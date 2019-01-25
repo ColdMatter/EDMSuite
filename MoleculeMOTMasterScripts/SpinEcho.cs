@@ -35,7 +35,9 @@ public class Patterns : MOTMasterScript
         Parameters["MagTrapDuration"] = 2500;
         Parameters["MOTWaitBeforeImage"] = 500;
         Parameters["RamseyPulseDuration"] = 2;
-        Parameters["RamseyWaitTime"] = 1;// 400;
+        Parameters["RamseyPiPulseDuration"] = 4;
+        Parameters["RamseyWaitTime"] = 400;
+        Parameters["HalfRamseyWaitTime"] = 200;
 
 
         // Camera
@@ -122,9 +124,10 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
-        int magTrapStartTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int secondRamseyPulseTime = magTrapStartTime + (int)Parameters["RamseyWaitTime"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
+        int spinEchoTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"] + (int)Parameters["HalfRamseyWaitTime"];
+        int secondRamseyPulseTime = spinEchoTime + (int)Parameters["RamseyPiPulseDuration"] + (int)Parameters["HalfRamseyWaitTime"];
         int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -133,6 +136,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
         p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB");
         p.Pulse(patternStartBeforeQ, firstRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
+        p.Pulse(patternStartBeforeQ, spinEchoTime, (int)Parameters["RamseyPiPulseDuration"], "microwaveC");
         p.Pulse(patternStartBeforeQ, secondRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
 
 
@@ -170,8 +174,8 @@ public class Patterns : MOTMasterScript
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
         int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
         int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
-        int secondMagTrapStartTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int secondRamseyPulseTime = magTrapStartTime + (int)Parameters["RamseyWaitTime"];
+        int spinEchoTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"] + (int)Parameters["HalfRamseyWaitTime"];
+        int secondRamseyPulseTime = spinEchoTime + (int)Parameters["RamseyPiPulseDuration"] + (int)Parameters["HalfRamseyWaitTime"];
         int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -192,9 +196,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", magTrapStartTime, (double)Parameters["MOTCoilsCurrentMagTrapValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", firstRamseyPulseTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]); 
-        p.AddAnalogValue("MOTCoilsCurrent", secondMagTrapStartTime, (double)Parameters["MOTCoilsCurrentMagTrapValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", secondRamseyPulseTime -100, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], -0.01);
 
         // Shim Fields

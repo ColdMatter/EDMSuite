@@ -35,8 +35,9 @@ public class Patterns : MOTMasterScript
         Parameters["MagTrapDuration"] = 2500;
         Parameters["MOTWaitBeforeImage"] = 500;
         Parameters["RamseyPulseDuration"] = 2;
-        Parameters["RamseyWaitTime"] = 1;// 400;
-
+        Parameters["RamseyPiPulseDuration"] = 4;
+        Parameters["FirstRamseyWaitTime"] = 873;// 400;
+        Parameters["SecondRamseyWaitTime"] = 360;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -79,6 +80,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.01; //0.21
         Parameters["MOTCoilsOffsetFieldValue"] = -0.01;
         Parameters["MOTCoilsCurrentMagTrapValue"] = 1.2;// 1.2;// 0.6;
+        Parameters["MOTCoilsCurrentRamseyMagTrapValue"] = -0.01;// 1.2;// 0.6;
 
         Parameters["CoilsSwitchOffTime"] = 40000;
 
@@ -122,9 +124,10 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
-        int magTrapStartTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int secondRamseyPulseTime = magTrapStartTime + (int)Parameters["RamseyWaitTime"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
+        int ramseyPiPulseTime = firstRamseyPulseTime + (int)Parameters["FirstRamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
+        int secondRamseyPulseTime = ramseyPiPulseTime + (int)Parameters["SecondRamseyWaitTime"] + (int)Parameters["RamseyPiPulseDuration"];
         int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -133,6 +136,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
         p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB");
         p.Pulse(patternStartBeforeQ, firstRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
+        p.Pulse(patternStartBeforeQ, ramseyPiPulseTime, (int)Parameters["RamseyPiPulseDuration"], "microwaveC");
         p.Pulse(patternStartBeforeQ, secondRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
 
 
@@ -143,7 +147,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("bXSlowingAOM", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
         p.AddEdge("v10SlowingAOM", patternStartBeforeQ + (int)Parameters["slowingRepumpAOMOffStart"] + (int)Parameters["slowingRepumpAOMOffDuration"], true); // send slowing repump aom high and hold it high
 
-        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime - 1400, (int)Parameters["MagTrapDuration"] + 10000, "bXSlowingShutter"); //Takes 14ms to start closing
+        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime - 1400, (int)Parameters["MagTrapDuration"] + 3000, "bXSlowingShutter"); //Takes 14ms to start closing
         p.Pulse(patternStartBeforeQ, microwavePulseTime - 1500, motRecaptureTime - microwavePulseTime + 1500 - 1000, "v00MOTShutter");
 
         //p.Pulse(patternStartBeforeQ, offsetFieldTurnOnTime, offsetFieldTurnOffTime - offsetFieldTurnOnTime, "bottomCoilDirection");
@@ -170,8 +174,8 @@ public class Patterns : MOTMasterScript
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
         int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
         int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
-        int secondMagTrapStartTime = firstRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int secondRamseyPulseTime = magTrapStartTime + (int)Parameters["RamseyWaitTime"];
+        int ramseyPiPulseTime = firstRamseyPulseTime + (int)Parameters["FirstRamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
+        int secondRamseyPulseTime = ramseyPiPulseTime + (int)Parameters["SecondRamseyWaitTime"] + (int)Parameters["RamseyPiPulseDuration"];
         int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
@@ -192,9 +196,8 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", magTrapStartTime, (double)Parameters["MOTCoilsCurrentMagTrapValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", firstRamseyPulseTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]); 
-        p.AddAnalogValue("MOTCoilsCurrent", secondMagTrapStartTime, (double)Parameters["MOTCoilsCurrentMagTrapValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", secondRamseyPulseTime -100, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", firstRamseyPulseTime, (double)Parameters["MOTCoilsCurrentRamseyMagTrapValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], -0.01);
 
         // Shim Fields
@@ -238,4 +241,3 @@ public class Patterns : MOTMasterScript
     }
 
 }
-

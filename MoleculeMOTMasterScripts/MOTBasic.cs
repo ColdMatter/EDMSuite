@@ -46,7 +46,7 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartTime"] = 360;// 340;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] =  -1.3;
+        Parameters["SlowingChirpEndValue"] = -1.3;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 8.0; //1.05;

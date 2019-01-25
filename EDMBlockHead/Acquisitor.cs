@@ -67,6 +67,16 @@ namespace EDMBlockHead.Acquire
             acquireThread.Start();
         }
 
+        public void StartMagDataAcquisition(BlockConfig config)
+        {
+            this.config = config;
+            acquireThread = new Thread(new ThreadStart(this.AcquireMagData));
+            acquireThread.Name = "BlockHead Acquisitor";
+            acquireThread.Priority = ThreadPriority.Highest;
+            backendState = AcquisitorState.running;
+            acquireThread.Start();
+        }
+
 		// calling this method stops acquisition as soon as possible (usually after the current shot)
 		public void Stop() 
 		{
@@ -650,7 +660,7 @@ namespace EDMBlockHead.Acquire
             AcquisitionStopping();
 
             // hand the new block back to the controller
-            Controller.GetController().AcquisitionFinished(b);
+            Controller.GetController().MagDataAcquisitionFinished(b);
 
             // signal anybody waiting on the lock that we're done
             Monitor.Pulse(MonitorLockObject);
@@ -878,10 +888,19 @@ namespace EDMBlockHead.Acquire
             // Comment the following line out if you're not null running.
             //magInputs.GateLength = 3000;
 
+            ScannedAnalogInput mag = new ScannedAnalogInput();
+            mag.ReductionMode = DataReductionMode.Average;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
+            mag.AverageEvery = 20;
+            mag.LowLimit = -10;
+            mag.HighLimit = 10;
+            mag.Calibration = 1.0e-6; // bartington calibration is 1V = 10uT but we have 10x amplifier so it's 1V = 1uT
+            magInputs.Channels.Add(mag);
+
             ScannedAnalogInput b0y = new ScannedAnalogInput();
             b0y.ReductionMode = DataReductionMode.Average;
             b0y.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinB0_Y"];
-            b0y.AverageEvery = 20;
+            b0y.AverageEvery = 20; 
             b0y.LowLimit = -10;
             b0y.HighLimit = 10;
             b0y.Calibration = 1.0e-9 / 2.7; // analog output calibration is 2.7 V/nT

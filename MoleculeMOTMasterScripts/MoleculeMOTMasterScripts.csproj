@@ -64,7 +64,7 @@
     <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
     <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
     <Compile Include="MicrowavePulseExperimental.cs" />
-    <Compile Include="MicrowavePulseExperimental2.cs" />
+    <Compile Include="MicrowavePulseN2.cs" />
     <Compile Include="MicrowavePulseMagneticTrapF2.cs" />
     <Compile Include="MicrowaveSpectroscopy.cs" />
     <Compile Include="MinimalCameraTest.cs" />
@@ -101,16 +101,22 @@
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabiFlopsFreeSpace.cs" />
+    <Compile Include="RamseyFreeSpaceN2.cs" />
     <Compile Include="RamseySpectroscopyFreeSpace.cs" />
     <Compile Include="RamseySpectroscopyFreeSpaceNoRecapture.cs" />
     <Compile Include="RamseySpectroscopySpinEchoFreeSpace.cs" />
     <Compile Include="RamseySpectroscopyTrap.cs" />
+    <Compile Include="RamseySpinEchoFreeSpaceN2.cs" />
+    <Compile Include="RamseySpinEchoTrapN2.cs" />
+    <Compile Include="RamseySpinEchoTrapOnWaitN2.cs" />
+    <Compile Include="RamseyTrapN2.cs" />
     <Compile Include="RAP.cs" />
     <Compile Include="RAPScanMicrowaves.cs" />
     <Compile Include="RbMagTrap.cs" />
     <Compile Include="RbMOTLoadingRate.cs" />
     <Compile Include="RbMOTTemp.cs" />
     <Compile Include="ScatteringRate.cs" />
+    <Compile Include="SFMTest.cs" />
     <Compile Include="ShutterTest.cs" />
     <Compile Include="SingleFrequencyMolasses.cs" />
     <Compile Include="SingleFrequencyMolassesLevitate.cs" />
@@ -119,6 +125,7 @@
     <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwice.cs" />
     <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwiceNumber.cs" />
     <Compile Include="SingleFrequencyMolassesTest.cs" />
+    <Compile Include="SpinEcho.cs" />
     <Compile Include="stateSpectroscopy.cs" />
     <Compile Include="test.cs" />
   </ItemGroup>
