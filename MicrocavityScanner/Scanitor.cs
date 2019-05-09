@@ -47,6 +47,8 @@ namespace MicrocavityScanner.Acquire
         
         public void Initialise()
         {
+            ConnectRemoting();
+
             fastLaserValue = GetValue(Controller.GetController().laserSettings["FastLaser"]);
             slowLaserValue = GetValue(Controller.GetController().laserSettings["SlowLaser"]);
             UpdatePosArgs evArgs = new UpdatePosArgs();
@@ -58,8 +60,6 @@ namespace MicrocavityScanner.Acquire
 
         public void StartScan()
         {
-            ConnectRemoting();
-
             controllerInstance = Controller.GetController();
 
             acquireThread = new Thread(new ThreadStart(this.Acquire));
@@ -329,6 +329,10 @@ namespace MicrocavityScanner.Acquire
             {
                 daqchannel = "/dev1/AI5";
             }
+            else if (channel == "Analog AO2")
+            {
+                daqchannel = "/dev1/AI5";
+            }
             inputTask.AIChannels.CreateVoltageChannel(daqchannel, "readchan", NationalInstruments.DAQmx.AITerminalConfiguration.Rse
                 , min, max, NationalInstruments.DAQmx.AIVoltageUnits.Volts);
             NationalInstruments.DAQmx.AnalogSingleChannelReader reader;
@@ -392,8 +396,8 @@ namespace MicrocavityScanner.Acquire
             double max = 10; 
             if (channel == "Analog AO0")
             {
-                min = -4;
-                max = 4;
+                min = -10;
+                max = 10;
             }
             string daqchannel = "dev1/" + channel.Substring(7,3);
             outputTask.AOChannels.CreateVoltageChannel(daqchannel, "scanchan"

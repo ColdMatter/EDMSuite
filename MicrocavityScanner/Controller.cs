@@ -22,7 +22,7 @@ namespace MicrocavityScanner
     public class Controller : MarshalByRefObject
     {
         #region Class members
-        private TransferCavityLock2012.Controller tclController;
+        public TransferCavityLock2012.Controller tclController;
         //private ScanMaster.Controller smController;
         public ScanSerializer serializer = new ScanSerializer();
         public enum AppState { stopped, running, starting };
@@ -90,6 +90,10 @@ namespace MicrocavityScanner
 
             mainForm = new MainForm(this);
             mainForm.Show();
+
+            // connect the TCL controller over remoting network connection
+            //tclController = (TransferCavityLock2012.Controller)(Activator.GetObject(typeof(TransferCavityLock2012.Controller), "tcp://localhost:1190/controller.rem"));
+
 
             scanitor.Initialise();
 

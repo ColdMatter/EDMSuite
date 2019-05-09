@@ -75,8 +75,8 @@ namespace MicrocavityScanner.Acquire
             settings["triggerActive"] = false;
             //settings["pointsPerScan"] = 1000;
             //the analog channels read a terminated channel first to eliminate crosstalk
-            settings["analogChannel"] = "noiseMicrophone,TiSapphMonitor";
-            settings["dummyChannel"] = "zeroed1,zeroed2";
+            settings["analogChannel"] = "noiseMicrophone,TiSapphMonitor,QuartzRefCavity";
+            settings["dummyChannel"] = "zeroed1,zeroed2,zeroed3";
             settings["preArm"] = true;
             settings["channel"] = "uCavityReflectionAPD";
             settings["gateLength"] = 100;

@@ -118,7 +118,7 @@
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -384,7 +384,8 @@
             "tclECDLControl",
             "tclTiSapphControl",
             "Analog AO0",
-            "Analog AO1"});
+            "Analog AO1",
+            "Analog AO2"});
             this.FastAxisSelectCombo.Location = new System.Drawing.Point(9, 19);
             this.FastAxisSelectCombo.Name = "FastAxisSelectCombo";
             this.FastAxisSelectCombo.Size = new System.Drawing.Size(188, 21);
@@ -544,7 +545,8 @@
             "tclECDLControl",
             "tclTiSapphControl",
             "Analog AO0",
-            "Analog AO1"});
+            "Analog AO1",
+            "Analog AO2"});
             this.SlowAxisSelectCombo.Location = new System.Drawing.Point(4, 19);
             this.SlowAxisSelectCombo.Name = "SlowAxisSelectCombo";
             this.SlowAxisSelectCombo.Size = new System.Drawing.Size(188, 21);

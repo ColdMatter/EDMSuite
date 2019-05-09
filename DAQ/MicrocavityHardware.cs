@@ -61,14 +61,15 @@ namespace DAQ.HAL
 			// map the analog channels
             AddAnalogInputChannel("ECDLError", daqBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("TiSapphError", daqBoard + "/ai5", AITerminalConfiguration.Differential);
-			AddAnalogInputChannel("uCavityReflectionECDL", daqBoard + "/ai6", AITerminalConfiguration.Differential);
+			AddAnalogInputChannel("uCavityReflectionECDL", daqBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("uCavityReflectionTiSapph", daqBoard + "/ai7", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("uCavityVoltage", daqBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("TiSapphMonitor", daqBoard + "/ai1", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("QuartzRefCavity", daqBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("QuartzRefCavity", daqBoard + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("noiseMicrophone", daqBoard + "/ai0", AITerminalConfiguration.Differential);
             Info.Add("zeroed1","ai7_dummy1");
             Info.Add("zeroed2", "ai7_dummy2");
+            Info.Add("zeroed3", "ai7_dummy3");
 
             AddAnalogInputChannel("master", TCLBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("tclpdTiSapph", TCLBoard + "/ai2", AITerminalConfiguration.Differential);
@@ -81,7 +82,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("ECDLControl", daqBoard + "/ao1");
 
             AddAnalogOutputChannel("tclTiSapphControl", TCLBoard + "/ao0",-10,10);
-            AddAnalogOutputChannel("tclECDLControl", TCLBoard + "/ao1",0,10);
+            AddAnalogOutputChannel("tclECDLControl", TCLBoard + "/ao1",-5,5);
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao2");
 
             // map the counter channels
