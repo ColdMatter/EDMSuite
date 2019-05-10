@@ -1,3 +1,4 @@
+#if EDM
 using System;
 using System.Runtime.Remoting;
 using System.Threading;
@@ -96,3 +97,4 @@ namespace ScanMaster.Acquire.Plugins
 		
 	}
 }
+#endif

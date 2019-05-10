@@ -138,10 +138,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EDMHardwareControl\EDMHardwareControl.csproj">
-      <Project>{dfe81ee7-f9af-4551-b3d7-336f14101ab6}</Project>
-      <Name>EDMHardwareControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
       <Name>TransferCavityLock2012</Name>
@@ -149,7 +145,7 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
