@@ -15,72 +15,72 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
-        Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 8000;
-        Parameters["FlashToQ"] = 16; // This is a time before the Q switch
-        Parameters["QSwitchPulseDuration"] = 10;
-        Parameters["FlashPulseDuration"] = 10;
-        Parameters["HeliumShutterToQ"] = 100;
-        Parameters["HeliumShutterDuration"] = 1550;
+        Parameters["PatternLength"] = 1;// 50000;
+        Parameters["TCLBlockStart"] = 1;// 2000; // This is a time before the Q switch
+        Parameters["TCLBlockDuration"] = 1;// 8000;
+        Parameters["FlashToQ"] = 1;// 16; // This is a time before the Q switch
+        Parameters["QSwitchPulseDuration"] = 1;// 10;
+        Parameters["FlashPulseDuration"] = 1;// 10;
+        Parameters["HeliumShutterToQ"] = 1;// 100;
+        Parameters["HeliumShutterDuration"] = 1;// 1550;
 
-        Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 1400;
-        Parameters["MolassesRampDuration"] = 200;
-        Parameters["v0F0PumpDuration"] = 10;
-        Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 3;
-        Parameters["SecondMicrowavePulseDuration"] = 3;
-        Parameters["MagTrapDuration"] = 2500;
-        Parameters["MOTWaitBeforeImage"] = 500;
-        Parameters["RamseyPulseDuration"] = 2;
-        Parameters["RamseyWaitTime"] = 100;
+        Parameters["MOTSwitchOffTime"] = 1;// 6300;
+        Parameters["MolassesDelay"] = 1;// 100;
+        Parameters["MolassesHoldTime"] = 1;//1400;
+        Parameters["MolassesRampDuration"] = 1;//200;
+        Parameters["v0F0PumpDuration"] = 1;//10;
+        Parameters["MOTPictureTriggerTime"] = 1;//4000;
+        Parameters["MicrowavePulseDuration"] = 1;//3;
+        Parameters["SecondMicrowavePulseDuration"] = 1;//3;
+        Parameters["MagTrapDuration"] = 1;//2500;
+        Parameters["MOTWaitBeforeImage"] = 1;//500;
+        Parameters["RamseyPulseDuration"] = 1;//2;
+        Parameters["RamseyWaitTime"] = 1;
 
 
         // Camera
-        Parameters["Frame0TriggerDuration"] = 10;
+        Parameters["Frame0TriggerDuration"] = 1;//10;
 
         //PMT
         Parameters["PMTTrigger"] = 4000;
-        Parameters["PMTTriggerDuration"] = 10;
+        Parameters["PMTTriggerDuration"] = 1;// 10;
 
         // BX poke
         Parameters["PokeDetuningValue"] = -1.45;
-        Parameters["PokeDuration"] = 300;// 100;
+        Parameters["PokeDuration"] = 1;//300;// 100;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
-        Parameters["slowingAOMOnDuration"] = 45000;
+        Parameters["slowingAOMOnDuration"] = 1;//45000;
         Parameters["slowingAOMOffStart"] = 1500;
-        Parameters["slowingAOMOffDuration"] = 40000;
+        Parameters["slowingAOMOffDuration"] = 1;//40000;
         Parameters["slowingRepumpAOMOnStart"] = 250;
-        Parameters["slowingRepumpAOMOnDuration"] = 45000;
+        Parameters["slowingRepumpAOMOnDuration"] = 1;// 45000;
         Parameters["slowingRepumpAOMOffStart"] = 1700;
-        Parameters["slowingRepumpAOMOffDuration"] = 40000;
+        Parameters["slowingRepumpAOMOffDuration"] = 1;//40000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
-        Parameters["SlowingChirpDuration"] = 1160;
+        Parameters["SlowingChirpStartTime"] = 1;//340;
+        Parameters["SlowingChirpDuration"] = 1;//1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.3;
-        Parameters["SlowingChirpHoldDuration"] = 8000;
+        Parameters["SlowingChirpHoldDuration"] = 1;//8000;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 8.0;
-        Parameters["slowingCoilsOffTime"] = 1500;
+        Parameters["slowingCoilsOffTime"] = 1;//1500;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsCurrentRampStartValue"] = 0.6;
-        Parameters["MOTCoilsCurrentRampStartTime"] = 4000;
+        Parameters["MOTCoilsCurrentRampStartTime"] = 1;//4000;
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
-        Parameters["MOTCoilsCurrentRampDuration"] = 1000;
+        Parameters["MOTCoilsCurrentRampDuration"] = 1;//1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.05;// -0.01; //0.21
         Parameters["MOTCoilsOffsetFieldValue"] = -0.05;// -0.01;
-        Parameters["MOTCoilsCurrentMagTrapValue"] = 0.6;
+        Parameters["MOTCoilsCurrentMagTrapValue"] = 1.2;// 0.6;
 
-        Parameters["CoilsSwitchOffTime"] = 40000;
+        Parameters["CoilsSwitchOffTime"] = 1;//40000;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
@@ -88,12 +88,12 @@ public class Patterns : MOTMasterScript
         Parameters["zShimLoadCurrent"] = -5.35;// -5.35; 
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 5500;
-        Parameters["v0IntensityRampDuration"] = 400;
+        Parameters["v0IntensityRampStartTime"] = 1;//5500;
+        Parameters["v0IntensityRampDuration"] = 1;//400;
         Parameters["v0IntensityRampStartValue"] = 5.8;
         Parameters["v0IntensityRampEndValue"] = 8.465;
         Parameters["v0IntensityMolassesValue"] = 5.8;
-        Parameters["v0IntensityF0PumpValue"] =  9.0;
+        Parameters["v0IntensityF0PumpValue"] = 9.0;
         Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
@@ -123,10 +123,10 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
-        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
+        int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
@@ -169,10 +169,10 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int firstRamseyPulseTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
-        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
-        int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
+        int motRecaptureTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         // Add Analog Channels

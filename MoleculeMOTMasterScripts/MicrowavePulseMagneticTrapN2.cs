@@ -31,12 +31,11 @@ public class Patterns : MOTMasterScript
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
         Parameters["MicrowavePulseDuration"] = 3;
-        Parameters["SecondMicrowavePulseDuration"] = 3;
+        Parameters["SecondMicrowavePulseDuration"] = 4;
+        Parameters["ThirdMicrowavePulseDuration"] = 4;
         Parameters["MagTrapDuration"] = 2500;
+        Parameters["MagTrapWaitTime"] = 1000; //wait after mag trap on before microwave pulse
         Parameters["MOTWaitBeforeImage"] = 500;
-        Parameters["RamseyPulseDuration"] = 2;
-        Parameters["RamseyWaitTime"] = 100;
-
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -47,7 +46,7 @@ public class Patterns : MOTMasterScript
 
         // BX poke
         Parameters["PokeDetuningValue"] = -1.45;
-        Parameters["PokeDuration"] = 300;// 100;
+        Parameters["PokeDuration"] = 100;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
@@ -93,7 +92,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartValue"] = 5.8;
         Parameters["v0IntensityRampEndValue"] = 8.465;
         Parameters["v0IntensityMolassesValue"] = 5.8;
-        Parameters["v0IntensityF0PumpValue"] =  9.0;
+        Parameters["v0IntensityF0PumpValue"] = 9.0;
         Parameters["v0IntensityImageValue"] = 5.8;
 
         // v0 Light Frequency
@@ -123,18 +122,18 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
-        int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
-        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int thirdMicrowavePulseTime = magTrapStartTime + (int)Parameters["MagTrapWaitTime"];
         int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveB");
-        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveA");
-        p.Pulse(patternStartBeforeQ, firstRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
-        p.Pulse(patternStartBeforeQ, secondRamseyPulseTime, (int)Parameters["RamseyPulseDuration"], "microwaveC");
+        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
+        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB");
+        p.Pulse(patternStartBeforeQ, thirdMicrowavePulseTime, (int)Parameters["ThirdMicrowavePulseDuration"], "microwaveC");
+
+
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
@@ -169,9 +168,8 @@ public class Patterns : MOTMasterScript
         int microwavePulseTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int blowAwayTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"];
         int secondMicrowavePulseTime = blowAwayTime + (int)Parameters["PokeDuration"];
-        int firstRamseyPulseTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
-        int secondRamseyPulseTime = firstRamseyPulseTime + (int)Parameters["RamseyWaitTime"] + (int)Parameters["RamseyPulseDuration"];
-        int magTrapStartTime = secondRamseyPulseTime + (int)Parameters["RamseyPulseDuration"];
+        int magTrapStartTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"];
+        int thirdMicrowavePulseTime = magTrapStartTime + (int)Parameters["MagTrapWaitTime"];
         int motRecaptureTime = magTrapStartTime + (int)Parameters["MagTrapDuration"];
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 

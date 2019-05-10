@@ -72,14 +72,14 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.3;// 0.65;// 1.5;
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.01; //0.06
-        Parameters["MOTCoilsCurrentLevitateValue"] =  1.8;// 0.65;
+        Parameters["MOTCoilsCurrentLevitateValue"] = 1.8;// 0.65;
         Parameters["TopCoilShuntLevitateValue"] = 1.27;// 8.0; for previous shunt circuit - this will needs changing in all other levitation scripts!
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 1.7;// 1.6;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.12;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -5.35; //0.26
+        Parameters["xShimLoadCurrent"] = 3.6;// 1.7
+        Parameters["yShimLoadCurrent"] = -0.12;
+        Parameters["zShimLoadCurrent"] = -5.35;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
@@ -127,8 +127,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, v00ChirpTime, (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"] + (int)Parameters["SingleFreqMolassesDuration"], "v00Sidebands");
         p.Pulse(patternStartBeforeQ, v00ChirpTime, 2 * (int)Parameters["v00ChirpDuration"] + (int)Parameters["v00ChirpWait"] + (int)Parameters["SingleFreqMolassesDuration"] + 200, "v00LockBlock");
       //p.Pulse(patternStartBeforeQ, releaseTime - 1500, (int)Parameters["RotationTime"] + 1500 - 1250, "v00MOTShutter");
-        p.Pulse(patternStartBeforeQ, molassesStartTime, (int)Parameters["CoilsSwitchOffTime"] - molassesStartTime, "bottomCoilDirection");
-        //p.Pulse(patternStartBeforeQ, molassesStartTime, harmonicTrapOffTime - molassesStartTime + 20, "bottomCoilDirection");
+        //p.Pulse(patternStartBeforeQ, molassesStartTime, (int)Parameters["CoilsSwitchOffTime"] - molassesStartTime, "bottomCoilDirection");
+        p.Pulse(patternStartBeforeQ, molassesStartTime, harmonicTrapOffTime - molassesStartTime + 20, "bottomCoilDirection");
         //p.Pulse(patternStartBeforeQ, harmonicTrapOffTime + 20, (int)Parameters["CoilsSwitchOffTime"] - (harmonicTrapOffTime + 20), "topCoilDirection");
         //p.Pulse(patternStartBeforeQ, singleFrequencyMolassesTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame

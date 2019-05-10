@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BFieldCalibration.cs" />
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
     <Compile Include="F2MF2Levitation.cs" />
@@ -65,8 +66,10 @@
     <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
     <Compile Include="MicrowavePulseExperimental.cs" />
     <Compile Include="MicrowavePulseN2.cs" />
-    <Compile Include="MicrowavePulseMagneticTrapF2.cs" />
+    <Compile Include="MicrowavePulseMagneticTrapN2.cs" />
     <Compile Include="MicrowaveSpectroscopy.cs" />
+    <Compile Include="MicrowaveSpectroscopySingleFreq.cs" />
+    <Compile Include="MicrowaveSpectroscopySingleFreqOnly.cs" />
     <Compile Include="MinimalCameraTest.cs" />
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
@@ -101,7 +104,12 @@
     <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabiFlopsFreeSpace.cs" />
+    <Compile Include="RamseyBFieldN1.cs" />
+    <Compile Include="RamseyBFieldN2.cs" />
     <Compile Include="RamseyFreeSpaceN2.cs" />
+    <Compile Include="RamseyFreeSpaceN2SingleFreq.cs" />
+    <Compile Include="RamseyFreeSpaceN2SingleFreqOnly.cs" />
+    <Compile Include="RamseyInterTrapN2.cs" />
     <Compile Include="RamseySpectroscopyFreeSpace.cs" />
     <Compile Include="RamseySpectroscopyFreeSpaceNoRecapture.cs" />
     <Compile Include="RamseySpectroscopySpinEchoFreeSpace.cs" />
@@ -126,6 +134,7 @@
     <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwiceNumber.cs" />
     <Compile Include="SingleFrequencyMolassesTest.cs" />
     <Compile Include="SpinEcho.cs" />
+    <Compile Include="SpinEchoFreeSpaceN2SingleFreqOnly.cs" />
     <Compile Include="stateSpectroscopy.cs" />
     <Compile Include="test.cs" />
   </ItemGroup>

@@ -78,9 +78,9 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 2.7;// 1.6;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.12;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -5.35; //0.26
+        Parameters["xShimLoadCurrent"] = 2.7;
+        Parameters["yShimLoadCurrent"] = -0.12;
+        Parameters["zShimLoadCurrent"] = -5.35; 
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
