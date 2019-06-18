@@ -18,9 +18,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
         private ControllerState state = ControllerState.STOPPED;
         private AnalogSingleChannelReader therm4KRTReader;
         private AnalogSingleChannelReader therm4KReader;
+        private AnalogSingleChannelReader therm40KReader;
         private AnalogSingleChannelReader sf6TempReader;
         private AnalogSingleChannelReader vRefReader;
-        private double lowTempThreshCelcius = -34.0;
+        private double lowTempThreshCelcius = -20.0;
         private AnalogSingleChannelReader sourcePressureReader;
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
@@ -28,6 +29,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
         private bool finishedHeating = true;
         private bool isHolding = false;
         private bool maxTempReached = true;
+        private bool isRecording = false;
         private System.Windows.Forms.Timer readTimer;
 
         private enum ControllerState
@@ -53,12 +55,20 @@ namespace ZeemanSisyphusHardwareControl.Controls
             set { this.isHolding = value; }
         }
 
+        public bool IsRecording
+        {
+            get { return isRecording; }
+            set { this.isRecording = value; }
+
+        }
+
         public SourceTabController()
         {
             InitReadTimer();
 
             therm4KRTReader = CreateAnalogInputReader("4KRTthermistor");
             therm4KReader = CreateAnalogInputReader("4Kthermistor");
+            therm40KReader = CreateAnalogInputReader("40Kthermistor");
             vRefReader = CreateAnalogInputReader("thermVref");
             sf6TempReader = CreateAnalogInputReader("SF6thermistor");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
@@ -132,7 +142,17 @@ namespace ZeemanSisyphusHardwareControl.Controls
             double vRef = vRefReader.ReadSingleSample(); 
             double sf6TempVoltage = sf6TempReader.ReadSingleSample();
             double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
-            return  SteinhartHartEquation(sf6TempResistance, false);
+            double sf6Temp= SteinhartHartEquation(sf6TempResistance, false);
+            return sf6Temp;
+        }
+
+        protected double Get40KTemperature()
+        {
+            double vRef = vRefReader.ReadSingleSample();
+            double therm40KVoltage = therm40KReader.ReadSingleSample();
+            double therm40KResistance = ConvertVoltageToResistance(therm40KVoltage, vRef);
+            double therm40KTemp = SteinhartHartEquation(therm40KResistance, false);
+            return therm40KTemp;
         }
 
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
@@ -179,6 +199,20 @@ namespace ZeemanSisyphusHardwareControl.Controls
             {
                 castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
             }
+
+            double therm40KTemp = Get40KTemperature();
+            {
+                castView.UpdateCurrent40KTemperature(therm40KTemp.ToString("F2"));
+            }
+            if (IsRecording)
+            {
+                using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(@"D:\\Box Sync\\CaF MOT\\ZeemanSisyphus\\data\\temperatureData\\SF6Line.csv", true))
+                {
+                    file.WriteLine(sf6Temp + "," + temp + "," + therm40KTemp);
+                }
+
+            }
         }
 
         public void SetCryoState(bool state) 
@@ -207,6 +241,12 @@ namespace ZeemanSisyphusHardwareControl.Controls
                 castView.UpdateReadButton(true);
                 castView.EnableControls(false);
             }
+        }
+
+        public void ToggleRecording()
+        {
+            isRecording = !isRecording;
+            castView.UpdateRecordButton(!isRecording);
         }
 
         public void ToggleCycling()
@@ -247,7 +287,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
         protected double ConvertVoltageToPressure(double voltage)
         {
-            return Math.Pow(10.0,(voltage - 10.875));//conversion for cold cathode ionization gauge series 903
+            return Math.Pow(10.0,(voltage - 7.75)/0.75); //conversion for IONIVAC ITR 90 in mbar
         }
 
         protected double GetPressure()
@@ -259,10 +299,15 @@ namespace ZeemanSisyphusHardwareControl.Controls
         protected void UpdatePressure(object anObject, EventArgs eventArgs)
         {
             double pressure = GetPressure();
-            
+            castView.UpdateCurrentPressure(pressure.ToString("e2"));
+            if (IsRecording)
             {
-                castView.UpdateCurrentPressure(pressure.ToString("e2"));
-        
+                using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(@"D:\\Box Sync\\CaF MOT\\ZeemanSisyphus\\data\\pressureData\\data.csv", true))
+                {
+                    file.WriteLine(pressure);
+                }
+
             }
         }
         
