@@ -36,6 +36,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
         {
             currentSF6Temperature.Text = temp;
         }
+        public void UpdateCurrent40KTemperature(string temp)
+        {
+            current40KTemperature.Text = temp;
+        }
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
@@ -44,6 +48,11 @@ namespace ZeemanSisyphusHardwareControl.Controls
         public void UpdateReadButton(bool state)
         {
             readButton.Text = state ? "Start Reading" : "Stop Reading";
+        }
+
+        public void UpdateRecordButton(bool state)
+        {
+            recordButton.Text = state ? "Start Recording" : "Stop Recording";
         }
 
         public void UpdateCycleButton(bool state)
@@ -64,6 +73,7 @@ namespace ZeemanSisyphusHardwareControl.Controls
             cryoSwitch.Enabled = state;
             cycleButton.Enabled = state;
             holdButton.Enabled = state;
+            recordButton.Enabled = state;
         }
 
         public void SetCryoState(bool state)
@@ -101,6 +111,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
             castController.ToggleReading();
         }
 
+        private void toggleRecording(object sender, EventArgs e)
+        {
+            castController.ToggleRecording();
+        }
         private void toggleCycling(object sender, EventArgs e)
         {
             castController.ToggleCycling();
@@ -164,6 +178,11 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
 
         private void currentSF6Temperature_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
         {
 
         }
