@@ -22,6 +22,10 @@ namespace DAQ.HAL
             string analogPatternBoardName = "analogPattern";//NI PXIe-6229
             string analogPatternBoardAddress = "/PXI1Slot4";
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
+
+            string usbDaqName = "usbDaq";
+            string usbDaqAddress = "/Dev3";
+            Boards.Add(usbDaqName, usbDaqAddress); // NI USB-6009
            
 
             // map the digital channels
@@ -30,8 +34,6 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 2, 6);
             AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 2, 4);//connect to daq board PFI 0
-            AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
-            AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
            // AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 4);
            // AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 3, 3);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 2);
@@ -52,13 +54,20 @@ namespace DAQ.HAL
       
 
             // map the analog channels
-            AddAnalogInputChannel("4KRTthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("thermVref", analogPatternBoardAddress + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourcePressure", analogPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("SF6thermistor", analogPatternBoardAddress + "/ai15", AITerminalConfiguration.Rse);
             AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
+
+
+            // map the USB channels
+            AddDigitalOutputChannel("sourceHeater", usbDaqAddress, 0, 0);
+            AddDigitalOutputChannel("cryoCooler", usbDaqAddress, 0, 1);
+
+            AddAnalogInputChannel("thermVref", usbDaqAddress + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("4KRTthermistor", usbDaqAddress + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("SF6thermistor", usbDaqAddress + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("4Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourcePressure", usbDaqAddress + "/ai5", AITerminalConfiguration.Rse);
             
 
             // ScanMaster configuration
