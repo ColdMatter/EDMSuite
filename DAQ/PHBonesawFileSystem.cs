@@ -12,6 +12,9 @@ namespace DAQ.Environment
             Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\");
             Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\Temp Camera Images\\");
             Paths.Add("HardwareClassPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\MoleculeMOTHardware.cs");
+            Paths.Add("settingsPath", "C:\\ControlPrograms\\Settings\\ScanMaster\\");
+            Paths.Add("scanMasterDataPath", "C:\\Users\\cafmot\\Box Sync\\CaF MOT\\MOTData\\MOTScanMasterData\\");//where scan master will save data
+            Paths.Add("fakeData", "C:\\ControlPrograms\\Settings\\Examples\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

@@ -35,7 +35,7 @@ def ScanSingleParameter(script_name, parameter_name, values):
 		dic[parameter_name] = value
 		mm.Go(dic)
 		end = time.time()
-		print '{0} : {1} seconds'.format(value, int(round(end-start)))
+		print '{0} : {1} seconds'.format(value, end-start)
 	print 'Finished'
 	return 0
 

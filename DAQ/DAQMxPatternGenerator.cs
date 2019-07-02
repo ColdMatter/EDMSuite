@@ -118,6 +118,9 @@ namespace DAQ.HAL
                         0.5
                         );
                     counterTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
+		    //When just setting this attibute SQM seems to revert to finite samples when
+		    //task is started. So use the following method to configure SQM.
+                    counterTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
                     counterTask.Start();
 
                     clockSource = device + (string)Environs.Hardware.GetInfo("PGClockCounter") + "InternalOutput";

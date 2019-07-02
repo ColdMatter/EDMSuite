@@ -35,6 +35,12 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
 #endif
+
+#if EDM
+            scanOutputPlugins.Add("NI Rfsg frequency output", typeof(NIRfsgFrequencyOutputPlugin));
+            scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
+            scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
+#endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
             switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));

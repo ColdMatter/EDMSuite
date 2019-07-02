@@ -58,7 +58,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EDM|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\EDM\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EDM</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
@@ -142,14 +142,10 @@
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
       <Name>TransferCavityLock2012</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ZSHardwareControl\ZeemanSisyphusHardwareControl.csproj">
-      <Project>{e19c13d6-c15c-4edd-8633-db1a931ed5a2}</Project>
-      <Name>ZeemanSisyphusHardwareControl</Name>
-    </ProjectReference>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=15.5.45.109, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
@@ -209,6 +205,9 @@
     </Compile>
     <Compile Include="BigSkyYAGPlugin.cs" />
     <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
+    <Compile Include="HardwareControllerOutputPlugin.cs" />
+    <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="NIRfsgFrequencyOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SuperPumpingPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPatternPlugin.cs" />
