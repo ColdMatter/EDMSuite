@@ -14,7 +14,8 @@ namespace TransferCavityLock2012
     /// </summary>
     public abstract class Laser
     {
-        public double Gain { get; set; }
+        public double IntegralGain { get; set; }
+        public double ProportionalGain { get; set; }
         public string Name;
         public string FeedbackChannel;
         public LorentzianFit Fit { get; set; }
@@ -32,6 +33,7 @@ namespace TransferCavityLock2012
 
         public virtual double LaserSetPoint { get; set; }
         public abstract double VoltageError { get; }
+        public abstract double VoltageErrorDifferenceFromLast { get; }
 
         public double UpperVoltageLimit
         {
@@ -110,17 +112,51 @@ namespace TransferCavityLock2012
         {
             LatestScanData = scanData;
             lockBlocked = shouldBlock;
+            LorentzianFit newFit = new LorentzianFit(0, 0, 0, 0);
             if (!lockBlocked)
             {
                 switch (lState)
                 {
 
                     case LaserState.LOCKED:
-                        LorentzianFit newFit = FitWithPreviousAsBestGuess(rampData, scanData);
+                        newFit = FitWithPreviousAsBestGuess(rampData, scanData);
                         double dataPeakCentre = rampData[Array.IndexOf(scanData, scanData.Max())];
                         bool fitTooNarrow = newFit.Width < 0.001; // Sometimes fit seems to break and give a tiny width
                         bool fitTooFarFromMax = Math.Abs(newFit.Centre - dataPeakCentre)/newFit.Width > 1;
                         if (fitTooNarrow || fitTooFarFromMax) 
+                        {
+                            newFit = FitUsingDataForBestGuess(rampData, scanData);
+                        }
+                        Fit = newFit;
+                        break;
+
+                    case LaserState.LOCKING:
+                        Fit = FitUsingDataForBestGuess(rampData, scanData);
+                        Lock();
+                        break;
+
+                    case LaserState.FREE:
+                        break;
+                }
+            }
+        }
+
+        public virtual void UpdateScanFast(double[] rampData, double[] scanData, bool shouldBlock, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
+        {
+            LatestScanData = scanData;
+            lockBlocked = shouldBlock;
+            LorentzianFit newFit = new LorentzianFit(0, 0, 0, 0);
+            if (!lockBlocked)
+            {
+                switch (lState)
+                {
+
+                    case LaserState.LOCKED:
+                        newFit = FitWithPreviousAsBestGuess(rampData, scanData, pointsToConsiderEitherSideOfPeakInFWHMs, maximumNLMFSteps);
+                        double dataPeakCentre = rampData[Array.IndexOf(scanData, scanData.Max())];
+                        bool fitTooNarrow = newFit.Width < 0.001; // Sometimes fit seems to break and give a tiny width
+                        bool fitTooFarFromMax = Math.Abs(newFit.Centre - dataPeakCentre) / newFit.Width > 1;
+                        if (fitTooNarrow || fitTooFarFromMax)
                         {
                             newFit = FitUsingDataForBestGuess(rampData, scanData);
                         }
@@ -143,6 +179,11 @@ namespace TransferCavityLock2012
             return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit);
         }
 
+        protected LorentzianFit FitWithPreviousAsBestGuess(double[] rampData, double[] scanData, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
+        {
+            return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, Fit, pointsToConsiderEitherSideOfPeakInFWHMs, maximumNLMFSteps);
+        }
+
         protected LorentzianFit FitUsingDataForBestGuess(double[] rampData, double[] scanData)
         {
             double background = scanData.Min();
@@ -158,7 +199,7 @@ namespace TransferCavityLock2012
         {
             if (lState == LaserState.LOCKED)
             {
-                CurrentVoltage = CurrentVoltage + Gain * VoltageError;
+                CurrentVoltage = CurrentVoltage + IntegralGain * VoltageError + ProportionalGain * VoltageErrorDifferenceFromLast;
             }
         }
 

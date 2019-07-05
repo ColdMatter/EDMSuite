@@ -221,14 +221,24 @@ namespace TransferCavityLock2012
             changeLaserVoltage(Cavities[cavityName].SlaveLasers[slaveName], voltage);
         }
 
-        internal void MasterGainChanged(string cavityName, double g)
+        internal void MasterIGainChanged(string cavityName, double g)
         {
-            Cavities[cavityName].Master.Gain = g;
+            Cavities[cavityName].Master.IntegralGain = g;
         }
 
-        internal void SlaveGainChanged(string cavityName, string slaveName, double g)
+        internal void MasterPGainChanged(string cavityName, double g)
         {
-            Cavities[cavityName].SlaveLasers[slaveName].Gain = g;
+            Cavities[cavityName].Master.ProportionalGain = g;
+        }
+
+        internal void SlaveIGainChanged(string cavityName, string slaveName, double g)
+        {
+            Cavities[cavityName].SlaveLasers[slaveName].IntegralGain = g;
+        }
+
+        internal void SlavePGainChanged(string cavityName, string slaveName, double g)
+        {
+            Cavities[cavityName].SlaveLasers[slaveName].ProportionalGain = g;
         }
 
         internal void MasterSetPointChanged(string cavityName, double setPoint)
@@ -483,7 +493,7 @@ namespace TransferCavityLock2012
                     slaveCentre,
                     laser.LaserSetPoint,
                     laser.VoltageError,
-                    laser.Gain,
+                    laser.IntegralGain,
                     laser.CurrentVoltage));
                 }
             }
@@ -537,7 +547,15 @@ namespace TransferCavityLock2012
                 {
                     double[] laserScanData = scanData.GetLaserData(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
                     bool lockBlocked = scanData.LaserLockBlocked(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
-                    laser.UpdateScan(rampData, laserScanData, lockBlocked);
+
+                    if (ui.fastFitCheckBox.Checked)
+                    {
+                        laser.UpdateScanFast(rampData, laserScanData, lockBlocked, config.PointsToConsiderEitherSideOfPeakInFWHMs, config.MaximumNLMFSteps);
+                    }
+                    else
+                    {
+                        laser.UpdateScan(rampData, laserScanData, lockBlocked);
+                    }
                 }
 
                 // Locking

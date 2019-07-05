@@ -22,18 +22,19 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public CavityControlPanel(string name, double gain)
+        public CavityControlPanel(string name, double igain, double pgain)
         {
             CavityName = name;
             InitializeComponent();
-            MasterGainTextBox.Text = gain.ToString();
+            MasterIGainTextBox.Text = igain.ToString();
+            MasterPGainTextBox.Text = pgain.ToString();
         }
 
         public void AddSlaveLaserPanel(SlaveLaser sl)
         {
             string title = sl.Name;
             TabPage newTab = new TabPage(title);
-            LockControlPanel panel = new LockControlPanel(title, sl.LowerVoltageLimit, sl.UpperVoltageLimit, sl.Gain);
+            LockControlPanel panel = new LockControlPanel(title, sl.LowerVoltageLimit, sl.UpperVoltageLimit, sl.IntegralGain, sl.ProportionalGain);
             panel.Controller = this.controller;
             panel.CavityPanel = this;
             slaveLasersTab.TabPages.Add(newTab);
@@ -68,13 +69,26 @@ namespace TransferCavityLock2012
         private void MasterGainTextBox_TextChanged(object sender, EventArgs e)
         {
             double value;
-            if (Double.TryParse(MasterGainTextBox.Text, out value))
+            if (Double.TryParse(MasterIGainTextBox.Text, out value))
             {
-                if (MasterGainTextBox.Focused)
+                if (MasterIGainTextBox.Focused)
                 {
-                    controller.MasterGainChanged(CavityName, value);
+                    controller.MasterIGainChanged(CavityName, value);
                 }
             }
+        }
+
+        private void MasterPGainTextBox_TextChanged(object sender, EventArgs e)
+        {
+            double value;
+            if (Double.TryParse(MasterPGainTextBox.Text, out value))
+            {
+                if (MasterPGainTextBox.Focused)
+                {
+                    controller.MasterPGainChanged(CavityName, value);
+                }
+            }
+
         }
 
         private void MasterSetPointTextBox_TextChanged(object sender, EventArgs e)
@@ -105,14 +119,14 @@ namespace TransferCavityLock2012
             {
                 case Laser.LaserState.FREE:
                     UIHelper.EnableControl(MasterSetPointTextBox, true);
-                    UIHelper.EnableControl(MasterGainTextBox, true);
+                    UIHelper.EnableControl(MasterIGainTextBox, true);
                     UIHelper.EnableControl(SummedVoltageTextBox, true);
                     UIHelper.EnableControl(CavLockVoltageTrackBar, true);
                     break;
 
                 case Laser.LaserState.LOCKING:
                     UIHelper.EnableControl(MasterSetPointTextBox, false);
-                    UIHelper.EnableControl(MasterGainTextBox, false);
+                    UIHelper.EnableControl(MasterIGainTextBox, false);
                     UIHelper.EnableControl(SummedVoltageTextBox, false);
                     UIHelper.EnableControl(CavLockVoltageTrackBar, false);
                     foreach (LockControlPanel slavePanel in SlaveLaserPanels.Values)

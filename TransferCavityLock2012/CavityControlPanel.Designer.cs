@@ -37,6 +37,8 @@
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.MasterFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.MasterPGainTextBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.CavLockVoltageTrackBar = new System.Windows.Forms.TrackBar();
             this.label6 = new System.Windows.Forms.Label();
@@ -44,7 +46,7 @@
             this.VoltageIntoCavityTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.SummedVoltageTextBox = new System.Windows.Forms.TextBox();
-            this.MasterGainTextBox = new System.Windows.Forms.TextBox();
+            this.MasterIGainTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.masterLockEnableCheck = new System.Windows.Forms.CheckBox();
             this.MasterSetPointTextBox = new System.Windows.Forms.TextBox();
@@ -146,6 +148,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.MasterPGainTextBox);
+            this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.label7);
             this.groupBox4.Controls.Add(this.CavLockVoltageTrackBar);
             this.groupBox4.Controls.Add(this.label6);
@@ -153,7 +157,7 @@
             this.groupBox4.Controls.Add(this.VoltageIntoCavityTextBox);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.SummedVoltageTextBox);
-            this.groupBox4.Controls.Add(this.MasterGainTextBox);
+            this.groupBox4.Controls.Add(this.MasterIGainTextBox);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.masterLockEnableCheck);
             this.groupBox4.Controls.Add(this.MasterSetPointTextBox);
@@ -166,10 +170,29 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Cavity Settings";
             // 
+            // MasterPGainTextBox
+            // 
+            this.MasterPGainTextBox.AcceptsReturn = true;
+            this.MasterPGainTextBox.Location = new System.Drawing.Point(84, 76);
+            this.MasterPGainTextBox.Name = "MasterPGainTextBox";
+            this.MasterPGainTextBox.Size = new System.Drawing.Size(57, 20);
+            this.MasterPGainTextBox.TabIndex = 67;
+            this.MasterPGainTextBox.Text = "1";
+            this.MasterPGainTextBox.TextChanged += new System.EventHandler(this.MasterPGainTextBox_TextChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 76);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(40, 13);
+            this.label5.TabIndex = 66;
+            this.label5.Text = "P gain:";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 76);
+            this.label7.Location = new System.Drawing.Point(156, 96);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(87, 13);
             this.label7.TabIndex = 65;
@@ -232,24 +255,24 @@
             this.SummedVoltageTextBox.TabIndex = 59;
             this.SummedVoltageTextBox.TextChanged += new System.EventHandler(this.SummedVoltageTextBox_TextChanged);
             // 
-            // MasterGainTextBox
+            // MasterIGainTextBox
             // 
-            this.MasterGainTextBox.AcceptsReturn = true;
-            this.MasterGainTextBox.Location = new System.Drawing.Point(84, 49);
-            this.MasterGainTextBox.Name = "MasterGainTextBox";
-            this.MasterGainTextBox.Size = new System.Drawing.Size(57, 20);
-            this.MasterGainTextBox.TabIndex = 58;
-            this.MasterGainTextBox.Text = "1";
-            this.MasterGainTextBox.TextChanged += new System.EventHandler(this.MasterGainTextBox_TextChanged);
+            this.MasterIGainTextBox.AcceptsReturn = true;
+            this.MasterIGainTextBox.Location = new System.Drawing.Point(84, 49);
+            this.MasterIGainTextBox.Name = "MasterIGainTextBox";
+            this.MasterIGainTextBox.Size = new System.Drawing.Size(57, 20);
+            this.MasterIGainTextBox.TabIndex = 58;
+            this.MasterIGainTextBox.Text = "1";
+            this.MasterIGainTextBox.TextChanged += new System.EventHandler(this.MasterGainTextBox_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 49);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 57;
-            this.label1.Text = "Gain:";
+            this.label1.Text = "I gain:";
             // 
             // masterLockEnableCheck
             // 
@@ -326,12 +349,14 @@
         public System.Windows.Forms.TextBox VoltageIntoCavityTextBox;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.TextBox SummedVoltageTextBox;
-        public System.Windows.Forms.TextBox MasterGainTextBox;
+        public System.Windows.Forms.TextBox MasterIGainTextBox;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.CheckBox masterLockEnableCheck;
         public System.Windows.Forms.TextBox MasterSetPointTextBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TabControl slaveLasersTab;
+        public System.Windows.Forms.TextBox MasterPGainTextBox;
+        private System.Windows.Forms.Label label5;
 
     }
 }

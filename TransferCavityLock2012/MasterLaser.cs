@@ -23,5 +23,14 @@ namespace TransferCavityLock2012
                 return Fit.Centre - LaserSetPoint; 
             }
         }
+
+        public override double VoltageErrorDifferenceFromLast
+        {
+            get 
+            {
+                //Not implementing proportional feedback for master laser
+                return 0;
+            }
+        }
     }
 }

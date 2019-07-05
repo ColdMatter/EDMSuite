@@ -24,6 +24,70 @@ namespace TransferCavityLock2012
             return fit;
         }
 
+        public static LorentzianFit FitLorentzianToData(double[] voltages, double[] signal, LorentzianFit bestGuess, double pointsToConsiderEitherSideOfPeakInFWHMs, int maximumNLMFSteps)
+        {
+            LorentzianFitter lorentzianFitter = new LorentzianFitter();
+            double bg = bestGuess.Background;
+            double amp = bestGuess.Amplitude;
+            double ctr = bestGuess.Centre;
+            double w = bestGuess.Width;
+            double pointsToConsider = 0;
+
+            double[][] allxypairs = new double[voltages.Length][];
+
+            int j = 0;
+
+            for (int i = 0; i < voltages.Length; i++)
+            {
+                allxypairs[i] = new double[2];
+                allxypairs[i][0] = voltages[i];
+                allxypairs[i][1] = signal[i];
+            }
+
+
+            if (pointsToConsiderEitherSideOfPeakInFWHMs * w < 10)
+            {
+                pointsToConsider = 10;
+            }
+            else
+            {
+                pointsToConsider = pointsToConsiderEitherSideOfPeakInFWHMs * w;
+            }
+
+            for (int i = 0; i < voltages.Length; i++)
+            {
+                if ((allxypairs[i][0] > (ctr - pointsToConsider)) && (allxypairs[i][0] < (ctr + pointsToConsider)))
+                {
+                    j++;
+                }
+            }
+
+            double[] selectedvoltages = new double[j];
+            double[] selectedsignal = new double[j];
+
+
+            for (int i = 0, k = 0; i < voltages.Length; i++)
+            {
+                if ((allxypairs[i][0] > (ctr - pointsToConsider)) && (allxypairs[i][0] < (ctr + pointsToConsider)))
+                {
+                    selectedvoltages[k] = allxypairs[i][0];
+                    selectedsignal[k] = allxypairs[i][1];
+                    k++;
+                }
+            }
+
+            lorentzianFitter.Fit(selectedvoltages, selectedsignal, new double[] { bg, amp, ctr, w });
+            double[] coefficients = lorentzianFitter.Parameters;
+
+            LorentzianFit fit = new LorentzianFit(coefficients[0], coefficients[1], coefficients[2], coefficients[3]);
+
+            double minCentrePosition = voltages.Min();
+            double maxCentrePosition = voltages.Max();
+            fit = fitFailSafe(fit, minCentrePosition, maxCentrePosition);
+
+            return fit;
+        }
+
         private static LorentzianFit fitFailSafe(LorentzianFit fit, double lowerLimit, double upperLimit)
         {
             if (fit.Centre < lowerLimit)

@@ -19,6 +19,8 @@ namespace TransferCavityLock2012
         public double FSRCalibration { get; set; }
         public string BlockChannel { get; set; }
         private int lockCount;
+        private double voltageError;
+        private double previousVoltageError;
         private List<double> oldFrequencyErrors;
 
         public SlaveLaser(string feedbackChannel, string photoDiode, Cavity cavity)
@@ -39,7 +41,24 @@ namespace TransferCavityLock2012
             get
             {
                 double voltageDifferenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
-                return voltageDifferenceFromMaster - LaserSetPoint;
+                voltageError = voltageDifferenceFromMaster - LaserSetPoint;
+                return voltageError;
+            }
+        }
+
+        public override double VoltageErrorDifferenceFromLast
+        {
+            get 
+            {
+                return voltageError - previousVoltageError;
+            }
+        }
+
+        public double PreviousVoltageError
+        {
+            get
+            {
+                return previousVoltageError;
             }
         }
 
@@ -78,6 +97,7 @@ namespace TransferCavityLock2012
             // Set the initial lock point
             LaserSetPoint = Fit.Centre - ParentCavity.Master.Fit.Centre;
             // Initialise error tracking
+            previousVoltageError = 0.0;
             oldFrequencyErrors = new List<double>();
             lockCount = 0;
         }
@@ -89,6 +109,7 @@ namespace TransferCavityLock2012
                 base.UpdateLock();
                 if (lState == LaserState.LOCKED)
                 {
+                    previousVoltageError = voltageError;
                     oldFrequencyErrors.Add(FrequencyError);
                     if (oldFrequencyErrors.Count > ParentCavity.Controller.numScanAverages)
                     {

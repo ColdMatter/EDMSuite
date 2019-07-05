@@ -20,11 +20,11 @@ namespace TransferCavityLock2012
             Master = new MasterLaser(config.RampOffset, config.MasterLaser, this);
             if (config.DefaultGains.ContainsKey("Master"))
             {
-                Master.Gain = config.DefaultGains["Master"];
+                Master.IntegralGain = config.DefaultGains["Master"];
             }
             else
             {
-                Master.Gain = 1.0;
+                Master.IntegralGain = 1.0;
             }
             SlaveLasers = new Dictionary<string, SlaveLaser>();
             foreach (KeyValuePair<string, string> entry in config.SlaveLasers)
@@ -34,11 +34,11 @@ namespace TransferCavityLock2012
                 slave.FSRCalibration = config.FSRCalibrations[entry.Key];
                 if (config.DefaultGains.ContainsKey(laser))
                 {
-                    slave.Gain = config.DefaultGains[laser];
+                    slave.IntegralGain = config.DefaultGains[laser];
                 }
                 else
                 {
-                    slave.Gain = 0.0;
+                    slave.IntegralGain = 0.0;
                 }
                 if (config.BlockChannels.ContainsKey(laser))
                 {

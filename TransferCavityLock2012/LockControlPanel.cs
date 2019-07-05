@@ -33,13 +33,14 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit, double gain)
+        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit, double igain, double pgain)
         {
             this.name = name;
             this.upperVoltageLimit = upperVoltageLimit;
             this.lowerVoltageLimit = lowerVoltageLimit;
             InitializeComponent();
-            this.GainTextbox.Text = gain.ToString();
+            this.IGainTextbox.Text = igain.ToString();
+            this.PGainTextbox.Text = pgain.ToString();
         }
 
         #region Events
@@ -76,7 +77,7 @@ namespace TransferCavityLock2012
 
         private void VoltageToLaserChanged(object sender, EventArgs e)
         {
-            if (!VoltageToLaserTextBox.Focused) return;
+            if (!VoltageToLaserTextBox.Focused && !VoltageTrackBar.Focused) return;
             double number;
             System.Globalization.NumberStyles numberStyle = System.Globalization.NumberStyles.Number; // Determines what formats are allowed for numbers
             if (Double.TryParse(VoltageToLaserTextBox.Text, numberStyle, System.Globalization.CultureInfo.InvariantCulture, out number))
@@ -96,7 +97,19 @@ namespace TransferCavityLock2012
         {
             try
             {
-                Controller.SlaveGainChanged(CavityPanel.CavityName, name, Double.Parse(GainTextbox.Text));
+                Controller.SlaveIGainChanged(CavityPanel.CavityName, name, Double.Parse(IGainTextbox.Text));
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void PGainChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Controller.SlavePGainChanged(CavityPanel.CavityName, name, Double.Parse(PGainTextbox.Text));
             }
             catch (Exception)
             {
@@ -172,14 +185,14 @@ namespace TransferCavityLock2012
                 case SlaveLaser.LaserState.FREE:
                     UIHelper.EnableControl(VoltageToLaserTextBox, true);
                     UIHelper.EnableControl(LaserSetPointTextBox, false);
-                    UIHelper.EnableControl(GainTextbox, true);
+                    UIHelper.EnableControl(IGainTextbox, true);
                     UIHelper.SetLEDState(lockedLED, false);
                     UIHelper.EnableControl(VoltageTrackBar, true);
                     break;
 
                 case SlaveLaser.LaserState.LOCKING:
                     UIHelper.EnableControl(VoltageToLaserTextBox, false);
-                    UIHelper.EnableControl(GainTextbox, false);
+                    UIHelper.EnableControl(IGainTextbox, false);
                     UIHelper.SetLEDState(lockedLED, false);
                     UIHelper.EnableControl(VoltageTrackBar, false);
                     break;
@@ -196,5 +209,6 @@ namespace TransferCavityLock2012
         }
 
         #endregion
+
     }
 }

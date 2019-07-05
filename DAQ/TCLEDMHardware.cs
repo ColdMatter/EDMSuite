@@ -62,7 +62,7 @@ namespace DAQ.HAL
             tclConfigPump.BaseRamp = "PumpCavityRampVoltage";
             tclConfigPump.TCPChannel = 1191;
             tclConfigPump.DefaultScanPoints = 500;
-            tclConfigPump.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            tclConfigPump.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfigPump.AnalogSampleRate = 61250;
             tclConfigPump.MaximumNLMFSteps = 20;
             tclConfigPump.TriggerOnRisingEdge = false;
@@ -84,8 +84,8 @@ namespace DAQ.HAL
             tclConfigProbe.Trigger = tclBoardProbe + "/PFI0";
             tclConfigProbe.BaseRamp = "ProbeCavityRampVoltage";
             tclConfigProbe.TCPChannel = 1190;
-            tclConfigProbe.DefaultScanPoints = 500 * 1 / 4;
-            tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            tclConfigProbe.DefaultScanPoints = 500 * 1 / 2;
+            tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfigProbe.AnalogSampleRate = 61250 * 1 / 2;
             tclConfigProbe.MaximumNLMFSteps = 20;
             tclConfigProbe.TriggerOnRisingEdge = false;
@@ -101,7 +101,7 @@ namespace DAQ.HAL
 
             Info.Add("TCLConfigPump", tclConfigPump);
             Info.Add("TCLConfigProbe", tclConfigProbe);
-            Info.Add("DefaultCavity", tclConfigPump);
+            Info.Add("DefaultCavity", tclConfigProbe);
 
             ////TCL configuration for pump cavity
             //TCLConfig tcl1 = new TCLConfig("Pump Cavity");

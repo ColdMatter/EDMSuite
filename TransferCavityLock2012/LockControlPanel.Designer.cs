@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             this.lockParams = new System.Windows.Forms.GroupBox();
+            this.PGainTextbox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.lockedLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label10 = new System.Windows.Forms.Label();
             this.setPointIncrementBox = new System.Windows.Forms.TextBox();
-            this.GainTextbox = new System.Windows.Forms.TextBox();
+            this.IGainTextbox = new System.Windows.Forms.TextBox();
             this.VoltageToLaserTextBox = new System.Windows.Forms.TextBox();
             this.setPointAdjustMinusButton = new System.Windows.Forms.Button();
             this.setPointAdjustPlusButton = new System.Windows.Forms.Button();
@@ -67,10 +69,12 @@
             // 
             // lockParams
             // 
+            this.lockParams.Controls.Add(this.PGainTextbox);
+            this.lockParams.Controls.Add(this.label5);
             this.lockParams.Controls.Add(this.lockedLED);
             this.lockParams.Controls.Add(this.label10);
             this.lockParams.Controls.Add(this.setPointIncrementBox);
-            this.lockParams.Controls.Add(this.GainTextbox);
+            this.lockParams.Controls.Add(this.IGainTextbox);
             this.lockParams.Controls.Add(this.VoltageToLaserTextBox);
             this.lockParams.Controls.Add(this.setPointAdjustMinusButton);
             this.lockParams.Controls.Add(this.setPointAdjustPlusButton);
@@ -82,10 +86,28 @@
             this.lockParams.Controls.Add(this.VoltageTrackBar);
             this.lockParams.Location = new System.Drawing.Point(589, 3);
             this.lockParams.Name = "lockParams";
-            this.lockParams.Size = new System.Drawing.Size(355, 162);
+            this.lockParams.Size = new System.Drawing.Size(355, 201);
             this.lockParams.TabIndex = 13;
             this.lockParams.TabStop = false;
             this.lockParams.Text = "Lock Parameters";
+            // 
+            // PGainTextbox
+            // 
+            this.PGainTextbox.Location = new System.Drawing.Point(167, 40);
+            this.PGainTextbox.Name = "PGainTextbox";
+            this.PGainTextbox.Size = new System.Drawing.Size(81, 20);
+            this.PGainTextbox.TabIndex = 56;
+            this.PGainTextbox.Text = "0.5";
+            this.PGainTextbox.TextChanged += new System.EventHandler(this.PGainChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 43);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(40, 13);
+            this.label5.TabIndex = 55;
+            this.label5.Text = "P gain:";
             // 
             // lockedLED
             // 
@@ -98,7 +120,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 66);
+            this.label10.Location = new System.Drawing.Point(6, 95);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(123, 13);
             this.label10.TabIndex = 33;
@@ -106,24 +128,24 @@
             // 
             // setPointIncrementBox
             // 
-            this.setPointIncrementBox.Location = new System.Drawing.Point(168, 63);
+            this.setPointIncrementBox.Location = new System.Drawing.Point(168, 92);
             this.setPointIncrementBox.Name = "setPointIncrementBox";
             this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
             this.setPointIncrementBox.TabIndex = 32;
             this.setPointIncrementBox.Text = "0.01";
             // 
-            // GainTextbox
+            // IGainTextbox
             // 
-            this.GainTextbox.Location = new System.Drawing.Point(167, 15);
-            this.GainTextbox.Name = "GainTextbox";
-            this.GainTextbox.Size = new System.Drawing.Size(81, 20);
-            this.GainTextbox.TabIndex = 31;
-            this.GainTextbox.Text = "0.5";
-            this.GainTextbox.TextChanged += new System.EventHandler(this.GainChanged);
+            this.IGainTextbox.Location = new System.Drawing.Point(167, 15);
+            this.IGainTextbox.Name = "IGainTextbox";
+            this.IGainTextbox.Size = new System.Drawing.Size(81, 20);
+            this.IGainTextbox.TabIndex = 31;
+            this.IGainTextbox.Text = "0.5";
+            this.IGainTextbox.TextChanged += new System.EventHandler(this.GainChanged);
             // 
             // VoltageToLaserTextBox
             // 
-            this.VoltageToLaserTextBox.Location = new System.Drawing.Point(167, 89);
+            this.VoltageToLaserTextBox.Location = new System.Drawing.Point(167, 118);
             this.VoltageToLaserTextBox.Name = "VoltageToLaserTextBox";
             this.VoltageToLaserTextBox.Size = new System.Drawing.Size(100, 20);
             this.VoltageToLaserTextBox.TabIndex = 30;
@@ -132,7 +154,7 @@
             // 
             // setPointAdjustMinusButton
             // 
-            this.setPointAdjustMinusButton.Location = new System.Drawing.Point(124, 37);
+            this.setPointAdjustMinusButton.Location = new System.Drawing.Point(124, 66);
             this.setPointAdjustMinusButton.Name = "setPointAdjustMinusButton";
             this.setPointAdjustMinusButton.Size = new System.Drawing.Size(37, 23);
             this.setPointAdjustMinusButton.TabIndex = 29;
@@ -142,7 +164,7 @@
             // 
             // setPointAdjustPlusButton
             // 
-            this.setPointAdjustPlusButton.Location = new System.Drawing.Point(81, 37);
+            this.setPointAdjustPlusButton.Location = new System.Drawing.Point(81, 66);
             this.setPointAdjustPlusButton.Name = "setPointAdjustPlusButton";
             this.setPointAdjustPlusButton.Size = new System.Drawing.Size(37, 23);
             this.setPointAdjustPlusButton.TabIndex = 28;
@@ -153,7 +175,7 @@
             // LaserSetPointTextBox
             // 
             this.LaserSetPointTextBox.AcceptsReturn = true;
-            this.LaserSetPointTextBox.Location = new System.Drawing.Point(167, 39);
+            this.LaserSetPointTextBox.Location = new System.Drawing.Point(167, 68);
             this.LaserSetPointTextBox.Name = "LaserSetPointTextBox";
             this.LaserSetPointTextBox.Size = new System.Drawing.Size(57, 20);
             this.LaserSetPointTextBox.TabIndex = 27;
@@ -176,14 +198,14 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 18);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.Size = new System.Drawing.Size(36, 13);
             this.label4.TabIndex = 20;
-            this.label4.Text = "Gain";
+            this.label4.Text = "I gain:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 92);
+            this.label2.Location = new System.Drawing.Point(6, 121);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 13);
             this.label2.TabIndex = 17;
@@ -192,7 +214,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 42);
+            this.label3.Location = new System.Drawing.Point(6, 71);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 13);
             this.label3.TabIndex = 13;
@@ -201,7 +223,7 @@
             // VoltageTrackBar
             // 
             this.VoltageTrackBar.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.VoltageTrackBar.Location = new System.Drawing.Point(6, 114);
+            this.VoltageTrackBar.Location = new System.Drawing.Point(6, 150);
             this.VoltageTrackBar.Maximum = 1000;
             this.VoltageTrackBar.Name = "VoltageTrackBar";
             this.VoltageTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -217,7 +239,7 @@
             this.SlaveLaserIntensityScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.SlaveDataPlot,
             this.SlaveFitPlot});
-            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(567, 132);
+            this.SlaveLaserIntensityScatterGraph.Size = new System.Drawing.Size(567, 142);
             this.SlaveLaserIntensityScatterGraph.TabIndex = 12;
             this.SlaveLaserIntensityScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis1});
@@ -246,7 +268,7 @@
             this.groupBox1.Controls.Add(this.SlaveLaserIntensityScatterGraph);
             this.groupBox1.Location = new System.Drawing.Point(4, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(582, 286);
+            this.groupBox1.Size = new System.Drawing.Size(582, 325);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Slave laser";
@@ -260,11 +282,11 @@
             | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
             | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
             | NationalInstruments.UI.GraphInteractionModes.EditRange)));
-            this.ErrorScatterGraph.Location = new System.Drawing.Point(6, 155);
+            this.ErrorScatterGraph.Location = new System.Drawing.Point(6, 179);
             this.ErrorScatterGraph.Name = "ErrorScatterGraph";
             this.ErrorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.ErrorPlot});
-            this.ErrorScatterGraph.Size = new System.Drawing.Size(570, 125);
+            this.ErrorScatterGraph.Size = new System.Drawing.Size(570, 140);
             this.ErrorScatterGraph.TabIndex = 13;
             this.ErrorScatterGraph.UseColorGenerator = true;
             this.ErrorScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -289,7 +311,7 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.rmsVoltageDeviationTextBox);
             this.groupBox2.Controls.Add(this.slErrorResetButton);
-            this.groupBox2.Location = new System.Drawing.Point(589, 171);
+            this.groupBox2.Location = new System.Drawing.Point(589, 210);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(355, 118);
             this.groupBox2.TabIndex = 16;
@@ -332,7 +354,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "LockControlPanel";
-            this.Size = new System.Drawing.Size(952, 294);
+            this.Size = new System.Drawing.Size(952, 331);
             this.lockParams.ResumeLayout(false);
             this.lockParams.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).EndInit();
@@ -351,7 +373,7 @@
         private System.Windows.Forms.GroupBox lockParams;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox setPointIncrementBox;
-        private System.Windows.Forms.TextBox GainTextbox;
+        private System.Windows.Forms.TextBox IGainTextbox;
         private System.Windows.Forms.TextBox VoltageToLaserTextBox;
         private System.Windows.Forms.Button setPointAdjustMinusButton;
         private System.Windows.Forms.Button setPointAdjustPlusButton;
@@ -376,5 +398,7 @@
         public System.Windows.Forms.TrackBar VoltageTrackBar;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox rmsVoltageDeviationTextBox;
+        private System.Windows.Forms.TextBox PGainTextbox;
+        private System.Windows.Forms.Label label5;
     }
 }

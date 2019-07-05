@@ -43,7 +43,7 @@ namespace TransferCavityLock2012
         {
             string title = cavity.Name;
             TabPage newTab = new TabPage(title);
-            CavityControlPanel panel = new CavityControlPanel(cavity.Name, cavity.Master.Gain);
+            CavityControlPanel panel = new CavityControlPanel(cavity.Name, cavity.Master.IntegralGain, cavity.Master.ProportionalGain);
             panel.controller = this.controller;
             foreach (KeyValuePair<string, SlaveLaser> entry in cavity.SlaveLasers)
             {
@@ -264,8 +264,6 @@ namespace TransferCavityLock2012
         }
 
         #endregion
-
-       
     }
 }
 
