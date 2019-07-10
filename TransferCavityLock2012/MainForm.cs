@@ -63,6 +63,7 @@ namespace TransferCavityLock2012
                     UIHelper.EnableControl(rampStopButton, false);
                     UIHelper.EnableControl(NumberOfScanpointsTextBox, true);
                     UIHelper.SetLEDState(rampLED, false);
+                    UIHelper.EnableControl(analogPeakFinderCheckBox, false);
                     break;
 
                 case Controller.ControllerState.RUNNING:
@@ -70,6 +71,7 @@ namespace TransferCavityLock2012
                     UIHelper.EnableControl(rampStopButton, true);
                     UIHelper.EnableControl(NumberOfScanpointsTextBox, false);
                     UIHelper.SetLEDState(rampLED, true);
+                    UIHelper.EnableControl(analogPeakFinderCheckBox, true);
                     break;
             }
         }
@@ -263,7 +265,14 @@ namespace TransferCavityLock2012
             }
         }
 
+        private void analogPeakFinderCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableAnalogPeakFinder(analogPeakFinderCheckBox.Checked);
+        }
+
         #endregion
+
+
     }
 }
 

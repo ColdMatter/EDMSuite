@@ -186,6 +186,7 @@ namespace TransferCavityLock2012
                     UIHelper.EnableControl(VoltageToLaserTextBox, true);
                     UIHelper.EnableControl(LaserSetPointTextBox, false);
                     UIHelper.EnableControl(IGainTextbox, true);
+                    UIHelper.EnableControl(PGainTextbox, true);
                     UIHelper.SetLEDState(lockedLED, false);
                     UIHelper.EnableControl(VoltageTrackBar, true);
                     break;
@@ -193,6 +194,7 @@ namespace TransferCavityLock2012
                 case SlaveLaser.LaserState.LOCKING:
                     UIHelper.EnableControl(VoltageToLaserTextBox, false);
                     UIHelper.EnableControl(IGainTextbox, false);
+                    UIHelper.EnableControl(PGainTextbox, false);
                     UIHelper.SetLEDState(lockedLED, false);
                     UIHelper.EnableControl(VoltageTrackBar, false);
                     break;

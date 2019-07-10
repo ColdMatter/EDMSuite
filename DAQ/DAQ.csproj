@@ -211,6 +211,7 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DAQMxTCL2012AnalogPeakFinderReadHelper.cs" />
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />

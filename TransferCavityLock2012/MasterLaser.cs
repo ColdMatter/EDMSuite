@@ -11,6 +11,8 @@ namespace TransferCavityLock2012
 {
     public class MasterLaser : Laser
     {
+        private double voltageError;
+
         public MasterLaser(string feedbackChannel, string photoDiode, Cavity cavity)
             : base(feedbackChannel, photoDiode, cavity)
         {
@@ -19,8 +21,17 @@ namespace TransferCavityLock2012
         public override double VoltageError
         {
             get 
-            { 
-                return Fit.Centre - LaserSetPoint; 
+            {
+                switch (lPeakFindingMode)
+                {
+                    case PeakFindingMode.DIGITAL:
+                        voltageError = Fit.Centre - LaserSetPoint;
+                        break;
+                    case PeakFindingMode.ANALOG:
+                        voltageError = PeakRampPosition - LaserSetPoint;
+                        break;
+                }
+                return voltageError; 
             }
         }
 

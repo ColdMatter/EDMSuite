@@ -114,6 +114,13 @@ namespace DAQ.TransferCavityLock2012
             set { trigger = value; }
         }
 
+        private string extTTLClock;
+        public string ExtTTLClock
+        {
+            get { return extTTLClock; }
+            set { extTTLClock = value; }
+        }
+
         private Dictionary<string, TCLSingleCavityConfig> cavities = new Dictionary<string, TCLSingleCavityConfig>();
         public Dictionary<string, TCLSingleCavityConfig> Cavities
         {

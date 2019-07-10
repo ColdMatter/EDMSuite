@@ -40,9 +40,20 @@ namespace TransferCavityLock2012
         {
             get
             {
-                double voltageDifferenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
+                double voltageDifferenceFromMaster = 0;
+
+                switch (lPeakFindingMode)
+                {
+                    case PeakFindingMode.DIGITAL:
+                        voltageDifferenceFromMaster = Fit.Centre - ParentCavity.Master.Fit.Centre;
+                        break;
+                    case PeakFindingMode.ANALOG:
+                        voltageDifferenceFromMaster = PeakRampPosition - ParentCavity.Master.PeakRampPosition;
+                        break;
+                }
                 voltageError = voltageDifferenceFromMaster - LaserSetPoint;
                 return voltageError;
+                
             }
         }
 

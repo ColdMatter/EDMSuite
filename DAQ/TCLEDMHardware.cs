@@ -82,13 +82,14 @@ namespace DAQ.HAL
             //TCL configuration of probe cavity: 27/06/2019 (Chris)
             TCLConfig tclConfigProbe = new TCLConfig("Probe");
             tclConfigProbe.Trigger = tclBoardProbe + "/PFI0";
+            tclConfigProbe.ExtTTLClock = tclBoardProbe + "/PFI1";
             tclConfigProbe.BaseRamp = "ProbeCavityRampVoltage";
             tclConfigProbe.TCPChannel = 1190;
             tclConfigProbe.DefaultScanPoints = 500 * 1 / 2;
             tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfigProbe.AnalogSampleRate = 61250 * 1 / 2;
             tclConfigProbe.MaximumNLMFSteps = 20;
-            tclConfigProbe.TriggerOnRisingEdge = false;
+            tclConfigProbe.TriggerOnRisingEdge = true;
             string probe = "ProbeCavity";
 
             tclConfigProbe.AddCavity(probe);

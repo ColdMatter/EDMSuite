@@ -57,6 +57,7 @@
             this.dissableGUIupdateCheckBox = new System.Windows.Forms.CheckBox();
             this.fastFitCheckBox = new System.Windows.Forms.CheckBox();
             this.cavitiesTab = new System.Windows.Forms.TabControl();
+            this.analogPeakFinderCheckBox = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -283,6 +284,7 @@
             this.tableLayoutPanel5.ColumnCount = 2;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 42.4F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 57.6F));
+            this.tableLayoutPanel5.Controls.Add(this.analogPeakFinderCheckBox, 0, 2);
             this.tableLayoutPanel5.Controls.Add(this.scanAvCheckBox, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.axisCheckBox, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.logCheckBox, 0, 1);
@@ -359,6 +361,17 @@
             this.cavitiesTab.Size = new System.Drawing.Size(1020, 542);
             this.cavitiesTab.TabIndex = 1;
             // 
+            // analogPeakFinderCheckBox
+            // 
+            this.analogPeakFinderCheckBox.AutoSize = true;
+            this.analogPeakFinderCheckBox.Location = new System.Drawing.Point(3, 53);
+            this.analogPeakFinderCheckBox.Name = "analogPeakFinderCheckBox";
+            this.analogPeakFinderCheckBox.Size = new System.Drawing.Size(144, 17);
+            this.analogPeakFinderCheckBox.TabIndex = 60;
+            this.analogPeakFinderCheckBox.Text = "Analog peak finder mode";
+            this.analogPeakFinderCheckBox.UseVisualStyleBackColor = true;
+            this.analogPeakFinderCheckBox.CheckedChanged += new System.EventHandler(this.analogPeakFinderCheckBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -420,6 +433,7 @@
         private NationalInstruments.UI.XAxis xAxis3;
         private NationalInstruments.UI.YAxis yAxis3;
         private System.Windows.Forms.TabControl cavitiesTab;
+        public System.Windows.Forms.CheckBox analogPeakFinderCheckBox;
     }
 }
 

@@ -47,7 +47,8 @@ namespace TransferCavityLock2012
         private Dictionary<string, int> aiChannelsLookup; // All ai channels, including the cavity and the master.
         private Dictionary<string, int> diChannelsLookup; // All di channels for blocking lock for particular laser
         private ScanParameters scanParameters; // All parameters used by a scan
-        TransferCavity2012Lockable tcl;
+        TransferCavity2012Lockable tclDigital;
+        private Dictionary<string, TransferCavity2012Lockable> tclAnalogs = new Dictionary<string, TransferCavity2012Lockable>();
 
         public Controller(string configName)
         {
@@ -59,7 +60,13 @@ namespace TransferCavityLock2012
             STOPPED, RUNNING
         };
 
+        public enum PeakFindingMode // Allows switching between using an analog peak finder or using TCL software to find the peaks
+        {
+            DIGITAL, ANALOG
+        };
+
         public ControllerState TCLState = ControllerState.STOPPED;
+        public PeakFindingMode TCLPeakFindingMode = PeakFindingMode.DIGITAL;
         public object rampStopLock = new object();
         public object tweakLock = new object();
 
@@ -75,13 +82,13 @@ namespace TransferCavityLock2012
         {
             initializeCavityControl();
 
-            initializeAIs();
-
             defaultScanPoints = config.DefaultScanPoints;
 
             initializeScanParameters();
 
             TCLState = ControllerState.STOPPED;
+
+            TCLPeakFindingMode = PeakFindingMode.DIGITAL;
 
             ui = new MainForm(config.Name);
             ui.controller = this;
@@ -121,7 +128,36 @@ namespace TransferCavityLock2012
                 diChannelsLookup.Add(s, diChannelsLookup.Count);
                 digitalChannelsToRead.Add(digitals[s]);
             }
-            tcl = new DAQMxTCL2012ExtTriggeredMultiReadHelper(analogChannelsToRead.ToArray(), digitalChannelsToRead.ToArray(), config.Trigger);
+            tclDigital = new DAQMxTCL2012ExtTriggeredMultiReadHelper(analogChannelsToRead.ToArray(), digitalChannelsToRead.ToArray(), config.Trigger);
+        }
+
+        private void initializeAIsForAnalogPeakFinder()
+        {
+            Dictionary<string, string> analogs = new Dictionary<string, string>();
+            Dictionary<string, string> digitals = new Dictionary<string, string>();
+
+            analogs.Add("baseRamp", config.BaseRamp);
+
+            List<string> analogChannelsToRead = new List<string>();
+            List<string> digitalChannelsToRead = new List<string>();
+            aiChannelsLookup = new Dictionary<string, int>();
+            diChannelsLookup = new Dictionary<string, int>();
+            foreach (string s in analogs.Keys)
+            {
+                aiChannelsLookup.Add(s, aiChannelsLookup.Count);
+                analogChannelsToRead.Add(analogs[s]);
+            }
+            foreach (string s in digitals.Keys)
+            {
+                diChannelsLookup.Add(s, diChannelsLookup.Count);
+                digitalChannelsToRead.Add(digitals[s]);
+            }
+
+            tclAnalogs.Clear();
+            foreach (string s in Cavities.Keys)
+            {
+                tclAnalogs.Add(s, new DAQMxTCL2012AnalogPeakFinderReadHelper(analogChannelsToRead.ToArray(), digitalChannelsToRead.ToArray(), config.Trigger, config.ExtTTLClock, s));
+            }
         }
 
         private void initializeCavityControl()
@@ -193,6 +229,26 @@ namespace TransferCavityLock2012
         public void ShowDialog(string title, string message)
         {
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        public void EnableAnalogPeakFinder(bool enable)
+        {
+            if (enable)
+            {
+                TCLPeakFindingMode = PeakFindingMode.ANALOG;
+                foreach (Laser laser in AllLasers)
+                {
+                    laser.lPeakFindingMode = Laser.PeakFindingMode.ANALOG;
+                }
+            }
+            else
+            {
+                TCLPeakFindingMode = PeakFindingMode.DIGITAL;
+                foreach (Laser laser in AllLasers)
+                {
+                    laser.lPeakFindingMode = Laser.PeakFindingMode.DIGITAL;
+                }
+            }
         }
 
         #region Passing Events from UIs to the correct slave laser class.
@@ -388,12 +444,27 @@ namespace TransferCavityLock2012
 
         private void initialiseAIHardware(ScanParameters sp)
         {
-            tcl.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
+            tclDigital.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
+        }
+
+        private void initialiseAIHardwareForAnalogPeakFinder(ScanParameters sp)
+        {
+            foreach (string key in tclAnalogs.Keys)
+            {
+                int numberOfPeaks = Cavities[key].GetAllLasers().Count();
+                tclAnalogs[key].ConfigureHardware(numberOfPeaks, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
+            }
         }
 
         private TCLReadData acquireData(ScanParameters sp)
         {
-            return tcl.Read(sp.Steps);
+            return tclDigital.Read(sp.Steps);
+        }
+
+        private TCLReadData acquireDataWithAnalogPeakFinder(string cavityName)
+        {
+            int numberOfPeaks = Cavities[cavityName].GetAllLasers().Count();
+            return tclAnalogs[cavityName].Read(numberOfPeaks);
         }
 
         private List<Laser> AllLasers
@@ -477,13 +548,33 @@ namespace TransferCavityLock2012
             }
         }
 
+        private void updateErrorGraph(SlaveLaser laser, double[] rampData)
+        {
+            List<double> errorList = laser.OldFrequencyErrors;
+            double standardDev = Math.Sqrt(errorList.Average(x => x * x));
+            ui.SetLaserSDTextBox(laser.ParentCavity.Name, laser.Name, standardDev);
+            ui.AppendToErrorGraph(laser.ParentCavity.Name, laser.Name, laser.LockCount, laser.FrequencyError);
+        }
+
         private void logLaserParams(Laser laser) 
         {
             // Trying to be consistent with old format here
             if (laser is SlaveLaser)
             {
-                double slaveCentre = laser.Fit != null ? laser.Fit.Centre : 0;
-                double masterCentre = laser.ParentCavity.Master.Fit != null ? laser.ParentCavity.Master.Fit.Centre : 0;
+                double slaveCentre = 0;
+                double masterCentre = 0;
+
+                switch (TCLPeakFindingMode)
+                {
+                    case PeakFindingMode.DIGITAL:
+                        slaveCentre = laser.Fit != null ? laser.Fit.Centre : 0;
+                        masterCentre = laser.ParentCavity.Master.Fit != null ? laser.ParentCavity.Master.Fit.Centre : 0;
+                        break;
+                    case PeakFindingMode.ANALOG:
+                        slaveCentre = laser.PeakRampPosition;
+                        masterCentre = laser.ParentCavity.Master.PeakRampPosition;
+                        break;
+                }
 
                 if (ui.logCheckBox.Checked && serializer != null)
                 {
@@ -514,7 +605,6 @@ namespace TransferCavityLock2012
 
         private void endLoop()
         {
-            tcl.DisposeReadTask();
             foreach (Laser laser in AllLasers)
             {
                 if (laser.lState != Laser.LaserState.FREE)
@@ -525,8 +615,40 @@ namespace TransferCavityLock2012
             }
         }
 
+        private void stopAIs()
+        {
+            tclDigital.DisposeReadTask();
+        }
+
+        private void stopAIsForAnalogPeakFinder()
+        {
+            foreach (TransferCavity2012Lockable tcl in tclAnalogs.Values)
+            {
+                tcl.DisposeReadTask();
+            }
+        }
+
         private void mainLoop()
         {
+            while (TCLState != ControllerState.STOPPED)
+            {
+                switch (TCLPeakFindingMode)
+                {
+                    case PeakFindingMode.DIGITAL:
+                        mainLoopDigitalPeakFinder();
+                        break;
+                    case PeakFindingMode.ANALOG:
+                        mainLoopAnalogPeakFinder();
+                        break;
+                }
+            }
+
+            endLoop();
+        }
+
+        private void mainLoopDigitalPeakFinder()
+        {
+            initializeAIs();
             initialiseAIHardware(scanParameters);
             ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
 
@@ -535,7 +657,7 @@ namespace TransferCavityLock2012
             stopWatch.Start();
             int loopCount = 0;
 
-            while (TCLState != ControllerState.STOPPED)
+            while (TCLState != ControllerState.STOPPED && TCLPeakFindingMode == PeakFindingMode.DIGITAL)
             {
                 // Read data
                 TCLReadData rawData = acquireData(scanParameters);
@@ -547,15 +669,7 @@ namespace TransferCavityLock2012
                 {
                     double[] laserScanData = scanData.GetLaserData(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
                     bool lockBlocked = scanData.LaserLockBlocked(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
-
-                    if (ui.fastFitCheckBox.Checked)
-                    {
-                        laser.UpdateScanFast(rampData, laserScanData, lockBlocked, config.PointsToConsiderEitherSideOfPeakInFWHMs, config.MaximumNLMFSteps);
-                    }
-                    else
-                    {
-                        laser.UpdateScan(rampData, laserScanData, lockBlocked);
-                    }
+                    laser.UpdateScan(rampData, laserScanData, lockBlocked);
                 }
 
                 // Locking
@@ -586,8 +700,83 @@ namespace TransferCavityLock2012
                 stopWatch.Start();
                 loopCount++;
             }
-            endLoop();
+
+            stopAIs();
         }
+
+        private void mainLoopAnalogPeakFinder()
+        {
+            initializeAIsForAnalogPeakFinder();
+            initialiseAIHardwareForAnalogPeakFinder(scanParameters);
+            Dictionary<string, ScanData> scanData = new Dictionary<string, ScanData>();
+
+            foreach (string cavityName in Cavities.Keys)
+            {
+                scanData.Add(cavityName, new ScanData(aiChannelsLookup, diChannelsLookup));
+            }
+
+            scanTimes = new List<double>();
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            int loopCount = 0;
+
+            while (TCLState != ControllerState.STOPPED && TCLPeakFindingMode == PeakFindingMode.ANALOG)
+            {
+                // Read data
+                Dictionary<string, TCLReadData> rawData = new Dictionary<string, TCLReadData>();
+                foreach (string cavityName in Cavities.Keys)
+                {
+                    rawData.Add(cavityName, acquireDataWithAnalogPeakFinder(cavityName));
+                }
+
+                // Get scan data
+                foreach (string cavityName in Cavities.Keys)
+                {
+                    scanData[cavityName].AddNewScan(rawData[cavityName], ui.scanAvCheckBox.Checked, numScanAverages);
+                }
+
+                // Get ramp data
+                Dictionary<string, double[]> rampData = new Dictionary<string, double[]>();
+                foreach (string cavityName in Cavities.Keys)
+                {
+                    rampData.Add(cavityName, scanData[cavityName].GetRampData());
+                }
+
+                // Finding peak positions
+                foreach (string cavityName in Cavities.Keys)
+                {
+                    Laser[] laserList = Cavities[cavityName].GetAllLasers();
+                    List<Laser> sortedLaserList = laserList.OrderBy(l => l.Fit.Centre).ToList();
+                    for (int i = 0; i < sortedLaserList.Count; i++)
+                    {
+                        sortedLaserList[i].PeakRampPosition = rampData[cavityName][i];
+                    }
+                }
+
+                // Locking and logging
+                foreach (Laser laser in AllLasers)
+                {
+                    laser.UpdateLock();
+                    if (ui.logCheckBox.Checked && laser.IsLocked)
+                    {
+                        logLaserParams(laser);
+                    }
+                    if (!ui.dissableGUIupdateCheckBox.Checked && laser is SlaveLaser)
+                    {
+                        SlaveLaser sLaser = (SlaveLaser)laser;
+                        updateErrorGraph(sLaser, rampData[laser.ParentCavity.Name]);
+                    }
+                }
+
+                updateLockRate(stopWatch);
+                stopWatch.Reset();
+                stopWatch.Start();
+                loopCount++;
+            }
+
+            stopAIsForAnalogPeakFinder();
+        }
+
         #endregion
 
         public void LoadParametersWithDialog()

@@ -24,12 +24,20 @@ namespace TransferCavityLock2012
         public Cavity ParentCavity;
         private TransferCavityLock2012LaserControllable laser;
         protected bool lockBlocked;
+        public double PeakRampPosition{ get; set; }
+        public string RampVoltageChannel;
 
         public enum LaserState
         {
             FREE, LOCKING, LOCKED
         };
+        public enum PeakFindingMode
+        {
+            DIGITAL, ANALOG
+        };
+
         public LaserState lState = LaserState.FREE;
+        public PeakFindingMode lPeakFindingMode = PeakFindingMode.DIGITAL;
 
         public virtual double LaserSetPoint { get; set; }
         public abstract double VoltageError { get; }
@@ -81,6 +89,7 @@ namespace TransferCavityLock2012
         {
             laser = new DAQMxTCL2012LaserControlHelper(feedbackChannel);
             lState = LaserState.FREE;
+            lPeakFindingMode = PeakFindingMode.DIGITAL;
             Name = feedbackChannel;
             FeedbackChannel = feedbackChannel;
             PhotoDiodeChannel = photoDiode;
