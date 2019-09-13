@@ -54,9 +54,8 @@
             this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.fsrTextBox = new System.Windows.Forms.TextBox();
+            this.rmsVoltageDeviationTextBox = new System.Windows.Forms.TextBox();
             this.slErrorResetButton = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
             this.lockParams.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lockedLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VoltageTrackBar)).BeginInit();
@@ -112,7 +111,6 @@
             this.setPointIncrementBox.Size = new System.Drawing.Size(55, 20);
             this.setPointIncrementBox.TabIndex = 32;
             this.setPointIncrementBox.Text = "0.01";
-            this.setPointIncrementBox.TextChanged += new System.EventHandler(this.setPointIncrementBox_TextChanged);
             // 
             // GainTextbox
             // 
@@ -164,6 +162,7 @@
             // lockEnableCheck
             // 
             this.lockEnableCheck.AutoSize = true;
+            this.lockEnableCheck.Enabled = false;
             this.lockEnableCheck.Location = new System.Drawing.Point(254, 17);
             this.lockEnableCheck.Name = "lockEnableCheck";
             this.lockEnableCheck.Size = new System.Drawing.Size(50, 17);
@@ -287,9 +286,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.fsrTextBox);
+            this.groupBox2.Controls.Add(this.rmsVoltageDeviationTextBox);
             this.groupBox2.Controls.Add(this.slErrorResetButton);
             this.groupBox2.Location = new System.Drawing.Point(589, 171);
             this.groupBox2.Name = "groupBox2";
@@ -301,20 +299,19 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 58);
+            this.label1.Location = new System.Drawing.Point(6, 62);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(203, 13);
+            this.label1.Size = new System.Drawing.Size(193, 13);
             this.label1.TabIndex = 54;
-            this.label1.Text = "Voltage spacing between adjacent peaks";
+            this.label1.Text = "Average rms frequency deviation (MHz)";
             // 
-            // fsrTextBox
+            // rmsVoltageDeviationTextBox
             // 
-            this.fsrTextBox.Location = new System.Drawing.Point(215, 56);
-            this.fsrTextBox.Name = "fsrTextBox";
-            this.fsrTextBox.Size = new System.Drawing.Size(81, 20);
-            this.fsrTextBox.TabIndex = 54;
-            this.fsrTextBox.Text = "1";
-            this.fsrTextBox.TextChanged += new System.EventHandler(this.fsrTextBox_TextChanged);
+            this.rmsVoltageDeviationTextBox.Location = new System.Drawing.Point(51, 78);
+            this.rmsVoltageDeviationTextBox.Name = "rmsVoltageDeviationTextBox";
+            this.rmsVoltageDeviationTextBox.Size = new System.Drawing.Size(100, 20);
+            this.rmsVoltageDeviationTextBox.TabIndex = 54;
+            this.rmsVoltageDeviationTextBox.Text = "0";
             // 
             // slErrorResetButton
             // 
@@ -325,15 +322,6 @@
             this.slErrorResetButton.Text = "Reset Graph";
             this.slErrorResetButton.UseVisualStyleBackColor = true;
             this.slErrorResetButton.Click += new System.EventHandler(this.slErrorResetButton_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 85);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(293, 13);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "(Sets error signal y axis to be in MHz assuming 1.5 GHz FSR)";
             // 
             // LockControlPanel
             // 
@@ -387,7 +375,6 @@
         private System.Windows.Forms.Button slErrorResetButton;
         public System.Windows.Forms.TrackBar VoltageTrackBar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox fsrTextBox;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox rmsVoltageDeviationTextBox;
     }
 }

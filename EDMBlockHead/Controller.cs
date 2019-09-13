@@ -122,8 +122,14 @@ namespace EDMBlockHead
             DigitalModulation dm = new DigitalModulation();
             dm.Name = "E";
             dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
-            dm.Waveform.Code = new bool[] { true, true, false, false, false, false, false, false, false, false, false, false };
+            dm.Waveform.Code = new bool[] { true, true, true, true, false, false, false, false, false, false, false, false };
             config.DigitalModulations.Add(dm);
+
+            DigitalModulation mw = new DigitalModulation();
+            mw.Name = "MW";
+            mw.Waveform = new Waveform("Mw Modulation", CODE_LENGTH);
+            mw.Waveform.Code = new bool[] { false, true, false, true, true, true, false, true, false, false, false, false };
+            config.DigitalModulations.Add(mw);
 
             DigitalModulation pi = new DigitalModulation();
             pi.Name = "PI";
@@ -185,23 +191,23 @@ namespace EDMBlockHead
             rf2F.Step = 0.1;
             config.AnalogModulations.Add(rf2F);
 
-            AnalogModulation lf1 = new AnalogModulation();
-            lf1.Name = "LF1";
-            lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
-            lf1.Waveform.Code = new bool[] { false, true, false, true, false, false, false, false, false, false, false, false };
-            lf1.DelayAfterSwitch = 0;
-            lf1.Centre = 2.5;
-            lf1.Step = 0.05;
-            config.AnalogModulations.Add(lf1);
+            //AnalogModulation lf1 = new AnalogModulation();
+            //lf1.Name = "LF1";
+            //lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
+            //lf1.Waveform.Code = new bool[] { false, true, false, true, false, false, false, false, false, false, false, false };
+            //lf1.DelayAfterSwitch = 0;
+            //lf1.Centre = 2.5;
+            //lf1.Step = 0.05;
+            //config.AnalogModulations.Add(lf1);
 
-            AnalogModulation lf2 = new AnalogModulation();
-            lf2.Name = "LF2";
-            lf2.Waveform = new Waveform("laser frequency 2 modulation", CODE_LENGTH);
-            lf2.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
-            lf2.DelayAfterSwitch = 0;
-            lf2.Centre = 1.0;
-            lf2.Step = 0.01;
-            config.AnalogModulations.Add(lf2);
+            //AnalogModulation lf2 = new AnalogModulation();
+            //lf2.Name = "LF2";
+            //lf2.Waveform = new Waveform("laser frequency 2 modulation", CODE_LENGTH);
+            //lf2.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            //lf2.DelayAfterSwitch = 0;
+            //lf2.Centre = 1.0;
+            //lf2.Step = 0.01;
+            //config.AnalogModulations.Add(lf2);
 
             config.Settings["codeLength"] = CODE_LENGTH;
             config.Settings["numberOfPoints"] = 4096;
@@ -210,17 +216,34 @@ namespace EDMBlockHead
             config.Settings["eBleedTime"] = 1000;
             config.Settings["eSwitchTime"] = 500;
             config.Settings["eChargeTime"] = 1000;
-            config.Settings["magnetCalibration"] = 16.5;
+            config.Settings["eRampDownDeay"] = 10;
+            config.Settings["eRampDownTime"] = 10;
+            config.Settings["eRampUpTime"] = 10;
+            config.Settings["eDischargeTime"] = 10;
+            config.Settings["greenDCMF"] = 10;
+            config.Settings["magnetCalibration"] = 16.9;
+            config.Settings["dummy"] = "jack";
+            config.Settings["cluster"] = "28May1701";
+            config.Settings["phaseScramblerV"] = 1.0;
 
 			config.Settings["eState"] = true;
 			config.Settings["bState"] = true;
             config.Settings["rfState"] = true;
+            config.Settings["mwState"] = true;
 			config.Settings["ePlus"] = 8.0;
 			config.Settings["eMinus"] = -8.0;
-			config.Settings["gtPlus"] = 1.6;
-			config.Settings["gtMinus"] = -1.6;
-			config.Settings["gbPlus"] = 1.6;
-			config.Settings["gbMinus"] = -1.6;
+
+            config.Settings["greenAmp"] = 16.5;
+            config.Settings["greenFreq"] = 16.5;
+            config.Settings["clusterIndex"] = 1;
+            config.Settings["E0PlusBoost"] = 0.1;
+            config.Settings["bBiasV"] = 0.1;
+
+            config.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
+            config.Settings["minimumSignalToRun"] = 300.0;
+            config.Settings["targetStepperGateStartTime"] = 2340.0;
+            config.Settings["targetStepperGateEndTime"] = 2540.0;
+
 
         }
 
@@ -255,6 +278,31 @@ namespace EDMBlockHead
             }
         }
 
+        public void StartIntelligentTargetStepper()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartTargetStepper(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting intelligent target stepper ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
+        public void StartMagDataAcquisition()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartMagDataAcquisition(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting acquisition of magnetic field data ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
+
         public void StopAcquisition()
         {
             if (appState == AppState.running)
@@ -273,6 +321,13 @@ namespace EDMBlockHead
             scanMaster.OutputPattern();
         }
 
+        public void StartNoMoleculesPattern()
+        {
+            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            scanMaster.SelectProfile("Scan B without molecules");
+            scanMaster.OutputPattern();
+        }
+
         public void StopPattern()
         {
             ScanMaster.Controller scanMaster = new ScanMaster.Controller();
@@ -283,6 +338,22 @@ namespace EDMBlockHead
         {
             Monitor.Enter(acquisitor.MonitorLockObject);
             StartAcquisition();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
+        public void StartTargetStepperAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartIntelligentTargetStepper();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
+        public void StartMagDataAcquisitionAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartMagDataAcquisition();
             Monitor.Wait(acquisitor.MonitorLockObject);
             Monitor.Exit(acquisitor.MonitorLockObject);
         }
@@ -316,6 +387,18 @@ namespace EDMBlockHead
             }
         }
 
+        public Boolean TargetHealthy
+        {
+            set
+            {
+                targetHealthy = value;
+            }
+            get
+            {
+                return targetHealthy;
+            }
+        }
+
         #endregion
 
         #region Local methods
@@ -325,8 +408,8 @@ namespace EDMBlockHead
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
             // "cgate11Fixed" for Ar, "centreFixedKr" for Kr
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate4", b); // was cgate11fixed
-            DBlock = blockDemodulator.DemodulateBlockNL(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate5", b); // was cgate11fixed
+            DBlock = blockDemodulator.DemodulateBlock(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
             liveViewer.AddDBlock(DBlock);
        
             //config.g
@@ -335,7 +418,38 @@ namespace EDMBlockHead
             mainWindow.AppendToTextArea("Acquisition finished");
             SetStatusReady();
         }
-        
+
+        public void IntelligentAcquisitionFinished()
+        {
+            if (TargetHealthy)
+            {
+                mainWindow.AppendToTextArea("Intelligent target stepper found a good spot.");
+            }
+            else
+            {
+                mainWindow.AppendToTextArea("Intelligent target stepper failed to find a good spot.");
+            }
+
+            appState = AppState.stopped;
+            mainWindow.AppendToTextArea("Acquisition finished");
+            SetStatusReady();
+        }
+
+        public void MagDataAcquisitionFinished(Block b)
+        {
+            this.Block = b;
+            mainWindow.AppendToTextArea("Demodulating magnetic data block.");
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
+            DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
+            // liveViewer.AddDBlock(DBlock);
+
+            haveBlock = true;
+            appState = AppState.stopped;
+            mainWindow.AppendToTextArea("Acquisition finished");
+            SetStatusReady();
+        }
+
+        private bool targetHealthy; 
         double[] northLeakages = new double[UPDATE_EVERY];
         double[] southLeakages = new double[UPDATE_EVERY];
         int leakageIndex = 0;
@@ -417,6 +531,7 @@ namespace EDMBlockHead
                 mainWindow.StatusText = value;
             }
         }
+
 
         public void SaveBlock()
         {

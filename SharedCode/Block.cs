@@ -44,7 +44,7 @@ namespace Data.EDM
 			get { return config; }
 			set { config = value; }
 		}
-
+        
 		public double[] GetTOFIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];
@@ -180,22 +180,41 @@ namespace Data.EDM
         // by normalising the PMT data to the norm data. The normalisation is done
         // by dividing the PMT tofs through by the integrated norm data. The integration
         // is done according to the provided GatedDetectorExtractSpec.
-        public void Normalise(GatedDetectorExtractSpec normGate)
-        {
-            GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
-            double averageNorm = 0;
-            foreach (double val in normData.PointValues) averageNorm += val;
-            averageNorm /= normData.PointValues.Count;
+        //public void Normalise(GatedDetectorExtractSpec normGate)
+        //{
+        //    GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
+        //    double averageNorm = 0;
+        //    foreach (double val in normData.PointValues) averageNorm += val;
+        //    averageNorm /= normData.PointValues.Count;
 
-            for (int i = 0; i < points.Count; i++)
-            {
-                Shot shot = ((EDMPoint)points[i]).Shot;
-                TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
-                shot.TOFs.Add(normedTOF);
-            }
-            // give these data a name
-            detectors.Add("topNormed");
-        }
+        //    for (int i = 0; i < points.Count; i++)
+        //    {
+        //        Shot shot = ((EDMPoint)points[i]).Shot;
+        //        TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
+        //        shot.TOFs.Add(normedTOF);
+        //    }
+        //    // give these data a name
+        //    detectors.Add("topNormed");
+        //}
+
+        //// this function adds a new set of detector data to the block, constructed
+        //// by calculating the asymmetry of the top and bottom detectors The integration
+        //// is done according to the provided GatedDetectorExtractSpec.
+        //public void Normalise(GatedDetectorExtractSpec normGate)
+        //{
+        //    GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
+
+        //    for (int i = 0; i < points.Count; i++)
+        //    {
+        //        Shot shot = ((EDMPoint)points[i]).Shot;
+        //        TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] );
+        //        shot.TOFs.Add(normedTOF);
+        //    }
+        //    // give these data a name
+        //    detectors.Add("topNormed");
+        //}
+
+
 
         // this function takes some of the single point data and adds it to the block shots as TOFs
         // with one data point in them. This allows us to use the same code to break all of the data

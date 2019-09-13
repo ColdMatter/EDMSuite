@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Collections;
 using DAQ.HAL;
@@ -14,9 +15,10 @@ namespace DAQ.Analog
     /// 
     /// </summary>
 
-    [Serializable]
+    [Serializable, DataContract]
     public class AnalogPatternBuilder
     {
+        [DataMember]
         public Dictionary<String, Dictionary<Int32, Double>> AnalogPatterns;
         public int PatternLength;
         public double[,] Pattern;
@@ -123,23 +125,33 @@ namespace DAQ.Analog
             List<int> events = getSortedListOfEvents(channel);
             int timeUntilNextEvent = 0;
             events.Add(PatternLength);
-            for (int i = 0; i < events.Count - 1; i++)
+            if (calibrations.ContainsKey(channel))
             {
-                timeUntilNextEvent = events[i + 1] - events[i];
-                double dval = AnalogPatterns[channel][events[i]];
-                for (int j = 0; j < timeUntilNextEvent; j++)
+                for (int i = 0; i < events.Count - 1; i++)
                 {
-                    try
+                    timeUntilNextEvent = events[i + 1] - events[i];
+                    double dval = AnalogPatterns[channel][events[i]];
+                    for (int j = 0; j < timeUntilNextEvent; j++)
                     {
                         d[events[i] + j] = ((Calibration)calibrations[channel]).Convert(dval);
                     }
-                    catch
+
+                }
+            }
+            else
+            {
+                for (int i = 0; i < events.Count - 1; i++)
+                {
+                    timeUntilNextEvent = events[i + 1] - events[i];
+                    double dval = AnalogPatterns[channel][events[i]];
+                    for (int j = 0; j < timeUntilNextEvent; j++)
                     {
                         d[events[i] + j] = dval;
                     }
-                }
 
+                }
             }
+            
 
             return d;
         }

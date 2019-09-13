@@ -59,6 +59,7 @@ namespace MOTMaster
         private static string
             hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
+        private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -66,6 +67,7 @@ namespace MOTMaster
 
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
+        public bool triggered = false;
 
 
         ControllerWindow controllerWindow;
@@ -96,7 +98,7 @@ namespace MOTMaster
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.Boards["multiDAQ"]);
+            pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
             apg = new DAQMxAnalogPatternGenerator();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -131,8 +133,15 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            
-            pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            if (triggered == true)
+            {
+                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+            }
+            else
+            {
+                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            }
+
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
         }
 
@@ -282,121 +291,117 @@ namespace MOTMaster
         }
         public void Go(Dictionary<String, Object> dict)
         {
-            status = RunningState.running;
-            Stopwatch watch = new Stopwatch();
-            MOTMasterScript script = prepareScript(scriptPath, dict);
-            if (script != null)
+            if (status == RunningState.stopped)
             {
-                MOTMasterSequence sequence = getSequenceFromScript(script);
-               
-                try
+                status = RunningState.running;
+                Stopwatch watch = new Stopwatch();
+                MOTMasterScript script = prepareScript(scriptPath, dict);
+                if (script != null)
                 {
-                    if (config.CameraUsed) prepareCameraControl();
+                    MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                    if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
-
-                    if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
-
-                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
-
-                    if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
-
-                    watch.Start();
-
-                    if(controllerWindow.RunUntilStoppedState)
+                    try
                     {
-                        while(status == RunningState.running)
-                        {
-                            if (!config.Debug) runPattern(sequence);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
-                        {
-                            if (!config.Debug) runPattern(sequence);
-                        }
-                    }
-                   
-                    if (!config.Debug) clearDigitalPattern(sequence);
+                        if (config.CameraUsed) prepareCameraControl();
 
+                        if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
 
-                    watch.Stop();
-                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
-                    if (saveEnable)
-                    {
-                        if (config.CameraUsed)
+                        if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+
+                        buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+                        if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+
+                        watch.Start();
+
+                        if (controllerWindow.RunUntilStoppedState)
                         {
-                            waitUntilCameraAquisitionIsDone();
-                            try
+                            while (status == RunningState.running)
                             {
-                                checkDataArrived();
+                                if (!config.Debug) runPattern(sequence);
                             }
-                            catch (DataNotArrivedFromHardwareControllerException)
-                            {
-                                return;
-                            }
-                            Dictionary<String, Object> report = null;
-                            if (config.ReporterUsed)
-                            {
-                                report = GetExperimentReport();
-                            }
-
-                            save(script, scriptPath, imageData, report);
                         }
                         else
                         {
-                            Dictionary<String, Object> report = null;
-                            if (config.ReporterUsed)
+                            for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                             {
-                                report = GetExperimentReport();
+                                if (!config.Debug) runPattern(sequence);
                             }
-
-                            save(script, scriptPath, report);
-
                         }
 
 
+                        watch.Stop();
+                        //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
+                        if (saveEnable)
+                        {
+                            if (config.CameraUsed)
+                            {
+                                waitUntilCameraAquisitionIsDone();
+                                try
+                                {
+                                    checkDataArrived();
+                                }
+                                catch (DataNotArrivedFromHardwareControllerException)
+                                {
+                                    return;
+                                }
+                                Dictionary<String, Object> report = null;
+                                if (config.ReporterUsed)
+                                {
+                                    report = GetExperimentReport();
+                                }
+
+                                save(sequence, script, scriptPath, imageData, report);
+                            }
+                            else
+                            {
+                                Dictionary<String, Object> report = null;
+                                if (config.ReporterUsed)
+                                {
+                                    report = GetExperimentReport();
+                                }
+
+                                save(sequence, script, scriptPath, report);
+
+                            }
+
+
+                        }
+                        if (config.CameraUsed) finishCameraControl();
+                        if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+
+                        if (!config.Debug) clearDigitalPattern(sequence);
                     }
-                    if (config.CameraUsed) finishCameraControl();
-                    if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                    catch (System.Net.Sockets.SocketException e)
+                    {
+                        MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+                    }
                 }
-                catch (System.Net.Sockets.SocketException e)
+                else
                 {
-                    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+                    MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
                 }
+                status = RunningState.stopped;
             }
-            else
-            {
-                MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
-            }
-            status = RunningState.stopped;
-            
         }
         
         #endregion
 
         #region private stuff
 
-
-        private void save(MOTMasterScript script, string pathToPattern, byte[,] imageData, Dictionary<String, Object> report)
-        {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,  
-                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
-        }
-        private void save(MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
+        // ONGOING: these save functions should probably take a sequence argument
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, cameraAttributesPath, imageData, config.ExternalFilePattern);
+                sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
-        private void save(MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
+        private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
         {
             ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
-                script.Parameters, report, config.ExternalFilePattern);
+                sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
         private void runPattern(MOTMasterSequence sequence)
         {
-            
             initializeHardware(sequence);
             run(sequence);
             releaseHardware();

@@ -82,5 +82,22 @@ namespace DAQ.Remoting
                     );
         }
 
+        //Here we call TransferCavityLock2012 applications from GREMLIN PC
+        public static void ConnectPumpCavityOnGremlin()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock2012"),
+                "tcp://155.198.206.103:1190/controller.rem"
+                );
+        }
+
+        public static void ConnectProbeCavityOnGremlin()
+        {
+            RemotingConfiguration.RegisterWellKnownClientType(
+                Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock2012"),
+                "tcp://155.198.206.103:1191/controller.rem"
+                );
+        }
+
     }
 }

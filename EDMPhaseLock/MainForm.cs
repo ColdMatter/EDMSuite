@@ -346,7 +346,7 @@ namespace EDMPhaseLock
 		Synth redSynth;
         Task analogOutputTask;
         AnalogSingleChannelWriter analogWriter;
-		CounterReader counterReader;
+		CounterSingleChannelReader counterReader;
 		bool running = false;
 		bool lockOscillator;
 		double oscillatorFrequency;
@@ -365,7 +365,7 @@ namespace EDMPhaseLock
 		const int LOCK_UPDATE_EVERY = 5;		// this is how often the lock is updated in terms
 												// of SAMPLE_MULTI_READs (same idea as GUI update interval above)
 		// lock parameters
-		const double PROPORTIONAL_GAIN = 1;		// the units are Hz per count
+		const double PROPORTIONAL_GAIN = 1.2;		// the units are Hz per count
 		const double DERIVATIVE_GAIN = 50;		// the units are difficult to work out
 		const double OSCILLATOR_DEVIATION_LIMIT = 75000;		// this is the furthest the output frequency
 															// can deviate from the target frequency
@@ -458,7 +458,7 @@ namespace EDMPhaseLock
 				1000
 				);
 
-			counterReader = new CounterReader(counterTask.Stream);
+			counterReader = new CounterSingleChannelReader(counterTask.Stream);
 			counterReader.SynchronizeCallbacks = true;
 
 			if (!Environs.Debug)
@@ -531,7 +531,7 @@ namespace EDMPhaseLock
 			}
 			
 			// start the counter reading again right away
-			if (!Environs.Debug)
+			if (!Environs.Debug && running)
 				counterReader.BeginReadMultiSampleInt32(
 					SAMPLE_MULTI_READ,
 					new AsyncCallback(CounterCallBack),

@@ -14,11 +14,13 @@ namespace DAQ.TransferCavityLock2012
             configurationName = name;
             slaveVoltageUpperLimit = 5.0;
             slaveVoltageLowerLimit = 0.0;
-            defaultGain = 0.5;
             defaultLaserVoltage = 0.0;
             maxInputVoltage = 10.0;
             defaultScanPoints = 1000;
             analogSampleRate = 50000;
+            maximumNLMFSteps = 100;
+            pointsToConsiderEitherSideOfPeakInFWHMs = 4;
+            triggerOnRisingEdge = true;
         }
 
         private string configurationName;
@@ -35,18 +37,11 @@ namespace DAQ.TransferCavityLock2012
             set { tcpChannel = value; }
         }
 
-        private string masterLaser;
-        public string MasterLaser
+        private string baseRamp;
+        public string BaseRamp // This is what used to be called Cavity in previous version
         {
-            get { return masterLaser; }
-            set { masterLaser = value; }
-        }
-
-        private string cavity;
-        public string Cavity
-        {
-            get { return cavity; }
-            set { cavity = value; }
+            get { return baseRamp; }
+            set { baseRamp = value; }
         }
 
         private double slaveVoltageUpperLimit;
@@ -61,13 +56,6 @@ namespace DAQ.TransferCavityLock2012
         {
             get { return slaveVoltageLowerLimit; }
             set { slaveVoltageLowerLimit = value; }
-        }
-
-        private double defaultGain;
-        public double DefaultGain
-        {
-            get { return defaultGain; }
-            set { defaultGain = value; }
         }
 
         private double defaultLaserVoltage;
@@ -98,6 +86,26 @@ namespace DAQ.TransferCavityLock2012
             set { analogSampleRate = value; }
         }
 
+        private int maximumNLMFSteps; 
+        public int MaximumNLMFSteps
+        {
+            get { return maximumNLMFSteps; }
+            set { maximumNLMFSteps = value; }
+        }
+
+        private double pointsToConsiderEitherSideOfPeakInFWHMs;
+        public double PointsToConsiderEitherSideOfPeakInFWHMs
+        {
+            get { return pointsToConsiderEitherSideOfPeakInFWHMs; }
+            set { pointsToConsiderEitherSideOfPeakInFWHMs = value; }
+        }
+
+        private bool triggerOnRisingEdge;
+        public bool TriggerOnRisingEdge
+        {
+            get { return triggerOnRisingEdge; }
+            set { triggerOnRisingEdge = value; }
+        }
 
         private string trigger;
         public string Trigger
@@ -106,41 +114,83 @@ namespace DAQ.TransferCavityLock2012
             set { trigger = value; }
         }
 
-        private string ramp;
+        private Dictionary<string, TCLSingleCavityConfig> cavities = new Dictionary<string, TCLSingleCavityConfig>();
+        public Dictionary<string, TCLSingleCavityConfig> Cavities
+        {
+            get { return cavities; }
+            set { cavities = value; }
+        }
+
+        public void AddCavity(string cavityName)
+        {
+            Cavities.Add(cavityName, new TCLSingleCavityConfig(cavityName));
+        }
+
+
+        #region Legacy Methods
+        // Below are legacy methods to maintain backwards compatability. 
+
+        public string Cavity
+        {
+            get { return baseRamp; }
+            set { baseRamp = value; }
+        }
+
+        // Helper method to allow generating a default cavity if none have been added
+        public TCLSingleCavityConfig GetDefaultCavity()
+        {
+            if (cavities.Count == 0)
+            {
+                AddCavity(configurationName);
+                return Cavities[configurationName];
+            }
+            else if (cavities.Count == 1)
+            {
+                return Cavities.First().Value;
+            }
+            else
+            {
+                throw new System.InvalidOperationException(
+                    "If you have more than a single cavity on this instance of TCL then you must change configuration for individuals cavities separately"
+                    );
+            }
+        }
+
+        // These will only work if you have only a single cavity
+        public string MasterLaser
+        {
+            get { return GetDefaultCavity().MasterLaser; }
+            set { GetDefaultCavity().MasterLaser = value; }
+        }
+
         public string Ramp
         {
-            get { return ramp; }
-            set { ramp = value; }
+            get { return GetDefaultCavity().RampOffset; }
+            set { GetDefaultCavity().RampOffset = value; }
         }
-
-        private Dictionary<string, string> lasers = new Dictionary<string,string>();
-        
-        public Dictionary<string, string> Lasers
-        {
-            get { return lasers; }
-            set { lasers = value; }
-        }
-
 
         public void AddLaser(string name, string photodiode)
         {
-            Lasers.Add(name, photodiode);
+            GetDefaultCavity().AddSlaveLaser(name, photodiode);
         }
 
-       
+        public void AddFSRCalibration(string name, double spacingbetweenPeaksInVolts)
+        {
+            GetDefaultCavity().AddFSRCalibration(name, spacingbetweenPeaksInVolts);
+        }
 
+        public Dictionary<string, double> DefaultGains
+        {
+            get { return GetDefaultCavity().DefaultGains; }
+            set { GetDefaultCavity().DefaultGains = value; }
+        }
 
-       
+        public void AddDefaultGain(string name, double gain)
+        {
+            GetDefaultCavity().AddDefaultGain(name, gain);
+        }       
 
         
-
-        
-
-      
-       
-
-        
-
-
+        #endregion 
     }
 }

@@ -35,6 +35,12 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
 #endif
+
+#if EDM
+            scanOutputPlugins.Add("NI Rfsg frequency output", typeof(NIRfsgFrequencyOutputPlugin));
+            scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
+            scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
+#endif
             // switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
             switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));
@@ -44,6 +50,8 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
             patternPlugins.Add("Pump-probe Dual CCD", typeof(DualCCDPatternPlugin));
+            patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
+            patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
 			patternPlugins.Add("Guide", typeof(GuidePatternPlugin));
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
@@ -53,6 +61,8 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
+            patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
+            patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

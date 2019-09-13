@@ -293,7 +293,9 @@ namespace ScanMaster
 						else
 						{
 							AcquisitorPlugin plugin = PluginForString(manager.CurrentProfile, bits[0]);
-							if (sr.SetField(plugin, bits[1], bits[2]))
+                            if(bits[2]=="?")
+                                manager.Window.WriteLine(bits[0] + ":" + bits[1] + " = " + sr.GetField(plugin, bits[1]).ToString());
+							else if (sr.SetField(plugin, bits[1], bits[2]))
 								manager.Window.WriteLine(bits[0] + ":" + bits[1] + " modified.");
 							else manager.Window.WriteLine("Error setting field");
 						}

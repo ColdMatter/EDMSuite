@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace DAQ.Pattern
 {
@@ -8,9 +9,13 @@ namespace DAQ.Pattern
 	/// A layout represents a pattern as a set of edges. This class is used
 	/// internally by the pattern builder.
 	/// </summary>
+    [DataContract]
+    [KnownType(typeof(EdgeSet))]
+    [KnownType(typeof(SortedList))]
 	public class Layout
 	{
-		private SortedList eventList = new SortedList();
+        [DataMember]
+        public SortedList EventList = new SortedList();
 		private int channels = 0;
 	
 		public Layout( int channels ) 
@@ -20,14 +25,14 @@ namespace DAQ.Pattern
 	
 		public void AddEdge( int channel, int time, bool sense ) 
 		{
-			EdgeSet edgeSet = (EdgeSet)eventList[time];
+			EdgeSet edgeSet = (EdgeSet)EventList[time];
 			// is there already an edgeSet at this time ?
 			if (edgeSet == null)
 			{
 				// If not add a new one
 				edgeSet = new EdgeSet(channels);
 				edgeSet.AddEdge(channel, sense);
-				eventList[time] = edgeSet;
+				EventList[time] = edgeSet;
 			} 
 			else 
 			{
@@ -38,7 +43,7 @@ namespace DAQ.Pattern
 
 		public ArrayList EventTimes
 		{
-			get { return new ArrayList(eventList.Keys); }
+			get { return new ArrayList(EventList.Keys); }
 		}
 
 		public int LastEventTime
@@ -48,7 +53,7 @@ namespace DAQ.Pattern
 	
 		public EdgeSet GetEdgeSet( int time ) 
 		{
-			return (EdgeSet)eventList[time];
+			return (EdgeSet)EventList[time];
 		}
 
 		public override String ToString() 
@@ -67,7 +72,7 @@ namespace DAQ.Pattern
 			sb.Append("\n");
 		
 			// Events
-			foreach (DictionaryEntry ev in eventList)
+			foreach (DictionaryEntry ev in EventList)
 			{
 				int time = (int)ev.Key;
 				EdgeSet es = (EdgeSet)ev.Value;

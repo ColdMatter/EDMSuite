@@ -32,7 +32,7 @@ namespace Analysis.EDM
         private static Dictionary<string, DemodulationConfigBuilder> standardConfigs =
             new Dictionary<string, DemodulationConfigBuilder>();
 
-        private static double kDetectorDistanceRatio = 3.842;
+        private static double kDetectorDistanceRatio = 1.144;
 
         public static DemodulationConfig GetStandardDemodulationConfig(string name, Block b)
         {
@@ -53,9 +53,9 @@ namespace Analysis.EDM
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "wide";
                 dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.Name = "top";
+                dg0.Name = "bottomProbe";
                 dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "norm";
+                dg1.Name = "topProbe";
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "magnetometer";
                 dg2.Integrate = false;
@@ -108,7 +108,7 @@ namespace Analysis.EDM
 
             // for testing out different centred-gate widths
             for (int i = 1; i < 10; i++)
-                AddFixedSliceConfig("wgate" + i, 2190, i * 20);
+                AddFixedSliceConfig("wgate" + i, 2440, i * 20);
 
             for (int i = 1; i < 14; i++)
                 AddFixedSliceConfig("shiftgate" + i, 1850 + i*50, 65);
@@ -147,13 +147,13 @@ namespace Analysis.EDM
                 dc = new DemodulationConfig();
                 dc.AnalysisTag = "background";
                 dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.GateLow = 2550;
-                dg0.GateHigh = 2600;
-                dg0.Name = "top";
+                dg0.GateLow = 2850;
+                dg0.GateHigh = 3050;
+                dg0.Name = "bottomProbe";
                 dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "norm";
-                dg1.GateLow = 750;
-                dg1.GateHigh = 800;
+                dg1.Name = "topProbe";
+                dg1.GateLow = 2300;
+                dg1.GateHigh = 2530;
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
                 dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
@@ -162,6 +162,73 @@ namespace Analysis.EDM
                 return dc;
             };
             standardConfigs.Add("background", background);
+
+            // "magnetometer mode" gate - for analysing magnetic field data from QuSpins
+
+            DemodulationConfigBuilder magnetometers = delegate(Block b)
+            {
+                DemodulationConfig dc;
+                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9, dg10;
+
+                dc = new DemodulationConfig();
+                dc.AnalysisTag = "magnetometers";
+                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
+                dg0.Name = "quSpinB0_Y";
+                dg0.BackgroundSubtract = false;
+                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
+                dg1.Name = "quSpinB0_Z";
+                dg1.BackgroundSubtract = false;
+                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
+                dg2.Name = "quSpinEV_Y";
+                dg2.BackgroundSubtract = false;
+                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
+                dg3.Name = "quSpinEV_Z";
+                dg3.BackgroundSubtract = false;
+                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
+                dg4.Name = "quSpinEW_Y";
+                dg4.BackgroundSubtract = false;
+                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
+                dg5.Name = "quSpinEW_Z";
+                dg5.BackgroundSubtract = false;
+                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
+                dg6.Name = "quSpinEX_Y";
+                dg6.BackgroundSubtract = false;
+                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
+                dg7.Name = "quSpinEX_Z";
+                dg7.BackgroundSubtract = false;
+                dg8 = GatedDetectorExtractSpec.MakeWideGate(8);
+                dg8.Name = "quSpinEU_Y";
+                dg8.BackgroundSubtract = false;
+                dg9 = GatedDetectorExtractSpec.MakeWideGate(9);
+                dg9.Name = "quSpinEU_Z";
+                dg9.BackgroundSubtract = false;
+                dg10 = GatedDetectorExtractSpec.MakeWideGate(10);
+                dg10.Name = "bartington";
+                dg10.BackgroundSubtract = false;
+
+                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
+                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
+                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
+                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
+                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
+                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
+                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
+                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
+                dc.GatedDetectorExtractSpecs.Add(dg8.Name, dg8);
+                dc.GatedDetectorExtractSpecs.Add(dg9.Name, dg9);
+                dc.GatedDetectorExtractSpecs.Add(dg10.Name, dg10);
+
+                dc.PointDetectorChannels.Add("MiniFlux1");
+                dc.PointDetectorChannels.Add("MiniFlux2");
+                dc.PointDetectorChannels.Add("MiniFlux3");
+                dc.PointDetectorChannels.Add("NorthCurrent");
+                dc.PointDetectorChannels.Add("SouthCurrent");
+                dc.PointDetectorChannels.Add("PumpPD");
+                dc.PointDetectorChannels.Add("ProbePD");
+
+                return dc;
+            };
+            standardConfigs.Add("magnetometers", magnetometers);
 
             // add some fixed gate slices - the first three are the 1.1 sigma centre portion and two
             // non-overlapping portions either side.
@@ -267,34 +334,39 @@ namespace Analysis.EDM
                 dc.AnalysisTag = name;
                 dg0 = new GatedDetectorExtractSpec();
                 dg0.Index = 0;
-                dg0.Name = "top";
-                dg0.BackgroundSubtract = false;
+                dg0.Name = "bottomProbe";
+                dg0.BackgroundSubtract = true;
                 dg0.GateLow = (int)(centre - width);
                 dg0.GateHigh = (int)(centre + width);
                 dg1 = new GatedDetectorExtractSpec();
                 dg1.Index = 1;
-                dg1.Name = "norm";
-                dg1.BackgroundSubtract = false;
-                dg1.GateLow = (int)((centre - width) / kDetectorDistanceRatio);
-                dg1.GateHigh = (int)((centre + width) / kDetectorDistanceRatio);
+                dg1.Name = "topProbe";
+                dg1.BackgroundSubtract = true;
+                dg1.GateLow = (int)((centre - width) * kDetectorDistanceRatio);
+                dg1.GateHigh = (int)((centre + width) * kDetectorDistanceRatio);
                 dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
                 dg2.Name = "magnetometer";
                 dg2.Integrate = false;
+                dg2.BackgroundSubtract = false;
                 dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
                 dg3.Name = "gnd";
                 dg3.Integrate = false;
+                dg3.BackgroundSubtract = false;
                 dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
                 dg4.Name = "battery";
                 dg4.Integrate = false; //Add this in to analyse By in 3 axis internal magnetometer tests
+                dg4.BackgroundSubtract = false;
                 dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
                 dg5.Name = "rfCurrent";
                 dg5.Integrate = false;
+                dg5.BackgroundSubtract = false;
                 dg6 = new GatedDetectorExtractSpec();
                 dg6.Index = 6;
                 dg6.Name = "reflectedrf1Amplitude";
                 dg6.BackgroundSubtract = false;
                 dg6.GateLow = 800;
                 dg6.GateHigh = 1800;
+                dg6.BackgroundSubtract = false;
                 //dg6.GateLow = (rf1CT / conFac) - 1;
                 //dg6.GateHigh = (rf1CT / conFac) + 1;
                 dg7 = new GatedDetectorExtractSpec();
@@ -305,6 +377,7 @@ namespace Analysis.EDM
                 //dg7.GateHigh = (rf2CT / conFac) + 1;
                 dg7.GateLow = 800;
                 dg7.GateHigh =1800;
+                dg7.BackgroundSubtract = false;
 
 
                 dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);

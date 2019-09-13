@@ -1,8 +1,10 @@
 bin
 obj
 *.suo
+*.csproj
 *.csproj.user
 *.licx
 *.lnk
 iamjack.sh
 iamjoe.sh
+*.orig

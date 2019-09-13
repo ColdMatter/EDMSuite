@@ -19,6 +19,11 @@ namespace ScanMaster.Acquire.Plugin
 #if DECELERATOR
     ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif
+#if EDM
+    ,XmlInclude(typeof(NIRfsgAmplitudeOutputPlugin))
+    ,XmlInclude(typeof(NIRfsgFrequencyOutputPlugin))
+    ,XmlInclude(typeof(HardwareControllerOutputPlugin))
+#endif
     ]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin
 	{

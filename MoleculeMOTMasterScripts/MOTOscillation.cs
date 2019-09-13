@@ -26,6 +26,9 @@ public class Patterns : MOTMasterScript
         //Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
 
+        //PMT
+        Parameters["PMTTrigger"] = 4000;
+        Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
@@ -42,18 +45,15 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.3;
+        Parameters["SlowingChirpEndTime"] = 1500; //This is a quick fix to a stupid problem. Should be removed
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
+        Parameters["MOTCoilsCurrentRampStartTime"] = 6000;
+        Parameters["MOTCoilsCurrentRampDuration"] = 500;
+        Parameters["MOTCoilsCurrentRampStartValue"] = 0.75;
+        Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsRampActive"] = false;
-        Parameters["MOTCoilsCurrentRampStartTime"] = 1500;
-        Parameters["MOTCoilsCurrentRampDuration"] = 1000;
-        Parameters["MOTCoilsCurrentRampStartValue"] = 0.8;
-        Parameters["MOTCoilsCurrentRampEndValue"] = 1.2;
-
-        Parameters["MOTBOPCoilsCurrentStartValue"] = 10.0;
-        Parameters["MOTBOPCoilsCurrentMolassesValue"] = 0.2;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = -3.9;
@@ -79,7 +79,7 @@ public class Patterns : MOTMasterScript
         Parameters["PokeStartTime"] = 7500;
         Parameters["PokeDuration"] = 50;
         Parameters["OscillationTime"] = 200;
-        Parameters["PokeDetuningValue"] = -1.35;
+        Parameters["PokeDetuningValue"] = -1.45;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -91,7 +91,7 @@ public class Patterns : MOTMasterScript
         
         p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"], (int)Parameters["PokeDuration"], "aom"); //poke pulse to MOT - note b-x held on resonance until 80ms
         p.AddEdge("aom", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
-       // p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"], (int)Parameters["PokeDuration"], "motAOM"); //mot light off during poke
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"], 30, "motAOM"); //mot light off during poke
         p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"] + (int)Parameters["PokeDuration"] + (int)Parameters["OscillationTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         
         return p;
@@ -110,16 +110,11 @@ public class Patterns : MOTMasterScript
         p.AddChannel("xShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
 
-
         // B Field
         // For the delta electronica box (bottom MOT coil) - top coil is in digital section
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0);
-
-        // For BOP
-        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTBOPCoilsCurrentStartValue"]);
-        p.AddAnalogValue("MOTBOPCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], (double)Parameters["MOTBOPCoilsCurrentMolassesValue"]);
-
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);

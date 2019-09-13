@@ -1,4 +1,4 @@
-# edm_init.py - sets up the IronPython environment ready for scripting
+﻿# edm_init.py - sets up the IronPython environment ready for scripting
 # the edm control software.
 
 import clr
@@ -42,7 +42,7 @@ import EDMHardwareControl
 import SirCachealot
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1171/controller.rem'), EDMBlockHead.Controller)
+bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
 sc = typedproxy(System.Activator.GetObject(SirCachealot.Controller, 'tcp://localhost:1180/controller.rem'), SirCachealot.Controller)
 

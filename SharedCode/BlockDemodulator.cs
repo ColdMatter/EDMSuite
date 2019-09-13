@@ -58,10 +58,10 @@ namespace Analysis.EDM
             //        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
 
             //}
-            // ** normalise the top detector **
+            // ** calculate the asymmtry **
             gatedDetectorData.Add(
-                gatedDetectorData[db.DetectorIndices["top"]] / gatedDetectorData[db.DetectorIndices["norm"]]);
-            db.DetectorIndices.Add("topNormed", db.DetectorIndices.Count);
+                (gatedDetectorData[db.DetectorIndices["topProbe"]] - gatedDetectorData[db.DetectorIndices["bottomProbe"]]) / (gatedDetectorData[db.DetectorIndices["topProbe"]] + gatedDetectorData[db.DetectorIndices["bottomProbe"]]));
+            db.DetectorIndices.Add("asymmetry", db.DetectorIndices.Count);
 
             // *** extract the point detector data ***
             List<PointDetectorData> pointDetectorData = new List<PointDetectorData>();
@@ -82,8 +82,7 @@ namespace Analysis.EDM
                 db.DetectorIndices.Add(config.PointDetectorChannels[i], i + gatedDetectorData.Count);
             }
 
-            // calculate the norm FFT
-            db.NormFourier = DetectorFT.MakeFT(gatedDetectorData[db.DetectorIndices["norm"]], kFourierAverage);
+           
 
             // *** demodulate channels ***
             // ** build the list of modulations **
@@ -198,7 +197,7 @@ namespace Analysis.EDM
             // we start with the standard demodulated block
             DemodulatedBlock dblock = DemodulateBlock(b, config);
             // First do everything for the un-normalised top detector
-            int tdi = dblock.DetectorIndices["top"];
+            int tdi = dblock.DetectorIndices["asymmetry"];
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
             BlockTOFDemodulator btdt = new BlockTOFDemodulator();
@@ -206,7 +205,7 @@ namespace Analysis.EDM
             
             // now repeat having normed the block
             // normalise the PMT signal
-            b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
+            //b.Normalise(config.GatedDetectorExtractSpecs["norm"]);
             int tndi = dblock.DetectorIndices["topNormed"];
             // TOF demodulate the block to get the channel wiggles
             // the BlockTOFDemodulator only demodulates the PMT detector
@@ -460,6 +459,172 @@ namespace Analysis.EDM
 
 
             return dblock;
+        }
+
+        // DemodulateMagDataBlock gives the detector data from the five QuSpin magnetometers
+        // placed around the interaction region.
+        public DemodulatedBlock DemodulateMagDataBlock(Block b, DemodulationConfig config)
+        {
+            // *** copy across the metadata ***
+            DemodulatedBlock db = new DemodulatedBlock();
+            db.TimeStamp = b.TimeStamp;
+            db.Config = b.Config;
+            db.DemodulationConfig = config;
+
+            // *** extract the gated detector data using the given config ***
+            List<GatedDetectorData> gatedDetectorData = new List<GatedDetectorData>();
+            int ind = 0;
+            foreach (string d in b.detectors)
+            {
+                GatedDetectorExtractSpec gdes;
+                config.GatedDetectorExtractSpecs.TryGetValue(d, out gdes);
+
+                if (gdes != null)
+                {
+                    gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gdes));
+                    db.DetectorIndices.Add(gdes.Name, ind);
+                    ind++;
+                    db.DetectorCalibrations.Add(gdes.Name,
+                        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gdes.Index]).Calibration);
+                }
+            }
+
+            //foreach (KeyValuePair<string, GatedDetectorExtractSpec> spec in config.GatedDetectorExtractSpecs)
+            //{
+            //    GatedDetectorExtractSpec gate = spec.Value;
+            //    gatedDetectorData.Add(GatedDetectorData.ExtractFromBlock(b, gate));
+            //    db.DetectorIndices.Add(gate.Name, ind);
+            //    ind++;
+            //    db.DetectorCalibrations.Add(gate.Name,
+            //        ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[gate.Index]).Calibration);
+
+            //}
+            // ** calculate the asymmtry **
+            //gatedDetectorData.Add(
+            //   (gatedDetectorData[db.DetectorIndices["topProbe"]] - gatedDetectorData[db.DetectorIndices["bottomProbe"]]) / (gatedDetectorData[db.DetectorIndices["topProbe"]] + gatedDetectorData[db.DetectorIndices["bottomProbe"]]));
+            //db.DetectorIndices.Add("asymmetry", db.DetectorIndices.Count);
+
+            // *** extract the point detector data ***
+            List<PointDetectorData> pointDetectorData = new List<PointDetectorData>();
+            foreach (string channel in config.PointDetectorChannels)
+            {
+                pointDetectorData.Add(PointDetectorData.ExtractFromBlock(b, channel));
+                // for the moment all single point detector channels are set to have a calibration
+                // of 1.0 .
+                db.DetectorCalibrations.Add(channel, 1.0);
+            }
+
+            // *** build the list of detector data ***
+            List<DetectorData> detectorData = new List<DetectorData>();
+            for (int i = 0; i < gatedDetectorData.Count; i++) detectorData.Add(gatedDetectorData[i]);
+            for (int i = 0; i < config.PointDetectorChannels.Count; i++)
+            {
+                detectorData.Add(pointDetectorData[i]);
+                db.DetectorIndices.Add(config.PointDetectorChannels[i], i + gatedDetectorData.Count);
+            }
+
+
+
+            // *** demodulate channels ***
+            // ** build the list of modulations **
+            List<string> modNames = new List<string>();
+            List<Waveform> modWaveforms = new List<Waveform>();
+            foreach (AnalogModulation mod in b.Config.AnalogModulations)
+            {
+                modNames.Add(mod.Name);
+                modWaveforms.Add(mod.Waveform);
+            }
+            foreach (DigitalModulation mod in b.Config.DigitalModulations)
+            {
+                modNames.Add(mod.Name);
+                modWaveforms.Add(mod.Waveform);
+            }
+            foreach (TimingModulation mod in b.Config.TimingModulations)
+            {
+                modNames.Add(mod.Name);
+                modWaveforms.Add(mod.Waveform);
+            }
+            // ** work out the switch state for each point **
+            int blockLength = modWaveforms[0].Length;
+            List<bool[]> wfBits = new List<bool[]>();
+            foreach (Waveform wf in modWaveforms) wfBits.Add(wf.Bits);
+            List<uint> switchStates = new List<uint>(blockLength);
+            for (int i = 0; i < blockLength; i++)
+            {
+                uint switchState = 0;
+                for (int j = 0; j < wfBits.Count; j++)
+                {
+                    if (wfBits[j][i]) switchState += (uint)Math.Pow(2, j);
+                }
+                switchStates.Add(switchState);
+            }
+            // pre-calculate the state signs for each analysis channel
+            // the first index selects the analysis channel, the second the switchState
+            int numStates = (int)Math.Pow(2, modWaveforms.Count);
+            int[,] stateSigns = new int[numStates, numStates];
+            for (uint i = 0; i < numStates; i++)
+            {
+                for (uint j = 0; j < numStates; j++)
+                {
+                    stateSigns[i, j] = stateSign(j, i);
+                }
+            }
+
+            // ** the following needs to be done for each detector **
+            for (int detector = 0; detector < detectorData.Count; detector++)
+            {
+                DetectorChannelValues dcv = new DetectorChannelValues();
+                for (int i = 0; i < modNames.Count; i++) dcv.SwitchMasks.Add(modNames[i], (uint)(1 << i));
+                // * divide the data up into bins according to switch state *
+                List<List<double>> statePoints = new List<List<double>>(numStates);
+                for (int i = 0; i < numStates; i++) statePoints.Add(new List<double>(blockLength / numStates));
+                for (int i = 0; i < blockLength; i++)
+                {
+                    statePoints[(int)switchStates[i]].Add(detectorData[detector].PointValues[i]);
+                }
+
+                // * calculate the channel values *
+                int subLength = blockLength / numStates;
+                double[,] channelValues = new double[numStates, subLength];
+                for (int channel = 0; channel < numStates; channel++)
+                {
+                    for (int subIndex = 0; subIndex < subLength; subIndex++)
+                    {
+                        double chanVal = 0;
+                        for (int i = 0; i < numStates; i++) chanVal +=
+                            stateSigns[channel, i] * statePoints[i][subIndex];
+                        chanVal /= (double)numStates;
+                        channelValues[channel, subIndex] = chanVal;
+                    }
+                }
+                //* calculate the channel means *
+                double[] channelMeans = new double[numStates];
+                for (int channel = 0; channel < numStates; channel++)
+                {
+                    double total = 0;
+                    for (int i = 0; i < subLength; i++) total += channelValues[channel, i];
+                    total /= blockLength / numStates;
+                    channelMeans[channel] = total;
+                }
+                dcv.Values = channelMeans;
+
+                //* calculate the channel errors *
+                double[] channelErrors = new double[numStates];
+                for (int channel = 0; channel < numStates; channel++)
+                {
+                    double total = 0;
+                    for (int i = 0; i < subLength; i++)
+                        total += Math.Pow(channelValues[channel, i] - channelMeans[channel], 2);
+                    total /= subLength * (subLength - 1);
+                    total = Math.Sqrt(total);
+                    channelErrors[channel] = total;
+                }
+                dcv.Errors = channelErrors;
+
+                db.ChannelValues.Add(dcv);
+            }
+
+            return db;
         }
 
         // calculate, for a given analysis channel, whether a given state contributes

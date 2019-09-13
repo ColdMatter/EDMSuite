@@ -26,7 +26,7 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("rfPulseGenerator", "Dev2");
+            Boards.Add("rfAWG", "Dev2");
            
         }
 

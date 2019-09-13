@@ -11,9 +11,13 @@ using DAQ.Environment;
 
 namespace TriggeredShapedPulses
 {
+
     public class Controller : MarshalByRefObject
     {
         NIRfsg _rfsgSession;
+
+        const double rfCarrierFreq = 170e6;
+        const double samplingRate = 100e6;
         
         Dictionary<int, ShapedPulse> pulses = new Dictionary<int, ShapedPulse>();
         Dictionary<int, string> RfChoice = new Dictionary<int, string>();
@@ -34,24 +38,38 @@ namespace TriggeredShapedPulses
             set { botRfChoice = value; }
         }
 
-        public void Initialise()
+        public void LoadPulses(double[][] pulseParams)
         {
             pulses.Add(1, new ShapedPulse());
             pulses.Add(2, new ShapedPulse());
 
+            foreach (int key in pulses.Keys)
+            {
+                Console.WriteLine("Loading pulse " + key + ": " + pulseParams[key - 1][0] + "/" + pulseParams[key - 1][1] + "/" + pulseParams[key - 1][2]);
+                Console.WriteLine("Pulse frequency (in Hz): " + pulseParams[key - 1][3]);
+                Console.WriteLine("Phase offset (in rad): " + pulseParams[key - 1][4]);
+                pulses[key].Param0 = pulseParams[key - 1][0];
+                pulses[key].Param1 = pulseParams[key - 1][1];
+                pulses[key].Param2 = pulseParams[key - 1][2];
+                pulses[key].Freq = pulseParams[key - 1][3];
+                pulses[key].Phase = pulseParams[key - 1][4];
+            }
+
+            Console.WriteLine("Pulses loaded successfully.");
+        }
+        public void Initialise()
+        {
             RfChoice.Add(1, "pulse1");
             RfChoice.Add(2, "pulse2");
 
             topRfChoice = 1;
             botRfChoice = 1;
 
-            string resourceName = (String)Environs.Hardware.Boards["rfPulseGenerator"]; 
+            string resourceName = (String)Environs.Hardware.Boards["rfAWG"]; 
             double ArbPreFilterGain = -2;
             int waveformRepeatCount = 1;
 
-            double frequency = 170e6;
             double power = 5;
-            double iqRate = 100e6;
             double pulseLength = 1e-6;
             double deadTime = 3e-7; // The generated pulses seem to cut off at some point if I use
                                     // all the sampling points available, hence the need for some
@@ -73,9 +91,9 @@ namespace TriggeredShapedPulses
                 _rfsgSession.DriverOperation.Warning += new EventHandler<RfsgWarningEventArgs>(DriverOperation_Warning);
 
                 // Configure instrument
-                _rfsgSession.RF.Configure(frequency, power);
+                _rfsgSession.RF.Configure(rfCarrierFreq, power);
                 _rfsgSession.Arb.GenerationMode = RfsgWaveformGenerationMode.Script;
-                _rfsgSession.Arb.IQRate = iqRate;
+                _rfsgSession.Arb.IQRate = samplingRate;
                 _rfsgSession.Arb.PreFilterGain = ArbPreFilterGain;
                 _rfsgSession.RF.PowerLevelType = RfsgRFPowerLevelType.PeakPower;
 
@@ -107,12 +125,12 @@ namespace TriggeredShapedPulses
                 // Initialise waveforms and write waveforms to device
                 double[] initialParams = new double[3] { 1, 0, 0 };
                 double[] blankData = Enumerable.Repeat(0.0, numberOfSamples).ToArray();
-                double[] writeData;
+                double[][] writeData;
 
                 foreach(int key in pulses.Keys)
                 {
                     writeData = MakePulse(pulses[key], numberOfSamples, numberOfDeadPoints);
-                    _rfsgSession.Arb.WriteWaveform(RfChoice[key], writeData, blankData);
+                    _rfsgSession.Arb.WriteWaveform(RfChoice[key], writeData[0], writeData[1]);
                 }
                 _rfsgSession.Arb.WriteWaveform("allZeros", blankData, blankData);
 
@@ -124,18 +142,7 @@ namespace TriggeredShapedPulses
             }
 
         }
-        public void LoadPulses(double[][] pulseParams)
-        {
-            foreach (int key in pulses.Keys)
-            {
-                Console.WriteLine("Loading pulse "+ key + ": " + pulseParams[key-1][0] + "/" + pulseParams[key-1][1] + "/" + pulseParams[key-1][2]);
-                pulses[key].Param0 = pulseParams[key-1][0];
-                pulses[key].Param1 = pulseParams[key-1][1];
-                pulses[key].Param2 = pulseParams[key-1][2];
-            }
 
-            Console.WriteLine("Pulses loaded successfully.");
-        }
         public void StartGeneration()
         {
             string BotRFPulse = RfChoice[botRfChoice];
@@ -274,20 +281,33 @@ namespace TriggeredShapedPulses
 
             return Convert.ToInt32(smallestNumberOfSamples / waveformQuantum) * waveformQuantum;
         }
-        private static double[] MakePulse(ShapedPulse pulse, int noSamples, int noDeadPts)
+        private static double[][] MakePulse(ShapedPulse pulse, int noSamples, int noDeadPts)
         {
-            double[] sineArray = new double[noSamples];
+            double[][] iqArray = new double[2][]
+            {
+                new double[noSamples],
+                new double[noSamples]
+            };
+            double[] amplitude = new double[noSamples];
+            double[] cosArray = new double[noSamples];
+            double[] sinArray = new double[noSamples];
+
             for (int i = 0; i < (noSamples - noDeadPts); i++)
             {
-                sineArray[i] = pulse.Param0 + pulse.Param1 * Math.Sin(Math.PI * i / (noSamples - noDeadPts)) + pulse.Param2 * Math.Sin(2 * Math.PI * i / (noSamples - noDeadPts));
+                amplitude[i] = (pulse.Param0 + pulse.Param1 * Math.Sin(Math.PI * i / (noSamples - noDeadPts)) + pulse.Param2 * Math.Sin(2 * Math.PI * i / (noSamples - noDeadPts)));
+                cosArray[i] = Math.Cos(2 * Math.PI * (pulse.Freq - samplingRate) * i + pulse.Phase);
+                sinArray[i] = Math.Sin(2 * Math.PI * (pulse.Freq - samplingRate) * i + pulse.Phase);
+                iqArray[0][i] = amplitude[i] * cosArray[i];
+                iqArray[1][i] = amplitude[i] * sinArray[i];
             }
 
             for (int i = noSamples - noDeadPts + 1; i < noSamples; i++)
             {
-                sineArray[i] = 0;
+                iqArray[0][i] = 0;
+                iqArray[1][i] = 0;
             }
 
-            return sineArray;
+            return iqArray;
         }
     }
 }
