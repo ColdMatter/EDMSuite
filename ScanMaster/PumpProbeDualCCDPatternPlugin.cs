@@ -21,10 +21,10 @@ namespace ScanMaster.Acquire.Plugins
     /// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class PumpProbePatternPlugin : SupersonicPGPluginBase
+	public class PumpProbeDualCCDPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private PumpProbePatternBuilder scanPatternBuilder;
+        private PumpProbeDualCCDPatternBuilder scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
@@ -46,7 +46,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new PumpProbePatternBuilder();
+            scanPatternBuilder = new PumpProbeDualCCDPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -62,12 +62,12 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
                 (int)settings["flashlampPulseLength"],
-				(int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] - (int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
-				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
-				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
-                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],
+                (int)settings["aomOnStart"],                                                    //aomStart1
+                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aomDuration1
+                (int)settings["aomOffStart"] + (int)settings["aomOffDuration"],                 //aomStart2
+				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"]
+                - (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],               //aomDuration2
+                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aom2Duration1
                 GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],

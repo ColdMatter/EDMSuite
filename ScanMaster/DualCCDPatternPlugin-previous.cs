@@ -21,32 +21,35 @@ namespace ScanMaster.Acquire.Plugins
     /// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class PumpProbePatternPlugin : SupersonicPGPluginBase
+	public class DualCCDPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private PumpProbePatternBuilder scanPatternBuilder;
+        private DualCCDPatternBuilder scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
-			settings["aomOnStart"] = 100;
-			settings["aomOnDuration"] = 100;
-			settings["aomOffStart"] = 140;
+			settings["aomOnStart"] = 10;
+            settings["valveToQ"] = 570;
+            settings["flashToQ"] = 230;
+			settings["aomOnDuration"] = 260000;
+			settings["aomOffStart"] = 1000;
             settings["aom2OffStart"] = 140;
-			settings["aomOffDuration"] = 20;
+			settings["aomOffDuration"] = 250020;
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 5;
-            settings["sequenceLength"] = 2;
-            settings["switchLineDuration"] = 1000;
-            settings["switchLineDelay"] = 0;
-            settings["padStart"] = 0;
+            settings["sequenceLength"] = 4;
+            settings["switchLineDuration"] = 360000;
+            settings["switchLineDelay"] = -50000;
+            settings["padStart"] = 50000;
             settings["flashlampPulseLength"] = 100;
             settings["chirpStart"] = 100;
             settings["chirpDuration"] = 300;
+            settings["flashlampPulseInterval"] = 500000;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new PumpProbePatternBuilder();
+            scanPatternBuilder = new DualCCDPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -62,12 +65,12 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
                 (int)settings["flashlampPulseLength"],
-				(int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] - (int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
-				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
-				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
-                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],
+                (int)settings["aomOnStart"],                                                    //aomStart1
+                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aomDuration1
+                (int)settings["aomOffStart"] + (int)settings["aomOffDuration"],                 //aomStart2
+				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"]
+                - (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],               //aomDuration2
+                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aom2Duration1
                 GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],

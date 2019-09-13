@@ -190,9 +190,17 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DualCCDPatternBuilder.cs" />
+    <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="MMPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
+    <Compile Include="PumpProbePatternBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PumpProbePatternPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,12 +338,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PulsedRFScanPatternPlugin.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PumpProbePatternBuilder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PumpProbePatternPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="QuantaRayYAGPlugin.cs" />

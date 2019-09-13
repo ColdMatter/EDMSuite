@@ -21,64 +21,61 @@ namespace ScanMaster.Acquire.Plugins
     /// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class PumpProbePatternPlugin : SupersonicPGPluginBase
+	public class DualCCDPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private PumpProbePatternBuilder scanPatternBuilder;
+        private DualCCDPatternBuilder scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
-			settings["aomOnStart"] = 100;
-			settings["aomOnDuration"] = 100;
-			settings["aomOffStart"] = 140;
-            settings["aom2OffStart"] = 140;
-			settings["aomOffDuration"] = 20;
+            settings["valveToQ"] = 570;
+            settings["flashToQ"] = 230;
+            settings["ccd1Start"] = 10;
+			settings["ccd1Duration"] = 10000;
+            settings["ccd2Start"] = 10;
+            settings["ccd2Duration"] = 10000;
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 5;
             settings["sequenceLength"] = 2;
-            settings["switchLineDuration"] = 1000;
-            settings["switchLineDelay"] = 0;
-            settings["padStart"] = 0;
+            settings["switchLineDuration"] = 360000;
+            settings["switchLineDelay"] = -50000;
+            settings["padStart"] = 50000;
             settings["flashlampPulseLength"] = 100;
-            settings["chirpStart"] = 100;
-            settings["chirpDuration"] = 300;
+            settings["flashlampPulseInterval"] = 500000;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new PumpProbePatternBuilder();
+            scanPatternBuilder = new DualCCDPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
 		{
+            scanPatternBuilder.EnforceTimeOrdering = false;
 			scanPatternBuilder.Clear();
 			scanPatternBuilder.ShotSequence(
-                (int)settings["padStart"],
-				(int)settings["sequenceLength"],
-				(int)settings["padShots"],
-                (int)settings["padStart"],
-				(int)settings["flashlampPulseInterval"],
-				(int)settings["valvePulseLength"],
-				(int)settings["valveToQ"],
-				(int)settings["flashToQ"],
-                (int)settings["flashlampPulseLength"],
-				(int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] - (int)settings["aomOnStart"],
-				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
-				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
-				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
-                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],
+                (int)settings["padStart"],                  //startTime
+                (int)settings["sequenceLength"],            //numberOfOnOffShots
+                (int)settings["padShots"],                  //padShots
+                (int)settings["padStart"],                  //padStart
+                (int)settings["flashlampPulseInterval"],    //flashlampPulseInterval
+				(int)settings["valvePulseLength"],          //valvePulseLength
+                (int)settings["valveToQ"],                  //valveToQ
+                (int)settings["flashToQ"],                  //flashToQ
+                (int)settings["flashlampPulseLength"],      //flashlampPulseLength
+                (int)settings["ccd1Start"],                 //ccd1Start
+                (int)settings["ccd1Duration"],              //ccd1Duration
+                (int)settings["ccd2Start"],                 //ccd2Start
+				(int)settings["ccd2Duration"],              //ccd2Duration
                 GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],
                 (int)settings["switchLineDelay"],
-                (int)settings["chirpStart"], 
-                (int)settings["chirpDuration"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
 
-			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
+			scanPatternBuilder.BuildPattern(8 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);
 
 			return scanPatternBuilder;

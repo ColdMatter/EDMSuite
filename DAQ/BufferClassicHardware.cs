@@ -30,7 +30,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
             AddDigitalOutputChannel("aom", pgBoard, 1, 1);//
             AddDigitalOutputChannel("aom2", pgBoard, 1, 2);//
+            AddDigitalOutputChannel("shutter1", pgBoard, 1, 3);//
+            AddDigitalOutputChannel("shutter2", pgBoard, 1, 4);//
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
+            AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
             //(0,3) pin 12 is unconnected
             AddDigitalOutputChannel("shutterTrig1", pgBoard, 1, 6);// Pin 21, triggers camera for on-shots (not wired up)
             AddDigitalOutputChannel("shutterTrig2", pgBoard, 1, 7);// Pin 22, triggers camera for off-shots (not wired up)
@@ -88,8 +91,8 @@ namespace DAQ.HAL
 
             //TransferCavityLock info
             TCLConfig tcl1 = new TCLConfig("IR Cavity");
-            tcl1.AddLaser("pumplaser", "p1");
-            tcl1.AddLaser("v21repump", "p2");
+            tcl1.AddLaser("v0laser", "p1");
+            tcl1.AddLaser("v2laser", "p2");
             tcl1.Trigger = TCLBoard + "/PFI0";
             tcl1.Cavity = "cavityRampMonitor";
             tcl1.MasterLaser = "master";
@@ -97,13 +100,16 @@ namespace DAQ.HAL
             tcl1.TCPChannel = 1190;
             tcl1.SlaveVoltageLowerLimit = 0.0;
             tcl1.SlaveVoltageUpperLimit = 10.0;
+      //      tcl1.AnalogSampleRate = 15000;
       //      tcl1.DefaultScanPoints = 600;
             Info.Add("IR", tcl1);
 
 
             //TransferCavityLock info
             TCLConfig tcl2 = new TCLConfig("VIS Cavity");
-            tcl2.AddLaser("v1repump", "VISp1");
+            tcl2.AddLaser("v1laser", "VISp1");
+            tcl2.AddLaser("probelaser", "VISp2");
+            tcl2.AddLaser("v3laser", "VISp3");
             tcl2.Trigger = TCLBoard2 + "/PFI0";
             tcl2.Cavity = "VIScavityRampMonitor";
             tcl2.MasterLaser = "VISmaster";
@@ -115,7 +121,7 @@ namespace DAQ.HAL
      //       tcl2.DefaultScanPoints = 300;
             Info.Add("VIS", tcl2);
             // The next line is try two DAQ cards for one cavity. (14 Nov 2016) Feel free to delete it.
-            tcl2.AddLaser("v2repump", "VISp2");
+
 
             //TCL Lockable lasers
            // Info.Add("TCLLockableLasers", new string[] { "pumplaser"});
@@ -142,24 +148,24 @@ namespace DAQ.HAL
       //      AddAnalogInputChannel("VISp2", TCLBoard2 + "/ai7", AITerminalConfiguration.Rse);
 
             AddAnalogInputChannel("VISmaster", TCLBoard2 + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("VISp1", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("VIScavityRampMonitor", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
-            //The next line is try two DAQ cards for one cavity. (14 Nov 2016) Feel free to delete it.
+            AddAnalogInputChannel("VISp1", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("VISp2", TCLBoard2 + "/ai3", AITerminalConfiguration.Rse);
-
+            AddAnalogInputChannel("VISp3", TCLBoard2 + "/ai16", AITerminalConfiguration.Rse);
 
 
 
             // map the analog output channels
-            AddAnalogOutputChannel("pumplaser", TCLBoard + "/ao1");
-            AddAnalogOutputChannel("v21repump", TCLBoard + "/ao2");
+            AddAnalogOutputChannel("v0laser", TCLBoard + "/ao1");
+            AddAnalogOutputChannel("v2laser", TCLBoard + "/ao2");
             AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao0");
 
 
-            AddAnalogOutputChannel("v1repump", TCLBoard2 + "/ao1");
+            AddAnalogOutputChannel("v1laser", TCLBoard2 + "/ao1");
             AddAnalogOutputChannel("VISrampfb", TCLBoard2 + "/ao0");
-            AddAnalogOutputChannel("v2repump", TCLBoard2 + "/ao2");
+            AddAnalogOutputChannel("probelaser", TCLBoard2 + "/ao2");
+            AddAnalogOutputChannel("v3laser", TCLBoard2 + "/ao3");
 
            
 
