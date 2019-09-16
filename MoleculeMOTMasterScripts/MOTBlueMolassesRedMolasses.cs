@@ -107,6 +107,10 @@ public class Patterns : MOTMasterScript
         
         p.AddChannel("v0IntensityRamp");
         p.AddChannel("v0FrequencyRamp");
+        p.AddChannel("xShimCoilCurrent");
+        p.AddChannel("yShimCoilCurrent");
+        p.AddChannel("v00EOMAmp");
+        p.AddChannel("zShimCoilCurrent");
 
 
         // B Field
@@ -130,9 +134,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v0FrequencyRamp", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"])/(double)Parameters["calibGradient"]) ;
 
         p.AddAnalogValue("v0FrequencyRamp", (int)Parameters["MOTSwitchOffTime"] + 100, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyNewValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);//jump to blue detuning
-        p.AddAnalogValue("v0FrequencyRamp", (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDuration"] + (int)Parameters["ExpansionTime"], ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
+        p.AddAnalogValue("v0FrequencyRamp", (int)Parameters["MOTSwitchOffTime"] + 100 + (int)Parameters["MolassesDuration"] + (int)Parameters["ExpansionTime"], ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
 
-        p.SwitchAllOffAtEndOfPattern();
         return p;
    }
 

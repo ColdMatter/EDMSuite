@@ -28,16 +28,17 @@ namespace DAQ.HAL
             string tclBoardProbe = (string)Boards["tclBoardProbe"];
 
             // Analog inputs
-            AddAnalogInputChannel("CavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
-            AddAnalogInputChannel("Pumpmaster", tclBoardProbe + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("Pumpp1", tclBoardProbe + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("Pumpp2", tclBoardProbe + "/ai5", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("CavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
+            //AddAnalogInputChannel("Pumpmaster", tclBoardProbe + "/ai3", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("Pumpp1", tclBoardProbe + "/ai4", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("Pumpp2", tclBoardProbe + "/ai5", AITerminalConfiguration.Rse);
 
-            // Cavity inputs for the cavity that controls the Pump lasers
-            //AddAnalogInputChannel("PumpCavityRampVoltage", tclBoardPump + "/ai8", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("Pumpmaster", tclBoardPump + "/ai1", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("Pumpp1", tclBoardPump + "/ai2", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("Pumpp2", tclBoardPump + "/ai3", AITerminalConfiguration.Rse);
+            // Change on 27/06/2019: I move the pump PD inputs to tclBoardPump 
+            // to increase the sample rate on tclBoardProbe
+            AddAnalogInputChannel("PumpCavityRampVoltage", tclBoardPump + "/ai8", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("Pumpmaster", tclBoardPump + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("Pumpp1", tclBoardPump + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("Pumpp2", tclBoardPump + "/ai3", AITerminalConfiguration.Rse);
 
             // Lasers locked to pump cavity
             AddAnalogOutputChannel("KeopsysDiodeLaser", tclBoardPump + "/ao2", -4, 4); //tick
@@ -47,7 +48,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("PumpCavityLengthVoltage", tclBoardPump + "/ao1", -10, 10); //tick
 
             // Probe cavity inputs
-            //AddAnalogInputChannel("ProbeCavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("ProbeCavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
             AddAnalogInputChannel("Probemaster", tclBoardProbe + "/ai1", AITerminalConfiguration.Rse); //tick
             AddAnalogInputChannel("Probep1", tclBoardProbe + "/ai2", AITerminalConfiguration.Rse); //tick
 
@@ -55,40 +56,52 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("TopticaSHGPZT", tclBoardProbe + "/ao0", -4, 4); //tick
             AddAnalogOutputChannel("ProbeCavityLengthVoltage", tclBoardProbe + "/ao1", -10, 10); //tick
 
-            // TCL configuration for pump and probe cavities
-            TCLConfig tclConfig = new TCLConfig("Pump and Probe");
-            tclConfig.Trigger = tclBoardProbe + "/PFI0";
-            tclConfig.BaseRamp = "CavityRampVoltage";
-            tclConfig.TCPChannel = 1190;
-            tclConfig.DefaultScanPoints = 500 / 2;
-            tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
-            tclConfig.AnalogSampleRate = 61250 / 2;
-            tclConfig.MaximumNLMFSteps = 20;
-            tclConfig.TriggerOnRisingEdge = false;
+            //TCL configuration for pump cavity: 27/06/2019 (Chris)
+            TCLConfig tclConfigPump = new TCLConfig("Pump");
+            tclConfigPump.Trigger = tclBoardPump + "/PFI0";
+            tclConfigPump.BaseRamp = "PumpCavityRampVoltage";
+            tclConfigPump.TCPChannel = 1191;
+            tclConfigPump.DefaultScanPoints = 500;
+            tclConfigPump.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            tclConfigPump.AnalogSampleRate = 61250;
+            tclConfigPump.MaximumNLMFSteps = 20;
+            tclConfigPump.TriggerOnRisingEdge = false;
             string pump = "PumpCavity";
+
+            tclConfigPump.AddCavity(pump);
+            tclConfigPump.Cavities[pump].AddSlaveLaser("MenloPZT", "Pumpp1");
+            tclConfigPump.Cavities[pump].AddSlaveLaser("KeopsysDiodeLaser", "Pumpp2");
+            tclConfigPump.Cavities[pump].MasterLaser = "Pumpmaster";
+            tclConfigPump.Cavities[pump].RampOffset = "PumpCavityLengthVoltage";
+            tclConfigPump.Cavities[pump].AddDefaultGain("Master", 0.3);
+            tclConfigPump.Cavities[pump].AddDefaultGain("MenloPZT", -0.2);
+            tclConfigPump.Cavities[pump].AddDefaultGain("KeopsysDiodeLaser", 1);
+            tclConfigPump.Cavities[pump].AddFSRCalibration("MenloPZT", 3.84);
+            tclConfigPump.Cavities[pump].AddFSRCalibration("KeopsysDiodeLaser", 3.84);
+
+            //TCL configuration of probe cavity: 27/06/2019 (Chris)
+            TCLConfig tclConfigProbe = new TCLConfig("Probe");
+            tclConfigProbe.Trigger = tclBoardProbe + "/PFI0";
+            tclConfigProbe.BaseRamp = "ProbeCavityRampVoltage";
+            tclConfigProbe.TCPChannel = 1190;
+            tclConfigProbe.DefaultScanPoints = 500 * 1 / 4;
+            tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            tclConfigProbe.AnalogSampleRate = 61250 * 1 / 2;
+            tclConfigProbe.MaximumNLMFSteps = 20;
+            tclConfigProbe.TriggerOnRisingEdge = false;
             string probe = "ProbeCavity";
 
-            tclConfig.AddCavity(pump);
-            tclConfig.Cavities[pump].AddSlaveLaser("MenloPZT", "Pumpp1");
-            tclConfig.Cavities[pump].AddSlaveLaser("KeopsysDiodeLaser", "Pumpp2");
-            tclConfig.Cavities[pump].MasterLaser = "Pumpmaster";
-            tclConfig.Cavities[pump].RampOffset = "PumpCavityLengthVoltage";
-            tclConfig.Cavities[pump].AddDefaultGain("Master", 0.3);
-            tclConfig.Cavities[pump].AddDefaultGain("MenloPZT", -0.2);
-            tclConfig.Cavities[pump].AddDefaultGain("KeopsysDiodeLaser", 1);
-            tclConfig.Cavities[pump].AddFSRCalibration("MenloPZT", 3.84);
-            tclConfig.Cavities[pump].AddFSRCalibration("KeopsysDiodeLaser", 3.84);
+            tclConfigProbe.AddCavity(probe);
+            tclConfigProbe.Cavities[probe].AddSlaveLaser("TopticaSHGPZT", "Probep1");
+            tclConfigProbe.Cavities[probe].MasterLaser = "Probemaster";
+            tclConfigProbe.Cavities[probe].RampOffset = "ProbeCavityLengthVoltage";
+            tclConfigProbe.Cavities[probe].AddDefaultGain("Master", 0.4);
+            tclConfigProbe.Cavities[probe].AddDefaultGain("TopticaSHGPZT", 0.04);
+            tclConfigProbe.Cavities[probe].AddFSRCalibration("TopticaSHGPZT", 3.84);
 
-            tclConfig.AddCavity(probe);
-            tclConfig.Cavities[probe].AddSlaveLaser("TopticaSHGPZT", "Probep1");
-            tclConfig.Cavities[probe].MasterLaser = "Probemaster";
-            tclConfig.Cavities[probe].RampOffset = "ProbeCavityLengthVoltage";
-            tclConfig.Cavities[probe].AddDefaultGain("Master", 0.4);
-            tclConfig.Cavities[probe].AddDefaultGain("TopticaSHGPZT", 0.04);
-            tclConfig.Cavities[probe].AddFSRCalibration("TopticaSHGPZT", 3.84);
-
-            Info.Add("TCLConfig", tclConfig);
-            Info.Add("DefaultCavity", tclConfig);
+            Info.Add("TCLConfigPump", tclConfigPump);
+            Info.Add("TCLConfigProbe", tclConfigProbe);
+            Info.Add("DefaultCavity", tclConfigPump);
 
             ////TCL configuration for pump cavity
             //TCLConfig tcl1 = new TCLConfig("Pump Cavity");
@@ -132,6 +145,41 @@ namespace DAQ.HAL
             //tcl2.AddDefaultGain("TopticaSHGPZT", 0.04);
             //Info.Add("ProbeCavity", tcl2);
             //Info.Add("DefaultCavity", tcl2);
+
+            // TCL configuration for pump and probe cavities
+            //TCLConfig tclConfig = new TCLConfig("Pump and Probe");
+            //tclConfig.Trigger = tclBoardProbe + "/PFI0";
+            //tclConfig.BaseRamp = "CavityRampVoltage";
+            //tclConfig.TCPChannel = 1190;
+            //tclConfig.DefaultScanPoints = 500 * 5 / 2;
+            //tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            //tclConfig.AnalogSampleRate = 61250 * 5 / 2;
+            //tclConfig.MaximumNLMFSteps = 20;
+            //tclConfig.TriggerOnRisingEdge = false;
+            //string pump = "PumpCavity";
+            //string probe = "ProbeCavity";
+
+            //tclConfig.AddCavity(pump);
+            //tclConfig.Cavities[pump].AddSlaveLaser("MenloPZT", "Pumpp1");
+            //tclConfig.Cavities[pump].AddSlaveLaser("KeopsysDiodeLaser", "Pumpp2");
+            //tclConfig.Cavities[pump].MasterLaser = "Pumpmaster";
+            //tclConfig.Cavities[pump].RampOffset = "PumpCavityLengthVoltage";
+            //tclConfig.Cavities[pump].AddDefaultGain("Master", 0.3);
+            //tclConfig.Cavities[pump].AddDefaultGain("MenloPZT", -0.2);
+            //tclConfig.Cavities[pump].AddDefaultGain("KeopsysDiodeLaser", 1);
+            //tclConfig.Cavities[pump].AddFSRCalibration("MenloPZT", 3.84);
+            //tclConfig.Cavities[pump].AddFSRCalibration("KeopsysDiodeLaser", 3.84);
+
+            //tclConfig.AddCavity(probe);
+            //tclConfig.Cavities[probe].AddSlaveLaser("TopticaSHGPZT", "Probep1");
+            //tclConfig.Cavities[probe].MasterLaser = "Probemaster";
+            //tclConfig.Cavities[probe].RampOffset = "ProbeCavityLengthVoltage";
+            //tclConfig.Cavities[probe].AddDefaultGain("Master", 0.4);
+            //tclConfig.Cavities[probe].AddDefaultGain("TopticaSHGPZT", 0.04);
+            //tclConfig.Cavities[probe].AddFSRCalibration("TopticaSHGPZT", 3.84);
+
+            //Info.Add("TCLConfig", tclConfig);
+            //Info.Add("DefaultCavity", tclConfig);
         }
     }
 }

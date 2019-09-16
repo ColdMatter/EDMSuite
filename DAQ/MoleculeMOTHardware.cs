@@ -103,7 +103,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("rbCoolingShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rbOpticalPumpingShutter", digitalPatternBoardAddress, 2, 5);
-
+            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 2, 6);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -126,6 +126,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);
             AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
             AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
 
 
             // TCL Config

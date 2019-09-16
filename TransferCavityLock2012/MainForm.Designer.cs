@@ -328,6 +328,7 @@
             this.logCheckBox.TabIndex = 57;
             this.logCheckBox.Text = "Log laser parameters";
             this.logCheckBox.UseVisualStyleBackColor = true;
+            this.logCheckBox.CheckedChanged += new System.EventHandler(this.logCheckBox_CheckedChanged);
             // 
             // dissableGUIupdateCheckBox
             // 

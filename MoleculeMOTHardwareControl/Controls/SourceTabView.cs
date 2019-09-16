@@ -22,9 +22,14 @@ namespace MoleculeMOTHardwareControl.Controls
 
         #region UI Update Handlers
 
-        public void UpdateCurrentTemperature(string temp)
+        public void UpdateCurrentSourceTemperature(string temp)
         {
             currentTemperature.Text = temp;
+        }
+
+        public void UpdateCurrentSF6Temperature(string temp)
+        {
+            sf6Temperature.Text = temp;
         }
 
         public void UpdateGraph(double time, double temp)
@@ -112,6 +117,11 @@ namespace MoleculeMOTHardwareControl.Controls
         }
 
         #endregion
+
+        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
  
     }
 }

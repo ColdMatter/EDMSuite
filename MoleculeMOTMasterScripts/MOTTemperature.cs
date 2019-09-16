@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 1;
+        Parameters["ExpansionTime"] = 100;
         Parameters["MolassesDelay"] = 600;// 100;
         Parameters["MolassesHoldTime"] = 600;// 600;
         Parameters["MolassesRampDuration"] = 1;
@@ -69,15 +69,15 @@ public class Patterns : MOTMasterScript
         Parameters["CoilsSwitchOffTime"] = 20000;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 1.4;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = -0.5;// -0.155; //2.4
-        Parameters["zShimLoadCurrent"] = -6.3; //0.26
+        Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
+        Parameters["yShimLoadCurrent"] = -0.12;// -0.12;
+        Parameters["zShimLoadCurrent"] = -5.35;// -5.35; 
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;
         Parameters["v0IntensityRampStartValue"] = 5.8;
-        Parameters["v0IntensityRampEndValue"] = 8.465;
+        Parameters["v0IntensityRampEndValue"] = 5.8;// 8.465;
         Parameters["v0IntensityMolassesValue"] = 5.8;
 
         // v0 Light Frequency
@@ -103,7 +103,6 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, releaseTime, cameraTriggerTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
        // p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
@@ -135,7 +134,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", releaseTime, -0.01);
+        p.AddAnalogValue("MOTCoilsCurrent", releaseTime, -0.05);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);

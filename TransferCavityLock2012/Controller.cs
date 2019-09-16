@@ -474,6 +474,18 @@ namespace TransferCavityLock2012
             {
                 double slaveCentre = laser.Fit != null ? laser.Fit.Centre : 0;
                 double masterCentre = laser.ParentCavity.Master.Fit != null ? laser.ParentCavity.Master.Fit.Centre : 0;
+
+                if (ui.logCheckBox.Checked && serializer != null)
+                {
+                    serializer.AddData(new TCLDataLog(DateTime.Now,
+                    laser.Name,
+                    masterCentre,
+                    slaveCentre,
+                    laser.LaserSetPoint,
+                    laser.VoltageError,
+                    laser.Gain,
+                    laser.CurrentVoltage));
+                }
             }
         }
 

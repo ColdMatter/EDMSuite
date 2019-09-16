@@ -215,7 +215,11 @@ namespace MOTMaster
             Dictionary<string, int> digitalChannels = new Dictionary<string,int>();
             foreach (DictionaryEntry pair in digitalChannelsHash)
             {
-                digitalChannels.Add((string)pair.Key, ((DigitalOutputChannel)pair.Value).BitNumber);
+                string patternGeneratorBoard = (string)DAQ.Environment.Environs.Hardware.GetInfo("PatternGeneratorBoard");
+                if (((DigitalOutputChannel)pair.Value).Device == patternGeneratorBoard)
+                {
+                    digitalChannels.Add((string)pair.Key, ((DigitalOutputChannel)pair.Value).BitNumber);
+                }
             }
 
             var settings = new DataContractJsonSerializerSettings();

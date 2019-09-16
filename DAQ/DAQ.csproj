@@ -142,9 +142,8 @@
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Driver, Version=1.1.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Common, Version=15.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=17.1.45.99, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=1.4.45.19, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=17.6.45.181, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.ModularInstruments.NIRfsg.Fx45, Version=14.5.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=17.5.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
