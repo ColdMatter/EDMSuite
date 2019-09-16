@@ -213,8 +213,10 @@
     <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="NIRfsgFrequencyOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SuperPumpingPatternBuilder.cs" />
+    <Compile Include="SuperPumpingPulsedRFDoubleSwitchScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPatternPlugin.cs" />
+    <Compile Include="SuperPumpingPulsedRFDoubleSwitchScanPatternPlugin.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />

@@ -696,17 +696,17 @@ namespace EDMBlockHead.Acquire
             notDBChan.Modulation = config.GetModulationByName("DB");
             switchedChannels.Add(notDBChan);
 
-            TTLSwitchedChannel piChan = new TTLSwitchedChannel();
-            piChan.Channel = "piFlipEnable";
-            piChan.Invert = false;
-            piChan.Modulation = config.GetModulationByName("PI");
-            switchedChannels.Add(piChan);
+            //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
+            //piChan.Channel = "piFlipEnable";
+            //piChan.Invert = false;
+            //piChan.Modulation = config.GetModulationByName("PI");
+            //switchedChannels.Add(piChan);
 
-            TTLSwitchedChannel notPIChan = new TTLSwitchedChannel();
-            notPIChan.Channel = "notPIFlipEnable";
-            notPIChan.Invert = true;
-            notPIChan.Modulation = config.GetModulationByName("PI");
-            switchedChannels.Add(notPIChan);
+            //TTLSwitchedChannel notPIChan = new TTLSwitchedChannel();
+            //notPIChan.Channel = "notPIFlipEnable";
+            //notPIChan.Invert = true;
+            //notPIChan.Modulation = config.GetModulationByName("PI");
+            //switchedChannels.Add(notPIChan);
 
             //ESwitchChannel eChan = new ESwitchChannel();
             //eChan.Invert = false;
@@ -744,10 +744,10 @@ namespace EDMBlockHead.Acquire
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 
-            HardwareControllerSwitchChannel mwChan = new HardwareControllerSwitchChannel();
-            mwChan.Channel = "mwChan";
-            mwChan.Modulation = config.GetModulationByName("MW");
-            switchedChannels.Add(mwChan);
+            //HardwareControllerSwitchChannel mwChan = new HardwareControllerSwitchChannel();
+            //mwChan.Channel = "mwChan";
+            //mwChan.Modulation = config.GetModulationByName("MW");
+            //switchedChannels.Add(mwChan);
 
             //AnalogSwitchedChannel lf1Channel = new AnalogSwitchedChannel();
             //lf1Channel.Channel = "flPZT";
