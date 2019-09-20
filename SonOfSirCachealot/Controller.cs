@@ -177,9 +177,9 @@ namespace SonOfSirCachealot
         internal void RunTest1()
         {
             //BlockStore.AddBlock("C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip");
-            string datRoot = "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_";
+            string datRoot = "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_";
             List<string> files = new List<string>();
-            for (int i = 0; i < 10; i++) files.Add(datRoot + i + ".zip");
+            for (int i = 0; i < 1; i++) files.Add(datRoot + i + ".zip");
             BlockStore.AddBlocks(files.ToArray());
         }
 

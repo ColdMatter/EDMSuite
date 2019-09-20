@@ -184,8 +184,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockDemodulatorNewScheme.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
+    <Compile Include="DemodulatedBlockNewScheme.cs" />
+    <Compile Include="DemodulationConfigNewScheme.cs" />
     <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />

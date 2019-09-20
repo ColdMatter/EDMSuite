@@ -26,7 +26,7 @@ namespace SonOfSirCachealot
             Monitor.SetQueueLength(paths.Length);
 
             new Thread(new ThreadStart(() =>
-                paths.AsParallel().ForAll((e) => AddBlock(e, "cgate11Fixed"))
+                paths.AsParallel().ForAll((e) => AddBlock(e, "wide"))
             )).Start();
 
             // spawn a progress monitor thread
@@ -55,6 +55,16 @@ namespace SonOfSirCachealot
                     // by the integral of the corresponding "norm" TOF over the gate in the function below.
                     // TODO: this could be improved!
                     //b.Normalise(DemodulationConfig.GetStandardDemodulationConfig(normConfig, b).GatedDetectorExtractSpecs["norm"]);
+
+                    // *** subtract background ***
+                    b.SubtractBackgroundFromProbeDetectorTOFs();
+
+                    // *** create scaled bottom probe ***
+                    b.CreateScaledBottomProbe();
+
+                    // *** create asymmetry TOF ***
+                    b.ConstructAsymmetryTOF();
+
                     // add some of the single point data to the Shot TOFs so that it gets analysed
                     string[] spvsToTOFulise = new string[] { "NorthCurrent", "SouthCurrent", "MiniFlux1",
                         "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD"};
@@ -85,8 +95,7 @@ namespace SonOfSirCachealot
 
                     // extract the TOFChannelSets
                     List<string> detectorsToExtract = new List<string>
-                        { "top", "norm", "magnetometer", "gnd", "battery","topNormed","NorthCurrent", "SouthCurrent",
-                            "MiniFlux1", "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD" };
+                        { "asymmetry", "topProbeNoBackground", "bottomProbeNoBackground", "magnetometer", "NorthCurrent", "SouthCurrent" };
                     foreach (string detector in detectorsToExtract)
                     {
                         BlockTOFDemodulator demod = new BlockTOFDemodulator();

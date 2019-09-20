@@ -79,5 +79,10 @@ namespace SirCachealot
         {
             controller.Test1();
         }
+
+        private void test2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.Test2();
+        }
     }
 }
