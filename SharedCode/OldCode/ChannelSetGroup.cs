@@ -30,8 +30,8 @@
 //        {
 //            int index = 0;
 //            if (rfState) index += rfIndex;
-//            if (bState) index += bIndex;
-//            if (eState) index += eIndex;
+//            if (bState)  index += bIndex;
+//            if (eState)  index += eIndex;
 //            return index;
 //        }
 

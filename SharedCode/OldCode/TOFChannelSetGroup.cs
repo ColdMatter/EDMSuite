@@ -45,7 +45,7 @@
 //                // return the weighted difference - this slightly quirky construction
 //                // let's me reuse the existing code.
 //                return weightedAverageChannelSets(
-//                    new List<TOFChannelSet>() { onAverage, (offAverage * -1.0) });
+//                    new List<TOFChannelSet>() {onAverage, (offAverage * -1.0)});
 //            }
 //            // this means that there were not channels with both states of the requested signing.
 //            else return null;
@@ -62,12 +62,13 @@
 //            {
 //                // get the counts
 //                int[] counts = new int[chanSets.Count];
-//                for (int i = 0; i < chanSets.Count; i++) counts[i] = chanSets[i].Channels.Count;
+//                for (int i = 0; i < chanSets.Count; i++) counts[i] = chanSets[i].Count;
 //                int total = 0;
 //                for (int i = 0; i < counts.Length; i++) total += counts[i];
 
 //                TOFChannelSet tcs = chanSets[0] * (double)counts[0];
 //                for (int i = 1; i < chanSets.Count; i++) tcs += chanSets[i] * (double)counts[i];
+//                tcs.Count = total;
 //                return tcs / total;
 //            }
 //            else return null;

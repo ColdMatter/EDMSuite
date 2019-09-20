@@ -125,7 +125,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# Do the same for the microwave channel
 	bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# print the waveform codes
-	# printWaveformCode(bc, "E")
+	printWaveformCode(bc, "E")
 	# printWaveformCode(bc, "B")
 	# printWaveformCode(bc, "DB")
 	# printWaveformCode(bc, "PI")
@@ -151,16 +151,16 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# number of times to step the target looking for a good target spot
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000;
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 300.0;
+	bc.Settings["minimumSignalToRun"] = 350.0;
 	bc.Settings["targetStepperGateStartTime"] = 2340.0;
 	bc.Settings["targetStepperGateEndTime"] = 2540.0;
 	return bc
 
 # lock gains
 # microamps of current per volt of control input
-kSteppingBiasCurrentPerVolt = 2453.06
+kSteppingBiasCurrentPerVolt = 350.79
 # max change in the b-bias voltage per block
-kBMaxChange = 0.05
+kBMaxChange = 0.2
 # volts of rf*a input required per cal's worth of offset
 kRFAVoltsPerCal = 3.2
 kRFAMaxChange = 0.05
@@ -171,13 +171,20 @@ kRFFMaxChange = 0.05
 def updateLocks(bState):
 	bottomProbeChannelValues = bh.DBlock.ChannelValues[0]
 	# note the weird python syntax for a one element list
+	#sigValue = bottomProbeChannelValues.GetValue(("SIG",))
+	#bValue = bottomProbeChannelValues.GetValue(("B","MW"))
+	#dbValue = bottomProbeChannelValues.GetValue(("DB","MW"))
+	#rf1aValue = bottomProbeChannelValues.GetValue(("RF1A","DB","MW"))
+	#rf2aValue = bottomProbeChannelValues.GetValue(("RF2A","DB","MW"))
+	#rf1fValue = bottomProbeChannelValues.GetValue(("RF1F","DB","MW"))
+	#rf2fValue = bottomProbeChannelValues.GetValue(("RF2F","DB","MW"))
 	sigValue = bottomProbeChannelValues.GetValue(("SIG",))
-	bValue = bottomProbeChannelValues.GetValue(("B","MW"))
-	dbValue = bottomProbeChannelValues.GetValue(("DB","MW"))
-	rf1aValue = bottomProbeChannelValues.GetValue(("RF1A","DB","MW"))
-	rf2aValue = bottomProbeChannelValues.GetValue(("RF2A","DB","MW"))
-	rf1fValue = bottomProbeChannelValues.GetValue(("RF1F","DB","MW"))
-	rf2fValue = bottomProbeChannelValues.GetValue(("RF2F","DB","MW"))
+	bValue = bottomProbeChannelValues.GetValue(("B",))
+	dbValue = bottomProbeChannelValues.GetValue(("DB",))
+	rf1aValue = bottomProbeChannelValues.GetValue(("RF1A","DB"))
+	rf2aValue = bottomProbeChannelValues.GetValue(("RF2A","DB"))
+	rf1fValue = bottomProbeChannelValues.GetValue(("RF1F","DB"))
+	rf2fValue = bottomProbeChannelValues.GetValue(("RF2F","DB"))
 	print "SIG: " + str(sigValue)
 	print "B: " + str(bValue) + " DB: " + str(dbValue)
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)

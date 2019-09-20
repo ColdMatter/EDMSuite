@@ -23,7 +23,7 @@ namespace SirCachealot
         // UI
         internal MainWindow mainWindow;
         System.Threading.Timer statusMonitorTimer;
- 
+
         // Database
         private MySqlDBlockStore blockStore;
 
@@ -286,11 +286,11 @@ namespace SirCachealot
 
             log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             BlockTOFDemodulator btd = new BlockTOFDemodulator();
-            
+
             foreach (string detectorName in detectorNames)
             {
                 TOFChannelSet tcs = btd.TOFDemodulateBlock(b, b.detectors.IndexOf(detectorName), true);
-                
+
                 string savePathTCS = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
                 log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
                 Stream fs = new FileStream(savePathTCS, FileMode.Create);

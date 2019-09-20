@@ -1,3 +1,3 @@
 @echo off
 cd ..\EDMScripts
-..\IronPython\ipy.exe -X:NotImportCompiled -X:ColorfulConsole -X:AutoIndent -i edm_init.py
+..\IronPython\ipy32.exe -X:ColorfulConsole -X:AutoIndent -i edm_init.py

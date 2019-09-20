@@ -47,11 +47,11 @@ namespace Data.EDM
 			get { return config; }
 			set { config = value; }
 		}
-        
+
 		public double[] GetTOFIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];
-			for (int i = 0 ; i < points.Count ; i++) temp[i] = 
+			for (int i = 0 ; i < points.Count ; i++) temp[i] =
 								(double)((EDMPoint)points[i]).Shot.Integrate(index, startTime, endTime);
 			return temp;
 		}
@@ -63,7 +63,7 @@ namespace Data.EDM
                               (double)((EDMPoint)points[i]).Shot.GatedMean(index, startTime, endTime);
             return temp;
         }
-        
+
         public TOF GetAverageTOF(int index)
 		{
 			TOF temp = new TOF();
@@ -81,9 +81,9 @@ namespace Data.EDM
 
         //// Old functions
         //// NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        //// This function takes a list of switches, defining an analysis channel, and gives the 
+        //// This function takes a list of switches, defining an analysis channel, and gives the
         //// average TOF for that analysis channel's positively contributing TOFs and the same for
-        //// the negative contributors. Note that this definition may or may not line up with how 
+        //// the negative contributors. Note that this definition may or may not line up with how
         //// the analysis channels are defined (they may differ by a sign, which might depend on
         //// the number of switches in the channel).
         //public TOF[] GetSwitchTOFs(string[] switches, int index)
@@ -122,9 +122,9 @@ namespace Data.EDM
 
 
         //// NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        //// This function takes a list of switches, defining an analysis channel, and gives the 
+        //// This function takes a list of switches, defining an analysis channel, and gives the
         //// average TOF for that analysis channel's positively contributing TOFs and the same for
-        //// the negative contributors. Note that this definition may or may not line up with how 
+        //// the negative contributors. Note that this definition may or may not line up with how
         //// the analysis channels are defined (they may differ by a sign, which might depend on
         //// the number of switches in the channel).
         //public TOF[] GetSwitchTOFs(string[] switches, int index, bool normed)
@@ -206,8 +206,8 @@ namespace Data.EDM
 
         // this function adds a new set of detector data to the block, constructed
         // by calculating the asymmetry of the top and bottom detectors, after scaling
-        // the bottom detector in time so that it matches the top detector 
-      
+        // the bottom detector in time so that it matches the top detector
+
         public void ConstructAsymmetryTOF()
         {
             for (int i = 0; i < points.Count; i++)
@@ -265,7 +265,7 @@ namespace Data.EDM
                 TOF t = (TOF)shot.TOFs[1];
                 double bg = t.GatedMean(3200, 3300);
                 TOF bgSubtracted = t - bg;
-                
+
                 // if value if negative, set to zero
                 for (int j = 0; j < bgSubtracted.Length; j++)
                 {
