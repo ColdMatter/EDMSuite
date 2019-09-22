@@ -112,7 +112,8 @@ namespace EDMBlockHead
             AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
             AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
             AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
-
+            AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
+            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
 
             blockCount = blockCount + 1;
         }
