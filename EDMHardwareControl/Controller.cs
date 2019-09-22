@@ -2332,8 +2332,8 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.rf1FMPlusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
-            // The synth is connected to channel three
-            rfCounter.Channel = 3;
+            // The synth is connected to channel two
+            rfCounter.Channel = 2;
             double rf1PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1PlusFreqMon, String.Format("{0:F0}", rf1PlusFreq));
             window.SetRadioButton(window.rf1FMMinusRB, true);
@@ -2956,7 +2956,7 @@ namespace EDMHardwareControl
                 window.SetRadioButton(window.probeAOMStepPlusButton, true);
                 UpdateProbeAOMV();
                 Thread.Sleep(10);
-                rfCounter.Channel = 2;
+                rfCounter.Channel = 3;
                 for (int i = 1; i <= averages; i++)
                 {
                     I2PlusFreq = I2PlusFreq+rfCounter.Frequency;

@@ -234,7 +234,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao0", 0, 10);
 
 
-            
+
 
 
 
@@ -309,7 +309,7 @@ namespace DAQ.HAL
             //Info.Add("DefaultCavity", tcl2);
 
             // Obsolete Laser control
-            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao19", 0, 10);
+            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", 0, 10);
             AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao20", 0, 10);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);
