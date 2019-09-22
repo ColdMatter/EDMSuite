@@ -79,135 +79,18 @@ namespace Data.EDM
             return d;
         }
 
-        //// Old functions
-        //// NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        //// This function takes a list of switches, defining an analysis channel, and gives the
-        //// average TOF for that analysis channel's positively contributing TOFs and the same for
-        //// the negative contributors. Note that this definition may or may not line up with how
-        //// the analysis channels are defined (they may differ by a sign, which might depend on
-        //// the number of switches in the channel).
-        //public TOF[] GetSwitchTOFs(string[] switches, int index)
-        //{
-        //    TOF[] tofs = new TOF[2];
-        //    // calculate the state of the channel for each point in the block
-        //    int numSwitches = switches.Length;
-        //    int waveformLength = config.GetModulationByName(switches[0]).Waveform.Length;
-        //    List<bool[]> switchBits = new List<bool[]>();
-        //    foreach (string s in switches)
-        //        switchBits.Add(config.GetModulationByName(s).Waveform.Bits);
-        //    List<bool> channelStates = new List<bool>();
-        //    for (int point = 0; point < waveformLength; point++)
-        //    {
-        //        bool channelState = false;
-        //        for (int i = 0; i < numSwitches; i++)
-        //        {
-        //            channelState = channelState ^ switchBits[i][point];
-        //        }
-        //        channelStates.Add(channelState);
-        //    }
-        //    // build the "on" and "off" average TOFs
-        //    TOF tOn = new TOF();
-        //    TOF tOff = new TOF();
-        //    for (int i = 0; i < waveformLength; i++)
-        //    {
-        //        if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-        //        else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-        //    }
-        //    tOn /= (waveformLength / 2);
-        //    tOff /= (waveformLength / 2);
-        //    tofs[0] = tOn;
-        //    tofs[1] = tOff;
-        //    return tofs;
-        //}
-
-
-        //// NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        //// This function takes a list of switches, defining an analysis channel, and gives the
-        //// average TOF for that analysis channel's positively contributing TOFs and the same for
-        //// the negative contributors. Note that this definition may or may not line up with how
-        //// the analysis channels are defined (they may differ by a sign, which might depend on
-        //// the number of switches in the channel).
-        //public TOF[] GetSwitchTOFs(string[] switches, int index, bool normed)
-        //{
-        //    TOF[] tofs = new TOF[2];
-        //    // calculate the state of the channel for each point in the block
-        //    int numSwitches = switches.Length;
-        //    int waveformLength = config.GetModulationByName(switches[0]).Waveform.Length;
-        //    List<bool[]> switchBits = new List<bool[]>();
-        //    foreach (string s in switches)
-        //        switchBits.Add(config.GetModulationByName(s).Waveform.Bits);
-        //    List<bool> channelStates = new List<bool>();
-        //    for (int point = 0; point < waveformLength; point++)
-        //    {
-        //        bool channelState = false;
-        //        for (int i = 0; i < numSwitches; i++)
-        //        {
-        //            channelState = channelState ^ switchBits[i][point];
-        //        }
-        //        channelStates.Add(channelState);
-        //    }
-        //    // build the "on" and "off" average TOFs
-        //    TOF tOn = new TOF();
-        //    TOF tOff = new TOF();
-        //    if (!normed)
-        //    {
-        //        // if no normalisation is requested then the TOFs are added directly
-        //        for (int i = 0; i < waveformLength; i++)
-        //        {
-        //            if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-        //            else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // otherwise each point's TOF is normalised to the ratio of that points norm
-        //        // signal (integrated over the cgate11) to the average norm signal for the block
-        //        double[] normIntegrals = GetTOFIntegralArray(1, 0, 3000);
-        //        double normMean = 0;
-        //        for (int j = 0; j < normIntegrals.Length; j++) normMean += normIntegrals[j];
-        //        normMean /= normIntegrals.Length;
-        //        for (int j = 0; j < normIntegrals.Length; j++) normIntegrals[j] /= normMean;
-        //        for (int i = 0; i < waveformLength; i++)
-        //        {
-        //            if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]) / normIntegrals[i];
-        //            else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]) / normIntegrals[i];
-        //        }
-        //    }
-        //    tOn /= (waveformLength / 2);
-        //    tOff /= (waveformLength / 2);
-        //    tofs[0] = tOn;
-        //    tofs[1] = tOff;
-        //    return tofs;
-        //}
-
-        // Old function - we don't normalise by a "norm" detector anymore - CH 12/09
-        // this function adds a new set of detector data to the block, constructed
-        // by normalising the PMT data to the norm data. The normalisation is done
-        // by dividing the PMT tofs through by the integrated norm data. The integration
-        // is done according to the provided GatedDetectorExtractSpec.
-
-        // This is kept for backwards-compatibility with old code, but we don't normalise data with a "norm" detector anymore
-        public void Normalise(GatedDetectorExtractSpec normGate)
+        // convenience function to subtract background from TOFs, scale bottom TOF, 
+        // and then calculate the asymmetry TOF
+        public void ProcessBlock()
         {
-            GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
-            double averageNorm = 0;
-            foreach (double val in normData.PointValues) averageNorm += val;
-            averageNorm /= normData.PointValues.Count;
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                Shot shot = ((EDMPoint)points[i]).Shot;
-                TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
-                shot.TOFs.Add(normedTOF);
-            }
-            // give these data a name
-            detectors.Add("topNormed");
+            this.SubtractBackgroundFromProbeDetectorTOFs();
+            this.CreateScaledBottomProbe();
+            this.ConstructAsymmetryTOF();
         }
 
         // this function adds a new set of detector data to the block, constructed
-        // by calculating the asymmetry of the top and bottom detectors, after scaling
-        // the bottom detector in time so that it matches the top detector
-
+        // by calculating the asymmetry of the top and bottom detectors (which must
+        // be scaled first)
         public void ConstructAsymmetryTOF()
         {
             for (int i = 0; i < points.Count; i++)

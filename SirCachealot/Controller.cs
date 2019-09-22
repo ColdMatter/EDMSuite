@@ -363,16 +363,16 @@ namespace SirCachealot
         //}
 
 
-        public DemodulatedBlockNewScheme Test1()
+        public DemodulatedBlock Test1()
         {
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(
                 "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_0.zip", "block.xml");
 
-            BlockDemodulatorNewScheme bd = new BlockDemodulatorNewScheme();
+            BlockDemodulator bd = new BlockDemodulator();
 
-            DemodulatedBlockNewScheme db = bd.DemodulateBlockNL(b,
-                DemodulationConfigNewScheme.GetStandardDemodulationConfig("wide", b));
+            DemodulatedBlock db = bd.DemodulateBlockNL(b,
+                DemodulationConfig.GetStandardDemodulationConfig("wide", b));
 
             return db;
 

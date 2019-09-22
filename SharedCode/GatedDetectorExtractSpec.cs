@@ -13,7 +13,6 @@ namespace Analysis.EDM
     public class GatedDetectorExtractSpec
     {
         public string Name = "";
-        public int Index;
         public int GateLow;
         public int GateHigh;
         //public int FirstSelection;
@@ -22,7 +21,7 @@ namespace Analysis.EDM
         public double WidthFWHM;
         public bool Integrate = true;
         //public bool Select = false;
-        public bool BackgroundSubtract = true;
+        public bool BackgroundSubtract = false;
         public double Background;
 
         //public void FitToTOF(TOF t)
@@ -44,12 +43,23 @@ namespace Analysis.EDM
         //    return dg;
         //}
 
-        public static GatedDetectorExtractSpec MakeWideGate(int detector)
+        public static GatedDetectorExtractSpec MakeWideGate(string detectorName, bool integrate)
         {
             GatedDetectorExtractSpec dg = new GatedDetectorExtractSpec();
-            dg.Index = detector;
+            dg.Name = detectorName;
             dg.GateLow = 0;
             dg.GateHigh = 100000000;
+            dg.Integrate = integrate;
+            return dg;
+        }
+
+        public static GatedDetectorExtractSpec MakeGate(string detectorName, int gateLow, int gateHigh, bool integrate)
+        {
+            GatedDetectorExtractSpec dg = new GatedDetectorExtractSpec();
+            dg.Name = detectorName;
+            dg.GateLow = gateLow;
+            dg.GateHigh = gateHigh;
+            dg.Integrate = integrate;
             return dg;
         }
     }

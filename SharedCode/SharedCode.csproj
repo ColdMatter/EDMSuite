@@ -187,8 +187,7 @@
     <Compile Include="BlockDemodulatorNewScheme.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
-    <Compile Include="DemodulatedBlockNewScheme.cs" />
-    <Compile Include="DemodulationConfigNewScheme.cs" />
+    <Compile Include="DemodulationConfig.cs" />
     <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
@@ -196,6 +195,7 @@
     <Compile Include="OldCode\IField.cs" />
     <Compile Include="OldCode\IVectorSpace.cs" />
     <Compile Include="PressureMonitorDataLog.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="TCLDataLog.cs" />
     <Compile Include="TOFAccumulator.cs" />
     <Compile Include="TOFChannel.cs" />
@@ -237,7 +237,7 @@
     <Compile Include="DecelerationExperiment.cs" />
     <Compile Include="Decelerator.cs" />
     <Compile Include="DemodulatedBlock.cs" />
-    <Compile Include="DemodulationConfig.cs" />
+    <Compile Include="OldCode\DemodulationConfig.cs" />
     <Compile Include="DetectorChannelValues.cs" />
     <Compile Include="DetectorFT.cs" />
     <Compile Include="GatedDetectorExtractSpec.cs" />
