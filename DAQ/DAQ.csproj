@@ -224,6 +224,8 @@
     <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="PHNFITCH2FileSystem.cs" />
+    <Compile Include="CentaurEDMFileSystem.cs" />
+    <Compile Include="CentaurEDMHardware.cs" />
     <Compile Include="RfAWGConfig.cs" />
     <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SRSDS345Synth.cs" />

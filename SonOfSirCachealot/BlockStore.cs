@@ -279,7 +279,7 @@ namespace SonOfSirCachealot
                                          && (dbb.clusterIndex == clusterIndex)
                                          select dbb;
                 foreach (DBBlock dbb in b) dbb.include = included;
-                dc.SubmitChanges();              
+                dc.SubmitChanges();
             }
         }
 

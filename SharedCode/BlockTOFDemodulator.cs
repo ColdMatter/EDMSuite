@@ -14,8 +14,21 @@ namespace Analysis.EDM
     /// </summary>
     public class BlockTOFDemodulator
     {
+        // constants
+        private static double plateSpacing = 1.2;
+        private static double electronCharge = 1.6022 * Math.Pow(10, -19);
+        private static double bohrMagneton = 9.274 * Math.Pow(10, -24);
+        private static double saturatedEffectiveField = 26 * Math.Pow(10, 9);
+
         public TOFChannelSet TOFDemodulateBlock(Block b, int detectorIndex, bool allChannels)
         {
+            //edm factor calculation
+            double dbStep = ((AnalogModulation)b.Config.GetModulationByName("DB")).Step;
+            double magCal = (double)b.Config.Settings["magnetCalibration"];
+            double eField = cField((double)b.Config.Settings["ePlus"], (double)b.Config.Settings["eMinus"]);//arguments are in volts not kV
+            double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
+                        (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
+
             // *** demodulate channels ***
             // ** build the list of modulations **
             List<string> modNames = new List<string>();
@@ -113,15 +126,21 @@ namespace Analysis.EDM
                 int rf2aChannel = (1 << rf2aIndex); 
                 int dbrf1aChannel = (1 << dbIndex) + (1 << rf1aIndex);
                 int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
-                int lf1Channel = (1 << lf1Index);
-                int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
 
                 channelsToAnalyse = new List<int>() { sigChannel, bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
                     dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
                     rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
-                    dbrf2aChannel, lf1Channel, dblf1Channel,
+                    dbrf2aChannel,
                 };
-                                
+
+                if (lf1Index != -1) // Index = -1 if "LF1" not found
+                {
+                    int lf1Channel = (1 << lf1Index);
+                    channelsToAnalyse.Add(lf1Channel);
+                    int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
+                    channelsToAnalyse.Add(dblf1Channel);
+                }
+                
                 if (lf2Index != -1) // Index = -1 if "LF2" not found
                 {
                     int lf2Channel = (1 << lf2Index);
@@ -148,8 +167,8 @@ namespace Analysis.EDM
                     if (stateSigns[channel, switchStates[i]]) tOn += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]);
                     else tOff += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]);
                 }
-                tOn /= (blockLength / 2);
-                tOff /= (blockLength / 2);
+                tOn /= blockLength;
+                tOff /= blockLength;
                 tc.On = tOn;
                 tc.Off = tOff;
                 // This "if" is to take care of the case of the "SIG" channel, for which there
@@ -194,8 +213,34 @@ namespace Analysis.EDM
             TOFChannel c_dbrf1a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF1A" }); 
             TOFChannel c_dbrf2a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2A" });
 
-            TOFChannel c_lf1 = (TOFChannel)tcs.GetChannel(new string[] { "LF1" });
-            TOFChannel c_dblf1 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
+            TOFChannel c_lf1;
+            TOFChannel c_dblf1;
+            if (modNames.IndexOf("LF1") == -1) // Index = -1 if "LF1" not found
+            {
+                TOF tofTemp = new TOF();
+                TOFChannel tcTemp = new TOFChannel();
+                // For SOME blocks there is no LF1 channel (and hence switch states).
+                // To get around this problem I will populate the TOFChannel with "SIG"
+                // It will then be obvious in the analysis when LF1 takes on real values.
+                for (int i = 0; i < blockLength; i++)
+                {
+                    tofTemp += ((TOF)((EDMPoint)(b.Points[i])).Shot.TOFs[detectorIndex]);
+                }
+                tofTemp /= (blockLength / 2);
+
+                tcTemp.On = tofTemp;
+                tcTemp.Off = tofTemp;
+                tcTemp.Difference = tofTemp;
+
+                c_lf1 = tcTemp;
+                c_dblf1 = tcTemp;
+            }
+            else
+            {
+                c_lf1 = (TOFChannel)tcs.GetChannel(new string[] { "LF1" });
+                c_dblf1 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
+            }
+            
 
             TOFChannel c_lf2;
             TOFChannel c_dblf2;
@@ -249,11 +294,11 @@ namespace Analysis.EDM
             // combinations to always keep them dimensionless. If you
             // don't you'll run into trouble with integral vs. average
             // signal.
-            TOFChannel edmDB = c_eb / c_db;
+            TOFChannel edmDB = (c_eb / c_db) * edmFactor;
             tcs.AddChannel(new string[] { "EDMDB" }, edmDB);
 
             // The corrected edm channel. This should be proportional to the edm phase.
-            TOFChannel edmCorrDB = (squaredTerms + linearTerms) / preDenominator;
+            TOFChannel edmCorrDB = ((squaredTerms + linearTerms) / preDenominator) * edmFactor;
             tcs.AddChannel(new string[] { "EDMCORRDB" }, edmCorrDB);
 
             // It's useful to have an estimate of the size of the correction. Here
@@ -366,5 +411,27 @@ namespace Analysis.EDM
             tcs.AddChannel(new string[] { "SIGDBDB" }, SigdbdbNL);
             return tcs;
         }
+
+        private static double polarisationFactor(double electricField/*in kV/cm*/)
+        {
+            double polFactor = 0.00001386974812686904
+                + 0.09020507207607358 * electricField
+                + 0.0008134261949342792 * Math.Pow(electricField, 2)
+                - 0.001365930559363722 * Math.Pow(electricField, 3)
+                + 0.00016467328012807663 * Math.Pow(electricField, 4)
+                - 9.53482 * Math.Pow(10, -6) * Math.Pow(electricField, 5)
+                + 2.804041112473679 * Math.Pow(10, -7) * Math.Pow(electricField, 6)
+                - 3.352604355536456 * Math.Pow(10, -9) * Math.Pow(electricField, 7);
+
+            return polFactor;
+        }
+
+        private static double cField(double ePlus, double eMinus)//voltage in volts returns kV/cm
+        {
+            double efield = (ePlus - eMinus) / plateSpacing;
+            //double efield = 4/ plateSpacing;
+            return efield / 1000;
+        }
+
     }
 }

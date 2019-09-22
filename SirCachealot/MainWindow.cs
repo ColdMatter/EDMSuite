@@ -55,7 +55,7 @@ namespace SirCachealot
             logTextBox.BeginInvoke(new AppendTextDelegate(logTextBox.AppendText),
 				new object[] {txt + Environment.NewLine});
         }
-        
+
         public void AppendToErrorLog(string txt)
         {
             errorLogTextBox.BeginInvoke(new AppendTextDelegate(errorLogTextBox.AppendText),
@@ -78,6 +78,11 @@ namespace SirCachealot
         private void test1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.Test1();
+        }
+
+        private void test2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.Test2();
         }
     }
 }

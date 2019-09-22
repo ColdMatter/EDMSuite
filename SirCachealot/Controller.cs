@@ -23,12 +23,12 @@ namespace SirCachealot
         // UI
         internal MainWindow mainWindow;
         System.Threading.Timer statusMonitorTimer;
- 
+
         // Database
         private MySqlDBlockStore blockStore;
 
         // TOF Demodulation
- //       private TOFChannelSetGroupAccumulator tcsga;
+        private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
         private object accumulatorLock = new object();
 
         // Threading
@@ -237,73 +237,108 @@ namespace SirCachealot
 
         #region TOFDemodulation
 
-        //public void TOFDemodulateBlocks(string[] blockFiles, string savePath)
-        //{
-        //    // first of all test that the save location exists to avoid later disappointment.
+        public void TOFDemodulateBlocks(string[] blockFiles, string savePath, string[] detectorNames)
+        {
+            // first of all test that the save location exists to avoid later disappointment.
 
-        //    if (!Directory.Exists(Path.GetDirectoryName(savePath)))
-        //    {
-        //        log("Save path does not exist!!");
-        //        return;
-        //    }
+            if (!Directory.Exists(Path.GetDirectoryName(savePath)))
+            {
+                log("Save path does not exist!!");
+                return;
+            }
 
-        //    // initialise the accumulator
-        //    tcsga = new TOFChannelSetGroupAccumulator();
-        //    // queue the blocks - the last block analysed will take care of saving the results.
-        //    foreach (string blockFile in blockFiles)
-        //    {
-        //        tofDemodulateParams tdp = new tofDemodulateParams();
-        //        tdp.blockPath = blockFile;
-        //        tdp.savePath = savePath;
-        //        threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
-        //    }
-        //}
+            // initialise the TOF accumulator dictionary
+            tcsaDictionary = new Dictionary<string, TOFChannelSetAccumulator>();
+            foreach (string detectorName in detectorNames)
+            {
+                tcsaDictionary.Add(detectorName, new TOFChannelSetAccumulator());
+            }
 
-        //private void TOFDemodulateBlock(string blockPath, string savePath)
-        //{
-        //    BlockSerializer bs = new BlockSerializer();
-        //    string[] splitPath = blockPath.Split('\\');
-        //    log("Loading block " + splitPath[splitPath.Length - 1]); 
-        //    Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
-        //    log("Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-        //    BlockTOFDemodulator btd = new BlockTOFDemodulator();
-        //    TOFChannelSet tcs = btd.TOFDemodulateBlock(b, 0, true);
-        //    log("Accumulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-        //    lock (accumulatorLock) tcsga.Add(tcs);
-        //    // are we the last block to be added? If so, it's our job to save the results
-        //    if (threadManager.RemainingJobs == 1)
-        //    {
-        //        // this lock should not be needed
-        //        lock(accumulatorLock)
-        //        {
-        //            TOFChannelSetGroup tcsg = tcsga.GetResult();
-        //            Stream fileStream = new FileStream(savePath, FileMode.Create);
-        //            (new BinaryFormatter()).Serialize(fileStream, tcsg);
-        //            fileStream.Close();
-        //        }
-        //    }
-        //}
+            // queue the blocks - the last block analysed will take care of saving the results.
+            foreach (string blockFile in blockFiles)
+            {
+                tofDemodulateParams tdp = new tofDemodulateParams();
+                tdp.blockPath = blockFile;
+                tdp.savePath = savePath;
+                tdp.detectorNames = detectorNames;
+                threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
+            }
+        }
 
-        //private void TOFDemodulateThreadWrapper(object parametersIn)
-        //{
-        //    threadManager.QueueItemWrapper(delegate(object parms)
-        //    {
-        //        tofDemodulateParams parameters = (tofDemodulateParams)parms;
-        //        TOFDemodulateBlock(parameters.blockPath, parameters.savePath);
-        //    },
-        //    parametersIn
-        //    );
-        //}
-        //private struct tofDemodulateParams
-        //{
-        //    public string blockPath;
-        //    public string savePath;
-        //    // this struct has a ToString method defined for error reporting porpoises.
-        //    public override string ToString()
-        //    {
-        //        return blockPath;
-        //    }
-        //}
+        private void TOFDemodulateBlock(string blockPath, string savePath, string[] detectorNames)
+        {
+            BlockSerializer bs = new BlockSerializer();
+            string[] splitPath = blockPath.Split('\\');
+            log("Loading block " + splitPath[splitPath.Length - 1]);
+            Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
+
+            // *** subtract background ***
+            b.SubtractBackgroundFromProbeDetectorTOFs();
+
+            // *** create scaled bottom probe ***
+            b.CreateScaledBottomProbe();
+
+            // *** create asymmetry TOF ***
+            b.ConstructAsymmetryTOF();
+
+            // *** convert point detector data into TOFs ***
+            b.TOFuliseSinglePointData();
+
+            log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+            BlockTOFDemodulator btd = new BlockTOFDemodulator();
+
+            foreach (string detectorName in detectorNames)
+            {
+                TOFChannelSet tcs = btd.TOFDemodulateBlock(b, b.detectors.IndexOf(detectorName), true);
+
+                string savePathTCS = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
+                log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+                Stream fs = new FileStream(savePathTCS, FileMode.Create);
+                (new BinaryFormatter()).Serialize(fs, tcs);
+                fs.Close();
+
+                log("Accumulating block for detector " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+                lock (accumulatorLock) tcsaDictionary[detectorName].Add(tcs);
+            }
+
+            // are we the last block to be added? If so, it's our job to save the results
+            if (threadManager.RemainingJobs == 1)
+            {
+                // this lock should not be needed
+                lock (accumulatorLock)
+                {
+                    foreach (string detectorName in detectorNames)
+                    {
+                        TOFChannelSet tcsResult = tcsaDictionary[detectorName].GetResult();
+                        Stream fileStream = new FileStream(savePath + "average" + detectorName + b.Config.Settings["cluster"] + ".bin", FileMode.Create);
+                        (new BinaryFormatter()).Serialize(fileStream, tcsResult);
+                        fileStream.Close();
+                    }
+                }
+            }
+        }
+
+        private void TOFDemodulateThreadWrapper(object parametersIn)
+        {
+            threadManager.QueueItemWrapper(delegate(object parms)
+            {
+                tofDemodulateParams parameters = (tofDemodulateParams)parms;
+                TOFDemodulateBlock(parameters.blockPath, parameters.savePath, parameters.detectorNames);
+            },
+            parametersIn
+            );
+        }
+        private struct tofDemodulateParams
+        {
+            public string blockPath;
+            public string savePath;
+            public string[] detectorNames;
+            // this struct has a ToString method defined for error reporting porpoises.
+            public override string ToString()
+            {
+                return blockPath;
+            }
+        }
 
         #endregion
 
@@ -328,16 +363,18 @@ namespace SirCachealot
         //}
 
 
-        public void Test1()
+        public DemodulatedBlock Test1()
         {
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(
-                "C:\\Users\\jony\\Files\\Data\\SEDM\\v3\\2009\\October2009\\01Oct0900_0.zip", "block.xml");
+                "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_0.zip", "block.xml");
 
             BlockDemodulator bd = new BlockDemodulator();
 
             DemodulatedBlock db = bd.DemodulateBlockNL(b,
-                DemodulationConfig.GetStandardDemodulationConfig("cgate11Fixed", b));
+                DemodulationConfig.GetStandardDemodulationConfig("wide", b));
+
+            return db;
 
             //JsonSerializer serializer = new JsonSerializer();
             //using (StreamWriter sw = new StreamWriter("c:\\Users\\jony\\Desktop\\test.json"))
@@ -348,6 +385,14 @@ namespace SirCachealot
 
 
             //bs.SerializeBlockAsJSON("c:\\Users\\jony\\Desktop\\test.json", b);
+        }
+
+        public void Test2()
+        {
+            string[] blockPath = new string[1];
+            blockPath[0] = "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_1.zip";
+            string savePath = @"C:\Users\EDM\Desktop\";
+            TOFDemodulateBlocks(blockPath, savePath, new string[3] {"asymmetry","topProbeNoBackground","NorthCurrent"});
         }
 
         #endregion

@@ -43,6 +43,7 @@ namespace EDMBlockHead
         BlockSerializer blockSerializer = new BlockSerializer();
         BlockDemodulator blockDemodulator = new BlockDemodulator();
         public DemodulatedBlock DBlock;
+        public QuickEDMAnalysis AnalysedDBlock;
         private bool haveBlock = false;
 
         // State information
@@ -407,10 +408,11 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            // "cgate11Fixed" for Ar, "centreFixedKr" for Kr
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate5", b); // was cgate11fixed
-            DBlock = blockDemodulator.DemodulateBlock(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
-            liveViewer.AddDBlock(DBlock);
+            blockDemodulator.AddDetectorsToBlock(b, false);
+            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("liveBlockAnalysis", b);
+            DBlock = blockDemodulator.DemodulateBlockNL(b, dc);
+            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
+            liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
             //config.g
             haveBlock = true;
@@ -437,10 +439,10 @@ namespace EDMBlockHead
 
         public void MagDataAcquisitionFinished(Block b)
         {
-            this.Block = b;
-            mainWindow.AppendToTextArea("Demodulating magnetic data block.");
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
-            DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
+            // this.Block = b;
+            // mainWindow.AppendToTextArea("Demodulating magnetic data block.");
+            // DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
+            // DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
             // liveViewer.AddDBlock(DBlock);
 
             haveBlock = true;

@@ -9,6 +9,7 @@ using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 
 using Analysis.EDM;
+using Analysis;
 using EDMConfig;
 
 namespace EDMBlockHead
@@ -17,14 +18,13 @@ namespace EDMBlockHead
     {
         private Controller controller;
 
-        int blockCount = 1;
-        double clusterVariance = 0;
-        double clusterVarianceNormed = 0;
-        double blocksPerDay = 240;
+        private const int kNumReplicates = 200;
+        private const double trimLevel = 0.05;
+        private Random r = new Random();
+        List<double> edms;
 
-        private double initPumpPD = 1;
-        private double initProbePD = 1;
- 
+        int blockCount = 1;
+        int blocksPerDay = 220;
 
         public LiveViewer(Controller c)
         {
@@ -35,7 +35,9 @@ namespace EDMBlockHead
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateStatusText("EDMErr_A\t EDMErr_B\t {B}_A\t\t {B}_B\t\t {DB}_A\t\t {DB}_B\t\t {DB}_A/{SIG}_A\t\t{DB}_A/{SIG}_B  " + Environment.NewLine);
+            UpdateStatusText("{DB}\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t" + Environment.NewLine);
+
+            edms = new List<double>();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -48,45 +50,37 @@ namespace EDMBlockHead
         //{
         //}
 
-        public void AddDBlock(DemodulatedBlock dblock)
+        public void AddAnalysedDBlock(QuickEDMAnalysis analysis)
         {
-            QuickEDMAnalysis analysis = QuickEDMAnalysis.AnalyseDBlock(dblock);
+            edms.Add(analysis.RawEDMValAndErr[0]);
 
             //Append LiveViewer text with edm errors, B, DB & DB/SIG
             AppendStatusText(
-                (Math.Pow(10, 26) * analysis.RawEDMErrbp).ToString("G3")
-                + "\t" 
-                + (Math.Pow(10, 26) * analysis.RawEDMErrbp).ToString("G3")
-                + "\t" 
-                + (analysis.BValAndErrbp[0]).ToString("N2")
+                (analysis.DBValAndErr[0]).ToString("N3")
                 + "\t"
-                + "\t" + (analysis.BValAndErrtp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrbp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrtp[0]).ToString("N2")
-                + "\t" + (analysis.DBValAndErrbp[0] / analysis.SIGValAndErrbp[0]).ToString("N3")
-                + "\t" + (analysis.DBValAndErrtp[0] / analysis.SIGValAndErrtp[0]).ToString("N3")
+                + "\t" + (analysis.SIGValAndErrbp[0]).ToString("N3")
+                + "\t" + (analysis.SIGValAndErrtp[0]).ToString("N3")
+                + "\t" + (analysis.BValAndErr[0]).ToString("N3")
+                + "\t" + (analysis.rf1AmpAndErr[0]).ToString("N3")
+                + "\t" + (analysis.rf2AmpAndErr[0]).ToString("N3")
+                + "\t" + (analysis.rf1FreqAndErr[0]).ToString("N3")
+                + "\t" + (analysis.rf2FreqAndErr[0]).ToString("N3")
                 + Environment.NewLine);
 
-            // Rollings values of edm error
-            clusterVariance = 
-                ((clusterVariance * (blockCount - 1)) + analysis.RawEDMErr * analysis.RawEDMErr) / blockCount;
-            double edmPerDay = Math.Sqrt(clusterVariance / blocksPerDay);
-            clusterVarianceNormed =
-                ((clusterVarianceNormed * (blockCount - 1)) 
-                + analysis.RawEDMErr * analysis.RawEDMErr) / blockCount;
-            double edmPerDayNormed = Math.Sqrt(clusterVarianceNormed / blocksPerDay);
+            // edm error
+            double edmErrOverCluster = Statistics.BootstrappedTrimmedMeanAndError(edms.ToArray(), trimLevel, kNumReplicates)[1];
+            double edmErrPerDay = edmErrOverCluster * Math.Sqrt((double)edms.Count / (double)blocksPerDay);
 
             UpdateClusterStatusText(
-                "errorPerDay: " + edmPerDay.ToString("E3") 
-                + "\terrorPerDayNormed: " + edmPerDayNormed.ToString("E3")
-                + Environment.NewLine + "block count: " + blockCount);
+                "Error per day: " + edmErrPerDay.ToString("E3")
+                + Environment.NewLine + "Block count: " + blockCount);
 
             //Update Plots
             AppendToSigScatter(new double[] { blockCount }, new double[] { analysis.SIGValAndErr[0] });
             AppendToBScatter(new double[] { blockCount }, new double[] { analysis.BValAndErr[0] });
             AppendToDBScatter(new double[] { blockCount }, new double[] { analysis.DBValAndErr[0] });
             AppendToEDMScatter(new double[] { blockCount }, 
-                new double[] { Math.Pow(10, 26) * analysis.RawEDMErr });
+                new double[] { Math.Pow(10, 26) * analysis.RawEDMValAndErr[1] });
             AppendSigmaToSIGScatter(new double[] { blockCount },
                 new double[] { analysis.SIGValAndErr[0] + analysis.SIGValAndErr[1] },
                 new double[] { analysis.SIGValAndErr[0] - analysis.SIGValAndErr[1] });
@@ -110,10 +104,10 @@ namespace EDMBlockHead
                 new double[] { analysis.SouthECorrCurrentValAndError[0] });
             AppendToMagNoiseScatter(new double[] { blockCount },
                 new double[] { analysis.MagValandErr[1] });
-            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErrtp[0] });
-            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErrtp[0] });
-            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErrtp[0] });
-            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErrtp[0] });
+            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
+            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
+            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
+            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
             AppendToRF1ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1ADBDB[0] });
             AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
             AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
@@ -126,12 +120,11 @@ namespace EDMBlockHead
         private void resetEdmErrRunningMeans()
         {
             blockCount = 1;
-            clusterVariance = 0;
-            clusterVarianceNormed = 0;
-            UpdateClusterStatusText("errorPerDay: " + 0 + "\terrorPerDayNormed: " + 0
-                + Environment.NewLine + "block count: " + 0);
-            UpdateStatusText("EDMErr_A\t EDMErr_B\t {B}_A\t\t {B}_B\t\t {DB}_A\t\t {DB}_B\t\t {DB}_A/{SIG}_A\t\t{DB}_A/{SIG}_B  " + Environment.NewLine);
-            ClearSIGScatter();
+            edms.Clear();
+            UpdateClusterStatusText(
+                "Error per day: " + 0
+                + Environment.NewLine + "Block count: " + 0);
+            UpdateStatusText("{DB}\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t" + Environment.NewLine); ClearSIGScatter();
             ClearBScatter();
             ClearDBScatter();
             ClearEDMErrScatter();

@@ -17,7 +17,7 @@
 //        public void Add(TOFChannelSet val)
 //        {
 //            int index = machineStateIndex(
-//                (bool)val.Config.Settings["eState"], 
+//                (bool)val.Config.Settings["eState"],
 //                (bool)val.Config.Settings["bState"],
 //                (bool)val.Config.Settings["rfState"]);
 //            ((TOFChannelSetAccumulator)ChannelSets[index]).Add(val);

@@ -34,7 +34,7 @@ namespace Analysis.EDM
             {
                 return new double[] {0.0, 0.0};
             }
-            
+
         }
 
         public double[] GetSpecialChannelValueAndError(string name, string detector)
