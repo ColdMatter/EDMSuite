@@ -285,11 +285,11 @@ namespace SirCachealot
             b.TOFuliseSinglePointData();
 
             log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-            BlockTOFDemodulator btd = new BlockTOFDemodulator();
+            BlockDemodulator bd = new BlockDemodulator();
 
             foreach (string detectorName in detectorNames)
             {
-                TOFChannelSet tcs = btd.TOFDemodulateBlock(b, b.detectors.IndexOf(detectorName), true);
+                TOFChannelSet tcs = bd.TOFDemodulateBlock(b, b.detectors.IndexOf(detectorName), true);
 
                 string savePathTCS = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
                 log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);

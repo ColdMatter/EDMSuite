@@ -19,7 +19,7 @@ namespace SirCachealot.Database
     {
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
-        private string kConnectionString = "Server=127.0.0.1;Uid=root;Pwd=atomic1;default command timeout=300;";
+        private string kConnectionString = "server=localhost;user=root;port=3306;password=atomic1;default command timeout=300;";
         public long QueryCount;
         public long DBlockCount;
 
@@ -277,6 +277,7 @@ namespace SirCachealot.Database
                 bool eState = (bool)db.Config.Settings["eState"];
                 bool bState = (bool)db.Config.Settings["bState"];
                 bool rfState = (bool)db.Config.Settings["rfState"];
+                bool mwState = (bool)db.Config.Settings["mwState"];
                 
                 DateTime timeStamp = db.TimeStamp;
                 double ePlus = (double)db.Config.Settings["ePlus"];
@@ -286,7 +287,7 @@ namespace SirCachealot.Database
                 mySqlComm = mySql.CreateCommand();
                 mySqlComm.CommandText =
                     "INSERT INTO DBLOCKS " +
-                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?ts, " +
+                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?mwState, ?ts, " +
                     "?ePlus, ?eMinus);";
                 // the uid column is defined auto_increment
                 mySqlComm.Parameters.AddWithValue("?uint", null);
@@ -296,6 +297,7 @@ namespace SirCachealot.Database
                 mySqlComm.Parameters.AddWithValue("?eState", eState);
                 mySqlComm.Parameters.AddWithValue("?bState", bState);
                 mySqlComm.Parameters.AddWithValue("?rfState", rfState);
+                mySqlComm.Parameters.AddWithValue("?mwState", mwState);
                 mySqlComm.Parameters.AddWithValue("?ts", timeStamp);
                 mySqlComm.Parameters.AddWithValue("?ePlus", ePlus);
                 mySqlComm.Parameters.AddWithValue("?eMinus", eMinus);

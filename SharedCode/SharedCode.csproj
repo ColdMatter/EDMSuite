@@ -28,7 +28,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -154,21 +154,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Common, Version=15.0.40.49154, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.Controls, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Controls.Booleans, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Controls.Graphs, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Controls.Numerics, Version=15.0.45.3898, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Net, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.NetworkVariable, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Tdms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -184,9 +169,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockDemodulatorNewScheme.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
+    <Compile Include="TOFDemodulatedBlock.cs" />
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
@@ -222,7 +207,7 @@
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BlockTOFDemodulator.cs" />
+    <Compile Include="OldCode\BlockTOFDemodulator.cs" />
     <Compile Include="DetectorData.cs" />
     <Compile Include="PointDetectorData.cs" />
     <Compile Include="QuickEDMAnalysis.cs" />
