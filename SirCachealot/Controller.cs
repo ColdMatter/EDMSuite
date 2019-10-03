@@ -25,7 +25,8 @@ namespace SirCachealot
         System.Threading.Timer statusMonitorTimer;
 
         // Database
-        private MySqlDBlockStore blockStore;
+        // private MySqlDBlockStore blockStore;
+        private MySqlTOFDBlockStore blockStore;
 
         // TOF Demodulation
         private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
@@ -41,7 +42,8 @@ namespace SirCachealot
         internal void Initialise()
         {
             //set up sql database
-            blockStore = new MySqlDBlockStore();
+            //blockStore = new MySqlDBlockStore();
+            blockStore = new MySqlTOFDBlockStore();
             blockStore.Start();
             threadManager.InitialiseThreading(this);
         }
@@ -116,77 +118,156 @@ namespace SirCachealot
          * private member, for internal use. External users need to get the block store through this
          * getter, which only exposes the block store's generic functions.
          */
-        public DBlockStore DBlockStore
+        //public DBlockStore DBlockStore
+        //{
+        //    get
+        //    {
+        //        return blockStore;
+        //    }
+        //}
+
+        public TOFDBlockStore DBlockStore
         {
             get
             {
-                return blockStore;
+                try
+                {
+                    return blockStore;
+                }
+
+                catch (Exception e)
+                {
+                    log(e.ToString());
+                    return null;
+                }
             }
         }
 
         /* This is a convenient way to add a block, if you're using standard demodulation
          * configurations. This method is thread-safe.
          */
-        public void AddBlock(Block b, string[] demodulationConfigs)
+        //public void AddBlock(Block b, string[] demodulationConfigs)
+        //{
+        //    log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+        //    BlockDemodulator blockDemodulator = new BlockDemodulator();
+        //    foreach (string dcName in demodulationConfigs)
+        //    {
+        //        DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig(dcName, b);
+        //        //DemodulatedBlock dBlock = blockDemodulator.DemodulateBlockNL(b, dc);
+        //        DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
+        //        blockStore.AddDBlock(dBlock);
+        //    }
+        //}
+
+        public void AddBlock(Block b, string[] detectors)
         {
-            log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             BlockDemodulator blockDemodulator = new BlockDemodulator();
-            foreach (string dcName in demodulationConfigs)
+            foreach(string dName in detectors)
             {
-                DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig(dcName, b);
-                //DemodulatedBlock dBlock = blockDemodulator.DemodulateBlockNL(b, dc);
-                DemodulatedBlock dBlock = blockDemodulator.DemodulateBlock(b, dc);
-                blockStore.AddDBlock(dBlock);
+                log("Adding detector " + dName + " in block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+                TOFDemodulatedBlock tdBlock = blockDemodulator.TOFDemodulateBlock(b, dName, true);
+                blockStore.AddDBlock(tdBlock);
             }
         }
 
         // This method is thread-safe.
-        public void AddBlock(string path, string[] demodulationConfigs)
+        //public void AddBlock(string path, string[] demodulationConfigs)
+        //{
+        //    string[] splitPath = path.Split('\\');
+        //    log("Loading block " + splitPath[splitPath.Length - 1]);
+        //    BlockSerializer bs = new BlockSerializer();
+        //    Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
+        //    AddBlock(b, demodulationConfigs);
+        //}
+
+        public void AddBlock(string path, string[] detectors)
         {
             string[] splitPath = path.Split('\\');
             log("Loading block " + splitPath[splitPath.Length - 1]);
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
-            AddBlock(b, demodulationConfigs);
+            AddBlock(b, detectors);
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
-        public void AddBlockToQueue(string path, string[] demodulationConfigs)
+        //public void AddBlockToQueue(string path, string[] demodulationConfigs)
+        //{
+        //    blockAddParams bap = new blockAddParams();
+        //    bap.path = path;
+        //    bap.demodulationConfigs = demodulationConfigs;
+        //    threadManager.AddToQueue(AddBlockThreadWrapper, bap);
+        //}
+
+        public void AddBlockToQueue(string path, string[] detectors)
         {
             blockAddParams bap = new blockAddParams();
             bap.path = path;
-            bap.demodulationConfigs = demodulationConfigs;
+            bap.detectors = detectors;
             threadManager.AddToQueue(AddBlockThreadWrapper, bap);
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
-        public void AddBlocksToQueue(string[] paths, string[] demodulationConfigs)
+        //public void AddBlocksToQueue(string[] paths, string[] demodulationConfigs)
+        //{
+        //    foreach (string path in paths)
+        //    {
+        //        blockAddParams bap = new blockAddParams();
+        //        bap.path = path;
+        //        bap.demodulationConfigs = demodulationConfigs;
+        //        threadManager.AddToQueue(AddBlockThreadWrapper, bap);
+        //    }
+        //}
+
+        public void AddBlocksToQueue(string[] paths, string[] detectors)
         {
             foreach (string path in paths)
             {
                 blockAddParams bap = new blockAddParams();
                 bap.path = path;
-                bap.demodulationConfigs = demodulationConfigs;
+                bap.detectors = detectors;
                 threadManager.AddToQueue(AddBlockThreadWrapper, bap);
             }
         }
 
         // this method and the following struct are wrappers so that we can add a block
         // with a single parameter, as required by the threadpool.
+        //private void AddBlockThreadWrapper(object parametersIn)
+        //{
+        //    threadManager.QueueItemWrapper(delegate(object parms)
+        //    {
+        //        blockAddParams parameters = (blockAddParams)parms;
+        //        AddBlock(parameters.path, parameters.demodulationConfigs);
+        //    },
+        //    parametersIn
+        //    );
+        //}
+
         private void AddBlockThreadWrapper(object parametersIn)
         {
-            threadManager.QueueItemWrapper(delegate(object parms)
+            threadManager.QueueItemWrapper(delegate (object parms)
             {
                 blockAddParams parameters = (blockAddParams)parms;
-                AddBlock(parameters.path, parameters.demodulationConfigs);
+                AddBlock(parameters.path, parameters.detectors);
             },
             parametersIn
             );
         }
+
+        //private struct blockAddParams
+        //{
+        //    public string path;
+        //    public string[] demodulationConfigs;
+        //    // this struct has a ToString method defined for error reporting porpoises.
+        //    public override string ToString()
+        //    {
+        //        return path;
+        //    }
+        //}
+
         private struct blockAddParams
         {
             public string path;
-            public string[] demodulationConfigs;
+            public string[] detectors;
             // this struct has a ToString method defined for error reporting porpoises.
             public override string ToString()
             {
@@ -257,7 +338,7 @@ namespace SirCachealot
             // queue the blocks - the last block analysed will take care of saving the results.
             foreach (string blockFile in blockFiles)
             {
-                tofDemodulateParams tdp = new tofDemodulateParams();
+                TofDemodulateParams tdp = new TofDemodulateParams();
                 tdp.blockPath = blockFile;
                 tdp.savePath = savePath;
                 tdp.detectorNames = detectorNames;
@@ -271,50 +352,22 @@ namespace SirCachealot
             string[] splitPath = blockPath.Split('\\');
             log("Loading block " + splitPath[splitPath.Length - 1]);
             Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
+            BlockDemodulator bd = new BlockDemodulator();
+            Dictionary<string, TOFDemodulatedBlock> tdbs = new Dictionary<string, TOFDemodulatedBlock>();
 
-            // *** subtract background ***
-            b.SubtractBackgroundFromProbeDetectorTOFs();
-
-            // *** create scaled bottom probe ***
-            b.CreateScaledBottomProbe();
-
-            // *** create asymmetry TOF ***
-            b.ConstructAsymmetryTOF();
-
-            // *** convert point detector data into TOFs ***
-            b.TOFuliseSinglePointData();
+            bd.AddDetectorsToBlock(b, true);
 
             log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-            BlockDemodulator bd = new BlockDemodulator();
-
             foreach (string detectorName in detectorNames)
             {
-                TOFChannelSet tcs = bd.TOFDemodulateBlock(b, b.detectors.IndexOf(detectorName), true);
+                TOFDemodulatedBlock tdb = bd.TOFDemodulateBlock(b, detectorName, true);
+                tdbs.Add(detectorName, tdb);
 
-                string savePathTCS = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
+                string savePathTDB = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
                 log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-                Stream fs = new FileStream(savePathTCS, FileMode.Create);
-                (new BinaryFormatter()).Serialize(fs, tcs);
+                Stream fs = new FileStream(savePathTDB, FileMode.Create);
+                (new BinaryFormatter()).Serialize(fs, tdb);
                 fs.Close();
-
-                log("Accumulating block for detector " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-                lock (accumulatorLock) tcsaDictionary[detectorName].Add(tcs);
-            }
-
-            // are we the last block to be added? If so, it's our job to save the results
-            if (threadManager.RemainingJobs == 1)
-            {
-                // this lock should not be needed
-                lock (accumulatorLock)
-                {
-                    foreach (string detectorName in detectorNames)
-                    {
-                        TOFChannelSet tcsResult = tcsaDictionary[detectorName].GetResult();
-                        Stream fileStream = new FileStream(savePath + "average" + detectorName + b.Config.Settings["cluster"] + ".bin", FileMode.Create);
-                        (new BinaryFormatter()).Serialize(fileStream, tcsResult);
-                        fileStream.Close();
-                    }
-                }
             }
         }
 
@@ -322,13 +375,13 @@ namespace SirCachealot
         {
             threadManager.QueueItemWrapper(delegate(object parms)
             {
-                tofDemodulateParams parameters = (tofDemodulateParams)parms;
+                TofDemodulateParams parameters = (TofDemodulateParams)parms;
                 TOFDemodulateBlock(parameters.blockPath, parameters.savePath, parameters.detectorNames);
             },
             parametersIn
             );
         }
-        private struct tofDemodulateParams
+        private struct TofDemodulateParams
         {
             public string blockPath;
             public string savePath;

@@ -386,6 +386,17 @@ namespace Data
             return t;
         }
 
+        public static TOF Zero()
+        {
+            TOF t = new TOF();
+            t.Data = new double[RANDOM_TOF_SIZE];
+            for (int i = 0; i < RANDOM_TOF_SIZE; i++) t.Data[i] = 0.0;
+            t.Calibration = 1.0;
+            t.ClockPeriod = 10;
+            t.GateStartTime = 1800;
+            return t;
+        }
+
         // helper to make a TOF from a single data point
         public TOF(double d)
         {

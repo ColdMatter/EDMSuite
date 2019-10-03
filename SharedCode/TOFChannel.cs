@@ -85,5 +85,17 @@ namespace Analysis.EDM
 
             return tc;
         }
+
+        public static TOFChannel Zero()
+        {
+            TOFChannel tc = new TOFChannel();
+            TOF on = TOF.Zero();
+            TOF off = TOF.Zero();
+            tc.On = on;
+            tc.Off = off;
+            tc.Difference = on - off;
+
+            return tc;
+        }
     }
 }

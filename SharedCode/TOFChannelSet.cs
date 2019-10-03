@@ -53,5 +53,12 @@ namespace Analysis.EDM
             for (int i = 0; i < NUMBER_OF_CHANNELS; i++) tcs.AddChannel("c" + i, TOFChannel.Random());
             return tcs;
         }
+
+        public static TOFChannelSet Zero()
+        {
+            TOFChannelSet tcs = new TOFChannelSet();
+            for (int i = 0; i < NUMBER_OF_CHANNELS; i++) tcs.AddChannel("c" + i, TOFChannel.Zero());
+            return tcs;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace Analysis.EDM
             new Dictionary<string, DemodulationConfigBuilder>();
 
         // ratio of distance from source for the two detectors
-        private static double kDetectorDistanceRatio = 1715.0/1500.0;
+        // private static double kDetectorDistanceRatio = 1715.0/1500.0;
 
         public static DemodulationConfig GetStandardDemodulationConfig(string name, Block b)
         {

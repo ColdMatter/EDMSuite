@@ -16,7 +16,7 @@ using Analysis.EDM;
 
 namespace SirCachealot.Database
 {
-    class MySqlDBlockStore : MarshalByRefObject, DBlockStore
+    class MySqlTOFDBlockStore : MarshalByRefObject, TOFDBlockStore
     {
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
@@ -83,16 +83,16 @@ namespace SirCachealot.Database
             return GetUIDsFromCommand(mySqlComm);
         }
 
-        public UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs)
+        public UInt32[] GetUIDsByDetector(string d, UInt32[] fromUIDs)
         {
             QueryCount++;
-            return GetByStringParameter("ATAG", tag, fromUIDs);
+            return GetByStringParameter("DETECTOR", d, fromUIDs);
         }
 
-        public UInt32[] GetUIDsByAnalysisTag(string tag)
+        public UInt32[] GetUIDsByDetector(string d)
         {
             QueryCount++;
-            return GetByStringParameter("ATAG", tag);
+            return GetByStringParameter("DETECTOR", d);
         }
 
         public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, uint[] fromUIDs)
@@ -275,7 +275,7 @@ namespace SirCachealot.Database
             return GetUIDsFromCommand(mySqlComm);
         }
 
-        public uint[] GetUIDsByPredicate(PredicateFunction func, uint[] fromUIDs)
+        public uint[] GetUIDsByPredicate(TOFPredicateFunction func, uint[] fromUIDs)
         {
             QueryCount++;
             mySqlComm = mySql.CreateCommand();
@@ -284,23 +284,23 @@ namespace SirCachealot.Database
             List<UInt32> matchedUIDs = new List<UInt32>();
             foreach (UInt32 uid in uids)
             {
-                DemodulatedBlock db = GetDBlock(uid);
+                TOFDemodulatedBlock db = GetDBlock(uid);
                 if (func(db)) matchedUIDs.Add(uid);
             }
             return matchedUIDs.ToArray();
         }
 
-        public DemodulatedBlock GetDBlock(uint uid)
+        public TOFDemodulatedBlock GetDBlock(uint uid)
         {
             DBlockCount++;
             byte[] dbb;
 
             MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
-            DemodulatedBlock db;
+            TOFDemodulatedBlock db;
             if (rd.Read())
             {
                 dbb = (byte[])rd["DBDAT"];
-                db = deserializeDBlockFromByteArray(dbb);
+                db = deserializeTOFDBlockFromByteArray(dbb);
                 rd.Close();
             }
             else
@@ -315,7 +315,7 @@ namespace SirCachealot.Database
         // I need to fix a db problem concerning the UIDs before unlocking it.
         // Hopefully it won't hurt the performance too badly.
         private object dbAddLock = new object();
-        public UInt32 AddDBlock(DemodulatedBlock db)
+        public UInt32 AddDBlock(TOFDemodulatedBlock db)
         {
             lock (dbAddLock)
             {
@@ -323,7 +323,7 @@ namespace SirCachealot.Database
                 // extract the data that we're going to put in the sql database
                 string clusterName = db.Config.Settings["cluster"] as string;
                 int clusterIndex = (int)db.Config.Settings["clusterIndex"];
-                string aTag = db.DemodulationConfig.AnalysisTag;
+                string dName = db.Detector;
                 bool eState = (bool)db.Config.Settings["eState"];
                 bool bState = (bool)db.Config.Settings["bState"];
                 bool rfState = (bool)db.Config.Settings["rfState"];
@@ -334,18 +334,18 @@ namespace SirCachealot.Database
                 DateTime timeStamp = db.TimeStamp;
                 double ePlus = (double)db.Config.Settings["ePlus"];
                 double eMinus = (double)db.Config.Settings["eMinus"];
-                byte[] dBlockBytes = serializeDBlockAsByteArray(db);
+                byte[] dBlockBytes = serializeTOFDBlockAsByteArray(db);
 
                 mySqlComm = mySql.CreateCommand();
                 mySqlComm.CommandText =
                     "INSERT INTO DBLOCKS " +
-                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?mwState, ?ts, " +
+                    "VALUES(?uint, ?cluster, ?clusterIndex, ?dName, ?eState, ?bState, ?rfState, ?mwState, ?ts, " +
                     "?ePlus, ?eMinus);";
                 // the uid column is defined auto_increment
                 mySqlComm.Parameters.AddWithValue("?uint", null);
                 mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
                 mySqlComm.Parameters.AddWithValue("?clusterIndex", clusterIndex);
-                mySqlComm.Parameters.AddWithValue("?aTag", aTag);
+                mySqlComm.Parameters.AddWithValue("?dName", dName);
                 mySqlComm.Parameters.AddWithValue("?eState", eState);
                 mySqlComm.Parameters.AddWithValue("?bState", bState);
                 mySqlComm.Parameters.AddWithValue("?rfState", rfState);
@@ -490,14 +490,14 @@ namespace SirCachealot.Database
             executeNonQuery(
                 "CREATE TABLE DBLOCKS (UID INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
                 "CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, " +
-                "ATAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, BLOCKTIME DATETIME, " +
+                "DETECTOR VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, MWSTATE BOOL, BLOCKTIME DATETIME, " +
                 "EPLUS DOUBLE, EMINUS DOUBLE, PRIMARY KEY (UID))"
                 );
             executeNonQuery(
                 "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, TAG VARCHAR(30))"
                 );
             executeNonQuery(
-                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT MEDIUMBLOB, PRIMARY KEY (UID))"
+                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT LONGBLOB, PRIMARY KEY (UID))"
                 );
         }
 
@@ -520,7 +520,7 @@ namespace SirCachealot.Database
             return mySqlComm.ExecuteReader();
         }
 
-        private byte[] serializeDBlockAsByteArray(DemodulatedBlock db)
+        private byte[] serializeTOFDBlockAsByteArray(TOFDemodulatedBlock db)
         {
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream();
@@ -532,11 +532,11 @@ namespace SirCachealot.Database
             return buffer;
         }
 
-        private DemodulatedBlock deserializeDBlockFromByteArray(byte[] ba)
+        private TOFDemodulatedBlock deserializeTOFDBlockFromByteArray(byte[] ba)
         {
             MemoryStream ms = new MemoryStream(ba);
             BinaryFormatter bf = new BinaryFormatter();
-            return (DemodulatedBlock)bf.Deserialize(ms);
+            return (TOFDemodulatedBlock)bf.Deserialize(ms);
         }
 
     }

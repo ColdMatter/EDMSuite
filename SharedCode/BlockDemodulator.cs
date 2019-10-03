@@ -195,14 +195,15 @@ namespace Analysis.EDM
             DemodulatedBlock dblock = DemodulateBlock(b, config);
             
             // TOF-demodulate the asymmetry detector
-            int asymmetryIndex = dblock.DetectorIndices["asymmetry"];
             // TOF demodulate the block to get the channel wiggles
             // but only do it for the important channels (to calculate the
             // special nonlinear terms we need)
-            TOFChannelSet tcs = TOFDemodulateBlock(b, asymmetryIndex, false);
+            TOFDemodulatedBlock tdb = TOFDemodulateBlock(b, "asymmetry", false);
+            TOFChannelSet tcs = tdb.TOFChannels;
 
             // get hold of the gating data
             GatedDetectorExtractSpec gate = config.GatedDetectorExtractSpecs["asymmetry"];
+            int asymmetryIndex = b.detectors.IndexOf("asymmetry");
 
             // gate the special channels
             TOFChannel edmDB = (TOFChannel)tcs.GetChannel("EDMDB");
@@ -318,8 +319,13 @@ namespace Analysis.EDM
             return dblock;
         }
 
-        public TOFChannelSet TOFDemodulateBlock(Block b, int detectorIndex, bool allChannels)
+        public TOFDemodulatedBlock TOFDemodulateBlock(Block b, string detector, bool allChannels)
         {
+            if (!b.detectors.Contains("asymmetry")) AddDetectorsToBlock(b, true);
+
+            int detectorIndex = b.detectors.IndexOf(detector);
+            if (detectorIndex == -1) return null;
+
             //edm factor calculation
             double dbStep = ((AnalogModulation)b.Config.GetModulationByName("DB")).Step;
             double magCal = (double)b.Config.Settings["magnetCalibration"];
@@ -707,7 +713,15 @@ namespace Analysis.EDM
             SigdbdbNL.Off = c_sig.On / (c_db.Off * c_db.Off);
             SigdbdbNL.Difference = c_sig.Difference / (c_db.Difference * c_db.Difference);
             tcs.AddChannel(new string[] { "SIGDBDB" }, SigdbdbNL);
-            return tcs;
+
+            TOFDemodulatedBlock tdb = new TOFDemodulatedBlock();
+            tdb.Config = b.Config;
+            tdb.Detector = detector;
+            tdb.DetectorIndex = detectorIndex;
+            tdb.DetectorCalibration = ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[b.detectors.IndexOf(detector)]).Calibration;
+            tdb.TimeStamp = b.TimeStamp;
+            tdb.TOFChannels = tcs;
+            return tdb;
         }
 
         // calculate, for a given analysis channel, whether a given state contributes

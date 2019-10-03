@@ -147,6 +147,8 @@
     <Compile Include="CreateDBDialog.Designer.cs">
       <DependentUpon>CreateDBDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="MySqlTOFDBlockStore.cs" />
+    <Compile Include="TOFDBlockStore.cs" />
     <Compile Include="DBlockStore.cs" />
     <Compile Include="ListSelectionDialog.cs">
       <SubType>Form</SubType>

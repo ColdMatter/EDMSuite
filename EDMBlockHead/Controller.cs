@@ -408,7 +408,7 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            blockDemodulator.AddDetectorsToBlock(b, false);
+            blockDemodulator.AddDetectorsToBlock(b, true);
             DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("liveBlockAnalysis", b);
             DBlock = blockDemodulator.DemodulateBlockNL(b, dc);
             AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);

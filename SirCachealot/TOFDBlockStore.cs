@@ -7,7 +7,7 @@ using Analysis.EDM;
 namespace SirCachealot.Database
 {
     
-    public interface DBlockStore
+    public interface TOFDBlockStore
     {
         UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs);
         UInt32[] GetUIDsByCluster(string clusterName);
@@ -36,11 +36,11 @@ namespace SirCachealot.Database
         UInt32[] GetUIDsByVoltageRange(double low, double high, UInt32[] fromUIDs);
         UInt32[] GetUIDsByVoltageRange(double low, double high);
 
-        UInt32[] GetUIDsByPredicate(PredicateFunction func, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByPredicate(TOFPredicateFunction func, UInt32[] fromUIDs);
 
-        DemodulatedBlock GetDBlock(UInt32 uid);
+        TOFDemodulatedBlock GetDBlock(UInt32 uid);
        
-        UInt32 AddDBlock(DemodulatedBlock db);
+        UInt32 AddDBlock(TOFDemodulatedBlock db);
   
         void RemoveDBlock(UInt32 uid);
 
@@ -53,8 +53,8 @@ namespace SirCachealot.Database
         UInt32[] GetTaggedIndicesForCluster(string clusterName, string tag);
     }
 
-    public delegate bool PredicateFunction(DemodulatedBlock dblock);
+    public delegate bool TOFPredicateFunction(TOFDemodulatedBlock dblock);
 
-    public class BlockNotFoundException : Exception { }
+    public class TOFBlockNotFoundException : Exception { }
 
 }
