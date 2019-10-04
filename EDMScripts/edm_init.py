@@ -72,5 +72,6 @@ for i in range(len(scriptsToLoad)):
 print ""
 
 def run(i):
-	execfile(scriptsToLoad[i])
+	global run_script
+	execfile(scriptsToLoad[i], globals())
 	run_script()

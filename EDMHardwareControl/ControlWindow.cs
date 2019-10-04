@@ -595,6 +595,7 @@ namespace EDMHardwareControl
         public TextBox rfAWGCarrierFreqTextBox;
         private Button rfAWGTestButton;
         public TextBox rfAWGTestTextBox;
+        public CheckBox eDisableSwitching;
 
  
 
@@ -1151,6 +1152,7 @@ namespace EDMHardwareControl
             this.startI2ErrorSigPollButton = new System.Windows.Forms.Button();
             this.rfAWGTab = new System.Windows.Forms.TabPage();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.rfAWGTestTextBox = new System.Windows.Forms.TextBox();
             this.rfAWGTestButton = new System.Windows.Forms.Button();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
             this.label173 = new System.Windows.Forms.Label();
@@ -1201,7 +1203,7 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.rfAWGTestTextBox = new System.Windows.Forms.TextBox();
+            this.eDisableSwitching = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1301,6 +1303,7 @@ namespace EDMHardwareControl
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.eDisableSwitching);
             this.groupBox2.Controls.Add(this.label78);
             this.groupBox2.Controls.Add(this.eOvershootHoldTextBox);
             this.groupBox2.Controls.Add(this.label79);
@@ -6496,6 +6499,14 @@ namespace EDMHardwareControl
             this.groupBox27.TabStop = false;
             this.groupBox27.Text = "Pulsed rf control";
             // 
+            // rfAWGTestTextBox
+            // 
+            this.rfAWGTestTextBox.Location = new System.Drawing.Point(367, 19);
+            this.rfAWGTestTextBox.Name = "rfAWGTestTextBox";
+            this.rfAWGTestTextBox.Size = new System.Drawing.Size(64, 20);
+            this.rfAWGTestTextBox.TabIndex = 12;
+            this.rfAWGTestTextBox.Text = "0";
+            // 
             // rfAWGTestButton
             // 
             this.rfAWGTestButton.Location = new System.Drawing.Point(437, 20);
@@ -6947,13 +6958,13 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
-            // rfAWGTestTextBox
+            // eDisableSwitching
             // 
-            this.rfAWGTestTextBox.Location = new System.Drawing.Point(367, 19);
-            this.rfAWGTestTextBox.Name = "rfAWGTestTextBox";
-            this.rfAWGTestTextBox.Size = new System.Drawing.Size(64, 20);
-            this.rfAWGTestTextBox.TabIndex = 12;
-            this.rfAWGTestTextBox.Text = "0";
+            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
+            this.eDisableSwitching.Name = "eDisableSwitching";
+            this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
+            this.eDisableSwitching.TabIndex = 53;
+            this.eDisableSwitching.Text = "Disable switching";
             // 
             // ControlWindow
             // 

@@ -72,17 +72,29 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("cavitylong", daqBoard + "/ai4", AITerminalConfiguration.Nrse);//Pin 28
             //AddAnalogInputChannel("cavityshort", daqBoard + "/ai5", AITerminalConfiguration.Nrse);//Pin 60
 
+<<<<<<< HEAD
             // map the analog input channels
+=======
+            // map the analog channels
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
             string daqBoard = (string)Boards["daq"];
             AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
+<<<<<<< HEAD
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
             AddAnalogInputChannel("cavityshort", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60
+=======
+
+            AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
+            AddAnalogInputChannel("cavityshort", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60
+
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
             AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
             AddAnalogInputChannel("Temp2", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
             AddAnalogInputChannel("pressure1", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
+<<<<<<< HEAD
             AddAnalogInputChannel("master", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p1", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p2", TCLBoard + "/ai16", AITerminalConfiguration.Rse);
@@ -156,6 +168,16 @@ namespace DAQ.HAL
             TCLConfig tcl1 = new TCLConfig("IR Cavity");
             tcl1.AddLaser("v0laser", "p1");
             tcl1.AddLaser("v2laser", "p2");
+=======
+            
+            
+            AddAnalogOutputChannel("phaseLockAnalogOutput", daqBoard + "/ao1"); //pin 21
+
+            //TransferCavityLock info
+            TCLConfig tcl1 = new TCLConfig("IR Cavity");
+            tcl1.AddLaser("pumplaser", "p1");
+            tcl1.AddLaser("v21repump", "p2");
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
             tcl1.Trigger = TCLBoard + "/PFI0";
             tcl1.Cavity = "cavityRampMonitor";
             tcl1.MasterLaser = "master";
@@ -163,6 +185,7 @@ namespace DAQ.HAL
             tcl1.TCPChannel = 1190;
             tcl1.SlaveVoltageLowerLimit = 0.0;
             tcl1.SlaveVoltageUpperLimit = 10.0;
+<<<<<<< HEAD
       //      tcl1.AnalogSampleRate = 15000;
       //      tcl1.DefaultScanPoints = 600;
             Info.Add("IR", tcl1);
@@ -172,6 +195,15 @@ namespace DAQ.HAL
             tcl2.AddLaser("v1laser", "VISp1");
             tcl2.AddLaser("probelaser", "VISp2");
             tcl2.AddLaser("v3laser", "VISp3");
+=======
+      //      tcl1.DefaultScanPoints = 600;
+            Info.Add("IR", tcl1);
+
+
+            //TransferCavityLock info
+            TCLConfig tcl2 = new TCLConfig("VIS Cavity");
+            tcl2.AddLaser("v1repump", "VISp1");
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
             tcl2.Trigger = TCLBoard2 + "/PFI0";
             tcl2.Cavity = "VIScavityRampMonitor";
             tcl2.MasterLaser = "VISmaster";
@@ -182,8 +214,63 @@ namespace DAQ.HAL
             //tcl2.AnalogSampleRate = 15000;
      //       tcl2.DefaultScanPoints = 300;
             Info.Add("VIS", tcl2);
+<<<<<<< HEAD
 
  */
+=======
+            // The next line is try two DAQ cards for one cavity. (14 Nov 2016) Feel free to delete it.
+            tcl2.AddLaser("v2repump", "VISp2");
+
+            //TCL Lockable lasers
+           // Info.Add("TCLLockableLasers", new string[] { "pumplaser"});
+           // Info.Add("TCLPhotodiodes", new string[] { "cavityRampMonitor", "master", "p1"});// THE FIRST TWO MUST BE CAVITY AND MASTER PHOTODIODE!!!!
+           // Info.Add("TCL_Slave_Voltage_Limit_Upper", 2.0); //volts: Laser control
+           // Info.Add("TCL_Slave_Voltage_Limit_Lower", -2.0); //volts: Laser control
+           // Info.Add("TCL_Default_Gain", -0.01);
+           // Info.Add("TCL_Default_VoltageToLaser", 0.0);
+           // Info.Add("TCL_MAX_INPUT_VOLTAGE", 10.0);
+           // Info.Add("TCL_Default_ScanPoints", 1000);
+            // Some matching up for TCL
+           // Info.Add("pumplaser", "p1");
+           // Info.Add("TCLTrigger", TCLBoard + "/PFI0");
+
+            AddAnalogInputChannel("master", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p1", TCLBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("p2", TCLBoard + "/ai16", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cavityRampMonitor", TCLBoard + "/ai1", AITerminalConfiguration.Rse);
+
+      //      AddAnalogInputChannel("VISmaster", TCLBoard2 + "/ai5", AITerminalConfiguration.Rse);
+      //      AddAnalogInputChannel("VISp1", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
+      //      AddAnalogInputChannel("VIScavityRampMonitor", TCLBoard2 + "/ai4", AITerminalConfiguration.Rse);
+      //      //The next line is try two DAQ cards for one cavity. (14 Nov 2016) Feel free to delete it.
+      //      AddAnalogInputChannel("VISp2", TCLBoard2 + "/ai7", AITerminalConfiguration.Rse);
+
+            AddAnalogInputChannel("VISmaster", TCLBoard2 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("VISp1", TCLBoard2 + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("VIScavityRampMonitor", TCLBoard2 + "/ai1", AITerminalConfiguration.Rse);
+            //The next line is try two DAQ cards for one cavity. (14 Nov 2016) Feel free to delete it.
+            AddAnalogInputChannel("VISp2", TCLBoard2 + "/ai3", AITerminalConfiguration.Rse);
+
+
+
+
+            // map the analog output channels
+            AddAnalogOutputChannel("pumplaser", TCLBoard + "/ao1");
+            AddAnalogOutputChannel("v21repump", TCLBoard + "/ao2");
+            AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
+            AddAnalogOutputChannel("rampfb", TCLBoard + "/ao0");
+
+
+            AddAnalogOutputChannel("v1repump", TCLBoard2 + "/ao1");
+            AddAnalogOutputChannel("VISrampfb", TCLBoard2 + "/ao0");
+            AddAnalogOutputChannel("v2repump", TCLBoard2 + "/ao2");
+
+           
+
+            //map the counter channels
+            //AddCounterChannel("pmt", daqBoard + "/ctr0");
+            //AddCounterChannel("sample clock", daqBoard + "/ctr1");
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
 
             //These need to be activated for the phase lock
             AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8

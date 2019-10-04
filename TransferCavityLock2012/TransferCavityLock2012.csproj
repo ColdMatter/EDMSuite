@@ -110,7 +110,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="NationalInstruments.DAQmx, Version=19.1.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+=======
+    <Reference Include="NationalInstruments.DAQmx, Version=18.5.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+    </Reference>
+>>>>>>> 9bbece49561cfeb6ebdbb0ca9fda0a0726f6b4fb
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -210,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

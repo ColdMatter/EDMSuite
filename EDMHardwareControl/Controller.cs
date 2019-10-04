@@ -94,7 +94,7 @@ namespace EDMHardwareControl
         LeyboldPTR225Gauge pressureMonitor = new LeyboldPTR225Gauge("Middle Penning gauge", "middlePenningGauge");
         BrilliantLaser yag = (BrilliantLaser)Environs.Hardware.YAG;
         Task bBoxAnalogOutputTask;
-        //Task steppingBBiasAnalogOutputTask;
+        Task steppingBBiasAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
         Task probeAOMAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
@@ -189,7 +189,7 @@ namespace EDMHardwareControl
 
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
-            //steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
             //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             probeAOMAnalogOutputTask = CreateAnalogOutputTask("probeAOM");
@@ -698,7 +698,19 @@ namespace EDMHardwareControl
             {
                 window.SetCheckBox(window.attenuatorSelectCheck, value);
             }
-        }       
+        }
+
+        public bool ESwitchingEnabled
+        {
+            get
+            {
+                return !window.eDisableSwitching.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.eDisableSwitching, value);
+            }
+        }
 
         public bool EFieldEnabled
         {
@@ -2038,7 +2050,14 @@ namespace EDMHardwareControl
             lock (switchingLock)
             {
                 newEPolarity = state;
-                switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                if (ESwitchingEnabled)
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                }
+                else
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorkerDummy));
+                }
                 window.EnableControl(window.switchEButton, false);
                 window.EnableControl(window.ePolarityCheck, false);
                 window.EnableControl(window.eBleedCheck, false);
@@ -2118,6 +2137,22 @@ namespace EDMHardwareControl
                 }
             }
             GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+        }
+
+        //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
+        public void SwitchEWorkerDummy()
+        {
+            lock (switchingLock)
+            {
+                Thread.Sleep((int)(1000 * ERampDownTime));
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                Thread.Sleep((int)(1000 * EBleedTime));
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                Thread.Sleep((int)(1000 * ERampUpTime));
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+            }
             ESwitchDone();
         }
 
@@ -3199,16 +3234,16 @@ namespace EDMHardwareControl
             SetAnalogOutput(bBoxAnalogOutputTask, v);
         }
 
-        //public void SetSteppingBBiasVoltage()
-        //{
-        //    double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
-        //    SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
-        //}
-
         public void SetSteppingBBiasVoltage()
         {
-            bfieldCntrl.SetOut1(SteppingBiasVoltage);
+            double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
         }
+
+        //public void SetSteppingBBiasVoltage()
+        //{
+        //    bfieldCntrl.SetOut1(SteppingBiasVoltage);
+        //}
 
         public void SetRandomProbePosition()
         {
@@ -3376,10 +3411,16 @@ namespace EDMHardwareControl
             t.Abort();
         }
 
+        //public void SetSteppingBBiasVoltage(double v)
+        //{
+        //    window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
+        //    bfieldCntrl.SetOut1(v);
+        //}
+
         public void SetSteppingBBiasVoltage(double v)
         {
             window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
-            bfieldCntrl.SetOut1(v);
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
         //This method is supposed to automate the process of setting a bias current before EDM data taking. 
