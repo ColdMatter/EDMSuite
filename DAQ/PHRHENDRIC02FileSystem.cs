@@ -9,18 +9,13 @@ namespace DAQ.Environment
     {
         public PHRHENDRIC02FileSystem()
         {
-            //Paths.Add("settingsPath", "d:\\scanmaster\\settings\\");
-            //Paths.Add("scanMasterDataPath", "d:\\data\\");
-            //Paths.Add("fakeData", "d:\\scanmaster\\examples\\");
             Paths.Add("settingsPath", "d:\\Settings\\");
             Paths.Add("scanMasterDataPath", "d:\\Data\\");
             Paths.Add("fakeData", "d:\\Examples\\");
             Paths.Add("UntriggeredCameraAttributesPath", "d:\\Settings\\CameraAttributes\\SHCCameraAttributes.txt");
             Paths.Add("CameraAttributesPath", "d:\\Settings\\CameraAttributes\\MOTMasterCameraAttributes.txt");
             Paths.Add("transferCavityData", "d:\\Data\\TCL\\");
-
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
-
             SortDataByDate = false;
         }
     }

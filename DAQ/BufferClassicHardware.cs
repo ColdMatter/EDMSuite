@@ -96,20 +96,21 @@ namespace DAQ.HAL
             // map the analog output channels
             AddAnalogOutputChannel("phaseLockAnalogOutput", daqBoard + "/ao1"); //pin 21
             AddAnalogOutputChannel("v0laser", TCLBoard + "/ao1");
+
             AddAnalogOutputChannel("v2laser", TCLBoard + "/ao2");
             AddAnalogOutputChannel("laser", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("rampfb", TCLBoard + "/ao0");
-            AddAnalogOutputChannel("v1laser", TCLBoard2 + "/ao1");
+            AddAnalogOutputChannel("v1laser", TCLBoard2 + "/ao1", 0, 10);
             AddAnalogOutputChannel("VISrampfb", TCLBoard2 + "/ao0");
-            AddAnalogOutputChannel("probelaser", TCLBoard2 + "/ao2");
-            AddAnalogOutputChannel("v3laser", TCLBoard2 + "/ao3");
+            AddAnalogOutputChannel("probelaser", TCLBoard2 + "/ao2", 0, 10);
+            AddAnalogOutputChannel("v3laser", TCLBoard2 + "/ao3", 0, 10);
 
 // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
 // multiple cavities share a single ramp (BaseRamp analog input) + trigger
 // Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
             TCLConfig tclConfig = new TCLConfig("TCL");
-            tclConfig.Trigger = TCLBoard + "/PFI0";
-            tclConfig.BaseRamp = "cavityRampMonitor";
+            tclConfig.Trigger = TCLBoard2 + "/PFI0";    // probe card atm
+            tclConfig.BaseRamp = "VIScavityRampMonitor";
             tclConfig.TCPChannel = 1190;
             tclConfig.DefaultScanPoints = 600;
             tclConfig.AnalogSampleRate = 15000;
@@ -118,6 +119,7 @@ namespace DAQ.HAL
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfig.MaximumNLMFSteps = 20;
 
+            /*
             string IRCavity = "IRCavity";
             tclConfig.AddCavity(IRCavity);
             tclConfig.Cavities[IRCavity].RampOffset = "rampfb";
@@ -129,7 +131,8 @@ namespace DAQ.HAL
             tclConfig.Cavities[IRCavity].AddSlaveLaser("v2laser", "p2");
             tclConfig.Cavities[IRCavity].AddDefaultGain("v2laser", 0.04);
             tclConfig.Cavities[IRCavity].AddFSRCalibration("v2laser", 3.84);
-       
+            */
+            
             string VISCavity = "VISCavity";
             tclConfig.AddCavity(VISCavity);
             tclConfig.Cavities[VISCavity].RampOffset = "VISrampfb";
