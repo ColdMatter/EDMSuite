@@ -323,7 +323,7 @@ namespace SirCachealot.Database
                 // extract the data that we're going to put in the sql database
                 string clusterName = db.Config.Settings["cluster"] as string;
                 int clusterIndex = (int)db.Config.Settings["clusterIndex"];
-                string aTag = db.DemodulationConfig.AnalysisTag;
+                string aTag = db.DataType.ToString();
                 bool eState = (bool)db.Config.Settings["eState"];
                 bool bState = (bool)db.Config.Settings["bState"];
                 bool rfState = (bool)db.Config.Settings["rfState"];

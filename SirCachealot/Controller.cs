@@ -25,12 +25,15 @@ namespace SirCachealot
         System.Threading.Timer statusMonitorTimer;
 
         // Database
-        // private MySqlDBlockStore blockStore;
-        private MySqlTOFDBlockStore blockStore;
+        private MySqlDBlockStore blockStore;
+        //private MySqlTOFDBlockStore blockStore;
+
+        // Gate set used for demodulation
+        private GatedDemodulationConfigSet gateSet;
 
         // TOF Demodulation
-        private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
-        private object accumulatorLock = new object();
+        //private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
+        //private object accumulatorLock = new object();
 
         // Threading
         private ThreadManager threadManager = new ThreadManager();
@@ -42,8 +45,9 @@ namespace SirCachealot
         internal void Initialise()
         {
             //set up sql database
-            //blockStore = new MySqlDBlockStore();
-            blockStore = new MySqlTOFDBlockStore();
+            blockStore = new MySqlDBlockStore();
+            //blockStore = new MySqlTOFDBlockStore();
+            gateSet = new GatedDemodulationConfigSet();
             blockStore.Start();
             threadManager.InitialiseThreading(this);
         }
@@ -118,28 +122,11 @@ namespace SirCachealot
          * private member, for internal use. External users need to get the block store through this
          * getter, which only exposes the block store's generic functions.
          */
-        //public DBlockStore DBlockStore
-        //{
-        //    get
-        //    {
-        //        return blockStore;
-        //    }
-        //}
-
-        public TOFDBlockStore DBlockStore
+        public DBlockStore DBlockStore
         {
             get
             {
-                try
-                {
-                    return blockStore;
-                }
-
-                catch (Exception e)
-                {
-                    log(e.ToString());
-                    return null;
-                }
+                return blockStore;
             }
         }
 
@@ -159,16 +146,24 @@ namespace SirCachealot
         //    }
         //}
 
-        public void AddBlock(Block b, string[] detectors)
+        public void AddBlock(Block b)
         {
-            BlockDemodulator blockDemodulator = new BlockDemodulator();
-            foreach(string dName in detectors)
-            {
-                log("Adding detector " + dName + " in block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-                TOFDemodulatedBlock tdBlock = blockDemodulator.TOFDemodulateBlock(b, dName, true);
-                blockStore.AddDBlock(tdBlock);
-            }
+            TOFBlockDemodulator blockDemodulator = new TOFBlockDemodulator();
+            log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+            TOFDemodulatedBlock tdBlock = blockDemodulator.TOFDemodulateBlock(b);
+            blockStore.AddDBlock(tdBlock);
         }
+
+        public void AddGatedBlock(Block b, GatedDemodulationConfig gateConfig)
+        {
+            GatedBlockDemodulator blockDemodulator = new GatedBlockDemodulator();
+            log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"] +
+                " with gate: " + gateConfig.Name
+                );
+            GatedDemodulatedBlock gdBlock = blockDemodulator.GateThenDemodulateBlock(b, gateConfig);
+            blockStore.AddDBlock(gdBlock);
+        }
+
 
         // This method is thread-safe.
         //public void AddBlock(string path, string[] demodulationConfigs)
@@ -180,13 +175,25 @@ namespace SirCachealot
         //    AddBlock(b, demodulationConfigs);
         //}
 
-        public void AddBlock(string path, string[] detectors)
+        public Block LoadBlockFromFile(string path)
         {
             string[] splitPath = path.Split('\\');
             log("Loading block " + splitPath[splitPath.Length - 1]);
             BlockSerializer bs = new BlockSerializer();
             Block b = bs.DeserializeBlockFromZippedXML(path, "block.xml");
-            AddBlock(b, detectors);
+            return b;
+        }
+
+        public void AddBlock(string path)
+        {
+            Block b = LoadBlockFromFile(path);
+            AddBlock(b);
+        }
+
+        public void AddGatedBlock(string path, GatedDemodulationConfig gateConfig)
+        {
+            Block b = LoadBlockFromFile(path);
+            AddGatedBlock(b, gateConfig);
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
@@ -198,11 +205,27 @@ namespace SirCachealot
         //    threadManager.AddToQueue(AddBlockThreadWrapper, bap);
         //}
 
-        public void AddBlockToQueue(string path, string[] detectors)
+        public void GateTOFDemodulatedBlock(DemodulatedBlock dblock, GatedDemodulationConfig gateConfig)
+        {
+            TOFDemodulatedBlock tdblock = dblock as TOFDemodulatedBlock;
+            GatedDemodulatedBlock gdblock = new GatedDemodulatedBlock();
+
+            if (tdblock == null)
+            {
+                log("Error: Not a TOF demodulated block.");
+                return;
+            }
+
+            GatedBlockDemodulator gatedDemodulator = new GatedBlockDemodulator();
+            gdblock = gatedDemodulator.GateTOFDemodulatedBlock(tdblock, gateConfig);
+
+            blockStore.AddDBlock(gdblock);
+        }
+
+        public void AddBlockToQueue(string path)
         {
             blockAddParams bap = new blockAddParams();
             bap.path = path;
-            bap.detectors = detectors;
             threadManager.AddToQueue(AddBlockThreadWrapper, bap);
         }
 
@@ -218,13 +241,12 @@ namespace SirCachealot
         //    }
         //}
 
-        public void AddBlocksToQueue(string[] paths, string[] detectors)
+        public void AddBlocksToQueue(string[] paths)
         {
             foreach (string path in paths)
             {
                 blockAddParams bap = new blockAddParams();
                 bap.path = path;
-                bap.detectors = detectors;
                 threadManager.AddToQueue(AddBlockThreadWrapper, bap);
             }
         }
@@ -247,7 +269,7 @@ namespace SirCachealot
             threadManager.QueueItemWrapper(delegate (object parms)
             {
                 blockAddParams parameters = (blockAddParams)parms;
-                AddBlock(parameters.path, parameters.detectors);
+                AddBlock(parameters.path);
             },
             parametersIn
             );
@@ -267,7 +289,6 @@ namespace SirCachealot
         private struct blockAddParams
         {
             public string path;
-            public string[] detectors;
             // this struct has a ToString method defined for error reporting porpoises.
             public override string ToString()
             {
@@ -306,6 +327,23 @@ namespace SirCachealot
             log("Selected db: " + db);
         }
 
+        public void LoadGateSet(string path)
+        {
+            GateManager gateManager = new GateManager();
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "xml gate set|*.xml";
+            dialog.Title = "Open gate set";
+            dialog.ShowDialog();
+            if (dialog.FileName != "")
+            {
+                System.IO.FileStream fs =
+                    (System.IO.FileStream)dialog.OpenFile();
+                gateManager.LoadGateSetFromXml(fs);
+                fs.Close();
+            }
+            gateSet = gateManager.GateSet;
+        }
+
         private string GetDatabaseStats()
         {
             StringBuilder b = new StringBuilder();
@@ -318,80 +356,76 @@ namespace SirCachealot
 
         #region TOFDemodulation
 
-        public void TOFDemodulateBlocks(string[] blockFiles, string savePath, string[] detectorNames)
-        {
-            // first of all test that the save location exists to avoid later disappointment.
+        //public void TOFDemodulateBlocks(string[] blockFiles, string savePath, string[] detectorNames)
+        //{
+        //    // first of all test that the save location exists to avoid later disappointment.
 
-            if (!Directory.Exists(Path.GetDirectoryName(savePath)))
-            {
-                log("Save path does not exist!!");
-                return;
-            }
+        //    if (!Directory.Exists(Path.GetDirectoryName(savePath)))
+        //    {
+        //        log("Save path does not exist!!");
+        //        return;
+        //    }
 
-            // initialise the TOF accumulator dictionary
-            tcsaDictionary = new Dictionary<string, TOFChannelSetAccumulator>();
-            foreach (string detectorName in detectorNames)
-            {
-                tcsaDictionary.Add(detectorName, new TOFChannelSetAccumulator());
-            }
+        //    // initialise the TOF accumulator dictionary
+        //    tcsaDictionary = new Dictionary<string, TOFChannelSetAccumulator>();
+        //    foreach (string detectorName in detectorNames)
+        //    {
+        //        tcsaDictionary.Add(detectorName, new TOFChannelSetAccumulator());
+        //    }
 
-            // queue the blocks - the last block analysed will take care of saving the results.
-            foreach (string blockFile in blockFiles)
-            {
-                TofDemodulateParams tdp = new TofDemodulateParams();
-                tdp.blockPath = blockFile;
-                tdp.savePath = savePath;
-                tdp.detectorNames = detectorNames;
-                threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
-            }
-        }
+        //    // queue the blocks - the last block analysed will take care of saving the results.
+        //    foreach (string blockFile in blockFiles)
+        //    {
+        //        TofDemodulateParams tdp = new TofDemodulateParams();
+        //        tdp.blockPath = blockFile;
+        //        tdp.savePath = savePath;
+        //        tdp.detectorNames = detectorNames;
+        //        threadManager.AddToQueue(TOFDemodulateThreadWrapper, tdp);
+        //    }
+        //}
 
-        private void TOFDemodulateBlock(string blockPath, string savePath, string[] detectorNames)
-        {
-            BlockSerializer bs = new BlockSerializer();
-            string[] splitPath = blockPath.Split('\\');
-            log("Loading block " + splitPath[splitPath.Length - 1]);
-            Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
-            BlockDemodulator bd = new BlockDemodulator();
-            Dictionary<string, TOFDemodulatedBlock> tdbs = new Dictionary<string, TOFDemodulatedBlock>();
+        //private void TOFDemodulateBlock(string blockPath, string savePath, string[] detectorNames)
+        //{
+        //    BlockSerializer bs = new BlockSerializer();
+        //    string[] splitPath = blockPath.Split('\\');
+        //    log("Loading block " + splitPath[splitPath.Length - 1]);
+        //    Block b = bs.DeserializeBlockFromZippedXML(blockPath, "block.xml");
+        //    TOFBlockDemodulator bd = new TOFBlockDemodulator();
 
-            bd.AddDetectorsToBlock(b, true);
+        //    log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+        //    foreach (string detectorName in detectorNames)
+        //    {
+        //        TOFDemodulatedBlock tdb = bd.TOFDemodulateBlock(b);
 
-            log("TOF Demodulating block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-            foreach (string detectorName in detectorNames)
-            {
-                TOFDemodulatedBlock tdb = bd.TOFDemodulateBlock(b, detectorName, true);
-                tdbs.Add(detectorName, tdb);
+        //        string savePathTDB = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
+        //        log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
+        //        Stream fs = new FileStream(savePathTDB, FileMode.Create);
+        //        (new BinaryFormatter()).Serialize(fs, tdb);
+        //        fs.Close();
+        //    }
+        //}
 
-                string savePathTDB = savePath + detectorName + b.Config.Settings["cluster"] + "-" + b.Config.Settings["clusterIndex"] + ".bin";
-                log("Saving TOF Channel Set for " + detectorName + " - " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
-                Stream fs = new FileStream(savePathTDB, FileMode.Create);
-                (new BinaryFormatter()).Serialize(fs, tdb);
-                fs.Close();
-            }
-        }
-
-        private void TOFDemodulateThreadWrapper(object parametersIn)
-        {
-            threadManager.QueueItemWrapper(delegate(object parms)
-            {
-                TofDemodulateParams parameters = (TofDemodulateParams)parms;
-                TOFDemodulateBlock(parameters.blockPath, parameters.savePath, parameters.detectorNames);
-            },
-            parametersIn
-            );
-        }
-        private struct TofDemodulateParams
-        {
-            public string blockPath;
-            public string savePath;
-            public string[] detectorNames;
-            // this struct has a ToString method defined for error reporting porpoises.
-            public override string ToString()
-            {
-                return blockPath;
-            }
-        }
+        //private void TOFDemodulateThreadWrapper(object parametersIn)
+        //{
+        //    threadManager.QueueItemWrapper(delegate(object parms)
+        //    {
+        //        TofDemodulateParams parameters = (TofDemodulateParams)parms;
+        //        TOFDemodulateBlock(parameters.blockPath, parameters.savePath, parameters.detectorNames);
+        //    },
+        //    parametersIn
+        //    );
+        //}
+        //private struct TofDemodulateParams
+        //{
+        //    public string blockPath;
+        //    public string savePath;
+        //    public string[] detectorNames;
+        //    // this struct has a ToString method defined for error reporting porpoises.
+        //    public override string ToString()
+        //    {
+        //        return blockPath;
+        //    }
+        //}
 
         #endregion
 
@@ -416,36 +450,17 @@ namespace SirCachealot
         //}
 
 
-        public DemodulatedBlock Test1()
+        public void Test1()
         {
-            BlockSerializer bs = new BlockSerializer();
-            Block b = bs.DeserializeBlockFromZippedXML(
-                "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_0.zip", "block.xml");
-
-            BlockDemodulator bd = new BlockDemodulator();
-
-            DemodulatedBlock db = bd.DemodulateBlockNL(b,
-                DemodulationConfig.GetStandardDemodulationConfig("wide", b));
-
-            return db;
-
-            //JsonSerializer serializer = new JsonSerializer();
-            //using (StreamWriter sw = new StreamWriter("c:\\Users\\jony\\Desktop\\test.json"))
-            //using (JsonWriter writer = new JsonTextWriter(sw))
-            //{
-            //    serializer.Serialize(writer, b.Config);
-            //}
-
-
-            //bs.SerializeBlockAsJSON("c:\\Users\\jony\\Desktop\\test.json", b);
+            
         }
 
         public void Test2()
         {
-            string[] blockPath = new string[1];
-            blockPath[0] = "C:\\Users\\EDM\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_1.zip";
-            string savePath = @"C:\Users\EDM\Desktop\";
-            TOFDemodulateBlocks(blockPath, savePath, new string[3] {"asymmetry","topProbeNoBackground","NorthCurrent"});
+            //string[] blockPath = new string[1];
+            //blockPath[0] = "C:\\Users\\cjh211\\Box\\EDM (Electron EDM)\\Data\\sedm\\v3\\2019\\September2019\\09Sep1928_1.zip";
+            //string savePath = @"C:\Users\cjh211\Desktop\scTest\";
+            //TOFDemodulateBlocks(blockPath, savePath, new string[3] {"asymmetry","topProbeNoBackground","NorthCurrent"});
         }
 
         #endregion

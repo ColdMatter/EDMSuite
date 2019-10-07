@@ -147,6 +147,12 @@
     <Compile Include="CreateDBDialog.Designer.cs">
       <DependentUpon>CreateDBDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="GateListDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GateListDialog.Designer.cs">
+      <DependentUpon>GateListDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="MySqlTOFDBlockStore.cs" />
     <Compile Include="TOFDBlockStore.cs" />
     <Compile Include="DBlockStore.cs" />
@@ -168,6 +174,9 @@
     <EmbeddedResource Include="CreateDBDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CreateDBDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GateListDialog.resx">
+      <DependentUpon>GateListDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ListSelectionDialog.resx">
       <SubType>Designer</SubType>

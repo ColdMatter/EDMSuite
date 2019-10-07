@@ -1,47 +1,50 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using EDMConfig;
 
 namespace Analysis.EDM
 {
+    public enum DemodulatedBlockType { TOF, GATED }
     [Serializable]
+    [XmlInclude(typeof(GatedDemodulatedBlock))]
+    [XmlInclude(typeof(TOFDemodulatedBlock))]
     public class DemodulatedBlock
     {
         public DateTime TimeStamp;
         public BlockConfig Config;
-        public DemodulationConfig DemodulationConfig;
+        public DemodulatedBlockType DataType;
 
-        public Dictionary<string, int> DetectorIndices = new Dictionary<string, int>();
-        public List<DetectorChannelValues> ChannelValues = new List<DetectorChannelValues>();
-        public Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
+        private readonly Dictionary<string, ChannelSet> ChannelSetDictionary = new Dictionary<string, ChannelSet>();
+        private readonly Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
 
-        // This is a convenience function that pulls out the mean and error of a channel,
-        // specified by a set of switches for a given detector. This isn't the most efficient
-        // way to do it if pulling out a lot of values, but it's not bad. And it is convenient.
-        public double[] GetChannelValueAndError(string[] switches, string detector)
+        public void AddDetector(string detector, double calibration, ChannelSet channelSet)
         {
-            int detectorIndex;
-
-            if (DetectorIndices.TryGetValue(detector, out detectorIndex))
-            {
-                DetectorChannelValues dcv = ChannelValues[detectorIndex];
-                uint channelIndex = dcv.GetChannelIndex(switches);
-                return new double[] { dcv.Values[channelIndex], dcv.Errors[channelIndex] };
-            }
-            else
-            {
-                return new double[] {0.0, 0.0};
-            }
-
+            ChannelSetDictionary.Add(detector, channelSet);
+            DetectorCalibrations.Add(detector, calibration);
+        }
+        
+        public ChannelSet GetChannelSet(string detector)
+        {
+            return ChannelSetDictionary[detector];
         }
 
-        public double[] GetSpecialChannelValueAndError(string name, string detector)
+        public double GetCalibration(string detector)
         {
-            int detectorIndex = DetectorIndices[detector];
-            DetectorChannelValues dcv = ChannelValues[detectorIndex];
-            return dcv.SpecialValues[name];
+            return DetectorCalibrations[detector];
+        }
+
+        public List<string> Detectors
+        {
+            get
+            {
+                Dictionary<string, ChannelSet>.KeyCollection keys = ChannelSetDictionary.Keys;
+                List<string> keyArray = new List<string>();
+                foreach (string key in keys) keyArray.Add(key);
+                return keyArray;
+            }
         }
 
     }

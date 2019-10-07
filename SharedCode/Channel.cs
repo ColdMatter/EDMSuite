@@ -12,12 +12,22 @@ namespace Analysis.EDM
     /// on, an off and a difference value, and these values can be of any type. Examples could be a channel
     /// of TOF values, or simply a channel of numbers.
     /// </summary>
+    /// 
+    public abstract class Channel
+    {
+        public object On;
+        public object Off;
+        public object Difference;
+    }
+
     [Serializable]
     [XmlInclude(typeof(TOFChannel))]
-    public class Channel<T>
+    [XmlInclude(typeof(GatedChannel))]
+    [XmlInclude(typeof(PointChannel))]
+    public class Channel<T> : Channel
     {
-        public T On;
-        public T Off;
-        public T Difference;
+        public new T On;
+        public new T Off;      
+        public new T Difference;
     }
 }

@@ -169,10 +169,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="PointWithError.cs" />
+    <Compile Include="GatedBlockDemodulator.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
+    <Compile Include="GatedChannel.cs" />
+    <Compile Include="PointChannel.cs" />
+    <Compile Include="GatedDemodulatedBlock.cs" />
     <Compile Include="TOFDemodulatedBlock.cs" />
-    <Compile Include="DemodulationConfig.cs" />
+    <Compile Include="GatedDemodulationConfig.cs" />
     <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
     <Compile Include="OldCode\ChannelSetGroup.cs" />
@@ -203,7 +209,7 @@
     <Compile Include="BlockConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="TOFBlockDemodulator.cs" />
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -225,7 +231,7 @@
     <Compile Include="OldCode\DemodulationConfig.cs" />
     <Compile Include="DetectorChannelValues.cs" />
     <Compile Include="DetectorFT.cs" />
-    <Compile Include="GatedDetectorExtractSpec.cs" />
+    <Compile Include="Gate.cs" />
     <Compile Include="DigitalModulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -290,6 +296,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="licenses.licx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

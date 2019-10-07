@@ -79,13 +79,17 @@ namespace Data.EDM
             return d;
         }
 
-        // convenience function to subtract background from TOFs, scale bottom TOF, 
-        // and then calculate the asymmetry TOF
-        public void ProcessBlock()
+        // This function adds background-subtracted TOFs, scaled bottom probe TOF, and asymmetry TOF to the block
+        // Also has the option of converting single point data to TOFs
+        public static void AddDetectorsToBlock(Block b)
         {
-            this.SubtractBackgroundFromProbeDetectorTOFs();
-            this.CreateScaledBottomProbe();
-            this.ConstructAsymmetryTOF();
+            b.SubtractBackgroundFromProbeDetectorTOFs();
+
+            b.CreateScaledBottomProbe();
+
+            b.ConstructAsymmetryTOF();
+
+            b.TOFuliseSinglePointData();
         }
 
         // this function adds a new set of detector data to the block, constructed
@@ -128,7 +132,7 @@ namespace Data.EDM
             {
                 Shot shot = ((EDMPoint)points[i]).Shot;
                 TOF t = (TOF)shot.TOFs[0];
-                double bg = t.GatedMeanAndUncertainty(2800, 2900)[0];
+                double bg = t.GatedMean(2800, 2900);
                 TOF bgSubtracted = t - bg;
 
                 // if value if negative, set to zero

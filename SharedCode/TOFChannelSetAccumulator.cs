@@ -11,7 +11,7 @@ namespace Analysis.EDM
     {
         private int Count;
 
-        public void Add(TOFChannelSet val)
+        public void Add(ChannelSet<TOF> val)
         {
             if (Channels.Count == 0)
             {
@@ -23,9 +23,9 @@ namespace Analysis.EDM
             Count++;
         }
 
-        public TOFChannelSet GetResult()
+        public ChannelSet<TOF> GetResult()
         {
-            TOFChannelSet cs = new TOFChannelSet();
+            ChannelSet<TOF> cs = new ChannelSet<TOF>();
             foreach (string channel in Channels)
                 cs.AddChannel(channel, ((TOFChannelAccumulator)GetChannel(channel)).GetResult());
             return cs;
