@@ -28,8 +28,8 @@ namespace SirCachealot
         private MySqlDBlockStore blockStore;
         //private MySqlTOFDBlockStore blockStore;
 
-        // Gate set used for demodulation
-        private GatedDemodulationConfigSet gateSet;
+        // Gate set dictionary
+        private Dictionary<string, GatedDemodulationConfig> currentGateSetDictionary = new Dictionary<string, GatedDemodulationConfig>();
 
         // TOF Demodulation
         //private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
@@ -47,7 +47,6 @@ namespace SirCachealot
             //set up sql database
             blockStore = new MySqlDBlockStore();
             //blockStore = new MySqlTOFDBlockStore();
-            gateSet = new GatedDemodulationConfigSet();
             blockStore.Start();
             threadManager.InitialiseThreading(this);
         }
@@ -116,7 +115,6 @@ namespace SirCachealot
         #endregion
 
         #region Database methods
-
         /* This is the interface that SirCachealot provides to the d-block store. The actual d-block
          * store class is an instance of the DBlock store interface. That object is available as a
          * private member, for internal use. External users need to get the block store through this
@@ -164,6 +162,12 @@ namespace SirCachealot
             blockStore.AddDBlock(gdBlock);
         }
 
+        public void AddGatedBlock(Block b, string gateConfigName)
+        {
+            if (currentGateSetDictionary.ContainsKey(gateConfigName)) AddGatedBlock(b, currentGateSetDictionary[gateConfigName]);
+            else errorLog("Gate config " + gateConfigName + " not found!");
+        }
+
 
         // This method is thread-safe.
         //public void AddBlock(string path, string[] demodulationConfigs)
@@ -194,6 +198,12 @@ namespace SirCachealot
         {
             Block b = LoadBlockFromFile(path);
             AddGatedBlock(b, gateConfig);
+        }
+
+        public void AddGatedBlock(string path, string gateConfigName)
+        {
+            Block b = LoadBlockFromFile(path);
+            AddGatedBlock(b, gateConfigName);
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
@@ -327,7 +337,18 @@ namespace SirCachealot
             log("Selected db: " + db);
         }
 
-        public void LoadGateSet(string path)
+        private string GetDatabaseStats()
+        {
+            StringBuilder b = new StringBuilder();
+            b.AppendLine("Database queries: " + blockStore.QueryCount);
+            b.AppendLine("DBlocks served: " + blockStore.DBlockCount);
+            return b.ToString();
+        }
+
+        #endregion
+
+        #region Gate methods
+        public void LoadGateSet()
         {
             GateManager gateManager = new GateManager();
             OpenFileDialog dialog = new OpenFileDialog();
@@ -341,15 +362,130 @@ namespace SirCachealot
                 gateManager.LoadGateSetFromXml(fs);
                 fs.Close();
             }
-            gateSet = gateManager.GateSet;
+
+            GatedDemodulationConfigSet gateConfigSet = new GatedDemodulationConfigSet();
+            gateConfigSet = gateManager.GateSet;
+            List<string> gateConfigNames = new List<string>();
+
+            currentGateSetDictionary.Clear();
+            log("Gate configs loaded:");
+            foreach (GatedDemodulationConfig config in gateConfigSet.GatedDemodulationConfigs)
+            {
+                gateConfigNames.Add(config.Name);
+                log(config.Name);
+                currentGateSetDictionary.Add(config.Name, config);
+            }
+            mainWindow.PopulateGateConfigList(gateConfigNames);
         }
 
-        private string GetDatabaseStats()
+        public void SaveGateSet()
         {
-            StringBuilder b = new StringBuilder();
-            b.AppendLine("Database queries: " + blockStore.QueryCount);
-            b.AppendLine("DBlocks served: " + blockStore.DBlockCount);
-            return b.ToString();
+            GateManager gateManager = new GateManager();
+            GatedDemodulationConfigSet gateConfigSet = new GatedDemodulationConfigSet();
+            foreach (string key in currentGateSetDictionary.Keys)
+            {
+                gateConfigSet.AddGatedDemodulationConfig(currentGateSetDictionary[key]);
+            }
+            gateManager.GateSet = gateConfigSet;
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "xml gate set|*.xml";
+            dialog.Title = "Save gate set";
+            dialog.ShowDialog();
+            if (dialog.FileName != "")
+            {
+                System.IO.FileStream fs =
+                    (System.IO.FileStream)dialog.OpenFile();
+                gateManager.SaveGateSetAsXml(fs);
+                fs.Close();
+            }
+            log("Saved gate config to " + dialog.FileName.ToString());
+        }
+
+        public void UpdateGateListInUI(string gateConfigName)
+        {
+            GatedDemodulationConfig gateConfig = currentGateSetDictionary[gateConfigName];
+            List<string[]> gateConfigData = new List<string[]>();
+            mainWindow.ClearGateList();
+            for (int i = 0; i < gateConfig.Gates.Count; i++)
+            {
+                mainWindow.AddGateListEntry(
+                    gateConfig.GatedDetectors[i],
+                    gateConfig.Gates[i].GateLow,
+                    gateConfig.Gates[i].GateHigh,
+                    gateConfig.Gates[i].Integrate
+                    );
+            }
+
+            // TO IMPLEMENT: POINT DETECTORS
+        }
+
+        public void NewGateConfig()
+        {
+            GatedDemodulationConfig newGateConfig = GatedDemodulationConfig.MakeStandardWideGateConfig();
+            newGateConfig.Name = "Untitled";
+            try
+            {
+                currentGateSetDictionary.Add(newGateConfig.Name, newGateConfig);
+            }
+            catch (ArgumentException)
+            {
+                errorLog("A gate config with the same name already exists!");
+            }
+            RefreshGateConfigList();
+            mainWindow.SelectGateConfig(newGateConfig.Name);
+        }
+
+        public void SaveCurrentGateConfig()
+        {
+            var gateConfig = new GatedDemodulationConfig();
+            List<object[]> gateConfigData = mainWindow.GetGateConfigFromDataView();
+
+            gateConfig.Name = mainWindow.GetGateConfigNameTextBox();
+
+            foreach (object[] gateData in gateConfigData)
+            {
+                if (!gateConfig.GatedDetectors.Contains((string)gateData[0]))
+                {
+                    gateConfig.AddGate(
+                        (string)gateData[0],
+                        new Gate()
+                        {
+                            GateLow = (int)gateData[1],
+                            GateHigh = (int)gateData[2],
+                            Integrate = (bool)gateData[3]
+                        }
+                        );
+                }
+
+                else
+                {
+                    MessageBox.Show("Two gates have the same detector!");
+                    return;
+                }
+            }
+
+            currentGateSetDictionary.Remove(mainWindow.GetGateConfigName());
+            try
+            {
+                currentGateSetDictionary.Add(gateConfig.Name, gateConfig);
+            }
+            catch (ArgumentException)
+            {
+                errorLog("A gate config with the same name already exists!");
+            }
+
+            RefreshGateConfigList();
+            mainWindow.SelectGateConfig(gateConfig.Name);
+        }
+
+        private void RefreshGateConfigList()
+        {
+            List<string> updatedGateConfigNames = new List<string>();
+            foreach (string key in currentGateSetDictionary.Keys)
+            {
+                updatedGateConfigNames.Add(key);
+            }
+            mainWindow.PopulateGateConfigList(updatedGateConfigNames);
         }
 
         #endregion
@@ -434,7 +570,7 @@ namespace SirCachealot
         // Somewhere for SirCachealot to store test results that's accessible by Mathematica.
         // Makes debugging easier and is needed as a workaround for the constant Mathematica
         // NET/Link errors.
-//        public TOFChannelSetGroup ChanSetGroup;
+        //        public TOFChannelSetGroup ChanSetGroup;
         // workarounds for NET/Link bugs
         //public TOFChannelSet GetAveragedChannelSet(bool eSign, bool bSign, bool rfSign)
         //{
@@ -452,7 +588,11 @@ namespace SirCachealot
 
         public void Test1()
         {
-            
+            GatedDemodulationConfig standardConfig = GatedDemodulationConfig.MakeStandardWideGateConfig();
+            //gateSet = new GatedDemodulationConfigSet();
+            //gateSet.GatedDemodulationConfigs.Add(standardConfig);
+
+            //SaveGateSet();
         }
 
         public void Test2()

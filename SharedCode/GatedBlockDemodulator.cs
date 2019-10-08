@@ -133,7 +133,7 @@ namespace Analysis.EDM
             {
                 var channelSet = new ChannelSet<PointChannel>();
 
-                if (config.Gates.Contains(detector))
+                if (config.GatedDetectors.Contains(detector))
                 {
                     var tofChannelSet = tofDemodulatedBlock.GetChannelSet(detector);
                     foreach(string tofChannelName in tofChannelSet.Channels)

@@ -10,9 +10,11 @@ namespace Analysis.EDM
     [Serializable]
     public class Gate
     {
-        public int GateLow;
-        public int GateHigh;
-        public bool Integrate;
+        public int GateLow { get; set; }
+        public int GateHigh { get; set; }
+        public bool Integrate { get; set; }
+
+        public Gate() { }
 
         public Gate(int gateLow, int gateHigh, bool integrate)
         {

@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="GateManager.cs" />
     <Compile Include="PointWithError.cs" />
     <Compile Include="GatedBlockDemodulator.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="GatedChannel.cs" />
     <Compile Include="PointChannel.cs" />
     <Compile Include="GatedDemodulatedBlock.cs" />
+    <Compile Include="GatedDemodulationConfigSet.cs" />
     <Compile Include="TOFDemodulatedBlock.cs" />
     <Compile Include="GatedDemodulationConfig.cs" />
     <Compile Include="IQData.cs" />
@@ -296,9 +298,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="licenses.licx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

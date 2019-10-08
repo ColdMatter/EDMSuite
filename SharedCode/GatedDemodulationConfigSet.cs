@@ -12,6 +12,7 @@ namespace Analysis.EDM
 	{
 		public GatedDemodulationConfigSet()
 		{
+            gatedDemodulationConfigs = new List<GatedDemodulationConfig>();
 		}
 	
 		private List<GatedDemodulationConfig> gatedDemodulationConfigs;
@@ -23,6 +24,11 @@ namespace Analysis.EDM
 			get { return gatedDemodulationConfigs; }
 			set { gatedDemodulationConfigs = value; }
 		}
+
+        public void AddGatedDemodulationConfig(GatedDemodulationConfig gateConfig)
+        {
+            gatedDemodulationConfigs.Add(gateConfig);
+        }
 	}
 	
 }

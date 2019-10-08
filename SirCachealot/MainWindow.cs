@@ -12,9 +12,56 @@ namespace SirCachealot
     {
         internal Controller controller;
 
+        private readonly List<string> detectorList = new List<string>() { 
+            "asymmetry", 
+            "topProbeNoBackground", 
+            "bottomProbeScaled", 
+            "magnetometer", 
+            "gnd", 
+            "battery"
+        };
+
         public MainWindow()
         {
             InitializeComponent();
+            InitialiseGateListDataView();
+        }
+
+        private void InitialiseGateListDataView()
+        {
+            this.gateListDataView.AutoGenerateColumns = false;
+
+            DataGridViewComboBoxColumn col1 = new DataGridViewComboBoxColumn();
+            col1.DataPropertyName = "Detector";
+            col1.HeaderText = "Detector";
+            col1.DataSource = detectorList;
+            col1.ValueType = typeof(String);
+
+            this.gateListDataView.Columns.Add(col1);
+
+            DataGridViewTextBoxColumn col2 = new DataGridViewTextBoxColumn();
+            col2.DataPropertyName = "StartTime";
+            col2.HeaderText = "Start time (us)";
+            col2.ValueType = typeof(int);
+
+            this.gateListDataView.Columns.Add(col2);
+
+            DataGridViewTextBoxColumn col3 = new DataGridViewTextBoxColumn();
+            col3.DataPropertyName = "EndTime";
+            col3.HeaderText = "End time (us)";
+            col3.ValueType = typeof(int);
+
+            this.gateListDataView.Columns.Add(col3);
+
+            DataGridViewComboBoxColumn col4 = new DataGridViewComboBoxColumn();
+            col4.DataPropertyName = "Integrate";
+            col4.HeaderText = "Integrate?";
+            col4.DataSource = new List<bool>() { true, false };
+            col4.ValueType = typeof(bool);
+
+            this.gateListDataView.Columns.Add(col4);
+
+            this.gateListDataView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
         // choosing File->Exit is set to close the form.
@@ -33,7 +80,6 @@ namespace SirCachealot
         {
             controller.UIInitialise();
         }
-
 
         private void createToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -68,6 +114,77 @@ namespace SirCachealot
                 new object[] { txt + Environment.NewLine });
         }
 
+        public void PopulateGateConfigList(List<string> gateConfigNames)
+        {
+            gateConfigSelectionComboBox.DataSource = gateConfigNames;
+        }
+
+        public List<string> GetGateConfigList()
+        {
+            List<string> gateConfigList = new List<string>();
+            foreach(object item in gateConfigSelectionComboBox.Items)
+            {
+                gateConfigList.Add((string)item);
+            }
+            return gateConfigList;
+        }
+        
+        public void AddGateListEntry(string detector, int startTime, int endTime, bool integrate)
+        {
+            if (detectorList.Contains(detector))
+            {
+                this.gateListDataView.Rows.Add(detector, startTime, endTime, integrate);
+            }
+
+            this.gateListDataView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+        }
+
+        public void ClearGateList()
+        {
+            this.gateListDataView.Rows.Clear();
+        }
+
+        public string GetGateConfigName()
+        {
+            return gateConfigSelectionComboBox.SelectedItem.ToString();
+        }
+
+        public string GetGateConfigNameTextBox()
+        {
+            return currentGateConfigNameTextBox.Text;
+        }
+
+        public void SelectGateConfig(string name)
+        {
+            if (gateConfigSelectionComboBox.Items.Contains(name))
+            {
+                gateConfigSelectionComboBox.SelectedItem = name;
+            }
+        }
+
+        public List<object[]> GetGateConfigFromDataView()
+        {
+            List<object[]> configData = new List<object[]>();
+            
+            foreach (DataGridViewRow row in gateListDataView.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    object[] entry = new object[4];
+                    int i = 0;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        entry[i] = cell.Value;
+                        i++;
+                    }
+                    configData.Add(entry);
+                }
+                
+            }
+
+            return configData;
+        }
+
         private void SetStatsTextInternal(string txt)
         {
             statsTextBox.Text = txt;
@@ -83,6 +200,32 @@ namespace SirCachealot
         private void test2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.Test2();
+        }
+
+        private void loadGateSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadGateSet();
+        }
+
+        private void gateConfigSelectionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.UpdateGateListInUI(gateConfigSelectionComboBox.SelectedItem.ToString());
+            currentGateConfigNameTextBox.Text = gateConfigSelectionComboBox.SelectedItem.ToString();
+        }
+
+        private void updateGatesButton_Click(object sender, EventArgs e)
+        {
+            controller.SaveCurrentGateConfig();
+        }
+
+        private void newGateConfigButton_Click(object sender, EventArgs e)
+        {
+            controller.NewGateConfig();
+        }
+
+        private void saveGateConfigSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SaveGateSet();
         }
     }
 }
