@@ -16,19 +16,23 @@ namespace Analysis.EDM
         // Since it's fast we only have the option of demodulating all channels for all detectors.
         public GatedDemodulatedBlock GateThenDemodulateBlock(Block b, GatedDemodulationConfig config)
         {
+            if (!b.detectors.Contains("asymmetry")) b.AddDetectorsToBlock();
+
             int blockLength = b.Points.Count;
 
             // ----Copy across metadata----
-            GatedDemodulatedBlock gatedDemodulatedBlock = new GatedDemodulatedBlock();
-            gatedDemodulatedBlock.TimeStamp = b.TimeStamp;
-            gatedDemodulatedBlock.Config = b.Config;
-            gatedDemodulatedBlock.GateConfig = config;
+            GatedDemodulatedBlock gatedDemodulatedBlock = new GatedDemodulatedBlock(b.TimeStamp, b.Config, b.GetPointDetectors(), config);
 
             // ----Gate the detector data using the config----
-            Dictionary<string, double[]> gatedDetectorData = new Dictionary<string, double[]>();
-            foreach (string d in b.detectors)
+            Dictionary<string, double[]> detectorData = new Dictionary<string, double[]>();
+            List<string> detectorList = new List<string>();
+            foreach (string d in config.GatedDetectors)
             {
-                gatedDetectorData.Add(d, GetGatedDetectorData(b, d, config.GetGate(d)));
+                detectorData.Add(d, GetGatedDetectorData(b, d, config.GetGate(d)));
+            }
+            foreach (string d in b.GetPointDetectors())
+            {
+                detectorData.Add(d, GetPointDetectorData(b, d));
             }
 
             // ----Demodulate channels----
@@ -44,8 +48,10 @@ namespace Analysis.EDM
             int[,] stateSigns = GetStateSigns(numStates);
 
             // --This is done for each detector--
-            for (int detectorIndex = 0; detectorIndex < b.detectors.Count; detectorIndex++)
+            foreach (string d in detectorData.Keys)
             {
+                int detectorIndex = b.detectors.IndexOf(d);
+
                 // We obtain one Channel Set for each detector
                 ChannelSet<double> gatedChannelSet = new ChannelSet<double>();
 
@@ -55,21 +61,22 @@ namespace Analysis.EDM
                 // Divide TOFs into bins depending on switch state
                 List<List<double>> statePoints = new List<List<double>>(numStates);
                 for (int i = 0; i < numStates; i++) statePoints.Add(new List<double>(blockLength / numStates));
-                for (int i = 0; i < blockLength; i++) statePoints[(int)switchStates[i]].Add(gatedDetectorData[b.detectors[detectorIndex]][i]);
+                for (int i = 0; i < blockLength; i++) statePoints[(int)switchStates[i]].Add(detectorData[b.detectors[detectorIndex]][i]);
                 int subLength = blockLength / numStates;
 
                 // For each analysis channel, calculate the mean and error
                 // by means of RunningStatistics, then add to ChannelSet
                 for (int channel = 0; channel < numStates; channel++)
                 {
-                    Channel<RunningStatistics> runningStats = new Channel<RunningStatistics>();
+                    Channel<RunningStatistics> runningStats = new Channel<RunningStatistics> 
+                    { On = new RunningStatistics(), Off = new RunningStatistics(), Difference = new RunningStatistics() };
                     for (int subIndex = 0; subIndex < subLength; subIndex++)
                     {
                         double onVal = 0.0;
                         double offVal = 0.0;
                         for (int i = 0; i < numStates; i++)
                         {
-                            if (stateSigns[channel, switchStates[i]] == 1) onVal += statePoints[i][subIndex];
+                            if (stateSigns[channel, i] == 1) onVal += statePoints[i][subIndex];
                             else offVal += statePoints[i][subIndex];
                         }
                         onVal /= blockLength;
@@ -79,13 +86,14 @@ namespace Analysis.EDM
                         runningStats.Difference.Push(onVal - offVal);
                     }
 
+                    PointWithError pweOn = new PointWithError() { Value = runningStats.On.Mean, Error = runningStats.On.StandardErrorOfSampleMean };
+                    PointWithError pweOff = new PointWithError() { Value = runningStats.Off.Mean, Error = runningStats.Off.StandardErrorOfSampleMean };
+                    PointWithError pweDifference = new PointWithError() { Value = runningStats.Difference.Mean, Error = runningStats.Difference.StandardErrorOfSampleMean };
+
                     GatedChannel gatedChannel = new GatedChannel();
-                    gatedChannel.On.Value = runningStats.On.Mean;
-                    gatedChannel.On.Error = runningStats.On.StandardErrorOfSampleMean;
-                    gatedChannel.Off.Value = runningStats.Off.Mean;
-                    gatedChannel.Off.Error = runningStats.Off.StandardErrorOfSampleMean;
-                    gatedChannel.Difference.Value = runningStats.Difference.Mean;
-                    gatedChannel.Difference.Error = runningStats.Difference.StandardErrorOfSampleMean;
+                    gatedChannel.On = pweOn;
+                    gatedChannel.Off = pweOff;
+                    gatedChannel.Difference = pweDifference;
 
                     // add the Channel to the ChannelSet
                     List<string> usedSwitches = new List<string>();
@@ -107,10 +115,15 @@ namespace Analysis.EDM
                     
                     foreach(string channelName in tofSpecialChannelSet.Channels)
                     {
-                        gatedChannelSet.AddChannel(
-                            channelName, 
+                        //Only add special channels
+                        if (!gatedChannelSet.Channels.Contains(channelName))
+                        {
+                            gatedChannelSet.AddChannel(
+                            channelName,
                             GateTOFChannel((TOFChannel)tofSpecialChannelSet.GetChannel(channelName), config.GetGate("asymmetry"))
                             );
+                        }
+                        
                     }
                 }
 
@@ -123,11 +136,7 @@ namespace Analysis.EDM
 
         public GatedDemodulatedBlock GateTOFDemodulatedBlock(TOFDemodulatedBlock tofDemodulatedBlock, GatedDemodulationConfig config)
         {
-            var gatedDemodulatedBlock = new GatedDemodulatedBlock()
-            {
-                TimeStamp = tofDemodulatedBlock.TimeStamp,
-                Config = tofDemodulatedBlock.Config
-            };
+            var gatedDemodulatedBlock = new GatedDemodulatedBlock(tofDemodulatedBlock.TimeStamp, tofDemodulatedBlock.Config, tofDemodulatedBlock.PointDetectors, config);
 
             foreach(string detector in tofDemodulatedBlock.Detectors)
             {
@@ -145,7 +154,7 @@ namespace Analysis.EDM
                     }
                 }
 
-                if (config.PointDetectors.Contains(detector))
+                if (tofDemodulatedBlock.PointDetectors.Contains(detector))
                 {
                     var tofChannelSet = tofDemodulatedBlock.GetChannelSet(detector);
                     foreach (string tofChannelName in tofChannelSet.Channels)
@@ -174,6 +183,11 @@ namespace Analysis.EDM
             return rawData;
         }
 
+        private double[] GetPointDetectorData(Block b, string detector)
+        {
+            return b.GetSPData(detector).ToArray();
+        }
+
         private GatedChannel GateTOFChannel(TOFChannel tofChannel, Gate gate)
         {
             var gatedChannel = new GatedChannel();
@@ -181,12 +195,11 @@ namespace Analysis.EDM
             var offMeanAndErr = tofChannel.Off.GatedMeanAndUncertainty(gate.GateLow, gate.GateHigh);
             var diffMeanAndErr = tofChannel.Difference.GatedMeanAndUncertainty(gate.GateLow, gate.GateHigh);
 
-            gatedChannel.On.Value = onMeanAndErr[0];
-            gatedChannel.On.Error = onMeanAndErr[1];
-            gatedChannel.Off.Value = offMeanAndErr[0];
-            gatedChannel.Off.Error = offMeanAndErr[1];
-            gatedChannel.Difference.Value = diffMeanAndErr[0];
-            gatedChannel.Difference.Error = diffMeanAndErr[1];
+            gatedChannel.On = new PointWithError() { Value = onMeanAndErr[0], Error = onMeanAndErr[1] };
+            // For the SIG channel, there is no off TOF
+            if (offMeanAndErr == null) gatedChannel.Off = new PointWithError() { Value = 0.0, Error = 0.0 };
+            else gatedChannel.Off = new PointWithError() { Value = offMeanAndErr[0], Error = offMeanAndErr[1] };
+            gatedChannel.Difference = new PointWithError() { Value = diffMeanAndErr[0], Error = diffMeanAndErr[1] };
 
             return gatedChannel;
         }

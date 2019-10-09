@@ -12,12 +12,12 @@ namespace Analysis.EDM
     {
         public TOFDemodulatedBlock TOFDemodulateBlock(Block b, string[] detectorsToDemodulate, int[] channelsToAnalyse)
         {
+            if (!b.detectors.Contains("asymmetry")) b.AddDetectorsToBlock();
+
             int blockLength = b.Points.Count;
 
             // ----Copy across metadata----
-            TOFDemodulatedBlock tofDemodulatedBlock = new TOFDemodulatedBlock();
-            tofDemodulatedBlock.TimeStamp = b.TimeStamp;
-            tofDemodulatedBlock.Config = b.Config;
+            TOFDemodulatedBlock tofDemodulatedBlock = new TOFDemodulatedBlock(b.TimeStamp, b.Config, b.GetPointDetectors());
 
             // ----Demodulate channels----
             // --Build list of modulations--
@@ -61,7 +61,7 @@ namespace Analysis.EDM
                         TOF tOff = new TOF();
                         for (int i = 0; i < numStates; i++)
                         {
-                            if (stateSigns[channel, switchStates[i]] == 1) tOn += stateTOFs[i][subIndex];
+                            if (stateSigns[channel, i] == 1) tOn += stateTOFs[i][subIndex];
                             else tOff += stateTOFs[i][subIndex];
                         }
                         tOn /= blockLength;
@@ -97,6 +97,7 @@ namespace Analysis.EDM
         // This demodulates all the detectors, in all the channels.
         public TOFDemodulatedBlock TOFDemodulateBlock(Block b)
         {
+            if (!b.detectors.Contains("asymmetry")) b.AddDetectorsToBlock();
             string[] allDetectors = b.detectors.ToArray();
 
             List<Modulation> modulations = GetModulations(b);
@@ -216,8 +217,11 @@ namespace Analysis.EDM
 
             // This is missing the term /beta c_db c_ebdb at the moment, mainly because
             // I've no idea what beta should be.
-            TOFChannel linearTerms = (c_b * c_dbrf1f * c_edbrf1f) + (c_b * c_dbrf2f * c_edbrf2f)
-                - (c_db * c_brf1f * c_edbrf1f) - (c_db * c_brf2f * c_edbrf2f);
+            TOFChannel linearTerms = (c_b * c_dbrf1f * c_edbrf1f) 
+                + (c_b * c_dbrf2f * c_edbrf2f)
+                - (c_db * c_brf1f * c_edbrf1f) 
+                - (c_db * c_brf2f * c_edbrf2f)
+                ;
 
             TOFChannel preDenominator = (c_db * c_db * c_db)
                 + (c_dbrf1f * c_edb * c_edbrf1f) + (c_dbrf1f * c_edb * c_edbrf1f)

@@ -31,6 +31,7 @@ namespace SirCachealot
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,19 +39,20 @@ namespace SirCachealot
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.test2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadGateSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveGateConfigSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.statsTextBox = new System.Windows.Forms.TextBox();
             this.errorLogTextBox = new System.Windows.Forms.TextBox();
             this.gateConfigSelectionComboBox = new System.Windows.Forms.ComboBox();
-            this.gatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadGateSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gateListDataView = new System.Windows.Forms.DataGridView();
             this.updateGatesButton = new System.Windows.Forms.Button();
             this.currentGateConfigNameTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.newGateConfigButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.saveGateConfigSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addGatedBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gateListDataView)).BeginInit();
             this.SuspendLayout();
@@ -71,10 +73,19 @@ namespace SirCachealot
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addBlockToolStripMenuItem,
+            this.addGatedBlockToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // addBlockToolStripMenuItem
+            // 
+            this.addBlockToolStripMenuItem.Name = "addBlockToolStripMenuItem";
+            this.addBlockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addBlockToolStripMenuItem.Text = "Add block";
+            this.addBlockToolStripMenuItem.Click += new System.EventHandler(this.addBlockToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -95,14 +106,14 @@ namespace SirCachealot
             // selectToolStripMenuItem
             // 
             this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-            this.selectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.selectToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
             this.selectToolStripMenuItem.Text = "Select ...";
             this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
             // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
             this.createToolStripMenuItem.Text = "Create ...";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
@@ -118,16 +129,39 @@ namespace SirCachealot
             // test1ToolStripMenuItem
             // 
             this.test1ToolStripMenuItem.Name = "test1ToolStripMenuItem";
-            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
             this.test1ToolStripMenuItem.Text = "Test1";
             this.test1ToolStripMenuItem.Click += new System.EventHandler(this.test1ToolStripMenuItem_Click);
             // 
             // test2ToolStripMenuItem
             // 
             this.test2ToolStripMenuItem.Name = "test2ToolStripMenuItem";
-            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
             this.test2ToolStripMenuItem.Text = "Test2";
             this.test2ToolStripMenuItem.Click += new System.EventHandler(this.test2ToolStripMenuItem_Click);
+            // 
+            // gatesToolStripMenuItem
+            // 
+            this.gatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadGateSetToolStripMenuItem,
+            this.saveGateConfigSetToolStripMenuItem});
+            this.gatesToolStripMenuItem.Name = "gatesToolStripMenuItem";
+            this.gatesToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.gatesToolStripMenuItem.Text = "Gates";
+            // 
+            // loadGateSetToolStripMenuItem
+            // 
+            this.loadGateSetToolStripMenuItem.Name = "loadGateSetToolStripMenuItem";
+            this.loadGateSetToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.loadGateSetToolStripMenuItem.Text = "Load gate config set";
+            this.loadGateSetToolStripMenuItem.Click += new System.EventHandler(this.loadGateSetToolStripMenuItem_Click);
+            // 
+            // saveGateConfigSetToolStripMenuItem
+            // 
+            this.saveGateConfigSetToolStripMenuItem.Name = "saveGateConfigSetToolStripMenuItem";
+            this.saveGateConfigSetToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.saveGateConfigSetToolStripMenuItem.Text = "Save gate config set";
+            this.saveGateConfigSetToolStripMenuItem.Click += new System.EventHandler(this.saveGateConfigSetToolStripMenuItem_Click);
             // 
             // logTextBox
             // 
@@ -172,22 +206,6 @@ namespace SirCachealot
             this.gateConfigSelectionComboBox.Size = new System.Drawing.Size(120, 21);
             this.gateConfigSelectionComboBox.TabIndex = 6;
             this.gateConfigSelectionComboBox.SelectedIndexChanged += new System.EventHandler(this.gateConfigSelectionComboBox_SelectedIndexChanged);
-            // 
-            // gatesToolStripMenuItem
-            // 
-            this.gatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadGateSetToolStripMenuItem,
-            this.saveGateConfigSetToolStripMenuItem});
-            this.gatesToolStripMenuItem.Name = "gatesToolStripMenuItem";
-            this.gatesToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.gatesToolStripMenuItem.Text = "Gates";
-            // 
-            // loadGateSetToolStripMenuItem
-            // 
-            this.loadGateSetToolStripMenuItem.Name = "loadGateSetToolStripMenuItem";
-            this.loadGateSetToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.loadGateSetToolStripMenuItem.Text = "Load gate config set";
-            this.loadGateSetToolStripMenuItem.Click += new System.EventHandler(this.loadGateSetToolStripMenuItem_Click);
             // 
             // gateListDataView
             // 
@@ -244,12 +262,12 @@ namespace SirCachealot
             this.label2.TabIndex = 12;
             this.label2.Text = "Gate config selection:";
             // 
-            // saveGateConfigSetToolStripMenuItem
+            // addGatedBlockToolStripMenuItem
             // 
-            this.saveGateConfigSetToolStripMenuItem.Name = "saveGateConfigSetToolStripMenuItem";
-            this.saveGateConfigSetToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.saveGateConfigSetToolStripMenuItem.Text = "Save gate config set";
-            this.saveGateConfigSetToolStripMenuItem.Click += new System.EventHandler(this.saveGateConfigSetToolStripMenuItem_Click);
+            this.addGatedBlockToolStripMenuItem.Name = "addGatedBlockToolStripMenuItem";
+            this.addGatedBlockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addGatedBlockToolStripMenuItem.Text = "Add gated block";
+            this.addGatedBlockToolStripMenuItem.Click += new System.EventHandler(this.addGatedBlockToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -306,5 +324,7 @@ namespace SirCachealot
         private System.Windows.Forms.Button newGateConfigButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ToolStripMenuItem saveGateConfigSetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addBlockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addGatedBlockToolStripMenuItem;
     }
 }

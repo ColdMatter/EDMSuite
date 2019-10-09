@@ -21,6 +21,18 @@ namespace Data.EDM
 
         public List<string> detectors = new List<string>();
 
+        public List<string> GetPointDetectors()
+        {
+            EDMPoint point = (EDMPoint)points[0];
+            List<string> pointDetectorList = new List<string>();
+            foreach (string key in point.SinglePointData.Keys)
+            {
+                //XmlSerialisableHashtables have "dummy" as a default entry.
+                if (key != "dummy") pointDetectorList.Add(key);
+            }
+            return pointDetectorList;
+        }
+
 		public void SetTimeStamp()
 		{
 			timeStamp = DateTime.Now;
@@ -81,15 +93,15 @@ namespace Data.EDM
 
         // This function adds background-subtracted TOFs, scaled bottom probe TOF, and asymmetry TOF to the block
         // Also has the option of converting single point data to TOFs
-        public static void AddDetectorsToBlock(Block b)
+        public void AddDetectorsToBlock()
         {
-            b.SubtractBackgroundFromProbeDetectorTOFs();
+            SubtractBackgroundFromProbeDetectorTOFs();
 
-            b.CreateScaledBottomProbe();
+            CreateScaledBottomProbe();
 
-            b.ConstructAsymmetryTOF();
+            ConstructAsymmetryTOF();
 
-            b.TOFuliseSinglePointData();
+            TOFuliseSinglePointData();
         }
 
         // this function adds a new set of detector data to the block, constructed

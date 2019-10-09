@@ -16,9 +16,18 @@ namespace Analysis.EDM
         public DateTime TimeStamp;
         public BlockConfig Config;
         public DemodulatedBlockType DataType;
+        public List<string> PointDetectors;
 
         private readonly Dictionary<string, ChannelSet> ChannelSetDictionary = new Dictionary<string, ChannelSet>();
         private readonly Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
+
+        public DemodulatedBlock(DateTime timeStamp, BlockConfig config, DemodulatedBlockType dataType, List<string> pointDetectors)
+        {
+            this.TimeStamp = timeStamp;
+            this.Config = config;
+            this.DataType = dataType;
+            this.PointDetectors = pointDetectors;
+        }
 
         public void AddDetector(string detector, double calibration, ChannelSet channelSet)
         {

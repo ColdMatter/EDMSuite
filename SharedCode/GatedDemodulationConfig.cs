@@ -77,8 +77,12 @@ namespace Analysis.EDM
             gateConfig.AddGate("bottomProbeScaled", Gate.WideGate());
             gateConfig.AddGate("topProbeNoBackground", Gate.WideGate());
             gateConfig.AddGate("magnetometer", new Gate(1000, 1800, false));
-            gateConfig.AddPointDetector("NorthCurrent");
-            gateConfig.AddPointDetector("SouthCurrent");
+            gateConfig.AddGate("gnd", new Gate(1000, 1800, false));
+            gateConfig.AddGate("battery", new Gate(1000, 1800, false));
+            gateConfig.AddGate("rfCurrent", new Gate(1000, 1800, false));
+            gateConfig.AddGate("reflectedrf1Amplitude", new Gate(1000, 1800, false));
+            gateConfig.AddGate("reflectedrf2Amplitude", new Gate(1000, 1800, false));
+            gateConfig.AddGate("bottomProbeNoBackground", Gate.WideGate());
 
             return gateConfig;
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -30,6 +31,9 @@ namespace SirCachealot
 
         // Gate set dictionary
         private Dictionary<string, GatedDemodulationConfig> currentGateSetDictionary = new Dictionary<string, GatedDemodulationConfig>();
+
+        // Selected gate config
+        private string selectedGateConfigName = "";
 
         // TOF Demodulation
         //private Dictionary<string, TOFChannelSetAccumulator> tcsaDictionary;
@@ -150,6 +154,25 @@ namespace SirCachealot
             log("Adding block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"]);
             TOFDemodulatedBlock tdBlock = blockDemodulator.TOFDemodulateBlock(b);
             blockStore.AddDBlock(tdBlock);
+            TimeSpan ts = DateTime.Now.Subtract(threadManager.GetCurrentAnalysisStart());
+            log("Added block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"] + " after " + ts.TotalSeconds.ToString() + " seconds.");
+        }
+
+        public void AddBlockFromMainWindow()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "zipped blocks|*.zip";
+            dialog.Title = "Add Block";
+            dialog.Multiselect = true;
+            dialog.ShowDialog();
+            ClearAnalysisRunStats();
+            foreach (string fileName in dialog.FileNames)
+            {
+                if (fileName != "")
+                {
+                    AddBlockToQueue(fileName);
+                }
+            }
         }
 
         public void AddGatedBlock(Block b, GatedDemodulationConfig gateConfig)
@@ -160,12 +183,39 @@ namespace SirCachealot
                 );
             GatedDemodulatedBlock gdBlock = blockDemodulator.GateThenDemodulateBlock(b, gateConfig);
             blockStore.AddDBlock(gdBlock);
+            TimeSpan ts = DateTime.Now.Subtract(threadManager.GetCurrentAnalysisStart());
+            log("Added block " + b.Config.Settings["cluster"] + " - " + b.Config.Settings["clusterIndex"] + " after " + ts.TotalSeconds.ToString() + " seconds.");
         }
 
         public void AddGatedBlock(Block b, string gateConfigName)
         {
             if (currentGateSetDictionary.ContainsKey(gateConfigName)) AddGatedBlock(b, currentGateSetDictionary[gateConfigName]);
             else errorLog("Gate config " + gateConfigName + " not found!");
+        }
+
+        public void AddGatedBlockFromMainWindow()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "zipped blocks|*.zip";
+            dialog.Title = "Add Block";
+            dialog.Multiselect = true;
+            dialog.ShowDialog();
+            ClearAnalysisRunStats();
+            SelectGateConfigForDemodulation();
+            foreach (string fileName in dialog.FileNames)
+            {
+                if (fileName != "")
+                {
+                    if (selectedGateConfigName != "")
+                    {
+                        AddGatedBlockToQueue(fileName, selectedGateConfigName);
+                    }
+                    else
+                    {
+                        errorLog("No gate config selected!");
+                    }
+                }
+            }
         }
 
 
@@ -206,6 +256,8 @@ namespace SirCachealot
             AddGatedBlock(b, gateConfigName);
         }
 
+
+
         // Use this to add blocks to SirCachealot's analysis queue.
         //public void AddBlockToQueue(string path, string[] demodulationConfigs)
         //{
@@ -218,13 +270,13 @@ namespace SirCachealot
         public void GateTOFDemodulatedBlock(DemodulatedBlock dblock, GatedDemodulationConfig gateConfig)
         {
             TOFDemodulatedBlock tdblock = dblock as TOFDemodulatedBlock;
-            GatedDemodulatedBlock gdblock = new GatedDemodulatedBlock();
-
             if (tdblock == null)
             {
                 log("Error: Not a TOF demodulated block.");
                 return;
             }
+
+            GatedDemodulatedBlock gdblock = new GatedDemodulatedBlock(dblock.TimeStamp, dblock.Config, dblock.PointDetectors, gateConfig);
 
             GatedBlockDemodulator gatedDemodulator = new GatedBlockDemodulator();
             gdblock = gatedDemodulator.GateTOFDemodulatedBlock(tdblock, gateConfig);
@@ -237,6 +289,14 @@ namespace SirCachealot
             blockAddParams bap = new blockAddParams();
             bap.path = path;
             threadManager.AddToQueue(AddBlockThreadWrapper, bap);
+        }
+
+        public void AddGatedBlockToQueue(string path, string config)
+        {
+            gatedBlockAddParams bap = new gatedBlockAddParams();
+            bap.path = path;
+            bap.gateConfig = config;
+            threadManager.AddToQueue(AddGatedBlockThreadWrapper, bap);
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
@@ -258,6 +318,17 @@ namespace SirCachealot
                 blockAddParams bap = new blockAddParams();
                 bap.path = path;
                 threadManager.AddToQueue(AddBlockThreadWrapper, bap);
+            }
+        }
+
+        public void AddGatedBlocksToQueue(string[] paths, string config)
+        {
+            foreach (string path in paths)
+            {
+                gatedBlockAddParams bap = new gatedBlockAddParams();
+                bap.path = path;
+                bap.gateConfig = config;
+                threadManager.AddToQueue(AddGatedBlockThreadWrapper, bap);
             }
         }
 
@@ -285,6 +356,17 @@ namespace SirCachealot
             );
         }
 
+        private void AddGatedBlockThreadWrapper(object parametersIn)
+        {
+            threadManager.QueueItemWrapper(delegate (object parms)
+            {
+                gatedBlockAddParams parameters = (gatedBlockAddParams)parms;
+                AddGatedBlock(parameters.path, parameters.gateConfig);
+            },
+            parametersIn
+            );
+        }
+
         //private struct blockAddParams
         //{
         //    public string path;
@@ -303,6 +385,17 @@ namespace SirCachealot
             public override string ToString()
             {
                 return path;
+            }
+        }
+
+        private struct gatedBlockAddParams
+        {
+            public string path;
+            public string gateConfig;
+            // this struct has a ToString method defined for error reporting porpoises.
+            public override string ToString()
+            {
+                return path + ", gate config: " + gateConfig;
             }
         }
 
@@ -415,8 +508,6 @@ namespace SirCachealot
                     gateConfig.Gates[i].Integrate
                     );
             }
-
-            // TO IMPLEMENT: POINT DETECTORS
         }
 
         public void NewGateConfig()
@@ -480,12 +571,23 @@ namespace SirCachealot
 
         private void RefreshGateConfigList()
         {
-            List<string> updatedGateConfigNames = new List<string>();
-            foreach (string key in currentGateSetDictionary.Keys)
-            {
-                updatedGateConfigNames.Add(key);
-            }
+            List<string> updatedGateConfigNames = new List<string>(this.currentGateSetDictionary.Keys);
             mainWindow.PopulateGateConfigList(updatedGateConfigNames);
+        }
+
+        internal void SelectGateConfigForDemodulation()
+        {
+            List<string> gateConfigNames = new List<string>(this.currentGateSetDictionary.Keys);
+            ListSelectionDialog dialog = new ListSelectionDialog();
+            dialog.Populate(gateConfigNames);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string gateConfigSelected = dialog.SelectedItem();
+                if (gateConfigSelected != "")
+                {
+                    selectedGateConfigName = gateConfigSelected;
+                }
+            }
         }
 
         #endregion

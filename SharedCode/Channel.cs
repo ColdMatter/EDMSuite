@@ -13,6 +13,10 @@ namespace Analysis.EDM
     /// of TOF values, or simply a channel of numbers.
     /// </summary>
     /// 
+    [Serializable]
+    [XmlInclude(typeof(GatedChannel))]
+    [XmlInclude(typeof(PointChannel))]
+    [XmlInclude(typeof(TOFChannel))]
     public abstract class Channel
     {
         public object On;
@@ -26,8 +30,46 @@ namespace Analysis.EDM
     [XmlInclude(typeof(PointChannel))]
     public class Channel<T> : Channel
     {
-        public new T On;
-        public new T Off;      
-        public new T Difference;
+        private T _on;
+        private T _off;
+        private T _difference;
+        public new T On 
+        {
+            get
+            {
+                return _on;
+            }
+            set
+            {
+                _on = value;
+                base.On = value;
+            }
+        }
+
+        public new T Off
+        {
+            get
+            {
+                return _off;
+            }
+            set
+            {
+                _off = value;
+                base.Off = value;
+            }
+        }
+
+        public new T Difference
+        {
+            get
+            {
+                return _difference;
+            }
+            set
+            {
+                _difference = value;
+                base.Difference = value;
+            }
+        }
     }
 }

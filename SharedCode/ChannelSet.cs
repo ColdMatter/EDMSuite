@@ -17,6 +17,7 @@ namespace Analysis.EDM
     /// </summary>
     /// 
 
+    [Serializable]
     public abstract class ChannelSet
     {
         [BsonElement("csd")]

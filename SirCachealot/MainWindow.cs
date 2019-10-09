@@ -12,13 +12,33 @@ namespace SirCachealot
     {
         internal Controller controller;
 
-        private readonly List<string> detectorList = new List<string>() { 
+        private readonly List<string> gatedDetectorList = new List<string>() 
+        { 
             "asymmetry", 
             "topProbeNoBackground", 
             "bottomProbeScaled", 
+            "topProbe",
+            "bottomProbe",
             "magnetometer", 
             "gnd", 
-            "battery"
+            "battery",
+            "rfCurrent",
+            "reflectedrf1Amplitude",
+            "reflectedrf2Amplitude",
+            "bottomProbeNoBackground"
+        };
+
+        private readonly List<string> pointDetectorList = new List<string>()
+        {
+            "MiniFlux1",
+            "MiniFlux2",
+            "MiniFlux3",
+            "PumpPD",
+            "ProbePD",
+            "NorthCurrent",
+            "SouthCurrent",
+            "PhaseLockFrequency",
+            "PhaseLockError"
         };
 
         public MainWindow()
@@ -34,7 +54,7 @@ namespace SirCachealot
             DataGridViewComboBoxColumn col1 = new DataGridViewComboBoxColumn();
             col1.DataPropertyName = "Detector";
             col1.HeaderText = "Detector";
-            col1.DataSource = detectorList;
+            col1.DataSource = gatedDetectorList;
             col1.ValueType = typeof(String);
 
             this.gateListDataView.Columns.Add(col1);
@@ -131,7 +151,7 @@ namespace SirCachealot
         
         public void AddGateListEntry(string detector, int startTime, int endTime, bool integrate)
         {
-            if (detectorList.Contains(detector))
+            if (gatedDetectorList.Contains(detector))
             {
                 this.gateListDataView.Rows.Add(detector, startTime, endTime, integrate);
             }
@@ -226,6 +246,16 @@ namespace SirCachealot
         private void saveGateConfigSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.SaveGateSet();
+        }
+
+        private void addBlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.AddBlockFromMainWindow();
+        }
+
+        private void addGatedBlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.AddGatedBlockFromMainWindow();
         }
     }
 }

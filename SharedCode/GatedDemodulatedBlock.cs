@@ -8,12 +8,14 @@ namespace Analysis.EDM
     [Serializable]
     public class GatedDemodulatedBlock : DemodulatedBlock
     {
-        public GatedDemodulationConfig GateConfig;
+        public GatedDemodulationConfig GateConfig { get; set; }
 
-        public GatedDemodulatedBlock()
+        public GatedDemodulatedBlock(DateTime timeStamp, BlockConfig config, List<string> pointDetectors, GatedDemodulationConfig gateConfig)
+            :base(timeStamp, config, DemodulatedBlockType.GATED, pointDetectors)
         {
-            this.DataType = DemodulatedBlockType.GATED;
+            this.GateConfig = gateConfig;
         }
+
         public double[] GetChannelValueAndError(string[] switches, string detector)
         {
             ChannelSet channelSet = GetChannelSet(detector);
