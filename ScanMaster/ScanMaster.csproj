@@ -210,11 +210,14 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SingleCounterInputPlugin.cs" />
+    <Compile Include="GPIBInputPlugin.cs" />
     <Compile Include="BigSkyYAGPlugin.cs" />
     <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
     <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="NIRfsgFrequencyOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="NullGPIBInputPlugin.cs" />
     <Compile Include="SuperPumpingPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFDoubleSwitchScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />

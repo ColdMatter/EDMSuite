@@ -19,6 +19,7 @@ namespace ScanMaster.Acquire
 		public PatternPlugin pgPlugin;
 		public YAGPlugin yagPlugin;
 		public AnalogInputPlugin analogPlugin;
+        public GPIBInputPlugin gpibPlugin;
 
 		public AcquisitorConfiguration()
 		{
@@ -29,6 +30,7 @@ namespace ScanMaster.Acquire
 			SetPatternPlugin("No pattern");
 			SetYAGPlugin("No YAG");
 			SetAnalogPlugin("No analog input");
+            SetGPIBPlugin("No GPIB input");
 		}
 
 		public void SetOutputPlugin(String type)
@@ -67,6 +69,12 @@ namespace ScanMaster.Acquire
 			analogPlugin.Config = this;
 		}
 
+        public void SetGPIBPlugin(String type)
+        {
+            gpibPlugin = PluginRegistry.GetRegistry().GetGPIBPlugin(type);
+            gpibPlugin.Config = this;
+        }
+
 		public override string ToString()
 		{
 			return outputPlugin + Environment.NewLine +
@@ -74,7 +82,8 @@ namespace ScanMaster.Acquire
 				switchPlugin + Environment.NewLine +
 				shotGathererPlugin + Environment.NewLine +
 				analogPlugin + Environment.NewLine +
-				yagPlugin + Environment.NewLine;
+				yagPlugin + Environment.NewLine + 
+                gpibPlugin + Environment.NewLine;
 
 		}
 

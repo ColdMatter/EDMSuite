@@ -596,6 +596,8 @@ namespace EDMHardwareControl
         private Button rfAWGTestButton;
         public TextBox rfAWGTestTextBox;
         public CheckBox eDisableSwitching;
+        private NumericUpDown probeAOMampnumericUpDown;
+        private Label label169;
 
  
 
@@ -631,6 +633,7 @@ namespace EDMHardwareControl
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.eDisableSwitching = new System.Windows.Forms.CheckBox();
             this.label78 = new System.Windows.Forms.Label();
             this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
@@ -1203,7 +1206,8 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.eDisableSwitching = new System.Windows.Forms.CheckBox();
+            this.probeAOMampnumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label169 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1299,6 +1303,7 @@ namespace EDMHardwareControl
             this.groupBox28.SuspendLayout();
             this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1333,6 +1338,14 @@ namespace EDMHardwareControl
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Switch";
+            // 
+            // eDisableSwitching
+            // 
+            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
+            this.eDisableSwitching.Name = "eDisableSwitching";
+            this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
+            this.eDisableSwitching.TabIndex = 53;
+            this.eDisableSwitching.Text = "Disable switching";
             // 
             // label78
             // 
@@ -4113,6 +4126,8 @@ namespace EDMHardwareControl
             // 
             // groupBox18
             // 
+            this.groupBox18.Controls.Add(this.label169);
+            this.groupBox18.Controls.Add(this.probeAOMampnumericUpDown);
             this.groupBox18.Controls.Add(this.probeAOMFreqStepTextBox);
             this.groupBox18.Controls.Add(this.label73);
             this.groupBox18.Controls.Add(this.probeAOMFreqMinusTextBox);
@@ -6958,13 +6973,28 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
-            // eDisableSwitching
+            // probeAOMampnumericUpDown
             // 
-            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
-            this.eDisableSwitching.Name = "eDisableSwitching";
-            this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
-            this.eDisableSwitching.TabIndex = 53;
-            this.eDisableSwitching.Text = "Disable switching";
+            this.probeAOMampnumericUpDown.DecimalPlaces = 2;
+            this.probeAOMampnumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.probeAOMampnumericUpDown.Location = new System.Drawing.Point(129, 145);
+            this.probeAOMampnumericUpDown.Name = "probeAOMampnumericUpDown";
+            this.probeAOMampnumericUpDown.Size = new System.Drawing.Size(75, 20);
+            this.probeAOMampnumericUpDown.TabIndex = 53;
+            this.probeAOMampnumericUpDown.ValueChanged += new System.EventHandler(this.probeAOMampnumericUpDown_ValueChanged);
+            // 
+            // label169
+            // 
+            this.label169.AutoSize = true;
+            this.label169.Location = new System.Drawing.Point(6, 147);
+            this.label169.Name = "label169";
+            this.label169.Size = new System.Drawing.Size(117, 13);
+            this.label169.TabIndex = 66;
+            this.label169.Text = "VCA control voltage (V)";
             // 
             // ControlWindow
             // 
@@ -7120,6 +7150,7 @@ namespace EDMHardwareControl
             this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7982,6 +8013,12 @@ namespace EDMHardwareControl
        {
            controller.ConnectRfAWG();
            controller.EnableRfAWGPulsedGeneration();
+       }
+
+       private void probeAOMampnumericUpDown_ValueChanged(object sender, EventArgs e)
+       {
+           double val = (double)probeAOMampnumericUpDown.Value;
+           controller.UpdateProbeAOMamp(val);
        }
 
 

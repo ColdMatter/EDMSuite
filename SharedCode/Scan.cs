@@ -61,6 +61,15 @@ namespace Data.Scans
 			return temp;
 		}
 
+        public double[] GetGPIBArray
+        {
+            get
+            {
+                double[] temp = new double[points.Count];
+                for (int i = 0; i < points.Count; i++) temp[i] = ((ScanPoint)points[i]).ScanParameter;
+                return temp;
+            }
+        }
         public int AnalogChannelCount
         {
             get

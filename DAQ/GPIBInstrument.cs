@@ -9,7 +9,7 @@ namespace DAQ.HAL
 	/// <summary>
 	/// 
 	/// </summary>
-	public class GPIBInstrument : Instrument
+	public abstract class GPIBInstrument : Instrument
 	{
 		GpibSession session;
 		string address;

@@ -28,7 +28,7 @@ namespace ScanMaster.Acquire.Plugins
             
         }
 
-        public override void AcquisitionStarting()
+        public override void AcquisitionStarting(Type counterName)
         {
             counter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
             counter.Connect();

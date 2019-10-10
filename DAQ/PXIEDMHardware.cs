@@ -195,7 +195,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
-            //temporarily disable quspins 19Jul2018
+            
             AddAnalogInputChannel("quSpinB0_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinB0_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
 
@@ -207,6 +207,9 @@ namespace DAQ.HAL
             AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
+
+            //This analog input is broken, we assign this as a dummy so we don't break the rest of the code
+            AddAnalogInputChannel("laserPowerMeter", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
             AddAnalogOutputChannel("bScan", aoBoard + "/ao2");
@@ -307,9 +310,12 @@ namespace DAQ.HAL
             //tcl2.AddDefaultGain("TopticaSHGPZT", 0.04);
             //Info.Add("ProbeCavity", tcl2);
             //Info.Add("DefaultCavity", tcl2);
-
-            // Obsolete Laser control
+            
+            //probe AOM control
             AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", 0, 10);
+            AddAnalogOutputChannel("probeAOMamp", aoBoard + "/ao28", 0, 10);
+
+            //Obselete Laser control
             AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao20", 0, 10);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
             AddAnalogOutputChannel("I2LockBias", aoBoard + "/ao5", 0, 5);

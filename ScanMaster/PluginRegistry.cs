@@ -21,6 +21,7 @@ namespace ScanMaster.Acquire.Plugin
 		private Hashtable yagPlugins = new Hashtable();
 		private Hashtable shotGathererPlugins = new Hashtable();
 		private Hashtable analogInputPlugins = new Hashtable();
+        private Hashtable gpibInputPlugins = new Hashtable();
 
 		private PluginRegistry()
 		{
@@ -77,6 +78,12 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
+            //GPIB Input plugins
+            gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
+            gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
+            gpibInputPlugins.Add("GPIB input", typeof(GPIBInputPlugin));
+            
+
 #if DECELERATOR
             analogInputPlugins.Add("Deceleration hardware analog input", typeof(DecelerationHardwareAnalogInputPlugin));
 #endif
@@ -143,11 +150,23 @@ namespace ScanMaster.Acquire.Plugin
 		{
 			return (AnalogInputPlugin)InstantiatePlugin(analogInputPlugins, type);
 		}
+
+
 		
 		public String[] GetAnalogPlugins()
 		{
 			return GetPluginNameList(analogInputPlugins);
 		}
+
+        public GPIBInputPlugin GetGPIBPlugin(String type)
+        {
+            return (GPIBInputPlugin)InstantiatePlugin(gpibInputPlugins, type);
+        }
+
+        public String[] GetGPIBPlugins()
+        {
+            return GetPluginNameList(gpibInputPlugins);
+        }
 
 		private object InstantiatePlugin(Hashtable plugins, String type)
 		{
