@@ -42,18 +42,14 @@ extractPhysicalQuantities::usage="";
 
 cField::usage="";
 edmFactor::usage="";
-rawEDM::usage="";
 edmSign::usage="";
+rawEDM::usage="";
 rawEDMErr::usage="";
-gamma::usage="";
-geometricCorrection::usage="";
-geometricCorrectionErr::usage="";
 correctedEDM::usage="";
 correctedEDMErr::usage="";
 counts::usage="";
+contrast::usage="";
 sn::usage="";
-correctedEDMNLNormed::usage="";
-correctedEDMErrNLNormed::usage="";
 
 extractSummaryData::usage="";
 correctBlock::usage="";
@@ -70,6 +66,7 @@ Begin["`Private`"];
 (* ::Input::Initialization:: *)
 electronCharge=1.6022*10^-19;
 bohrMagneton=9.274*10^-24;
+hbar=1.05457*10^-34;
 saturatedEffectiveField=26*10^9;
 plateSpacing=1.2;
 curveHalfWidthCurrent= 0.647  (*1260 us 0.49265*);(*long machine 0.5362*)(*Short Machine 0.665*) (*should be half the ideal DB step*);
@@ -124,7 +121,7 @@ newData=("data"/.integral)-subbedBG;
 
 
 (* ::Input::Initialization:: *)
-cField[dblock_]:=(dblock@Config@Settings["ePlus"] - dblock@Config@Settings["eMinus"])/plateSpacing;
+cField[dblock_]:=(dblock@Config@Settings["ePlus"] - dblock@Config@Settings["eMinus"])/plateSpacing
 
 
 (* ::Input::Initialization:: *)
@@ -134,38 +131,58 @@ dbStep=dblock@Config@GetModulationByName["DB"]@Step;
 magCal=dblock@Config@Settings["magnetCalibration"];
 
 1/electronCharge (bohrMagneton * dbStep*magCal*10^-9)1/(saturatedEffectiveField polarisationFactor[Abs[cField[dblock]]/1000])
-];
+]
 
 
 (* ::Input::Initialization:: *)
-edmSign[dblock_]:= boolSign[dblock@Config@Settings["eState"]] boolSign[dblock@Config@Settings["bState"]];
+edmSign[dblock_]:= boolSign[dblock@Config@Settings["eState"]] boolSign[dblock@Config@Settings["bState"]]
 
 
 (* ::Input::Initialization:: *)
-rawEDMGated[dblock_,detector_]:=(edmFactor[dblock] getGatedChannel["EDMDB",detector,dblock])+edmSign[dblock]SEDM3`Blind`blindEDM
+rawEDM[dblock_,gated_]:=If[gated,
+(edmFactor[dblock] getGatedChannel["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM,
+Transpose[getTOFChannelTimes["EDMDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+]
 
 
 (* ::Input::Initialization:: *)
-rawEDMGatedErr[dblock_,detector_]:=edmFactor[dblock]getGatedError["EDMDB",detector,dblock];
+rawEDMErr[dblock_,gated_]:=If[gated,
+edmFactor[dblock]getGatedError["EDMDB","asymmetry",dblock],
+edmFactor[dblock] getTOFChannelErrors["EDMDB","asymmetry",dblock]
+]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMGated[dblock_]:=
-edmFactor[dblock](dblock@["EDMCORRDB","topNormed"])[[1]]+edmSign[dblock]SEDM3`Blind`blindEDM;
+correctedEDM[dblock_,gated_]:=If[gated,
+edmFactor[dblock] getGatedChannel["EDMCORRDB","asymmetry",dblock]+edmSign[dblock]SEDM3`Blind`blindEDM,
+Transpose[getTOFChannelTimes["EDMCORRDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMCORRDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMErrNLNormed[dblock_]:=
-edmFactor[dblock](dblock@GetSpecialChannelValueAndError["EDMCORRDB","topNormed"])[[2]];
+correctedEDMErr[dblock_,gated_]:=If[gated,
+edmFactor[dblock] getGatedError["EDMCORRDB","asymmetry",dblock],
+edmFactor[dblock] getTOFChannelErrors["EDMCORRDB","asymmetry",dblock]
+]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMNLNormedUSB[dblock_]:=
-edmFactor[dblock](dblock@GetSpecialChannelValueAndError["EDMCORRDB","topNormed"])[[1]]+SEDM3`Blind`blindEDM;
+counts[dblock_,detector_,gated_]:=If[gated,
+(getGatedChannel[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector],
+(getTOFChannelData[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector]
+]
 
 
 (* ::Input::Initialization:: *)
-counts[dblock_,detector_]:=(getChannel[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector];
+contrast[dblock_,gated_]:= Module[{dbStep,magCal,interferometerLength,phaseStep},
+
+dbStep=dblock@Config@GetModulationByName["DB"]@Step;
+magCal=dblock@Config@Settings["magnetCalibration"];
+interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
+phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
+
+getChannel[dblock,"asymmetry",gated]/phaseStep;
+]
 
 
 (* ::Input::Initialization:: *)
@@ -173,223 +190,150 @@ sn[counts_]:=Abs[1/Sqrt[counts]];
 
 
 (* ::Input::Initialization:: *)
-extractPhysicalQuantities[dblock_]:={"polarisation"->polarisationFactor[Abs[cField[dblock]]/1000],
-"rawEDM"->rawEDM[dblock,"top"],
-"signedEDM"->edmSign[dblock]rawEDM[dblock,"top"],
-"rawEDMErr"->rawEDMErr[dblock,"top"],
-"geometricCorrection"->geometricCorrection[dblock,"top"],
-"geometricCorrectionError"->geometricCorrectionErr[dblock,"top"],
-"correctedEDM"->correctedEDM[dblock,"top"],
-"signedCorrectedEDM"->edmSign[dblock]correctedEDM[dblock,"top"],
-"correctedEDMErr"->correctedEDMErr[dblock,"top"],
-"rawEDMNormed"->rawEDM[dblock,"topNormed"],
-"signedEDMNormed"->edmSign[dblock]rawEDM[dblock,"topNormed"],
-"rawEDMErrNormed"->rawEDMErr[dblock,"topNormed"],
-"geometricCorrectionNormed"->geometricCorrection[dblock,"topNormed"],
-"geometricCorrectionErrorNormed"->geometricCorrectionErr[dblock,"topNormed"],
-"correctedEDMNormed"->correctedEDM[dblock,"topNormed"],
-"signedCorrectedEDMNormed"->edmSign[dblock]correctedEDM[dblock,"topNormed"],
-"correctedEDMErrNormed"->correctedEDMErr[dblock,"topNormed"],
-"signedCorrectedEDMNLNormed"->edmSign[dblock]correctedEDMNLNormed[dblock],
-"correctedEDMErrNLNormed"->correctedEDMErrNLNormed[dblock],
-"pmtCounts"->counts[dblock,"top"]
-}
+extractPhysicalQuantities[dblock_,gated_]:=
+{"rawEDM"->rawEDM[dblock,gated],
+"rawEDMErr"->rawEDMErr[dblock,gated],
+"signedEDM"->edmSign[dblock] rawEDM[dblock,gated],
+"correctedEDM"->correctedEDM[dblock,gated],
+"correctedEDMErr"->correctedEDMErr[dblock,gated],
+"signedCorrectedEDM"->edmSign[dblock] correctedEDM[dblock,gated],
+"pmtCountsTop"->counts[dblock,"topProbeNoBackground",gated],
+"pmtCountsBottom"->counts[dblock,"bottomProbeScaled",gated],
+"pmtLaserBackgroundTop"->counts[dblock,"TopDetectorBackground",gated],
+"pmtLaserBackgroundBottom"->counts[dblock,"BottomDetectorBackground",gated],
+"contrast"->contrast[dblock,gated],
+"polarisation"->polarisationFactor[Abs[cField[dblock]]/1000]}
 
 
 (* ::Input::Initialization:: *)
-extractNoiseData[dblock_]:=Module[{normShotNoiseV\[Mu]sPerShot,normCal,topCal,highFrequencyNormOverShotNoise,normFourier,normShotNoisePPMPerChannel,topShotNoiseV\[Mu]sPerShot,topShotNoisePPMPerChannel},
+(*extractNoiseData[dblock_]:=Module[{normShotNoiseV\[Mu]sPerShot,normCal,topCal,highFrequencyNormOverShotNoise,normFourier,normShotNoisePPMPerChannel,topShotNoiseV\[Mu]sPerShot,topShotNoisePPMPerChannel},
 
 normCal=1/(If[#==0.08928571428571429`,1/(1.9 8.5),#]&[dblock@DetectorCalibrations["norm"]]);
 topCal=1/(If[#==0.14492753623188406`,1.97/6.28,#]&[dblock@DetectorCalibrations["top"]]);
 
 normFourier=Take[#,Round[Length[#]/2]]&[dblock@NormFourier@FFT];
 
-normShotNoiseV\[Mu]sPerShot=\[Sqrt](1/normCal (getChannel[{"SIG"},"norm",dblock]+(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@Background)*(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateHigh-dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateLow)));
+normShotNoiseV\[Mu]sPerShot=\[Sqrt](1/normCal(getChannel[{"SIG"},"norm",dblock]+(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@Background)*(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateHigh-dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateLow)));
 highFrequencyNormOverShotNoise=Mean[Drop[normFourier,Round[Length[normFourier]/4]]]/normShotNoiseV\[Mu]sPerShot;
-normShotNoisePPMPerChannel=10^6 normShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"norm",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
+normShotNoisePPMPerChannel=10^6normShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"norm",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
 topShotNoiseV\[Mu]sPerShot=Sqrt[ getChannel[{"SIG"},"top",dblock]/topCal];
-topShotNoisePPMPerChannel=10^6 topShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"top",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
+topShotNoisePPMPerChannel=10^6topShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"top",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
 
-{"normFourier"->normFourier,
-"normShotNoiseV\[Mu]sPerShot"->normShotNoiseV\[Mu]sPerShot,
-"hfNormOverShotNoise"->highFrequencyNormOverShotNoise,
-"normShotNoisePPMPerChannel"->normShotNoisePPMPerChannel,
-"topShotNoisePPMPerChannel"->topShotNoisePPMPerChannel
+{"normFourier"\[Rule]normFourier,
+"normShotNoiseV\[Mu]sPerShot"\[Rule]normShotNoiseV\[Mu]sPerShot,
+"hfNormOverShotNoise"\[Rule]highFrequencyNormOverShotNoise,
+"normShotNoisePPMPerChannel"\[Rule]normShotNoisePPMPerChannel,
+"topShotNoisePPMPerChannel"\[Rule]topShotNoisePPMPerChannel
 }
-]
+]*)
 
 
 (* ::Input::Initialization:: *)
-getChannelNoisePPM[dblock_,switches_,detector_]:=10^6 getError[switches,detector,dblock]/getChannel[{"SIG"},detector,dblock]
+(*getChannelNoisePPM[dblock_,switches_,detector_]:=10^6getError[switches,detector,dblock]/getChannel[{"SIG"},detector,dblock]*)
 
 
 (* ::Input::Initialization:: *)
-analyseBlock[dblock_]:=Module[{physicalQuantities,noiseDat},
-physicalQuantities=extractPhysicalQuantities[dblock];
-noiseDat=extractNoiseData[dblock];
-{"analysisResults"->physicalQuantities,"noiseData"->noiseDat}
+analyseBlock[dblock_,gated_]:=Module[{physicalQuantities},
+physicalQuantities=extractPhysicalQuantities[dblock,gated];
+(*noiseDat=extractNoiseData[dblock];*)
+{"analysisResults"->physicalQuantities}
 ];
 
 
 (* ::Input::Initialization:: *)
-(*extractSummaryData[dbl_,abl_]:={
-"E"\[Rule](getChannel[{"E"},"mag1",dbl]),
-"B"\[Rule](getChannel[{"SIG"},"mag1",dbl]),
-"EErr"\[Rule](getError[{"E"},"mag1",dbl]),
-"B\[Alpha]E"\[Rule](getChannel[{"B","E"},"topNormed",dbl]),
-"DB"\[Rule](getChannel[{"DB"},"topNormed",dbl]),
-"RF1F"\[Rule](getChannelAndError[{"RF1F"},"topNormed",dbl]),
-"RF2F"\[Rule](getChannelAndError[{"RF2F"},"topNormed",dbl]),
-"RF1FDB"\[Rule](getChannelAndError[{"RF1F","DB"},"topNormed",dbl]),
-"RF2FDB"\[Rule](getChannelAndError[{"RF2F","DB"},"topNormed",dbl]),
-"RF1FE"\[Rule](getChannelAndError[{"RF1F","E"},"topNormed",dbl]),
-"RF2FE"\[Rule](getChannelAndError[{"RF2F","E"},"topNormed",dbl]),
-"RF1FEDB"\[Rule](getChannelAndError[{"RF1F","E","DB"},"topNormed",dbl]),
-"RF2FEDB"\[Rule](getChannelAndError[{"RF2F","E","DB"},"topNormed",dbl]),
-"Bmol"\[Rule](getChannel[{"B"},"topNormed",dbl]),
-"rfCurrent"\[Rule] (dbl@GetChannelValueAndError[{"SIG"},"rfCurrent"]),
-"rfCurrentE"\[Rule] (dbl@GetChannelValueAndError[{"E"},"rfCurrent"]),
-"E\[Alpha]DB"\[Rule](getChannel[{"E","DB"},"topNormed",dbl]),
-"signedCorrectedEDMNLNormed"\[Rule]("signedCorrectedEDMNLNormed"/.("analysisResults"/.abl)),
-"correctedEDMErrNLNormed"\[Rule]("correctedEDMErrNLNormed"/.("analysisResults"/.abl)),
-"edmFactor"\[Rule]edmFactor[dbl],
-"bState"\[Rule](dbl@Config@Settings["bState"]),
-"cluster"\[Rule](dbl@Config@Settings["cluster"]),
-"clusterIndex"\[Rule](dbl@Config@Settings["clusterIndex"]),
-"eState"\[Rule](dbl@Config@Settings["eState"]),
-"rfState"\[Rule](dbl@Config@Settings["rfState"]),
-"ePlus"\[Rule](dbl@Config@Settings["ePlus"]),
-"eMinus"\[Rule](dbl@Config@Settings["eMinus"]),
-"probePolarizerAngle"\[Rule](dbl@Config@Settings["probePolarizerAngle"]),
-"pumpPolarizerAngle"\[Rule](dbl@Config@Settings["pumpPolarizerAngle"]),
-"timeStamp"\[Rule](dbl@TimeStamp@Ticks),
-"hour"\[Rule](dbl@TimeStamp@Hour),
-"rf1Step"\[Rule]If[#\[Equal]0,1547,#]&[(dbl@Config@GetModulationByName["RF1F"]@PhysicalStep)],
-"rf2Step"\[Rule]If[#\[Equal]0,1630,#]&[(dbl@Config@GetModulationByName["RF2F"]@PhysicalStep)],
-"CORRDB"\[Rule](dbl@ChannelValues[6]@SpecialValues["CORRDB"]),
-"RF1FDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["RF1FDB"]),
-"RF2FDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["RF2FDB"]),
-"RF1FDBDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["RF1FDBDB"]),
-"RF2FDBDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["RF2FDBDB"]),
-"ERF1FDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["ERF1FDB"]),
-"ERF2FDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["ERF2FDB"]),
-"ERF1FDBDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["ERF1FDBDB"]),
-"ERF2FDBDBNL"\[Rule](dbl@ChannelValues[6]@SpecialValues["ERF2FDBDB"]),
-"BRF1FCORRDB"\[Rule](dbl@ChannelValues[6]@SpecialValues["BRF1FCORRDB"]),
-"BRF2FCORRDB"\[Rule](dbl@ChannelValues[6]@SpecialValues["BRF2FCORRDB"])
-}*) 
+extractSummaryData[dbl_,abl_,gated_]:={
+"EMag"->getChannel[{"E"},"magnetometer",dbl,gated],
+"SIGMag"->getChannel[{"SIG"},"magnetometer",dbl,gated],
+"BMag"->getChannel[{"B"},"magnetometer",dbl,gated],
+"EMagErr"->getError[{"E"},"magnetometer",dbl,gated],
+"SIGMagErr"->getError[{"SIG"},"magnetometer",dbl,gated],
+"BMagErr"->getError[{"B"},"magnetometer",dbl,gated],
+"BDBMag"->getChannel[{"B","DB"},"magnetometer",dbl,gated],
+"BDBMagErr"->getError[{"B","DB"},"magnetometer",dbl,gated],
 
+"PhaseLockFrequency"->getChannel[{"SIG"},"PhaseLockFrequency",dbl,gated],
 
-(* ::Input::Initialization:: *)
-extractSummaryData[dbl_,abl_]:={
-"E"->Check[(getChannel[{"E"},"magnetometer",dbl]),(getChannel[{"E"},"mag1",dbl])],
-"B"->Check[(getChannel[{"SIG"},"magnetometer",dbl]),(getChannel[{"SIG"},"mag1",dbl])],
-"BMag"->Check[(getChannel[{"B"},"magnetometer",dbl]),(getChannel[{"B"},"mag1",dbl])],
-"BErr"->Check[(getError[{"SIG"},"magnetometer",dbl]),(getError[{"SIG"},"mag1",dbl])],
-"BMagErr"->Check[(getError[{"B"},"magnetometer",dbl]),(getError[{"B"},"mag1",dbl])],
-"BDBMag"->Check[(getChannel[{"B","DB"},"magnetometer",dbl]),(getChannel[{"B","DB"},"mag1",dbl])],
-"BDBMagErr"->Check[(getError[{"B","DB"},"magnetometer",dbl]),(getError[{"B","DB"},"mag1",dbl])],
-"LF1Mini1"->getChannel[{"LF1"},"MiniFlux1",dbl],
-"LF1Mini2"->getChannel[{"LF1"},"MiniFlux2",dbl],
-"LF1Mini3"->getChannel[{"LF1"},"MiniFlux3",dbl],
-"Mini1"->getChannel[{"SIG"},"MiniFlux1",dbl],
-"Mini2"->getChannel[{"SIG"},"MiniFlux2",dbl],
-"Mini3"->getChannel[{"SIG"},"MiniFlux3",dbl],
-"EMini1"->getChannel[{"E"},"MiniFlux1",dbl],
-"EMini2"->getChannel[{"E"},"MiniFlux2",dbl],
-"EMini3"->getChannel[{"E"},"MiniFlux3",dbl],
-"cPlusV"->getChannel[{"SIG"},"reflectedrf1Amplitude",dbl],
-"cMinusV"->getChannel[{"SIG"},"reflectedrf2Amplitude",dbl],
-"EcPlusV"->getChannel[{"E"},"reflectedrf1Amplitude",dbl],
-"EcMinusV"->getChannel[{"E"},"reflectedrf2Amplitude",dbl],
-"EBcPlusV"->getChannel[{"B","E"},"reflectedrf1Amplitude",dbl],
-"EBcMinusV"->getChannel[{"B","E"},"reflectedrf2Amplitude",dbl],
-"PhaseLockFrequency"->getChannel[{"SIG"},"PhaseLockFrequency",dbl],
-"ncE"->getChannel[{"E"},"NorthCurrent",dbl],
-"scE"->getChannel[{"E"},"SouthCurrent",dbl],
-"ncEErr"->getError[{"E"},"NorthCurrent",dbl],
-"scEErr"->getError[{"E"},"SouthCurrent",dbl],
-"rf1r"->getChannel[{"SIG"},"reflectedrf1Amplitude",dbl],
-"rf2r"->getChannel[{"SIG"},"reflectedrf2Amplitude",dbl],
-"rf1rE"->getChannel[{"E"},"reflectedrf1Amplitude",dbl],
-"rf2rE"->getChannel[{"E"},"reflectedrf2Amplitude",dbl],
-"rf1rEErr"->getError[{"E"},"reflectedrf1Amplitude",dbl],
-"rf2rEErr"->getError[{"E"},"reflectedrf2Amplitude",dbl],
-"EErr"->Check[(getError[{"E"},"magnetometer",dbl]),(getError[{"E"},"mag1",dbl])],
-"B\[Alpha]E"->(getChannel[{"B","E"},"topNormed",dbl]),
-"B\[Alpha]Etop"->(getChannel[{"B","E"},"top",dbl]),
-"B\[Alpha]E\[Alpha]DB"->(getChannel[{"B","E","DB"},"topNormed",dbl]),
-"B\[Alpha]E\[Alpha]DBtop"->(getChannel[{"B","E","DB"},"top",dbl]),
-"DB"->(getChannel[{"DB"},"topNormed",dbl]),
-"DBErr"->(getError[{"DB"},"topNormed",dbl]),
-"DBtop"->(getChannel[{"DB"},"top",dbl]),
-"DBtopErr"->(getError[{"DB"},"top",dbl]),
-"SIG"->(getChannel[{"SIG"},"top",dbl]),
-"SIGErr"->(getError[{"SIG"},"top",dbl]),
-"Norm"->(getChannel[{"SIG"},"norm",dbl]),
-"NormErr"->(getError[{"SIG"},"norm",dbl]),
-"SIGNormed"->(getChannel[{"SIG"},"topNormed",dbl]),
-"SIGNormedErr"->(getError[{"SIG"},"topNormed",dbl]),
-"RF1F"->(getChannelAndError[{"RF1F"},"topNormed",dbl]),
-"RF2F"->(getChannelAndError[{"RF2F"},"topNormed",dbl]),
-"RF1A"->(getChannelAndError[{"RF1A"},"topNormed",dbl]),
-"RF2A"->(getChannelAndError[{"RF2A"},"topNormed",dbl]),
-"RF1FDB"->(getChannelAndError[{"RF1F","DB"},"topNormed",dbl]),
-"RF2FDB"->(getChannelAndError[{"RF2F","DB"},"topNormed",dbl]),
-"RF1FE"->(getChannelAndError[{"RF1F","E"},"topNormed",dbl]),
-"RF2FE"->(getChannelAndError[{"RF2F","E"},"topNormed",dbl]),
-"RF1AE"->(getChannelAndError[{"RF1A","E"},"topNormed",dbl]),
-"RF2AE"->(getChannelAndError[{"RF2A","E"},"topNormed",dbl]),
-"RF1AB"->(getChannelAndError[{"RF1A","B"},"topNormed",dbl]),
-"RF2AB"->(getChannelAndError[{"RF2A","B"},"topNormed",dbl]),
-"RF1FEDB"->(getChannelAndError[{"RF1F","E","DB"},"topNormed",dbl]),
-"RF2FEDB"->(getChannelAndError[{"RF2F","E","DB"},"topNormed",dbl]),
-"Bmol"->(getChannel[{"B"},"topNormed",dbl]),
-"Bmoltop"->(getChannel[{"B"},"top",dbl]),
-"BmolErr"->(getError[{"B"},"topNormed",dbl]),
-"rfCurrent"-> Check[(dbl@GetChannelValueAndError[{"SIG"},"rfCurrent"]),0],
-"rfCurrentE"->Check[(dbl@GetChannelValueAndError[{"E"},"rfCurrent"]),0],
-"E\[Alpha]DB"->(getChannel[{"E","DB"},"topNormed",dbl]),
-"E\[Alpha]DBtop"->(getChannel[{"E","DB"},"top",dbl]),
-"B\[Alpha]DB"->(getError[{"B","DB"},"topNormed",dbl]),
-"E\[Alpha]B"->(getChannel[{"E","B"},"topNormed",dbl]),
-"E\[Alpha]B2"->(getChannel[{"B","E"},"topNormed",dbl]),
+"ENorthCurrent"->getChannel[{"E"},"NorthCurrent",dbl,gated],
+"ESouthCurrent"->getChannel[{"E"},"SouthCurrent",dbl,gated],
+"ENorthCurrentErr"->getError[{"E"},"NorthCurrent",dbl,gated],
+"ESouthCurrentErr"->getError[{"E"},"SouthCurrent",dbl,gated],
+
+"cSIGtop"->getChannel[{"SIG"},"topProbeNoBackground",dbl,gated],
+"cSIGtopErr"->getError[{"SIG"},"topProbeBoBackground",dbl,gated],
+"cSIGbottom"->getChannel[{"SIG"},"bottomProbeScaled",dbl,gated],
+"cSIGbottomErr"->getError[{"SIG"},"bottomProbeScaled",dbl,gated],
+"cLaserBackgroundtop"->getChannel[{"SIG"},"TopDetectorBackground",dbl,gated],
+"cLaserBackgroundtopErr"->getError[{"SIG"},"TopDetectorBackground",dbl,gated],
+"cLaserBackgroundbottom"->getChannel[{"SIG"},"BottomDetectorBackground",dbl,gated],
+"cLaserBackgroundbottomErr"->getError[{"SIG"},"BottomDetectorBackground",dbl,gated],
+
+"cRF1F"->(getChannel[{"RF1F"},"asymmetry",dbl,gated]),
+"cRF2F"->(getChannel[{"RF2F"},"asymmetry",dbl,gated]),
+"cRF1A"->(getChannel[{"RF1A"},"asymmetry",dbl,gated]),
+"cRF2A"->(getChannel[{"RF2A"},"asymmetry",dbl,gated]),
+"cRF1FErr"->(getError[{"RF1F"},"asymmetry",dbl,gated]),
+"cRF2FErr"->(getError[{"RF2F"},"asymmetry",dbl,gated]),
+"cRF1AErr"->(getError[{"RF1A"},"asymmetry",dbl,gated]),
+"cRF2AErr"->(getError[{"RF2A"},"asymmetry",dbl,gated]),
+
+"cRF1FDB"->(getChannel[{"RF1F","DB"},"asymmetry",dbl,gated]),
+"cRF2FDB"->(getChannel[{"RF2F","DB"},"asymmetry",dbl,gated]),
+"cRF1FE"->(getChannel[{"RF1F","E"},"asymmetry",dbl,gated]),
+"cRF2FE"->(getChannel[{"RF2F","E"},"asymmetry",dbl,gated]),
+"cRF1AE"->(getChannel[{"RF1A","E"},"asymmetry",dbl,gated]),
+"cRF2AE"->(getChannel[{"RF2A","E"},"asymmetry",dbl,gated]),
+"cRF1AB"->(getChannel[{"RF1A","B"},"asymmetry",dbl,gated]),
+"cRF2AB"->(getChannel[{"RF2A","B"},"asymmetry",dbl,gated]),
+"cRF1FEDB"->(getChannel[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
+"cRF2FEDB"->(getChannel[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
+"cRF1FDBErr"->(getError[{"RF1F","DB"},"asymmetry",dbl,gated]),
+"cRF2FDBErr"->(getError[{"RF2F","DB"},"asymmetry",dbl,gated]),
+"cRF1FEErr"->(getError[{"RF1F","E"},"asymmetry",dbl,gated]),
+"cRF2FEErr"->(getError[{"RF2F","E"},"asymmetry",dbl,gated]),
+"cRF1AEErr"->(getError[{"RF1A","E"},"asymmetry",dbl,gated]),
+"cRF2AEErr"->(getError[{"RF2A","E"},"asymmetry",dbl,gated]),
+"cRF1ABErr"->(getError[{"RF1A","B"},"asymmetry",dbl,gated]),
+"cRF2ABErr"->(getError[{"RF2A","B"},"asymmetry",dbl,gated]),
+"cRF1FEDBErr"->(getError[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
+"cRF2FEDBErr"->(getError[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
+
+"cEB"->getChannel[{"B","E"},"asymmetry",dbl,gated],
+"cEBErr"->getError[{"B","E"},"asymmetry",dbl,gated],
+"cEBDB"->getChannel[{"B","E","DB"},"asymmetry",dbl,gated],
+"cEBDBErr"->getError[{"B","E","DB"},"asymmetry",dbl,gated],
+"cDB"->getChannel[{"DB"},"asymmetry",dbl,gated],
+"cDBErr"->getError[{"DB"},"asymmetry",dbl,gated],
+"cB"->getChannel[{"B"},"asymmetry",dbl,gated],
+"cBErr"->getError[{"B"},"asymmetry",dbl,gated],
+"cEDB"->getChannel[{"E","DB"},"asymmetry",dbl,gated],
+"cEDBErr"->getError[{"E","DB"},"asymmetry",dbl,gated],
+"cBDB"->getChannel[{"B","DB"},"asymmetry",dbl,gated],
+"cBDBErr"->getError[{"B","DB"},"asymmetry",dbl,gated],
+
 "signedEDM"->("signedEDM"/.("analysisResults"/.abl)),
-"signedEDMNormed"->("signedEDMNormed"/.("analysisResults"/.abl)),
-"rawEDMErrNormed"->("rawEDMErrNormed"/.("analysisResults"/.abl)),
+"rawEDMErr"->("rawEDMErr"/.("analysisResults"/.abl)),
 "signedCorrectedEDM"->("signedCorrectedEDM"/.("analysisResults"/.abl)),
-"geometricCorrection"->("geometricCorrection"/.("analysisResults"/.abl)),
 "correctedEDMErr"->("correctedEDMErr"/.("analysisResults"/.abl)),
-"signedCorrectedEDMNLNormed"->("signedCorrectedEDMNLNormed"/.("analysisResults"/.abl)),
-"correctedEDMErrNLNormed"->("correctedEDMErrNLNormed"/.("analysisResults"/.abl)),
 "edmFactor"->edmFactor[dbl],
-"Pi"->(getChannel[{"PI"},"topNormed",dbl]),
-"LF2"->(getChannel[{"LF2"},"topNormed",dbl]),
-"LF1"->(getChannel[{"LF1"},"topNormed",dbl]),
-"LF1Err"->(getError[{"LF1"},"topNormed",dbl]),
-"LF1B"->(getChannel[{"LF1","B"},"topNormed",dbl]),
-"LF1B"->(getChannel[{"LF1","E"},"topNormed",dbl]),
-"LF1Btop"->(getChannel[{"LF1","B"},"top",dbl]),
-"LF2Err"->(getError[{"LF2"},"topNormed",dbl]),
-"LF2pump"->(getChannel[{"LF2"},"norm",dbl]),
-"LF2pumpErr"->(getError[{"LF2"},"norm",dbl]),
-"LF2top"->(getChannel[{"LF2"},"top",dbl]),
-"LF2topErr"->(getError[{"LF2"},"top",dbl]),
-"LF2DB"->(getChannelAndError[{"LF2","DB"},"topNormed",dbl]),
-"LF2DBtop"->(getChannelAndError[{"LF2","DB"},"top",dbl]),
-"phaseScramblerV"->(dbl@Config@Settings["phaseScramblerV"]),
-"bState"->(dbl@Config@Settings["bState"]),
-"cluster"->(dbl@Config@Settings["cluster"]),
-"clusterIndex"->(dbl@Config@Settings["clusterIndex"]),
-"eState"->(dbl@Config@Settings["eState"]),
-"rfState"->(dbl@Config@Settings["rfState"]),
-"ePlus"->(dbl@Config@Settings["ePlus"]),
-"eMinus"->(dbl@Config@Settings["eMinus"]),
-"probePolarizerAngle"->(dbl@Config@Settings["probePolarizerAngle"]),
-"pumpPolarizerAngle"->(dbl@Config@Settings["pumpPolarizerAngle"]),
-"pumpAOM"->(dbl@Config@Settings["pumpAOMFreq"]),
-"timeStamp"->(dbl@TimeStamp@Ticks),
-"hour"->(dbl@TimeStamp@Hour),
+
+"Pi"->getChannel[{"PI"},"asymmetry",dbl,gated],
+"LF1"->getChannel[{"LF1"},"asymmetry",dbl,gated],
+"LF1Err"->getError[{"LF1"},"asymmetry",dbl,gated],
+"LF1B"->getChannel[{"LF1","B"},"asymmetry",dbl,gated],
+"LF1BErr"->getError[{"LF1","B"},"asymmetry",dbl,gated],
+
+"phaseScramblerV"->dbl@Config@Settings["phaseScramblerV"],
+"bState"->dbl@Config@Settings["bState"],
+"cluster"->dbl@Config@Settings["cluster"],
+"clusterIndex"->dbl@Config@Settings["clusterIndex"],
+"eState"->dbl@Config@Settings["eState"],
+"rfState"->dbl@Config@Settings["rfState"],
+"mwState"->dbl@Config@Settings["mwState"],
+"ePlus"->dbl@Config@Settings["ePlus"],
+"eMinus"->dbl@Config@Settings["eMinus"],
+"timeStamp"->dbl@TimeStamp@Ticks,
+"hour"->dbl@TimeStamp@Hour,
+
 "rf1Step"->If[#==0,1547,#]&[(dbl@Config@GetModulationByName["RF1F"]@PhysicalStep)],
 "rf2Step"->If[#==0,1630,#]&[(dbl@Config@GetModulationByName["RF2F"]@PhysicalStep)],
 "rf1fCentre"->If[#==0,1547,#]&[(dbl@Config@GetModulationByName["RF1F"]@PhysicalCentre)],
@@ -399,9 +343,8 @@ extractSummaryData[dbl_,abl_]:={
 "BiasC"->(dbl@Config@Settings["bBiasV"]),
 "bigB"->(dbl@Config@GetModulationByName["B"]@PhysicalStep),
 "LF1PhysicalCentre"->If[#==0,1547,#]&[(dbl@Config@GetModulationByName["LF1"]@PhysicalCentre)],
+
 "BDBNL"->dbl@GetSpecialChannelValueAndError["BDB","topNormed"],
-"CORRDB"->dbl@GetSpecialChannelValueAndError["CORRDB","topNormed"],
-"choCorrection"->dbl@GetSpecialChannelValueAndError["CORRDB_OLD","topNormed"],
 "RF1FDBNL"->dbl@GetSpecialChannelValueAndError["RF1FDB","topNormed"],
 "RF2FDBNL"->dbl@GetSpecialChannelValueAndError["RF2FDB","topNormed"],
 "RF1FDBDBNL"->dbl@GetSpecialChannelValueAndError["RF1FDBDB","topNormed"],
@@ -411,10 +354,7 @@ extractSummaryData[dbl_,abl_]:={
 "ERF1FDBDBNL"->dbl@GetSpecialChannelValueAndError["ERF1FDBDB","topNormed"],
 "ERF2FDBDBNL"->dbl@GetSpecialChannelValueAndError["ERF2FDBDB","topNormed"],
 "BRF1FCORRDB"->dbl@GetSpecialChannelValueAndError["BRF1FCORRDB","topNormed"],
-"BRF2FCORRDB"->dbl@GetSpecialChannelValueAndError["BRF2FCORRDB","topNormed"],
-"LF2DBDBNL"->dbl@GetSpecialChannelValueAndError["LF2DBDB","top"],
-(*"LF2DBDBNL"\[Rule](dbl@ChannelValues[0]@SpecialValues["LF2DBDB"])*)
-"0PlusBoost"->(dbl@Config@Settings["E0PlusBoost"])
+"BRF2FCORRDB"->dbl@GetSpecialChannelValueAndError["BRF2FCORRDB","topNormed"]
 }
 
 

@@ -142,7 +142,8 @@ namespace Data.EDM
         {
             for (int i = 0; i < points.Count; i++)
             {
-                Shot shot = ((EDMPoint)points[i]).Shot;
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[0];
                 double bg = t.GatedMean(2800, 2900);
                 TOF bgSubtracted = t - bg;
@@ -154,13 +155,15 @@ namespace Data.EDM
                 }
 
                 shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("BottomDetectorBackground", bg);
             }
             // give these data a name
             detectors.Add("bottomProbeNoBackground");
 
             for (int i = 0; i < points.Count; i++)
             {
-                Shot shot = ((EDMPoint)points[i]).Shot;
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[1];
                 double bg = t.GatedMean(3200, 3300);
                 TOF bgSubtracted = t - bg;
@@ -172,6 +175,7 @@ namespace Data.EDM
                 }
 
                 shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("TopDetectorBackground", bg);
             }
             // give these data a name
             detectors.Add("topProbeNoBackground");

@@ -38,6 +38,10 @@ getTOFChannelWithError::usage="";
 getTOFChannelTimes::usage=""
 getTOFChannelData::usage=""
 getTOFChannelErrors::usage=""
+getTOFChannel::usage=""
+getChannel::usage=""
+getError::usage=""
+getChannelAndError::usage=""
 selectByCluster::usage="";
 selectByTag::usage="";
 uidsForTag::usage="";
@@ -119,6 +123,11 @@ getTOFChannelWithError[channel_,detector_,dblock_]:=dblock@GetTOFChannelWithErro
 getTOFChannelTimes[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[1]]
 getTOFChannelData[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[2]]
 getTOFChannelErrors[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[3]]
+getTOFChannel[channel_,detector_,dblock_]:=Transpose[{getTOFChannelTimes[channel,detector,dblock],getTOFChannelData[channel,detector,dblock]}]
+
+getChannel[channel_,detector_,dblock_,gated_]:=If[gated,getGatedChannel[channel,detector,dblock],getTOFChannel[channel,detector,dblock]]
+getError[channel_,detector_,dblock_,gated_]:=If[gated,getGatedError[channel,detector,dblock],getTOFChannelErrors[channel,detector,dblock]]
+getChannelAndError[channel_,detector_,dblock_,gated_]:=If[gated,getGatedChannelAndError[channel,detector,dblock],getTOFChannelWithError[channel,detector,dblock]]
 
 
 (* ::Input::Initialization:: *)
