@@ -13,16 +13,34 @@ namespace Analysis.EDM
         {
         }
 
-        public TOF GetTOFChannel(string[] switches, string detector)
+        public double[][] GetTOFChannelWithError(string[] switches, string detector)
         {
             ChannelSet channelSet = GetChannelSet(detector);
-            return (TOF)channelSet.GetChannel(switches).Difference;
+            TOFWithError channelTOF = (TOFWithError)channelSet.GetChannel(switches).Difference;
+            double[] times = new double[channelTOF.Times.Length];
+            for (int i = 0; i < channelTOF.Times.Length; i++) times[i] = Convert.ToDouble(channelTOF.Times[i]);
+
+            List<double[]> result = new List<double[]>();
+            result.Add(times);
+            result.Add(channelTOF.Data);
+            result.Add(channelTOF.Errors);
+
+            return result.ToArray();
         }
 
-        public TOF GetTOFChannel(string channelName, string detector)
+        public double[][] GetTOFChannelWithError(string channelName, string detector)
         {
             ChannelSet channelSet = GetChannelSet(detector);
-            return (TOF)channelSet.GetChannel(channelName).Difference;
+            TOFWithError channelTOF = (TOFWithError)channelSet.GetChannel(channelName).Difference;
+            double[] times = new double[channelTOF.Times.Length];
+            for (int i = 0; i < channelTOF.Times.Length; i++) times[i] = Convert.ToDouble(channelTOF.Times[i]);
+
+            List<double[]> result = new List<double[]>();
+            result.Add(times);
+            result.Add(channelTOF.Data);
+            result.Add(channelTOF.Errors);
+
+            return result.ToArray();
         }
     }
 }

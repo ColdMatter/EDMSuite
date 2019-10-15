@@ -9,6 +9,12 @@ namespace Analysis.EDM
     [Serializable]
     public class TOFChannel : Channel<TOF>
     {
+        public TOFChannel()
+        {
+            this.On = new TOF();
+            this.Off = new TOF();
+            this.Difference = new TOF();
+        }
         static public TOFChannel operator +(TOFChannel t1, TOFChannel t2)
         {
             TOFChannel temp = new TOFChannel();

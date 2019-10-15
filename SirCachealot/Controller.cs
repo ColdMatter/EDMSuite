@@ -272,7 +272,7 @@ namespace SirCachealot
             TOFDemodulatedBlock tdblock = dblock as TOFDemodulatedBlock;
             if (tdblock == null)
             {
-                log("Error: Not a TOF demodulated block.");
+                errorLog("Error: Object is not a TOF demodulated block.");
                 return;
             }
 
@@ -282,6 +282,9 @@ namespace SirCachealot
             gdblock = gatedDemodulator.GateTOFDemodulatedBlock(tdblock, gateConfig);
 
             blockStore.AddDBlock(gdblock);
+            log("Gated TOF demodulated block " + dblock.Config.Settings["cluster"] + " - " + dblock.Config.Settings["clusterIndex"] +
+                " with gate: " + gateConfig.Name
+                );
         }
 
         public void AddBlockToQueue(string path)
@@ -695,6 +698,9 @@ namespace SirCachealot
             //gateSet.GatedDemodulationConfigs.Add(standardConfig);
 
             //SaveGateSet();
+            SelectDB("dbTest1");
+            DemodulatedBlock dBlock = blockStore.GetDBlock(1);
+            GateTOFDemodulatedBlock(dBlock, GatedDemodulationConfig.MakeStandardWideGateConfig());
         }
 
         public void Test2()

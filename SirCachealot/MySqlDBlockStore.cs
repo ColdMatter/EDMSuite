@@ -95,18 +95,16 @@ namespace SirCachealot.Database
             return GetByStringParameter("ATAG", tag);
         }
 
-        public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, uint[] fromUIDs)
+        public UInt32[] GetUIDsByGateTag(string tag, UInt32[] fromUIDs)
         {
             QueryCount++;
-            mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText =
-                "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND BSTATE = ?bState " +
-                "AND RFSTATE = ?rfState AND UID IN " +
-                MakeSQLArrayString(fromUIDs);
-            mySqlComm.Parameters.AddWithValue("?eState", eState);
-            mySqlComm.Parameters.AddWithValue("?bState", bState);
-            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
-            return GetUIDsFromCommand(mySqlComm);
+            return GetByStringParameter("GATETAG", tag, fromUIDs);
+        }
+
+        public UInt32[] GetUIDsByGateTag(string tag)
+        {
+            QueryCount++;
+            return GetByStringParameter("GATETAG", tag);
         }
 
         public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState, uint[] fromUIDs)
@@ -121,18 +119,6 @@ namespace SirCachealot.Database
             mySqlComm.Parameters.AddWithValue("?bState", bState);
             mySqlComm.Parameters.AddWithValue("?rfState", rfState);
             mySqlComm.Parameters.AddWithValue("?mwState", mwState);
-            return GetUIDsFromCommand(mySqlComm);
-        }
-
-        public uint[] GetUIDsByMachineState(bool eState, bool bState, bool rfState)
-        {
-            QueryCount++;
-            mySqlComm = mySql.CreateCommand();
-            mySqlComm.CommandText = "SELECT UID FROM DBLOCKS WHERE ESTATE = ?eState AND " +
-                "RFSTATE = ?rfState AND BSTATE = ?bState";
-            mySqlComm.Parameters.AddWithValue("?eState", eState);
-            mySqlComm.Parameters.AddWithValue("?bState", bState);
-            mySqlComm.Parameters.AddWithValue("?rfState", rfState);
             return GetUIDsFromCommand(mySqlComm);
         }
 

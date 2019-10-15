@@ -17,6 +17,7 @@ namespace Analysis.EDM
         public GatedDemodulatedBlock GateThenDemodulateBlock(Block b, GatedDemodulationConfig config)
         {
             if (!b.detectors.Contains("asymmetry")) b.AddDetectorsToBlock();
+            if (!b.Config.Settings.Contains("mwState")) b.Config.Settings.Add("mwState", true);
 
             int blockLength = b.Points.Count;
 
@@ -134,6 +135,7 @@ namespace Analysis.EDM
             return gatedDemodulatedBlock;
         }
 
+        // This function takes a TOF demodulated block and gates each channel according to the gate configuration.
         public GatedDemodulatedBlock GateTOFDemodulatedBlock(TOFDemodulatedBlock tofDemodulatedBlock, GatedDemodulationConfig config)
         {
             var gatedDemodulatedBlock = new GatedDemodulatedBlock(tofDemodulatedBlock.TimeStamp, tofDemodulatedBlock.Config, tofDemodulatedBlock.PointDetectors, config);
@@ -147,11 +149,13 @@ namespace Analysis.EDM
                     var tofChannelSet = tofDemodulatedBlock.GetChannelSet(detector);
                     foreach(string tofChannelName in tofChannelSet.Channels)
                     {
+                        TOFChannel tofChannel = (TOFChannel)tofChannelSet.GetChannel(tofChannelName);
                         channelSet.AddChannel(
-                            tofChannelName,
-                            GateTOFChannel((TOFChannel)tofChannelSet.GetChannel(tofChannelName), config.GetGate(detector))
-                            );
+                                tofChannelName,
+                                GateTOFChannel(tofChannel, config.GetGate(detector))
+                                );
                     }
+                    gatedDemodulatedBlock.AddDetector(detector, tofDemodulatedBlock.GetCalibration(detector), channelSet);
                 }
 
                 if (tofDemodulatedBlock.PointDetectors.Contains(detector))
@@ -164,11 +168,10 @@ namespace Analysis.EDM
                             UnTOFulisePointChannel((TOFChannel)tofChannelSet.GetChannel(tofChannelName))
                             );
                     }
+
+                    gatedDemodulatedBlock.AddDetector(detector, tofDemodulatedBlock.GetCalibration(detector), channelSet);
                 }
-
-                gatedDemodulatedBlock.AddDetector(detector, tofDemodulatedBlock.GetCalibration(detector), channelSet);
             }
-
             return gatedDemodulatedBlock;
         }
 
@@ -216,8 +219,11 @@ namespace Analysis.EDM
 
             if(tofChannel.Off is TOFWithError offTOF)
             {
-                pointChannel.Off.Value = offTOF.Data[0];
-                pointChannel.Off.Error = offTOF.Errors[0];
+                if (offTOF.Length != 0)
+                {
+                    pointChannel.Off.Value = offTOF.Data[0];
+                    pointChannel.Off.Error = offTOF.Errors[0];
+                }
             }
 
             if(tofChannel.Difference is TOFWithError diffTOF)

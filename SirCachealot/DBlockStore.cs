@@ -18,8 +18,14 @@ namespace SirCachealot.Database
         UInt32[] GetUIDsByTag(string tag, UInt32[] fromUIDs);
         UInt32[] GetUIDsByTag(string tag);
 
-        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, UInt32[] fromUIDs);
-        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState);
+        UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByAnalysisTag(string tag);
+
+        UInt32[] GetUIDsByGateTag(string tag, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByGateTag(string tag);
+
+        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState);
 
         UInt32[] GetUIDsByEState(bool eState, UInt32[] fromUIDs);
         UInt32[] GetUIDsByEState(bool eState);
@@ -29,7 +35,10 @@ namespace SirCachealot.Database
 
         UInt32[] GetUIDsByRFState(bool rfState, UInt32[] fromUIDs);
         UInt32[] GetUIDsByRFState(bool rfState);
-        
+
+        UInt32[] GetUIDsByMWState(bool mwState, UInt32[] fromUIDs);
+        UInt32[] GetUIDsByMWState(bool mwState);
+
         UInt32[] GetUIDsByDateRange(DateTime start, DateTime end, UInt32[] fromUIDs);
         UInt32[] GetUIDsByDateRange(DateTime start, DateTime end);
 

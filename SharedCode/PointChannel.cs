@@ -9,6 +9,12 @@ namespace Analysis.EDM
     [Serializable]
     public class PointChannel : Channel<PointWithError>
     {
+        public PointChannel()
+        {
+            this.On = new PointWithError();
+            this.Off = new PointWithError();
+            this.Difference = new PointWithError();
+        }
         static public PointChannel operator +(PointChannel t1, PointChannel t2)
         {
             PointChannel temp = new PointChannel();
