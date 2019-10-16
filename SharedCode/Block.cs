@@ -145,7 +145,7 @@ namespace Data.EDM
                 EDMPoint point = (EDMPoint)points[i];
                 Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[0];
-                double bg = t.GatedMean(2800, 2900);
+                double bg = t.GatedMeanAndUncertainty(2800, 2900)[0];
                 TOF bgSubtracted = t - bg;
 
                 // if value if negative, set to zero
@@ -165,7 +165,7 @@ namespace Data.EDM
                 EDMPoint point = (EDMPoint)points[i];
                 Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[1];
-                double bg = t.GatedMean(3200, 3300);
+                double bg = t.GatedMeanAndUncertainty(3200, 3300)[0];
                 TOF bgSubtracted = t - bg;
 
                 // if value if negative, set to zero

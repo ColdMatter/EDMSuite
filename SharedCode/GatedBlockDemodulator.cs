@@ -80,8 +80,8 @@ namespace Analysis.EDM
                             if (stateSigns[channel, i] == 1) onVal += statePoints[i][subIndex];
                             else offVal += statePoints[i][subIndex];
                         }
-                        onVal /= blockLength;
-                        offVal /= blockLength;
+                        onVal /= numStates;
+                        offVal /= numStates;
                         runningStats.On.Push(onVal);
                         runningStats.Off.Push(offVal);
                         runningStats.Difference.Push(onVal - offVal);

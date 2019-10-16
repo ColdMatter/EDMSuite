@@ -127,17 +127,23 @@ namespace Analysis.EDM
             int lf1Index = modNames.IndexOf("LF1");
 
             int sigChannel = 0;
+            int eChannel = (1 << eIndex);
             int bChannel = (1 << bIndex);
             int dbChannel = (1 << dbIndex);
             int ebChannel = (1 << eIndex) + (1 << bIndex);
             int edbChannel = (1 << eIndex) + (1 << dbIndex);
+            int bdbChannel = (1 << bIndex) + (1 << dbIndex);
             int dbrf1fChannel = (1 << dbIndex) + (1 << rf1fIndex);
             int dbrf2fChannel = (1 << dbIndex) + (1 << rf2fIndex);
             int brf1fChannel = (1 << bIndex) + (1 << rf1fIndex);
             int brf2fChannel = (1 << bIndex) + (1 << rf2fIndex);
             int edbrf1fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf1fIndex);
             int edbrf2fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf2fIndex);
+            int bdbrf1fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+            int bdbrf2fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
             int ebdbChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex);
+            int ebdbrf1fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+            int ebdbrf2fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
             int rf1fChannel = (1 << rf1fIndex);
             int rf2fChannel = (1 << rf2fIndex);
             int erf1fChannel = (1 << eIndex) + (1 << rf1fIndex);
@@ -147,8 +153,8 @@ namespace Analysis.EDM
             int dbrf1aChannel = (1 << dbIndex) + (1 << rf1aIndex);
             int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
 
-            List<int> channelsToAnalyse = new List<int> { sigChannel, bChannel, dbChannel, ebChannel, edbChannel, dbrf1fChannel,
-                dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, ebdbChannel,
+            List<int> channelsToAnalyse = new List<int> { sigChannel, eChannel, bChannel, dbChannel, ebChannel, edbChannel, bdbChannel, dbrf1fChannel,
+                dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, bdbrf1fChannel, bdbrf2fChannel, ebdbChannel, ebdbrf1fChannel, ebdbrf2fChannel,
                 rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
                 dbrf2aChannel
             };
@@ -312,8 +318,22 @@ namespace Analysis.EDM
             tcs.AddChannel(new string[] { "BDB" }, bDB);
 
             // we also need to extract the rf-step induced phase shifts. These come out in the
-            // B.RFxF channels, but like the edm, need to be corrected. I'm going to use just the
-            // simplest level of correction for these.
+            // B.RFxF channels, but like the edm, need to be corrected. 
+
+            //// Work out the terms
+            //TOFChannel brf1fCorrectionTerms = c_eb * c_db
+            //    - c_edb * c_b + c_bdb * c_e - c_ebdb * c_sig
+            //    + c_erf1f * c_bdbrf1f + c_erf2f * c_bdbrf2f
+            //    - c_brf1f * c_edbrf1f - c_brf2f * c_edbrf2f
+            //    - c_ebdbrf1f * c_rf1f - c_ebdbrf2f * c_rf2f
+            //    ;
+
+            //TOFChannel brf1fPreDenominator = c_db * c_db
+            //    - c_edb * c_edb + c_bdb * c_bdb - c_ebdb * c_ebdb
+            //    + c_bdbrf1f * c_bdbrf1f + c_bdbrf2f * c_bdbrf2f
+            //    - c_edbrf1f * c_edbrf1f - c_edbrf2f * c_edbrf2f
+            //    + c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
+            //    ;
 
             TOFChannel brf1fCorrDB = (c_brf1f / c_db) - ((c_b * c_dbrf1f) / (c_db * c_db));
             tcs.AddChannel(new string[] { "BRF1FCORRDB" }, brf1fCorrDB);

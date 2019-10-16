@@ -279,16 +279,28 @@ namespace Data
 
         static public TOF operator *(TOF t1, TOF t2)
         {
-            TOF temp = new TOF();
-            temp.Data = new double[t1.Data.Length];
-            temp.GateStartTime = t1.GateStartTime;
-            temp.ClockPeriod = t1.ClockPeriod;
-
-            for (int i = 0; i < t1.Data.Length; i++)
+            if (t1.ClockPeriod == t2.ClockPeriod && t1.GateStartTime == t2.GateStartTime
+                && t1.Length == t2.Length)
             {
-                temp.Data[i] = t1.Data[i] * t2.Data[i];
+                TOF temp = new TOF();
+                temp.Data = new double[t1.Data.Length];
+                temp.GateStartTime = t1.GateStartTime;
+                temp.ClockPeriod = t1.ClockPeriod;
+
+                for (int i = 0; i < t1.Data.Length; i++)
+                {
+                    temp.Data[i] = t1.Data[i] * t2.Data[i];
+                }
+                return temp;
             }
-            return temp;
+            else
+            {
+                if (t1.Length == 0) return t2;
+                if (t2.Length == 0) return t1;
+                return null;
+            }
+
+            
         }
 
         static public TOF ScaleTOFInTimeToMatchAnotherTOF(TOF t1, TOF t2, double d)
