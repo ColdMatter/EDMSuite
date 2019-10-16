@@ -59,7 +59,7 @@ namespace Analysis.EDM
         public double[] LF1DB;
         public double[] LF1DBDB;
 
-        public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
+        public static QuickEDMAnalysis AnalyseDBlock(GatedDemodulatedBlock dblock)
         {
             QuickEDMAnalysis analysis = new QuickEDMAnalysis();
 
@@ -94,7 +94,7 @@ namespace Analysis.EDM
             analysis.BDBValAndErr = dblock.GetChannelValueAndError(new string[] { "B", "DB" }, "asymmetry");
 
             //corrected edm in asymmetry detector
-            analysis.RawEDMValAndErr = dblock.GetSpecialChannelValueAndError("EDMCORRDB", "asymmetry");
+            analysis.RawEDMValAndErr = dblock.GetChannelValueAndError("EDMCORRDB", "asymmetry");
 
             //leakage currents
             analysis.NorthCurrentValAndError = 
@@ -112,19 +112,19 @@ namespace Analysis.EDM
             //rf freq
             analysis.rf1FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "asymmetry");
             analysis.rf2FreqAndErr = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "asymmetry");
-            analysis.RF1FDBDB = dblock.GetSpecialChannelValueAndError("RF1FDBDB", "asymmetry");
-            analysis.RF2FDBDB = dblock.GetSpecialChannelValueAndError("RF2FDBDB", "asymmetry");
+            analysis.RF1FDBDB = dblock.GetChannelValueAndError("RF1FDBDB", "asymmetry");
+            analysis.RF2FDBDB = dblock.GetChannelValueAndError("RF2FDBDB", "asymmetry");
 
             //rf amp
             analysis.rf1AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "asymmetry");
             analysis.rf2AmpAndErr = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "asymmetry");
-            analysis.RF1ADBDB = dblock.GetSpecialChannelValueAndError("RF1ADBDB", "asymmetry");
-            analysis.RF2ADBDB = dblock.GetSpecialChannelValueAndError("RF2ADBDB", "asymmetry");
+            analysis.RF1ADBDB = dblock.GetChannelValueAndError("RF1ADBDB", "asymmetry");
+            analysis.RF2ADBDB = dblock.GetChannelValueAndError("RF2ADBDB", "asymmetry");
 
             //probe laser frequency
             analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
-            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError("LF1DB", "asymmetry");
-            analysis.LF1DBDB = dblock.GetSpecialChannelValueAndError("LF1DBDB", "asymmetry");
+            analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
+            analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
             
             return analysis;
         }

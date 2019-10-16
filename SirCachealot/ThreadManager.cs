@@ -72,6 +72,11 @@ namespace SirCachealot.Parallel
             currentAnalysisStart = DateTime.Now;
         }
 
+        public DateTime GetCurrentAnalysisStart()
+        {
+            return currentAnalysisStart;
+        }
+
         public string GetThreadStats()
         {
             StringBuilder b = new StringBuilder();

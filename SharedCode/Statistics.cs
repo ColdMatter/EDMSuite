@@ -20,13 +20,13 @@ namespace Analysis
 
         public static double Variance(double[] values)
         {
-            double[] squaredValues = new double[values.Length];
-            for (int i = 1; i < values.Length; i++) squaredValues[i] = values[i] * values[i];
+            double v = 0.0;
+            double mean = Mean(values);
+            for (int i = 1; i < values.Length; i++) v += Math.Pow(values[i] - mean, 2);
 
-            double squaredMean = Mean(squaredValues);
-            double meanSquared = Mean(values) * Mean(values);
+            v /= values.Length - 1;
 
-            return squaredMean - meanSquared;
+            return v;
         }
 
         public static double StandardDeviation(double[] values)

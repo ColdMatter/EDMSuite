@@ -1,0 +1,254 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 6.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      9120,        246]
+NotebookOptionsPosition[      7062,        199]
+NotebookOutlinePosition[      7438,        215]
+CellTagsIndexPosition[      7395,        212]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["EDMSuite", "Title",
+ CellChangeTimes->{{3.422794262891*^9, 
+  3.422794263977*^9}},ExpressionUUID->"327d2b2a-3e49-48c0-9c95-9727ec4a2e85"],
+
+Cell["\<\
+This package exists to load the EDMSuite .NET code in a predictable way. It \
+also provides functions for connecting to .NET remote programs.\
+\>", "Text",
+ CellChangeTimes->{{3.422794205292*^9, 3.422794220884*^9}, {3.422794266624*^9,
+   3.422794273027*^9}},ExpressionUUID->"675cabb5-5e8f-4457-886a-4372fd243033"],
+
+Cell[CellGroupData[{
+
+Cell["Package declarations", "Section",ExpressionUUID->"2389a1b2-54e8-4c01-a651-dc9e8c22d9a6"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", 
+   RowBox[{
+   "\"\<SEDM4`EDMSuite`\>\"", ",", " ", "\"\<NETLink`\>\"", ",", 
+    "\"\<JLink`\>\""}], "]"}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794258844*^9, 3.422794283347*^9}, {
+  3.7796167770605307`*^9, 
+  3.7796167771648073`*^9}},ExpressionUUID->"498b116c-ae8d-4822-be58-\
+a1c33ea23758"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"initialiseSharedCode", "::", "usage"}], "=", 
+   "\"\<Reinstalls .NET/Link and reloads the EDMSuite dlls.\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"createBlockSerializer", "::", "usage"}], "=", 
+   "\"\<Creates a block serializer, which is available as \
+SEDM3`EDMSuite`$blockSerializer.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"createScanSerializer", "::", "usage"}], "=", 
+   "\"\<Creates a scan serializer, which is available as \
+SEDM3`EDMSuite`$scanSerializer.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"connectToSirCachealot", "::", "usage"}], "=", 
+   "\"\<Creates a .NET remoting connection to SirCachealot. An instance of \
+SirCachealots Controller object is made available as \
+SEDM3`EDMSuite`$sirCachealot.\>\""}], ";"}], "\[IndentingNewLine]"}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.4227942012860003`*^9, {3.422794286242*^9, 3.422794293146*^9}, {
+   3.4227949500369997`*^9, 
+   3.422795042008*^9}},ExpressionUUID->"5979c3b1-39c4-43a7-a093-5bba0883e18b"],
+
+Cell[CellGroupData[{
+
+Cell["Exposed package variables", "Subsection",ExpressionUUID->"d262aace-12e2-4d17-b260-1657b837f195"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$blockSerializer", "=", "Null"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"$scanSerializer", "=", "Null"}], ";"}]}], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"cc96ec05-65ec-489d-9844-4d57761b2b29"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Implementation", "Section",ExpressionUUID->"53faa7ec-849d-4053-86a8-184f36e4f5b6"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"thisFileName", "=", "$InputFileName"}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.7796237526664157`*^9, 3.7796237601302385`*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"b22ef813-101b-4333-b97b-7a08359dd210"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"initialiseSharedCode", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"ReinstallNET", "[", "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"LoadNETAssembly", "[", 
+       RowBox[{
+        RowBox[{"DirectoryName", "[", "thisFileName", "]"}], "<>", 
+        "\"\<Libraries\\\\SharedCode.dll\>\""}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"LoadNETAssembly", "[", 
+       RowBox[{
+        RowBox[{"DirectoryName", "[", "thisFileName", "]"}], "<>", 
+        "\"\<Libraries\\\\SirCachealot.exe\>\""}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+      "LoadNETType", "[", 
+       "\"\<System.Runtime.Remoting.RemotingConfiguration\>\"", "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"LoadNETType", "[", "\"\<System.Type\>\"", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.42279422898*^9, 3.42279424888*^9}, {3.422795105958*^9, 
+  3.422795106185*^9}, {3.779623287947287*^9, 3.779623305915037*^9}, {
+  3.7796236013795977`*^9, 3.77962363808322*^9}, {3.779623700251027*^9, 
+  3.7796237140186634`*^9}, {3.7796237684754295`*^9, 
+  3.7796238524106503`*^9}},ExpressionUUID->"6ef640af-1d1a-406e-ba81-\
+3e7f0c738229"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"createBlockSerializer", "[", "]"}], ":=", 
+   RowBox[{"SEDM4`EDMSuite`$blockSerializer", " ", "=", " ", 
+    RowBox[{"NETNew", "[", "\"\<Data.EDM.BlockSerializer\>\"", "]"}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794301408*^9, 3.422794302591*^9}, 
+   3.7796172568367596`*^9},ExpressionUUID->"11160dfd-d879-491c-ae6f-\
+f4726fa46b9c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"createScanSerializer", "[", "]"}], ":=", 
+   RowBox[{"SEDM4`EDMSuite`$scanSerializer", " ", "=", " ", 
+    RowBox[{"NETNew", "[", "\"\<Data.Scans.ScanSerializer\>\"", "]"}]}]}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794303583*^9, 3.4227943052609997`*^9}, {
+  3.422795051947*^9, 3.422795055858*^9}, {3.422795121538*^9, 
+  3.4227951864820004`*^9}, {3.7796172415240417`*^9, 3.779617255220462*^9}, {
+  3.7796238910840673`*^9, 
+  3.7796238933781834`*^9}},ExpressionUUID->"e13bbef2-7d10-431d-adc7-\
+cdea7b509511"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"connectToSirCachealot", "[", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"RemotingConfiguration`RegisterWellKnownClientType", "[", 
+      RowBox[{
+       RowBox[{
+       "Type`GetType", "[", "\"\<SirCachealot.Controller, SirCachealot\>\"", 
+        "]"}], ",", "\"\<tcp://localhost:1180/controller.rem\>\""}], "]"}], 
+     ";", "\[IndentingNewLine]", 
+     RowBox[{"SEDM4`EDMSuite`$sirCachealot", " ", "=", 
+      RowBox[{"NETNew", "[", "\"\<SirCachealot.Controller\>\"", "]"}]}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"0724e473-d40d-4cba-aa5b-7068fc7e857e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Package end", "Section",ExpressionUUID->"ce569703-b76b-44a5-811a-a7442b637704"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"2e0821e1-70a3-428f-8a6b-5738db53c7bf"]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{1920, 997},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"12.0 for Microsoft Windows (64-bit) (April 8, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[567, 22, 143, 2, 96, "Title",ExpressionUUID->"327d2b2a-3e49-48c0-9c95-9727ec4a2e85"],
+Cell[713, 26, 323, 5, 34, "Text",ExpressionUUID->"675cabb5-5e8f-4457-886a-4372fd243033"],
+Cell[CellGroupData[{
+Cell[1061, 35, 94, 0, 67, "Section",ExpressionUUID->"2389a1b2-54e8-4c01-a651-dc9e8c22d9a6"],
+Cell[1158, 37, 381, 10, 44, "Input",ExpressionUUID->"498b116c-ae8d-4822-be58-a1c33ea23758",
+ InitializationCell->True],
+Cell[1542, 49, 1129, 26, 121, "Input",ExpressionUUID->"5979c3b1-39c4-43a7-a093-5bba0883e18b",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[2696, 79, 102, 0, 53, "Subsection",ExpressionUUID->"d262aace-12e2-4d17-b260-1657b837f195"],
+Cell[2801, 81, 257, 6, 64, "Input",ExpressionUUID->"cc96ec05-65ec-489d-9844-4d57761b2b29",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3107, 93, 88, 0, 67, "Section",ExpressionUUID->"53faa7ec-849d-4053-86a8-184f36e4f5b6"],
+Cell[3198, 95, 364, 8, 64, "Input",ExpressionUUID->"b22ef813-101b-4333-b97b-7a08359dd210",
+ InitializationCell->True],
+Cell[3565, 105, 1360, 31, 159, "Input",ExpressionUUID->"6ef640af-1d1a-406e-ba81-3e7f0c738229",
+ InitializationCell->True],
+Cell[4928, 138, 417, 10, 44, "Input",ExpressionUUID->"11160dfd-d879-491c-ae6f-f4726fa46b9c",
+ InitializationCell->True],
+Cell[5348, 150, 588, 13, 44, "Input",ExpressionUUID->"e13bbef2-7d10-431d-adc7-cdea7b509511",
+ InitializationCell->True],
+Cell[5939, 165, 737, 17, 102, "Input",ExpressionUUID->"0724e473-d40d-4cba-aa5b-7068fc7e857e",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6713, 187, 85, 0, 67, "Section",ExpressionUUID->"ce569703-b76b-44a5-811a-a7442b637704"],
+Cell[6801, 189, 233, 6, 64, "Input",ExpressionUUID->"2e0821e1-70a3-428f-8a6b-5738db53c7bf",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

@@ -21,6 +21,18 @@ namespace Data.EDM
 
         public List<string> detectors = new List<string>();
 
+        public List<string> GetPointDetectors()
+        {
+            EDMPoint point = (EDMPoint)points[0];
+            List<string> pointDetectorList = new List<string>();
+            foreach (string key in point.SinglePointData.Keys)
+            {
+                //XmlSerialisableHashtables have "dummy" as a default entry.
+                if (key != "dummy") pointDetectorList.Add(key);
+            }
+            return pointDetectorList;
+        }
+
 		public void SetTimeStamp()
 		{
 			timeStamp = DateTime.Now;
@@ -79,13 +91,17 @@ namespace Data.EDM
             return d;
         }
 
-        // convenience function to subtract background from TOFs, scale bottom TOF, 
-        // and then calculate the asymmetry TOF
-        public void ProcessBlock()
+        // This function adds background-subtracted TOFs, scaled bottom probe TOF, and asymmetry TOF to the block
+        // Also has the option of converting single point data to TOFs
+        public void AddDetectorsToBlock()
         {
-            this.SubtractBackgroundFromProbeDetectorTOFs();
-            this.CreateScaledBottomProbe();
-            this.ConstructAsymmetryTOF();
+            SubtractBackgroundFromProbeDetectorTOFs();
+
+            CreateScaledBottomProbe();
+
+            ConstructAsymmetryTOF();
+
+            TOFuliseSinglePointData();
         }
 
         // this function adds a new set of detector data to the block, constructed
@@ -126,7 +142,8 @@ namespace Data.EDM
         {
             for (int i = 0; i < points.Count; i++)
             {
-                Shot shot = ((EDMPoint)points[i]).Shot;
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[0];
                 double bg = t.GatedMeanAndUncertainty(2800, 2900)[0];
                 TOF bgSubtracted = t - bg;
@@ -138,15 +155,17 @@ namespace Data.EDM
                 }
 
                 shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("BottomDetectorBackground", bg);
             }
             // give these data a name
             detectors.Add("bottomProbeNoBackground");
 
             for (int i = 0; i < points.Count; i++)
             {
-                Shot shot = ((EDMPoint)points[i]).Shot;
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
                 TOF t = (TOF)shot.TOFs[1];
-                double bg = t.GatedMean(3200, 3300);
+                double bg = t.GatedMeanAndUncertainty(3200, 3300)[0];
                 TOF bgSubtracted = t - bg;
 
                 // if value if negative, set to zero
@@ -156,6 +175,7 @@ namespace Data.EDM
                 }
 
                 shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("TopDetectorBackground", bg);
             }
             // give these data a name
             detectors.Add("topProbeNoBackground");

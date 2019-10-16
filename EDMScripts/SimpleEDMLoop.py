@@ -80,6 +80,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
 	bc.Settings["greenFreq"] = hc.GreenSynthOnFrequency
+	bc.Settings["rf1CentreTime"] = sm.GetPGSetting("rf1CentreTime")
+	bc.Settings["rf2CentreTime"] = sm.GetPGSetting("rf2CentreTime")
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -149,11 +151,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot
-	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000;
+	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 350.0;
-	bc.Settings["targetStepperGateStartTime"] = 2340.0;
-	bc.Settings["targetStepperGateEndTime"] = 2540.0;
+	bc.Settings["minimumSignalToRun"] = 350.0
+	bc.Settings["targetStepperGateStartTime"] = 2340.0
+	bc.Settings["targetStepperGateEndTime"] = 2540.0
 	return bc
 
 # lock gains
@@ -232,20 +234,20 @@ def updateLocks(bState):
 
 def updateLocksNL(bState):
 	sigValue = bh.AnalysedDBlock.SIGValAndErr[0]
-	bValue = bh.AnalysedDBlock.BValAndErr[0];
-	dbValue = bh.AnalysedDBlock.DBValAndErr[0];
-	bDBValue = bh.AnalysedDBlock.BDBValAndErr[0];
-	rf1aValue = bh.AnalysedDBlock.rf1AmpAndErr[0];
-	rf1adbdbValue = bh.AnalysedDBlock.RF1ADBDB[0];
-	rf2aValue = bh.AnalysedDBlock.rf2AmpAndErr[0];
-	rf2adbdbValue = bh.AnalysedDBlock.RF2ADBDB[0];
-	rf1fValue = bh.AnalysedDBlock.rf1FreqAndErr[0];
-	rf1fdbdbValue = bh.AnalysedDBlock.RF1FDBDB[0];
-	rf2fValue = bh.AnalysedDBlock.rf2FreqAndErr[0];
-	rf2fdbdbValue = bh.AnalysedDBlock.RF2FDBDB[0];
-	lf1Value = bh.AnalysedDBlock.LF1ValAndErr[0];
-	lf1dbdbValue = bh.AnalysedDBlock.LF1DBDB[0];
-	lf1dbValue = bh.AnalysedDBlock.LF1DB[0];
+	bValue = bh.AnalysedDBlock.BValAndErr[0]
+	dbValue = bh.AnalysedDBlock.DBValAndErr[0]
+	bDBValue = bh.AnalysedDBlock.BDBValAndErr[0]
+	rf1aValue = bh.AnalysedDBlock.rf1AmpAndErr[0]
+	rf1adbdbValue = bh.AnalysedDBlock.RF1ADBDB[0]
+	rf2aValue = bh.AnalysedDBlock.rf2AmpAndErr[0]
+	rf2adbdbValue = bh.AnalysedDBlock.RF2ADBDB[0]
+	rf1fValue = bh.AnalysedDBlock.rf1FreqAndErr[0]
+	rf1fdbdbValue = bh.AnalysedDBlock.RF1FDBDB[0]
+	rf2fValue = bh.AnalysedDBlock.rf2FreqAndErr[0]
+	rf2fdbdbValue = bh.AnalysedDBlock.RF2FDBDB[0]
+	lf1Value = bh.AnalysedDBlock.LF1ValAndErr[0]
+	lf1dbdbValue = bh.AnalysedDBlock.LF1DBDB[0]
+	lf1dbValue = bh.AnalysedDBlock.LF1DB[0]
 	#lf2Value = pmtChannelValues.GetValue(("LF2",))
 	#lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
 	#rf1ampRefSig = rf1ampReftChannelValues.GetValue(("SIG",))
