@@ -916,6 +916,8 @@ namespace EDMHardwareControl
             this.argonShutterCheckBox = new System.Windows.Forms.CheckBox();
             this.label32 = new System.Windows.Forms.Label();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.label169 = new System.Windows.Forms.Label();
+            this.probeAOMampnumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.probeAOMFreqStepTextBox = new System.Windows.Forms.TextBox();
             this.label73 = new System.Windows.Forms.Label();
             this.probeAOMFreqMinusTextBox = new System.Windows.Forms.TextBox();
@@ -1206,8 +1208,6 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.probeAOMampnumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label169 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1245,6 +1245,7 @@ namespace EDMHardwareControl
             this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.groupBox18.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.probeAOMtrackBar)).BeginInit();
             this.panel5.SuspendLayout();
             this.tabPage13.SuspendLayout();
@@ -1303,7 +1304,6 @@ namespace EDMHardwareControl
             this.groupBox28.SuspendLayout();
             this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -2351,7 +2351,7 @@ namespace EDMHardwareControl
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Size = new System.Drawing.Size(697, 575);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Synth";
+            this.tabPage2.Text = "Interferometer RF";
             // 
             // groupBox24
             // 
@@ -4106,6 +4106,7 @@ namespace EDMHardwareControl
             this.groupBox10.TabIndex = 69;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Shutters";
+            this.groupBox10.Enter += new System.EventHandler(this.groupBox10_Enter);
             // 
             // argonShutterCheckBox
             // 
@@ -4150,6 +4151,29 @@ namespace EDMHardwareControl
             this.groupBox18.TabIndex = 68;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Probe AOM";
+            // 
+            // label169
+            // 
+            this.label169.AutoSize = true;
+            this.label169.Location = new System.Drawing.Point(6, 147);
+            this.label169.Name = "label169";
+            this.label169.Size = new System.Drawing.Size(117, 13);
+            this.label169.TabIndex = 66;
+            this.label169.Text = "VCA control voltage (V)";
+            // 
+            // probeAOMampnumericUpDown
+            // 
+            this.probeAOMampnumericUpDown.DecimalPlaces = 2;
+            this.probeAOMampnumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.probeAOMampnumericUpDown.Location = new System.Drawing.Point(129, 145);
+            this.probeAOMampnumericUpDown.Name = "probeAOMampnumericUpDown";
+            this.probeAOMampnumericUpDown.Size = new System.Drawing.Size(75, 20);
+            this.probeAOMampnumericUpDown.TabIndex = 53;
+            this.probeAOMampnumericUpDown.ValueChanged += new System.EventHandler(this.probeAOMampnumericUpDown_ValueChanged);
             // 
             // probeAOMFreqStepTextBox
             // 
@@ -4938,7 +4962,7 @@ namespace EDMHardwareControl
             this.tabPage12.Name = "tabPage12";
             this.tabPage12.Size = new System.Drawing.Size(697, 575);
             this.tabPage12.TabIndex = 10;
-            this.tabPage12.Text = "RF VCOs";
+            this.tabPage12.Text = "Pump RF VCOs";
             // 
             // groupBox42
             // 
@@ -4994,7 +5018,7 @@ namespace EDMHardwareControl
             this.groupBox40.Size = new System.Drawing.Size(661, 141);
             this.groupBox40.TabIndex = 71;
             this.groupBox40.TabStop = false;
-            this.groupBox40.Text = "155 MHz VCO";
+            this.groupBox40.Text = "155 MHz VCO - unused";
             // 
             // VCO155FreqStepMinusButton
             // 
@@ -6973,29 +6997,6 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
-            // probeAOMampnumericUpDown
-            // 
-            this.probeAOMampnumericUpDown.DecimalPlaces = 2;
-            this.probeAOMampnumericUpDown.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.probeAOMampnumericUpDown.Location = new System.Drawing.Point(129, 145);
-            this.probeAOMampnumericUpDown.Name = "probeAOMampnumericUpDown";
-            this.probeAOMampnumericUpDown.Size = new System.Drawing.Size(75, 20);
-            this.probeAOMampnumericUpDown.TabIndex = 53;
-            this.probeAOMampnumericUpDown.ValueChanged += new System.EventHandler(this.probeAOMampnumericUpDown_ValueChanged);
-            // 
-            // label169
-            // 
-            this.label169.AutoSize = true;
-            this.label169.Location = new System.Drawing.Point(6, 147);
-            this.label169.Name = "label169";
-            this.label169.Size = new System.Drawing.Size(117, 13);
-            this.label169.TabIndex = 66;
-            this.label169.Text = "VCA control voltage (V)";
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -7067,6 +7068,7 @@ namespace EDMHardwareControl
             this.groupBox10.ResumeLayout(false);
             this.groupBox18.ResumeLayout(false);
             this.groupBox18.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.probeAOMtrackBar)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -7150,7 +7152,6 @@ namespace EDMHardwareControl
             this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.probeAOMampnumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -8019,6 +8020,11 @@ namespace EDMHardwareControl
        {
            double val = (double)probeAOMampnumericUpDown.Value;
            controller.UpdateProbeAOMamp(val);
+       }
+
+       private void groupBox10_Enter(object sender, EventArgs e)
+       {
+
        }
 
 

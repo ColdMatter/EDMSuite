@@ -41,8 +41,8 @@ namespace EDMBlockHead
         private BlockConfig config;
         private XmlSerializer serializer = new XmlSerializer(typeof(BlockConfig));
         BlockSerializer blockSerializer = new BlockSerializer();
-        BlockDemodulator blockDemodulator = new BlockDemodulator();
-        public DemodulatedBlock DBlock;
+        GatedBlockDemodulator gatedBlockDemodulator = new GatedBlockDemodulator();
+        public GatedDemodulatedBlock DBlock;
         public QuickEDMAnalysis AnalysedDBlock;
         private bool haveBlock = false;
 
@@ -317,21 +317,21 @@ namespace EDMBlockHead
 
         public void StartPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.SelectProfile("Scan B");
             scanMaster.OutputPattern();
         }
 
         public void StartNoMoleculesPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.SelectProfile("Scan B without molecules");
             scanMaster.OutputPattern();
         }
 
         public void StopPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.StopPatternOutput();
         }
 
@@ -408,9 +408,9 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            blockDemodulator.AddDetectorsToBlock(b, true);
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("liveBlockAnalysis", b);
-            DBlock = blockDemodulator.DemodulateBlockNL(b, dc);
+            b.AddDetectorsToBlock();
+            GatedDemodulationConfig dc = GatedDemodulationConfig.MakeLiveAnalysisGateConfig();
+            DBlock = gatedBlockDemodulator.GateThenDemodulateBlock(b, dc);
             AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
             liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
@@ -584,7 +584,7 @@ namespace EDMBlockHead
         {
             for (int i = 1; i <= 20; i++)
             {
-                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2009\\April2009\\30apr0900_";
+                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2019\\September2019\\09Sep1928_";
                 BlockSerializer bs = new BlockSerializer();
                 Block b = bs.DeserializeBlockFromZippedXML(fileRoot + (i.ToString()) + ".zip", "block.xml");
                 AcquisitionFinished(b);

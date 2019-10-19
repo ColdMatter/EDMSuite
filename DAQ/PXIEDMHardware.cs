@@ -143,9 +143,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("notB", aoBoard, 0, 1);
 
             AddDigitalOutputChannel("db", aoBoard, 0, 2);
-            AddDigitalOutputChannel("notDB", aoBoard, 0, 3);
+            AddDigitalOutputChannel("notDB", aoBoard, 0, 3);                                                        
             AddDigitalOutputChannel("piFlipEnable", aoBoard, 0, 4);
-            AddDigitalOutputChannel("notPIFlipEnable", aoBoard, 0, 5); //doesn't seem to be connected to anything
+            AddDigitalOutputChannel("notPIFlipEnable", aoBoard, 0, 5); //not connected to anything
             AddDigitalOutputChannel("mwSwitching", aoBoard, 0, 6);
 
             // these digitial outputs are switched slowly during the pattern

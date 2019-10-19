@@ -5,7 +5,7 @@ namespace DAQ.HAL
     /// <summary>
     /// Represents a (GPIB) frequency counter
     /// </summary>
-    public class FrequencyCounter : GPIBInstrument
+    public abstract class FrequencyCounter : GPIBInstrument
     {
         public FrequencyCounter(String visaAddress)
             : base(visaAddress)

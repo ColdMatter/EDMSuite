@@ -107,7 +107,8 @@ namespace Analysis.EDM
                 }
 
                 // Append the ChannelSet with special combinations of channels for the asymmetry detector only
-                if(b.detectors[detectorIndex] == "asymmetry")
+                // Also append for bottom probe detector for live analysis purposes
+                if(b.detectors[detectorIndex] == "asymmetry" || b.detectors[detectorIndex] == "bottomProbeScaled")
                 {
                     var tofBlockDemodulator = new TOFBlockDemodulator();
                     // Get a TOF demodulated block containing only the special channels in the asymmetry deteector
@@ -211,13 +212,15 @@ namespace Analysis.EDM
         {
             PointChannel pointChannel = new PointChannel();
 
-            if (tofChannel.On is TOFWithError onTOF)
+            TOFWithError onTOF = tofChannel.On as TOFWithError;
+            if (onTOF != null)
             {
                 pointChannel.On.Value = onTOF.Data[0];
                 pointChannel.On.Error = onTOF.Errors[0];
             }
 
-            if(tofChannel.Off is TOFWithError offTOF)
+            TOFWithError offTOF = tofChannel.Off as TOFWithError;
+            if(offTOF != null)
             {
                 if (offTOF.Length != 0)
                 {
@@ -226,7 +229,8 @@ namespace Analysis.EDM
                 }
             }
 
-            if(tofChannel.Difference is TOFWithError diffTOF)
+            TOFWithError diffTOF = tofChannel.Difference as TOFWithError;
+            if(diffTOF != null)
             {
                 pointChannel.Difference.Value = diffTOF.Data[0];
                 pointChannel.Difference.Error = diffTOF.Errors[0];

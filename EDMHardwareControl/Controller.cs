@@ -1930,6 +1930,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool MWManualState
+        {
+            get
+            {
+                return window.microwaveStateCheckBox.Checked;
+            }
+        }
+
         public double E0PlusBoost
         {
             get

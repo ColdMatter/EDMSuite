@@ -94,7 +94,7 @@ namespace EDMBlockHead.Acquire
 			// lock onto something that the front end can see
 			Monitor.Enter(MonitorLockObject);
 
-			scanMaster = new ScanMaster.Controller();
+			scanMaster = ScanMaster.Controller.GetController();
 			phaseLock = new EDMPhaseLock.MainForm();
             hardwareController = new EDMHardwareControl.Controller();
 	
@@ -287,7 +287,7 @@ namespace EDMBlockHead.Acquire
             // lock onto something that the front end can see
             Monitor.Enter(MonitorLockObject);
 
-            scanMaster = new ScanMaster.Controller();
+            scanMaster = ScanMaster.Controller.GetController();
             phaseLock = new EDMPhaseLock.MainForm();
             hardwareController = new EDMHardwareControl.Controller();
 
@@ -480,7 +480,7 @@ namespace EDMBlockHead.Acquire
             // lock onto something that the front end can see
             Monitor.Enter(MonitorLockObject);
 
-            scanMaster = new ScanMaster.Controller();
+            scanMaster = ScanMaster.Controller.GetController();
             phaseLock = new EDMPhaseLock.MainForm();
             hardwareController = new EDMHardwareControl.Controller();
 
@@ -696,11 +696,11 @@ namespace EDMBlockHead.Acquire
             notDBChan.Modulation = config.GetModulationByName("DB");
             switchedChannels.Add(notDBChan);
 
-            //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
-            //piChan.Channel = "piFlipEnable";
-            //piChan.Invert = false;
-            //piChan.Modulation = config.GetModulationByName("PI");
-            //switchedChannels.Add(piChan);
+            TTLSwitchedChannel piChan = new TTLSwitchedChannel();
+            piChan.Channel = "piFlipEnable";
+            piChan.Invert = false;
+            piChan.Modulation = config.GetModulationByName("PI");
+            switchedChannels.Add(piChan);
 
             //TTLSwitchedChannel notPIChan = new TTLSwitchedChannel();
             //notPIChan.Channel = "notPIFlipEnable";
@@ -796,7 +796,7 @@ namespace EDMBlockHead.Acquire
             bottomProbe.ChopLength = 80;
             bottomProbe.LowLimit = 0;
             bottomProbe.HighLimit = 10;
-            bottomProbe.Calibration = 0.209145; // calibration from 5-8-08, b14. p52, high gain setting
+            bottomProbe.Calibration = 510; 
             inputs.Channels.Add(bottomProbe);
 
             //			// this code can be enabled for faster null runs
@@ -816,7 +816,7 @@ namespace EDMBlockHead.Acquire
             topProbe.ChopLength = 80;
             topProbe.LowLimit = 0;
             topProbe.HighLimit = 10;
-            topProbe.Calibration = 0.0406658; // calibration from 5-8-08, b14. p52, high gain setting
+            topProbe.Calibration = 510;
             inputs.Channels.Add(topProbe);
 
             ScannedAnalogInput mag = new ScannedAnalogInput();
