@@ -41,7 +41,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -142,6 +142,10 @@
       <Project>{dfe81ee7-f9af-4551-b3d7-336f14101ab6}</Project>
       <Name>EDMHardwareControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
       <Name>TransferCavityLock2012</Name>
@@ -194,11 +198,6 @@
       <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
       <Name>MoleculeMOTHardwareControl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Name>SharedCode</Name>
-      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Acquisitor.cs">
@@ -210,11 +209,14 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SingleCounterInputPlugin.cs" />
+    <Compile Include="GPIBInputPlugin.cs" />
     <Compile Include="BigSkyYAGPlugin.cs" />
     <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
     <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="NIRfsgFrequencyOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="NullGPIBInputPlugin.cs" />
     <Compile Include="SuperPumpingPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFDoubleSwitchScanPatternBuilder.cs" />
     <Compile Include="SuperPumpingPulsedRFScanPatternBuilder.cs" />

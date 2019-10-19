@@ -115,6 +115,7 @@ namespace Data.EDM
                 int bottomScaledIndex = detectors.IndexOf("bottomProbeScaled");
                 int topIndex = detectors.IndexOf("topProbeNoBackground");
                 TOF asymmetry = ((TOF)shot.TOFs[bottomScaledIndex] - (TOF)shot.TOFs[topIndex]) / ((TOF)shot.TOFs[bottomScaledIndex] + (TOF)shot.TOFs[topIndex]);
+                asymmetry.Calibration = 1;
                 shot.TOFs.Add(asymmetry);
             }
             // give these data a name
@@ -129,7 +130,10 @@ namespace Data.EDM
                 Shot shot = ((EDMPoint)points[i]).Shot;
                 int bottomIndex = detectors.IndexOf("bottomProbeNoBackground");
                 int topIndex = detectors.IndexOf("topProbeNoBackground");
-                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF((TOF)shot.TOFs[bottomIndex], (TOF)shot.TOFs[topIndex], kDetectorDistanceRatio);
+                TOF bottomTOF = (TOF)shot.TOFs[bottomIndex];
+                TOF topTOF = (TOF)shot.TOFs[topIndex];
+                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF(bottomTOF, topTOF, kDetectorDistanceRatio);
+                bottomScaled.Calibration = bottomTOF.Calibration;
                 shot.TOFs.Add(bottomScaled);
             }
             // give these data a name
@@ -154,6 +158,7 @@ namespace Data.EDM
                     if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
                 }
 
+                bgSubtracted.Calibration = t.Calibration;
                 shot.TOFs.Add(bgSubtracted);
                 point.SinglePointData.Add("BottomDetectorBackground", bg);
             }
@@ -174,6 +179,7 @@ namespace Data.EDM
                     if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
                 }
 
+                bgSubtracted.Calibration = t.Calibration;
                 shot.TOFs.Add(bgSubtracted);
                 point.SinglePointData.Add("TopDetectorBackground", bg);
             }

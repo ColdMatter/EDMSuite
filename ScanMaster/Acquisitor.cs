@@ -75,6 +75,7 @@ namespace ScanMaster.Acquire
 				config.switchPlugin.AcquisitionStarting();
 				config.yagPlugin.AcquisitionStarting();
 				config.analogPlugin.AcquisitionStarting();
+                config.gpibPlugin.AcquisitionStarting();
 
 				for (int scanNumber = 0 ;; scanNumber++)
 				{
@@ -86,6 +87,8 @@ namespace ScanMaster.Acquire
 					config.switchPlugin.ScanStarting();
 					config.yagPlugin.ScanStarting();
 					config.analogPlugin.ScanStarting();
+                    config.gpibPlugin.ScanStarting();
+
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
 					{
 						// calculate the new scan parameter and move the scan along
@@ -134,6 +137,10 @@ namespace ScanMaster.Acquire
 						config.analogPlugin.ArmAndWait();
 						sp.Analogs.AddRange(config.analogPlugin.Analogs);
 
+                        // sample the gpib channels and add them to the ScanPoint
+                        config.gpibPlugin.ArmAndWait();
+                        sp.gpibval = config.gpibPlugin.GPIBval;
+
 						// send up the data bundle
 						DataEventArgs evArgs = new DataEventArgs();
 						evArgs.point = sp;
@@ -154,6 +161,7 @@ namespace ScanMaster.Acquire
 					config.shotGathererPlugin.ScanFinished();
 					config.switchPlugin.ScanFinished();
 					config.analogPlugin.ScanFinished();
+                    config.gpibPlugin.ScanFinished();
                     // I think that this pause will workaround an annoying threading bug
                     // I should probably be less cheezy and put a lock in, but I'm not really
                     // sure that I know what the bug is as it's intermittent (and rare).

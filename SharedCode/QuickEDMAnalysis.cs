@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using Data.EDM;
 using EDMConfig;
 
 namespace Analysis.EDM
 {
+    [Serializable]
     public class QuickEDMAnalysis
     {
         // constants
@@ -14,6 +16,7 @@ namespace Analysis.EDM
         private static double electronCharge = 1.6022 * Math.Pow(10, -19);
         private static double bohrMagneton = 9.274 * Math.Pow(10, -24);
         private static double saturatedEffectiveField = 26 * Math.Pow(10, 9);
+        private static double hbar = 1.05457 * Math.Pow(10, -34);
         
         // analysis results for asymmetry
         public double[] SIGValAndErr;
@@ -23,6 +26,9 @@ namespace Analysis.EDM
         public double[] EBValAndErr;
         public double[] BDBValAndErr;
         public double[] RawEDMValAndErr;
+
+        public double ShotNoise;
+        public double Contrast;
 
         // analysis results top probe 
         public double[] SIGValAndErrtp;
@@ -37,6 +43,7 @@ namespace Analysis.EDM
         public double[] DBValAndErrbp;
         public double[] EValAndErrbp;
         public double[] EBValAndErrbp;
+        public double[] BDBValAndErrbp;
 
         public double[] NorthCurrentValAndError;
         public double[] SouthCurrentValAndError;
@@ -50,10 +57,20 @@ namespace Analysis.EDM
         public double[] rf1AmpAndErr;
         public double[] rf2AmpAndErr;
 
+        public double[] rf1FreqAndErrbp;
+        public double[] rf2FreqAndErrbp;
+        public double[] rf1AmpAndErrbp;
+        public double[] rf2AmpAndErrbp;
+
         public double[] RF1FDBDB;
         public double[] RF2FDBDB;
         public double[] RF1ADBDB;
         public double[] RF2ADBDB;
+
+        public double[] RF1FDBDBbp;
+        public double[] RF2FDBDBbp;
+        public double[] RF1ADBDBbp;
+        public double[] RF2ADBDBbp;
 
         public double[] LF1ValAndErr;
         public double[] LF1DB;
@@ -70,6 +87,8 @@ namespace Analysis.EDM
             double eField = cField((double)config.Settings["ePlus"], (double)config.Settings["eMinus"]);//arguments are in volts not kV
             double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
                         (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
+            //Add in interferometer length instead of 800 10^-6 after testing is done with old blocks
+            double dbPhaseStep = dbStep * magCal * Math.Pow(10, -9) * bohrMagneton * 800 * Math.Pow(10, -6) / hbar;
 
             //Get relevant channel values and errors for top probe
             analysis.SIGValAndErrtp = dblock.GetChannelValueAndError(new string[] { "SIG" }, "topProbeNoBackground");
@@ -84,6 +103,7 @@ namespace Analysis.EDM
             analysis.DBValAndErrbp = dblock.GetChannelValueAndError(new string[] { "DB" }, "bottomProbeScaled");
             analysis.EValAndErrbp = dblock.GetChannelValueAndError(new string[] { "E" }, "bottomProbeScaled");
             analysis.EBValAndErrbp = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "bottomProbeScaled");
+            analysis.BDBValAndErrbp = dblock.GetChannelValueAndError(new string[] { "B", "DB" }, "bottomProbeScaled");
 
             //Get relevant channel values and errors for asymmetry
             analysis.SIGValAndErr = dblock.GetChannelValueAndError(new string[] { "SIG" }, "asymmetry");
@@ -92,6 +112,12 @@ namespace Analysis.EDM
             analysis.EValAndErr = dblock.GetChannelValueAndError(new string[] { "E" }, "asymmetry");
             analysis.EBValAndErr = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "asymmetry");
             analysis.BDBValAndErr = dblock.GetChannelValueAndError(new string[] { "B", "DB" }, "asymmetry");
+
+            double bottomProbeCalibration = dblock.GetCalibration("bottomProbe");
+            double topProbeCalibration = dblock.GetCalibration("topProbe");
+            //Replace 510 with the calibrations above after testing is done with old blocks
+            analysis.ShotNoise = 1.0 / Math.Sqrt(analysis.SIGValAndErrbp[0] * 510 + analysis.SIGValAndErrtp[0] * 510);
+            analysis.Contrast = analysis.DBValAndErr[0] / 2 / dbPhaseStep;
 
             //corrected edm in asymmetry detector
             analysis.RawEDMValAndErr = dblock.GetChannelValueAndError("EDMCORRDB", "asymmetry");
@@ -121,10 +147,22 @@ namespace Analysis.EDM
             analysis.RF1ADBDB = dblock.GetChannelValueAndError("RF1ADBDB", "asymmetry");
             analysis.RF2ADBDB = dblock.GetChannelValueAndError("RF2ADBDB", "asymmetry");
 
+            //rf freq bottom probe
+            analysis.rf1FreqAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "bottomProbeScaled");
+            analysis.rf2FreqAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "bottomProbeScaled");
+            analysis.RF1FDBDBbp = dblock.GetChannelValueAndError("RF1FDBDB", "bottomProbeScaled");
+            analysis.RF2FDBDBbp = dblock.GetChannelValueAndError("RF2FDBDB", "bottomProbeScaled");
+
+            //rf amp bottom probe
+            analysis.rf1AmpAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "bottomProbeScaled");
+            analysis.rf2AmpAndErrbp = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "bottomProbeScaled");
+            analysis.RF1ADBDBbp = dblock.GetChannelValueAndError("RF1ADBDB", "bottomProbeScaled");
+            analysis.RF2ADBDBbp = dblock.GetChannelValueAndError("RF2ADBDB", "bottomProbeScaled");
+
             //probe laser frequency
-            analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
-            analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
-            analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
+            //analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
+            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
+            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
             
             return analysis;
         }

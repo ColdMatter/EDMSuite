@@ -97,6 +97,7 @@ namespace EDMHardwareControl
         Task steppingBBiasAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
         Task probeAOMAnalogOutputTask;
+        Task probeAOMampAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
@@ -115,6 +116,8 @@ namespace EDMHardwareControl
         Task groundedInputTask;
         Task piMonitorTask;
         Task i2ErrorSignalInputTask;
+        Task laserPowerMeterInputTask;
+
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
         //Task uWaveMixerAnalogOutputTask;
@@ -193,6 +196,7 @@ namespace EDMHardwareControl
             //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             probeAOMAnalogOutputTask = CreateAnalogOutputTask("probeAOM");
+            probeAOMampAnalogOutputTask = CreateAnalogOutputTask("probeAOMamp");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -235,7 +239,8 @@ namespace EDMHardwareControl
             //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
             //diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
             i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
-            
+            laserPowerMeterInputTask = CreateAnalogInputTask("laserPowerMeter");
+                        
 
             // make the control window
             window = new ControlWindow();
@@ -1925,6 +1930,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool MWManualState
+        {
+            get
+            {
+                return window.microwaveStateCheckBox.Checked;
+            }
+        }
+
         public double E0PlusBoost
         {
             get
@@ -1984,6 +1997,11 @@ namespace EDMHardwareControl
             this.lf1State = lf1State;
 
             SetAnalogOutput(probeAOMAnalogOutputTask, calculateProbeAOMFrequency(lf1State));
+        }
+
+        public void UpdateProbeAOMamp(double val)
+        {
+            SetAnalogOutput(probeAOMampAnalogOutputTask, val);
         }
 
         private bool lf2State;

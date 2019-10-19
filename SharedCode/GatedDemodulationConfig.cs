@@ -88,5 +88,25 @@ namespace Analysis.EDM
 
             return gateConfig;
         }
+
+        public static GatedDemodulationConfig MakeLiveAnalysisGateConfig()
+        {
+            GatedDemodulationConfig gateConfig = new GatedDemodulationConfig();
+            gateConfig.Name = "Live analysis gate set";
+            gateConfig.AddGate("asymmetry", new Gate(2691, 2921, false));
+            gateConfig.AddGate("bottomProbeScaled", new Gate(2691, 2921, true));
+            gateConfig.AddGate("topProbeNoBackground", new Gate(2691, 2921, true));
+            gateConfig.AddGate("magnetometer", new Gate(1000, 1800, false));
+            gateConfig.AddGate("gnd", Gate.WideGate());
+            gateConfig.AddGate("battery", Gate.WideGate());
+            gateConfig.AddGate("rfCurrent", Gate.WideGate());
+            gateConfig.AddGate("reflectedrf1Amplitude", Gate.WideGate());
+            gateConfig.AddGate("reflectedrf2Amplitude", Gate.WideGate());
+            gateConfig.AddGate("bottomProbeNoBackground", new Gate(2340, 2540, true));
+            gateConfig.AddGate("bottomProbe", new Gate(2340, 2540, true));
+            gateConfig.AddGate("topProbe", new Gate(2691, 2921, true));
+
+            return gateConfig;
+        }
     }
 }
