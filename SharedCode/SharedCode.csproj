@@ -179,6 +179,7 @@
     <Compile Include="PointChannel.cs" />
     <Compile Include="GatedDemodulatedBlock.cs" />
     <Compile Include="GatedDemodulationConfigSet.cs" />
+    <Compile Include="TOFWithErrorChannel.cs" />
     <Compile Include="TOFDemodulatedBlock.cs" />
     <Compile Include="GatedDemodulationConfig.cs" />
     <Compile Include="IQData.cs" />

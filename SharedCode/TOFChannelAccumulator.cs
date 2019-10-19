@@ -22,9 +22,9 @@ namespace Analysis.EDM
             Difference.Add(val.Difference);
         }
 
-        public TOFChannel GetResult()
+        public TOFWithErrorChannel GetResult()
         {
-            TOFChannel tc = new TOFChannel();
+            TOFWithErrorChannel tc = new TOFWithErrorChannel();
             tc.On = On.GetResult();
             tc.Off = Off.GetResult();
             tc.Difference = Difference.GetResult();

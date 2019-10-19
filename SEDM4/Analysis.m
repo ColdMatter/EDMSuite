@@ -140,8 +140,8 @@ edmSign[dblock_]:= boolSign[dblock@Config@Settings["eState"]] boolSign[dblock@Co
 
 (* ::Input::Initialization:: *)
 rawEDM[dblock_,gated_]:=If[gated,
-(edmFactor[dblock] getGatedChannel["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM,
-Transpose[getTOFChannelTimes["EDMDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+(edmFactor[dblock] getGatedChannel["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM4`Blind`blindEDM,
+Transpose[{getTOFChannelTimes["EDMDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM4`Blind`blindEDM}]
 ]
 
 
@@ -154,8 +154,8 @@ edmFactor[dblock] getTOFChannelErrors["EDMDB","asymmetry",dblock]
 
 (* ::Input::Initialization:: *)
 correctedEDM[dblock_,gated_]:=If[gated,
-edmFactor[dblock] getGatedChannel["EDMCORRDB","asymmetry",dblock]+edmSign[dblock]SEDM3`Blind`blindEDM,
-Transpose[getTOFChannelTimes["EDMCORRDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMCORRDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+edmFactor[dblock] getGatedChannel["EDMCORRDB","asymmetry",dblock]+edmSign[dblock]SEDM4`Blind`blindEDM,
+Transpose[{getTOFChannelTimes["EDMCORRDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMCORRDB","asymmetry",dblock])+edmSign[dblock]SEDM4`Blind`blindEDM}]
 ]
 
 
@@ -168,8 +168,8 @@ edmFactor[dblock] getTOFChannelErrors["EDMCORRDB","asymmetry",dblock]
 
 (* ::Input::Initialization:: *)
 counts[dblock_,detector_,gated_]:=If[gated,
-(getGatedChannel[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector],
-(getTOFChannelData[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector]
+(getGatedChannel[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])*dblock@GetCalibration[detector],
+(getTOFChannelData[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])*dblock@GetCalibration[detector]
 ]
 
 
@@ -181,7 +181,7 @@ magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
 phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 
-getChannel[dblock,"asymmetry",gated]/phaseStep;
+getChannel[{"DB"},"asymmetry",dblock,gated]/phaseStep
 ]
 
 
@@ -197,8 +197,10 @@ extractPhysicalQuantities[dblock_,gated_]:=
 "correctedEDM"->correctedEDM[dblock,gated],
 "correctedEDMErr"->correctedEDMErr[dblock,gated],
 "signedCorrectedEDM"->edmSign[dblock] correctedEDM[dblock,gated],
-"pmtCountsTop"->counts[dblock,"topProbeNoBackground",gated],
-"pmtCountsBottom"->counts[dblock,"bottomProbeScaled",gated],
+"pmtCountsTopBgSubtracted"->counts[dblock,"topProbeNoBackground",gated],
+"pmtCountsBottomBgSubtractedScaled"->counts[dblock,"bottomProbeScaled",gated],
+"pmtCountsTop"->counts[dblock,"topProbe",gated],
+"pmtCountsBottom"->counts[dblock,"bottomProbe",gated],
 "pmtLaserBackgroundTop"->counts[dblock,"TopDetectorBackground",gated],
 "pmtLaserBackgroundBottom"->counts[dblock,"BottomDetectorBackground",gated],
 "contrast"->contrast[dblock,gated],

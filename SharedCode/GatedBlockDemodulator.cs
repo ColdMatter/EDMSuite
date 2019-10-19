@@ -121,7 +121,7 @@ namespace Analysis.EDM
                         {
                             gatedChannelSet.AddChannel(
                             channelName,
-                            GateTOFChannel((TOFChannel)tofSpecialChannelSet.GetChannel(channelName), config.GetGate("asymmetry"))
+                            GateTOFChannel((TOFWithErrorChannel)tofSpecialChannelSet.GetChannel(channelName), config.GetGate("asymmetry"))
                             );
                         }
                         
@@ -149,7 +149,7 @@ namespace Analysis.EDM
                     var tofChannelSet = tofDemodulatedBlock.GetChannelSet(detector);
                     foreach(string tofChannelName in tofChannelSet.Channels)
                     {
-                        TOFChannel tofChannel = (TOFChannel)tofChannelSet.GetChannel(tofChannelName);
+                        TOFWithErrorChannel tofChannel = (TOFWithErrorChannel)tofChannelSet.GetChannel(tofChannelName);
                         channelSet.AddChannel(
                                 tofChannelName,
                                 GateTOFChannel(tofChannel, config.GetGate(detector))
@@ -165,7 +165,7 @@ namespace Analysis.EDM
                     {
                         channelSet.AddChannel(
                             tofChannelName,
-                            UnTOFulisePointChannel((TOFChannel)tofChannelSet.GetChannel(tofChannelName))
+                            UnTOFulisePointChannel((TOFWithErrorChannel)tofChannelSet.GetChannel(tofChannelName))
                             );
                     }
 
@@ -191,7 +191,7 @@ namespace Analysis.EDM
             return b.GetSPData(detector).ToArray();
         }
 
-        private GatedChannel GateTOFChannel(TOFChannel tofChannel, Gate gate)
+        private GatedChannel GateTOFChannel(TOFWithErrorChannel tofChannel, Gate gate)
         {
             var gatedChannel = new GatedChannel();
             var onMeanAndErr = tofChannel.On.GatedMeanAndUncertainty(gate.GateLow, gate.GateHigh);
@@ -207,7 +207,7 @@ namespace Analysis.EDM
             return gatedChannel;
         }
 
-        private PointChannel UnTOFulisePointChannel(TOFChannel tofChannel)
+        private PointChannel UnTOFulisePointChannel(TOFWithErrorChannel tofChannel)
         {
             PointChannel pointChannel = new PointChannel();
 
@@ -217,7 +217,7 @@ namespace Analysis.EDM
                 pointChannel.On.Error = onTOF.Errors[0];
             }
 
-            if(tofChannel.Off is TOFWithError offTOF)
+            if (tofChannel.Off is TOFWithError offTOF)
             {
                 if (offTOF.Length != 0)
                 {
@@ -226,7 +226,7 @@ namespace Analysis.EDM
                 }
             }
 
-            if(tofChannel.Difference is TOFWithError diffTOF)
+            if (tofChannel.Difference is TOFWithError diffTOF)
             {
                 pointChannel.Difference.Value = diffTOF.Data[0];
                 pointChannel.Difference.Error = diffTOF.Errors[0];

@@ -73,6 +73,23 @@ namespace Data
             return temp;
         }
 
+        static public TOFWithError operator /(double d, TOFWithError t)
+        {
+            TOFWithError temp = new TOFWithError();
+            temp.Data = new double[t.Data.Length];
+            temp.Errors = new double[t.Errors.Length];
+            temp.GateStartTime = t.GateStartTime;
+            temp.ClockPeriod = t.ClockPeriod;
+            temp.Calibration = t.Calibration;
+
+            for (int i = 0; i < t.Data.Length; i++)
+            {
+                temp.Data[i] = d / t.Data[i];
+                temp.Errors[i] = t.Errors[i] * Math.Abs(d) / Math.Pow(t.Data[i], 2);
+            }
+            return temp;
+        }
+
         static public TOFWithError operator *(TOFWithError t, double d)
         {
             TOFWithError temp = new TOFWithError();
@@ -92,41 +109,61 @@ namespace Data
 
         static public TOFWithError operator /(TOFWithError t1, TOFWithError t2)
         {
-            TOFWithError temp = new TOFWithError();
-            temp.Data = new double[t1.Data.Length];
-            temp.Errors = new double[t1.Errors.Length];
-            temp.GateStartTime = t1.GateStartTime;
-            temp.ClockPeriod = t1.ClockPeriod;
-            temp.Calibration = t1.Calibration;
-
-            for (int i = 0; i < t1.Data.Length; i++)
+            if (t1.ClockPeriod == t2.ClockPeriod && t1.GateStartTime == t2.GateStartTime
+                && t1.Length == t2.Length)
             {
-                temp.Data[i] = t1.Data[i] / t2.Data[i];
-                temp.Errors[i] = temp.Data[i] * Math.Sqrt(
-                    Math.Pow(t1.Errors[i] / t1.Data[i], 2) +
-                    Math.Pow(t2.Errors[i] / t2.Data[i], 2)
-                    );
+                TOFWithError temp = new TOFWithError();
+                temp.Data = new double[t1.Data.Length];
+                temp.Errors = new double[t1.Errors.Length];
+                temp.GateStartTime = t1.GateStartTime;
+                temp.ClockPeriod = t1.ClockPeriod;
+                temp.Calibration = t1.Calibration;
+
+                for (int i = 0; i < t1.Data.Length; i++)
+                {
+                    temp.Data[i] = t1.Data[i] / t2.Data[i];
+                    temp.Errors[i] = temp.Data[i] * Math.Sqrt(
+                        Math.Pow(t1.Errors[i] / t1.Data[i], 2) +
+                        Math.Pow(t2.Errors[i] / t2.Data[i], 2)
+                        );
+                }
+                return temp;
             }
-            return temp;
+            else
+            {
+                if (t1.Length == 0) return t2;
+                if (t2.Length == 0) return t1;
+                return null;
+            }
         }
 
         static public TOFWithError operator *(TOFWithError t1, TOFWithError t2)
         {
-            TOFWithError temp = new TOFWithError();
-            temp.Data = new double[t1.Data.Length];
-            temp.Errors = new double[t1.Errors.Length];
-            temp.GateStartTime = t1.GateStartTime;
-            temp.ClockPeriod = t1.ClockPeriod;
-
-            for (int i = 0; i < t1.Data.Length; i++)
+            if (t1.ClockPeriod == t2.ClockPeriod && t1.GateStartTime == t2.GateStartTime
+                && t1.Length == t2.Length)
             {
-                temp.Data[i] = t1.Data[i] * t2.Data[i];
-                temp.Errors[i] = temp.Data[i] * Math.Sqrt(
-                    Math.Pow(t1.Errors[i]/t1.Data[i], 2) +
-                    Math.Pow(t2.Errors[i]/t2.Data[i], 2)
-                    );
+                TOFWithError temp = new TOFWithError();
+                temp.Data = new double[t1.Data.Length];
+                temp.Errors = new double[t1.Errors.Length];
+                temp.GateStartTime = t1.GateStartTime;
+                temp.ClockPeriod = t1.ClockPeriod;
+
+                for (int i = 0; i < t1.Data.Length; i++)
+                {
+                    temp.Data[i] = t1.Data[i] * t2.Data[i];
+                    temp.Errors[i] = temp.Data[i] * Math.Sqrt(
+                        Math.Pow(t1.Errors[i] / t1.Data[i], 2) +
+                        Math.Pow(t2.Errors[i] / t2.Data[i], 2)
+                        );
+                }
+                return temp;
             }
-            return temp;
+            else
+            {
+                if (t1.Length == 0) return t2;
+                if (t2.Length == 0) return t1;
+                return null;
+            }
         }
     }
 }

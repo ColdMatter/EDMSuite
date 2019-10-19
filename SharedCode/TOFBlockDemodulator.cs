@@ -38,7 +38,7 @@ namespace Analysis.EDM
                 int detectorIndex = b.detectors.IndexOf(detectorsToDemodulate[d]);
 
                 // We obtain one TOF Channel Set for each detector
-                ChannelSet<TOF> tofChannelSet = new ChannelSet<TOF>();
+                ChannelSet<TOFWithError> tofChannelSet = new ChannelSet<TOFWithError>();
 
                 // Detector calibration
                 double calibration = ((TOF)((EDMPoint)b.Points[0]).Shot.TOFs[detectorIndex]).Calibration;
@@ -64,8 +64,8 @@ namespace Analysis.EDM
                             if (stateSigns[channel, i] == 1) tOn += stateTOFs[i][subIndex];
                             else tOff += stateTOFs[i][subIndex];
                         }
-                        tOn /= blockLength;
-                        tOff /= blockLength;
+                        tOn /= numStates;
+                        tOff /= numStates;
                         tc.On = tOn;
                         tc.Off = tOff;
                         // This "if" is to take care of the case of the "SIG" channel, for which there is no off TOF.
@@ -85,7 +85,7 @@ namespace Analysis.EDM
                 }
 
                 // Append the ChannelSet with special combinations of channels
-                ChannelSet<TOF> tofChannelSetWithSpecialValues = AppendChannelSetWithSpecialValues(tofChannelSet);
+                ChannelSet<TOFWithError> tofChannelSetWithSpecialValues = AppendChannelSetWithSpecialValues(tofChannelSet);
 
                 // Add the ChannelSet to the demodulated block
                 tofDemodulatedBlock.AddDetector(detectorsToDemodulate[d], calibration, tofChannelSetWithSpecialValues);
@@ -170,48 +170,48 @@ namespace Analysis.EDM
             return TOFDemodulateBlock(b, detectors, channelsToAnalyse.ToArray());
         }
 
-        private ChannelSet<TOF> AppendChannelSetWithSpecialValues(ChannelSet<TOF> tcs)
+        private ChannelSet<TOFWithError> AppendChannelSetWithSpecialValues(ChannelSet<TOFWithError> tcs)
         {
-            ChannelSet<TOF> tcsWithSpecialValues = tcs;
+            ChannelSet<TOFWithError> tcsWithSpecialValues = tcs;
 
             // Extract the TOFChannels that we need.
-            TOFChannel c_eb = (TOFChannel)tcs.GetChannel(new string[] { "E", "B" });
-            TOFChannel c_edb = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB" });
-            TOFChannel c_bdb = (TOFChannel)tcs.GetChannel(new string[] { "B", "DB" });
-            TOFChannel c_dbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF1F" });
-            TOFChannel c_dbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2F" });
-            TOFChannel c_e = (TOFChannel)tcs.GetChannel(new string[] { "E" });
-            TOFChannel c_b = (TOFChannel)tcs.GetChannel(new string[] { "B" });
-            TOFChannel c_db = (TOFChannel)tcs.GetChannel(new string[] { "DB" });
-            TOFChannel c_sig = (TOFChannel)tcs.GetChannel(new string[] { "SIG" });
+            TOFWithErrorChannel c_eb = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "B" });
+            TOFWithErrorChannel c_edb = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "DB" });
+            TOFWithErrorChannel c_bdb = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B", "DB" });
+            TOFWithErrorChannel c_dbrf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB", "RF1F" });
+            TOFWithErrorChannel c_dbrf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB", "RF2F" });
+            TOFWithErrorChannel c_e = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E" });
+            TOFWithErrorChannel c_b = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B" });
+            TOFWithErrorChannel c_db = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB" });
+            TOFWithErrorChannel c_sig = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "SIG" });
 
-            TOFChannel c_brf1f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF1F" });
-            TOFChannel c_brf2f = (TOFChannel)tcs.GetChannel(new string[] { "B", "RF2F" });
-            TOFChannel c_edbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
-            TOFChannel c_edbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "DB", "RF2F" });
-            TOFChannel c_bdbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "B", "DB", "RF1F" });
-            TOFChannel c_bdbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "B", "DB", "RF2F" });
-            TOFChannel c_ebdb = (TOFChannel)tcs.GetChannel(new string[] { "E", "B", "DB" });
+            TOFWithErrorChannel c_brf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B", "RF1F" });
+            TOFWithErrorChannel c_brf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B", "RF2F" });
+            TOFWithErrorChannel c_edbrf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
+            TOFWithErrorChannel c_edbrf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "DB", "RF2F" });
+            TOFWithErrorChannel c_bdbrf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B", "DB", "RF1F" });
+            TOFWithErrorChannel c_bdbrf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "B", "DB", "RF2F" });
+            TOFWithErrorChannel c_ebdb = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "B", "DB" });
 
-            TOFChannel c_ebdbrf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "B", "DB", "RF1F" });
-            TOFChannel c_ebdbrf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "B", "DB", "RF2F" });
+            TOFWithErrorChannel c_ebdbrf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "B", "DB", "RF1F" });
+            TOFWithErrorChannel c_ebdbrf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "B", "DB", "RF2F" });
 
-            TOFChannel c_rf1f = (TOFChannel)tcs.GetChannel(new string[] { "RF1F" });
-            TOFChannel c_rf2f = (TOFChannel)tcs.GetChannel(new string[] { "RF2F" });
+            TOFWithErrorChannel c_rf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "RF1F" });
+            TOFWithErrorChannel c_rf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "RF2F" });
 
-            TOFChannel c_erf1f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF1F" });
-            TOFChannel c_erf2f = (TOFChannel)tcs.GetChannel(new string[] { "E", "RF2F" });
+            TOFWithErrorChannel c_erf1f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "RF1F" });
+            TOFWithErrorChannel c_erf2f = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "E", "RF2F" });
 
-            TOFChannel c_rf1a = (TOFChannel)tcs.GetChannel(new string[] { "RF1A" });
-            TOFChannel c_rf2a = (TOFChannel)tcs.GetChannel(new string[] { "RF2A" });
-            TOFChannel c_dbrf1a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF1A" });
-            TOFChannel c_dbrf2a = (TOFChannel)tcs.GetChannel(new string[] { "DB", "RF2A" });
+            TOFWithErrorChannel c_rf1a = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "RF1A" });
+            TOFWithErrorChannel c_rf2a = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "RF2A" });
+            TOFWithErrorChannel c_dbrf1a = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB", "RF1A" });
+            TOFWithErrorChannel c_dbrf2a = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB", "RF2A" });
 
             // For SOME blocks there is no LF1 channel (and hence switch states).
             // To get around this problem I will populate the TOFChannel with "SIG"
             // It will then be obvious in the analysis when LF1 takes on real values.
-            TOFChannel c_lf1;
-            TOFChannel c_dblf1;
+            TOFWithErrorChannel c_lf1;
+            TOFWithErrorChannel c_dblf1;
             if (!tcs.Channels.Contains("LF1"))
             {
                 c_lf1 = c_sig;
@@ -219,19 +219,19 @@ namespace Analysis.EDM
             }
             else
             {
-                c_lf1 = (TOFChannel)tcs.GetChannel(new string[] { "LF1" });
-                c_dblf1 = (TOFChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
+                c_lf1 = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "LF1" });
+                c_dblf1 = (TOFWithErrorChannel)tcs.GetChannel(new string[] { "DB", "LF1" });
             }
 
             // Work out the terms for the full, corrected edm. 
-            TOFChannel terms = c_eb * c_db 
+            TOFWithErrorChannel terms = c_eb * c_db 
                 - c_edb * c_b + c_bdb * c_e - c_ebdb * c_sig 
                 + c_erf1f * c_bdbrf1f + c_erf2f * c_bdbrf2f
                 - c_brf1f * c_edbrf1f - c_brf2f * c_edbrf2f 
                 - c_ebdbrf1f * c_rf1f - c_ebdbrf2f * c_rf2f
                 ;
 
-            TOFChannel preDenominator = c_db * c_db 
+            TOFWithErrorChannel preDenominator = c_db * c_db 
                 - c_edb * c_edb + c_bdb * c_bdb - c_ebdb * c_ebdb
                 + c_bdbrf1f * c_bdbrf1f + c_bdbrf2f * c_bdbrf2f 
                 - c_edbrf1f * c_edbrf1f - c_edbrf2f * c_edbrf2f
@@ -242,103 +242,103 @@ namespace Analysis.EDM
             // combinations to always keep them dimensionless. If you
             // don't you'll run into trouble with integral vs. average
             // signal.
-            TOFChannel edmDB = c_eb / c_db;
+            TOFWithErrorChannel edmDB = c_eb / c_db;
             tcs.AddChannel(new string[] { "EDMDB" }, edmDB);
 
             // The corrected edm channel. This should be proportional to the edm phase.
-            TOFChannel edmCorrDB = terms / preDenominator;
+            TOFWithErrorChannel edmCorrDB = terms / preDenominator;
             tcs.AddChannel(new string[] { "EDMCORRDB" }, edmCorrDB);
 
             // It's useful to have an estimate of the size of the correction. Here
             // we return the difference between the corrected edm channel and the
             // naive guess, edmDB.
-            TOFChannel correctionDB = edmCorrDB - edmDB;
+            TOFWithErrorChannel correctionDB = edmCorrDB - edmDB;
             tcs.AddChannel(new string[] { "CORRDB" }, correctionDB);
 
             // The "old" correction that just corrects for the E-correlated amplitude change.
             // This is included in the dblocks for debugging purposes.
-            TOFChannel correctionDB_old = (c_edb * c_b) / (c_db * c_db);
+            TOFWithErrorChannel correctionDB_old = (c_edb * c_b) / (c_db * c_db);
             tcs.AddChannel(new string[] { "CORRDB_OLD" }, correctionDB_old);
 
-            TOFChannel edmCorrDB_old = edmDB - correctionDB_old;
+            TOFWithErrorChannel edmCorrDB_old = edmDB - correctionDB_old;
             tcs.AddChannel(new string[] { "EDMCORRDB_OLD" }, edmCorrDB_old);
 
             // Normalised RFxF channels.
-            TOFChannel rf1fDB = c_rf1f / c_db;
+            TOFWithErrorChannel rf1fDB = c_rf1f / c_db;
             tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
 
-            TOFChannel rf2fDB = c_rf2f / c_db;
+            TOFWithErrorChannel rf2fDB = c_rf2f / c_db;
             tcs.AddChannel(new string[] { "RF2FDB" }, rf2fDB);
 
             // And RFxF.DB channels, again normalised to DB. The naming of these channels is quite
             // unfortunate, but it's just tough.
-            TOFChannel rf1fDBDB = c_dbrf1f / c_db;
+            TOFWithErrorChannel rf1fDBDB = c_dbrf1f / c_db;
             tcs.AddChannel(new string[] { "RF1FDBDB" }, rf1fDBDB);
 
-            TOFChannel rf2fDBDB = c_dbrf2f / c_db;
+            TOFWithErrorChannel rf2fDBDB = c_dbrf2f / c_db;
             tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
 
             // Normalised RFxAchannels.
-            TOFChannel rf1aDB = c_rf1a / c_db;
+            TOFWithErrorChannel rf1aDB = c_rf1a / c_db;
             tcs.AddChannel(new string[] { "RF1ADB" }, rf1aDB);
 
-            TOFChannel rf2aDB = c_rf2a / c_db;
+            TOFWithErrorChannel rf2aDB = c_rf2a / c_db;
             tcs.AddChannel(new string[] { "RF2ADB" }, rf2aDB);
 
             // And RFxA.DB channels, again normalised to DB. The naming of these channels is quite
             // unfortunate, but it's just tough.
-            TOFChannel rf1aDBDB = c_dbrf1a / c_db;
+            TOFWithErrorChannel rf1aDBDB = c_dbrf1a / c_db;
             tcs.AddChannel(new string[] { "RF1ADBDB" }, rf1aDBDB);
 
-            TOFChannel rf2aDBDB = c_dbrf2a / c_db;
+            TOFWithErrorChannel rf2aDBDB = c_dbrf2a / c_db;
             tcs.AddChannel(new string[] { "RF2ADBDB" }, rf2aDBDB);
 
             // the E.RFxF channels, normalized to DB
-            TOFChannel erf1fDB = c_erf1f / c_db;
+            TOFWithErrorChannel erf1fDB = c_erf1f / c_db;
             tcs.AddChannel(new string[] { "ERF1FDB" }, erf1fDB);
 
-            TOFChannel erf2fDB = c_erf2f / c_db;
+            TOFWithErrorChannel erf2fDB = c_erf2f / c_db;
             tcs.AddChannel(new string[] { "ERF2FDB" }, erf2fDB);
 
             // the E.RFxF.DB channels, normalized to DB, again dodgy naming convention.
-            TOFChannel erf1fDBDB = c_edbrf1f / c_db;
+            TOFWithErrorChannel erf1fDBDB = c_edbrf1f / c_db;
             tcs.AddChannel(new string[] { "ERF1FDBDB" }, erf1fDBDB);
 
-            TOFChannel erf2fDBDB = c_edbrf2f / c_db;
+            TOFWithErrorChannel erf2fDBDB = c_edbrf2f / c_db;
             tcs.AddChannel(new string[] { "ERF2FDBDB" }, erf2fDBDB);
 
             // the LF1 channel, normalized to DB
-            TOFChannel lf1DB = c_lf1 / c_db;
+            TOFWithErrorChannel lf1DB = c_lf1 / c_db;
             tcs.AddChannel(new string[] { "LF1DB" }, lf1DB);
 
-            TOFChannel lf1DBDB = c_dblf1 / c_db;
+            TOFWithErrorChannel lf1DBDB = c_dblf1 / c_db;
             tcs.AddChannel(new string[] { "LF1DBDB" }, lf1DBDB);
 
-            TOFChannel bDB = c_b / c_db;
+            TOFWithErrorChannel bDB = c_b / c_db;
             tcs.AddChannel(new string[] { "BDB" }, bDB);
 
             // we also need to extract the rf-step induced phase shifts. These come out in the
             // B.RFxF channels, but like the edm, need to be corrected. 
 
             //// Work out the terms
-            //TOFChannel brf1fCorrectionTerms = c_eb * c_db
+            //TOFWithErrorChannel brf1fCorrectionTerms = c_eb * c_db
             //    - c_edb * c_b + c_bdb * c_e - c_ebdb * c_sig
             //    + c_erf1f * c_bdbrf1f + c_erf2f * c_bdbrf2f
             //    - c_brf1f * c_edbrf1f - c_brf2f * c_edbrf2f
             //    - c_ebdbrf1f * c_rf1f - c_ebdbrf2f * c_rf2f
             //    ;
 
-            //TOFChannel brf1fPreDenominator = c_db * c_db
+            //TOFWithErrorChannel brf1fPreDenominator = c_db * c_db
             //    - c_edb * c_edb + c_bdb * c_bdb - c_ebdb * c_ebdb
             //    + c_bdbrf1f * c_bdbrf1f + c_bdbrf2f * c_bdbrf2f
             //    - c_edbrf1f * c_edbrf1f - c_edbrf2f * c_edbrf2f
             //    + c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
             //    ;
 
-            TOFChannel brf1fCorrDB = (c_brf1f / c_db) - ((c_b * c_dbrf1f) / (c_db * c_db));
+            TOFWithErrorChannel brf1fCorrDB = (c_brf1f / c_db) - ((c_b * c_dbrf1f) / (c_db * c_db));
             tcs.AddChannel(new string[] { "BRF1FCORRDB" }, brf1fCorrDB);
 
-            TOFChannel brf2fCorrDB = (c_brf2f / c_db) - ((c_b * c_dbrf2f) / (c_db * c_db));
+            TOFWithErrorChannel brf2fCorrDB = (c_brf2f / c_db) - ((c_b * c_dbrf2f) / (c_db * c_db));
             tcs.AddChannel(new string[] { "BRF2FCORRDB" }, brf2fCorrDB);
 
             //Some extra channels for various shot noise calculations, these are a bit weird
@@ -346,21 +346,15 @@ namespace Analysis.EDM
 
             tcs.AddChannel(new string[] { "ONEOVERDB" }, 1 / c_db);
 
-            TOFChannel dbSigNL = new TOFChannel();
-            dbSigNL.On = c_db.On / c_sig.On;
-            dbSigNL.Off = c_db.Off / c_sig.On; ;
-            dbSigNL.Difference = c_db.Difference / c_sig.Difference;
+            TOFWithErrorChannel dbSigNL = c_db / c_sig;
             tcs.AddChannel(new string[] { "DBSIG" }, dbSigNL);
 
 
-            TOFChannel dbdbSigSigNL = dbSigNL * dbSigNL;
+            TOFWithErrorChannel dbdbSigSigNL = dbSigNL * dbSigNL;
             tcs.AddChannel(new string[] { "DBDBSIGSIG" }, dbdbSigSigNL);
 
 
-            TOFChannel SigdbdbNL = new TOFChannel();
-            SigdbdbNL.On = c_sig.On / (c_db.On * c_db.On);
-            SigdbdbNL.Off = c_sig.On / (c_db.Off * c_db.Off);
-            SigdbdbNL.Difference = c_sig.Difference / (c_db.Difference * c_db.Difference);
+            TOFWithErrorChannel SigdbdbNL = c_sig / (c_db * c_db);
             tcs.AddChannel(new string[] { "SIGDBDB" }, SigdbdbNL);
 
             return tcsWithSpecialValues;

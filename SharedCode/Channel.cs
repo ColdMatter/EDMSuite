@@ -17,6 +17,7 @@ namespace Analysis.EDM
     [XmlInclude(typeof(GatedChannel))]
     [XmlInclude(typeof(PointChannel))]
     [XmlInclude(typeof(TOFChannel))]
+    [XmlInclude(typeof(TOFWithErrorChannel))]
     public abstract class Channel
     {
         public object On;
@@ -28,6 +29,7 @@ namespace Analysis.EDM
     [XmlInclude(typeof(TOFChannel))]
     [XmlInclude(typeof(GatedChannel))]
     [XmlInclude(typeof(PointChannel))]
+    [XmlInclude(typeof(TOFWithErrorChannel))]
     public class Channel<T> : Channel
     {
         private T _on;
