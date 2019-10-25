@@ -443,6 +443,8 @@ namespace SirCachealot.Database
         private UInt32[] GetUIntsFromCommand(MySqlCommand cm, string column)
         {
             MySqlDataReader rd = cm.ExecuteReader();
+
+
             List<UInt32> uids = new List<UInt32>();
             while (rd.Read()) uids.Add((UInt32)rd[column]);
             rd.Close();
@@ -508,6 +510,8 @@ namespace SirCachealot.Database
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = command;
             return mySqlComm.ExecuteReader();
+
+
         }
 
         private byte[] serializeDBlockAsByteArray(DemodulatedBlock db)

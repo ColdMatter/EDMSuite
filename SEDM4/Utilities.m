@@ -20,15 +20,16 @@
 
 
 (* ::Input::Initialization:: *)
-BeginPackage["SEDM4`Utilities`"];
+BeginPackage["SEDM4`Utilities`","SEDM4`Statistics`"];
 
 
 (* ::Input::Initialization:: *)
 getClusterFiles::usage="Returns a list of files that belong to the named cluster. It expects the files to be stored in the standard structure. It doesn't query the database - it really looks for files on your hard disk.";
 getBlockFile::usage="Give it a cluster and cluster index and it'll return the filename for the block. It will only return a value if you have that block in your data root.";
 standardErrorOfSampleMean::usage="Puts the function that they inexplicably removed from 5.2 back in. Calculates the s.d. over sqrt the number of samples.";
-weightedMean::usage="Takes  a list of {value, error} pairs and calculates the weighted mean.";
 timeStampToDateList::usage="";
+makeTOFChannelWithError::usage="";
+getTrimmedMeanAndErrTOFChannel::usage="";
 
 
 (* ::Input::Initialization:: *)
@@ -93,12 +94,12 @@ timeStampToDateList[ts_]:=DateList[ts/10^7+AbsoluteTime[{1,1,1,0,0,0}]//N]
 
 
 (* ::Input::Initialization:: *)
-weightedMean[chanList_]:=Module[{wvr,wedm,wse},
-wvr=(1/Plus@@ (1/#[[2]]^2&/@ chanList));
-wedm =wvr(Plus@@((#[[1]]/#[[2]]^2)&/@chanList));
-wse = Sqrt[wvr];
-{wedm,wse}
-];
+makeTOFChannelWithError[times_,data_,errs_]:=MapThread[{#1,Around[#2,#3]}&,{times,data,errs}]
+getTrimmedMeanAndErrTOFChannel[tofChannels_]:=Module[{times,tme},
+times=First/@tofChannels[[1]];
+tme=trimmedMeanAndBSErr/@(Transpose[Last/@#&/@tofChannels]);
+makeTOFChannelWithError[times,First/@tme,Last/@tme]
+]
 
 
 (* ::Input::Initialization:: *)

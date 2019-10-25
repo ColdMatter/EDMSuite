@@ -597,6 +597,19 @@ namespace SirCachealot
 
         #region TOFDemodulation
 
+        public ChannelSet<TOFWithError> TOFAccumulate(uint[] uids, string detector)
+        {
+            TOFChannelSetAccumulator tcsa = new TOFChannelSetAccumulator();
+
+            for (uint i = 0; i < uids.Length; i++)
+            {
+                TOFDemodulatedBlock tdb = (TOFDemodulatedBlock)blockStore.GetDBlock(uids[i]);
+                tcsa.Add((ChannelSet<TOFWithError>)tdb.GetChannelSet(detector));
+            }
+
+            return tcsa.GetResult();
+        }
+
         //public void TOFDemodulateBlocks(string[] blockFiles, string savePath, string[] detectorNames)
         //{
         //    // first of all test that the save location exists to avoid later disappointment.

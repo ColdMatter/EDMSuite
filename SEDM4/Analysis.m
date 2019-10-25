@@ -184,7 +184,7 @@ magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
 phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 
-getChannel[{"DB"},"asymmetry",dblock,gated]/phaseStep
+{#[[1]],#[[2]]/(2phaseStep)}&/@getChannel[{"DB"},"asymmetry",dblock,gated]
 ]
 
 

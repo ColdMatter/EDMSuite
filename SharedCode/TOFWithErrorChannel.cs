@@ -15,6 +15,17 @@ namespace Analysis.EDM
             this.Off = new TOFWithError();
             this.Difference = new TOFWithError();
         }
+
+        public double DifferenceChiSquared
+        {
+            get
+            {
+                double d = 0;
+                for (int i = 0; i < this.Difference.Length; i++)
+                    d += Math.Pow(this.Difference.Data[i] / this.Difference.Errors[i], 2);
+                return d / ((double)this.Difference.Length);
+            }
+        }
         static public TOFWithErrorChannel operator +(TOFWithErrorChannel t1, TOFWithErrorChannel t2)
         {
             TOFWithErrorChannel temp = new TOFWithErrorChannel();

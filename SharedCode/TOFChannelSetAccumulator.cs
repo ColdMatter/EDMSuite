@@ -23,9 +23,21 @@ namespace Analysis.EDM
             Count++;
         }
 
-        public ChannelSet<TOF> GetResult()
+        public void Add(ChannelSet<TOFWithError> val)
         {
-            ChannelSet<TOF> cs = new ChannelSet<TOF>();
+            if (Channels.Count == 0)
+            {
+                foreach (string channel in val.Channels) AddChannel(channel, new TOFChannelAccumulator());
+                Count = 0;
+            }
+            foreach (string channel in val.Channels)
+                ((TOFChannelAccumulator)GetChannel(channel)).Add((TOFWithErrorChannel)val.GetChannel(channel));
+            Count++;
+        }
+
+        public ChannelSet<TOFWithError> GetResult()
+        {
+            ChannelSet<TOFWithError> cs = new ChannelSet<TOFWithError>();
             foreach (string channel in Channels)
                 cs.AddChannel(channel, ((TOFChannelAccumulator)GetChannel(channel)).GetResult());
             return cs;

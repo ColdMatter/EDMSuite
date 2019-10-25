@@ -22,6 +22,13 @@ namespace Analysis.EDM
             Difference.Add(val.Difference);
         }
 
+        public void Add(TOFWithErrorChannel val)
+        {
+            On.Add(val.On);
+            Off.Add(val.Off);
+            Difference.Add(val.Difference);
+        }
+
         public TOFWithErrorChannel GetResult()
         {
             TOFWithErrorChannel tc = new TOFWithErrorChannel();

@@ -25,6 +25,7 @@ BeginPackage["SEDM4`Statistics`"];
 
 (* ::Input::Initialization:: *)
 bootstrapReplicate::usage="";
+bootstrapMeanAndError::usage="";
 trimmedMeanAndBSErr::usage="";
 diffWithError::usage="";
 sumWithError::usage="";
@@ -40,6 +41,9 @@ weightedMean::usage="Takes  a list of {value, error} pairs and calculates the we
 Begin["`Private`"];
 
 bootstrapReplicate[dataset_]:=Module[{l,rnds},l=Length[dataset];rnds=Table[RandomInteger[l-1]+1,{l}];dataset[[rnds]]];
+
+bootstrapMeanAndError[vals_]:=
+{Mean[#],StandardDeviation[#]}&[Table[First[weightedMean[bootstrapReplicate[vals]]],{100}]]
 
 trimmedMeanAndBSErr[dat_,trimLevel_:0.05,replicates_:1000]:={Mean[#],StandardDeviation[#]}&[Table[TrimmedMean[bootstrapReplicate[dat],trimLevel],{replicates}]]
 trimmedMeanAndBSErr[{}]:={0,0}

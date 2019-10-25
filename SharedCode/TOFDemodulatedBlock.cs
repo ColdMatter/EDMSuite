@@ -13,6 +13,23 @@ namespace Analysis.EDM
         {
         }
 
+        public TOFWithError GetTOFWithErrorChannel(string[] switches, string detector)
+        {
+            ChannelSet channelSet = GetChannelSet(detector);
+            return (TOFWithError)channelSet.GetChannel(switches).Difference;
+        }
+
+        public TOFWithError GetTOFWithErrorChannel(string channelName, string detector)
+        {
+            ChannelSet channelSet = GetChannelSet(detector);
+            return (TOFWithError)channelSet.GetChannel(channelName).Difference;
+        }
+
+        public ChannelSet GetTOFChannelSet(string detector)
+        {
+            return GetChannelSet(detector);
+        }
+
         public double[][] GetTOFChannelWithError(string[] switches, string detector)
         {
             ChannelSet channelSet = GetChannelSet(detector);
