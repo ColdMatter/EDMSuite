@@ -29,7 +29,7 @@ namespace Data
 
         // This helper function takes a pair of gates and trims them to the width of the
         // captured data. It returns null if the gates don't make sense.
-        private double[] TrimGates(double startTime, double endTime)
+        protected double[] TrimGates(double startTime, double endTime)
         {
             // check for swapped gates
             if (startTime > endTime) return null;
@@ -139,7 +139,7 @@ namespace Data
             for (int i = low; i <= high; i++) stats.Push(tofData[i]);
 
             mne[0] = stats.Mean;
-            mne[1] = stats.StandardDeviation;
+            mne[1] = stats.StandardErrorOfSampleMean;
             return mne;
         }
 

@@ -15,11 +15,11 @@ namespace Analysis.EDM
         {
             if (Channels.Count == 0)
             {
-                foreach (string channel in val.Channels) AddChannel(channel, new TOFChannelAccumulator());
+                foreach (string channel in val.Channels) AddChannel(channel, new TOFAccumulator());
                 Count = 0;
             }
-            foreach (string channel in val.Channels) 
-                ((TOFChannelAccumulator)GetChannel(channel)).Add((TOFChannel)val.GetChannel(channel));
+            foreach (string channel in val.Channels)
+                ((TOFAccumulator)GetChannel(channel)).Add((TOF)val.GetChannel(channel));
             Count++;
         }
 
@@ -27,11 +27,11 @@ namespace Analysis.EDM
         {
             if (Channels.Count == 0)
             {
-                foreach (string channel in val.Channels) AddChannel(channel, new TOFChannelAccumulator());
+                foreach (string channel in val.Channels) AddChannel(channel, new TOFAccumulator());
                 Count = 0;
             }
             foreach (string channel in val.Channels)
-                ((TOFChannelAccumulator)GetChannel(channel)).Add((TOFWithErrorChannel)val.GetChannel(channel));
+                ((TOFAccumulator)GetChannel(channel)).Add((TOFWithError)val.GetChannel(channel));
             Count++;
         }
 
@@ -39,7 +39,7 @@ namespace Analysis.EDM
         {
             ChannelSet<TOFWithError> cs = new ChannelSet<TOFWithError>();
             foreach (string channel in Channels)
-                cs.AddChannel(channel, ((TOFChannelAccumulator)GetChannel(channel)).GetResult());
+                cs.AddChannel(channel, ((TOFAccumulator)GetChannel(channel)).GetResult());
             return cs;
         }
     }

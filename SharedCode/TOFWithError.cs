@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
+using Analysis;
+
 namespace Data
 {
     /// <summary>
@@ -23,6 +25,36 @@ namespace Data
             this.Calibration = t.Calibration;
             this.GateStartTime = t.GateStartTime;
             this.ClockPeriod = t.ClockPeriod;
+        }
+
+        public double[] GatedWeightedMeanAndUncertainty(double startTime, double endTime)
+        {
+            double[] mne;
+
+            double[] trimmedGates = TrimGates(startTime, endTime);
+            if (trimmedGates == null) return null;
+            startTime = trimmedGates[0];
+            endTime = trimmedGates[1];
+
+            int low = (int)Math.Ceiling((startTime - GateStartTime) / ClockPeriod);
+            int high = (int)Math.Floor((endTime - GateStartTime) / ClockPeriod);
+
+            // check the range is sensible
+            if (low < 0) low = 0;
+            if (high > this.Length - 1) high = this.Length - 1;
+            if (low > high) return null;
+
+            double[] values = new double[high - low + 1];
+            double[] errors = new double[high - low + 1];
+
+            for (int i = low; i <= high; i++)
+            {
+                values[i] = Data[i];
+                errors[i] = Errors[i];
+            }
+
+            mne = Statistics.WeightedMeanAndError(values, errors);
+            return mne;
         }
 
         // this method adds two TOFWithErrors together. It combines the errors using the

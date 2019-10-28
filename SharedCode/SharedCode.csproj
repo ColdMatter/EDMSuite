@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="DemodulationConfig.cs" />
     <Compile Include="GateManager.cs" />
     <Compile Include="PointWithError.cs" />
     <Compile Include="GatedBlockDemodulator.cs" />
