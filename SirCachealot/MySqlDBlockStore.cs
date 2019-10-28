@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 using System.Data;
 using System.Data.Common;
@@ -23,6 +24,7 @@ namespace SirCachealot.Database
         private string kConnectionString = "server=localhost;user=root;port=3306;password=atomic1;default command timeout=300;";
         public long QueryCount;
         public long DBlockCount;
+        private WorkQueue readerQueue = new WorkQueue();
 
         public UInt32[] GetUIDsByCluster(string clusterName, UInt32[] fromUIDs)
         {
@@ -279,22 +281,29 @@ namespace SirCachealot.Database
         public DemodulatedBlock GetDBlock(uint uid)
         {
             DBlockCount++;
-            byte[] dbb;
-
-            MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
             DemodulatedBlock db;
+
+            Task<byte[]> readerTask = readerQueue.Execute(() => GetDBlockWorker(uid));
+            db = deserializeDBlockFromByteArray(readerTask.Result);
+            return db;
+        }
+
+        public byte[] GetDBlockWorker(uint uid)
+        {
+            byte[] dbb;
+            MySqlDataReader rd = executeReader("SELECT DBDAT FROM DBLOCKDATA WHERE UID = " + uid);
             if (rd.Read())
             {
                 dbb = (byte[])rd["DBDAT"];
-                db = deserializeDBlockFromByteArray(dbb);
                 rd.Close();
+                rd.Dispose();
             }
             else
             {
                 rd.Close();
                 throw new BlockNotFoundException();
             }
-            return db;
+            return dbb;
         }
 
         // this method temporarily is locked so that only one thread at a time can execute.
@@ -302,7 +311,7 @@ namespace SirCachealot.Database
         // Hopefully it won't hurt the performance too badly.
         private object dbAddLock = new object();
         public UInt32 AddDBlock(DemodulatedBlock db)
-        {
+        { 
             lock (dbAddLock)
             {
                 mySqlComm = mySql.CreateCommand();
@@ -445,6 +454,7 @@ namespace SirCachealot.Database
             MySqlDataReader rd = cm.ExecuteReader();
 
 
+
             List<UInt32> uids = new List<UInt32>();
             while (rd.Read()) uids.Add((UInt32)rd[column]);
             rd.Close();
@@ -510,6 +520,8 @@ namespace SirCachealot.Database
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = command;
             return mySqlComm.ExecuteReader();
+
+
 
 
         }

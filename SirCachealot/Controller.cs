@@ -256,6 +256,10 @@ namespace SirCachealot
             AddGatedBlock(b, gateConfigName);
         }
 
+        public DemodulatedBlock GetDBlock(uint uid)
+        {
+            return blockStore.GetDBlock(uid);
+        }
 
 
         // Use this to add blocks to SirCachealot's analysis queue.
@@ -300,6 +304,15 @@ namespace SirCachealot
             bap.path = path;
             bap.gateConfig = config;
             threadManager.AddToQueue(AddGatedBlockThreadWrapper, bap);
+        }
+
+        public DemodulatedBlock GetDBlockInQueue(uint uid)
+        {
+            getDBlockParams bap = new getDBlockParams();
+            bap.uid = uid;
+            threadManager.AddToQueue(GetDBlockWrapper, bap);
+            bap.eventWaitHandle.WaitOne();
+            return bap.result;
         }
 
         // Use this to add blocks to SirCachealot's analysis queue.
@@ -370,6 +383,22 @@ namespace SirCachealot
             );
         }
 
+        public void GetDBlockWrapper(object parametersIn)
+        {
+            threadManager.QueueItemWrapper(delegate (object parms)
+            {
+                GetDBlockResult((getDBlockParams)parms);
+            },
+            parametersIn
+            );
+        }
+
+        private void GetDBlockResult(getDBlockParams state)
+        {
+            state.result = GetDBlock(state.uid);
+            state.eventWaitHandle.Set();
+        }
+
         //private struct blockAddParams
         //{
         //    public string path;
@@ -399,6 +428,20 @@ namespace SirCachealot
             public override string ToString()
             {
                 return path + ", gate config: " + gateConfig;
+            }
+        }
+
+        private class getDBlockParams
+        {
+            public EventWaitHandle eventWaitHandle = new ManualResetEvent(false);
+
+            public uint uid;
+
+            public DemodulatedBlock result;
+
+            public override string ToString()
+            {
+                return uid.ToString();
             }
         }
 
