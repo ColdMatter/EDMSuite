@@ -79,7 +79,6 @@ namespace Analysis.EDM
             dc.AddTOFDetector("bottomProbeScaled");
             dc.AddTOFDetector("topProbeNoBackground");
             dc.AddTOFDetector("battery");
-            dc.AddTOFDetector("asymmetryShotNoiseVariance");
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
             dc.AddGatedDetector("gnd", Gate.WideGate());

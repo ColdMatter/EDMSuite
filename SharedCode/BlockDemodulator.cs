@@ -17,8 +17,6 @@ namespace Analysis.EDM
         {
             if (!b.detectors.Contains("asymmetry")) b.AddDetectorsToBlock();
 
-            if (!b.detectors.Contains("asymmetryShotNoiseVariance")) b.ConstructAsymmetryShotNoiseTOF();
-
             int blockLength = b.Points.Count;
 
             DemodulatedBlock db = new DemodulatedBlock(b.TimeStamp, b.Config, demodulationConfig);

@@ -101,8 +101,6 @@ namespace Data.EDM
 
             ConstructAsymmetryTOF();
 
-            ConstructAsymmetryShotNoiseTOF();
-
             TOFuliseSinglePointData();
         }
 
