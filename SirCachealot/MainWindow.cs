@@ -98,6 +98,7 @@ namespace SirCachealot
         // this alerts the controller that the form is loaded and ready.
         private void formLoadHandler(object sender, EventArgs e)
         {
+            controller.MySQLInitialise();
             controller.UIInitialise();
         }
 

@@ -24,9 +24,9 @@ BeginPackage["SEDM4`NonZeroFinder`","SEDM4`EDMSuite`","SEDM4`Statistics`","NETLi
 
 
 (* ::Input::Initialization:: *)
-buildGatedChannelTable::usage="";
-showSortedTable::usage=""
-showDynamicTable::usage="";
+buildGatedChannelTable::usage="buildGatedChannelTable[tofChannelSet_, gateLow_, gateHigh_, switches_] takes a TOF channel set, extracts all possible channels from the list of switches, and gates each channel based on gateLow and gateHigh.";
+showSortedTable::usage="showSortedTable[channelTable_, switches_, trimLevel_] takes a channel table and the switches used to generate it, sorts the table by the channel mean divided by the channel error, then displays the channels that have a mean/error larger than a threshold trimLevel."
+showDynamicTable::usage="showDynamicTable[channelTable_, switches_] shows a sorted channel table (see showSortedTable) in a Manipulate environment, allowing for changes in the threshold for displaying channels.";
 
 
 (* ::Input::Initialization:: *)
@@ -38,7 +38,6 @@ Begin["`Private`"];
 
 
 (* ::Input::Initialization:: *)
-kDataVersionString="v4";
 stateList=Reverse[Thread[IntegerDigits[#,2,4]==1]&/@Range[0,15]];
 channelNames={1->"E",2->"B",3->"RF",4->"MW"};
 modeHeads=Join[
@@ -50,7 +49,7 @@ specialChannels={"SIG"};
 
 
 (* ::Input::Initialization:: *)
-sedm4::noBlockFile="There is no file corresponding to that block on disk.";
+
 
 
 (* ::Input::Initialization:: *)

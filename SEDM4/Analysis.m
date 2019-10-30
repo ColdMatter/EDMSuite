@@ -24,36 +24,31 @@ BeginPackage["SEDM4`Analysis`","SEDM4`EDMSuite`","SEDM4`Polarisation`","SEDM4`Da
 
 
 (* ::Input::Initialization:: *)
-weightedMean::usage="Takes  a list of {value, error} pairs and calculates the weighted mean.";
-integrateTOF::usage="Takes a block and integrates to TOF profiles for the specified detector. The Boolean parameter returnIntegral determines whether the returned values are the integrals (in V \[Mu]s) or the average values (in V).";
-getAverageBG::usage="";
-getPulseTiming::usage="";
-getGateTiming::usage="";
-integrateTOFBackSubtract::usage="";
-extractNoiseData::usage="";
-getChannelNoisePPM::usage="";
-analyseBlock::usage="This function take a block and an extraction function and analyses the block.The extraction function is applied to the block and is expected to return a list of detectorDatas.The detector data is format is defined by integrateTOF.This is the usual way to generate detector data,but other ways can be plugged in if you like-for instance extracting data from the single point values instead of the TOFs.";
-generatePulsedRFGates::usage="Calculates the correct gates to exclude molecules more than a given distance from the guard plate centres. The centres are in microseconds, the keep lengths in m. Molecules are selected symmetrically around the centre position. The offset parameter is to deal with a bug in the acquisition software before September 2005. If in doubt, it should be set to zero.";
-
+(*Helper functions*)
 basis::usage="";
 edmWaveform::usage="";
 boolSign::usage="";
 
-cField::usage="";
-edmFactor::usage="";
-edmSign::usage="";
+(*Functions to extract data from a block*)
+integrateTOF::usage="Takes a block and integrates to TOF profiles for the specified detector. The Boolean parameter returnIntegral determines whether the returned values are the integrals (in V \[Mu]s) or the average values (in V).";
+getAverageBG::usage="";
+integrateTOFBackSubtract::usage="";
+
+(*Functions to extract physical quantities from a demodulated block*)
+cField::usage="cField[dblock_] returns the electric field applied in kV/cm.";
+edmFactor::usage="edmFactor[dblock_] returns the factor used to convert the EDM channel values into a physical EDM in e.cm units.";
+edmSign::usage="edmSign[dblock_] returns the sign of the edm given by the manual E and B states of the block.";
 rawEDMWithErr::usage="rawEDMWithErr[dblock_] returns the uncorrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
 correctedEDMWithErr::usage="correctedEDMWithErr[dblock_] returns the corrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
-
 contrast::usage="contrast[dblock_] returns the contrast of the interferometer as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
-edmSn2::usage=""
 edmSn::usage="edmSn[dblock_] returns the shot-noise-limited uncertainty in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
 edmSnNoLaserBackground::usage="edmSnNoLaserBackground[dblock_] returns the shot-noise-limited uncertainty (without factoring in the laser scatter background) in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
 snPPMPerChannel::usage="snPPMPerChannel[dblock_] returns the shot-noise-limited uncertainty in a typical channel in parts per million, in a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}."
 
-extractPhysicalQuantities::usage="";
-extractSummaryData::usage="";
-correctBlock::usage="";
+(*Main functions used to extract all quantities of interest for a demodulated block*)
+extractPhysicalQuantities::usage="extractPhysicalQuantities[dblock_] takes a demodulated block and extracts the uncorrected and corrected edms, the contrast, and the shot-noise sensitivities for both the edm and the channels.";
+extractSummaryData::usage="extractSummaryData[dblock_] takes a demodulated block and extracts the physical quantities, basic configuration data such as timestamps and manual states, as well as any channels of interest. Edit this function to add/remove channels of interest.";
+correctBlock::usage="Not functional currently, but will be developed at a later date to correct for systematic shifts on a block-by-block basis.";
 
 
 (* ::Input::Initialization:: *)
@@ -70,12 +65,6 @@ bohrMagneton=9.274*10^-24;
 hbar=1.05457*10^-34;
 saturatedEffectiveField=26*10^9;
 plateSpacing=1.2;
-curveHalfWidthCurrent= 0.647  (*1260 us 0.49265*);(*long machine 0.5362*)(*Short Machine 0.665*) (*should be half the ideal DB step*);
-
-kMachineLength=1.3;
-kRF1Ratio=1.103*2.31;
-kRF2Ratio=1.103;
-
 pmtCalibration = 510;
 
 
@@ -158,15 +147,7 @@ asymmetrySnWithLaserBackground[sTop_,sBot_,sTopbg_,sBotbg_]:=(4sTop sBot^2+4sBot
 
 
 (* ::Input::Initialization:: *)
-asymmetrySn[sTop_,sBot_]:=(4sTop sBot^2+4sBot sTop^2)/(sTop+sBot)^4
-
-
-(* ::Input::Initialization:: *)
-edmSn2[dblock_]:=Module[{asymmetryVar,dbChannel},
-asymmetryVar=getTOFChannelValues[{"SIG"},"asymmetryShotNoiseVariance",dblock];
-dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
-Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetryVar/(10 dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
-]
+asymmetrySnNoLaserBackground[sTop_,sBot_]:=(4sTop sBot^2+4sBot sTop^2)/(sTop+sBot)^4
 
 
 (* ::Input::Initialization:: *)
@@ -218,49 +199,13 @@ extractPhysicalQuantities[dblock_]:=
 "correctedEDMWithErr"->correctedEDMWithErr[dblock],
 "signedCorrectedEDMWithErr"->edmSign[dblock] correctedEDMWithErr[dblock],
 "contrast"->contrast[dblock],
-"polarisation"->polarisationFactor[Abs[cField[dblock]]/1000],
 "edmSn"->edmSn[dblock],
 "edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
 "snPPMPerChannel"->snPPMPerChannel[dblock]}
 
 
 (* ::Input::Initialization:: *)
-(*extractNoiseData[dblock_]:=Module[{normShotNoiseV\[Mu]sPerShot,normCal,topCal,highFrequencyNormOverShotNoise,normFourier,normShotNoisePPMPerChannel,topShotNoiseV\[Mu]sPerShot,topShotNoisePPMPerChannel},
-
-normCal=1/(If[#==0.08928571428571429`,1/(1.9 8.5),#]&[dblock@DetectorCalibrations["norm"]]);
-topCal=1/(If[#==0.14492753623188406`,1.97/6.28,#]&[dblock@DetectorCalibrations["top"]]);
-
-normFourier=Take[#,Round[Length[#]/2]]&[dblock@NormFourier@FFT];
-
-normShotNoiseV\[Mu]sPerShot=\[Sqrt](1/normCal(getChannel[{"SIG"},"norm",dblock]+(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@Background)*(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateHigh-dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateLow)));
-highFrequencyNormOverShotNoise=Mean[Drop[normFourier,Round[Length[normFourier]/4]]]/normShotNoiseV\[Mu]sPerShot;
-normShotNoisePPMPerChannel=10^6normShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"norm",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
-topShotNoiseV\[Mu]sPerShot=Sqrt[ getChannel[{"SIG"},"top",dblock]/topCal];
-topShotNoisePPMPerChannel=10^6topShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"top",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
-
-{"normFourier"\[Rule]normFourier,
-"normShotNoiseV\[Mu]sPerShot"\[Rule]normShotNoiseV\[Mu]sPerShot,
-"hfNormOverShotNoise"\[Rule]highFrequencyNormOverShotNoise,
-"normShotNoisePPMPerChannel"\[Rule]normShotNoisePPMPerChannel,
-"topShotNoisePPMPerChannel"\[Rule]topShotNoisePPMPerChannel
-}
-]*)
-
-
-(* ::Input::Initialization:: *)
-(*getChannelNoisePPM[dblock_,switches_,detector_]:=10^6getError[switches,detector,dblock]/getChannel[{"SIG"},detector,dblock]*)
-
-
-(* ::Input::Initialization:: *)
-analyseBlock[dblock_]:=Module[{physicalQuantities},
-physicalQuantities=extractPhysicalQuantities[dblock];
-(*noiseDat=extractNoiseData[dblock];*)
-{"analysisResults"->physicalQuantities}
-];
-
-
-(* ::Input::Initialization:: *)
-extractSummaryData[dbl_,abl_]:=Join["analysisResults"/.abl,{
+extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],{
 "bState"->dbl@Config@Settings["bState"],
 "cluster"->dbl@Config@Settings["cluster"],
 "clusterIndex"->dbl@Config@Settings["clusterIndex"],

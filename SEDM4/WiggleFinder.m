@@ -24,8 +24,8 @@ BeginPackage["SEDM4`WiggleFinder`","SEDM4`EDMSuite`","NETLink`"];
 
 
 (* ::Input::Initialization:: *)
-plotWithSpread::usage="";
-showWigglyChannelFinder::usage="";
+plotWithSpread::usage="plotWithSpread[data_, trimLow_, trimHigh_, color_:Automatic, yRange_:Automatic] takes a TOF with errors and plots its mean and spread (based on its errors). Gridlines are drawn based on trimLow and trimHigh to show where the analyses are carried out. The base color and y-axis range can be chosen as well.";
+showWigglyChannelFinder::usage="showWigglyChannelFinder[switches_, tofSetsList_, datasetNames_, trimLow_, trimHigh_] takes a list of TOF channel sets and names for each set, extracts all possible channels from these sets based on the list of switches provided, calculates the chi-squared value for a model assuming a flat line around the mean of the channel, sorts the channels based on the chi-squared values and displays them.";
 
 
 (* ::Input::Initialization:: *)
@@ -37,13 +37,12 @@ Begin["`Private`"];
 
 
 (* ::Input::Initialization:: *)
-kDataVersionString="v4";
 modeHeads={"None","E","B","RF","MW","EB","ERF","EMW","BRF","BMW","RFMW","EBRF","EBMW","ERFMW","BRFMW","EBRFMW"};
 specialChannels={"SIG"};
 
 
 (* ::Input::Initialization:: *)
-sedm4::noBlockFile="There is no file corresponding to that block on disk.";
+
 
 
 (* ::Input::Initialization:: *)
@@ -67,7 +66,7 @@ PlotRange->{All,range},Frame->True,Axes->None,FrameTicks->{Automatic,Automatic}
 
 
 (* ::Input::Initialization:: *)
-plotWithSpread[d_,trimLow_,trimHigh_,color_,range_]:=Show[
+plotWithSpread[d_,trimLow_,trimHigh_,color_:Automatic,range_:Automatic]:=Show[
 ListPlot[Transpose[{{#[[1]],#[[2]]-#[[3]]},{#[[1]],#[[2]]+#[[3]]}}&/@d],Filling->{1->{{2},Directive[Opacity[0.2],color]}},Joined->True,PlotStyle->{Gray,Gray},PlotRange->All,GridLines->{{trimLow,trimHigh},None},GridLinesStyle->Directive[Purple,Thick,Dashed]],
 ListPlot[{#[[1]],#[[2]]}&/@d,Joined->True,PlotStyle->color,PlotRange->All],
 PlotRange->{All,range},Frame->True,FrameTicks->{Automatic,Automatic}

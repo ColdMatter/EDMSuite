@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[    112060,       2567]
-NotebookOptionsPosition[    105754,       2448]
-NotebookOutlinePosition[    106150,       2465]
-CellTagsIndexPosition[    106107,       2462]
+NotebookDataLength[     99621,       2256]
+NotebookOptionsPosition[     93819,       2145]
+NotebookOutlinePosition[     94215,       2162]
+CellTagsIndexPosition[     94172,       2159]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -53,146 +53,131 @@ Cell[BoxData[
  CellLabel->
   "In[473]:=",ExpressionUUID->"40c034a3-5d6d-4643-9c16-36ef5f2e3e16"],
 
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Helper", " ", "functions"}], "*)"}], "\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{"weightedMean", "::", "usage"}], "=", 
-   "\"\<Takes  a list of {value, error} pairs and calculates the weighted \
-mean.\>\""}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"integrateTOF", "::", "usage"}], "=", 
-   "\"\<Takes a block and integrates to TOF profiles for the specified \
+   RowBox[{
+    RowBox[{
+     RowBox[{"basis", "::", "usage"}], "=", "\"\<\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edmWaveform", "::", "usage"}], "=", "\"\<\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"boolSign", "::", "usage"}], "=", "\"\<\>\""}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Functions", " ", "to", " ", "extract", " ", "data", " ", "from", " ", 
+     "a", " ", "block"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"integrateTOF", "::", "usage"}], "=", 
+     "\"\<Takes a block and integrates to TOF profiles for the specified \
 detector. The Boolean parameter returnIntegral determines whether the \
 returned values are the integrals (in V \[Mu]s) or the average values (in V).\
 \>\""}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"getAverageBG", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"getPulseTiming", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"getGateTiming", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"integrateTOFBackSubtract", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"extractNoiseData", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"getChannelNoisePPM", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"analyseBlock", "::", "usage"}], "=", 
-   "\"\<This function take a block and an extraction function and analyses \
-the block.The extraction function is applied to the block and is expected to \
-return a list of detectorDatas.The detector data is format is defined by \
-integrateTOF.This is the usual way to generate detector data,but other ways \
-can be plugged in if you like-for instance extracting data from the single \
-point values instead of the TOFs.\>\""}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
    RowBox[{
-    RowBox[{"generatePulsedRFGates", "::", "usage"}], "=", 
-    "\"\<Calculates the correct gates to exclude molecules more than a given \
-distance from the guard plate centres. The centres are in microseconds, the \
-keep lengths in m. Molecules are selected symmetrically around the centre \
-position. The offset parameter is to deal with a bug in the acquisition \
-software before September 2005. If in doubt, it should be set to zero.\>\""}],
-    ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"basis", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"edmWaveform", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
+    RowBox[{
+     RowBox[{"getAverageBG", "::", "usage"}], "=", "\"\<\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
    RowBox[{
-    RowBox[{"boolSign", "::", "usage"}], "=", "\"\<\>\""}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"cField", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"edmFactor", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"edmSign", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"rawEDMWithErr", "::", "usage"}], "=", 
-   "\"\<rawEDMWithErr[dblock_] returns the uncorrected EDM as a TOF with \
+    RowBox[{
+     RowBox[{"integrateTOFBackSubtract", "::", "usage"}], "=", "\"\<\>\""}], 
+    ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Functions", " ", "to", " ", "extract", " ", "physical", " ", 
+     "quantities", " ", "from", " ", "a", " ", "demodulated", " ", "block"}], 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"cField", "::", "usage"}], "=", 
+     "\"\<cField[dblock_] returns the electric field applied in kV/cm.\>\""}],
+     ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edmFactor", "::", "usage"}], "=", 
+     "\"\<edmFactor[dblock_] returns the factor used to convert the EDM \
+channel values into a physical EDM in e.cm units.\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edmSign", "::", "usage"}], "=", 
+     "\"\<edmSign[dblock_] returns the sign of the edm given by the manual E \
+and B states of the block.\>\""}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"rawEDMWithErr", "::", "usage"}], "=", 
+     "\"\<rawEDMWithErr[dblock_] returns the uncorrected EDM as a TOF with \
 errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
 \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \
 \(i\)]\)}...}.\>\""}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
    RowBox[{
-    RowBox[{"correctedEDMWithErr", "::", "usage"}], "=", 
-    "\"\<correctedEDMWithErr[dblock_] returns the corrected EDM as a TOF with \
-errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
-\!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \
-\(i\)]\)}...}.\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"contrast", "::", "usage"}], "=", 
-   "\"\<contrast[dblock_] returns the contrast of the interferometer as a TOF \
+    RowBox[{
+     RowBox[{"correctedEDMWithErr", "::", "usage"}], "=", 
+     "\"\<correctedEDMWithErr[dblock_] returns the corrected EDM as a TOF \
 with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
 \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \
 \(i\)]\)}...}.\>\""}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"edmSn2", "::", "usage"}], "=", "\"\<\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"edmSn", "::", "usage"}], "=", 
-   "\"\<edmSn[dblock_] returns the shot-noise-limited uncertainty in the EDM \
-value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
-\!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"edmSnNoLaserBackground", "::", "usage"}], "=", 
-   "\"\<edmSnNoLaserBackground[dblock_] returns the shot-noise-limited \
+   RowBox[{
+    RowBox[{
+     RowBox[{"contrast", "::", "usage"}], "=", 
+     "\"\<contrast[dblock_] returns the contrast of the interferometer as a \
+TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
+\!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \
+\(i\)]\)}...}.\>\""}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edmSn", "::", "usage"}], "=", 
+     "\"\<edmSn[dblock_] returns the shot-noise-limited uncertainty in the \
+EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
+\!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edmSnNoLaserBackground", "::", "usage"}], "=", 
+     "\"\<edmSnNoLaserBackground[dblock_] returns the shot-noise-limited \
 uncertainty (without factoring in the laser scatter background) in the EDM \
 value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
-\!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"snPPMPerChannel", "::", "usage"}], "=", 
-   "\"\<snPPMPerChannel[dblock_] returns the shot-noise-limited uncertainty \
+\!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"snPPMPerChannel", "::", "usage"}], "=", 
+    "\"\<snPPMPerChannel[dblock_] returns the shot-noise-limited uncertainty \
 in a typical channel in parts per million, in a TOF of the form \
 {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \
 \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.\>\""}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"extractPhysicalQuantities", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"extractSummaryData", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"correctBlock", "::", "usage"}], "=", "\"\<\>\""}], 
-  ";"}]}], "Input",
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Main", " ", "functions", " ", "used", " ", "to", " ", "extract", " ", 
+     "all", " ", "quantities", " ", "of", " ", "interest", " ", "for", " ", 
+     "a", " ", "demodulated", " ", "block"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"extractPhysicalQuantities", "::", "usage"}], "=", 
+     "\"\<extractPhysicalQuantities[dblock_] takes a demodulated block and \
+extracts the uncorrected and corrected edms, the contrast, and the shot-noise \
+sensitivities for both the edm and the channels.\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"extractSummaryData", "::", "usage"}], "=", 
+     "\"\<extractSummaryData[dblock_] takes a demodulated block and extracts \
+the physical quantities, basic configuration data such as timestamps and \
+manual states, as well as any channels of interest. Edit this function to \
+add/remove channels of interest.\>\""}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"correctBlock", "::", "usage"}], "=", 
+     "\"\<Not functional currently, but will be developed at a later date to \
+correct for systematic shifts on a block-by-block basis.\>\""}], 
+    ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.3950549198786383`*^9, 3.3950549341686387`*^9}, {
    3.3950551000526385`*^9, 3.3950551061056385`*^9}, {3.3950552557046385`*^9, 
@@ -225,8 +210,10 @@ in a typical channel in parts per million, in a TOF of the form \
    3.7813468383888965`*^9}, {3.7813470174539127`*^9, 
    3.7813470278695602`*^9}, {3.781347397940259*^9, 3.7813474547001343`*^9}, {
    3.7813475659518566`*^9, 3.781347566822178*^9}, {3.7813535523856354`*^9, 
-   3.7813535699694223`*^9}, {3.7813609829256043`*^9, 
-   3.7813609861792617`*^9}},ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-\
+   3.7813535699694223`*^9}, {3.7813609829256043`*^9, 3.7813609861792617`*^9}, 
+   3.7814229657310925`*^9, {3.781423012480386*^9, 3.7814230225982933`*^9}, {
+   3.7814232916865587`*^9, 3.781423551579378*^9}, {3.7814236083602877`*^9, 
+   3.781423928984578*^9}},ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-\
 5c2bd9dcbd43"],
 
 Cell[CellGroupData[{
@@ -276,29 +263,6 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"plateSpacing", "=", "1.2"}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{
-   RowBox[{"curveHalfWidthCurrent", "=", " ", "0.647"}], "  ", 
-   RowBox[{"(*", 
-    RowBox[{"1260", " ", "us", " ", "0.49265"}], "*)"}], ";", 
-   RowBox[{"(*", 
-    RowBox[{"long", " ", "machine", " ", "0.5362"}], "*)"}], 
-   RowBox[{"(*", 
-    RowBox[{"Short", " ", "Machine", " ", "0.665"}], "*)"}], " ", 
-   RowBox[{"(*", 
-    RowBox[{
-    "should", " ", "be", " ", "half", " ", "the", " ", "ideal", " ", "DB", 
-     " ", "step"}], "*)"}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"kMachineLength", "=", "1.3"}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"kRF1Ratio", "=", 
-   RowBox[{"1.103", "*", "2.31"}]}], ";"}], "\n", 
- RowBox[{
-  RowBox[{
-   RowBox[{"kRF2Ratio", "=", "1.103"}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
   RowBox[{"pmtCalibration", " ", "=", " ", "510"}], ";"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.453453423656*^9, 3.453453423835*^9}, 
@@ -312,7 +276,8 @@ Cell[BoxData[{
    3.728387886890231*^9}, 3.779686175697801*^9, {3.780142835869749*^9, 
    3.7801428588859797`*^9}, {3.7804881613325806`*^9, 
    3.7804881664301815`*^9}, {3.780831487627115*^9, 3.780831502454522*^9}, 
-   3.780831618980447*^9},ExpressionUUID->"24c2488e-3376-40f7-8294-\
+   3.780831618980447*^9, {3.7814230075332446`*^9, 
+   3.7814230370436788`*^9}},ExpressionUUID->"24c2488e-3376-40f7-8294-\
 bc9318b08602"]
 }, Open  ]],
 
@@ -417,7 +382,9 @@ Cell[BoxData[{
 
 Cell[CellGroupData[{
 
-Cell["Functions that extract data from the block", "Subsection",ExpressionUUID->"03540a33-4817-4f87-aee2-190fa0d45693"],
+Cell["Functions that extract data from a block", "Subsection",
+ CellChangeTimes->{
+  3.78142325676871*^9},ExpressionUUID->"03540a33-4817-4f87-aee2-190fa0d45693"],
 
 Cell["\<\
 Takes a block and integrates to TOF profiles for the specified detector. The \
@@ -557,7 +524,12 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Functions for calculating physical quantities", "Subsection",ExpressionUUID->"8bc6ff2b-2ee5-4976-a92b-68ff4e1819d0"],
+Cell["\<\
+Functions for calculating physical quantities from a demodulated block\
+\>", "Subsection",
+ CellChangeTimes->{{3.781423260090543*^9, 
+  3.781423268858899*^9}},ExpressionUUID->"8bc6ff2b-2ee5-4976-a92b-\
+68ff4e1819d0"],
 
 Cell["\<\
 These functions take the block config (and modulations) plus the extracted \
@@ -787,13 +759,14 @@ Cell[BoxData[
  InitializationCell->True,
  CellChangeTimes->{{3.780586609599512*^9, 3.7805866413629694`*^9}, {
   3.7813465063573494`*^9, 3.781346512891717*^9}, {3.781346548135406*^9, 
-  3.781346579820622*^9}, {3.7813661754216228`*^9, 
-  3.7813661768835087`*^9}},ExpressionUUID->"63282ec3-ad48-4994-9069-\
+  3.781346579820622*^9}, {3.7813661754216228`*^9, 3.7813661768835087`*^9}, {
+  3.781422947030427*^9, 
+  3.7814229477342925`*^9}},ExpressionUUID->"63282ec3-ad48-4994-9069-\
 20743a260deb"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"asymmetrySn", "[", 
+  RowBox[{"asymmetrySnNoLaserBackground", "[", 
    RowBox[{"sTop_", ",", "sBot_"}], "]"}], ":=", 
   FractionBox[
    RowBox[{
@@ -805,53 +778,10 @@ Cell[BoxData[
     RowBox[{"(", 
      RowBox[{"sTop", "+", "sBot"}], ")"}], "4"]]}]], "Input",
  InitializationCell->True,
- CellChangeTimes->{{3.78135345344965*^9, 
-  3.78135348000025*^9}},ExpressionUUID->"e2c0b2f7-85ad-496f-b5fd-\
+ CellChangeTimes->{{3.78135345344965*^9, 3.78135348000025*^9}, {
+  3.781422942982676*^9, 
+  3.781422944939859*^9}},ExpressionUUID->"e2c0b2f7-85ad-496f-b5fd-\
 1fc9b5d69cdb"],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"edmSn2", "[", "dblock_", "]"}], ":=", 
-  RowBox[{"Module", "[", 
-   RowBox[{
-    RowBox[{"{", 
-     RowBox[{"asymmetryVar", ",", "dbChannel"}], "}"}], ",", 
-    "\[IndentingNewLine]", 
-    RowBox[{
-     RowBox[{"asymmetryVar", "=", 
-      RowBox[{"getTOFChannelValues", "[", 
-       RowBox[{
-        RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", 
-        "\"\<asymmetryShotNoiseVariance\>\"", ",", "dblock"}], "]"}]}], ";", 
-     "\[IndentingNewLine]", 
-     RowBox[{"dbChannel", "=", 
-      RowBox[{"getTOFChannelValues", "[", 
-       RowBox[{
-        RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
-        "dblock"}], "]"}]}], ";", "\[IndentingNewLine]", 
-     RowBox[{"Transpose", "[", 
-      RowBox[{"{", 
-       RowBox[{
-        RowBox[{"getTOFChannelTimes", "[", 
-         RowBox[{
-          RowBox[{"{", "\"\<DB\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
-          "dblock"}], "]"}], ",", 
-        RowBox[{
-         RowBox[{"edmFactor", "[", "dblock", "]"}], 
-         SqrtBox[
-          FractionBox["asymmetryVar", 
-           RowBox[{"10", " ", 
-            RowBox[{"dblock", "@", 
-             RowBox[{"Config", "@", 
-              RowBox[{"Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}], 
-            "*", 
-            SuperscriptBox["dbChannel", "2"]}]]]}]}], "}"}], "]"}]}]}], 
-   "\[IndentingNewLine]", "]"}]}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.7813609033415427`*^9, 3.781360975352521*^9}, {
-  3.781361013773424*^9, 3.7813610141975403`*^9}, {3.7813610985944214`*^9, 
-  3.7813611018279405`*^9}},ExpressionUUID->"4f2a0a0a-b448-4d90-9dcb-\
-9053afe1a70e"],
 
 Cell[BoxData[
  RowBox[{
@@ -934,8 +864,8 @@ Cell[BoxData[
    3.7813402787076907`*^9}, {3.7813403846523056`*^9, 3.781340399899836*^9}, {
    3.7813404931396813`*^9, 3.781340498362564*^9}, 3.7813405781156015`*^9, {
    3.7813465884936757`*^9, 3.7813465992863646`*^9}, {3.78134667529838*^9, 
-   3.781346695509102*^9}, 
-   3.7813609605923758`*^9},ExpressionUUID->"23b46104-77c2-4a04-aefd-\
+   3.781346695509102*^9}, 3.7813609605923758`*^9, {3.781422954265616*^9, 
+   3.7814229716758957`*^9}},ExpressionUUID->"23b46104-77c2-4a04-aefd-\
 70dee3bbf73e"],
 
 Cell[BoxData[
@@ -1178,12 +1108,6 @@ Cell[BoxData[
     "\[IndentingNewLine]", 
     RowBox[{"\"\<contrast\>\"", "\[Rule]", 
      RowBox[{"contrast", "[", "dblock", "]"}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"\"\<polarisation\>\"", "\[Rule]", 
-     RowBox[{"polarisationFactor", "[", 
-      RowBox[{
-       RowBox[{"Abs", "[", 
-        RowBox[{"cField", "[", "dblock", "]"}], "]"}], "/", "1000"}], "]"}]}],
-     ",", "\[IndentingNewLine]", 
     RowBox[{"\"\<edmSn\>\"", "\[Rule]", 
      RowBox[{"edmSn", "[", "dblock", "]"}]}], ",", "\[IndentingNewLine]", 
     RowBox[{"\"\<edmSnNoLaserBackground\>\"", "\[Rule]", 
@@ -1213,261 +1137,25 @@ Cell[BoxData[
    3.781346974967992*^9, 3.7813470024891047`*^9}, {3.7813470419409657`*^9, 
    3.7813471025451097`*^9}, {3.781347549670579*^9, 3.7813475568497114`*^9}, {
    3.7813535238648233`*^9, 3.781353537478014*^9}, {3.7813568834958982`*^9, 
-   3.7813568835831685`*^9}, {3.7813608785748615`*^9, 
-   3.781360893776176*^9}},ExpressionUUID->"b75263c9-969c-45c5-96a3-\
+   3.7813568835831685`*^9}, {3.7813608785748615`*^9, 3.781360893776176*^9}, {
+   3.7814236886858444`*^9, 
+   3.7814236938044395`*^9}},ExpressionUUID->"b75263c9-969c-45c5-96a3-\
 cac3892a928d"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Functions for characterising noise", "Subsection",
- CellChangeTimes->{{3.399630242141*^9, 
-  3.399630253532*^9}},ExpressionUUID->"3e04dca5-ee14-4feb-a917-8a7d29f64eab"],
-
-Cell[BoxData[
- RowBox[{"(*", 
-  RowBox[{
-   RowBox[{"extractNoiseData", "[", "dblock_", "]"}], ":=", 
-   RowBox[{"Module", "[", 
-    RowBox[{
-     RowBox[{"{", 
-      RowBox[{
-      "normShotNoiseV\[Mu]sPerShot", ",", "normCal", ",", "topCal", ",", 
-       "highFrequencyNormOverShotNoise", ",", "normFourier", ",", 
-       "normShotNoisePPMPerChannel", ",", "topShotNoiseV\[Mu]sPerShot", ",", 
-       "topShotNoisePPMPerChannel"}], "}"}], ",", "\[IndentingNewLine]", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"normCal", "=", 
-       RowBox[{"1", "/", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"If", "[", 
-            RowBox[{
-             RowBox[{"#", "==", "0.08928571428571429`"}], ",", 
-             FractionBox["1", 
-              RowBox[{"1.9", " ", "8.5"}]], ",", "#"}], "]"}], "&"}], "[", 
-          RowBox[{"dblock", "@", 
-           RowBox[{"DetectorCalibrations", "[", "\"\<norm\>\"", "]"}]}], 
-          "]"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"topCal", "=", 
-       RowBox[{"1", "/", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"If", "[", 
-            RowBox[{
-             RowBox[{"#", "==", "0.14492753623188406`"}], ",", 
-             FractionBox["1.97", "6.28"], ",", "#"}], "]"}], "&"}], "[", 
-          RowBox[{"dblock", "@", 
-           RowBox[{"DetectorCalibrations", "[", "\"\<top\>\"", "]"}]}], "]"}],
-          ")"}]}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
-      RowBox[{"normFourier", "=", 
-       RowBox[{
-        RowBox[{
-         RowBox[{"Take", "[", 
-          RowBox[{"#", ",", 
-           RowBox[{"Round", "[", 
-            FractionBox[
-             RowBox[{"Length", "[", "#", "]"}], "2"], "]"}]}], "]"}], "&"}], 
-        "[", 
-        RowBox[{"dblock", "@", 
-         RowBox[{"NormFourier", "@", "FFT"}]}], "]"}]}], ";", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
-      RowBox[{"normShotNoiseV\[Mu]sPerShot", "=", 
-       RowBox[{"\[Sqrt]", 
-        RowBox[{"(", 
-         RowBox[{
-          FractionBox["1", "normCal"], 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"getChannel", "[", 
-             RowBox[{
-              RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<norm\>\"", ",", 
-              "dblock"}], "]"}], "+", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"dblock", "@", 
-               RowBox[{"DemodulationConfig", "@", 
-                RowBox[{
-                 RowBox[{
-                 "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], "@",
-                  "Background"}]}]}], ")"}], "*", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"dblock", "@", 
-                RowBox[{"DemodulationConfig", "@", 
-                 RowBox[{
-                  RowBox[{
-                  "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], 
-                  "@", "GateHigh"}]}]}], "-", 
-               RowBox[{"dblock", "@", 
-                RowBox[{"DemodulationConfig", "@", 
-                 RowBox[{
-                  RowBox[{
-                  "GatedDetectorExtractSpecs", "[", "\"\<norm\>\"", "]"}], 
-                  "@", "GateLow"}]}]}]}], ")"}]}]}], ")"}]}], ")"}]}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"highFrequencyNormOverShotNoise", "=", 
-       RowBox[{
-        RowBox[{"Mean", "[", 
-         RowBox[{"Drop", "[", 
-          RowBox[{"normFourier", ",", 
-           RowBox[{"Round", "[", 
-            FractionBox[
-             RowBox[{"Length", "[", "normFourier", "]"}], "4"], "]"}]}], 
-          "]"}], "]"}], "/", "normShotNoiseV\[Mu]sPerShot"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"normShotNoisePPMPerChannel", "=", 
-       RowBox[{
-        SuperscriptBox["10", "6"], 
-        RowBox[{"normShotNoiseV\[Mu]sPerShot", "/", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"getChannel", "[", 
-            RowBox[{
-             RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<norm\>\"", ",", 
-             "dblock"}], "]"}], 
-           RowBox[{"\[Sqrt]", 
-            RowBox[{"dblock", "@", 
-             RowBox[{"Config", "@", 
-              RowBox[{
-              "Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}]}]}], 
-          ")"}]}]}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"topShotNoiseV\[Mu]sPerShot", "=", 
-       SqrtBox[
-        FractionBox[
-         RowBox[{" ", 
-          RowBox[{"getChannel", "[", 
-           RowBox[{
-            RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<top\>\"", ",", 
-            "dblock"}], "]"}]}], "topCal"]]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"topShotNoisePPMPerChannel", "=", 
-       RowBox[{
-        SuperscriptBox["10", "6"], 
-        RowBox[{"topShotNoiseV\[Mu]sPerShot", "/", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"getChannel", "[", 
-            RowBox[{
-             RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<top\>\"", ",", 
-             "dblock"}], "]"}], 
-           RowBox[{"\[Sqrt]", 
-            RowBox[{"dblock", "@", 
-             RowBox[{"Config", "@", 
-              RowBox[{
-              "Settings", "[", "\"\<numberOfPoints\>\"", "]"}]}]}]}]}], 
-          ")"}]}]}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
-      RowBox[{"{", 
-       RowBox[{
-        RowBox[{"\"\<normFourier\>\"", "\[Rule]", "normFourier"}], ",", 
-        "\[IndentingNewLine]", 
-        RowBox[{
-        "\"\<normShotNoiseV\[Mu]sPerShot\>\"", "\[Rule]", 
-         "normShotNoiseV\[Mu]sPerShot"}], ",", "\[IndentingNewLine]", 
-        RowBox[{
-        "\"\<hfNormOverShotNoise\>\"", "\[Rule]", 
-         "highFrequencyNormOverShotNoise"}], ",", "\[IndentingNewLine]", 
-        RowBox[{
-        "\"\<normShotNoisePPMPerChannel\>\"", "\[Rule]", 
-         "normShotNoisePPMPerChannel"}], ",", "\[IndentingNewLine]", 
-        RowBox[{
-        "\"\<topShotNoisePPMPerChannel\>\"", "\[Rule]", 
-         "topShotNoisePPMPerChannel"}]}], "\[IndentingNewLine]", "}"}]}]}], 
-    "\[IndentingNewLine]", "]"}]}], "*)"}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.399630257329*^9, 3.399630275947*^9}, {3.399630314347*^9,
-    3.399630314494*^9}, {3.3996305427980003`*^9, 3.399630620726*^9}, {
-   3.399631323039*^9, 3.399631381583*^9}, {3.399631430204*^9, 
-   3.399631440315*^9}, {3.399631498167*^9, 3.399631733013*^9}, {
-   3.3996339154969997`*^9, 3.399633940612*^9}, {3.399634023756*^9, 
-   3.399634079347*^9}, {3.399634513954*^9, 3.399634595808*^9}, {
-   3.399634686085*^9, 3.399634881748*^9}, {3.399636594352*^9, 
-   3.399636602449*^9}, {3.399637623574*^9, 3.399637807308*^9}, {
-   3.399637862612*^9, 3.399637864785*^9}, {3.399638239711*^9, 
-   3.3996383022130003`*^9}, {3.3996387861730003`*^9, 3.399638819499*^9}, {
-   3.399638870599*^9, 3.399638906815*^9}, {3.399639479501*^9, 
-   3.3996395043529997`*^9}, {3.399639864973*^9, 3.399639869743*^9}, {
-   3.399639923197*^9, 3.399639924578*^9}, {3.399639964094*^9, 
-   3.399639988924*^9}, {3.39964003351*^9, 3.3996400381949997`*^9}, {
-   3.399640425613*^9, 3.399640429291*^9}, {3.3998715317470627`*^9, 
-   3.399871543227211*^9}, {3.3998723931801977`*^9, 3.399872430333913*^9}, {
-   3.399877873233*^9, 3.3998778926*^9}, 3.399925172215*^9, {
-   3.4003220773929996`*^9, 3.400322125532*^9}, {3.42297149316*^9, 
-   3.4229715454230003`*^9}, {3.4229716454*^9, 3.422971645926*^9}, {
-   3.423044946042*^9, 3.423045042135*^9}, {3.4230452384309998`*^9, 
-   3.4230452645220003`*^9}, {3.42304539376*^9, 3.4230454004*^9}, {
-   3.4230456296359997`*^9, 3.4230456318450003`*^9}, {3.423045703789*^9, 
-   3.423045755245*^9}, {3.423045791865*^9, 3.4230457955*^9}, {
-   3.423047059422*^9, 3.423047088112*^9}, {3.423047135389*^9, 
-   3.423047335472*^9}, {3.42961678765*^9, 3.42961679375*^9}, {
-   3.78013985679568*^9, 
-   3.7801398595479965`*^9}},ExpressionUUID->"663957de-96a7-4a26-a48e-\
-68ff80325b38"],
-
-Cell[BoxData[
- RowBox[{"(*", 
-  RowBox[{
-   RowBox[{"getChannelNoisePPM", "[", 
-    RowBox[{"dblock_", ",", "switches_", ",", "detector_"}], "]"}], ":=", 
-   RowBox[{
-    SuperscriptBox["10", "6"], 
-    FractionBox[
-     RowBox[{"getError", "[", 
-      RowBox[{"switches", ",", "detector", ",", "dblock"}], "]"}], 
-     RowBox[{"getChannel", "[", 
-      RowBox[{
-       RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "detector", ",", "dblock"}], 
-      "]"}]]}]}], "*)"}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.39963814704*^9, 3.399638179926*^9}, {
-  3.3996405841870003`*^9, 3.3996406035220003`*^9}, {3.399640685975*^9, 
-  3.399640687315*^9}, {3.423047386799*^9, 3.423047431543*^9}, {
-  3.7801398615563383`*^9, 
-  3.780139864043953*^9}},ExpressionUUID->"62a71937-9e3e-4156-aca0-\
-e11b1f4a3566"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Putting it all together", "Subsection",ExpressionUUID->"d9890faf-93f6-493d-9ddf-123d9e5a2420"],
+Cell["Summary and corrections for blocks", "Subsection",
+ CellChangeTimes->{{3.7814239733665247`*^9, 
+  3.78142398647941*^9}},ExpressionUUID->"d9890faf-93f6-493d-9ddf-\
+123d9e5a2420"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{
-   RowBox[{"analyseBlock", "[", "dblock_", "]"}], ":=", 
-   RowBox[{"Module", "[", 
-    RowBox[{
-     RowBox[{"{", "physicalQuantities", "}"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"physicalQuantities", "=", 
-       RowBox[{"extractPhysicalQuantities", "[", "dblock", "]"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"(*", 
-       RowBox[{
-        RowBox[{"noiseDat", "=", 
-         RowBox[{"extractNoiseData", "[", "dblock", "]"}]}], ";"}], "*)"}], 
-      "\[IndentingNewLine]", 
-      RowBox[{"{", 
-       RowBox[{"\"\<analysisResults\>\"", "\[Rule]", "physicalQuantities"}], 
-       "}"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.3996301440109997`*^9, 3.399630198218*^9}, {
-  3.3996305741800003`*^9, 3.399630575209*^9}, {3.399637857637*^9, 
-  3.399637858193*^9}, {3.4230474387349997`*^9, 3.423047498605*^9}, {
-  3.570354522881441*^9, 3.570354525610714*^9}, {3.780139947907954*^9, 
-  3.780139968506755*^9}, {3.781347893615142*^9, 
-  3.7813478964606733`*^9}},ExpressionUUID->"6d82bf9e-5775-4282-8e2a-\
-07a3a7bafcb2"],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"extractSummaryData", "[", 
-   RowBox[{"dbl_", ",", "abl_"}], "]"}], ":=", 
+  RowBox[{"extractSummaryData", "[", "dbl_", "]"}], ":=", 
   RowBox[{"Join", "[", 
    RowBox[{
-    RowBox[{"\"\<analysisResults\>\"", "/.", "abl"}], ",", 
+    RowBox[{"extractPhysicalQuantities", "[", "dbl", "]"}], ",", 
     RowBox[{"{", "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{"\"\<bState\>\"", "\[Rule]", 
@@ -1518,8 +1206,9 @@ Cell[BoxData[
         RowBox[{"TimeStamp", "@", "Hour"}]}]}]}], "\[IndentingNewLine]", 
      "}"}]}], "\[IndentingNewLine]", "]"}]}]], "Input",
  InitializationCell->True,
- CellChangeTimes->{{3.7813495424657335`*^9, 
-  3.781349593426193*^9}},ExpressionUUID->"52c370cc-2c89-4885-aaca-\
+ CellChangeTimes->{{3.7813495424657335`*^9, 3.781349593426193*^9}, {
+  3.781423584856864*^9, 
+  3.7814235901118116`*^9}},ExpressionUUID->"52c370cc-2c89-4885-aaca-\
 69e9acb8c7e3"],
 
 Cell[BoxData[
@@ -2430,7 +2119,16 @@ Cell[BoxData[
    3.503664772866596*^9}, {3.503664874486408*^9, 3.503664891015354*^9}, {
    3.50366549971717*^9, 3.5036655091737103`*^9}, {3.50366554063451*^9, 
    3.503665541595565*^9}},ExpressionUUID->"7d571ac2-8d5e-4ef3-854c-\
-49ed87dc6e3d"],
+49ed87dc6e3d"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Package ends", "Section",
+ CellChangeTimes->{{3.78142571419993*^9, 
+  3.7814257154943733`*^9}},ExpressionUUID->"20095157-d432-4950-8c3c-\
+146f5c8236ef"],
 
 Cell[BoxData[{
  RowBox[{
@@ -2442,7 +2140,6 @@ Cell[BoxData[{
   3.570352239131585*^9, {3.57035249658683*^9, 
    3.57035249773083*^9}},ExpressionUUID->"fcf6a6f1-7d7b-4bcd-a20b-\
 465532e5406b"]
-}, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
@@ -2471,102 +2168,94 @@ Cell[CellGroupData[{
 Cell[999, 37, 88, 0, 67, "Section",ExpressionUUID->"71ab4cc4-329b-4b32-bcce-8f89e4a775c2"],
 Cell[1090, 39, 693, 14, 64, "Input",ExpressionUUID->"40c034a3-5d6d-4643-9c16-36ef5f2e3e16",
  InitializationCell->True],
-Cell[1786, 55, 8010, 174, 1055, "Input",ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-5c2bd9dcbd43",
+Cell[1786, 55, 8062, 161, 960, "Input",ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-5c2bd9dcbd43",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[9821, 233, 102, 0, 53, "Subsection",ExpressionUUID->"84103005-c40e-4959-9496-8674e239bdec"],
-Cell[9926, 235, 111, 2, 44, "Input",ExpressionUUID->"21c06b5a-fbe2-4e50-9f8b-ad7aca1d0e34",
+Cell[9873, 220, 102, 0, 53, "Subsection",ExpressionUUID->"84103005-c40e-4959-9496-8674e239bdec"],
+Cell[9978, 222, 111, 2, 44, "Input",ExpressionUUID->"21c06b5a-fbe2-4e50-9f8b-ad7aca1d0e34",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10086, 243, 81, 0, 67, "Section",ExpressionUUID->"ce078900-2f75-42de-a665-3183f4611d33"],
-Cell[10170, 245, 177, 4, 44, "Input",ExpressionUUID->"22ab6b4f-be7a-4d20-8fd7-eabcbffdd909",
+Cell[10138, 230, 81, 0, 67, "Section",ExpressionUUID->"ce078900-2f75-42de-a665-3183f4611d33"],
+Cell[10222, 232, 177, 4, 44, "Input",ExpressionUUID->"22ab6b4f-be7a-4d20-8fd7-eabcbffdd909",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[10372, 253, 92, 0, 53, "Subsection",ExpressionUUID->"42f9c215-a5f6-4323-9168-b8e421c4f64e"],
-Cell[10467, 255, 2464, 60, 273, "Input",ExpressionUUID->"24c2488e-3376-40f7-8294-bc9318b08602",
+Cell[10424, 240, 92, 0, 53, "Subsection",ExpressionUUID->"42f9c215-a5f6-4323-9168-b8e421c4f64e"],
+Cell[10519, 242, 1717, 38, 140, "Input",ExpressionUUID->"24c2488e-3376-40f7-8294-bc9318b08602",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12968, 320, 85, 0, 53, "Subsection",ExpressionUUID->"2cdbaeb9-b601-440b-a740-df2ea571bb74"],
-Cell[13056, 322, 111, 2, 44, "Input",ExpressionUUID->"cdcc88e7-2a93-4b3d-875c-e6a2be4f7b93",
+Cell[12273, 285, 85, 0, 53, "Subsection",ExpressionUUID->"2cdbaeb9-b601-440b-a740-df2ea571bb74"],
+Cell[12361, 287, 111, 2, 44, "Input",ExpressionUUID->"cdcc88e7-2a93-4b3d-875c-e6a2be4f7b93",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13216, 330, 83, 0, 67, "Section",ExpressionUUID->"d0a3975d-06cb-4d5c-9492-6e79e1c7f754"],
+Cell[12521, 295, 83, 0, 67, "Section",ExpressionUUID->"d0a3975d-06cb-4d5c-9492-6e79e1c7f754"],
 Cell[CellGroupData[{
-Cell[13324, 334, 93, 0, 53, "Subsection",ExpressionUUID->"d1f09543-d1e7-4113-94ac-6344a5c42be9"],
-Cell[13420, 336, 192, 3, 34, "Text",ExpressionUUID->"2d49c7b6-a18b-4979-be58-bc8b3444a1fe"],
-Cell[13615, 341, 2586, 73, 258, "Input",ExpressionUUID->"904499bb-ca48-4090-8050-108bbca0ba86",
+Cell[12629, 299, 93, 0, 53, "Subsection",ExpressionUUID->"d1f09543-d1e7-4113-94ac-6344a5c42be9"],
+Cell[12725, 301, 192, 3, 34, "Text",ExpressionUUID->"2d49c7b6-a18b-4979-be58-bc8b3444a1fe"],
+Cell[12920, 306, 2586, 73, 258, "Input",ExpressionUUID->"904499bb-ca48-4090-8050-108bbca0ba86",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16238, 419, 119, 0, 53, "Subsection",ExpressionUUID->"03540a33-4817-4f87-aee2-190fa0d45693"],
-Cell[16360, 421, 293, 4, 56, "Text",ExpressionUUID->"59a7d770-dfb4-4e29-9cae-35f98e9fea1a"],
-Cell[16656, 427, 1913, 46, 254, "Input",ExpressionUUID->"258960af-ff12-41ca-b235-4fbe3ec89f1b",
+Cell[15543, 384, 161, 2, 53, "Subsection",ExpressionUUID->"03540a33-4817-4f87-aee2-190fa0d45693"],
+Cell[15707, 388, 293, 4, 56, "Text",ExpressionUUID->"59a7d770-dfb4-4e29-9cae-35f98e9fea1a"],
+Cell[16003, 394, 1913, 46, 254, "Input",ExpressionUUID->"258960af-ff12-41ca-b235-4fbe3ec89f1b",
  InitializationCell->True],
-Cell[18572, 475, 255, 5, 34, "Text",ExpressionUUID->"abe28a07-085e-4017-ba83-b7eaed88b5c0"],
-Cell[18830, 482, 574, 13, 64, "Input",ExpressionUUID->"5c05d50c-97d4-40f7-8a46-8d98bebe6acb",
+Cell[17919, 442, 255, 5, 34, "Text",ExpressionUUID->"abe28a07-085e-4017-ba83-b7eaed88b5c0"],
+Cell[18177, 449, 574, 13, 64, "Input",ExpressionUUID->"5c05d50c-97d4-40f7-8a46-8d98bebe6acb",
  InitializationCell->True],
-Cell[19407, 497, 617, 10, 100, "Text",ExpressionUUID->"b678240f-8501-4967-953f-72db485e17e6"],
-Cell[20027, 509, 1921, 45, 178, "Input",ExpressionUUID->"dce2be38-4e0b-420f-ad5c-436248cf0ebf",
+Cell[18754, 464, 617, 10, 100, "Text",ExpressionUUID->"b678240f-8501-4967-953f-72db485e17e6"],
+Cell[19374, 476, 1921, 45, 178, "Input",ExpressionUUID->"dce2be38-4e0b-420f-ad5c-436248cf0ebf",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[21985, 559, 122, 0, 53, "Subsection",ExpressionUUID->"8bc6ff2b-2ee5-4976-a92b-68ff4e1819d0"],
-Cell[22110, 561, 251, 4, 56, "Text",ExpressionUUID->"e3ead65e-e0e5-4343-8e64-c9651fc30826"],
-Cell[22364, 567, 743, 18, 44, "Input",ExpressionUUID->"fdfa2ac6-cbe3-4e27-8327-dae1127fe739",
+Cell[21332, 526, 226, 5, 37, "Subsection",ExpressionUUID->"8bc6ff2b-2ee5-4976-a92b-68ff4e1819d0"],
+Cell[21561, 533, 251, 4, 56, "Text",ExpressionUUID->"e3ead65e-e0e5-4343-8e64-c9651fc30826"],
+Cell[21815, 539, 743, 18, 44, "Input",ExpressionUUID->"fdfa2ac6-cbe3-4e27-8327-dae1127fe739",
  InitializationCell->True],
-Cell[23110, 587, 1770, 42, 218, "Input",ExpressionUUID->"599e83d9-c451-46fb-b3d3-7c685c127603",
+Cell[22561, 559, 1770, 42, 218, "Input",ExpressionUUID->"599e83d9-c451-46fb-b3d3-7c685c127603",
  InitializationCell->True],
-Cell[24883, 631, 591, 16, 44, "Input",ExpressionUUID->"d703e08a-581b-4146-8b76-83142d636c42",
+Cell[24334, 603, 591, 16, 44, "Input",ExpressionUUID->"d703e08a-581b-4146-8b76-83142d636c42",
  InitializationCell->True],
-Cell[25477, 649, 2144, 45, 83, "Input",ExpressionUUID->"c2715613-1d32-4ac8-943e-bed5d71b3798",
+Cell[24928, 621, 2144, 45, 83, "Input",ExpressionUUID->"c2715613-1d32-4ac8-943e-bed5d71b3798",
  InitializationCell->True],
-Cell[27624, 696, 1919, 41, 83, "Input",ExpressionUUID->"ff536c2c-5892-42c7-9905-68e45c3f12a2",
+Cell[27075, 668, 1919, 41, 83, "Input",ExpressionUUID->"ff536c2c-5892-42c7-9905-68e45c3f12a2",
  InitializationCell->True],
-Cell[29546, 739, 1358, 28, 64, "Input",ExpressionUUID->"23d0f30d-ed99-4d02-a949-bec140b14dcf",
+Cell[28997, 711, 1358, 28, 64, "Input",ExpressionUUID->"23d0f30d-ed99-4d02-a949-bec140b14dcf",
  InitializationCell->True],
-Cell[30907, 769, 884, 22, 88, "Input",ExpressionUUID->"63282ec3-ad48-4994-9069-20743a260deb",
+Cell[30358, 741, 935, 23, 88, "Input",ExpressionUUID->"63282ec3-ad48-4994-9069-20743a260deb",
  InitializationCell->True],
-Cell[31794, 793, 524, 16, 68, "Input",ExpressionUUID->"e2c0b2f7-85ad-496f-b5fd-1fc9b5d69cdb",
+Cell[31296, 766, 590, 17, 68, "Input",ExpressionUUID->"e2c0b2f7-85ad-496f-b5fd-1fc9b5d69cdb",
  InitializationCell->True],
-Cell[32321, 811, 1646, 42, 201, "Input",ExpressionUUID->"4f2a0a0a-b448-4d90-9dcb-9053afe1a70e",
+Cell[31889, 785, 3570, 83, 311, "Input",ExpressionUUID->"23b46104-77c2-4a04-aefd-70dee3bbf73e",
  InitializationCell->True],
-Cell[33970, 855, 3522, 83, 311, "Input",ExpressionUUID->"23b46104-77c2-4a04-aefd-70dee3bbf73e",
+Cell[35462, 870, 2784, 65, 254, "Input",ExpressionUUID->"6e22eda6-f527-4e36-a8d6-c97b1eb2ba10",
  InitializationCell->True],
-Cell[37495, 940, 2784, 65, 254, "Input",ExpressionUUID->"6e22eda6-f527-4e36-a8d6-c97b1eb2ba10",
+Cell[38249, 937, 2768, 70, 277, "Input",ExpressionUUID->"a09b853c-d7ff-4b91-8b68-43b34d5a3164",
  InitializationCell->True],
-Cell[40282, 1007, 2768, 70, 277, "Input",ExpressionUUID->"a09b853c-d7ff-4b91-8b68-43b34d5a3164",
+Cell[41020, 1009, 2895, 67, 260, "Input",ExpressionUUID->"1992f70e-ee69-436c-ad20-29bf7b927ee5",
  InitializationCell->True],
-Cell[43053, 1079, 2895, 67, 260, "Input",ExpressionUUID->"1992f70e-ee69-436c-ad20-29bf7b927ee5",
- InitializationCell->True],
-Cell[45951, 1148, 276, 6, 34, "Text",ExpressionUUID->"e22296b7-a73e-41b7-9032-71169db238fd"],
-Cell[46230, 1156, 3327, 61, 216, "Input",ExpressionUUID->"b75263c9-969c-45c5-96a3-cac3892a928d",
+Cell[43918, 1078, 276, 6, 34, "Text",ExpressionUUID->"e22296b7-a73e-41b7-9032-71169db238fd"],
+Cell[44197, 1086, 3136, 56, 197, "Input",ExpressionUUID->"b75263c9-969c-45c5-96a3-cac3892a928d",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[49594, 1222, 174, 2, 53, "Subsection",ExpressionUUID->"3e04dca5-ee14-4feb-a917-8a7d29f64eab"],
-Cell[49771, 1226, 7847, 180, 664, "Input",ExpressionUUID->"663957de-96a7-4a26-a48e-68ff80325b38",
+Cell[47370, 1147, 183, 3, 53, "Subsection",ExpressionUUID->"d9890faf-93f6-493d-9ddf-123d9e5a2420"],
+Cell[47556, 1152, 2454, 59, 273, "Input",ExpressionUUID->"52c370cc-2c89-4885-aaca-69e9acb8c7e3",
  InitializationCell->True],
-Cell[57621, 1408, 808, 20, 55, "Input",ExpressionUUID->"62a71937-9e3e-4156-aca0-e11b1f4a3566",
- InitializationCell->True]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[58466, 1433, 100, 0, 53, "Subsection",ExpressionUUID->"d9890faf-93f6-493d-9ddf-123d9e5a2420"],
-Cell[58569, 1435, 1144, 26, 121, "Input",ExpressionUUID->"6d82bf9e-5775-4282-8e2a-07a3a7bafcb2",
+Cell[50013, 1213, 37356, 773, 2401, "Input",ExpressionUUID->"b2cc66b9-d273-4506-89bc-c5c47524e955",
  InitializationCell->True],
-Cell[59716, 1463, 2424, 59, 273, "Input",ExpressionUUID->"52c370cc-2c89-4885-aaca-69e9acb8c7e3",
- InitializationCell->True],
-Cell[62143, 1524, 37356, 773, 2401, "Input",ExpressionUUID->"b2cc66b9-d273-4506-89bc-c5c47524e955",
- InitializationCell->True],
-Cell[99502, 2299, 5884, 133, 505, "Input",ExpressionUUID->"7d571ac2-8d5e-4ef3-854c-49ed87dc6e3d",
- InitializationCell->True],
-Cell[105389, 2434, 325, 9, 64, "Input",ExpressionUUID->"fcf6a6f1-7d7b-4bcd-a20b-465532e5406b",
+Cell[87372, 1988, 5884, 133, 505, "Input",ExpressionUUID->"7d571ac2-8d5e-4ef3-854c-49ed87dc6e3d",
  InitializationCell->True]
 }, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[93305, 2127, 158, 3, 67, "Section",ExpressionUUID->"20095157-d432-4950-8c3c-146f5c8236ef"],
+Cell[93466, 2132, 325, 9, 64, "Input",ExpressionUUID->"fcf6a6f1-7d7b-4bcd-a20b-465532e5406b",
+ InitializationCell->True]
 }, Open  ]]
 }, Open  ]]
 }

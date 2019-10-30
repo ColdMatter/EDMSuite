@@ -25,10 +25,9 @@ BeginPackage["SEDM4`EDMSuite`", "NETLink`","JLink`"];
 
 (* ::Input::Initialization:: *)
 initialiseSharedCode::usage="Reinstalls .NET/Link and reloads the EDMSuite dlls.";
-createBlockSerializer::usage="Creates a block serializer, which is available as SEDM3`EDMSuite`$blockSerializer.";
-createScanSerializer::usage="Creates a scan serializer, which is available as SEDM3`EDMSuite`$scanSerializer.";
-connectToSirCachealot::usage="Creates a .NET remoting connection to SirCachealot. An instance of SirCachealots Controller object is made available as SEDM3`EDMSuite`$sirCachealot.";
-
+createBlockSerializer::usage="Creates a block serializer, which is available as SEDM4`EDMSuite`$blockSerializer.";
+createScanSerializer::usage="Creates a scan serializer, which is available as SEDM4`EDMSuite`$scanSerializer.";
+connectToSirCachealot::usage="Creates a .NET remoting connection to SirCachealot. An instance of SirCachealots Controller object is made available as SEDM4`EDMSuite`$sirCachealot.";
 
 
 (* ::Input::Initialization:: *)

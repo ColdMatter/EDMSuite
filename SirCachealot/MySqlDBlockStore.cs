@@ -20,7 +20,6 @@ namespace SirCachealot.Database
     {
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
-        private string kConnectionString = "server=localhost;user=root;port=3306;password=atomic1;default command timeout=300;";
         public long QueryCount;
         public long DBlockCount;
 
@@ -435,11 +434,13 @@ namespace SirCachealot.Database
             return uids.ToArray();
         }
 
-        internal void Start()
+        internal void Start(string username, string password)
         {
-            //TODO: support multiple DBs
             // This creates a shared connection that is used for all query methods. As a result, the query
             // methods are probably not currently thread-safe (maybe, need to check).
+
+            string hostIP = "155.198.208.226";
+            string kConnectionString = "server=" + hostIP + ";user=" + username + ";port=3306;password=" + password + ";default command timeout=300;";
             mySql = new MySqlConnection(kConnectionString);
             mySql.Open();
             mySqlComm = mySql.CreateCommand();
@@ -473,7 +474,7 @@ namespace SirCachealot.Database
                 "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, TAG VARCHAR(30))"
                 );
             executeNonQuery(
-                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT LONGBLOB, PRIMARY KEY (UID))"
+                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT MEDIUMBLOB, PRIMARY KEY (UID))"
                 );
         }
 

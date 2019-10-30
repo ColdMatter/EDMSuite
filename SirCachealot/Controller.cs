@@ -48,10 +48,6 @@ namespace SirCachealot
         // Don't do any UI stuff here!
         internal void Initialise()
         {
-            //set up sql database
-            blockStore = new MySqlDBlockStore();
-            //blockStore = new MySqlTOFDBlockStore();
-            blockStore.Start();
             threadManager.InitialiseThreading(this);
         }
 
@@ -71,13 +67,36 @@ namespace SirCachealot
             statusMonitorTimer = new System.Threading.Timer(new TimerCallback(UpdateStatusMonitor), null, 500, 500);
         }
 
+        internal void MySQLInitialise()
+        {
+            //set up sql database
+            blockStore = new MySqlDBlockStore();
+
+            LogInToMySQLDialog dialog = new LogInToMySQLDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    blockStore.Start(dialog.GetUsername(), dialog.GetPassword());
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    mainWindow.Close();
+                }
+            }
+
+            else
+            {
+                mainWindow.Close();
+            }
+        }
+
         // this method gets called by the main window menu exit item, and when
         // the form's close button is pressed.
         internal void Exit()
         {
             blockStore.Stop();
-            // not sure whether this is needed, or even helpful.
-            statusMonitorTimer.Dispose();
         }
 
         internal void UpdateStatusMonitor(object unused)
