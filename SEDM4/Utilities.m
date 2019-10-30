@@ -30,6 +30,7 @@ standardErrorOfSampleMean::usage="Puts the function that they inexplicably remov
 timeStampToDateList::usage="";
 makeTOFChannelWithError::usage="";
 getTrimmedMeanAndErrTOFChannel::usage="";
+weightedMeanOfTOFWithError::usage="weightedMeanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the weighted mean and its standard error."
 
 
 (* ::Input::Initialization:: *)
@@ -46,6 +47,10 @@ kDataVersionString="v4";
 
 (* ::Input::Initialization:: *)
 sedm4::noBlockFile="There is no file corresponding to that block on disk.";
+
+
+(* ::Input::Initialization:: *)
+weightedMeanOfTOFWithError[tofWithError_]:=weightedMean[{#[[2]],#[[3]]}&/@tofWithError]
 
 
 (* ::Input::Initialization:: *)
@@ -95,10 +100,10 @@ timeStampToDateList[ts_]:=DateList[ts/10^7+AbsoluteTime[{1,1,1,0,0,0}]//N]
 
 (* ::Input::Initialization:: *)
 makeTOFChannelWithError[times_,data_,errs_]:=MapThread[{#1,Around[#2,#3]}&,{times,data,errs}]
-getTrimmedMeanAndErrTOFChannel[tofChannels_]:=Module[{times,tme},
-times=First/@tofChannels[[1]];
-tme=trimmedMeanAndBSErr/@(Transpose[Last/@#&/@tofChannels]);
-makeTOFChannelWithError[times,First/@tme,Last/@tme]
+getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_]:=Module[{times,tme},
+times=First/@tofWithErrChannels[[1]];
+tme=trimmedMeanAndBSErr/@(Transpose[#[[2]]&/@#&/@tofWithErrChannels]);
+Transpose[{times,First/@tme,Last/@tme}]
 ]
 
 

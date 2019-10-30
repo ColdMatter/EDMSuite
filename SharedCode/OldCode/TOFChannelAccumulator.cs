@@ -6,7 +6,7 @@
 
 //namespace Analysis.EDM
 //{
-//    public class TOFChannelAccumulator : Channel<TOFAccumulator>, IAccumulator<TOFChannel>
+//    public class TOFChannelAccumulator : Channel<TOFAccumulator>
 //    {
 //        public TOFChannelAccumulator()
 //        {
@@ -22,9 +22,16 @@
 //            Difference.Add(val.Difference);
 //        }
 
-//        public TOFChannel GetResult()
+//        public void Add(TOFWithErrorChannel val)
 //        {
-//            TOFChannel tc = new TOFChannel();
+//            On.Add(val.On);
+//            Off.Add(val.Off);
+//            Difference.Add(val.Difference);
+//        }
+
+//        public TOFWithErrorChannel GetResult()
+//        {
+//            TOFWithErrorChannel tc = new TOFWithErrorChannel();
 //            tc.On = On.GetResult();
 //            tc.Off = Off.GetResult();
 //            tc.Difference = Difference.GetResult();

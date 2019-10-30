@@ -101,6 +101,8 @@ namespace Data.EDM
 
             ConstructAsymmetryTOF();
 
+            ConstructAsymmetryShotNoiseTOF();
+
             TOFuliseSinglePointData();
         }
 
@@ -120,6 +122,40 @@ namespace Data.EDM
             }
             // give these data a name
             detectors.Add("asymmetry");
+        }
+
+        public void ConstructAsymmetryShotNoiseTOF()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+
+                TOF bottomScaled = (TOF)shot.TOFs[detectors.IndexOf("bottomProbeScaled")];
+                TOF top = (TOF)shot.TOFs[detectors.IndexOf("topProbeNoBackground")];
+
+                // Multiply TOFs by their calibrations
+                bottomScaled *= bottomScaled.Calibration;
+                top *= top.Calibration;
+
+                // Need the total signal TOF for later calculations
+                TOF total = bottomScaled + top;
+
+                // Get background counts
+                double topLaserBackground = (double)point.SinglePointData["TopDetectorBackground"] * bottomScaled.Calibration;
+                double bottomLaserBackground = (double)point.SinglePointData["BottomDetectorBackground"] * top.Calibration;
+
+                // Calculate the shot noise variance in the asymmetry detector
+                TOF asymmetryVariance =
+                    bottomScaled * bottomScaled * top * 4.0
+                    + bottomScaled * top * top * 4.0
+                    + top * top * bottomLaserBackground * 8.0
+                    + bottomScaled * bottomScaled * topLaserBackground * 8.0;
+                asymmetryVariance /= total * total * total * total;
+                shot.TOFs.Add(asymmetryVariance);
+            }
+
+            detectors.Add("asymmetryShotNoiseVariance");
         }
 
         // this function scales up the bottom detector to match the top

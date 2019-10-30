@@ -84,12 +84,12 @@ Mean[((#[[2]]-channelmean)/#[[3]])^2&/@(trimmedTOF)]
 
 (* ::Input::Initialization:: *)
 plotForTOFSetList[channelSetList_,trimLow_,trimHigh_,channel_,stateIndex_]:=Show[
-plotWithSpreadMini[getTOFWithError[channelSetList[[#]][[stateIndex]]@GetChannel[channel[[1]]]@Difference],trimLow,trimHigh,Hue[#/Length[channelSetList]],All]&/@Range[Length[channelSetList]]]
+plotWithSpreadMini[getTOFWithError[channelSetList[[#]][[stateIndex]]@GetChannel[channel[[1]]]],trimLow,trimHigh,Hue[#/Length[channelSetList]],All]&/@Range[Length[channelSetList]]]
 
 
 (* ::Input::Initialization:: *)
 showWigglyChannels[switches_,threshold_,stateIndex_,tofSetsList_,filterSwitches_,excludeSwitches_,sortBy_,trimLow_,trimHigh_]:=Module[{sortedChans,wigglyChans,filteredChannels,filteredChannels2},
-sortedChans=Sort[{#,chiSquaredForTOF[tofSetsList[[sortBy]][[stateIndex]]@GetChannel[#]@Difference,trimLow,trimHigh]}&/@getChannels[switches],#[[2]]>#2[[2]]&];
+sortedChans=Sort[{#,chiSquaredForTOF[tofSetsList[[sortBy]][[stateIndex]]@GetChannel[#],trimLow,trimHigh]}&/@getChannels[switches],#[[2]]>#2[[2]]&];
 wigglyChans=Select[sortedChans,#[[2]]>threshold&];
 filteredChannels=Cases[wigglyChans,Alternatives@@({{___,#,___},_}&/@Join[filterSwitches,specialChannels])];
 filteredChannels2=DeleteCases[filteredChannels,Alternatives@@({{___,#,___},_}&/@excludeSwitches)];

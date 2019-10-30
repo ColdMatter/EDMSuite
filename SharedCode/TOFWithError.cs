@@ -154,7 +154,7 @@ namespace Data
                 for (int i = 0; i < t1.Data.Length; i++)
                 {
                     temp.Data[i] = t1.Data[i] / t2.Data[i];
-                    temp.Errors[i] = temp.Data[i] * Math.Sqrt(
+                    temp.Errors[i] = Math.Abs(temp.Data[i]) * Math.Sqrt(
                         Math.Pow(t1.Errors[i] / t1.Data[i], 2) +
                         Math.Pow(t2.Errors[i] / t2.Data[i], 2)
                         );

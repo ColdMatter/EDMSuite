@@ -31,17 +31,13 @@ removeDBlock::usage="Removes the block with the given UID from the database.";
 addTagToBlock::usage="Associates a tag with a particular block. This association persists in the database unless explicitly removed (i.e. it doesn't go away when you re-analyse/remove dblocks etc.)";
 removeTagFromBlock::usage="Removes a tag from a block.";
 getDBlock::usage="Gets a block from the database.";
-getGatedChannelAndError::usage="This function gives the mean and error of an analysis channel for a given block and detector. The analysis channel is specified as a list of switches (strings).";
-getGatedChannel::usage="";
-getGatedError::usage="";
-getTOFChannelWithError::usage="";
-getTOFChannelTimes::usage=""
-getTOFChannelData::usage=""
-getTOFChannelErrors::usage=""
-getTOFChannel::usage=""
-getChannel::usage=""
-getError::usage=""
-getChannelAndError::usage=""
+getPointChannelValue::usage="getPointChannelValue[channel, detector, dblock] gives the point channel value for the detector in a demodulated block dblock."
+getPointChannelError::usage="getPointChannelError[channel, detector, dblock] gives the point channel error for the detector in a demodulated block dblock."
+getPointChannel::usage="getPointChannel[channel, detector, dblock] gives the point channel for the detector in a demodulated block dblock in the form {value, error}."
+getTOFChannelTimes::usage="getTOFChannelTimes[channel, detector, dblock] gives the TOF channel times for the detector in a demodulated block dblock."
+getTOFChannelValues::usage="getTOFChannelValues[channel, detector, dblock] gives the TOF channel values for the detector in a demodulated block dblock."
+getTOFChannelErrors::usage="getTOFChannelErrors[channel, detector, dblock] gives the TOF channel errors for the detector in a demodulated block dblock."
+getTOFChannel::usage="getTOFChannel[channel, detector, dblock] gives the TOF channel for the detector in a demodulated block dblock in the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}."
 selectByCluster::usage="";
 selectByTag::usage="";
 uidsForTag::usage="";
@@ -115,19 +111,14 @@ removeTagFromBlock[cluster_,index_,tagToRemove_]:=$sirCachealot@DBlockStore@Remo
 (* ::Input::Initialization:: *)
 getDBlock[uid_]:=$sirCachealot@DBlockStore@GetDBlock[uid]
 
-getGatedChannelAndError[channel_,detector_,dblock_]:=dblock@GetChannelValueAndError[channel,detector]
-getGatedChannel[channel_,detector_,dblock_]:=getChannelAndError[channel,detector,dblock][[1]]
-getGatedError[channel_,detector_,dblock_]:=getChannelAndError[channel,detector,dblock][[2]]
+getPointChannelValue[channel_,detector_,dblock_]:=dblock@GetPointChannel[channel,detector]@Value
+getPointChannelError[channel_,detector_,dblock_]:=dblock@GetPointChannel[channel,detector]@Error
+getPointChannel[channel_,detector_,dblock_]:={getPointChannelValue[channel,detector,dblock],getPointChannelError[channel,detector,dblock]}
 
-getTOFChannelWithError[channel_,detector_,dblock_]:=dblock@GetTOFChannelWithError[channel,detector]
-getTOFChannelTimes[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[1]]
-getTOFChannelData[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[2]]
-getTOFChannelErrors[channel_,detector_,dblock_]:=getTOFChannelWithError[channel,detector,dblock][[3]]
-getTOFChannel[channel_,detector_,dblock_]:=Transpose[{getTOFChannelTimes[channel,detector,dblock],getTOFChannelData[channel,detector,dblock]}]
-
-getChannel[channel_,detector_,dblock_,gated_]:=If[gated,getGatedChannel[channel,detector,dblock],getTOFChannel[channel,detector,dblock]]
-getError[channel_,detector_,dblock_,gated_]:=If[gated,getGatedError[channel,detector,dblock],getTOFChannelErrors[channel,detector,dblock]]
-getChannelAndError[channel_,detector_,dblock_,gated_]:=If[gated,getGatedChannelAndError[channel,detector,dblock],getTOFChannelWithError[channel,detector,dblock]]
+getTOFChannelTimes[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,detector]@Times
+getTOFChannelValues[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,detector]@Data
+getTOFChannelErrors[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,detector]@Errors
+getTOFChannel[channel_,detector_,dblock_]:=Transpose[{getTOFChannelTimes[channel,detector,dblock],getTOFChannelValues[channel,detector,dblock],getTOFChannelErrors[channel,detector,dblock]}]
 
 
 (* ::Input::Initialization:: *)

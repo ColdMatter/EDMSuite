@@ -79,7 +79,7 @@ trimChannelTable[chanTab_,trimLevel_]:=Select[chanTab,#[[4]]>trimLevel&]
 
 
 (* ::Input::Initialization:: *)
-buildGatedChannelTable[tofWithErr_,trimLow_,trimHigh_,switches_]:={#[[1]],#[[2]],Abs[#[[1]]/(#[[2]]+10^-9)]}&/@(gatedWeightedMean[tofWithErr@GetChannel[#]@Difference,trimLow,trimHigh]&/@getChannels[switches]);
+buildGatedChannelTable[tofWithErr_,trimLow_,trimHigh_,switches_]:={#[[1]],#[[2]],Abs[#[[1]]/(#[[2]]+10^-9)]}&/@(gatedWeightedMean[tofWithErr@GetChannel[#],trimLow,trimHigh]&/@getChannels[switches]);
 
 
 (* ::Input::Initialization:: *)
