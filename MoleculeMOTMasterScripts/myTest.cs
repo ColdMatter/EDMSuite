@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 100;
+        Parameters["ExpansionTime"] = 1000;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesHoldTime"] = 1000;
         Parameters["MolassesRampDuration"] = 200;
@@ -110,6 +110,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, releaseTime, imagingLightOnTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+
+        p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //image of MOT
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
@@ -143,8 +145,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTSwitchOffTime"], (double)Parameters["MOTCoilsCurrentMolassesValue"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", imagingLightOnTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["CoilsSwitchOffTime"], 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", imagingLightOnTime - (int)Parameters["ExpansionTime"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", imagingLightOnTime - (int)Parameters["ExpansionTime"] + 3000, 0.0);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);

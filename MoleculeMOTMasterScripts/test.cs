@@ -25,28 +25,32 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         // Camera
-        Parameters["Frame0Trigger"] = 600;
-        Parameters["Frame0TriggerDuration"] = 10;
+        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0TriggerDuration"] = 70;
+        Parameters["TransverseCameraTrigger"] = 210;
 
         //PMT
-        Parameters["PMTTrigger"] = 8000;
+        Parameters["PMTTrigger"] = 5000;
         Parameters["PMTTriggerDuration"] = 10;
 
+        //Dummy variable:
+        Parameters["Dummy"] = (int)Parameters["PMTTrigger"] + (int)Parameters["PMTTrigger"];
+
         // Slowing
-        Parameters["slowingAOMOnStart"] = 250;
+        Parameters["slowingAOMOnStart"] = 250; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 550;
-        Parameters["slowingAOMOffDuration"] = 35000;
-        Parameters["slowingRepumpAOMOnStart"] = 0;
+        Parameters["slowingAOMOffStart"] = 1500;//started from 1500
+        Parameters["slowingAOMOffDuration"] = 40000;
+        Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1000;//1700
+        Parameters["slowingRepumpAOMOffStart"] = 1520;
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 360;// 340;
+        Parameters["SlowingChirpStartTime"] = 340;// 340;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.3;
+        Parameters["SlowingChirpEndValue"] = 0.0;// -1.25;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 8.0; //1.05;
@@ -55,12 +59,12 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentValue"] = 0.6;// 0.65; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
-        Parameters["yShimLoadCurrent"] = -0.12;// -0.12;
-        Parameters["zShimLoadCurrent"] = -5.35;// -5.35; 
+        Parameters["xShimLoadCurrent"] = 3.6;//3.6
+        Parameters["yShimLoadCurrent"] = 0.0;//-0.12
+        Parameters["zShimLoadCurrent"] = 0.0;//-5.35
 
 
         // v0 Light Switch
@@ -71,6 +75,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.8;
+        Parameters["v0IntensityMolassesValue"] = 5.8;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 9.0;
@@ -94,7 +99,10 @@ public class Patterns : MOTMasterScript
         //   p.AddEdge("v00Shutter", 0, true);
         //p.Pulse(patternStartBeforeQ, 3000 - 1400, 10000, "bXSlowingShutter"); //Takes 14ms to start closing
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["TransverseCameraTrigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+
+
+
 
 
         return p;
@@ -116,33 +124,12 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
 
-        // Slowing field
-        p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
-        p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
 
-        // B Field
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], -0.05);
 
-        // Shim Fields
-        p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
-        p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
-        // trigger delay
-        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
-        // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.2);
 
-        // v0 Intensity Ramp
-        p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
 
-        // v0 Frequency Ramp
-        p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
-
-        //v0 chirp
-        p.AddAnalogValue("v00Chirp", 0, 0.0);
 
         return p;
     }
