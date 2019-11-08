@@ -9,13 +9,13 @@ using DAQ;
 
 namespace MOTMaster.SnippetLibrary
 {
-    public class LoadMoleculeMOTDualSpecies : MOTMasterScriptSnippet
+    public class LoadMoleculeMOT : MOTMasterScriptSnippet
     {
-        public LoadMoleculeMOTDualSpecies(PatternBuilder32 p, Dictionary<String, Object> parameters)
+        public LoadMoleculeMOT(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
             AddDigitalSnippet(p, parameters);
         }
-        public LoadMoleculeMOTDualSpecies(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
+        public LoadMoleculeMOT(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             AddAnalogSnippet(p, parameters);
         }
@@ -26,7 +26,7 @@ namespace MOTMaster.SnippetLibrary
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"] + (int)parameters["MOTLoadTime"] + (int)parameters["CMOTCoilsCurrentRampDuration"]; //!!!
             p.Pulse(patternStartBeforeQ, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 200, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
             p.Pulse(patternStartBeforeQ, -(int)parameters["FlashToQ"], (int)parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
-            p.Pulse((int)parameters["TCLBlockStart"], 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.//trigger the Q switch  !!!1st parameter was patternStartBeforeQ
+            p.Pulse(0, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.//trigger the Q switch  !!!1st parameter was patternStartBeforeQ
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch");
             p.Pulse(patternStartBeforeQ, -(int)parameters["HeliumShutterToQ"], (int)parameters["HeliumShutterDuration"], "heliumShutter");
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingAOMOnStart"], (int)parameters["slowingAOMOffStart"] - (int)parameters["slowingAOMOnStart"], "bXSlowingAOM"); //first pulse to slowing AOM

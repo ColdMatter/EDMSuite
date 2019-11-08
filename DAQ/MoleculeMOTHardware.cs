@@ -100,10 +100,27 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("v00Sidebands", digitalPatternBoardAddress, 2, 0);
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
+            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
+
+
+            // Rb Digital Pattern
+            AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
-            AddDigitalOutputChannel("rbCoolingShutter", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("rbOpticalPumpingShutter", digitalPatternBoardAddress, 2, 5);
-            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 2, 6);
+            AddDigitalOutputChannel("rbAbsImagingBeam", digitalPatternBoardAddress, 2, 5);
+            AddDigitalOutputChannel("rbRepump", digitalPatternBoardAddress, 2, 6);
+            AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
+            AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
+            AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
+            // Rb shutters
+            AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
+            AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
+            AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
+            AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
+
+
+
+
+
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -111,15 +128,26 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v00EOMAmp", analogPatternBoardAddress + "/ao11");
             AddAnalogOutputChannel("v00Frequency", analogPatternBoardAddress + "/ao12");
             AddAnalogOutputChannel("MOTCoilsCurrent", analogPatternBoardAddress + "/ao13"); //13
-            AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
+            //AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
             AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
-            AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23");
-            AddAnalogOutputChannel("rbCoolingFrequency", analogPatternBoardAddress + "/ao24");
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
+
+            // Old Rb Analog Pattern
+            AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23"); // from old setup
+            AddAnalogOutputChannel("rbCoolingFrequency", analogPatternBoardAddress + "/ao24"); // TTL in?
+
+
+            // New Rb
+            AddAnalogOutputChannel("rb3DCoolingFrequency", analogPatternBoardAddress + "/ao1");
+            AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
+            AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
+            AddAnalogOutputChannel("rb3DCoolingAttenuation", analogPatternBoardAddress + "/ao0");
+            AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5");
+            AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
 
 
             // Source
@@ -220,9 +248,9 @@ namespace DAQ.HAL
 
 
             // ScanMaster configuration
-            Info.Add("defaultTOFRange", new double[] { 4000, 12000 }); // these entries are the two ends of the range for the upper TOF graph
-            Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
-            Info.Add("defaultGate", new double[] { 6000, 2000 }); // the first entry is the centre of the gate, the second is the half width of the gate (upper TOF graph)
+            //Info.Add("defaultTOFRange", new double[] { 4000, 12000 }); // these entries are the two ends of the range for the upper TOF graph
+            //Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
+            //Info.Add("defaultGate", new double[] { 6000, 2000 }); // the first entry is the centre of the gate, the second is the half width of the gate (upper TOF graph)
 
 
             // Instruments
