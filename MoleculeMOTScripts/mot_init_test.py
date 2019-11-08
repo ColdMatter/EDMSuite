@@ -63,10 +63,5 @@ def reload_script():
 
 reload_script()
 
-print "Parameters['PatternLength'] = 50000;"
-print "ScanSingleParameter('MOTBasic_timing_test', 'Frame0TriggerDuration', [1,1,1])"
-
-ScanSingleParameter("MOTBasic_timing_test", "Frame0TriggerDuration", [1,1,1])
-#sys.exit()
 
 
