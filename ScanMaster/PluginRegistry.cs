@@ -47,11 +47,11 @@ namespace ScanMaster.Acquire.Plugin
 			// patternPlugins
 			patternPlugins.Add("No pattern", typeof(NullPGPlugin));
 			patternPlugins.Add("Pulsed rf scan", typeof(PulsedRFScanPatternPlugin));
-            patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
-            patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
-
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
+            patternPlugins.Add("Pump-probe Dual CCD", typeof(DualCCDPatternPlugin));
+            patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
+            patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
 			patternPlugins.Add("Guide", typeof(GuidePatternPlugin));
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));

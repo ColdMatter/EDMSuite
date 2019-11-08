@@ -37,6 +37,10 @@ namespace ScanMaster.Acquire.Plugins
             settings["computer"] = hostName;
             settings["scannedParameter"] = "setpoint";
             settings["TCLConfig"] = "TCLConfig";
+            settings["rampSteps"] = 100;
+            settings["setVoltageWaitTime"] = 50;
+            // TCL updates at a rate of 4-6 Hz, so waiting 500ms gives it at least 2/3 ramp cycles to move the laser to the correct frequency
+            settings["setSetPointWaitTime"] = 500;
         }
 
 
@@ -86,7 +90,17 @@ namespace ScanMaster.Acquire.Plugins
             {
                 tclController.UnlockLaser((string)settings["cavity"], (string)settings["channel"]);
             }
-            setV((double)settings["start"], 200, scannedParameter);
+
+            //go gently to the correct start position
+            if ((string)settings["scanMode"] == "up" || (string)settings["scanMode"] == "updown")
+            {
+                rampV((double)settings["start"], scannedParameter);
+            }
+            if ((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup")
+            {
+                rampV((double)settings["end"], scannedParameter);
+            }
+
         }
         
 
@@ -97,14 +111,30 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ScanFinished()
         {
-            setV((double)settings["start"], 200, scannedParameter);
+            //go gently to the correct start position
+            if ((string)settings["scanMode"] == "up")
+            {
+                rampV((double)settings["start"], scannedParameter);
+            }
+            if ((string)settings["scanMode"] == "down")
+            {
+                rampV((double)settings["end"], scannedParameter);
+            }
+            //all other cases, do nothing
         }
 
         public override void AcquisitionFinished()
         {
-            setV(initialVoltage, 200, "voltage");
-            setV(initialSetPoint, 200, "setpoint");
-            tclController.LockLaser((string)settings["cavity"], (string)settings["channel"]);
+            //go gently to the initial position
+            if (scannedParameter == "voltage")
+            {
+                rampV(initialVoltage, "voltage");
+                tclController.LockLaser((string)settings["cavity"], (string)settings["channel"]);
+            }
+            if (scannedParameter == "setpoint")
+            {
+                rampV(initialSetPoint, "setpoint");
+            }
         }
 
         [XmlIgnore]
@@ -113,28 +143,49 @@ namespace ScanMaster.Acquire.Plugins
             set
             {
                 scanParameter = value;
-                if (!Environs.Debug) setV(value, 50, scannedParameter);
+                if (!Environs.Debug) setV(value, scannedParameter);
             }
             get { return scanParameter; }
         }
 
-        private void setV(double v, int waitTime,string scannedOutput)
+        private void setV(double v, string scannedOutput)
         {
             switch (scannedOutput)
             {
             case "setpoint":
                     tclController.SetLaserSetpoint((string)settings["cavity"], (string)settings["channel"], v);
-                break;
+                    Thread.Sleep((int)settings["setSetPointWaitTime"]);
+                    break;
             case "voltage":
-                tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], v);
-                tclController.RefreshVoltageOnUI((string)settings["cavity"], (string)settings["channel"]);
-                break;
+                    tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], v);
+                    tclController.RefreshVoltageOnUI((string)settings["cavity"], (string)settings["channel"]);
+                    Thread.Sleep((int)settings["setVoltageWaitTime"]);
+                    break;
             }
-            Thread.Sleep(waitTime);
         }
 
-
-
+        // we need to ramp the laser output voltage slowly back to starting, but not the set point
+        private void rampV(double v, string scannedOutput)
+        {
+            switch (scannedOutput)
+            {
+                case "setpoint":
+                    tclController.SetLaserSetpoint((string)settings["cavity"], (string)settings["channel"], v);
+                    // since we are moving the set point by quite a distance, wait for TCL to move the laser to it by waiting 10x longer than usual
+                    Thread.Sleep(10*(int)settings["setSetPointWaitTime"]);
+                    break;
+                case "voltage":
+                    for (int i = 1; i <= (int)settings["rampSteps"]; i++)
+                    {
+                        tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], scanParameter - (i * (scanParameter - v) / (int)settings["rampSteps"]));
+                        tclController.RefreshVoltageOnUI((string)settings["cavity"], (string)settings["channel"]);
+                        Thread.Sleep((int)settings["setVoltageWaitTime"]);
+                    }
+                    break;
+            }
+            
+            scanParameter = v;
+        }
 
     }
 }

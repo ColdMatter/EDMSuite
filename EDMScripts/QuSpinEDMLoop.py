@@ -51,7 +51,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	hc.UpdateRFPowerMonitor()
 	hc.UpdateRFFrequencyMonitor()
 	bh.StartPattern()
-	hc.UpdateBCurrentMonitor()
+	#hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	#hc.UpdateProbeAOMFreqMonitor()
 	#hc.UpdatePumpAOMFreqMonitor()

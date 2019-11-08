@@ -7,7 +7,7 @@ using DAQ.Pattern;
 namespace DAQ.HAL
 {
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	public class DigitalOutputChannel : DAQMxChannel
 	{
@@ -21,7 +21,7 @@ namespace DAQ.HAL
 			this.device = device;
 			this.port = port;
 			this.line = line;
-           
+
 			physicalChannel = device + "/port" + port + "/line" + line;
 		}
 

@@ -67,7 +67,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["aomOffStart"] + (int)settings["aomOffDuration"], 
 				(int)settings["aomOnDuration"] - ((int)settings["aomOffStart"] 
 				- (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],
-                (int)settings["aom2OffStart"] - (int)settings["aomOnStart"],
+                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],
                 GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],

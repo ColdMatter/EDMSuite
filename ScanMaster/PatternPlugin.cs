@@ -15,6 +15,7 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(GuidePatternPlugin)),
 	 XmlInclude(typeof(CommonRamanPatternPlugin)),
 	 XmlInclude(typeof(PulsedRFScanPatternPlugin)),
+     XmlInclude(typeof(DualCCDPatternPlugin)),
      XmlInclude(typeof(SuperPumpingPulsedRFScanPatternPlugin)),
      XmlInclude(typeof(SuperPumpingPatternPlugin)),
 	 XmlInclude(typeof(PumpProbePatternPlugin)),
