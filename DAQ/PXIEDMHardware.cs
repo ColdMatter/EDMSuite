@@ -207,6 +207,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("valveMonVoltage", daqBoard +"/ai4", AITerminalConfiguration.Rse);
 
             //This analog input is broken, we assign this as a dummy so we don't break the rest of the code
             AddAnalogInputChannel("laserPowerMeter", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
@@ -226,6 +227,9 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1", 0, 5);
             AddAnalogOutputChannel("rf1FM", usbDAQ2 + "/ao0", 0, 5);
             AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
+
+            //Source control
+            AddAnalogOutputChannel("valveCtrlVoltage", aoBoard+"/ao14", 0,8);
 
             // E field control and monitoring
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);

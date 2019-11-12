@@ -1,5 +1,5 @@
-﻿# edm_init.py - sets up the IronPython environment ready for scripting
-# the edm control software.
+﻿# sm_init.py - sets up the IronPython environment ready for scripting
+# scan master.
 
 import clr
 import sys
@@ -16,8 +16,6 @@ clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
 sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\EDM\\"))
 clr.AddReferenceToFile("SirCachealot.exe")
-sys.path.append(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\EDM\\"))
-clr.AddReferenceToFile("TransferCavityLock.exe")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")
@@ -39,27 +37,21 @@ class typedproxy(object):
 # create connections to the control programs
 import System
 import ScanMaster
-import EDMBlockHead
 import EDMHardwareControl
-import SirCachealot
-import TransferCavityLock2012
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
-sc = typedproxy(System.Activator.GetObject(SirCachealot.Controller, 'tcp://localhost:1180/controller.rem'), SirCachealot.Controller)
-tclProbe = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://155.198.206.103:1190/controller.rem'), TransferCavityLock2012.Controller)
 
 # usage message
-print('EDM interactive scripting control')
+print('Scan Master scripting console interactive scripting control')
 print('''
-The variables sm, bh, and hc are pre-assigned to the ScanMaster, BlockHead
+The variables sm, and hc are pre-assigned to the ScanMaster,
 and EDMHardwareControl Controller objects respectively. You can call any of
 these objects methods, for example: sm.AcquireAndWait(5). Look at the c#
 code to see which remote methods are available. You can use any Python code
 you like to script these calls.
 
-You can run scripts in the EDMScripts directory with the command run(i),
+You can run scripts in the ScanMasterScripts directory with the command run(i),
 where i is the script's index number (below). For this to work the script
 must have a run_script() function defined somewhere. You'd be unwise to
 try and run more than one script in a session with this method!
@@ -68,9 +60,9 @@ Available scripts:''')
 
 # script shortcuts
 import nt
-pp = Path.GetFullPath("..\\EDMScripts")
+pp = Path.GetFullPath("..\\SMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "edm_init.py" and e != "winforms.py"]
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "sm_init.py" and e != "winforms.py"]
 for i in range(len(scriptsToLoad)):
             print str(i) + ": " + scriptsToLoad[i]
 print ""

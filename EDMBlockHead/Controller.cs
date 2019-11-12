@@ -192,14 +192,14 @@ namespace EDMBlockHead
             rf2F.Step = 0.1;
             config.AnalogModulations.Add(rf2F);
 
-            //AnalogModulation lf1 = new AnalogModulation();
-            //lf1.Name = "LF1";
-            //lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
-            //lf1.Waveform.Code = new bool[] { false, true, false, true, false, false, false, false, false, false, false, false };
-            //lf1.DelayAfterSwitch = 0;
-            //lf1.Centre = 2.5;
-            //lf1.Step = 0.05;
-            //config.AnalogModulations.Add(lf1);
+            AnalogModulation lf1 = new AnalogModulation();
+            lf1.Name = "LF1";
+            lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
+            lf1.Waveform.Code = new bool[] { false, false, false, true, false, false, false, false, false,false, false, false };
+            lf1.DelayAfterSwitch = 0;
+            lf1.Centre = 8.58;
+            lf1.Step = 0.05;
+            config.AnalogModulations.Add(lf1);
 
             //AnalogModulation lf2 = new AnalogModulation();
             //lf2.Name = "LF2";

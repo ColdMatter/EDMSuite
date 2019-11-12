@@ -130,7 +130,7 @@ namespace EDMBlockHead.Acquire
 					{
 						// just stuff a made up shot in
 						//Thread.Sleep(10);
-						s = DataFaker.GetFakeShot(1900,50,10,3,3);
+						s = DataFaker.GetFakeShot(1900,200,10,3,9);
 						((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
 						p = new EDMPoint();
 						p.Shot = s;
@@ -754,10 +754,10 @@ namespace EDMBlockHead.Acquire
             //lf1Channel.Modulation = config.GetModulationByName("LF1");
             //switchedChannels.Add(lf1Channel);
 
-            //HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
-            //lf1Channel.Channel = "probeAOM";
-            //lf1Channel.Modulation = config.GetModulationByName("LF1");
-            //switchedChannels.Add(lf1Channel);
+            HardwareControllerSwitchChannel lf1Channel = new HardwareControllerSwitchChannel();
+            lf1Channel.Channel = "probeAOM";
+            lf1Channel.Modulation = config.GetModulationByName("LF1");
+            switchedChannels.Add(lf1Channel);
 
             //HardwareControllerSwitchChannel lf2Channel = new HardwareControllerSwitchChannel();
             //lf2Channel.Channel = "pumpAOM";
@@ -818,7 +818,7 @@ namespace EDMBlockHead.Acquire
             topProbe.HighLimit = 10;
             topProbe.Calibration = 510;
             inputs.Channels.Add(topProbe);
-
+            
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;
             mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
@@ -874,6 +874,7 @@ namespace EDMBlockHead.Acquire
             reflectedrf2Amplitude.LowLimit = -10;
             reflectedrf2Amplitude.HighLimit = 1;
             inputs.Channels.Add(reflectedrf2Amplitude);
+             
         }
 
         // This version for magnetometer data taking with the QuSpins

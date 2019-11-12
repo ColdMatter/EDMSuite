@@ -36,6 +36,7 @@ namespace Analysis.EDM
         public double[] DBValAndErrtp;
         public double[] EValAndErrtp;
         public double[] EBValAndErrtp;
+        public double[] BDBValAndErrtp;
 
         // analysis results bottom probe 
         public double[] SIGValAndErrbp;
@@ -62,6 +63,11 @@ namespace Analysis.EDM
         public double[] rf1AmpAndErrbp;
         public double[] rf2AmpAndErrbp;
 
+        public double[] rf1FreqAndErrtp;
+        public double[] rf2FreqAndErrtp;
+        public double[] rf1AmpAndErrtp;
+        public double[] rf2AmpAndErrtp;
+
         public double[] RF1FDBDB;
         public double[] RF2FDBDB;
         public double[] RF1ADBDB;
@@ -71,6 +77,11 @@ namespace Analysis.EDM
         public double[] RF2FDBDBbp;
         public double[] RF1ADBDBbp;
         public double[] RF2ADBDBbp;
+
+        public double[] RF1FDBDBtp;
+        public double[] RF2FDBDBtp;
+        public double[] RF1ADBDBtp;
+        public double[] RF2ADBDBtp;
 
         public double[] LF1ValAndErr;
         public double[] LF1DB;
@@ -96,6 +107,7 @@ namespace Analysis.EDM
             analysis.DBValAndErrtp = dblock.GetChannelValueAndError(new string[] { "DB" }, "topProbeNoBackground");
             analysis.EValAndErrtp = dblock.GetChannelValueAndError(new string[] { "E" }, "topProbeNoBackground");
             analysis.EBValAndErrtp = dblock.GetChannelValueAndError(new string[] { "E", "B" }, "topProbeNoBackground");
+            analysis.BDBValAndErrtp = dblock.GetChannelValueAndError(new string[] { "B", "DB" }, "topProbeNoBackground");
 
             //Get relevant channel values and errors for bottom probe
             analysis.SIGValAndErrbp = dblock.GetChannelValueAndError(new string[] { "SIG" }, "bottomProbeScaled");
@@ -159,10 +171,22 @@ namespace Analysis.EDM
             analysis.RF1ADBDBbp = dblock.GetChannelValueAndError("RF1ADBDB", "bottomProbeScaled");
             analysis.RF2ADBDBbp = dblock.GetChannelValueAndError("RF2ADBDB", "bottomProbeScaled");
 
+            //rf freq top probe
+            analysis.rf1FreqAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF1F" }, "topProbeNoBackground");
+            analysis.rf2FreqAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF2F" }, "topProbeNoBackground");
+            analysis.RF1FDBDBtp = dblock.GetChannelValueAndError("RF1FDBDB", "topProbeNoBackground");
+            analysis.RF2FDBDBtp = dblock.GetChannelValueAndError("RF2FDBDB", "topProbeNoBackground");
+
+            //rf amp top probe
+            analysis.rf1AmpAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF1A" }, "topProbeNoBackground");
+            analysis.rf2AmpAndErrtp = dblock.GetChannelValueAndError(new string[] { "RF2A" }, "topProbeNoBackground");
+            analysis.RF1ADBDBtp = dblock.GetChannelValueAndError("RF1ADBDB", "topProbeNoBackground");
+            analysis.RF2ADBDBtp = dblock.GetChannelValueAndError("RF2ADBDB", "topProbeNoBackground");
+
             //probe laser frequency
-            //analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
-            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
-            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
+            analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
+            analysis.LF1DB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
+            analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
             
             return analysis;
         }

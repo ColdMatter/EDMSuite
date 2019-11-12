@@ -117,7 +117,8 @@ namespace EDMHardwareControl
         Task piMonitorTask;
         Task i2ErrorSignalInputTask;
         Task laserPowerMeterInputTask;
-
+        Task valveMonitorVoltageAnalogInputTask;
+        Task valveCtrlVoltageAnalogOutputTask;
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
         //Task uWaveMixerAnalogOutputTask;
@@ -193,6 +194,7 @@ namespace EDMHardwareControl
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            valveCtrlVoltageAnalogOutputTask = CreateAnalogOutputTask("valveCtrlVoltage");
             //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             probeAOMAnalogOutputTask = CreateAnalogOutputTask("probeAOM");
@@ -240,6 +242,7 @@ namespace EDMHardwareControl
             //diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
             i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
             laserPowerMeterInputTask = CreateAnalogInputTask("laserPowerMeter");
+            valveMonitorVoltageAnalogInputTask = CreateAnalogInputTask("valveMonVoltage");
                         
 
             // make the control window
@@ -321,7 +324,9 @@ namespace EDMHardwareControl
         private double ReadAnalogInput(Task task)
         {
             AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
-            double val = reader.ReadSingleSample();
+            
+            
+          double val = reader.ReadSingleSample();
             task.Control(TaskAction.Unreserve);
             return val;
         }
@@ -2963,6 +2968,31 @@ namespace EDMHardwareControl
             Thread.Sleep(5);
         }
 
+
+        public void UpdateValveControlVoltage(double val)
+        { 
+            SetAnalogOutput(valveCtrlVoltageAnalogOutputTask, val);
+        }
+
+        private double valveMonitorVoltage;
+        public double ValveMonitorVoltage
+        {
+            get
+            {
+                return valveMonitorVoltage;
+            }
+        }
+
+        public void UpdateValveMonitor()
+        {
+            valveMonitorVoltage = ReadAnalogInput(valveMonitorVoltageAnalogInputTask); 
+        }
+
+        public void UpdateValveMonitorUI()
+        {
+            UpdateValveMonitor();
+            window.SetTextBox(window.valveMonitorTextBox, valveMonitorVoltage.ToString());        
+        }
 
         public void UpdateProbeAOMFreqMonitor()
         {

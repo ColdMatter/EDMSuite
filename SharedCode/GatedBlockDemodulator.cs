@@ -108,12 +108,13 @@ namespace Analysis.EDM
 
                 // Append the ChannelSet with special combinations of channels for the asymmetry detector only
                 // Also append for bottom probe detector for live analysis purposes
-                if(b.detectors[detectorIndex] == "asymmetry" || b.detectors[detectorIndex] == "bottomProbeScaled")
+                if (b.detectors[detectorIndex] == "asymmetry" || b.detectors[detectorIndex] == "bottomProbeScaled" || b.detectors[detectorIndex] == "topProbeNoBackground")
                 {
+                    string detector = b.detectors[detectorIndex];
                     var tofBlockDemodulator = new TOFBlockDemodulator();
                     // Get a TOF demodulated block containing only the special channels in the asymmetry deteector
-                    var tofDemodulatedBlock = tofBlockDemodulator.TOFDemodulateBlockForSpecialChannels(b, new string[] { "asymmetry" });
-                    var tofSpecialChannelSet = tofDemodulatedBlock.GetChannelSet("asymmetry");
+                    var tofDemodulatedBlock = tofBlockDemodulator.TOFDemodulateBlockForSpecialChannels(b, new string[] { detector });
+                    var tofSpecialChannelSet = tofDemodulatedBlock.GetChannelSet(detector);
                     
                     foreach(string channelName in tofSpecialChannelSet.Channels)
                     {
@@ -122,7 +123,7 @@ namespace Analysis.EDM
                         {
                             gatedChannelSet.AddChannel(
                             channelName,
-                            GateTOFChannel((TOFChannel)tofSpecialChannelSet.GetChannel(channelName), config.GetGate("asymmetry"))
+                            GateTOFChannel((TOFChannel)tofSpecialChannelSet.GetChannel(channelName), config.GetGate(detector))
                             );
                         }
                         
