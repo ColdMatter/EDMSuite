@@ -1,4 +1,4 @@
-# Import a whole load of stuff
+﻿# Import a whole load of stuff
 from System.IO import *
 from System.Drawing import *
 from System.Runtime.Remoting import *
@@ -53,7 +53,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	bh.StartPattern()
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
-	#hc.UpdateProbeAOMFreqMonitor()
+	hc.UpdateProbeAOMV()
 	#hc.UpdatePumpAOMFreqMonitor()
 	#hc.CheckPiMonitor()
 	#print("Measuring polarizer angle")
@@ -68,7 +68,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default.xml")
+	bc = loadBlockConfig(settingsPath + "lfFreqStepTest05Nov19_try2.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -107,7 +107,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	bc.GetModulationByName("RF2F").PhysicalCentre = hc.RF2FrequencyCentre
 	bc.GetModulationByName("RF2F").PhysicalStep = hc.RF2FrequencyStep
 	# laser frequency stuff goes here
-
+	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre;
+	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep;
 	# generate the waveform codes
 	print("Generating waveform codes ...")
 	eWave = bc.GetModulationByName("E").Waveform
@@ -116,7 +117,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	##lf1Wave.Name = "LF1"
 	##mwWave = bc.GetModulationByName("MW").Waveform
 	##mwWave.Name = "MW"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F", "LF1") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -124,6 +125,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	bc.GetModulationByName("RF2A").Waveform = ws["RF2A"]
 	bc.GetModulationByName("RF1F").Waveform = ws["RF1F"]
 	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
+	bc.GetModulationByName("LF1").Waveform = ws["LF1"]	
 	# change the inversions of the static codes E
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# Do the same for the microwave channel
@@ -152,7 +154,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 150.0
+	bc.Settings["minimumSignalToRun"] = 250.0
 	bc.Settings["targetStepperGateStartTime"] = 2340.0
 	bc.Settings["targetStepperGateEndTime"] = 2540.0
 	return bc
@@ -232,21 +234,21 @@ def updateLocks(bState):
 
 
 def updateLocksNL(bState, mwState):
-	sigValue = bh.AnalysedDBlock.SIGValAndErrbp[0]
-	bValue = bh.AnalysedDBlock.BValAndErrbp[0]
-	dbValue = bh.AnalysedDBlock.DBValAndErrbp[0]
-	bDBValue = bh.AnalysedDBlock.BDBValAndErrbp[0]
-	rf1aValue = bh.AnalysedDBlock.rf1AmpAndErrbp[0]
-	rf1adbdbValue = bh.AnalysedDBlock.RF1ADBDBbp[0]
-	rf2aValue = bh.AnalysedDBlock.rf2AmpAndErrbp[0]
-	rf2adbdbValue = bh.AnalysedDBlock.RF2ADBDBbp[0]
-	rf1fValue = bh.AnalysedDBlock.rf1FreqAndErrbp[0]
-	rf1fdbdbValue = bh.AnalysedDBlock.RF1FDBDBbp[0]
-	rf2fValue = bh.AnalysedDBlock.rf2FreqAndErrbp[0]
-	rf2fdbdbValue = bh.AnalysedDBlock.RF2FDBDBbp[0]
-	#lf1Value = bh.AnalysedDBlock.LF1ValAndErr[0]
-	#lf1dbdbValue = bh.AnalysedDBlock.LF1DBDB[0]
-	#lf1dbValue = bh.AnalysedDBlock.LF1DB[0]
+	sigValue = bh.AnalysedDBlock.SIGValAndErr[0]
+	bValue = bh.AnalysedDBlock.BValAndErr[0]
+	dbValue = bh.AnalysedDBlock.DBValAndErr[0]
+	bDBValue = bh.AnalysedDBlock.BDBValAndErr[0]
+	rf1aValue = bh.AnalysedDBlock.rf1AmpAndErr[0]
+	rf1adbdbValue = bh.AnalysedDBlock.RF1ADBDB[0]
+	rf2aValue = bh.AnalysedDBlock.rf2AmpAndErr[0]
+	rf2adbdbValue = bh.AnalysedDBlock.RF2ADBDB[0]
+	rf1fValue = bh.AnalysedDBlock.rf1FreqAndErr[0]
+	rf1fdbdbValue = bh.AnalysedDBlock.RF1FDBDB[0]
+	rf2fValue = bh.AnalysedDBlock.rf2FreqAndErr[0]
+	rf2fdbdbValue = bh.AnalysedDBlock.RF2FDBDB[0]
+	lf1Value = bh.AnalysedDBlock.LF1ValAndErr[0]
+	lf1dbdbValue = bh.AnalysedDBlock.LF1DBDB[0]
+	lf1dbValue = bh.AnalysedDBlock.LF1DB[0]
 	#lf2Value = pmtChannelValues.GetValue(("LF2",))
 	#lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
 	#rf1ampRefSig = rf1ampReftChannelValues.GetValue(("SIG",))
@@ -262,54 +264,59 @@ def updateLocksNL(bState, mwState):
 	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
 	print "RF1A.DB/DB: " + str(rf1adbdbValue) + " RF2A.DB/DB: " + str(rf2adbdbValue)
 	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
-	#print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
+	print "LF1: " + str(lf1Value) + " LF1.DB/DB: " + str(lf1dbdbValue)
 	#print "LF2: " + str(lf2Value) + " LF2.DB/DB: " + str(lf2dbdbValue)
 	#print "RF1 Reflected: " + str(rf1ampRefSig) +  " RF2 Reflected: " + str(rf2ampRefSig)
 	#print "{E}_RF1 Reflected: {" + str(rf1ampRefE) + " , " + str(rf1ampRefEErr) + " }"
 	#print "{E}_RF2 Reflected: {" + str(rf2ampRefE) + " , " + str(rf2ampRefEErr) + " }"
 
 	# B bias lock
-	# the sign of the feedback depends on the b-state and the microwave state
-	if bState and mwState:
+	# the sign of the feedback depends only on the b-state
+	# when mw manual state is false, {DB} flips sign as well
+	if bState:
 		feedbackSign = 1
 	else:
 		feedbackSign = -1
-		deltaBias = - (1.0/10.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
-		deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
-		print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
-		newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
-		hc.SetSteppingBBiasVoltage( newBiasVoltage )
-		# RFA  locks
-		deltaRF1A = - (6.0/3.0) * rf1adbdbValue * kRFAVoltsPerCal
-		deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
-		print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
-		newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
-		hc.SetRF1AttCentre( newRF1A )
-		#
-		deltaRF2A = - (6.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
-		deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
-		print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
-		newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
-		hc.SetRF2AttCentre( newRF2A )
-		# RFF  locks
-		deltaRF1F = - (10.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
-		deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
-		print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
-		newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
-		hc.SetRF1FMCentre( newRF1F )
-		#
-		deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
-		deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
-		print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
-		newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
-		hc.SetRF2FMCentre( newRF2F )
+	
+	if mwState:
+		rfFeedbackSign = 1
+	else:
+		rfFeedbackSign = -1
+		
+	deltaBias = - (1.0/10.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
+	deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
+	print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
+	newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
+	hc.SetSteppingBBiasVoltage( newBiasVoltage )
+	# RFA  locks
+	deltaRF1A = - (3.0/3.0) * rf1adbdbValue * kRFAVoltsPerCal
+	deltaRF1A = windowValue(deltaRF1A, -kRFAMaxChange, kRFAMaxChange)
+	print "Attempting to change RF1A by " + str(deltaRF1A) + " V."
+	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
+	hc.SetRF1AttCentre( newRF1A )
+	#
+	deltaRF2A = - (6.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
+	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
+	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
+	hc.SetRF2AttCentre( newRF2A )
+	# RFF  locks
+	deltaRF1F = - (1.0/4.0) * rf1fdbdbValue * kRFFVoltsPerCal
+	deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
+	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
+	hc.SetRF1FMCentre( newRF1F )
+	#
+	deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
+	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
+	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
+	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
+	hc.SetRF2FMCentre( newRF2F )
 
-	# Laser frequency lock
-	#deltaLF1 = -2.5 * (lf1dbdbValue)
-	#deltaLF1 = windowValue(deltaLF1, -0.1, 0.1)
-	#print "Attempting to change LF1 by " + str(deltaLF1) + " V."
-	#newLF1 = windowValue( hc.probeAOMVoltage - deltaLF1, hc.probeAOMStep, 10 - hc.probeAOMStep )
-	#hc.SetProbeAOMVoltage( newLF1 )
+	# Laser frequency lock using TCL
+	deltaLF1setpoint = -1 * (lf1dbdbValue)
+	print "Attempting to change tclProbe setpoint by " + str(deltaLF1setpoint) + " V."
+	#tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT") +deltaLF1setpoint)
 
 	# Laser frequency lock (-ve multiplier in f0 mode and +ve in f1)
 	#deltaLF2 =  - 2.5 * lf2dbdbValue

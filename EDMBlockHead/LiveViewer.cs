@@ -35,7 +35,7 @@ namespace EDMBlockHead
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t" + Environment.NewLine);
+            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1}\t {LF1DBDB}" + Environment.NewLine);
 
             edms = new List<double>();
         }
@@ -65,6 +65,12 @@ namespace EDMBlockHead
                 + "\t" + (analysis.rf2AmpAndErr[0]).ToString("N4")
                 + "\t" + (analysis.rf1FreqAndErr[0]).ToString("N4")
                 + "\t" + (analysis.rf2FreqAndErr[0]).ToString("N4")
+                + "\t" + (analysis.LF1ValAndErr[0]).ToString("N4")
+                + "\t" + (analysis.LF1ValAndErr[1]).ToString("N4")
+                + "\t" + (analysis.LF1DB[0]).ToString("N4")
+                + "\t" + (analysis.LF1DB[1]).ToString("N4")
+                + "\t" + (analysis.LF1DBDB[0]).ToString("N4")
+                + "\t" + (analysis.LF1DBDB[1]).ToString("N4")
                 + Environment.NewLine);
 
             // edm error
@@ -112,8 +118,8 @@ namespace EDMBlockHead
             AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
             AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
             AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
-            //AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
-            //AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
+            AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
+            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
 
             blockCount = blockCount + 1;
         }
@@ -125,7 +131,7 @@ namespace EDMBlockHead
             UpdateClusterStatusText(
                 "Error per day: " + 0
                 + Environment.NewLine + "Block count: " + 0);
-            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t" + Environment.NewLine); ClearSIGScatter();
+            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1}\t Error \t {LF1DB} \t Error \t {LF1DBDB} \t Error" + Environment.NewLine); ClearSIGScatter();
             ClearBScatter();
             ClearDBScatter();
             ClearEDMErrScatter();

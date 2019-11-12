@@ -124,10 +124,10 @@ namespace Analysis.EDM
             analysis.RF2ADBDB = dblock.GetTOFChannel("RF2ADBDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
 
             //probe laser frequency
-            //analysis.LF1ValAndErr = dblock.GetChannelValueAndError(new string[] { "LF1" }, "asymmetry");
-            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DB", "asymmetry");
-            //analysis.LF1DBDB = dblock.GetChannelValueAndError("LF1DBDB", "asymmetry");
-
+            analysis.LF1ValAndErr = dblock.GetTOFChannel(new string[] { "LF1" }, "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
+            analysis.LF1DB = dblock.GetTOFChannel("LF1DB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
+            analysis.LF1DBDB = dblock.GetTOFChannel("LF1DBDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
+            
             return analysis;
         }
 

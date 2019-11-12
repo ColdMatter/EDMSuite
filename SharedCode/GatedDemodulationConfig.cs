@@ -75,22 +75,34 @@ namespace Analysis.EDM
             return gateConfig;
         }
 
+        public int LiveAnalysisGateTimeStartScaled { get { return liveAnalysisGateTimeStartScaled; } }
+
+        public int LiveAnalysisGateTimeEndScaled { get { return liveAnalysisGateTimeEndScaled; } }
+
+        private int liveAnalysisGateTimeStartBottom = 2550;
+        private int liveAnalysisGateTimeEndBottom = 2650;
+
+        private int liveAnalysisGateTimeStartScaled = 2933;
+        private int liveAnalysisGateTimeEndScaled = 3048;
+
+
+
         public static GatedDemodulationConfig MakeLiveAnalysisGateConfig()
         {
             GatedDemodulationConfig gateConfig = new GatedDemodulationConfig();
             gateConfig.Name = "Live analysis gate set";
-            gateConfig.AddGate("asymmetry", new Gate(2691, 2921, false));
-            gateConfig.AddGate("bottomProbeScaled", new Gate(2691, 2921, true));
-            gateConfig.AddGate("topProbeNoBackground", new Gate(2691, 2921, true));
+            gateConfig.AddGate("asymmetry", new Gate(gateConfig.LiveAnalysisGateTimeStartScaled, gateConfig.LiveAnalysisGateTimeEndScaled, false));
+            gateConfig.AddGate("bottomProbeScaled", new Gate(gateConfig.LiveAnalysisGateTimeStartScaled, gateConfig.LiveAnalysisGateTimeEndScaled, true));
+            gateConfig.AddGate("topProbeNoBackground", new Gate(gateConfig.LiveAnalysisGateTimeStartScaled, gateConfig.LiveAnalysisGateTimeEndScaled, true));
             gateConfig.AddGate("magnetometer", new Gate(1000, 1800, false));
             gateConfig.AddGate("gnd", Gate.WideGate());
             gateConfig.AddGate("battery", Gate.WideGate());
             gateConfig.AddGate("rfCurrent", Gate.WideGate());
             gateConfig.AddGate("reflectedrf1Amplitude", Gate.WideGate());
             gateConfig.AddGate("reflectedrf2Amplitude", Gate.WideGate());
-            gateConfig.AddGate("bottomProbeNoBackground", new Gate(2340, 2540, true));
-            gateConfig.AddGate("bottomProbe", new Gate(2340, 2540, true));
-            gateConfig.AddGate("topProbe", new Gate(2691, 2921, true));
+            gateConfig.AddGate("bottomProbeNoBackground", new Gate(2390, 2490, true));
+            gateConfig.AddGate("bottomProbe", new Gate(2390, 2490, true));
+            gateConfig.AddGate("topProbe", new Gate(gateConfig.LiveAnalysisGateTimeStartScaled, gateConfig.LiveAnalysisGateTimeEndScaled, true));
 
             return gateConfig;
         }

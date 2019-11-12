@@ -84,10 +84,13 @@ namespace DAQ.HAL
 
         protected override void Write(string cmd)
         {
-            if (!connected) Connect();
-            outputStream.DiscardBufferedData();
-            if (!Environs.Debug) inputStream.WriteLine(cmd);
-            Thread.Sleep(500);
+            if (!Environs.Debug)
+            {
+                if (!connected) Connect();
+                outputStream.DiscardBufferedData();
+                if (!Environs.Debug) inputStream.WriteLine(cmd);
+                Thread.Sleep(500);
+            }
         }
 
         protected override string Read()
