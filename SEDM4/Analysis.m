@@ -24,35 +24,31 @@ BeginPackage["SEDM4`Analysis`","SEDM4`EDMSuite`","SEDM4`Polarisation`","SEDM4`Da
 
 
 (* ::Input::Initialization:: *)
-weightedMean::usage="Takes  a list of {value, error} pairs and calculates the weighted mean.";
-integrateTOF::usage="Takes a block and integrates to TOF profiles for the specified detector. The Boolean parameter returnIntegral determines whether the returned values are the integrals (in V \[Mu]s) or the average values (in V).";
-getAverageBG::usage="";
-getPulseTiming::usage="";
-getGateTiming::usage="";
-integrateTOFBackSubtract::usage="";
-extractNoiseData::usage="";
-getChannelNoisePPM::usage="";
-analyseBlock::usage="This function take a block and an extraction function and analyses the block.The extraction function is applied to the block and is expected to return a list of detectorDatas.The detector data is format is defined by integrateTOF.This is the usual way to generate detector data,but other ways can be plugged in if you like-for instance extracting data from the single point values instead of the TOFs.";
-generatePulsedRFGates::usage="Calculates the correct gates to exclude molecules more than a given distance from the guard plate centres. The centres are in microseconds, the keep lengths in m. Molecules are selected symmetrically around the centre position. The offset parameter is to deal with a bug in the acquisition software before September 2005. If in doubt, it should be set to zero.";
-
+(*Helper functions*)
 basis::usage="";
 edmWaveform::usage="";
 boolSign::usage="";
-extractPhysicalQuantities::usage="";
 
-cField::usage="";
-edmFactor::usage="";
-edmSign::usage="";
-rawEDM::usage="";
-rawEDMErr::usage="";
-correctedEDM::usage="";
-correctedEDMErr::usage="";
-counts::usage="";
-contrast::usage="";
-sn::usage="";
+(*Functions to extract data from a block*)
+integrateTOF::usage="Takes a block and integrates to TOF profiles for the specified detector. The Boolean parameter returnIntegral determines whether the returned values are the integrals (in V \[Mu]s) or the average values (in V).";
+getAverageBG::usage="";
+integrateTOFBackSubtract::usage="";
 
-extractSummaryData::usage="";
-correctBlock::usage="";
+(*Functions to extract physical quantities from a demodulated block*)
+cField::usage="cField[dblock_] returns the electric field applied in kV/cm.";
+edmFactor::usage="edmFactor[dblock_] returns the factor used to convert the EDM channel values into a physical EDM in e.cm units.";
+edmSign::usage="edmSign[dblock_] returns the sign of the edm given by the manual E and B states of the block.";
+rawEDMWithErr::usage="rawEDMWithErr[dblock_] returns the uncorrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
+correctedEDMWithErr::usage="correctedEDMWithErr[dblock_] returns the corrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
+contrast::usage="contrast[dblock_] returns the contrast of the interferometer as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
+edmSn::usage="edmSn[dblock_] returns the shot-noise-limited uncertainty in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
+edmSnNoLaserBackground::usage="edmSnNoLaserBackground[dblock_] returns the shot-noise-limited uncertainty (without factoring in the laser scatter background) in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
+snPPMPerChannel::usage="snPPMPerChannel[dblock_] returns the shot-noise-limited uncertainty in a typical channel in parts per million, in a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}."
+
+(*Main functions used to extract all quantities of interest for a demodulated block*)
+extractPhysicalQuantities::usage="extractPhysicalQuantities[dblock_] takes a demodulated block and extracts the uncorrected and corrected edms, the contrast, and the shot-noise sensitivities for both the edm and the channels.";
+extractSummaryData::usage="extractSummaryData[dblock_] takes a demodulated block and extracts the physical quantities, basic configuration data such as timestamps and manual states, as well as any channels of interest. Edit this function to add/remove channels of interest.";
+correctBlock::usage="Not functional currently, but will be developed at a later date to correct for systematic shifts on a block-by-block basis.";
 
 
 (* ::Input::Initialization:: *)
@@ -69,11 +65,7 @@ bohrMagneton=9.274*10^-24;
 hbar=1.05457*10^-34;
 saturatedEffectiveField=26*10^9;
 plateSpacing=1.2;
-curveHalfWidthCurrent= 0.647  (*1260 us 0.49265*);(*long machine 0.5362*)(*Short Machine 0.665*) (*should be half the ideal DB step*);
-
-kMachineLength=1.3;
-kRF1Ratio=1.103*2.31;
-kRF2Ratio=1.103;
+pmtCalibration = 510;
 
 
 (* ::Input::Initialization:: *)
@@ -139,190 +131,81 @@ edmSign[dblock_]:= boolSign[dblock@Config@Settings["eState"]] boolSign[dblock@Co
 
 
 (* ::Input::Initialization:: *)
-rawEDM[dblock_,gated_]:=If[gated,
-(edmFactor[dblock] getGatedChannel["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM,
-Transpose[getTOFChannelTimes["EDMDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+rawEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMDB","asymmetry",dblock]
+
+
+(* ::Input::Initialization:: *)
+correctedEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB","asymmetry",dblock]
+
+
+(* ::Input::Initialization:: *)
+counts[dblock_,detector_]:=getTOFChannelValues[{"SIG"},detector,dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*)
+
+
+(* ::Input::Initialization:: *)
+asymmetrySnWithLaserBackground[sTop_,sBot_,sTopbg_,sBotbg_]:=(4sTop sBot^2+4sBot sTop^2+4sBotbg sTop^2+4 sTopbg sBot^2)/(sTop+sBot)^4
+
+
+(* ::Input::Initialization:: *)
+asymmetrySnNoLaserBackground[sTop_,sBot_]:=(4sTop sBot^2+4sBot sTop^2)/(sTop+sBot)^4
+
+
+(* ::Input::Initialization:: *)
+edmSn[dblock_]:=Module[{topCounts,bottomCounts,topLaserScatter,bottomLaserScatter,dbChannel},
+topCounts=getTOFChannelValues[{"SIG"},"topProbeNoBackground",dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*);
+bottomCounts=getTOFChannelValues[{"SIG"},"bottomProbeScaled",dblock]*pmtCalibration*10;
+topLaserScatter=getPointChannelValue[{"SIG"},"TopDetectorBackground",dblock]*pmtCalibration*10;
+bottomLaserScatter=getPointChannelValue[{"SIG"},"BottomDetectorBackground",dblock]*pmtCalibration*10;
+dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
+Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySnWithLaserBackground[topCounts,bottomCounts,topLaserScatter,bottomLaserScatter]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
 ]
 
 
 (* ::Input::Initialization:: *)
-rawEDMErr[dblock_,gated_]:=If[gated,
-edmFactor[dblock]getGatedError["EDMDB","asymmetry",dblock],
-edmFactor[dblock] getTOFChannelErrors["EDMDB","asymmetry",dblock]
+edmSnNoLaserBackground[dblock_]:=Module[{topCounts,bottomCounts,dbChannel},
+topCounts=getTOFChannelValues[{"SIG"},"topProbeNoBackground",dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*);
+bottomCounts=getTOFChannelValues[{"SIG"},"bottomProbeScaled",dblock]*pmtCalibration*10;
+dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
+Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySn[topCounts,bottomCounts]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
 ]
 
 
 (* ::Input::Initialization:: *)
-correctedEDM[dblock_,gated_]:=If[gated,
-edmFactor[dblock] getGatedChannel["EDMCORRDB","asymmetry",dblock]+edmSign[dblock]SEDM3`Blind`blindEDM,
-Transpose[getTOFChannelTimes["EDMCORRDB","asymmetry",dblock],(edmFactor[dblock] getTOFChannelData["EDMCORRDB","asymmetry",dblock])+edmSign[dblock]SEDM3`Blind`blindEDM]
+snPPMPerChannel[dblock_]:=Module[{topCounts,bottomCounts,topLaserScatter,bottomLaserScatter},
+topCounts=getTOFChannelValues[{"SIG"},"topProbeNoBackground",dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*);
+bottomCounts=getTOFChannelValues[{"SIG"},"bottomProbeScaled",dblock]*pmtCalibration*10;
+topLaserScatter=getPointChannelValue[{"SIG"},"TopDetectorBackground",dblock]*pmtCalibration*10;
+bottomLaserScatter=getPointChannelValue[{"SIG"},"BottomDetectorBackground",dblock]*pmtCalibration*10;
+
+Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],10^6 Sqrt[asymmetrySnWithLaserBackground[topCounts,bottomCounts,topLaserScatter,bottomLaserScatter]/dblock@Config@Settings["numberOfPoints"]]}]
 ]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMErr[dblock_,gated_]:=If[gated,
-edmFactor[dblock] getGatedError["EDMCORRDB","asymmetry",dblock],
-edmFactor[dblock] getTOFChannelErrors["EDMCORRDB","asymmetry",dblock]
-]
-
-
-(* ::Input::Initialization:: *)
-counts[dblock_,detector_,gated_]:=If[gated,
-(getGatedChannel[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector],
-(getTOFChannelData[{"SIG"},detector,dblock] dblock@Config@Settings["numberOfPoints"])/dblock@DetectorCalibrations[detector]
-]
-
-
-(* ::Input::Initialization:: *)
-contrast[dblock_,gated_]:= Module[{dbStep,magCal,interferometerLength,phaseStep},
-
+contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep},
 dbStep=dblock@Config@GetModulationByName["DB"]@Step;
 magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
 phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 
-getChannel[dblock,"asymmetry",gated]/phaseStep;
+{#[[1]],#[[2]]/(2phaseStep),#[[3]]/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 ]
 
 
 (* ::Input::Initialization:: *)
-sn[counts_]:=Abs[1/Sqrt[counts]];
+extractPhysicalQuantities[dblock_]:=
+{"rawEDMWithErr"->rawEDMWithErr[dblock],
+"signedEDMWithErr"->edmSign[dblock] rawEDMWithErr[dblock],
+"correctedEDMWithErr"->correctedEDMWithErr[dblock],
+"signedCorrectedEDMWithErr"->edmSign[dblock] correctedEDMWithErr[dblock],
+"contrast"->contrast[dblock],
+"edmSn"->edmSn[dblock],
+"edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
+"snPPMPerChannel"->snPPMPerChannel[dblock]}
 
 
 (* ::Input::Initialization:: *)
-extractPhysicalQuantities[dblock_,gated_]:=
-{"rawEDM"->rawEDM[dblock,gated],
-"rawEDMErr"->rawEDMErr[dblock,gated],
-"signedEDM"->edmSign[dblock] rawEDM[dblock,gated],
-"correctedEDM"->correctedEDM[dblock,gated],
-"correctedEDMErr"->correctedEDMErr[dblock,gated],
-"signedCorrectedEDM"->edmSign[dblock] correctedEDM[dblock,gated],
-"pmtCountsTop"->counts[dblock,"topProbeNoBackground",gated],
-"pmtCountsBottom"->counts[dblock,"bottomProbeScaled",gated],
-"pmtLaserBackgroundTop"->counts[dblock,"TopDetectorBackground",gated],
-"pmtLaserBackgroundBottom"->counts[dblock,"BottomDetectorBackground",gated],
-"contrast"->contrast[dblock,gated],
-"polarisation"->polarisationFactor[Abs[cField[dblock]]/1000]}
-
-
-(* ::Input::Initialization:: *)
-(*extractNoiseData[dblock_]:=Module[{normShotNoiseV\[Mu]sPerShot,normCal,topCal,highFrequencyNormOverShotNoise,normFourier,normShotNoisePPMPerChannel,topShotNoiseV\[Mu]sPerShot,topShotNoisePPMPerChannel},
-
-normCal=1/(If[#==0.08928571428571429`,1/(1.9 8.5),#]&[dblock@DetectorCalibrations["norm"]]);
-topCal=1/(If[#==0.14492753623188406`,1.97/6.28,#]&[dblock@DetectorCalibrations["top"]]);
-
-normFourier=Take[#,Round[Length[#]/2]]&[dblock@NormFourier@FFT];
-
-normShotNoiseV\[Mu]sPerShot=\[Sqrt](1/normCal(getChannel[{"SIG"},"norm",dblock]+(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@Background)*(dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateHigh-dblock@DemodulationConfig@GatedDetectorExtractSpecs["norm"]@GateLow)));
-highFrequencyNormOverShotNoise=Mean[Drop[normFourier,Round[Length[normFourier]/4]]]/normShotNoiseV\[Mu]sPerShot;
-normShotNoisePPMPerChannel=10^6normShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"norm",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
-topShotNoiseV\[Mu]sPerShot=Sqrt[ getChannel[{"SIG"},"top",dblock]/topCal];
-topShotNoisePPMPerChannel=10^6topShotNoiseV\[Mu]sPerShot/(getChannel[{"SIG"},"top",dblock]\[Sqrt]dblock@Config@Settings["numberOfPoints"]);
-
-{"normFourier"\[Rule]normFourier,
-"normShotNoiseV\[Mu]sPerShot"\[Rule]normShotNoiseV\[Mu]sPerShot,
-"hfNormOverShotNoise"\[Rule]highFrequencyNormOverShotNoise,
-"normShotNoisePPMPerChannel"\[Rule]normShotNoisePPMPerChannel,
-"topShotNoisePPMPerChannel"\[Rule]topShotNoisePPMPerChannel
-}
-]*)
-
-
-(* ::Input::Initialization:: *)
-(*getChannelNoisePPM[dblock_,switches_,detector_]:=10^6getError[switches,detector,dblock]/getChannel[{"SIG"},detector,dblock]*)
-
-
-(* ::Input::Initialization:: *)
-analyseBlock[dblock_,gated_]:=Module[{physicalQuantities},
-physicalQuantities=extractPhysicalQuantities[dblock,gated];
-(*noiseDat=extractNoiseData[dblock];*)
-{"analysisResults"->physicalQuantities}
-];
-
-
-(* ::Input::Initialization:: *)
-extractSummaryData[dbl_,abl_,gated_]:={
-"EMag"->getChannel[{"E"},"magnetometer",dbl,gated],
-"SIGMag"->getChannel[{"SIG"},"magnetometer",dbl,gated],
-"BMag"->getChannel[{"B"},"magnetometer",dbl,gated],
-"EMagErr"->getError[{"E"},"magnetometer",dbl,gated],
-"SIGMagErr"->getError[{"SIG"},"magnetometer",dbl,gated],
-"BMagErr"->getError[{"B"},"magnetometer",dbl,gated],
-"BDBMag"->getChannel[{"B","DB"},"magnetometer",dbl,gated],
-"BDBMagErr"->getError[{"B","DB"},"magnetometer",dbl,gated],
-
-"PhaseLockFrequency"->getChannel[{"SIG"},"PhaseLockFrequency",dbl,gated],
-
-"ENorthCurrent"->getChannel[{"E"},"NorthCurrent",dbl,gated],
-"ESouthCurrent"->getChannel[{"E"},"SouthCurrent",dbl,gated],
-"ENorthCurrentErr"->getError[{"E"},"NorthCurrent",dbl,gated],
-"ESouthCurrentErr"->getError[{"E"},"SouthCurrent",dbl,gated],
-
-"cSIGtop"->getChannel[{"SIG"},"topProbeNoBackground",dbl,gated],
-"cSIGtopErr"->getError[{"SIG"},"topProbeBoBackground",dbl,gated],
-"cSIGbottom"->getChannel[{"SIG"},"bottomProbeScaled",dbl,gated],
-"cSIGbottomErr"->getError[{"SIG"},"bottomProbeScaled",dbl,gated],
-"cLaserBackgroundtop"->getChannel[{"SIG"},"TopDetectorBackground",dbl,gated],
-"cLaserBackgroundtopErr"->getError[{"SIG"},"TopDetectorBackground",dbl,gated],
-"cLaserBackgroundbottom"->getChannel[{"SIG"},"BottomDetectorBackground",dbl,gated],
-"cLaserBackgroundbottomErr"->getError[{"SIG"},"BottomDetectorBackground",dbl,gated],
-
-"cRF1F"->(getChannel[{"RF1F"},"asymmetry",dbl,gated]),
-"cRF2F"->(getChannel[{"RF2F"},"asymmetry",dbl,gated]),
-"cRF1A"->(getChannel[{"RF1A"},"asymmetry",dbl,gated]),
-"cRF2A"->(getChannel[{"RF2A"},"asymmetry",dbl,gated]),
-"cRF1FErr"->(getError[{"RF1F"},"asymmetry",dbl,gated]),
-"cRF2FErr"->(getError[{"RF2F"},"asymmetry",dbl,gated]),
-"cRF1AErr"->(getError[{"RF1A"},"asymmetry",dbl,gated]),
-"cRF2AErr"->(getError[{"RF2A"},"asymmetry",dbl,gated]),
-
-"cRF1FDB"->(getChannel[{"RF1F","DB"},"asymmetry",dbl,gated]),
-"cRF2FDB"->(getChannel[{"RF2F","DB"},"asymmetry",dbl,gated]),
-"cRF1FE"->(getChannel[{"RF1F","E"},"asymmetry",dbl,gated]),
-"cRF2FE"->(getChannel[{"RF2F","E"},"asymmetry",dbl,gated]),
-"cRF1AE"->(getChannel[{"RF1A","E"},"asymmetry",dbl,gated]),
-"cRF2AE"->(getChannel[{"RF2A","E"},"asymmetry",dbl,gated]),
-"cRF1AB"->(getChannel[{"RF1A","B"},"asymmetry",dbl,gated]),
-"cRF2AB"->(getChannel[{"RF2A","B"},"asymmetry",dbl,gated]),
-"cRF1FEDB"->(getChannel[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
-"cRF2FEDB"->(getChannel[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
-"cRF1FDBErr"->(getError[{"RF1F","DB"},"asymmetry",dbl,gated]),
-"cRF2FDBErr"->(getError[{"RF2F","DB"},"asymmetry",dbl,gated]),
-"cRF1FEErr"->(getError[{"RF1F","E"},"asymmetry",dbl,gated]),
-"cRF2FEErr"->(getError[{"RF2F","E"},"asymmetry",dbl,gated]),
-"cRF1AEErr"->(getError[{"RF1A","E"},"asymmetry",dbl,gated]),
-"cRF2AEErr"->(getError[{"RF2A","E"},"asymmetry",dbl,gated]),
-"cRF1ABErr"->(getError[{"RF1A","B"},"asymmetry",dbl,gated]),
-"cRF2ABErr"->(getError[{"RF2A","B"},"asymmetry",dbl,gated]),
-"cRF1FEDBErr"->(getError[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
-"cRF2FEDBErr"->(getError[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
-
-"cEB"->getChannel[{"B","E"},"asymmetry",dbl,gated],
-"cEBErr"->getError[{"B","E"},"asymmetry",dbl,gated],
-"cEBDB"->getChannel[{"B","E","DB"},"asymmetry",dbl,gated],
-"cEBDBErr"->getError[{"B","E","DB"},"asymmetry",dbl,gated],
-"cDB"->getChannel[{"DB"},"asymmetry",dbl,gated],
-"cDBErr"->getError[{"DB"},"asymmetry",dbl,gated],
-"cB"->getChannel[{"B"},"asymmetry",dbl,gated],
-"cBErr"->getError[{"B"},"asymmetry",dbl,gated],
-"cEDB"->getChannel[{"E","DB"},"asymmetry",dbl,gated],
-"cEDBErr"->getError[{"E","DB"},"asymmetry",dbl,gated],
-"cBDB"->getChannel[{"B","DB"},"asymmetry",dbl,gated],
-"cBDBErr"->getError[{"B","DB"},"asymmetry",dbl,gated],
-
-"signedEDM"->("signedEDM"/.("analysisResults"/.abl)),
-"rawEDMErr"->("rawEDMErr"/.("analysisResults"/.abl)),
-"signedCorrectedEDM"->("signedCorrectedEDM"/.("analysisResults"/.abl)),
-"correctedEDMErr"->("correctedEDMErr"/.("analysisResults"/.abl)),
-"edmFactor"->edmFactor[dbl],
-
-"Pi"->getChannel[{"PI"},"asymmetry",dbl,gated],
-"LF1"->getChannel[{"LF1"},"asymmetry",dbl,gated],
-"LF1Err"->getError[{"LF1"},"asymmetry",dbl,gated],
-"LF1B"->getChannel[{"LF1","B"},"asymmetry",dbl,gated],
-"LF1BErr"->getError[{"LF1","B"},"asymmetry",dbl,gated],
-
-"phaseScramblerV"->dbl@Config@Settings["phaseScramblerV"],
+extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],{
 "bState"->dbl@Config@Settings["bState"],
 "cluster"->dbl@Config@Settings["cluster"],
 "clusterIndex"->dbl@Config@Settings["clusterIndex"],
@@ -332,41 +215,137 @@ extractSummaryData[dbl_,abl_,gated_]:={
 "ePlus"->dbl@Config@Settings["ePlus"],
 "eMinus"->dbl@Config@Settings["eMinus"],
 "timeStamp"->dbl@TimeStamp@Ticks,
-"hour"->dbl@TimeStamp@Hour,
+"hour"->dbl@TimeStamp@Hour
+}
+]
 
-"rf1Step"->dbl@Config@GetModulationByName["RF1F"]@PhysicalStep,
-"rf2Step"->dbl@Config@GetModulationByName["RF2F"]@PhysicalStep,
-"rf1fCentre"->dbl@Config@GetModulationByName["RF1F"]@PhysicalCentre,
-"rf2fCentre"->dbl@Config@GetModulationByName["RF2F"]@PhysicalCentre,
-"rf1Power"->dbl@Config@GetModulationByName["RF1A"]@PhysicalCentre,
-"rf2Power"->dbl@Config@GetModulationByName["RF2A"]@PhysicalCentre,
-"BiasC"->dbl@Config@Settings["bBiasV"],
-"BStep"->dbl@Config@GetModulationByName["B"]@PhysicalStep,
+
+(* ::Input::Initialization:: *)
+(*extractSummaryData[dbl_,abl_,gated_]:=Join["analysisResults"/.abl,{
+"EMag"\[Rule]getChannel[{"E"},"magnetometer",dbl,gated],
+"SIGMag"\[Rule]getChannel[{"SIG"},"magnetometer",dbl,gated],
+"BMag"\[Rule]getChannel[{"B"},"magnetometer",dbl,gated],
+"EMagErr"\[Rule]getError[{"E"},"magnetometer",dbl,gated],
+"SIGMagErr"\[Rule]getError[{"SIG"},"magnetometer",dbl,gated],
+"BMagErr"\[Rule]getError[{"B"},"magnetometer",dbl,gated],
+"BDBMag"\[Rule]getChannel[{"B","DB"},"magnetometer",dbl,gated],
+"BDBMagErr"\[Rule]getError[{"B","DB"},"magnetometer",dbl,gated],
+
+"PhaseLockFrequency"\[Rule]getChannel[{"SIG"},"PhaseLockFrequency",dbl,gated],
+
+"ENorthCurrent"\[Rule]getChannel[{"E"},"NorthCurrent",dbl,gated],
+"ESouthCurrent"\[Rule]getChannel[{"E"},"SouthCurrent",dbl,gated],
+"ENorthCurrentErr"\[Rule]getError[{"E"},"NorthCurrent",dbl,gated],
+"ESouthCurrentErr"\[Rule]getError[{"E"},"SouthCurrent",dbl,gated],
+
+"cSIGtop"->getChannel[{"SIG"},"topProbeNoBackground",dbl,gated],
+"cSIGtopErr"->getError[{"SIG"},"topProbeNoBackground",dbl,gated],
+"cSIGbottom"->getChannel[{"SIG"},"bottomProbeScaled",dbl,gated],
+"cSIGbottomErr"->getError[{"SIG"},"bottomProbeScaled",dbl,gated],
+"cLaserBackgroundtop"->getChannel[{"SIG"},"TopDetectorBackground",dbl,gated],
+"cLaserBackgroundtopErr"->getError[{"SIG"},"TopDetectorBackground",dbl,gated],
+"cLaserBackgroundbottom"->getChannel[{"SIG"},"BottomDetectorBackground",dbl,gated],
+"cLaserBackgroundbottomErr"->getError[{"SIG"},"BottomDetectorBackground",dbl,gated],
+
+"cRF1F"\[Rule](getChannel[{"RF1F"},"asymmetry",dbl,gated]),
+"cRF2F"\[Rule](getChannel[{"RF2F"},"asymmetry",dbl,gated]),
+"cRF1A"\[Rule](getChannel[{"RF1A"},"asymmetry",dbl,gated]),
+"cRF2A"\[Rule](getChannel[{"RF2A"},"asymmetry",dbl,gated]),
+"cRF1FErr"\[Rule](getError[{"RF1F"},"asymmetry",dbl,gated]),
+"cRF2FErr"\[Rule](getError[{"RF2F"},"asymmetry",dbl,gated]),
+"cRF1AErr"\[Rule](getError[{"RF1A"},"asymmetry",dbl,gated]),
+"cRF2AErr"\[Rule](getError[{"RF2A"},"asymmetry",dbl,gated]),
+
+"cRF1FDB"\[Rule](getChannel[{"RF1F","DB"},"asymmetry",dbl,gated]),
+"cRF2FDB"\[Rule](getChannel[{"RF2F","DB"},"asymmetry",dbl,gated]),
+"cRF1FE"\[Rule](getChannel[{"RF1F","E"},"asymmetry",dbl,gated]),
+"cRF2FE"\[Rule](getChannel[{"RF2F","E"},"asymmetry",dbl,gated]),
+"cRF1AE"\[Rule](getChannel[{"RF1A","E"},"asymmetry",dbl,gated]),
+"cRF2AE"\[Rule](getChannel[{"RF2A","E"},"asymmetry",dbl,gated]),
+"cRF1AB"\[Rule](getChannel[{"RF1A","B"},"asymmetry",dbl,gated]),
+"cRF2AB"\[Rule](getChannel[{"RF2A","B"},"asymmetry",dbl,gated]),
+"cRF1FEDB"\[Rule](getChannel[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
+"cRF2FEDB"\[Rule](getChannel[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
+"cRF1FDBErr"\[Rule](getError[{"RF1F","DB"},"asymmetry",dbl,gated]),
+"cRF2FDBErr"\[Rule](getError[{"RF2F","DB"},"asymmetry",dbl,gated]),
+"cRF1FEErr"\[Rule](getError[{"RF1F","E"},"asymmetry",dbl,gated]),
+"cRF2FEErr"\[Rule](getError[{"RF2F","E"},"asymmetry",dbl,gated]),
+"cRF1AEErr"\[Rule](getError[{"RF1A","E"},"asymmetry",dbl,gated]),
+"cRF2AEErr"\[Rule](getError[{"RF2A","E"},"asymmetry",dbl,gated]),
+"cRF1ABErr"\[Rule](getError[{"RF1A","B"},"asymmetry",dbl,gated]),
+"cRF2ABErr"\[Rule](getError[{"RF2A","B"},"asymmetry",dbl,gated]),
+"cRF1FEDBErr"\[Rule](getError[{"RF1F","E","DB"},"asymmetry",dbl,gated]),
+"cRF2FEDBErr"\[Rule](getError[{"RF2F","E","DB"},"asymmetry",dbl,gated]),
+
+"cE"\[Rule]getChannel[{"E"},"asymmetry",dbl,gated],
+"cEErr"\[Rule]getError[{"E"},"asymmetry",dbl,gated],
+"cEB"\[Rule]getChannel[{"B","E"},"asymmetry",dbl,gated],
+"cEBErr"\[Rule]getError[{"B","E"},"asymmetry",dbl,gated],
+"cEBDB"\[Rule]getChannel[{"B","E","DB"},"asymmetry",dbl,gated],
+"cEBDBErr"\[Rule]getError[{"B","E","DB"},"asymmetry",dbl,gated],
+"cDB"\[Rule]getChannel[{"DB"},"asymmetry",dbl,gated],
+"cDBErr"\[Rule]getError[{"DB"},"asymmetry",dbl,gated],
+"cB"\[Rule]getChannel[{"B"},"asymmetry",dbl,gated],
+"cBErr"\[Rule]getError[{"B"},"asymmetry",dbl,gated],
+"cEDB"\[Rule]getChannel[{"E","DB"},"asymmetry",dbl,gated],
+"cEDBErr"\[Rule]getError[{"E","DB"},"asymmetry",dbl,gated],
+"cBDB"\[Rule]getChannel[{"B","DB"},"asymmetry",dbl,gated],
+"cBDBErr"\[Rule]getError[{"B","DB"},"asymmetry",dbl,gated],
+
+"edmFactor"\[Rule]edmFactor[dbl],
+
+"Pi"\[Rule]getChannel[{"PI"},"asymmetry",dbl,gated],
+(*"LF1"\[Rule]getChannel[{"LF1"},"asymmetry",dbl,gated],
+"LF1Err"\[Rule]getError[{"LF1"},"asymmetry",dbl,gated],
+"LF1B"\[Rule]getChannel[{"LF1","B"},"asymmetry",dbl,gated],
+"LF1BErr"\[Rule]getError[{"LF1","B"},"asymmetry",dbl,gated],*)
+
+"phaseScramblerV"\[Rule]dbl@Config@Settings["phaseScramblerV"],
+"bState"\[Rule]dbl@Config@Settings["bState"],
+"cluster"\[Rule]dbl@Config@Settings["cluster"],
+"clusterIndex"\[Rule]dbl@Config@Settings["clusterIndex"],
+"eState"\[Rule]dbl@Config@Settings["eState"],
+"rfState"\[Rule]dbl@Config@Settings["rfState"],
+"mwState"\[Rule]dbl@Config@Settings["mwState"],
+"ePlus"\[Rule]dbl@Config@Settings["ePlus"],
+"eMinus"\[Rule]dbl@Config@Settings["eMinus"],
+"timeStamp"\[Rule]dbl@TimeStamp@Ticks,
+"hour"\[Rule]dbl@TimeStamp@Hour,
+
+"rf1Step"\[Rule]dbl@Config@GetModulationByName["RF1F"]@PhysicalStep,
+"rf2Step"\[Rule]dbl@Config@GetModulationByName["RF2F"]@PhysicalStep,
+"rf1fCentre"\[Rule]dbl@Config@GetModulationByName["RF1F"]@PhysicalCentre,
+"rf2fCentre"\[Rule]dbl@Config@GetModulationByName["RF2F"]@PhysicalCentre,
+"rf1Power"\[Rule]dbl@Config@GetModulationByName["RF1A"]@PhysicalCentre,
+"rf2Power"\[Rule]dbl@Config@GetModulationByName["RF2A"]@PhysicalCentre,
+"BiasC"\[Rule]dbl@Config@Settings["bBiasV"],
+"BStep"\[Rule]dbl@Config@GetModulationByName["B"]@PhysicalStep,
 (*"LF1PhysicalCentre"\[Rule]If[#\[Equal]0,1547,#]&[(dbl@Config@GetModulationByName["LF1"]@PhysicalCentre)],*)
 
-"BDB"->dbl@getChannel["BDB","asymmetry",gated],
-"BDBErr"->dbl@getError["BDB","asymmetry",gated],
-"RF1FDB"->dbl@getChannel["RF1FDB","asymmetry",gated],
-"RF1FDBErr"->dbl@getError["RF1FDB","asymmetry",gated],
-"RF2FDB"->dbl@getChannel["RF2FDB","asymmetry",gated],
-"RF2FDBErr"->dbl@getError["RF2FDB","asymmetry",gated],
-"RF1FDBDB"->dbl@getChannel["RF1FDBDB","asymmetry",gated],
-"RF1FDBDBErr"->dbl@getError["RF1FDBDB","asymmetry",gated],
-"RF2FDBDB"->dbl@getChannel["RF2FDBDB","asymmetry",gated],
-"RF2FDBDBErr"->dbl@getError["RF2FDBDB","asymmetry",gated],
-"ERF1FDB"->dbl@getChannel["ERF1FDB","asymmetry",gated],
-"ERF1FDBErr"->dbl@getError["ERF1FDB","asymmetry",gated],
-"ERF2FDB"->dbl@getChannel["ERF2FDB","asymmetry",gated],
-"ERF2FDBErr"->dbl@getChannel["ERF2FDB","asymmetry",gated],
-"ERF1FDBDB"->dbl@getChannel["ERF1FDBDB","asymmetry",gated],
-"ERF1FDBDBErr"->dbl@getChannel["ERF1FDBDB","asymmetry",gated],
-"ERF2FDBDB"->dbl@getChannel["ERF2FDBDB","asymmetry",gated],
-"ERF2FDBDBErr"->dbl@getError["ERF2FDBDB","asymmetry",gated],
-"BRF1FCORRDB"->dbl@getChannel["BRF1FCORRDB","asymmetry",gated],
-"BRF1FCORRDBErr"->dbl@getError["BRF1FCORRDB","asymmetry",gated],
-"BRF2FCORRDB"->dbl@getChannel["BRF2FCORRDB","asymmetry",gated],
-"BRF2FCORRDBErr"->dbl@getError["BRF2FCORRDB","asymmetry",gated]
+"BDB"\[Rule]getChannel["BDB","asymmetry",dbl,gated],
+"BDBErr"\[Rule]getError["BDB","asymmetry",dbl,gated],
+"RF1FDB"\[Rule]getChannel["RF1FDB","asymmetry",dbl,gated],
+"RF1FDBErr"\[Rule]getError["RF1FDB","asymmetry",dbl,gated],
+"RF2FDB"\[Rule]getChannel["RF2FDB","asymmetry",dbl,gated],
+"RF2FDBErr"\[Rule]getError["RF2FDB","asymmetry",dbl,gated],
+"RF1FDBDB"\[Rule]getChannel["RF1FDBDB","asymmetry",dbl,gated],
+"RF1FDBDBErr"\[Rule]getError["RF1FDBDB","asymmetry",dbl,gated],
+"RF2FDBDB"\[Rule]getChannel["RF2FDBDB","asymmetry",dbl,gated],
+"RF2FDBDBErr"\[Rule]getError["RF2FDBDB","asymmetry",dbl,gated],
+"ERF1FDB"\[Rule]getChannel["ERF1FDB","asymmetry",dbl,gated],
+"ERF1FDBErr"\[Rule]getError["ERF1FDB","asymmetry",dbl,gated],
+"ERF2FDB"\[Rule]getChannel["ERF2FDB","asymmetry",dbl,gated],
+"ERF2FDBErr"\[Rule]getChannel["ERF2FDB","asymmetry",dbl,gated],
+"ERF1FDBDB"\[Rule]getChannel["ERF1FDBDB","asymmetry",dbl,gated],
+"ERF1FDBDBErr"\[Rule]getChannel["ERF1FDBDB","asymmetry",dbl,gated],
+"ERF2FDBDB"\[Rule]getChannel["ERF2FDBDB","asymmetry",dbl,gated],
+"ERF2FDBDBErr"\[Rule]getError["ERF2FDBDB","asymmetry",dbl,gated],
+"BRF1FCORRDB"\[Rule]getChannel["BRF1FCORRDB","asymmetry",dbl,gated],
+"BRF1FCORRDBErr"\[Rule]getError["BRF1FCORRDB","asymmetry",dbl,gated],
+"BRF2FCORRDB"\[Rule]getChannel["BRF2FCORRDB","asymmetry",dbl,gated],
+"BRF2FCORRDBErr"\[Rule]getError["BRF2FCORRDB","asymmetry",dbl,gated]
 }
+]*)
 
 
 (* ::Input::Initialization:: *)
@@ -382,43 +361,6 @@ fullyCorrectedBlockEDM=("signedCorrectedEDMNLNormed"/.summaryData)-(wiggleCorr+w
 
 Join[summaryData,{"wiggleCorr"->wiggleCorr,"wiggleCorrDB"->wiggleCorrDB,"bCorr"->bCorr,"rf1PhaseCorr"->rf1PhaseCorr,"rf2PhaseCorr"->rf2PhaseCorr,"offsetCorrection"->offsetCorrection,"fullyCorrectedBlockEDM"->fullyCorrectedBlockEDM}]
 ]
-
-
-(* ::Input::Initialization:: *)
-generatePulsedRFGates[rf1Centre_,rf2Centre_,rf1KeepLength_,rf2KeepLength_,offset_]:=Module[{rf1Gates,rf2Gates},
-rf1Gates=tCut[rf1Centre,kMachineLength/kRF1Ratio,kMachineLength,#]&/@({-1,1}rf1KeepLength);
-rf2Gates=tCut[rf2Centre,kMachineLength/kRF2Ratio,kMachineLength,#]&/@({-1,1}rf2KeepLength);
-Round[{Max[#[[1]]]-offset,Min[#[[2]]]-offset}&[Transpose[{rf1Gates,rf2Gates}]]]
-]
-
-generatePulsedRFGates[block_,rf1KeepLength_,rf2KeepLength_,offset_]:=
-Module[{config},
-config=extractConfig[block];
-generatePulsedRFGates["rf1CentreTime"/.config,"rf2CentreTime"/.config,rf1KeepLength,rf2KeepLength,offset]
-]
-
-
-(* ::Input::Initialization:: *)
-tCut[tpulse_,rfLength_,beamLength_,keepLength_]:=1/(rfLength/beamLength-keepLength/beamLength) tpulse;
-
-
-(* ::Input::Initialization:: *)
-getPulseTiming[block_,detector_]:=Module[{model,tofData,centreGuess,widthGuess,fit},
-tofData=Transpose[{block[GetAverageTOF[detector][Times]],block[GetAverageTOF[detector][Data]]}];
-model=a E^(-(1/2) ((x-b)/ c)^2);
-centreGuess=Mean[First/@tofData];
-widthGuess=First[Last[tofData]-First[tofData]]/50;
-fit=Check[
-FindFit[tofData,model,{a,{b,centreGuess},{c,widthGuess},d},x],
-(* Do something roughly sensible if the fit doesn't converge *)
-{b->centreGuess,c->1/2 (First[Last[tofData]]-First[First[tofData]])}
-];
-{"centre"->b,"fwhm"->2Sqrt[2Log[2]]Abs[c]}/.fit
-]
-
-
-(* ::Input::Initialization:: *)
-getGateTiming[block_,detector_,w_]:=Round[{"centre"-w ("fwhm")/2,"centre"+w ("fwhm")/2}]/.getPulseTiming[block,detector]
 
 
 (* ::Input::Initialization:: *)

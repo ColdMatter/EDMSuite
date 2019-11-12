@@ -18,7 +18,6 @@ namespace Analysis.EDM
     public class GatedDemodulationConfig
     {
         public string Name = "";
-        private readonly List<string> pointDetectorList = new List<string>();
         private readonly List<string> gatedDetectorList = new List<string>();
         private readonly List<Gate> gateList = new List<Gate>();
 
@@ -53,19 +52,6 @@ namespace Analysis.EDM
             get
             {
                 return gatedDetectorList;
-            }
-        }
-
-        public void AddPointDetector(string pdName)
-        {
-            if (!pointDetectorList.Contains(pdName)) pointDetectorList.Add(pdName);
-        }
-
-        public List<string> PointDetectors
-        {
-            get
-            {
-                return pointDetectorList;
             }
         }
 

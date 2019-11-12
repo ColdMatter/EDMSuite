@@ -20,10 +20,11 @@
 
 
 (* ::Input::Initialization:: *)
-BeginPackage["SEDM3`Graphics`",{"SEDM3`Database`","SEDM3`Analysis`","ErrorBarPlots`","PlotLegends`"}];
+BeginPackage["SEDM4`Graphics`",{"SEDM4`Database`","SEDM4`Analysis`"}];
 
 
 (* ::Input::Initialization:: *)
+plotTOFWithError::usage="plotTOFWithError[data_, plotTitle_] takes TOF data in the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(data\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...} and plots them with a title."
 plotDataWithErrorBar::usage="Does just that. It takes a list of two-element {mean,error} lists and a title and plots them.";
 plotChannel::usage="";
 plotClusterDiagnostics::usage=
@@ -51,6 +52,8 @@ Begin["`Private`"];
 
 
 (* ::Input::Initialization:: *)
+plotTOFWithError[data_,plotTitle_]:=ListPlot[{#[[1]],Around[#[[2]],#[[3]]]}&/@data,PlotLabel->plotTitle]
+
 plotDataWithErrorBar[data_,plotTitle_]:=ErrorListPlot[data,PlotRange->All,PlotLabel->plotTitle];
 
 plotChannel[blocks_,detector_,channel_]:=Module[{pts},

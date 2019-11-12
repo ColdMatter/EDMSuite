@@ -24,7 +24,7 @@ BeginPackage["SEDM4`Polarisation`"];
 
 
 (* ::Input::Initialization:: *)
-polarisationFactor::usage="polarisationFactor[Efield] gives the polarisation factor for a field EField (kV/cm).";
+polarisationFactor::usage="polarisationFactor[Efield_] gives the polarisation factor for a field EField (kV/cm).";
 
 
 (* ::Input::Initialization:: *)

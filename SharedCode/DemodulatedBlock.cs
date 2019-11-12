@@ -4,40 +4,68 @@ using System.Text;
 using System.Xml.Serialization;
 
 using EDMConfig;
+using Data;
 
 namespace Analysis.EDM
 {
-    public enum DemodulatedBlockType { TOF, GATED }
     [Serializable]
-    [XmlInclude(typeof(GatedDemodulatedBlock))]
-    [XmlInclude(typeof(TOFDemodulatedBlock))]
     public class DemodulatedBlock
     {
-        public DateTime TimeStamp;
-        public BlockConfig Config;
-        public DemodulatedBlockType DataType;
-        public List<string> PointDetectors;
+        public DateTime TimeStamp { get; }
+        public BlockConfig Config { get; }
+        public DemodulationConfig DemodulationConfig { get; }
 
-        private readonly Dictionary<string, ChannelSet> ChannelSetDictionary = new Dictionary<string, ChannelSet>();
+        private readonly Dictionary<string, ChannelSet<TOFWithError>> TOFChannelSetDictionary = new Dictionary<string, ChannelSet<TOFWithError>>();
+        private readonly Dictionary<string, ChannelSet<PointWithError>> PointChannelSetDictionary = new Dictionary<string, ChannelSet<PointWithError>>();
         private readonly Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
 
-        public DemodulatedBlock(DateTime timeStamp, BlockConfig config, DemodulatedBlockType dataType, List<string> pointDetectors)
+        public DemodulatedBlock(DateTime timeStamp, BlockConfig config, DemodulationConfig demodulationConfig)
         {
             this.TimeStamp = timeStamp;
             this.Config = config;
-            this.DataType = dataType;
-            this.PointDetectors = pointDetectors;
+            this.DemodulationConfig = demodulationConfig;
         }
 
-        public void AddDetector(string detector, double calibration, ChannelSet channelSet)
+        public PointWithError GetPointChannel(string[] switches, string detector)
         {
-            ChannelSetDictionary.Add(detector, channelSet);
+            return GetPointChannelSet(detector).GetChannel(switches);
+        }
+
+        public PointWithError GetPointChannel(string channel, string detector)
+        {
+            return GetPointChannelSet(detector).GetChannel(channel);
+        }
+
+        public TOFWithError GetTOFChannel(string[] switches, string detector)
+        {
+            return GetTOFChannelSet(detector).GetChannel(switches);
+        }
+
+        public TOFWithError GetTOFChannel(string channel, string detector)
+        {
+            return GetTOFChannelSet(detector).GetChannel(channel);
+        }
+
+        public void AddDetector(string detector, double calibration, ChannelSet<PointWithError> channelSet)
+        {
+            PointChannelSetDictionary.Add(detector, channelSet);
             DetectorCalibrations.Add(detector, calibration);
         }
-        
-        public ChannelSet GetChannelSet(string detector)
+
+        public void AddDetector(string detector, double calibration, ChannelSet<TOFWithError> channelSet)
         {
-            return ChannelSetDictionary[detector];
+            TOFChannelSetDictionary.Add(detector, channelSet);
+            DetectorCalibrations.Add(detector, calibration);
+        }
+
+        public ChannelSet<PointWithError> GetPointChannelSet(string detector)
+        {
+            return PointChannelSetDictionary[detector];
+        }
+
+        public ChannelSet<TOFWithError> GetTOFChannelSet(string detector)
+        {
+            return TOFChannelSetDictionary[detector];
         }
 
         public double GetCalibration(string detector)
@@ -49,9 +77,11 @@ namespace Analysis.EDM
         {
             get
             {
-                Dictionary<string, ChannelSet>.KeyCollection keys = ChannelSetDictionary.Keys;
+                Dictionary<string, ChannelSet<PointWithError>>.KeyCollection keys1 = PointChannelSetDictionary.Keys;
+                Dictionary<string, ChannelSet<TOFWithError>>.KeyCollection keys2 = TOFChannelSetDictionary.Keys;
                 List<string> keyArray = new List<string>();
-                foreach (string key in keys) keyArray.Add(key);
+                foreach (string key in keys1) keyArray.Add(key);
+                foreach (string key in keys2) keyArray.Add(key);
                 return keyArray;
             }
         }

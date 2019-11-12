@@ -21,9 +21,6 @@ namespace SirCachealot.Database
         UInt32[] GetUIDsByAnalysisTag(string tag, UInt32[] fromUIDs);
         UInt32[] GetUIDsByAnalysisTag(string tag);
 
-        UInt32[] GetUIDsByGateTag(string tag, UInt32[] fromUIDs);
-        UInt32[] GetUIDsByGateTag(string tag);
-
         UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState, UInt32[] fromUIDs);
         UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState);
 

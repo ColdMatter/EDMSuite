@@ -41,8 +41,8 @@ namespace EDMBlockHead
         private BlockConfig config;
         private XmlSerializer serializer = new XmlSerializer(typeof(BlockConfig));
         BlockSerializer blockSerializer = new BlockSerializer();
-        GatedBlockDemodulator gatedBlockDemodulator = new GatedBlockDemodulator();
-        public GatedDemodulatedBlock DBlock;
+        BlockDemodulator blockDemodulator = new BlockDemodulator();
+        public DemodulatedBlock DBlock;
         public QuickEDMAnalysis AnalysedDBlock;
         private bool haveBlock = false;
 
@@ -409,8 +409,7 @@ namespace EDMBlockHead
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
             b.AddDetectorsToBlock();
-            GatedDemodulationConfig dc = GatedDemodulationConfig.MakeLiveAnalysisGateConfig();
-            DBlock = gatedBlockDemodulator.GateThenDemodulateBlock(b, dc);
+            DBlock = blockDemodulator.QuickDemodulateBlock(b);
             AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
             liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        

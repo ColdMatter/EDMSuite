@@ -170,16 +170,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="DemodulationConfig.cs" />
     <Compile Include="GateManager.cs" />
     <Compile Include="PointWithError.cs" />
-    <Compile Include="GatedBlockDemodulator.cs" />
+    <Compile Include="OldCode\GatedBlockDemodulator.cs" />
     <Compile Include="CurrentMonitorDataLog.cs" />
     <Compile Include="DataLog.cs" />
-    <Compile Include="GatedChannel.cs" />
-    <Compile Include="PointChannel.cs" />
-    <Compile Include="GatedDemodulatedBlock.cs" />
+    <Compile Include="OldCode\GatedChannel.cs" />
+    <Compile Include="OldCode\PointChannel.cs" />
+    <Compile Include="OldCode\GatedDemodulatedBlock.cs" />
     <Compile Include="GatedDemodulationConfigSet.cs" />
-    <Compile Include="TOFDemodulatedBlock.cs" />
+    <Compile Include="OldCode\TOFWithErrorChannel.cs" />
+    <Compile Include="OldCode\TOFDemodulatedBlock.cs" />
     <Compile Include="GatedDemodulationConfig.cs" />
     <Compile Include="IQData.cs" />
     <Compile Include="JSONSerializer.cs" />
@@ -191,10 +193,9 @@
     <Compile Include="Statistics.cs" />
     <Compile Include="TCLDataLog.cs" />
     <Compile Include="TOFAccumulator.cs" />
-    <Compile Include="TOFChannel.cs" />
+    <Compile Include="OldCode\TOFChannel.cs" />
     <Compile Include="OldCode\TOFChannelAccumulator.cs" />
-    <Compile Include="TOFChannelAccumulator.cs" />
-    <Compile Include="TOFChannelSet.cs" />
+    <Compile Include="OldCode\TOFChannelSet.cs" />
     <Compile Include="OldCode\TOFChannelSetAccumulator.cs" />
     <Compile Include="OldCode\TOFChannelSetGroup.cs" />
     <Compile Include="OldCode\TOFChannelSetGroupAccumulator.cs" />
@@ -211,17 +212,17 @@
     <Compile Include="BlockConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TOFBlockDemodulator.cs" />
+    <Compile Include="OldCode\TOFBlockDemodulator.cs" />
     <Compile Include="BlockSerializer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OldCode\BlockTOFDemodulator.cs" />
-    <Compile Include="DetectorData.cs" />
-    <Compile Include="PointDetectorData.cs" />
+    <Compile Include="OldCode\DetectorData.cs" />
+    <Compile Include="OldCode\PointDetectorData.cs" />
     <Compile Include="QuickEDMAnalysis.cs" />
     <Compile Include="RunningStatistics.cs" />
     <Compile Include="OldCode\TOFAccumulator.cs" />
-    <Compile Include="Channel.cs" />
+    <Compile Include="OldCode\Channel.cs" />
     <Compile Include="ChannelSet.cs" />
     <Compile Include="TOFChannelSetAccumulator.cs" />
     <Compile Include="TOFWithError.cs" />
@@ -231,8 +232,8 @@
     <Compile Include="Decelerator.cs" />
     <Compile Include="DemodulatedBlock.cs" />
     <Compile Include="OldCode\DemodulationConfig.cs" />
-    <Compile Include="DetectorChannelValues.cs" />
-    <Compile Include="DetectorFT.cs" />
+    <Compile Include="OldCode\DetectorChannelValues.cs" />
+    <Compile Include="OldCode\DetectorFT.cs" />
     <Compile Include="Gate.cs" />
     <Compile Include="DigitalModulation.cs">
       <SubType>Code</SubType>
@@ -241,7 +242,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FieldMap.cs" />
-    <Compile Include="GatedDetectorData.cs" />
+    <Compile Include="OldCode\GatedDetectorData.cs" />
     <Compile Include="Modulation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -268,7 +269,7 @@
     <Compile Include="TOF.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TOFFitter.cs" />
+    <Compile Include="OldCode\TOFFitter.cs" />
     <Compile Include="Waveform.cs">
       <SubType>Code</SubType>
     </Compile>

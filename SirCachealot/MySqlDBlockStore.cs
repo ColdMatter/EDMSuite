@@ -20,7 +20,6 @@ namespace SirCachealot.Database
     {
         private MySqlConnection mySql;
         private MySqlCommand mySqlComm;
-        private string kConnectionString = "server=localhost;user=root;port=3306;password=atomic1;default command timeout=300;";
         public long QueryCount;
         public long DBlockCount;
 
@@ -93,18 +92,6 @@ namespace SirCachealot.Database
         {
             QueryCount++;
             return GetByStringParameter("ATAG", tag);
-        }
-
-        public UInt32[] GetUIDsByGateTag(string tag, UInt32[] fromUIDs)
-        {
-            QueryCount++;
-            return GetByStringParameter("GATETAG", tag, fromUIDs);
-        }
-
-        public UInt32[] GetUIDsByGateTag(string tag)
-        {
-            QueryCount++;
-            return GetByStringParameter("GATETAG", tag);
         }
 
         public UInt32[] GetUIDsByMachineState(bool eState, bool bState, bool rfState, bool mwState, uint[] fromUIDs)
@@ -309,10 +296,7 @@ namespace SirCachealot.Database
                 // extract the data that we're going to put in the sql database
                 string clusterName = db.Config.Settings["cluster"] as string;
                 int clusterIndex = (int)db.Config.Settings["clusterIndex"];
-                string aTag = db.DataType.ToString();
-                string gateTag = "";
-                if (db is GatedDemodulatedBlock gdb) gateTag = gdb.GateConfig.Name;
-                else gateTag = null;
+                string aTag = "";
                 bool eState = (bool)db.Config.Settings["eState"];
                 bool bState = (bool)db.Config.Settings["bState"];
                 bool rfState = (bool)db.Config.Settings["rfState"];
@@ -328,14 +312,13 @@ namespace SirCachealot.Database
                 mySqlComm = mySql.CreateCommand();
                 mySqlComm.CommandText =
                     "INSERT INTO DBLOCKS " +
-                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?gateTag, ?eState, ?bState, ?rfState, ?mwState, ?ts, " +
+                    "VALUES(?uint, ?cluster, ?clusterIndex, ?aTag, ?eState, ?bState, ?rfState, ?mwState, ?ts, " +
                     "?ePlus, ?eMinus);";
                 // the uid column is defined auto_increment
                 mySqlComm.Parameters.AddWithValue("?uint", null);
                 mySqlComm.Parameters.AddWithValue("?cluster", clusterName);
                 mySqlComm.Parameters.AddWithValue("?clusterIndex", clusterIndex);
                 mySqlComm.Parameters.AddWithValue("?aTag", aTag);
-                mySqlComm.Parameters.AddWithValue("?gateTag", gateTag);
                 mySqlComm.Parameters.AddWithValue("?eState", eState);
                 mySqlComm.Parameters.AddWithValue("?bState", bState);
                 mySqlComm.Parameters.AddWithValue("?rfState", rfState);
@@ -443,17 +426,21 @@ namespace SirCachealot.Database
         private UInt32[] GetUIntsFromCommand(MySqlCommand cm, string column)
         {
             MySqlDataReader rd = cm.ExecuteReader();
+
+
             List<UInt32> uids = new List<UInt32>();
             while (rd.Read()) uids.Add((UInt32)rd[column]);
             rd.Close();
             return uids.ToArray();
         }
 
-        internal void Start()
+        internal void Start(string username, string password)
         {
-            //TODO: support multiple DBs
             // This creates a shared connection that is used for all query methods. As a result, the query
             // methods are probably not currently thread-safe (maybe, need to check).
+
+            string hostIP = "155.198.208.226";
+            string kConnectionString = "server=" + hostIP + ";user=" + username + ";port=3306;password=" + password + ";default command timeout=300;";
             mySql = new MySqlConnection(kConnectionString);
             mySql.Open();
             mySqlComm = mySql.CreateCommand();
@@ -480,14 +467,14 @@ namespace SirCachealot.Database
             executeNonQuery(
                 "CREATE TABLE DBLOCKS (UID INT UNSIGNED NOT NULL AUTO_INCREMENT, " +
                 "CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, " +
-                "ATAG VARCHAR(30), GATETAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, MWSTATE BOOL, BLOCKTIME DATETIME, " +
+                "ATAG VARCHAR(30), ESTATE BOOL, BSTATE BOOL, RFSTATE BOOL, MWSTATE BOOL, BLOCKTIME DATETIME, " +
                 "EPLUS DOUBLE, EMINUS DOUBLE, PRIMARY KEY (UID))"
                 );
             executeNonQuery(
                 "CREATE TABLE TAGS (CLUSTER VARCHAR(30), CLUSTERINDEX INT UNSIGNED, TAG VARCHAR(30))"
                 );
             executeNonQuery(
-                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT LONGBLOB, PRIMARY KEY (UID))"
+                "CREATE TABLE DBLOCKDATA (UID INT UNSIGNED NOT NULL, DBDAT MEDIUMBLOB, PRIMARY KEY (UID))"
                 );
         }
 
@@ -508,6 +495,8 @@ namespace SirCachealot.Database
             mySqlComm = mySql.CreateCommand();
             mySqlComm.CommandText = command;
             return mySqlComm.ExecuteReader();
+
+
         }
 
         private byte[] serializeDBlockAsByteArray(DemodulatedBlock db)

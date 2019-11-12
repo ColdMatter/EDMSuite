@@ -19,27 +19,43 @@
 
 
 
-BeginPackage["SEDM3`Timesaving`",{"ErrorBarPlots`"}];
+(* ::Input::Initialization:: *)
+BeginPackage["SEDM4`TOF`","SEDM4`Statistics`"];
 
 
-makeFittable::usage="";
-makePlotable::usage="";
-makeWeights::usage= "";
+(* ::Input::Initialization:: *)
+getTrimmedMeanAndErrTOFChannel::usage="getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_] takes a list of TOF channels (with errors), calculates the trimmed mean and its standard error of each point of the TOF across all the channels via bootstrapping, and returns the result as a TOF with errors.";
+weightedMeanOfTOFWithError::usage="weightedMeanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the weighted mean and its standard error."
+
+
+(* ::Input::Initialization:: *)
 
 
 
-
+(* ::Input::Initialization:: *)
 Begin["`Private`"];
 
-makeFittable={#[[1]],#[[2,1]]}&;
-makePlotable={{#[[1]],#[[2,1]]},ErrorBar[#[[2,2]]]}&;
-makeWeights=Module[{\[CapitalDelta]ys},
-\[CapitalDelta]ys=#[[2,2]];
-1/\[CapitalDelta]ys^2]
-ernd[pt_,dp_:2]:=Module[{me},
-me=MantissaExponent[pt[[2]]];
-(1.0{Round[pt[[1]],10^(-dp+#[[2]])],Round[#[[1]],10^-dp]*10^#[[2]]}&/@{me})[[1]]]
+
+(* ::Input::Initialization:: *)
 
 
+
+(* ::Input::Initialization:: *)
+
+
+
+(* ::Input::Initialization:: *)
+getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_]:=Module[{times,tme},
+times=First/@tofWithErrChannels[[1]];
+tme=trimmedMeanAndBSErr/@(Transpose[#[[2]]&/@#&/@tofWithErrChannels]);
+Transpose[{times,First/@tme,Last/@tme}]
+]
+
+
+(* ::Input::Initialization:: *)
+weightedMeanOfTOFWithError[tofWithError_]:=weightedMean[{#[[2]],#[[3]]}&/@tofWithError]
+
+
+(* ::Input::Initialization:: *)
 End[];
 EndPackage[];

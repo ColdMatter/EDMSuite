@@ -66,5 +66,19 @@ namespace Analysis
 
             return tME;
         }
+
+        public static double[] WeightedMeanAndError(double[] values, double[] errors)
+        {
+            double wMean = 0.0;
+            double wVar = 0.0;
+
+            for (int i = 0; i < errors.Length; i++) wVar += Math.Pow(errors[i], -2);
+            wVar = Math.Pow(wVar, -1);
+
+            for (int i = 0; i < values.Length; i++) wMean += values[i] * Math.Pow(errors[i], -2);
+            wMean *= wVar;
+
+            return new double[2] { wMean, Math.Sqrt(wVar) };
+        }
     }
 }

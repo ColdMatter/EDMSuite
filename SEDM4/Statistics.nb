@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[     17745,        505]
-NotebookOptionsPosition[     16510,        472]
-NotebookOutlinePosition[     16885,        488]
-CellTagsIndexPosition[     16842,        485]
+NotebookDataLength[     18554,        527]
+NotebookOptionsPosition[     17317,        494]
+NotebookOutlinePosition[     17692,        510]
+CellTagsIndexPosition[     17649,        507]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -43,6 +43,10 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{"bootstrapReplicate", "::", "usage"}], "=", "\"\<\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"bootstrapMeanAndError", "::", "usage"}], "=", "\"\<\>\""}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
@@ -87,8 +91,8 @@ mean.\>\""}], ";"}]}], "Input",
   3.4951969489327965`*^9}, {3.4951971994231553`*^9, 3.4951972031631603`*^9}, {
   3.4960452439020967`*^9, 3.4960452496734266`*^9}, {3.598884090087398*^9, 
   3.5988841118795767`*^9}, {3.610348142212389*^9, 3.6103481469808655`*^9}, {
-  3.7796858245948105`*^9, 
-  3.7796858353508053`*^9}},ExpressionUUID->"a8714ee3-5274-4560-9b6a-\
+  3.7796858245948105`*^9, 3.7796858353508053`*^9}, {3.7808404477238398`*^9, 
+  3.780840455731126*^9}},ExpressionUUID->"a8714ee3-5274-4560-9b6a-\
 e9fb942a6928"]
 }, Open  ]],
 
@@ -122,6 +126,23 @@ Cell[BoxData[{
        RowBox[{
        "dataset", "\[LeftDoubleBracket]", "rnds", 
         "\[RightDoubleBracket]"}]}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"bootstrapMeanAndError", "[", "vals_", "]"}], ":=", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Mean", "[", "#", "]"}], ",", 
+       RowBox[{"StandardDeviation", "[", "#", "]"}]}], "}"}], "&"}], "[", 
+    RowBox[{"Table", "[", 
+     RowBox[{
+      RowBox[{"First", "[", 
+       RowBox[{"weightedMean", "[", 
+        RowBox[{"bootstrapReplicate", "[", "vals", "]"}], "]"}], "]"}], ",", 
+      RowBox[{"{", "100", "}"}]}], "]"}], "]"}]}], 
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"trimmedMeanAndBSErr", "[", 
@@ -452,7 +473,8 @@ Cell[BoxData[{
    3.4960452618531237`*^9}, {3.5980186356923513`*^9, 3.598018641747957*^9}, {
    3.6103480929084587`*^9, 3.610348133634531*^9}, {3.779685820859719*^9, 
    3.7796858210472393`*^9}, {3.7796858633798275`*^9, 
-   3.7796859508502865`*^9}},ExpressionUUID->"3c2a752d-1f9a-4f8b-88b0-\
+   3.7796859508502865`*^9}, {3.7808404687172813`*^9, 
+   3.780840479341552*^9}},ExpressionUUID->"3c2a752d-1f9a-4f8b-88b0-\
 295254a571e7"]
 }, Open  ]],
 
@@ -493,17 +515,17 @@ Cell[CellGroupData[{
 Cell[746, 29, 94, 0, 67, "Section",ExpressionUUID->"78290bd0-abd6-4846-8ba6-fd3c8cd28c54"],
 Cell[843, 31, 335, 8, 44, "Input",ExpressionUUID->"b68301bc-43a6-4579-b4aa-7f4d3f43c12a",
  InitializationCell->True],
-Cell[1181, 41, 1800, 50, 216, "Input",ExpressionUUID->"a8714ee3-5274-4560-9b6a-e9fb942a6928",
+Cell[1181, 41, 1975, 54, 235, "Input",ExpressionUUID->"a8714ee3-5274-4560-9b6a-e9fb942a6928",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3018, 96, 88, 0, 67, "Section",ExpressionUUID->"275897ab-7d46-4aad-9c85-fc2496c43b30"],
-Cell[3109, 98, 13015, 357, 886, "Input",ExpressionUUID->"3c2a752d-1f9a-4f8b-88b0-295254a571e7",
+Cell[3193, 100, 88, 0, 67, "Section",ExpressionUUID->"275897ab-7d46-4aad-9c85-fc2496c43b30"],
+Cell[3284, 102, 13647, 375, 943, "Input",ExpressionUUID->"3c2a752d-1f9a-4f8b-88b0-295254a571e7",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16161, 460, 85, 0, 67, "Section",ExpressionUUID->"7e6ee9d6-4bae-4c22-8bbc-b4d86a6690ad"],
-Cell[16249, 462, 233, 6, 64, "Input",ExpressionUUID->"84e36ff2-3f4e-4f9f-b51d-1a2d24fad5e2",
+Cell[16968, 482, 85, 0, 67, "Section",ExpressionUUID->"7e6ee9d6-4bae-4c22-8bbc-b4d86a6690ad"],
+Cell[17056, 484, 233, 6, 64, "Input",ExpressionUUID->"84e36ff2-3f4e-4f9f-b51d-1a2d24fad5e2",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]]
