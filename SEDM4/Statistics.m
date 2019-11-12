@@ -35,6 +35,11 @@ interxileRangeAndBSErr::usage="";
 sdAndBSErr::usage="";
 linearFitXYDist::usage="";
 weightedMean::usage="Takes  a list of {value, error} pairs and calculates the weighted mean.";
+weightedTrimmedMean::usage=""
+weightedTrimmedMeanAndBSError::usage=""
+weightedMeanAndBSError::usage=""
+meanAndBSError::usage=""
+standardErrorOnMean::usage=""
 
 
 (* ::Input::Initialization:: *)
@@ -43,7 +48,7 @@ Begin["`Private`"];
 bootstrapReplicate[dataset_]:=Module[{l,rnds},l=Length[dataset];rnds=Table[RandomInteger[l-1]+1,{l}];dataset[[rnds]]];
 
 bootstrapMeanAndError[vals_]:=
-{Mean[#],StandardDeviation[#]}&[Table[First[weightedMean[bootstrapReplicate[vals]]],{100}]]
+{Mean[#],StandardDeviation[#]}&[Table[Mean[bootstrapReplicate[vals]],{1000}]]
 
 trimmedMeanAndBSErr[dat_,trimLevel_:0.05,replicates_:1000]:={Mean[#],StandardDeviation[#]}&[Table[TrimmedMean[bootstrapReplicate[dat],trimLevel],{replicates}]]
 trimmedMeanAndBSErr[{}]:={0,0}
@@ -65,12 +70,28 @@ xvalFromdata[d_]:=(-c m+d[[1]]+m d[[2]])/(1+m^2);
 distFromdata[d_]:=(d[[1]]-xvalFromdata[d])^2+(d[[2]]-(m*xvalFromdata[d]+c))^2;
 sln=NMinimize[{Plus@@(distFromdata/@data),m>0},{m,c}];
 {m,c}/.sln[[2]]]
+
 weightedMean[chanList_]:=Module[{wvr,wedm,wse},
 wvr=(1/Plus@@ (1/#[[2]]^2&/@ chanList));
 wedm =wvr(Plus@@((#[[1]]/#[[2]]^2)&/@chanList));
 wse = Sqrt[wvr];
 {wedm,wse}
 ];
+
+weightedTrimmedMean[dat_,trimLevel_]:=Module[{l},
+l=Length[dat];
+weightedMean[Drop[Drop[SortBy[dat,#[[1]]&],Round[trimLevel l]],Round[-trimLevel l]]]
+]
+weightedTrimmedMeanAndBSError[dat_,trimLevel_:0.05,replicates_:1000]:={Mean[#],StandardDeviation[#]}&[Table[weightedTrimmedMean[bootstrapReplicate[dat],trimLevel][[1]],{replicates}]]
+weightedTrimmedMeanAndBSError[{}]:={0,0}
+
+weightedMeanAndBSError[dat_,replicates_:1000]:={Mean[#],StandardDeviation[#]}&[Table[weightedMean[bootstrapReplicate[dat]][[1]],{replicates}]]
+weightedMeanAndBSError[{}]:={0,0}
+
+meanAndBSError[dat_,replicates_:1000]:={Mean[#],StandardDeviation[#]}&[Table[Mean[bootstrapReplicate[dat]],{replicates}]]
+meanAndBSError[{}]:={0,0}
+
+standardErrorOnMean[dat_]:=StandardDeviation[dat]/Sqrt[Length[dat]]
 
 
 (* ::Input::Initialization:: *)

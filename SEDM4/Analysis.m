@@ -166,7 +166,7 @@ edmSnNoLaserBackground[dblock_]:=Module[{topCounts,bottomCounts,dbChannel},
 topCounts=getTOFChannelValues[{"SIG"},"topProbeNoBackground",dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*);
 bottomCounts=getTOFChannelValues[{"SIG"},"bottomProbeScaled",dblock]*pmtCalibration*10;
 dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
-Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySn[topCounts,bottomCounts]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
+Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySnNoLaserBackground[topCounts,bottomCounts]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
 ]
 
 
@@ -215,7 +215,16 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],{
 "ePlus"->dbl@Config@Settings["ePlus"],
 "eMinus"->dbl@Config@Settings["eMinus"],
 "timeStamp"->dbl@TimeStamp@Ticks,
-"hour"->dbl@TimeStamp@Hour
+"hour"->dbl@TimeStamp@Hour,
+
+"cSIG"->getTOFChannel[{"SIG"},"asymmetry",dbl],
+"cE"->getTOFChannel[{"E"},"asymmetry",dbl],
+"cB"->getTOFChannel[{"B"},"asymmetry",dbl],
+"cDB"->getTOFChannel[{"DB"},"asymmetry",dbl],
+"cEDB"->getTOFChannel[{"E","DB"},"asymmetry",dbl],
+"cEB"->getTOFChannel[{"E","B"},"asymmetry",dbl],
+"cBDB"->getTOFChannel[{"B","DB"},"asymmetry",dbl],
+"cEBDB"->getTOFChannel[{"E","B","DB"},"asymmetry",dbl]
 }
 ]
 
