@@ -25,6 +25,7 @@ namespace DAQ.HAL
 
         private double lastPressure = 0;
 
+
         private const double VOLTAGE_LOWER_BOUND = 0;  // volts
         private const double VOLTAGE_UPPER_BOUND = 10; // volts
         private const double GAUGE_OFFSET = 7.75;      // volts

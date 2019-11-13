@@ -31,8 +31,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
             //(0,3) pin 12 is unconnected
-            AddDigitalOutputChannel("shutterTrig1", pgBoard, 1, 6);// Pin 21, triggers camera for on-shots (not wired up)
-            AddDigitalOutputChannel("shutterTrig2", pgBoard, 1, 7);// Pin 22, triggers camera for off-shots (not wired up)
+            AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
+            AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
             AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);//
             AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
@@ -41,7 +41,8 @@ namespace DAQ.HAL
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
-            AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
+            //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
+            AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
            
             // add things to the info
@@ -59,14 +60,17 @@ namespace DAQ.HAL
 
             // map the analog input channels for "daq" card
             AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
-            AddAnalogInputChannel("Temp2", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31
+            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
-            AddAnalogInputChannel("pressure1", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
+            AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
             AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
-            AddAnalogInputChannel("cavityshort", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60
+            AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
+            AddAnalogInputChannel("S1TemperatureMonitor", daqBoard + "/ai9", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("S2TemperatureMonitor", daqBoard + "/ai10", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("SF6TemperatureMonitor", daqBoard + "/ai11", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
@@ -100,7 +104,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai16", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai17", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai18", AITerminalConfiguration.Rse); unused
-            //AddAnalogInputChannel("xxx", TCLBoard + "/ai19", AITerminalConfiguration.Rse); 
+            //AddAnalogInputChannel("xxx", TCLBoard + "/ai19", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai20", AITerminalConfiguration.Rse); unused
 
             // map the analog output channels for the tcl card
@@ -109,6 +113,9 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("probelaser", TCLBoard + "/ao2", 0, 10);
             AddAnalogOutputChannel("v0laser", TCLBoard + "/ao3", 0, 10);
 
+            // add the GPIB/RS232/USB instruments
+            Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL4::INSTR"));
+            Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL6::INSTR"));
             
 
 // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
