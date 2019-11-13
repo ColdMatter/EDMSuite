@@ -292,6 +292,10 @@ namespace Analysis.EDM
                 + c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
                 ;
 
+            // Work out terms for corrected edm (no rf channels)
+            TOFWithError termsNoRf = c_eb * c_db - c_edb * c_b + c_bdb * c_e + c_ebdb * c_sig;
+            TOFWithError preDenominatorNoRf = c_db * c_db - c_edb * c_edb + c_bdb * c_bdb - c_ebdb * c_ebdb;
+
             // it's important when working out the non-linear channel
             // combinations to always keep them dimensionless. If you
             // don't you'll run into trouble with integral vs. average
@@ -316,6 +320,14 @@ namespace Analysis.EDM
 
             TOFWithError edmCorrDB_old = edmDB - correctionDB_old;
             tcs.AddChannel(new string[] { "EDMCORRDB_OLD" }, edmCorrDB_old);
+
+            // The "no rf" correction that just corrects for the E/B-correlated amplitude change.
+            // This is included in the dblocks for debugging purposes.
+            TOFWithError edmCorrDB_norf = termsNoRf / preDenominatorNoRf;
+            tcs.AddChannel(new string[] { "EDMCORRDB_NORF" }, edmCorrDB_norf);
+
+            TOFWithError correctionDB_norf = edmCorrDB_norf - edmDB;
+            tcs.AddChannel(new string[] { "CORRDB_NORF" }, correctionDB_norf);
 
             // Normalised RFxF channels.
             TOFWithError rf1fDB = c_rf1f / c_db;
