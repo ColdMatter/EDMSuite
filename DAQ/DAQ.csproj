@@ -409,6 +409,7 @@
     <Content Include="bdc-comm-92.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

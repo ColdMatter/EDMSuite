@@ -7,3 +7,4 @@ obj
 iamjack.sh
 iamjoe.sh
 *.orig
+*.pyc

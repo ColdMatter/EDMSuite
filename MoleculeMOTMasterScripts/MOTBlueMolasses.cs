@@ -31,24 +31,24 @@ public class Patterns : MOTMasterScript
         Parameters["Frame0TriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 250;
+        Parameters["slowingAOMOnStart"] = 250; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1500;
-        Parameters["slowingAOMOffDuration"] = 35000;
-        Parameters["slowingRepumpAOMOnStart"] = 250;
+        Parameters["slowingAOMOffStart"] = 1500;//started from 1500
+        Parameters["slowingAOMOffDuration"] = 40000;
+        Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1500;
+        Parameters["slowingRepumpAOMOffStart"] = 1520;
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
+        Parameters["SlowingChirpStartTime"] = 340;// 340;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.2;
+        Parameters["SlowingChirpEndValue"] = -1.25;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentValue"] = 0.75;
+        Parameters["MOTCoilsCurrentValue"] = 0.65;
         
         // Shim fields
         Parameters["xShimLoadCurrent"] = -3.9;
@@ -57,9 +57,9 @@ public class Patterns : MOTMasterScript
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 2000;
-        Parameters["v0IntensityRampStartValue"] = 5.0;
-        Parameters["v0IntensityRampEndValue"] = 8.75;
-        Parameters["v0IntensityMolassesValue"] = 5.0;
+        Parameters["v0IntensityRampStartValue"] = 5.8;
+        Parameters["v0IntensityRampEndValue"] = 8.5;
+        Parameters["v0IntensityMolassesValue"] = 5.8;
 
         //ramp extension
         //Parameters["v0IntensityRampDuration2"] = 500;
@@ -86,7 +86,7 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
       
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDuration"], (int)Parameters["ExpansionTime"], "motAOM"); //pulse off the MOT light to release the cloud
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOn"], (int)Parameters["MOTSwitchOffTime"] - (int)Parameters["MOTCoilsSwitchOn"], "bTrigger"); //// B Field pulse for the BOP (top MOT coil) - bottom coil is in analog section
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOn"], (int)Parameters["MOTSwitchOffTime"] - (int)Parameters["MOTCoilsSwitchOn"], "bTrigger"); //// B Field pulse for the BOP (top MOT coil) - bottom coil is in analog section
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDuration"] + (int)Parameters["ExpansionTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         //
         return p;

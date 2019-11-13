@@ -16,8 +16,8 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 50000;
-        Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 8000;
+        Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
+        Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
@@ -64,7 +64,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRampDuration"] = 1000;
         Parameters["MOTCoilsCurrentMolassesValue"] = 0.0; //0.21
         Parameters["MOTCoilsCurrentMagTrapValue"] = 1.25;
-        Parameters["magRampDuration"] = 1;
+        Parameters["magRampDuration"] = 1;//1
 
         Parameters["CoilsSwitchOffTime"] = 40000;
 
@@ -102,19 +102,25 @@ public class Patterns : MOTMasterScript
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
+        /*
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
         int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
         int magTrapStartTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int magTrapEndTime = magTrapStartTime + (int)Parameters["MagTrapDuration"]; 
         int imageTime = magTrapEndTime + (int)Parameters["ExpansionTime"];
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
+        
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTSwitchOffTime"], (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, magTrapStartTime, imageTime - magTrapStartTime, "v00MOTAOM"); // turn off the MOT light for magnetic trap
         //p.Pulse(patternStartBeforeQ, 1, 35000, "bXSlowingShutter"); // Close BX shutter during magnetic trap (note it takes at least 30ms to do anything so turning off at 1 is fine)
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
+        
+        p.Pulse(patternStartBeforeQ, magTrapStartTime - 1690, magTrapEndTime - 1200, "bXSlowingShutter");
+        p.Pulse(patternStartBeforeQ, magTrapStartTime - 2060, magTrapEndTime - 990, "v00MOTShutter");
+        */
         return p;
     }
 
@@ -123,7 +129,7 @@ public class Patterns : MOTMasterScript
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
-
+        /*
         int molassesStartTime = (int)Parameters["MOTSwitchOffTime"] + (int)Parameters["MolassesDelay"];
         int v0F0PumpStartTime = molassesStartTime + (int)Parameters["MolassesDuration"];
         int magTrapStartTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
@@ -186,7 +192,7 @@ public class Patterns : MOTMasterScript
             imageTime,
             ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyMOTValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]
         );
-
+        */
         return p;
     }
 
