@@ -217,6 +217,8 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AgilentFRG720Gauge.cs" />
+    <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="LakeShore336TemperatureController.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
@@ -226,6 +228,7 @@
     <Compile Include="PHNFITCH2FileSystem.cs" />
     <Compile Include="RfAWGConfig.cs" />
     <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="SiliconDiodeTemperatureMonitors.cs" />
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
