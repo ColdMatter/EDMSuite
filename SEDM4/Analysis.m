@@ -40,6 +40,7 @@ edmFactor::usage="edmFactor[dblock_] returns the factor used to convert the EDM 
 edmSign::usage="edmSign[dblock_] returns the sign of the edm given by the manual E and B states of the block.";
 rawEDMWithErr::usage="rawEDMWithErr[dblock_] returns the uncorrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
 correctedEDMWithErr::usage="correctedEDMWithErr[dblock_] returns the corrected EDM as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
+correctedEDMNoRfWithErr::usage="correctedEDMNoRfWithErr[dblock_] returns the corrected EDM (without rf channels) as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
 contrast::usage="contrast[dblock_] returns the contrast of the interferometer as a TOF with errors of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}.";
 edmSn::usage="edmSn[dblock_] returns the shot-noise-limited uncertainty in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
 edmSnNoLaserBackground::usage="edmSnNoLaserBackground[dblock_] returns the shot-noise-limited uncertainty (without factoring in the laser scatter background) in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
@@ -139,6 +140,10 @@ correctedEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SE
 
 
 (* ::Input::Initialization:: *)
+correctedEDMNoRfWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB_NORF","asymmetry",dblock]
+
+
+(* ::Input::Initialization:: *)
 counts[dblock_,detector_]:=getTOFChannelValues[{"SIG"},detector,dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*)
 
 
@@ -198,6 +203,8 @@ extractPhysicalQuantities[dblock_]:=
 "signedEDMWithErr"->edmSign[dblock] rawEDMWithErr[dblock],
 "correctedEDMWithErr"->correctedEDMWithErr[dblock],
 "signedCorrectedEDMWithErr"->edmSign[dblock] correctedEDMWithErr[dblock],
+"correctedEDMNoRfWithErr"->correctedEDMNoRfWithErr[dblock],
+"signedCorrectedEDMNoRfWithErr"->edmSign[dblock] correctedEDMNoRfWithErr[dblock],
 "contrast"->contrast[dblock],
 "edmSn"->edmSn[dblock],
 "edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
