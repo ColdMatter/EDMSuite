@@ -326,11 +326,11 @@ namespace UEDMHardwareControl
             {
                 if(refreshModeCryoTurnOnDateTimeFlag)
                 {
-                    if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value > window.dateTimePickerRefreshModeTurnHeatersOff.Value)
+                    if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value >= window.dateTimePickerRefreshModeTurnHeatersOff.Value)// The heaters can be stopped before or at the same time as the cryo turning on
                     {
-                        if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value > DateTime.Now)
+                        if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value > DateTime.Now) // The cryo cannot be turned on in the past - otherwise you should just turn on the cryo (instead of using refresh mode)
                         {
-                            if(window.dateTimePickerRefreshModeTurnHeatersOff.Value > DateTime.Now)
+                            if (window.dateTimePickerRefreshModeTurnHeatersOff.Value > DateTime.Now) // The heaters cannot be turned off in the past - otherwise you should just turn off the heaters (instead of using refresh mode)
                             {
                                 refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
                                 RefreshModeEnableUIElements(true);
@@ -486,42 +486,35 @@ namespace UEDMHardwareControl
         }
         private void EvaporateAndPumpNeonWithoutLakeShore()
         {
-            double TemperatureSetpoint = 0.0;
             if (!refreshModeCancelFlag)
             {
-                window.SetTextBox(window.tbHeaterTempSetpointStage2, TemperatureSetpoint.ToString());
+                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
                 UpdateStage2TemperatureSetpoint();
-                window.SetTextBox(window.tbHeaterTempSetpointStage1, TemperatureSetpoint.ToString());
+                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
                 UpdateStage1TemperatureSetpoint();
-                StartStage1DigitalHeaterControl();
-                StartStage2DigitalHeaterControl();
                 window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
             }
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                if (refreshModeCancelFlag) break;
-                if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
+                if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
+                if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
                     {
-                        TemperatureSetpoint -= SourceRefreshConstants.TemperatureSetpointDecrementValue;
-                        window.SetTextBox(window.tbHeaterTempSetpointStage2,TemperatureSetpoint.ToString());
-                        UpdateStage2TemperatureSetpoint();
-                        window.SetTextBox(window.tbHeaterTempSetpointStage1, TemperatureSetpoint.ToString());
-                        UpdateStage1TemperatureSetpoint();
+                        StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
+                        StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
+                        EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                        EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
                     }
                 }
                 else
                 {
-                    TemperatureSetpoint += SourceRefreshConstants.TemperatureSetpointIncrementValue;
-                    window.SetTextBox(window.tbHeaterTempSetpointStage2, TemperatureSetpoint.ToString());
-                    UpdateStage2TemperatureSetpoint();
-                    window.SetTextBox(window.tbHeaterTempSetpointStage1, TemperatureSetpoint.ToString());
-                    UpdateStage1TemperatureSetpoint();
-                    if (TemperatureSetpoint >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax)
+                    StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
+                    StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
+                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the cell temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after Cell_T = NeonEvaporationCycleTemperatureMax)
                     {
-                        if (lastPressure <= SourceRefreshConstants.CryoStoppingPressure)
+                        if (lastPressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
                             break;
                         }
