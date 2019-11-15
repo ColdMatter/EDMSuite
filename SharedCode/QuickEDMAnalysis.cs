@@ -13,8 +13,8 @@ namespace Analysis.EDM
     public class QuickEDMAnalysis
     {
         // asymmetry gates
-        private static double GATE_LOW = 2700;
-        private static double GATE_HIGH = 2900;
+        private static double GATE_LOW = 2830;
+        private static double GATE_HIGH = 3030;
 
         // constants
         private static double plateSpacing = 1.2;
@@ -86,8 +86,8 @@ namespace Analysis.EDM
             analysis.EBValAndErr = dblock.GetTOFChannel(new string[] { "E", "B" }, "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
             analysis.BDBValAndErr = dblock.GetTOFChannel("BDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
 
-            double bottomProbeCalibration = dblock.GetCalibration("bottomProbe");
-            double topProbeCalibration = dblock.GetCalibration("topProbe");
+            double bottomProbeCalibration = dblock.GetCalibration("bottomProbeScaled");
+            double topProbeCalibration = dblock.GetCalibration("topProbeNoBackground");
             //Replace 510 with the calibrations above after testing is done with old blocks
             analysis.ShotNoise = 1.0 / Math.Sqrt(analysis.SIGValAndErrbp[0] * 510 + analysis.SIGValAndErrtp[0] * 510);
             analysis.Contrast = analysis.DBValAndErr[0] / 2 / dbPhaseStep;
@@ -95,8 +95,7 @@ namespace Analysis.EDM
             //raw edm in asymmetry detector
             double[] edmdb;
             edmdb = dblock.GetTOFChannel("EDMDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
-            analysis.RawEDMValAndErr[0] = edmFactor * edmdb[0];
-            analysis.RawEDMValAndErr[1] = edmFactor * edmdb[1];
+            analysis.RawEDMValAndErr = new double[2] { edmFactor * edmdb[0], edmFactor * edmdb[1] };
 
             //leakage currents
             analysis.NorthCurrentValAndError =

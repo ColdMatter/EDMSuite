@@ -68,7 +68,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "lfFreqStepTest05Nov19_try2.xml")
+	bc = loadBlockConfig(settingsPath + "lfFreqStepTest05Nov19_try3.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -154,9 +154,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 250.0
-	bc.Settings["targetStepperGateStartTime"] = 2340.0
-	bc.Settings["targetStepperGateEndTime"] = 2540.0
+	bc.Settings["minimumSignalToRun"] = 200.0
+	bc.Settings["targetStepperGateStartTime"] = 2510.0
+	bc.Settings["targetStepperGateEndTime"] = 2710.0
 	return bc
 
 # lock gains
@@ -248,6 +248,7 @@ def updateLocksNL(bState, mwState):
 	rf2fdbdbValue = bh.AnalysedDBlock.RF2FDBDB[0]
 	lf1Value = bh.AnalysedDBlock.LF1ValAndErr[0]
 	lf1dbdbValue = bh.AnalysedDBlock.LF1DBDB[0]
+	lf1dbdbValueErr = bh.AnalysedDBlock.LF1DBDB[1]
 	lf1dbValue = bh.AnalysedDBlock.LF1DB[0]
 	#lf2Value = pmtChannelValues.GetValue(("LF2",))
 	#lf2dbdbValue = pmtChannelValues.GetSpecialValue("LF2DBDB")
@@ -314,7 +315,7 @@ def updateLocksNL(bState, mwState):
 	hc.SetRF2FMCentre( newRF2F )
 
 	# Laser frequency lock using TCL
-	deltaLF1setpoint = 0.5 * (lf1dbdbValue)
+	deltaLF1setpoint = windowValue(0.25*lf1dbdbValue, -0.025, 0.025)
 	print "Attempting to change tclProbe setpoint by " + str(deltaLF1setpoint) + " V."
 	tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT") +deltaLF1setpoint)
 
@@ -390,13 +391,16 @@ def EDMGo():
 
 	# loop and take data
 	blockIndex = 0
-	maxBlockIndex = 10000
+	maxBlockIndex = 150
 	dbValueList = []
 	Emag1List =[]
 	Emini1List=[]
 	Emini2List=[]
 	Emini3List=[]
 	while blockIndex < maxBlockIndex:
+		#if blockIndex%5==0:
+		#	tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT") -0.005)
+
 		print("Acquiring block " + str(blockIndex) + " ...")
 		# save the block config and load into blockhead
 		print("Saving temp config.")

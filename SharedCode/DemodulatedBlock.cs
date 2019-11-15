@@ -11,9 +11,9 @@ namespace Analysis.EDM
     [Serializable]
     public class DemodulatedBlock
     {
-        public DateTime TimeStamp { get; }
-        public BlockConfig Config { get; }
-        public DemodulationConfig DemodulationConfig { get; }
+        public DateTime TimeStamp { get; private set; }
+        public BlockConfig Config { get; private set; }
+        public DemodulationConfig DemodulationConfig { get; private set; }
 
         private readonly Dictionary<string, ChannelSet<TOFWithError>> TOFChannelSetDictionary = new Dictionary<string, ChannelSet<TOFWithError>>();
         private readonly Dictionary<string, ChannelSet<PointWithError>> PointChannelSetDictionary = new Dictionary<string, ChannelSet<PointWithError>>();

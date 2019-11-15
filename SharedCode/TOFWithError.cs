@@ -49,8 +49,8 @@ namespace Data
 
             for (int i = low; i <= high; i++)
             {
-                values[i] = Data[i];
-                errors[i] = Errors[i];
+                values[i-low] = Data[i];
+                errors[i-low] = Errors[i];
             }
 
             mne = Statistics.WeightedMeanAndError(values, errors);

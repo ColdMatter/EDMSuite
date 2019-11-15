@@ -596,10 +596,10 @@ namespace EDMHardwareControl
         private Button rfAWGTestButton;
         public TextBox rfAWGTestTextBox;
         public CheckBox eDisableSwitching;
-        private NumericUpDown probeAOMampnumericUpDown;
+        public NumericUpDown probeAOMampnumericUpDown;
         private Label label169;
         private GroupBox groupBox36;
-        private NumericUpDown valveControlVoltageNumericUpDown;
+        public NumericUpDown valveControlVoltageNumericUpDown;
         public TextBox valveMonitorTextBox;
         private Button valveVoltageMonitorMeasureButton;
         private Label label172;
@@ -1103,6 +1103,12 @@ namespace EDMHardwareControl
             this.setProbePolAngle = new System.Windows.Forms.Button();
             this.probePolModeSelectSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.valveControlVoltageNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.valveMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.valveVoltageMonitorMeasureButton = new System.Windows.Forms.Button();
+            this.label172 = new System.Windows.Forms.Label();
+            this.label170 = new System.Windows.Forms.Label();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.TargetStepButton = new System.Windows.Forms.Button();
             this.label66 = new System.Windows.Forms.Label();
@@ -1214,12 +1220,6 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.groupBox36 = new System.Windows.Forms.GroupBox();
-            this.label170 = new System.Windows.Forms.Label();
-            this.label172 = new System.Windows.Forms.Label();
-            this.valveVoltageMonitorMeasureButton = new System.Windows.Forms.Button();
-            this.valveMonitorTextBox = new System.Windows.Forms.TextBox();
-            this.valveControlVoltageNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1295,6 +1295,8 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.probePolVoltTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.probePolModeSelectSwitch)).BeginInit();
             this.tabPage5.SuspendLayout();
+            this.groupBox36.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.valveControlVoltageNumericUpDown)).BeginInit();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.tabPage9.SuspendLayout();
@@ -1316,8 +1318,6 @@ namespace EDMHardwareControl
             this.groupBox28.SuspendLayout();
             this.groupBox26.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.groupBox36.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.valveControlVoltageNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -5942,6 +5942,74 @@ namespace EDMHardwareControl
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
             // 
+            // groupBox36
+            // 
+            this.groupBox36.Controls.Add(this.valveControlVoltageNumericUpDown);
+            this.groupBox36.Controls.Add(this.valveMonitorTextBox);
+            this.groupBox36.Controls.Add(this.valveVoltageMonitorMeasureButton);
+            this.groupBox36.Controls.Add(this.label172);
+            this.groupBox36.Controls.Add(this.label170);
+            this.groupBox36.Location = new System.Drawing.Point(13, 242);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(351, 87);
+            this.groupBox36.TabIndex = 48;
+            this.groupBox36.TabStop = false;
+            this.groupBox36.Text = "SF6 Valve";
+            // 
+            // valveControlVoltageNumericUpDown
+            // 
+            this.valveControlVoltageNumericUpDown.DecimalPlaces = 3;
+            this.valveControlVoltageNumericUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.valveControlVoltageNumericUpDown.Location = new System.Drawing.Point(160, 28);
+            this.valveControlVoltageNumericUpDown.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.valveControlVoltageNumericUpDown.Name = "valveControlVoltageNumericUpDown";
+            this.valveControlVoltageNumericUpDown.Size = new System.Drawing.Size(64, 20);
+            this.valveControlVoltageNumericUpDown.TabIndex = 4;
+            this.valveControlVoltageNumericUpDown.ValueChanged += new System.EventHandler(this.valveControlVoltageNumericUpDown_ValueChanged);
+            // 
+            // valveMonitorTextBox
+            // 
+            this.valveMonitorTextBox.Location = new System.Drawing.Point(158, 61);
+            this.valveMonitorTextBox.Name = "valveMonitorTextBox";
+            this.valveMonitorTextBox.Size = new System.Drawing.Size(66, 20);
+            this.valveMonitorTextBox.TabIndex = 3;
+            // 
+            // valveVoltageMonitorMeasureButton
+            // 
+            this.valveVoltageMonitorMeasureButton.Location = new System.Drawing.Point(256, 53);
+            this.valveVoltageMonitorMeasureButton.Name = "valveVoltageMonitorMeasureButton";
+            this.valveVoltageMonitorMeasureButton.Size = new System.Drawing.Size(75, 28);
+            this.valveVoltageMonitorMeasureButton.TabIndex = 2;
+            this.valveVoltageMonitorMeasureButton.Text = "Measure";
+            this.valveVoltageMonitorMeasureButton.UseVisualStyleBackColor = true;
+            this.valveVoltageMonitorMeasureButton.Click += new System.EventHandler(this.valveVoltageMonitorMeasureButton_Click);
+            // 
+            // label172
+            // 
+            this.label172.AutoSize = true;
+            this.label172.Location = new System.Drawing.Point(19, 61);
+            this.label172.Name = "label172";
+            this.label172.Size = new System.Drawing.Size(121, 13);
+            this.label172.TabIndex = 1;
+            this.label172.Text = "Monitor Voltage (54V/V)";
+            // 
+            // label170
+            // 
+            this.label170.AutoSize = true;
+            this.label170.Location = new System.Drawing.Point(19, 30);
+            this.label170.Name = "label170";
+            this.label170.Size = new System.Drawing.Size(119, 13);
+            this.label170.TabIndex = 0;
+            this.label170.Text = "Control Voltage (54V/V)";
+            // 
             // groupBox17
             // 
             this.groupBox17.Controls.Add(this.TargetStepButton);
@@ -7012,74 +7080,6 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
-            // groupBox36
-            // 
-            this.groupBox36.Controls.Add(this.valveControlVoltageNumericUpDown);
-            this.groupBox36.Controls.Add(this.valveMonitorTextBox);
-            this.groupBox36.Controls.Add(this.valveVoltageMonitorMeasureButton);
-            this.groupBox36.Controls.Add(this.label172);
-            this.groupBox36.Controls.Add(this.label170);
-            this.groupBox36.Location = new System.Drawing.Point(13, 242);
-            this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(351, 87);
-            this.groupBox36.TabIndex = 48;
-            this.groupBox36.TabStop = false;
-            this.groupBox36.Text = "SF6 Valve";
-            // 
-            // label170
-            // 
-            this.label170.AutoSize = true;
-            this.label170.Location = new System.Drawing.Point(19, 30);
-            this.label170.Name = "label170";
-            this.label170.Size = new System.Drawing.Size(119, 13);
-            this.label170.TabIndex = 0;
-            this.label170.Text = "Control Voltage (54V/V)";
-            // 
-            // label172
-            // 
-            this.label172.AutoSize = true;
-            this.label172.Location = new System.Drawing.Point(19, 61);
-            this.label172.Name = "label172";
-            this.label172.Size = new System.Drawing.Size(121, 13);
-            this.label172.TabIndex = 1;
-            this.label172.Text = "Monitor Voltage (54V/V)";
-            // 
-            // valveVoltageMonitorMeasureButton
-            // 
-            this.valveVoltageMonitorMeasureButton.Location = new System.Drawing.Point(256, 53);
-            this.valveVoltageMonitorMeasureButton.Name = "valveVoltageMonitorMeasureButton";
-            this.valveVoltageMonitorMeasureButton.Size = new System.Drawing.Size(75, 28);
-            this.valveVoltageMonitorMeasureButton.TabIndex = 2;
-            this.valveVoltageMonitorMeasureButton.Text = "Measure";
-            this.valveVoltageMonitorMeasureButton.UseVisualStyleBackColor = true;
-            this.valveVoltageMonitorMeasureButton.Click += new System.EventHandler(this.valveVoltageMonitorMeasureButton_Click);
-            // 
-            // valveMonitorTextBox
-            // 
-            this.valveMonitorTextBox.Location = new System.Drawing.Point(158, 61);
-            this.valveMonitorTextBox.Name = "valveMonitorTextBox";
-            this.valveMonitorTextBox.Size = new System.Drawing.Size(66, 20);
-            this.valveMonitorTextBox.TabIndex = 3;
-            // 
-            // valveControlVoltageNumericUpDown
-            // 
-            this.valveControlVoltageNumericUpDown.DecimalPlaces = 3;
-            this.valveControlVoltageNumericUpDown.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.valveControlVoltageNumericUpDown.Location = new System.Drawing.Point(160, 28);
-            this.valveControlVoltageNumericUpDown.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.valveControlVoltageNumericUpDown.Name = "valveControlVoltageNumericUpDown";
-            this.valveControlVoltageNumericUpDown.Size = new System.Drawing.Size(64, 20);
-            this.valveControlVoltageNumericUpDown.TabIndex = 4;
-            this.valveControlVoltageNumericUpDown.ValueChanged += new System.EventHandler(this.valveControlVoltageNumericUpDown_ValueChanged);
-            // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -7200,6 +7200,9 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.probePolVoltTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.probePolModeSelectSwitch)).EndInit();
             this.tabPage5.ResumeLayout(false);
+            this.groupBox36.ResumeLayout(false);
+            this.groupBox36.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.valveControlVoltageNumericUpDown)).EndInit();
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
             this.groupBox15.ResumeLayout(false);
@@ -7235,9 +7238,6 @@ namespace EDMHardwareControl
             this.groupBox26.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox36.ResumeLayout(false);
-            this.groupBox36.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.valveControlVoltageNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7594,6 +7594,16 @@ namespace EDMHardwareControl
 		{
 			box.Text = text;
 		}
+
+        public void SetNumericUpDown(NumericUpDown box, double value)
+        {
+            box.Invoke(new SetNumericUpDownDelegate(SetNumericUpDownHelper), new object[] { box, value });
+        }
+        private delegate void SetNumericUpDownDelegate(NumericUpDown box, double value);
+        private void SetNumericUpDownHelper(NumericUpDown box, double value)
+        {
+            box.Value = (Decimal)value;
+        }
 
         public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
         {

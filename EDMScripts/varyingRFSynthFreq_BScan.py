@@ -24,10 +24,7 @@ def StopPattern():
 	sm.StopPatternOutput()
 
 def Acquire():
-	currentSetpoint = tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT")
 	count=0
-	print("Current setpoint is: " + str(currentSetpoint))
-	print("")
 	fileSystem = Environs.FileSystem
 	file = \
 		fileSystem.GetDataDirectory(\
@@ -36,19 +33,24 @@ def Acquire():
 	print("Saving as " + file + "_*.zip")
 	print("")
 	# start looping
-	x = [0.002*i for i in range(-10,10)]
-	for j in range(5):
+	x = [172.6+0.02*i for i in range(31)]
+	for j in range(3):
 		for i in range(len(x)):
-			sm.AdjustProfileParameter("outputPlugin", "dummy", x[i], False)
-			tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",currentSetpoint+x[i])
-			for k in range(0,2):
-				print("Current detuning: " + str(x[i]) + ", MW state: " + str(hc.MwSwitchState))
+			hc.SetGreenSynthFrequency(round(x[i],2))
+			sm.AdjustProfileParameter("out", "externalParameters", str(round(x[i],2)), False)
+			for k in range(4):
+				#print("MW state: " + str(hc.MwSwitchState) + ", Pi flip: " + str(hc.phaseFlip1State))
+				print("Synth Freq: " + str(x[i]) + "V, MW state: " + str(hc.MwSwitchState))
 				count=count+1
 				sm.AcquireAndWait(2)
-				scanPath = file + "_" + str(count) + "_" + str(round(currentSetpoint+x[i],3)) + ".zip"
+				scanPath = file + "_" + str(count) + ".zip"
 				sm.SaveAverageData(scanPath)
 				hc.SwitchMwAndWait()
-	tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",currentSetpoint)
+				if (k<2):
+					hc.SetPhaseFlip1(True)
+				else:
+					hc.SetPhaseFlip1(False)
+sm.AdjustProfileParameter("out", "externalParameters", "SidIsGreat", False)
 		
 	
 

@@ -35,7 +35,7 @@ namespace EDMBlockHead
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1}\t {LF1DBDB}" + Environment.NewLine);
+            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1}\t Error \t {LF1DB} \t Error \t {LF1DBDB} \t Error" + Environment.NewLine);
 
             edms = new List<double>();
         }

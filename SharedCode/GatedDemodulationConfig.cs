@@ -79,12 +79,17 @@ namespace Analysis.EDM
 
         public int LiveAnalysisGateTimeEndScaled { get { return liveAnalysisGateTimeEndScaled; } }
 
-        private int liveAnalysisGateTimeStartBottom = 2550;
-        private int liveAnalysisGateTimeEndBottom = 2650;
+        //private int liveAnalysisGateTimeStartBottom = 2550;
+        //private int liveAnalysisGateTimeEndBottom = 2650;
 
-        private int liveAnalysisGateTimeStartScaled = 2933;
-        private int liveAnalysisGateTimeEndScaled = 3048;
+        //private int liveAnalysisGateTimeStartScaled = 2933;
+        //private int liveAnalysisGateTimeEndScaled = 3048;
 
+        private int liveAnalysisGateTimeStartBottom = 2390;
+        private int liveAnalysisGateTimeEndBottom = 2490;
+
+        private int liveAnalysisGateTimeStartScaled = 2748;
+        private int liveAnalysisGateTimeEndScaled = 2863;
 
 
         public static GatedDemodulationConfig MakeLiveAnalysisGateConfig()

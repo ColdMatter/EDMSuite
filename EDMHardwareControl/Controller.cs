@@ -434,7 +434,11 @@ namespace EDMHardwareControl
             public double topProbemwDwellOffTime;
             public double anapicof0Freq;
             public double anapicof1Freq;
-
+            public double probeAOM;
+            public double probeAOMamp;
+            public double probeAOMstep;
+            public double valveCtrlVoltage;
+            
         }
 
         public void SaveParametersWithDialog()
@@ -509,6 +513,11 @@ namespace EDMHardwareControl
             dataStore.bottomProbemwDwellOffTime = AnapicoBottomProbeMWDwellOffTime;
             dataStore.topProbemwDwellOnTime = AnapicoTopProbeMWDwellOnTime;
             dataStore.topProbemwDwellOffTime = AnapicoTopProbeMWDwellOffTime;
+            dataStore.probeAOM = ProbeAOMFrequencyCentre;
+            dataStore.probeAOMstep = ProbeAOMFrequencyStep;
+            dataStore.probeAOMamp = ProbeAOMamp;
+            dataStore.valveCtrlVoltage = ValveCtrlVoltage;
+
 
 
             // serialize it
@@ -594,6 +603,9 @@ namespace EDMHardwareControl
                 AnapicoBottomProbeMWDwellOffTime = dataStore.bottomProbemwDwellOffTime;
                 AnapicoTopProbeMWDwellOnTime = dataStore.topProbemwDwellOnTime;
                 AnapicoTopProbeMWDwellOffTime = dataStore.topProbemwDwellOffTime;
+                ProbeAOMamp =dataStore.probeAOMamp;
+                ValveCtrlVoltage =dataStore.valveCtrlVoltage;
+                Console.Out.WriteLine(dataStore.valveCtrlVoltage);
 
             }
             catch (Exception)
@@ -854,6 +866,8 @@ namespace EDMHardwareControl
             }
         }
 
+       
+
         public double ProbeAOMFrequencyStep
         {
             get
@@ -861,6 +875,8 @@ namespace EDMHardwareControl
                 return Double.Parse(window.probeAOMFreqStepTextBox.Text);
             }
         }
+
+        
 
         /* This is something of a cheesy hack. It lets the edm script check to see if the YAG
           * laser has failed.
@@ -1071,10 +1087,22 @@ namespace EDMHardwareControl
             }
             set
             {
+                SetprobeAOMVoltage(value);
                 window.SetTextBox(window.probeAOMVTextBox, value.ToString());
             }
         }
 
+        public double ProbeAOMamp
+        {
+            get
+            {
+                return Double.Parse(window.probeAOMampnumericUpDown.Text);
+            }
+            set {
+                window.SetNumericUpDown(window.probeAOMampnumericUpDown, value);
+                UpdateProbeAOMamp(value);
+            }
+        }
        
 
         public double probeAOMStep
@@ -1240,7 +1268,9 @@ namespace EDMHardwareControl
             }
             set
             {
+                UpdateVCO161AmpVoltage(value);
                 window.SetTextBox(window.VCO161AmpVoltageTextBox, value.ToString());
+
             }
         }
 
@@ -1288,6 +1318,7 @@ namespace EDMHardwareControl
             }
             set
             {
+                UpdateVCO155AmpVoltage(value);
                 window.SetTextBox(window.VCO155AmpVoltageTextBox, value.ToString());
             }
         }
@@ -1720,6 +1751,18 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool phaseFlip1State
+        {
+            get
+            {
+                return window.phaseFlip1CheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.phaseFlip1CheckBox, value);
+            }
+        }
+
         private double piFlipMonVoltage;
         public double PiFlipMonVoltage
         {
@@ -2006,6 +2049,7 @@ namespace EDMHardwareControl
 
         public void UpdateProbeAOMamp(double val)
         {
+            
             SetAnalogOutput(probeAOMampAnalogOutputTask, val);
         }
 
@@ -2968,9 +3012,23 @@ namespace EDMHardwareControl
             Thread.Sleep(5);
         }
 
+        private double valveCtrlVoltage;
+
+        public double ValveCtrlVoltage
+        {
+            get { return valveCtrlVoltage; }
+            set
+            {
+                valveCtrlVoltage = value;
+                window.valveControlVoltageNumericUpDown.Value = (Decimal)value;
+                UpdateValveControlVoltage(value);
+                UpdateValveMonitor();
+            }
+        }
 
         public void UpdateValveControlVoltage(double val)
-        { 
+        {
+            valveCtrlVoltage = val;
             SetAnalogOutput(valveCtrlVoltageAnalogOutputTask, val);
         }
 
@@ -3078,6 +3136,29 @@ namespace EDMHardwareControl
         //    window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
         //    UpdatePumpPolarizerAngle();
         //}
+
+        public void SetGreenSynthFrequency(double value)
+        {
+            try
+            {
+                greenSynth.Connect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Disconnect error: " + e.Message);
+            }
+            greenSynth.Frequency = value;
+            window.SetTextBox(window.greenOnFreqBox, String.Format("{0:F2}", value));
+            try
+            {
+                greenSynth.Disconnect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Disconnect error: " + e.Message);
+            }
+        }
+        
 
         public void EnableGreenSynth(bool enable)
         {
