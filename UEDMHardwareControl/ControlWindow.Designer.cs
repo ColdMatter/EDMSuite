@@ -73,6 +73,9 @@
             this.ToolStripMenuItemPlotPressureChart = new System.Windows.Forms.ToolStripMenuItem();
             this.temperatureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemPlotTemperatureChart = new System.Windows.Forms.ToolStripMenuItem();
+            this.neonFlowPlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.neonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemPlotNeonFlowChart = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.gbCryoControl = new System.Windows.Forms.GroupBox();
@@ -409,7 +412,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // saveToolStripMenuItem
@@ -417,15 +420,16 @@
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.plotsToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
             // 
             this.plotsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pressureAndTemperaturePlotsToolStripMenuItem});
+            this.pressureAndTemperaturePlotsToolStripMenuItem,
+            this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -467,10 +471,33 @@
             this.ToolStripMenuItemPlotTemperatureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotTemperatureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotTemperatureChart_Click);
             // 
+            // neonFlowPlotToolStripMenuItem
+            // 
+            this.neonFlowPlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.neonToolStripMenuItem});
+            this.neonFlowPlotToolStripMenuItem.Name = "neonFlowPlotToolStripMenuItem";
+            this.neonFlowPlotToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.neonFlowPlotToolStripMenuItem.Text = "Gas Flow Plots";
+            // 
+            // neonToolStripMenuItem
+            // 
+            this.neonToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemPlotNeonFlowChart});
+            this.neonToolStripMenuItem.Name = "neonToolStripMenuItem";
+            this.neonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.neonToolStripMenuItem.Text = "Neon";
+            // 
+            // ToolStripMenuItemPlotNeonFlowChart
+            // 
+            this.ToolStripMenuItemPlotNeonFlowChart.Name = "ToolStripMenuItemPlotNeonFlowChart";
+            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemPlotNeonFlowChart.Text = "Plot Image";
+            this.ToolStripMenuItemPlotNeonFlowChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotNeonFlowChart_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1975,6 +2002,9 @@
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.TextBox tbRefreshModeTemperatureSetpoint;
         private System.Windows.Forms.TabPage tabPageHeatersControl;
+        private System.Windows.Forms.ToolStripMenuItem neonFlowPlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem neonToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemPlotNeonFlowChart;
     }
 }
 
