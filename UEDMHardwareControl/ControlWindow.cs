@@ -162,6 +162,16 @@ namespace UEDMHardwareControl
         }
 
         /// <summary>
+        /// This menu item is used to save an image of the pressure graph in its current state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemPlotPressureChart_Click(object sender, EventArgs e)
+        {
+            controller.SavePlotImage(chart1);
+        }
+
+        /// <summary>
         /// This menu item is used to save an image of the temperature graph in its current state.
         /// </summary>
         /// <param name="sender"></param>
@@ -172,13 +182,13 @@ namespace UEDMHardwareControl
         }
 
         /// <summary>
-        /// This menu item is used to save an image of the pressure graph in its current state.
+        /// This menu item is used to save an image of the neon flow graph in its current state.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ToolStripMenuItemPlotPressureChart_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemPlotNeonFlowChart_Click(object sender, EventArgs e)
         {
-            controller.SavePlotImage(chart2);
+            controller.SavePlotImage(chart3);
         }
         
         
@@ -446,6 +456,10 @@ namespace UEDMHardwareControl
         {
             controller.UpdateRefreshTemperature();
         }
+
+        
+
+        
 
         
 
