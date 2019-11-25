@@ -390,7 +390,7 @@ namespace UEDMHardwareControl
 
         public static class SourceRefreshConstants
         {
-            public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 1e-4 mbar
+            public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
             public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
@@ -403,6 +403,7 @@ namespace UEDMHardwareControl
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
             public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
+            public static Double NeonEvaporationPollPeriod { get { return 100; } } // milli seconds
         }
 
         public void EnableRefreshModeRoomTemperature(bool Enable)
@@ -500,6 +501,7 @@ namespace UEDMHardwareControl
                 if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
                 if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
+                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
                     {
                         StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
@@ -518,6 +520,11 @@ namespace UEDMHardwareControl
                         {
                             break;
                         }
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
+                    }
+                    else
+                    {
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
                     }
                 }
                 
