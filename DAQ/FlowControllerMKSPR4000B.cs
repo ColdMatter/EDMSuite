@@ -69,7 +69,6 @@ namespace DAQ.HAL
         {
             ConnectToFlowController();
             string query = SetCarriageReturn(String.Concat("?", cmd, parameter));
-            Console.Write(query);
             string response = Query(query);
             Disconnect();
             return response;
