@@ -457,6 +457,11 @@ namespace UEDMHardwareControl
             controller.UpdateRefreshTemperature();
         }
 
+        private void ToolStripMenuItemSaveNeonFlowDataCSV_Click(object sender, EventArgs e)
+        {
+            controller.SavePlotDataToCSV(chart3);
+        }
+
         
 
         

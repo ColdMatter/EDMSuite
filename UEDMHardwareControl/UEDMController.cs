@@ -152,9 +152,52 @@ namespace UEDMHardwareControl
 	         }
         }
 
-        public void SavePlotDataToCSV(Chart mychart)// to be created
+        public string csvContent;
+        public void SavePlotDataToCSV(Chart myChart)// to be created
         {
+            // Displays a SaveFileDialog so the user can save the Image
+            // assigned to Button2.
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "CSV|*.csv";
+            saveFileDialog1.Title = "Save a CSV File";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {    
+                // If the file name is not an empty string open it for saving.
+                if(saveFileDialog1.FileName != "")
+                {
             
+                    foreach (Series series in myChart.Series)
+                    {
+                        string seriesName = series.Name;
+                        int pointCount = series.Points.Count;
+                        csvContent += "Unix Time Stamp (s)" + "," + "Full date/time" + "," + "Neon Flow (SCCM)" + "\r\n"; // Header lines
+
+                        for (int p = 0; p < pointCount; p++)
+                        {
+                            var points = series.Points[p];
+
+                            string yValuesCSV = String.Empty;
+
+                            DateTime xDateTime = DateTime.FromOADate(points.XValue); // points.XValue is assumed to be a double. It must be converted to a datetime so that we can choose the datetime string format easily.
+                            Int32 unixTimestamp = (Int32)(xDateTime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                            string csvLine = unixTimestamp + "," + xDateTime.ToString("dd/MM/yyyy hh:mm:ss") + "," + points.YValues[0];
+                    
+                            csvContent += csvLine + "\r\n";
+
+                        }
+
+                    }
+
+                    // Using stream writer class the chart points are exported. Create an instance of the stream writer class.
+                    System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
+
+                    // Write the datapoints into the file.
+                    file.WriteLine(csvContent);
+
+                    file.Close();
+                }
+            }
         }
 
         #endregion

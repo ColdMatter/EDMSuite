@@ -145,6 +145,8 @@
             this.tbNeonFlowActual = new System.Windows.Forms.TextBox();
             this.tabPageHeatersControl = new System.Windows.Forms.TabPage();
             this.gbDigitalHeaters = new System.Windows.Forms.GroupBox();
+            this.tbHeaterControlStatus = new System.Windows.Forms.TextBox();
+            this.labelHeaterControlStatus = new System.Windows.Forms.Label();
             this.btHeatersTurnOffWaitCancel = new System.Windows.Forms.Button();
             this.btHeatersTurnOffWaitStart = new System.Windows.Forms.Button();
             this.labelHowLongUntilHeatersTurnOff = new System.Windows.Forms.Label();
@@ -185,8 +187,7 @@
             this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tbRefreshModeStatus = new System.Windows.Forms.TextBox();
             this.tabPageTemporary = new System.Windows.Forms.TabPage();
-            this.labelHeaterControlStatus = new System.Windows.Forms.Label();
-            this.tbHeaterControlStatus = new System.Windows.Forms.TextBox();
+            this.ToolStripMenuItemSaveNeonFlowDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.gbTemperatureMonitorControl.SuspendLayout();
@@ -484,7 +485,8 @@
             // neonToolStripMenuItem
             // 
             this.neonToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItemPlotNeonFlowChart});
+            this.ToolStripMenuItemPlotNeonFlowChart,
+            this.ToolStripMenuItemSaveNeonFlowDataCSV});
             this.neonToolStripMenuItem.Name = "neonToolStripMenuItem";
             this.neonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.neonToolStripMenuItem.Text = "Neon";
@@ -492,7 +494,7 @@
             // ToolStripMenuItemPlotNeonFlowChart
             // 
             this.ToolStripMenuItemPlotNeonFlowChart.Name = "ToolStripMenuItemPlotNeonFlowChart";
-            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemPlotNeonFlowChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotNeonFlowChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotNeonFlowChart_Click);
             // 
@@ -1392,6 +1394,23 @@
             this.gbDigitalHeaters.TabStop = false;
             this.gbDigitalHeaters.Text = "Digital Heater Control";
             // 
+            // tbHeaterControlStatus
+            // 
+            this.tbHeaterControlStatus.Location = new System.Drawing.Point(436, 160);
+            this.tbHeaterControlStatus.Multiline = true;
+            this.tbHeaterControlStatus.Name = "tbHeaterControlStatus";
+            this.tbHeaterControlStatus.Size = new System.Drawing.Size(393, 80);
+            this.tbHeaterControlStatus.TabIndex = 17;
+            // 
+            // labelHeaterControlStatus
+            // 
+            this.labelHeaterControlStatus.AutoSize = true;
+            this.labelHeaterControlStatus.Location = new System.Drawing.Point(390, 163);
+            this.labelHeaterControlStatus.Name = "labelHeaterControlStatus";
+            this.labelHeaterControlStatus.Size = new System.Drawing.Size(40, 13);
+            this.labelHeaterControlStatus.TabIndex = 16;
+            this.labelHeaterControlStatus.Text = "Status:";
+            // 
             // btHeatersTurnOffWaitCancel
             // 
             this.btHeatersTurnOffWaitCancel.Enabled = false;
@@ -1804,22 +1823,12 @@
             this.tabPageTemporary.TabIndex = 1;
             this.tabPageTemporary.Text = "Temporary tab";
             // 
-            // labelHeaterControlStatus
+            // ToolStripMenuItemSaveNeonFlowDataCSV
             // 
-            this.labelHeaterControlStatus.AutoSize = true;
-            this.labelHeaterControlStatus.Location = new System.Drawing.Point(390, 163);
-            this.labelHeaterControlStatus.Name = "labelHeaterControlStatus";
-            this.labelHeaterControlStatus.Size = new System.Drawing.Size(40, 13);
-            this.labelHeaterControlStatus.TabIndex = 16;
-            this.labelHeaterControlStatus.Text = "Status:";
-            // 
-            // tbHeaterControlStatus
-            // 
-            this.tbHeaterControlStatus.Location = new System.Drawing.Point(436, 160);
-            this.tbHeaterControlStatus.Multiline = true;
-            this.tbHeaterControlStatus.Name = "tbHeaterControlStatus";
-            this.tbHeaterControlStatus.Size = new System.Drawing.Size(393, 80);
-            this.tbHeaterControlStatus.TabIndex = 17;
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Name = "ToolStripMenuItemSaveNeonFlowDataCSV";
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(154, 22);
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Text = "Plot Data (CSV)";
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveNeonFlowDataCSV_Click);
             // 
             // ControlWindow
             // 
@@ -2028,6 +2037,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemPlotNeonFlowChart;
         public System.Windows.Forms.TextBox tbHeaterControlStatus;
         private System.Windows.Forms.Label labelHeaterControlStatus;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSaveNeonFlowDataCSV;
     }
 }
 
