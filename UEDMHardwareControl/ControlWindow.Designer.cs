@@ -185,6 +185,8 @@
             this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tbRefreshModeStatus = new System.Windows.Forms.TextBox();
             this.tabPageTemporary = new System.Windows.Forms.TabPage();
+            this.labelHeaterControlStatus = new System.Windows.Forms.Label();
+            this.tbHeaterControlStatus = new System.Windows.Forms.TextBox();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.gbTemperatureMonitorControl.SuspendLayout();
@@ -1373,6 +1375,8 @@
             // 
             // gbDigitalHeaters
             // 
+            this.gbDigitalHeaters.Controls.Add(this.tbHeaterControlStatus);
+            this.gbDigitalHeaters.Controls.Add(this.labelHeaterControlStatus);
             this.gbDigitalHeaters.Controls.Add(this.btHeatersTurnOffWaitCancel);
             this.gbDigitalHeaters.Controls.Add(this.btHeatersTurnOffWaitStart);
             this.gbDigitalHeaters.Controls.Add(this.labelHowLongUntilHeatersTurnOff);
@@ -1383,7 +1387,7 @@
             this.gbDigitalHeaters.Controls.Add(this.gbCryoStage2HeaterControl);
             this.gbDigitalHeaters.Location = new System.Drawing.Point(16, 14);
             this.gbDigitalHeaters.Name = "gbDigitalHeaters";
-            this.gbDigitalHeaters.Size = new System.Drawing.Size(849, 220);
+            this.gbDigitalHeaters.Size = new System.Drawing.Size(849, 255);
             this.gbDigitalHeaters.TabIndex = 17;
             this.gbDigitalHeaters.TabStop = false;
             this.gbDigitalHeaters.Text = "Digital Heater Control";
@@ -1800,6 +1804,23 @@
             this.tabPageTemporary.TabIndex = 1;
             this.tabPageTemporary.Text = "Temporary tab";
             // 
+            // labelHeaterControlStatus
+            // 
+            this.labelHeaterControlStatus.AutoSize = true;
+            this.labelHeaterControlStatus.Location = new System.Drawing.Point(390, 163);
+            this.labelHeaterControlStatus.Name = "labelHeaterControlStatus";
+            this.labelHeaterControlStatus.Size = new System.Drawing.Size(40, 13);
+            this.labelHeaterControlStatus.TabIndex = 16;
+            this.labelHeaterControlStatus.Text = "Status:";
+            // 
+            // tbHeaterControlStatus
+            // 
+            this.tbHeaterControlStatus.Location = new System.Drawing.Point(436, 160);
+            this.tbHeaterControlStatus.Multiline = true;
+            this.tbHeaterControlStatus.Name = "tbHeaterControlStatus";
+            this.tbHeaterControlStatus.Size = new System.Drawing.Size(393, 80);
+            this.tbHeaterControlStatus.TabIndex = 17;
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2005,6 +2026,8 @@
         private System.Windows.Forms.ToolStripMenuItem neonFlowPlotToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem neonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemPlotNeonFlowChart;
+        public System.Windows.Forms.TextBox tbHeaterControlStatus;
+        private System.Windows.Forms.Label labelHeaterControlStatus;
     }
 }
 

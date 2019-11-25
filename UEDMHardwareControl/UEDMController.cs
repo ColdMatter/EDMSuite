@@ -152,6 +152,11 @@ namespace UEDMHardwareControl
 	         }
         }
 
+        public void SavePlotDataToCSV(Chart mychart)// to be created
+        {
+            
+        }
+
         #endregion
 
         #region Cryo Control
@@ -763,17 +768,19 @@ namespace UEDMHardwareControl
 
         public void StopStage1DigitalHeaterControl()
         {
-            Stage1HeaterControlFlag = false;
+            Stage1HeaterControlFlag = false; // change control flag so that the temperature setpoint loop stops
             window.EnableControl(window.btStartHeaterControlStage1, true);
             window.EnableControl(window.btStopHeaterControlStage1, false);
             window.EnableControl(window.checkBoxEnableHeatersS1, true);
+            EnableDigitalHeaters(1, false); // turn off heater
         }
         public void StopStage2DigitalHeaterControl()
         {
-            Stage2HeaterControlFlag = false;
+            Stage2HeaterControlFlag = false; // change control flag so that the temperature setpoint loop stops
             window.EnableControl(window.btStartHeaterControlStage2, true);
             window.EnableControl(window.btStopHeaterControlStage2, false);
             window.EnableControl(window.checkBoxEnableHeatersS2, true);
+            EnableDigitalHeaters(2, false); // turn off heater
         }
 
         public void UpdateStage2TemperatureSetpoint()
@@ -787,21 +794,33 @@ namespace UEDMHardwareControl
 
         public void ControlHeaters()
         {
-            if(Stage2HeaterControlFlag)
+            if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
             {
-                if (Double.Parse(lastS2Temp) < Stage2TemperatureSetpoint)
-                {
-                    EnableDigitalHeaters(2, true);
-                }
-                else EnableDigitalHeaters(2, false);
+                window.SetTextBox(window.tbHeaterControlStatus, "Pressure above safe limit for turbo. Heaters disabled.");
+                EnableDigitalHeaters(1, false); // turn heaters off
+                EnableDigitalHeaters(2, false); // turn heaters off
+                
             }
-            if (Stage1HeaterControlFlag)
+            else
             {
-                if (Double.Parse(lastS1Temp) < Stage1TemperatureSetpoint)
+                window.SetTextBox(window.tbHeaterControlStatus, "");
+                if (Stage2HeaterControlFlag)
                 {
-                    EnableDigitalHeaters(1, true);
+                    if (Double.Parse(lastS2Temp) < Stage2TemperatureSetpoint)
+                    {
+                        EnableDigitalHeaters(2, true);
+                    }
+                    else EnableDigitalHeaters(2, false);
                 }
-                else EnableDigitalHeaters(1, false);
+                if (Stage1HeaterControlFlag)
+                {
+                    if (Double.Parse(lastS1Temp) < Stage1TemperatureSetpoint)
+                    {
+                        EnableDigitalHeaters(1, true);
+                    }
+                    else EnableDigitalHeaters(1, false);
+                }
+                
             }
         }
 
