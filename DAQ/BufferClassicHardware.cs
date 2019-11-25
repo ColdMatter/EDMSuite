@@ -16,11 +16,11 @@ namespace DAQ.HAL
             Boards.Add("daq", "/DAQ_PXIe_6363");
             Boards.Add("pg", "/PG_PXIe_6535");
             Boards.Add("tcl", "/TCL_PXI_6229");
-            Boards.Add("unused", "/Unused_PXI_6229");  //This card is connected and ready to use but not in use.
+            Boards.Add("UEDMHardwareController", "/UEDM_Hardware_Controller_PXI_6229");  
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
-            //string Unnamed = (string)Boards["unused"];
+            string UEDMHardwareControllerBoard = (string)Boards["UEDMHardwareController"];
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
@@ -62,31 +62,35 @@ namespace DAQ.HAL
             AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
             AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
-            AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
+            //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
             AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
-            AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
-            AddAnalogInputChannel("S1TemperatureMonitor", daqBoard + "/ai9", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("S2TemperatureMonitor", daqBoard + "/ai10", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("SF6TemperatureMonitor", daqBoard + "/ai11", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
+            //AddAnalogInputChannel("S1TemperatureMonitor", daqBoard + "/ai9", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("S2TemperatureMonitor", daqBoard + "/ai10", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("SF6TemperatureMonitor", daqBoard + "/ai11", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("v2laser", daqBoard + "/ao1"); //pin 21
 
-            // map the analog input channels for the "unused" card
-            //AddAnalogInputChannel("master", Unnamed + "/ai0", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p1", Unnamed + "/ai1", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("p2", Unnamed + "/ai2", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("cavityRampMonitor", Unnamed + "/ai3", AITerminalConfiguration.Rse);
+            // map the analog input channels for the "UEDMHardwareControllerBoard" card
+            AddAnalogInputChannel("cellTemperatureMonitor", UEDMHardwareControllerBoard + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("S1TemperatureMonitor", UEDMHardwareControllerBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("S2TemperatureMonitor", UEDMHardwareControllerBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("SF6TemperatureMonitor", UEDMHardwareControllerBoard + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressureGauge_source", UEDMHardwareControllerBoard + "/ai4", AITerminalConfiguration.Rse);
 
-            // map the analog output channels for the "unused" card
+            
+
+            // map the analog output channels for the "UEDMHardwareControllerBoard" card
             //AddAnalogOutputChannel("laser", Unnamed + "/ao0");
             //AddAnalogOutputChannel("phaseLockAnalogOutput", Unnamed + "/ao1")
-            //AddAnalogOutputChannel("xxx", Unnamed + "/ao2");
-            //AddAnalogOutputChannel("xxx", Unnamed + "/ao3");
+
+            // map the digital channels of the "UEDMHardwareControllerBoard" card
+            //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 0);// cryo cooler digital logic
 
             // map the analog input channels for the "tcl" card
             AddAnalogInputChannel("VISmaster", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
