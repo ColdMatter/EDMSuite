@@ -436,10 +436,10 @@ namespace UEDMHardwareControl
         }
 
 
-        public static class SourceRefreshConstants
+        public static class SourceRefreshConstants 
         {
             public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
-            public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
+            public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
             public static Double TemperatureSetpointDecrementValue { get { return 0.5; } } // Kelvin
