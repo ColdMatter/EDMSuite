@@ -459,7 +459,17 @@ namespace UEDMHardwareControl
 
         private void ToolStripMenuItemSaveNeonFlowDataCSV_Click(object sender, EventArgs e)
         {
-            controller.SavePlotDataToCSV(chart3);
+            //controller.SavePlotDataToCSV(chart3,"SCCM");
+        }
+
+        private void ToolStripMenuItemSavePressurePlotDataCSV_Click(object sender, EventArgs e)
+        {
+            //controller.SavePlotDataToCSV(chart1, "mbar");
+        }
+
+        private void ToolStripMenuItemSaveTemperaturePlotDataCSV_Click(object sender, EventArgs e)
+        {
+            //controller.SavePlotDataToCSV(chart2, "Kelvin");
         }
 
         
