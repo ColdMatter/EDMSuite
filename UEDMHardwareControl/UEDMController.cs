@@ -152,43 +152,19 @@ namespace UEDMHardwareControl
 	         }
         }
 
-        public string csvContent;
-        public void SavePlotDataToCSV(Chart myChart)// to be created
+        
+        public string[] csvData;
+        public void SavePlotDataToCSV(string csvContent)// to be created
         {
-            // Displays a SaveFileDialog so the user can save the Image
-            // assigned to Button2.
+            // Displays a SaveFileDialog so the user can save the data
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "CSV|*.csv";
             saveFileDialog1.Title = "Save a CSV File";
-
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {    
+            {
                 // If the file name is not an empty string open it for saving.
-                if(saveFileDialog1.FileName != "")
+                if (saveFileDialog1.FileName != "")
                 {
-            
-                    foreach (Series series in myChart.Series)
-                    {
-                        string seriesName = series.Name;
-                        int pointCount = series.Points.Count;
-                        csvContent += "Unix Time Stamp (s)" + "," + "Full date/time" + "," + "Neon Flow (SCCM)" + "\r\n"; // Header lines
-
-                        for (int p = 0; p < pointCount; p++)
-                        {
-                            var points = series.Points[p];
-
-                            string yValuesCSV = String.Empty;
-
-                            DateTime xDateTime = DateTime.FromOADate(points.XValue); // points.XValue is assumed to be a double. It must be converted to a datetime so that we can choose the datetime string format easily.
-                            Int32 unixTimestamp = (Int32)(xDateTime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                            string csvLine = unixTimestamp + "," + xDateTime.ToString("dd/MM/yyyy hh:mm:ss") + "," + points.YValues[0];
-                    
-                            csvContent += csvLine + "\r\n";
-
-                        }
-
-                    }
-
                     // Using stream writer class the chart points are exported. Create an instance of the stream writer class.
                     System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
 
@@ -197,7 +173,31 @@ namespace UEDMHardwareControl
 
                     file.Close();
                 }
+
+
             }
+            
+            //foreach (Series series in myChart.Series)
+            //{
+            //    string seriesName = series.Name;
+            //    int pointCount = series.Points.Count;
+            //    csvContent += "Unix Time Stamp (s)" + "," + "Full date/time" + "," + seriesName + " (" + Units + ")" + "\r\n"; // Header lines
+            //
+            //    for (int p = 0; p < pointCount; p++)
+            //    {
+            //        var points = series.Points[p];
+            //
+            //        string yValuesCSV = String.Empty;
+            //
+            //        DateTime xDateTime = DateTime.FromOADate(points.XValue); // points.XValue is assumed to be a double. It must be converted to a datetime so that we can choose the datetime string format easily.
+            //        Int32 unixTimestamp = (Int32)(xDateTime.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            //        string csvLine = unixTimestamp + "," + xDateTime.ToString("dd/MM/yyyy hh:mm:ss") + "," + points.YValues[0];
+            //
+            //        csvContent += csvLine + "\r\n";
+            //
+            //    }
+            //    csvContent += "\r\n";
+            //}
         }
 
         #endregion
@@ -509,7 +509,7 @@ namespace UEDMHardwareControl
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high for the turbo pump, reduce the setpoint of the heaters
+                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high for the turbo pump, reduce the setpoint of the heaters
                 {
                     if(HeatersEnabled)
                     {
@@ -523,7 +523,7 @@ namespace UEDMHardwareControl
                     SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, TemperatureSetpoint);
                     if (TemperatureSetpoint >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax)
                     {
-                        if (lastPressure <= SourceRefreshConstants.CryoStoppingPressure)
+                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure)
                         {
                             break;
                         }
@@ -547,7 +547,7 @@ namespace UEDMHardwareControl
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
                 if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
-                if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
                     window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
@@ -564,7 +564,7 @@ namespace UEDMHardwareControl
                     StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
                     if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the cell temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after Cell_T = NeonEvaporationCycleTemperatureMax)
                     {
-                        if (lastPressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
                             break;
                         }
@@ -588,7 +588,7 @@ namespace UEDMHardwareControl
 
             for(; ; )
             {
-                if(lastPressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
+                if(lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
                 {
                     if(!HeatersEnabled) // if heaters turned off then turn them on
                     {
@@ -629,7 +629,7 @@ namespace UEDMHardwareControl
                 if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the temperature has reached the specified value, then exit this loop.
                 TimeSpan TimeLeft = window.dateTimePickerStopHeatingAndTurnCryoOn.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
                 window.SetTextBox(window.tbHowLongUntilHeatingStopsAndCryoTurnsOn, TimeLeft.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
-                if (lastPressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
+                if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
                 {
                     if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
                     {
@@ -726,7 +726,7 @@ namespace UEDMHardwareControl
             }
             for(; ; )
             {
-                if(lastPressure <= SourceRefreshConstants.CryoStartingPressure)
+                if(lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
                 { break; }
                 Thread.Sleep(SourceRefreshConstants.CoolDownWait);
             }
@@ -754,7 +754,7 @@ namespace UEDMHardwareControl
             {
                 if (refreshModeCancelFlag) break;
                 window.SetTextBox(window.tbRefreshModeStatus, "Waiting for the pressure to reach a low enough value for the cryo to turn on"); // Update refresh mode status textbox
-                if(lastPressure <= SourceRefreshConstants.CryoStartingPressure)
+                if(lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
                 { break; }
                 Thread.Sleep(SourceRefreshConstants.CoolDownWait);
             }
@@ -837,7 +837,7 @@ namespace UEDMHardwareControl
 
         public void ControlHeaters()
         {
-            if (lastPressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+            if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
             {
                 window.SetTextBox(window.tbHeaterControlStatus, "Pressure above safe limit for turbo. Heaters disabled.");
                 EnableDigitalHeaters(1, false); // turn heaters off
@@ -918,7 +918,7 @@ namespace UEDMHardwareControl
 
         #region Pressure monitor
 
-        private double lastPressure;
+        private double lastSourcePressure;
         private int pressureMovingAverageSampleLength = 10;
         private Queue<double> pressureSamples = new Queue<double>();
         private string sourceSeries = "Source Pressure";
@@ -926,10 +926,10 @@ namespace UEDMHardwareControl
         public void UpdatePressureMonitor()
         {
             //sample the pressure
-            lastPressure = sourcePressureMonitor.Pressure;
+            lastSourcePressure = sourcePressureMonitor.Pressure;
 
             //add samples to Queues for averaging
-            pressureSamples.Enqueue(lastPressure);
+            pressureSamples.Enqueue(lastSourcePressure);
 
             //drop samples when array is larger than the moving average sample length
             while (pressureSamples.Count > pressureMovingAverageSampleLength)
@@ -953,11 +953,11 @@ namespace UEDMHardwareControl
         public void PlotLastPressure()
         {
             //sample the pressure
-            lastPressure = sourcePressureMonitor.Pressure;
+            lastSourcePressure = sourcePressureMonitor.Pressure;
             DateTime localDate = DateTime.Now;
 
             //plot the most recent samples
-            window.AddPointToChart(window.chart1, sourceSeries, localDate, lastPressure);
+            window.AddPointToChart(window.chart1, sourceSeries, localDate, lastSourcePressure);
         }
 
         private JSONSerializer pressureDataSerializer;
@@ -1025,7 +1025,7 @@ namespace UEDMHardwareControl
                         {
                             pressureDataSerializer.AddData(new PressureMonitorDataLog(DateTime.Now,
                                 pressureMonitorPollPeriod,
-                                lastPressure));
+                                lastSourcePressure));
                         }
 
                         count = 0;
@@ -1151,6 +1151,7 @@ namespace UEDMHardwareControl
 
 
         double[] tempMonitorsData;
+        public string csvDataTemperatureAndPressure = "";
 
         public void UpdateAllTempMonitorsUsingDAQ()
         {
@@ -1177,12 +1178,29 @@ namespace UEDMHardwareControl
             }
         }
 
-        
 
         private Thread PTMonitorPollThread;
         private int PTMonitorPollPeriod = 1000;
         private bool PTMonitorFlag;
         private Object PTMonitorLock;
+
+        internal void PTMonitorPollEnableUIElements(bool StartStop) // Start = true (elements to enable/disable when starting refresh mode)
+        {
+            window.EnableControl(window.btStartTandPMonitoring, !StartStop); // window.btStartTandPMonitoring.Enabled = false when starting refresh mode (for example)
+            window.EnableControl(window.btStopTandPMonitoring, StartStop); // window.btStopTandPMonitoring.Enabled = true when starting refresh mode (for example)
+            window.EnableControl(window.checkBoxSF6TempPlot, StartStop);
+            window.EnableControl(window.checkBoxS2TempPlot, StartStop);
+            window.EnableControl(window.checkBoxS1TempPlot, StartStop);
+            window.EnableControl(window.checkBoxCellTempPlot, StartStop);
+            window.EnableControl(window.checkBoxBeamlinePressurePlot, StartStop);
+            window.EnableControl(window.checkBoxSourcePressurePlot, StartStop);
+            window.EnableControl(window.btUpdateHeaterControlStage2, StartStop);
+            window.EnableControl(window.btStartHeaterControlStage2, StartStop);
+            window.EnableControl(window.btStartHeaterControlStage1, StartStop);
+            window.EnableControl(window.btUpdateHeaterControlStage1, StartStop);
+            window.EnableControl(window.btStartRefreshMode, StartStop);
+
+        }
 
         internal void StartPTMonitorPoll()
         {
@@ -1197,19 +1215,8 @@ namespace UEDMHardwareControl
             Stage1HeaterControlFlag = false;
             UpdateStage1TemperatureSetpoint();
             UpdateStage2TemperatureSetpoint();
-            window.EnableControl(window.btStartTandPMonitoring, false);
-            window.EnableControl(window.btStopTandPMonitoring, true);
-            window.EnableControl(window.checkBoxSF6TempPlot, true);
-            window.EnableControl(window.checkBoxS2TempPlot, true);
-            window.EnableControl(window.checkBoxS1TempPlot, true);
-            window.EnableControl(window.checkBoxCellTempPlot, true);
-            window.EnableControl(window.checkBoxBeamlinePressurePlot, true);
-            window.EnableControl(window.checkBoxSourcePressurePlot, true);
-            window.EnableControl(window.btUpdateHeaterControlStage2, true);
-            window.EnableControl(window.btStartHeaterControlStage2, true);
-            window.EnableControl(window.btStartHeaterControlStage1, true);
-            window.EnableControl(window.btUpdateHeaterControlStage1, true);
-            window.EnableControl(window.btStartRefreshMode, true);
+            PTMonitorPollEnableUIElements(true);
+            if (csvDataTemperatureAndPressure == "") csvDataTemperatureAndPressure += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "Cell Temperature (K)" + "," + "S1 Temperature (K)" + "," + "S2 Temperature (K)" + "," + "SF6 Temperature (K)" + "," + "Source Pressure (mbar)" + "," + "Beamline Pressure (mbar)" + "\r\n"; // Header lines for csv file
             pressureSamples.Clear();
             PTMonitorLock = new Object();
             PTMonitorFlag = false;
@@ -1223,11 +1230,21 @@ namespace UEDMHardwareControl
             }
             else
             {
-                StopStage1DigitalHeaterControl();
-                StopStage2DigitalHeaterControl();
-                EnableDigitalHeaters(1, false);
-                EnableDigitalHeaters(2, false);
-                PTMonitorFlag = true;
+                UEDMSavePlotDataDialog savePTDataDialog = new UEDMSavePlotDataDialog("Save data message", "Would you like to save the temperature and pressure data now? \n\nThe data will not be cleared.");
+                savePTDataDialog.ShowDialog();
+                if (savePTDataDialog.DialogResult != DialogResult.Cancel)
+                {
+                    StopStage1DigitalHeaterControl();
+                    StopStage2DigitalHeaterControl();
+                    EnableDigitalHeaters(1, false);
+                    EnableDigitalHeaters(2, false);
+                    PTMonitorFlag = true;
+                    if (savePTDataDialog.DialogResult == DialogResult.Yes)
+                    {
+                        SavePlotDataToCSV(csvDataTemperatureAndPressure);
+                    }
+                }
+                savePTDataDialog.Dispose();
             }
         }
         private void PTMonitorPollWorker()
@@ -1244,6 +1261,11 @@ namespace UEDMHardwareControl
                     PlotLastTemperatures();
                     UpdatePressureMonitor();
                     PlotLastPressure();
+
+                    Double unixTimestamp = (Double)(DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+                    string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + "," + lastCellTemp + "," + lastS1Temp + "," + lastS2Temp + "," + lastSF6Temp + "," + lastSourcePressure + "\r\n";
+                    csvDataTemperatureAndPressure += csvLine;
+
                     ControlHeaters();
                     if (PTMonitorFlag)
                     {
@@ -1252,22 +1274,7 @@ namespace UEDMHardwareControl
                     }
                 }
             }
-            window.EnableControl(window.btStartTandPMonitoring, true);
-            window.EnableControl(window.btStopTandPMonitoring, false);
-            window.EnableControl(window.checkBoxSF6TempPlot, false);
-            window.EnableControl(window.checkBoxS2TempPlot, false);
-            window.EnableControl(window.checkBoxS1TempPlot, false);
-            window.EnableControl(window.checkBoxCellTempPlot, false);
-            window.EnableControl(window.checkBoxBeamlinePressurePlot, false);
-            window.EnableControl(window.checkBoxSourcePressurePlot, false);
-            window.EnableControl(window.btUpdateHeaterControlStage2, false);
-            window.EnableControl(window.btStopHeaterControlStage2, false);
-            window.EnableControl(window.btStartHeaterControlStage2, false);
-            window.EnableControl(window.btStopHeaterControlStage1, false);
-            window.EnableControl(window.btStartHeaterControlStage1, false);
-            window.EnableControl(window.btUpdateHeaterControlStage1, false);
-            Stage2HeaterControlFlag = false;
-            Stage1HeaterControlFlag = false;
+            PTMonitorPollEnableUIElements(false);
         }
 
         #endregion
