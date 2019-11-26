@@ -162,7 +162,7 @@ namespace DAQ.HAL
                         else
                         {
                             if (Voltage > VoltageAt2K) Temperature = 0; // To avoid NaN - Below temperature measurement range 
-                            else Temperature = 9999.9999; // To avoid NaN - Above temperature measurement range 
+                            else Temperature = 999.999; // To avoid NaN - Above temperature measurement range 
                         }
                     }
                 }
