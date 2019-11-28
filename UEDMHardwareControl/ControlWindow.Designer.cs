@@ -71,11 +71,14 @@
             this.pressureAndTemperaturePlotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pressureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemPlotPressureChart = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSavePressurePlotDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.temperatureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemPlotTemperatureChart = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSaveTemperaturePlotDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.neonFlowPlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.neonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemPlotNeonFlowChart = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSaveNeonFlowDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.gbCryoControl = new System.Windows.Forms.GroupBox();
@@ -180,16 +183,14 @@
             this.gbRefreshModeCoolDown = new System.Windows.Forms.GroupBox();
             this.labelWhenHeatingStopsAndCryoTurnsOn = new System.Windows.Forms.Label();
             this.labelHowLongUntilHeatingStopsAndCryoTurnsOn = new System.Windows.Forms.Label();
-            this.tbHowLongUntilHeatingStopsAndCryoTurnsOn = new System.Windows.Forms.TextBox();
+            this.tbHowLongUntilCryoTurnsOn = new System.Windows.Forms.TextBox();
             this.dateTimePickerStopHeatingAndTurnCryoOn = new System.Windows.Forms.DateTimePicker();
             this.btCancelRefreshMode = new System.Windows.Forms.Button();
             this.btStartRefreshMode = new System.Windows.Forms.Button();
             this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tbRefreshModeStatus = new System.Windows.Forms.TextBox();
             this.tabPageTemporary = new System.Windows.Forms.TabPage();
-            this.ToolStripMenuItemSaveNeonFlowDataCSV = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemSavePressurePlotDataCSV = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemSaveTemperaturePlotDataCSV = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPageWarmUpMode = new System.Windows.Forms.TabPage();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.gbTemperatureMonitorControl.SuspendLayout();
@@ -417,7 +418,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // saveToolStripMenuItem
@@ -425,7 +426,7 @@
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.plotsToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
@@ -434,7 +435,7 @@
             this.pressureAndTemperaturePlotsToolStripMenuItem,
             this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -452,7 +453,7 @@
             this.ToolStripMenuItemPlotPressureChart,
             this.ToolStripMenuItemSavePressurePlotDataCSV});
             this.pressureToolStripMenuItem.Name = "pressureToolStripMenuItem";
-            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.pressureToolStripMenuItem.Text = "Pressure";
             // 
             // ToolStripMenuItemPlotPressureChart
@@ -462,13 +463,20 @@
             this.ToolStripMenuItemPlotPressureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotPressureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotPressureChart_Click);
             // 
+            // ToolStripMenuItemSavePressurePlotDataCSV
+            // 
+            this.ToolStripMenuItemSavePressurePlotDataCSV.Name = "ToolStripMenuItemSavePressurePlotDataCSV";
+            this.ToolStripMenuItemSavePressurePlotDataCSV.Size = new System.Drawing.Size(154, 22);
+            this.ToolStripMenuItemSavePressurePlotDataCSV.Text = "Plot Data (CSV)";
+            this.ToolStripMenuItemSavePressurePlotDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSavePressurePlotDataCSV_Click);
+            // 
             // temperatureToolStripMenuItem
             // 
             this.temperatureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemPlotTemperatureChart,
             this.ToolStripMenuItemSaveTemperaturePlotDataCSV});
             this.temperatureToolStripMenuItem.Name = "temperatureToolStripMenuItem";
-            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.temperatureToolStripMenuItem.Text = "Temperature";
             // 
             // ToolStripMenuItemPlotTemperatureChart
@@ -477,6 +485,13 @@
             this.ToolStripMenuItemPlotTemperatureChart.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemPlotTemperatureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotTemperatureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotTemperatureChart_Click);
+            // 
+            // ToolStripMenuItemSaveTemperaturePlotDataCSV
+            // 
+            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Name = "ToolStripMenuItemSaveTemperaturePlotDataCSV";
+            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Size = new System.Drawing.Size(154, 22);
+            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Text = "Plot Data (CSV)";
+            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveTemperaturePlotDataCSV_Click);
             // 
             // neonFlowPlotToolStripMenuItem
             // 
@@ -492,7 +507,7 @@
             this.ToolStripMenuItemPlotNeonFlowChart,
             this.ToolStripMenuItemSaveNeonFlowDataCSV});
             this.neonToolStripMenuItem.Name = "neonToolStripMenuItem";
-            this.neonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.neonToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.neonToolStripMenuItem.Text = "Neon";
             // 
             // ToolStripMenuItemPlotNeonFlowChart
@@ -502,10 +517,17 @@
             this.ToolStripMenuItemPlotNeonFlowChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotNeonFlowChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotNeonFlowChart_Click);
             // 
+            // ToolStripMenuItemSaveNeonFlowDataCSV
+            // 
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Name = "ToolStripMenuItemSaveNeonFlowDataCSV";
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(154, 22);
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Text = "Plot Data (CSV)";
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveNeonFlowDataCSV_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1127,6 +1149,7 @@
             this.tabControl.Controls.Add(this.tabPageFlowControllers);
             this.tabControl.Controls.Add(this.tabPageHeatersControl);
             this.tabControl.Controls.Add(this.tabPageRefreshMode);
+            this.tabControl.Controls.Add(this.tabPageWarmUpMode);
             this.tabControl.Controls.Add(this.tabPageTemporary);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
@@ -1685,11 +1708,11 @@
             // labelRefreshModeHowLongUntilHeatersTurnOff
             // 
             this.labelRefreshModeHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(40, 43);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 43);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Name = "labelRefreshModeHowLongUntilHeatersTurnOff";
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(77, 26);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Text = "How long until \r\ncryo turns on:";
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
             // tbRefreshModeHowLongUntilHeatersTurnOff
             // 
@@ -1732,7 +1755,7 @@
             // 
             this.gbRefreshModeCoolDown.Controls.Add(this.labelWhenHeatingStopsAndCryoTurnsOn);
             this.gbRefreshModeCoolDown.Controls.Add(this.labelHowLongUntilHeatingStopsAndCryoTurnsOn);
-            this.gbRefreshModeCoolDown.Controls.Add(this.tbHowLongUntilHeatingStopsAndCryoTurnsOn);
+            this.gbRefreshModeCoolDown.Controls.Add(this.tbHowLongUntilCryoTurnsOn);
             this.gbRefreshModeCoolDown.Controls.Add(this.dateTimePickerStopHeatingAndTurnCryoOn);
             this.gbRefreshModeCoolDown.Location = new System.Drawing.Point(50, 128);
             this.gbRefreshModeCoolDown.Name = "gbRefreshModeCoolDown";
@@ -1759,12 +1782,12 @@
             this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.TabIndex = 11;
             this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
             // 
-            // tbHowLongUntilHeatingStopsAndCryoTurnsOn
+            // tbHowLongUntilCryoTurnsOn
             // 
-            this.tbHowLongUntilHeatingStopsAndCryoTurnsOn.Location = new System.Drawing.Point(103, 45);
-            this.tbHowLongUntilHeatingStopsAndCryoTurnsOn.Name = "tbHowLongUntilHeatingStopsAndCryoTurnsOn";
-            this.tbHowLongUntilHeatingStopsAndCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
-            this.tbHowLongUntilHeatingStopsAndCryoTurnsOn.TabIndex = 16;
+            this.tbHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(103, 45);
+            this.tbHowLongUntilCryoTurnsOn.Name = "tbHowLongUntilCryoTurnsOn";
+            this.tbHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
+            this.tbHowLongUntilCryoTurnsOn.TabIndex = 16;
             // 
             // dateTimePickerStopHeatingAndTurnCryoOn
             // 
@@ -1827,26 +1850,15 @@
             this.tabPageTemporary.TabIndex = 1;
             this.tabPageTemporary.Text = "Temporary tab";
             // 
-            // ToolStripMenuItemSaveNeonFlowDataCSV
+            // tabPageWarmUpMode
             // 
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Name = "ToolStripMenuItemSaveNeonFlowDataCSV";
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(154, 22);
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Text = "Plot Data (CSV)";
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveNeonFlowDataCSV_Click);
-            // 
-            // ToolStripMenuItemSavePressurePlotDataCSV
-            // 
-            this.ToolStripMenuItemSavePressurePlotDataCSV.Name = "ToolStripMenuItemSavePressurePlotDataCSV";
-            this.ToolStripMenuItemSavePressurePlotDataCSV.Size = new System.Drawing.Size(154, 22);
-            this.ToolStripMenuItemSavePressurePlotDataCSV.Text = "Plot Data (CSV)";
-            this.ToolStripMenuItemSavePressurePlotDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSavePressurePlotDataCSV_Click);
-            // 
-            // ToolStripMenuItemSaveTemperaturePlotDataCSV
-            // 
-            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Name = "ToolStripMenuItemSaveTemperaturePlotDataCSV";
-            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Size = new System.Drawing.Size(154, 22);
-            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Text = "Plot Data (CSV)";
-            this.ToolStripMenuItemSaveTemperaturePlotDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveTemperaturePlotDataCSV_Click);
+            this.tabPageWarmUpMode.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageWarmUpMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageWarmUpMode.Name = "tabPageWarmUpMode";
+            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageWarmUpMode.Size = new System.Drawing.Size(1033, 703);
+            this.tabPageWarmUpMode.TabIndex = 5;
+            this.tabPageWarmUpMode.Text = "Warm up mode";
             // 
             // ControlWindow
             // 
@@ -1971,11 +1983,11 @@
         public System.Windows.Forms.CheckBox checkBoxCellTempPlot;
         public System.Windows.Forms.CheckBox checkBoxCryoEnable;
         private System.Windows.Forms.Label labelClearTemperaturePlotData;
-        private System.Windows.Forms.Button btClearSF6TempData;
-        private System.Windows.Forms.Button btClearS2TempData;
-        private System.Windows.Forms.Button btClearS1TempData;
-        private System.Windows.Forms.Button btClearCellTempData;
-        private System.Windows.Forms.Button btClearAllTempData;
+        public System.Windows.Forms.Button btClearSF6TempData;
+        public System.Windows.Forms.Button btClearS2TempData;
+        public System.Windows.Forms.Button btClearS1TempData;
+        public System.Windows.Forms.Button btClearCellTempData;
+        public System.Windows.Forms.Button btClearAllTempData;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPagePlotting;
         private System.Windows.Forms.TabPage tabPageTemporary;
@@ -1987,9 +1999,9 @@
         private System.Windows.Forms.Label labelSelectPressureDataToPlotChart1;
         public System.Windows.Forms.CheckBox checkBoxBeamlinePressurePlot;
         public System.Windows.Forms.CheckBox checkBoxSourcePressurePlot;
-        private System.Windows.Forms.Button btClearAllPressureData;
-        private System.Windows.Forms.Button btClearBeamlinePressureData;
-        private System.Windows.Forms.Button btClearSourcePressureData;
+        public System.Windows.Forms.Button btClearAllPressureData;
+        public System.Windows.Forms.Button btClearBeamlinePressureData;
+        public System.Windows.Forms.Button btClearSourcePressureData;
         private System.Windows.Forms.Label labelClearPressurePlotData;
         private System.Windows.Forms.TabPage tabPageFlowControllers;
         private System.Windows.Forms.GroupBox gbSF6FlowController;
@@ -2038,7 +2050,7 @@
         public System.Windows.Forms.DateTimePicker dateTimePickerStopHeatingAndTurnCryoOn;
         private System.Windows.Forms.Label labelWhenHeatingStopsAndCryoTurnsOn;
         private System.Windows.Forms.Label labelHowLongUntilHeatingStopsAndCryoTurnsOn;
-        public System.Windows.Forms.TextBox tbHowLongUntilHeatingStopsAndCryoTurnsOn;
+        public System.Windows.Forms.TextBox tbHowLongUntilCryoTurnsOn;
         public System.Windows.Forms.CheckBox checkBoxRefreshSourceAtRoomTemperature;
         private System.Windows.Forms.GroupBox gbRefreshModeWarmUp;
         private System.Windows.Forms.Label labelRefreshModeHowLongUntilHeatersTurnOff;
@@ -2058,6 +2070,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSaveNeonFlowDataCSV;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSavePressurePlotDataCSV;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSaveTemperaturePlotDataCSV;
+        private System.Windows.Forms.TabPage tabPageWarmUpMode;
     }
 }
 
