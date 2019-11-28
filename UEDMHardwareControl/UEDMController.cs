@@ -357,15 +357,31 @@ namespace UEDMHardwareControl
         private double refreshTemperature;
         private bool HeatersEnabled;
 
+        /// <summary>
+        /// When refresh mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with refresh mode. This function can be used to disable or enable the relevant UI components.
+        /// </summary>
+        /// <param name="StartStop"></param>
         internal void RefreshModeEnableUIElements(bool StartStop) // Start = true (elements to enable/disable when starting refresh mode)
         {
+            // Ugly, but it works...
+            // Disable and enable to Start and Stop buttons respectively
             window.EnableControl(window.btStartRefreshMode, !StartStop); // window.btStartRefreshMode.Enabled = false when starting refresh mode (for example)
             window.EnableControl(window.btCancelRefreshMode, StartStop); // window.btCancelRefreshMode.Enabled = true when starting refresh mode (for example)
+            // Disable user control of the cryo on/off status
             window.EnableControl(window.checkBoxCryoEnable, !StartStop);
+            // Disable user control of the heater setpoint when in refresh mode
             window.EnableControl(window.btUpdateHeaterControlStage2, !StartStop);
             window.EnableControl(window.btUpdateHeaterControlStage1, !StartStop);
             window.EnableControl(window.btHeatersTurnOffWaitStart, !StartStop);
-            
+            // Disable clear pressure/temp data so that the user can't interfere with refresh mode
+            window.EnableControl(window.btClearAllPressureData, !StartStop);
+            window.EnableControl(window.btClearAllTempData, !StartStop);
+            window.EnableControl(window.btClearSourcePressureData, !StartStop);
+            window.EnableControl(window.btClearBeamlinePressureData, !StartStop);
+            window.EnableControl(window.btClearCellTempData, !StartStop);
+            window.EnableControl(window.btClearSF6TempData, !StartStop);
+            window.EnableControl(window.btClearS2TempData, !StartStop);
+            window.EnableControl(window.btClearS1TempData, !StartStop);
         }
 
         internal void StartRefreshMode()
@@ -476,6 +492,13 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse refresh temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void UpdateUITimeLeftIndicators()
+        {
+            TimeSpan TimeLeftUntilCryoTurnsOn = window.dateTimePickerStopHeatingAndTurnCryoOn.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
+            window.SetTextBox(window.tbHowLongUntilCryoTurnsOn, TimeLeftUntilCryoTurnsOn.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+            TimeSpan TimeLeftUntilHeatersTurnOff = window.dateTimePickerRefreshModeTurnHeatersOff.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
+            window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+        }
 
         private void InitializeSourceRefresh() // This won't work, but isn't being used yet - problem for another day!
         {
@@ -547,6 +570,7 @@ namespace UEDMHardwareControl
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
                 if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
+                UpdateUITimeLeftIndicators();
                 if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
                     window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
@@ -562,7 +586,7 @@ namespace UEDMHardwareControl
                 {
                     StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
                     StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
-                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the cell temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after Cell_T = NeonEvaporationCycleTemperatureMax)
+                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
                     {
                         if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
@@ -626,9 +650,9 @@ namespace UEDMHardwareControl
             for (; ; )
             {
                 if (refreshModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
+                UpdateUITimeLeftIndicators();
                 if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the temperature has reached the specified value, then exit this loop.
-                TimeSpan TimeLeft = window.dateTimePickerStopHeatingAndTurnCryoOn.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
-                window.SetTextBox(window.tbHowLongUntilHeatingStopsAndCryoTurnsOn, TimeLeft.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+                
                 if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
                 {
                     if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
@@ -638,7 +662,7 @@ namespace UEDMHardwareControl
                         EnableDigitalHeaters(1, true); // turn heaters on
                         EnableDigitalHeaters(2, true); // turn heaters on
                     }
-                    if (Double.Parse(lastCellTemp) >= refreshTemperature) // If the source has reached the desired temperature, then break the loop
+                    if (Double.Parse(lastS2Temp) >= refreshTemperature) // If the source has reached the desired temperature, then break the loop
                     {
                         break;
                     }
@@ -706,10 +730,11 @@ namespace UEDMHardwareControl
                     }
                 }
 
-                TimeSpan TimeLeft = window.dateTimePickerStopHeatingAndTurnCryoOn.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
-                window.SetTextBox(window.tbHowLongUntilHeatingStopsAndCryoTurnsOn, TimeLeft.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+                UpdateUITimeLeftIndicators();
                 Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait); // Iterate the loop according to this time interval
             }
+            window.SetTextBox(window.tbHowLongUntilCryoTurnsOn, ""); 
+            window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, ""); 
         }
 
         private void CoolDownSource()
