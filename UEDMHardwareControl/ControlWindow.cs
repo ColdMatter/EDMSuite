@@ -203,10 +203,6 @@ namespace UEDMHardwareControl
         {
             //controller.StartPressureMonitorPoll();
         }
-        private void btStopPressureMonitorPoll_Click(object sender, EventArgs e)
-        {
-            controller.StopPressureMonitorPoll();
-        }
         private void cbLogPressureData_CheckedChanged(object sender, EventArgs e)
         {
             if (cbLogPressureData.Checked)
@@ -225,12 +221,7 @@ namespace UEDMHardwareControl
             //controller.StartTempMonitorPoll();
         }
 
-        private void btStopTempMonitorPoll_Click(object sender, EventArgs e)
-        {
-            controller.StopTempMonitorPoll();
-        }
-
-        #endregion
+        
 
         private void cbTurnCryoOn_CheckedChanged(object sender, EventArgs e)
         {
@@ -304,6 +295,12 @@ namespace UEDMHardwareControl
             else controller.EnableChartSeries(chart2, "SF6 Temperature", false);
         }
 
+        private void checkBoxNeonTempPlot_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxNeonTempPlot.Checked) controller.EnableChartSeries(chart2, "Neon Temperature", true);
+            else controller.EnableChartSeries(chart2, "Neon Temperature", false);
+        }
+
         private void btClearCellTempData_Click(object sender, EventArgs e)
         {
             controller.ClearChartSeriesData(chart2, "Cell Temperature");
@@ -324,12 +321,18 @@ namespace UEDMHardwareControl
             controller.ClearChartSeriesData(chart2, "SF6 Temperature");
         }
 
+        private void btClearNeonTempData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart2, "Neon Temperature");
+        }
+
         private void btClearAllTempData_Click(object sender, EventArgs e)
         {
             controller.ClearChartSeriesData(chart2, "Cell Temperature");
             controller.ClearChartSeriesData(chart2, "S1 Temperature");
             controller.ClearChartSeriesData(chart2, "S2 Temperature");
             controller.ClearChartSeriesData(chart2, "SF6 Temperature");
+            controller.ClearChartSeriesData(chart2, "Neon Temperature");
         }
 
         private void checkBoxSourcePressurePlot_CheckedChanged(object sender, EventArgs e)
@@ -472,18 +475,22 @@ namespace UEDMHardwareControl
             //controller.SavePlotDataToCSV(chart2, "Kelvin");
         }
 
-        
+        private void btUpdatePTPollPeriod_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePTMonitorPollPeriod();
+        }
 
-        
+        #endregion
 
-        
+        private void checkBoxMonitorPressureWhenHeating_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxMonitorPressureWhenHeating.Checked) controller.EnableMonitorPressureWhenHeating(true);
+            else controller.EnableMonitorPressureWhenHeating(false);
+        }
 
-        
-
-
-        
-
-        
-
+        private void btQueryLakeShore336PIDvalues_Click(object sender, EventArgs e)
+        {
+            controller.QueryPIDLoopValues();
+        }
     }
 }

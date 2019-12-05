@@ -320,7 +320,7 @@ namespace UEDMHardwareControl
             }
         }
 
-        private void EnableOutput3or4(int Output, bool OnOff)
+        private void EnableLakeGoreHeaterOutput3or4(int Output, bool OnOff)
         {
             if (OnOff)
             {
@@ -334,17 +334,35 @@ namespace UEDMHardwareControl
             }
         }
 
-        private void IsOutputEnabled(int Output)
+        /// <summary>
+        /// Sets the range parameter for a given output.
+        /// LakeShore 336 outputs 1 and 2 are the PID loop controlled heaters (100 Watts and 50 Watts respectively).
+        /// For outputs 1 and 2: 0 = Off, 1 = Low, 2 = Medium and 3= High.
+        /// </summary>
+        /// <param name="Output"></param>
+        /// <param name="range"></param>
+        private void EnableLakeGoreHeaterOutput1or2(int Output, int range)
         {
-            string S1HeaterOutput = tempController.QueryHeaterRange(Output);
-            string trimResponse = S1HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
-            string status = trimResponse.Substring(0, 1); // Take the first character of the string.
-            if (status == "1") HeatersEnabled = true;
-            else HeatersEnabled = false;
+            if (range != 0)
+            {
+                tempController.SetHeaterRange(Output, range); // 1 = Low, 2 = Medium and 3= High
+                HeatersEnabled = true;
+            }
+            else
+            {
+                tempController.SetHeaterRange(Output, range); // 0 = Off
+                HeatersEnabled = false;
+            }
         }
 
-        
-
+        private void IsOutputEnabled(int Output)
+        {
+            string HeaterOutput = tempController.QueryHeaterRange(Output);
+            string trimResponse = HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
+            string status = trimResponse.Substring(0, 1); // Take the first character of the string.
+            if (status == "1") HeatersEnabled = true; // Heater Output is on
+            else HeatersEnabled = false; // Heater Output is off
+        }
         
 
         private Thread refreshModeThread;
@@ -382,6 +400,7 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btClearSF6TempData, !StartStop);
             window.EnableControl(window.btClearS2TempData, !StartStop);
             window.EnableControl(window.btClearS1TempData, !StartStop);
+            window.EnableControl(window.btClearNeonTempData, !StartStop);
         }
 
         internal void StartRefreshMode()
@@ -500,22 +519,9 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
         }
 
-        private void InitializeSourceRefresh() // This won't work, but isn't being used yet - problem for another day!
+        private void InitializeSourceRefresh() 
         {
-            // Stop/Start pressure and temperature monitoring loops
-            StopPressureMonitorPoll();
-            StopTempMonitorPoll();
-            Thread.Sleep(4000); // Wait for monitoring loops to notice flags and finish operation
-            pressureMonitorFlag = false;
-            tempMonitorFlag = false;
-            StartPressureMonitorPoll();
-            StartTempMonitorPoll();
-            Thread.Sleep(2000);
-
-            // Check if heaters are enabled
-            IsOutputEnabled(SourceRefreshConstants.S2LakeShoreHeaterOutput);
-
-            //Poll cryo status
+            window.SetTextBox(window.tbRefreshModeStatus, "Starting initialization process");
         }
         private void InitializeSourceRefreshWithoutLakeShore()
         {
@@ -528,28 +534,43 @@ namespace UEDMHardwareControl
         /// </summary>
         private void EvaporateAndPumpNeon()
         {
-            double TemperatureSetpoint = 0;
+            if (!refreshModeCancelFlag)
+            {
+                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
+                UpdateStage2TemperatureSetpoint();
+                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
+                UpdateStage1TemperatureSetpoint();
+                window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
+            }
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high for the turbo pump, reduce the setpoint of the heaters
+                if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
+                UpdateUITimeLeftIndicators();
+                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
-                    if(HeatersEnabled)
+                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
+                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
                     {
-                        TemperatureSetpoint -= SourceRefreshConstants.TemperatureSetpointDecrementValue;
-                        SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, TemperatureSetpoint);
+                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, false); // turn off heaters
+                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn off heaters
                     }
                 }
-                else // If the pressure is safe for the turbo pump, increase the setpoint of the heaters
+                else
                 {
-                    TemperatureSetpoint += SourceRefreshConstants.TemperatureSetpointIncrementValue;
-                    SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, TemperatureSetpoint);
-                    if (TemperatureSetpoint >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax)
+                    EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, true); // turn on heaters
+                    EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
+                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
                     {
-                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure)
+                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
                             break;
                         }
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
+                    }
+                    else
+                    {
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
                     }
                 }
 
@@ -616,7 +637,7 @@ namespace UEDMHardwareControl
                 {
                     if(!HeatersEnabled) // if heaters turned off then turn them on
                     {
-                        EnableOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
+                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
                     }
                     if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.RefreshingTemperature)
                     {
@@ -627,7 +648,7 @@ namespace UEDMHardwareControl
                 {
                     if (HeatersEnabled) // if heaters are on
                     {
-                        EnableOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn heaters off
+                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn heaters off
                     }
                 }
                 Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait);
@@ -741,7 +762,7 @@ namespace UEDMHardwareControl
         {
             if(HeatersEnabled)
             {
-                EnableOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false);
+                EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false);
             }
             for(; ; )
             {
@@ -860,14 +881,20 @@ namespace UEDMHardwareControl
             Stage1TemperatureSetpoint = Double.Parse(window.tbHeaterTempSetpointStage1.Text);
         }
 
+        public bool monitorPressureWhenHeating = true;
+
+        public void EnableMonitorPressureWhenHeating(bool Enable)
+        {
+            monitorPressureWhenHeating = Enable;
+        }
         public void ControlHeaters()
         {
-            if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+            
+            if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit & monitorPressureWhenHeating) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
             {
                 window.SetTextBox(window.tbHeaterControlStatus, "Pressure above safe limit for turbo. Heaters disabled.");
                 EnableDigitalHeaters(1, false); // turn heaters off
                 EnableDigitalHeaters(2, false); // turn heaters off
-                
             }
             else
             {
@@ -1005,67 +1032,6 @@ namespace UEDMHardwareControl
             pressureDataSerializer.EndLogFile();
         }
 
-        private Thread pressureMonitorPollThread;
-        private int pressureMonitorPollPeriod = 100;
-        private int pressureMonitorLogPeriod = 1000;
-        private int pressureLoggingRate;
-        private bool pressureMonitorFlag;
-        private Object pressureMonitorLock;
-
-        internal void StartPressureMonitorPoll()
-        {
-            pressureMonitorPollThread = new Thread(new ThreadStart(pressureMonitorPollWorker));
-            pressureMonitorPollPeriod = Int32.Parse(window.tbPressurePollPeriod.Text);
-            pressureMovingAverageSampleLength = Int32.Parse(window.tbPressureSampleLength.Text);
-            pressureMonitorLogPeriod = Int32.Parse(window.tbpressureMonitorLogPeriod.Text) * 1000; // Convert from seconds to milliseconds
-            pressureLoggingRate = pressureMonitorLogPeriod / pressureMonitorPollPeriod;
-            window.EnableControl(window.btStartPressureMonitorPoll, false);
-            window.EnableControl(window.btStopPressureMonitorPoll, true);
-            pressureSamples.Clear();
-            pressureMonitorLock = new Object();
-            pressureMonitorFlag = false;
-            pressureMonitorPollThread.Start();
-        }
-        internal void StopPressureMonitorPoll()
-        {
-            pressureMonitorFlag = true;
-        }
-        private void pressureMonitorPollWorker()
-        {
-            int count = 0;
-
-            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
-            {
-                Thread.Sleep(pressureMonitorPollPeriod);
-                ++count;
-                lock (pressureMonitorLock)
-                {
-                    UpdatePressureMonitor();
-                    PlotLastPressure();
-                    if (count == pressureLoggingRate)
-                    {
-                        PlotLastPressure();
-
-                        if (window.cbLogPressureData.Checked)
-                        {
-                            pressureDataSerializer.AddData(new PressureMonitorDataLog(DateTime.Now,
-                                pressureMonitorPollPeriod,
-                                lastSourcePressure));
-                        }
-
-                        count = 0;
-                    }
-                    if (pressureMonitorFlag)
-                    {
-                        pressureMonitorFlag = false;
-                        break;
-                    }
-                }
-            }
-            window.EnableControl(window.btStartPressureMonitorPoll, true);
-            window.EnableControl(window.btStopPressureMonitorPoll, false);
-        }
-
         # endregion
 
         #region Temperature Monitors
@@ -1077,11 +1043,13 @@ namespace UEDMHardwareControl
         public string lastCellTemp;
         public string lastS1Temp;
         public string lastS2Temp;
+        public string lastNeonTemp;
         public string lastSF6Temp;
         private string cellTSeries = "Cell Temperature";
         private string S1TSeries = "S1 Temperature";
         private string S2TSeries = "S2 Temperature";
         private string SF6TSeries = "SF6 Temperature";
+        private string neonTSeries = "Neon Temperature";
 
         public void UpdateAllTempMonitors()
         {
@@ -1090,94 +1058,32 @@ namespace UEDMHardwareControl
             TemperatureArray = receivedData.Split(',');
             if (TemperatureArray.Length == 8)
             {
-                lastCellTemp = TemperatureArray[0];
-                lastS1Temp = TemperatureArray[1];
-                lastS2Temp = TemperatureArray[2];
-                lastSF6Temp = TemperatureArray[3];
+                lastCellTemp = TemperatureArray[0]; // LakeShore Input A
+                lastNeonTemp = TemperatureArray[1]; // LakeShore Input B
+                lastS2Temp = TemperatureArray[2];   // LakeShore Input C
+                lastSF6Temp = TemperatureArray[3];  // LakeShore Input D1
+                lastS1Temp = TemperatureArray[4];   // LakeShore Input D2
                 window.SetTextBox(window.tbTCell, lastCellTemp);
-                window.SetTextBox(window.tbTS1, lastS1Temp);
+                window.SetTextBox(window.tbTNeon, lastNeonTemp);
                 window.SetTextBox(window.tbTS2, lastS2Temp);
+                window.SetTextBox(window.tbTS1, lastS1Temp);
                 window.SetTextBox(window.tbTSF6, lastSF6Temp);
             }
             else
             {
                 window.SetTextBox(window.tbTCell, "err_UpdateAllTempMonitors");
-                window.SetTextBox(window.tbTS1, "err_UpdateAllTempMonitors");
+                window.SetTextBox(window.tbTNeon, "err_UpdateAllTempMonitors");
                 window.SetTextBox(window.tbTS2, "err_UpdateAllTempMonitors");
                 window.SetTextBox(window.tbTSF6, "err_UpdateAllTempMonitors");
+                window.SetTextBox(window.tbTNeon, "err_UpdateAllTempMonitors");
             }
         }
 
-        public void PlotLastTemperatures()
-        {
-            DateTime localDate = DateTime.Now;
-            double CellTemp = Double.Parse(lastCellTemp);
-            double S1Temp = Double.Parse(lastS1Temp);
-            double S2Temp = Double.Parse(lastS2Temp);
-            double SF6Temp = Double.Parse(lastSF6Temp);
-
-            //plot the most recent samples
-            window.AddPointToChart(window.chart2, cellTSeries, localDate, CellTemp);
-            window.AddPointToChart(window.chart2, S1TSeries, localDate, S1Temp);
-            window.AddPointToChart(window.chart2, S2TSeries, localDate, S2Temp);
-            window.AddPointToChart(window.chart2, SF6TSeries, localDate, SF6Temp);
-        }
-
-
-
-        private Thread tempMonitorPollThread;
-        private int tempMonitorPollPeriod = 100;
-        private bool tempMonitorFlag;
-        private Object tempMonitorLock;
-
-        internal void StartTempMonitorPoll()
-        {
-            tempMonitorPollThread = new Thread(new ThreadStart(tempMonitorPollWorker));
-            tempMonitorPollPeriod = Int32.Parse(window.tbTempPollPeriod.Text);
-            window.EnableControl(window.btStartTempMonitorPoll, false);
-            window.EnableControl(window.btStopTempMonitorPoll, true);
-            tempMonitorLock = new Object();
-            tempMonitorFlag = false;
-            tempMonitorPollThread.Start();
-        }
-        internal void StopTempMonitorPoll()
-        {
-            tempMonitorFlag = true;
-        }
-        private void tempMonitorPollWorker()
-        {
-            int count = 0;
-
-            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
-            {
-                Thread.Sleep(tempMonitorPollPeriod);
-                ++count;
-                lock (tempMonitorLock)
-                {
-                    //UpdateAllTempMonitors(); 
-                    UpdateAllTempMonitorsUsingDAQ();
-                    if (tempMonitorFlag)
-                    {
-                        tempMonitorFlag = false;
-                        break;
-                    }
-                }
-            }
-            window.EnableControl(window.btStartTempMonitorPoll, true);
-            window.EnableControl(window.btStopTempMonitorPoll, false);
-        }
-
-        #endregion
-
-        #region Temperature and Pressure Monitors using DAQ
-        // Whilst the LakeShore is not in operation, the silicon diodes can still be monitored by measuring the voltage drop across them (which is temperature dependent).
-        // This region contains the functions required to use this functionality.
-        // Change the tempMonitorPollWorker() function in region "Temperature Monitors" to revert back to using the LakeShore Controller.
-
-
+        // The following function isn't currently being used, but has been kept as a back up for when we don't have the LakeShore temperature controller.
         double[] tempMonitorsData;
-        public string csvDataTemperatureAndPressure = "";
-
+        /// <summary>
+        /// Function to measure the temperature of silicon diodes via the analogue inputs of our data acquisition system (i.e. when we don't have the LakeShore temperature controller)
+        /// </summary>
         public void UpdateAllTempMonitorsUsingDAQ()
         {
             //sample the temperatures
@@ -1188,27 +1094,54 @@ namespace UEDMHardwareControl
                 lastCellTemp = tempMonitorsData[0].ToString("N6");
                 lastS1Temp = tempMonitorsData[1].ToString("N6");
                 lastS2Temp = tempMonitorsData[2].ToString("N6");
-                lastSF6Temp = tempMonitorsData[3].ToString("N6"); 
+                lastSF6Temp = tempMonitorsData[3].ToString("N6");
                 window.SetTextBox(window.tbTCell, lastCellTemp);
-                window.SetTextBox(window.tbTS1, lastS1Temp);
+                window.SetTextBox(window.tbTNeon, lastS1Temp);
                 window.SetTextBox(window.tbTS2, lastS2Temp);
                 window.SetTextBox(window.tbTSF6, lastSF6Temp);
             }
             else
             {
                 window.SetTextBox(window.tbTCell, "err_UpdateAllTempMonitorsUsingDAQ");
-                window.SetTextBox(window.tbTS1, "err_UpdateAllTempMonitorsUsingDAQ");
+                window.SetTextBox(window.tbTNeon, "err_UpdateAllTempMonitorsUsingDAQ");
                 window.SetTextBox(window.tbTS2, "err_UpdateAllTempMonitorsUsingDAQ");
                 window.SetTextBox(window.tbTSF6, "err_UpdateAllTempMonitorsUsingDAQ");
             }
         }
 
+        public void PlotLastTemperatures()
+        {
+            DateTime localDate = DateTime.Now;
+            double CellTemp = Double.Parse(lastCellTemp);
+            double S1Temp = Double.Parse(lastS1Temp);
+            double S2Temp = Double.Parse(lastS2Temp);
+            double SF6Temp = Double.Parse(lastSF6Temp);
+            double NeonTemp = Double.Parse(lastNeonTemp);
+
+            //plot the most recent samples
+            window.AddPointToChart(window.chart2, cellTSeries, localDate, CellTemp);
+            window.AddPointToChart(window.chart2, S1TSeries, localDate, S1Temp);
+            window.AddPointToChart(window.chart2, S2TSeries, localDate, S2Temp);
+            window.AddPointToChart(window.chart2, SF6TSeries, localDate, SF6Temp);
+            window.AddPointToChart(window.chart2, neonTSeries, localDate, NeonTemp);
+        }
+
+        #endregion
+
+        #region Temperature and Pressure Monitoring
+        // If the LakeShore is not in operation, the silicon diodes can still be monitored by measuring the voltage drop across them (which is temperature dependent).
 
         private Thread PTMonitorPollThread;
         private int PTMonitorPollPeriod = 1000;
+        private int PTMonitorPollPeriodLowerLimit = 100;
         private bool PTMonitorFlag;
         private Object PTMonitorLock;
+        public string csvDataTemperatureAndPressure = "";
 
+        /// <summary>
+        /// Many user interface (UI) components need to be enabled/disabled so that the user can't perform actions that could be harmful to the experiment. This function combines this list of UI elements.
+        /// </summary>
+        /// <param name="StartStop"></param>
         internal void PTMonitorPollEnableUIElements(bool StartStop) // Start = true (elements to enable/disable when starting refresh mode)
         {
             window.EnableControl(window.btStartTandPMonitoring, !StartStop); // window.btStartTandPMonitoring.Enabled = false when starting refresh mode (for example)
@@ -1227,6 +1160,20 @@ namespace UEDMHardwareControl
 
         }
 
+        public void UpdatePTMonitorPollPeriod()
+        {
+            int PTMonitorPollPeriodParseValue;
+            if (Int32.TryParse(window.tbTandPPollPeriod.Text, out PTMonitorPollPeriodParseValue))
+            {
+                if (PTMonitorPollPeriodParseValue >= PTMonitorPollPeriodLowerLimit)
+                {
+                    PTMonitorPollPeriod = PTMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                }
+                else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
         internal void StartPTMonitorPoll()
         {
             PTMonitorPollThread = new Thread(() =>
@@ -1234,7 +1181,7 @@ namespace UEDMHardwareControl
                 PTMonitorPollWorker();
             });
             PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            PTMonitorPollPeriod = Int32.Parse(window.tbTandPPollPeriod.Text);
+            
             pressureMovingAverageSampleLength = 10; 
             Stage2HeaterControlFlag = false;
             Stage1HeaterControlFlag = false;
@@ -1282,7 +1229,7 @@ namespace UEDMHardwareControl
                 ++count;
                 lock (PTMonitorLock)
                 {
-                    UpdateAllTempMonitorsUsingDAQ();
+                    UpdateAllTempMonitors(); 
                     PlotLastTemperatures();
                     UpdatePressureMonitor();
                     PlotLastPressure();
@@ -1451,6 +1398,28 @@ namespace UEDMHardwareControl
                 else MessageBox.Show("Setpoint request is outside of the MKS PR4000B flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        #endregion
+
+        #region LakeShore 336
+        public string[] PIDValueArray;
+        public void QueryPIDLoopValues()
+        {
+            if (window.comboBoxLakeShore336OutputsQuery.Text == "1" | window.comboBoxLakeShore336OutputsQuery.Text == "2")
+            {
+                receivedData = tempController.QueryPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
+                PIDValueArray = receivedData.Split(',');
+                window.SetTextBox(window.tbLakeShore336PIDPValueOutput, PIDValueArray[0]);
+                window.SetTextBox(window.tbLakeShore336PIDIValueOutput, PIDValueArray[1]);
+                window.SetTextBox(window.tbLakeShore336PIDDValueOutput, PIDValueArray[2]);
+            }
+            else
+            {
+                string message = "Please select output 1 or 2";
+                string caption = "User input exception";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+            }
         }
 
         #endregion
