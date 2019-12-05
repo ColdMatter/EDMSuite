@@ -29,6 +29,8 @@ namespace DAQ.HAL
             public static String WarmupSupplyParameterQuery { get { return "WARMUP? "; } } // Output and value need defining.
             public static String HeaterRangeQuery { get { return "RANGE? "; } } // Output need defining.
             public static String HeaterRangeCommand { get { return "RANGE "; } } // Output and range need defining.
+            public static String ControlLoopPIDValuesQuery { get { return "PID? "; } } // Output need defining.
+            public static String ControlLoopPIDValuesCommand { get { return "PID "; } } // Output and range need defining.
         }
 
         // Serial connection parameters for the LakeShore Model 336 Temperature Controller:
@@ -102,7 +104,7 @@ namespace DAQ.HAL
                 
                 string response = Query(temperatureRequest);
                 Disconnect();
-                return response;//response;
+                return response;
             }
             else { return "err"; }
         }
@@ -325,6 +327,29 @@ namespace DAQ.HAL
         {
             Connect(SerialTerminationMethod.TerminationCharacter);
             string cmd = SetLineFeed(String.Concat(CommandTypes.HeaterRangeCommand, Output, ",", Range));
+            Write(cmd, true);
+            Thread.Sleep(1000);
+            Disconnect();
+        }
+
+        #endregion
+
+        #region PID Loops
+
+        public string QueryPIDLoopValues(int Output)
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string query = SetLineFeed(String.Concat(CommandTypes.ControlLoopPIDValuesQuery, Output));
+            string response = Query(query);
+            Thread.Sleep(500);
+            Disconnect();
+            return response;
+        }
+
+        public void SetPIDLoopValues(int Output, double proportional, double integral, double derivative)
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string cmd = SetLineFeed(String.Concat(CommandTypes.HeaterRangeCommand, Output, ",", proportional, ",", integral, ",", derivative));
             Write(cmd, true);
             Thread.Sleep(1000);
             Disconnect();
