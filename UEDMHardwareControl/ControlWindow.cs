@@ -492,5 +492,10 @@ namespace UEDMHardwareControl
         {
             controller.QueryPIDLoopValues();
         }
+
+        private void btSetLakeShore336PIDvalues_Click(object sender, EventArgs e)
+        {
+            controller.SetPIDLoopValues();
+        }
     }
 }

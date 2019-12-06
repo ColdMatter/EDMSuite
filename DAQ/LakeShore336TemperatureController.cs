@@ -349,7 +349,7 @@ namespace DAQ.HAL
         public void SetPIDLoopValues(int Output, double proportional, double integral, double derivative)
         {
             Connect(SerialTerminationMethod.TerminationCharacter);
-            string cmd = SetLineFeed(String.Concat(CommandTypes.HeaterRangeCommand, Output, ",", proportional, ",", integral, ",", derivative));
+            string cmd = SetLineFeed(String.Concat(CommandTypes.ControlLoopPIDValuesCommand, Output, ",", proportional, ",", integral, ",", derivative));
             Write(cmd, true);
             Thread.Sleep(1000);
             Disconnect();

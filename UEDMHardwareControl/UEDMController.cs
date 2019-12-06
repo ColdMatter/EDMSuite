@@ -481,7 +481,7 @@ namespace UEDMHardwareControl
             public static Double TemperatureSetpointIncrementValue { get { return 0.5; } } // Kelvin
             public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
             public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
+            public static Double CryoStoppingPressure { get { return 0.0002; } } // 1e-5 mbar
             public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
@@ -1403,16 +1403,20 @@ namespace UEDMHardwareControl
         #endregion
 
         #region LakeShore 336
-        public string[] PIDValueArray;
+        public string[] PIDValueStringArray;
+        public double[] PIDValueDoubleArray;
+        public string[] PIDValueString = { "P", "I", "D" };
+        public double[] PIDValueLowerLimits = { 0, 0 , 0 };
+        public double[] PIDValueUpperLimits = { 1000, 1000, 200 };
         public void QueryPIDLoopValues()
         {
             if (window.comboBoxLakeShore336OutputsQuery.Text == "1" | window.comboBoxLakeShore336OutputsQuery.Text == "2")
             {
                 receivedData = tempController.QueryPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
-                PIDValueArray = receivedData.Split(',');
-                window.SetTextBox(window.tbLakeShore336PIDPValueOutput, PIDValueArray[0]);
-                window.SetTextBox(window.tbLakeShore336PIDIValueOutput, PIDValueArray[1]);
-                window.SetTextBox(window.tbLakeShore336PIDDValueOutput, PIDValueArray[2]);
+                PIDValueStringArray = receivedData.Split(',');
+                window.SetTextBox(window.tbLakeShore336PIDPValueOutput, PIDValueStringArray[0]);
+                window.SetTextBox(window.tbLakeShore336PIDIValueOutput, PIDValueStringArray[1]);
+                window.SetTextBox(window.tbLakeShore336PIDDValueOutput, PIDValueStringArray[2]);
             }
             else
             {
@@ -1420,6 +1424,59 @@ namespace UEDMHardwareControl
                 string caption = "User input exception";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK);
             }
+        }
+
+        public void SetPIDLoopValues()
+        {
+            if (window.comboBoxLakeShore336OutputsSet.Text == "1" | window.comboBoxLakeShore336OutputsSet.Text == "2")
+            {
+                bool PIDValuesInvalid = ValidatePIDLoopValues();
+
+                if(!PIDValuesInvalid)
+                {
+                    tempController.SetPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
+                }
+            }
+            else
+            {
+                string message = "Please select output 1 or 2";
+                string caption = "User input exception";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+            }
+        }
+
+        internal bool ValidatePIDLoopValues()
+        {
+            PIDValueStringArray = new string[3];
+            PIDValueDoubleArray = new double[3];
+            PIDValueStringArray[0] = window.tbLakeShore336PIDPValueInput.Text;
+            PIDValueStringArray[1] = window.tbLakeShore336PIDIValueInput.Text;
+            PIDValueStringArray[2] = window.tbLakeShore336PIDDValueInput.Text;
+            bool PIDValuesInvalid = false;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (Double.TryParse(PIDValueStringArray[i], out PIDValueDoubleArray[i]))
+                {
+                    if (PIDValueDoubleArray[i] < PIDValueLowerLimits[i])
+                    {
+                        PIDValuesInvalid = true;
+                        MessageBox.Show(PIDValueString[i] + " value less than minimum value.", "", MessageBoxButtons.OK);
+                    }
+                    if (PIDValueDoubleArray[i] > PIDValueUpperLimits[i])
+                    {
+                        PIDValuesInvalid = true;
+                        MessageBox.Show(PIDValueString[i] + " value greater than maximum value.", "", MessageBoxButtons.OK);
+                    }
+                }
+                else
+                {
+                    PIDValuesInvalid = true;
+                    MessageBox.Show("Unable to parse " + PIDValueString[i] + " value string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+                }
+            }
+                
+            return PIDValuesInvalid;
         }
 
         #endregion
