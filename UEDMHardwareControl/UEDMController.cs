@@ -481,7 +481,7 @@ namespace UEDMHardwareControl
             public static Double TemperatureSetpointIncrementValue { get { return 0.5; } } // Kelvin
             public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
             public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStoppingPressure { get { return 0.0002; } } // 1e-5 mbar
+            public static Double CryoStoppingPressure { get { return 0.0008; } } // 1e-5 mbar
             public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
@@ -607,7 +607,7 @@ namespace UEDMHardwareControl
                 {
                     StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
                     StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
-                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
+                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
                     {
                         if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
@@ -672,8 +672,9 @@ namespace UEDMHardwareControl
             {
                 if (refreshModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
                 UpdateUITimeLeftIndicators();
-                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the temperature has reached the specified value, then exit this loop.
-                
+                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the refresh temperature has reached the specified value, then exit this loop.
+                if (window.dateTimePickerRefreshModeTurnHeatersOff.Value < DateTime.Now) break; // If the user requested that the heaters turn off before the refresh temperature has reached the specified value, then exit this loop.
+
                 if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
                 {
                     if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
@@ -788,14 +789,20 @@ namespace UEDMHardwareControl
                 EnableDigitalHeaters(2, false); // turn heaters off
                 window.SetTextBox(window.tbRefreshModeStatus, "Stopping heaters"); // Update refresh mode status textbox
             }
-            for(; ; )
+            for (; ; )
             {
                 if (refreshModeCancelFlag) break;
-                window.SetTextBox(window.tbRefreshModeStatus, "Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update refresh mode status textbox
-                if(Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
-                { break; }
+                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // Exit this loop when the user defined datetime is reached.
                 Thread.Sleep(SourceRefreshConstants.CoolDownWait);
             }
+                for (; ; )
+                {
+                    if (refreshModeCancelFlag) break;
+                    window.SetTextBox(window.tbRefreshModeStatus, "Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update refresh mode status textbox
+                    if (Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
+                    { break; }
+                    Thread.Sleep(SourceRefreshConstants.CoolDownWait);
+                }
             for(; ; )
             {
                 if (refreshModeCancelFlag) break;
@@ -1477,6 +1484,105 @@ namespace UEDMHardwareControl
             }
                 
             return PIDValuesInvalid;
+        }
+        
+
+        // Autotune
+        public int AutotuneOutput;
+        public bool AutotuneOutputSelected = false;
+        public int AutotuneMode;
+        public bool AutotuneModeSelected = false;
+
+        public void AutotuneLakeShore336TemperatureControl()
+        {
+            if (AutotuneOutputSelected)
+            {
+                if (AutotuneModeSelected)
+                {
+                    tempController.AutotuneOutput(AutotuneOutput, AutotuneMode); 
+                }
+                else
+                {
+                    string message = "Please select autotune mode";
+                    string caption = "User input exception";
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                string message = "Please select autotune output";
+                string caption = "User input exception";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+            }
+        }
+
+        public void AutotuneOutputSelectionChanged()
+        {
+            AutotuneOutputSelected = true;
+            AutotuneOutput = Int32.Parse(window.comboBoxLakeShore336OutputsAutotune.Text);
+        }
+
+        public void AutotuneModeSelectionChanged()
+        {
+            AutotuneModeSelected = true;
+            string AutotuneModeString = window.comboBoxLakeShore336AutotuneModes.Text;
+            if (AutotuneModeString == "P")
+            {
+                AutotuneMode = 0;
+            }
+            else
+            {
+                if (AutotuneModeString == "P and I")
+                {
+                    AutotuneMode = 1;
+                }
+                else
+                {
+                    AutotuneMode = 2;
+                }
+            }
+        }
+
+        public string[] AutotuneStatusInfo;
+        public string StatusOutput;
+        public void QueryAutotuneStatus()
+        {
+            StatusOutput = "";
+            string status = tempController.QueryControlTuningStatus();
+            AutotuneStatusInfo = status.Split(',');
+
+            if (AutotuneStatusInfo[0] == "0")
+            {
+                StatusOutput += "No active tuning\n";
+            }
+            else
+            {
+                StatusOutput += "Active tuning\n";
+                if (AutotuneStatusInfo[1] == "1")
+                {
+                    StatusOutput += "Tuning output 1\n";
+                }
+                else
+                {
+                    StatusOutput += "Tuning output 2\n";
+                }
+            }
+
+            if (AutotuneStatusInfo[2] == "0")
+            {
+                StatusOutput += "No tuning error\nCurrent stage in autotune process: ";
+                StatusOutput += AutotuneStatusInfo[2];
+            }
+            else
+            {
+                StatusOutput += "Tuning error\n";
+                if (AutotuneStatusInfo[3] == "0")
+                {
+                    StatusOutput += "Initial conditions not met when starting the autotune procedure, causing the autotuning process to never actually begin.\n";
+                }
+            }
+
+            window.SetRichTextBox(window.rtbAutotuneStatus, StatusOutput);
         }
 
         #endregion

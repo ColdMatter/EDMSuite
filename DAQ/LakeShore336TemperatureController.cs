@@ -30,7 +30,9 @@ namespace DAQ.HAL
             public static String HeaterRangeQuery { get { return "RANGE? "; } } // Output need defining.
             public static String HeaterRangeCommand { get { return "RANGE "; } } // Output and range need defining.
             public static String ControlLoopPIDValuesQuery { get { return "PID? "; } } // Output need defining.
-            public static String ControlLoopPIDValuesCommand { get { return "PID "; } } // Output and range need defining.
+            public static String ControlLoopPIDValuesCommand { get { return "PID "; } } // Output and PID Values need defining.
+            public static String AutotuneCommand { get { return "ATUNE "; } } // Output and Mode need defining.
+            public static String ControlTuningStatusQuery { get { return "TUNEST? "; } } // No other input
         }
 
         // Serial connection parameters for the LakeShore Model 336 Temperature Controller:
@@ -354,6 +356,42 @@ namespace DAQ.HAL
             Thread.Sleep(1000);
             Disconnect();
         }
+
+        #endregion
+
+        #region Autotune outputs
+
+        /// <summary>
+        /// Autotune a user defined output.
+        /// Outputs 1-4 can be autotuned.
+        /// Autotune modes: 0 = P; 1 = P and I; 2 = P, I and D.
+        /// </summary>
+        /// <param name="Output"></param>
+        /// <param name="Mode"></param>
+        public void AutotuneOutput(int Output, int Mode)
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string cmd = SetLineFeed(String.Concat(CommandTypes.AutotuneCommand, Output, ",", Mode));
+            Write(cmd, true);
+            Thread.Sleep(1000);
+            Disconnect();
+        }
+
+        /// <summary>
+        /// If initial conditions required to autotune the specified loop are not met, an Autotune initialization error will occur and the Autotune process will not be performed.
+        /// The TUNEST? query can be used to check if an autotune error occured.
+        /// </summary>
+        /// <returns></returns>
+        public string QueryControlTuningStatus()
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string query = SetLineFeed(String.Concat(CommandTypes.ControlTuningStatusQuery, ""));
+            string response = Query(query);
+            Thread.Sleep(500);
+            Disconnect();
+            return response;
+        }
+        
 
         #endregion
     }

@@ -52,6 +52,16 @@ namespace UEDMHardwareControl
             box.Text = text;
         }
 
+        public void SetRichTextBox(RichTextBox box, string text)
+        {
+            box.Invoke(new SetRichTextBoxDelegate(SetRichTextBoxHelper), new object[] { box, text });
+        }
+        private delegate void SetRichTextBoxDelegate(RichTextBox box, string text);
+        private void SetRichTextBoxHelper(RichTextBox box, string text)
+        {
+            box.Text = text;
+        }
+
         /// <summary>
         /// Adds point to chart (graph) in control window. This function is called from UEDMController on each poll of a pressure gauge.
         /// </summary>
@@ -496,6 +506,26 @@ namespace UEDMHardwareControl
         private void btSetLakeShore336PIDvalues_Click(object sender, EventArgs e)
         {
             controller.SetPIDLoopValues();
+        }
+
+        private void comboBoxLakeShore336OutputsAutotune_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.AutotuneOutputSelectionChanged();
+        }
+
+        private void comboBoxLakeShore336AutotuneModes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.AutotuneModeSelectionChanged();
+        }
+
+        private void btAutotuneLakeShore336Output_Click(object sender, EventArgs e)
+        {
+            controller.AutotuneLakeShore336TemperatureControl();
+        }
+
+        private void btQueryAutotuneError_Click(object sender, EventArgs e)
+        {
+            controller.QueryAutotuneStatus();
         }
     }
 }
