@@ -62,6 +62,16 @@ namespace UEDMHardwareControl
             box.Text = text;
         }
 
+        public void AppendTextBox(TextBox box, string text)
+        {
+            box.Invoke(new AppendTextBoxDelegate(AppendTextBoxHelper), new object[] { box, text });
+        }
+        private delegate void AppendTextBoxDelegate(TextBox box, string text);
+        private void AppendTextBoxHelper(TextBox box, string text)
+        {
+            box.AppendText(text);
+        }
+        
         /// <summary>
         /// Adds point to chart (graph) in control window. This function is called from UEDMController on each poll of a pressure gauge.
         /// </summary>
@@ -86,7 +96,7 @@ namespace UEDMHardwareControl
 
         public void ClearChartSeriesData(Chart chart, string series)
         {
-            chart.Invoke(new ClearChartSeriesDataDelegate(ClearChartSeriesDataHelper), new object[] { chart, series});
+            chart.Invoke(new ClearChartSeriesDataDelegate(ClearChartSeriesDataHelper), new object[] { chart, series });
         }
         private delegate void ClearChartSeriesDataDelegate(Chart chart, string series);
         private void ClearChartSeriesDataHelper(Chart chart, string series)
@@ -117,7 +127,7 @@ namespace UEDMHardwareControl
             }
             else
             {
-                if(scale == "Linear")
+                if (scale == "Linear")
                 {
                     chart.ChartAreas[0].AxisY.IsLogarithmic = false;
                 }
@@ -131,7 +141,7 @@ namespace UEDMHardwareControl
         private delegate void SetAxisYIsStartedFromZeroDelegate(Chart chart, bool YesNo);
         private void SetAxisYIsStartedFromZeroHelper(Chart chart, bool YesNo)
         {
-            if(YesNo) chart.ChartAreas[0].AxisY.IsStartedFromZero = true;
+            if (YesNo) chart.ChartAreas[0].AxisY.IsStartedFromZero = true;
             else chart.ChartAreas[0].AxisY.IsStartedFromZero = false;
         }
 
@@ -200,9 +210,9 @@ namespace UEDMHardwareControl
         {
             controller.SavePlotImage(chart3);
         }
-        
-        
-        
+
+
+
         // Pressure monitoring
         /// <summary>
         /// When the "Start Pressure Monitoring" button is clicked by the user, this will call the function in UEDMController which will periodically update the pressure monitor textboxes in the controller window.
@@ -231,7 +241,7 @@ namespace UEDMHardwareControl
             //controller.StartTempMonitorPoll();
         }
 
-        
+
 
         private void cbTurnCryoOn_CheckedChanged(object sender, EventArgs e)
         {
@@ -272,18 +282,18 @@ namespace UEDMHardwareControl
 
         private void checkBoxCryoEnable_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxCryoEnable.Checked)
+            if (checkBoxCryoEnable.Checked)
             {
                 controller.EnableCryoDigitalControl(true);
             }
             else controller.EnableCryoDigitalControl(false);
-            
+
         }
 
 
         private void checkBoxCellTempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if(checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell Temperature", true);
+            if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell Temperature", true);
             else controller.EnableChartSeries(chart2, "Cell Temperature", false);
         }
 
@@ -389,7 +399,7 @@ namespace UEDMHardwareControl
 
         private void checkBoxEnableHeatersS2_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxEnableHeatersS2.Checked) controller.EnableDigitalHeaters(2,true);
+            if (checkBoxEnableHeatersS2.Checked) controller.EnableDigitalHeaters(2, true);
             else controller.EnableDigitalHeaters(2, false);
         }
 
@@ -457,12 +467,12 @@ namespace UEDMHardwareControl
 
         private void dateTimePickerRefreshModeTurnHeatersOff_ValueChanged(object sender, EventArgs e)
         {
-            controller.HeaterTurnOffDateTimeSpecified();
+            controller.RefreshModeHeaterTurnOffDateTimeSpecified();
         }
 
         private void dateTimePickerStopHeatingAndTurnCryoOn_ValueChanged(object sender, EventArgs e)
         {
-            controller.CryoTurnOnDateTimeSpecified();
+            controller.RefreshModeCryoTurnOnDateTimeSpecified();
         }
 
         private void btRefreshModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
@@ -526,6 +536,63 @@ namespace UEDMHardwareControl
         private void btQueryAutotuneError_Click(object sender, EventArgs e)
         {
             controller.QueryAutotuneStatus();
+        }
+
+        private void checkBoxWarmUpSourceToRoomTemperature_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxWarmUpSourceToRoomTemperature.Checked) controller.EnableWarmUpModeRoomTemperature(true);
+            else controller.EnableWarmUpModeRoomTemperature(false);
+        }
+
+        private void btWarmUpModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
+        {
+            controller.UpdateWarmUpTemperature();
+        }
+
+        private void btStartWarmUpMode_Click(object sender, EventArgs e)
+        {
+            controller.StartWarmUpMode();
+        }
+
+        private void btCancelWarmUpMode_Click(object sender, EventArgs e)
+        {
+            controller.CancelWarmUpMode();
+        }
+
+        private void checkBoxCoolDownSourceAtRoomTemperature_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxCoolDownSourceAtRoomTemperature.Checked) controller.EnableCoolDownModeRoomTemperature(true);
+            else controller.EnableCoolDownModeRoomTemperature(false);
+        }
+
+        private void btCoolDownModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
+        {
+            controller.UpdateCoolDownTemperature();
+        }
+
+        private void dateTimePickerCoolDownModeTurnHeatersOff_ValueChanged(object sender, EventArgs e)
+        {
+            controller.CoolDownModeHeaterTurnOffDateTimeSpecified();
+        }
+
+        private void dateTimePickerCoolDownModeTurnCryoOn_ValueChanged(object sender, EventArgs e)
+        {
+            controller.CoolDownModeCryoTurnOnDateTimeSpecified();
+        }
+
+        private void dateTimePickerWarmUpModeTurnHeatersOff_ValueChanged(object sender, EventArgs e)
+        {
+            controller.WarmUpModeHeaterTurnOffDateTimeSpecified();
+        }
+
+        private void btStartCoolDownMode_Click(object sender, EventArgs e)
+        {
+            controller.StartCoolDownMode();
+        }
+
+        private void btCancelCoolDownMode_Click(object sender, EventArgs e)
+        {
+            controller.CancelCoolDownMode();
         }
     }
 }

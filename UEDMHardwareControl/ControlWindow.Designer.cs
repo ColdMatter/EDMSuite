@@ -190,26 +190,60 @@
             this.btQueryLakeShore336PIDvalues = new System.Windows.Forms.Button();
             this.comboBoxLakeShore336OutputsQuery = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tabPageSourceModes = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageRefreshMode = new System.Windows.Forms.TabPage();
             this.gbRefreshModeWarmUp = new System.Windows.Forms.GroupBox();
             this.btRefreshModeTemperatureSetpointUpdate = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelRefreshModeTemperatureSetpoint = new System.Windows.Forms.Label();
             this.tbRefreshModeTemperatureSetpoint = new System.Windows.Forms.TextBox();
             this.labelRefreshModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.Label();
             this.tbRefreshModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.TextBox();
             this.checkBoxRefreshSourceAtRoomTemperature = new System.Windows.Forms.CheckBox();
             this.labelRefreshModeTurnHeatersOff = new System.Windows.Forms.Label();
             this.dateTimePickerRefreshModeTurnHeatersOff = new System.Windows.Forms.DateTimePicker();
-            this.gbRefreshModeCoolDown = new System.Windows.Forms.GroupBox();
-            this.labelWhenHeatingStopsAndCryoTurnsOn = new System.Windows.Forms.Label();
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn = new System.Windows.Forms.Label();
-            this.tbHowLongUntilCryoTurnsOn = new System.Windows.Forms.TextBox();
-            this.dateTimePickerStopHeatingAndTurnCryoOn = new System.Windows.Forms.DateTimePicker();
             this.btCancelRefreshMode = new System.Windows.Forms.Button();
+            this.gbRefreshModeCoolDown = new System.Windows.Forms.GroupBox();
+            this.labelRefreshModeCryoTurnOnDateTime = new System.Windows.Forms.Label();
+            this.labelRefreshModeHowLongUntilCryoTurnsOn = new System.Windows.Forms.Label();
+            this.tbRefreshModeHowLongUntilCryoTurnsOn = new System.Windows.Forms.TextBox();
+            this.dateTimePickerRefreshModeTurnCryoOn = new System.Windows.Forms.DateTimePicker();
             this.btStartRefreshMode = new System.Windows.Forms.Button();
-            this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tbRefreshModeStatus = new System.Windows.Forms.TextBox();
+            this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tabPageWarmUpMode = new System.Windows.Forms.TabPage();
+            this.btCancelWarmUpMode = new System.Windows.Forms.Button();
+            this.btStartWarmUpMode = new System.Windows.Forms.Button();
+            this.tbWarmUpModeStatus = new System.Windows.Forms.TextBox();
+            this.labelWarmUpModeStatus = new System.Windows.Forms.Label();
+            this.gbWarmUpModeWarmUp = new System.Windows.Forms.GroupBox();
+            this.btWarmUpModeTemperatureSetpointUpdate = new System.Windows.Forms.Button();
+            this.labelWarmUpModeTemperatureSetpoint = new System.Windows.Forms.Label();
+            this.tbWarmUpModeTemperatureSetpoint = new System.Windows.Forms.TextBox();
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.Label();
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.TextBox();
+            this.checkBoxWarmUpSourceToRoomTemperature = new System.Windows.Forms.CheckBox();
+            this.labelWarmUpModeTurnHeatersOff = new System.Windows.Forms.Label();
+            this.dateTimePickerWarmUpModeTurnHeatersOff = new System.Windows.Forms.DateTimePicker();
+            this.tabPageCoolDownMode = new System.Windows.Forms.TabPage();
+            this.gbCoolDownModeWarmUp = new System.Windows.Forms.GroupBox();
+            this.btCoolDownModeTemperatureSetpointUpdate = new System.Windows.Forms.Button();
+            this.labelCoolDownModeTemperatureSetpoint = new System.Windows.Forms.Label();
+            this.tbCoolDownModeTemperatureSetpoint = new System.Windows.Forms.TextBox();
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.Label();
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff = new System.Windows.Forms.TextBox();
+            this.checkBoxCoolDownSourceAtRoomTemperature = new System.Windows.Forms.CheckBox();
+            this.labelCoolDownModeTurnHeatersOff = new System.Windows.Forms.Label();
+            this.dateTimePickerCoolDownModeTurnHeatersOff = new System.Windows.Forms.DateTimePicker();
+            this.btCancelCoolDownMode = new System.Windows.Forms.Button();
+            this.gbCoolDownModeCoolDown = new System.Windows.Forms.GroupBox();
+            this.labelCoolDownModeCryoTurnOnDateTime = new System.Windows.Forms.Label();
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn = new System.Windows.Forms.Label();
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn = new System.Windows.Forms.TextBox();
+            this.dateTimePickerCoolDownModeTurnCryoOn = new System.Windows.Forms.DateTimePicker();
+            this.btStartCoolDownMode = new System.Windows.Forms.Button();
+            this.tbCoolDownModeStatus = new System.Windows.Forms.TextBox();
+            this.labelCoolDownModeStatus = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -232,9 +266,16 @@
             this.gbAutotune.SuspendLayout();
             this.gbLakeShore336PIDLoops.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabPageSourceModes.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.tabPageRefreshMode.SuspendLayout();
             this.gbRefreshModeWarmUp.SuspendLayout();
             this.gbRefreshModeCoolDown.SuspendLayout();
+            this.tabPageWarmUpMode.SuspendLayout();
+            this.gbWarmUpModeWarmUp.SuspendLayout();
+            this.tabPageCoolDownMode.SuspendLayout();
+            this.gbCoolDownModeWarmUp.SuspendLayout();
+            this.gbCoolDownModeCoolDown.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -383,6 +424,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -1105,8 +1147,7 @@
             this.tabControl.Controls.Add(this.tabPageFlowControllers);
             this.tabControl.Controls.Add(this.tabPageHeatersControl);
             this.tabControl.Controls.Add(this.tabPageLakeShore);
-            this.tabControl.Controls.Add(this.tabPageRefreshMode);
-            this.tabControl.Controls.Add(this.tabPageWarmUpMode);
+            this.tabControl.Controls.Add(this.tabPageSourceModes);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -1122,7 +1163,7 @@
             this.tabPagePlotting.Controls.Add(this.chart2);
             this.tabPagePlotting.Location = new System.Drawing.Point(4, 22);
             this.tabPagePlotting.Name = "tabPagePlotting";
-            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPagePlotting.Size = new System.Drawing.Size(1033, 703);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and temperature plots";
@@ -1134,7 +1175,7 @@
             this.tabPageFlowControllers.Controls.Add(this.gbNeonFlowController);
             this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 22);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
-            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPageFlowControllers.Size = new System.Drawing.Size(1033, 703);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
@@ -1623,7 +1664,7 @@
             this.tabPageLakeShore.Controls.Add(this.groupBox3);
             this.tabPageLakeShore.Location = new System.Drawing.Point(4, 22);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
-            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.tabPageLakeShore.Size = new System.Drawing.Size(1033, 703);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
@@ -1877,33 +1918,57 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "do not use";
             // 
+            // tabPageSourceModes
+            // 
+            this.tabPageSourceModes.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageSourceModes.Controls.Add(this.tabControl1);
+            this.tabPageSourceModes.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSourceModes.Name = "tabPageSourceModes";
+            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSourceModes.Size = new System.Drawing.Size(1033, 703);
+            this.tabPageSourceModes.TabIndex = 3;
+            this.tabPageSourceModes.Text = "Source Modes";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPageRefreshMode);
+            this.tabControl1.Controls.Add(this.tabPageWarmUpMode);
+            this.tabControl1.Controls.Add(this.tabPageCoolDownMode);
+            this.tabControl1.Location = new System.Drawing.Point(2, 6);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1030, 697);
+            this.tabControl1.TabIndex = 22;
+            // 
             // tabPageRefreshMode
             // 
-            this.tabPageRefreshMode.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageRefreshMode.BackColor = System.Drawing.Color.Silver;
             this.tabPageRefreshMode.Controls.Add(this.gbRefreshModeWarmUp);
-            this.tabPageRefreshMode.Controls.Add(this.gbRefreshModeCoolDown);
             this.tabPageRefreshMode.Controls.Add(this.btCancelRefreshMode);
+            this.tabPageRefreshMode.Controls.Add(this.gbRefreshModeCoolDown);
             this.tabPageRefreshMode.Controls.Add(this.btStartRefreshMode);
-            this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeStatus);
             this.tabPageRefreshMode.Controls.Add(this.tbRefreshModeStatus);
+            this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeStatus);
             this.tabPageRefreshMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageRefreshMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPageRefreshMode.Name = "tabPageRefreshMode";
-            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageRefreshMode.Size = new System.Drawing.Size(1033, 703);
-            this.tabPageRefreshMode.TabIndex = 3;
+            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageRefreshMode.Size = new System.Drawing.Size(1022, 671);
+            this.tabPageRefreshMode.TabIndex = 0;
             this.tabPageRefreshMode.Text = "Refresh Mode";
             // 
             // gbRefreshModeWarmUp
             // 
             this.gbRefreshModeWarmUp.Controls.Add(this.btRefreshModeTemperatureSetpointUpdate);
-            this.gbRefreshModeWarmUp.Controls.Add(this.label2);
+            this.gbRefreshModeWarmUp.Controls.Add(this.labelRefreshModeTemperatureSetpoint);
             this.gbRefreshModeWarmUp.Controls.Add(this.tbRefreshModeTemperatureSetpoint);
             this.gbRefreshModeWarmUp.Controls.Add(this.labelRefreshModeHowLongUntilHeatersTurnOff);
             this.gbRefreshModeWarmUp.Controls.Add(this.tbRefreshModeHowLongUntilHeatersTurnOff);
             this.gbRefreshModeWarmUp.Controls.Add(this.checkBoxRefreshSourceAtRoomTemperature);
             this.gbRefreshModeWarmUp.Controls.Add(this.labelRefreshModeTurnHeatersOff);
             this.gbRefreshModeWarmUp.Controls.Add(this.dateTimePickerRefreshModeTurnHeatersOff);
-            this.gbRefreshModeWarmUp.Location = new System.Drawing.Point(50, 40);
+            this.gbRefreshModeWarmUp.Location = new System.Drawing.Point(45, 17);
             this.gbRefreshModeWarmUp.Name = "gbRefreshModeWarmUp";
             this.gbRefreshModeWarmUp.Size = new System.Drawing.Size(710, 78);
             this.gbRefreshModeWarmUp.TabIndex = 21;
@@ -1920,14 +1985,14 @@
             this.btRefreshModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
             this.btRefreshModeTemperatureSetpointUpdate.Click += new System.EventHandler(this.btRefreshModeTemperatureSetpointUpdate_Click);
             // 
-            // label2
+            // labelRefreshModeTemperatureSetpoint
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(253, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(126, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "Refresh Temperature (K):";
+            this.labelRefreshModeTemperatureSetpoint.AutoSize = true;
+            this.labelRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(250, 20);
+            this.labelRefreshModeTemperatureSetpoint.Name = "labelRefreshModeTemperatureSetpoint";
+            this.labelRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
+            this.labelRefreshModeTemperatureSetpoint.TabIndex = 21;
+            this.labelRefreshModeTemperatureSetpoint.Text = "Refresh Temperature (K):";
             // 
             // tbRefreshModeTemperatureSetpoint
             // 
@@ -1935,12 +2000,11 @@
             this.tbRefreshModeTemperatureSetpoint.Name = "tbRefreshModeTemperatureSetpoint";
             this.tbRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbRefreshModeTemperatureSetpoint.TabIndex = 20;
-            this.tbRefreshModeTemperatureSetpoint.Text = "310";
             // 
             // labelRefreshModeHowLongUntilHeatersTurnOff
             // 
             this.labelRefreshModeHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 43);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Name = "labelRefreshModeHowLongUntilHeatersTurnOff";
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
@@ -1956,7 +2020,7 @@
             // checkBoxRefreshSourceAtRoomTemperature
             // 
             this.checkBoxRefreshSourceAtRoomTemperature.AutoSize = true;
-            this.checkBoxRefreshSourceAtRoomTemperature.Location = new System.Drawing.Point(524, 22);
+            this.checkBoxRefreshSourceAtRoomTemperature.Location = new System.Drawing.Point(525, 20);
             this.checkBoxRefreshSourceAtRoomTemperature.Name = "checkBoxRefreshSourceAtRoomTemperature";
             this.checkBoxRefreshSourceAtRoomTemperature.Size = new System.Drawing.Size(160, 17);
             this.checkBoxRefreshSourceAtRoomTemperature.TabIndex = 17;
@@ -1967,7 +2031,7 @@
             // labelRefreshModeTurnHeatersOff
             // 
             this.labelRefreshModeTurnHeatersOff.AutoSize = true;
-            this.labelRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(20, 25);
+            this.labelRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelRefreshModeTurnHeatersOff.Name = "labelRefreshModeTurnHeatersOff";
             this.labelRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelRefreshModeTurnHeatersOff.TabIndex = 19;
@@ -1983,58 +2047,10 @@
             this.dateTimePickerRefreshModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerRefreshModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerRefreshModeTurnHeatersOff_ValueChanged);
             // 
-            // gbRefreshModeCoolDown
-            // 
-            this.gbRefreshModeCoolDown.Controls.Add(this.labelWhenHeatingStopsAndCryoTurnsOn);
-            this.gbRefreshModeCoolDown.Controls.Add(this.labelHowLongUntilHeatingStopsAndCryoTurnsOn);
-            this.gbRefreshModeCoolDown.Controls.Add(this.tbHowLongUntilCryoTurnsOn);
-            this.gbRefreshModeCoolDown.Controls.Add(this.dateTimePickerStopHeatingAndTurnCryoOn);
-            this.gbRefreshModeCoolDown.Location = new System.Drawing.Point(50, 128);
-            this.gbRefreshModeCoolDown.Name = "gbRefreshModeCoolDown";
-            this.gbRefreshModeCoolDown.Size = new System.Drawing.Size(220, 78);
-            this.gbRefreshModeCoolDown.TabIndex = 20;
-            this.gbRefreshModeCoolDown.TabStop = false;
-            this.gbRefreshModeCoolDown.Text = "Cool down";
-            // 
-            // labelWhenHeatingStopsAndCryoTurnsOn
-            // 
-            this.labelWhenHeatingStopsAndCryoTurnsOn.AutoSize = true;
-            this.labelWhenHeatingStopsAndCryoTurnsOn.Location = new System.Drawing.Point(15, 25);
-            this.labelWhenHeatingStopsAndCryoTurnsOn.Name = "labelWhenHeatingStopsAndCryoTurnsOn";
-            this.labelWhenHeatingStopsAndCryoTurnsOn.Size = new System.Drawing.Size(82, 13);
-            this.labelWhenHeatingStopsAndCryoTurnsOn.TabIndex = 11;
-            this.labelWhenHeatingStopsAndCryoTurnsOn.Text = "Turn cryo on at:";
-            // 
-            // labelHowLongUntilHeatingStopsAndCryoTurnsOn
-            // 
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.AutoSize = true;
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.Location = new System.Drawing.Point(20, 43);
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.Name = "labelHowLongUntilHeatingStopsAndCryoTurnsOn";
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.TabIndex = 11;
-            this.labelHowLongUntilHeatingStopsAndCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
-            // 
-            // tbHowLongUntilCryoTurnsOn
-            // 
-            this.tbHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(103, 45);
-            this.tbHowLongUntilCryoTurnsOn.Name = "tbHowLongUntilCryoTurnsOn";
-            this.tbHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
-            this.tbHowLongUntilCryoTurnsOn.TabIndex = 16;
-            // 
-            // dateTimePickerStopHeatingAndTurnCryoOn
-            // 
-            this.dateTimePickerStopHeatingAndTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerStopHeatingAndTurnCryoOn.Location = new System.Drawing.Point(103, 19);
-            this.dateTimePickerStopHeatingAndTurnCryoOn.Name = "dateTimePickerStopHeatingAndTurnCryoOn";
-            this.dateTimePickerStopHeatingAndTurnCryoOn.Size = new System.Drawing.Size(97, 20);
-            this.dateTimePickerStopHeatingAndTurnCryoOn.TabIndex = 15;
-            this.dateTimePickerStopHeatingAndTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
-            this.dateTimePickerStopHeatingAndTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerStopHeatingAndTurnCryoOn_ValueChanged);
-            // 
             // btCancelRefreshMode
             // 
             this.btCancelRefreshMode.Enabled = false;
-            this.btCancelRefreshMode.Location = new System.Drawing.Point(226, 209);
+            this.btCancelRefreshMode.Location = new System.Drawing.Point(680, 158);
             this.btCancelRefreshMode.Name = "btCancelRefreshMode";
             this.btCancelRefreshMode.Size = new System.Drawing.Size(75, 23);
             this.btCancelRefreshMode.TabIndex = 14;
@@ -2042,10 +2058,58 @@
             this.btCancelRefreshMode.UseVisualStyleBackColor = true;
             this.btCancelRefreshMode.Click += new System.EventHandler(this.btCancelRefreshMode_Click);
             // 
+            // gbRefreshModeCoolDown
+            // 
+            this.gbRefreshModeCoolDown.Controls.Add(this.labelRefreshModeCryoTurnOnDateTime);
+            this.gbRefreshModeCoolDown.Controls.Add(this.labelRefreshModeHowLongUntilCryoTurnsOn);
+            this.gbRefreshModeCoolDown.Controls.Add(this.tbRefreshModeHowLongUntilCryoTurnsOn);
+            this.gbRefreshModeCoolDown.Controls.Add(this.dateTimePickerRefreshModeTurnCryoOn);
+            this.gbRefreshModeCoolDown.Location = new System.Drawing.Point(45, 103);
+            this.gbRefreshModeCoolDown.Name = "gbRefreshModeCoolDown";
+            this.gbRefreshModeCoolDown.Size = new System.Drawing.Size(243, 78);
+            this.gbRefreshModeCoolDown.TabIndex = 20;
+            this.gbRefreshModeCoolDown.TabStop = false;
+            this.gbRefreshModeCoolDown.Text = "Cool down";
+            // 
+            // labelRefreshModeCryoTurnOnDateTime
+            // 
+            this.labelRefreshModeCryoTurnOnDateTime.AutoSize = true;
+            this.labelRefreshModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
+            this.labelRefreshModeCryoTurnOnDateTime.Name = "labelRefreshModeCryoTurnOnDateTime";
+            this.labelRefreshModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
+            this.labelRefreshModeCryoTurnOnDateTime.TabIndex = 11;
+            this.labelRefreshModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
+            // 
+            // labelRefreshModeHowLongUntilCryoTurnsOn
+            // 
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.AutoSize = true;
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Name = "labelRefreshModeHowLongUntilCryoTurnsOn";
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 11;
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
+            // 
+            // tbRefreshModeHowLongUntilCryoTurnsOn
+            // 
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Name = "tbRefreshModeHowLongUntilCryoTurnsOn";
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 16;
+            // 
+            // dateTimePickerRefreshModeTurnCryoOn
+            // 
+            this.dateTimePickerRefreshModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.dateTimePickerRefreshModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
+            this.dateTimePickerRefreshModeTurnCryoOn.Name = "dateTimePickerRefreshModeTurnCryoOn";
+            this.dateTimePickerRefreshModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
+            this.dateTimePickerRefreshModeTurnCryoOn.TabIndex = 15;
+            this.dateTimePickerRefreshModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
+            this.dateTimePickerRefreshModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerStopHeatingAndTurnCryoOn_ValueChanged);
+            // 
             // btStartRefreshMode
             // 
             this.btStartRefreshMode.Enabled = false;
-            this.btStartRefreshMode.Location = new System.Drawing.Point(145, 209);
+            this.btStartRefreshMode.Location = new System.Drawing.Point(599, 158);
             this.btStartRefreshMode.Name = "btStartRefreshMode";
             this.btStartRefreshMode.Size = new System.Drawing.Size(75, 23);
             this.btStartRefreshMode.TabIndex = 13;
@@ -2053,32 +2117,361 @@
             this.btStartRefreshMode.UseVisualStyleBackColor = true;
             this.btStartRefreshMode.Click += new System.EventHandler(this.btStartRefreshMode_Click);
             // 
+            // tbRefreshModeStatus
+            // 
+            this.tbRefreshModeStatus.Location = new System.Drawing.Point(168, 224);
+            this.tbRefreshModeStatus.Multiline = true;
+            this.tbRefreshModeStatus.Name = "tbRefreshModeStatus";
+            this.tbRefreshModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbRefreshModeStatus.Size = new System.Drawing.Size(588, 145);
+            this.tbRefreshModeStatus.TabIndex = 11;
+            // 
             // labelRefreshModeStatus
             // 
             this.labelRefreshModeStatus.AutoSize = true;
-            this.labelRefreshModeStatus.Location = new System.Drawing.Point(110, 241);
+            this.labelRefreshModeStatus.Location = new System.Drawing.Point(53, 227);
             this.labelRefreshModeStatus.Name = "labelRefreshModeStatus";
             this.labelRefreshModeStatus.Size = new System.Drawing.Size(110, 13);
             this.labelRefreshModeStatus.TabIndex = 12;
             this.labelRefreshModeStatus.Text = "Refresh Mode Status:";
             // 
-            // tbRefreshModeStatus
-            // 
-            this.tbRefreshModeStatus.Location = new System.Drawing.Point(226, 238);
-            this.tbRefreshModeStatus.Multiline = true;
-            this.tbRefreshModeStatus.Name = "tbRefreshModeStatus";
-            this.tbRefreshModeStatus.Size = new System.Drawing.Size(483, 98);
-            this.tbRefreshModeStatus.TabIndex = 11;
-            // 
             // tabPageWarmUpMode
             // 
-            this.tabPageWarmUpMode.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageWarmUpMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageWarmUpMode.Controls.Add(this.btCancelWarmUpMode);
+            this.tabPageWarmUpMode.Controls.Add(this.btStartWarmUpMode);
+            this.tabPageWarmUpMode.Controls.Add(this.tbWarmUpModeStatus);
+            this.tabPageWarmUpMode.Controls.Add(this.labelWarmUpModeStatus);
+            this.tabPageWarmUpMode.Controls.Add(this.gbWarmUpModeWarmUp);
             this.tabPageWarmUpMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageWarmUpMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPageWarmUpMode.Name = "tabPageWarmUpMode";
-            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageWarmUpMode.Size = new System.Drawing.Size(1033, 703);
-            this.tabPageWarmUpMode.TabIndex = 5;
-            this.tabPageWarmUpMode.Text = "Warm up mode";
+            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageWarmUpMode.Size = new System.Drawing.Size(1022, 671);
+            this.tabPageWarmUpMode.TabIndex = 1;
+            this.tabPageWarmUpMode.Text = "Warm Up Mode";
+            // 
+            // btCancelWarmUpMode
+            // 
+            this.btCancelWarmUpMode.Enabled = false;
+            this.btCancelWarmUpMode.Location = new System.Drawing.Point(680, 114);
+            this.btCancelWarmUpMode.Name = "btCancelWarmUpMode";
+            this.btCancelWarmUpMode.Size = new System.Drawing.Size(75, 23);
+            this.btCancelWarmUpMode.TabIndex = 26;
+            this.btCancelWarmUpMode.Text = "Cancel";
+            this.btCancelWarmUpMode.UseVisualStyleBackColor = true;
+            this.btCancelWarmUpMode.Click += new System.EventHandler(this.btCancelWarmUpMode_Click);
+            // 
+            // btStartWarmUpMode
+            // 
+            this.btStartWarmUpMode.Enabled = false;
+            this.btStartWarmUpMode.Location = new System.Drawing.Point(599, 114);
+            this.btStartWarmUpMode.Name = "btStartWarmUpMode";
+            this.btStartWarmUpMode.Size = new System.Drawing.Size(75, 23);
+            this.btStartWarmUpMode.TabIndex = 25;
+            this.btStartWarmUpMode.Text = "Start";
+            this.btStartWarmUpMode.UseVisualStyleBackColor = true;
+            this.btStartWarmUpMode.Click += new System.EventHandler(this.btStartWarmUpMode_Click);
+            // 
+            // tbWarmUpModeStatus
+            // 
+            this.tbWarmUpModeStatus.Location = new System.Drawing.Point(168, 162);
+            this.tbWarmUpModeStatus.Multiline = true;
+            this.tbWarmUpModeStatus.Name = "tbWarmUpModeStatus";
+            this.tbWarmUpModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbWarmUpModeStatus.Size = new System.Drawing.Size(588, 145);
+            this.tbWarmUpModeStatus.TabIndex = 23;
+            // 
+            // labelWarmUpModeStatus
+            // 
+            this.labelWarmUpModeStatus.AutoSize = true;
+            this.labelWarmUpModeStatus.Location = new System.Drawing.Point(46, 164);
+            this.labelWarmUpModeStatus.Name = "labelWarmUpModeStatus";
+            this.labelWarmUpModeStatus.Size = new System.Drawing.Size(118, 13);
+            this.labelWarmUpModeStatus.TabIndex = 24;
+            this.labelWarmUpModeStatus.Text = "Warm Up Mode Status:";
+            // 
+            // gbWarmUpModeWarmUp
+            // 
+            this.gbWarmUpModeWarmUp.Controls.Add(this.btWarmUpModeTemperatureSetpointUpdate);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.labelWarmUpModeTemperatureSetpoint);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.tbWarmUpModeTemperatureSetpoint);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.labelWarmUpModeHowLongUntilHeatersTurnOff);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.tbWarmUpModeHowLongUntilHeatersTurnOff);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.checkBoxWarmUpSourceToRoomTemperature);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.labelWarmUpModeTurnHeatersOff);
+            this.gbWarmUpModeWarmUp.Controls.Add(this.dateTimePickerWarmUpModeTurnHeatersOff);
+            this.gbWarmUpModeWarmUp.Location = new System.Drawing.Point(45, 17);
+            this.gbWarmUpModeWarmUp.Name = "gbWarmUpModeWarmUp";
+            this.gbWarmUpModeWarmUp.Size = new System.Drawing.Size(710, 78);
+            this.gbWarmUpModeWarmUp.TabIndex = 22;
+            this.gbWarmUpModeWarmUp.TabStop = false;
+            this.gbWarmUpModeWarmUp.Text = "Warm Up";
+            // 
+            // btWarmUpModeTemperatureSetpointUpdate
+            // 
+            this.btWarmUpModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(399, 46);
+            this.btWarmUpModeTemperatureSetpointUpdate.Name = "btWarmUpModeTemperatureSetpointUpdate";
+            this.btWarmUpModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btWarmUpModeTemperatureSetpointUpdate.TabIndex = 22;
+            this.btWarmUpModeTemperatureSetpointUpdate.Text = "Update";
+            this.btWarmUpModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
+            this.btWarmUpModeTemperatureSetpointUpdate.Click += new System.EventHandler(this.btWarmUpModeTemperatureSetpointUpdate_Click);
+            // 
+            // labelWarmUpModeTemperatureSetpoint
+            // 
+            this.labelWarmUpModeTemperatureSetpoint.AutoSize = true;
+            this.labelWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(244, 20);
+            this.labelWarmUpModeTemperatureSetpoint.Name = "labelWarmUpModeTemperatureSetpoint";
+            this.labelWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(134, 13);
+            this.labelWarmUpModeTemperatureSetpoint.TabIndex = 21;
+            this.labelWarmUpModeTemperatureSetpoint.Text = "Warm Up Temperature (K):";
+            // 
+            // tbWarmUpModeTemperatureSetpoint
+            // 
+            this.tbWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(385, 19);
+            this.tbWarmUpModeTemperatureSetpoint.Name = "tbWarmUpModeTemperatureSetpoint";
+            this.tbWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
+            this.tbWarmUpModeTemperatureSetpoint.TabIndex = 20;
+            // 
+            // labelWarmUpModeHowLongUntilHeatersTurnOff
+            // 
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.AutoSize = true;
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Name = "labelWarmUpModeHowLongUntilHeatersTurnOff";
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
+            // 
+            // tbWarmUpModeHowLongUntilHeatersTurnOff
+            // 
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Name = "tbWarmUpModeHowLongUntilHeatersTurnOff";
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
+            // 
+            // checkBoxWarmUpSourceToRoomTemperature
+            // 
+            this.checkBoxWarmUpSourceToRoomTemperature.AutoSize = true;
+            this.checkBoxWarmUpSourceToRoomTemperature.Location = new System.Drawing.Point(525, 20);
+            this.checkBoxWarmUpSourceToRoomTemperature.Name = "checkBoxWarmUpSourceToRoomTemperature";
+            this.checkBoxWarmUpSourceToRoomTemperature.Size = new System.Drawing.Size(166, 17);
+            this.checkBoxWarmUpSourceToRoomTemperature.TabIndex = 17;
+            this.checkBoxWarmUpSourceToRoomTemperature.Text = "Warm up to room temperature";
+            this.checkBoxWarmUpSourceToRoomTemperature.UseVisualStyleBackColor = true;
+            this.checkBoxWarmUpSourceToRoomTemperature.CheckedChanged += new System.EventHandler(this.checkBoxWarmUpSourceToRoomTemperature_CheckedChanged);
+            // 
+            // labelWarmUpModeTurnHeatersOff
+            // 
+            this.labelWarmUpModeTurnHeatersOff.AutoSize = true;
+            this.labelWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
+            this.labelWarmUpModeTurnHeatersOff.Name = "labelWarmUpModeTurnHeatersOff";
+            this.labelWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
+            this.labelWarmUpModeTurnHeatersOff.TabIndex = 19;
+            this.labelWarmUpModeTurnHeatersOff.Text = "Turn heaters off at:";
+            // 
+            // dateTimePickerWarmUpModeTurnHeatersOff
+            // 
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Name = "dateTimePickerWarmUpModeTurnHeatersOff";
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.TabIndex = 18;
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerWarmUpModeTurnHeatersOff_ValueChanged);
+            // 
+            // tabPageCoolDownMode
+            // 
+            this.tabPageCoolDownMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageCoolDownMode.Controls.Add(this.gbCoolDownModeWarmUp);
+            this.tabPageCoolDownMode.Controls.Add(this.btCancelCoolDownMode);
+            this.tabPageCoolDownMode.Controls.Add(this.gbCoolDownModeCoolDown);
+            this.tabPageCoolDownMode.Controls.Add(this.btStartCoolDownMode);
+            this.tabPageCoolDownMode.Controls.Add(this.tbCoolDownModeStatus);
+            this.tabPageCoolDownMode.Controls.Add(this.labelCoolDownModeStatus);
+            this.tabPageCoolDownMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageCoolDownMode.Name = "tabPageCoolDownMode";
+            this.tabPageCoolDownMode.Size = new System.Drawing.Size(1022, 671);
+            this.tabPageCoolDownMode.TabIndex = 2;
+            this.tabPageCoolDownMode.Text = "Cool Down Mode";
+            // 
+            // gbCoolDownModeWarmUp
+            // 
+            this.gbCoolDownModeWarmUp.Controls.Add(this.btCoolDownModeTemperatureSetpointUpdate);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.labelCoolDownModeTemperatureSetpoint);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.tbCoolDownModeTemperatureSetpoint);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.labelCoolDownModeHowLongUntilHeatersTurnOff);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.tbCoolDownModeHowLongUntilHeatersTurnOff);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.checkBoxCoolDownSourceAtRoomTemperature);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.labelCoolDownModeTurnHeatersOff);
+            this.gbCoolDownModeWarmUp.Controls.Add(this.dateTimePickerCoolDownModeTurnHeatersOff);
+            this.gbCoolDownModeWarmUp.Location = new System.Drawing.Point(45, 17);
+            this.gbCoolDownModeWarmUp.Name = "gbCoolDownModeWarmUp";
+            this.gbCoolDownModeWarmUp.Size = new System.Drawing.Size(710, 78);
+            this.gbCoolDownModeWarmUp.TabIndex = 27;
+            this.gbCoolDownModeWarmUp.TabStop = false;
+            this.gbCoolDownModeWarmUp.Text = "Warm Up";
+            // 
+            // btCoolDownModeTemperatureSetpointUpdate
+            // 
+            this.btCoolDownModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(399, 46);
+            this.btCoolDownModeTemperatureSetpointUpdate.Name = "btCoolDownModeTemperatureSetpointUpdate";
+            this.btCoolDownModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btCoolDownModeTemperatureSetpointUpdate.TabIndex = 22;
+            this.btCoolDownModeTemperatureSetpointUpdate.Text = "Update";
+            this.btCoolDownModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
+            this.btCoolDownModeTemperatureSetpointUpdate.Click += new System.EventHandler(this.btCoolDownModeTemperatureSetpointUpdate_Click);
+            // 
+            // labelCoolDownModeTemperatureSetpoint
+            // 
+            this.labelCoolDownModeTemperatureSetpoint.AutoSize = true;
+            this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(250, 20);
+            this.labelCoolDownModeTemperatureSetpoint.Name = "labelCoolDownModeTemperatureSetpoint";
+            this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
+            this.labelCoolDownModeTemperatureSetpoint.TabIndex = 21;
+            this.labelCoolDownModeTemperatureSetpoint.Text = "Heating Temperature (K):";
+            // 
+            // tbCoolDownModeTemperatureSetpoint
+            // 
+            this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(385, 19);
+            this.tbCoolDownModeTemperatureSetpoint.Name = "tbCoolDownModeTemperatureSetpoint";
+            this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
+            this.tbCoolDownModeTemperatureSetpoint.TabIndex = 20;
+            // 
+            // labelCoolDownModeHowLongUntilHeatersTurnOff
+            // 
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.AutoSize = true;
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Name = "labelCoolDownModeHowLongUntilHeatersTurnOff";
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
+            // 
+            // tbCoolDownModeHowLongUntilHeatersTurnOff
+            // 
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Name = "tbCoolDownModeHowLongUntilHeatersTurnOff";
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
+            // 
+            // checkBoxCoolDownSourceAtRoomTemperature
+            // 
+            this.checkBoxCoolDownSourceAtRoomTemperature.AutoSize = true;
+            this.checkBoxCoolDownSourceAtRoomTemperature.Location = new System.Drawing.Point(528, 22);
+            this.checkBoxCoolDownSourceAtRoomTemperature.Name = "checkBoxCoolDownSourceAtRoomTemperature";
+            this.checkBoxCoolDownSourceAtRoomTemperature.Size = new System.Drawing.Size(153, 30);
+            this.checkBoxCoolDownSourceAtRoomTemperature.TabIndex = 17;
+            this.checkBoxCoolDownSourceAtRoomTemperature.Text = "Leave at room temperature\r\nuntil cryo is turned on";
+            this.checkBoxCoolDownSourceAtRoomTemperature.UseVisualStyleBackColor = true;
+            this.checkBoxCoolDownSourceAtRoomTemperature.CheckedChanged += new System.EventHandler(this.checkBoxCoolDownSourceAtRoomTemperature_CheckedChanged);
+            // 
+            // labelCoolDownModeTurnHeatersOff
+            // 
+            this.labelCoolDownModeTurnHeatersOff.AutoSize = true;
+            this.labelCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
+            this.labelCoolDownModeTurnHeatersOff.Name = "labelCoolDownModeTurnHeatersOff";
+            this.labelCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
+            this.labelCoolDownModeTurnHeatersOff.TabIndex = 19;
+            this.labelCoolDownModeTurnHeatersOff.Text = "Turn heaters off at:";
+            // 
+            // dateTimePickerCoolDownModeTurnHeatersOff
+            // 
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Name = "dateTimePickerCoolDownModeTurnHeatersOff";
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.TabIndex = 18;
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnHeatersOff_ValueChanged);
+            // 
+            // btCancelCoolDownMode
+            // 
+            this.btCancelCoolDownMode.Enabled = false;
+            this.btCancelCoolDownMode.Location = new System.Drawing.Point(680, 158);
+            this.btCancelCoolDownMode.Name = "btCancelCoolDownMode";
+            this.btCancelCoolDownMode.Size = new System.Drawing.Size(75, 23);
+            this.btCancelCoolDownMode.TabIndex = 25;
+            this.btCancelCoolDownMode.Text = "Cancel";
+            this.btCancelCoolDownMode.UseVisualStyleBackColor = true;
+            this.btCancelCoolDownMode.Click += new System.EventHandler(this.btCancelCoolDownMode_Click);
+            // 
+            // gbCoolDownModeCoolDown
+            // 
+            this.gbCoolDownModeCoolDown.Controls.Add(this.labelCoolDownModeCryoTurnOnDateTime);
+            this.gbCoolDownModeCoolDown.Controls.Add(this.labelCoolDownModeHowLongUntilCryoTurnsOn);
+            this.gbCoolDownModeCoolDown.Controls.Add(this.tbCoolDownModeHowLongUntilCryoTurnsOn);
+            this.gbCoolDownModeCoolDown.Controls.Add(this.dateTimePickerCoolDownModeTurnCryoOn);
+            this.gbCoolDownModeCoolDown.Location = new System.Drawing.Point(45, 103);
+            this.gbCoolDownModeCoolDown.Name = "gbCoolDownModeCoolDown";
+            this.gbCoolDownModeCoolDown.Size = new System.Drawing.Size(243, 78);
+            this.gbCoolDownModeCoolDown.TabIndex = 26;
+            this.gbCoolDownModeCoolDown.TabStop = false;
+            this.gbCoolDownModeCoolDown.Text = "Cool down";
+            // 
+            // labelCoolDownModeCryoTurnOnDateTime
+            // 
+            this.labelCoolDownModeCryoTurnOnDateTime.AutoSize = true;
+            this.labelCoolDownModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
+            this.labelCoolDownModeCryoTurnOnDateTime.Name = "labelCoolDownModeCryoTurnOnDateTime";
+            this.labelCoolDownModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
+            this.labelCoolDownModeCryoTurnOnDateTime.TabIndex = 11;
+            this.labelCoolDownModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
+            // 
+            // labelCoolDownModeHowLongUntilCryoTurnsOn
+            // 
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.AutoSize = true;
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Name = "labelCoolDownModeHowLongUntilCryoTurnsOn";
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 11;
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
+            // 
+            // tbCoolDownModeHowLongUntilCryoTurnsOn
+            // 
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Name = "tbCoolDownModeHowLongUntilCryoTurnsOn";
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 16;
+            // 
+            // dateTimePickerCoolDownModeTurnCryoOn
+            // 
+            this.dateTimePickerCoolDownModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.dateTimePickerCoolDownModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
+            this.dateTimePickerCoolDownModeTurnCryoOn.Name = "dateTimePickerCoolDownModeTurnCryoOn";
+            this.dateTimePickerCoolDownModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
+            this.dateTimePickerCoolDownModeTurnCryoOn.TabIndex = 15;
+            this.dateTimePickerCoolDownModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
+            this.dateTimePickerCoolDownModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnCryoOn_ValueChanged);
+            // 
+            // btStartCoolDownMode
+            // 
+            this.btStartCoolDownMode.Enabled = false;
+            this.btStartCoolDownMode.Location = new System.Drawing.Point(599, 158);
+            this.btStartCoolDownMode.Name = "btStartCoolDownMode";
+            this.btStartCoolDownMode.Size = new System.Drawing.Size(75, 23);
+            this.btStartCoolDownMode.TabIndex = 24;
+            this.btStartCoolDownMode.Text = "Start";
+            this.btStartCoolDownMode.UseVisualStyleBackColor = true;
+            this.btStartCoolDownMode.Click += new System.EventHandler(this.btStartCoolDownMode_Click);
+            // 
+            // tbCoolDownModeStatus
+            // 
+            this.tbCoolDownModeStatus.Location = new System.Drawing.Point(168, 224);
+            this.tbCoolDownModeStatus.Multiline = true;
+            this.tbCoolDownModeStatus.Name = "tbCoolDownModeStatus";
+            this.tbCoolDownModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbCoolDownModeStatus.Size = new System.Drawing.Size(588, 145);
+            this.tbCoolDownModeStatus.TabIndex = 22;
+            // 
+            // labelCoolDownModeStatus
+            // 
+            this.labelCoolDownModeStatus.AutoSize = true;
+            this.labelCoolDownModeStatus.Location = new System.Drawing.Point(43, 227);
+            this.labelCoolDownModeStatus.Name = "labelCoolDownModeStatus";
+            this.labelCoolDownModeStatus.Size = new System.Drawing.Size(125, 13);
+            this.labelCoolDownModeStatus.TabIndex = 23;
+            this.labelCoolDownModeStatus.Text = "Cool Down Mode Status:";
             // 
             // ControlWindow
             // 
@@ -2134,12 +2527,24 @@
             this.gbLakeShore336PIDLoops.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabPageSourceModes.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
             this.tabPageRefreshMode.ResumeLayout(false);
             this.tabPageRefreshMode.PerformLayout();
             this.gbRefreshModeWarmUp.ResumeLayout(false);
             this.gbRefreshModeWarmUp.PerformLayout();
             this.gbRefreshModeCoolDown.ResumeLayout(false);
             this.gbRefreshModeCoolDown.PerformLayout();
+            this.tabPageWarmUpMode.ResumeLayout(false);
+            this.tabPageWarmUpMode.PerformLayout();
+            this.gbWarmUpModeWarmUp.ResumeLayout(false);
+            this.gbWarmUpModeWarmUp.PerformLayout();
+            this.tabPageCoolDownMode.ResumeLayout(false);
+            this.tabPageCoolDownMode.PerformLayout();
+            this.gbCoolDownModeWarmUp.ResumeLayout(false);
+            this.gbCoolDownModeWarmUp.PerformLayout();
+            this.gbCoolDownModeCoolDown.ResumeLayout(false);
+            this.gbCoolDownModeCoolDown.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2253,15 +2658,15 @@
         private System.Windows.Forms.Label labelTurnHeatersOffAt;
         public System.Windows.Forms.TextBox tbHowLongUntilHeatersTurnOff;
         public System.Windows.Forms.DateTimePicker dateTimePickerHeatersTurnOff;
-        private System.Windows.Forms.TabPage tabPageRefreshMode;
+        private System.Windows.Forms.TabPage tabPageSourceModes;
         private System.Windows.Forms.Label labelRefreshModeStatus;
         public System.Windows.Forms.TextBox tbRefreshModeStatus;
         public System.Windows.Forms.Button btCancelRefreshMode;
         public System.Windows.Forms.Button btStartRefreshMode;
-        public System.Windows.Forms.DateTimePicker dateTimePickerStopHeatingAndTurnCryoOn;
-        private System.Windows.Forms.Label labelWhenHeatingStopsAndCryoTurnsOn;
-        private System.Windows.Forms.Label labelHowLongUntilHeatingStopsAndCryoTurnsOn;
-        public System.Windows.Forms.TextBox tbHowLongUntilCryoTurnsOn;
+        public System.Windows.Forms.DateTimePicker dateTimePickerRefreshModeTurnCryoOn;
+        private System.Windows.Forms.Label labelRefreshModeCryoTurnOnDateTime;
+        private System.Windows.Forms.Label labelRefreshModeHowLongUntilCryoTurnsOn;
+        public System.Windows.Forms.TextBox tbRefreshModeHowLongUntilCryoTurnsOn;
         public System.Windows.Forms.CheckBox checkBoxRefreshSourceAtRoomTemperature;
         private System.Windows.Forms.GroupBox gbRefreshModeWarmUp;
         private System.Windows.Forms.Label labelRefreshModeHowLongUntilHeatersTurnOff;
@@ -2269,8 +2674,8 @@
         private System.Windows.Forms.Label labelRefreshModeTurnHeatersOff;
         public System.Windows.Forms.DateTimePicker dateTimePickerRefreshModeTurnHeatersOff;
         private System.Windows.Forms.GroupBox gbRefreshModeCoolDown;
-        private System.Windows.Forms.Button btRefreshModeTemperatureSetpointUpdate;
-        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.Button btRefreshModeTemperatureSetpointUpdate;
+        private System.Windows.Forms.Label labelRefreshModeTemperatureSetpoint;
         public System.Windows.Forms.TextBox tbRefreshModeTemperatureSetpoint;
         private System.Windows.Forms.TabPage tabPageHeatersControl;
         private System.Windows.Forms.ToolStripMenuItem neonFlowPlotToolStripMenuItem;
@@ -2281,7 +2686,6 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSaveNeonFlowDataCSV;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSavePressurePlotDataCSV;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSaveTemperaturePlotDataCSV;
-        private System.Windows.Forms.TabPage tabPageWarmUpMode;
         private System.Windows.Forms.Label labelTS1;
         public System.Windows.Forms.TextBox tbTS1;
         public System.Windows.Forms.Button btClearNeonTempData;
@@ -2312,6 +2716,40 @@
         private System.Windows.Forms.GroupBox gbAutotune;
         private System.Windows.Forms.Button btQueryAutotuneError;
         public System.Windows.Forms.RichTextBox rtbAutotuneStatus;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPageRefreshMode;
+        private System.Windows.Forms.TabPage tabPageWarmUpMode;
+        private System.Windows.Forms.TabPage tabPageCoolDownMode;
+        private System.Windows.Forms.GroupBox gbWarmUpModeWarmUp;
+        public System.Windows.Forms.Button btWarmUpModeTemperatureSetpointUpdate;
+        private System.Windows.Forms.Label labelWarmUpModeTemperatureSetpoint;
+        public System.Windows.Forms.TextBox tbWarmUpModeTemperatureSetpoint;
+        private System.Windows.Forms.Label labelWarmUpModeHowLongUntilHeatersTurnOff;
+        public System.Windows.Forms.TextBox tbWarmUpModeHowLongUntilHeatersTurnOff;
+        public System.Windows.Forms.CheckBox checkBoxWarmUpSourceToRoomTemperature;
+        private System.Windows.Forms.Label labelWarmUpModeTurnHeatersOff;
+        public System.Windows.Forms.DateTimePicker dateTimePickerWarmUpModeTurnHeatersOff;
+        public System.Windows.Forms.Button btCancelWarmUpMode;
+        public System.Windows.Forms.Button btStartWarmUpMode;
+        public System.Windows.Forms.TextBox tbWarmUpModeStatus;
+        private System.Windows.Forms.Label labelWarmUpModeStatus;
+        private System.Windows.Forms.GroupBox gbCoolDownModeWarmUp;
+        public System.Windows.Forms.Button btCoolDownModeTemperatureSetpointUpdate;
+        private System.Windows.Forms.Label labelCoolDownModeTemperatureSetpoint;
+        public System.Windows.Forms.TextBox tbCoolDownModeTemperatureSetpoint;
+        private System.Windows.Forms.Label labelCoolDownModeHowLongUntilHeatersTurnOff;
+        public System.Windows.Forms.TextBox tbCoolDownModeHowLongUntilHeatersTurnOff;
+        public System.Windows.Forms.CheckBox checkBoxCoolDownSourceAtRoomTemperature;
+        private System.Windows.Forms.Label labelCoolDownModeTurnHeatersOff;
+        public System.Windows.Forms.DateTimePicker dateTimePickerCoolDownModeTurnHeatersOff;
+        public System.Windows.Forms.Button btCancelCoolDownMode;
+        private System.Windows.Forms.GroupBox gbCoolDownModeCoolDown;
+        private System.Windows.Forms.Label labelCoolDownModeCryoTurnOnDateTime;
+        private System.Windows.Forms.Label labelCoolDownModeHowLongUntilCryoTurnsOn;
+        public System.Windows.Forms.TextBox tbCoolDownModeHowLongUntilCryoTurnsOn;
+        public System.Windows.Forms.DateTimePicker dateTimePickerCoolDownModeTurnCryoOn;
+        public System.Windows.Forms.Button btStartCoolDownMode;
+        public System.Windows.Forms.TextBox tbCoolDownModeStatus;
+        private System.Windows.Forms.Label labelCoolDownModeStatus;
     }
 }
-

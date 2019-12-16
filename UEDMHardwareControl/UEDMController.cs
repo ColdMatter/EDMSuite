@@ -29,9 +29,9 @@ namespace UEDMHardwareControl
         /// The main entry point for the application.
         /// </summary>
         # region Setup
-        
+
         // hardware
-        private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor"};
+        private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
         private static string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
 
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
@@ -72,7 +72,7 @@ namespace UEDMHardwareControl
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            
+
 
 
             // make the control window
@@ -88,12 +88,18 @@ namespace UEDMHardwareControl
             // Set initial datetime picker values for the user interface
             DateTime now = DateTime.Now;
             DateTime InitialDateTime = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 4, 0, 0);
-            window.SetDateTimePickerValue(window.dateTimePickerStopHeatingAndTurnCryoOn, InitialDateTime);
             window.SetDateTimePickerValue(window.dateTimePickerHeatersTurnOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnCryoOn, InitialDateTime);
             window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerWarmUpModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnCryoOn, InitialDateTime);
             // Set flags
             refreshModeHeaterTurnOffDateTimeFlag = false;
             refreshModeCryoTurnOnDateTimeFlag = false;
+            warmupModeHeaterTurnOffDateTimeFlag = false;
+            CoolDownModeHeaterTurnOffDateTimeFlag = false;
+            CoolDownModeCryoTurnOnDateTimeFlag = false;
             // Check that the LakeShore relay is set correctly 
             InitializeCryoControl();
         }
@@ -142,17 +148,17 @@ namespace UEDMHardwareControl
 
             if (ff.ShowDialog() == DialogResult.OK)
             {
-	            if ((myStream = ff.OpenFile()) != null)
-	            {
-		            using (myStream)
-		            {
+                if ((myStream = ff.OpenFile()) != null)
+                {
+                    using (myStream)
+                    {
                         mychart.SaveImage(myStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-		            }
-	            }
-	         }
+                    }
+                }
+            }
         }
 
-        
+
         public string[] csvData;
         public void SavePlotDataToCSV(string csvContent)// to be created
         {
@@ -176,7 +182,7 @@ namespace UEDMHardwareControl
 
 
             }
-            
+
             //foreach (Series series in myChart.Series)
             //{
             //    string seriesName = series.Name;
@@ -225,7 +231,7 @@ namespace UEDMHardwareControl
             }
             else
             {
-                if(status == Off) window.SetTextBox(window.tbCryoState, "OFF");
+                if (status == Off) window.SetTextBox(window.tbCryoState, "OFF");
                 else
                 {
                     window.SetTextBox(window.tbCryoState, "UNKNOWN");
@@ -263,11 +269,11 @@ namespace UEDMHardwareControl
         private void TurnOnCryoCooler()
         {
             string status = PollCryoStatus(); // Query the status of the relay.
-            if(status == Off) // If off, then try to turn it on
+            if (status == Off) // If off, then try to turn it on
             {
                 bool relaySuccessFlag = tempController.SetRelayParameters(RelayNumber, Int32.Parse(On)); //Turn cryo on
                 // Now check if the LakeShore relay has been changed correctly
-                string newstatus = PollCryoStatus(); 
+                string newstatus = PollCryoStatus();
                 if (newstatus == Off)// Cryo is still off - throw an exception
                 {
                     string message = "Cryo control exception: The LakeShore 336 temperature controller Relay-" + RelayNumber + " has not been correctly changed. This means that the cryo cooler has not been turned on.\n\nClick OK to continue.";
@@ -275,7 +281,7 @@ namespace UEDMHardwareControl
                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                 }
             }
-            else 
+            else
             {
                 if (status == On) // The cryo was already turned on! Has some element of hardware been changed manually? Throw exception.
                 {
@@ -301,7 +307,7 @@ namespace UEDMHardwareControl
                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                 }
             }
-            else 
+            else
             {
                 if (status == Off) // The cryo was already turned off! Has some element of hardware been changed manually? Throw exception.
                 {
@@ -314,13 +320,13 @@ namespace UEDMHardwareControl
 
         private void SetHeaterSetpoint(int Output, double Value)
         {
-            if(Value > 0)
+            if (Value > 0)
             {
                 tempController.SetControlSetpoint(Output, Value);
             }
         }
 
-        private void EnableLakeGoreHeaterOutput3or4(int Output, bool OnOff)
+        private void EnableLakeShoreHeaterOutput3or4(int Output, bool OnOff)
         {
             if (OnOff)
             {
@@ -341,7 +347,7 @@ namespace UEDMHardwareControl
         /// </summary>
         /// <param name="Output"></param>
         /// <param name="range"></param>
-        private void EnableLakeGoreHeaterOutput1or2(int Output, int range)
+        private void EnableLakeShoreHeaterOutput1or2(int Output, int range)
         {
             if (range != 0)
             {
@@ -363,65 +369,647 @@ namespace UEDMHardwareControl
             if (status == "1") HeatersEnabled = true; // Heater Output is on
             else HeatersEnabled = false; // Heater Output is off
         }
-        
 
+        #endregion
+
+        #region Source Modes
+
+        private string SourceMode;
+
+        // Source mode functions
+        public void UpdateUITimeLeftIndicators()
+        {
+            if (SourceMode == "Refresh")
+            {
+                TimeSpan TimeLeftUntilCryoTurnsOn = CryoTurnOnDateTime - DateTime.Now; // Update user interface with the time left until the cryo turns on.
+                window.SetTextBox(window.tbRefreshModeHowLongUntilCryoTurnsOn, TimeLeftUntilCryoTurnsOn.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+                TimeSpan TimeLeftUntilHeatersTurnOff = HeatersTurnOffDateTime - DateTime.Now; // Update user interface with the time left until the heaters turn off.
+                window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+            }
+            if (SourceMode == "Warmup")
+            {
+                TimeSpan TimeLeftUntilHeatersTurnOff = HeatersTurnOffDateTime - DateTime.Now; // Update user interface with the time left until the heaters turn off.
+                window.SetTextBox(window.tbWarmUpModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be stopped
+            }
+            if (SourceMode == "Cooldown")
+            {
+                TimeSpan TimeLeftUntilCryoTurnsOn = CryoTurnOnDateTime - DateTime.Now; // Update user interface with the time left until the cryo turns on.
+                window.SetTextBox(window.tbCoolDownModeHowLongUntilCryoTurnsOn, TimeLeftUntilCryoTurnsOn.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be stopped
+                TimeSpan TimeLeftUntilHeatersTurnOff = HeatersTurnOffDateTime - DateTime.Now; // Update user interface with the time left until the heaters turn off.
+                window.SetTextBox(window.tbCoolDownModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the cryo is turned on
+            }
+        }
+        public void ResetUITimeLeftIndicators()
+        {
+            if (SourceMode == "Refresh")
+            {
+                window.SetTextBox(window.tbRefreshModeHowLongUntilCryoTurnsOn, ""); // Clear textbox
+                window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, ""); // Clear textbox
+            }
+            if (SourceMode == "Warmup")
+            {
+                window.SetTextBox(window.tbWarmUpModeHowLongUntilHeatersTurnOff, ""); // Clear textbox
+            }
+            if (SourceMode == "Cooldown")
+            {
+                window.SetTextBox(window.tbCoolDownModeHowLongUntilCryoTurnsOn, ""); // Clear textbox
+                window.SetTextBox(window.tbCoolDownModeHowLongUntilHeatersTurnOff, ""); // Clear textbox
+            }
+        }
+        public void UpdateSourceModeStatus(string StatusUpdate)
+        {
+            if (StatusUpdate != LastStatusMessage)
+            {
+                LastStatusMessage = StatusUpdate;
+                if (SourceMode == "Refresh")
+                {
+                    window.AppendTextBox(window.tbRefreshModeStatus, StatusUpdate + Environment.NewLine);
+                }
+                if (SourceMode == "Warmup")
+                {
+                    window.AppendTextBox(window.tbWarmUpModeStatus, StatusUpdate + Environment.NewLine);
+                }
+                if (SourceMode == "Cooldown")
+                {
+                    window.AppendTextBox(window.tbCoolDownModeStatus, StatusUpdate + Environment.NewLine);
+                }
+            }
+        }
+        public void UpdateSourceModeHeaterSetpoints(double setpoint)
+        {
+            window.SetTextBox(window.tbHeaterTempSetpointStage2, setpoint.ToString());
+            UpdateStage2TemperatureSetpoint();
+            window.SetTextBox(window.tbHeaterTempSetpointStage1, setpoint.ToString());
+            UpdateStage1TemperatureSetpoint();
+        }
+        public void EnableSourceModeHeaters(bool Enable)
+        {
+            if (Enable)
+            {
+                StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
+                StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
+            }
+            else
+            {
+                StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
+                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
+                EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+            }
+        }
+        public void UpdateWarmToRoomTemperatureOnlyFlag()
+        {
+            if (SourceMode == "Refresh")
+            {
+                WarmToRoomTemperatureOnly = window.checkBoxRefreshSourceAtRoomTemperature.Checked;
+            }
+            else
+            {
+                if (SourceMode == "Warmup")
+                {
+                    WarmToRoomTemperatureOnly = window.checkBoxWarmUpSourceToRoomTemperature.Checked;
+                }
+                else
+                {
+                    if (SourceMode == "Cooldown")
+                    {
+                        WarmToRoomTemperatureOnly = window.checkBoxCoolDownSourceAtRoomTemperature.Checked;
+                    }
+                }
+            }
+        }
+        public void EnableWarmUpModeUIControls(bool Enable)
+        {
+            window.EnableControl(window.dateTimePickerWarmUpModeTurnHeatersOff, Enable);
+            window.EnableControl(window.tbWarmUpModeHowLongUntilHeatersTurnOff, Enable);
+            window.EnableControl(window.tbWarmUpModeTemperatureSetpoint, Enable);
+            window.EnableControl(window.btWarmUpModeTemperatureSetpointUpdate, Enable);
+            window.EnableControl(window.btStartWarmUpMode, Enable);
+            window.EnableControl(window.checkBoxWarmUpSourceToRoomTemperature, Enable);
+        }
+        public void EnableRefreshModeUIControls(bool Enable)
+        {
+            window.EnableControl(window.btStartRefreshMode, Enable);
+            window.EnableControl(window.tbRefreshModeTemperatureSetpoint, Enable);
+            window.EnableControl(window.btRefreshModeTemperatureSetpointUpdate, Enable);
+            window.EnableControl(window.dateTimePickerRefreshModeTurnHeatersOff, Enable);
+            window.EnableControl(window.dateTimePickerRefreshModeTurnCryoOn, Enable);
+            window.EnableControl(window.tbRefreshModeHowLongUntilCryoTurnsOn, Enable);
+            window.EnableControl(window.tbRefreshModeHowLongUntilHeatersTurnOff, Enable);
+            window.EnableControl(window.checkBoxRefreshSourceAtRoomTemperature, Enable);
+        }
+        public void EnableCoolDownModeUIControls(bool Enable)
+        {
+            window.EnableControl(window.btStartCoolDownMode, Enable);
+            window.EnableControl(window.tbCoolDownModeTemperatureSetpoint, Enable);
+            window.EnableControl(window.btCoolDownModeTemperatureSetpointUpdate, Enable);
+            window.EnableControl(window.dateTimePickerCoolDownModeTurnHeatersOff, Enable);
+            window.EnableControl(window.dateTimePickerCoolDownModeTurnCryoOn, Enable);
+            window.EnableControl(window.tbCoolDownModeHowLongUntilCryoTurnsOn, Enable);
+            window.EnableControl(window.tbCoolDownModeHowLongUntilHeatersTurnOff, Enable);
+            window.EnableControl(window.checkBoxCoolDownSourceAtRoomTemperature, Enable);
+        }
+        public void EnableOtherSourceModeUIControls(bool Enable)
+        {
+            // Enable user control of the cryo on/off status
+            window.EnableControl(window.checkBoxCryoEnable, Enable);
+            // Enable user control of the heater setpoint when in source mode
+            window.EnableControl(window.btUpdateHeaterControlStage2, Enable);
+            window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
+            window.EnableControl(window.btHeatersTurnOffWaitStart, Enable);
+            // Disable clear pressure/temp data so that the user can't interfere with refresh mode
+            window.EnableControl(window.btClearAllPressureData, Enable);
+            window.EnableControl(window.btClearAllTempData, Enable);
+            window.EnableControl(window.btClearSourcePressureData, Enable);
+            window.EnableControl(window.btClearBeamlinePressureData, Enable);
+            window.EnableControl(window.btClearCellTempData, Enable);
+            window.EnableControl(window.btClearSF6TempData, Enable);
+            window.EnableControl(window.btClearS2TempData, Enable);
+            window.EnableControl(window.btClearS1TempData, Enable);
+            window.EnableControl(window.btClearNeonTempData, Enable);
+        }
+
+        // Source mode parameters
+        private DateTime HeatersTurnOffDateTime;
+        private DateTime CryoTurnOnDateTime;
+        private double NeonEvaporationCycleTemperatureMax;
+        private double TurbomolecularPumpUpperPressureLimit;
+        private double WarmUpTemperatureSetpoint;
+        private double CryoStoppingPressure;
+        private double CryoStartingTemperatureMax;
+        private double CryoStartingPressure;
+        private string LastStatusMessage;
+        private bool SourceModeTemperatureSetpointUpdated;
+        private bool HeatersEnabled;
+        private bool sourceModeCancelFlag;
+        private bool WarmToRoomTemperatureOnly;
+        private bool SourceModeActive = false;
+        private int NeonEvaporationCycleWaitTime;
+        private int WarmupMonitoringWait;
+        private int CoolDownWait;
+        public void SetSourceModeConstants()
+        {
+            if (SourceMode == "Refresh")
+            {
+                NeonEvaporationCycleTemperatureMax = SourceRefreshConstants.NeonEvaporationCycleTemperatureMax;
+                TurbomolecularPumpUpperPressureLimit = SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit;
+                NeonEvaporationCycleWaitTime = SourceRefreshConstants.NeonEvaporationCycleWaitTime;
+                CryoStoppingPressure = SourceRefreshConstants.CryoStoppingPressure;
+                WarmupMonitoringWait = SourceRefreshConstants.WarmupMonitoringWait;
+                CoolDownWait = SourceRefreshConstants.CoolDownWait;
+                CryoStartingTemperatureMax = SourceRefreshConstants.CryoStartingTemperatureMax;
+                CryoStartingPressure = SourceRefreshConstants.CryoStartingPressure;
+                HeatersTurnOffDateTime = window.dateTimePickerRefreshModeTurnHeatersOff.Value;
+                CryoTurnOnDateTime = window.dateTimePickerRefreshModeTurnCryoOn.Value;
+            }
+            if (SourceMode == "Warmup")
+            {
+                NeonEvaporationCycleTemperatureMax = SourceWarmUpConstants.NeonEvaporationCycleTemperatureMax;
+                TurbomolecularPumpUpperPressureLimit = SourceWarmUpConstants.TurbomolecularPumpUpperPressureLimit;
+                NeonEvaporationCycleWaitTime = SourceWarmUpConstants.NeonEvaporationCycleWaitTime;
+                CryoStoppingPressure = SourceWarmUpConstants.CryoStoppingPressure;
+                WarmupMonitoringWait = SourceWarmUpConstants.WarmupMonitoringWait;
+                HeatersTurnOffDateTime = window.dateTimePickerWarmUpModeTurnHeatersOff.Value;
+            }
+            if (SourceMode == "Cooldown")
+            {
+                TurbomolecularPumpUpperPressureLimit = SourceCoolDownConstants.TurbomolecularPumpUpperPressureLimit;
+                WarmupMonitoringWait = SourceCoolDownConstants.WarmupMonitoringWait;
+                CoolDownWait = SourceCoolDownConstants.CoolDownWait;
+                CryoStartingTemperatureMax = SourceCoolDownConstants.CryoStartingTemperatureMax;
+                CryoStartingPressure = SourceCoolDownConstants.CryoStartingPressure;
+                HeatersTurnOffDateTime = window.dateTimePickerCoolDownModeTurnHeatersOff.Value;
+                CryoTurnOnDateTime = window.dateTimePickerCoolDownModeTurnCryoOn.Value;
+            }
+        }
+
+        // Source mode processes - these are generalized so that they can be used by different source mode (refresh mode, warm up, etc.) using different parameters.
+        private void InitializeSourceRefresh()
+        {
+            window.SetTextBox(window.tbRefreshModeStatus, "Starting initialization process");
+        }
+        private void InitializeSourceMode()
+        {
+            UpdateSourceModeStatus("Starting initialization process");
+            SetSourceModeConstants();
+            SourceModeActive = true;
+            SourceModeTemperatureSetpointUpdated = false; // reset this flag
+            if (SourceMode == "Refresh")
+            {
+                RefreshModeEnableUIElements(true);
+                UpdateRefreshTemperature();
+                UpdateWarmToRoomTemperatureOnlyFlag();
+            }
+            if (SourceMode == "Warmup")
+            {
+                WarmUpModeEnableUIElements(true);
+                UpdateWarmUpTemperature();
+                UpdateWarmToRoomTemperatureOnlyFlag();
+            }
+            if (SourceMode == "Cooldown")
+            {
+                CoolDownModeEnableUIElements(true);
+                UpdateCoolDownTemperature();
+                UpdateWarmToRoomTemperatureOnlyFlag();
+            }
+        }
+        /// <summary>
+        /// Controls the process of incrementally warming up the source. This is done gradually so that the neon evaporates at a steady rate - reducing the risk to the turbomolecular pump.
+        /// A process map (flow diagram) of this code can be found on OneNote in "Equipment + Apparatus" > "Hardware Controller" > "Source refresh mode process maps"
+        /// </summary>
+        private void EvaporateAndPumpNeon()
+        {
+            if (!sourceModeCancelFlag)
+            {
+                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
+                UpdateStage2TemperatureSetpoint();
+                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
+                UpdateStage1TemperatureSetpoint();
+                window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
+            }
+
+            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
+            {
+                if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
+                UpdateUITimeLeftIndicators();
+                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+                {
+                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
+                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
+                    {
+                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, false); // turn off heaters
+                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn off heaters
+                    }
+                }
+                else
+                {
+                    EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, true); // turn on heaters
+                    EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
+                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
+                    {
+                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                        {
+                            break;
+                        }
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
+                    }
+                    else
+                    {
+                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
+                    }
+                }
+
+                Thread.Sleep(SourceRefreshConstants.NeonEvaporationCycleWaitTime);
+            }
+        }
+        private void EvaporateAndPumpNeonWithoutLakeShore()
+        {
+            if (!sourceModeCancelFlag)
+            {
+                UpdateSourceModeHeaterSetpoints(NeonEvaporationCycleTemperatureMax);
+                UpdateSourceModeStatus("Starting neon evaporation cycle");
+            }
+
+            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
+            {
+                if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that source mode be cancelled
+                UpdateUITimeLeftIndicators();
+                if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+                {
+                    UpdateSourceModeStatus("Neon evaporation cycle: temperature has yet to reach setpoint, but pressure above turbo limit");
+                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
+                    {
+                        EnableSourceModeHeaters(false); // Disable heaters
+                    }
+                }
+                else
+                {
+                    EnableSourceModeHeaters(true); // Enable heaters
+                    if (Double.Parse(lastCellTemp) >= NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
+                    {
+                        if (lastSourcePressure <= CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                        {
+                            break;
+                        }
+                        UpdateSourceModeStatus("Neon evaporation cycle: temperature has reached setpoint, but pressure too high for cryo shutdown");
+                    }
+                    else
+                    {
+                        UpdateSourceModeStatus("Neon evaporation cycle: pressure and temperature low - heating source");
+                    }
+                }
+
+                Thread.Sleep(NeonEvaporationCycleWaitTime);
+            }
+        }
+        private void TurnOffCryoAndWarmup()
+        {
+            TurnOffCryoCooler(); // The pressure should be checked before this function is used (see process maps on OneNote)
+
+            SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, SourceRefreshConstants.RefreshingTemperature);
+
+            for (; ; )
+            {
+                if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
+                {
+                    if (!HeatersEnabled) // if heaters turned off then turn them on
+                    {
+                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
+                    }
+                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.RefreshingTemperature)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    if (HeatersEnabled) // if heaters are on
+                    {
+                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn heaters off
+                    }
+                }
+                Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait);
+            }
+
+        }
+        private void TurnOffCryoAndWarmupWithoutLakeShore()
+        {
+            if (!sourceModeCancelFlag) // If source mode has been cancelled then skip these functions
+            {
+                // Wait for cryo pressure to reduce to a point at which the cryo can be turned off.
+                for (; ; )
+                {
+                    if (sourceModeCancelFlag) break; // If source mode has been cancelled then exit this loop (check on every iteration of the loop)
+                    if (lastSourcePressure <= CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                    {
+                        break;
+                    }
+                    UpdateSourceModeStatus("Waiting for pressure to reduce before turning off the cryo. The cryo will be turned off when the source chamber pressure reaches " + CryoStoppingPressure.ToString() + " mbar.");
+                    Thread.Sleep(WarmupMonitoringWait); // Iterate the loop according to this time interval
+                }
+                EnableCryoDigitalControl(false); // Turn off cryo
+                UpdateSourceModeStatus("Starting warmup");
+
+                // Monitor the pressure as the source heats up. 
+                // If the pressure gets too high for the turbo, then turn off the heaters. 
+                // If pressure is low enough, then turn on the heaters.
+                for (; ; )
+                {
+                    // Check conditions that would lead to this loop being exited:
+                    if (sourceModeCancelFlag) break; // If source mode has been cancelled then exit this loop (check on every iteration of the loop)
+                    if (HeatersTurnOffDateTime < DateTime.Now) break; // If the user requested that the heaters turn off before the temperature setpoint has been reached, then exit this loop.
+
+                    // Update UI indicators and check if the user has updated the warm up temperature:
+                    UpdateUITimeLeftIndicators();
+                    if (SourceModeTemperatureSetpointUpdated) // If the temperature setpoint is updated by the user, this if statement will update the hardware temperature setpoint.
+                    {
+                        UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
+                        SourceModeTemperatureSetpointUpdated = false; // Reset the flag
+                    }
+
+                    // Check is the source pressure is within safe limits for the turbomolecular pump:
+                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                    {
+                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        {
+                            EnableSourceModeHeaters(true); // Enable heaters
+                        }
+                        if (Double.Parse(lastS2Temp) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
+                        {
+                            break;
+                        }
+                        UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
+                    }
+                    else // If the pressure is high, then turn the heaters off
+                    {
+                        UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        {
+                            EnableSourceModeHeaters(false); // disable heaters
+                        }
+                    }
+                    Thread.Sleep(WarmupMonitoringWait); // Iterate the loop according to this time interval
+                }
+            }
+        }
+        public void SourceModeWait()
+        {
+            //If the source reaches the desired temperature before the user defined heater turn off time, then wait until this time.
+            for (; ; )
+            {
+                // Check conditions that would lead to this loop being exited:
+                if (sourceModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
+                if (HeatersTurnOffDateTime < DateTime.Now) break; // If the user requested that the heaters turn off at this time, then exit this loop.
+
+                // Check if the user has updated the temperature setpoint:
+                if (SourceModeTemperatureSetpointUpdated) // If the temperature setpoint is updated by the user, this if statement will update the hardware temperature setpoint.
+                {
+                    UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
+                    SourceModeTemperatureSetpointUpdated = false; //Reset the flag
+                }
+
+                if (WarmToRoomTemperatureOnly) // If the user has stated that the source should be left at room temperature, then turn off the heaters
+                {
+                    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on, turn them off
+                    {
+                        EnableSourceModeHeaters(false);
+                    }
+                    UpdateSourceModeStatus("Waiting at room temperature"); // Update source mode status textbox
+                }
+                else // User wants source to be heated
+                {
+                    // Check is the source pressure is within safe limits for the turbomolecular pump:
+                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                    {
+                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        {
+                            EnableSourceModeHeaters(true); // Enable heaters
+                        }
+                        UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin."); // Update source mode status textbox
+                    }
+                    else // If the pressure is high, then turn the heaters off
+                    {
+                        UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        {
+                            EnableSourceModeHeaters(false); // Disable heaters
+                        }
+                    }
+                }
+
+                UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
+                Thread.Sleep(WarmupMonitoringWait); // Iterate the loop according to this time interval
+            }
+        }
+        private void CoolDownSource()
+        {
+            if (HeatersEnabled)
+            {
+                EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false);
+            }
+            for (; ; )
+            {
+                if (Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
+                { break; }
+                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
+            }
+            for (; ; )
+            {
+                if (lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
+                { break; }
+                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
+            }
+            TurnOnCryoCooler();
+        }
+        private void CoolDownSourceWithoutLakeShore()
+        {
+            if (!sourceModeCancelFlag)
+            {
+                EnableSourceModeHeaters(false); // Turn off heaters
+                UpdateSourceModeStatus("Heaters stopped for cryo turn on"); // Update status textbox
+
+                // Wait until the (user defined) cryo turn on time is reached:
+                for (; ; )
+                {
+                    if (sourceModeCancelFlag) break;
+                    if (CryoTurnOnDateTime < DateTime.Now) break; // Exit this loop when the user defined datetime is reached.
+                    Thread.Sleep(CoolDownWait);
+                    UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the cryo turns on
+                }
+
+                if (!sourceModeCancelFlag) ResetUITimeLeftIndicators(); // Clears the user interface textboxes now that the timers have finished.
+
+                // Wait until the source temperature is low enough for the cryo to be started:
+                for (; ; )
+                {
+                    if (sourceModeCancelFlag) break;
+                    UpdateSourceModeStatus("Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update source mode status
+                    if (Double.Parse(lastS1Temp) <= CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= CryoStartingTemperatureMax)
+                    { break; }
+                    Thread.Sleep(CoolDownWait);
+                }
+
+                // Wait for the pressure to be low enough for the cryo to be started:
+                for (; ; )
+                {
+                    if (sourceModeCancelFlag) break;
+                    UpdateSourceModeStatus("Waiting for the pressure to reach a low enough value for the cryo to turn on"); // Update source mode status
+                    if (lastSourcePressure <= CryoStartingPressure)
+                    { break; }
+                    Thread.Sleep(CoolDownWait);
+                }
+                if (!sourceModeCancelFlag)
+                {
+                    UpdateSourceModeStatus("Starting cryo");
+                    EnableCryoDigitalControl(true);
+                }
+            }
+        }
+
+        // Refresh mode
         private Thread refreshModeThread;
-        private bool refreshModeCancelFlag;
         private Object refreshModeLock;
-        private bool refreshModeActive = false;
-        private bool refreshAtRoomTemperature;
         private bool refreshModeHeaterTurnOffDateTimeFlag = false;
         private bool refreshModeCryoTurnOnDateTimeFlag = false;
-        private double refreshTemperature;
-        private bool HeatersEnabled;
-
         /// <summary>
         /// When refresh mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with refresh mode. This function can be used to disable or enable the relevant UI components.
         /// </summary>
         /// <param name="StartStop"></param>
-        internal void RefreshModeEnableUIElements(bool StartStop) // Start = true (elements to enable/disable when starting refresh mode)
+        internal void RefreshModeEnableUIElements(bool Enable) // elements to enable/disable when starting/finishing refresh mode
         {
-            // Ugly, but it works...
             // Disable and enable to Start and Stop buttons respectively
-            window.EnableControl(window.btStartRefreshMode, !StartStop); // window.btStartRefreshMode.Enabled = false when starting refresh mode (for example)
-            window.EnableControl(window.btCancelRefreshMode, StartStop); // window.btCancelRefreshMode.Enabled = true when starting refresh mode (for example)
-            // Disable user control of the cryo on/off status
-            window.EnableControl(window.checkBoxCryoEnable, !StartStop);
-            // Disable user control of the heater setpoint when in refresh mode
-            window.EnableControl(window.btUpdateHeaterControlStage2, !StartStop);
-            window.EnableControl(window.btUpdateHeaterControlStage1, !StartStop);
-            window.EnableControl(window.btHeatersTurnOffWaitStart, !StartStop);
-            // Disable clear pressure/temp data so that the user can't interfere with refresh mode
-            window.EnableControl(window.btClearAllPressureData, !StartStop);
-            window.EnableControl(window.btClearAllTempData, !StartStop);
-            window.EnableControl(window.btClearSourcePressureData, !StartStop);
-            window.EnableControl(window.btClearBeamlinePressureData, !StartStop);
-            window.EnableControl(window.btClearCellTempData, !StartStop);
-            window.EnableControl(window.btClearSF6TempData, !StartStop);
-            window.EnableControl(window.btClearS2TempData, !StartStop);
-            window.EnableControl(window.btClearS1TempData, !StartStop);
-            window.EnableControl(window.btClearNeonTempData, !StartStop);
+            window.EnableControl(window.btStartRefreshMode, !Enable); // window.btStartRefreshMode.Enabled = false when starting refresh mode (for example)
+            window.EnableControl(window.btCancelRefreshMode, Enable); // window.btCancelRefreshMode.Enabled = true when starting refresh mode (for example)
+            // Disable user control of warmup mode when in refresh mode
+            EnableWarmUpModeUIControls(!Enable);
+            // Disable user control of cool down mode when in refresh mode
+            EnableCoolDownModeUIControls(!Enable);
+            // Disable other UI interface elements to prevent the user from performing an action that could interfere with refresh mode
+            EnableOtherSourceModeUIControls(!Enable);
+        }
+        public void EnableRefreshModeRoomTemperature(bool Enable)
+        {
+            WarmToRoomTemperatureOnly = Enable;
+            window.EnableControl(window.btRefreshModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of refresh temperature update button
+            window.EnableControl(window.tbRefreshModeTemperatureSetpoint, !Enable); // Enable/disable user control of refresh temperature setpoint textbox
+            if (Enable)
+            {
+                WarmUpTemperatureSetpoint = 295; // Approx room temperature
+                window.SetTextBox(window.tbRefreshModeTemperatureSetpoint, "295");
+            }
+        }
+        public void RefreshModeHeaterTurnOffDateTimeSpecified()
+        {
+            refreshModeHeaterTurnOffDateTimeFlag = true;
+            UpdateRefreshModeHeaterTurnOffDateTime();
+        }
+        public void UpdateRefreshModeHeaterTurnOffDateTime()
+        {
+            HeatersTurnOffDateTime = window.dateTimePickerRefreshModeTurnHeatersOff.Value;
+        }
+        public void RefreshModeCryoTurnOnDateTimeSpecified()
+        {
+            refreshModeCryoTurnOnDateTimeFlag = true;
+            UpdateRefreshModeCryoTurnOnDateTime();
+        }
+        public void UpdateRefreshModeCryoTurnOnDateTime()
+        {
+            CryoTurnOnDateTime = window.dateTimePickerRefreshModeTurnCryoOn.Value;
+        }
+        public void UpdateRefreshTemperature()
+        {
+            string RefreshTemperatureInput = window.tbRefreshModeTemperatureSetpoint.Text;
+            double parseddouble;
+            if (Double.TryParse(RefreshTemperatureInput, out parseddouble))
+            {
+                WarmUpTemperatureSetpoint = parseddouble;
+                SourceModeTemperatureSetpointUpdated = true;
+            }
+            else MessageBox.Show("Unable to parse refresh temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public static class SourceRefreshConstants
+        {
+            public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
+            public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
+            public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
+            public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
+            public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
+            public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
+            public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
+            public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
+            public static Double RefreshingTemperature { get { return 300; } } // Kelvin
+            public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
+            public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
+            public static Double NeonEvaporationPollPeriod { get { return 100; } } // milli seconds
         }
 
         internal void StartRefreshMode()
         {
+            UpdateRefreshModeHeaterTurnOffDateTime();
+            UpdateRefreshModeCryoTurnOnDateTime();
             if (refreshModeHeaterTurnOffDateTimeFlag)
             {
-                if(refreshModeCryoTurnOnDateTimeFlag)
+                if (refreshModeCryoTurnOnDateTimeFlag)
                 {
-                    if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value >= window.dateTimePickerRefreshModeTurnHeatersOff.Value)// The heaters can be stopped before or at the same time as the cryo turning on
+                    if (CryoTurnOnDateTime >= HeatersTurnOffDateTime)// The heaters can be stopped before or at the same time as the cryo turning on
                     {
-                        if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value > DateTime.Now) // The cryo cannot be turned on in the past - otherwise you should just turn on the cryo (instead of using refresh mode)
+                        if (CryoTurnOnDateTime > DateTime.Now) // The cryo cannot be turned on in the past - otherwise you should just turn on the cryo (instead of using refresh mode)
                         {
-                            if (window.dateTimePickerRefreshModeTurnHeatersOff.Value > DateTime.Now) // The heaters cannot be turned off in the past - otherwise you should just turn off the heaters (instead of using refresh mode)
+                            if (HeatersTurnOffDateTime > DateTime.Now) // The heaters cannot be turned off in the past - otherwise you should just turn off the heaters (instead of using refresh mode)
                             {
-                                refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
-                                RefreshModeEnableUIElements(true);
-                                refreshModeLock = new Object();
-                                refreshModeCancelFlag = false;
-                                refreshModeActive = true;
-                                refreshModeThread.Start();
-                                UpdateRefreshTemperature();
+                                if (SourceModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                                {
+                                    refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
+                                    SourceMode = "Refresh";
+                                    refreshModeLock = new Object();
+                                    sourceModeCancelFlag = false;
+                                    refreshModeThread.Start();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Please provide a refresh mode temperature (and click update) or select the \"Refresh at room temperature\" checkbox.\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                                }
                             }
                             else
                             {
@@ -450,375 +1038,287 @@ namespace UEDMHardwareControl
         }
         internal void CancelRefreshMode()
         {
-            refreshModeCancelFlag = true;
+            sourceModeCancelFlag = true;
         }
         private void refreshModeWorker()
         {
-            if (!refreshModeCancelFlag) InitializeSourceRefreshWithoutLakeShore();
-            if (!refreshModeCancelFlag) WarmUpSourceWithoutLakeShore();
-            if (!refreshModeCancelFlag) RefreshModeWait();// Wait at desired temperature, until the user defined datetime
-            if (!refreshModeCancelFlag) CoolDownSourceWithoutLakeShore();
-            if (refreshModeCancelFlag)
+            if (!sourceModeCancelFlag) InitializeSourceMode();
+            if (!sourceModeCancelFlag) EvaporateAndPumpNeonWithoutLakeShore(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) TurnOffCryoAndWarmupWithoutLakeShore(); // Cryo turn off and controlled warm up off source
+            if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
+            if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
+            if (sourceModeCancelFlag) // If refresh mode is cancelled, then turn off the heaters before finishing.
             {
-                window.SetTextBox(window.tbRefreshModeStatus, "Refresh mode cancelled");
-                StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off
-                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
-                EnableDigitalHeaters(1, false); // turn heaters off
-                EnableDigitalHeaters(2, false); // turn heaters off
+                UpdateSourceModeStatus("Refresh mode cancelled");
+                EnableSourceModeHeaters(false); // Disable heaters
+                ResetUITimeLeftIndicators();
             }
-            RefreshModeEnableUIElements(false);
-            refreshModeActive = false;
+            RefreshModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
+            SourceMode = ""; // Reset parameter
+            SourceModeActive = false;
         }
 
+        // Warm up mode
+        private Thread warmupModeThread;
+        private Object warmupModeLock;
+        private bool warmupModeHeaterTurnOffDateTimeFlag = false;
+        private bool warmupModeTemperatureSetpointUpdated = false;
+        /// <summary>
+        /// When warmup mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with warmup mode. This function is used to disable or enable the relevant UI components.
+        /// </summary>
+        /// <param name="StartStop"></param>
+        internal void WarmUpModeEnableUIElements(bool Enable) // elements to enable/disable when starting/finishing warm up mode
+        {
+            // Disable and enable to Start and Cancel buttons respectively
+            window.EnableControl(window.btStartWarmUpMode, !Enable); // window.btStartWarmUpMode.Enabled = false when starting warmup mode (for example)
+            window.EnableControl(window.btCancelWarmUpMode, Enable); // window.btCancelWarmUpMode.Enabled = true when starting warmup mode (for example)
+            // Disable user control of refresh mode when in warmup mode
+            EnableRefreshModeUIControls(!Enable);
+            // Disable user control of cool down mode when in warmup mode
+            EnableCoolDownModeUIControls(!Enable);
+            // Disable other UI interface elements to prevent the user from performing an action that could interfere with warm up mode
+            EnableOtherSourceModeUIControls(!Enable);
+        }
+        public void EnableWarmUpModeRoomTemperature(bool Enable)
+        {
+            WarmToRoomTemperatureOnly = Enable;
+            window.EnableControl(window.btWarmUpModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of warm up mode temperature update button
+            window.EnableControl(window.tbWarmUpModeTemperatureSetpoint, !Enable); // Enable/disable user control of warm up mode temperature setpoint textbox
+            if (Enable)
+            {
+                WarmUpTemperatureSetpoint = 295; // Approx room temperature
+                window.SetTextBox(window.tbWarmUpModeTemperatureSetpoint, "295");
+            }
+        }
+        public void WarmUpModeHeaterTurnOffDateTimeSpecified()
+        {
+            warmupModeHeaterTurnOffDateTimeFlag = true;
+            UpdateWarmUpModeHeaterTurnOffDateTime();
+        }
+        public void UpdateWarmUpModeHeaterTurnOffDateTime()
+        {
+            HeatersTurnOffDateTime = window.dateTimePickerWarmUpModeTurnHeatersOff.Value;
+        }
+        public void UpdateWarmUpTemperature()
+        {
+            string WarmUpTemperatureInput = window.tbWarmUpModeTemperatureSetpoint.Text;
+            double parseddouble;
+            if (Double.TryParse(WarmUpTemperatureInput, out parseddouble))
+            {
+                WarmUpTemperatureSetpoint = parseddouble;
+                SourceModeTemperatureSetpointUpdated = true;
+                warmupModeTemperatureSetpointUpdated = true;
+            }
+            else MessageBox.Show("Unable to parse warm up temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
 
-        public static class SourceRefreshConstants 
+        public static class SourceWarmUpConstants
         {
             public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
             public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
-            public static Double TemperatureSetpointDecrementValue { get { return 0.5; } } // Kelvin
-            public static Double TemperatureSetpointIncrementValue { get { return 0.5; } } // Kelvin
             public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
-            public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStoppingPressure { get { return 0.0008; } } // 1e-5 mbar
-            public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
-            public static Double RefreshingTemperature { get { return 300; } } // Kelvin
+            public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
-            public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
             public static Double NeonEvaporationPollPeriod { get { return 100; } } // milli seconds
         }
 
-        public void EnableRefreshModeRoomTemperature(bool Enable)
+        internal void StartWarmUpMode()
         {
-            refreshAtRoomTemperature = Enable;
+            UpdateWarmUpModeHeaterTurnOffDateTime(); // Update the heater turn off datetime. This is in case, for example, the refresh mode heater turn off time was last updated.
+            if (warmupModeHeaterTurnOffDateTimeFlag) // A flag specific to warm up mode - to avoid conflicts with other modes
+            {
+                if (HeatersTurnOffDateTime > DateTime.Now) // The heaters cannot be turned off in the past 
+                {
+                    if (warmupModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                    {
+                        warmupModeThread = new Thread(new ThreadStart(warmupModeWorker));
+                        SourceMode = "Warmup";
+                        warmupModeLock = new Object();
+                        sourceModeCancelFlag = false;
+                        warmupModeThread.Start();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please provide a warm up mode temperature (and click update) or select the \"Warm up to room temperature\" checkbox.\n\nWarm up mode not started.", "Warm Up Mode Exception", MessageBoxButtons.OK);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("User has requested that the heaters turn off in the past. Adjust the datetimes to sensible values.\n\nWarm up mode not started.\n\nDo these messages come across as passive agressive? I hope not...", "Warm Up Mode Exception", MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No datetime specified for turning off the heaters.\n\nWarm up mode not started.", "Warm Up Mode Exception", MessageBoxButtons.OK);
+            }
         }
-        public void HeaterTurnOffDateTimeSpecified()
+        internal void CancelWarmUpMode()
         {
-            refreshModeHeaterTurnOffDateTimeFlag = true;
+            sourceModeCancelFlag = true;
         }
-        public void CryoTurnOnDateTimeSpecified()
+        private void warmupModeWorker()
         {
-            refreshModeCryoTurnOnDateTimeFlag = true;
+            if (!sourceModeCancelFlag) InitializeSourceMode();
+            if (!sourceModeCancelFlag) EvaporateAndPumpNeonWithoutLakeShore(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) TurnOffCryoAndWarmupWithoutLakeShore(); // Cryo turn off and controlled warm up of source
+            if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
+            if (sourceModeCancelFlag) // If warm up mode is cancelled, then turn off the heaters before finishing.
+            {
+                UpdateSourceModeStatus("Warm up mode cancelled");
+                EnableSourceModeHeaters(false); // Disable heaters
+                ResetUITimeLeftIndicators();
+            }
+            WarmUpModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in warm up mode.
+            SourceMode = ""; // Reset parameter
+            SourceModeActive = false;
         }
-        public void UpdateRefreshTemperature()
+
+        // Cool down mode
+        private Thread CoolDownModeThread;
+        private Object CoolDownModeLock;
+        private bool CoolDownModeHeaterTurnOffDateTimeFlag = false;
+        private bool CoolDownModeCryoTurnOnDateTimeFlag = false;
+        private bool CoolDownModeTemperatureSetpointUpdated = false;
+        internal void CoolDownModeEnableUIElements(bool Enable) // UI elements to enable/disable when starting/finishing cool down mode
         {
-            string RefreshTemperatureInput = window.tbRefreshModeTemperatureSetpoint.Text;
+            // Disable and enable to Start and Stop buttons respectively
+            window.EnableControl(window.btStartCoolDownMode, !Enable); // window.btStartCoolDownMode.Enabled = false when starting cool down mode (for example)
+            window.EnableControl(window.btCancelCoolDownMode, Enable); // window.btCancelCoolDownMode.Enabled = true when starting cool down mode (for example)
+            // Disable user control of warmup mode when in cool down mode
+            EnableWarmUpModeUIControls(!Enable);
+            // Disable user control of refresh mode when in cool down mode
+            EnableRefreshModeUIControls(!Enable);
+            // Disable other UI interface elements to prevent the user from performing an action that could interfere with cool down mode
+            EnableOtherSourceModeUIControls(!Enable);
+        }
+        public void EnableCoolDownModeRoomTemperature(bool Enable)
+        {
+            WarmToRoomTemperatureOnly = Enable;
+            window.EnableControl(window.btCoolDownModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of cool down mode temperature update button
+            window.EnableControl(window.tbCoolDownModeTemperatureSetpoint, !Enable); // Enable/disable user control of cool down mode temperature setpoint textbox
+            if (Enable)
+            {
+                WarmUpTemperatureSetpoint = 295; // Approx room temperature
+                window.SetTextBox(window.tbCoolDownModeTemperatureSetpoint, "295");
+            }
+        }
+        public void CoolDownModeHeaterTurnOffDateTimeSpecified()
+        {
+            CoolDownModeHeaterTurnOffDateTimeFlag = true;
+            UpdateCoolDownModeHeaterTurnOffDateTime();
+        }
+        public void UpdateCoolDownModeHeaterTurnOffDateTime()
+        {
+            HeatersTurnOffDateTime = window.dateTimePickerCoolDownModeTurnHeatersOff.Value;
+        }
+        public void CoolDownModeCryoTurnOnDateTimeSpecified()
+        {
+            CoolDownModeCryoTurnOnDateTimeFlag = true;
+            UpdateCoolDownModeCryoTurnOnDateTime();
+        }
+        public void UpdateCoolDownModeCryoTurnOnDateTime()
+        {
+            CryoTurnOnDateTime = window.dateTimePickerCoolDownModeTurnCryoOn.Value;
+        }
+        public void UpdateCoolDownTemperature()
+        {
+            string WarmUpTemperatureInput = window.tbCoolDownModeTemperatureSetpoint.Text;
             double parseddouble;
-            if (Double.TryParse(RefreshTemperatureInput, out parseddouble))
+            if (Double.TryParse(WarmUpTemperatureInput, out parseddouble))
             {
-                refreshTemperature = parseddouble;
+                WarmUpTemperatureSetpoint = parseddouble;
+                SourceModeTemperatureSetpointUpdated = true;
+                CoolDownModeTemperatureSetpointUpdated = true;
             }
-            else MessageBox.Show("Unable to parse refresh temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
-        }
-        public void UpdateUITimeLeftIndicators()
-        {
-            TimeSpan TimeLeftUntilCryoTurnsOn = window.dateTimePickerStopHeatingAndTurnCryoOn.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
-            window.SetTextBox(window.tbHowLongUntilCryoTurnsOn, TimeLeftUntilCryoTurnsOn.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
-            TimeSpan TimeLeftUntilHeatersTurnOff = window.dateTimePickerRefreshModeTurnHeatersOff.Value - DateTime.Now; // Update user interface with the time left until the cryo turns off.
-            window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, TimeLeftUntilHeatersTurnOff.ToString(@"d\.hh\:mm\:ss")); // Update textbox to inform user how long is left until the heating process will be forced to stop early and the cryo turned on
+            else MessageBox.Show("Unable to parse temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
-        private void InitializeSourceRefresh() 
+        public static class SourceCoolDownConstants
         {
-            window.SetTextBox(window.tbRefreshModeStatus, "Starting initialization process");
-        }
-        private void InitializeSourceRefreshWithoutLakeShore()
-        {
-            window.SetTextBox(window.tbRefreshModeStatus, "Starting initialization process");
+            public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
+            public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
+            public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
+            public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
+            public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
+            public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
+            public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
         }
 
-        /// <summary>
-        /// Controls the process of incrementally warming up the source. This is done gradually so that the neon evaporates at a steady rate - reducing the risk to the turbomolecular pump.
-        /// A process map (flow diagram) of this code can be found on OneNote in "Equipment + Apparatus" > "Hardware Controller" > "Source refresh mode process maps"
-        /// </summary>
-        private void EvaporateAndPumpNeon()
+        internal void StartCoolDownMode()
         {
-            if (!refreshModeCancelFlag)
+            UpdateCoolDownModeHeaterTurnOffDateTime();
+            UpdateCoolDownModeCryoTurnOnDateTime();
+            if (CoolDownModeHeaterTurnOffDateTimeFlag)
             {
-                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage2TemperatureSetpoint();
-                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage1TemperatureSetpoint();
-                window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
-            }
-
-            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
-            {
-                if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
-                UpdateUITimeLeftIndicators();
-                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+                if (CoolDownModeCryoTurnOnDateTimeFlag)
                 {
-                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
-                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
+                    if (CryoTurnOnDateTime >= HeatersTurnOffDateTime)// The heaters can be stopped before or at the same time as the cryo turning on
                     {
-                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, false); // turn off heaters
-                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn off heaters
-                    }
-                }
-                else
-                {
-                    EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, true); // turn on heaters
-                    EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
-                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
-                    {
-                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                        if (CryoTurnOnDateTime > DateTime.Now) // The cryo cannot be turned on in the past - otherwise you should just turn on the cryo (instead of using cool down mode)
                         {
-                            break;
+                            if (HeatersTurnOffDateTime > DateTime.Now) // The heaters shouldn't be turned off in the past
+                            {
+                                if (CoolDownModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                                {
+                                    CoolDownModeThread = new Thread(new ThreadStart(CoolDownModeWorker));
+                                    SourceMode = "Cooldown";
+                                    CoolDownModeLock = new Object();
+                                    sourceModeCancelFlag = false;
+                                    CoolDownModeThread.Start();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Please provide a cool down mode temperature (and click update) or select the \"Leave at room temperature until cryo is turned on\" checkbox.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("User has requested that the heaters turn off... in the past. Adjust the datetimes to sensible values.\n\nCool down mode not started.\n\nDo these messages come across as passive agressive? I hope not...", "Cool Down Mode Exception", MessageBoxButtons.OK);
+                            }
                         }
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
+                        else
+                        {
+                            MessageBox.Show("User has requested that the cryo turns on... in the past. Adjust the datetimes to sensible values.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
+                        }
                     }
                     else
                     {
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
-                    }
-                }
-
-                Thread.Sleep(SourceRefreshConstants.NeonEvaporationCycleWaitTime);
-            }
-        }
-        private void EvaporateAndPumpNeonWithoutLakeShore()
-        {
-            if (!refreshModeCancelFlag)
-            {
-                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage2TemperatureSetpoint();
-                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage1TemperatureSetpoint();
-                window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
-            }
-
-            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
-            {
-                if (refreshModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
-                UpdateUITimeLeftIndicators();
-                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
-                {
-                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
-                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
-                    {
-                        StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
-                        StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
-                        EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
-                        EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                        MessageBox.Show("User has requested that the cryo turns on before the heaters turn off - adjust the datetimes to sensible values.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
                     }
                 }
                 else
                 {
-                    StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
-                    StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
-                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
-                    {
-                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
-                        {
-                            break;
-                        }
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
-                    }
-                    else
-                    {
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
-                    }
+                    MessageBox.Show("No datetime specified for turning on the cryo.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
                 }
-                
-                Thread.Sleep(SourceRefreshConstants.NeonEvaporationCycleWaitTime);
+            }
+            else
+            {
+                MessageBox.Show("No datetime specified for turning off the heaters.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
             }
         }
-
-        private void TurnOffCryoAndWarmup()
+        internal void CancelCoolDownMode()
         {
-            TurnOffCryoCooler(); // The pressure should be checked before this function is used (see process maps on OneNote)
-
-            SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, SourceRefreshConstants.RefreshingTemperature);
-
-            for(; ; )
-            {
-                if(lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
-                {
-                    if(!HeatersEnabled) // if heaters turned off then turn them on
-                    {
-                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
-                    }
-                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.RefreshingTemperature)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    if (HeatersEnabled) // if heaters are on
-                    {
-                        EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn heaters off
-                    }
-                }
-                Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait);
-            }
-
+            sourceModeCancelFlag = true;
         }
-        private void TurnOffCryoAndWarmupWithoutLakeShore()
+        private void CoolDownModeWorker()
         {
-            if (!refreshModeCancelFlag) // If refresh mode has been cancelled then skip these functions
+            if (!sourceModeCancelFlag) InitializeSourceMode();
+            if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
+            if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
+            if (sourceModeCancelFlag) // If cool down mode is cancelled, then turn off the heaters before finishing.
             {
-                EnableCryoDigitalControl(false); // The pressure should be checked before this function is used (see process maps on OneNote)
-                window.SetTextBox(window.tbHeaterTempSetpointStage2, refreshTemperature.ToString());
-                UpdateStage2TemperatureSetpoint();
-                window.SetTextBox(window.tbHeaterTempSetpointStage1, refreshTemperature.ToString());
-                UpdateStage1TemperatureSetpoint();
-                window.SetTextBox(window.tbRefreshModeStatus, "Starting warmup");
+                UpdateSourceModeStatus("Refresh mode cancelled");
+                EnableSourceModeHeaters(false); // Disable heaters
+                ResetUITimeLeftIndicators();
             }
-
-            // Monitor the pressure as the source heats up. If the pressure gets too high for the turbo, then turn off the heaters. If pressure is low enough, then turn on the heaters.
-            for (; ; )
-            {
-                if (refreshModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
-                UpdateUITimeLeftIndicators();
-                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the refresh temperature has reached the specified value, then exit this loop.
-                if (window.dateTimePickerRefreshModeTurnHeatersOff.Value < DateTime.Now) break; // If the user requested that the heaters turn off before the refresh temperature has reached the specified value, then exit this loop.
-
-                if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
-                {
-                    if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
-                    {
-                        StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
-                        StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
-                        EnableDigitalHeaters(1, true); // turn heaters on
-                        EnableDigitalHeaters(2, true); // turn heaters on
-                    }
-                    if (Double.Parse(lastS2Temp) >= refreshTemperature) // If the source has reached the desired temperature, then break the loop
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
-                    {
-                        StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off
-                        StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
-                        EnableDigitalHeaters(1, false); // turn heaters off
-                        EnableDigitalHeaters(2, false); // turn heaters off
-                    }
-                }
-                Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait); // Iterate the loop according to this time interval
-                window.SetTextBox(window.tbRefreshModeStatus, "Still warming"); // Update refresh mode status textbox
-            }
+            CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
+            SourceMode = ""; // Reset parameter
+            SourceModeActive = false;
         }
 
-
-        /// <summary>
-        /// Incrementally warms up the source so that the turbomolecular pump isn't at risk of large quantities of neon from being evaporated quickly. 
-        /// Once the source is warm enough, the risk becomes low and the cryo can be turned off.
-        /// </summary>
-        private void WarmUpSource()
-        {
-            EvaporateAndPumpNeon();
-            TurnOffCryoAndWarmup();
-        }
-        private void WarmUpSourceWithoutLakeShore()
-        {
-            if (!refreshModeCancelFlag) EvaporateAndPumpNeonWithoutLakeShore();
-            if (!refreshModeCancelFlag) TurnOffCryoAndWarmupWithoutLakeShore();
-        }
-        
-        public void RefreshModeWait()
-        {
-            //If the source reaches the desired temperature before the user defined cryo turn off time, then wait until this time.
-            for (; ; )
-            {
-                if (refreshModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
-                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // If the user requested that the cryo turns off before the temperature has reached the specified value, then exit this loop.
-                if (window.dateTimePickerRefreshModeTurnHeatersOff.Value < DateTime.Now) break; // Break loop when the user defined datetime is reached
-
-                if (refreshAtRoomTemperature) // If the user has stated that the source should bake (maintain user defined temperature whilst cryo is off)
-                {
-                    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on, turn them off
-                    {
-                        StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off
-                        StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
-                        EnableDigitalHeaters(1, false); // turn heaters off
-                        EnableDigitalHeaters(2, false); // turn heaters off
-                        window.SetTextBox(window.tbRefreshModeStatus, "Waiting at room temperature"); // Update refresh mode status textbox
-                    }
-                }
-                else
-                {
-                    if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off, turn them on
-                    {
-                        StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
-                        StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
-                        EnableDigitalHeaters(1, true); // turn heaters on
-                        EnableDigitalHeaters(2, true); // turn heaters on
-                        window.SetTextBox(window.tbRefreshModeStatus, "Waiting at desired refreshing temperature"); // Update refresh mode status textbox
-                    }
-                }
-
-                UpdateUITimeLeftIndicators();
-                Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait); // Iterate the loop according to this time interval
-            }
-            window.SetTextBox(window.tbHowLongUntilCryoTurnsOn, ""); 
-            window.SetTextBox(window.tbRefreshModeHowLongUntilHeatersTurnOff, ""); 
-        }
-
-        private void CoolDownSource()
-        {
-            if(HeatersEnabled)
-            {
-                EnableLakeGoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false);
-            }
-            for(; ; )
-            {
-                if(Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
-                { break; }
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-            for(; ; )
-            {
-                if(lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
-                { break; }
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-            TurnOnCryoCooler();
-        }
-        private void CoolDownSourceWithoutLakeShore()
-        {
-            if (!refreshModeCancelFlag)
-            {
-                StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off
-                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
-                EnableDigitalHeaters(1, false); // turn heaters off
-                EnableDigitalHeaters(2, false); // turn heaters off
-                window.SetTextBox(window.tbRefreshModeStatus, "Stopping heaters"); // Update refresh mode status textbox
-            }
-            for (; ; )
-            {
-                if (refreshModeCancelFlag) break;
-                if (window.dateTimePickerStopHeatingAndTurnCryoOn.Value < DateTime.Now) break; // Exit this loop when the user defined datetime is reached.
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-                for (; ; )
-                {
-                    if (refreshModeCancelFlag) break;
-                    window.SetTextBox(window.tbRefreshModeStatus, "Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update refresh mode status textbox
-                    if (Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
-                    { break; }
-                    Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-                }
-            for(; ; )
-            {
-                if (refreshModeCancelFlag) break;
-                window.SetTextBox(window.tbRefreshModeStatus, "Waiting for the pressure to reach a low enough value for the cryo to turn on"); // Update refresh mode status textbox
-                if(lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
-                { break; }
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-            if (!refreshModeCancelFlag)
-            {
-                window.SetTextBox(window.tbRefreshModeStatus, "Starting cryo");
-                EnableCryoDigitalControl(true);
-            }
-        }
-
-        #endregion 
+        #endregion
 
         #region Digital heater control
 
@@ -832,14 +1332,14 @@ namespace UEDMHardwareControl
 
         public void EnableDigitalHeaters(int Channel, bool Enable)
         {
-            if(Channel == 1)
+            if (Channel == 1)
             {
                 SetDigitalLine("heatersS1TriggerDigitalOutputTask", Enable);
                 window.SetCheckBox(window.checkBoxEnableHeatersS1, Enable);
             }
             else
             {
-                if(Channel == 2)
+                if (Channel == 2)
                 {
                     SetDigitalLine("heatersS2TriggerDigitalOutputTask", Enable);
                     window.SetCheckBox(window.checkBoxEnableHeatersS2, Enable);
@@ -896,7 +1396,7 @@ namespace UEDMHardwareControl
         }
         public void ControlHeaters()
         {
-            
+
             if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit & monitorPressureWhenHeating) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
             {
                 window.SetTextBox(window.tbHeaterControlStatus, "Pressure above safe limit for turbo. Heaters disabled.");
@@ -922,7 +1422,7 @@ namespace UEDMHardwareControl
                     }
                     else EnableDigitalHeaters(1, false);
                 }
-                
+
             }
         }
 
@@ -961,8 +1461,8 @@ namespace UEDMHardwareControl
                 {
                     StopStage2DigitalHeaterControl();
                     StopStage1DigitalHeaterControl();
-                    EnableDigitalHeaters(1,false);
-                    EnableDigitalHeaters(2,false);
+                    EnableDigitalHeaters(1, false);
+                    EnableDigitalHeaters(2, false);
                     break;
                 }
                 TimeSpan TimeLeft = window.dateTimePickerHeatersTurnOff.Value - DateTime.Now;
@@ -1061,7 +1561,7 @@ namespace UEDMHardwareControl
         public void UpdateAllTempMonitors()
         {
             //sample the temperatures
-            receivedData = tempController.GetTemperature(0,"K");
+            receivedData = tempController.GetTemperature(0, "K");
             TemperatureArray = receivedData.Split(',');
             if (TemperatureArray.Length == 8)
             {
@@ -1149,21 +1649,23 @@ namespace UEDMHardwareControl
         /// Many user interface (UI) components need to be enabled/disabled so that the user can't perform actions that could be harmful to the experiment. This function combines this list of UI elements.
         /// </summary>
         /// <param name="StartStop"></param>
-        internal void PTMonitorPollEnableUIElements(bool StartStop) // Start = true (elements to enable/disable when starting refresh mode)
+        internal void PTMonitorPollEnableUIElements(bool Enable) // Elements to enable/disable when starting/stopping pressure and temperaure monitoring
         {
-            window.EnableControl(window.btStartTandPMonitoring, !StartStop); // window.btStartTandPMonitoring.Enabled = false when starting refresh mode (for example)
-            window.EnableControl(window.btStopTandPMonitoring, StartStop); // window.btStopTandPMonitoring.Enabled = true when starting refresh mode (for example)
-            window.EnableControl(window.checkBoxSF6TempPlot, StartStop);
-            window.EnableControl(window.checkBoxS2TempPlot, StartStop);
-            window.EnableControl(window.checkBoxS1TempPlot, StartStop);
-            window.EnableControl(window.checkBoxCellTempPlot, StartStop);
-            window.EnableControl(window.checkBoxBeamlinePressurePlot, StartStop);
-            window.EnableControl(window.checkBoxSourcePressurePlot, StartStop);
-            window.EnableControl(window.btUpdateHeaterControlStage2, StartStop);
-            window.EnableControl(window.btStartHeaterControlStage2, StartStop);
-            window.EnableControl(window.btStartHeaterControlStage1, StartStop);
-            window.EnableControl(window.btUpdateHeaterControlStage1, StartStop);
-            window.EnableControl(window.btStartRefreshMode, StartStop);
+            window.EnableControl(window.btStartTandPMonitoring, !Enable); // window.btStartTandPMonitoring.Enabled = false when starting monitoring (for example)
+            window.EnableControl(window.btStopTandPMonitoring, Enable); // window.btStopTandPMonitoring.Enabled = true when stopping monitoring (for example)
+            window.EnableControl(window.checkBoxSF6TempPlot, Enable);
+            window.EnableControl(window.checkBoxS2TempPlot, Enable);
+            window.EnableControl(window.checkBoxS1TempPlot, Enable);
+            window.EnableControl(window.checkBoxCellTempPlot, Enable);
+            window.EnableControl(window.checkBoxBeamlinePressurePlot, Enable);
+            window.EnableControl(window.checkBoxSourcePressurePlot, Enable);
+            window.EnableControl(window.btUpdateHeaterControlStage2, Enable);
+            window.EnableControl(window.btStartHeaterControlStage2, Enable);
+            window.EnableControl(window.btStartHeaterControlStage1, Enable);
+            window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
+            window.EnableControl(window.btStartRefreshMode, Enable);
+            window.EnableControl(window.btStartWarmUpMode, Enable);
+            window.EnableControl(window.btStartCoolDownMode, Enable);
 
         }
 
@@ -1188,8 +1690,8 @@ namespace UEDMHardwareControl
                 PTMonitorPollWorker();
             });
             PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            
-            pressureMovingAverageSampleLength = 10; 
+
+            pressureMovingAverageSampleLength = 10;
             Stage2HeaterControlFlag = false;
             Stage1HeaterControlFlag = false;
             UpdateStage1TemperatureSetpoint();
@@ -1203,9 +1705,9 @@ namespace UEDMHardwareControl
         }
         internal void StopPTMonitorPoll()
         {
-            if(refreshModeActive)
+            if (SourceModeActive)
             {
-                MessageBox.Show("Refresh mode is currently active. To stop temperature and pressure monitoring, please first cancel refresh mode and ensure that the apparatus is in a safe state to be left unmonitored.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                MessageBox.Show(SourceMode + " mode is currently active. To stop temperature and pressure monitoring, please first cancel refresh mode and ensure that the apparatus is in a safe state to be left unmonitored.", "Refresh Mode Exception", MessageBoxButtons.OK);
             }
             else
             {
@@ -1236,7 +1738,7 @@ namespace UEDMHardwareControl
                 ++count;
                 lock (PTMonitorLock)
                 {
-                    UpdateAllTempMonitors(); 
+                    UpdateAllTempMonitors();
                     PlotLastTemperatures();
                     UpdatePressureMonitor();
                     PlotLastPressure();
@@ -1262,7 +1764,7 @@ namespace UEDMHardwareControl
 
         public void ChangePlotYAxisScale(int ChartNumber)
         {
-            if(ChartNumber == 1)
+            if (ChartNumber == 1)
             {
                 string YScale = window.comboBoxPlot1ScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                 window.ChangeChartYScale(window.chart1, YScale);
@@ -1270,14 +1772,14 @@ namespace UEDMHardwareControl
             }
             else
             {
-                if(ChartNumber == 2)
+                if (ChartNumber == 2)
                 {
                     string YScale = window.comboBoxPlot2ScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                     window.ChangeChartYScale(window.chart2, YScale);
                     window.SetAxisYIsStartedFromZero(window.chart2, false);
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -1413,7 +1915,7 @@ namespace UEDMHardwareControl
         public string[] PIDValueStringArray;
         public double[] PIDValueDoubleArray;
         public string[] PIDValueString = { "P", "I", "D" };
-        public double[] PIDValueLowerLimits = { 0, 0 , 0 };
+        public double[] PIDValueLowerLimits = { 0, 0, 0 };
         public double[] PIDValueUpperLimits = { 1000, 1000, 200 };
         public void QueryPIDLoopValues()
         {
@@ -1439,7 +1941,7 @@ namespace UEDMHardwareControl
             {
                 bool PIDValuesInvalid = ValidatePIDLoopValues();
 
-                if(!PIDValuesInvalid)
+                if (!PIDValuesInvalid)
                 {
                     tempController.SetPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
                 }
@@ -1482,10 +1984,10 @@ namespace UEDMHardwareControl
                     MessageBox.Show("Unable to parse " + PIDValueString[i] + " value string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
                 }
             }
-                
+
             return PIDValuesInvalid;
         }
-        
+
 
         // Autotune
         public int AutotuneOutput;
@@ -1499,7 +2001,7 @@ namespace UEDMHardwareControl
             {
                 if (AutotuneModeSelected)
                 {
-                    tempController.AutotuneOutput(AutotuneOutput, AutotuneMode); 
+                    tempController.AutotuneOutput(AutotuneOutput, AutotuneMode);
                 }
                 else
                 {
