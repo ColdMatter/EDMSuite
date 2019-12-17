@@ -517,16 +517,10 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btUpdateHeaterControlStage2, Enable);
             window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
             window.EnableControl(window.btHeatersTurnOffWaitStart, Enable);
-            // Disable clear pressure/temp data so that the user can't interfere with refresh mode
-            window.EnableControl(window.btClearAllPressureData, Enable);
-            window.EnableControl(window.btClearAllTempData, Enable);
-            window.EnableControl(window.btClearSourcePressureData, Enable);
-            window.EnableControl(window.btClearBeamlinePressureData, Enable);
-            window.EnableControl(window.btClearCellTempData, Enable);
-            window.EnableControl(window.btClearSF6TempData, Enable);
-            window.EnableControl(window.btClearS2TempData, Enable);
-            window.EnableControl(window.btClearS1TempData, Enable);
-            window.EnableControl(window.btClearNeonTempData, Enable);
+        }
+        public void SetPressureAndTemperatureMonitoringPollPeriod(int PollPeriod)
+        {
+            PTMonitorPollPeriod = PollPeriod;
         }
 
         // Source mode parameters
@@ -546,6 +540,7 @@ namespace UEDMHardwareControl
         private bool SourceModeActive = false;
         private int NeonEvaporationCycleWaitTime;
         private int WarmupMonitoringWait;
+        private int SourceModeWaitPeriod;
         private int CoolDownWait;
         public void SetSourceModeConstants()
         {
@@ -559,6 +554,7 @@ namespace UEDMHardwareControl
                 CoolDownWait = SourceRefreshConstants.CoolDownWait;
                 CryoStartingTemperatureMax = SourceRefreshConstants.CryoStartingTemperatureMax;
                 CryoStartingPressure = SourceRefreshConstants.CryoStartingPressure;
+                SourceModeWaitPeriod = SourceRefreshConstants.SourceModeWait;
                 HeatersTurnOffDateTime = window.dateTimePickerRefreshModeTurnHeatersOff.Value;
                 CryoTurnOnDateTime = window.dateTimePickerRefreshModeTurnCryoOn.Value;
             }
@@ -569,6 +565,7 @@ namespace UEDMHardwareControl
                 NeonEvaporationCycleWaitTime = SourceWarmUpConstants.NeonEvaporationCycleWaitTime;
                 CryoStoppingPressure = SourceWarmUpConstants.CryoStoppingPressure;
                 WarmupMonitoringWait = SourceWarmUpConstants.WarmupMonitoringWait;
+                SourceModeWaitPeriod = SourceWarmUpConstants.SourceModeWait;
                 HeatersTurnOffDateTime = window.dateTimePickerWarmUpModeTurnHeatersOff.Value;
             }
             if (SourceMode == "Cooldown")
@@ -578,6 +575,7 @@ namespace UEDMHardwareControl
                 CoolDownWait = SourceCoolDownConstants.CoolDownWait;
                 CryoStartingTemperatureMax = SourceCoolDownConstants.CryoStartingTemperatureMax;
                 CryoStartingPressure = SourceCoolDownConstants.CryoStartingPressure;
+                SourceModeWaitPeriod = SourceCoolDownConstants.SourceModeWait;
                 HeatersTurnOffDateTime = window.dateTimePickerCoolDownModeTurnHeatersOff.Value;
                 CryoTurnOnDateTime = window.dateTimePickerCoolDownModeTurnCryoOn.Value;
             }
@@ -666,6 +664,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag)
             {
+                SetPressureAndTemperatureMonitoringPollPeriod(NeonEvaporationCycleWaitTime);
                 UpdateSourceModeHeaterSetpoints(NeonEvaporationCycleTemperatureMax);
                 UpdateSourceModeStatus("Starting neon evaporation cycle");
             }
@@ -749,6 +748,7 @@ namespace UEDMHardwareControl
                 }
                 EnableCryoDigitalControl(false); // Turn off cryo
                 UpdateSourceModeStatus("Starting warmup");
+                SetPressureAndTemperatureMonitoringPollPeriod(WarmupMonitoringWait);
 
                 // Monitor the pressure as the source heats up. 
                 // If the pressure gets too high for the turbo, then turn off the heaters. 
@@ -794,51 +794,55 @@ namespace UEDMHardwareControl
         }
         public void SourceModeWait()
         {
-            //If the source reaches the desired temperature before the user defined heater turn off time, then wait until this time.
-            for (; ; )
+            if (!sourceModeCancelFlag)
             {
-                // Check conditions that would lead to this loop being exited:
-                if (sourceModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
-                if (HeatersTurnOffDateTime < DateTime.Now) break; // If the user requested that the heaters turn off at this time, then exit this loop.
-
-                // Check if the user has updated the temperature setpoint:
-                if (SourceModeTemperatureSetpointUpdated) // If the temperature setpoint is updated by the user, this if statement will update the hardware temperature setpoint.
+                SetPressureAndTemperatureMonitoringPollPeriod(SourceModeWaitPeriod);
+                //If the source reaches the desired temperature before the user defined heater turn off time, then wait until this time.
+                for (; ; )
                 {
-                    UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
-                    SourceModeTemperatureSetpointUpdated = false; //Reset the flag
-                }
+                    // Check conditions that would lead to this loop being exited:
+                    if (sourceModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
+                    if (HeatersTurnOffDateTime < DateTime.Now) break; // If the user requested that the heaters turn off at this time, then exit this loop.
 
-                if (WarmToRoomTemperatureOnly) // If the user has stated that the source should be left at room temperature, then turn off the heaters
-                {
-                    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on, turn them off
+                    // Check if the user has updated the temperature setpoint:
+                    if (SourceModeTemperatureSetpointUpdated) // If the temperature setpoint is updated by the user, this if statement will update the hardware temperature setpoint.
                     {
-                        EnableSourceModeHeaters(false);
+                        UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
+                        SourceModeTemperatureSetpointUpdated = false; //Reset the flag
                     }
-                    UpdateSourceModeStatus("Waiting at room temperature"); // Update source mode status textbox
-                }
-                else // User wants source to be heated
-                {
-                    // Check is the source pressure is within safe limits for the turbomolecular pump:
-                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+
+                    if (WarmToRoomTemperatureOnly) // If the user has stated that the source should be left at room temperature, then turn off the heaters
                     {
-                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on, turn them off
                         {
-                            EnableSourceModeHeaters(true); // Enable heaters
+                            EnableSourceModeHeaters(false);
                         }
-                        UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin."); // Update source mode status textbox
+                        UpdateSourceModeStatus("Waiting at room temperature"); // Update source mode status textbox
                     }
-                    else // If the pressure is high, then turn the heaters off
+                    else // User wants source to be heated
                     {
-                        UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
-                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        // Check is the source pressure is within safe limits for the turbomolecular pump:
+                        if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
                         {
-                            EnableSourceModeHeaters(false); // Disable heaters
+                            if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                            {
+                                EnableSourceModeHeaters(true); // Enable heaters
+                            }
+                            UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin."); // Update source mode status textbox
+                        }
+                        else // If the pressure is high, then turn the heaters off
+                        {
+                            UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                            {
+                                EnableSourceModeHeaters(false); // Disable heaters
+                            }
                         }
                     }
-                }
 
-                UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
-                Thread.Sleep(WarmupMonitoringWait); // Iterate the loop according to this time interval
+                    UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
+                    Thread.Sleep(SourceModeWaitPeriod); // Iterate the loop according to this time interval
+                }
             }
         }
         private void CoolDownSource()
@@ -865,6 +869,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag)
             {
+                SetPressureAndTemperatureMonitoringPollPeriod(CoolDownWait);
                 EnableSourceModeHeaters(false); // Turn off heaters
                 UpdateSourceModeStatus("Heaters stopped for cryo turn on"); // Update status textbox
 
@@ -974,14 +979,14 @@ namespace UEDMHardwareControl
             public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
-            public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
+            public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
             public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
             public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
             public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
-            public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
+            public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
             public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
-            public static Double NeonEvaporationPollPeriod { get { return 100; } } // milli seconds
+            public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
         }
 
         internal void StartRefreshMode()
@@ -1049,7 +1054,7 @@ namespace UEDMHardwareControl
             if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
             if (sourceModeCancelFlag) // If refresh mode is cancelled, then turn off the heaters before finishing.
             {
-                UpdateSourceModeStatus("Refresh mode cancelled");
+                UpdateSourceModeStatus("Refresh mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
             }
@@ -1118,10 +1123,10 @@ namespace UEDMHardwareControl
             public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
-            public static Int32 NeonEvaporationCycleWaitTime { get { return 5000; } } // milli seconds
+            public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
             public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
-            public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
-            public static Double NeonEvaporationPollPeriod { get { return 100; } } // milli seconds
+            public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
+            public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
         }
 
         internal void StartWarmUpMode()
@@ -1166,7 +1171,7 @@ namespace UEDMHardwareControl
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
             if (sourceModeCancelFlag) // If warm up mode is cancelled, then turn off the heaters before finishing.
             {
-                UpdateSourceModeStatus("Warm up mode cancelled");
+                UpdateSourceModeStatus("Warm up mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
             }
@@ -1244,6 +1249,7 @@ namespace UEDMHardwareControl
             public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
             public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
+            public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
         }
 
         internal void StartCoolDownMode()
@@ -1309,11 +1315,11 @@ namespace UEDMHardwareControl
             if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
             if (sourceModeCancelFlag) // If cool down mode is cancelled, then turn off the heaters before finishing.
             {
-                UpdateSourceModeStatus("Refresh mode cancelled");
+                UpdateSourceModeStatus("Cool down mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
             }
-            CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
+            CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in cool down mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
         }
