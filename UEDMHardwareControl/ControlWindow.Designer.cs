@@ -106,6 +106,11 @@
             this.labelPlot1ScaleY = new System.Windows.Forms.Label();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btRollingTemperatureChartTimeAxis = new System.Windows.Forms.Button();
+            this.labelTemperatureRollingTimeAxisPeriod = new System.Windows.Forms.Label();
+            this.tbRollingTemperatureChartTimeAxisPeriod = new System.Windows.Forms.TextBox();
+            this.cbEnableTemperatureChartRollingTimeAxis = new System.Windows.Forms.CheckBox();
+            this.labelRollingTemperaturePlotTimeAxis = new System.Windows.Forms.Label();
             this.checkBoxNeonTempPlot = new System.Windows.Forms.CheckBox();
             this.btClearNeonTempData = new System.Windows.Forms.Button();
             this.labelClearTemperaturePlotData = new System.Windows.Forms.Label();
@@ -784,6 +789,7 @@
             // 
             // btClearAllPressureData
             // 
+            this.btClearAllPressureData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btClearAllPressureData.Location = new System.Drawing.Point(109, 140);
             this.btClearAllPressureData.Name = "btClearAllPressureData";
             this.btClearAllPressureData.Size = new System.Drawing.Size(75, 23);
@@ -959,6 +965,11 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btRollingTemperatureChartTimeAxis);
+            this.groupBox2.Controls.Add(this.labelTemperatureRollingTimeAxisPeriod);
+            this.groupBox2.Controls.Add(this.tbRollingTemperatureChartTimeAxisPeriod);
+            this.groupBox2.Controls.Add(this.cbEnableTemperatureChartRollingTimeAxis);
+            this.groupBox2.Controls.Add(this.labelRollingTemperaturePlotTimeAxis);
             this.groupBox2.Controls.Add(this.checkBoxNeonTempPlot);
             this.groupBox2.Controls.Add(this.btClearNeonTempData);
             this.groupBox2.Controls.Add(this.labelClearTemperaturePlotData);
@@ -980,6 +991,52 @@
             this.groupBox2.TabIndex = 22;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Plot Options";
+            // 
+            // btRollingTemperatureChartTimeAxis
+            // 
+            this.btRollingTemperatureChartTimeAxis.Location = new System.Drawing.Point(190, 293);
+            this.btRollingTemperatureChartTimeAxis.Name = "btRollingTemperatureChartTimeAxis";
+            this.btRollingTemperatureChartTimeAxis.Size = new System.Drawing.Size(84, 23);
+            this.btRollingTemperatureChartTimeAxis.TabIndex = 20;
+            this.btRollingTemperatureChartTimeAxis.Text = "Update";
+            this.btRollingTemperatureChartTimeAxis.UseVisualStyleBackColor = true;
+            this.btRollingTemperatureChartTimeAxis.Click += new System.EventHandler(this.btRollingTemperatureChartTimeAxis_Click);
+            // 
+            // labelTemperatureRollingTimeAxisPeriod
+            // 
+            this.labelTemperatureRollingTimeAxisPeriod.AutoSize = true;
+            this.labelTemperatureRollingTimeAxisPeriod.Location = new System.Drawing.Point(7, 298);
+            this.labelTemperatureRollingTimeAxisPeriod.Name = "labelTemperatureRollingTimeAxisPeriod";
+            this.labelTemperatureRollingTimeAxisPeriod.Size = new System.Drawing.Size(96, 13);
+            this.labelTemperatureRollingTimeAxisPeriod.TabIndex = 19;
+            this.labelTemperatureRollingTimeAxisPeriod.Text = "Rolling period (ms):";
+            // 
+            // tbRollingTemperatureChartTimeAxisPeriod
+            // 
+            this.tbRollingTemperatureChartTimeAxisPeriod.Location = new System.Drawing.Point(109, 295);
+            this.tbRollingTemperatureChartTimeAxisPeriod.Name = "tbRollingTemperatureChartTimeAxisPeriod";
+            this.tbRollingTemperatureChartTimeAxisPeriod.Size = new System.Drawing.Size(75, 20);
+            this.tbRollingTemperatureChartTimeAxisPeriod.TabIndex = 18;
+            // 
+            // cbEnableTemperatureChartRollingTimeAxis
+            // 
+            this.cbEnableTemperatureChartRollingTimeAxis.AutoSize = true;
+            this.cbEnableTemperatureChartRollingTimeAxis.Location = new System.Drawing.Point(109, 272);
+            this.cbEnableTemperatureChartRollingTimeAxis.Name = "cbEnableTemperatureChartRollingTimeAxis";
+            this.cbEnableTemperatureChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
+            this.cbEnableTemperatureChartRollingTimeAxis.TabIndex = 17;
+            this.cbEnableTemperatureChartRollingTimeAxis.Text = "Enable";
+            this.cbEnableTemperatureChartRollingTimeAxis.UseVisualStyleBackColor = true;
+            this.cbEnableTemperatureChartRollingTimeAxis.CheckedChanged += new System.EventHandler(this.cbEnableTemperatureChartRollingTimeAxis_CheckedChanged);
+            // 
+            // labelRollingTemperaturePlotTimeAxis
+            // 
+            this.labelRollingTemperaturePlotTimeAxis.AutoSize = true;
+            this.labelRollingTemperaturePlotTimeAxis.Location = new System.Drawing.Point(15, 273);
+            this.labelRollingTemperaturePlotTimeAxis.Name = "labelRollingTemperaturePlotTimeAxis";
+            this.labelRollingTemperaturePlotTimeAxis.Size = new System.Drawing.Size(85, 13);
+            this.labelRollingTemperaturePlotTimeAxis.TabIndex = 16;
+            this.labelRollingTemperaturePlotTimeAxis.Text = "Rolling time axis:";
             // 
             // checkBoxNeonTempPlot
             // 
@@ -1053,9 +1110,10 @@
             // 
             // btClearAllTempData
             // 
-            this.btClearAllTempData.Location = new System.Drawing.Point(109, 269);
+            this.btClearAllTempData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btClearAllTempData.Location = new System.Drawing.Point(190, 240);
             this.btClearAllTempData.Name = "btClearAllTempData";
-            this.btClearAllTempData.Size = new System.Drawing.Size(75, 23);
+            this.btClearAllTempData.Size = new System.Drawing.Size(84, 23);
             this.btClearAllTempData.TabIndex = 8;
             this.btClearAllTempData.Text = "Clear all";
             this.btClearAllTempData.UseVisualStyleBackColor = true;
@@ -2753,5 +2811,10 @@
         public System.Windows.Forms.Button btStartCoolDownMode;
         public System.Windows.Forms.TextBox tbCoolDownModeStatus;
         private System.Windows.Forms.Label labelCoolDownModeStatus;
+        private System.Windows.Forms.Button btRollingTemperatureChartTimeAxis;
+        private System.Windows.Forms.Label labelTemperatureRollingTimeAxisPeriod;
+        public System.Windows.Forms.TextBox tbRollingTemperatureChartTimeAxisPeriod;
+        public System.Windows.Forms.CheckBox cbEnableTemperatureChartRollingTimeAxis;
+        private System.Windows.Forms.Label labelRollingTemperaturePlotTimeAxis;
     }
 }

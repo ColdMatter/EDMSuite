@@ -1511,6 +1511,9 @@ namespace UEDMHardwareControl
 
         private string receivedData;
         private int TempMovingAverageSampleLength = 2;
+        private int TemperatureChartRollingPeriod;
+        private bool TemperatureChartRollingPeriodSelected = false;
+        private bool TemperatureChartRollingXAxis = false;
         //private Queue<double> TempSamples = new Queue<double>();
         public string[] TemperatureArray;
         public string lastCellTemp;
@@ -1534,8 +1537,8 @@ namespace UEDMHardwareControl
                 lastCellTemp = TemperatureArray[0]; // LakeShore Input A
                 lastNeonTemp = TemperatureArray[1]; // LakeShore Input B
                 lastS2Temp = TemperatureArray[2];   // LakeShore Input C
-                lastSF6Temp = TemperatureArray[3];  // LakeShore Input D1
-                lastS1Temp = TemperatureArray[4];   // LakeShore Input D2
+                lastSF6Temp = TemperatureArray[3];  // LakeShore Input D
+                lastS1Temp = TemperatureArray[4];   // LakeShore Input D1
                 window.SetTextBox(window.tbTCell, lastCellTemp);
                 window.SetTextBox(window.tbTNeon, lastNeonTemp);
                 window.SetTextBox(window.tbTS2, lastS2Temp);
@@ -1597,6 +1600,50 @@ namespace UEDMHardwareControl
             window.AddPointToChart(window.chart2, S2TSeries, localDate, S2Temp);
             window.AddPointToChart(window.chart2, SF6TSeries, localDate, SF6Temp);
             window.AddPointToChart(window.chart2, neonTSeries, localDate, NeonTemp);
+            if (TemperatureChartRollingXAxis)
+            {
+                UpdateTemperatureChartRollingTimeAxis();
+            }
+        }
+
+        private void UpdateTemperatureChartRollingTimeAxis()
+        {
+            DateTime xMin = DateTime.Now.AddMilliseconds(-TemperatureChartRollingPeriod);
+            window.SetChartXAxisMinDateTime(window.chart2, xMin);
+        }
+        public void EnableTemperatureChartRollingTimeAxis(bool Enable)
+        {
+            if (Enable)
+            {
+                if (TemperatureChartRollingPeriodSelected)
+                {
+                    TemperatureChartRollingXAxis = true;
+                }
+                else
+                {
+                    MessageBox.Show("Please select temperature chart rolling period.", "User input exception", MessageBoxButtons.OK);
+                    window.SetCheckBox(window.cbEnableTemperatureChartRollingTimeAxis, false);
+                }
+            }
+            else
+            {
+                TemperatureChartRollingXAxis = false;
+                window.SetChartXAxisMinAuto(window.chart2);
+            }
+        }
+        public void UpdateTemperatureChartRollingPeriod()
+        {
+            int TemperatureChartRollingPeriodParsedValue;
+            if (Int32.TryParse(window.tbRollingTemperatureChartTimeAxisPeriod.Text, out TemperatureChartRollingPeriodParsedValue))
+            {
+                if (PTMonitorPollPeriod <= TemperatureChartRollingPeriodParsedValue)
+                {
+                    TemperatureChartRollingPeriod = TemperatureChartRollingPeriodParsedValue; // Update temperature chart rolling period
+                    TemperatureChartRollingPeriodSelected = true;
+                }
+                else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse temperature chart rolling period string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
         #endregion

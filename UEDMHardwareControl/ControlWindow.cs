@@ -134,17 +134,28 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void SetXAxisRolling(Chart chart, int numberOfPoints)
+        public void SetChartXAxisMinDateTime(Chart chart, DateTime xmin)
         {
-            chart.Invoke(new SetXAxisRollingDelegate(SetXAxisRollingHelper), new object[] { chart, numberOfPoints });
+            chart.Invoke(new SetChartXAxisMinDateTimeDelegate(SetChartXAxisMinDateTimeHelper), new object[] { chart, xmin });
         }
-        private delegate void SetXAxisRollingDelegate(Chart chart, int numberOfPoints);
-        private void SetXAxisRollingHelper(Chart chart, int numberOfPoints)
+        private delegate void SetChartXAxisMinDateTimeDelegate(Chart chart, DateTime xmin);
+        private void SetChartXAxisMinDateTimeHelper(Chart chart, DateTime xmin)
         {
             Axis xaxis = chart.ChartAreas[0].AxisX;
-            xaxis.Minimum = xaxis.Maximum - numberOfPoints;
+            xaxis.Minimum = xmin.ToOADate();
         }
 
+        public void SetChartXAxisMinAuto(Chart chart)
+        {
+            chart.Invoke(new SetChartXAxisMinAutoDelegate(SetChartXAxisMinAutoHelper), new object[] { chart });
+        }
+        private delegate void SetChartXAxisMinAutoDelegate(Chart chart);
+        private void SetChartXAxisMinAutoHelper(Chart chart)
+        {
+            Axis xaxis = chart.ChartAreas[0].AxisX;
+            xaxis.Minimum = Double.NaN; ;
+            chart.ChartAreas[0].RecalculateAxesScale();
+        }
 
         public void SetAxisYIsStartedFromZero(Chart chart, bool YesNo)
         {
@@ -605,6 +616,16 @@ namespace UEDMHardwareControl
         private void btCancelCoolDownMode_Click(object sender, EventArgs e)
         {
             controller.CancelCoolDownMode();
+        }
+
+        private void cbEnableTemperatureChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableTemperatureChartRollingTimeAxis(cbEnableTemperatureChartRollingTimeAxis.Checked);
+        }
+
+        private void btRollingTemperatureChartTimeAxis_Click(object sender, EventArgs e)
+        {
+            controller.UpdateTemperatureChartRollingPeriod();
         }
 
     }
