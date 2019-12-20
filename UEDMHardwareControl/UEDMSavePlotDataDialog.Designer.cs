@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UEDMSavePlotDataDialog));
             this.MessageDescription = new System.Windows.Forms.RichTextBox();
             this.btCancel = new System.Windows.Forms.Button();
             this.btSave = new System.Windows.Forms.Button();
@@ -80,6 +81,7 @@
             this.Controls.Add(this.btSave);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.MessageDescription);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "UEDMSavePlotDataDialog";
             this.Text = "windowTitleText";
             this.ResumeLayout(false);

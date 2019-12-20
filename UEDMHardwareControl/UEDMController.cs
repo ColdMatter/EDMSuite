@@ -318,58 +318,6 @@ namespace UEDMHardwareControl
             }
         }
 
-        private void SetHeaterSetpoint(int Output, double Value)
-        {
-            if (Value > 0)
-            {
-                tempController.SetControlSetpoint(Output, Value);
-            }
-        }
-
-        private void EnableLakeShoreHeaterOutput3or4(int Output, bool OnOff)
-        {
-            if (OnOff)
-            {
-                tempController.SetHeaterRange(Output, 1); // true = on
-                HeatersEnabled = true;
-            }
-            else
-            {
-                tempController.SetHeaterRange(Output, 0); // false = off
-                HeatersEnabled = false;
-            }
-        }
-
-        /// <summary>
-        /// Sets the range parameter for a given output.
-        /// LakeShore 336 outputs 1 and 2 are the PID loop controlled heaters (100 Watts and 50 Watts respectively).
-        /// For outputs 1 and 2: 0 = Off, 1 = Low, 2 = Medium and 3= High.
-        /// </summary>
-        /// <param name="Output"></param>
-        /// <param name="range"></param>
-        private void EnableLakeShoreHeaterOutput1or2(int Output, int range)
-        {
-            if (range != 0)
-            {
-                tempController.SetHeaterRange(Output, range); // 1 = Low, 2 = Medium and 3= High
-                HeatersEnabled = true;
-            }
-            else
-            {
-                tempController.SetHeaterRange(Output, range); // 0 = Off
-                HeatersEnabled = false;
-            }
-        }
-
-        private void IsOutputEnabled(int Output)
-        {
-            string HeaterOutput = tempController.QueryHeaterRange(Output);
-            string trimResponse = HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
-            string status = trimResponse.Substring(0, 1); // Take the first character of the string.
-            if (status == "1") HeatersEnabled = true; // Heater Output is on
-            else HeatersEnabled = false; // Heater Output is off
-        }
-
         #endregion
 
         #region Source Modes
@@ -437,24 +385,36 @@ namespace UEDMHardwareControl
         }
         public void UpdateSourceModeHeaterSetpoints(double setpoint)
         {
+            // Second stage heater
             window.SetTextBox(window.tbHeaterTempSetpointStage2, setpoint.ToString());
             UpdateStage2TemperatureSetpoint();
+            // First stage heater
             window.SetTextBox(window.tbHeaterTempSetpointStage1, setpoint.ToString());
             UpdateStage1TemperatureSetpoint();
+            // Cell heater
+            SetHeaterSetpoint(LakeShoreCellOutput, setpoint);
         }
         public void EnableSourceModeHeaters(bool Enable)
         {
             if (Enable)
             {
+                // First stage heater
                 StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
+                // Second stage heater
                 StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
+                // Cell heater
+                EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 3);
             }
             else
             {
+                // First stage heater
                 StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
-                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
                 EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                // Second stage heater
+                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
                 EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                // Cell heater
+                EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 0);
             }
         }
         public void UpdateWarmToRoomTemperatureOnlyFlag()
@@ -2091,6 +2051,56 @@ namespace UEDMHardwareControl
             }
 
             window.SetRichTextBox(window.rtbAutotuneStatus, StatusOutput);
+        }
+
+
+        // Heaters
+        private int LakeShoreCellOutput = 1;
+
+        public void SetHeaterSetpoint(int Output, double Value)
+        {
+            if (Value > 0)
+            {
+                tempController.SetControlSetpoint(Output, Value);
+            }
+        }
+        private void EnableLakeShoreHeaterOutput3or4(int Output, bool OnOff)
+        {
+            if (OnOff)
+            {
+                tempController.SetHeaterRange(Output, 1); // 1 = on
+            }
+            else
+            {
+                tempController.SetHeaterRange(Output, 0); // 0 = off
+            }
+        }
+        /// <summary>
+        /// Sets the range parameter for a given output.
+        /// LakeShore 336 outputs 1 and 2 are the PID loop controlled heaters (100 Watts and 50 Watts respectively).
+        /// For outputs 1 and 2: 0 = Off, 1 = Low, 2 = Medium and 3= High.
+        /// </summary>
+        /// <param name="Output"></param>
+        /// <param name="range"></param>
+        public void EnableLakeShoreHeaterOutput1or2(int Output, int range)
+        {
+            if (range != 0)
+            {
+                tempController.SetHeaterRange(Output, range); // 1 = Low, 2 = Medium and 3= High
+            }
+            else
+            {
+                tempController.SetHeaterRange(Output, range); // 0 = Off
+            }
+        }
+
+        private void IsOutputEnabled(int Output)
+        {
+            string HeaterOutput = tempController.QueryHeaterRange(Output);
+            string trimResponse = HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
+            string status = trimResponse.Substring(0, 1); // Take the first character of the string.
+            if (status == "1") HeatersEnabled = true; // Heater Output is on
+            else HeatersEnabled = false; // Heater Output is off
         }
 
         #endregion

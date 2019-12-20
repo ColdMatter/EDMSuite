@@ -134,6 +134,18 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetXAxisRolling(Chart chart, int numberOfPoints)
+        {
+            chart.Invoke(new SetXAxisRollingDelegate(SetXAxisRollingHelper), new object[] { chart, numberOfPoints });
+        }
+        private delegate void SetXAxisRollingDelegate(Chart chart, int numberOfPoints);
+        private void SetXAxisRollingHelper(Chart chart, int numberOfPoints)
+        {
+            Axis xaxis = chart.ChartAreas[0].AxisX;
+            xaxis.Minimum = xaxis.Maximum - numberOfPoints;
+        }
+
+
         public void SetAxisYIsStartedFromZero(Chart chart, bool YesNo)
         {
             chart.Invoke(new SetAxisYIsStartedFromZeroDelegate(SetAxisYIsStartedFromZeroHelper), new object[] { chart, YesNo });
@@ -594,5 +606,6 @@ namespace UEDMHardwareControl
         {
             controller.CancelCoolDownMode();
         }
+
     }
 }

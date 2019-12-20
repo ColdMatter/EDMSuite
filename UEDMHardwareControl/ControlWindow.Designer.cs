@@ -45,6 +45,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -1163,7 +1164,7 @@
             this.tabPagePlotting.Controls.Add(this.chart2);
             this.tabPagePlotting.Location = new System.Drawing.Point(4, 22);
             this.tabPagePlotting.Name = "tabPagePlotting";
-            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3);
             this.tabPagePlotting.Size = new System.Drawing.Size(1033, 703);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and temperature plots";
@@ -1175,7 +1176,7 @@
             this.tabPageFlowControllers.Controls.Add(this.gbNeonFlowController);
             this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 22);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
-            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageFlowControllers.Size = new System.Drawing.Size(1033, 703);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
@@ -1664,7 +1665,7 @@
             this.tabPageLakeShore.Controls.Add(this.groupBox3);
             this.tabPageLakeShore.Location = new System.Drawing.Point(4, 22);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
-            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageLakeShore.Size = new System.Drawing.Size(1033, 703);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
@@ -1924,7 +1925,7 @@
             this.tabPageSourceModes.Controls.Add(this.tabControl1);
             this.tabPageSourceModes.Location = new System.Drawing.Point(4, 22);
             this.tabPageSourceModes.Name = "tabPageSourceModes";
-            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSourceModes.Size = new System.Drawing.Size(1033, 703);
             this.tabPageSourceModes.TabIndex = 3;
             this.tabPageSourceModes.Text = "Source Modes";
@@ -1935,7 +1936,7 @@
             this.tabControl1.Controls.Add(this.tabPageWarmUpMode);
             this.tabControl1.Controls.Add(this.tabPageCoolDownMode);
             this.tabControl1.Location = new System.Drawing.Point(2, 6);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1030, 697);
@@ -1951,9 +1952,9 @@
             this.tabPageRefreshMode.Controls.Add(this.tbRefreshModeStatus);
             this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeStatus);
             this.tabPageRefreshMode.Location = new System.Drawing.Point(4, 22);
-            this.tabPageRefreshMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageRefreshMode.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageRefreshMode.Name = "tabPageRefreshMode";
-            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(2);
             this.tabPageRefreshMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageRefreshMode.TabIndex = 0;
             this.tabPageRefreshMode.Text = "Refresh Mode";
@@ -2144,9 +2145,9 @@
             this.tabPageWarmUpMode.Controls.Add(this.labelWarmUpModeStatus);
             this.tabPageWarmUpMode.Controls.Add(this.gbWarmUpModeWarmUp);
             this.tabPageWarmUpMode.Location = new System.Drawing.Point(4, 22);
-            this.tabPageWarmUpMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageWarmUpMode.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageWarmUpMode.Name = "tabPageWarmUpMode";
-            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(2);
             this.tabPageWarmUpMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageWarmUpMode.TabIndex = 1;
             this.tabPageWarmUpMode.Text = "Warm Up Mode";
@@ -2290,7 +2291,7 @@
             this.tabPageCoolDownMode.Controls.Add(this.tbCoolDownModeStatus);
             this.tabPageCoolDownMode.Controls.Add(this.labelCoolDownModeStatus);
             this.tabPageCoolDownMode.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageCoolDownMode.Name = "tabPageCoolDownMode";
             this.tabPageCoolDownMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageCoolDownMode.TabIndex = 2;
@@ -2485,6 +2486,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbTempMonitors);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "ControlWindow";
             this.Text = "Ultracold EDM Hardware Controller";
