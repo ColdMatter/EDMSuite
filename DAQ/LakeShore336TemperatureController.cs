@@ -154,15 +154,18 @@ namespace DAQ.HAL
         {
             if (ValidateRelayNumber(RelayNumber) & ValidateRelayMode(RelayMode) & ValidateRelayInputAlarm(RelayInputAlarm) & ValidateRelayAlarmType(AlarmType)) // validate that the channel and temperature unit selected are valid options
             {
-                Connect(SerialTerminationMethod.TerminationCharacter);
-                string RelayCommand = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterCommand, RelayNumber, ",", RelayMode, ",", RelayInputAlarm, ",", AlarmType));
-                Write(RelayCommand);
-                Disconnect();
+                if (!Environs.Debug)
+                {
+                    Connect(SerialTerminationMethod.TerminationCharacter);
+                    string RelayCommand = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterCommand, RelayNumber, ",", RelayMode, ",", RelayInputAlarm, ",", AlarmType));
+                    Write(RelayCommand);
+                    Disconnect();
+                }
                 return true; // success in writing the command, but should check that the relay parameters have been correctly changed
             }
             else return false; // The input parameters were not valid. 
         }
-
+        
         /// <summary>
         /// Write a command to the LakeShore 336 temperature controller to change the relay parameters. 
         /// This function will return a bool flag to indicate whether or not it has successfully written to the device (true = success). 
@@ -177,11 +180,14 @@ namespace DAQ.HAL
         {
             if (ValidateRelayNumber(RelayNumber) & ValidateRelayMode(RelayMode)) // validate that the channel and temperature unit selected are valid options
             {
-                Connect(SerialTerminationMethod.TerminationCharacter);
-                string RelayCommand = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterCommand, RelayNumber, ",", RelayMode));
-                Write(RelayCommand, true);
-                Thread.Sleep(2000);// Wait to prevent an attempt to interact with the LakeShore Controller. Without this, and if another command/query is immediately sent, the relay state won't change and the next 
-                Disconnect();
+                if (!Environs.Debug)
+                {
+                    Connect(SerialTerminationMethod.TerminationCharacter);
+                    string RelayCommand = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterCommand, RelayNumber, ",", RelayMode));
+                    Write(RelayCommand, true);
+                    Thread.Sleep(2000);// Wait to prevent an attempt to interact with the LakeShore Controller. Without this, and if another command/query is immediately sent, the relay state won't change and the next 
+                    Disconnect();
+                }
                 return true; // success in writing the command, but should check that the relay parameters have been correctly changed
             }
             else return false; // The input parameters were not valid. 
@@ -198,10 +204,14 @@ namespace DAQ.HAL
         {
             if(ValidateRelayNumber(RelayNumber))
             {
-                Connect(SerialTerminationMethod.TerminationCharacter);
-                string query = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterQuery, RelayNumber));
-                string response = Query(query);
-                Disconnect();
+                string response = "";
+                if (!Environs.Debug)
+                {
+                    Connect(SerialTerminationMethod.TerminationCharacter);
+                    string query = SetLineFeed(String.Concat(CommandTypes.RelayControlParameterQuery, RelayNumber));
+                    response = Query(query);
+                    Disconnect();
+                }
                 return response;
             }
             else return "Exception: Invalid relay number";

@@ -37,10 +37,13 @@ namespace DAQ.HAL
 
         public AgilentFRG720Gauge(string name, string channelName)
         {
-            readPressureTask = new Task("Read pressure -" + name);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(readPressureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-            pressureReader = new AnalogSingleChannelReader(readPressureTask.Stream);
-            readPressureTask.Control(TaskAction.Verify);
+            if (!Environs.Debug)
+            {
+                readPressureTask = new Task("Read pressure -" + name);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(readPressureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                pressureReader = new AnalogSingleChannelReader(readPressureTask.Stream);
+                readPressureTask.Control(TaskAction.Verify);
+            }
         }
 
         public double Pressure

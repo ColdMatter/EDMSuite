@@ -15,7 +15,6 @@ using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
-
 using DAQ.HAL;
 using DAQ.Environment;
 using System.Diagnostics;
@@ -28,12 +27,12 @@ namespace UEDMHardwareControl
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        # region Setup
-
+        #region Setup
+        
         // hardware
         private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
         private static string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
-
+        
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
         AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGauge_source");
         AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGauge_beamline");
@@ -112,18 +111,24 @@ namespace UEDMHardwareControl
 
         private void CreateDigitalTask(String name)
         {
-            Task digitalTask = new Task(name);
-            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
-            digitalTask.Control(TaskAction.Verify);
-            digitalTasks.Add(name, digitalTask);
+            if (!Environs.Debug)
+            {
+                Task digitalTask = new Task(name);
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
+                digitalTask.Control(TaskAction.Verify);
+                digitalTasks.Add(name, digitalTask);
+            }
         }
 
         private void SetDigitalLine(string name, bool value)
         {
-            Task digitalTask = ((Task)digitalTasks[name]);
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
-            writer.WriteSingleSampleSingleLine(true, value);
-            digitalTask.Control(TaskAction.Unreserve);
+            if (!Environs.Debug)
+            {
+                Task digitalTask = ((Task)digitalTasks[name]);
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
+                writer.WriteSingleSampleSingleLine(true, value);
+                digitalTask.Control(TaskAction.Unreserve);
+            }
         }
 
 
@@ -221,23 +226,26 @@ namespace UEDMHardwareControl
 
         public void InitializeCryoControl()
         {
-            string status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
-            if (status == On)
+            if (!Environs.Debug)
             {
-                string message = "Cryo control warning: The LakeShore 336 temperature controller Relay-" + RelayNumber + " is set such that the cryo will turn be on. \n\nClick OK to continue opening application.";
-                string caption = "Cryo Control Warning";
-                MessageBox.Show(message, caption, MessageBoxButtons.OK);
-                window.SetTextBox(window.tbCryoState, "ON");
-            }
-            else
-            {
-                if (status == Off) window.SetTextBox(window.tbCryoState, "OFF");
+                string status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
+                if (status == On)
+                {
+                    string message = "Cryo control warning: The LakeShore 336 temperature controller Relay-" + RelayNumber + " is set such that the cryo will turn be on. \n\nClick OK to continue opening application.";
+                    string caption = "Cryo Control Warning";
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                    window.SetTextBox(window.tbCryoState, "ON");
+                }
                 else
                 {
-                    window.SetTextBox(window.tbCryoState, "UNKNOWN");
-                    string message = "Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-" + RelayNumber + ", an unexpected response was provided. The state of the relay is UNKNOWN. \n\nClick OK to continue.";
-                    string caption = "Cryo Control Exception";
-                    MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                    if (status == Off) window.SetTextBox(window.tbCryoState, "OFF");
+                    else
+                    {
+                        window.SetTextBox(window.tbCryoState, "UNKNOWN");
+                        string message = "Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-" + RelayNumber + ", an unexpected response was provided. The state of the relay is UNKNOWN. \n\nClick OK to continue.";
+                        string caption = "Cryo Control Exception";
+                        MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                    }
                 }
             }
         }
@@ -1664,18 +1672,16 @@ namespace UEDMHardwareControl
         /// <param name="StartStop"></param>
         internal void PTMonitorPollEnableUIElements(bool Enable) // Elements to enable/disable when starting/stopping pressure and temperaure monitoring
         {
+            // Pressure and Temperature monitoring start/stop buttons
             window.EnableControl(window.btStartTandPMonitoring, !Enable); // window.btStartTandPMonitoring.Enabled = false when starting monitoring (for example)
             window.EnableControl(window.btStopTandPMonitoring, Enable); // window.btStopTandPMonitoring.Enabled = true when stopping monitoring (for example)
-            window.EnableControl(window.checkBoxSF6TempPlot, Enable);
-            window.EnableControl(window.checkBoxS2TempPlot, Enable);
-            window.EnableControl(window.checkBoxS1TempPlot, Enable);
-            window.EnableControl(window.checkBoxCellTempPlot, Enable);
-            window.EnableControl(window.checkBoxBeamlinePressurePlot, Enable);
-            window.EnableControl(window.checkBoxSourcePressurePlot, Enable);
+            // Heater control UI elements
             window.EnableControl(window.btUpdateHeaterControlStage2, Enable);
             window.EnableControl(window.btStartHeaterControlStage2, Enable);
             window.EnableControl(window.btStartHeaterControlStage1, Enable);
             window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
+            window.EnableControl(window.btHeatersTurnOffWaitStart, Enable);
+            // Source modes UI elements
             window.EnableControl(window.btStartRefreshMode, Enable);
             window.EnableControl(window.btStartWarmUpMode, Enable);
             window.EnableControl(window.btStartCoolDownMode, Enable);

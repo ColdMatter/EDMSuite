@@ -38,25 +38,28 @@ namespace DAQ.HAL
 
         public SiliconDiodeTemperatureMonitors(string[] name, string[] channelName)
         {
-            readCellTemperatureTask = new Task("Read cell temperature -" + name[0]);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[0]]).AddToTask(readCellTemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-            cellTemperatureReader = new AnalogSingleChannelReader(readCellTemperatureTask.Stream);
-            readCellTemperatureTask.Control(TaskAction.Verify);
+            if (!Environs.Debug)
+            {
+                readCellTemperatureTask = new Task("Read cell temperature -" + name[0]);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[0]]).AddToTask(readCellTemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                cellTemperatureReader = new AnalogSingleChannelReader(readCellTemperatureTask.Stream);
+                readCellTemperatureTask.Control(TaskAction.Verify);
 
-            readS1TemperatureTask = new Task("Read S1 temperature -" + name[1]);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[1]]).AddToTask(readS1TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-            s1TemperatureReader = new AnalogSingleChannelReader(readS1TemperatureTask.Stream);
-            readS1TemperatureTask.Control(TaskAction.Verify);
+                readS1TemperatureTask = new Task("Read S1 temperature -" + name[1]);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[1]]).AddToTask(readS1TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                s1TemperatureReader = new AnalogSingleChannelReader(readS1TemperatureTask.Stream);
+                readS1TemperatureTask.Control(TaskAction.Verify);
 
-            readS2TemperatureTask = new Task("Read S2 temperature -" + name[2]);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[2]]).AddToTask(readS2TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-            s2TemperatureReader = new AnalogSingleChannelReader(readS2TemperatureTask.Stream);
-            readS2TemperatureTask.Control(TaskAction.Verify);
+                readS2TemperatureTask = new Task("Read S2 temperature -" + name[2]);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[2]]).AddToTask(readS2TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                s2TemperatureReader = new AnalogSingleChannelReader(readS2TemperatureTask.Stream);
+                readS2TemperatureTask.Control(TaskAction.Verify);
 
-            readSF6TemperatureTask = new Task("Read SF6 temperature -" + name[3]);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[3]]).AddToTask(readSF6TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-            sf6TemperatureReader = new AnalogSingleChannelReader(readSF6TemperatureTask.Stream);
-            readSF6TemperatureTask.Control(TaskAction.Verify);
+                readSF6TemperatureTask = new Task("Read SF6 temperature -" + name[3]);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[3]]).AddToTask(readSF6TemperatureTask, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                sf6TemperatureReader = new AnalogSingleChannelReader(readSF6TemperatureTask.Stream);
+                readSF6TemperatureTask.Control(TaskAction.Verify);
+            }
         }
         
 
