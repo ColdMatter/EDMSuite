@@ -81,10 +81,13 @@ namespace Analysis.EDM
             dc.AddTOFDetector("battery");
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
-            dc.AddGatedDetector("gnd", Gate.WideGate());
-            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
-            dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
-            dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+            //dc.AddGatedDetector("gnd", Gate.WideGate());
+            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+
+            dc.AddGatedDetector("quSpinFS_Y", Gate.WideGate());
+            dc.AddGatedDetector("quSpinFS_Z", Gate.WideGate());
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");
@@ -92,6 +95,12 @@ namespace Analysis.EDM
             dc.AddPointDetector("SouthCurrent");
             dc.AddPointDetector("BottomDetectorBackground");
             dc.AddPointDetector("TopDetectorBackground");
+            dc.AddPointDetector("MiniFlux1");
+            dc.AddPointDetector("MiniFlux2");
+            dc.AddPointDetector("MiniFlux3");
+            dc.AddPointDetector("topPD");
+            dc.AddPointDetector("bottomPD");
+            dc.AddPointDetector("ValveMonV");
 
             return dc;
         }
@@ -105,9 +114,9 @@ namespace Analysis.EDM
             dc.AddGatedDetector("topProbeNoBackground", Gate.WideGate());
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
-            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
-            dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
-            dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");

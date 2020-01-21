@@ -48,6 +48,7 @@ snPPMPerChannel::usage="snPPMPerChannel[dblock_] returns the shot-noise-limited 
 
 (*Main functions used to extract all quantities of interest for a demodulated block*)
 extractPhysicalQuantities::usage="extractPhysicalQuantities[dblock_] takes a demodulated block and extracts the uncorrected and corrected edms, the contrast, and the shot-noise sensitivities for both the edm and the channels.";
+extractShotNoise::usage="";
 extractSummaryData::usage="extractSummaryData[dblock_] takes a demodulated block and extracts the physical quantities, basic configuration data such as timestamps and manual states, as well as any channels of interest. Edit this function to add/remove channels of interest.";
 correctBlock::usage="Not functional currently, but will be developed at a later date to correct for systematic shifts on a block-by-block basis.";
 
@@ -132,15 +133,15 @@ edmSign[dblock_]:= boolSign[dblock@Config@Settings["eState"]] boolSign[dblock@Co
 
 
 (* ::Input::Initialization:: *)
-rawEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMDB","asymmetry",dblock]
+rawEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]])+edmSign[dblock]SEDM4`Blind`blindEDM,edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMDB","asymmetry",dblock]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB","asymmetry",dblock]
+correctedEDMWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]])+edmSign[dblock]SEDM4`Blind`blindEDM,edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB","asymmetry",dblock]
 
 
 (* ::Input::Initialization:: *)
-correctedEDMNoRfWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]]+edmSign[dblock]SEDM4`Blind`blindEDM),edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB_NORF","asymmetry",dblock]
+correctedEDMNoRfWithErr[dblock_]:={#[[1]],edmFactor[dblock](#[[2]])+edmSign[dblock]SEDM4`Blind`blindEDM,edmFactor[dblock]#[[3]]}&/@getTOFChannel["EDMCORRDB_NORF","asymmetry",dblock]
 
 
 (* ::Input::Initialization:: *)
@@ -148,11 +149,15 @@ counts[dblock_,detector_]:=getTOFChannelValues[{"SIG"},detector,dblock]*pmtCalib
 
 
 (* ::Input::Initialization:: *)
-asymmetrySnWithLaserBackground[sTop_,sBot_,sTopbg_,sBotbg_]:=(4sTop sBot^2+4sBot sTop^2+4sBotbg sTop^2+4 sTopbg sBot^2)/(sTop+sBot)^4
+(*asymmetrySnWithLaserBackground[sTop_,sBot_,sTopbg_,sBotbg_]:=(4sTop sBot^2+4sBot sTop^2+4sBotbg sTop^2+4 sTopbg sBot^2)/(sTop+sBot)^41/(sTop+sBot+sTopbg+sBotbg)*)
 
 
 (* ::Input::Initialization:: *)
-asymmetrySnNoLaserBackground[sTop_,sBot_]:=(4sTop sBot^2+4sBot sTop^2)/(sTop+sBot)^4
+asymmetrySnWithLaserBackground[sTop_,sBot_,sTopbg_,sBotbg_]:=(sTop+sTopbg+sBot+sBotbg)/(sTop+sBot)^2
+
+
+(* ::Input::Initialization:: *)
+asymmetrySnNoLaserBackground[sTop_,sBot_]:=1/(sTop+sBot)
 
 
 (* ::Input::Initialization:: *)
@@ -164,6 +169,17 @@ bottomLaserScatter=getPointChannelValue[{"SIG"},"BottomDetectorBackground",dbloc
 dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
 Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySnWithLaserBackground[topCounts,bottomCounts,topLaserScatter,bottomLaserScatter]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
 ]
+
+
+(* ::Input::Initialization:: *)
+(*edmSnNew[dblock_]:=Module[{topCounts,bottomCounts,topLaserScatter,bottomLaserScatter,dbChannel},
+topCounts=getTOFChannelValues[{"SIG"},"topProbeNoBackground",dblock]*pmtCalibration(*in MHz/V*)*10(*the resolution of the TOF is 10\[Mu]s*);
+bottomCounts=getTOFChannelValues[{"SIG"},"bottomProbeScaled",dblock]*pmtCalibration*10;
+topLaserScatter=getPointChannelValue[{"SIG"},"TopDetectorBackground",dblock]*pmtCalibration*10;
+bottomLaserScatter=getPointChannelValue[{"SIG"},"BottomDetectorBackground",dblock]*pmtCalibration*10;
+dbChannel=getTOFChannelValues[{"DB"},"asymmetry",dblock];
+Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],edmFactor[dblock]Sqrt[asymmetrySnWithLaserBackgroundNew[topCounts,bottomCounts,topLaserScatter,bottomLaserScatter]/(dblock@Config@Settings["numberOfPoints"]*dbChannel^2)]}]
+]*)
 
 
 (* ::Input::Initialization:: *)
@@ -199,20 +215,29 @@ phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 
 (* ::Input::Initialization:: *)
 extractPhysicalQuantities[dblock_]:=
-{"rawEDMWithErr"->rawEDMWithErr[dblock],
+{
+"rawEDMWithErr"->rawEDMWithErr[dblock],
 "signedEDMWithErr"->edmSign[dblock] rawEDMWithErr[dblock],
 "correctedEDMWithErr"->correctedEDMWithErr[dblock],
 "signedCorrectedEDMWithErr"->edmSign[dblock] correctedEDMWithErr[dblock],
 "correctedEDMNoRfWithErr"->correctedEDMNoRfWithErr[dblock],
 "signedCorrectedEDMNoRfWithErr"->edmSign[dblock] correctedEDMNoRfWithErr[dblock],
-"contrast"->contrast[dblock],
-"edmSn"->edmSn[dblock],
-"edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
-"snPPMPerChannel"->snPPMPerChannel[dblock]}
+"contrast"->contrast[dblock]
+}
 
 
 (* ::Input::Initialization:: *)
-extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],{
+extractShotNoise[dblock_]:=
+{
+"edmSn"->edmSn[dblock],
+"edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
+"snPPMPerChannel"->snPPMPerChannel[dblock]
+}
+
+
+(* ::Input::Initialization:: *)
+extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[dbl],
+{
 "bState"->dbl@Config@Settings["bState"],
 "cluster"->dbl@Config@Settings["cluster"],
 "clusterIndex"->dbl@Config@Settings["clusterIndex"],
@@ -231,7 +256,14 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],{
 "cEDB"->getTOFChannel[{"E","DB"},"asymmetry",dbl],
 "cEB"->getTOFChannel[{"E","B"},"asymmetry",dbl],
 "cBDB"->getTOFChannel[{"B","DB"},"asymmetry",dbl],
-"cEBDB"->getTOFChannel[{"E","B","DB"},"asymmetry",dbl]
+"cEBDB"->getTOFChannel[{"E","B","DB"},"asymmetry",dbl],
+
+"cSIGTop"->getTOFChannel[{"SIG"},"topProbeNoBackground",dbl],
+"cSIGBottom"->getTOFChannel[{"SIG"},"bottomProbeScaled",dbl],
+
+"EMag"->getPointChannel[{"E"},"magnetometer",dbl]
+(*"topPD"\[Rule]getPointChannel[{"SIG"},"topPD",dbl],
+"bottomPD"\[Rule]getPointChannel[{"SIG"},"bottomPD",dbl]*)
 }
 ]
 

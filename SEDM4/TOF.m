@@ -26,6 +26,7 @@ BeginPackage["SEDM4`TOF`","SEDM4`Statistics`"];
 (* ::Input::Initialization:: *)
 getTrimmedMeanAndErrTOFChannel::usage="getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_] takes a list of TOF channels (with errors), calculates the trimmed mean and its standard error of each point of the TOF across all the channels via bootstrapping, and returns the result as a TOF with errors.";
 weightedMeanOfTOFWithError::usage="weightedMeanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the weighted mean and its standard error."
+meanOfTOFWithError::usage="meanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the mean and its standard error."
 
 
 (* ::Input::Initialization:: *)
@@ -54,6 +55,10 @@ Transpose[{times,First/@tme,Last/@tme}]
 
 (* ::Input::Initialization:: *)
 weightedMeanOfTOFWithError[tofWithError_]:=weightedMean[{#[[2]],#[[3]]}&/@tofWithError]
+
+
+(* ::Input::Initialization:: *)
+meanOfTOFWithError[tofWithError_]:={Mean[#[[2]]&/@tofWithError],Sqrt[Plus@@((#[[3]]&/@tofWithError)^2)/Length[tofWithError]^2]}
 
 
 (* ::Input::Initialization:: *)

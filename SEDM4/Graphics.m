@@ -20,13 +20,13 @@
 
 
 (* ::Input::Initialization:: *)
-BeginPackage["SEDM4`Graphics`",{"SEDM4`Database`","SEDM4`Analysis`"}];
+BeginPackage["SEDM4`Graphics`",{"SEDM4`Database`","SEDM4`Analysis`","SEDM4`TOF`"}];
 
 
 (* ::Input::Initialization:: *)
 plotTOFWithError::usage="plotTOFWithError[data_, plotTitle_] takes TOF data in the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(data\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...} and plots them with a title."
-plotDataWithErrorBar::usage="Does just that. It takes a list of two-element {mean,error} lists and a title and plots them.";
-plotChannel::usage="";
+getGatedChannel::usage="";
+getBlockDiagnostics::usage="";
 plotClusterDiagnostics::usage=
 "Plot a summary of a cluster for live diagnostic porpoises.";
 colorFunc::usage="colorFunc shades numbers pleasingly";
@@ -54,7 +54,32 @@ Begin["`Private`"];
 (* ::Input::Initialization:: *)
 plotTOFWithError[data_,plotTitle_]:=ListPlot[{#[[1]],Around[#[[2]],#[[3]]]}&/@data,PlotLabel->plotTitle]
 
-plotDataWithErrorBar[data_,plotTitle_]:=ErrorListPlot[data,PlotRange->All,PlotLabel->plotTitle];
+getGatedChannel[dblock_,detector_,channel_,gateLow_,gateHigh_]:=Module[{tof,trimmedTof},
+tof=getTOFChannel[channel,detector,dblock];
+trimmedTof=Select[tof,gateLow<=#[[1]]<=gateHigh&];
+channel<>"_"<>detector->meanOfTOFWithError[trimmedTof]
+]
+
+getNonTofChannel[dblock_,detector_,channel_]:=channel<>"_"<>detector->getPointChannel[channel,detector,dblock]
+
+getBlockDiagnostics[uid_,detectorAndChannelList_,gateLow_,gateHigh_,pointDetectorAndChannelList_]:=
+Module[{db,blockTime,blockPhysicalQts,gatedChannels,pointChannels,shotNoise,edmNoise},
+NETBlock[
+db=getDBlock[uid];
+blockTime=db@TimeStamp@Ticks;
+
+gatedChannels=getGatedChannel[db,#[[1]],#[[2]],gateLow,gateHigh]&/@detectorAndChannelList;
+pointChannels=getNonTofChannel[db,#[[1]],#[[2]]]&/@pointDetectorAndChannelList;
+blockPhysicalQts=(#[[1]]->weightedMeanOfTOFWithError[Select[#[[2]],gateLow<=#[[1]]<=gateHigh&]])&/@extractPhysicalQuantities[db];
+shotNoise=(#[[1]]->Sqrt[Total[(Last/@Select[#[[2]],gateLow<=#[[1]]<=gateHigh&])^2]/Length[Select[#[[2]],gateLow<=#[[1]]<=gateHigh&]]^2])&/@extractShotNoise[db];
+edmNoise=10^6 getGatedChannel[db,"asymmetry",{"E","B"},gateLow,gateHigh][[2,2]];
+];
+{"gatedChannels"->gatedChannels,"pointChannels"->pointChannels,"physicalQuantities"->blockPhysicalQts,"shotNoise"->shotNoise,"timeStamp"->blockTime,"edmNoisePPM"->edmNoise}
+]
+
+plotClusterDiagnostics[diagnostics_]:=Module[{gatedChannelPlots,noisePlots},
+gatedChannelPlots=ListPlot[Around@@#&/@(Last/@#),PlotLabel->(First[#[[1]]])]&/@(#&/@(Transpose["gatedChannels"/.#&/@diagnostics]))
+]
 
 plotChannel[blocks_,detector_,channel_]:=Module[{pts},
 pts=getChannelAndError[channel,detector,#]&/@blocks;
