@@ -28,9 +28,10 @@ namespace ZeemanSisyphusHardwareControl.Controls
             rbThermRT.Checked = !(lowTemp);
             rbThermLT.Checked = lowTemp;
         }
-        public void UpdateCurrentPressure(string pressure)
+        public void UpdateCurrentPressure(string[] pressures)
         {
-            currentPressure.Text = pressure;
+            currentPressureNear.Text = pressures[0];
+            currentPressureFar.Text = pressures[1];
         }
         public void UpdateCurrentSF6Temperature(string temp)
         {

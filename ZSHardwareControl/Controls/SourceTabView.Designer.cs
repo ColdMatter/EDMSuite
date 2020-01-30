@@ -53,7 +53,7 @@
             this.readButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.currentPressure = new System.Windows.Forms.TextBox();
+            this.currentPressureNear = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -61,6 +61,9 @@
             this.numRref = new System.Windows.Forms.NumericUpDown();
             this.rbThermRT = new System.Windows.Forms.RadioButton();
             this.currentTemperature = new System.Windows.Forms.TextBox();
+            this.currentPressureFar = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
@@ -383,7 +386,10 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.currentPressure);
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.currentPressureFar);
+            this.groupBox3.Controls.Add(this.currentPressureNear);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(246, 3);
             this.groupBox3.Name = "groupBox3";
@@ -392,14 +398,14 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Source Pressure (mbar)";
             // 
-            // currentPressure
+            // currentPressureNear
             // 
-            this.currentPressure.Location = new System.Drawing.Point(84, 56);
-            this.currentPressure.Name = "currentPressure";
-            this.currentPressure.ReadOnly = true;
-            this.currentPressure.Size = new System.Drawing.Size(100, 20);
-            this.currentPressure.TabIndex = 0;
-            this.currentPressure.TextChanged += new System.EventHandler(this.currentPressure_TextChanged);
+            this.currentPressureNear.Location = new System.Drawing.Point(79, 45);
+            this.currentPressureNear.Name = "currentPressureNear";
+            this.currentPressureNear.ReadOnly = true;
+            this.currentPressureNear.Size = new System.Drawing.Size(100, 20);
+            this.currentPressureNear.TabIndex = 0;
+            this.currentPressureNear.TextChanged += new System.EventHandler(this.currentPressure_TextChanged);
             // 
             // groupBox2
             // 
@@ -490,6 +496,32 @@
             this.currentTemperature.Size = new System.Drawing.Size(100, 20);
             this.currentTemperature.TabIndex = 0;
             // 
+            // currentPressureFar
+            // 
+            this.currentPressureFar.Location = new System.Drawing.Point(79, 71);
+            this.currentPressureFar.Name = "currentPressureFar";
+            this.currentPressureFar.ReadOnly = true;
+            this.currentPressureFar.Size = new System.Drawing.Size(100, 20);
+            this.currentPressureFar.TabIndex = 1;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(51, 74);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(22, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Far";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(43, 48);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Near";
+            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -543,7 +575,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox currentTemperature;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox currentPressure;
+        private System.Windows.Forms.TextBox currentPressureNear;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RadioButton rbThermLT;
@@ -560,6 +592,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox current40KTemperature;
+        private System.Windows.Forms.TextBox currentPressureFar;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
 
     }
 }

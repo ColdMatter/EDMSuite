@@ -9,6 +9,7 @@ using ScanMaster.Acquire.Plugin;
 
 namespace ScanMaster.Acquire.Plugins
 {
+#if EDM
 	/// <summary>
 	/// A plugin that scans a synth's frequency.
 	/// </summary>
@@ -95,4 +96,5 @@ namespace ScanMaster.Acquire.Plugins
 
 		
 	}
+#endif
 }

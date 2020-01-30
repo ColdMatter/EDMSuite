@@ -22,7 +22,8 @@ namespace ZeemanSisyphusHardwareControl.Controls
         private AnalogSingleChannelReader sf6TempReader;
         private AnalogSingleChannelReader vRefReader;
         private double lowTempThreshCelcius = -20.0;
-        private AnalogSingleChannelReader sourcePressureReader;
+        private AnalogSingleChannelReader sourcePressureReaderNear;
+        private AnalogSingleChannelReader sourcePressureReaderFar;
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
         private bool isCycling = false;
@@ -73,7 +74,8 @@ namespace ZeemanSisyphusHardwareControl.Controls
             sf6TempReader = CreateAnalogInputReader("SF6thermistor");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
-            sourcePressureReader = CreateAnalogInputReader("sourcePressure");
+            sourcePressureReaderNear = CreateAnalogInputReader("sourcePressureNear");
+            sourcePressureReaderFar = CreateAnalogInputReader("sourcePressureFar");
 
         }
 
@@ -104,11 +106,18 @@ namespace ZeemanSisyphusHardwareControl.Controls
 
         protected double SteinhartHartEquation(double resistance, bool lowTemp, bool kelvin = false)
         {
+            //double[] lowTempConstants = new double[] {
+            //    -0.8448254546374075,
+            //    0.5207880924960208,
+            //    -0.10709667105482057,
+            //    0.007405708155883199
+            //};
+
             double[] lowTempConstants = new double[] {
-                -0.8448254546374075,
-                0.5207880924960208,
-                -0.10709667105482057,
-                0.007405708155883199
+                -0.196298,
+                0.132734,
+                -0.0301823,
+                0.00235364
             };
 
             double[] roomTempConstants = new double[] {
@@ -134,7 +143,8 @@ namespace ZeemanSisyphusHardwareControl.Controls
             double therm4KResistance = ConvertVoltageToResistance(therm4KVoltage, vRef);
             double[] tempFromLTTherm = { SteinhartHartEquation(therm4KResistance, true), 1 };
 
-            return (Double.IsNaN(tempFromRTTherm[0]) || (tempFromRTTherm[0] < lowTempThreshCelcius)) ? tempFromLTTherm : tempFromRTTherm;
+            // return (Double.IsNaN(tempFromRTTherm[0]) || (tempFromRTTherm[0] < lowTempThreshCelcius)) ? tempFromLTTherm : tempFromRTTherm;
+            return tempFromRTTherm;
         }
 
         protected double GetSF6Temperature()
@@ -290,22 +300,23 @@ namespace ZeemanSisyphusHardwareControl.Controls
             return Math.Pow(10.0,(voltage - 7.75)/0.75); //conversion for IONIVAC ITR 90 in mbar
         }
 
-        protected double GetPressure()
+        protected double GetPressure(AnalogSingleChannelReader reader)
         {
-            double sourcePressureVoltage = sourcePressureReader.ReadSingleSample();
+            double sourcePressureVoltage = reader.ReadSingleSample();
             return ConvertVoltageToPressure(sourcePressureVoltage);
         }
 
         protected void UpdatePressure(object anObject, EventArgs eventArgs)
         {
-            double pressure = GetPressure();
-            castView.UpdateCurrentPressure(pressure.ToString("e2"));
+            double pressureNear = GetPressure(sourcePressureReaderNear);
+            double pressureFar = GetPressure(sourcePressureReaderFar);
+            string[] pressures = { pressureNear.ToString("e2"), pressureFar.ToString("e2") };
+            castView.UpdateCurrentPressure(pressures);
             if (IsRecording)
             {
-                using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(@"D:\\Box Sync\\CaF MOT\\ZeemanSisyphus\\data\\pressureData\\data.csv", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"D:\\Box Sync\\CaF MOT\\ZeemanSisyphus\\data\\pressureData\\data.csv", true))
                 {
-                    file.WriteLine(pressure);
+                    file.WriteLine(pressureNear + "," + pressureFar);
                 }
 
             }
