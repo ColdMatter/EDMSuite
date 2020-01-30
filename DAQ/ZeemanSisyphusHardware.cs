@@ -55,8 +55,9 @@ namespace DAQ.HAL
 
             // map the analog channels
             AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
+            AddAnalogInputChannel("pmt1", analogPatternBoardAddress + "/ai5", AITerminalConfiguration.Rse);
 
+            AddAnalogOutputChannel("v0AOMFrequency", analogPatternBoardAddress + "/ao0");
 
             // map the USB channels
             AddDigitalOutputChannel("sourceHeater", usbDaqAddress, 0, 0);
@@ -66,8 +67,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("4KRTthermistor", usbDaqAddress + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("SF6thermistor", usbDaqAddress + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("4Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourcePressure", usbDaqAddress + "/ai5", AITerminalConfiguration.Rse);
+            // AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse); // Dummy channel so we don't have to remove refs to 40K therm from front-end.
+            AddAnalogInputChannel("sourcePressureFar", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourcePressureNear", usbDaqAddress + "/ai5", AITerminalConfiguration.Rse);
             
 
             // ScanMaster configuration
