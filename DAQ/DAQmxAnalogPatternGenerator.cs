@@ -24,7 +24,7 @@ namespace DAQ.Analog
             Configure(aPattern, clockRate, false);
         }
 
-        public void Configure(AnalogPatternBuilder aPattern, int clockRate,  bool loop)
+        public void Configure(AnalogPatternBuilder aPattern, int clockRate, bool loop)
         {
             analogOutputTask = new Task();
             foreach (string keys in aPattern.AnalogPatterns.Keys)
@@ -34,11 +34,11 @@ namespace DAQ.Analog
             string clockSource = "";
 
             SampleQuantityMode sqm;
-            if(loop)
+            if (loop)
             {
                 sqm = SampleQuantityMode.ContinuousSamples;
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.AllowRegeneration;
-                
+
             }
             else
             {
@@ -46,13 +46,13 @@ namespace DAQ.Analog
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
             }
 
-            
+
             analogOutputTask.Timing.ConfigureSampleClock(clockSource, clockRate,
-                    SampleClockActiveEdge.Rising, sqm, 
+                    SampleClockActiveEdge.Rising, sqm,
                     aPattern.PatternLength);
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                     (string)Environs.Hardware.GetInfo("AOPatternTrigger"), DigitalEdgeStartTriggerEdge.Rising);
-                       
+
             analogOutputTask.Control(TaskAction.Verify);
 
         }
@@ -68,7 +68,7 @@ namespace DAQ.Analog
         {
             analogOutputTask.Stop();
             analogOutputTask.Dispose();
-            
+
         }
 
         #region private methods for creating timed Tasks/channels
@@ -76,7 +76,7 @@ namespace DAQ.Analog
         private void AddToAnalogOutputTask(Task task, string channel)
         {
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
-            c.AddToTask(task, c.RangeLow, c.RangeHigh); 
+            c.AddToTask(task, c.RangeLow, c.RangeHigh);
         }
         #endregion
 
