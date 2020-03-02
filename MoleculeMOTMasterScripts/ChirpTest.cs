@@ -15,9 +15,9 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
-        Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 15000;
+        Parameters["PatternLength"] = 5000;
+        Parameters["TCLBlockStart"] = 400; // This is a time before the Q switch
+        Parameters["TCLBlockDuration"] = 1500;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
@@ -25,31 +25,31 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 400;
         Parameters["Frame0TriggerDuration"] = 10;
         
         //PMT
-        Parameters["PMTTrigger"] = 5000;
+        Parameters["PMTTrigger"] = 500;
         Parameters["PMTTriggerDuration"] = 10;
 
         //Dummy variable:
         Parameters["Dummy"] = (int)Parameters["PMTTrigger"] + (int)Parameters["PMTTrigger"];
 
         // Slowing
-        Parameters["slowingAOMOnStart"] =  240; //started from 250
-        Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1520;//started from 1500
-        Parameters["slowingAOMOffDuration"] = 40000;
+        Parameters["slowingAOMOnStart"] =  10; //started from 250
+        Parameters["slowingAOMOnDuration"] = 4500;
+        Parameters["slowingAOMOffStart"] = 152;//started from 1500
+        Parameters["slowingAOMOffDuration"] = 4000;
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
-        Parameters["slowingRepumpAOMOffDuration"] = 35000;
+        Parameters["slowingRepumpAOMOnDuration"] = 4500;
+        Parameters["slowingRepumpAOMOffStart"] = 152;//1520
+        Parameters["slowingRepumpAOMOffDuration"] = 3500;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;// 340;
+        Parameters["SlowingChirpStartTime"] = 380;// 340;
         Parameters["SlowingChirpDuration"] = 1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25;
+        Parameters["SlowingChirpEndValue"] = 1.25;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42; //1.05;
@@ -57,7 +57,7 @@ public class Patterns : MOTMasterScript
         
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsSwitchOff"] = 20000;
+        Parameters["MOTCoilsSwitchOff"] = 2000;
         Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
 
         // Shim fields
@@ -67,12 +67,12 @@ public class Patterns : MOTMasterScript
 
 
         // v0 Light Switch
-        Parameters["MOTAOMStartTime"] = 15000;
+        Parameters["MOTAOMStartTime"] = 1500;
         Parameters["MOTAOMDuration"] = 500;
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 5000;
-        Parameters["v0IntensityRampDuration"] = 2000;
+        Parameters["v0IntensityRampStartTime"] = 500;
+        Parameters["v0IntensityRampDuration"] = 200;
         Parameters["v0IntensityRampStartValue"] = 5.8;
         Parameters["v0IntensityMolassesValue"] = 5.8;
 
@@ -94,7 +94,7 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters); // This is how you load "preset" patterns.          
      //   p.AddEdge("v00Shutter", 0, true);
         //p.Pulse(patternStartBeforeQ, 3000 - 1400, 10000, "bXSlowingShutter"); //Takes 14ms to start closing
 
@@ -132,6 +132,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
         //p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["Frame0Trigger"], 0.0);
+        //p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["Frame0Trigger"]-50, 0.0);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
         
 

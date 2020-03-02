@@ -18,7 +18,7 @@ namespace MoleculeMOTHardwareControl.Controls
     public partial class TrackView : MoleculeMOTHardwareControl.Controls.GenericView
     {
         protected TrackController castController;
-        
+            
         public TrackView(TrackController controllerInstance)
             : base(controllerInstance)
         {
@@ -50,6 +50,8 @@ namespace MoleculeMOTHardwareControl.Controls
                 this.GroupStatusChanged += new ChangedCurrentGroupStateHandler(CurrentGroupStateHandlerChanged);
                 this.ErrorMessageChanged += new ChangedLabelErrorMessageHandler(ErrorMessageHandlerChanged);           
             }
+
+           
         }
 
         const int DEFAULT_TIMEOUT = 10000;
@@ -157,6 +159,7 @@ namespace MoleculeMOTHardwareControl.Controls
         private void CurrentPositionHandlerChanged(double[] currentValues)
         {
             string strPosition = currentValues[0].ToString("F2", CultureInfo.CurrentCulture.NumberFormat);
+            
             textBoxPosition.BeginInvoke(
                    new Action(() =>
                    {
