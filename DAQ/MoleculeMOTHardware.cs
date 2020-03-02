@@ -260,6 +260,9 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
+            additionalPatternBoards.Add(digitalPatternBoardAddress2, digitalPatternBoardAddress2 + "/PFI3");
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
             //Info.Add("PGTrigger", Boards["pg"] + "/PFI2");   // trigger from "cryocooler sync" box, delay controlled from "triggerDelay" analog output
 
 

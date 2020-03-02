@@ -46,18 +46,12 @@ namespace MOTMaster
 
         #region Class members
 
-        private static string
-            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
-        private static string
-            daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
-        private static string
-            scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
-        private static string
-            motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
-        private static string
-            cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
-        private static string
-            hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
+        private static string motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
+        private static string daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
+        private static string scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
+        private static string motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
+        private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
@@ -72,7 +66,8 @@ namespace MOTMaster
 
         ControllerWindow controllerWindow;
 
-        DAQMxPatternGenerator pg;
+        DAQMxPatternGenerator pgMaster;
+        Dictionary<string, DAQMxPatternGenerator> pgs;
         DAQMxAnalogPatternGenerator apg;
 
         CameraControllable camera = null;
@@ -98,7 +93,19 @@ namespace MOTMaster
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
+            pgMaster = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
+            Dictionary<string, string> additionalPGs = (Dictionary<string, string>)Environs.Hardware.GetInfo("AdditionalPatternGeneratorBoards");
+            pgs = new Dictionary<string, DAQMxPatternGenerator>();
+            if (additionalPGs != null)
+            {
+                foreach (string address in additionalPGs.Keys)
+                {
+                    pgs[address] = new DAQMxPatternGenerator(address);
+                }
+            }
+            
+            
+
             apg = new DAQMxAnalogPatternGenerator();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
@@ -128,18 +135,22 @@ namespace MOTMaster
         private void run(MOTMasterSequence sequence)
         {
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            pg.OutputPattern(sequence.DigitalPattern.Pattern);
+            pgMaster.OutputPattern(sequence.DigitalPattern.Pattern);
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
             if (triggered == true)
             {
-                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
             }
             else
             {
-                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+            }
+            foreach (string address in pgs.Keys)
+            {
+                pgs[address].Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, true, true);
             }
 
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
@@ -148,7 +159,11 @@ namespace MOTMaster
 
         private void releaseHardware()
         {
-            pg.StopPattern();
+            pgMaster.StopPattern();
+            foreach (DAQMxPatternGenerator pg in pgs.Values)
+            {
+                pg.StopPattern();
+            }
             apg.StopPattern();
         }
         private void clearDigitalPattern(MOTMasterSequence sequence)

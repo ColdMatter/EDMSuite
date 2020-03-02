@@ -222,6 +222,7 @@
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
     <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="PatternBuilder32SingleBoard.cs" />
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="PHNFITCH2FileSystem.cs" />
     <Compile Include="RfAWGConfig.cs" />
