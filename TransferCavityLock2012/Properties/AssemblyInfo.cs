@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TransferCavityLock")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration(" ")]
 [assembly: AssemblyCompany("Imperial College London")]
 [assembly: AssemblyProduct("TransferCavityLock")]
 [assembly: AssemblyCopyright("Copyright © Imperial College London 2009")]

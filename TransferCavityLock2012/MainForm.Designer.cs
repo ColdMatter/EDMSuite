@@ -133,7 +133,7 @@
             this.NumberOfScanpointsTextBox.TabIndex = 22;
             // 
             // MasterLaserIntensityScatterGraph
-            // 
+            //
             this.MasterLaserIntensityScatterGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
             | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
             | NationalInstruments.UI.GraphInteractionModes.PanX) 

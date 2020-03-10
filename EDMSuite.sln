@@ -1330,7 +1330,6 @@ Global
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.EDMTestCrate|x86.ActiveCfg = Release|Any CPU
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.EDMTestCrate|x86.Build.0 = Release|Any CPU
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.Microcavity|Any CPU.ActiveCfg = Release|Any CPU
-		{50415E09-90A7-4328-8107-D74D945B5AAF}.Microcavity|Any CPU.Build.0 = Release|Any CPU
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.Microcavity|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.Microcavity|Mixed Platforms.Build.0 = Release|Any CPU
 		{50415E09-90A7-4328-8107-D74D945B5AAF}.Microcavity|x86.ActiveCfg = Release|Any CPU

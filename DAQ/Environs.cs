@@ -219,7 +219,14 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-				default:
+                case "DESKTOP-RF38GIT":
+                    Hardware = new MicrocavityHardware();
+                    FileSystem = new CCMQNFileSystem();
+                    Debug = false;
+                    Info.Add("DefaultCavity", "DefaultCavity");
+                    break;
+
+                default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
