@@ -247,7 +247,7 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-                case "PH-JHWANG4":
+                case "PH-CCMQN3":
                     Hardware = new ConfocalHardware("RoomTConfocal");
                     FileSystem = new ConfocalFileSystem("RoomTConfocal");
                     Debug = false;

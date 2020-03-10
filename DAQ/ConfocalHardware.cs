@@ -87,7 +87,7 @@ namespace DAQ.HAL
                     Info.Add("SampleClockReader", "/dev1/PFI15");
 
                     // IP
-                    Info.Add("IPAdress", "192.168.1.24");
+                    Info.Add("IPAdress", "192.168.1.26");
                     Info.Add("Port", 24242);
 
                     break;
