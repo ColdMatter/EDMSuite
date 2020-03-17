@@ -3,11 +3,14 @@ using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Lifetime;
+using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
@@ -32,11 +35,15 @@ namespace UEDMHardwareControl
         // hardware
         private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
         private static string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
+
+        private static string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
+        private static string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
         
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
-        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGauge_source");
-        AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGauge_beamline");
+        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource");
+        LeyboldPTR225PressureGauge beamlinePressureMonitor = new LeyboldPTR225PressureGauge("Pressure gauge beamline", "pressureGaugeBeamline");
         SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
+        UEDMHardwareControllerAIs hardwareControllerAIs = new UEDMHardwareControllerAIs(AINames, AIChannelNames);
 
         FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
 
@@ -44,6 +51,29 @@ namespace UEDMHardwareControl
         Task cryoTriggerDigitalOutputTask;
         Task heatersS2TriggerDigitalOutputTask;
         Task heatersS1TriggerDigitalOutputTask;
+
+        private void CreateDigitalTask(String name)
+        {
+            if (!Environs.Debug)
+            {
+                Task digitalTask = new Task(name);
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
+                digitalTask.Control(TaskAction.Verify);
+                digitalTasks.Add(name, digitalTask);
+            }
+        }
+
+        private void SetDigitalLine(string name, bool value)
+        {
+            if (!Environs.Debug)
+            {
+                Task digitalTask = ((Task)digitalTasks[name]);
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
+                writer.WriteSingleSampleSingleLine(true, value);
+                digitalTask.Control(TaskAction.Unreserve);
+            }
+        }
+
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -59,10 +89,15 @@ namespace UEDMHardwareControl
 
         public void Start()
         {
-            // make the digital tasks
+            // Create digital output tasks
             CreateDigitalTask("cryoTriggerDigitalOutputTask");
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
+
+            CreateDigitalTask("Port00");
+            CreateDigitalTask("Port01");
+            CreateDigitalTask("Port02");
+            CreateDigitalTask("Port03");
 
             // digitial input tasks
 
@@ -109,28 +144,65 @@ namespace UEDMHardwareControl
             StopPTMonitorPoll();
         }
 
-        private void CreateDigitalTask(String name)
+        #region Windows API
+        // The following methods can block windows shutdown (although the user will be able to force shutdown still)
+        [DllImport("user32.dll")]
+        public extern static bool ShutdownBlockReasonCreate(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] string pwszReason);
+        [DllImport("user32.dll")]
+        public extern static bool ShutdownBlockReasonDestroy(IntPtr hWnd);
+
+        private bool isBlocked = false;
+
+        /// <summary>
+        /// This method will stop Windows from shutting down - providing a reason to the user.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="strMessage"></param>
+        private void StopShutdown(IntPtr hWnd, string strMessage)
         {
-            if (!Environs.Debug)
+            try
             {
-                Task digitalTask = new Task(name);
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
-                digitalTask.Control(TaskAction.Verify);
-                digitalTasks.Add(name, digitalTask);
+                //strMessage == Message to display in shutdown/logoff box
+                if (ShutdownBlockReasonCreate(hWnd, strMessage))
+                {
+                    isBlocked = true;
+                }
+                else
+                {
+                    MessageBox.Show("StopShutdown Failed", "Stopping Windows shutdown", MessageBoxButtons.OKCancel);
+                }
+            }
+            catch (Exception ext)
+            {
+                MessageBox.Show("++ StopShutdown Error:    " + ext.Message + " " + ext.StackTrace);
             }
         }
 
-        private void SetDigitalLine(string name, bool value)
+        /// <summary>
+        /// This will reset the API shutdown block
+        /// </summary>
+        /// <param name="hWnd"></param>
+        private void ResetShutdown(IntPtr hWnd)
         {
-            if (!Environs.Debug)
+            try
             {
-                Task digitalTask = ((Task)digitalTasks[name]);
-                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask.Stream);
-                writer.WriteSingleSampleSingleLine(true, value);
-                digitalTask.Control(TaskAction.Unreserve);
+
+                if (ShutdownBlockReasonDestroy(hWnd))
+                {
+                    isBlocked = false;
+                }
+                else
+                {
+                    MessageBox.Show("ResetShutdown Failed","Resetting Windows API shutdown block",MessageBoxButtons.OKCancel);
+                }
+            }
+            catch (Exception ext)
+            {
+                MessageBox.Show("++ ResetShutdown Error:    " + ext.Message + " " + ext.StackTrace);
             }
         }
 
+        #endregion
 
         #region Menu controls
 
@@ -163,9 +235,73 @@ namespace UEDMHardwareControl
             }
         }
 
+        List<Image> ChartsToImages(List<Chart> charts)
+        {
+            var imageList = new List<Image>();
+            foreach (var c in charts)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    c.SaveImage(ms, ChartImageFormat.Png);
+                    var bmp = System.Drawing.Bitmap.FromStream(ms);
+                    imageList.Add(bmp);
+                }
+            }
+            return imageList;
+        }
+
+        private static Image MergeImages(List<Image> imageList)
+        {
+            var finalSize = new Size();
+            foreach (var image in imageList)
+            {
+                if (image.Width > finalSize.Width)
+                {
+                    finalSize.Width = image.Width;
+                }
+                finalSize.Height += image.Height;
+            }
+            var outputImage = new Bitmap(finalSize.Width, finalSize.Height);
+            using (var gfx = Graphics.FromImage(outputImage))
+            {
+                var y = 0;
+                foreach (var image in imageList)
+                {
+                    gfx.DrawImage(image, 0, y);
+                    y += image.Height;
+                }
+            }
+            return outputImage;
+        }
+
+        public void SaveMultipleChartImages(List<Chart> mycharts)
+        {
+            var imageList = ChartsToImages(mycharts);
+            var finalImage = MergeImages(imageList);
+
+            Stream myStream;
+            SaveFileDialog ff = new SaveFileDialog();
+
+            ff.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+            ff.FilterIndex = 1;
+            ff.RestoreDirectory = true;
+
+            if (ff.ShowDialog() == DialogResult.OK)
+            {
+                if ((myStream = ff.OpenFile()) != null)
+                {
+                    using (myStream)
+                    {
+                        finalImage.Save(myStream, System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                }
+            }
+            
+        }
+
 
         public string[] csvData;
-        public void SavePlotDataToCSV(string csvContent)// to be created
+        public void SavePlotDataToCSV(string csvContent)
         {
             // Displays a SaveFileDialog so the user can save the data
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -178,14 +314,12 @@ namespace UEDMHardwareControl
                 {
                     // Using stream writer class the chart points are exported. Create an instance of the stream writer class.
                     System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
-
+                    
                     // Write the datapoints into the file.
                     file.WriteLine(csvContent);
 
                     file.Close();
                 }
-
-
             }
 
             //foreach (Series series in myChart.Series)
@@ -216,6 +350,7 @@ namespace UEDMHardwareControl
         #region Cryo Control
 
         private int RelayNumber = 1;
+        // Currently the LakeShore/cryo relay is set up such that the relay is in the normally open state
         private string Off = "0"; // I.e. connected in normally open state (NO)
         private string On = "1"; // Swap these if the wiring is changed to normally closed (NC)
 
@@ -228,7 +363,11 @@ namespace UEDMHardwareControl
         {
             if (!Environs.Debug)
             {
-                string status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
+                string status;
+                lock (LakeShore336Lock)
+                {
+                    status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
+                }
                 if (status == On)
                 {
                     string message = "Cryo control warning: The LakeShore 336 temperature controller Relay-" + RelayNumber + " is set such that the cryo will turn be on. \n\nClick OK to continue opening application.";
@@ -252,7 +391,11 @@ namespace UEDMHardwareControl
 
         public string PollCryoStatus()
         {
-            string status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
+            string status;
+            lock (LakeShore336Lock)
+            {
+                status = tempController.QueryRelayStatus(RelayNumber); // Query the status of the relay.
+            }
             if (status == Off | status == On)
             {
                 if (status == Off) window.SetTextBox(window.tbCryoState, "OFF");
@@ -279,7 +422,11 @@ namespace UEDMHardwareControl
             string status = PollCryoStatus(); // Query the status of the relay.
             if (status == Off) // If off, then try to turn it on
             {
-                bool relaySuccessFlag = tempController.SetRelayParameters(RelayNumber, Int32.Parse(On)); //Turn cryo on
+                bool relaySuccessFlag;
+                lock (LakeShore336Lock)
+                {
+                    relaySuccessFlag = tempController.SetRelayParameters(RelayNumber, Int32.Parse(On)); //Turn cryo on
+                }
                 // Now check if the LakeShore relay has been changed correctly
                 string newstatus = PollCryoStatus();
                 if (newstatus == Off)// Cryo is still off - throw an exception
@@ -305,7 +452,11 @@ namespace UEDMHardwareControl
             string status = PollCryoStatus(); // Query the status of the relay.
             if (status == On) // If on, then try to turn it off
             {
-                bool relaySuccessFlag = tempController.SetRelayParameters(RelayNumber, Int32.Parse(Off));
+                bool relaySuccessFlag;
+                lock (LakeShore336Lock)
+                {
+                    relaySuccessFlag = tempController.SetRelayParameters(RelayNumber, Int32.Parse(Off));
+                }
                 // Now check if the LakeShore relay has been changed correctly
                 string newstatus = PollCryoStatus();
                 if (newstatus == On)// Cryo is still on - throw an exception
@@ -550,85 +701,37 @@ namespace UEDMHardwareControl
         }
 
         // Source mode processes - these are generalized so that they can be used by different source mode (refresh mode, warm up, etc.) using different parameters.
-        private void InitializeSourceRefresh()
-        {
-            window.SetTextBox(window.tbRefreshModeStatus, "Starting initialization process");
-        }
         private void InitializeSourceMode()
         {
-            UpdateSourceModeStatus("Starting initialization process");
             SetSourceModeConstants();
             SourceModeActive = true;
             SourceModeTemperatureSetpointUpdated = false; // reset this flag
             if (SourceMode == "Refresh")
             {
+                UpdateSourceModeStatus("Initializing refresh mode (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                StopShutdown(refreshModeShutdownBlockHandle, refreshModeShutdownBlockReason);
                 RefreshModeEnableUIElements(true);
                 UpdateRefreshTemperature();
                 UpdateWarmToRoomTemperatureOnlyFlag();
             }
             if (SourceMode == "Warmup")
             {
+                UpdateSourceModeStatus("Initializing warmup mode (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                StopShutdown(warmupModeShutdownBlockHandle, warmupModeShutdownBlockReason);
                 WarmUpModeEnableUIElements(true);
                 UpdateWarmUpTemperature();
                 UpdateWarmToRoomTemperatureOnlyFlag();
             }
             if (SourceMode == "Cooldown")
             {
+                UpdateSourceModeStatus("Initializing cool down mode (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                StopShutdown(cooldownModeShutdownBlockHandle, cooldownModeShutdownBlockReason);
                 CoolDownModeEnableUIElements(true);
                 UpdateCoolDownTemperature();
                 UpdateWarmToRoomTemperatureOnlyFlag();
             }
         }
-        /// <summary>
-        /// Controls the process of incrementally warming up the source. This is done gradually so that the neon evaporates at a steady rate - reducing the risk to the turbomolecular pump.
-        /// A process map (flow diagram) of this code can be found on OneNote in "Equipment + Apparatus" > "Hardware Controller" > "Source refresh mode process maps"
-        /// </summary>
         private void EvaporateAndPumpNeon()
-        {
-            if (!sourceModeCancelFlag)
-            {
-                window.SetTextBox(window.tbHeaterTempSetpointStage2, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage2TemperatureSetpoint();
-                window.SetTextBox(window.tbHeaterTempSetpointStage1, SourceRefreshConstants.NeonEvaporationCycleTemperatureMax.ToString());
-                UpdateStage1TemperatureSetpoint();
-                window.SetTextBox(window.tbRefreshModeStatus, "Starting neon evaporation cycle");
-            }
-
-            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
-            {
-                if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that refresh mode be cancelled
-                UpdateUITimeLeftIndicators();
-                if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
-                {
-                    window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure above turbo limit");
-                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
-                    {
-                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, false); // turn off heaters
-                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn off heaters
-                    }
-                }
-                else
-                {
-                    EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S1LakeShoreHeaterOutput, true); // turn on heaters
-                    EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
-                    if (Double.Parse(lastS2Temp) >= SourceRefreshConstants.NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
-                    {
-                        if (lastSourcePressure <= SourceRefreshConstants.CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
-                        {
-                            break;
-                        }
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: temperature high enough, but pressure too high for cryo shutdown");
-                    }
-                    else
-                    {
-                        window.SetTextBox(window.tbRefreshModeStatus, "Neon evaporation cycle: pressure and temperature low - heating source");
-                    }
-                }
-
-                Thread.Sleep(SourceRefreshConstants.NeonEvaporationCycleWaitTime);
-            }
-        }
-        private void EvaporateAndPumpNeonWithoutLakeShore()
         {
             if (!sourceModeCancelFlag)
             {
@@ -643,7 +746,6 @@ namespace UEDMHardwareControl
                 UpdateUITimeLeftIndicators();
                 if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
-                    UpdateSourceModeStatus("Neon evaporation cycle: temperature has yet to reach setpoint, but pressure above turbo limit");
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
                     {
                         EnableSourceModeHeaters(false); // Disable heaters
@@ -652,7 +754,7 @@ namespace UEDMHardwareControl
                 else
                 {
                     EnableSourceModeHeaters(true); // Enable heaters
-                    if (Double.Parse(lastCellTemp) >= NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
+                    if (lastS2Temp >= NeonEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = NeonEvaporationCycleTemperatureMax)
                     {
                         if (lastSourcePressure <= CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
                         {
@@ -660,46 +762,12 @@ namespace UEDMHardwareControl
                         }
                         UpdateSourceModeStatus("Neon evaporation cycle: temperature has reached setpoint, but pressure too high for cryo shutdown");
                     }
-                    else
-                    {
-                        UpdateSourceModeStatus("Neon evaporation cycle: pressure and temperature low - heating source");
-                    }
                 }
 
                 Thread.Sleep(NeonEvaporationCycleWaitTime);
             }
         }
         private void TurnOffCryoAndWarmup()
-        {
-            TurnOffCryoCooler(); // The pressure should be checked before this function is used (see process maps on OneNote)
-
-            SetHeaterSetpoint(SourceRefreshConstants.S2LakeShoreHeaterOutput, SourceRefreshConstants.RefreshingTemperature);
-
-            for (; ; )
-            {
-                if (lastSourcePressure < SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit)
-                {
-                    if (!HeatersEnabled) // if heaters turned off then turn them on
-                    {
-                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, true); // turn on heaters
-                    }
-                    if (Double.Parse(lastCellTemp) >= SourceRefreshConstants.RefreshingTemperature)
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    if (HeatersEnabled) // if heaters are on
-                    {
-                        EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false); // turn heaters off
-                    }
-                }
-                Thread.Sleep(SourceRefreshConstants.WarmupMonitoringWait);
-            }
-
-        }
-        private void TurnOffCryoAndWarmupWithoutLakeShore()
         {
             if (!sourceModeCancelFlag) // If source mode has been cancelled then skip these functions
             {
@@ -714,8 +782,9 @@ namespace UEDMHardwareControl
                     UpdateSourceModeStatus("Waiting for pressure to reduce before turning off the cryo. The cryo will be turned off when the source chamber pressure reaches " + CryoStoppingPressure.ToString() + " mbar.");
                     Thread.Sleep(WarmupMonitoringWait); // Iterate the loop according to this time interval
                 }
-                EnableCryoDigitalControl(false); // Turn off cryo
-                UpdateSourceModeStatus("Starting warmup");
+                //EnableCryoDigitalControl(false); // Turn off cryo
+                SetCryoState(false);
+                UpdateSourceModeStatus("Starting warmup - cryo turned off (" + DateTime.Now.ToString("F",CultureInfo.CreateSpecificCulture("en-UK")) + ")");
                 SetPressureAndTemperatureMonitoringPollPeriod(WarmupMonitoringWait);
 
                 // Monitor the pressure as the source heats up. 
@@ -742,7 +811,7 @@ namespace UEDMHardwareControl
                         {
                             EnableSourceModeHeaters(true); // Enable heaters
                         }
-                        if (Double.Parse(lastS2Temp) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
+                        if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
                         {
                             break;
                         }
@@ -770,7 +839,11 @@ namespace UEDMHardwareControl
                 {
                     // Check conditions that would lead to this loop being exited:
                     if (sourceModeCancelFlag) break; // If refresh mode has been cancelled then exit this loop (check on every iteration of the loop)
-                    if (HeatersTurnOffDateTime < DateTime.Now) break; // If the user requested that the heaters turn off at this time, then exit this loop.
+                    if (HeatersTurnOffDateTime < DateTime.Now)
+                    {
+                        UpdateSourceModeStatus("Heaters turned off (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                        break; // If the user requested that the heaters turn off at this time, then exit this loop.
+                    }
 
                     // Check if the user has updated the temperature setpoint:
                     if (SourceModeTemperatureSetpointUpdated) // If the temperature setpoint is updated by the user, this if statement will update the hardware temperature setpoint.
@@ -815,31 +888,10 @@ namespace UEDMHardwareControl
         }
         private void CoolDownSource()
         {
-            if (HeatersEnabled)
-            {
-                EnableLakeShoreHeaterOutput3or4(SourceRefreshConstants.S2LakeShoreHeaterOutput, false);
-            }
-            for (; ; )
-            {
-                if (Double.Parse(lastS1Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= SourceRefreshConstants.CryoStartingTemperatureMax)
-                { break; }
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-            for (; ; )
-            {
-                if (lastSourcePressure <= SourceRefreshConstants.CryoStartingPressure)
-                { break; }
-                Thread.Sleep(SourceRefreshConstants.CoolDownWait);
-            }
-            TurnOnCryoCooler();
-        }
-        private void CoolDownSourceWithoutLakeShore()
-        {
             if (!sourceModeCancelFlag)
             {
                 SetPressureAndTemperatureMonitoringPollPeriod(CoolDownWait);
                 EnableSourceModeHeaters(false); // Turn off heaters
-                UpdateSourceModeStatus("Heaters stopped for cryo turn on"); // Update status textbox
 
                 // Wait until the (user defined) cryo turn on time is reached:
                 for (; ; )
@@ -856,9 +908,9 @@ namespace UEDMHardwareControl
                 for (; ; )
                 {
                     if (sourceModeCancelFlag) break;
-                    UpdateSourceModeStatus("Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update source mode status
-                    if (Double.Parse(lastS1Temp) <= CryoStartingTemperatureMax & Double.Parse(lastS2Temp) <= CryoStartingTemperatureMax)
+                    if (Double.Parse(lastS1TempString) <= CryoStartingTemperatureMax & Double.Parse(lastS2TempString) <= CryoStartingTemperatureMax)
                     { break; }
+                    UpdateSourceModeStatus("Waiting for temperature to reach the safe operating range for cryo to turn on"); // Update source mode status
                     Thread.Sleep(CoolDownWait);
                 }
 
@@ -866,15 +918,16 @@ namespace UEDMHardwareControl
                 for (; ; )
                 {
                     if (sourceModeCancelFlag) break;
-                    UpdateSourceModeStatus("Waiting for the pressure to reach a low enough value for the cryo to turn on"); // Update source mode status
                     if (lastSourcePressure <= CryoStartingPressure)
                     { break; }
+                    UpdateSourceModeStatus("Waiting for the pressure to reach a low enough value for the cryo to turn on"); // Update source mode status
                     Thread.Sleep(CoolDownWait);
                 }
                 if (!sourceModeCancelFlag)
                 {
-                    UpdateSourceModeStatus("Starting cryo");
-                    EnableCryoDigitalControl(true);
+                    UpdateSourceModeStatus("Starting cryo (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                    //EnableCryoDigitalControl(true); // Temporary digital control
+                    SetCryoState(true);
                 }
             }
         }
@@ -884,6 +937,8 @@ namespace UEDMHardwareControl
         private Object refreshModeLock;
         private bool refreshModeHeaterTurnOffDateTimeFlag = false;
         private bool refreshModeCryoTurnOnDateTimeFlag = false;
+        private static string refreshModeShutdownBlockReason = "Refresh mode enabled!";
+        private static IntPtr refreshModeShutdownBlockHandle;
         /// <summary>
         /// When refresh mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with refresh mode. This function can be used to disable or enable the relevant UI components.
         /// </summary>
@@ -940,17 +995,21 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse refresh temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void RefreshModeSetWindowsAPIShutdownHandle(IntPtr Handle)
+        {
+            refreshModeShutdownBlockHandle = Handle;
+        }
 
         public static class SourceRefreshConstants
         {
             public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
-            public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
+            public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
             public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
             public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
-            public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
+            public static Double CryoStoppingPressure { get { return 0.00005; } } // 5e-5 mbar
+            public static Double CryoStartingTemperatureMax { get { return 320; } } // Kelvin
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
             public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
@@ -1016,10 +1075,10 @@ namespace UEDMHardwareControl
         private void refreshModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
-            if (!sourceModeCancelFlag) EvaporateAndPumpNeonWithoutLakeShore(); // Controlled evaporation of neon from cryo pump
-            if (!sourceModeCancelFlag) TurnOffCryoAndWarmupWithoutLakeShore(); // Cryo turn off and controlled warm up off source
+            if (!sourceModeCancelFlag) EvaporateAndPumpNeon(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) TurnOffCryoAndWarmup(); // Cryo turn off and controlled warm up off source
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
-            if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
+            if (!sourceModeCancelFlag) CoolDownSource(); // Turn on cryo
             if (sourceModeCancelFlag) // If refresh mode is cancelled, then turn off the heaters before finishing.
             {
                 UpdateSourceModeStatus("Refresh mode cancelled\n");
@@ -1029,6 +1088,7 @@ namespace UEDMHardwareControl
             RefreshModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
+            ResetShutdown(refreshModeShutdownBlockHandle);
         }
 
         // Warm up mode
@@ -1036,6 +1096,8 @@ namespace UEDMHardwareControl
         private Object warmupModeLock;
         private bool warmupModeHeaterTurnOffDateTimeFlag = false;
         private bool warmupModeTemperatureSetpointUpdated = false;
+        private static string warmupModeShutdownBlockReason = "Warm up mode enabled!";
+        private static IntPtr warmupModeShutdownBlockHandle;
         /// <summary>
         /// When warmup mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with warmup mode. This function is used to disable or enable the relevant UI components.
         /// </summary>
@@ -1084,15 +1146,19 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse warm up temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void WarmupModeSetWindowsAPIShutdownHandle(IntPtr Handle)
+        {
+            warmupModeShutdownBlockHandle = Handle;
+        }
 
         public static class SourceWarmUpConstants
         {
             public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
-            public static Double NeonEvaporationCycleTemperatureMax { get { return 30; } }  // Kelvin
+            public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
             public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
-            public static Double CryoStoppingPressure { get { return 0.00001; } } // 1e-5 mbar
+            public static Double CryoStoppingPressure { get { return 0.00005; } } // 5e-5 mbar
             public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
             public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
         }
@@ -1134,8 +1200,8 @@ namespace UEDMHardwareControl
         private void warmupModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
-            if (!sourceModeCancelFlag) EvaporateAndPumpNeonWithoutLakeShore(); // Controlled evaporation of neon from cryo pump
-            if (!sourceModeCancelFlag) TurnOffCryoAndWarmupWithoutLakeShore(); // Cryo turn off and controlled warm up of source
+            if (!sourceModeCancelFlag) EvaporateAndPumpNeon(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) TurnOffCryoAndWarmup(); // Cryo turn off and controlled warm up of source
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
             if (sourceModeCancelFlag) // If warm up mode is cancelled, then turn off the heaters before finishing.
             {
@@ -1146,6 +1212,7 @@ namespace UEDMHardwareControl
             WarmUpModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in warm up mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
+            ResetShutdown(warmupModeShutdownBlockHandle);
         }
 
         // Cool down mode
@@ -1154,6 +1221,8 @@ namespace UEDMHardwareControl
         private bool CoolDownModeHeaterTurnOffDateTimeFlag = false;
         private bool CoolDownModeCryoTurnOnDateTimeFlag = false;
         private bool CoolDownModeTemperatureSetpointUpdated = false;
+        private static string cooldownModeShutdownBlockReason = "Cool down mode enabled!";
+        private static IntPtr cooldownModeShutdownBlockHandle;
         internal void CoolDownModeEnableUIElements(bool Enable) // UI elements to enable/disable when starting/finishing cool down mode
         {
             // Disable and enable to Start and Stop buttons respectively
@@ -1207,6 +1276,10 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void CoolDownModeSetWindowsAPIShutdownHandle(IntPtr Handle)
+        {
+            cooldownModeShutdownBlockHandle = Handle;
+        }
 
         public static class SourceCoolDownConstants
         {
@@ -1214,7 +1287,7 @@ namespace UEDMHardwareControl
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
             public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStartingTemperatureMax { get { return 310; } } // Kelvin
+            public static Double CryoStartingTemperatureMax { get { return 320; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 3000; } } // milli seconds
             public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
             public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
@@ -1280,7 +1353,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
-            if (!sourceModeCancelFlag) CoolDownSourceWithoutLakeShore(); // Turn on cryo
+            if (!sourceModeCancelFlag) CoolDownSource(); // Turn on cryo
             if (sourceModeCancelFlag) // If cool down mode is cancelled, then turn off the heaters before finishing.
             {
                 UpdateSourceModeStatus("Cool down mode cancelled\n");
@@ -1290,6 +1363,7 @@ namespace UEDMHardwareControl
             CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in cool down mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
+            ResetShutdown(cooldownModeShutdownBlockHandle);
         }
 
         #endregion
@@ -1382,7 +1456,7 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.tbHeaterControlStatus, "");
                 if (Stage2HeaterControlFlag)
                 {
-                    if (Double.Parse(lastS2Temp) < Stage2TemperatureSetpoint)
+                    if (Double.Parse(lastS2TempString) < Stage2TemperatureSetpoint)
                     {
                         EnableDigitalHeaters(2, true);
                     }
@@ -1390,7 +1464,7 @@ namespace UEDMHardwareControl
                 }
                 if (Stage1HeaterControlFlag)
                 {
-                    if (Double.Parse(lastS1Temp) < Stage1TemperatureSetpoint)
+                    if (Double.Parse(lastS1TempString) < Stage1TemperatureSetpoint)
                     {
                         EnableDigitalHeaters(1, true);
                     }
@@ -1449,38 +1523,59 @@ namespace UEDMHardwareControl
 
         #endregion
 
-        #region Pressure monitor
+        #region Pressure monitors
 
         private double lastSourcePressure;
+        private double lastBeamlinePressure;
+        private double SourceGaugeCorrectionFactor = 4.1;
+        private double BeamlineGaugeCorrectionFactor = 4.35;
         private int pressureMovingAverageSampleLength = 10;
-        private Queue<double> pressureSamples = new Queue<double>();
+        private int PressureChartRollingPeriod;
+        private bool PressureChartRollingPeriodSelected = false;
+        private bool PressureChartRollingXAxis = false;
+        private Queue<double> pressureSamplesSource = new Queue<double>();
+        private Queue<double> pressureSamplesBeamline = new Queue<double>();
         private string sourceSeries = "Source Pressure";
+        private string beamlineSeries = "Beamline Pressure";
 
         public void UpdatePressureMonitor()
         {
             //sample the pressure
-            lastSourcePressure = sourcePressureMonitor.Pressure;
+            lock (HardwareControllerDAQCardLock) // Lock access to the DAQ card
+            {
+                lastSourcePressure = sourcePressureMonitor.Pressure * SourceGaugeCorrectionFactor;
+                lastBeamlinePressure = beamlinePressureMonitor.Pressure * BeamlineGaugeCorrectionFactor;
+            }
 
             //add samples to Queues for averaging
-            pressureSamples.Enqueue(lastSourcePressure);
+            pressureSamplesSource.Enqueue(lastSourcePressure);
+            pressureSamplesBeamline.Enqueue(lastBeamlinePressure);
 
             //drop samples when array is larger than the moving average sample length
-            while (pressureSamples.Count > pressureMovingAverageSampleLength)
+            while (pressureSamplesSource.Count > pressureMovingAverageSampleLength)
             {
-                pressureSamples.Dequeue();
+                pressureSamplesSource.Dequeue();
+            }
+            while (pressureSamplesBeamline.Count > pressureMovingAverageSampleLength)
+            {
+                pressureSamplesBeamline.Dequeue();
             }
 
             //average samples
-            double avgPressure = pressureSamples.Average();
-            string avgPressureExpForm = avgPressure.ToString("E");
+            double avgPressureSource = pressureSamplesSource.Average();
+            string avgPressureSourceExpForm = avgPressureSource.ToString("E");
+            double avgPressureBeamline = pressureSamplesBeamline.Average();
+            string avgPressureBeamlineExpForm = avgPressureBeamline.ToString("E");
 
-            //update text boxes
-            window.SetTextBox(window.tbPSource, (avgPressureExpForm).ToString());
+            //update UI monitor text boxes
+            window.SetTextBox(window.tbPSource, (avgPressureSourceExpForm).ToString());
+            window.SetTextBox(window.tbPBeamline, (avgPressureBeamlineExpForm).ToString());
         }
 
         public void ClearPressureMonitorAv()
         {
-            pressureSamples.Clear();
+            pressureSamplesSource.Clear();
+            pressureSamplesBeamline.Clear();
         }
 
         public void PlotLastPressure()
@@ -1491,6 +1586,91 @@ namespace UEDMHardwareControl
 
             //plot the most recent samples
             window.AddPointToChart(window.chart1, sourceSeries, localDate, lastSourcePressure);
+
+            // Handle rolling time axis on pressure chart
+            if (PressureChartRollingXAxis) // If the user has requested that the time axis of the chart rolls
+            {
+                UpdatePressureChartRollingTimeAxis();  // Update chart time axis
+            }
+        }
+        public void PlotPressureArrays(double[] SourcePressures, double[] BeamlinePressures, DateTime[] MeasurementDateTimes)
+        {
+            AddArrayOfPointsToChart(window.chart1, sourceSeries, MeasurementDateTimes, SourcePressures);
+            AddArrayOfPointsToChart(window.chart1, beamlineSeries, MeasurementDateTimes, BeamlinePressures);
+
+            if (PressureChartRollingXAxis)
+            {
+                UpdatePressureChartRollingTimeAxis();
+                UpdatePressureChartRollingYAxis();
+            }
+        }
+
+        private void UpdatePressureChartRollingTimeAxis()
+        {
+            DateTime xMin = DateTime.Now.AddMilliseconds(-PressureChartRollingPeriod);
+            window.SetChartXAxisMinDateTime(window.chart1, xMin);
+        }
+        public void UpdatePressureChartRollingYAxis()
+        {
+            // Calculate the number of points being displayed on the chart (when rolling axis is being applied)
+            double RawRatio = PressureChartRollingPeriod / PTMonitorPollPeriod;
+            double RoundedUpRatio = Math.Ceiling(RawRatio);
+            int numberOfPointsBeingDisplayed = Convert.ToInt32(RoundedUpRatio);
+
+            window.UpdateChartYScaleWhenXAxisRolling(window.chart1, numberOfPointsBeingDisplayed);
+        }
+        public void EnablePressureChartRollingTimeAxis(bool Enable)
+        {
+            if (Enable)
+            {
+                if (PressureChartRollingPeriodSelected)
+                {
+                    PressureChartRollingXAxis = true;
+                }
+                else
+                {
+                    MessageBox.Show("Please select pressure chart rolling period.", "User input exception", MessageBoxButtons.OK);
+                    window.SetCheckBox(window.cbEnablePressureChartRollingTimeAxis, false);
+                }
+            }
+            else
+            {
+                PressureChartRollingXAxis = false;
+                window.SetChartXAxisMinAuto(window.chart1);
+                window.SetChartYAxisAuto(window.chart1);
+            }
+        }
+        public void UpdatePressureChartRollingPeriod()
+        {
+            int PressureChartRollingPeriodParsedValue;
+            if (Int32.TryParse(window.tbRollingPressureChartTimeAxisPeriod.Text, out PressureChartRollingPeriodParsedValue)) 
+            {
+                if (PTMonitorPollPeriod <= PressureChartRollingPeriodParsedValue * 1000)  //*1000 to convert seconds to ms
+                {
+                    PressureChartRollingPeriod = PressureChartRollingPeriodParsedValue * 1000; // Update pressure chart rolling period  //*1000 to convert seconds to ms
+                    PressureChartRollingPeriodSelected = true;
+                }
+                else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse pressure chart rolling period string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void UpdateGaugesCorrectionFactors()
+        {
+            double SourceGaugeCorrectionFactorParsedValue;
+            double BeamlineGaugeCorrectionFactorParsedValue;
+
+            if (Double.TryParse(window.tbSourceGaugeCorrectionFactor.Text, out SourceGaugeCorrectionFactorParsedValue))
+            {
+                SourceGaugeCorrectionFactor = SourceGaugeCorrectionFactorParsedValue; // Update source gauge correction factor
+            }
+            else MessageBox.Show("Unable to parse source gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+
+            if (Double.TryParse(window.tbBeamlineGaugeCorrectionFactor.Text, out BeamlineGaugeCorrectionFactorParsedValue))
+            {
+                BeamlineGaugeCorrectionFactor = BeamlineGaugeCorrectionFactorParsedValue; // Update beamline gauge correction factor
+            }
+            else MessageBox.Show("Unable to parse beamline gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
         private JSONSerializer pressureDataSerializer;
@@ -1524,34 +1704,93 @@ namespace UEDMHardwareControl
         private bool TemperatureChartRollingXAxis = false;
         //private Queue<double> TempSamples = new Queue<double>();
         public string[] TemperatureArray;
-        public string lastCellTemp;
-        public string lastS1Temp;
-        public string lastS2Temp;
-        public string lastNeonTemp;
-        public string lastSF6Temp;
+        public string lastCellTempString;
+        public string lastS1TempString;
+        public string lastS2TempString;
+        public string lastNeonTempString;
+        public string lastSF6TempString;
+        public double lastCellTemp;
+        public double lastS1Temp;
+        public double lastS2Temp;
+        public double lastNeonTemp;
+        public double lastSF6Temp;
         private string cellTSeries = "Cell Temperature";
         private string S1TSeries = "S1 Temperature";
         private string S2TSeries = "S2 Temperature";
         private string SF6TSeries = "SF6 Temperature";
         private string neonTSeries = "Neon Temperature";
 
+        public void TryParseTemperatureString(string TemperatureString, string SeriesName)
+        {
+            double temporaryTemperatureVariable;
+            if (Double.TryParse(TemperatureString, out temporaryTemperatureVariable))
+            {
+                if(SeriesName == S1TSeries)
+                {
+                    lastS1Temp = temporaryTemperatureVariable;
+                }
+                else
+                {
+                    if (SeriesName == cellTSeries)
+                    {
+                        lastCellTemp = temporaryTemperatureVariable;
+                    }
+                    else
+                    {
+                        if (SeriesName == S2TSeries)
+                        {
+                            lastS2Temp = temporaryTemperatureVariable;
+                        }
+                        else
+                        {
+                            if (SeriesName == SF6TSeries)
+                            {
+                                lastSF6Temp = temporaryTemperatureVariable;
+                            }
+                            else
+                            {
+                                if (SeriesName == neonTSeries)
+                                {
+                                    lastNeonTemp = temporaryTemperatureVariable;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else MessageBox.Show("Unable to parse temperature string.", "LakeShore 336 temperature measurement exception", MessageBoxButtons.OK);
+        }
+
         public void UpdateAllTempMonitors()
         {
             //sample the temperatures
-            receivedData = tempController.GetTemperature(0, "K");
-            TemperatureArray = receivedData.Split(',');
+            lock (LakeShore336Lock) // Lock access to the LakeShore 336 temperature controller
+            {
+                receivedData = tempController.GetTemperature(0, "K"); // This will return a string containing all the temperature measurements
+            }
+            TemperatureArray = receivedData.Split(','); // Split the comma delimited string into its components
             if (TemperatureArray.Length == 8)
             {
-                lastCellTemp = TemperatureArray[0]; // LakeShore Input A
-                lastNeonTemp = TemperatureArray[1]; // LakeShore Input B
-                lastS2Temp = TemperatureArray[2];   // LakeShore Input C
-                lastSF6Temp = TemperatureArray[3];  // LakeShore Input D
-                lastS1Temp = TemperatureArray[4];   // LakeShore Input D1
-                window.SetTextBox(window.tbTCell, lastCellTemp);
-                window.SetTextBox(window.tbTNeon, lastNeonTemp);
-                window.SetTextBox(window.tbTS2, lastS2Temp);
-                window.SetTextBox(window.tbTS1, lastS1Temp);
-                window.SetTextBox(window.tbTSF6, lastSF6Temp);
+                // Retreive the temperature measurements (strings) from the string array
+                lastCellTempString = TemperatureArray[0]; // LakeShore Input A
+                lastNeonTempString = TemperatureArray[1]; // LakeShore Input B
+                lastS2TempString = TemperatureArray[2];   // LakeShore Input C
+                lastSF6TempString = TemperatureArray[3];  // LakeShore Input D
+                lastS1TempString = TemperatureArray[4];   // LakeShore Input D1
+
+                // Update window textboxes so that the user can see the most recent temperature measurement
+                window.SetTextBox(window.tbTCell, lastCellTempString);
+                window.SetTextBox(window.tbTNeon, lastNeonTempString);
+                window.SetTextBox(window.tbTS2, lastS2TempString);
+                window.SetTextBox(window.tbTS1, lastS1TempString);
+                window.SetTextBox(window.tbTSF6, lastSF6TempString);
+
+                // TryParse the temperature strings and save the values to double variables
+                TryParseTemperatureString(lastCellTempString, cellTSeries);
+                TryParseTemperatureString(lastNeonTempString, neonTSeries);
+                TryParseTemperatureString(lastS2TempString, S2TSeries);
+                TryParseTemperatureString(lastS1TempString, S1TSeries);
+                TryParseTemperatureString(lastSF6TempString, SF6TSeries);
             }
             else
             {
@@ -1575,14 +1814,14 @@ namespace UEDMHardwareControl
             if (tempMonitorsData.Length == 4)
             {
 
-                lastCellTemp = tempMonitorsData[0].ToString("N6");
-                lastS1Temp = tempMonitorsData[1].ToString("N6");
-                lastS2Temp = tempMonitorsData[2].ToString("N6");
-                lastSF6Temp = tempMonitorsData[3].ToString("N6");
-                window.SetTextBox(window.tbTCell, lastCellTemp);
-                window.SetTextBox(window.tbTNeon, lastS1Temp);
-                window.SetTextBox(window.tbTS2, lastS2Temp);
-                window.SetTextBox(window.tbTSF6, lastSF6Temp);
+                lastCellTempString = tempMonitorsData[0].ToString("N6");
+                lastS1TempString = tempMonitorsData[1].ToString("N6");
+                lastS2TempString = tempMonitorsData[2].ToString("N6");
+                lastSF6TempString = tempMonitorsData[3].ToString("N6");
+                window.SetTextBox(window.tbTCell, lastCellTempString);
+                window.SetTextBox(window.tbTNeon, lastS1TempString);
+                window.SetTextBox(window.tbTS2, lastS2TempString);
+                window.SetTextBox(window.tbTSF6, lastSF6TempString);
             }
             else
             {
@@ -1596,11 +1835,11 @@ namespace UEDMHardwareControl
         public void PlotLastTemperatures()
         {
             DateTime localDate = DateTime.Now;
-            double CellTemp = Double.Parse(lastCellTemp);
-            double S1Temp = Double.Parse(lastS1Temp);
-            double S2Temp = Double.Parse(lastS2Temp);
-            double SF6Temp = Double.Parse(lastSF6Temp);
-            double NeonTemp = Double.Parse(lastNeonTemp);
+            double CellTemp = lastCellTemp;
+            double S1Temp = lastS1Temp;
+            double S2Temp = lastS2Temp;
+            double SF6Temp = lastSF6Temp;
+            double NeonTemp = lastNeonTemp;
 
             //plot the most recent samples
             window.AddPointToChart(window.chart2, cellTSeries, localDate, CellTemp);
@@ -1613,11 +1852,34 @@ namespace UEDMHardwareControl
                 UpdateTemperatureChartRollingTimeAxis();
             }
         }
+        public void PlotTemperatureArrays(double[] CellTemperatures, double[] S1Temperatures, double[] S2Temperature, double[] SF6Temperatures, double[] NeonTemperatures, DateTime[] MeasurementDateTimes)
+        {
+            AddArrayOfPointsToChart(window.chart2, cellTSeries, MeasurementDateTimes, CellTemperatures);
+            AddArrayOfPointsToChart(window.chart2, S1TSeries, MeasurementDateTimes, S1Temperatures);
+            AddArrayOfPointsToChart(window.chart2, S2TSeries, MeasurementDateTimes, S2Temperature);
+            AddArrayOfPointsToChart(window.chart2, SF6TSeries, MeasurementDateTimes, SF6Temperatures);
+            AddArrayOfPointsToChart(window.chart2, neonTSeries, MeasurementDateTimes, NeonTemperatures);
+
+            if (TemperatureChartRollingXAxis)
+            {
+                UpdateTemperatureChartRollingTimeAxis();
+                UpdateTemperatureChartRollingYAxis();
+            }
+        }
 
         private void UpdateTemperatureChartRollingTimeAxis()
         {
             DateTime xMin = DateTime.Now.AddMilliseconds(-TemperatureChartRollingPeriod);
             window.SetChartXAxisMinDateTime(window.chart2, xMin);
+        }
+        public void UpdateTemperatureChartRollingYAxis()
+        {
+            // Calculate the number of points being displayed on the chart (when rolling axis is being applied)
+            double RawRatio = TemperatureChartRollingPeriod / PTMonitorPollPeriod;
+            double RoundedUpRatio = Math.Ceiling(RawRatio);
+            int numberOfPointsBeingDisplayed = Convert.ToInt32(RoundedUpRatio);
+
+            window.UpdateChartYScaleWhenXAxisRolling(window.chart2, numberOfPointsBeingDisplayed);
         }
         public void EnableTemperatureChartRollingTimeAxis(bool Enable)
         {
@@ -1637,6 +1899,7 @@ namespace UEDMHardwareControl
             {
                 TemperatureChartRollingXAxis = false;
                 window.SetChartXAxisMinAuto(window.chart2);
+                window.SetChartYAxisAuto(window.chart2);
             }
         }
         public void UpdateTemperatureChartRollingPeriod()
@@ -1644,9 +1907,9 @@ namespace UEDMHardwareControl
             int TemperatureChartRollingPeriodParsedValue;
             if (Int32.TryParse(window.tbRollingTemperatureChartTimeAxisPeriod.Text, out TemperatureChartRollingPeriodParsedValue))
             {
-                if (PTMonitorPollPeriod <= TemperatureChartRollingPeriodParsedValue)
+                if (PTMonitorPollPeriod <= TemperatureChartRollingPeriodParsedValue * 1000)  //*1000 to convert seconds to ms
                 {
-                    TemperatureChartRollingPeriod = TemperatureChartRollingPeriodParsedValue; // Update temperature chart rolling period
+                    TemperatureChartRollingPeriod = TemperatureChartRollingPeriodParsedValue * 1000; // Update temperature chart rolling period  //*1000 to convert seconds to ms
                     TemperatureChartRollingPeriodSelected = true;
                 }
                 else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
@@ -1656,15 +1919,40 @@ namespace UEDMHardwareControl
 
         #endregion
 
-        #region Temperature and Pressure Monitoring
+        #region Temperature and Pressure Monitoring/Plotting
         // If the LakeShore is not in operation, the silicon diodes can still be monitored by measuring the voltage drop across them (which is temperature dependent).
 
         private Thread PTMonitorPollThread;
+        private Thread PTPlottingThread;
         private int PTMonitorPollPeriod = 1000;
         private int PTMonitorPollPeriodLowerLimit = 100;
         private bool PTMonitorFlag;
-        private Object PTMonitorLock;
+        private bool PTPlottingFlag;
+        private readonly object LakeShore336Lock = new object(); // Object for locking access to the lakeshore - preventing multiple threads from accesing the LakeShore simultaneously
+        private readonly object HardwareControllerDAQCardLock = new object(); // Object for locking access to the DAQ card used for this hardware controller
         public string csvDataTemperatureAndPressure = "";
+
+        // Arrays for temperature and pressure measurements. These are used for plotting the temperatures and pressures as the plotting can lag the measurement of these quantities.
+        private readonly object PTPlottingBufferLock = new object();
+        static int MaxPlottingArrayLength = 10000;
+        public int NumberOfPTMeasurementsInQueue = 0;
+        public double[] CellTempPlottingArray = new double[MaxPlottingArrayLength];
+        public double[] S1TempPlottingArray = new double[MaxPlottingArrayLength];
+        public double[] S2TempPlottingArray = new double[MaxPlottingArrayLength];
+        public double[] NeonTempPlottingArray = new double[MaxPlottingArrayLength];
+        public double[] SF6TempPlottingArray = new double[MaxPlottingArrayLength];
+        public double[] SourcePressurePlottingArray = new double[MaxPlottingArrayLength];
+        public double[] BeamlinePressurePlottingArray = new double[MaxPlottingArrayLength];
+        public DateTime[] DateTimePlottingArray = new DateTime[MaxPlottingArrayLength];
+        // Buffer arrays for plotting
+        public double[] CellTempPlottingArrayBuffer;
+        public double[] S1TempPlottingArrayBuffer;
+        public double[] S2TempPlottingArrayBuffer;
+        public double[] NeonTempPlottingArrayBuffer;
+        public double[] SF6TempPlottingArrayBuffer;
+        public double[] SourcePressurePlottingArrayBuffer;
+        public double[] BeamlinePressurePlottingArrayBuffer;
+        public DateTime[] DateTimePlottingArrayBuffer;
 
         /// <summary>
         /// Many user interface (UI) components need to be enabled/disabled so that the user can't perform actions that could be harmful to the experiment. This function combines this list of UI elements.
@@ -1701,14 +1989,55 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void UpdatePTPlottingArrays(DateTime MeasurementDateTimeStamp)
+        {
+            lock (PTPlottingBufferLock)
+            {
+                CellTempPlottingArray[NumberOfPTMeasurementsInQueue] = lastCellTemp;
+                S1TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastS1Temp;
+                S2TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastS2Temp;
+                NeonTempPlottingArray[NumberOfPTMeasurementsInQueue] = lastNeonTemp;
+                SF6TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastSF6Temp;
+                SourcePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastSourcePressure;
+                BeamlinePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastBeamlinePressure;
+                DateTimePlottingArray[NumberOfPTMeasurementsInQueue] = MeasurementDateTimeStamp;
+                
+                ++NumberOfPTMeasurementsInQueue; // Count the number of measurements added to the plotting queue
+            }
+        }
+        public void ClearPTCSVData()
+        {
+            csvDataTemperatureAndPressure = "";
+        }
+        public void SetPTCSVHeaderLine()
+        {
+            csvDataTemperatureAndPressure += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "Cell Temperature (K)" + "," + "S1 Temperature (K)" + "," + "S2 Temperature (K)" + "," + "SF6 Temperature (K)" + "," + "Source Pressure (mbar)" + "," + "Beamline Pressure (mbar)" + "\r\n"; // Header lines for csv file
+        }
+        public void ResetPTCSVData()
+        {
+            ClearPTCSVData();
+            SetPTCSVHeaderLine();
+        }
+        public void SavePTDataToCSV()
+        {
+            SavePlotDataToCSV(csvDataTemperatureAndPressure);
+        }
 
         internal void StartPTMonitorPoll()
         {
+            // Setup pressure and temperature monitoring thread
             PTMonitorPollThread = new Thread(() =>
             {
                 PTMonitorPollWorker();
             });
             PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+
+            // Setup pressure and temperature plotting thread
+            PTPlottingThread = new Thread(() =>
+            {
+                PTPlottingWorker();
+            });
+            PTPlottingThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. 
 
             pressureMovingAverageSampleLength = 10;
             Stage2HeaterControlFlag = false;
@@ -1716,11 +2045,13 @@ namespace UEDMHardwareControl
             UpdateStage1TemperatureSetpoint();
             UpdateStage2TemperatureSetpoint();
             PTMonitorPollEnableUIElements(true);
-            if (csvDataTemperatureAndPressure == "") csvDataTemperatureAndPressure += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "Cell Temperature (K)" + "," + "S1 Temperature (K)" + "," + "S2 Temperature (K)" + "," + "SF6 Temperature (K)" + "," + "Source Pressure (mbar)" + "," + "Beamline Pressure (mbar)" + "\r\n"; // Header lines for csv file
-            pressureSamples.Clear();
-            PTMonitorLock = new Object();
+            if (csvDataTemperatureAndPressure == "") SetPTCSVHeaderLine();
+            pressureSamplesSource.Clear();
+            pressureSamplesBeamline.Clear();
             PTMonitorFlag = false;
+            PTPlottingFlag = false;
             PTMonitorPollThread.Start();
+            PTPlottingThread.Start();
         }
         internal void StopPTMonitorPoll()
         {
@@ -1730,51 +2061,121 @@ namespace UEDMHardwareControl
             }
             else
             {
-                UEDMSavePlotDataDialog savePTDataDialog = new UEDMSavePlotDataDialog("Save data message", "Would you like to save the temperature and pressure data now? \n\nThe data will not be cleared.");
-                savePTDataDialog.ShowDialog();
-                if (savePTDataDialog.DialogResult != DialogResult.Cancel)
-                {
-                    StopStage1DigitalHeaterControl();
-                    StopStage2DigitalHeaterControl();
-                    EnableDigitalHeaters(1, false);
-                    EnableDigitalHeaters(2, false);
-                    PTMonitorFlag = true;
-                    if (savePTDataDialog.DialogResult == DialogResult.Yes)
-                    {
-                        SavePlotDataToCSV(csvDataTemperatureAndPressure);
-                    }
-                }
-                savePTDataDialog.Dispose();
+                StopStage1DigitalHeaterControl();
+                StopStage2DigitalHeaterControl();
+                EnableDigitalHeaters(1, false);
+                EnableDigitalHeaters(2, false);
+                PTMonitorFlag = true;
+                PTPlottingFlag = true;
             }
         }
         private void PTMonitorPollWorker()
         {
             int count = 0;
+            //int NumberofMovingAveragePoints = 2;
+            //int MaxChartPoints = 100; // Maximum number of points that will be plotted on a given chart
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                Thread.Sleep(PTMonitorPollPeriod);
+                var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure pressure and temperature. This is subtracted from the poll period so that the loop is executed at the proper frequency.
                 ++count;
-                lock (PTMonitorLock)
+                // Measure temperatures and pressures
+                // Note that locks are used to prevent threads attempting to access the DAQ card or LakeShore 336 temperature controller simultaneously
+                UpdateAllTempMonitors(); // Measure temperatures and update the window textboxes with the current values
+                UpdatePressureMonitor(); // Measure pressures and update the window textboxes with the current values
+                DateTime MeasurementDateTimeStamp = DateTime.Now;
+
+                // Update the data plotting queue
+                UpdatePTPlottingArrays(MeasurementDateTimeStamp);
+                    
+                if (PTMonitorFlag)
                 {
-                    UpdateAllTempMonitors();
-                    PlotLastTemperatures();
-                    UpdatePressureMonitor();
-                    PlotLastPressure();
-
-                    Double unixTimestamp = (Double)(DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
-                    string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + "," + lastCellTemp + "," + lastS1Temp + "," + lastS2Temp + "," + lastSF6Temp + "," + lastSourcePressure + "\r\n";
-                    csvDataTemperatureAndPressure += csvLine;
-
-                    ControlHeaters();
-                    if (PTMonitorFlag)
-                    {
-                        PTMonitorFlag = false;
-                        break;
-                    }
+                    PTMonitorFlag = false;
+                    break;
                 }
+
+                // Append data to string (to be written to a CSV file when the user wishes to save the data)
+                Double unixTimestamp = (Double)(DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+                string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + "," + lastCellTempString + "," + lastS1TempString + "," + lastS2TempString + "," + lastSF6TempString + "," + lastSourcePressure + "," + lastBeamlinePressure + "\r\n";
+                csvDataTemperatureAndPressure += csvLine;
+
+                // Enable/disable the heaters that are controlled using NI card digital outputs (as opposed to the self-contained LakeShore 336 heaters/sensors)
+                ControlHeaters(); 
+
+                // Calculate and subtract from the poll period the amount of time taken to perform the contents of this loop (so that the temperature and pressure are polled at the correct frequency)
+                watch.Stop(); // Stop the stopwatch that was started at the start of the for loop
+                int ThreadWaitPeriod = PTMonitorPollPeriod - Convert.ToInt32(watch.ElapsedMilliseconds); // Subtract the time elapsed from the user defined poll period
+                if (ThreadWaitPeriod < 0) ThreadWaitPeriod = 0; // If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
+                Thread.Sleep(ThreadWaitPeriod); // Wait until the next temperature/pressure measurements are to be made
             }
             PTMonitorPollEnableUIElements(false);
+        }
+        private void PTPlottingWorker()
+        {
+            int PlottingQueueLength = 0;
+            for (; ; )
+            {
+                Thread.Sleep(PTMonitorPollPeriod); // Wait until more data is taken
+
+                lock (PTPlottingBufferLock) // Use lock to prevent new measurements being added to the plotting queue whilst the plotting function is in operation.
+                {
+                    PlottingQueueLength = NumberOfPTMeasurementsInQueue;
+                    NumberOfPTMeasurementsInQueue = 0; // Reset the number of items in the queue to zero
+                    // Create buffer arrays that can store the data locally - allowing temperature and pressure measurements to continue unimpeded.
+                    CellTempPlottingArrayBuffer = new double[PlottingQueueLength];
+                    S1TempPlottingArrayBuffer = new double[PlottingQueueLength];
+                    S2TempPlottingArrayBuffer = new double[PlottingQueueLength];
+                    NeonTempPlottingArrayBuffer = new double[PlottingQueueLength];
+                    SF6TempPlottingArrayBuffer = new double[PlottingQueueLength];
+                    SourcePressurePlottingArrayBuffer = new double[PlottingQueueLength];
+                    BeamlinePressurePlottingArrayBuffer = new double[PlottingQueueLength];
+                    DateTimePlottingArrayBuffer = new DateTime[PlottingQueueLength];
+
+                    if (PlottingQueueLength > 0) // If no data has been recorded, then there is no need to perform this function.
+                    {
+                        // Copy the data to buffer arrays so that the lock can be released and the monitoring thread can continue to make measurements of the temperature and pressure
+                        long sourceIndex = 0; // Starting index of the data to be copied from the source array
+                        long destinationIndex = 0; // Starting index of where the data will be stored in the destination (buffer) array
+                        long lengthOfDataToCopy = Convert.ToInt64(PlottingQueueLength); // Number of measurements saved to the plotting queue (i.e. how many elements of the data arrays are to be copied to the buffer arrays)
+                        Array.Copy(CellTempPlottingArray, sourceIndex, CellTempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(S1TempPlottingArray, sourceIndex, S1TempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(S2TempPlottingArray, sourceIndex, S2TempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(NeonTempPlottingArray, sourceIndex, NeonTempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(SF6TempPlottingArray, sourceIndex, SF6TempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(SourcePressurePlottingArray, sourceIndex, SourcePressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(BeamlinePressurePlottingArray, sourceIndex, BeamlinePressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(DateTimePlottingArray, sourceIndex, DateTimePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        
+                        // Clear the temperature/pressure plotting arrays and release the lock so that measurements can continue whilst plotting is performed.
+                        int sourceClearIndex = Convert.ToInt32(sourceIndex);
+                        int lengthOfDataToClear = Convert.ToInt32(lengthOfDataToCopy);
+                        Array.Clear(CellTempPlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(S1TempPlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(S2TempPlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(NeonTempPlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(SF6TempPlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(SourcePressurePlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(BeamlinePressurePlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(DateTimePlottingArray, sourceClearIndex, lengthOfDataToClear);
+                    }
+                }
+
+                if (PlottingQueueLength > 0)
+                {
+                    // Plot pressure data
+                    PlotPressureArrays(SourcePressurePlottingArrayBuffer, BeamlinePressurePlottingArrayBuffer, DateTimePlottingArrayBuffer);
+                    // Plot temperature data
+                    PlotTemperatureArrays(CellTempPlottingArrayBuffer, S1TempPlottingArrayBuffer, S2TempPlottingArrayBuffer, SF6TempPlottingArrayBuffer, NeonTempPlottingArrayBuffer, DateTimePlottingArrayBuffer);
+                }
+
+                PlottingQueueLength = 0; // Reset variable
+
+                if (PTPlottingFlag) // If the user has requested that monitoring/plotting of temperature/pressure be stopped, then break this loop
+                {
+                    PTPlottingFlag = false;
+                    break;
+                }
+            }
         }
 
         #endregion
@@ -1796,6 +2197,15 @@ namespace UEDMHardwareControl
                     string YScale = window.comboBoxPlot2ScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                     window.ChangeChartYScale(window.chart2, YScale);
                     window.SetAxisYIsStartedFromZero(window.chart2, false);
+                }
+                else
+                {
+                    if (ChartNumber == 4)
+                    {
+                        string YScale = window.comboBoxAnalogueInputsChartScaleY.Text; // Read the Y scale mode chosen by the user in the UI
+                        window.ChangeChartYScale(window.chart4, YScale);
+                        window.SetAxisYIsStartedFromZero(window.chart4, false);
+                    }
                 }
             }
 
@@ -1820,6 +2230,16 @@ namespace UEDMHardwareControl
         public void ClearChartSeriesData(Chart chart, string series)
         {
             window.ClearChartSeriesData(chart, series);
+        }
+
+        public void AddArrayOfPointsToChart(Chart myChart, string mySeries, DateTime[] xArray, double[] yArray)
+        {
+            int count = 0;
+            foreach (double TemperatureValue in yArray)
+            {
+                window.AddPointToChart(myChart, mySeries, xArray[count], TemperatureValue);
+                ++count;
+            }
         }
 
         #endregion
@@ -1881,12 +2301,10 @@ namespace UEDMHardwareControl
             NeonFlowSetPointFlag = false;
             NeonFlowMonitorPollThread.Start();
         }
-
         internal void StopNeonFlowMonitorPoll()
         {
             NeonFlowMonitorFlag = true;
         }
-
         private void NeonFlowActMonitorPollWorker()
         {
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
@@ -1940,7 +2358,10 @@ namespace UEDMHardwareControl
         {
             if (window.comboBoxLakeShore336OutputsQuery.Text == "1" | window.comboBoxLakeShore336OutputsQuery.Text == "2")
             {
-                receivedData = tempController.QueryPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
+                lock (LakeShore336Lock)
+                {
+                    receivedData = tempController.QueryPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
+                }
                 PIDValueStringArray = receivedData.Split(',');
                 window.SetTextBox(window.tbLakeShore336PIDPValueOutput, PIDValueStringArray[0]);
                 window.SetTextBox(window.tbLakeShore336PIDIValueOutput, PIDValueStringArray[1]);
@@ -1962,7 +2383,10 @@ namespace UEDMHardwareControl
 
                 if (!PIDValuesInvalid)
                 {
-                    tempController.SetPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
+                    lock (LakeShore336Lock)
+                    {
+                        tempController.SetPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
+                    }
                 }
             }
             else
@@ -2020,7 +2444,10 @@ namespace UEDMHardwareControl
             {
                 if (AutotuneModeSelected)
                 {
-                    tempController.AutotuneOutput(AutotuneOutput, AutotuneMode);
+                    lock (LakeShore336Lock)
+                    {
+                        tempController.AutotuneOutput(AutotuneOutput, AutotuneMode);
+                    }
                 }
                 else
                 {
@@ -2069,7 +2496,11 @@ namespace UEDMHardwareControl
         public void QueryAutotuneStatus()
         {
             StatusOutput = "";
-            string status = tempController.QueryControlTuningStatus();
+            string status;
+            lock (LakeShore336Lock)
+            {
+                status = tempController.QueryControlTuningStatus();
+            }
             AutotuneStatusInfo = status.Split(',');
 
             if (AutotuneStatusInfo[0] == "0")
@@ -2114,18 +2545,24 @@ namespace UEDMHardwareControl
         {
             if (Value > 0)
             {
-                tempController.SetControlSetpoint(Output, Value);
+                lock (LakeShore336Lock)
+                {
+                    tempController.SetControlSetpoint(Output, Value);
+                }
             }
         }
         private void EnableLakeShoreHeaterOutput3or4(int Output, bool OnOff)
         {
-            if (OnOff)
+            lock (LakeShore336Lock)
             {
-                tempController.SetHeaterRange(Output, 1); // 1 = on
-            }
-            else
-            {
-                tempController.SetHeaterRange(Output, 0); // 0 = off
+                if (OnOff)
+                {
+                    tempController.SetHeaterRange(Output, 1); // 1 = on
+                }
+                else
+                {
+                    tempController.SetHeaterRange(Output, 0); // 0 = off
+                }
             }
         }
         /// <summary>
@@ -2137,23 +2574,667 @@ namespace UEDMHardwareControl
         /// <param name="range"></param>
         public void EnableLakeShoreHeaterOutput1or2(int Output, int range)
         {
-            if (range != 0)
+            lock (LakeShore336Lock)
             {
-                tempController.SetHeaterRange(Output, range); // 1 = Low, 2 = Medium and 3= High
-            }
-            else
-            {
-                tempController.SetHeaterRange(Output, range); // 0 = Off
+                if (range != 0)
+                {
+                    tempController.SetHeaterRange(Output, range); // 1 = Low, 2 = Medium and 3= High
+                }
+                else
+                {
+                    tempController.SetHeaterRange(Output, range); // 0 = Off
+                }
             }
         }
 
         private void IsOutputEnabled(int Output)
         {
-            string HeaterOutput = tempController.QueryHeaterRange(Output);
+            string HeaterOutput;
+            lock (LakeShore336Lock)
+            {
+                HeaterOutput = tempController.QueryHeaterRange(Output);
+            }
+            
             string trimResponse = HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
             string status = trimResponse.Substring(0, 1); // Take the first character of the string.
             if (status == "1") HeatersEnabled = true; // Heater Output is on
             else HeatersEnabled = false; // Heater Output is off
+        }
+
+        #endregion
+
+        #region Analogue/Digital IO tab
+
+        public void SetDigitalOutput(string PortName, bool Enable)
+        {
+            SetDigitalLine(PortName, Enable);
+        }
+        public void EnableAnalogueInputsMonitoringUIControls(bool Enable)
+        {
+            window.EnableControl(window.btStartMonitoringAnalogueInputs, !Enable); // Disable start button
+            window.EnableControl(window.btStopMonitoringAnalogueInputs, Enable); // Enable stop button
+        }
+        public void UpdateAIMonitorPollPeriod()
+        {
+            int AIMonitorPollPeriodParseValue;
+            if (Int32.TryParse(window.tbAnalogueMonitoringPollPeriod.Text, out AIMonitorPollPeriodParseValue))
+            {
+                if (AIMonitorPollPeriodParseValue >= AIMonitorPollPeriodLowerLimit)
+                {
+                    AnalogueInputsMonitorPollPeriod = AIMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                }
+                else MessageBox.Show("Poll period value too small. The analogue inputs can only be polled every " + AIMonitorPollPeriodLowerLimit.ToString() + " ms.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void UpdateAIPlottingArrays(DateTime MeasurementDateTimeStamp)
+        {
+            lock (PTPlottingBufferLock)
+            {
+                CellTempPlottingArray[NumberOfPTMeasurementsInQueue] = lastCellTemp;
+                S1TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastS1Temp;
+                S2TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastS2Temp;
+                NeonTempPlottingArray[NumberOfPTMeasurementsInQueue] = lastNeonTemp;
+                SF6TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastSF6Temp;
+                SourcePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastSourcePressure;
+                BeamlinePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastBeamlinePressure;
+                DateTimePlottingArray[NumberOfPTMeasurementsInQueue] = MeasurementDateTimeStamp;
+
+                ++NumberOfPTMeasurementsInQueue; // Count the number of measurements added to the plotting queue
+            }
+        }
+        public void MonitorAnalogueInputs()
+        {
+            double[] aiData;
+            lock (HardwareControllerDAQCardLock) // Lock access to the DAQ card
+            {
+                aiData = hardwareControllerAIs.AIVoltages(); // Read (and average) data from AI ports
+            } // Release lock as soon as possible so that other monitoring threads can access it without unnecessary delay
+            DateTime dateTimeStamp = DateTime.Now;
+            double AI11Measurement;
+            double AI12Measurement;
+            double AI13Measurement;
+            double AI14Measurement;
+            double AI15Measurement;
+
+            lock (AIPlottingBufferLock)
+            {
+                // Split array of measurements into local variables
+                AI11Measurement = aiData[0];
+                AI12Measurement = aiData[1];
+                AI13Measurement = aiData[2];
+                AI14Measurement = aiData[3];
+                AI15Measurement = aiData[4];
+                
+                // Record data in arrays for plotting in a different thread
+                AI11[NumberOfAIMeasurementsInQueue] = AI11Measurement;
+                AI12[NumberOfAIMeasurementsInQueue] = AI12Measurement;
+                AI13[NumberOfAIMeasurementsInQueue] = AI13Measurement;
+                AI14[NumberOfAIMeasurementsInQueue] = AI14Measurement;
+                AI15[NumberOfAIMeasurementsInQueue] = AI15Measurement;
+                //Console.Write(Convert.ToString(AI15[NumberOfAIMeasurementsInQueue]) + "\n");
+                AIDateTimePlottingArray[NumberOfAIMeasurementsInQueue] = dateTimeStamp;
+
+                ++NumberOfAIMeasurementsInQueue; // Increment the number of items in the plotting queue
+                // Release lock so that plotting can access the data
+            }
+
+            // Update the UI monitor textboxes. This is done here so that if the plotting is lagging, the monitor textboxes are working at the same frequency as the poll period.
+            int count = 0;
+            // Append data to string (to be written to a CSV file when the user wishes to save the data)
+            Double unixTimestamp = (Double)(dateTimeStamp.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+            string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt"); // Initialize next line to be written to CSV data string
+
+            foreach (bool Flag in AIConversionEnabled)
+            {
+                double ConvertedValue;
+                if (Flag)
+                {
+                    if (AISeries[count] == "AI11")
+                    {
+                        ConvertedValue = AIConversionMethods.OhmMeterConversionMethod(AI11Measurement);
+                        window.SetTextBox(window.tbMonitorAI11, ConvertedValue.ToString("E"));
+                        csvLine += "," + ConvertedValue.ToString("E");
+                    }
+                    if (AISeries[count] == "AI12")
+                    {
+                        ConvertedValue = AIConversionMethods.OhmMeterConversionMethod(AI12Measurement);
+                        window.SetTextBox(window.tbMonitorAI12, ConvertedValue.ToString("E"));
+                        csvLine += "," + ConvertedValue.ToString("E");
+                    }
+                    if (AISeries[count] == "AI13")
+                    {
+                        ConvertedValue = AIConversionMethods.OhmMeterConversionMethod(AI13Measurement);
+                        window.SetTextBox(window.tbMonitorAI13, ConvertedValue.ToString("E"));
+                        csvLine += "," + ConvertedValue.ToString("E");
+                    }
+                    if (AISeries[count] == "AI14")
+                    {
+                        ConvertedValue = AIConversionMethods.OhmMeterConversionMethod(AI14Measurement);
+                        window.SetTextBox(window.tbMonitorAI14, ConvertedValue.ToString("E"));
+                        csvLine += "," + ConvertedValue.ToString("E");
+                    }
+                    if (AISeries[count] == "AI15")
+                    {
+                        ConvertedValue = AIConversionMethods.OhmMeterConversionMethod(AI15Measurement);
+                        window.SetTextBox(window.tbMonitorAI15, ConvertedValue.ToString("E"));
+                        csvLine += "," + ConvertedValue.ToString("E");
+                    } // Yes this is very horrible, but multidimensional arrays are almost as bad in C#. Will try and make this more pretty later
+                }
+                else
+                {
+                    if (AISeries[count] == "AI11")
+                    {
+                        window.SetTextBox(window.tbMonitorAI11, AI11Measurement.ToString("E"));
+                        csvLine += "," + AI11Measurement.ToString("E");
+                    }
+                    if (AISeries[count] == "AI12")
+                    {
+                        window.SetTextBox(window.tbMonitorAI12, AI12Measurement.ToString("E"));
+                        csvLine += "," + AI12Measurement.ToString("E");
+                    }
+                    if (AISeries[count] == "AI13")
+                    {
+                        window.SetTextBox(window.tbMonitorAI13, AI13Measurement.ToString("E"));
+                        csvLine += "," + AI13Measurement.ToString("E");
+                    }
+                    if (AISeries[count] == "AI14")
+                    {
+                        window.SetTextBox(window.tbMonitorAI14, AI14Measurement.ToString("E"));
+                        csvLine += "," + AI14Measurement.ToString("E");
+                    }
+                    if (AISeries[count] == "AI15")
+                    {
+                        window.SetTextBox(window.tbMonitorAI15, AI15Measurement.ToString("E"));
+                        csvLine += "," + AI15Measurement.ToString("E");
+                    } // Yes this is very horrible, but multidimensional arrays are almost as bad in C#. Will try and make this more pretty later
+                }
+                ++count;
+            }
+
+            csvLine += "\r\n";
+            lock (AICSVDataLock)
+            {
+                csvDataAnalogueInputs += csvLine;
+            }
+        }
+        private void UpdateAIChartRollingTimeAxis()
+        {
+            DateTime xMin = DateTime.Now.AddMilliseconds(-AIChartRollingPeriod);
+            window.SetChartXAxisMinDateTime(window.chart4, xMin);
+        }
+        public void EnableAIChartRollingTimeAxis(bool Enable)
+        {
+            if (Enable)
+            {
+                if (AIChartRollingPeriodSelected)
+                {
+                    AIChartRollingXAxis = true;
+                }
+                else
+                {
+                    MessageBox.Show("Please select analogue input chart rolling period.", "User input exception", MessageBoxButtons.OK);
+                    window.SetCheckBox(window.cbEnableAnalogueInputsChartRollingTimeAxis, false);
+                }
+            }
+            else
+            {
+                AIChartRollingXAxis = false;
+                window.SetChartXAxisMinAuto(window.chart4);
+            }
+        }
+        public void UpdateAIChartRollingPeriod()
+        {
+            int AIChartRollingPeriodParsedValue;
+            if (Int32.TryParse(window.tbAnalogueInputsChartRollingAxisPeriod.Text, out AIChartRollingPeriodParsedValue))
+            {
+                if (AnalogueInputsMonitorPollPeriod <= AIChartRollingPeriodParsedValue)
+                {
+                    AIChartRollingPeriod = AIChartRollingPeriodParsedValue; // Update AI chart rolling period
+                    AIChartRollingPeriodSelected = true;
+                }
+                else MessageBox.Show("Rolling period less than the polling period of the plot.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse chart rolling period string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void ClearAllAIChartSeries()
+        {
+            foreach (string SeriesName in AISeries) 
+            {
+                ClearChartSeriesData(window.chart4, SeriesName);
+            }
+            foreach (string SeriesName in AIConversionSeries)
+            {
+                ClearChartSeriesData(window.chart4, SeriesName);
+            }
+            ClearAnalogueInputsCSVData();
+        }
+        public void ClearAnalogueInputsCSVData()
+        {
+            lock (AICSVDataLock)
+            {
+                csvDataAnalogueInputs = "";
+                SetAnalogueInputsCSVHeaderLine();
+                ClearAIMonitorTextBoxes();
+            }
+        }
+        public void ClearAIMonitorTextBoxes()
+        {
+            window.SetTextBox(window.tbMonitorAI11, "");
+            window.SetTextBox(window.tbMonitorAI12, "");
+            window.SetTextBox(window.tbMonitorAI13, "");
+            window.SetTextBox(window.tbMonitorAI14, "");
+            window.SetTextBox(window.tbMonitorAI15, "");
+        }
+        public void SetAnalogueInputsCSVHeaderLine()
+        {
+            if (csvDataAnalogueInputs == "") csvDataAnalogueInputs += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "AI11 (arb.)" + "," + "AI12 (arb.)" + "," + "AI13 (arb.)" + "," + "AI14 (arb.)" + "," + "AI15 (arb.)" + "," + "\r\n"; // Header lines for csv file
+        }
+        public void SaveAnalogueInputsDataToCSV()
+        {
+            lock (AICSVDataLock)
+            {
+                SavePlotDataToCSV(csvDataAnalogueInputs);
+            }
+        }
+
+        public class AIConversionMethods
+        {
+            public static double OhmMeterConversionMethod(double Voltage)
+            {
+                double Vin = 4.9793; // Measured using DAQ AI12 with Ohm meter resistors connected
+                double KnownResistor = 6839.5; // Calculated using a fit. This less precisely known resistor (6.8 kOhms) was calibrated against a better known resistor (100.0 Ohms) by varying (double) KnownResistor and measuring (double) outputResistance below.
+
+                double outputResistance = KnownResistor * ((Vin / Voltage) - 1);
+
+                return outputResistance; 
+            }
+            public static double[] OhmMeterSeriesConversion(double[] Voltages)
+            {
+                int ArrayLength = Voltages.Length;
+                double[] OutputArray = new double[ArrayLength];
+                int count = 0;
+                foreach (double Voltage in Voltages)
+                {
+                    OutputArray[count] = OhmMeterConversionMethod(Voltage);
+                    ++count;
+                }
+                return OutputArray;
+            }
+        }
+
+        public void EnableConvertedAISeries(string AnalogueInputName, string AIConversionMethodName)
+        {
+            // Setup thread for conversion to be run on.
+            // This prevents the UI from locking up if the AIChartSeriesLock is already taken by the AI plotting thread.
+            Thread ConvertAnalogueInput = new Thread(() => EnableConvertedAISeriesWorker(AnalogueInputName, AIConversionMethodName));
+            ConvertAnalogueInput.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            ConvertAnalogueInput.Start();
+        }
+        public void EnableConvertedAISeriesWorker(string AnalogueInputName, string AIConversionMethodName)
+        {
+            SetAIConversionStatusTextBox("");
+            
+            int ConversionMethodIndex = Array.IndexOf(AIConversionMethodsNames, AIConversionMethodName);
+            string Units = AIConversionUnits[ConversionMethodIndex];
+
+            int AISeriesNameIndex = Array.IndexOf(AISeries, AnalogueInputName);
+            string AIConvertedSeriesName = AIConversionSeries[AISeriesNameIndex];
+
+            // Lock the chart series so that the plotting thread doesn't add any points whilst this operation is being performed.
+            // Note that the monitoring thread can continue to read the analogue inputs whilst this conversion is taking place.
+            lock (AIChartSeriesLock)
+            {
+                Console.Write(Convert.ToString(DateTime.Now) + "\n");
+                if (AIConversionMethodName != "None") // If the user is converting to raw voltage to another quantity
+                {
+                    double[] OutputArray;
+                    ClearChartSeriesData(window.chart4, AIConvertedSeriesName); // Clear the series data. If switching between conversions, this resets the series before the new data are added.
+
+                    // Get current datapoints from analogue inputs chart series
+                    AppendAIConversionStatusTextBox("Collecting raw data.");
+                    Tuple<double[], DateTime[]> RawAISeriesData = GetRawAISeriesData(AnalogueInputName); // Returns the raw voltages and datetimes in a tuple format
+                    double[] RawVoltages = RawAISeriesData.Item1; // Raw voltages to be converted
+                    DateTime[] AISeriesDateTimes = RawAISeriesData.Item2; // DateTimes associated with the raw voltages
+
+                    if (AIConversionMethodName == "Ohm Meter")
+                    {
+                        AppendAIConversionStatusTextBox("Applying conversion method to raw voltages.");
+                        OutputArray = AIConversionMethods.OhmMeterSeriesConversion(RawVoltages);
+                        AppendAIConversionStatusTextBox("Adding data to plot.");
+                        AddArrayOfPointsToChart(window.chart4, AIConvertedSeriesName, AISeriesDateTimes, OutputArray);
+                        EnableChartSeries(window.chart4, AnalogueInputName, false);
+                        EnableChartSeries(window.chart4, AIConvertedSeriesName, CheckIfAISeriesEnabled(AnalogueInputName));
+                        AIConversionEnabled[AISeriesNameIndex] = true;
+                        CurrentAIConversionMethods[AISeriesNameIndex] = AIConversionMethodName;
+                        AppendAIConversionStatusTextBox("Finished.");
+                    }
+
+                }
+                else // I.e. if user has reverted back to raw voltage
+                {
+                    EnableChartSeries(window.chart4, AnalogueInputName, CheckIfAISeriesEnabled(AnalogueInputName)); // Enable the raw voltage data series if checkbox is checked (show on chart)
+                    EnableChartSeries(window.chart4, AIConvertedSeriesName, false); // Disable the converted data series (hide on chart)
+                    ClearChartSeriesData(window.chart4, AIConvertedSeriesName); // Clear the converted data series
+                    AIConversionEnabled[AISeriesNameIndex] = false; // Reset flag
+                    CurrentAIConversionMethods[AISeriesNameIndex] = AIConversionMethodName; // Reset conversion name to "None"
+                }
+            }
+
+            SetAIUnits(AnalogueInputName, Units); // Set analogue input units
+        }
+        private Tuple<double[], DateTime[]> GetRawAISeriesData(string AnalogueInputSeriesName)
+        {
+            double[] AIYValues;
+            DateTime[] AIXValues;
+           
+            int pointsCount = window.chart4.Series[AnalogueInputSeriesName].Points.Count; // Number of points in the series
+            AIYValues = new double[pointsCount]; 
+            AIXValues = new DateTime[pointsCount];
+
+            for (int i = 0; i < pointsCount; ++i) // Annoyingly, there doesn't seem to be a way to simply get all of the YValues using one function. One must loop over the datapoints individually and extract the information that you want.
+            {
+                var point = window.chart4.Series[AnalogueInputSeriesName].Points[i]; // Get next datapoint
+                AIYValues[i] = point.YValues[0]; // Get datapoint YValue
+                AIXValues[i] = DateTime.FromOADate(point.XValue); // point.XValue assumed (by the computer) to be a double. FromOADate() is used because we know better than the computer!
+            }
+
+            return Tuple.Create(AIYValues, AIXValues); // Tuple is used to pair related values without having to define a new type
+        }
+        private void SetAIUnits(string AnalogueInputName, string Units)
+        {
+            if (AnalogueInputName == "AI11")
+            {
+                window.SetTextBox(window.tbAI11Units, Units);
+            }
+            else
+            {
+                if (AnalogueInputName == "AI12")
+                {
+                    window.SetTextBox(window.tbAI12Units, Units);
+                }
+                else
+                {
+                    if (AnalogueInputName == "AI13")
+                    {
+                        window.SetTextBox(window.tbAI13Units, Units);
+                    }
+                    else
+                    {
+                        if (AnalogueInputName == "AI14")
+                        {
+                            window.SetTextBox(window.tbAI14Units, Units);
+                        }
+                        else
+                        {
+                            if (AnalogueInputName == "AI15")
+                            {
+                                window.SetTextBox(window.tbAI15Units, Units);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private void AddConvertedAIPointsToChart(string AnalogueInputSeriesName, double[] RawVoltages, DateTime[] DateTimeStamps)
+        {
+            int AISeriesNameIndex = Array.IndexOf(AISeries, AnalogueInputSeriesName);
+            string AIConvertedSeriesName = AIConversionSeries[AISeriesNameIndex];
+            string ConversionMethod = CurrentAIConversionMethods[AISeriesNameIndex];
+            double[] ConvertedValues;
+
+            if (ConversionMethod == "Ohm Meter")
+            {
+                ConvertedValues = AIConversionMethods.OhmMeterSeriesConversion(RawVoltages);
+                AddArrayOfPointsToChart(window.chart4, AIConvertedSeriesName, DateTimeStamps, ConvertedValues);
+            }
+        }
+        private bool CheckIfAISeriesEnabled(string AnalogueInputSeriesName)
+        {
+            if (AnalogueInputSeriesName == "AI11")
+            {
+                if (window.cbPlotAnalogueInputAI11.Checked) return true;
+                else return false;
+            }
+            if (AnalogueInputSeriesName == "AI12")
+            {
+                if (window.cbPlotAnalogueInputAI12.Checked) return true;
+                else return false;
+            }
+            if (AnalogueInputSeriesName == "AI13")
+            {
+                if (window.cbPlotAnalogueInputAI13.Checked) return true;
+                else return false;
+            }
+            if (AnalogueInputSeriesName == "AI14")
+            {
+                if (window.cbPlotAnalogueInputAI14.Checked) return true;
+                else return false;
+            }
+            if (AnalogueInputSeriesName == "AI15")
+            {
+                if (window.cbPlotAnalogueInputAI15.Checked) return true;
+                else return false;
+            }
+            else return false;
+        }
+        public void AppendAIConversionStatusTextBox(string StatusUpdate)
+        {
+            window.AppendTextBox(window.tbAIConversionStatus, StatusUpdate + Environment.NewLine);
+        }
+        public void SetAIConversionStatusTextBox(string StatusUpdate)
+        {
+            window.SetTextBox(window.tbAIConversionStatus, StatusUpdate);
+        }
+        
+        private Thread AnalogueInputsMonitorPollThread;
+        private Thread AnalogueInputsPlottingThread;
+        private int AnalogueInputsMonitorPollPeriod = 1000;
+        private int AIMonitorPollPeriodLowerLimit = 50;
+        private bool AnalogueInputsMonitorFlag;
+        private bool AnalogueInputsPlottingFlag;
+        private Object AnalogueInputsMonitorLock;
+        private string[] AISeries = { "AI11", "AI12", "AI13", "AI14", "AI15" }; // Names of series used in analogue inputs chart
+        private string[] AIConversionSeries = { "AI11 Converted", "AI12 Converted", "AI13 Converted", "AI14 Converted", "AI15 Converted" }; // Names of converted series used in analogue inputs chart
+        private bool[] AIConversionEnabled = { false, false, false, false, false}; // Flags to indicate whether or not the user has requested that an analogue input be converted using some pre-defined method
+        private string[] CurrentAIConversionMethods = { "None", "None", "None", "None", "None"};
+        private string[] AIConversionMethodsNames = { "None", "Ohm Meter" }; // Names of methods that can be applied to the AI data
+        private string[] AIConversionUnits = { "(V)", "(Ohms)"}; // Units of converted values
+        public string csvDataAnalogueInputs = "";
+        
+        // Plotting variables
+        private readonly object AIPlottingBufferLock = new object();
+        private readonly object AIChartSeriesLock = new object();
+        private readonly object AICSVDataLock = new object();
+        static int MaxAIPlottingArrayLength = 10000;
+        public int NumberOfAIMeasurementsInQueue = 0;
+        private int AIChartRollingPeriod;
+        private bool AIChartRollingPeriodSelected = false;
+        private bool AIChartRollingXAxis = false;
+        // Arrays for analogue input measurements
+        public double[] AI11 = new double[MaxAIPlottingArrayLength];
+        public double[] AI12 = new double[MaxAIPlottingArrayLength];
+        public double[] AI13 = new double[MaxAIPlottingArrayLength];
+        public double[] AI14 = new double[MaxAIPlottingArrayLength];
+        public double[] AI15 = new double[MaxAIPlottingArrayLength];
+        public DateTime[] AIDateTimePlottingArray = new DateTime[MaxAIPlottingArrayLength];
+        // Buffer arrays for plotting
+        public double[] AI11Buffer;
+        public double[] AI12Buffer;
+        public double[] AI13Buffer;
+        public double[] AI14Buffer;
+        public double[] AI15Buffer;
+        public DateTime[] AIDateTimePlottingArrayBuffer;
+
+        internal void StartAnalogueInputsMonitorPoll()
+        {
+            // Setup monitoring and plotting threads
+            AnalogueInputsMonitorPollThread = new Thread(new ThreadStart(AnalogueInputsMonitorPollWorker));
+            AnalogueInputsMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            AnalogueInputsPlottingThread = new Thread(new ThreadStart(AnalogueInputsPlottingWorker));
+            AnalogueInputsPlottingThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            
+            AnalogueInputsMonitorPollPeriod = Int32.Parse(window.tbAnalogueMonitoringPollPeriod.Text);
+            EnableAnalogueInputsMonitoringUIControls(true); // Enable/disable UI elements that the user should/shouldn't interact with whilst this process in running
+            AnalogueInputsMonitorLock = new Object();
+            AnalogueInputsMonitorFlag = false;
+            AnalogueInputsPlottingFlag = false;
+            SetAnalogueInputsCSVHeaderLine();
+            
+            // Start monitoring and plotting threads
+            AnalogueInputsMonitorPollThread.Start();
+            AnalogueInputsPlottingThread.Start();
+        }
+        internal void StopAnalogueInputsMonitorPoll()
+        {
+            
+
+            UEDMSavePlotDataDialog saveAIDataDialog = new UEDMSavePlotDataDialog("Save data message", "Would you like to save the analogue inputs data now? \n\nThe data will not be cleared.");
+            saveAIDataDialog.ShowDialog();
+            if (saveAIDataDialog.DialogResult != DialogResult.Cancel) // If the user chooses to cancel the action of stopping AI monitoring, then don't perform any of these actions
+            {
+                AnalogueInputsMonitorFlag = true;
+                AnalogueInputsPlottingFlag = true;
+
+                if (saveAIDataDialog.DialogResult == DialogResult.Yes)
+                {
+                    lock (AICSVDataLock)
+                    {
+                        SavePlotDataToCSV(csvDataAnalogueInputs);
+                    }
+                }
+            }
+            saveAIDataDialog.Dispose();
+        }
+        private void AnalogueInputsMonitorPollWorker()
+        {
+            int count = 0;
+
+            for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure values. This is subtracted from the poll period so that the loop is executed at the proper frequency.
+                ++count;
+                lock (AnalogueInputsMonitorLock)
+                {
+                    // Measure AI ports and record data in plotting queue - the data will be plotted in a different thread.
+                    MonitorAnalogueInputs();
+
+                    if (AnalogueInputsMonitorFlag)
+                    {
+                        AnalogueInputsMonitorFlag = false;
+                        break;
+                    }
+                }
+
+                // Calculate and subtract from the poll period the amount of time taken to perform the contents of this loop (so that the AI ports are polled at the correct frequency)
+                watch.Stop(); // Stop the stopwatch that was started at the start of the for loop
+                int ThreadWaitPeriod = AnalogueInputsMonitorPollPeriod - Convert.ToInt32(watch.ElapsedMilliseconds); // Subtract the time elapsed from the user defined poll period
+                if (ThreadWaitPeriod < 0) ThreadWaitPeriod = 0; // If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
+                Thread.Sleep(ThreadWaitPeriod); // Wait until the next AI measurements are to be made
+            }
+            EnableAnalogueInputsMonitoringUIControls(false);
+        }
+        private void AnalogueInputsPlottingWorker()
+        {
+            int PlottingQueueLength = 0;
+            for (; ; )
+            {
+                Thread.Sleep(AnalogueInputsMonitorPollPeriod); // Wait until more data is taken
+
+                // Plot AI data
+                lock (AIChartSeriesLock) // If the series data is currently being converted, then lock the series
+                {
+                    lock (AIPlottingBufferLock) // Use lock to prevent new measurements being added to the plotting queue whilst the plotting function is in operation.
+                    {
+                        PlottingQueueLength = NumberOfAIMeasurementsInQueue;
+                        NumberOfAIMeasurementsInQueue = 0; // Reset the number of items in the queue to zero
+                        // Create buffer arrays that can store the data locally - allowing AI measurements to continue unimpeded.
+                        AI11Buffer = new double[PlottingQueueLength];
+                        AI12Buffer = new double[PlottingQueueLength];
+                        AI13Buffer = new double[PlottingQueueLength];
+                        AI14Buffer = new double[PlottingQueueLength];
+                        AI15Buffer = new double[PlottingQueueLength];
+                        AIDateTimePlottingArrayBuffer = new DateTime[PlottingQueueLength];
+
+                        if (PlottingQueueLength > 0) // If no data has been recorded, then there is no need to perform this function.
+                        {
+                            // Copy the data to buffer arrays so that the lock can be released and the monitoring thread can continue to make measurements of the AI ports
+                            long sourceIndex = 0; // Starting index of the data to be copied from the source array
+                            long destinationIndex = 0; // Starting index of where the data will be stored in the destination (buffer) array
+                            long lengthOfDataToCopy = Convert.ToInt64(PlottingQueueLength); // Number of measurements saved to the plotting queue (i.e. how many elements of the data arrays are to be copied to the buffer arrays)
+                            Array.Copy(AI11, sourceIndex, AI11Buffer, destinationIndex, lengthOfDataToCopy);
+                            Array.Copy(AI12, sourceIndex, AI12Buffer, destinationIndex, lengthOfDataToCopy);
+                            Array.Copy(AI13, sourceIndex, AI13Buffer, destinationIndex, lengthOfDataToCopy);
+                            Array.Copy(AI14, sourceIndex, AI14Buffer, destinationIndex, lengthOfDataToCopy);
+                            Array.Copy(AI15, sourceIndex, AI15Buffer, destinationIndex, lengthOfDataToCopy);
+                            Array.Copy(AIDateTimePlottingArray, sourceIndex, AIDateTimePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+
+                            // Clear the data plotting arrays and release the lock so that measurements can continue whilst plotting is performed.
+                            int sourceClearIndex = Convert.ToInt32(sourceIndex);
+                            int lengthOfDataToClear = Convert.ToInt32(lengthOfDataToCopy);
+                            Array.Clear(AI11, sourceClearIndex, lengthOfDataToClear);
+                            Array.Clear(AI12, sourceClearIndex, lengthOfDataToClear);
+                            Array.Clear(AI13, sourceClearIndex, lengthOfDataToClear);
+                            Array.Clear(AI14, sourceClearIndex, lengthOfDataToClear);
+                            Array.Clear(AI15, sourceClearIndex, lengthOfDataToClear);
+                            Array.Clear(AIDateTimePlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        }
+                    }
+
+                    if (PlottingQueueLength > 0)
+                    {
+
+                        AddArrayOfPointsToChart(window.chart4, AISeries[0], AIDateTimePlottingArrayBuffer, AI11Buffer);
+                        AddArrayOfPointsToChart(window.chart4, AISeries[1], AIDateTimePlottingArrayBuffer, AI12Buffer);
+                        AddArrayOfPointsToChart(window.chart4, AISeries[2], AIDateTimePlottingArrayBuffer, AI13Buffer);
+                        AddArrayOfPointsToChart(window.chart4, AISeries[3], AIDateTimePlottingArrayBuffer, AI14Buffer);
+                        AddArrayOfPointsToChart(window.chart4, AISeries[4], AIDateTimePlottingArrayBuffer, AI15Buffer);
+
+                        int count = 0;
+                        foreach (bool Flag in AIConversionEnabled)
+                        {
+                            if (Flag)
+                            {
+                                if (AISeries[count] == "AI11")
+                                {
+                                    AddConvertedAIPointsToChart(AISeries[count], AI11Buffer, AIDateTimePlottingArrayBuffer);
+                                }
+                                if (AISeries[count] == "AI12")
+                                {
+                                    AddConvertedAIPointsToChart(AISeries[count], AI12Buffer, AIDateTimePlottingArrayBuffer);
+                                }
+                                if (AISeries[count] == "AI13")
+                                {
+                                    AddConvertedAIPointsToChart(AISeries[count], AI13Buffer, AIDateTimePlottingArrayBuffer);
+                                }
+                                if (AISeries[count] == "AI14")
+                                {
+                                    AddConvertedAIPointsToChart(AISeries[count], AI14Buffer, AIDateTimePlottingArrayBuffer);
+                                }
+                                if (AISeries[count] == "AI15")
+                                {
+                                    AddConvertedAIPointsToChart(AISeries[count], AI15Buffer, AIDateTimePlottingArrayBuffer);
+                                } // Yes this is very horrible, but multidimensional arrays are almost as bad in C#. Will try and make this more pretty later
+                            }
+                            ++count;
+                        }
+
+                        // Update chart
+                        if (AIChartRollingXAxis)
+                        {
+                            UpdateAIChartRollingTimeAxis();
+                        }
+                    }
+                }
+
+                PlottingQueueLength = 0; // Reset variable
+
+                if (AnalogueInputsPlottingFlag) // If the user has requested that monitoring/plotting of temperature/pressure be stopped, then break this loop
+                {
+                    AnalogueInputsPlottingFlag = false;
+                    break;
+                }
+            }
         }
 
         #endregion

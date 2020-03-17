@@ -134,6 +134,62 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void UpdateChartYScaleWhenXAxisRolling(Chart chart, int NumberOfPointsBeingDisplayed)
+        {
+            chart.Invoke(new UpdateChartYScaleWhenXAxisRollingDelegate(UpdateChartYScaleWhenXAxisRollingHelper), new object[] { chart, NumberOfPointsBeingDisplayed });
+        }
+        private delegate void UpdateChartYScaleWhenXAxisRollingDelegate(Chart chart, int NumberOfPointsBeingDisplayed);
+        private void UpdateChartYScaleWhenXAxisRollingHelper(Chart chart, int NumberOfPointsBeingDisplayed)
+        {
+            double max = Double.MinValue;
+            double min = Double.MaxValue;
+
+            foreach (Series ser in chart.Series)
+            {
+                if (chart.Series[ser.Name].Enabled)
+                {
+                    int pointsCount = chart.Series[ser.Name].Points.Count; // Number of points in the series
+                    double YValue;
+                    int startPoint = pointsCount - NumberOfPointsBeingDisplayed;
+
+                    if (startPoint < 0) startPoint = 0;
+
+                    for (int ii = startPoint; ii < pointsCount; ii++)
+                    {
+                        YValue = chart.Series[ser.Name].Points[ii].YValues[0];
+                        min = Math.Min(min, YValue);
+                        max = Math.Max(max, YValue);
+                    }
+                }
+            }
+
+            // If the series data are cleared, then the min/max need to be defined until the next data point is added to the series:
+            if (min == Double.MinValue)
+            {
+                min = 0;
+            }
+            if (max == Double.MaxValue)
+            {
+                max = 1;
+            }
+
+            Axis ay = chart.ChartAreas[0].AxisY;
+            
+            ay.Maximum = max;
+            ay.Minimum = min;
+            if (chart.Name == "chart1")
+            {
+                ay.LabelStyle.Format = "0.##E+0";
+            }
+            else
+            {
+                if (chart.Name == "chart2")
+                {
+                    ay.LabelStyle.Format = "#.####";
+                }
+            }
+        }
+
         public void SetChartXAxisMinDateTime(Chart chart, DateTime xmin)
         {
             chart.Invoke(new SetChartXAxisMinDateTimeDelegate(SetChartXAxisMinDateTimeHelper), new object[] { chart, xmin });
@@ -153,7 +209,20 @@ namespace UEDMHardwareControl
         private void SetChartXAxisMinAutoHelper(Chart chart)
         {
             Axis xaxis = chart.ChartAreas[0].AxisX;
-            xaxis.Minimum = Double.NaN; ;
+            xaxis.Minimum = Double.NaN; 
+            chart.ChartAreas[0].RecalculateAxesScale();
+        }
+
+        public void SetChartYAxisAuto(Chart chart)
+        {
+            chart.Invoke(new SetChartYAxisAutoDelegate(SetChartYAxisAutoHelper), new object[] { chart });
+        }
+        private delegate void SetChartYAxisAutoDelegate(Chart chart);
+        private void SetChartYAxisAutoHelper(Chart chart)
+        {
+            Axis yaxis = chart.ChartAreas[0].AxisY;
+            yaxis.Minimum = Double.NaN;
+            yaxis.Maximum = Double.NaN; 
             chart.ChartAreas[0].RecalculateAxesScale();
         }
 
@@ -187,6 +256,23 @@ namespace UEDMHardwareControl
         {
             checkBox.Checked = checkedStatus;
         }
+
+        public void SetChartMovingAverage(Chart chart, int NumberOfPointsToAverage)
+        {
+            chart.Invoke(new SetChartMovingAverageDelegate(SetChartMovingAverageHelper), new object[] { chart, NumberOfPointsToAverage });
+        }
+        private delegate void SetChartMovingAverageDelegate(Chart chart, int NumberOfPointsToAverage);
+        private void SetChartMovingAverageHelper(Chart chart, int NumberOfPointsToAverage)
+        {
+            foreach (Series series in chart.Series)
+            {
+                if (series.Points.Count > NumberOfPointsToAverage)
+                {
+                    chart.DataManipulator.FinancialFormula(FinancialFormula.MovingAverage, NumberOfPointsToAverage.ToString(), series.Name + ":Y", series.Name + ":Y");
+                }
+            }
+        }
+
 
         # endregion
 
@@ -380,8 +466,7 @@ namespace UEDMHardwareControl
 
         private void checkBoxSourcePressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxSourcePressurePlot.Checked) controller.EnableChartSeries(chart1, "Source Pressure", true);
-            else controller.EnableChartSeries(chart1, "Source Pressure", false);
+            controller.EnableChartSeries(chart1, "Source Pressure", checkBoxSourcePressurePlot.Checked);
         }
 
         private void btClearSourcePressureData_Click(object sender, EventArgs e)
@@ -474,6 +559,7 @@ namespace UEDMHardwareControl
 
         private void btStartRefreshMode_Click(object sender, EventArgs e)
         {
+            controller.RefreshModeSetWindowsAPIShutdownHandle(this.Handle);
             controller.StartRefreshMode();
         }
 
@@ -574,6 +660,7 @@ namespace UEDMHardwareControl
 
         private void btStartWarmUpMode_Click(object sender, EventArgs e)
         {
+            controller.WarmupModeSetWindowsAPIShutdownHandle(this.Handle);
             controller.StartWarmUpMode();
         }
 
@@ -610,6 +697,7 @@ namespace UEDMHardwareControl
 
         private void btStartCoolDownMode_Click(object sender, EventArgs e)
         {
+            controller.CoolDownModeSetWindowsAPIShutdownHandle(this.Handle);
             controller.StartCoolDownMode();
         }
 
@@ -628,5 +716,289 @@ namespace UEDMHardwareControl
             controller.UpdateTemperatureChartRollingPeriod();
         }
 
+        private void cbEnablePressureChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnablePressureChartRollingTimeAxis(cbEnablePressureChartRollingTimeAxis.Checked);
+        }
+
+        private void btRollingPressureChartTimeAxis_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePressureChartRollingPeriod();
+        }
+
+        private void btGaugesCorrectionFactors_Click(object sender, EventArgs e)
+        {
+            controller.UpdateGaugesCorrectionFactors();
+        }
+
+        private void tbSourceGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdateGaugesCorrectionFactors();
+            }
+        }
+
+        private void tbBeamlineGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdateGaugesCorrectionFactors();
+            }
+        }
+
+        private void tbTandPPollPeriod_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdatePTMonitorPollPeriod();
+            }
+        }
+
+        private void tbRollingPressureChartTimeAxisPeriod_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdatePressureChartRollingPeriod();
+            }
+        }
+
+        private void tbRollingTemperatureChartTimeAxisPeriod_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdateTemperatureChartRollingPeriod();
+            }
+        }
+
+        private void tbNewNeonFlowSetPoint_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.SetNeonFlowSetpoint();
+            }
+        }
+
+        private void cbDigitalOutputP00_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDigitalOutput("Port00", cbDigitalOutputP00.Checked);
+        }
+
+        private void cbDigitalOutputP01_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDigitalOutput("Port01", cbDigitalOutputP01.Checked);
+        }
+
+        private void cbDigitalOutputP02_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDigitalOutput("Port02", cbDigitalOutputP02.Checked);
+        }
+
+        private void cbDigitalOutputP03_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDigitalOutput("Port03", cbDigitalOutputP03.Checked);
+        }
+
+        private void comboBoxAnalogueInputsChartScaleY_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.ChangePlotYAxisScale(4);
+        }
+
+        private void btUpdateAnalogueMonitoringPollPeriod_Click(object sender, EventArgs e)
+        {
+            controller.UpdateAIMonitorPollPeriod();
+        }
+
+        private void btStartMonitoringAnalogueInputs_Click(object sender, EventArgs e)
+        {
+            controller.StartAnalogueInputsMonitorPoll();
+        }
+
+        private void btStopMonitoringAnalogueInputs_Click(object sender, EventArgs e)
+        {
+            controller.StopAnalogueInputsMonitorPoll();
+        }
+
+        private void cbPlotAnalogueInputAI11_CheckedChanged(object sender, EventArgs e)
+        {
+            if (comboBoxAI11Conversion.Text == "None")
+            {
+                controller.EnableChartSeries(chart4, "AI11", cbPlotAnalogueInputAI11.Checked);
+            }
+            else
+            {
+                controller.EnableChartSeries(chart4, "AI11 Converted", cbPlotAnalogueInputAI11.Checked);
+            }
+        }
+
+        private void cbPlotAnalogueInputAI12_CheckedChanged(object sender, EventArgs e)
+        {
+            if (comboBoxAI12Conversion.Text == "None")
+            {
+                controller.EnableChartSeries(chart4, "AI12", cbPlotAnalogueInputAI12.Checked);
+            }
+            else
+            {
+                controller.EnableChartSeries(chart4, "AI12 Converted", cbPlotAnalogueInputAI12.Checked);
+            }
+        }
+
+        private void cbPlotAnalogueInputAI13_CheckedChanged(object sender, EventArgs e)
+        {
+            if (comboBoxAI13Conversion.Text == "None")
+            {
+                controller.EnableChartSeries(chart4, "AI13", cbPlotAnalogueInputAI13.Checked);
+            }
+            else
+            {
+                controller.EnableChartSeries(chart4, "AI13 Converted", cbPlotAnalogueInputAI13.Checked);
+            }
+        }
+
+        private void cbPlotAnalogueInputAI14_CheckedChanged(object sender, EventArgs e)
+        {
+            if (comboBoxAI14Conversion.Text == "None")
+            {
+                controller.EnableChartSeries(chart4, "AI14", cbPlotAnalogueInputAI14.Checked);
+            }
+            else
+            {
+                controller.EnableChartSeries(chart4, "AI14 Converted", cbPlotAnalogueInputAI14.Checked);
+            }
+        }
+
+        private void cbPlotAnalogueInputAI15_CheckedChanged(object sender, EventArgs e)
+        {
+            if (comboBoxAI15Conversion.Text == "None")
+            {
+                controller.EnableChartSeries(chart4, "AI15", cbPlotAnalogueInputAI15.Checked);
+            }
+            else
+            {
+                controller.EnableChartSeries(chart4, "AI15 Converted", cbPlotAnalogueInputAI15.Checked);
+            }
+        }
+
+        private void btClearAI11SeriesData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart4, "AI11");
+            controller.ClearChartSeriesData(chart4, "AI11 Converted");
+        }
+
+        private void btClearAI12SeriesData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart4, "AI12");
+            controller.ClearChartSeriesData(chart4, "AI12 Converted");
+        }
+
+        private void btClearAI13SeriesData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart4, "AI13");
+            controller.ClearChartSeriesData(chart4, "AI13 Converted");
+        }
+
+        private void btClearAI14SeriesData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart4, "AI14");
+            controller.ClearChartSeriesData(chart4, "AI14 Converted");
+        }
+
+        private void btClearAI15SeriesData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart4, "AI15");
+            controller.ClearChartSeriesData(chart4, "AI15 Converted");
+        }
+
+        private void btClearAllAnalogueInputData_Click(object sender, EventArgs e)
+        {
+            controller.ClearAllAIChartSeries();
+        }
+
+        private void btUpdateAnalogueInputsChartRollingAxisPeriod_Click(object sender, EventArgs e)
+        {
+            controller.UpdateAIChartRollingPeriod();
+        }
+
+        private void cbEnableAnalogueInputsChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableAIChartRollingTimeAxis(cbEnableAnalogueInputsChartRollingTimeAxis.Checked);
+        }
+
+        private void btSaveAICSVData_Click(object sender, EventArgs e)
+        {
+            controller.SaveAnalogueInputsDataToCSV();
+        }
+
+        private void comboBoxAI11Conversion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.EnableConvertedAISeries("AI11", comboBoxAI11Conversion.Text);
+        }
+
+        private void comboBoxAI12Conversion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.EnableConvertedAISeries("AI12", comboBoxAI12Conversion.Text);
+        }
+
+        private void comboBoxAI13Conversion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.EnableConvertedAISeries("AI13", comboBoxAI13Conversion.Text);
+        }
+
+        private void comboBoxAI14Conversion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.EnableConvertedAISeries("AI14", comboBoxAI14Conversion.Text);
+        }
+
+        private void comboBoxAI15Conversion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.EnableConvertedAISeries("AI15", comboBoxAI15Conversion.Text);
+        }
+
+        private void checkBoxBeamlinePressurePlot_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableChartSeries(chart1, "Beamline Pressure", checkBoxBeamlinePressurePlot.Checked);
+        }
+
+        private void btResetPTCSVData_Click(object sender, EventArgs e)
+        {
+            controller.ResetPTCSVData();
+        }
+
+        private void btSaveAllPTDataToCSV_Click(object sender, EventArgs e)
+        {
+            controller.SavePTDataToCSV();
+        }
+
+        private void pressureAndTemperatureDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.SavePTDataToCSV();
+        }
+
+        private void pressueAndTemperatureImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var PTcharts = new List<Chart> { chart1, chart2 };
+            controller.SaveMultipleChartImages(PTcharts);
+        }
+
+        private void chart1_MouseEnter(object sender, EventArgs e)
+        {
+            if (!chart1.Focused)
+                chart1.Focus();
+        }
+
+        private void chart1_MouseLeave(object sender, EventArgs e)
+        {
+            if (chart1.Focused)
+                chart1.Parent.Focus();
+        }
+
+        private void labelTemperatureRollingTimeAxisPeriod_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        
     }
 }

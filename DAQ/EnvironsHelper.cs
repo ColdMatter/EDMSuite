@@ -231,8 +231,14 @@ namespace DAQ.Environment
 
                 case "SSWARB":
                     Hardware = new BufferClassicHardware();
-                    FileSystem = new SSWARBFileSystem();
+                   // FileSystem = new SSWARBFileSystem();
                     Debug = true;
+                    break;
+
+                case "CENTAUR":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new CENTAURFileSystem();
+                    Debug = false;
                     break;
 
                 case "PH-RHENDRIC-02":

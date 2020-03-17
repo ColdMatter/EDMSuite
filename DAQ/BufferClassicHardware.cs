@@ -31,8 +31,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
             //(0,3) pin 12 is unconnected
-            AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
-            AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
+            //AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
+            //AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
             AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);//
             AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
@@ -68,9 +68,6 @@ namespace DAQ.HAL
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
-            //AddAnalogInputChannel("S1TemperatureMonitor", daqBoard + "/ai9", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("S2TemperatureMonitor", daqBoard + "/ai10", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("SF6TemperatureMonitor", daqBoard + "/ai11", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
@@ -81,9 +78,21 @@ namespace DAQ.HAL
             AddAnalogInputChannel("S1TemperatureMonitor", UEDMHardwareControllerBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("S2TemperatureMonitor", UEDMHardwareControllerBoard + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("SF6TemperatureMonitor", UEDMHardwareControllerBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pressureGauge_source", UEDMHardwareControllerBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressureGaugeSource", UEDMHardwareControllerBoard + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressureGaugeBeamline", UEDMHardwareControllerBoard + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("AI11", UEDMHardwareControllerBoard + "/ai11", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("AI12", UEDMHardwareControllerBoard + "/ai12", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("AI13", UEDMHardwareControllerBoard + "/ai13", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("AI14", UEDMHardwareControllerBoard + "/ai14", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
 
-            
+            // map the digital channels of the "UEDMHardwareControllerBoard" card
+            AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
+            AddDigitalOutputChannel("Port01", UEDMHardwareControllerBoard, 0, 1);
+            AddDigitalOutputChannel("Port02", UEDMHardwareControllerBoard, 0, 2);
+            AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
+            AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
+            AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
 
             // map the analog output channels for the "UEDMHardwareControllerBoard" card
             //AddAnalogOutputChannel("laser", Unnamed + "/ao0");
@@ -118,8 +127,8 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v0laser", TCLBoard + "/ao3", 0, 10);
 
             // add the GPIB/RS232/USB instruments
-            Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL4::INSTR"));
-            Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL6::INSTR"));
+            Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
+            Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
             
 
 // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
@@ -162,6 +171,7 @@ namespace DAQ.HAL
             tclConfig.Cavities[IRCavity].AddFSRCalibration("v2laser", 3.84);
             
             Info.Add("TCLConfig", tclConfig);
+            Info.Add("DefaultCavity", tclConfig);
 
             //These need to be activated for the phase lock
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
