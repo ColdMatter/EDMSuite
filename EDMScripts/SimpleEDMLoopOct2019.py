@@ -37,6 +37,11 @@ def checkYAGAndFix():
 		bh.StopPattern()
 		bh.StartPattern()
 
+def checkPhaseLock():
+	while (abs(pl.PhaseError) > 5):
+		prompt("Check Phase Lock is running (hit enter if you are happy.)")
+	print("Phase Lock checked.")
+
 def printWaveformCode(bc, name):
 	print(name + ": " + str(bc.GetModulationByName(name).Waveform.Code) + " -- " + str(bc.GetModulationByName(name).Waveform.Inverted))
 
@@ -66,6 +71,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	print("Bias: " + str(hc.BiasCurrent))
 	print("B step: " + str(abs(hc.FlipStepCurrent)))
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
+	print("Phase Lock Error (deg): "+ str(pl.PhaseError))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	bc = loadBlockConfig(settingsPath + "lfFreqStepTest05Nov19_try2.xml")
@@ -117,7 +123,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	##lf1Wave.Name = "LF1"
 	##mwWave = bc.GetModulationByName("MW").Waveform
 	##mwWave.Name = "MW"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F", "LF1") )
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F","LF1") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -149,14 +155,15 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	bc.Settings["eSwitchTime"] = hc.ESwitchTime
 	bc.Settings["eRampUpTime"] = hc.ERampUpTime
 	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
+	bc.Settings["eOvershootFactor"] = hc.EOvershootFactor
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 250.0
-	bc.Settings["targetStepperGateStartTime"] = 2340.0
-	bc.Settings["targetStepperGateEndTime"] = 2540.0
+	bc.Settings["minimumSignalToRun"] = 200.0
+	bc.Settings["targetStepperGateStartTime"] = 2380.0
+	bc.Settings["targetStepperGateEndTime"] = 2580.0
 	return bc
 
 # lock gains
@@ -313,8 +320,9 @@ def updateLocksNL(bState, mwState):
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 
-	# Laser frequency lock using TCL
-	deltaLF1setpoint = 0.5 * (lf1dbdbValue)
+	#Laser frequency lock using TCL
+	#deltaLF1setpoint = 0.5 * (lf1dbdbValue)
+	deltaLF1setpoint = 0.25 * (lf1dbdbValue)	
 	print "Attempting to change tclProbe setpoint by " + str(deltaLF1setpoint) + " V."
 	tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT") +deltaLF1setpoint)
 
@@ -355,6 +363,7 @@ def EDMGo():
 	if cluster == "":
 		cluster = suggestedClusterName
 		print("Using cluster " + suggestedClusterName)
+	checkPhaseLock()
 	eState = hc.EManualState
 	print("E-state: " + str(eState))
 	bState = hc.BManualState
@@ -405,11 +414,13 @@ def EDMGo():
 		saveBlockConfig(tempConfigFile, bc)
 		System.Threading.Thread.Sleep(500)
 		print("Loading temp config.")
+		# hc.GreenSynthEnabled = False
 		bh.LoadConfig(tempConfigFile)
 		# take the block and save it
 		print("Running Target Stepper ...")
 		bh.StartTargetStepperAndWait()
 		print("Target Stepper finished")
+		# hc.GreenSynthEnabled = True
 		if bh.TargetHealthy == False:
 			print("Unable to find acceptable spot")
 			print("Stopping Cluster")

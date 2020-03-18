@@ -154,13 +154,13 @@ namespace ScanMaster.Acquire
 						}
  					}
 					// prepare for the start of the next scan
-					OnScanFinished();
-					config.pgPlugin.ScanFinished();
-					config.yagPlugin.ScanFinished();
-					config.outputPlugin.ScanFinished();
-					config.shotGathererPlugin.ScanFinished();
-					config.switchPlugin.ScanFinished();
-					config.analogPlugin.ScanFinished();
+                    OnScanFinished();
+                    config.pgPlugin.ScanFinished();
+                    config.yagPlugin.ScanFinished();
+                    config.outputPlugin.ScanFinished();
+                    config.shotGathererPlugin.ScanFinished();
+                    config.switchPlugin.ScanFinished();
+                    config.analogPlugin.ScanFinished();
                     config.gpibPlugin.ScanFinished();
                     // I think that this pause will workaround an annoying threading bug
                     // I should probably be less cheezy and put a lock in, but I'm not really

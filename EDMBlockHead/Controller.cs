@@ -44,6 +44,9 @@ namespace EDMBlockHead
         BlockDemodulator blockDemodulator = new BlockDemodulator();
         public DemodulatedBlock DBlock;
         public QuickEDMAnalysis AnalysedDBlock;
+        private double GateLow= QuickEDMAnalysis.GATE_LOW;
+        private double GateHigh = QuickEDMAnalysis.GATE_HIGH;
+
         private bool haveBlock = false;
 
         // State information
@@ -438,11 +441,12 @@ namespace EDMBlockHead
 
         public void MagDataAcquisitionFinished(Block b)
         {
-            // this.Block = b;
-            // mainWindow.AppendToTextArea("Demodulating magnetic data block.");
-            // DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
-            // DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
-            // liveViewer.AddDBlock(DBlock);
+            this.Block = b;
+            mainWindow.AppendToTextArea("Demodulating magnetic data block.");
+            b.AddDetectorsToMagBlock();
+            //DBlock = blockDemodulator.QuickDemodulateBlock(b);
+            //AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
+            //liveViewer.AddAnalysedDBlock(AnalysedDBlock);
 
             haveBlock = true;
             appState = AppState.stopped;
@@ -470,6 +474,7 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                mainWindow.PlotGates(GateLow, GateHigh);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[5];

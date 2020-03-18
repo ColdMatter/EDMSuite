@@ -600,7 +600,7 @@ namespace EDMPhaseLock
 		}
 
 		private object lockParameterLockObject = new Object();
-		double phaseErrorInDegrees = 0;
+		double phaseErrorInDegrees = 10;//changed to non-zero starting value so we can check phase lock is running with blockhead
 		private void UpdateLock()
 		{
 			lock(lockParameterLockObject)

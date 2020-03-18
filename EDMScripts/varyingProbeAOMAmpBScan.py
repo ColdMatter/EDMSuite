@@ -33,7 +33,7 @@ def Acquire():
 	print("Saving as " + file + "_*.zip")
 	print("")
 	# start looping
-	x = [0.55, 0.58, 0.62, 0.67, 0.85]
+	x = [0.55, 0.62, 0.85]
 	for j in range(3):
 		for i in range(len(x)):
 			hc.UpdateProbeAOMamp(x[i])
@@ -43,13 +43,13 @@ def Acquire():
 				print("AOM: " + str(x[i]) + "V, MW state: " + str(hc.MwSwitchState))
 				count=count+1
 				sm.AcquireAndWait(2)
-				scanPath = file + "_" + str(count) + "_" + str(round(x[i],2)) + ".zip"
+				scanPath = file + "_" + str(count) + ".zip"
 				sm.SaveAverageData(scanPath)
 				hc.SwitchMwAndWait()
 				if (k<2):
-					hc.SetPhaseFlip1(True)
+					hc.SetPhaseFlip2(True)
 				else:
-					hc.SetPhaseFlip1(False)
+					hc.SetPhaseFlip2(False)
 sm.AdjustProfileParameter("out", "externalParameters", "SidIsGreat", False)
 		
 	

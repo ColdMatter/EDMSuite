@@ -104,6 +104,11 @@ namespace Data.EDM
             TOFuliseSinglePointData();
         }
 
+        public void AddDetectorsToMagBlock()
+        {
+            TOFuliseSinglePointData();
+        }
+
         // this function adds a new set of detector data to the block, constructed
         // by calculating the asymmetry of the top and bottom detectors (which must
         // be scaled first)

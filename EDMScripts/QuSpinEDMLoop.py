@@ -68,7 +68,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default.xml")
+	#bc = loadBlockConfig(settingsPath + "default.xml")
+	bc = loadBlockConfig(settingsPath + "QuspinTest_With_dB_noDB.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -108,11 +109,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	print("Generating waveform codes ...")
 	eWave = bc.GetModulationByName("E").Waveform
 	eWave.Name = "E"
-	##lf1Wave = bc.GetModulationByName("LF1").Waveform
-	##lf1Wave.Name = "LF1"
-	mwWave = bc.GetModulationByName("MW").Waveform
-	mwWave.Name = "MW"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, mwWave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	lf1Wave = bc.GetModulationByName("LF1").Waveform
+	lf1Wave.Name = "LF1"
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -123,7 +122,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	# change the inversions of the static codes E 
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# Do the same for the microwave channel
-	bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	#bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# print the waveform codes
 	# printWaveformCode(bc, "E")
 	# printWaveformCode(bc, "B")
@@ -374,6 +373,8 @@ def QuSpinGo():
 	print("B-state: " + str(bState))
 	rfState = hc.RFManualState
 	print("rf-state: " + str(rfState))
+	mwState = hc.MWManualState
+	print("mw-state: " + str(mwState))
 	# this is to make sure the B current monitor is in a sensible state
 	#hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase 
@@ -438,19 +439,9 @@ def QuSpinGo():
 		hc.SetScramblerVoltage(scramblerV)
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV)
-		#pmtChannelValues = bh.DBlock.ChannelValues[0]
-		#magChannelValues = bh.DBlock.ChannelValues[2]
-		#mini1ChannelValues = bh.DBlock.ChannelValues[9]
-		#mini2ChannelValues = bh.DBlock.ChannelValues[10]
-		#mini3ChannelValues = bh.DBlock.ChannelValues[11]
-		#dbValue = pmtChannelValues.GetValue(("DB",))
-		#magEValue = magChannelValues.GetValue(("E",))
-		#mini1EValue = mini1ChannelValues.GetValue(("E",))
-		#mini2EValue = mini2ChannelValues.GetValue(("E",))
-		#mini3EValue = mini3ChannelValues.GetValue(("E",))
 
-		hc.EnableAnapicoListSweep( True )
-		print("ListSweep for microwaves enabled")
+		#hc.EnableAnapicoListSweep( True )
+		#print("ListSweep for microwaves enabled")
 
 		# some code to stop EDMLoop if the laser unlocks. 
 		# This averages the last 3 db values and stops the loop if the average is below 1

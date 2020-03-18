@@ -13,8 +13,8 @@ namespace Analysis.EDM
     public class QuickEDMAnalysis
     {
         // asymmetry gates
-        private static double GATE_LOW = 2830;
-        private static double GATE_HIGH = 3030;
+        public static double GATE_LOW = 2760;
+        public static double GATE_HIGH = 2960;
 
         // constants
         private static double plateSpacing = 1.2;
@@ -61,6 +61,9 @@ namespace Analysis.EDM
         public double[] LF1ValAndErr;
         public double[] LF1DB;
         public double[] LF1DBDB;
+
+        public double[] TopPDSIG;
+        public double[] BottomPDSIG;
 
         public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
         {
@@ -126,7 +129,10 @@ namespace Analysis.EDM
             analysis.LF1ValAndErr = dblock.GetTOFChannel(new string[] { "LF1" }, "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
             analysis.LF1DB = dblock.GetTOFChannel("LF1DB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
             analysis.LF1DBDB = dblock.GetTOFChannel("LF1DBDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
-            
+
+            //probe photodiode monitors
+            analysis.TopPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "topPD"));
+            analysis.BottomPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "bottomPD"));
             return analysis;
         }
 

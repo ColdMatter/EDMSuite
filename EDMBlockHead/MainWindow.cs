@@ -59,6 +59,8 @@ namespace EDMBlockHead.GUI
         private YAxis yAxis5;
         private MenuItem IntelitentTargetStepperMenuItem;
         private MenuItem stopTargetStepperMenuItem;
+        private WaveformPlot GateStart;
+        private WaveformPlot GateEnd;
 
 		private Controller controller;
 
@@ -135,6 +137,8 @@ namespace EDMBlockHead.GUI
             this.tofPlot4 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.yAxis5 = new NationalInstruments.UI.YAxis();
+            this.GateStart = new NationalInstruments.UI.WaveformPlot();
+            this.GateEnd = new NationalInstruments.UI.WaveformPlot();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -331,7 +335,9 @@ namespace EDMBlockHead.GUI
             this.tofGraph2.Location = new System.Drawing.Point(242, 8);
             this.tofGraph2.Name = "tofGraph2";
             this.tofGraph2.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.tofPlot2});
+            this.tofPlot2,
+            this.GateStart,
+            this.GateEnd});
             this.tofGraph2.Size = new System.Drawing.Size(228, 362);
             this.tofGraph2.TabIndex = 4;
             this.tofGraph2.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -437,6 +443,17 @@ namespace EDMBlockHead.GUI
             this.yAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis5.Range = new NationalInstruments.UI.Range(-1D, 10D);
             // 
+            // GateStart
+            // 
+            this.GateStart.CanScaleYAxis = false;
+            this.GateStart.XAxis = this.xAxis2;
+            this.GateStart.YAxis = this.yAxis2;
+            // 
+            // GateEnd
+            // 
+            this.GateEnd.XAxis = this.xAxis2;
+            this.GateEnd.YAxis = this.yAxis2;
+            // 
             // MainWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -493,6 +510,12 @@ namespace EDMBlockHead.GUI
             if (tofIndex == 1) PlotY(tofGraph2, tofPlot2, data, start, inc);
             if (tofIndex == 2) PlotY(tofGraph3, tofPlot3, data, start, inc);
             if (tofIndex == 3) PlotY(tofGraph4, tofPlot4, data, start, inc);
+        }
+
+        public void PlotGates(double gateLow,double gateHigh)
+        {
+            PlotY(tofGraph2, GateStart, new double[] { 0.0, 10.0 }, gateLow, 0.1);
+            PlotY(tofGraph2, GateEnd, new double[] { 0.0, 10.0 }, gateHigh, 0.1);
         }
 
         public void AppendLeakageMeasurement(double[] northValues, double[] southValues)

@@ -35,7 +35,7 @@ namespace EDMBlockHead
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateStatusText("C\t SN\t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1}\t Error \t {LF1DB} \t Error \t {LF1DBDB} \t Error" + Environment.NewLine);
+            UpdateStatusText("C\t SN\t EDM err \t {SIG}_A\t {SIG}_B\t {B}\t {RF1A}\t {RF2A}\t {RF1F}\t {RF2F}\t {LF1DBDB} \t Error" + Environment.NewLine);
 
             edms = new List<double>();
         }
@@ -58,6 +58,7 @@ namespace EDMBlockHead
             AppendStatusText(
                 (analysis.Contrast).ToString("N3")
                 + "\t" + (analysis.ShotNoise).ToString("N4")
+                + "\t" + (analysis.RawEDMValAndErr[1]*Math.Pow(10, 26) ).ToString("N4")
                 + "\t" + (analysis.SIGValAndErrbp[0]).ToString("N1")
                 + "\t" + (analysis.SIGValAndErrtp[0]).ToString("N1")
                 + "\t" + (analysis.BValAndErr[0]).ToString("N4")
@@ -65,10 +66,6 @@ namespace EDMBlockHead
                 + "\t" + (analysis.rf2AmpAndErr[0]).ToString("N4")
                 + "\t" + (analysis.rf1FreqAndErr[0]).ToString("N4")
                 + "\t" + (analysis.rf2FreqAndErr[0]).ToString("N4")
-                + "\t" + (analysis.LF1ValAndErr[0]).ToString("N4")
-                + "\t" + (analysis.LF1ValAndErr[1]).ToString("N4")
-                + "\t" + (analysis.LF1DB[0]).ToString("N4")
-                + "\t" + (analysis.LF1DB[1]).ToString("N4")
                 + "\t" + (analysis.LF1DBDB[0]).ToString("N4")
                 + "\t" + (analysis.LF1DBDB[1]).ToString("N4")
                 + Environment.NewLine);
@@ -120,6 +117,8 @@ namespace EDMBlockHead
             AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
             AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
             AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
+            AppendToTopPDScatter(new double[] { blockCount }, new double[] { analysis.TopPDSIG[0]});
+            AppendToBottomPDScatter(new double[] { blockCount }, new double[] { analysis.BottomPDSIG[0]});
 
             blockCount = blockCount + 1;
         }
@@ -319,12 +318,12 @@ namespace EDMBlockHead
             PlotXYAppend(rfFreqScatterGraph, rf2fScatterPlot, x, y);
         }
 
-        private void AppendTopProbePDScatter(double[] x, double[] y)
+        private void AppendToTopPDScatter(double[] x, double[] y)
         {
             PlotXYAppend(photoDiodeScatterGraph, probePDScatterPlot, x, y);
         }
 
-        private void AppendTopPumpPDScatter(double[] x, double[] y)
+        private void AppendToBottomPDScatter(double[] x, double[] y)
         {
             PlotXYAppend(photoDiodeScatterGraph, pumpPDScatterPlot, x, y);
         }

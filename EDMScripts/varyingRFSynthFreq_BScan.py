@@ -47,9 +47,9 @@ def Acquire():
 				sm.SaveAverageData(scanPath)
 				hc.SwitchMwAndWait()
 				if (k<2):
-					hc.SetPhaseFlip1(True)
+					hc.SetPhaseFlip2(True)
 				else:
-					hc.SetPhaseFlip1(False)
+					hc.SetPhaseFlip2(False)
 sm.AdjustProfileParameter("out", "externalParameters", "SidIsGreat", False)
 		
 	
