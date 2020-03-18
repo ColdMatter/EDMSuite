@@ -273,7 +273,6 @@ namespace EDMHardwareControl
         public TextBox northV2FSlopeTextBox;
         private Label label85;
         private Label label84;
-        private TabPage tabPage8;
         public RadioButton radioButton4;
         public RadioButton radioButton5;
         public RadioButton radioButton6;
@@ -418,8 +417,6 @@ namespace EDMHardwareControl
         private TabPage tabPage12;
         private GroupBox groupBox161MHzVCO;
         public TrackBar VCO161AmpTrackBar;
-        public TextBox VCO161FreqTextBox;
-        private Label label137;
         public TextBox VCO161AmpVoltageTextBox;
         private Button VCO161UpdateButton;
         private Label label138;
@@ -437,8 +434,6 @@ namespace EDMHardwareControl
         public TextBox VCO30AmpVoltageTextBox;
         private Button VCO30UpdateButton;
         private Label label134;
-        public TrackBar VCO161FreqTrackBar;
-        private Label label140;
         private Label label139;
         public TrackBar VCO30FreqTrackBar;
         private Label label142;
@@ -450,10 +445,6 @@ namespace EDMHardwareControl
         public TextBox VCO161AmpStepTextBox;
         private Label label145;
         private Button VCO161AmpStepPlusButton;
-        private Button VCO161FreqStepPlusButton;
-        public TextBox VCO161FreqStepTextBox;
-        private Label label146;
-        private Button VCO161FreqStepMinusButton;
         private Button VCO30FreqStepMinusButton;
         private Button VCO30FreqStepPlusButton;
         public TextBox VCO30FreqStepTextBox;
@@ -604,6 +595,12 @@ namespace EDMHardwareControl
         private Button valveVoltageMonitorMeasureButton;
         private Label label172;
         private Label label170;
+        private TabPage tabPage4;
+        private Button buttonPrepareForBScan;
+        private Button buttonPrepareAF0BF1Probe;
+        private Label label174;
+        private Label label175;
+        private Label label176;
 
  
 
@@ -672,6 +669,7 @@ namespace EDMHardwareControl
             this.label8 = new System.Windows.Forms.Label();
             this.greenOnFreqBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label176 = new System.Windows.Forms.Label();
             this.updateFieldButton = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -757,6 +755,7 @@ namespace EDMHardwareControl
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.rfManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label175 = new System.Windows.Forms.Label();
             this.setDCFMtoGuess = new System.Windows.Forms.Button();
             this.Copyrf2f = new System.Windows.Forms.Button();
             this.Copyrf1f = new System.Windows.Forms.Button();
@@ -852,6 +851,7 @@ namespace EDMHardwareControl
             this.label39 = new System.Windows.Forms.Label();
             this.rf1AttenuatorVoltageTextBox = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label174 = new System.Windows.Forms.Label();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.bManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
@@ -943,7 +943,6 @@ namespace EDMHardwareControl
             this.probeAOMVTextBox = new System.Windows.Forms.TextBox();
             this.UpdateProbeAOMButton = new System.Windows.Forms.Button();
             this.label68 = new System.Windows.Forms.Label();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabPage13 = new System.Windows.Forms.TabPage();
             this.label93 = new System.Windows.Forms.Label();
             this.anapicofreqcontrol = new System.Windows.Forms.GroupBox();
@@ -1046,20 +1045,12 @@ namespace EDMHardwareControl
             this.VCO30UpdateButton = new System.Windows.Forms.Button();
             this.label134 = new System.Windows.Forms.Label();
             this.groupBox161MHzVCO = new System.Windows.Forms.GroupBox();
-            this.VCO161FreqStepMinusButton = new System.Windows.Forms.Button();
-            this.VCO161FreqStepPlusButton = new System.Windows.Forms.Button();
-            this.VCO161FreqStepTextBox = new System.Windows.Forms.TextBox();
-            this.label146 = new System.Windows.Forms.Label();
             this.VCO161AmpStepMinusButton = new System.Windows.Forms.Button();
             this.VCO161AmpStepTextBox = new System.Windows.Forms.TextBox();
             this.label145 = new System.Windows.Forms.Label();
             this.VCO161AmpStepPlusButton = new System.Windows.Forms.Button();
-            this.VCO161FreqTrackBar = new System.Windows.Forms.TrackBar();
-            this.label140 = new System.Windows.Forms.Label();
             this.label139 = new System.Windows.Forms.Label();
             this.VCO161AmpTrackBar = new System.Windows.Forms.TrackBar();
-            this.VCO161FreqTextBox = new System.Windows.Forms.TextBox();
-            this.label137 = new System.Windows.Forms.Label();
             this.VCO161AmpVoltageTextBox = new System.Windows.Forms.TextBox();
             this.VCO161UpdateButton = new System.Windows.Forms.Button();
             this.label138 = new System.Windows.Forms.Label();
@@ -1204,6 +1195,9 @@ namespace EDMHardwareControl
             this.rfAWGOnAmpTextBox = new System.Windows.Forms.TextBox();
             this.label158 = new System.Windows.Forms.Label();
             this.rfAWGOnFreqTextBox = new System.Windows.Forms.TextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.buttonPrepareForBScan = new System.Windows.Forms.Button();
+            this.buttonPrepareAF0BF1Probe = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label67 = new System.Windows.Forms.Label();
@@ -1283,7 +1277,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.VCO30FreqTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VCO30AmpTrackBar)).BeginInit();
             this.groupBox161MHzVCO.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.VCO161FreqTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.VCO161AmpTrackBar)).BeginInit();
             this.tabPage6.SuspendLayout();
             this.groupBox34.SuspendLayout();
@@ -1317,6 +1310,7 @@ namespace EDMHardwareControl
             this.groupBox29.SuspendLayout();
             this.groupBox28.SuspendLayout();
             this.groupBox26.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1628,6 +1622,7 @@ namespace EDMHardwareControl
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label176);
             this.groupBox1.Controls.Add(this.updateFieldButton);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label11);
@@ -1644,9 +1639,18 @@ namespace EDMHardwareControl
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Supplies";
             // 
+            // label176
+            // 
+            this.label176.Location = new System.Drawing.Point(6, 178);
+            this.label176.MaximumSize = new System.Drawing.Size(200, 200);
+            this.label176.Name = "label176";
+            this.label176.Size = new System.Drawing.Size(152, 30);
+            this.label176.TabIndex = 45;
+            this.label176.Text = "Note: Bertan +ve supplies require +/- 3kV/V";
+            // 
             // updateFieldButton
             // 
-            this.updateFieldButton.Location = new System.Drawing.Point(48, 168);
+            this.updateFieldButton.Location = new System.Drawing.Point(42, 154);
             this.updateFieldButton.Name = "updateFieldButton";
             this.updateFieldButton.Size = new System.Drawing.Size(75, 23);
             this.updateFieldButton.TabIndex = 40;
@@ -1752,7 +1756,6 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage11);
-            this.tabControl.Controls.Add(this.tabPage8);
             this.tabControl.Controls.Add(this.tabPage13);
             this.tabControl.Controls.Add(this.tabPage12);
             this.tabControl.Controls.Add(this.tabPage6);
@@ -1761,10 +1764,11 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage7);
             this.tabControl.Controls.Add(this.tabPage10);
             this.tabControl.Controls.Add(this.rfAWGTab);
+            this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(705, 601);
+            this.tabControl.Size = new System.Drawing.Size(747, 601);
             this.tabControl.TabIndex = 25;
             // 
             // tabPage1
@@ -1778,7 +1782,7 @@ namespace EDMHardwareControl
             this.tabPage1.Controls.Add(this.groupBox7);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(697, 575);
+            this.tabPage1.Size = new System.Drawing.Size(739, 575);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "E-field";
             // 
@@ -2363,7 +2367,7 @@ namespace EDMHardwareControl
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(697, 575);
+            this.tabPage2.Size = new System.Drawing.Size(739, 575);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Interferometer RF";
             // 
@@ -2479,6 +2483,7 @@ namespace EDMHardwareControl
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label175);
             this.groupBox4.Controls.Add(this.setDCFMtoGuess);
             this.groupBox4.Controls.Add(this.Copyrf2f);
             this.groupBox4.Controls.Add(this.Copyrf1f);
@@ -2533,6 +2538,15 @@ namespace EDMHardwareControl
             this.groupBox4.TabIndex = 27;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "rf measurement";
+            // 
+            // label175
+            // 
+            this.label175.AutoSize = true;
+            this.label175.Location = new System.Drawing.Point(550, 112);
+            this.label175.Name = "label175";
+            this.label175.Size = new System.Drawing.Size(105, 13);
+            this.label175.TabIndex = 72;
+            this.label175.Text = "Note: 10% = 0.41 dB";
             // 
             // setDCFMtoGuess
             // 
@@ -3428,10 +3442,12 @@ namespace EDMHardwareControl
             this.rf1AttenuatorVoltageTextBox.Size = new System.Drawing.Size(34, 20);
             this.rf1AttenuatorVoltageTextBox.TabIndex = 0;
             this.rf1AttenuatorVoltageTextBox.Text = "5";
+            this.rf1AttenuatorVoltageTextBox.TextChanged += new System.EventHandler(this.rf1AttenuatorVoltageTextBox_TextChanged);
             // 
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage3.Controls.Add(this.label174);
             this.tabPage3.Controls.Add(this.groupBox23);
             this.tabPage3.Controls.Add(this.groupBox20);
             this.tabPage3.Controls.Add(this.groupBox9);
@@ -3440,9 +3456,19 @@ namespace EDMHardwareControl
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(697, 575);
+            this.tabPage3.Size = new System.Drawing.Size(739, 575);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "B-field";
+            // 
+            // label174
+            // 
+            this.label174.AutoSize = true;
+            this.label174.Location = new System.Drawing.Point(21, 396);
+            this.label174.Name = "label174";
+            this.label174.Size = new System.Drawing.Size(463, 13);
+            this.label174.TabIndex = 50;
+            this.label174.Text = "Applied B is 17nT/mA. The dB value should be about 82uA and the DB should be abou" +
+    "t 650 uA.";
             // 
             // groupBox23
             // 
@@ -3823,7 +3849,7 @@ namespace EDMHardwareControl
             this.tabPage11.Controls.Add(this.groupBox18);
             this.tabPage11.Location = new System.Drawing.Point(4, 22);
             this.tabPage11.Name = "tabPage11";
-            this.tabPage11.Size = new System.Drawing.Size(697, 575);
+            this.tabPage11.Size = new System.Drawing.Size(739, 575);
             this.tabPage11.TabIndex = 10;
             this.tabPage11.Text = "Q(0)+P12";
             // 
@@ -4366,16 +4392,6 @@ namespace EDMHardwareControl
             this.label68.TabIndex = 36;
             this.label68.Text = "Voltage (V)";
             // 
-            // tabPage8
-            // 
-            this.tabPage8.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(697, 575);
-            this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "P(1) Lasers";
-            // 
             // tabPage13
             // 
             this.tabPage13.BackColor = System.Drawing.SystemColors.Control;
@@ -4385,7 +4401,7 @@ namespace EDMHardwareControl
             this.tabPage13.Controls.Add(this.groupBox41);
             this.tabPage13.Location = new System.Drawing.Point(4, 22);
             this.tabPage13.Name = "tabPage13";
-            this.tabPage13.Size = new System.Drawing.Size(697, 575);
+            this.tabPage13.Size = new System.Drawing.Size(739, 575);
             this.tabPage13.TabIndex = 10;
             this.tabPage13.Text = "Microwaves";
             // 
@@ -4974,7 +4990,7 @@ namespace EDMHardwareControl
             this.tabPage12.Controls.Add(this.groupBox161MHzVCO);
             this.tabPage12.Location = new System.Drawing.Point(4, 22);
             this.tabPage12.Name = "tabPage12";
-            this.tabPage12.Size = new System.Drawing.Size(697, 575);
+            this.tabPage12.Size = new System.Drawing.Size(739, 575);
             this.tabPage12.TabIndex = 10;
             this.tabPage12.Text = "Pump RF VCOs";
             // 
@@ -5356,20 +5372,12 @@ namespace EDMHardwareControl
             // 
             // groupBox161MHzVCO
             // 
-            this.groupBox161MHzVCO.Controls.Add(this.VCO161FreqStepMinusButton);
-            this.groupBox161MHzVCO.Controls.Add(this.VCO161FreqStepPlusButton);
-            this.groupBox161MHzVCO.Controls.Add(this.VCO161FreqStepTextBox);
-            this.groupBox161MHzVCO.Controls.Add(this.label146);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpStepMinusButton);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpStepTextBox);
             this.groupBox161MHzVCO.Controls.Add(this.label145);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpStepPlusButton);
-            this.groupBox161MHzVCO.Controls.Add(this.VCO161FreqTrackBar);
-            this.groupBox161MHzVCO.Controls.Add(this.label140);
             this.groupBox161MHzVCO.Controls.Add(this.label139);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpTrackBar);
-            this.groupBox161MHzVCO.Controls.Add(this.VCO161FreqTextBox);
-            this.groupBox161MHzVCO.Controls.Add(this.label137);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161AmpVoltageTextBox);
             this.groupBox161MHzVCO.Controls.Add(this.VCO161UpdateButton);
             this.groupBox161MHzVCO.Controls.Add(this.label138);
@@ -5380,42 +5388,6 @@ namespace EDMHardwareControl
             this.groupBox161MHzVCO.TabStop = false;
             this.groupBox161MHzVCO.Text = "161 MHz VCO";
             this.groupBox161MHzVCO.Enter += new System.EventHandler(this.groupBox39_Enter);
-            // 
-            // VCO161FreqStepMinusButton
-            // 
-            this.VCO161FreqStepMinusButton.Location = new System.Drawing.Point(551, 19);
-            this.VCO161FreqStepMinusButton.Name = "VCO161FreqStepMinusButton";
-            this.VCO161FreqStepMinusButton.Size = new System.Drawing.Size(37, 23);
-            this.VCO161FreqStepMinusButton.TabIndex = 60;
-            this.VCO161FreqStepMinusButton.Text = "-";
-            this.VCO161FreqStepMinusButton.UseVisualStyleBackColor = true;
-            this.VCO161FreqStepMinusButton.Click += new System.EventHandler(this.VCO161FreqStepMinusButton_Click);
-            // 
-            // VCO161FreqStepPlusButton
-            // 
-            this.VCO161FreqStepPlusButton.Location = new System.Drawing.Point(508, 19);
-            this.VCO161FreqStepPlusButton.Name = "VCO161FreqStepPlusButton";
-            this.VCO161FreqStepPlusButton.Size = new System.Drawing.Size(37, 23);
-            this.VCO161FreqStepPlusButton.TabIndex = 59;
-            this.VCO161FreqStepPlusButton.Text = "+";
-            this.VCO161FreqStepPlusButton.UseVisualStyleBackColor = true;
-            this.VCO161FreqStepPlusButton.Click += new System.EventHandler(this.VCO161FreqStepPlusButton_Click);
-            // 
-            // VCO161FreqStepTextBox
-            // 
-            this.VCO161FreqStepTextBox.Location = new System.Drawing.Point(438, 48);
-            this.VCO161FreqStepTextBox.Name = "VCO161FreqStepTextBox";
-            this.VCO161FreqStepTextBox.Size = new System.Drawing.Size(64, 20);
-            this.VCO161FreqStepTextBox.TabIndex = 58;
-            this.VCO161FreqStepTextBox.Text = "0.1";
-            // 
-            // label146
-            // 
-            this.label146.Location = new System.Drawing.Point(342, 51);
-            this.label146.Name = "label146";
-            this.label146.Size = new System.Drawing.Size(90, 23);
-            this.label146.TabIndex = 57;
-            this.label146.Text = "Step Voltage (V)";
             // 
             // VCO161AmpStepMinusButton
             // 
@@ -5453,23 +5425,6 @@ namespace EDMHardwareControl
             this.VCO161AmpStepPlusButton.UseVisualStyleBackColor = true;
             this.VCO161AmpStepPlusButton.Click += new System.EventHandler(this.VCO161StepPlusButton_Click);
             // 
-            // VCO161FreqTrackBar
-            // 
-            this.VCO161FreqTrackBar.Location = new System.Drawing.Point(345, 91);
-            this.VCO161FreqTrackBar.Maximum = 1000;
-            this.VCO161FreqTrackBar.Name = "VCO161FreqTrackBar";
-            this.VCO161FreqTrackBar.Size = new System.Drawing.Size(287, 45);
-            this.VCO161FreqTrackBar.TabIndex = 52;
-            this.VCO161FreqTrackBar.Scroll += new System.EventHandler(this.VCO161FreqTrackBar_Scroll);
-            // 
-            // label140
-            // 
-            this.label140.Location = new System.Drawing.Point(342, 78);
-            this.label140.Name = "label140";
-            this.label140.Size = new System.Drawing.Size(90, 23);
-            this.label140.TabIndex = 51;
-            this.label140.Text = "VCO Frequency";
-            // 
             // label139
             // 
             this.label139.Location = new System.Drawing.Point(16, 78);
@@ -5486,22 +5441,6 @@ namespace EDMHardwareControl
             this.VCO161AmpTrackBar.Size = new System.Drawing.Size(287, 45);
             this.VCO161AmpTrackBar.TabIndex = 49;
             this.VCO161AmpTrackBar.Scroll += new System.EventHandler(this.VCO161AmpTrackBar_Scroll);
-            // 
-            // VCO161FreqTextBox
-            // 
-            this.VCO161FreqTextBox.Location = new System.Drawing.Point(438, 21);
-            this.VCO161FreqTextBox.Name = "VCO161FreqTextBox";
-            this.VCO161FreqTextBox.Size = new System.Drawing.Size(64, 20);
-            this.VCO161FreqTextBox.TabIndex = 47;
-            this.VCO161FreqTextBox.Text = "0";
-            // 
-            // label137
-            // 
-            this.label137.Location = new System.Drawing.Point(342, 24);
-            this.label137.Name = "label137";
-            this.label137.Size = new System.Drawing.Size(90, 23);
-            this.label137.TabIndex = 46;
-            this.label137.Text = "Freq Voltage (V)";
             // 
             // VCO161AmpVoltageTextBox
             // 
@@ -5536,7 +5475,7 @@ namespace EDMHardwareControl
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(697, 575);
+            this.tabPage6.Size = new System.Drawing.Size(739, 575);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Polarizer";
             // 
@@ -5938,7 +5877,7 @@ namespace EDMHardwareControl
             this.tabPage5.Controls.Add(this.groupBox15);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(697, 575);
+            this.tabPage5.Size = new System.Drawing.Size(739, 575);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Source";
             // 
@@ -6169,7 +6108,7 @@ namespace EDMHardwareControl
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(697, 575);
+            this.tabPage9.Size = new System.Drawing.Size(739, 575);
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Misc";
             // 
@@ -6407,7 +6346,7 @@ namespace EDMHardwareControl
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(697, 575);
+            this.tabPage7.Size = new System.Drawing.Size(739, 575);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Alerts";
             // 
@@ -6436,7 +6375,7 @@ namespace EDMHardwareControl
             this.tabPage10.Controls.Add(this.groupBox37);
             this.tabPage10.Location = new System.Drawing.Point(4, 22);
             this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Size = new System.Drawing.Size(697, 575);
+            this.tabPage10.Size = new System.Drawing.Size(739, 575);
             this.tabPage10.TabIndex = 9;
             this.tabPage10.Text = "I2 lock code";
             // 
@@ -6601,7 +6540,7 @@ namespace EDMHardwareControl
             this.rfAWGTab.Location = new System.Drawing.Point(4, 22);
             this.rfAWGTab.Name = "rfAWGTab";
             this.rfAWGTab.Padding = new System.Windows.Forms.Padding(3);
-            this.rfAWGTab.Size = new System.Drawing.Size(697, 575);
+            this.rfAWGTab.Size = new System.Drawing.Size(739, 575);
             this.rfAWGTab.TabIndex = 11;
             this.rfAWGTab.Text = "Rf AWG";
             // 
@@ -6937,6 +6876,38 @@ namespace EDMHardwareControl
             this.rfAWGOnFreqTextBox.TabIndex = 0;
             this.rfAWGOnFreqTextBox.Text = "170.800";
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.buttonPrepareForBScan);
+            this.tabPage4.Controls.Add(this.buttonPrepareAF0BF1Probe);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(739, 575);
+            this.tabPage4.TabIndex = 12;
+            this.tabPage4.Text = "Machine Modes";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // buttonPrepareForBScan
+            // 
+            this.buttonPrepareForBScan.Location = new System.Drawing.Point(68, 101);
+            this.buttonPrepareForBScan.Name = "buttonPrepareForBScan";
+            this.buttonPrepareForBScan.Size = new System.Drawing.Size(143, 51);
+            this.buttonPrepareForBScan.TabIndex = 1;
+            this.buttonPrepareForBScan.Text = "Prepare Machine for B Scan";
+            this.buttonPrepareForBScan.UseVisualStyleBackColor = true;
+            this.buttonPrepareForBScan.Click += new System.EventHandler(this.buttonPrepareForBScan_Click);
+            // 
+            // buttonPrepareAF0BF1Probe
+            // 
+            this.buttonPrepareAF0BF1Probe.Location = new System.Drawing.Point(68, 48);
+            this.buttonPrepareAF0BF1Probe.Name = "buttonPrepareAF0BF1Probe";
+            this.buttonPrepareAF0BF1Probe.Size = new System.Drawing.Size(143, 47);
+            this.buttonPrepareAF0BF1Probe.TabIndex = 0;
+            this.buttonPrepareAF0BF1Probe.Text = "Prepare Machine for P12 probe, AF0BF1";
+            this.buttonPrepareAF0BF1Probe.UseVisualStyleBackColor = true;
+            this.buttonPrepareAF0BF1Probe.Click += new System.EventHandler(this.buttonPrepareAF0BF1Probe_Click);
+            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(96, 24);
@@ -6968,7 +6939,7 @@ namespace EDMHardwareControl
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(724, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(771, 24);
             this.menuStrip1.TabIndex = 26;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -7083,7 +7054,7 @@ namespace EDMHardwareControl
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(724, 626);
+            this.ClientSize = new System.Drawing.Size(771, 626);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -7131,6 +7102,7 @@ namespace EDMHardwareControl
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.groupBox23.ResumeLayout(false);
             this.groupBox20.ResumeLayout(false);
             this.groupBox20.PerformLayout();
@@ -7184,7 +7156,6 @@ namespace EDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.VCO30AmpTrackBar)).EndInit();
             this.groupBox161MHzVCO.ResumeLayout(false);
             this.groupBox161MHzVCO.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.VCO161FreqTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.VCO161AmpTrackBar)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.groupBox34.ResumeLayout(false);
@@ -7236,6 +7207,7 @@ namespace EDMHardwareControl
             this.groupBox28.PerformLayout();
             this.groupBox26.ResumeLayout(false);
             this.groupBox26.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -7789,11 +7761,6 @@ namespace EDMHardwareControl
             controller.UpdateVCO161AmpVoltage((Double)VCO161AmpTrackBar.Value / 100.0);
         }
 
-        private void VCO161FreqTrackBar_Scroll(object sender, EventArgs e)
-        {
-            controller.UpdateVCO161FreqVoltage((Double)VCO161FreqTrackBar.Value / 100.0);
-        }
-
         private void VCO30AmpTrackBar_Scroll(object sender, EventArgs e)
         {
             controller.UpdateVCO30AmpVoltage((Double)VCO30AmpTrackBar.Value / 100.0);
@@ -7817,7 +7784,7 @@ namespace EDMHardwareControl
         private void VCO161UpdateButton_Click(object sender, EventArgs e)
         {
             controller.UpdateVCO161AmpV();
-            controller.UpdateVCO161FreqV();
+            //controller.UpdateVCO161FreqV();
         }
 
         private void VCO30UpdateButton_Click(object sender, EventArgs e)
@@ -7847,13 +7814,13 @@ namespace EDMHardwareControl
         private void VCO161FreqStepPlusButton_Click(object sender, EventArgs e)
         {
             controller.IncreaseVCOVoltage();
-            controller.TweakVCO161FreqV();
+            //controller.TweakVCO161FreqV();
         }
 
         private void VCO161FreqStepMinusButton_Click(object sender, EventArgs e)
         {
             controller.DecreaseVCOVoltage();
-            controller.TweakVCO161FreqV();
+            //controller.TweakVCO161FreqV();
         }
 
        private void VCO30AmpStepPlusButton_Click(object sender, EventArgs e)
@@ -8049,6 +8016,7 @@ namespace EDMHardwareControl
        private void getCurrentListButton_Click(object sender, EventArgs e)
        {
            controller.GetAnapicoCurrentList();
+           //controller.GetAnapicoSYN420CurrentList();
        }
 
        private void updatePressureMonitorButton_Click(object sender, EventArgs e)
@@ -8132,8 +8100,28 @@ namespace EDMHardwareControl
        {
            controller.UpdateValveMonitorUI();
        }
-       
 
+       private void buttonPrepareForBScan_Click(object sender, EventArgs e)
+       {
+           controller.PrepareForBScan();
+       }
+
+       private void buttonPrepareAF0BF1Probe_Click(object sender, EventArgs e)
+       {
+           controller.PrepareForP12ProbeWithoutIF();
+       }
+
+       private void rf1AttenuatorVoltageTextBox_TextChanged(object sender, EventArgs e)
+       {
+
+       }
+
+       private void label176_Click(object sender, EventArgs e)
+       {
+
+       }
+       
+        
         
         
 
