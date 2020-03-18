@@ -81,10 +81,20 @@ namespace Analysis.EDM
             dc.AddTOFDetector("battery");
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
+<<<<<<< HEAD
             dc.AddGatedDetector("gnd", Gate.WideGate());
             //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
             //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
             //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+=======
+            //dc.AddGatedDetector("gnd", Gate.WideGate());
+            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+
+            dc.AddGatedDetector("quSpinFS_Y", Gate.WideGate());
+            dc.AddGatedDetector("quSpinFS_Z", Gate.WideGate());
+>>>>>>> 57128b4613c08087295a07c020100b5c319d4796
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");
@@ -92,6 +102,12 @@ namespace Analysis.EDM
             dc.AddPointDetector("SouthCurrent");
             dc.AddPointDetector("BottomDetectorBackground");
             dc.AddPointDetector("TopDetectorBackground");
+            dc.AddPointDetector("MiniFlux1");
+            dc.AddPointDetector("MiniFlux2");
+            dc.AddPointDetector("MiniFlux3");
+            dc.AddPointDetector("topPD");
+            dc.AddPointDetector("bottomPD");
+            dc.AddPointDetector("ValveMonV");
 
             return dc;
         }

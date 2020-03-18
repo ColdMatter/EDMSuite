@@ -68,8 +68,9 @@ getClusterFiles::usage="getClusterFiles[clusterName_] returns a list of files th
 getBlockFile::usage="getBlockFile[clusterName_, clusterIndex_] returns the filename for the block identified by its cluster name and index. It will only return a value if you have that block in your data root.";
 
 (*Other useful functions*)
+sortUids::usage="sortUids[uids_] sorts the given uid list by the blocks' timestamp."
 machineStateForCluster::usage="machineStateForCluster[clusterName_] returns the machine state for a particular cluster in the form {eState, bState, rfState, mwState}.";
-timeStampToDateList::usage="timeStampToDateList[ts_] converts a .NET timestamp object into a Mathematica DataList object.";
+timeStampToDateList::usage="timeStampToDateList[ts_] converts a block timestamp (in Ticks) into a Mathematica DateList.";
 
 
 (* ::Input::Initialization:: *)
@@ -196,6 +197,12 @@ getDirectoryFromBrokenName[brokenName_]:=Module[{yearString},
 yearString="20" <>brokenName[[3]];
 Global`$dataRoot<>"\\sedm\\"<>kDataVersionString<>"\\" <>yearString<>"\\"<>(brokenName[[2]]/.monthReps)<>yearString
 ];
+
+
+(* ::Input::Initialization:: *)
+sortUids[uids_]:=NETBlock[
+SortBy[uids,timeStampToDateList[getDBlock[#]@TimeStamp@Ticks]&]
+]
 
 
 (* ::Input::Initialization:: *)
