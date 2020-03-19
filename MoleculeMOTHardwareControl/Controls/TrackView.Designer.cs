@@ -30,6 +30,8 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBoxIterations = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.textBoxTweezer = new System.Windows.Forms.TextBox();
             this.RBTrigger = new System.Windows.Forms.RadioButton();
@@ -103,6 +105,8 @@
             // groupBox4
             // 
             this.groupBox4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.groupBox4.Controls.Add(this.label13);
+            this.groupBox4.Controls.Add(this.textBoxIterations);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.textBoxTweezer);
             this.groupBox4.Controls.Add(this.RBTrigger);
@@ -115,6 +119,26 @@
             this.groupBox4.TabIndex = 6;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Triggered positioning";
+            // 
+            // label13
+            // 
+            this.label13.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(247, 22);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(50, 13);
+            this.label13.TabIndex = 38;
+            this.label13.Text = "Iterations";
+            this.label13.Click += new System.EventHandler(this.label13_Click);
+            // 
+            // textBoxIterations
+            // 
+            this.textBoxIterations.Location = new System.Drawing.Point(303, 19);
+            this.textBoxIterations.Name = "textBoxIterations";
+            this.textBoxIterations.Size = new System.Drawing.Size(31, 20);
+            this.textBoxIterations.TabIndex = 37;
+            this.textBoxIterations.Text = "0";
+            this.textBoxIterations.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label15
             // 
@@ -683,5 +707,7 @@
         private System.Windows.Forms.Label label_MessageCommunication;
         private System.Windows.Forms.Label label_GroupStatusDescription;
         private System.Windows.Forms.Label label_ErrorMessage;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBoxIterations;
     }
 }

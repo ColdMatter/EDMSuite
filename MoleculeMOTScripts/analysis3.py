@@ -131,14 +131,15 @@ def sincFit(x,y,sigma=None):
 
 def injector(fileNoStart,fileNoStop,NoImages,
              fileNameString,
+             fileSkip=1,
              remotePath="//PH-TEW105/Users/rfmot/Desktop/AbsImages/",
              dirPath="C:/Users/cafmot/Box Sync/CaF MOT/MOTData/MOTMasterData/"):
     imgs=os.listdir(remotePath)
     imgs.sort(key=natural_keys)
-    if len(imgs)==(fileNoStop-fileNoStart+1)*NoImages:
+    if len(imgs)==(fileNoStop-fileNoStart+1)*NoImages/fileSkip:
         print('Inserting images to the zip files...')
         l=0
-        for fileNo in range(fileNoStart,fileNoStop+1):
+        for fileNo in range(fileNoStart,fileNoStop+1, fileSkip):
             filepath=os.path.join(dirPath,fileNameString+'_'+str(fileNo).zfill(3)+'.zip')
             with zipfile.ZipFile(filepath, 'a') as archive:
                 files=archive.namelist()
@@ -268,8 +269,8 @@ class Analysis():
         axialX=self.pixelSize*(self.binSize/self.magFactor)*np.arange(0,axialYLength)
         smoothRadialY=radialY#savgol_filter(radialY,self.smoothingWindow,3)
         smoothAxialY=axialY#savgol_filter(axialY,self.smoothingWindow,3)
-        radialpopt,radialpcov,radialIsFit=gaussianFitOffset(radialX,smoothRadialY)
-        axialpopt,axialpcov,axialIsFit=gaussianFitOffset(axialX,smoothAxialY)
+        radialpopt,radialpcov,radialIsFit=gaussianFitOffset(radialX,radialY)
+        axialpopt,axialpcov,axialIsFit=gaussianFitOffset(axialX,axialY)
         return radialX,radialY,\
                radialpopt,radialIsFit,\
                axialX,axialY,\
@@ -1176,9 +1177,9 @@ def analysisWithDefaultCaFSettings():
     analysis.etaQ=0.65
     analysis.exposureTime=10e-3
     analysis.crop=True
-    analysis.cropCentre=(53,70)
-    analysis.cropHeight=60
-    analysis.cropWidth=60
+    analysis.cropCentre=(65,65)
+    analysis.cropHeight=50
+    analysis.cropWidth=50
     analysis.massInAMU=59
     analysis.diffStr='C'
     analysis.smoothingWindow=11

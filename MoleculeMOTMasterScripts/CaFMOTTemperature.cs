@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["RbMOTLoadTime"] = 10;//200000
-        Parameters["FreeExpansionTime"] = 100;
+        Parameters["FreeExpansionTime"] = 220;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
@@ -48,7 +48,7 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
+        Parameters["SlowingChirpStartTime"] = 380;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
         Parameters["SlowingChirpEndValue"] = -1.25;
@@ -82,10 +82,10 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;//400
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 5.6;
+        Parameters["v0IntensityEndValue"] = 6.35;
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 9.0;
+        Parameters["v0FrequencyStartValue"] = 10.0;
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
@@ -93,6 +93,8 @@ public class Patterns : MOTMasterScript
         // v0 F=1 (dodgy code using an analogue output to control a TTL)
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
+
+        Parameters["MOTHoldTime"] = 3000;
 
 
     }
@@ -105,7 +107,7 @@ public class Patterns : MOTMasterScript
         int rbMOTLoadingStartTime = patternStartBeforeQ;
         int rbMOTLoadingEndTime = rbMOTLoadingStartTime + (int)Parameters["RbMOTLoadTime"];
         int moleculeMOTLoadingStartTime = rbMOTLoadingEndTime;
-        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000 + (int)Parameters["v0IntensityRampDuration"];
+        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000 + (int)Parameters["v0IntensityRampDuration"] + (int)Parameters["MOTHoldTime"];
         int firstImageTime = moleculeMOTLoadingEndTime + (int)Parameters["FieldDecayTime"] + (int)Parameters["FreeExpansionTime"];
         
 
@@ -137,7 +139,7 @@ public class Patterns : MOTMasterScript
         int rbMOTLoadingStartTime = 0;
         int rbMOTLoadingEndTime = rbMOTLoadingStartTime + (int)Parameters["RbMOTLoadTime"];
         int moleculeMOTLoadingStartTime = rbMOTLoadingEndTime;
-        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000 + (int)Parameters["v0IntensityRampDuration"];
+        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000 + (int)Parameters["v0IntensityRampDuration"] + (int)Parameters["MOTHoldTime"];
         int firstImageTime = moleculeMOTLoadingEndTime + (int)Parameters["FieldDecayTime"] + (int)Parameters["FreeExpansionTime"];
 
         // Add Analog Channels

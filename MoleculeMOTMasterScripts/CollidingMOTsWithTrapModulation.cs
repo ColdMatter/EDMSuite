@@ -15,7 +15,8 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 350000;
+        Parameters["Dummy"] = 0.0;
+        Parameters["PatternLength"] = 270000;
 
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
@@ -25,7 +26,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["RbMOTLoadTime"] = 250000;
+        Parameters["RbMOTLoadTime"] = 200000;
         Parameters["FreeExpansionTime"] = 100;
 
         // Camera
@@ -57,7 +58,7 @@ public class Patterns : MOTMasterScript
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42;
-        Parameters["slowingCoilsOffTime"] = 1500;
+        Parameters["slowingCoilsOffTime"] = 2500;
 
         // BX poke
         Parameters["PokeDetuningValue"] = -1.37;//-1.37
@@ -82,10 +83,10 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 7.78;//7.8
+        Parameters["v0IntensityEndValue"] = 8.01;//7.8
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 9.0;
+        Parameters["v0FrequencyStartValue"] = 10.0;
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
@@ -98,7 +99,7 @@ public class Patterns : MOTMasterScript
         Parameters["ImagingFrequency"] = 1.7; //2.1
         Parameters["MOTCoolingLoadingFrequency"] = 4.4;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
-        Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
+        Parameters["RbRepumpSwitch"] = 10.0; // 0.0 will keep it on and 10.0 will switch it off
 
         //Rb cooling light PWM
         Parameters["CaFCycleLength"] = 10;
@@ -140,17 +141,17 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
 
-        p.Pulse(0, firstImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(0, secondImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(0, firstImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(0, secondImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, thridImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, fourthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        /*p.Pulse(0, fourthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, fithImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, sixthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, seventhImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, eightImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, ninethImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(0, tenthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        
+        */
 
 
         //p.Pulse(0, tenthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
@@ -165,15 +166,14 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("v00MOTAOM", 0, false);
 
-
-        
-        for (int t = moleculeMOTLoadingEndTime; t < tenthImageTime + 1000; t += (int)Parameters["CaFCycleLength"])
+        /*
+        for (int t = moleculeMOTLoadingEndTime + (int)Parameters["v0IntensityRampDuration"]; t < tenthImageTime + 1000; t += (int)Parameters["CaFCycleLength"])
         {
             p.AddEdge("v00MOTAOM", t, true);
             p.AddEdge("v00MOTAOM", t + (int)Parameters["CaFHalfCycleLength"], false);
         }
+        */
         
-
 
 
         //Turn everything back on at end of sequence:
@@ -190,8 +190,8 @@ public class Patterns : MOTMasterScript
 
         
         p.Pulse(0, tenthImageTime + 1100, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of cloud
-        p.Pulse(0, tenthImageTime + 12200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        p.Pulse(0, tenthImageTime + 21200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
+        p.Pulse(0, tenthImageTime + 17200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
+        p.Pulse(0, tenthImageTime + 32200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
         
 
 

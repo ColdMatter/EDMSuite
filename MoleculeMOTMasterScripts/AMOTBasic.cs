@@ -32,9 +32,6 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTrigger"] = 5000;
         Parameters["PMTTriggerDuration"] = 10;
 
-        //Dummy variable:
-        Parameters["Dummy"] = 5.0*Math.Exp(-5.0);
-
         // Slowing
         Parameters["slowingAOMOnStart"] = 240; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
@@ -77,7 +74,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityMolassesValue"] = 5.6;
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 9.0;
+        Parameters["v0FrequencyStartValue"] = 10.0; //9.0
 
         // triggering delay (10V = 1 second)
        // Parameters["triggerDelay"] = 5.0;
@@ -150,7 +147,7 @@ public class Patterns : MOTMasterScript
        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.5); //4.7
+        p.AddAnalogValue("v00EOMAmp", 0, 4.65); //4.7
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
