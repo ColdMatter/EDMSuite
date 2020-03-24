@@ -81,20 +81,10 @@ namespace Analysis.EDM
             dc.AddTOFDetector("battery");
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
-<<<<<<< HEAD
             dc.AddGatedDetector("gnd", Gate.WideGate());
             //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
             //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
             //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
-=======
-            //dc.AddGatedDetector("gnd", Gate.WideGate());
-            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
-
-            dc.AddGatedDetector("quSpinFS_Y", Gate.WideGate());
-            dc.AddGatedDetector("quSpinFS_Z", Gate.WideGate());
->>>>>>> 57128b4613c08087295a07c020100b5c319d4796
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");
