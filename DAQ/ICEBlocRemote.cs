@@ -101,7 +101,7 @@ namespace DAQ.HAL
             {
                 // Receive the TcpServer.response.
                 // Buffer to store the response bytes.
-                Byte[] data = new Byte[256];
+                Byte[] data = new Byte[512];
 
                 // Read the first batch of the TcpServer response bytes.
                 Int32 bytes = stream.Read(data, 0, data.Length);
@@ -273,7 +273,6 @@ namespace DAQ.HAL
             // the point of everything is here
             Send(msg);
         }
-
 
         private Dictionary<string, object> ConvertMessageToDictionary(string command, string msgIn)
         {

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using NationalInstruments;
 
 namespace ConfocalControl
 {
@@ -70,6 +71,20 @@ namespace ConfocalControl
             triplet_output_type_box.Items.Add("Counters");
             triplet_output_type_box.Items.Add("Analogues");
             triplet_output_type_box.SelectedIndex = 0;
+
+            teraScan_output_type_box.Items.Add("Lambda");
+            teraScan_output_type_box.Items.Add("Counters");
+            teraScan_output_type_box.Items.Add("Analogues");
+            teraScan_output_type_box.SelectedIndex = 0;
+            teraScan_segmentDisplay_ComboBox.Items.Add("Current");
+            teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
+
+            DFGPlugin.GetController().TeraData += teraScanData;
+            DFGPlugin.GetController().TeraTotalOnlyData += teraScanTotalOnlyData;
+            DFGPlugin.GetController().TeraSegmentOnlyData += teraScanSegmentOnlyData;
+            DFGPlugin.GetController().TeraSegmentScanFinished += teraScanSegmentFinished;
+            DFGPlugin.GetController().TeraScanFinished += teraScanFinished;
+            DFGPlugin.GetController().TeraScanProblem += teraScanProblem;
         }
 
         #endregion
@@ -535,6 +550,204 @@ namespace ConfocalControl
 
         #endregion
 
+        #region Tera Scan events
+
+        private void teraScan_output_type_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            teraScan_output_box.Items.Clear();
+            teraScan_output_box.SelectedIndex = -1;
+
+            switch (teraScan_output_type_box.SelectedIndex)
+            {
+                case 0:
+                    DFGPlugin.GetController().Settings["tera_channel_type"] = "Lambda";
+                    if (!DFGPlugin.GetController().TeraScanIsRunning()) DFGPlugin.GetController().RequestTeraHistoricData();
+                    teraScan_segmentDisplay_ComboBox_SelectionChanged(null, null);
+                    break;
+                case 1:
+                    DFGPlugin.GetController().Settings["tera_channel_type"] = "Counters";
+                    foreach (string input in (List<string>)DFGPlugin.GetController().teraScanBufferAccess.historicSettings["counterChannels"])
+                    {
+                        teraScan_output_box.Items.Add(input);
+                    }
+                    if (teraScan_output_box.Items.Count != 0) teraScan_output_box.SelectedIndex = 0;
+                    break;
+                case 2:
+                    DFGPlugin.GetController().Settings["tera_channel_type"] = "Analogues";
+                    foreach (string input in (List<string>)DFGPlugin.GetController().teraScanBufferAccess.historicSettings["analogueChannels"])
+                    {
+                        teraScan_output_box.Items.Add(input);
+                    }
+                    if (teraScan_output_box.Items.Count != 0) teraScan_output_box.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void teraScan_output_box_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DFGPlugin.GetController().Settings["tera_display_channel_index"] = teraScan_output_box.SelectedIndex;
+            if (!DFGPlugin.GetController().TeraScanIsRunning()) DFGPlugin.GetController().RequestTeraHistoricData();
+            teraScan_segmentDisplay_ComboBox_SelectionChanged(null, null);
+        }
+
+        private void teraScanProblem(Exception e)
+        {
+            MessageBox.Show(e.Message);
+            if (DFGPlugin.GetController().IsRunning() && DFGPlugin.GetController().TeraScanIsRunning())
+            {
+                if (DFGPlugin.GetController().TeraSegmentIsRunning())
+                {
+                    DFGPlugin.GetController().TeraScanSegmentAcquisitionEnd();
+                }
+                DFGPlugin.GetController().TeraScanAcquisitionStopping();
+            }
+        }
+
+        private void teraScanFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Normal,
+                   new Action(() =>
+                   {
+                       EnableNoneScanCommands();
+                       this.teraScan_Switch.Value = false;
+                       this.wavemeterScan_Switch.IsEnabled = true;
+                       this.teraScan_configure_Button.IsEnabled = true;
+                   }));
+        }
+
+        private void teraScanData(double[] data, double[] dataSeg, bool reset)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           if (reset)
+                           {
+                               this.teraScan_Display.DataSource = new AnalogWaveform<double>(0);
+                               this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0);
+                           }
+
+                           ((AnalogWaveform<double>)this.teraScan_Display.DataSource).Append(data);
+                           ((AnalogWaveform<double>)this.segmentScanDisplay.DataSource).Append(dataSeg);
+                       }));
+        }
+
+        private void teraScanTotalOnlyData(double[] data, bool reset)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           if (reset) { this.teraScan_Display.DataSource = new AnalogWaveform<double>(0); }
+                           ((AnalogWaveform<double>)this.teraScan_Display.DataSource).Append(data);
+                       }));
+        }
+
+        private void teraScanSegmentOnlyData(double[] data, bool reset)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           if (reset) { this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0); }
+                           ((AnalogWaveform<double>)this.segmentScanDisplay.DataSource).Append(data);
+                       }));
+        }
+
+        private void teraScanSegmentFinished()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           this.teraScan_segmentDisplay_ComboBox.Items.Add("Segment: " + Convert.ToString(DFGPlugin.GetController().teraScanBufferAccess.currentSegmentIndex));
+                       }));
+        }
+
+        private void teraScan_configure_Button_Click(object sender, RoutedEventArgs e)
+        {
+            DFGTeraScanConfigure window = new DFGTeraScanConfigure();
+            window.ShowDialog();
+        }
+
+        private void teraScan_Switch_Click(object sender, RoutedEventArgs e)
+        {
+            if (!teraScan_Switch.Value)
+            {
+                if (!DFGPlugin.GetController().TeraScanAcceptableSettings())
+                {
+                    MessageBox.Show("TeraScan parameters unacceptable");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           this.teraScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                if (!DFGPlugin.GetController().DFG.Connected)
+                {
+                    MessageBox.Show("not connected");
+                    Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           this.teraScan_Switch.Value = false;
+                       }));
+                    return;
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(
+                   DispatcherPriority.Normal,
+                   new Action(() =>
+                   {
+                       this.teraScan_Display.DataSource = new AnalogWaveform<double>(0);
+                       this.segmentScanDisplay.DataSource = new AnalogWaveform<double>(0);
+
+                       DissableNoneScanCommands();
+                       this.wavemeterScan_Switch.IsEnabled = false;
+                       this.teraScan_configure_Button.IsEnabled = false;
+
+                       this.teraScan_segmentDisplay_ComboBox.Items.Clear();
+                       this.teraScan_segmentDisplay_ComboBox.Items.Add("Current");
+                       this.teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
+                   }));
+
+                Thread thread = new Thread(new ThreadStart(DFGPlugin.GetController().StartTeraScan));
+                thread.IsBackground = true;
+                thread.Start();
+            }
+
+            else
+            {
+                if (DFGPlugin.GetController().IsRunning())
+                {
+                    DFGPlugin.GetController().StopAcquisition();
+                }
+            }
+        }
+
+        private void teraScan_segmentDisplay_ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int displayIndex = teraScan_segmentDisplay_ComboBox.SelectedIndex;
+
+            if (displayIndex < 1)
+            {
+                DFGPlugin.GetController().Settings["tera_display_current_segment"] = true;
+            }
+            else
+            {
+                DFGPlugin.GetController().Settings["tera_display_current_segment"] = false;
+                DFGPlugin.GetController().RequestSegmentData(displayIndex - 1);
+            }
+        }
+
+        #endregion
+
         #region Other methods
 
         private void DissableNoneScanCommands()
@@ -589,6 +802,14 @@ namespace ConfocalControl
             if (this.wavemeterScan_Display.DataSource != null)
             {
                 DFGPlugin.GetController().SaveWavemeterData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_wavemeterScan.txt", false);
+            }
+        }
+
+        private void teraScan_save_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.teraScan_Display.DataSource != null)
+            {
+                DFGPlugin.GetController().SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan.txt", false);
             }
         }
 

@@ -18,6 +18,7 @@ using DSPLib;
 
 namespace ConfocalControl
 {
+    
     class DFGPlugin
     {
         #region Class members
@@ -34,12 +35,19 @@ namespace ConfocalControl
         }
 
         // Define Opt state
-        private enum DFGState { stopped, running, stopping };
+        private enum DFGState { stopped, running, stopping, stepping };
         private DFGState backendState = DFGState.stopped;
         private enum WavemeterScanState { stopped, running, stopping };
         private WavemeterScanState wavemeterState = WavemeterScanState.stopped;
         private enum TripletScanState { stopped, running, stopping };
         private TripletScanState tripletState = TripletScanState.stopped;
+
+        private enum TeraScanState { stopped, running, stopping, stepping };
+        private TeraScanState teraState = TeraScanState.stopped;
+        private enum TeraScanSegmentState { stopped, running, stopping, unfinished };
+        private TeraScanSegmentState teraSegmentState = TeraScanSegmentState.stopped;
+        private enum TeraLaserState { stopped, running, stopping };
+        private TeraLaserState teraLaser = TeraLaserState.stopped;
 
         // Settings
         public PluginSettings Settings { get; set; }
@@ -58,6 +66,13 @@ namespace ConfocalControl
         public event TeraSingleDataEventHandler TripletDFTData;
         public event MultiChannelScanFinishedEventHandler TripletScanFinished;
         public event SpectraScanExceptionEventHandler TripletScanProblem;
+        // TeraScan
+        public event TeraScanFullDataEventHandler TeraData;
+        public event TeraScanSingleChannelDataEventHandler TeraTotalOnlyData;
+        public event TeraScanSingleChannelDataEventHandler TeraSegmentOnlyData;
+        public event MultiChannelScanFinishedEventHandler TeraSegmentScanFinished;
+        public event MultiChannelScanFinishedEventHandler TeraScanFinished;
+        public event SpectraScanExceptionEventHandler TeraScanProblem;
 
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
@@ -76,6 +91,20 @@ namespace ConfocalControl
         private List<double[]> tripletCounterBuffer;
         public Hashtable tripletHistoricSettings;
 
+        // Keep track of data for teraScan
+        private List<Point>[] fastAnalogBuffer;
+        private List<Point>[] fastCounterBuffer;
+        private double[] fastLatestCounters;
+        private double[] teraScanDisplayTotalWaveform;
+        private double[] teraScanDisplaySegmentWaveform;
+        private bool teraScan_display_is_current_segment;
+        private string teraScan_current_channel_type;
+        private int teraScan_current_display_channel_index;
+        private TeraScanDataHolder teraScanBuffer;
+        public TeraScanDataHolder teraScanBufferAccess { get { return teraScanBuffer; } }
+        private double teraLatestLambda;
+        public double latestLambda { get { return teraLatestLambda; } }
+
         // Keep track of tasks
         private Task triggerTask;
         private DigitalSingleChannelWriter triggerWriter;
@@ -84,6 +113,8 @@ namespace ConfocalControl
         private List<CounterSingleChannelReader> counterReaders;
         private Task analoguesTask;
         private AnalogMultiChannelReader analoguesReader;
+
+        double SPEEDOFLIGHT = 299792458;
 
         #endregion
 
@@ -120,6 +151,18 @@ namespace ConfocalControl
                 Settings["tripletInt"] = 2.0;
                 Settings["tripletRate"] = 10000.0;
 
+                Settings["TeraScanRepeatType"] = "single";
+                Settings["TeraScanType"] = "medium";
+                Settings["TeraScanStart"] = (double)1150;
+                Settings["TeraScanStop"] = (double)1155;
+                Settings["TeraScanRate"] = 500;
+                Settings["TeraScanUnits"] = "MHz/s";
+                Settings["TeraScanMultiLambda"] = new double[] { 1150, 1160, 1170, 1180, 1190 };
+                Settings["TeraScanMultiRange"] = 10.0;
+                Settings["tera_channel_type"] = "Lambda";
+                Settings["tera_display_channel_index"] = 0;
+                Settings["tera_display_current_segment"] = true;
+
                 Settings["triplet_channel_type"] = "Counters";
                 Settings["triplet_display_channel_index"] = 0;
             }
@@ -131,6 +174,8 @@ namespace ConfocalControl
             tripletHistoricSettings = new Hashtable();
             tripletHistoricSettings["counterChannels"] = (List<string>)Settings["counterChannels"];
             tripletHistoricSettings["analogueChannels"] = (List<string>)Settings["analogueChannels"];
+
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
 
             triggerTask = null;
             freqOutTask = null;
@@ -159,6 +204,16 @@ namespace ConfocalControl
         public bool TripletScanIsRunning()
         {
             return tripletState == TripletScanState.running;
+        }
+
+        public bool TeraScanIsRunning()
+        {
+            return teraState == TeraScanState.running;
+        }
+
+        public bool TeraSegmentIsRunning()
+        {
+            return teraSegmentState == TeraScanSegmentState.running;
         }
 
         private bool CheckIfStopping()
@@ -1023,5 +1078,709 @@ namespace ConfocalControl
         }
 
         #endregion
+
+        #region TeraScan
+
+        public bool TeraScanAcceptableSettings()
+        {
+            return true;
+        }
+
+        public void StartTeraScan()
+        {
+            switch ((string)Settings["TeraScanRepeatType"])
+            {
+                case "single":
+                    StartSingleTeraScan();
+                    break;
+                case "multi":
+                    //StartMultiTeraScan();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //Not Implemented
+        public void StartMultiTeraScan()
+        {
+            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
+            {
+                throw new DaqException("Counter already running");
+            }
+
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
+
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"];
+
+            teraState = TeraScanState.running;
+            backendState = DFGState.running;
+
+            for (int i = 0; i < ((double[])Settings["TeraScanMultiLambda"]).Length; i++)
+            {
+                if (teraState == TeraScanState.stepping && backendState == DFGState.stepping)
+                {
+                    teraState = TeraScanState.running;
+                    backendState = DFGState.running;
+                }
+
+                if ((teraState == TeraScanState.running) == false)
+                {
+                    break;
+                }
+
+                Settings["TeraScanStart"] = SPEEDOFLIGHT / (SPEEDOFLIGHT / ((double[])Settings["TeraScanMultiLambda"])[i] + (double)Settings["TeraScanMultiRange"] / 2);
+                Settings["TeraScanStop"] = SPEEDOFLIGHT / (SPEEDOFLIGHT / ((double[])Settings["TeraScanMultiLambda"])[i] - (double)Settings["TeraScanMultiRange"] / 2);
+
+                TeraScanInitialise();
+                teraLatestLambda = (double)Settings["TeraScanStart"];
+                TeraScanAcquisitionStarting();
+                while (true)
+                {
+                    Dictionary<string, object> autoOutput = new Dictionary<string, object>();
+                    while (backendState == DFGState.running && teraState == TeraScanState.running)
+                    {
+                        //autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
+                        autoOutput = DFG.ReceiveCustomMessage("terascan_output", true);
+                        if (autoOutput.Count > 0)
+                        {
+                            object item;
+                            autoOutput.TryGetValue("report", out item);
+                            if (item != null)
+                            {
+                                teraState = TeraScanState.stepping;
+                                backendState = DFGState.stepping;
+                                break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        Thread.Sleep(10);
+                    }
+                    if (backendState == DFGState.running && teraState == TeraScanState.running)
+                    {
+                        TeraScanSegmentStart();
+                    }
+                    else { break; }
+                }
+
+                if (teraLaser == TeraLaserState.stopped)
+                {
+                    int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, true);
+                }
+                else
+                {
+                    int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
+                    while (teraLaser != TeraLaserState.stopped)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+
+            }
+
+            Settings["TeraScanStart"] = initStartLambda;
+            Settings["TeraScanStop"] = initStopLambda;
+            TeraScanAcquisitionStopping();
+        }
+
+        public void StartSingleTeraScan()
+        {
+            //try
+            //{
+            if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
+            {
+                throw new DaqException("Counter already running");
+            }
+
+            teraState = TeraScanState.running;
+            backendState = DFGState.running;
+
+            //TeraScanInitialise();
+            teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
+            teraLatestLambda = (double)Settings["TeraScanStart"];
+            TeraScanAcquisitionStarting();
+            while (true)
+            {
+                Dictionary<string, object> autoOutput = new Dictionary<string, object>();
+                //while (backendState == DFGState.running && teraState == TeraScanState.running)
+                //{
+                //    // This functionality is not currently available on the DFG
+
+                //    autoOutput = DFG.ReceiveCustomMessage("automatic_output", true); 
+
+                //    if (autoOutput.Count > 0)
+                //    {
+                //        object item;
+                //        autoOutput.TryGetValue("report", out item);
+                //        if (item != null)
+                //        {
+                //            teraState = TeraScanState.stopping;
+                //            backendState = DFGState.stopping;
+                //            break;
+                //        }
+                //        else
+                //        {
+                //            break;
+                //        }
+                //    }
+                //    Thread.Sleep(10);
+                //}
+                if (backendState == DFGState.running && teraState == TeraScanState.running)
+                {
+                    TeraScanSegmentStart();
+                }
+                else { break; }
+            }
+            TeraScanAcquisitionStopping();
+
+            //}
+            //catch (Exception e)
+            //{
+            //    if (TeraScanProblem != null) TeraScanProblem(e);
+            //}
+        }
+
+        private void TeraScanInitialise()
+        {
+            //Not implemented yet
+            
+            DFG.terascan_output("start", 0, 2, "on");
+
+            string scanType = (string)Settings["TeraScanType"];
+            double startLambda = (double)Settings["TeraScanStart"];
+            double stopLambda = (double)Settings["TeraScanStop"];
+            int scanRate = (int)Settings["TeraScanRate"];
+            string scanUnits = (string)Settings["TeraScanUnits"];
+            int reply = DFG.scan_stitch_initialise(scanType, startLambda, stopLambda, scanRate, scanUnits);
+        }
+
+        private void TeraScanAcquisitionStarting()
+        {
+            // Turn on correct display
+            teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+            teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+            teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+
+            ////Not implemented yet
+
+            //int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "start", true, false);
+            //switch (reply)
+            //{
+            //    case 0:
+            //        return;
+            //    default:
+            //        throw new Exception("Couldn't start tera scan");
+            //}
+        }
+
+        public void TeraScanAcquisitionStopping()
+        {
+            if (teraLaser == TeraLaserState.stopped)
+            {
+                int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, true);
+            }
+            else
+            {
+                int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
+                while (teraLaser != TeraLaserState.stopped)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+
+            teraState = TeraScanState.stopped;
+            backendState = DFGState.stopped;
+            if (TeraScanFinished != null) TeraScanFinished();
+        }
+
+        private void TeraScanSegmentAcquisitionStarting()
+        {
+            // Initialise containers
+            fastAnalogBuffer = new List<Point>[((List<string>)Settings["analogueChannels"]).Count];
+            for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
+            {
+                fastAnalogBuffer[i] = new List<Point>();
+            }
+            fastCounterBuffer = new List<Point>[((List<string>)Settings["counterChannels"]).Count];
+            fastLatestCounters = new double[((List<string>)Settings["counterChannels"]).Count];
+            for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
+            {
+                fastCounterBuffer[i] = new List<Point>();
+                fastLatestCounters[i] = 0;
+            }
+
+            // Define sample rate 
+            pointsPerExposure = 1;
+            sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+
+            // Set up clock task
+            freqOutTask = new Task("sample clock task");
+
+            // Finite pulse train
+            freqOutTask.COChannels.CreatePulseChannelFrequency(
+                ((CounterChannel)Environs.Hardware.CounterChannels["SampleClock"]).PhysicalChannel,
+                "photon counter clocking signal",
+                COPulseFrequencyUnits.Hertz,
+                COPulseIdleState.Low,
+                0,
+                sampleRate,
+                0.5);
+
+
+            freqOutTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
+
+            freqOutTask.Control(TaskAction.Verify);
+
+            // Set up edge-counting tasks
+            counterTasks = new List<Task>();
+            counterReaders = new List<CounterSingleChannelReader>();
+
+            for (int i = 0; i < ((List<string>)Settings["counterChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)Settings["counterChannels"])[i];
+
+                counterTasks.Add(new Task("buffered edge counters " + channelName));
+
+                // Count upwards on rising edges starting from zero
+                counterTasks[i].CIChannels.CreateCountEdgesChannel(
+                    ((CounterChannel)Environs.Hardware.CounterChannels[channelName]).PhysicalChannel,
+                    "edge counter " + channelName,
+                    CICountEdgesActiveEdge.Rising,
+                    0,
+                    CICountEdgesCountDirection.Up);
+
+                // Take one sample within a window determined by sample rate using clock task
+                counterTasks[i].Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                counterTasks[i].Control(TaskAction.Verify);
+
+                DaqStream counterStream = counterTasks[i].Stream;
+                counterReaders.Add(new CounterSingleChannelReader(counterStream));
+
+                // Start tasks
+                counterTasks[i].Start();
+            }
+
+            // Set up analogue sampling tasks
+            analoguesTask = new Task("analogue sampler");
+
+            for (int i = 0; i < ((List<string>)Settings["analogueChannels"]).Count; i++)
+            {
+                string channelName = ((List<string>)Settings["analogueChannels"])[i];
+
+                double inputRangeLow = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][0];
+                double inputRangeHigh = ((Dictionary<string, double[]>)Settings["analogueLowHighs"])[channelName][1];
+
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(
+                    analoguesTask,
+                    inputRangeLow,
+                    inputRangeHigh
+                    );
+            }
+
+            if (((List<string>)Settings["analogueChannels"]).Count != 0)
+            {
+                analoguesTask.Timing.ConfigureSampleClock(
+                    (string)Environs.Hardware.GetInfo("SampleClockReader"),
+                    sampleRate,
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.ContinuousSamples);
+
+                analoguesTask.Control(TaskAction.Verify);
+
+                DaqStream analogStream = analoguesTask.Stream;
+                analoguesReader = new AnalogMultiChannelReader(analogStream);
+
+                // Start tasks
+                analoguesTask.Start();
+            }
+        }
+
+        private void TeraScanSegmentAcquisitionStart()
+        {
+            freqOutTask.Start();
+            bool isFirst = true;
+
+            DateTime displayStartTime = DateTime.Now;
+            DateTime displayCurrentTime = DateTime.Now;
+            List<double> displayData = new List<double>();
+
+            while (backendState == DFGState.running && teraSegmentState == TeraScanSegmentState.running)
+            {
+                // Read first counter
+                double[] counterRead = counterReaders[0].ReadMultiSampleDouble(-1);
+                int dataReadLength = counterRead.Length;
+
+                if (dataReadLength > 0)
+                {
+                    if (isFirst)
+                    {
+                        teraScanBuffer.latestCounters[0] = counterRead[counterRead.Length - 1];
+
+                        for (int i = 1; i < teraScanBuffer.numberCounterChannels; i++)
+                        {
+                            counterRead = counterReaders[i].ReadMultiSampleDouble(dataReadLength);
+                            teraScanBuffer.latestCounters[i] = counterRead[counterRead.Length - 1];
+                        }
+
+                        if (((List<string>)Settings["analogueChannels"]).Count != 0)
+                        {
+                            double[,] analogRead = analoguesReader.ReadMultiSample(dataReadLength);
+                        }
+
+                        TeraSegmentOnlyData(new double[] { }, true);
+
+                        isFirst = false;
+                    }
+
+                    else
+                    {
+                        double dataLambda = teraLatestLambda;
+                        teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                        if (teraScan_current_channel_type == "Lambda")
+                        {
+                            displayData.Add(dataLambda);
+                        }
+
+                        double dataRead = counterRead[0] - teraScanBuffer.latestCounters[0];
+                        teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
+                        teraScanBuffer.latestCounters[0] = counterRead[counterRead.Length - 1];
+                        if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == 0)
+                        {
+                            displayData.Add(dataRead);
+                        }
+
+                        if (dataReadLength > 1)
+                        {
+                            for (int j = 1; j < counterRead.Length; j++)
+                            {
+                                dataLambda = teraLatestLambda;
+                                teraScanBuffer.AddLambdaDataToCurrentSegment(dataLambda);
+                                if (teraScan_current_channel_type == "Lambda")
+                                {
+                                    displayData.Add(dataLambda);
+                                }
+
+                                dataRead = counterRead[j] - counterRead[j - 1];
+                                teraScanBuffer.AddCounterDataToCurrentSegment(0, dataRead);
+                                if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == 0)
+                                {
+                                    displayData.Add(dataRead);
+                                }
+                            }
+                        }
+
+                        // Read other counter data
+                        for (int i = 1; i < teraScanBuffer.numberCounterChannels; i++)
+                        {
+                            counterRead = counterReaders[i].ReadMultiSampleDouble(dataReadLength);
+
+                            dataRead = counterRead[0] - teraScanBuffer.latestCounters[i];
+                            teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
+                            teraScanBuffer.latestCounters[i] = counterRead[counterRead.Length - 1];
+                            if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == i)
+                            {
+                                displayData.Add(dataRead);
+                            }
+
+                            if (counterRead.Length > 1)
+                            {
+                                for (int j = 1; j < counterRead.Length; j++)
+                                {
+                                    dataRead = counterRead[j] - counterRead[j - 1];
+                                    teraScanBuffer.AddCounterDataToCurrentSegment(i, dataRead);
+                                    if (teraScan_current_channel_type == "Counters" && teraScan_current_display_channel_index == i)
+                                    {
+                                        displayData.Add(dataRead);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Read analogue data
+                        if (((List<string>)Settings["analogueChannels"]).Count != 0)
+                        {
+                            double[,] analogRead = analoguesReader.ReadMultiSample(dataReadLength);
+
+                            for (int i = 0; i < analogRead.GetLength(0); i++)
+                            {
+                                for (int j = 0; j < analogRead.GetLength(1); j++)
+                                {
+                                    teraScanBuffer.AddAnalogueDataToCurrentSegment(i, analogRead[i, j]);
+                                    if (teraScan_current_channel_type == "Analogues" && teraScan_current_display_channel_index == i)
+                                    {
+                                        displayData.Add(analogRead[i, j]);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Broadcast
+                        displayCurrentTime = DateTime.Now;
+                        if ((displayCurrentTime - displayStartTime).TotalMilliseconds > 100 && displayData.Count > 0)
+                        {
+                            if (teraScan_display_is_current_segment != (bool)Settings["tera_display_current_segment"] || teraScan_current_channel_type != (string)Settings["tera_channel_type"] || teraScan_current_display_channel_index != (int)Settings["tera_display_channel_index"])
+                            {
+                                teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+                                teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+                                teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+                                TeraScanChangeDisplay();
+                                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
+                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+                            }
+                            else
+                            {
+                                teraScanDisplayTotalWaveform = displayData.ToArray();
+                                teraScanDisplaySegmentWaveform = displayData.ToArray();
+                                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, false); }
+                                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, false); }
+                            }
+                            displayStartTime = DateTime.Now;
+                            displayData = new List<double>();
+                        }
+                    }
+                }
+            }
+
+            // Final Broadcast
+            if (teraScan_display_is_current_segment != (bool)Settings["tera_display_current_segment"] || teraScan_current_channel_type != (string)Settings["tera_channel_type"] || teraScan_current_display_channel_index != (int)Settings["tera_display_channel_index"])
+            {
+                teraScan_display_is_current_segment = (bool)Settings["tera_display_current_segment"];
+                teraScan_current_channel_type = (string)Settings["tera_channel_type"];
+                teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
+                TeraScanChangeDisplay();
+                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
+                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, true); }
+            }
+            else
+            {
+                teraScanDisplayTotalWaveform = displayData.ToArray();
+                teraScanDisplaySegmentWaveform = displayData.ToArray();
+                if (teraScan_display_is_current_segment) { TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, false); }
+                else { TeraTotalOnlyData(teraScanDisplayTotalWaveform, false); }
+            }
+
+            freqOutTask.Stop();
+        }
+
+        public void TeraScanSegmentAcquisitionEnd()
+        {
+            freqOutTask.Dispose();
+            foreach (Task counterTask in counterTasks)
+            {
+                counterTask.Dispose();
+            }
+            analoguesTask.Dispose();
+
+            freqOutTask = null;
+            counterTasks = null;
+            analoguesTask = null;
+
+            counterReaders = null;
+            analoguesReader = null;
+        }
+
+        private void TeraScanSegmentLaserStart()
+        {
+            teraLaser = TeraLaserState.running;
+            //string status = "scan";
+            
+            //Not yet implemented
+            //DFG.terascan_continue();
+
+            while (teraLatestLambda < (Double)Settings["TeraScanStop"])
+            {
+                //Dictionary<string, object> autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
+
+                //I am trying to change this to get the wavelength of the DFG.
+               Dictionary<string, object> autoOutput = DFG.status();
+
+                if (autoOutput.Count != 0)
+                {
+                    try
+                    {
+                        teraLatestLambda = Convert.ToDouble(autoOutput["wavelength"]);
+                        //status = (string)autoOutput["status"];
+                        if (backendState != DFGState.running || teraState != TeraScanState.running)
+                        {
+                            teraLaser = TeraLaserState.stopping;
+                        }
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        teraLaser = TeraLaserState.stopping;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            //if (status != "end")
+            if (teraLatestLambda > (Double)Settings["TeraScanStop"])
+            {
+                teraSegmentState = TeraScanSegmentState.unfinished;
+                //MessageBox.Show(status);
+            }
+            else { teraLaser = TeraLaserState.stopped; teraSegmentState = TeraScanSegmentState.stopped; }
+        }
+
+        private void TeraScanSegmentStart()
+        {
+            teraLatestLambda = -1;
+            teraScanBuffer.AddNewSegment();
+            TeraScanSegmentAcquisitionStarting();
+            teraSegmentState = TeraScanSegmentState.running;
+            Thread thread = new Thread(new ThreadStart(TeraScanSegmentLaserStart));
+            thread.IsBackground = true;
+            thread.Start();
+            while (teraLatestLambda < 0) { Thread.Sleep(1); }
+            TeraScanSegmentAcquisitionStart();
+            TeraScanSegmentAcquisitionEnd();
+            // SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
+            if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }
+        }
+
+        private void TeraScanChangeDisplay()
+        {
+            int index;
+            switch ((string)Settings["tera_channel_type"])
+            {
+                case "Counters":
+                    index = (int)Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)Settings["counterChannels"]).Count)
+                    {
+                        teraScanDisplayTotalWaveform = teraScanBuffer.GetCounterData(index).ToArray();
+                        teraScanDisplaySegmentWaveform = teraScanBuffer.GetCurrentSegment().GetCounterData(index).ToArray();
+                    }
+                    break;
+
+                case "Analogues":
+                    index = (int)Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)Settings["analogueChannels"]).Count)
+                    {
+                        teraScanDisplayTotalWaveform = teraScanBuffer.GetAnalogueData(index).ToArray();
+                        teraScanDisplaySegmentWaveform = teraScanBuffer.GetCurrentSegment().GetAnalogueData(index).ToArray();
+                    }
+                    break;
+
+                case "Lambda":
+                    teraScanDisplayTotalWaveform = teraScanBuffer.GetLambdaData().ToArray();
+                    teraScanDisplaySegmentWaveform = teraScanBuffer.GetCurrentSegment().GetWavelengthData().ToArray();
+                    break;
+                default:
+                    throw new Exception("Did not understand data type");
+            }
+        }
+
+        public void RequestSegmentData(int segmentIndex)
+        {
+            SegmentDataHolder segment = DFGPlugin.GetController().teraScanBuffer.GetSegment(segmentIndex);
+            int index;
+            switch ((string)DFGPlugin.GetController().Settings["tera_channel_type"])
+            {
+                case "Counters":
+                    index = (int)DFGPlugin.GetController().Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)DFGPlugin.GetController().Settings["counterChannels"]).Count)
+                    {
+                        TeraSegmentOnlyData(segment.GetCounterData(index).ToArray(), true);
+                    }
+                    else { TeraSegmentOnlyData(new double[] { }, true); }
+                    break;
+
+                case "Analogues":
+                    index = (int)DFGPlugin.GetController().Settings["tera_display_channel_index"];
+                    if (index >= 0 && index < ((List<string>)DFGPlugin.GetController().Settings["analogueChannels"]).Count)
+                    {
+                        TeraSegmentOnlyData(segment.GetAnalogueData(index).ToArray(), true);
+                    }
+                    else { TeraSegmentOnlyData(new double[] { }, true); }
+                    break;
+
+                case "Lambda":
+                    TeraSegmentOnlyData(segment.GetWavelengthData().ToArray(), true);
+                    break;
+                default:
+                    throw new Exception("Did not understand data type");
+            }
+        }
+
+        public void RequestTeraHistoricData()
+        {
+            if (teraScanBuffer.currentSegmentIndex >= 0) { TeraScanChangeDisplay(); TeraData(teraScanDisplayTotalWaveform, teraScanDisplaySegmentWaveform, true); }
+        }
+
+        public void SaveTeraScanData(string fileName, bool automatic)
+        {
+            string directory = Environs.FileSystem.GetDataDirectory((string)Environs.FileSystem.Paths["scanMasterDataPath"]);
+
+            List<string> lines = new List<string>();
+            lines.Add(DateTime.Today.ToString("dd-MM-yyyy") + " " + DateTime.Now.ToString("HH:mm:ss"));
+            lines.Add("Sample rate = " + ((double)teraScanBuffer.historicSettings["sampleRate"]).ToString());
+            lines.Add("Type: " + (string)teraScanBuffer.historicSettings["TeraScanType"]);
+            lines.Add("Lambda start = " + ((double)teraScanBuffer.historicSettings["TeraScanStart"]).ToString() + ", Lambda stop = " + ((double)teraScanBuffer.historicSettings["TeraScanStop"]).ToString() + ", Frequency rate = " + ((int)teraScanBuffer.historicSettings["TeraScanRate"]).ToString() + (string)teraScanBuffer.historicSettings["TeraScanUnits"]);
+            lines.Add("");
+
+            string descriptionString = "Segment Index Lambda";
+
+            foreach (string channel in (List<string>)teraScanBuffer.historicSettings["counterChannels"])
+            {
+                descriptionString = descriptionString + " " + channel;
+            }
+            foreach (string channel in (List<string>)teraScanBuffer.historicSettings["analogueChannels"])
+            {
+                descriptionString = descriptionString + " " + channel;
+            }
+            lines.Add(descriptionString);
+
+
+            for (int i = 0; i < teraScanBuffer.currentSegmentIndex + 1; i++)
+            {
+                SegmentDataHolder segment = teraScanBuffer.GetSegment(i);
+                if (segment.GetWavelengthData().Count > 0)
+                {
+                    for (int j = 0; j < segment.GetWavelengthData().Count; j++)
+                    {
+                        string line = i.ToString() + " " + j.ToString() + " " + segment.GetWavelengthData()[j];
+                        for (int n = 0; n < teraScanBuffer.numberCounterChannels; n++)
+                        {
+                            line = line + " " + segment.GetCounterData(n)[j].ToString();
+                        }
+                        for (int m = 0; m < teraScanBuffer.numberAnalogChannels; m++)
+                        {
+                            line = line + " " + segment.GetAnalogueData(m)[j].ToString();
+                        }
+                        lines.Add(line);
+
+                    }
+                }
+            }
+
+            if (automatic) System.IO.File.WriteAllLines(directory + fileName, lines.ToArray());
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.InitialDirectory = directory;
+                saveFileDialog.FileName = fileName;
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    System.IO.File.WriteAllLines(saveFileDialog.FileName, lines.ToArray());
+                }
+            }
+        }
+
+        #endregion
+
     }
+
 }

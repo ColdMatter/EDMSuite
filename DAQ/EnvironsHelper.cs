@@ -259,7 +259,13 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-				default:
+                case "PH-CCMQN1":
+                    Hardware = new ConfocalHardware("ColdConfocal");
+                    FileSystem = new ConfocalFileSystem("ColdConfocal");
+                    Debug = false;
+                    break;
+
+                default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
