@@ -1141,8 +1141,8 @@ namespace ConfocalControl
                     Dictionary<string, object> autoOutput = new Dictionary<string, object>();
                     while (backendState == DFGState.running && teraState == TeraScanState.running)
                     {
-                        //autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
-                        autoOutput = DFG.ReceiveCustomMessage("terascan_output", true);
+                        autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
+                        //autoOutput = DFG.ReceiveCustomMessage("terascan_output", true);
                         if (autoOutput.Count > 0)
                         {
                             object item;
@@ -1199,36 +1199,36 @@ namespace ConfocalControl
             teraState = TeraScanState.running;
             backendState = DFGState.running;
 
-            //TeraScanInitialise();
+            TeraScanInitialise();
             teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
             teraLatestLambda = (double)Settings["TeraScanStart"];
             TeraScanAcquisitionStarting();
             while (true)
             {
                 Dictionary<string, object> autoOutput = new Dictionary<string, object>();
-                //while (backendState == DFGState.running && teraState == TeraScanState.running)
-                //{
-                //    // This functionality is not currently available on the DFG
+                while (backendState == DFGState.running && teraState == TeraScanState.running)
+                {
+                    // This functionality is not currently available on the DFG
 
-                //    autoOutput = DFG.ReceiveCustomMessage("automatic_output", true); 
+                    autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
 
-                //    if (autoOutput.Count > 0)
-                //    {
-                //        object item;
-                //        autoOutput.TryGetValue("report", out item);
-                //        if (item != null)
-                //        {
-                //            teraState = TeraScanState.stopping;
-                //            backendState = DFGState.stopping;
-                //            break;
-                //        }
-                //        else
-                //        {
-                //            break;
-                //        }
-                //    }
-                //    Thread.Sleep(10);
-                //}
+                    if (autoOutput.Count > 0)
+                    {
+                        object item;
+                        autoOutput.TryGetValue("report", out item);
+                        if (item != null)
+                        {
+                            teraState = TeraScanState.stopping;
+                            backendState = DFGState.stopping;
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    Thread.Sleep(10);
+                }
                 if (backendState == DFGState.running && teraState == TeraScanState.running)
                 {
                     TeraScanSegmentStart();
@@ -1246,8 +1246,8 @@ namespace ConfocalControl
 
         private void TeraScanInitialise()
         {
-            //Not implemented yet
-            
+            //Not tested
+
             DFG.terascan_output("start", 0, 2, "on");
 
             string scanType = (string)Settings["TeraScanType"];
@@ -1256,6 +1256,13 @@ namespace ConfocalControl
             int scanRate = (int)Settings["TeraScanRate"];
             string scanUnits = (string)Settings["TeraScanUnits"];
             int reply = DFG.scan_stitch_initialise(scanType, startLambda, stopLambda, scanRate, scanUnits);
+            switch (reply)
+            {
+                case 0:
+                    return;
+                default:
+                    throw new Exception("couldn't initialise tera scan");
+            }
         }
 
         private void TeraScanAcquisitionStarting()
@@ -1265,16 +1272,16 @@ namespace ConfocalControl
             teraScan_current_channel_type = (string)Settings["tera_channel_type"];
             teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
 
-            ////Not implemented yet
-
-            //int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "start", true, false);
-            //switch (reply)
-            //{
-            //    case 0:
-            //        return;
-            //    default:
-            //        throw new Exception("Couldn't start tera scan");
-            //}
+            //not tested
+            string scanType = (string)Settings["TeraScanType"];
+            int reply = dfg.scan_stitch_op(scanType, "start", true, false);
+            switch (reply)
+            {
+                case 0:
+                    return;
+                default:
+                    throw new Exception("couldn't start tera scan");
+            }
         }
 
         public void TeraScanAcquisitionStopping()
@@ -1591,24 +1598,21 @@ namespace ConfocalControl
         private void TeraScanSegmentLaserStart()
         {
             teraLaser = TeraLaserState.running;
-            //string status = "scan";
+            string status = "scan";
             
-            //Not yet implemented
-            //DFG.terascan_continue();
+            //Not yet tested
+            DFG.terascan_continue();
 
             while (teraLatestLambda < (Double)Settings["TeraScanStop"])
             {
-                //Dictionary<string, object> autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
-
-                //I am trying to change this to get the wavelength of the DFG.
-               Dictionary<string, object> autoOutput = DFG.status();
+                Dictionary<string, object> autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
 
                 if (autoOutput.Count != 0)
                 {
                     try
                     {
                         teraLatestLambda = Convert.ToDouble(autoOutput["wavelength"]);
-                        //status = (string)autoOutput["status"];
+                        status = (string)autoOutput["status"];
                         if (backendState != DFGState.running || teraState != TeraScanState.running)
                         {
                             teraLaser = TeraLaserState.stopping;
@@ -1625,8 +1629,7 @@ namespace ConfocalControl
                 }
             }
 
-            //if (status != "end")
-            if (teraLatestLambda > (Double)Settings["TeraScanStop"])
+            if (status != "end")
             {
                 teraSegmentState = TeraScanSegmentState.unfinished;
                 //MessageBox.Show(status);
