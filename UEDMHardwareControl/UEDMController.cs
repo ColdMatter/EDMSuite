@@ -144,6 +144,7 @@ namespace UEDMHardwareControl
             StopPTMonitorPoll();
         }
 
+        //note
         #region Windows API
         // The following methods can block windows shutdown (although the user will be able to force shutdown still)
         [DllImport("user32.dll")]
