@@ -48,7 +48,7 @@ namespace UEDMHardwareControl
         FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
 
         Hashtable digitalTasks = new Hashtable();
-        Task cryoTriggerDigitalOutputTask;
+        //Task cryoTriggerDigitalOutputTask;
         Task heatersS2TriggerDigitalOutputTask;
         Task heatersS1TriggerDigitalOutputTask;
 
@@ -90,7 +90,7 @@ namespace UEDMHardwareControl
         public void Start()
         {
             // Create digital output tasks
-            CreateDigitalTask("cryoTriggerDigitalOutputTask");
+            //CreateDigitalTask("cryoTriggerDigitalOutputTask");
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
 

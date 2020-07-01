@@ -41,8 +41,8 @@ namespace DAQ.HAL
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
-            //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
-            AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
+            AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
+            //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
            
             // add things to the info
