@@ -576,27 +576,6 @@ namespace UEDMHardwareControl
                 EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 0);
             }
         }
-        public void UpdateWarmToRoomTemperatureOnlyFlag()
-        {
-            if (SourceMode == "Refresh")
-            {
-                WarmToRoomTemperatureOnly = window.checkBoxRefreshSourceAtRoomTemperature.Checked;
-            }
-            else
-            {
-                if (SourceMode == "Warmup")
-                {
-                    WarmToRoomTemperatureOnly = window.checkBoxWarmUpSourceToRoomTemperature.Checked;
-                }
-                else
-                {
-                    if (SourceMode == "Cooldown")
-                    {
-                        WarmToRoomTemperatureOnly = window.checkBoxCoolDownSourceAtRoomTemperature.Checked;
-                    }
-                }
-            }
-        }
         public void EnableWarmUpModeUIControls(bool Enable)
         {
             window.EnableControl(window.dateTimePickerWarmUpModeTurnHeatersOff, Enable);
@@ -604,7 +583,6 @@ namespace UEDMHardwareControl
             window.EnableControl(window.tbWarmUpModeTemperatureSetpoint, Enable);
             window.EnableControl(window.btWarmUpModeTemperatureSetpointUpdate, Enable);
             window.EnableControl(window.btStartWarmUpMode, Enable);
-            window.EnableControl(window.checkBoxWarmUpSourceToRoomTemperature, Enable);
         }
         public void EnableRefreshModeUIControls(bool Enable)
         {
@@ -615,7 +593,6 @@ namespace UEDMHardwareControl
             window.EnableControl(window.dateTimePickerRefreshModeTurnCryoOn, Enable);
             window.EnableControl(window.tbRefreshModeHowLongUntilCryoTurnsOn, Enable);
             window.EnableControl(window.tbRefreshModeHowLongUntilHeatersTurnOff, Enable);
-            window.EnableControl(window.checkBoxRefreshSourceAtRoomTemperature, Enable);
         }
         public void EnableCoolDownModeUIControls(bool Enable)
         {
@@ -626,7 +603,6 @@ namespace UEDMHardwareControl
             window.EnableControl(window.dateTimePickerCoolDownModeTurnCryoOn, Enable);
             window.EnableControl(window.tbCoolDownModeHowLongUntilCryoTurnsOn, Enable);
             window.EnableControl(window.tbCoolDownModeHowLongUntilHeatersTurnOff, Enable);
-            window.EnableControl(window.checkBoxCoolDownSourceAtRoomTemperature, Enable);
         }
         public void EnableOtherSourceModeUIControls(bool Enable)
         {
@@ -655,7 +631,6 @@ namespace UEDMHardwareControl
         private bool SourceModeTemperatureSetpointUpdated;
         private bool HeatersEnabled;
         private bool sourceModeCancelFlag;
-        private bool WarmToRoomTemperatureOnly;
         private bool SourceModeActive = false;
         private int NeonEvaporationCycleWaitTime;
         private int WarmupMonitoringWait;
@@ -712,7 +687,6 @@ namespace UEDMHardwareControl
                 StopShutdown(refreshModeShutdownBlockHandle, refreshModeShutdownBlockReason);
                 RefreshModeEnableUIElements(true);
                 UpdateRefreshTemperature();
-                UpdateWarmToRoomTemperatureOnlyFlag();
             }
             if (SourceMode == "Warmup")
             {
@@ -720,7 +694,6 @@ namespace UEDMHardwareControl
                 StopShutdown(warmupModeShutdownBlockHandle, warmupModeShutdownBlockReason);
                 WarmUpModeEnableUIElements(true);
                 UpdateWarmUpTemperature();
-                UpdateWarmToRoomTemperatureOnlyFlag();
             }
             if (SourceMode == "Cooldown")
             {
@@ -728,10 +701,9 @@ namespace UEDMHardwareControl
                 StopShutdown(cooldownModeShutdownBlockHandle, cooldownModeShutdownBlockReason);
                 CoolDownModeEnableUIElements(true);
                 UpdateCoolDownTemperature();
-                UpdateWarmToRoomTemperatureOnlyFlag();
             }
         }
-        private void EvaporateAndPumpNeon()
+        private void DesorbAndPumpGases()
         {
             if (!sourceModeCancelFlag)
             {
@@ -851,15 +823,7 @@ namespace UEDMHardwareControl
                         UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
                         SourceModeTemperatureSetpointUpdated = false; //Reset the flag
                     }
-
-                    if (WarmToRoomTemperatureOnly) // If the user has stated that the source should be left at room temperature, then turn off the heaters
-                    {
-                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on, turn them off
-                        {
-                            EnableSourceModeHeaters(false);
-                        }
-                        UpdateSourceModeStatus("Waiting at room temperature"); // Update source mode status textbox
-                    }
+                    
                     else // User wants source to be heated
                     {
                         // Check is the source pressure is within safe limits for the turbomolecular pump:
@@ -955,17 +919,6 @@ namespace UEDMHardwareControl
             // Disable other UI interface elements to prevent the user from performing an action that could interfere with refresh mode
             EnableOtherSourceModeUIControls(!Enable);
         }
-        public void EnableRefreshModeRoomTemperature(bool Enable)
-        {
-            WarmToRoomTemperatureOnly = Enable;
-            window.EnableControl(window.btRefreshModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of refresh temperature update button
-            window.EnableControl(window.tbRefreshModeTemperatureSetpoint, !Enable); // Enable/disable user control of refresh temperature setpoint textbox
-            if (Enable)
-            {
-                WarmUpTemperatureSetpoint = 295; // Approx room temperature
-                window.SetTextBox(window.tbRefreshModeTemperatureSetpoint, "295");
-            }
-        }
         public void RefreshModeHeaterTurnOffDateTimeSpecified()
         {
             refreshModeHeaterTurnOffDateTimeFlag = true;
@@ -1002,18 +955,26 @@ namespace UEDMHardwareControl
 
         public static class SourceRefreshConstants
         {
+            // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit { get { return 0.0008; } } // 8e-4 mbar
+
+            // Warm up constants
             public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
             public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
-            public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
             public static Double CryoStoppingPressure { get { return 0.00005; } } // 5e-5 mbar
-            public static Double CryoStartingTemperatureMax { get { return 320; } } // Kelvin
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
-            public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
+
+            // Constants once warm up temperature has been reached
             public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
+
+
+            // Cool down
+            public static Double CryoStartingPressure { get { return 0.00005; } } // 5e-5 mbar
+            public static Double CryoStartingTemperatureMax { get { return 320; } } // Kelvin
+            public static Int32 CoolDownWait { get { return 3000; } } // milli seconds
         }
 
         internal void StartRefreshMode()
@@ -1030,7 +991,7 @@ namespace UEDMHardwareControl
                         {
                             if (HeatersTurnOffDateTime > DateTime.Now) // The heaters cannot be turned off in the past - otherwise you should just turn off the heaters (instead of using refresh mode)
                             {
-                                if (SourceModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                                if (SourceModeTemperatureSetpointUpdated)
                                 {
                                     refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
                                     SourceMode = "Refresh";
@@ -1040,7 +1001,7 @@ namespace UEDMHardwareControl
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Please provide a refresh mode temperature (and click update) or select the \"Refresh at room temperature\" checkbox.\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                                    MessageBox.Show("Please provide a refresh mode temperature (and click update).\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
                                 }
                             }
                             else
@@ -1075,7 +1036,7 @@ namespace UEDMHardwareControl
         private void refreshModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
-            if (!sourceModeCancelFlag) EvaporateAndPumpNeon(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) DesorbAndPumpGases(); // Controlled evaporation of gases from cryo pump
             if (!sourceModeCancelFlag) TurnOffCryoAndWarmup(); // Cryo turn off and controlled warm up off source
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
             if (!sourceModeCancelFlag) CoolDownSource(); // Turn on cryo
@@ -1113,17 +1074,6 @@ namespace UEDMHardwareControl
             EnableCoolDownModeUIControls(!Enable);
             // Disable other UI interface elements to prevent the user from performing an action that could interfere with warm up mode
             EnableOtherSourceModeUIControls(!Enable);
-        }
-        public void EnableWarmUpModeRoomTemperature(bool Enable)
-        {
-            WarmToRoomTemperatureOnly = Enable;
-            window.EnableControl(window.btWarmUpModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of warm up mode temperature update button
-            window.EnableControl(window.tbWarmUpModeTemperatureSetpoint, !Enable); // Enable/disable user control of warm up mode temperature setpoint textbox
-            if (Enable)
-            {
-                WarmUpTemperatureSetpoint = 295; // Approx room temperature
-                window.SetTextBox(window.tbWarmUpModeTemperatureSetpoint, "295");
-            }
         }
         public void WarmUpModeHeaterTurnOffDateTimeSpecified()
         {
@@ -1170,7 +1120,7 @@ namespace UEDMHardwareControl
             {
                 if (HeatersTurnOffDateTime > DateTime.Now) // The heaters cannot be turned off in the past 
                 {
-                    if (warmupModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                    if (warmupModeTemperatureSetpointUpdated)
                     {
                         warmupModeThread = new Thread(new ThreadStart(warmupModeWorker));
                         SourceMode = "Warmup";
@@ -1180,7 +1130,7 @@ namespace UEDMHardwareControl
                     }
                     else
                     {
-                        MessageBox.Show("Please provide a warm up mode temperature (and click update) or select the \"Warm up to room temperature\" checkbox.\n\nWarm up mode not started.", "Warm Up Mode Exception", MessageBoxButtons.OK);
+                        MessageBox.Show("Please provide a warm up mode temperature (and click update).\n\nWarm up mode not started.", "Warm Up Mode Exception", MessageBoxButtons.OK);
                     }
                 }
                 else
@@ -1200,7 +1150,7 @@ namespace UEDMHardwareControl
         private void warmupModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
-            if (!sourceModeCancelFlag) EvaporateAndPumpNeon(); // Controlled evaporation of neon from cryo pump
+            if (!sourceModeCancelFlag) DesorbAndPumpGases(); // Controlled evaporation of gases from cryo pump
             if (!sourceModeCancelFlag) TurnOffCryoAndWarmup(); // Cryo turn off and controlled warm up of source
             if (!sourceModeCancelFlag) SourceModeWait(); // Wait at desired temperature, until the user defined datetime
             if (sourceModeCancelFlag) // If warm up mode is cancelled, then turn off the heaters before finishing.
@@ -1234,17 +1184,6 @@ namespace UEDMHardwareControl
             EnableRefreshModeUIControls(!Enable);
             // Disable other UI interface elements to prevent the user from performing an action that could interfere with cool down mode
             EnableOtherSourceModeUIControls(!Enable);
-        }
-        public void EnableCoolDownModeRoomTemperature(bool Enable)
-        {
-            WarmToRoomTemperatureOnly = Enable;
-            window.EnableControl(window.btCoolDownModeTemperatureSetpointUpdate, !Enable); // Enable/disable user control of cool down mode temperature update button
-            window.EnableControl(window.tbCoolDownModeTemperatureSetpoint, !Enable); // Enable/disable user control of cool down mode temperature setpoint textbox
-            if (Enable)
-            {
-                WarmUpTemperatureSetpoint = 295; // Approx room temperature
-                window.SetTextBox(window.tbCoolDownModeTemperatureSetpoint, "295");
-            }
         }
         public void CoolDownModeHeaterTurnOffDateTimeSpecified()
         {
@@ -1307,7 +1246,7 @@ namespace UEDMHardwareControl
                         {
                             if (HeatersTurnOffDateTime > DateTime.Now) // The heaters shouldn't be turned off in the past
                             {
-                                if (CoolDownModeTemperatureSetpointUpdated | WarmToRoomTemperatureOnly)
+                                if (CoolDownModeTemperatureSetpointUpdated)
                                 {
                                     CoolDownModeThread = new Thread(new ThreadStart(CoolDownModeWorker));
                                     SourceMode = "Cooldown";
@@ -1317,7 +1256,7 @@ namespace UEDMHardwareControl
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Please provide a cool down mode temperature (and click update) or select the \"Leave at room temperature until cryo is turned on\" checkbox.\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
+                                    MessageBox.Show("Please provide a cool down mode temperature (and click update).\n\nCool down mode not started.", "Cool Down Mode Exception", MessageBoxButtons.OK);
                                 }
                             }
                             else

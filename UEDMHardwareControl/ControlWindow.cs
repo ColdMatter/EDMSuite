@@ -568,12 +568,6 @@ namespace UEDMHardwareControl
             controller.CancelRefreshMode();
         }
 
-        private void checkBoxRefreshSourceAtRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxRefreshSourceAtRoomTemperature.Checked) controller.EnableRefreshModeRoomTemperature(true);
-            else controller.EnableRefreshModeRoomTemperature(false);
-        }
-
         private void dateTimePickerRefreshModeTurnHeatersOff_ValueChanged(object sender, EventArgs e)
         {
             controller.RefreshModeHeaterTurnOffDateTimeSpecified();
@@ -647,12 +641,6 @@ namespace UEDMHardwareControl
             controller.QueryAutotuneStatus();
         }
 
-        private void checkBoxWarmUpSourceToRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxWarmUpSourceToRoomTemperature.Checked) controller.EnableWarmUpModeRoomTemperature(true);
-            else controller.EnableWarmUpModeRoomTemperature(false);
-        }
-
         private void btWarmUpModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
         {
             controller.UpdateWarmUpTemperature();
@@ -667,12 +655,6 @@ namespace UEDMHardwareControl
         private void btCancelWarmUpMode_Click(object sender, EventArgs e)
         {
             controller.CancelWarmUpMode();
-        }
-
-        private void checkBoxCoolDownSourceAtRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxCoolDownSourceAtRoomTemperature.Checked) controller.EnableCoolDownModeRoomTemperature(true);
-            else controller.EnableCoolDownModeRoomTemperature(false);
         }
 
         private void btCoolDownModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
