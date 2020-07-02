@@ -979,8 +979,19 @@ namespace UEDMHardwareControl
 
         }
 
+        private void btRefreshModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadRefreshModeOptionsDialog();
+        }
 
+        private void ButtonWarmUpModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadWarmupModeOptionsDialog();
+        }
 
-        
+        private void ButtonCoolDownModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadCooldownModeOptionsDialog();
+        }
     }
 }
