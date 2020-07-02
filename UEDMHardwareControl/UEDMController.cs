@@ -632,7 +632,7 @@ namespace UEDMHardwareControl
         private bool HeatersEnabled;
         private bool sourceModeCancelFlag;
         private bool SourceModeActive = false;
-        private int NeonEvaporationCycleWaitTime;
+        private int GasEvaporationCycleWaitTime;
         private int WarmupMonitoringWait;
         private int SourceModeWaitPeriod;
         private int CoolDownWait;
@@ -642,7 +642,7 @@ namespace UEDMHardwareControl
             {
                 NeonEvaporationCycleTemperatureMax = SourceRefreshConstants.NeonEvaporationCycleTemperatureMax;
                 TurbomolecularPumpUpperPressureLimit = SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit;
-                NeonEvaporationCycleWaitTime = SourceRefreshConstants.NeonEvaporationCycleWaitTime;
+                GasEvaporationCycleWaitTime = SourceRefreshConstants.GasEvaporationCycleWaitTime;
                 CryoStoppingPressure = SourceRefreshConstants.CryoStoppingPressure;
                 WarmupMonitoringWait = SourceRefreshConstants.WarmupMonitoringWait;
                 CoolDownWait = SourceRefreshConstants.CoolDownWait;
@@ -656,7 +656,7 @@ namespace UEDMHardwareControl
             {
                 NeonEvaporationCycleTemperatureMax = SourceWarmUpConstants.NeonEvaporationCycleTemperatureMax;
                 TurbomolecularPumpUpperPressureLimit = SourceWarmUpConstants.TurbomolecularPumpUpperPressureLimit;
-                NeonEvaporationCycleWaitTime = SourceWarmUpConstants.NeonEvaporationCycleWaitTime;
+                GasEvaporationCycleWaitTime = SourceWarmUpConstants.GasEvaporationCycleWaitTime;
                 CryoStoppingPressure = SourceWarmUpConstants.CryoStoppingPressure;
                 WarmupMonitoringWait = SourceWarmUpConstants.WarmupMonitoringWait;
                 SourceModeWaitPeriod = SourceWarmUpConstants.SourceModeWait;
@@ -707,7 +707,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag)
             {
-                SetPressureAndTemperatureMonitoringPollPeriod(NeonEvaporationCycleWaitTime);
+                SetPressureAndTemperatureMonitoringPollPeriod(GasEvaporationCycleWaitTime);
                 UpdateSourceModeHeaterSetpoints(NeonEvaporationCycleTemperatureMax);
                 UpdateSourceModeStatus("Starting neon evaporation cycle");
             }
@@ -736,7 +736,7 @@ namespace UEDMHardwareControl
                     }
                 }
 
-                Thread.Sleep(NeonEvaporationCycleWaitTime);
+                Thread.Sleep(GasEvaporationCycleWaitTime);
             }
         }
         private void TurnOffCryoAndWarmup()
@@ -962,7 +962,7 @@ namespace UEDMHardwareControl
             public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
-            public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
+            public static Int32 GasEvaporationCycleWaitTime { get { return 200; } } // milli seconds
             public static Double CryoStoppingPressure { get { return 0.00005; } } // 5e-5 mbar
             public static Double RefreshingTemperature { get { return 300; } } // Kelvin
             public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
@@ -1107,7 +1107,7 @@ namespace UEDMHardwareControl
             public static Double NeonEvaporationCycleTemperatureMax { get { return 40; } }  // Kelvin
             public static Int16 S1LakeShoreHeaterOutput { get { return 3; } }  // 
             public static Int16 S2LakeShoreHeaterOutput { get { return 4; } }  // 
-            public static Int32 NeonEvaporationCycleWaitTime { get { return 200; } } // milli seconds
+            public static Int32 GasEvaporationCycleWaitTime { get { return 200; } } // milli seconds
             public static Double CryoStoppingPressure { get { return 0.00005; } } // 5e-5 mbar
             public static Int32 WarmupMonitoringWait { get { return 500; } } // milli seconds
             public static Int32 SourceModeWait { get { return 3000; } } // milli seconds
