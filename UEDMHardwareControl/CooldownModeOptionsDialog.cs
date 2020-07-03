@@ -21,7 +21,7 @@ namespace UEDMHardwareControl
             btCancel.DialogResult = DialogResult.Cancel;
         }
 
-        // Parameters
+        // Options
         internal string TurbomolecularPumpUpperPressureLimitInitialTextValue;
         internal string TurbomolecularPumpUpperPressureLimitTextValue;
         public double TurbomolecularPumpUpperPressureLimitDoubleValue;
@@ -46,9 +46,14 @@ namespace UEDMHardwareControl
         internal string CryoStartingTemperatureMaxTextValue;
         public double CryoStartingTemperatureMaxDoubleValue;
 
+        // Conditional parameters
+        internal double CryoMaxTemperatureWhenTurnedOff;
+        internal int PTPollPeriodMinimum;
+
         // Flags
         public bool ParseFailFlag = false;
         public bool CooldownConstantChangedFlag = false;
+        internal bool CancelOptionsChangeFlag = false;
 
         internal void InitializeOptionsValues()
         {
@@ -65,6 +70,10 @@ namespace UEDMHardwareControl
             CoolDownPTPollPeriodInitialTextValue = UEDMController.SourceCoolDownConstants.CoolDownPTPollPeriod.ToString();
             CryoStartingPressureInitialTextValue = UEDMController.SourceCoolDownConstants.CryoStartingPressure.ToString("E3");
             CryoStartingTemperatureMaxInitialTextValue = UEDMController.SourceCoolDownConstants.CryoStartingTemperatureMax.ToString("E3");
+
+            // Other parameters
+            CryoMaxTemperatureWhenTurnedOff = UEDMController.SourceCoolDownConstants.CryoMaxTemperatureWhenTurnedOff;
+            PTPollPeriodMinimum = UEDMController.SourceCoolDownConstants.PTPollPeriodMinimum;
 
             ResetTextBoxValues();
         }
@@ -91,6 +100,9 @@ namespace UEDMHardwareControl
 
         private void ProcessOptions()
         {
+            // Reset flag
+            CancelOptionsChangeFlag = false;
+
             // TurbomolecularPumpUpperPressureLimit
             TurbomolecularPumpUpperPressureLimitTextValue = textBoxTurbomolecularPumpUpperPressureLimit.Text;
             if (!Double.TryParse(TurbomolecularPumpUpperPressureLimitTextValue, out TurbomolecularPumpUpperPressureLimitDoubleValue))
@@ -103,17 +115,50 @@ namespace UEDMHardwareControl
             {
                 ParseFailFlag = true;
             }
+            else
+            {
+                if (WarmupPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("WarmupPTPollPeriod (" + WarmupPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
+            }
             // SourceModeWaitPTPollPeriod
             SourceModeWaitPTPollPeriodTextValue = textBoxSourceModeWaitPTPollPeriod.Text;
             if (!Int32.TryParse(SourceModeWaitPTPollPeriodTextValue, out SourceModeWaitPTPollPeriodIntValue))
             {
                 ParseFailFlag = true;
             }
+            else
+            {
+                if (SourceModeWaitPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("SourceModeWaitPTPollPeriod (" + SourceModeWaitPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
+            }
             // CoolDownPTPollPeriod
             CoolDownPTPollPeriodTextValue = textBoxCoolDownPTPollPeriod.Text;
             if (!Int32.TryParse(CoolDownPTPollPeriodTextValue, out CoolDownPTPollPeriodIntValue))
             {
                 ParseFailFlag = true;
+            }
+            else
+            {
+                if (CoolDownPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("CoolDownPTPollPeriod (" + CoolDownPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
             }
             // CryoStartingPressure
             CryoStartingPressureTextValue = textBoxCryoStartingPressure.Text;
@@ -127,6 +172,17 @@ namespace UEDMHardwareControl
             {
                 ParseFailFlag = true;
             }
+            else
+            {
+                if (CryoMaxTemperatureWhenTurnedOff < CryoStartingTemperatureMaxDoubleValue)
+                {
+                    var res = MessageBox.Show("Cryo starting temperature (" + CryoStartingTemperatureMaxTextValue + " K) is higher than storage temperature limit.\n\n Are you sure that you want to continue? Press OK to continue. \nPress cancel to continue editting options.", "", MessageBoxButtons.OKCancel);
+                    if (res == DialogResult.Cancel)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
+            }
 
             if (ParseFailFlag)
             {
@@ -137,7 +193,13 @@ namespace UEDMHardwareControl
                 }
                 else DialogResult = DialogResult.Cancel;
             }
-            else DialogResult = DialogResult.OK;
+            else
+            {
+                if (!CancelOptionsChangeFlag)
+                {
+                    DialogResult = DialogResult.OK;
+                }
+            }
         }
 
         private void btSaveSettings_Click(object sender, EventArgs e)

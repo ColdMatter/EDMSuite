@@ -21,7 +21,7 @@ namespace UEDMHardwareControl
             btCancel.DialogResult = DialogResult.Cancel;
         }
 
-        // Parameters
+        // Options
         internal string TurbomolecularPumpUpperPressureLimitInitialTextValue;
         internal string TurbomolecularPumpUpperPressureLimitTextValue;
         public double TurbomolecularPumpUpperPressureLimitDoubleValue;
@@ -46,9 +46,13 @@ namespace UEDMHardwareControl
         internal string SourceModeWaitPTPollPeriodTextValue;
         public int SourceModeWaitPTPollPeriodIntValue;
 
+        // Conditional parameters
+        internal int PTPollPeriodMinimum;
+
         // Flags
         public bool ParseFailFlag = false;
         public bool WarmupConstantChangedFlag = false;
+        internal bool CancelOptionsChangeFlag = false;
 
         internal void InitializeOptionsValues()
         {
@@ -65,6 +69,9 @@ namespace UEDMHardwareControl
 
             // Wait at target temperature
             SourceModeWaitPTPollPeriodInitialTextValue = UEDMController.SourceWarmUpConstants.SourceModeWaitPTPollPeriod.ToString();
+
+            // Other parameters
+            PTPollPeriodMinimum = UEDMController.SourceWarmUpConstants.PTPollPeriodMinimum;
 
             ResetTextBoxValues();
         }
@@ -91,6 +98,8 @@ namespace UEDMHardwareControl
 
         private void ProcessOptions()
         {
+            CancelOptionsChangeFlag = false;
+
             // TurbomolecularPumpUpperPressureLimit
             TurbomolecularPumpUpperPressureLimitTextValue = textBoxTurbomolecularPumpUpperPressureLimit.Text;
             if (!Double.TryParse(TurbomolecularPumpUpperPressureLimitTextValue, out TurbomolecularPumpUpperPressureLimitDoubleValue))
@@ -109,6 +118,17 @@ namespace UEDMHardwareControl
             {
                 ParseFailFlag = true;
             }
+            else
+            {
+                if (DesorbingPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("DesorbingPTPollPeriod (" + DesorbingPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
+            }
             // CryoStoppingPressure
             CryoStoppingPressureTextValue = textBoxCryoStoppingPressure.Text;
             if (!Double.TryParse(CryoStoppingPressureTextValue, out CryoStoppingPressureDoubleValue))
@@ -121,11 +141,33 @@ namespace UEDMHardwareControl
             {
                 ParseFailFlag = true;
             }
+            else
+            {
+                if (WarmupPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("WarmupPTPollPeriod (" + WarmupPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
+            }
             // SourceModeWaitPTPollPeriod
             SourceModeWaitPTPollPeriodTextValue = textBoxSourceModeWaitPTPollPeriod.Text;
             if (!Int32.TryParse(SourceModeWaitPTPollPeriodTextValue, out SourceModeWaitPTPollPeriodIntValue))
             {
                 ParseFailFlag = true;
+            }
+            else
+            {
+                if (SourceModeWaitPTPollPeriodIntValue < PTPollPeriodMinimum)
+                {
+                    var res = MessageBox.Show("SourceModeWaitPTPollPeriod (" + SourceModeWaitPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    if (res == DialogResult.OK)
+                    {
+                        CancelOptionsChangeFlag = true;
+                    }
+                }
             }
 
             if (ParseFailFlag)
@@ -137,7 +179,13 @@ namespace UEDMHardwareControl
                 }
                 else DialogResult = DialogResult.Cancel;
             }
-            else DialogResult = DialogResult.OK;
+            else
+            {
+                if (!CancelOptionsChangeFlag)
+                {
+                    DialogResult = DialogResult.OK;
+                }
+            }
         }
 
         private void btSaveSettings_Click(object sender, EventArgs e)

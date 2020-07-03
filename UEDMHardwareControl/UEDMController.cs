@@ -975,7 +975,7 @@ namespace UEDMHardwareControl
             UpdateSourceModeStatus("SourceModeWaitPTPollPeriod = " + SourceRefreshConstants.SourceModeWaitPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("CoolDownPTPollPeriod = " + SourceRefreshConstants.CoolDownPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("CryoStartingPressure = " + SourceRefreshConstants.CryoStartingPressure.ToString("E3") + " mbar", mode);
-            UpdateSourceModeStatus("CryoStartingTemperatureMax = " + SourceRefreshConstants.CryoStartingTemperatureMax.ToString("E3") + " mbar", mode);
+            UpdateSourceModeStatus("CryoStartingTemperatureMax = " + SourceRefreshConstants.CryoStartingTemperatureMax.ToString("E3") + " K", mode);
         }
         public void LoadRefreshModeOptionsDialog()
         {
@@ -1012,6 +1012,8 @@ namespace UEDMHardwareControl
         {
             // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008; // 8e-4 mbar
+            public static Int32 PTPollPeriodMinimum = 100;                      // ms
+            public static Double CryoMaxTemperatureWhenTurnedOff = 335;         // K
 
             // Warm up constants
             public static Double GasEvaporationCycleTemperatureMax = 40; // Kelvin
@@ -1195,7 +1197,11 @@ namespace UEDMHardwareControl
 
         public static class SourceWarmUpConstants
         {
+            // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;  // 8e-4 mbar
+            public static Int32 PTPollPeriodMinimum = 100;                      // ms
+
+            // Warmup constants
             public static Double GasEvaporationCycleTemperatureMax = 40;         // Kelvin
             public static Int16 S1LakeShoreHeaterOutput = 3;                     // 
             public static Int16 S2LakeShoreHeaterOutput = 4;                     // 
@@ -1314,13 +1320,13 @@ namespace UEDMHardwareControl
         public void PrintCooldownModeConstants()
         {
             string mode = "Cooldown";
-            UpdateSourceModeStatus("Refresh mode constants updated. Here are the current settings:", mode);
+            UpdateSourceModeStatus("Cool down mode constants updated. Here are the current settings:", mode);
             UpdateSourceModeStatus("TurbomolecularPumpUpperPressureLimit = " + SourceCoolDownConstants.TurbomolecularPumpUpperPressureLimit.ToString("E3") + " mbar", mode);
             UpdateSourceModeStatus("WarmupPTPollPeriod = " + SourceCoolDownConstants.WarmupPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("SourceModeWaitPTPollPeriod = " + SourceCoolDownConstants.SourceModeWaitPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("CoolDownPTPollPeriod = " + SourceCoolDownConstants.CoolDownPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("CryoStartingPressure = " + SourceCoolDownConstants.CryoStartingPressure.ToString("E3") + " mbar", mode);
-            UpdateSourceModeStatus("CryoStartingTemperatureMax = " + SourceCoolDownConstants.CryoStartingTemperatureMax.ToString("E3") + " mbar", mode);
+            UpdateSourceModeStatus("CryoStartingTemperatureMax = " + SourceCoolDownConstants.CryoStartingTemperatureMax.ToString("E3") + " K", mode);
         }
         public void LoadCooldownModeOptionsDialog()
         {
@@ -1352,14 +1358,23 @@ namespace UEDMHardwareControl
 
         public static class SourceCoolDownConstants
         {
+            // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;  // 8e-4 mbar
+            public static Int32 PTPollPeriodMinimum = 100;                      // ms
+            public static Double CryoMaxTemperatureWhenTurnedOff = 335;         // K
+
+            // Warm up constants
             public static Int16 S1LakeShoreHeaterOutput = 3;                     // 
             public static Int16 S2LakeShoreHeaterOutput = 4;                     // 
+            public static Int32 WarmupPTPollPeriod = 3000;                       // milli seconds
+
+            // Wait at desired temperature constants
+            public static Int32 SourceModeWaitPTPollPeriod = 3000;               // milli seconds
+
+            // Cool down constants
+            public static Int32 CoolDownPTPollPeriod = 3000;                     // milli seconds
             public static Double CryoStartingPressure = 0.00005;                 // 5e-5 mbar
             public static Double CryoStartingTemperatureMax = 320;               // Kelvin
-            public static Int32 WarmupPTPollPeriod = 3000;                       // milli seconds
-            public static Int32 CoolDownPTPollPeriod = 3000;                     // milli seconds
-            public static Int32 SourceModeWaitPTPollPeriod = 3000;               // milli seconds
         }
 
         internal void StartCoolDownMode()

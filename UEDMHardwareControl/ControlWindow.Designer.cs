@@ -336,6 +336,8 @@
             this.labelDigitalOutputP02 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP01 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP00 = new System.Windows.Forms.Label();
+            this.labelCooldownModeInfoText = new System.Windows.Forms.Label();
+            this.labelCooldownInfo = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -2663,7 +2665,7 @@
             this.tbWarmUpModeStatus.Multiline = true;
             this.tbWarmUpModeStatus.Name = "tbWarmUpModeStatus";
             this.tbWarmUpModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbWarmUpModeStatus.Size = new System.Drawing.Size(783, 178);
+            this.tbWarmUpModeStatus.Size = new System.Drawing.Size(783, 457);
             this.tbWarmUpModeStatus.TabIndex = 23;
             // 
             // labelWarmUpModeStatus
@@ -2765,6 +2767,8 @@
             // tabPageCoolDownMode
             // 
             this.tabPageCoolDownMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageCoolDownMode.Controls.Add(this.labelCooldownInfo);
+            this.tabPageCoolDownMode.Controls.Add(this.labelCooldownModeInfoText);
             this.tabPageCoolDownMode.Controls.Add(this.ButtonCoolDownModeOptions);
             this.tabPageCoolDownMode.Controls.Add(this.gbCoolDownModeWarmUp);
             this.tabPageCoolDownMode.Controls.Add(this.btCancelCoolDownMode);
@@ -2781,7 +2785,7 @@
             // 
             // ButtonCoolDownModeOptions
             // 
-            this.ButtonCoolDownModeOptions.Location = new System.Drawing.Point(799, 161);
+            this.ButtonCoolDownModeOptions.Location = new System.Drawing.Point(916, 306);
             this.ButtonCoolDownModeOptions.Name = "ButtonCoolDownModeOptions";
             this.ButtonCoolDownModeOptions.Size = new System.Drawing.Size(100, 29);
             this.ButtonCoolDownModeOptions.TabIndex = 28;
@@ -2798,18 +2802,18 @@
             this.gbCoolDownModeWarmUp.Controls.Add(this.tbCoolDownModeHowLongUntilHeatersTurnOff);
             this.gbCoolDownModeWarmUp.Controls.Add(this.labelCoolDownModeTurnHeatersOff);
             this.gbCoolDownModeWarmUp.Controls.Add(this.dateTimePickerCoolDownModeTurnHeatersOff);
-            this.gbCoolDownModeWarmUp.Location = new System.Drawing.Point(60, 21);
+            this.gbCoolDownModeWarmUp.Location = new System.Drawing.Point(175, 188);
             this.gbCoolDownModeWarmUp.Margin = new System.Windows.Forms.Padding(4);
             this.gbCoolDownModeWarmUp.Name = "gbCoolDownModeWarmUp";
             this.gbCoolDownModeWarmUp.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCoolDownModeWarmUp.Size = new System.Drawing.Size(947, 96);
+            this.gbCoolDownModeWarmUp.Size = new System.Drawing.Size(783, 96);
             this.gbCoolDownModeWarmUp.TabIndex = 27;
             this.gbCoolDownModeWarmUp.TabStop = false;
             this.gbCoolDownModeWarmUp.Text = "Warm Up";
             // 
             // btCoolDownModeTemperatureSetpointUpdate
             // 
-            this.btCoolDownModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(532, 57);
+            this.btCoolDownModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(591, 53);
             this.btCoolDownModeTemperatureSetpointUpdate.Margin = new System.Windows.Forms.Padding(4);
             this.btCoolDownModeTemperatureSetpointUpdate.Name = "btCoolDownModeTemperatureSetpointUpdate";
             this.btCoolDownModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(100, 28);
@@ -2821,7 +2825,7 @@
             // labelCoolDownModeTemperatureSetpoint
             // 
             this.labelCoolDownModeTemperatureSetpoint.AutoSize = true;
-            this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(333, 25);
+            this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(397, 25);
             this.labelCoolDownModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelCoolDownModeTemperatureSetpoint.Name = "labelCoolDownModeTemperatureSetpoint";
             this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(170, 17);
@@ -2830,7 +2834,7 @@
             // 
             // tbCoolDownModeTemperatureSetpoint
             // 
-            this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(513, 23);
+            this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(575, 22);
             this.tbCoolDownModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4);
             this.tbCoolDownModeTemperatureSetpoint.Name = "tbCoolDownModeTemperatureSetpoint";
             this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(132, 22);
@@ -2878,7 +2882,7 @@
             // btCancelCoolDownMode
             // 
             this.btCancelCoolDownMode.Enabled = false;
-            this.btCancelCoolDownMode.Location = new System.Drawing.Point(907, 194);
+            this.btCancelCoolDownMode.Location = new System.Drawing.Point(1190, 306);
             this.btCancelCoolDownMode.Margin = new System.Windows.Forms.Padding(4);
             this.btCancelCoolDownMode.Name = "btCancelCoolDownMode";
             this.btCancelCoolDownMode.Size = new System.Drawing.Size(100, 28);
@@ -2893,7 +2897,7 @@
             this.gbCoolDownModeCoolDown.Controls.Add(this.labelCoolDownModeHowLongUntilCryoTurnsOn);
             this.gbCoolDownModeCoolDown.Controls.Add(this.tbCoolDownModeHowLongUntilCryoTurnsOn);
             this.gbCoolDownModeCoolDown.Controls.Add(this.dateTimePickerCoolDownModeTurnCryoOn);
-            this.gbCoolDownModeCoolDown.Location = new System.Drawing.Point(60, 127);
+            this.gbCoolDownModeCoolDown.Location = new System.Drawing.Point(966, 188);
             this.gbCoolDownModeCoolDown.Margin = new System.Windows.Forms.Padding(4);
             this.gbCoolDownModeCoolDown.Name = "gbCoolDownModeCoolDown";
             this.gbCoolDownModeCoolDown.Padding = new System.Windows.Forms.Padding(4);
@@ -2944,7 +2948,7 @@
             // btStartCoolDownMode
             // 
             this.btStartCoolDownMode.Enabled = false;
-            this.btStartCoolDownMode.Location = new System.Drawing.Point(799, 194);
+            this.btStartCoolDownMode.Location = new System.Drawing.Point(1082, 306);
             this.btStartCoolDownMode.Margin = new System.Windows.Forms.Padding(4);
             this.btStartCoolDownMode.Name = "btStartCoolDownMode";
             this.btStartCoolDownMode.Size = new System.Drawing.Size(100, 28);
@@ -2955,18 +2959,18 @@
             // 
             // tbCoolDownModeStatus
             // 
-            this.tbCoolDownModeStatus.Location = new System.Drawing.Point(224, 276);
+            this.tbCoolDownModeStatus.Location = new System.Drawing.Point(175, 342);
             this.tbCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(4);
             this.tbCoolDownModeStatus.Multiline = true;
             this.tbCoolDownModeStatus.Name = "tbCoolDownModeStatus";
             this.tbCoolDownModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbCoolDownModeStatus.Size = new System.Drawing.Size(783, 178);
+            this.tbCoolDownModeStatus.Size = new System.Drawing.Size(1115, 472);
             this.tbCoolDownModeStatus.TabIndex = 22;
             // 
             // labelCoolDownModeStatus
             // 
             this.labelCoolDownModeStatus.AutoSize = true;
-            this.labelCoolDownModeStatus.Location = new System.Drawing.Point(57, 279);
+            this.labelCoolDownModeStatus.Location = new System.Drawing.Point(4, 345);
             this.labelCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelCoolDownModeStatus.Name = "labelCoolDownModeStatus";
             this.labelCoolDownModeStatus.Size = new System.Drawing.Size(162, 17);
@@ -3775,6 +3779,24 @@
             this.labelDigitalOutputP00.TabIndex = 0;
             this.labelDigitalOutputP00.Text = "P0, 0:";
             // 
+            // labelCooldownModeInfoText
+            // 
+            this.labelCooldownModeInfoText.AutoSize = true;
+            this.labelCooldownModeInfoText.Location = new System.Drawing.Point(172, 16);
+            this.labelCooldownModeInfoText.Name = "labelCooldownModeInfoText";
+            this.labelCooldownModeInfoText.Size = new System.Drawing.Size(1122, 136);
+            this.labelCooldownModeInfoText.TabIndex = 29;
+            this.labelCooldownModeInfoText.Text = resources.GetString("labelCooldownModeInfoText.Text");
+            // 
+            // labelCooldownInfo
+            // 
+            this.labelCooldownInfo.AutoSize = true;
+            this.labelCooldownInfo.Location = new System.Drawing.Point(23, 16);
+            this.labelCooldownInfo.Name = "labelCooldownInfo";
+            this.labelCooldownInfo.Size = new System.Drawing.Size(143, 17);
+            this.labelCooldownInfo.TabIndex = 30;
+            this.labelCooldownInfo.Text = "Cool down mode info:";
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -4142,5 +4164,7 @@
         private System.Windows.Forms.Button ButtonCoolDownModeOptions;
         public System.Windows.Forms.Button btRefreshModeOptions;
         private System.Windows.Forms.Button ButtonWarmUpModeOptions;
+        private System.Windows.Forms.Label labelCooldownInfo;
+        private System.Windows.Forms.Label labelCooldownModeInfoText;
     }
 }

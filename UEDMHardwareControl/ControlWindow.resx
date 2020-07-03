@@ -120,6 +120,16 @@
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="labelCooldownModeInfoText.Text" xml:space="preserve">
+    <value>In this mode it is assumed that there are no gases to desorb from the cryo and that it is already turned off.
+
+Cool down mode start by warming the source to a user defined temperature. The heaters will turn off at the datetime input by the user, whether or not the target temperature has 
+been reached. If the source reaches the target temperature before this datetime, then the pressure and temperature poll period can be set to a different value to reduce the 
+amount of data stored by the UEDM hardware controller.
+
+The cryo turns on at the datetime defined by the user. Cryo turn on will override the heaters if they have not yet been turned off. Ensure that manually controlled heaters are 
+disabled before starting any source mode.</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>25</value>
   </metadata>
