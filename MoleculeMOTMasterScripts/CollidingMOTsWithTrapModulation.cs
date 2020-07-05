@@ -16,7 +16,7 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         Parameters["Dummy"] = 0.0;
-        Parameters["PatternLength"] = 270000;
+        Parameters["PatternLength"] = 300000;
 
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
@@ -31,8 +31,12 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
-        Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["TimeBetweenTriggers"] = 2500;
+        Parameters["Frame0TriggerDuration"] = 100;
+        Parameters["TimeBetweenTriggers"] = 1800;
+        Parameters["NoOfTriggers"] = 1;
+
+
+        Parameters["loadingTime"] = 3000;
 
 
         //PMT
@@ -83,7 +87,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 8.01;//7.8
+        Parameters["v0IntensityEndValue"] = 7.78;//7.8
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0;
@@ -102,8 +106,8 @@ public class Patterns : MOTMasterScript
         Parameters["RbRepumpSwitch"] = 10.0; // 0.0 will keep it on and 10.0 will switch it off
 
         //Rb cooling light PWM
-        Parameters["CaFCycleLength"] = 10;
-        Parameters["CaFHalfCycleLength"] = 3;
+        Parameters["CycleLength"] = 10;
+        Parameters["HalfCycleLength"] = 1;
 
 
 
@@ -117,19 +121,9 @@ public class Patterns : MOTMasterScript
         int rbMOTLoadingStartTime = patternStartBeforeQ;
         int rbMOTLoadingEndTime = rbMOTLoadingStartTime + (int)Parameters["RbMOTLoadTime"];
         int moleculeMOTLoadingStartTime = rbMOTLoadingEndTime;
-        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000;
+        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + (int)Parameters["loadingTime"];
         int firstImageTime = moleculeMOTLoadingEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int secondImageTime = firstImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int thridImageTime = secondImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int fourthImageTime = thridImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int fithImageTime = fourthImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int sixthImageTime = fithImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int seventhImageTime = sixthImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int eightImageTime = seventhImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int ninethImageTime = eightImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int tenthImageTime = ninethImageTime + (int)Parameters["TimeBetweenTriggers"];
-
-
+        int lastImageTime = firstImageTime + (int)Parameters["TimeBetweenTriggers"] * (int)Parameters["NoOfTriggers"];
         
         for (int t = 0; t < (int)Parameters["RbMOTLoadTime"]; t += 50000)
         {
@@ -141,24 +135,9 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
 
-        //p.Pulse(0, firstImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(0, secondImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, thridImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        /*p.Pulse(0, fourthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, fithImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, sixthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, seventhImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, eightImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, ninethImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, tenthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        */
-
-
-        //p.Pulse(0, tenthImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //Rb:
-
         p.AddEdge("rb3DCooling", 0, false);
-        p.AddEdge("rb3DCooling", tenthImageTime + 900, true);
+        p.AddEdge("rb3DCooling", lastImageTime + 1100, true);
         p.AddEdge("rb2DCooling", 0, false);
         p.AddEdge("rb2DCooling", rbMOTLoadingEndTime, true);
         p.AddEdge("rbPushBeam", 0, false);
@@ -166,39 +145,47 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("v00MOTAOM", 0, false);
 
-        /*
-        for (int t = moleculeMOTLoadingEndTime + (int)Parameters["v0IntensityRampDuration"]; t < tenthImageTime + 1000; t += (int)Parameters["CaFCycleLength"])
+        
+        // modulation of CaF MOT light
+        for (int t = firstImageTime; t < lastImageTime; t += (int)Parameters["CycleLength"])
         {
             p.AddEdge("v00MOTAOM", t, true);
-            p.AddEdge("v00MOTAOM", t + (int)Parameters["CaFHalfCycleLength"], false);
+            p.AddEdge("v00MOTAOM", t + (int)Parameters["HalfCycleLength"], false);
         }
-        */
         
 
 
+        /*
+        // modulation of Rb MOT light
+        for (int t = rbMOTLoadingEndTime + 1; t < lastImageTime; t += (int)Parameters["CycleLength"])
+        {
+            p.AddEdge("rb3DCooling", t, false);
+            p.AddEdge("rb3DCooling", t + (int)Parameters["HalfCycleLength"], true);
+        }
+
+        p.AddEdge("rb3DCooling", lastImageTime, false);
+        p.AddEdge("rb3DCooling", lastImageTime + 1000, true);
+        */
+
+        // consequtive camera triggers
+        for (int t = firstImageTime; t < lastImageTime; t += (int)Parameters["TimeBetweenTriggers"])
+        {
+            p.Pulse(0, t, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        }
+        
         //Turn everything back on at end of sequence:
-
-        //p.Pulse(0, moleculeMOTLoadingEndTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-
-
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
-        p.AddEdge("rbAbsImagingBeam", tenthImageTime + 1100, false);
-        p.AddEdge("rbAbsImagingBeam", tenthImageTime + 1100 + 15, true);
-        p.AddEdge("rbAbsImagingBeam", tenthImageTime + 12200, false);
-        p.AddEdge("rbAbsImagingBeam", tenthImageTime + 12200 + 15, true);
+        p.AddEdge("rbAbsImagingBeam", lastImageTime + 1100, false);
+        p.AddEdge("rbAbsImagingBeam", lastImageTime + 1100 + 15, true);
+        p.AddEdge("rbAbsImagingBeam", lastImageTime + 12200, false);
+        p.AddEdge("rbAbsImagingBeam", lastImageTime + 12200 + 15, true);
 
         
-        p.Pulse(0, tenthImageTime + 1100, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of cloud
-        p.Pulse(0, tenthImageTime + 17200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        p.Pulse(0, tenthImageTime + 32200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
+        p.Pulse(0, lastImageTime + 1100, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of cloud
+        p.Pulse(0, lastImageTime + 12200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
+        p.Pulse(0, lastImageTime + 21200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
         
-
-
-
-        //p.Pulse(0, moleculeMOTLoadingEndTime, 100, "rbAbsImgCamTrig");
-
-
         //p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
@@ -215,17 +202,10 @@ public class Patterns : MOTMasterScript
         int rbMOTLoadingStartTime = 0;
         int rbMOTLoadingEndTime = rbMOTLoadingStartTime + (int)Parameters["RbMOTLoadTime"];
         int moleculeMOTLoadingStartTime = rbMOTLoadingEndTime;
-        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + 5000;
+        int moleculeMOTLoadingEndTime = moleculeMOTLoadingStartTime + (int)Parameters["loadingTime"];
         int firstImageTime = moleculeMOTLoadingEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int secondImageTime = firstImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int thridImageTime = secondImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int fourthImageTime = thridImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int fithImageTime = fourthImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int sixthImageTime = fithImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int seventhImageTime = sixthImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int eightImageTime = seventhImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int ninethImageTime = eightImageTime + (int)Parameters["TimeBetweenTriggers"];
-        int tenthImageTime = ninethImageTime + (int)Parameters["TimeBetweenTriggers"];
+        int lastImageTime = firstImageTime + (int)Parameters["TimeBetweenTriggers"] * (int)Parameters["NoOfTriggers"];
+        
 
         // Add Analog Channels
 
@@ -238,8 +218,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00Chirp");
 
         //v00 AOM switching on and off continuously
-        //p.AddChannel("transferCoils");
-
+        
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
         p.AddChannel("rb3DCoolingAttenuation");
@@ -255,18 +234,15 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", rbMOTLoadingStartTime, (double)Parameters["MOTCoilsCurrentValueRb"]);
         p.AddAnalogValue("MOTCoilsCurrent", moleculeMOTLoadingStartTime, (double)Parameters["MOTCoilsCurrentValueCaF"]);
-        p.AddAnalogValue("MOTCoilsCurrent", tenthImageTime + 1000, 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", lastImageTime + 1000, 0.0);
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
-        // trigger delay
-        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
-
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.7);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
@@ -283,24 +259,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
-
         //Switch Rb repump:
         p.AddAnalogValue("rbRepumpAttenuation", 0, (double)Parameters["RbRepumpSwitch"]);
-
-
-
-        //p.AddAnalogValue("transferCoils", 0, 0.8);
-
-
-
-        // New stuff to modulate the CaF light
-        /*
-        for (int t = moleculeMOTLoadingEndTime; t < tenthImageTime + 1000; t += (int)Parameters["CaFCycleLength"])
-        {
-            p.AddAnalogValue("transferCoils", t, 0.3);
-            p.AddAnalogValue("transferCoils", t + (int)Parameters["CaFHalfCycleLength"], 0.7);
-        }
-        */
 
         return p;
     }

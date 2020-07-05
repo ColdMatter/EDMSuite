@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 250000;
+        Parameters["PatternLength"] = 150000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -32,18 +32,18 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 200000;
+        Parameters["MOTLoadTime"] = 100000;
         Parameters["CameraTriggerDelayAfterFirstImage"] = 8000;
         Parameters["Frame0TriggerDuration"] = 15;
         Parameters["TriggerJitter"] = 3;
-        Parameters["WaitBeforeImage"] = 150;
+        Parameters["WaitBeforeImage"] = 0;
         Parameters["FreeExpansionTime"] = 0;
 
 
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 2.7; //2.6 new resonance
+        Parameters["ImagingFrequency"] = 1.7; //2.6 new resonance
         Parameters["ProbePumpTime"] = 0; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
         Parameters["MOTCoolingLoadingFrequency"] = 4.6;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
@@ -157,8 +157,8 @@ public class Patterns : MOTMasterScript
         
         // Abs image
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
-        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
+        p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
+        p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
         //p.Pulse(0, rbMOTLoadTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
         //CaF camera trigger:
@@ -166,7 +166,7 @@ public class Patterns : MOTMasterScript
         //p.Pulse(0, rbMOTLoadTime - 100, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //trigger camera to take image of cloud
         //p.Pulse(0, rbMOTLoadTime - 200, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
         //p.Pulse(0, cameraTrigger1-200, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        //p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, rbMOTLoadTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
 
         p.AddEdge("rb2DMOTShutter", 0, false);

@@ -147,7 +147,7 @@ public class Patterns : MOTMasterScript
        // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.65); //4.7
+        p.AddAnalogValue("v00EOMAmp", 0, 4.1); //4.7
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

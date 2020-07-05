@@ -241,18 +241,24 @@ class Analysis():
                np.mean(thirdImages,axis=0)
 
     def cropImages(self,imageArray):
-        h_top=int(self.cropCentre[0]-self.cropHeight/2)
-        h_bottom=int(self.cropCentre[0]+self.cropHeight/2)
-        w_left=int(self.cropCentre[1]-self.cropWidth/2)
-        w_right=int(self.cropCentre[1]+self.cropWidth/2)
-        return imageArray[:,h_top:h_bottom,w_left:w_right]
+        if self.crop:
+            h_top=int(self.cropCentre[0]-self.cropHeight/2)
+            h_bottom=int(self.cropCentre[0]+self.cropHeight/2)
+            w_left=int(self.cropCentre[1]-self.cropWidth/2)
+            w_right=int(self.cropCentre[1]+self.cropWidth/2)
+            return imageArray[:,h_top:h_bottom,w_left:w_right]
+        else:
+            return imageArray
     
     def cropSingleImage(self,imageArray):
-        h_top=self.cropCentre[1]-self.cropHeight/2
-        h_bottom=self.cropCentre[1]+self.cropHeight/2
-        w_left=self.cropCentre[0]-self.cropWidth/2
-        w_right=self.cropCentre[0]+self.cropWidth/2
-        return imageArray[h_top:h_bottom,w_left:w_right]
+        if self.crop:
+            h_top=self.cropCentre[1]-self.cropHeight/2
+            h_bottom=self.cropCentre[1]+self.cropHeight/2
+            w_left=self.cropCentre[0]-self.cropWidth/2
+            w_right=self.cropCentre[0]+self.cropWidth/2
+            return imageArray[h_top:h_bottom,w_left:w_right]
+        else:
+            return imageArray
 
     def getImageNumber(self,imageArray):
         totalCount=np.sum(imageArray,axis=(1,2))

@@ -40,11 +40,11 @@ public class Patterns : MOTMasterScript
         Parameters["FirstImageDelay"] = 200;
         Parameters["FreeExpansionTime"] = 100;
         Parameters["WaitBeforeImage"] = 100;
-        Parameters["DelayFromTransferStart"] = 100;//10000;//210000;//180000;
+        Parameters["DelayFromTransferStart"] = 10;//10000;//210000;//180000;
 
 
         //Rb light
-        Parameters["ImagingFrequency"] = 2.58;//old value :2.58; //Resonance at aroun 2.65
+        Parameters["ImagingFrequency"] = 1.7;//old value :2.58; //Resonance at aroun 2.65
         Parameters["MOTCoolingLoadingFrequency"] = 4.6;//5.2 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
         Parameters["RbCoolingFrequencyCMOT"] = 3.2;
@@ -99,15 +99,15 @@ public class Patterns : MOTMasterScript
         Parameters["RampUpDelayIntMagTrapTweezer"] = 10;//10;//4300;
         Parameters["RampUpDurationIntMagTrapTweezer"] = 10000;//4420;
         Parameters["CurrentEndValueIntMagTrapTweezer"] =0.625;//0.625;
-        Parameters["DurationIntMagTrapTweezer"] =10000;
+        Parameters["DurationIntMagTrapTweezer"] =1000;
 
-        Parameters["DipoleTrapMagTrapOverlapDuration"] = 0;
-        Parameters["DurationDipoleTrap"] = 0;
+        Parameters["DipoleTrapMagTrapOverlapDuration"] = 500;
+        Parameters["DurationDipoleTrap"] = 5000;
 
         Parameters["SpeedBumpRamp1"] = 3200;//2250;
         Parameters["SpeedBumpRamp2"] = 2000;// 28750;
         Parameters["SpeedBumpRamp3"] = 1000;
-        Parameters["SpeedBumpRamp4"] = 3000;
+        Parameters["SpeedBumpRamp4"] = 2000;
         
 
 
@@ -187,16 +187,16 @@ public class Patterns : MOTMasterScript
         int rampUpInternalTweezerMagTrap = rbMagnteticTrapEndTime + (int)Parameters["RampUpDelayIntMagTrapTweezer"];
         int InternalTweezerMagTrapEndTime = rampUpInternalTweezerMagTrap + (int)Parameters["RampUpDurationIntMagTrapTweezer"] + (int)Parameters["DurationIntMagTrapTweezer"];
 
-        int DipoleTrapSwitchOnTime = InternalTweezerMagTrapEndTime - (int)Parameters["DipoleTrapMagTrapOverlapDuration"] + 10;
+        int DipoleTrapSwitchOnTime = InternalTweezerMagTrapEndTime - (int)Parameters["DipoleTrapMagTrapOverlapDuration"];
         int DipoleTrapSwitchOffTime = InternalTweezerMagTrapEndTime + (int)Parameters["DurationDipoleTrap"];
 
         int cameraTrigger1 = InternalTweezerMagTrapEndTime + (int)Parameters["DelayFromTransferStart"];
         //int cameraTrigger1 = rbMagnteticTrapEndTime + (int)Parameters["DelayFromTransferStart"];
 
         //int cameraTrigger2 = cameraTrigger1 + (int)Parameters["WaitBeforeImage"] + (int)Parameters["FreeExpansionTime"] + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //probe image, //image before transfer to external coils
-        int cameraTrigger2 = cameraTrigger1 + 20000;
+        int cameraTrigger2 = cameraTrigger1 + 8000;
         //int cameraTrigger3 = cameraTrigger2 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //bg
-        int cameraTrigger3 = cameraTrigger2 + 20000;
+        int cameraTrigger3 = cameraTrigger2 + 8000;
 
         int absprobeswitchoff = cameraTrigger2 + (int)Parameters["Frame0TriggerDuration"] + 20; //bg
         int coolingimgswitchoff = cameraTrigger1 + 20; //bg
@@ -233,7 +233,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rb2DCooling", rbMOTLoadTime, true);
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", rbMOTLoadTime, true);
-
+        
         //Absorption probe
 
         p.AddEdge("rbAbsImagingBeam", 0, true);
@@ -246,21 +246,20 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 100, true);
         //p.AddEdge("rbAbsImagingBeam", secondCameraTrigger + (int)Parameters["TriggerJitter"], false); //turn on probe beam to image what is left in the magnetic trap
         //p.AddEdge("rbAbsImagingBeam", secondCameraTrigger + (int)Parameters["TriggerJitter"] + (int)Parameters["Frame0TriggerDuration"], true);
-
+        
+        
         //Camera
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //1st camera frame
-        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //2nd camera frame
-        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //3rd camera frame
+        p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //2nd camera frame
+        p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //3rd camera frame
 
         
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //1st camera frame
         //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //2nd camera frame
         //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //3rd camera frame
 
-        p.AddEdge("dipoleTrapAOM", 0, false);
-        
-        //p.AddEdge("dipoleTrapAOM", DipoleTrapSwitchOnTime, true);
-        //p.AddEdge("dipoleTrapAOM", DipoleTrapSwitchOffTime, false);
+        //p.AddEdge("dipoleTrapAOM", DipoleTrapSwitchOnTime, false);
+        //p.AddEdge("dipoleTrapAOM", DipoleTrapSwitchOffTime, true);
 
         
 
@@ -271,6 +270,8 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("rbPushBamAbsorptionShutter", rbMolassesStartTime - (int)Parameters["rbAbsorptionShutterClosingTime"], true);
         //p.AddEdge("rbPushBamAbsorptionShutter", cameraTrigger1 - (int)Parameters["rbAbsorptionShutterOpeningTime"], false);
 
+        
+         
         p.AddEdge("rb3DMOTShutter", 0, false);
         p.AddEdge("rb3DMOTShutter", rbMagnteticTrapStartTime - (int)Parameters["coolingShutterClosingTime"], true);
         p.AddEdge("rb3DMOTShutter", swtichAllOn, false);
@@ -283,6 +284,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbOPShutter", 0, false); //this shutter now shutters only the optical pumping light
         //p.AddEdge("rbOPShutter", rbMagnteticTrapStartTime + (int)Parameters["OpticalPumpingDuration"] - (int)Parameters["repumpShutterClosingTime"], true);
         //p.AddEdge("rbOPShutter", swtichAllOn, false);
+        
 
         return p;
     }
@@ -358,11 +360,12 @@ public class Patterns : MOTMasterScript
         p.AddChannel("TweezerMOTCoils");
         p.AddChannel("DipoleTrapLaserControl");
         
+        
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
         
-
+        
 
         // B Field
         p.AddAnalogValue("speedbumpCoils", 0, -0.02);
@@ -372,7 +375,7 @@ public class Patterns : MOTMasterScript
 
         //p.AddAnalogValue("transferCoilsShunt1", 0, -0.02);
         //p.AddAnalogValue("transferCoilsShunt2", 0, -0.02);
-
+        
         p.AddAnalogValue("transferCoils", 0, 0.0); //start with external coils off
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTLoadDelay"], (double)Parameters["MOTCoilsCurrentValue"]); //switch on MOT coils to load Rb MOT
         p.AddAnalogValue("MOTCoilsCurrent", rbFirstFieldJump, (double)Parameters["CaFMOTLoadGradient"]);
@@ -380,13 +383,12 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", rbMOTswitchOffTime, -0.05); //switch off coils after MOT is loaded
         p.AddAnalogValue("MOTCoilsCurrent", rbMagnteticTrapStartTime, (double)Parameters["MagTrapInternalGradient"]);
 
+        
         //p.AddAnalogValue("MOTCoilsCurrent", rbMagnteticTrapTransferToExternalStartTime, 0.0);
 
         p.AddLinearRamp("MOTCoilsCurrent", rbMagnteticTrapTransferToExternalStartTime, (int)Parameters["TransferRampDurationInternalCoils"], 0.0);
                 
         p.AddLinearRamp("transferCoils", rbMagnteticTrapTransferToExternalStartTime, (int)Parameters["TransferRampDurationExternalCoils"], (double)Parameters["ExternalMagTrapRampEndValue"]);
-
-        //p.AddAnalogValue("transferCoils", rbMagnteticTrapEndTime, 0.0);
 
         p.AddLinearRamp("transferCoils", rbMagnteticTrapEndTime, (int)Parameters["RampDownTimeTransportTrap"], 0.0);
 
@@ -438,7 +440,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("yShimCoilCurrent", startMotionTime, 0.0);
 
 
-
+        
 
         return p;
     }

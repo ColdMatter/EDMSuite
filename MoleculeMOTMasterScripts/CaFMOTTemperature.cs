@@ -82,7 +82,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;//400
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 6.35;
+        Parameters["v0IntensityEndValue"] = 7.78;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0;
@@ -177,7 +177,7 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.7);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
