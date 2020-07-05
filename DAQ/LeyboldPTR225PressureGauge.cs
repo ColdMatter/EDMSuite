@@ -8,17 +8,9 @@ using NationalInstruments.DAQmx;
 namespace DAQ.HAL
 {
     /// <summary>
-    /// A class to represent a Agilent FRG720 Pirani Bayard-Alpert pressure gauge
-    /// 
-    /// Quote from Agilent website:
-    /// "The FRG-720 and FRG-730 combine Agilent's Pirani and Bayard-Alpert 
-    /// sensor into a single compact design that provides measuring capability 
-    /// from 5 x 10^-10 mbar to atmosphere (3.8 x 10^10 Torr to atmosphere). 
-    /// Combining these two technologies into a single unit reduces complexity 
-    /// and integration challenges while protecting the Bayard-Alpert sensor 
-    /// from premature burnout."  .
+    /// A class to represent a Leybold PTR225 pressure gauge. The gauge has a range of 5E-3 to 1E-8 mbar.
     /// </summary>
-    public class AgilentFRG720Gauge
+    public class LeyboldPTR225PressureGauge
     {
         private Task readPressureTask;
         private AnalogSingleChannelReader pressureReader;
@@ -28,14 +20,13 @@ namespace DAQ.HAL
 
         private const double VOLTAGE_LOWER_BOUND = 0;  // volts
         private const double VOLTAGE_UPPER_BOUND = 10; // volts
-        private const double GAUGE_OFFSET = 7.75;      // volts
-        private const double GAUGE_FACTOR = 0.75;      // volts
-        private const double GAUGE_CONSTANT = 0;       // dimensionless (mbar = 0, Pa = 2, Torr = -0.125)
-        private const double MAX_PRESSURE = 1000;      // mbar
+        private const double GAUGE_OFFSET = 12.66;      // volts
+        private const double GAUGE_FACTOR = 1.33;      // volts
+        private const double MAX_PRESSURE = 0.005;      // mbar
 
         private double highPressureWarningLevel = MAX_PRESSURE;
 
-        public AgilentFRG720Gauge(string name, string channelName)
+        public LeyboldPTR225PressureGauge(string name, string channelName)
         {
             if (!Environs.Debug)
             {
@@ -55,7 +46,7 @@ namespace DAQ.HAL
                 readPressureTask.Stop();
 
                 //convert the read voltage to a pressure
-                lastPressure = Math.Pow(10, ((voltage - GAUGE_OFFSET) / GAUGE_FACTOR) + GAUGE_CONSTANT);
+                lastPressure = Math.Pow(10, ((voltage - GAUGE_OFFSET) / GAUGE_FACTOR));
 
                 return lastPressure;
             }

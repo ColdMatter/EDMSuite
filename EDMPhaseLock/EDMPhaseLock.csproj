@@ -126,6 +126,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
     <OutputPath>bin\ultracoldEDM\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
+    <OutputPath>bin\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2012\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

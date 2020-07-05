@@ -16,6 +16,7 @@ namespace DAQ.Environment
             Paths.Add("CameraAttributesPath", "d:\\Settings\\CameraAttributes\\MOTMasterCameraAttributes.txt");
             Paths.Add("transferCavityData", "d:\\Data\\TCL\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+            Paths.Add("HardwareControllerDataPath", "C:\\Users\\Experiment\\Box Sync\\UltracoldEDM\\data\\");
             SortDataByDate = false;
         }
     }

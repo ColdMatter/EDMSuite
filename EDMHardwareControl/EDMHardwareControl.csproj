@@ -128,6 +128,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
     <OutputPath>bin\ultracoldEDM\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
+    <OutputPath>bin\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2012\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
