@@ -529,22 +529,22 @@ namespace UEDMHardwareControl
 
         private void btStartHeaterControlStage2_Click(object sender, EventArgs e)
         {
-            controller.StartStage2DigitalHeaterControl();
+            controller.StartStage2HeaterControl();
         }
 
         private void btStartHeaterControlStage1_Click(object sender, EventArgs e)
         {
-            controller.StartStage1DigitalHeaterControl();
+            controller.StartStage1HeaterControl();
         }
 
         private void btStopHeaterControlStage1_Click(object sender, EventArgs e)
         {
-            controller.StopStage1DigitalHeaterControl();
+            controller.StopStage1HeaterControl();
         }
 
         private void btStopHeaterControlStage2_Click(object sender, EventArgs e)
         {
-            controller.StopStage2DigitalHeaterControl();
+            controller.StopStage2HeaterControl();
         }
 
         private void btHeatersTurnOffWaitStart_Click(object sender, EventArgs e)

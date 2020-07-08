@@ -569,19 +569,19 @@ namespace UEDMHardwareControl
             if (Enable)
             {
                 // First stage heater
-                StartStage1DigitalHeaterControl(); // turn heaters setpoint loop on
+                StartStage1HeaterControl(); // turn heaters setpoint loop on
                 // Second stage heater
-                StartStage2DigitalHeaterControl(); // turn heaters setpoint loop on
+                StartStage2HeaterControl(); // turn heaters setpoint loop on
                 // Cell heater
                 EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 3);
             }
             else
             {
                 // First stage heater
-                StopStage1DigitalHeaterControl(); // turn heaters setpoint loop off 
+                StopStage1HeaterControl(); // turn heaters setpoint loop off 
                 EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
                 // Second stage heater
-                StopStage2DigitalHeaterControl(); // turn heaters setpoint loop off
+                StopStage2HeaterControl(); // turn heaters setpoint loop off
                 EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
                 // Cell heater
                 EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 0);
@@ -762,6 +762,7 @@ namespace UEDMHardwareControl
                     {
                         break;
                     }
+                    UpdateUITimeLeftIndicators();
                     UpdateSourceModeStatus("Waiting for pressure to reduce before turning off the cryo. The cryo will be turned off when the source chamber pressure reaches " + CryoStoppingPressure.ToString() + " mbar.");
                     Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
                 }
@@ -835,26 +836,25 @@ namespace UEDMHardwareControl
                         SourceModeTemperatureSetpointUpdated = false; //Reset the flag
                     }
                     
-                    else // User wants source to be heated
+                    
+                    // Check is the source pressure is within safe limits for the turbomolecular pump:
+                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
                     {
-                        // Check is the source pressure is within safe limits for the turbomolecular pump:
-                        if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
                         {
-                            if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
-                            {
-                                EnableSourceModeHeaters(true); // Enable heaters
-                            }
-                            UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin."); // Update source mode status textbox
+                            EnableSourceModeHeaters(true); // Enable heaters
                         }
-                        else // If the pressure is high, then turn the heaters off
+                        UpdateSourceModeStatus("Heating to/waiting at temperature setpoint (" + WarmUpTemperatureSetpoint + " Kelvin)"); // Update source mode status textbox
+                    }
+                    else // If the pressure is high, then turn the heaters off
+                    {
+                        UpdateSourceModeStatus("Heating to/waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
                         {
-                            UpdateSourceModeStatus("Waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
-                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
-                            {
-                                EnableSourceModeHeaters(false); // Disable heaters
-                            }
+                            EnableSourceModeHeaters(false); // Disable heaters
                         }
                     }
+                    
 
                     UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
                     Thread.Sleep(SourceModeWaitPeriod); // Iterate the loop according to this time interval
@@ -1011,15 +1011,15 @@ namespace UEDMHardwareControl
         public static class SourceRefreshConstants
         {
             // Global constants
-            public static Double TurbomolecularPumpUpperPressureLimit = 0.0008; // 8e-4 mbar
-            public static Int32 PTPollPeriodMinimum = 100;                      // ms
-            public static Double CryoMaxTemperatureWhenTurnedOff = 335;         // K
+            public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;                          // 8e-4 mbar
+            public static Int32 PTPollPeriodMinimum = UEDMController.PTMonitorPollPeriodLowerLimit;      // ms
+            public static Double CryoMaxTemperatureWhenTurnedOff = 335;                                  // K
 
             // Warm up constants
             public static Double GasEvaporationCycleTemperatureMax = 40; // Kelvin
             public static Int16 S1LakeShoreHeaterOutput = 3;             // Output number on the LakeShore temperature controller
             public static Int16 S2LakeShoreHeaterOutput = 4;             // Output number on the LakeShore temperature controller
-            public static Int32 DesorbingPTPollPeriod = 200;             // milli seconds
+            public static Int32 DesorbingPTPollPeriod = 100;             // milli seconds
             public static Double CryoStoppingPressure = 0.00005;         // 5e-5 mbar
             public static Double RefreshingTemperature = 300;            // Kelvin
             public static Int32 WarmupPTPollPeriod = 500;                // milli seconds
@@ -1198,14 +1198,14 @@ namespace UEDMHardwareControl
         public static class SourceWarmUpConstants
         {
             // Global constants
-            public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;  // 8e-4 mbar
-            public static Int32 PTPollPeriodMinimum = 100;                      // ms
+            public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;                      // 8e-4 mbar
+            public static Int32 PTPollPeriodMinimum = UEDMController.PTMonitorPollPeriodLowerLimit;  // ms
 
             // Warmup constants
             public static Double GasEvaporationCycleTemperatureMax = 40;         // Kelvin
             public static Int16 S1LakeShoreHeaterOutput = 3;                     // 
             public static Int16 S2LakeShoreHeaterOutput = 4;                     // 
-            public static Int32 DesorbingPTPollPeriod = 200;                     // milli seconds
+            public static Int32 DesorbingPTPollPeriod = 100;                     // milli seconds
             public static Double CryoStoppingPressure = 0.00005;                 // 5e-5 mbar
             public static Int32 WarmupPTPollPeriod = 500;                        // milli seconds
             public static Int32 SourceModeWaitPTPollPeriod = 3000;               // milli seconds
@@ -1360,7 +1360,7 @@ namespace UEDMHardwareControl
         {
             // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;  // 8e-4 mbar
-            public static Int32 PTPollPeriodMinimum = 100;                      // ms
+            public static Int32 PTPollPeriodMinimum = UEDMController.PTMonitorPollPeriodLowerLimit;                      // ms
             public static Double CryoMaxTemperatureWhenTurnedOff = 335;         // K
 
             // Warm up constants
@@ -1479,14 +1479,14 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void StartStage1DigitalHeaterControl()
+        public void StartStage1HeaterControl()
         {
             Stage1HeaterControlFlag = true;
             window.EnableControl(window.btStartHeaterControlStage1, false);
             window.EnableControl(window.btStopHeaterControlStage1, true);
             window.EnableControl(window.checkBoxEnableHeatersS1, false);
         }
-        public void StartStage2DigitalHeaterControl()
+        public void StartStage2HeaterControl()
         {
             Stage2HeaterControlFlag = true;
             window.EnableControl(window.btStartHeaterControlStage2, false);
@@ -1494,7 +1494,7 @@ namespace UEDMHardwareControl
             window.EnableControl(window.checkBoxEnableHeatersS2, false);
         }
 
-        public void StopStage1DigitalHeaterControl()
+        public void StopStage1HeaterControl()
         {
             Stage1HeaterControlFlag = false; // change control flag so that the temperature setpoint loop stops
             window.EnableControl(window.btStartHeaterControlStage1, true);
@@ -1502,7 +1502,7 @@ namespace UEDMHardwareControl
             window.EnableControl(window.checkBoxEnableHeatersS1, true);
             EnableDigitalHeaters(1, false); // turn off heater
         }
-        public void StopStage2DigitalHeaterControl()
+        public void StopStage2HeaterControl()
         {
             Stage2HeaterControlFlag = false; // change control flag so that the temperature setpoint loop stops
             window.EnableControl(window.btStartHeaterControlStage2, true);
@@ -1591,8 +1591,8 @@ namespace UEDMHardwareControl
                 }
                 if (window.dateTimePickerHeatersTurnOff.Value < DateTime.Now)
                 {
-                    StopStage2DigitalHeaterControl();
-                    StopStage1DigitalHeaterControl();
+                    StopStage2HeaterControl();
+                    StopStage1HeaterControl();
                     EnableDigitalHeaters(1, false);
                     EnableDigitalHeaters(2, false);
                     break;
@@ -2009,7 +2009,7 @@ namespace UEDMHardwareControl
         private Thread PTMonitorPollThread;
         private Thread PTPlottingThread;
         private int PTMonitorPollPeriod = 1000;
-        private int PTMonitorPollPeriodLowerLimit = 100;
+        public static int PTMonitorPollPeriodLowerLimit = 100; // LakeShore Model 336 limited to 10 readings per second for each input.
         private bool PTMonitorFlag;
         private bool PTPlottingFlag;
         private readonly object LakeShore336Lock = new object(); // Object for locking access to the lakeshore - preventing multiple threads from accesing the LakeShore simultaneously
@@ -2145,8 +2145,8 @@ namespace UEDMHardwareControl
             }
             else
             {
-                StopStage1DigitalHeaterControl();
-                StopStage2DigitalHeaterControl();
+                StopStage1HeaterControl();
+                StopStage2HeaterControl();
                 EnableDigitalHeaters(1, false);
                 EnableDigitalHeaters(2, false);
                 PTMonitorFlag = true;
