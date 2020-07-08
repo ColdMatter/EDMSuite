@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["MOTLoadTime"] = 4000;
         Parameters["MOTHoldTime"] = 500;
-        Parameters["FreeExpansionTime"] = 800;
+        Parameters["FreeExpansionTime"] = 400;
         Parameters["FullIntensityBlueMolassesDuration"] = 500;
         Parameters["BlueMolassesStartDelay"] = 10;
 

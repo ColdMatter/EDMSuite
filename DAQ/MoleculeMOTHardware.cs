@@ -52,6 +52,11 @@ namespace DAQ.HAL
             Boards.Add(usbBoard2Name, usbBoard2Address);
 
 
+            string digitalPatternBoardName2 = "digitalPattern2";
+            string digitalPatternBoardAddress2 = "/PXI1Slot4";
+            Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
+
+
             // Channel Declarations
 
             AddAnalogInputChannel("ramp", tclBoard1Address + "/ai4", AITerminalConfiguration.Rse);
@@ -114,12 +119,17 @@ namespace DAQ.HAL
             // Rb shutters
             AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
+
+            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
             AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
+            
             AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
+            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
 
 
 
-
+            // tweezer new digital pattern board
+            AddDigitalOutputChannel("test00", digitalPatternBoardAddress2, 0, 0);
 
 
             // Analog Pattern
@@ -131,7 +141,7 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
-            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
+            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21"); 
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
@@ -149,6 +159,16 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5");
             AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
 
+            // Transfer coil
+            AddAnalogOutputChannel("transferCoils", analogPatternBoardAddress + "/ao6");
+            AddAnalogOutputChannel("transferCoilsShunt1", analogPatternBoardAddress + "/ao7");
+            AddAnalogOutputChannel("transferCoilsShunt2", analogPatternBoardAddress + "/ao27");
+
+            // Tweezer MOT coils
+
+            AddAnalogOutputChannel("speedbumpCoils", analogPatternBoardAddress + "/ao20");
+            AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
+            AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
             // Source
             AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);

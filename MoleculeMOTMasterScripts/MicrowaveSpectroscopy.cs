@@ -33,7 +33,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 7;// 15;
+        Parameters["MicrowavePulseDuration"] = 9;// 15;
         Parameters["MicrowavePulseDurationTwo"] = 9;//extra
         Parameters["WaitBeforeRecapture"] = 200;
         Parameters["MOTWaitBeforeImage"] = 10;
@@ -47,20 +47,20 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 250;
+        Parameters["slowingAOMOnStart"] = 100; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1500;
+        Parameters["slowingAOMOffStart"] = 1520;//started from 1500
         Parameters["slowingAOMOffDuration"] = 40000;
-        Parameters["slowingRepumpAOMOnStart"] = 250;
+        Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1700;
-        Parameters["slowingRepumpAOMOffDuration"] = 40000;
+        Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
+        Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 340;
-        Parameters["SlowingChirpDuration"] = 1160;
-        Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.25;//-1.3
+        Parameters["SlowingChirpStartTime"] = 380;// 340;
+        Parameters["SlowingChirpDuration"] = 1160; //1160
+        Parameters["SlowingChirpStartValue"] = 0.0;//0.0
+        Parameters["SlowingChirpEndValue"] = -1.25;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42;
@@ -131,7 +131,7 @@ public class Patterns : MOTMasterScript
 
         //p.Pulse(patternStartBeforeQ, microwavePulseTime - 100, motRecaptureTime - microwavePulseTime, "bottomCoilDirection");
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTPictureTriggerTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of initial MOT
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTPictureTriggerTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of initial MOT
         p.Pulse(patternStartBeforeQ, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
         return p;

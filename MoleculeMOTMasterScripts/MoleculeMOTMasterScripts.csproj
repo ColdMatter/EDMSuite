@@ -63,6 +63,7 @@
     <Compile Include="BFieldCalibration.cs" />
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
+    <Compile Include="ChirpTest.cs" />
     <Compile Include="F2MF2Levitation.cs" />
     <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
     <Compile Include="MOTBasicBField.cs" />
-    <Compile Include="MOTBasic.cs" />
     <Compile Include="MOTBasicExperimental2.cs" />
     <Compile Include="MOTBlueMolasses.cs" />
     <Compile Include="MOTBlueMolassesNumber.cs" />

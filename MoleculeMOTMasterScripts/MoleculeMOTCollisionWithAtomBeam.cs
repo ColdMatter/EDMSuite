@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 410000; //300000
+        Parameters["PatternLength"] = 150000; //300000
 
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
@@ -25,14 +25,14 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["RbMOTLoadTime"] = 200;//200000
+        Parameters["RbMOTLoadTime"] = 500;
         Parameters["FreeExpansionTime"] = 100;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
         Parameters["TimeBetweenTriggers"] = 1800;
-        Parameters["NoOfTriggers"] = 1;
+        Parameters["NoOfTriggers"] = 30;
 
         Parameters["loadingTime"] = 3000;
 
@@ -101,7 +101,7 @@ public class Patterns : MOTMasterScript
         Parameters["ImagingFrequency"] = 1.7; //2.1
         Parameters["MOTCoolingLoadingFrequency"] = 4.6; //4.6
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
-        Parameters["RbRepumpSwitch"] = 10.0; // 0.0 will keep it on and 10.0 will switch it off
+        Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
 
     }
 
@@ -135,14 +135,16 @@ public class Patterns : MOTMasterScript
 
 
         //Rb:
-        
-        p.AddEdge("rb3DCooling", 0, false);
-        p.AddEdge("rb3DCooling", lastImageTime + 1000, true);
-        p.AddEdge("rb2DCooling", 0, false);
-        p.AddEdge("rb2DCooling", rbMOTLoadingEndTime, true);
-        p.AddEdge("rbPushBeam", 0, false);
-        p.AddEdge("rbPushBeam", rbMOTLoadingEndTime, true);
-        
+
+        p.AddEdge("rb3DCooling", 0, true); //3D MOT never loads
+
+        p.AddEdge("rb2DCooling", 0, true); // 2D MOT off while CaF MOT loads
+        p.AddEdge("rb2DCooling", moleculeMOTLoadingEndTime, false); // 2D MOT ON when CaF MOT loaded
+        p.AddEdge("rb2DCooling", lastImageTime, true); // 2D MOT stays on for lifetime measurement
+
+        p.AddEdge("rbPushBeam", 0, true);
+        p.AddEdge("rbPushBeam", moleculeMOTLoadingEndTime, false);
+        p.AddEdge("rbPushBeam", lastImageTime, true);
 
 
         //Turn everything back on at end of sequence:

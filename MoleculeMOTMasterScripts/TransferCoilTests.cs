@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 200000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -25,9 +25,8 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 14000;
         Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["FreeExpansionTime"] = 100;
 
         //PMT
         Parameters["PMTTrigger"] = 5000;
@@ -37,7 +36,7 @@ public class Patterns : MOTMasterScript
         Parameters["Dummy"] = (int)Parameters["PMTTrigger"] + (int)Parameters["PMTTrigger"];
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 100; //started from 250
+        Parameters["slowingAOMOnStart"] = 240; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1500
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -47,10 +46,10 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 380;// 380;
+        Parameters["SlowingChirpStartTime"] = 340;// 340;
         Parameters["SlowingChirpDuration"] = 1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25; //-1.25
+        Parameters["SlowingChirpEndValue"] = -1.25;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42; //1.05;
@@ -73,7 +72,7 @@ public class Patterns : MOTMasterScript
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5000;
-        Parameters["v0IntensityRampDuration"] = 400;
+        Parameters["v0IntensityRampDuration"] = 2000;
         Parameters["v0IntensityRampStartValue"] = 5.8;
         Parameters["v0IntensityMolassesValue"] = 5.8;
 
@@ -88,36 +87,37 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMOffValue"] = 0.0;
 
 
+        //Transport Coils values
+        Parameters["coilStartTime"] = 1000;
+        Parameters["coilRampDuration"] = 1000;
+        Parameters["coilEndValue"] = 5.0;
+
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
-        int motLoadingEndTime = patternStartBeforeQ + 5000;
-        int motSwitchOffTime = motLoadingEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int cameraTriggerTime = motSwitchOffTime + (int)Parameters["FreeExpansionTime"];
-
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-        // p.AddEdge("v00Shutter", 0, true);
+        //   p.AddEdge("v00Shutter", 0, true);
         //p.Pulse(patternStartBeforeQ, 3000 - 1400, 10000, "bXSlowingShutter"); //Takes 14ms to start closing
 
-        p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
-        p.AddEdge("v00MOTAOM", 0, false);
-        p.AddEdge("v00MOTAOM", motSwitchOffTime, true);
-        p.AddEdge("v00MOTAOM", cameraTriggerTime, false);
+
+        p.AddEdge("rbAbsImagingBeam", 0, true);
+        p.AddEdge("rb2DMOTShutter", 0, false);
+        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
+        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
+
         return p;
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
-        int motLoadingEndTime = 5000;
-        int motSwitchOffTime = motLoadingEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int cameraTriggerTime = motSwitchOffTime + (int)Parameters["FreeExpansionTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
@@ -130,6 +130,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("zShimCoilCurrent");
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
+        p.AddChannel("transferCoils");
 
 
         // Slowing field
@@ -138,18 +139,23 @@ public class Patterns : MOTMasterScript
 
 
 
-        // B Field
-        p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motSwitchOffTime, -0.1); //Switch off MOT coils to let cloud expand
+        // Use for transport trap
+        p.AddAnalogValue("transferCoils", 0, 0.0);
+        p.AddLinearRamp("transferCoils", 10, 10000, 5.0);
+        p.AddLinearRamp("transferCoils", 90010, 10000, 0.0);
+        //p.AddAnalogValue("transferCoils", 0, 0.0);
+        //p.AddAnalogValue("transferCoils", (int)Parameters["MOTCoilsSwitchOn"], (double)Parameters["MOTCoilsCurrentRampStartValue"]);
+        //p.AddLinearRamp("transferCoils", (int)Parameters["MOTCoilsCurrentRampStartTime"], (int)Parameters["MOTCoilsCurrentRampDuration"], (double)Parameters["MOTCoilsCurrentRampEndValue"]);
+        
 
 
 
-
+        /*
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-
+        */
         // trigger delay
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
@@ -158,8 +164,6 @@ public class Patterns : MOTMasterScript
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
-        p.AddLinearRamp("v00Intensity", motLoadingEndTime, (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityEndValue"]);
-        p.AddAnalogValue("v00Intensity", motSwitchOffTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);

@@ -195,3 +195,15 @@ def ChirpAmplitudeScan(values=[ -1.9, -1.95, -2.0, -2.05, -2.1]):
 	script_name = 'MOTBasic'
 	parameter_name = 'SlowingChirpEndValue'
 	return ScanSingleParameter(script_name, parameter_name, values)	
+
+def RunExperimentWithTrackMovement(script_name, StartPosition, EndPosition, numRuns):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	
+	for i in range(numRuns):
+		hc.tabs['XPS Track'].TCLscript(StartPosition, EndPosition)
+		mm.Go()
+
+def ScanTurningPoint(script_name, StartPosition, values, numRuns):
+	for value in values:
+		RunExperimentWithTrackMovement(script_name, StartPosition, value, numRuns)
+	

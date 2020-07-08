@@ -32,8 +32,9 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 7;
-        Parameters["SecondMicrowavePulseDuration"] = 7;//7
+        Parameters["MicrowavePulseDuration"] = 9;
+        Parameters["SecondMicrowavePulseDuration"] = 5
+            ;//7
         Parameters["ThirdMicrowavePulseDuration"] = 0;
         Parameters["MagTrapDuration"] = 10;
         Parameters["WaitBeforeRecapture"] = 100;
@@ -48,7 +49,7 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // BX poke
-        Parameters["PokeDetuningValue"] = -1.37;//-1.37
+        Parameters["PokeDetuningValue"] = -1.47;//-1.37
         Parameters["PokeDuration"] = 300;
 
         // Slowing
@@ -130,12 +131,6 @@ public class Patterns : MOTMasterScript
         int imageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns. 
-        
-        for (int t = 50000; t < (int)Parameters["PatternLength"]; t += 50000 )
-        {
-            p.Pulse(patternStartBeforeQ + t, -(int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
-            p.Pulse(patternStartBeforeQ + t, 0, (int)Parameters["QSwitchPulseDuration"], "qSwitch"); //trigger the Q switch
-        }
         
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveB");
         p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveA");

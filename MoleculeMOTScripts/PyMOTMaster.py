@@ -239,5 +239,55 @@ def MagTrapLifetime(values=[ 2000, 3000, 4000, 5000]):
 def ChirpAmplitudeScan(values=[ -1.9, -1.95, -2.0, -2.05, -2.1]):
 	script_name = 'MOTBasic'
 	parameter_name = 'SlowingChirpEndValue'
-	return ScanSingleParameter(script_name, parameter_name, values)	
+	return ScanSingleParameter(script_name, parameter_name, values)
 
+  
+# def RunExperimentWithTrackMovement(script_name, StartPosition, EndPosition, numRuns):
+# 	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+# 	for i in range(numRuns):
+# 		hc.tabs['XPS Track'].TCLscript(StartPosition, EndPosition)
+# 		start = time.time()
+# 		mm.Go()
+# 		end = time.time()
+# 		print '{0} : {1} : {2} seconds'.format(EndPosition, i, int(round(end-start)))
+# 	print 'Finished'
+
+def ScanTurningPoint(script_name, StartPosition, values, numRuns):
+	for value in values:
+		RunExperimentWithTrackMovement(script_name, StartPosition, value, numRuns)
+
+def ScanSingleParameterAndRunExperimentWithTrackMovement(script_name, parameter_name, values, StartPosition, EndPosition, numRuns):
+	dic = Dictionary[String, Object]()
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		dic[parameter_name] = value
+		for i in range(numRuns):
+			hc.tabs['XPS Track'].TCLscript(StartPosition, EndPosition)
+			start = time.time()
+			mm.Go(dic)
+			end = time.time()
+			print '{0} : {1} : {2} seconds'.format(value, i, int(round(end-start)))
+	print 'Finished'
+
+def ScanTurningPointTest(script_name, StartPosition, values, numRuns):
+	for value in values:
+		RunExperimentWithTrackMovement(script_name, StartPosition, value, numRuns)
+
+		  
+def ScanSingleParameterWithTrackMovement(script_name, StartPosition, EndPosition, Iterations, numRuns):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	hc.tabs['XPS Track'].TCLscript(StartPosition, EndPosition,Iterations)
+	for i in range(numRuns):
+		start = time.time()
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} : {2} seconds'.format(EndPosition, i, int(round(end-start)))
+	print 'Finished'
+
+def RunExperimentWithTrackMovement(script_name, StartPosition, EndPosition, Iterations):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	hc.tabs['XPS Track'].TCLscript(StartPosition, EndPosition,Iterations)
+	start = time.time()
+	mm.Go()
+	end = time.time()
+	print 'Finished'
