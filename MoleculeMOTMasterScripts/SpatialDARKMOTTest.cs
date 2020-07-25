@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 250000;
+        Parameters["PatternLength"] = 150000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -32,7 +32,7 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 200000;
+        Parameters["MOTLoadTime"] = 100000;
         Parameters["CameraTriggerDelayAfterFirstImage"] = 8000;
         Parameters["Frame0TriggerDuration"] = 15;
         Parameters["TriggerJitter"] = 3;
@@ -41,19 +41,19 @@ public class Patterns : MOTMasterScript
 
 
         //Rb light
-        Parameters["ImagingFrequency"] = 4.2; //2.58 resonance
-        Parameters["MOTCoolingLoadingFrequency"] = 4.4;//5.4 usewd to be
+        Parameters["ImagingFrequency"] = 4.5; //2.58 resonance
+        Parameters["MOTCoolingLoadingFrequency"] = 4.6;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
         Parameters["DARKMOTRepumpFrequency"] = 6.5; //6.9
-        Parameters["DARKMOTCoolingFrequency"] = 3.5; //6.9
-        Parameters["RbCoolingFrequencyRampDuration"] = 200;
+        Parameters["DARKMOTCoolingFrequency"] = 4.4; //6.9
+        Parameters["RbCoolingFrequencyRampDuration"] = 1;
 
         //Rb intenisty ramp down:
         Parameters["RbCoolingIntensityEndValue"] = 0.0;
         Parameters["RbCoolingIntensityRampDuration"] = 0;
 
         //DARK SPOT MOT:
-        Parameters["DARKMOTDuration"] = 600;
+        Parameters["DARKMOTDuration"] = 1200;
 
 
 
@@ -118,7 +118,6 @@ public class Patterns : MOTMasterScript
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
-        int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int rbMOTLoadTime = (int)Parameters["TCLBlockStart"] + (int)Parameters["MOTLoadTime"];
         int rbMOTCoolingEndTime = rbMOTLoadTime + (int)Parameters["RbCoolingIntensityRampDuration"];
         int rbDARKMOTEndTime = rbMOTCoolingEndTime + (int)Parameters["DARKMOTDuration"];
@@ -144,12 +143,10 @@ public class Patterns : MOTMasterScript
 
 
         p.AddEdge("rbRepump", 0, false);
-        p.AddEdge("rbRepump", rbMOTLoadTime, true);
+        p.AddEdge("rbRepump", rbMOTCoolingEndTime, true);
         p.AddEdge("rbRepump", cameraTrigger1 - 50, false);
 
-        p.AddEdge("rbOpticalPumpingAOM", 0, false); //Using thic channel for controlling DARK SPOT repump AOM
-        p.AddEdge("rbOpticalPumpingAOM", rbDARKMOTEndTime, true);
-        //p.AddEdge("rbOpticalPumpingAOM", cameraTrigger1 - 100, true);
+        p.AddEdge("rbOpticalPumpingAOM", 0, true); //Using thic channel for controlling DARK SPOT repump AOM
 
 
         //Turn everything back on at end of sequence:
@@ -170,14 +167,14 @@ public class Patterns : MOTMasterScript
 
         // Abs image
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of cloud
-        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
+        p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
+        p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
 
         //CaF camera trigger:
         //p.Pulse(0, rbMOTLoadTime - 100, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
 
-        p.AddEdge("rb2DMOTShutter", 0, false);
+        p.AddEdge("rb3DMOTShutter", 0, true);
         return p;
     }
 
@@ -238,7 +235,6 @@ public class Patterns : MOTMasterScript
 
         //Rb Laser intensities
         p.AddAnalogValue("rb3DCoolingAttenuation", 0, 0.0);
-        p.AddLinearRamp("rb3DCoolingAttenuation", rbMOTLoadTime, (int)Parameters["RbCoolingIntensityRampDuration"], (double)Parameters["RbCoolingIntensityEndValue"]);
 
         //Rb Laser detunings
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
@@ -246,11 +242,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
         //Rb DARK MOT repump detuning
-        p.AddAnalogValue("rbRepumpAttenuation", 0, 6.5); //This channel is now used for controlling DARK MOT repump detuning (6.5 V normal value 109.5 MHz)
-        p.AddAnalogValue("rbRepumpAttenuation", rbMOTCoolingEndTime, (double)Parameters["DARKMOTRepumpFrequency"]);
+        p.AddAnalogValue("rbRepumpAttenuation", 0, 0.0); //This channel is now used for controlling DARK MOT repump detuning (6.5 V normal value 109.5 MHz)
 
-        //DARK MOT Cooling frequency ramp
-        p.AddLinearRamp("rb3DCoolingFrequency", rbMOTCoolingEndTime, (int)Parameters["RbCoolingFrequencyRampDuration"], (double)Parameters["DARKMOTCoolingFrequency"]);
 
 
         //CMOT detuning

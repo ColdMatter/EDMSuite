@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 410000; //300000
+        Parameters["PatternLength"] = 250000; //300000
 
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
@@ -25,16 +25,16 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["RbMOTLoadTime"] = 200;//200000
+        Parameters["RbMOTLoadTime"] = 100000;//200000
         Parameters["FreeExpansionTime"] = 100;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["TimeBetweenTriggers"] = 1800;
-        Parameters["NoOfTriggers"] = 1;
+        Parameters["TimeBetweenTriggers"] = 2500;
+        Parameters["NoOfTriggers"] = 25;
 
-        Parameters["loadingTime"] = 3000;
+        Parameters["loadingTime"] = 5000;
 
         //PMT
         Parameters["PMTTrigger"] = 5000;
@@ -84,7 +84,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;//400
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 7.78; //7.78
+        Parameters["v0IntensityEndValue"] = 7.5; //7.78
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0;
@@ -219,7 +219,7 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
+        p.AddAnalogValue("v00EOMAmp", 0, 5.0);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

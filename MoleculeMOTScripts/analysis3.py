@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 linear=lambda x,m,c: m*x+c
 exponential=lambda x,s: np.exp(-(x)/s)
-exponentialOffset=lambda x,a,c,s,o: a*np.exp(-(x-c)/s)+o
+exponentialOffset=lambda x,a,c,s,o: a*np.exp(-(x-c)/s)
 gaussian=lambda x,a,c,s: a*np.exp(-(x-c)**2/(2*s**2))
 gaussianOffset=lambda x,a,c,s,o: np.abs(a)*np.exp(-(x-c)**2/(2*s**2))+o
 invSinc=lambda x,a,b,c,d: a-np.abs(b)*np.sinc((x-c)*d)
@@ -78,9 +78,10 @@ def expFitOffset(x,y,sigma=None):
 
 def gaussianFit(x,y,sigma=None):
     loc_trial=np.argmax(y)
+    halfmax_y = np.max(y)/2.0
     a_trial=y[loc_trial]
     c_trial=x[loc_trial]
-    s_trial=np.max(x)/2.0
+    s_trial=np.abs(x[0]-x[1])*len(y[y>halfmax_y])/2.0
     p0=[a_trial,c_trial,s_trial]
     try:
         popt,pcov=curve_fit(gaussian,x,y,sigma=sigma,p0=p0)
@@ -93,10 +94,11 @@ def gaussianFit(x,y,sigma=None):
 
 def gaussianFitOffset(x,y,sigma=None):
     loc_trial=np.argmax(y)
+    halfmax_y = np.max(y)/2.0
     o_trial=np.min(y)
     a_trial=y[loc_trial]
     c_trial=x[loc_trial]
-    s_trial=np.max(x)/2.0
+    s_trial=np.abs(x[0]-x[1])*len(y[y>halfmax_y])/2.0
     p0=[a_trial,c_trial,s_trial,o_trial]
     try:
         popt,pcov=curve_fit(gaussianOffset,x,y,sigma=sigma,p0=p0)
@@ -108,7 +110,7 @@ def gaussianFitOffset(x,y,sigma=None):
     return popt,np.diag(pcov),isFit
 
 def invSincFit(x,y,sigma=None):
-    p0=[np.max(y),np.min(y),np.mean(x),200]
+    p0=[np.max(y),np.min(y),x[np.argmin(y)],200]
     try:
         popt,pcov=curve_fit(invSinc,x,y,sigma=sigma,p0=p0)
         isFit=True
@@ -119,7 +121,7 @@ def invSincFit(x,y,sigma=None):
     return popt,np.diag(pcov),isFit
 
 def sincFit(x,y,sigma=None):
-    p0=[np.min(y),np.max(y),np.mean(x),200]
+    p0=[np.min(y),np.max(y),x[np.argmax(y)],200]
     try:
         popt,pcov=curve_fit(sinc,x,y,sigma=sigma,p0=p0)
         isFit=True
@@ -975,10 +977,10 @@ class Analysis():
 
     def lifetime(self,paramVals,meanNumbers,stdErrorNumbers):
         paramValsFine=np.linspace(np.min(paramVals),np.max(paramVals),100)
-        popt,diagpcov,isFit=expFit(paramVals,meanNumbers,stdErrorNumbers)
-        bound_upper = exponential(paramValsFine, *(popt + np.sqrt(diagpcov)))
-        bound_lower = exponential(paramValsFine, *(popt - np.sqrt(diagpcov)))
-        yFit=exponential(paramValsFine,*popt)
+        popt,diagpcov,isFit=expFitOffset(paramVals,meanNumbers,stdErrorNumbers)
+        bound_upper = exponentialOffset(paramValsFine, *(popt + np.sqrt(diagpcov)))
+        bound_lower = exponentialOffset(paramValsFine, *(popt - np.sqrt(diagpcov)))
+        yFit=exponentialOffset(paramValsFine,*popt)
         self.fitParams=popt
         fig,ax=plt.subplots(figsize=self.figSizePlot)
         ax.errorbar(paramVals/self.xScale,meanNumbers/self.yScale,
