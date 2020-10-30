@@ -54,7 +54,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	print("Measuring parameters ...")
 	bh.StopPattern()
 	hc.UpdateRFPowerMonitor()
-	hc.UpdateRFFrequencyMonitor()
+	#hc.UpdateRFFrequencyMonitor()
 	bh.StartPattern()
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
@@ -406,6 +406,7 @@ def EDMGo():
 	Emini2List=[]
 	Emini3List=[]
 	while blockIndex < maxBlockIndex:
+		
 		print("Acquiring block " + str(blockIndex) + " ...")
 		# save the block config and load into blockhead
 		print("Saving temp config.")
@@ -418,15 +419,15 @@ def EDMGo():
 		bh.LoadConfig(tempConfigFile)
 		# take the block and save it
 		print("Running Target Stepper ...")
-		bh.StartTargetStepperAndWait()
+		#bh.StartTargetStepperAndWait()
 		print("Target Stepper finished")
 		# hc.GreenSynthEnabled = True
-		if bh.TargetHealthy == False:
-			print("Unable to find acceptable spot")
-			print("Stopping Cluster")
-			hc.EnableEField( False )
-			bh.StopPattern()
-			break
+		#if bh.TargetHealthy == False:
+			#print("Unable to find acceptable spot")
+			#print("Stopping Cluster")
+			#hc.EnableEField( False )
+			#bh.StopPattern()
+			#break
 		print("Running Block ...")
 		bh.AcquireAndWait()
 		print("Done.")
@@ -442,10 +443,12 @@ def EDMGo():
 		File.Delete(tempConfigFile)
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
-		updateLocksNL(bState, mwState)
+		# updateLocksNL(bState, mwState)
 		# randomise Ramsey phase
 		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
+		print("setting green synth amp to: " + str(3.8 + blockIndex % 4))
+		hc.SetGreenSynthAmp(3.8 + blockIndex % 4)
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV)
 		#pmtChannelValues = bh.DBlock.ChannelValues[0]

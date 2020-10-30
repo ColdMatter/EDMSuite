@@ -48,8 +48,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	hc.UpdateRFPowerMonitor()
-	hc.UpdateRFFrequencyMonitor()
+	#hc.UpdateRFPowerMonitor()
+	#hc.UpdateRFFrequencyMonitor()
 	bh.StartPattern()
 	#hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()

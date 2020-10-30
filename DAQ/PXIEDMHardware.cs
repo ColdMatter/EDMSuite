@@ -203,16 +203,18 @@ namespace DAQ.HAL
             AddAnalogInputChannel("quSpinFS_Y", analogIn + "/ai5", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinFS_Z", analogIn + "/ai6", AITerminalConfiguration.Differential);
             //mag inputs for quspins inside the chamber
-            AddAnalogInputChannel("quSpinB0_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinB0_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEV_Y", analogIn + "/ai7", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinFV_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinFV_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinB0_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinB0_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEV_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinEV_Z", analogIn2 + "/ai1", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEW_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEW_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEX_Y", analogIn2 + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEW_Y", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEW_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEX_Y", analogIn2 + "/ai4", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery2", analogIn2 + "/ai7", AITerminalConfiguration.Differential);//temp move to have battery on both DAQs to monitor
 
             
