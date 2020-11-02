@@ -43,6 +43,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|AnyCPU'">
     <OutputPath>bin\EDMBlockHead\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
+    <OutputPath>bin\ultracoldEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
+    <OutputPath>bin\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -57,6 +65,7 @@
     <Compile Include="BFieldCalibration.cs" />
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
+    <Compile Include="ChirpTest.cs" />
     <Compile Include="F2MF2Levitation.cs" />
     <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
@@ -77,7 +86,6 @@
     <Compile Include="MolassesLoadMagTrapNumber.cs" />
     <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
     <Compile Include="MOTBasicBField.cs" />
-    <Compile Include="MOTBasic.cs" />
     <Compile Include="MOTBasicExperimental2.cs" />
     <Compile Include="MOTBlueMolasses.cs" />
     <Compile Include="MOTBlueMolassesNumber.cs" />

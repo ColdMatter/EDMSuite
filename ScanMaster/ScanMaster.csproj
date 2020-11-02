@@ -26,7 +26,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>C:\ScanMaster\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -36,10 +39,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
@@ -137,6 +140,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+<<<<<<< HEAD
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|AnyCPU'">
     <OutputPath>bin\EDMBlockHead\</OutputPath>
   </PropertyGroup>
@@ -153,6 +157,36 @@
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+=======
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
+    <OutputPath>bin\ultracoldEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
+    <OutputPath>bin\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>086BF7F3307069948BBB87857B7AEFCEF9260B85</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ScanMaster_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2012\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
       <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
       <Name>TransferCavityLock2012</Name>
@@ -160,13 +194,31 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=18.5.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+=======
+    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
     </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=18.6.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.UI.WindowsForms.dll</HintPath>
+    </Reference>
+<<<<<<< HEAD
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+=======
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -193,9 +245,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DAQ\Wolfram.NETLink.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <ProjectReference Include="..\MoleculeMOTHardwareControl\MoleculeMOTHardwareControl.csproj" Condition=" '$(Configuration)' == 'Decelerator' ">
       <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
       <Name>MoleculeMOTHardwareControl</Name>
+=======
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Name>DAQ</Name>
+      <Project>{BB737B99-2E9F-40C9-9809-895A7C51AD40}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Name>SharedCode</Name>
+      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +275,8 @@
     <Compile Include="SingleCounterInputPlugin.cs" />
     <Compile Include="GPIBInputPlugin.cs" />
     <Compile Include="BigSkyYAGPlugin.cs" />
+    <Compile Include="DualCCDPatternBuilder.cs" />
+    <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
     <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />
@@ -453,8 +519,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Properties\app.manifest" />
+    <None Include="ScanMaster_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -468,6 +541,11 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>

@@ -139,24 +139,44 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|AnyCPU'">
     <OutputPath>bin\EDMBlockHead\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
+    <OutputPath>bin\ultracoldEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
+    <OutputPath>bin\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
+=======
+    <Reference Include="NationalInstruments.Common, Version=19.0.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=18.5.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=19.1.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.ModularInstruments.NIRfsg.Fx40, Version=20.5.0.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+=======
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+>>>>>>> 1c9d57667e4c7b536060303861ebedbe5c0fbd43
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -216,7 +236,13 @@
     <Compile Include="ClamFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AgilentFRG720Gauge.cs" />
+    <Compile Include="CENTAURFileSystem.cs" />
+    <Compile Include="LeyboldPTR225PressureGauge.cs" />
+    <Compile Include="UEDMHardwareControllerAIs.cs" />
+    <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />
+    <Compile Include="LakeShore336TemperatureController.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
     <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
@@ -226,6 +252,7 @@
     <Compile Include="CentaurEDMHardware.cs" />
     <Compile Include="RfAWGConfig.cs" />
     <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
+    <Compile Include="SiliconDiodeTemperatureMonitors.cs" />
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
     <Compile Include="TCLEDMHardware.cs" />
@@ -406,6 +433,7 @@
     <Content Include="bdc-comm-92.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
   </ItemGroup>
   <ItemGroup>

@@ -298,27 +298,27 @@ namespace ScanMaster.GUI
             // 
             // statusBar1
             // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 405);
+            this.statusBar1.Location = new System.Drawing.Point(0, 644);
             this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Size = new System.Drawing.Size(778, 22);
+            this.statusBar1.Size = new System.Drawing.Size(1260, 32);
             this.statusBar1.SizingGrip = false;
             this.statusBar1.TabIndex = 13;
             this.statusBar1.Text = "Ready";
             // 
             // renameButton
             // 
-            this.renameButton.Location = new System.Drawing.Point(96, 376);
+            this.renameButton.Location = new System.Drawing.Point(154, 550);
             this.renameButton.Name = "renameButton";
-            this.renameButton.Size = new System.Drawing.Size(75, 23);
+            this.renameButton.Size = new System.Drawing.Size(120, 33);
             this.renameButton.TabIndex = 23;
             this.renameButton.Text = "Rename ...";
             this.renameButton.Click += new System.EventHandler(this.RenameHandler);
             // 
             // currentProfileLabel
             // 
-            this.currentProfileLabel.Location = new System.Drawing.Point(8, 312);
+            this.currentProfileLabel.Location = new System.Drawing.Point(13, 456);
             this.currentProfileLabel.Name = "currentProfileLabel";
-            this.currentProfileLabel.Size = new System.Drawing.Size(232, 24);
+            this.currentProfileLabel.Size = new System.Drawing.Size(371, 35);
             this.currentProfileLabel.TabIndex = 22;
             this.currentProfileLabel.Text = "Current profile: ";
             // 
@@ -327,9 +327,9 @@ namespace ScanMaster.GUI
             this.commandTextBox.BackColor = System.Drawing.Color.Black;
             this.commandTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.commandTextBox.ForeColor = System.Drawing.Color.Red;
-            this.commandTextBox.Location = new System.Drawing.Point(280, 376);
+            this.commandTextBox.Location = new System.Drawing.Point(448, 550);
             this.commandTextBox.Name = "commandTextBox";
-            this.commandTextBox.Size = new System.Drawing.Size(488, 22);
+            this.commandTextBox.Size = new System.Drawing.Size(781, 30);
             this.commandTextBox.TabIndex = 20;
             this.commandTextBox.TextChanged += new System.EventHandler(this.commandTextBox_TextChanged);
             this.commandTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUpHandler);
@@ -340,70 +340,71 @@ namespace ScanMaster.GUI
             this.outputTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.outputTextBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.outputTextBox.ForeColor = System.Drawing.Color.Lime;
-            this.outputTextBox.Location = new System.Drawing.Point(280, 32);
+            this.outputTextBox.Location = new System.Drawing.Point(448, 47);
             this.outputTextBox.Multiline = true;
             this.outputTextBox.Name = "outputTextBox";
             this.outputTextBox.ReadOnly = true;
             this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.outputTextBox.Size = new System.Drawing.Size(488, 336);
+            this.outputTextBox.Size = new System.Drawing.Size(781, 491);
             this.outputTextBox.TabIndex = 21;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(8, 8);
+            this.label1.Location = new System.Drawing.Point(13, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 24);
+            this.label1.Size = new System.Drawing.Size(160, 35);
             this.label1.TabIndex = 19;
             this.label1.Text = "Profiles:";
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(8, 376);
+            this.deleteButton.Location = new System.Drawing.Point(13, 550);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteButton.Size = new System.Drawing.Size(120, 33);
             this.deleteButton.TabIndex = 18;
             this.deleteButton.Text = "Delete";
             this.deleteButton.Click += new System.EventHandler(this.DeleteHandler);
             // 
             // cloneButton
             // 
-            this.cloneButton.Location = new System.Drawing.Point(184, 344);
+            this.cloneButton.Location = new System.Drawing.Point(294, 503);
             this.cloneButton.Name = "cloneButton";
-            this.cloneButton.Size = new System.Drawing.Size(75, 23);
+            this.cloneButton.Size = new System.Drawing.Size(120, 33);
             this.cloneButton.TabIndex = 17;
             this.cloneButton.Text = "Clone";
             this.cloneButton.Click += new System.EventHandler(this.CloneHandler);
             // 
             // newButton
             // 
-            this.newButton.Location = new System.Drawing.Point(96, 344);
+            this.newButton.Location = new System.Drawing.Point(154, 503);
             this.newButton.Name = "newButton";
-            this.newButton.Size = new System.Drawing.Size(75, 23);
+            this.newButton.Size = new System.Drawing.Size(120, 33);
             this.newButton.TabIndex = 16;
             this.newButton.Text = "New";
             this.newButton.Click += new System.EventHandler(this.NewProfileHandler);
             // 
             // selectButton
             // 
-            this.selectButton.Location = new System.Drawing.Point(8, 344);
+            this.selectButton.Location = new System.Drawing.Point(13, 503);
             this.selectButton.Name = "selectButton";
-            this.selectButton.Size = new System.Drawing.Size(75, 23);
+            this.selectButton.Size = new System.Drawing.Size(120, 33);
             this.selectButton.TabIndex = 15;
             this.selectButton.Text = "Select";
             this.selectButton.Click += new System.EventHandler(this.SelectProfileHandler);
             // 
             // profileListBox
             // 
-            this.profileListBox.Location = new System.Drawing.Point(8, 32);
+            this.profileListBox.ItemHeight = 20;
+            this.profileListBox.Location = new System.Drawing.Point(13, 47);
             this.profileListBox.Name = "profileListBox";
-            this.profileListBox.Size = new System.Drawing.Size(232, 264);
+            this.profileListBox.Size = new System.Drawing.Size(371, 384);
             this.profileListBox.TabIndex = 14;
             this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
             // 
             // ControllerWindow
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(778, 427);
+            this.AutoScaleBaseSize = new System.Drawing.Size(8, 19);
+            this.ClientSize = new System.Drawing.Size(1260, 676);
             this.Controls.Add(this.renameButton);
             this.Controls.Add(this.currentProfileLabel);
             this.Controls.Add(this.commandTextBox);

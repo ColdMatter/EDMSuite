@@ -76,7 +76,7 @@ namespace TransferCavityLock2012
 
         private void VoltageToLaserChanged(object sender, EventArgs e)
         {
-            if (!VoltageToLaserTextBox.Focused) return;
+            if (!VoltageToLaserTextBox.Focused && !VoltageTrackBar.Focused) return;
             double number;
             System.Globalization.NumberStyles numberStyle = System.Globalization.NumberStyles.Number; // Determines what formats are allowed for numbers
             if (Double.TryParse(VoltageToLaserTextBox.Text, numberStyle, System.Globalization.CultureInfo.InvariantCulture, out number))

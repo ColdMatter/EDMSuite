@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 10000;
         Parameters["Frame1Trigger"] = 10000;
         Parameters["Frame0TriggerDuration"] = 10;
 
@@ -36,7 +36,7 @@ public class Patterns : MOTMasterScript
         // Slowing
         Parameters["slowingAOMOnStart"] = 250;
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1500;
+        Parameters["slowingAOMOffStart"] = 1520;//1500
         Parameters["slowingAOMOffDuration"] = 35000;
         Parameters["slowingRepumpAOMOnStart"] = 0;
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
@@ -47,7 +47,7 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartTime"] = 360;// 340;
         Parameters["SlowingChirpDuration"] = 1160;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.3;
+        Parameters["SlowingChirpEndValue"] = -1.35;//-1.3
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 8.0; //1.05;
@@ -56,7 +56,7 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
-        Parameters["MOTCoilsCurrentValue"] = 0.6;// 0.65; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 1.0;// 0.65; // 0.65;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 3.6;// 2.7;
@@ -96,7 +96,7 @@ public class Patterns : MOTMasterScript
         //   p.AddEdge("v00Shutter", 0, true);
         p.Pulse(patternStartBeforeQ, 3000 - 1400, 20000, "bXSlowingShutter"); //Takes 14ms to start closing
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame1Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for second frame
 
 

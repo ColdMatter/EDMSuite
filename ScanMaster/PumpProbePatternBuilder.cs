@@ -16,7 +16,7 @@ namespace ScanMaster.Acquire.Patterns
 		}
 
     //	private const int FLASH_PULSE_LENGTH = 100;
-		private const int Q_PULSE_LENGTH = 100;
+		private const int Q_PULSE_LENGTH = 15;
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int padStart, int flashlampPulseInterval,

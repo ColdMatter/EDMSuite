@@ -23,7 +23,7 @@ namespace MOTMaster.SnippetLibrary
 
         public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
-            int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
+            int patternStartBeforeQ = (int)parameters["TCLBlockStart"] + (int)parameters["RbMOTLoadTime"];
             int slowingChirpStartTime = (int)parameters["SlowingChirpStartTime"];
             int slowingNewDetuningTime = slowingChirpStartTime + (int)parameters["SlowingChirpDuration"];
             int slowingChirpBackTime = slowingNewDetuningTime + (int)parameters["SlowingChirpHoldDuration"];
@@ -31,7 +31,7 @@ namespace MOTMaster.SnippetLibrary
 
             p.Pulse(patternStartBeforeQ, slowingChirpStartTime, slowingChirpFinishedTime - slowingChirpStartTime, "bXLockBlock"); ; // Want it to be blocked for whole time that bX laser is moved
             p.Pulse(patternStartBeforeQ, -(int)parameters["FlashToQ"], (int)parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
-            p.Pulse(patternStartBeforeQ, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.
+            p.Pulse((int)parameters["TCLBlockStart"], 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch"); //trigger the Q switch
             p.Pulse(patternStartBeforeQ, -(int)parameters["HeliumShutterToQ"], (int)parameters["HeliumShutterDuration"], "heliumShutter");
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingAOMOnStart"], (int)parameters["slowingAOMOffStart"] - (int)parameters["slowingAOMOnStart"], "bXSlowingAOM"); //first pulse to slowing AOM
@@ -42,7 +42,7 @@ namespace MOTMaster.SnippetLibrary
         public void AddAnalogSnippet(AnalogPatternBuilder p, Dictionary<String, Object> parameters)
         {
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
-            int slowingChirpStartTime = (int)parameters["SlowingChirpStartTime"];
+            int slowingChirpStartTime = (int)parameters["SlowingChirpStartTime"] + (int)parameters["RbMOTLoadTime"];
             int slowingNewDetuningTime = slowingChirpStartTime + (int)parameters["SlowingChirpDuration"];
             int slowingChirpBackTime = slowingNewDetuningTime + (int)parameters["SlowingChirpHoldDuration"];
             int slowingChirpFinishedTime = slowingChirpBackTime + (int)parameters["SlowingChirpDuration"];
