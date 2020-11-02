@@ -1,6 +1,7 @@
 using System;
 
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 using DAQ.Environment;
 
@@ -40,27 +41,27 @@ namespace DAQ.HAL
 
         protected override void Write(String command)
 		{
-			session.Write(command);
+			session.RawIO.Write(command);
 		}
 
         protected override string Read()
 		{
-			return session.ReadString();
+			return session.RawIO.ReadString();
 		}
 
         protected string Read(int numChars)
         {
-            return session.ReadString(numChars);
+            return session.RawIO.ReadString(numChars);
         }
 
         protected void Timeout()
         {
-            session.Timeout = NationalInstruments.VisaNS.Session.InfiniteTimeout;
+            session.TimeoutMilliseconds = VisaConstants.InfiniteTimeout;
         }
 
         protected void Timeout(int timeoutValue)
         {
-            session.Timeout = timeoutValue;
+            session.TimeoutMilliseconds = timeoutValue;
         }
 
         protected void TerminationCharacter(bool enabled)

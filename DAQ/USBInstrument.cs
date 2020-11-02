@@ -1,6 +1,7 @@
 using System;
 
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 using DAQ.Environment;
 
@@ -14,7 +15,7 @@ namespace DAQ.HAL
 		UsbSession session;
 		string address;
 
-        MessageBasedSessionReader reader;
+        //MessageBasedSessionReader reader;
 
 		public USBInstrument(String visaAddress)
 		{
@@ -43,34 +44,37 @@ namespace DAQ.HAL
 
         protected override void Write(String command)
 		{
-			session.Write(command);
+			session.RawIO.Write(command);
 		}
 
         protected override string Read()
 		{
-			return session.ReadString();
+			return session.RawIO.ReadString();
 		}
 
         protected string Read(int numChars)
         {
-            return session.ReadString(numChars);
+            return session.RawIO.ReadString(numChars);
         }
 
         protected char[] ReadBinaryEncodedData(int numChars)
         {
-            reader = new MessageBasedSessionReader(session);
-            reader.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
-            return reader.ReadChars(numChars);
+			session.FormattedIO.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
+			return session.FormattedIO.ReadString(numChars).ToCharArray();
+
+            //reader = new MessageBasedSessionReader(session);
+            //reader.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
+            //return reader.ReadChars(numChars);
         }
 
         protected void Timeout()
         {
-            session.Timeout = NationalInstruments.VisaNS.Session.InfiniteTimeout;
+            session.TimeoutMilliseconds =VisaConstants.InfiniteTimeout;
         }
 
         protected void Timeout(int timeoutValue)
         {
-            session.Timeout = timeoutValue;
+            session.TimeoutMilliseconds = timeoutValue;
         }
 
         protected void TerminationCharacter(bool enabled)

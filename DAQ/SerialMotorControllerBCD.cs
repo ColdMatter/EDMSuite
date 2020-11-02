@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using NationalInstruments.VisaNS;
 
 using DAQ.Environment;
 using System.Diagnostics;

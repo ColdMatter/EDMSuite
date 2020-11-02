@@ -9,11 +9,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
-using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.VisaNS;
+//using NationalInstruments.UI;
+//using NationalInstruments.UI.WindowsForms;
+//using NationalInstruments.Visa;
 using System.Linq;
 
 using DAQ.HAL;

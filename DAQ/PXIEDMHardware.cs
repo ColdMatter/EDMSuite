@@ -39,11 +39,11 @@ namespace DAQ.HAL
             Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2");
             // this drives the rf attenuators
-            Boards.Add("usbDAQ1", "/Dev6");
+            Boards.Add("usbDAQ1", "/Dev3");
             Boards.Add("analogIn", "/PXI1Slot15");
-            Boards.Add("usbDAQ2", "/Dev1");
-            Boards.Add("usbDAQ3", "/Dev2");
-            Boards.Add("usbDAQ4", "/Dev5");
+            Boards.Add("usbDAQ2", "/Dev2");
+            Boards.Add("usbDAQ3", "/Dev1");
+            Boards.Add("usbDAQ4", "/Dev4");
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
             string rfAWG = (string)Boards["rfAWG"];

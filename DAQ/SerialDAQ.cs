@@ -1,9 +1,5 @@
 using System;
 
-using NationalInstruments.VisaNS;
-
-using DAQ.Environment;
-
 
 namespace DAQ.HAL
 {

@@ -1,6 +1,7 @@
 using System;
 
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 using DAQ.Environment;
 
@@ -29,8 +30,8 @@ namespace DAQ.HAL
 				serial = new SerialSession(address);
 				serial.BaudRate = 9600;
 				serial.DataBits = 8;
-				serial.StopBits = StopBitType.One;
-				serial.ReadTermination = SerialTerminationMethod.LastBit;
+				serial.StopBits = SerialStopBitsMode.One;
+				serial.ReadTermination = SerialTerminationMethod.HighestBit;
 			}
 			connected = true;
 		}
@@ -44,16 +45,28 @@ namespace DAQ.HAL
 		public void StartFlashlamps(bool internalClock)
 		{
 			if (!connected) Connect();
-			if (!Environs.Debug) serial.Query("QE\r\n",17);
+			if (!Environs.Debug)
+			{
+				serial.RawIO.Write("QE\r\n");
+				serial.RawIO.ReadString(17);
+				//serial.Query("QE\r\n", 17);
+			}
 			if (internalClock)
 			{
-				if (!Environs.Debug) serial.Query("A\r\n",17);
+				if (!Environs.Debug)
+				{
+					serial.RawIO.Write("A\r\n");
+					serial.RawIO.ReadString(17);
+					//serial.Query("A\r\n", 17);
+				}
 			}
 			else
 			{
 				if (!Environs.Debug)
 				{
-					serial.Query("E\r\n",17);
+					serial.RawIO.Write("E\r\n");
+					serial.RawIO.ReadString(17);
+					//serial.Query("E\r\n",17);
 				}
 			}
 			Disconnect();
@@ -62,21 +75,36 @@ namespace DAQ.HAL
 		public void StopFlashlamps()
 		{
 			if (!connected) Connect();
-			if (!Environs.Debug) serial.Query("S\r\n",17);
+			if (!Environs.Debug)
+			{
+				serial.RawIO.Write("S\r\n");
+				serial.RawIO.ReadString(17);
+				//serial.Query("S\r\n", 17);
+			}
 			Disconnect();
 		}
 
 		public void EnableQSwitch()
 		{
 			if (!connected) Connect();
-			if (!Environs.Debug) serial.Query("CC\r\n",17);
+			if (!Environs.Debug)
+			{
+				serial.RawIO.Write("CC\r\n");
+				serial.RawIO.ReadString(17);
+				//serial.Query("CC\r\n", 17);
+			}
 			Disconnect();
 		}
 
 		public void DisableQSwitch()
 		{
 			if (!connected) Connect();
-			if (!Environs.Debug) serial.Query("CS\r\n",17);
+			if (!Environs.Debug)
+			{
+				serial.RawIO.Write("CS\r\n");
+				serial.RawIO.ReadString(17);
+				//serial.Query("CS\r\n", 17);
+			}
 			Disconnect();
 		}
 
@@ -86,7 +114,12 @@ namespace DAQ.HAL
 			{
 				if (!connected) Connect();
 				String reply = "";
-				if (!Environs.Debug) reply = serial.Query("IF2\r\n",17);
+				if (!Environs.Debug)
+				{
+					serial.RawIO.Write("IF2\r\n");
+					reply = serial.RawIO.ReadString(17);
+					//reply = serial.Query("IF2\r\n", 17);
+				}
 				Disconnect();
 				return (reply.IndexOf("1") != -1);
 				
@@ -96,7 +129,12 @@ namespace DAQ.HAL
 		public void SetFlashlampVoltage(int voltage)
 		{
 			if (!connected) Connect();
-			if (!Environs.Debug) serial.Query("V" + voltage + "\r\n",17);
+			if (!Environs.Debug)
+			{
+				serial.RawIO.Write("V" + voltage + "\r\n");
+				serial.RawIO.ReadString(17);
+				//serial.Query("V" + voltage + "\r\n", 17);
+			}
 			Disconnect();
 		}
 

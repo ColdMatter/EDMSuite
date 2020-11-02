@@ -1,7 +1,5 @@
 using System;
 
-using NationalInstruments.VisaNS;
-
 using DAQ.Environment;
 using System.Globalization;
 using System.Threading;
