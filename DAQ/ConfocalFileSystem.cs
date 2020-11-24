@@ -20,8 +20,7 @@ namespace DAQ
             _experimentName = experimentName;
             Paths.Add("settingsPath", "C:\\Users\\ccmqn\\Documents\\ConfocalMicroscope\\bin\\");
             // Paths.Add("scanMasterDataPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\");
-            // I have changed this because the network is 'full' even though it isn't (see triplet onenote 13/06/20)
-            Paths.Add("scanMasterDataPath", "C:\\Users\\ccmqn\\Desktop\\TripletScanTemp\\");
+            Paths.Add("scanMasterDataPath", "\\\\store.ic.ac.uk\\ic\\fons\\physics\\CCMQN\\data\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

@@ -1293,7 +1293,7 @@ namespace ConfocalControl
             else
             {
                 int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
-                while (teraLaser != TeraLaserState.stopped)
+                while (teraLaser != TeraLaserState.stopped) //getting stuck in this loop
                 {
                     Thread.Sleep(100);
                 }
@@ -1600,7 +1600,7 @@ namespace ConfocalControl
             teraLaser = TeraLaserState.running;
             string status = "scan";
             
-            //Not yet tested
+            
             DFG.terascan_continue();
 
             while (teraLatestLambda < (Double)Settings["TeraScanStop"])
