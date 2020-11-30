@@ -1206,10 +1206,8 @@ namespace ConfocalControl
             while (true)
             {
                 Dictionary<string, object> autoOutput = new Dictionary<string, object>();
-                while (backendState == DFGState.running && teraState == TeraScanState.running)
+                while (backendState == DFGState.running && teraState == TeraScanState.running && teraSegmentState == TeraScanSegmentState.running)
                 {
-                    // This functionality is not currently available on the DFG
-
                     autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
 
                     if (autoOutput.Count > 0)
@@ -1603,7 +1601,7 @@ namespace ConfocalControl
             
             DFG.terascan_continue();
 
-            while (teraLatestLambda < (Double)Settings["TeraScanStop"])
+            while (teraLatestLambda < (Double)Settings["TeraScanStop"] && teraLaser != TeraLaserState.stopped)
             {
                 Dictionary<string, object> autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
 
@@ -1615,12 +1613,16 @@ namespace ConfocalControl
                         status = (string)autoOutput["status"];
                         if (backendState != DFGState.running || teraState != TeraScanState.running)
                         {
-                            teraLaser = TeraLaserState.stopping;
+                            teraLaser = TeraLaserState.stopped;
+                        }
+                        if (status == "start")
+                        {
+                            teraLaser = TeraLaserState.stopped;
                         }
                     }
                     catch (KeyNotFoundException)
                     {
-                        teraLaser = TeraLaserState.stopping;
+                        teraLaser = TeraLaserState.stopped;
                     }
                 }
                 else
