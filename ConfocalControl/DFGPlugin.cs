@@ -77,6 +77,7 @@ namespace ConfocalControl
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
+        private double MAXSCANPOINTS = 1000000000;
         private int pointsPerExposure;
         private double sampleRate;
 
@@ -194,6 +195,11 @@ namespace ConfocalControl
         public bool IsRunning()
         {
             return backendState == DFGState.running;
+        }
+
+        public bool TeraLaserIsRunning()
+        {
+            return teraLaser == TeraLaserState.running;
         }
 
         public bool WavemeterScanIsRunning()
@@ -1088,16 +1094,33 @@ namespace ConfocalControl
 
         public void StartTeraScan()
         {
-            switch ((string)Settings["TeraScanRepeatType"])
+            try
             {
-                case "single":
-                    StartSingleTeraScan();
-                    break;
-                case "multi":
-                    //StartMultiTeraScan();
-                    break;
-                default:
-                    break;
+                (double)pointsEstimate = ScanPointsEstimate();
+
+                switch ((string)Settings["TeraScanRepeatType"])
+                {
+                    case "single":
+                        if (ScanPointsEstimate < MAXSCANPOINTS)
+                        {
+                            StartSingleTeraScan();
+                        }
+                        else
+                        {
+                            (int)blocks = Math.Ceiling(ScanPointsEstimate / MAXSCANPOINTS);
+                            StartLongTeraScan(blocks);
+                        }
+                        break;
+                    case "multi":
+                        //StartMultiTeraScan();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (TeraScanProblem != null) TeraScanProblem(e);
             }
         }
 
@@ -1187,7 +1210,55 @@ namespace ConfocalControl
             TeraScanAcquisitionStopping();
         }
 
-        public void StartSingleTeraScan()
+        public double ScanPointsEstimate()
+        {
+            (double)scanPoints = 0;
+            (double)sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+            switch ((double)Settings["TeraScanUnits"])
+            {
+                case "MHz/s":
+                    scanPoints = sampleRate * (SPEEDOFLIGHT/((double)Settings["TeraScanRate"] * 1000000)) * (1 / (double)Settings["TeraScanStart"] - 1 / (double)Settings["TeraScanEnd"]);
+                    break;
+                case "GHz/s":
+                    scanPoints = sampleRate * (SPEEDOFLIGHT / ((double)Settings["TeraScanRate"] * 1000000000)) * (1 / (double)Settings["TeraScanStart"] - 1 / (double)Settings["TeraScanEnd"]);
+                    break;
+            }
+            return scanPoints;
+        }
+
+        public void StartLongTeraScan(int blocks)
+        {
+            try
+            {
+                double initStartLambda = (double)Settings["TeraScanStart"];
+                double initStopLambda = (double)Settings["TeraScanStop"];
+
+                double rangeLambda = initStopLambda - initStartLambda;
+
+                double sectionLength = rangeLambda / (blocks + 1);
+
+                for (int i = 0; i < blocks; i++)
+                {
+                    (double)Settings["TeraScanStart"] = initStartLamda + (i * rangeLambda);
+                    (double)Settings["TeraScanStop"] = initStartLamda + ((i + 1) * rangeLambda);
+
+                    StartSingleTeraScan;
+
+                    SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
+                }
+            }
+            catch (Exception e)
+            {
+                if (TeraScanProblem != null) TeraScanProblem(e);
+            }
+            finally
+            {
+                (double)Settings["TeraScanStart"] = initStartLamda;
+                (double)Settings["TeraScanStop"] = initStopLamda;
+            }
+        }
+
+            public void StartSingleTeraScan()
         {
             //try
             //{
@@ -1284,6 +1355,9 @@ namespace ConfocalControl
 
         public void TeraScanAcquisitionStopping()
         {
+
+            teraState = TeraScanState.stopped;
+
             if (teraLaser == TeraLaserState.stopped)
             {
                 int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, true);
@@ -1296,8 +1370,6 @@ namespace ConfocalControl
                     Thread.Sleep(100);
                 }
             }
-
-            teraState = TeraScanState.stopped;
             backendState = DFGState.stopped;
             if (TeraScanFinished != null) TeraScanFinished();
         }
@@ -1597,7 +1669,6 @@ namespace ConfocalControl
         {
             teraLaser = TeraLaserState.running;
             string status = "scan";
-            
             
             DFG.terascan_continue();
 
