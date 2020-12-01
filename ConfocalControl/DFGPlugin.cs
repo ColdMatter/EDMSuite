@@ -77,7 +77,7 @@ namespace ConfocalControl
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
-        private double MAXSCANPOINTS = 1000000000;
+        private double MAXSCANPOINTS = Math.Pow(10,17);
         private int pointsPerExposure;
         private double sampleRate;
 
@@ -1096,19 +1096,19 @@ namespace ConfocalControl
         {
             try
             {
-                (double)pointsEstimate = ScanPointsEstimate();
+                double pointsEstimate = ScanPointsEstimate();
+                int blocks = (int)Math.Ceiling(pointsEstimate / MAXSCANPOINTS);
 
                 switch ((string)Settings["TeraScanRepeatType"])
                 {
                     case "single":
-                        if (ScanPointsEstimate < MAXSCANPOINTS)
+                        if (pointsEstimate > MAXSCANPOINTS)
                         {
-                            StartSingleTeraScan();
+                            StartLongTeraScan(blocks);
                         }
                         else
                         {
-                            (int)blocks = Math.Ceiling(ScanPointsEstimate / MAXSCANPOINTS);
-                            StartLongTeraScan(blocks);
+                            StartSingleTeraScan();
                         }
                         break;
                     case "multi":
@@ -1121,6 +1121,10 @@ namespace ConfocalControl
             catch (Exception e)
             {
                 if (TeraScanProblem != null) TeraScanProblem(e);
+            }
+            finally
+            {
+                if (TeraScanFinished != null) TeraScanFinished();
             }
         }
 
@@ -1212,15 +1216,18 @@ namespace ConfocalControl
 
         public double ScanPointsEstimate()
         {
-            (double)scanPoints = 0;
-            (double)sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
-            switch ((double)Settings["TeraScanUnits"])
+            double scanPoints = 0.0;
+            double sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+            double scanRate = Convert.ToDouble((int)Settings["TeraScanRate"]);
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"];
+            switch ((string)Settings["TeraScanUnits"])
             {
                 case "MHz/s":
-                    scanPoints = sampleRate * (SPEEDOFLIGHT/((double)Settings["TeraScanRate"] * 1000000)) * (1 / (double)Settings["TeraScanStart"] - 1 / (double)Settings["TeraScanEnd"]);
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT/(scanRate * Math.Pow(10,-3) *(1.0 / initStartLambda - 1.0 / initStopLambda))));
                     break;
                 case "GHz/s":
-                    scanPoints = sampleRate * (SPEEDOFLIGHT / ((double)Settings["TeraScanRate"] * 1000000000)) * (1 / (double)Settings["TeraScanStart"] - 1 / (double)Settings["TeraScanEnd"]);
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT / (scanRate * (1.0 / initStartLambda - 1.0 / initStopLambda))));
                     break;
             }
             return scanPoints;
@@ -1228,21 +1235,21 @@ namespace ConfocalControl
 
         public void StartLongTeraScan(int blocks)
         {
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"]; 
+            
             try
             {
-                double initStartLambda = (double)Settings["TeraScanStart"];
-                double initStopLambda = (double)Settings["TeraScanStop"];
-
                 double rangeLambda = initStopLambda - initStartLambda;
 
                 double sectionLength = rangeLambda / (blocks + 1);
 
                 for (int i = 0; i < blocks; i++)
                 {
-                    (double)Settings["TeraScanStart"] = initStartLamda + (i * rangeLambda);
-                    (double)Settings["TeraScanStop"] = initStartLamda + ((i + 1) * rangeLambda);
+                    Settings["TeraScanStart"] = initStartLambda + (i * rangeLambda);
+                    Settings["TeraScanStop"] = initStartLambda + ((i + 1) * rangeLambda);
 
-                    StartSingleTeraScan;
+                    StartSingleTeraScan();
 
                     SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
                 }
@@ -1253,8 +1260,8 @@ namespace ConfocalControl
             }
             finally
             {
-                (double)Settings["TeraScanStart"] = initStartLamda;
-                (double)Settings["TeraScanStop"] = initStopLamda;
+                Settings["TeraScanStart"] = initStartLambda;
+                Settings["TeraScanStop"] = initStopLambda;
             }
         }
 
@@ -1690,6 +1697,10 @@ namespace ConfocalControl
                         {
                             teraLaser = TeraLaserState.stopped;
                         }
+                        if (status == "end")
+                        {
+                            teraLaser = TeraLaserState.stopped;
+                        }
                     }
                     catch (KeyNotFoundException)
                     {
@@ -1719,7 +1730,7 @@ namespace ConfocalControl
             Thread thread = new Thread(new ThreadStart(TeraScanSegmentLaserStart));
             thread.IsBackground = true;
             thread.Start();
-            while (teraLatestLambda < 0) { Thread.Sleep(1); }
+            //while (teraLatestLambda < 0 && teraSegmentState == TeraScanSegmentState.running) { Thread.Sleep(1); } //This is causing issues at the end of the scan
             TeraScanSegmentAcquisitionStart();
             TeraScanSegmentAcquisitionEnd();
             // SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
