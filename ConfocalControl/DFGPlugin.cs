@@ -1499,6 +1499,8 @@ namespace ConfocalControl
 
             while (backendState == DFGState.running && teraSegmentState == TeraScanSegmentState.running)
             {
+                while(latestLambda<0) { Thread.Sleep(1); }//This waits until the laser is actually scanning
+                
                 // Read first counter
                 double[] counterRead = counterReaders[0].ReadMultiSampleDouble(-1);
                 int dataReadLength = counterRead.Length;
