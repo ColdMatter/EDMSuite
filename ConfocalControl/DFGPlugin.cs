@@ -73,11 +73,13 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler TeraSegmentScanFinished;
         public event MultiChannelScanFinishedEventHandler TeraScanFinished;
         public event SpectraScanExceptionEventHandler TeraScanProblem;
+        // Status Messaging
+        public event UpdateStatusEventHandler UpdateStatusBar;
 
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
-        private double MAXSCANPOINTS = Math.Pow(10,17);
+        private double MAXSCANPOINTS = 0.5*Math.Pow(10,5);
         private int pointsPerExposure;
         private double sampleRate;
 
@@ -131,7 +133,7 @@ namespace ConfocalControl
             dfg = new ICEBlocDFG();
 
             LoadSettings();
-            if (Settings.Keys.Count != 16)
+            if (Settings.Keys.Count != 27)
             {
                 Settings["wavelength"] = 1200.0;
 
@@ -1224,10 +1226,10 @@ namespace ConfocalControl
             switch ((string)Settings["TeraScanUnits"])
             {
                 case "MHz/s":
-                    scanPoints = (sampleRate * (SPEEDOFLIGHT/(scanRate * Math.Pow(10,-3) *(1.0 / initStartLambda - 1.0 / initStopLambda))));
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT/(scanRate * Math.Pow(10,-3))) *(1.0 / initStartLambda - 1.0 / initStopLambda));
                     break;
                 case "GHz/s":
-                    scanPoints = (sampleRate * (SPEEDOFLIGHT / (scanRate * (1.0 / initStartLambda - 1.0 / initStopLambda))));
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT / (scanRate)) * (1.0 / initStartLambda - 1.0 / initStopLambda));
                     break;
             }
             return scanPoints;
@@ -1242,16 +1244,19 @@ namespace ConfocalControl
             {
                 double rangeLambda = initStopLambda - initStartLambda;
 
-                double sectionLength = rangeLambda / (blocks + 1);
+                double sectionLength = rangeLambda / (blocks);
 
                 for (int i = 0; i < blocks; i++)
                 {
-                    Settings["TeraScanStart"] = initStartLambda + (i * rangeLambda);
-                    Settings["TeraScanStop"] = initStartLambda + ((i + 1) * rangeLambda);
+                    Settings["TeraScanStart"] = initStartLambda + (i * sectionLength);
+                    Settings["TeraScanStop"] = initStartLambda + ((i + 1) * sectionLength);
 
                     StartSingleTeraScan();
 
+                    double[] blank = new double[] { teraLatestLambda };
+                    TeraTotalOnlyData(blank, true);
                     SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
+                    UpdateStatusBar("Saving Data...");
                 }
             }
             catch (Exception e)
@@ -1262,29 +1267,32 @@ namespace ConfocalControl
             {
                 Settings["TeraScanStart"] = initStartLambda;
                 Settings["TeraScanStop"] = initStopLambda;
+                TeraScanAcquisitionStopping();
+                TeraScanSegmentAcquisitionEnd();
             }
         }
 
             public void StartSingleTeraScan()
         {
-            //try
-            //{
             if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
             {
                 throw new DaqException("Counter already running");
             }
 
-            teraState = TeraScanState.running;
-            backendState = DFGState.running;
+            UpdateStatusBar("TeraScan starting...");
 
+            teraState = TeraScanState.running;
+         
             TeraScanInitialise();
             teraScanBuffer = new TeraScanDataHolder(((List<string>)Settings["counterChannels"]).Count, ((List<string>)Settings["analogueChannels"]).Count, Settings);
             teraLatestLambda = (double)Settings["TeraScanStart"];
             TeraScanAcquisitionStarting();
+            backendState = DFGState.running;
+
             while (true)
             {
                 Dictionary<string, object> autoOutput = new Dictionary<string, object>();
-                while (backendState == DFGState.running && teraState == TeraScanState.running && teraSegmentState == TeraScanSegmentState.running)
+                while (backendState == DFGState.running && teraState == TeraScanState.running )
                 {
                     autoOutput = DFG.ReceiveCustomMessage("automatic_output", true);
 
@@ -1312,18 +1320,12 @@ namespace ConfocalControl
                 else { break; }
             }
             TeraScanAcquisitionStopping();
-
-            //}
-            //catch (Exception e)
-            //{
-            //    if (TeraScanProblem != null) TeraScanProblem(e);
-            //}
+            backendState = DFGState.stopped;
+            UpdateStatusBar("TeraScan Finished");
         }
 
         private void TeraScanInitialise()
         {
-            //Not tested
-
             DFG.terascan_output("start", 0, 2, "on");
 
             string scanType = (string)Settings["TeraScanType"];
@@ -1348,7 +1350,6 @@ namespace ConfocalControl
             teraScan_current_channel_type = (string)Settings["tera_channel_type"];
             teraScan_current_display_channel_index = (int)Settings["tera_display_channel_index"];
 
-            //not tested
             string scanType = (string)Settings["TeraScanType"];
             int reply = dfg.scan_stitch_op(scanType, "start", true, false);
             switch (reply)
@@ -1372,7 +1373,7 @@ namespace ConfocalControl
             else
             {
                 int reply = DFG.scan_stitch_op((string)Settings["TeraScanType"], "stop", false, false);
-                while (teraLaser != TeraLaserState.stopped) //getting stuck in this loop
+                while (teraLaser != TeraLaserState.stopped) 
                 {
                     Thread.Sleep(100);
                 }
@@ -1490,6 +1491,10 @@ namespace ConfocalControl
 
         private void TeraScanSegmentAcquisitionStart()
         {
+            while (latestLambda < 0 && backendState == DFGState.running && teraSegmentState == TeraScanSegmentState.running && teraState == TeraScanState.running)
+            {
+                Thread.Sleep(1);
+            }//This waits until the laser is actually scanning
             freqOutTask.Start();
             bool isFirst = true;
 
@@ -1497,11 +1502,9 @@ namespace ConfocalControl
             DateTime displayCurrentTime = DateTime.Now;
             List<double> displayData = new List<double>();
 
-            while (backendState == DFGState.running && teraSegmentState == TeraScanSegmentState.running)
+            while (backendState == DFGState.running && teraSegmentState == TeraScanSegmentState.running && teraState == TeraScanState.running)
             {
-                while(latestLambda<0) { Thread.Sleep(1); }//This waits until the laser is actually scanning
-                
-                // Read first counter
+               // Read first counter
                 double[] counterRead = counterReaders[0].ReadMultiSampleDouble(-1);
                 int dataReadLength = counterRead.Length;
 
@@ -1659,12 +1662,22 @@ namespace ConfocalControl
 
         public void TeraScanSegmentAcquisitionEnd()
         {
-            freqOutTask.Dispose();
-            foreach (Task counterTask in counterTasks)
+            try { freqOutTask.Dispose(); } catch (NullReferenceException e) { }
+            try
             {
-                counterTask.Dispose();
+                foreach (Task counterTask in counterTasks)
+                {
+                    try
+                    {
+                        counterTask.Dispose();
+                    }
+                    catch (NullReferenceException e)
+                    {
+                    }
+                }
             }
-            analoguesTask.Dispose();
+            catch (NullReferenceException e){}
+            try { analoguesTask.Dispose(); } catch (NullReferenceException e) { }
 
             freqOutTask = null;
             counterTasks = null;
@@ -1672,6 +1685,8 @@ namespace ConfocalControl
 
             counterReaders = null;
             analoguesReader = null;
+
+            UpdateStatusBar("Segment Finished");
         }
 
         private void TeraScanSegmentLaserStart()
@@ -1680,6 +1695,7 @@ namespace ConfocalControl
             string status = "scan";
             
             DFG.terascan_continue();
+            UpdateStatusBar("Laser Running...");
 
             while (teraLatestLambda < (Double)Settings["TeraScanStop"] && teraLaser != TeraLaserState.stopped)
             {
@@ -1689,24 +1705,42 @@ namespace ConfocalControl
                 {
                     try
                     {
-                        teraLatestLambda = Convert.ToDouble(autoOutput["wavelength"]);
-                        status = (string)autoOutput["status"];
-                        if (backendState != DFGState.running || teraState != TeraScanState.running)
+                        object latestWavelength = null;
+                        autoOutput.TryGetValue("wavelength", out latestWavelength);
+                        if(latestWavelength != null)
                         {
-                            teraLaser = TeraLaserState.stopped;
+                            teraLatestLambda = Convert.ToDouble(latestWavelength);
                         }
-                        if (status == "start")
+                        object latestStatus = null;
+                        if (autoOutput.TryGetValue("status", out latestStatus))
+                        {
+                            status = Convert.ToString(latestStatus);
+                        }
+                        if (backendState != DFGState.running || teraState != TeraScanState.running || status == "start")
                         {
                             teraLaser = TeraLaserState.stopped;
                         }
                         if (status == "end")
                         {
                             teraLaser = TeraLaserState.stopped;
+                            teraSegmentState = TeraScanSegmentState.stopped;
+                            if (teraLatestLambda > (Double)Settings["TeraScanStop"]) 
+                            {
+                                teraState = TeraScanState.stopped;
+                            }
                         }
                     }
-                    catch (KeyNotFoundException)
+                    catch (KeyNotFoundException e)
                     {
+                        // Get stack trace for the exception with source file information
+                        var st = new System.Diagnostics.StackTrace(e, true);
+                        // Get the top stack frame
+                        var frame = st.GetFrame(0);
+                        // Get the line number from the stack frame
+                        var line = frame.GetFileLineNumber();
                         teraLaser = TeraLaserState.stopped;
+                        teraSegmentState = TeraScanSegmentState.stopped;
+                        teraState = TeraScanState.stopped;
                     }
                 }
                 else
@@ -1717,23 +1751,31 @@ namespace ConfocalControl
 
             if (status != "end")
             {
-                teraSegmentState = TeraScanSegmentState.unfinished;
+                teraSegmentState = TeraScanSegmentState.running;
+                UpdateStatusBar("Segment not finished");
                 //MessageBox.Show(status);
             }
-            else { teraLaser = TeraLaserState.stopped; teraSegmentState = TeraScanSegmentState.stopped; }
+            else 
+            { 
+                teraLaser = TeraLaserState.stopped; 
+                teraSegmentState = TeraScanSegmentState.stopped;
+                UpdateStatusBar("Segment ended");
+            }
+
         }
 
         private void TeraScanSegmentStart()
         {
-            teraLatestLambda = -1;
+            UpdateStatusBar("Starting Segment..."); 
+            if (teraLatestLambda < (Double)Settings["TeraScanStop"]) { teraLatestLambda = -1; }
             teraScanBuffer.AddNewSegment();
             TeraScanSegmentAcquisitionStarting();
             teraSegmentState = TeraScanSegmentState.running;
             Thread thread = new Thread(new ThreadStart(TeraScanSegmentLaserStart));
             thread.IsBackground = true;
             thread.Start();
-            //while (teraLatestLambda < 0 && teraSegmentState == TeraScanSegmentState.running) { Thread.Sleep(1); } //This is causing issues at the end of the scan
             TeraScanSegmentAcquisitionStart();
+            while (teraLatestLambda < 0 && teraSegmentState == TeraScanSegmentState.running) { Thread.Sleep(1); }
             TeraScanSegmentAcquisitionEnd();
             // SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
             if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }

@@ -23,6 +23,7 @@ namespace ConfocalControl
     public delegate void TeraScanFullDataEventHandler(double[] dataTotal, double[] dataSegment, bool reset);
     public delegate void TeraScanSingleChannelDataEventHandler(double[] dataTotal, bool reset);
     public delegate void SpectraScanExceptionEventHandler(Exception e);
+    public delegate void UpdateStatusEventHandler(string message);
 
     public class SolsTiSPlugin
     {

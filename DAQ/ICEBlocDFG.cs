@@ -249,8 +249,15 @@ namespace DAQ.HAL
         {
             Dictionary<string, object> prms = new Dictionary<string, object>();
             Dictionary<string, object> rslt = GenericCommand("terascan_continue", prms);
-            if (rslt.Count == 0) return -1;
-            else return ((int)rslt["status"]);
+            try
+            {
+                if (rslt.Count == 0) return -1;
+                else return ((int)rslt["status"]);
+            }
+            catch
+            {
+                return -1;
+            }//If this tries to continue a stopped laser we get "reply" not "status"
         }
 
         #endregion

@@ -276,6 +276,10 @@ namespace DAQ.HAL
 
         private Dictionary<string, object> ConvertMessageToDictionary(string command, string msgIn)
         {
+            //if (msgIn.Contains("}{")) //If there are n replies in the message take the nth one.
+            //{
+            //    msgIn = msgIn.Substring(msgIn.LastIndexOf("}{")+1);
+            //}
             Dictionary<string, object> rslt = JsonConvert.DeserializeObject<Dictionary<string, object>>(msgIn);
             JObject j0 = (JObject)rslt["message"];
             bool ok = j0.GetValue("op").ToObject<string>().Equals(command + "_reply");

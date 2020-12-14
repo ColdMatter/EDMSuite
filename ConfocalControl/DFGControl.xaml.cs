@@ -79,12 +79,16 @@ namespace ConfocalControl
             teraScan_segmentDisplay_ComboBox.Items.Add("Current");
             teraScan_segmentDisplay_ComboBox.SelectedIndex = 0;
 
+            updateStatusBar("Disconnected");
+
             DFGPlugin.GetController().TeraData += teraScanData;
             DFGPlugin.GetController().TeraTotalOnlyData += teraScanTotalOnlyData;
             DFGPlugin.GetController().TeraSegmentOnlyData += teraScanSegmentOnlyData;
             DFGPlugin.GetController().TeraSegmentScanFinished += teraScanSegmentFinished;
             DFGPlugin.GetController().TeraScanFinished += teraScanFinished;
             DFGPlugin.GetController().TeraScanProblem += teraScanProblem;
+
+            DFGPlugin.GetController().UpdateStatusBar += updateStatusBar;
         }
 
         #endregion
@@ -99,8 +103,11 @@ namespace ConfocalControl
                 {
                     DFGPlugin.GetController().DFG.Connect();
                     string reply = DFGPlugin.GetController().DFG.StartLink(0);
-                    MessageBox.Show(reply);
-
+                    if (reply != "ok")
+                    {
+                        MessageBox.Show(reply);
+                    }
+                    updateStatusBar("Connected");
                 }
                 catch (Exception exception)
                 {
@@ -117,8 +124,15 @@ namespace ConfocalControl
 
         private void disconnect_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (DFGPlugin.GetController().DFG.Connected) DFGPlugin.GetController().DFG.Disconnect();
-            else MessageBox.Show("already disconnected");
+            if (DFGPlugin.GetController().DFG.Connected)
+            {
+                DFGPlugin.GetController().DFG.Disconnect();
+                updateStatusBar("Disconnected");
+            }
+            else
+            {
+                MessageBox.Show("already disconnected");
+            }
 
             checkConnection_Button_Click(null, null);
         }
@@ -594,7 +608,14 @@ namespace ConfocalControl
 
         private void teraScanProblem(Exception e)
         {
-            MessageBox.Show(e.Message);
+            //MessageBox.Show(e.Message);
+            Console.WriteLine(e.Message);
+            // Get stack trace for the exception with source file information
+            var st = new System.Diagnostics.StackTrace(e, true);
+            // Get the top stack frame
+            var frame = st.GetFrame(0);
+            // Get the line number from the stack frame
+            var line = frame.GetFileLineNumber();
             if (DFGPlugin.GetController().IsRunning() && DFGPlugin.GetController().TeraScanIsRunning())
             {
                 if (DFGPlugin.GetController().TeraSegmentIsRunning())
@@ -603,6 +624,7 @@ namespace ConfocalControl
                 }
                 DFGPlugin.GetController().TeraScanAcquisitionStopping();
             }
+            teraScanFinished();
         }
 
         private void teraScanFinished()
@@ -791,6 +813,16 @@ namespace ConfocalControl
             tripletScanRes_Set.Value = (int)DFGPlugin.GetController().Settings["tripletScanPoints"];
             tripletScanInt_Set.Value = (double)DFGPlugin.GetController().Settings["tripletInt"];
             tripletScanRate_Set.Value = (double)DFGPlugin.GetController().Settings["tripletRate"];
+        }
+
+        private void updateStatusBar(string message)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           this.myMessage.Text = message;
+                       }));
         }
 
         #endregion
