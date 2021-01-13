@@ -42,7 +42,7 @@ namespace DAQ.HAL
 
             // Lasers locked to pump cavity
             AddAnalogOutputChannel("KeopsysDiodeLaser", tclBoardPump + "/ao2", -4, 4); //tick
-            AddAnalogOutputChannel("MenloPZT", tclBoardPump + "/ao0", 0, 10); //tick
+            AddAnalogOutputChannel("NewKeopsysDiodeLaser", tclBoardPump + "/ao0", -4, 4); //tick
 
             // Length stabilisation for pump cavity
             AddAnalogOutputChannel("PumpCavityLengthVoltage", tclBoardPump + "/ao1", -10, 10); //tick
@@ -56,7 +56,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("TopticaSHGPZT", tclBoardProbe + "/ao0", -4, 4); //tick
             AddAnalogOutputChannel("ProbeCavityLengthVoltage", tclBoardProbe + "/ao1", -10, 10); //tick
 
-            //TCL configuration for pump cavity: 27/06/2019 (Chris)
+            //TCL configuration for pump cavity: 13/01/2021 (Chris)
             TCLConfig tclConfigPump = new TCLConfig("Pump");
             tclConfigPump.Trigger = tclBoardPump + "/PFI0";
             tclConfigPump.BaseRamp = "PumpCavityRampVoltage";
@@ -69,14 +69,14 @@ namespace DAQ.HAL
             string pump = "PumpCavity";
 
             tclConfigPump.AddCavity(pump);
-            tclConfigPump.Cavities[pump].AddSlaveLaser("MenloPZT", "Pumpp1");
+            tclConfigPump.Cavities[pump].AddSlaveLaser("NewKeopsysDiodeLaser", "Pumpp1");
             tclConfigPump.Cavities[pump].AddSlaveLaser("KeopsysDiodeLaser", "Pumpp2");
             tclConfigPump.Cavities[pump].MasterLaser = "Pumpmaster";
             tclConfigPump.Cavities[pump].RampOffset = "PumpCavityLengthVoltage";
             tclConfigPump.Cavities[pump].AddDefaultGain("Master", 0.3);
-            tclConfigPump.Cavities[pump].AddDefaultGain("MenloPZT", -0.2);
+            tclConfigPump.Cavities[pump].AddDefaultGain("NewKeopsysDiodeLaser", -0.2);
             tclConfigPump.Cavities[pump].AddDefaultGain("KeopsysDiodeLaser", 1);
-            tclConfigPump.Cavities[pump].AddFSRCalibration("MenloPZT", 3.84);
+            tclConfigPump.Cavities[pump].AddFSRCalibration("NewKeopsysDiodeLaser", 3.84);
             tclConfigPump.Cavities[pump].AddFSRCalibration("KeopsysDiodeLaser", 3.84);
 
             //TCL configuration of probe cavity: 27/06/2019 (Chris)
@@ -101,7 +101,7 @@ namespace DAQ.HAL
 
             Info.Add("TCLConfigPump", tclConfigPump);
             Info.Add("TCLConfigProbe", tclConfigProbe);
-            Info.Add("DefaultCavity", tclConfigPump);
+            Info.Add("DefaultCavity", tclConfigProbe);
 
             ////TCL configuration for pump cavity
             //TCLConfig tcl1 = new TCLConfig("Pump Cavity");
