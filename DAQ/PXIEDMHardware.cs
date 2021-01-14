@@ -39,11 +39,11 @@ namespace DAQ.HAL
             Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2");
             // this drives the rf attenuators
-            Boards.Add("usbDAQ1", "/Dev3");
+            Boards.Add("usbDAQ1", "/Dev2");
             Boards.Add("analogIn", "/PXI1Slot15");
-            Boards.Add("usbDAQ2", "/Dev2");
+            Boards.Add("usbDAQ2", "/Dev4");
             Boards.Add("usbDAQ3", "/Dev1");
-            Boards.Add("usbDAQ4", "/Dev4");
+            Boards.Add("usbDAQ4", "/Dev3");
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
             string rfAWG = (string)Boards["rfAWG"];
@@ -84,14 +84,14 @@ namespace DAQ.HAL
             Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL21::INSTR");
+            yag = new BrilliantLaser("ASRL13::INSTR");
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             //Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
-            Instruments.Add("red", new SRSDS345Synth("GPIB0::19::INSTR"));
+            Instruments.Add("red", new HP3325BSynth("ASRL12::INSTR"));
             Instruments.Add("4861", new ICS4861A("GPIB0::4::INSTR"));
-            Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::22::INSTR"));
+            Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::12::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             //Instruments.Add("rfCounter2", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
@@ -228,6 +228,9 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
             AddAnalogOutputChannel("bScan", aoBoard + "/ao2");
+
+            //Coherent 899 dye laser ctrl voltage
+            AddAnalogOutputChannel("Coherent899ControlVoltage", aoBoard + "/ao12", -5, 5);
 
             // B field control
             //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);

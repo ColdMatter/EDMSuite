@@ -196,10 +196,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DAQ\Wolfram.NETLink.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\MoleculeMOTHardwareControl\MoleculeMOTHardwareControl.csproj" Condition=" '$(Configuration)' == 'Decelerator' ">
-      <Project>{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}</Project>
-      <Name>MoleculeMOTHardwareControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Acquisitor.cs">

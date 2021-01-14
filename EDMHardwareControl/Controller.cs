@@ -69,7 +69,7 @@ namespace EDMHardwareControl
 
         // hardware
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
-        Synth redSynth = (Synth)Environs.Hardware.Instruments["red"];
+        HP3325BSynth redSynth = (HP3325BSynth)Environs.Hardware.Instruments["red"];
         //ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
@@ -137,6 +137,7 @@ namespace EDMHardwareControl
         Task bart200XInputTask;
         Task bart200YInputTask;
         Task bart200ZInputTask;
+        Task Coherent899AnalogOutputTask;
 
         ControlWindow window;
 
@@ -227,9 +228,10 @@ namespace EDMHardwareControl
             pumpMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("pumpMixerV");
             bottomProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("bottomProbeMixerV");
             topProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("topProbeMixerV");
+            Coherent899AnalogOutputTask = CreateAnalogOutputTask("Coherent899ControlVoltage");
 
 
-            
+
 
             // analog inputs
             topPDInputTask = CreateAnalogInputTask("topPD", 0, 5);
@@ -4799,6 +4801,72 @@ namespace EDMHardwareControl
                 sw.Stop();
                 window.SetTextBox(window.rfAWGTestTextBox, sw.ElapsedMilliseconds.ToString());
             }
+        }
+
+        //Coherent 899 laser control
+        public double Coherent899LaserVoltage
+        {
+            get
+            {
+                return Double.Parse(window.Coherent899ControlVoltageTextBox.Text);
+            }
+            set
+            {
+                UpdateCoherent899ControlVoltage(value);
+                window.SetTextBox(window.Coherent899ControlVoltageTextBox, value.ToString());
+
+            }
+        }
+
+        private int plus899Voltage = 0;
+        private int minus899Voltage = 0;
+
+        public void IncreaseCoherent899Voltage()
+        {
+            plus899Voltage++;
+        }
+
+        public void DecreaseCoherent899Voltage()
+        {
+            minus899Voltage++;
+        }
+
+        public double Coherent899ControlVoltageIncrement
+        {
+            get
+            {
+                return Double.Parse(window.Coherent899ControlVoltageStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.Coherent899ControlVoltageStepTextBox, value.ToString());
+            }
+        }
+
+        public void TweakCoherent899Voltage()
+        {
+            double pztVoltage = Coherent899LaserVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            double newPZTVoltage = pztVoltage + Coherent899ControlVoltageIncrement * (plus899Voltage - minus899Voltage);
+            plus899Voltage = 0;
+            minus899Voltage = 0;
+            SetAnalogOutput(Coherent899AnalogOutputTask, newPZTVoltage);
+            window.Coherent899ControlVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.Coherent899ControlVoltageTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void UpdateCoherent899ControlVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(Coherent899AnalogOutputTask, pztVoltage);
+            window.Coherent899ControlVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateCoherent899ControlV()
+        {
+            double pztVoltage = Coherent899LaserVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            SetAnalogOutput(Coherent899AnalogOutputTask, pztVoltage);
+            window.Coherent899ControlVoltageTrackBar.Value = 100 * (int)pztVoltage;
         }
 
         #endregion

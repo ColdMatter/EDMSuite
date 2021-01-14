@@ -25,6 +25,7 @@ namespace DAQ.HAL
 			if (!Environs.Debug) 
 			{
 				session = new GpibSession(address);
+				session.TimeoutMilliseconds = VisaConstants.InfiniteTimeout;
 
 			}
 		}
