@@ -147,6 +147,7 @@ namespace DAQ.Environment
                     break;
                 #endif
 
+                //PC running TCL for EDM
                 case "GREMLIN":
                     Hardware = new TCLEDMHardware();
                     FileSystem = new TCLEDMFileSystem();
@@ -218,10 +219,20 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+
+                //13 Jan 2021 (Chris): I've taken this computer to replace
+                //the computer running TCL for the EDM experiment.
+                //case "PH-REQUIEM":
+                //    Hardware = new PXISympatheticHardware();
+                //    FileSystem = new RequiemFileSystem();
+                //    Debug = false;
+                //    break;
+
                 case "PH-REQUIEM":
-                    Hardware = new PXISympatheticHardware();
-                    FileSystem = new RequiemFileSystem();
+                    Hardware = new TCLEDMHardware();
+                    FileSystem = new TCLEDMFileSystem();
                     Debug = false;
+                    //ExperimentType = "edm";
                     break;
 
                 case "PH-RAGNAROK":
