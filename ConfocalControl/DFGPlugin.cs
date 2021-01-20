@@ -1379,7 +1379,6 @@ namespace ConfocalControl
                 }
             }
             backendState = DFGState.stopped;
-            if (TeraScanFinished != null) TeraScanFinished();
         }
 
         private void TeraScanSegmentAcquisitionStarting()

@@ -126,6 +126,8 @@ namespace DAQ.HAL
             string msgReport = "";
             if (checkIfDataAvailable)
             {
+                
+                
                 if (stream.DataAvailable)
 	            {
                     msgReport = Receive();
