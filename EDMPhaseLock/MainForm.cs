@@ -127,7 +127,7 @@ namespace EDMPhaseLock
             // xAxis1
             // 
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0, 1000);
+            this.xAxis1.Range = new NationalInstruments.UI.Range(0D, 1000D);
             // 
             // outputGraph
             // 
@@ -146,13 +146,14 @@ namespace EDMPhaseLock
             // waveformPlot2
             // 
             this.waveformPlot2.LineColor = System.Drawing.Color.Red;
+            this.waveformPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.waveformPlot2.XAxis = this.xAxis2;
             this.waveformPlot2.YAxis = this.yAxis2;
             // 
             // xAxis2
             // 
             this.xAxis2.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis2.Range = new NationalInstruments.UI.Range(0, 1000);
+            this.xAxis2.Range = new NationalInstruments.UI.Range(0D, 1000D);
             // 
             // mainMenu1
             // 
@@ -225,11 +226,11 @@ namespace EDMPhaseLock
             // xAxis3
             // 
             this.xAxis3.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis3.Range = new NationalInstruments.UI.Range(0, 1000);
+            this.xAxis3.Range = new NationalInstruments.UI.Range(0D, 1000D);
             // 
             // yAxis3
             // 
-            this.yAxis3.Range = new NationalInstruments.UI.Range(-5, 5);
+            this.yAxis3.Range = new NationalInstruments.UI.Range(-5D, 5D);
             // 
             // MainForm
             // 
@@ -343,7 +344,7 @@ namespace EDMPhaseLock
         ControlMethod cm;
 		
         Task counterTask;
-		Synth redSynth;
+		HP3325BSynth redSynth;
         Task analogOutputTask;
         AnalogSingleChannelWriter analogWriter;
 		CounterSingleChannelReader counterReader;
@@ -365,7 +366,7 @@ namespace EDMPhaseLock
 		const int LOCK_UPDATE_EVERY = 5;		// this is how often the lock is updated in terms
 												// of SAMPLE_MULTI_READs (same idea as GUI update interval above)
 		// lock parameters
-		const double PROPORTIONAL_GAIN = 1.2;		// the units are Hz per count
+		const double PROPORTIONAL_GAIN = 1;		// the units are Hz per count
 		const double DERIVATIVE_GAIN = 50;		// the units are difficult to work out
 		const double OSCILLATOR_DEVIATION_LIMIT = 75000;		// this is the furthest the output frequency
 															// can deviate from the target frequency
@@ -391,7 +392,7 @@ namespace EDMPhaseLock
 
             if (cm == ControlMethod.synth)
             {
-                redSynth = (Synth)Environs.Hardware.Instruments["red"];
+                redSynth = (HP3325BSynth)Environs.Hardware.Instruments["red"];
                 redSynth.Connect();
             }
             else redSynth = null;
@@ -435,7 +436,7 @@ namespace EDMPhaseLock
 		{
 			// set up the counter - the fast oscillator is fed into a counter's source input
 			counterTask = new Task("PhaseLock task");
-			CounterChannel oscillatorChannel = 
+			CounterChannel oscillatorChannel =
 				((CounterChannel)Environs.Hardware.CounterChannels["phaseLockOscillator"]);
 			counterTask.CIChannels.CreateCountEdgesChannel(
 				oscillatorChannel.PhysicalChannel,
@@ -447,7 +448,7 @@ namespace EDMPhaseLock
 
 			// this counter is sample-clocked by the slow reference that we are locking to.
 			// the buffer is set to be "large"
-			CounterChannel referenceChannel = 
+			CounterChannel referenceChannel =
 				((CounterChannel)Environs.Hardware.CounterChannels["phaseLockReference"]);
 
 			counterTask.Timing.ConfigureSampleClock(
@@ -467,6 +468,7 @@ namespace EDMPhaseLock
 					new AsyncCallback(CounterCallBack),
 					null
 					);
+			
 		}
 
 		// keep track of gui updates

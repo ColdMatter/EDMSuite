@@ -26,11 +26,11 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionStarting()
         {
-            dot = new Task("ttlSwitchTask");
-            raita = new DigitalSingleChannelWriter(dot.Stream);
-            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["digitalSwitchChannel"]).AddToTask(
-                dot);
-            dot.Control(TaskAction.Verify);
+            //dot = new Task("ttlSwitchTask");
+            //raita = new DigitalSingleChannelWriter(dot.Stream);
+            //((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["digitalSwitchChannel"]).AddToTask(
+            //    dot);
+            //dot.Control(TaskAction.Verify);
         }
 
         public override void ScanStarting()
@@ -43,7 +43,7 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionFinished()
         {
-            dot.Dispose();
+            //dot.Dispose();
         }
 
         [XmlIgnore]
@@ -52,7 +52,7 @@ namespace ScanMaster.Acquire.Plugins
             set 
             {
                 state = value;
-                raita.WriteSingleSampleSingleLine(true, value);
+                //raita.WriteSingleSampleSingleLine(true, value);
             }
             get { return state; }
         }
