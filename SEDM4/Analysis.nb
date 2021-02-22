@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[    114491,       2566]
-NotebookOptionsPosition[    108153,       2446]
-NotebookOutlinePosition[    108581,       2464]
-CellTagsIndexPosition[    108538,       2461]
+NotebookDataLength[    121649,       2732]
+NotebookOptionsPosition[    115255,       2611]
+NotebookOutlinePosition[    115737,       2630]
+CellTagsIndexPosition[    115694,       2627]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1472,6 +1472,148 @@ Cell[BoxData[
           RowBox[{"\"\<E\>\"", ",", "\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], 
          ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cRF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<RF1F\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cRF2F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<RF2F\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cRF1A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<RF1A\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cRF2A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<RF2A\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBRF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBRF2F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF2F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cERF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cERF2F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cERF1A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cERF2A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<RF2A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBRF1A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBRF2A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<RF2A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF1A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF2A\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF2A\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEDBRF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF1F\>\""}], 
+          "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEDBRF2F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF2F\>\""}], 
+          "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cPI\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<PI\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cLF1\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<LF1\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBLF1\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<B\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBLF1\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cSIGTop\>\"", "\[Rule]", 
        RowBox[{"getTOFChannel", "[", 
         RowBox[{
@@ -1488,6 +1630,26 @@ Cell[BoxData[
        RowBox[{"getPointChannel", "[", 
         RowBox[{
          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<BMag\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<B\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGMag\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<ENorthCurrent\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<NorthCurrent\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<ESouthCurrent\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<SouthCurrent\>\"", ",", 
          "dbl"}], "]"}]}]}], "\[IndentingNewLine]", 
      RowBox[{"(*", 
       RowBox[{
@@ -1509,7 +1671,10 @@ Cell[BoxData[
   3.784537677086325*^9, 3.7845377048546147`*^9}, {3.7858498516691303`*^9, 
   3.7858498590466747`*^9}, {3.786005641657981*^9, 3.7860057007395616`*^9}, {
   3.7870487625446224`*^9, 3.7870487731768847`*^9}, {3.787052061452747*^9, 
-  3.7870520650152154`*^9}},ExpressionUUID->"52c370cc-2c89-4885-aaca-\
+  3.7870520650152154`*^9}, {3.8206673353603272`*^9, 3.820667374873635*^9}, {
+  3.8218616241755238`*^9, 3.8218616613749657`*^9}, {3.8218617082554903`*^9, 
+  3.821861986630413*^9}, {3.8218624147894154`*^9, 
+  3.8218624881171756`*^9}},ExpressionUUID->"52c370cc-2c89-4885-aaca-\
 69e9acb8c7e3"],
 
 Cell[BoxData[
@@ -2445,12 +2610,13 @@ Cell[BoxData[{
 }, Open  ]]
 },
 AutoGeneratedPackage->Automatic,
-WindowSize->{1920, 997},
-WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+WindowSize->{1904, 997},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 ShowSelection->True,
 Magnification:>1.25 Inherited,
-FrontEndVersion->"12.0 for Microsoft Windows (64-bit) (April 8, 2019)",
-StyleDefinitions->"Default.nb"
+FrontEndVersion->"12.1 for Microsoft Windows (64-bit) (June 19, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"f981ca71-2b7d-4d16-a453-6b6e0e2aa828"
 ]
 (* End of Notebook Content *)
 
@@ -2536,13 +2702,13 @@ Cell[34708, 838, 1092, 20, 77, "Input",ExpressionUUID->"930c367d-223a-4eaa-93d4-
  InitializationCell->True],
 Cell[35803, 860, 438, 10, 75, "Input",ExpressionUUID->"e2c0b2f7-85ad-496f-b5fd-1fc9b5d69cdb",
  InitializationCell->True],
-Cell[36244, 872, 3570, 83, 277, "Input",ExpressionUUID->"23b46104-77c2-4a04-aefd-70dee3bbf73e",
+Cell[36244, 872, 3570, 83, 282, "Input",ExpressionUUID->"23b46104-77c2-4a04-aefd-70dee3bbf73e",
  InitializationCell->True],
-Cell[39817, 957, 3219, 78, 277, "Input",ExpressionUUID->"e2132325-0b70-46f4-8e7b-fcc401e4b4b3",
+Cell[39817, 957, 3219, 78, 271, "Input",ExpressionUUID->"e2132325-0b70-46f4-8e7b-fcc401e4b4b3",
  InitializationCell->True],
-Cell[43039, 1037, 2855, 66, 229, "Input",ExpressionUUID->"6e22eda6-f527-4e36-a8d6-c97b1eb2ba10",
+Cell[43039, 1037, 2855, 66, 234, "Input",ExpressionUUID->"6e22eda6-f527-4e36-a8d6-c97b1eb2ba10",
  InitializationCell->True],
-Cell[45897, 1105, 2867, 71, 278, "Input",ExpressionUUID->"a09b853c-d7ff-4b91-8b68-43b34d5a3164",
+Cell[45897, 1105, 2867, 71, 280, "Input",ExpressionUUID->"a09b853c-d7ff-4b91-8b68-43b34d5a3164",
  InitializationCell->True],
 Cell[48767, 1178, 2895, 67, 290, "Input",ExpressionUUID->"1992f70e-ee69-436c-ad20-29bf7b927ee5",
  InitializationCell->True],
@@ -2554,17 +2720,17 @@ Cell[55340, 1318, 2560, 42, 176, "Input",ExpressionUUID->"8acdf743-80b3-4c4b-989
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[57937, 1365, 183, 3, 67, "Subsection",ExpressionUUID->"d9890faf-93f6-493d-9ddf-123d9e5a2420"],
-Cell[58123, 1370, 6221, 142, 752, "Input",ExpressionUUID->"52c370cc-2c89-4885-aaca-69e9acb8c7e3",
+Cell[58123, 1370, 13323, 307, 1448, "Input",ExpressionUUID->"52c370cc-2c89-4885-aaca-69e9acb8c7e3",
  InitializationCell->True],
-Cell[64347, 1514, 37356, 773, 3032, "Input",ExpressionUUID->"b2cc66b9-d273-4506-89bc-c5c47524e955",
+Cell[71449, 1679, 37356, 773, 3032, "Input",ExpressionUUID->"b2cc66b9-d273-4506-89bc-c5c47524e955",
  InitializationCell->True],
-Cell[101706, 2289, 5884, 133, 417, "Input",ExpressionUUID->"7d571ac2-8d5e-4ef3-854c-49ed87dc6e3d",
+Cell[108808, 2454, 5884, 133, 450, "Input",ExpressionUUID->"7d571ac2-8d5e-4ef3-854c-49ed87dc6e3d",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[107639, 2428, 158, 3, 83, "Section",ExpressionUUID->"20095157-d432-4950-8c3c-146f5c8236ef"],
-Cell[107800, 2433, 325, 9, 80, "Input",ExpressionUUID->"fcf6a6f1-7d7b-4bcd-a20b-465532e5406b",
+Cell[114741, 2593, 158, 3, 83, "Section",ExpressionUUID->"20095157-d432-4950-8c3c-146f5c8236ef"],
+Cell[114902, 2598, 325, 9, 80, "Input",ExpressionUUID->"fcf6a6f1-7d7b-4bcd-a20b-465532e5406b",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]]
