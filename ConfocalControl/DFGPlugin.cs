@@ -1130,7 +1130,7 @@ namespace ConfocalControl
             }
         }
 
-        //Not Implemented
+
         public void StartMultiTeraScan()
         {
             if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())

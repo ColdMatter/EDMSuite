@@ -68,6 +68,8 @@ namespace ConfocalControl
             SolsTiSPlugin.GetController().TeraScanFinished += teraScanFinished;
             SolsTiSPlugin.GetController().TeraScanProblem += teraScanProblem;
 
+            SolsTiSPlugin.GetController().UpdateStatusBar += updateStatusBar;
+
             output_type_box.Items.Add("Counters");
             output_type_box.Items.Add("Analogues");
             output_type_box.SelectedIndex = 0;
@@ -282,6 +284,7 @@ namespace ConfocalControl
                     {
                         case 0:
                             MessageBox.Show("tuning software not active");
+                            wavelength_Read.Text = (Convert.ToDouble(reply["current_wavelength"])).ToString();
                             break;
 
                         case 1:
@@ -1152,6 +1155,16 @@ namespace ConfocalControl
             fastScanType_ComboBox.SelectedItem = (string)SolsTiSPlugin.GetController().Settings["fastScanType"];
             fastScanWidth_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanWidth"];
             fastScanTime_Set.Value = (double)SolsTiSPlugin.GetController().Settings["fastScanTime"];
+        }
+
+        private void updateStatusBar(string message)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                       DispatcherPriority.Normal,
+                       new Action(() =>
+                       {
+                           this.myMessage.Text = message;
+                       }));
         }
 
         #endregion

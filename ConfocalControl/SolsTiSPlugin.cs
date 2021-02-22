@@ -85,9 +85,13 @@ namespace ConfocalControl
         public event MultiChannelScanFinishedEventHandler TripletScanFinished;
         public event SpectraScanExceptionEventHandler TripletScanProblem;
 
+        // Status Messaging
+        public event UpdateStatusEventHandler UpdateStatusBar;
+
         // Constants relating to sample acquisition
         private int MINNUMBEROFSAMPLES = 10;
         private double TRUESAMPLERATE = 1000;
+        private double MAXSCANPOINTS = 1 * Math.Pow(10, 5);
         private int pointsPerExposure;
         private double sampleRate;
 
@@ -1041,19 +1045,96 @@ namespace ConfocalControl
         {
             return true;
         }
-
+                
         public void StartTeraScan()
         {
-            switch ((string)Settings["TeraScanRepeatType"])
+            try
             {
-                case "single":
+                double pointsEstimate = ScanPointsEstimate();
+                int blocks = (int)Math.Ceiling(pointsEstimate / MAXSCANPOINTS);
+
+                switch ((string) Settings["TeraScanRepeatType"])
+                {
+                    case "single":
+                        if (pointsEstimate > MAXSCANPOINTS)
+                        {
+                            StartLongTeraScan(blocks);
+                        }
+                        else
+                        {
+                            StartSingleTeraScan();
+                        }
+                        break;
+                    case "multi":
+                        //StartMultiTeraScan();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (TeraScanProblem != null) TeraScanProblem(e);
+            }
+            finally
+            {
+                if (TeraScanFinished != null) TeraScanFinished();
+            }
+        }
+
+        public double ScanPointsEstimate()
+        {
+            double scanPoints = 0.0;
+            double sampleRate = (double)TimeTracePlugin.GetController().Settings["sampleRate"];
+            double scanRate = Convert.ToDouble((int)Settings["TeraScanRate"]);
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"];
+            switch ((string)Settings["TeraScanUnits"])
+            {
+                case "MHz/s":
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT / (scanRate * Math.Pow(10, -3))) * (1.0 / initStartLambda - 1.0 / initStopLambda));
+                    break;
+                case "GHz/s":
+                    scanPoints = (sampleRate * (SPEEDOFLIGHT / (scanRate)) * (1.0 / initStartLambda - 1.0 / initStopLambda));
+                    break;
+            }
+            return scanPoints;
+        }
+
+        public void StartLongTeraScan(int blocks)
+        {
+            double initStartLambda = (double)Settings["TeraScanStart"];
+            double initStopLambda = (double)Settings["TeraScanStop"];
+
+            try
+            {
+                double rangeLambda = initStopLambda - initStartLambda;
+
+                double sectionLength = rangeLambda / (blocks);
+
+                for (int i = 0; i < blocks; i++)
+                {
+                    Settings["TeraScanStart"] = initStartLambda + (i * sectionLength);
+                    Settings["TeraScanStop"] = initStartLambda + ((i + 1) * sectionLength);
+
                     StartSingleTeraScan();
-                    break;
-                case "multi":
-                    StartMultiTeraScan();
-                    break;
-                default:
-                    break;
+
+                    double[] blank = new double[] { teraLatestLambda };
+                    TeraTotalOnlyData(blank, true);
+                    SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
+                    UpdateStatusBar("Saving Data...");
+                }
+            }
+            catch (Exception e)
+            {
+                if (TeraScanProblem != null) TeraScanProblem(e);
+            }
+            finally
+            {
+                Settings["TeraScanStart"] = initStartLambda;
+                Settings["TeraScanStop"] = initStopLambda;
+                TeraScanAcquisitionStopping();
+                TeraScanSegmentAcquisitionEnd();
             }
         }
 
