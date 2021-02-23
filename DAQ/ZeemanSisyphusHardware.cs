@@ -24,7 +24,7 @@ namespace DAQ.HAL
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
 
             string usbDaqName = "usbDaq";
-            string usbDaqAddress = "/Dev3";
+            string usbDaqAddress = "/Dev1";
             Boards.Add(usbDaqName, usbDaqAddress); // NI USB-6009
            
 
@@ -64,11 +64,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cryoCooler", usbDaqAddress, 0, 1);
 
             AddAnalogInputChannel("thermVref", usbDaqAddress + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("4KRTthermistor", usbDaqAddress + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("SF6thermistor", usbDaqAddress + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("SF6thermistor", usbDaqAddress + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("4Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse);
-            // AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse); // Dummy channel so we don't have to remove refs to 40K therm from front-end.
+            // AddAnalogInputChannel("40Kthermistor", usbDaqAddress + "/ai3", AITerminalConfiguration.Rse); // Dummy channel so we don't have to remove refs to 40K therm from front-end.
             AddAnalogInputChannel("sourcePressureFar", usbDaqAddress + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressureNear", usbDaqAddress + "/ai5", AITerminalConfiguration.Rse);
             

@@ -1,5 +1,6 @@
 using System;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace Data
 {
@@ -17,10 +18,26 @@ namespace Data
 
         public TOF() { }
 
-        public double Integrate()
+        public double Integrate(bool rmbg = false)
         {
+            double[] tmpData;
+
+            if (rmbg)
+            {
+                tmpData = new double[tofData.Count()];
+                double bg = tofData.Take(25).Average();
+                for (int i = 0; i <= tofData.Count() - 1; i++)
+                {
+                    tmpData[i] = tofData[i] - bg;
+                }
+            }
+            else
+            {
+                tmpData = tofData;
+            }
+
             double sum = 0;
-            foreach (double sample in tofData) sum += sample;
+            foreach (double sample in tmpData) sum += sample;
             return (sum * clockPeriod);
         }
 

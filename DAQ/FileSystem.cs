@@ -23,7 +23,8 @@ namespace DAQ.Environment
 			{
 				String year = DateTime.Now.ToString("yyyy",DateTimeFormatInfo.InvariantInfo);
 				String month = DateTime.Now.ToString("MMMM",DateTimeFormatInfo.InvariantInfo);
-				String directory = baseDir + year + "\\" + month + year + "\\";
+                String monthNum = DateTime.Now.ToString("MM", DateTimeFormatInfo.InvariantInfo);
+				String directory = baseDir + year + "\\" + monthNum + month + "\\";
 				if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 				return directory;
 			}
@@ -42,9 +43,9 @@ namespace DAQ.Environment
 			int highestIndex = -1;
 			// assemble the stub for today's files
 			String day = DateTime.Now.ToString("dd",DateTimeFormatInfo.InvariantInfo);
-			String month = DateTime.Now.ToString("MMM",DateTimeFormatInfo.InvariantInfo);
-			String year = DateTime.Now.ToString("yy",DateTimeFormatInfo.InvariantInfo);
-			String fileStub = day + month + year;
+			String month = DateTime.Now.ToString("MM",DateTimeFormatInfo.InvariantInfo);
+			String year = DateTime.Now.ToString("yyyy",DateTimeFormatInfo.InvariantInfo);
+			String fileStub = year + month + day;
 
 			foreach(String dataPath in DataSearchPaths)
 			{
@@ -63,9 +64,9 @@ namespace DAQ.Environment
 			}
 			// make sure the number has two digits (there's probably a way to do this with number
 			// format, but I couldn't figure it out.
-			String indexString = (highestIndex + 1).ToString();
-			if (indexString.Length == 1) indexString = "0" + indexString;
-			return fileStub + indexString;
+			String indexString = (highestIndex + 1).ToString("D3");
+			//  if (indexString.Length == 1) indexString = "0" + indexString;
+			return fileStub + '_' + indexString;
 		}
 
 	}

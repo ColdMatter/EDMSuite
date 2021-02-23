@@ -22,11 +22,9 @@ namespace ZeemanSisyphusHardwareControl.Controls
 
         #region UI Update Handlers
 
-        public void UpdateCurrentTemperature(string temp, bool lowTemp)
+        public void UpdateCurrentTemperature(string temp)
         {
             currentTemperature.Text = temp;
-            rbThermRT.Checked = !(lowTemp);
-            rbThermLT.Checked = lowTemp;
         }
         public void UpdateCurrentPressure(string[] pressures)
         {
@@ -184,6 +182,16 @@ namespace ZeemanSisyphusHardwareControl.Controls
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox4_Enter(object sender, EventArgs e)
         {
 
         }

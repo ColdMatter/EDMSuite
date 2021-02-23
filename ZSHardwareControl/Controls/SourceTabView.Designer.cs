@@ -53,17 +53,14 @@
             this.readButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.currentPressureNear = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.rbThermLT = new System.Windows.Forms.RadioButton();
-            this.numRref = new System.Windows.Forms.NumericUpDown();
-            this.rbThermRT = new System.Windows.Forms.RadioButton();
-            this.currentTemperature = new System.Windows.Forms.TextBox();
-            this.currentPressureFar = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.currentPressureFar = new System.Windows.Forms.TextBox();
+            this.currentPressureNear = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numRref = new System.Windows.Forms.NumericUpDown();
+            this.currentTemperature = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
@@ -116,7 +113,8 @@
             this.groupBox4.Size = new System.Drawing.Size(181, 140);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Other Temperatures (°C)";
+            this.groupBox4.Text = "Other Temperatures (K if < -100C)";
+            this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
             // 
             // label4
             // 
@@ -324,25 +322,32 @@
             this.groupBox1.Size = new System.Drawing.Size(169, 83);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Cycle Max Temp (°C)";
+            this.groupBox1.Text = "Cycle Max Temp (V)";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // cycleLimit
             // 
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleLimit.DecimalPlaces = 4;
+            this.cycleLimit.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
             this.cycleLimit.Location = new System.Drawing.Point(23, 24);
+            this.cycleLimit.Maximum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.cycleLimit.Minimum = new decimal(new int[] {
-            100,
+            2,
             0,
             0,
             -2147483648});
             this.cycleLimit.Name = "cycleLimit";
             this.cycleLimit.Size = new System.Drawing.Size(120, 20);
             this.cycleLimit.TabIndex = 3;
-            this.cycleLimit.Value = new decimal(new int[] {
-            40,
-            0,
-            0,
-            0});
             this.cycleLimit.ValueChanged += new System.EventHandler(this.cycleLimit_ValueChanged);
             // 
             // cycleButton
@@ -398,6 +403,32 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Source Pressure (mbar)";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(51, 74);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(22, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Far";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(43, 48);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Near";
+            // 
+            // currentPressureFar
+            // 
+            this.currentPressureFar.Location = new System.Drawing.Point(79, 71);
+            this.currentPressureFar.Name = "currentPressureFar";
+            this.currentPressureFar.ReadOnly = true;
+            this.currentPressureFar.Size = new System.Drawing.Size(100, 20);
+            this.currentPressureFar.TabIndex = 1;
+            // 
             // currentPressureNear
             // 
             this.currentPressureNear.Location = new System.Drawing.Point(79, 45);
@@ -409,11 +440,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.rbThermLT);
             this.groupBox2.Controls.Add(this.numRref);
-            this.groupBox2.Controls.Add(this.rbThermRT);
             this.groupBox2.Controls.Add(this.currentTemperature);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
@@ -421,17 +449,8 @@
             this.groupBox2.Size = new System.Drawing.Size(237, 134);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Source Temp (RT: C, LT: K)";
+            this.groupBox2.Text = "Source Temp (K if < -100C)";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 95);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Thermistor in use:";
             // 
             // label1
             // 
@@ -441,17 +460,6 @@
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "Rref (kΩ):";
-            // 
-            // rbThermLT
-            // 
-            this.rbThermLT.AutoSize = true;
-            this.rbThermLT.Enabled = false;
-            this.rbThermLT.Location = new System.Drawing.Point(95, 111);
-            this.rbThermLT.Name = "rbThermLT";
-            this.rbThermLT.Size = new System.Drawing.Size(75, 17);
-            this.rbThermLT.TabIndex = 3;
-            this.rbThermLT.Text = "Low Temp";
-            this.rbThermLT.UseVisualStyleBackColor = true;
             // 
             // numRref
             // 
@@ -477,50 +485,13 @@
             65536});
             this.numRref.ValueChanged += new System.EventHandler(this.numRref_ValueChanged);
             // 
-            // rbThermRT
-            // 
-            this.rbThermRT.AutoSize = true;
-            this.rbThermRT.Enabled = false;
-            this.rbThermRT.Location = new System.Drawing.Point(6, 111);
-            this.rbThermRT.Name = "rbThermRT";
-            this.rbThermRT.Size = new System.Drawing.Size(83, 17);
-            this.rbThermRT.TabIndex = 2;
-            this.rbThermRT.Text = "Room Temp";
-            this.rbThermRT.UseVisualStyleBackColor = true;
-            // 
             // currentTemperature
             // 
-            this.currentTemperature.Location = new System.Drawing.Point(75, 56);
+            this.currentTemperature.Location = new System.Drawing.Point(70, 48);
             this.currentTemperature.Name = "currentTemperature";
             this.currentTemperature.ReadOnly = true;
             this.currentTemperature.Size = new System.Drawing.Size(100, 20);
             this.currentTemperature.TabIndex = 0;
-            // 
-            // currentPressureFar
-            // 
-            this.currentPressureFar.Location = new System.Drawing.Point(79, 71);
-            this.currentPressureFar.Name = "currentPressureFar";
-            this.currentPressureFar.ReadOnly = true;
-            this.currentPressureFar.Size = new System.Drawing.Size(100, 20);
-            this.currentPressureFar.TabIndex = 1;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(51, 74);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(22, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Far";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(43, 48);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(30, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Near";
             // 
             // SourceTabView
             // 
@@ -576,10 +547,7 @@
         private System.Windows.Forms.TextBox currentTemperature;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox currentPressureNear;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton rbThermLT;
-        private System.Windows.Forms.RadioButton rbThermRT;
         private System.Windows.Forms.NumericUpDown numRref;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.GroupBox groupBox1;
