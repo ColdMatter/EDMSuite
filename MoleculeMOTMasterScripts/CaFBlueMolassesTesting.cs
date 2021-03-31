@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["ExpansionTime"] = 100;
+        Parameters["ExpansionTime"] = 600;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesHoldTime"] = 200;
         Parameters["MolassesRampDuration"] = 100;
@@ -39,7 +39,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTLoadDuration"] = 4000;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 240; //started from 250
+        Parameters["slowingAOMOnStart"] = 180; //180
+        Parameters["PMTTrigger"] = 5000;
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -61,7 +62,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
         Parameters["yShimLoadCurrent"] = -1.92;// -1.92 is zero
-        Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero 
+        Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         // v0 Light Intensity
         Parameters["v0IntensityRampDuration"] = 100;
@@ -69,14 +70,16 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartValue"] = 5.6;
         Parameters["v0IntensityRampEndValue"] = 7.78;
         Parameters["v0IntensityMolassesValue"] = 5.6;
-        Parameters["v0MolassesIntensityRampEndValue"] = 5.6;
+        Parameters["v0MolassesIntensityRampEndValue"] = 8.17;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
-        Parameters["v0FrequencyNewValue"] = 20.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
+        Parameters["v0FrequencyNewValue"] = 22.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         //v0aomCalibrationValues
         Parameters["calibGradient"] = 11.4;
+
+        Parameters["v0FrequencyImagingValue"] = 0.0;
 
 
     }
@@ -94,12 +97,13 @@ public class Patterns : MOTMasterScript
         int cameraTriggerTime = imagingLightOnTime + (int)Parameters["WaitBeforeImage"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
+        p.AddEdge("rb2DMOTShutter", 0, true);
 
         p.Pulse(patternStartBeforeQ, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, releaseTime, imagingLightOnTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        
+
         return p;
     }
 
@@ -124,7 +128,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
         p.AddChannel("v00EOMAmp");
-        
+
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
@@ -146,13 +150,13 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.85);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.8);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", motSwitchOffTime, 10.0 - (double)Parameters["v0FrequencyNewValue"] / (double)Parameters["calibGradient"]);//jump to blue detuning
-        p.AddAnalogValue("v00Frequency", cameraTriggerTime, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
-        
+        p.AddAnalogValue("v00Frequency", releaseTime, 10.0 - (double)Parameters["v0FrequencyImagingValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
+
 
         return p;
     }

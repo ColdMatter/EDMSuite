@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["RbMOTLoadTime"] = 10;//200000
-        Parameters["FreeExpansionTime"] = 220;
+        Parameters["FreeExpansionTime"] = 20;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 240; //started from 250
+        Parameters["slowingAOMOnStart"] = 180; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1500
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -81,8 +81,12 @@ public class Patterns : MOTMasterScript
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;//400
-        Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 7.78;
+        //Parameters["v0IntensityRampStartValue"] = 5.6;
+        //Parameters["v0IntensityEndValue"] = 8.5;
+
+        //for 1W v0 power:
+        Parameters["v0IntensityRampStartValue"] = 6.9;
+        Parameters["v0IntensityEndValue"] = 7.8; //7.78;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0;
@@ -177,7 +181,7 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.8);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

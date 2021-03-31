@@ -20,6 +20,7 @@ namespace DAQ.HAL
 		private int length;
         // this task is used to generate the sample clock on the "integrated" 6229-type PGs
         private Task counterTask;
+        string clock_line;
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -55,13 +56,29 @@ namespace DAQ.HAL
 			Thread.Sleep(sleepTime);
 		}
 
-		public void Configure( double clockFrequency, bool loop, bool fullWidth,
-                                    bool lowGroup, int length, bool internalClock, bool triggered)
-		{	
-			this.clockFrequency = clockFrequency;
-			this.length = length;
+        public void Configure(string taskName, double clockFrequency, bool loop, bool fullWidth,
+                                    bool lowGroup, int length, bool internalClock, bool triggered, string clockLine)
+        {
+            pgTask = new Task(taskName);
+            clock_line = clockLine;
+            configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
+        }
 
-			pgTask = new Task("pgTask");
+        public void Configure(double clockFrequency, bool loop, bool fullWidth,
+                                    bool lowGroup, int length, bool internalClock, bool triggered)
+        {
+            
+            pgTask = new Task("pgTask");
+            clock_line = "PGClockLine";
+            configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
+        }
+
+        private void configure_PG(double clockFrequency, bool loop, bool fullWidth,
+                                    bool lowGroup, int length, bool internalClock, bool triggered)
+        {
+
+            this.clockFrequency = clockFrequency;
+            this.length = length;
 
             /**** Configure the output lines ****/
 
@@ -94,7 +111,7 @@ namespace DAQ.HAL
             String clockSource = "";
             if ((string)Environs.Hardware.GetInfo("PGType") == "dedicated")
             {
-                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo(clock_line);
                 else clockSource = "";
             }
 
@@ -103,7 +120,7 @@ namespace DAQ.HAL
                 // clocking is more complicated for the 6229 style PG boards as they don't have their own internal clock.
 
                 // if external clocking is required it's easy:
-                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo("PGClockLine");
+                if (!internalClock) clockSource = (string)Environment.Environs.Hardware.GetInfo(clock_line);
                 else
                 {
                     // if an internal clock is requested we generate it using the card's timer/counters.
@@ -127,7 +144,7 @@ namespace DAQ.HAL
                 }
             }
 
-
+            
 
             /**** Configure regeneration ****/
             
@@ -152,6 +169,14 @@ namespace DAQ.HAL
 				sqm,
 				length
 				);
+
+            /*
+            if (device == "/PXI1Slot4")
+                pgTask.ExportSignals.SampleClockOutputTerminal = device + "/PFI4";
+             
+            if (device == "/Dev1")
+                pgTask.ExportSignals.SampleClockOutputTerminal = device + "/PFI2";
+            */
 
             /**** Configure buffering ****/
 
@@ -185,7 +210,8 @@ namespace DAQ.HAL
 		
 		public void StopPattern()
 		{
-            pgTask.Dispose();
+            if (pgTask != null)
+                pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
         }
 	}

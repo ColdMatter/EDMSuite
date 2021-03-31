@@ -226,6 +226,9 @@
     <Compile Include="AgilentFRG720Gauge.cs" />
     <Compile Include="CENTAURFileSystem.cs" />
     <Compile Include="LeyboldPTR225PressureGauge.cs" />
+    <Compile Include="PatternBuilder32SingleBoard.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UEDMHardwareControllerAIs.cs" />
     <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />

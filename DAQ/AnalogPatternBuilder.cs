@@ -117,6 +117,50 @@ namespace DAQ.Analog
                 throw new InsufficientPatternLengthException();
             }
         }
+        public void AddPolynomialRamp(string channel, int startTime, int stopTime,
+            double finalValue, double upperThresholdValue, double lowerThresholdValue,
+            double weight1, double weight2, double weight3, double weight4)
+        {
+            if (PatternLength > stopTime)
+            {
+                double startValue = GetValue(channel, startTime);
+                int steps = stopTime - startTime;
+                for (int i = 0; i < steps; i++)
+                {
+                    if (AnalogPatterns[channel].ContainsKey(startTime + i) == false)
+                    {
+                        double t = 1.0 * steps;
+                        double it = 1.0 * i;
+                        double first = weight1 * (it / t);
+                        double second = weight2 * (it / t) * (it / t);
+                        double third = weight3 * (it / t) * (it / t) * (it / t);
+                        double fourth = weight4 * (it / t) * (it / t) * (it / t) * (it / t);
+                        double norm = startValue + weight1 + weight2 + weight3 + weight4;
+                        double value = finalValue * (startValue + first + second + third + fourth) / norm;
+                        if (value > upperThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, upperThresholdValue);
+                        }
+                        else if (value < lowerThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, lowerThresholdValue);
+                        }
+                        else
+                        {
+                            AddAnalogValue(channel, startTime + i, value);
+                        }
+                    }
+                    else
+                    {
+                        throw new ConflictInPatternException();
+                    }
+                }
+            }
+            else
+            {
+                throw new InsufficientPatternLengthException();
+            }
+        }
 
         //For a single channel, gets a sequence of events (changes to the output value) and builds a pattern.
         private double[] buildSinglePattern(string channel)
