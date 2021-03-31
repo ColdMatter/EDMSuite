@@ -28,7 +28,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -137,6 +137,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|AnyCPU'">
+    <OutputPath>bin\EDMBlockHead\</OutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
     <OutputPath>bin\ultracoldEDM\</OutputPath>
   </PropertyGroup>
@@ -150,16 +153,18 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.Common.dll</HintPath>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx, Version=19.1.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=15.5.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.ModularInstruments.NIRfsg.Fx40, Version=20.5.0.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -183,11 +188,6 @@
       <Name>Wolfram.NETLink</Name>
       <HintPath>Wolfram.NETLink.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Name>SharedCode</Name>
-      <Project>{BA0A0540-3F1C-483B-A180-CB78DF424F15}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveXPatternGeneratorForm.cs">
@@ -201,6 +201,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AnalogPatternBuilder.cs" />
+    <Compile Include="AnapicoSYN420.cs" />
     <Compile Include="AnritsuVNA.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -225,6 +226,7 @@
     </Compile>
     <Compile Include="AgilentFRG720Gauge.cs" />
     <Compile Include="CENTAURFileSystem.cs" />
+    <Compile Include="HP8656BSynth.cs" />
     <Compile Include="LeyboldPTR225PressureGauge.cs" />
     <Compile Include="PatternBuilder32SingleBoard.cs">
       <SubType>Code</SubType>
@@ -238,6 +240,8 @@
     <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="PHNFITCH2FileSystem.cs" />
+    <Compile Include="CentaurEDMFileSystem.cs" />
+    <Compile Include="CentaurEDMHardware.cs" />
     <Compile Include="RfAWGConfig.cs" />
     <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SiliconDiodeTemperatureMonitors.cs" />
@@ -423,6 +427,12 @@
     </Content>
     <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -124,6 +124,14 @@ namespace EDMBlockHead
             this.sECorrLeakagePlot = new NationalInstruments.UI.ScatterPlot();
             this.yAxis14 = new NationalInstruments.UI.YAxis();
             this.xAxis14 = new NationalInstruments.UI.XAxis();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor1 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor2 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor3 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor4 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
             ((System.ComponentModel.ISupportInitialize)(this.sigScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bScatterGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dbScatterGraph)).BeginInit();
@@ -149,12 +157,12 @@ namespace EDMBlockHead
             // 
             this.statusText.BackColor = System.Drawing.Color.Black;
             this.statusText.ForeColor = System.Drawing.Color.Lime;
-            this.statusText.Location = new System.Drawing.Point(12, 39);
+            this.statusText.Location = new System.Drawing.Point(16, 39);
             this.statusText.Multiline = true;
             this.statusText.Name = "statusText";
             this.statusText.ReadOnly = true;
             this.statusText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.statusText.Size = new System.Drawing.Size(541, 736);
+            this.statusText.Size = new System.Drawing.Size(625, 736);
             this.statusText.TabIndex = 0;
             this.statusText.WordWrap = false;
             // 
@@ -194,7 +202,7 @@ namespace EDMBlockHead
             this.sigScatterGraph.CaptionFont = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sigScatterGraph.CaptionPosition = NationalInstruments.UI.CaptionPosition.Left;
             this.sigScatterGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sigScatterGraph.Location = new System.Drawing.Point(6, 6);
+            this.sigScatterGraph.Location = new System.Drawing.Point(6, 5);
             this.sigScatterGraph.Name = "sigScatterGraph";
             this.sigScatterGraph.PlotAreaBorder = NationalInstruments.UI.Border.Etched;
             this.sigScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
@@ -709,10 +717,10 @@ namespace EDMBlockHead
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(559, 12);
+            this.tabControl1.Location = new System.Drawing.Point(647, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(546, 779);
+            this.tabControl1.Size = new System.Drawing.Size(545, 779);
             this.tabControl1.TabIndex = 35;
             // 
             // tabPage1
@@ -729,7 +737,7 @@ namespace EDMBlockHead
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(538, 753);
+            this.tabPage1.Size = new System.Drawing.Size(537, 753);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "1";
             // 
@@ -1087,12 +1095,65 @@ namespace EDMBlockHead
             this.xAxis14.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("F0");
             this.xAxis14.MajorDivisions.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(98, 22);
+            this.toolStripLabel1.Text = "InteractionMode:";
+            // 
+            // toolStripPropertyEditor1
+            // 
+            this.toolStripPropertyEditor1.AutoSize = false;
+            this.toolStripPropertyEditor1.Name = "toolStripPropertyEditor1";
+            this.toolStripPropertyEditor1.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor1.Size = new System.Drawing.Size(120, 23);
+            this.toolStripPropertyEditor1.Source = new NationalInstruments.UI.PropertyEditorSource(this.sigScatterGraph, "InteractionMode");
+            this.toolStripPropertyEditor1.Text = "ZoomX, ZoomY, ZoomAroundPoint, PanX, PanY, DragCursor, DragAnnotationCaption";
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(50, 15);
+            this.toolStripLabel2.Text = "Cursors:";
+            // 
+            
+            // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(75, 15);
+            this.toolStripLabel3.Text = "Annotations:";
+            // 
+            // toolStripPropertyEditor3
+            // 
+            this.toolStripPropertyEditor3.AutoSize = false;
+            this.toolStripPropertyEditor3.Name = "toolStripPropertyEditor3";
+            this.toolStripPropertyEditor3.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor3.Size = new System.Drawing.Size(120, 23);
+            this.toolStripPropertyEditor3.Source = new NationalInstruments.UI.PropertyEditorSource(this.sigScatterGraph, "Annotations");
+            this.toolStripPropertyEditor3.Text = "(Collection)";
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(36, 15);
+            this.toolStripLabel4.Text = "Plots:";
+            // 
+            // toolStripPropertyEditor4
+            // 
+            this.toolStripPropertyEditor4.AutoSize = false;
+            this.toolStripPropertyEditor4.Name = "toolStripPropertyEditor4";
+            this.toolStripPropertyEditor4.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor4.Size = new System.Drawing.Size(120, 23);
+            this.toolStripPropertyEditor4.Source = new NationalInstruments.UI.PropertyEditorSource(this.sigScatterGraph, "Plots");
+            this.toolStripPropertyEditor4.Text = "(Collection)";
+            // 
             // LiveViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1112, 882);
+            this.ClientSize = new System.Drawing.Size(1204, 882);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.resetRunningMeans);
             this.Controls.Add(this.clusterStatusText);
@@ -1225,6 +1286,14 @@ namespace EDMBlockHead
         private NationalInstruments.UI.XAxis xAxis8;
         private NationalInstruments.UI.YAxis yAxis8;
         private NationalInstruments.UI.ScatterPlot rf2adbdbScatterPlot;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor toolStripPropertyEditor1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor toolStripPropertyEditor2;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+        private NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor toolStripPropertyEditor3;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor toolStripPropertyEditor4;
 
     }
 }

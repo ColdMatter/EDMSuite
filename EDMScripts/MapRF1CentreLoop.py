@@ -1,4 +1,4 @@
-# MapLoop - asks ScanMaster to make a series of scans with one of the pg
+﻿# MapLoop - asks ScanMaster to make a series of scans with one of the pg
 # parameters incremented scan to scan
 
 from DAQ.Environment import *
@@ -19,9 +19,11 @@ def mapLoop(start, end, step, numScans):
 		print  "pg:rf1BlankingCentreTime -> " + str(r[i])
 		sm.AdjustProfileParameter("pg", "rf1CentreTime", str(r[i]), False)
 		sm.AdjustProfileParameter("pg", "rf1BlankingCentreTime", str(r[i]), False)
+		sm.AdjustProfileParameter("out", "externalParameters", str(r[i]), False)
 		sm.AcquireAndWait(numScans)
 		scanPath = file + "_" + str(i) + ".zip"
 		sm.SaveAverageData(scanPath)
+		hc.StepTarget()
 
 def run_script():
 	print "Use mapLoop(start, end, step, numScans)"

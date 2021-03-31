@@ -1,414 +1,130 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using Data.EDM;
+using Utility;
 
 
 namespace Analysis.EDM
 {
-    // Note that all FWHM based gates have been disabled to remove SharedCode's dependence on the
-    // NI analysis libraries.
-
     /// <summary>
-    /// This is a bit confusing looking, but it's pretty simple to use. Instances of this class
-    /// tell the BlockDemodulator how to extract the data. The class also provides a standard
-    /// library of configurations, accessed through the static member GetStandardDemodulationConfig.
-    /// This is usually the way you'll want to use the class, although you are of course free to build
-    /// your own configurations on the fly.
-    /// 
-    /// I have a nagging feeling that there might be a simpler way to do this, but I can't see it at
-    /// the minute.
+    /// This config contains the list of TOF-demodulated detectors,
+    /// gated-then-demodulated detectors, and point detectors
     /// </summary>
     [Serializable]
     public class DemodulationConfig
     {
-        public Dictionary<string, GatedDetectorExtractSpec> GatedDetectorExtractSpecs = 
-            new Dictionary<string, GatedDetectorExtractSpec>();
-        public List<string> PointDetectorChannels = new List<string>();
-        public String AnalysisTag = "";
+        public string Name = "";
+        private readonly List<string> _tofDetectorList = new List<string>();
+        private readonly List<string> _gatedDetectorList = new List<string>();
+        private readonly List<string> _pointDetectorList = new List<string>();
+        private readonly GatedDemodulationConfig _gateConfig = new GatedDemodulationConfig();
 
-        // static members for making standard configs
-        private static Dictionary<string, DemodulationConfigBuilder> standardConfigs =
-            new Dictionary<string, DemodulationConfigBuilder>();
-
-        private static double kDetectorDistanceRatio = 1.144;
-
-        public static DemodulationConfig GetStandardDemodulationConfig(string name, Block b)
+        public void AddTOFDetector(string detector)
         {
-            return (standardConfigs[name])(b);
+            _tofDetectorList.Add(detector);
         }
 
-        static DemodulationConfig()
+        public void AddGatedDetector(string detector, Gate gate)
         {
-            // here we stock the class' static library of configs up with some standard configs
-            
-            // a wide gate - integrate everything
-            DemodulationConfigBuilder wide = delegate(Block b)
-            {
-
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "wide";
-                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.Name = "bottomProbe";
-                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "topProbe";
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "magnetometer";
-                dg2.Integrate = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "gnd";
-                dg3.Integrate = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
-                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
-                dg5.Name = "rfCurrent";
-                dg5.Integrate = false;
-                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
-                dg6.Name = "reflectedrf1Amplitude";
-                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
-                dg7.Name = "reflectedrf2Amplitude";
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
-                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
-                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-                dc.PointDetectorChannels.Add("PumpPD");
-                dc.PointDetectorChannels.Add("ProbePD");
-
-                return dc;
-            };
-            standardConfigs.Add("wide", wide);
-
-            //// fwhm of the tof pulse for top and norm, wide gates for everything else.
-            //AddSliceConfig("fwhm", 0, 1);
-            //// narrower than fwhm, takes only the center hwhm
-            //AddSliceConfig("hwhm", 0, 0.5);
-            //// only the fast half of the fwhm (NOT TRUE - 01Jul08JH)
-            //AddSliceConfig("fast", -0.5, 0.5);
-            //// the slow half of the fwhm (NOT TRUE - 01Jul08 JH)
-            //AddSliceConfig("slow", 0.5, 0.5);
-            //// the fastest and slowest molecules, used for estimating any tof related systematic.
-            //// these gates don't overlap with the usual centred analysis gates (fwhm and cgate11).
-            //AddSliceConfig("vfast", -0.85, 0.5);
-            //AddSliceConfig("vslow", 0.85, 0.5);
-
-            // for testing out different centred-gate widths
-            for (int i = 1; i < 10; i++)
-                AddFixedSliceConfig("wgate" + i, 2440, i * 20);
-
-            for (int i = 1; i < 14; i++)
-                AddFixedSliceConfig("shiftgate" + i, 1850 + i*50, 65);
-
-            for (int i = 1; i < 7; i++)
-                AddFixedSliceConfig("slicegate" + i, 2050 + i * 50, 25);
-
-            for (int i = 1; i < 30; i++)
-                AddFixedSliceConfig("pgate" + i, 2090 + i*10, 10);
-
-
-            //// testing different gate centres. "slide0" is centred at -0.7 fwhm, "slide14"
-            //// is centred and +0.7 fwhm.
-            //for (int i = 0; i < 15; i++)
-            //    AddSliceConfig("slide" + i, (((double)i) / 10.0) - 0.7, 1);
-
-            //// now some finer slices
-            //double d = -1.4;
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    AddSliceConfig("slice" + i, d, 0.2);
-            //    d += 0.2;
-            //}
-            
-            //// optimised gates for spring 2009 run
-            //AddSliceConfig("optimum1", 0.3, 1.1);
-            //AddSliceConfig("optimum2", 0.2, 1.1);
-
-            // "background" gate
-            DemodulationConfigBuilder background = delegate(Block b)
-            {
-
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "background";
-                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.GateLow = 2850;
-                dg0.GateHigh = 3050;
-                dg0.Name = "bottomProbe";
-                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "topProbe";
-                dg1.GateLow = 2300;
-                dg1.GateHigh = 2530;
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-
-
-                return dc;
-            };
-            standardConfigs.Add("background", background);
-
-            // "magnetometer mode" gate - for analysing magnetic field data from QuSpins
-
-            DemodulationConfigBuilder magnetometers = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7, dg8, dg9, dg10;
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = "magnetometers";
-                dg0 = GatedDetectorExtractSpec.MakeWideGate(0);
-                dg0.Name = "quSpinB0_Y";
-                dg0.BackgroundSubtract = false;
-                dg1 = GatedDetectorExtractSpec.MakeWideGate(1);
-                dg1.Name = "quSpinB0_Z";
-                dg1.BackgroundSubtract = false;
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "quSpinEV_Y";
-                dg2.BackgroundSubtract = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "quSpinEV_Z";
-                dg3.BackgroundSubtract = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "quSpinEW_Y";
-                dg4.BackgroundSubtract = false;
-                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
-                dg5.Name = "quSpinEW_Z";
-                dg5.BackgroundSubtract = false;
-                dg6 = GatedDetectorExtractSpec.MakeWideGate(6);
-                dg6.Name = "quSpinEX_Y";
-                dg6.BackgroundSubtract = false;
-                dg7 = GatedDetectorExtractSpec.MakeWideGate(7);
-                dg7.Name = "quSpinEX_Z";
-                dg7.BackgroundSubtract = false;
-                dg8 = GatedDetectorExtractSpec.MakeWideGate(8);
-                dg8.Name = "quSpinEU_Y";
-                dg8.BackgroundSubtract = false;
-                dg9 = GatedDetectorExtractSpec.MakeWideGate(9);
-                dg9.Name = "quSpinEU_Z";
-                dg9.BackgroundSubtract = false;
-                dg10 = GatedDetectorExtractSpec.MakeWideGate(10);
-                dg10.Name = "bartington";
-                dg10.BackgroundSubtract = false;
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
-                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
-                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
-                dc.GatedDetectorExtractSpecs.Add(dg8.Name, dg8);
-                dc.GatedDetectorExtractSpecs.Add(dg9.Name, dg9);
-                dc.GatedDetectorExtractSpecs.Add(dg10.Name, dg10);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-                dc.PointDetectorChannels.Add("PumpPD");
-                dc.PointDetectorChannels.Add("ProbePD");
-
-                return dc;
-            };
-            standardConfigs.Add("magnetometers", magnetometers);
-
-            // add some fixed gate slices - the first three are the 1.1 sigma centre portion and two
-            // non-overlapping portions either side.
-            AddFixedSliceConfig("cgate11Fixed", 2156, 90); // This is normally ("cgate11Fixed", 2156, 90)
-            AddFixedSliceConfig("vfastFixed", 2025, 41);
-            AddFixedSliceConfig("vslowFixed", 2286, 41);
-            // these "nudge" gates are chosen to, hopefully, tweak the 09_10 dataset so that the
-            // RF1F channel, DB-normed in the non-linear way, is reduced to near zero
-            AddFixedSliceConfig("nudgeGate1", 2161, 90);
-            AddFixedSliceConfig("nudgeGate2", 2169, 90);
-            AddFixedSliceConfig("nudgeGate3", 2176, 90);
-            AddFixedSliceConfig("nudgeGate4", 2174, 90);
-            AddFixedSliceConfig("nudgeGate5", 2188, 90);
-            AddFixedSliceConfig("nudgeGate6", 2198, 90);
-            AddFixedSliceConfig("nudgeGate7", 2208, 90);
-            AddFixedSliceConfig("nudgeGate8", 2228, 90);
-            AddFixedSliceConfig("wideNudgeGate1", 2198, 100);
-            AddFixedSliceConfig("narrowNudgeGate1", 2198, 75);
-            AddFixedSliceConfig("narrowNudgeGate2", 2198, 65);
-            AddFixedSliceConfig("narrowNudgeGate3", 2198, 55);
-            AddFixedSliceConfig("narrowNudgeGate4", 2198, 45);
-
-            // these two are the fast and slow halves of the 1.1 sigma central gate.
-            AddFixedSliceConfig("fastFixed", 2110, 45);
-            AddFixedSliceConfig("slowFixed", 2201, 45);
-            // two fairly wide gates that take in most of the slow and fast molecules.
-            // They've been chosed to try and capture the wiggliness of our fast-slow
-            // wiggles.
-            AddFixedSliceConfig("widefastFixed", 1950, 150);
-            AddFixedSliceConfig("wideslowFixed", 2330, 150);
-            // A narrow centre gate for correlation analysis
-            AddFixedSliceConfig("cgateNarrowFixed", 2175, 25);
-            // A gate containing no molecules to look for edms caused by rf pickup
-            AddFixedSliceConfig("preMolecularBackground", 1850, 50);
-            // A demodulation config for Kr
-            AddFixedSliceConfig("centreFixedKr", 2950, 90);
-
-
+            _gatedDetectorList.Add(detector);
+            _gateConfig.AddGate(detector, gate);
         }
 
-        //private static void AddSliceConfig(string name, double offset, double width)
-        //{
-        //    // the slow half of the fwhm
-        //    DemodulationConfigBuilder dcb = delegate(Block b)
-        //    {
-        //        DemodulationConfig dc;
-        //        GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4;
-
-        //        dc = new DemodulationConfig();
-        //        dc.AnalysisTag = name;
-        //        dg0 = GatedDetectorExtractSpec.MakeGateFWHM(b, 0, offset, width);
-        //        dg0.Name = "top";
-        //        dg0.BackgroundSubtract = true;
-        //        dg1 = GatedDetectorExtractSpec.MakeGateFWHM(b, 1, offset, width);
-        //        dg1.Name = "norm";
-        //        dg1.BackgroundSubtract = true;
-        //        dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-        //        dg2.Name = "mag1";
-        //        dg2.Integrate = false;
-        //        dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-        //        dg3.Name = "short";
-        //        dg3.Integrate = false;
-        //        dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-        //        dg4.Name = "battery";
-
-        //        dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-        //        dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-        //        dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-        //        dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-        //        dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-
-        //        dc.PointDetectorChannels.Add("MiniFlux1");
-        //        dc.PointDetectorChannels.Add("MiniFlux2");
-        //        dc.PointDetectorChannels.Add("MiniFlux3");
-        //        dc.PointDetectorChannels.Add("NorthCurrent");
-        //        dc.PointDetectorChannels.Add("SouthCurrent");
-        //        dc.PointDetectorChannels.Add("PumpPD");
-        //        dc.PointDetectorChannels.Add("ProbePD");
-
-        //        return dc;
-        //    };
-        //    standardConfigs.Add(name, dcb);
-        //}
-
-        private static void AddFixedSliceConfig(string name, double centre, double width)
+        public void AddPointDetector(string detector)
         {
-            // the slow half of the fwhm
-            DemodulationConfigBuilder dcb = delegate(Block b)
-            {
-                DemodulationConfig dc;
-                GatedDetectorExtractSpec dg0, dg1, dg2, dg3, dg4, dg5, dg6, dg7;
-
-                //This dodgy bit of code is to make sure that the reflected rf power meters
-                // only select a single point in the centre of the rf pulse. It won't work
-                // if either of the rf pulses is centred at a time not divisible w/o rem. by 10us
-
-                int rf1CT = (int)b.Config.Settings["rf1CentreTime"];
-                int rf2CT = (int)b.Config.Settings["rf2CentreTime"];
-                int clock = (int)b.Config.Settings["clockFrequency"];
-                int conFac = clock / 1000000; 
-
-                dc = new DemodulationConfig();
-                dc.AnalysisTag = name;
-                dg0 = new GatedDetectorExtractSpec();
-                dg0.Index = 0;
-                dg0.Name = "bottomProbe";
-                dg0.BackgroundSubtract = true;
-                dg0.GateLow = (int)(centre - width);
-                dg0.GateHigh = (int)(centre + width);
-                dg1 = new GatedDetectorExtractSpec();
-                dg1.Index = 1;
-                dg1.Name = "topProbe";
-                dg1.BackgroundSubtract = true;
-                dg1.GateLow = (int)((centre - width) * kDetectorDistanceRatio);
-                dg1.GateHigh = (int)((centre + width) * kDetectorDistanceRatio);
-                dg2 = GatedDetectorExtractSpec.MakeWideGate(2);
-                dg2.Name = "magnetometer";
-                dg2.Integrate = false;
-                dg2.BackgroundSubtract = false;
-                dg3 = GatedDetectorExtractSpec.MakeWideGate(3);
-                dg3.Name = "gnd";
-                dg3.Integrate = false;
-                dg3.BackgroundSubtract = false;
-                dg4 = GatedDetectorExtractSpec.MakeWideGate(4);
-                dg4.Name = "battery";
-                dg4.Integrate = false; //Add this in to analyse By in 3 axis internal magnetometer tests
-                dg4.BackgroundSubtract = false;
-                dg5 = GatedDetectorExtractSpec.MakeWideGate(5);
-                dg5.Name = "rfCurrent";
-                dg5.Integrate = false;
-                dg5.BackgroundSubtract = false;
-                dg6 = new GatedDetectorExtractSpec();
-                dg6.Index = 6;
-                dg6.Name = "reflectedrf1Amplitude";
-                dg6.BackgroundSubtract = false;
-                dg6.GateLow = 800;
-                dg6.GateHigh = 1800;
-                dg6.BackgroundSubtract = false;
-                //dg6.GateLow = (rf1CT / conFac) - 1;
-                //dg6.GateHigh = (rf1CT / conFac) + 1;
-                dg7 = new GatedDetectorExtractSpec();
-                dg7.Index = 7 ;
-                dg7.Name = "reflectedrf2Amplitude";
-                dg7.BackgroundSubtract = false;
-                //dg7.GateLow = (rf2CT / conFac) - 1;
-                //dg7.GateHigh = (rf2CT / conFac) + 1;
-                dg7.GateLow = 800;
-                dg7.GateHigh =1800;
-                dg7.BackgroundSubtract = false;
-
-
-                dc.GatedDetectorExtractSpecs.Add(dg0.Name, dg0);
-                dc.GatedDetectorExtractSpecs.Add(dg1.Name, dg1);
-
-                dc.GatedDetectorExtractSpecs.Add(dg2.Name, dg2);
-                dc.GatedDetectorExtractSpecs.Add(dg3.Name, dg3);
-                dc.GatedDetectorExtractSpecs.Add(dg4.Name, dg4);
-                dc.GatedDetectorExtractSpecs.Add(dg5.Name, dg5);
-                dc.GatedDetectorExtractSpecs.Add(dg6.Name, dg6);
-                dc.GatedDetectorExtractSpecs.Add(dg7.Name, dg7);
-
-                dc.PointDetectorChannels.Add("MiniFlux1");
-                dc.PointDetectorChannels.Add("MiniFlux2");
-                dc.PointDetectorChannels.Add("MiniFlux3");
-                dc.PointDetectorChannels.Add("NorthCurrent");
-                dc.PointDetectorChannels.Add("SouthCurrent");
-                dc.PointDetectorChannels.Add("PumpPD");
-                dc.PointDetectorChannels.Add("ProbePD");
-                dc.PointDetectorChannels.Add("PhaseLockFrequency");
-                //dc.PointDetectorChannels.Add("CplusV");
-                //dc.PointDetectorChannels.Add("CminusV");
-
-                return dc;
-            };
-            standardConfigs.Add(name, dcb);
+            _pointDetectorList.Add(detector);
         }
 
+        public List<string> TOFDetectors
+        {
+            get
+            {
+                return _tofDetectorList;
+            }
+        }
 
-     }
+        public List<string> GatedDetectors
+        {
+            get
+            {
+                return _gatedDetectorList;
+            }
+        }
 
+        public List<string> PointDetectors
+        {
+            get
+            {
+                return _pointDetectorList;
+            }
+        }
 
-     public delegate DemodulationConfig DemodulationConfigBuilder(Block b);
+        public GatedDemodulationConfig Gates
+        {
+            get
+            {
+                return _gateConfig;
+            }
+        }
+
+        public static DemodulationConfig MakeStandardDemodulationConfig()
+        {
+            DemodulationConfig dc = new DemodulationConfig();
+
+            dc.AddTOFDetector("asymmetry");
+            dc.AddTOFDetector("bottomProbeScaled");
+            dc.AddTOFDetector("topProbeNoBackground");
+            dc.AddTOFDetector("battery");
+
+            dc.AddGatedDetector("magnetometer", Gate.WideGate());
+            dc.AddGatedDetector("gnd", Gate.WideGate());
+            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            dc.AddGatedDetector("reflectedrfAmplitude", Gate.WideGate());
+            dc.AddGatedDetector("incidentrfAmplitude", Gate.WideGate());
+
+            dc.AddPointDetector("PhaseLockFrequency");
+            dc.AddPointDetector("PhaseLockError");
+            dc.AddPointDetector("NorthCurrent");
+            dc.AddPointDetector("SouthCurrent");
+            dc.AddPointDetector("BottomDetectorBackground");
+            dc.AddPointDetector("TopDetectorBackground");
+            dc.AddPointDetector("MiniFlux1");
+            dc.AddPointDetector("MiniFlux2");
+            dc.AddPointDetector("MiniFlux3");
+            dc.AddPointDetector("topPD");
+            dc.AddPointDetector("bottomPD");
+            dc.AddPointDetector("ValveMonV");
+
+            return dc;
+        }
+
+        public static DemodulationConfig MakeLiveAnalysisConfig()
+        {
+            DemodulationConfig dc = new DemodulationConfig();
+
+            dc.AddTOFDetector("asymmetry");
+            dc.AddGatedDetector("bottomProbeScaled", Gate.WideGate());
+            dc.AddGatedDetector("topProbeNoBackground", Gate.WideGate());
+
+            dc.AddGatedDetector("magnetometer", Gate.WideGate());
+            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrfAmplitude", Gate.WideGate());
+            //dc.AddGatedDetector("incidentrfAmplitude", Gate.WideGate());
+
+            dc.AddPointDetector("PhaseLockFrequency");
+            dc.AddPointDetector("PhaseLockError");
+            dc.AddPointDetector("NorthCurrent");
+            dc.AddPointDetector("SouthCurrent");
+            dc.AddPointDetector("BottomDetectorBackground");
+            dc.AddPointDetector("TopDetectorBackground");
+            dc.AddPointDetector("topPD");
+            dc.AddPointDetector("bottomPD");
+
+            return dc;
+        }
+    }
 }

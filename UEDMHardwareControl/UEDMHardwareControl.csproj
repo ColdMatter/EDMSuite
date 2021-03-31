@@ -83,8 +83,10 @@
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=18.6.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=20.1.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -104,6 +106,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CooldownModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CooldownModeOptionsDialog.Designer.cs">
+      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WarmUpModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WarmUpModeOptionsDialog.Designer.cs">
+      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RefreshModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RefreshModeOptionsDialog.Designer.cs">
+      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UEDMRunner.cs" />
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
@@ -122,6 +142,12 @@
     <EmbeddedResource Include="ControlWindow.resx">
       <DependentUpon>ControlWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CooldownModeOptionsDialog.resx">
+      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WarmUpModeOptionsDialog.resx">
+      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -132,6 +158,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="RefreshModeOptionsDialog.resx">
+      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UEDMSavePlotDataDialog.resx">
       <DependentUpon>UEDMSavePlotDataDialog.cs</DependentUpon>
     </EmbeddedResource>

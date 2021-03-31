@@ -19,6 +19,7 @@ namespace Data.Scans
 		private ArrayList onShots = new ArrayList();
 		private ArrayList offShots = new ArrayList();
 		private ArrayList analogs = new ArrayList();
+        public double gpibval;
 
 		public Shot AverageOnShot 
 		{
@@ -215,6 +216,11 @@ namespace Data.Scans
 		{
 			get { return analogs; }
 		}
+        public double GPIBval
+        {
+            get { return gpibval; }
+        }
+        
 
 	}
 }

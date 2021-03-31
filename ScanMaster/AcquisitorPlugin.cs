@@ -50,6 +50,7 @@ namespace ScanMaster.Acquire.Plugin
 		private void InitialiseAllSettings()
 		{
 			settings["dummy"] = "jony";
+            settings["externalParameters"] = "SidIsGreat";
 			InitialiseBaseSettings();
 			InitialiseSettings();
 		}

@@ -102,6 +102,7 @@ namespace ScanMaster
 				p.AcquisitorConfig.pgPlugin.Config = p.AcquisitorConfig;
 				p.AcquisitorConfig.yagPlugin.Config = p.AcquisitorConfig;
 				p.AcquisitorConfig.analogPlugin.Config = p.AcquisitorConfig;
+                p.AcquisitorConfig.gpibPlugin.Config = p.AcquisitorConfig;
 			}
 			window.UpdateUI();
 		}

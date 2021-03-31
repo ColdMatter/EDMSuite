@@ -1,6 +1,7 @@
 ﻿using System;
 
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 using DAQ.Environment;
 
@@ -14,9 +15,9 @@ namespace DAQ.HAL
         // These are overrideable by child classes
         protected int BaudRate = 9600;
         protected short DataBits = 8;
-        protected StopBitType StopBit = StopBitType.One;
-        protected Parity ParitySetting = Parity.None;
-        protected FlowControlTypes FlowControl = FlowControlTypes.None;
+        protected SerialStopBitsMode StopBit = SerialStopBitsMode.One;
+        protected SerialParity ParitySetting = SerialParity.None;
+        protected SerialFlowControlModes FlowControl = SerialFlowControlModes.None;
         protected byte TerminationCharacter = 0xa;
         
         protected SerialSession serial;
@@ -30,7 +31,7 @@ namespace DAQ.HAL
 
         public override void Connect()
         {
-            Connect(SerialTerminationMethod.LastBit);
+            Connect(SerialTerminationMethod.HighestBit);
         }
         protected void Connect(SerialTerminationMethod method)
         {
@@ -60,37 +61,39 @@ namespace DAQ.HAL
         protected override void Write(string command)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             Disconnect();
         }
 
         protected void Write(byte[] command)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             Disconnect();
         }
 
         protected void Write(string command, bool stayOpen)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             if (!stayOpen) Disconnect();
         }
 
         protected string Query(string q)
         {
-            return serial.Query(q);
+            serial.RawIO.Write(q);
+            return serial.RawIO.ReadString();
+            //return serial.Query(q);
         }
 
         protected override string Read()
         {
-            return serial.ReadString();
+            return serial.RawIO.ReadString();
         }
 
         protected string Read(int bytes)
         {
-            return serial.ReadString(bytes);
+            return serial.RawIO.ReadString(bytes);
         }
 
         protected void Clear()

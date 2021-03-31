@@ -524,6 +524,7 @@ namespace ScanMaster
             scan.ScanSettings.Add("pg:pluginName", acquisitor.Configuration.pgPlugin.GetType().ToString());
             scan.ScanSettings.Add("yag:pluginName", acquisitor.Configuration.yagPlugin.GetType().ToString());
             scan.ScanSettings.Add("analog:pluginName", acquisitor.Configuration.analogPlugin.GetType().ToString());
+            scan.ScanSettings.Add("gpib:pluginName", acquisitor.Configuration.gpibPlugin.GetType().ToString());
 
             // settings from the output plugin
             st = acquisitor.Configuration.outputPlugin.Settings;
@@ -554,6 +555,11 @@ namespace ScanMaster
             st = acquisitor.Configuration.analogPlugin.Settings;
             keys = st.Keys;
             foreach (String key in keys) scan.ScanSettings.Add("analog:" + key, st[key]);
+
+            // settings from the gpib plugin
+            st = acquisitor.Configuration.gpibPlugin.Settings;
+            keys = st.Keys;
+            foreach (String key in keys) scan.ScanSettings.Add("gpib:" + key, st[key]);
         }
 
 

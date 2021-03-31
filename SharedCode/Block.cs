@@ -11,12 +11,27 @@ namespace Data.EDM
 	[Serializable]
 	public class Block : MarshalByRefObject
 	{
-		public int Version = 3;
+		public int Version = 4;
 		private ArrayList points = new ArrayList();
 		private DateTime timeStamp = DateTime.Now;
 		private BlockConfig config = new BlockConfig();
 
+        // ratio of distance from source for the two detectors
+        private static double kDetectorDistanceRatio = 1715.0 / 1500.0;
+
         public List<string> detectors = new List<string>();
+
+        public List<string> GetPointDetectors()
+        {
+            EDMPoint point = (EDMPoint)points[0];
+            List<string> pointDetectorList = new List<string>();
+            foreach (string key in point.SinglePointData.Keys)
+            {
+                //XmlSerialisableHashtables have "dummy" as a default entry.
+                if (key != "dummy") pointDetectorList.Add(key);
+            }
+            return pointDetectorList;
+        }
 
 		public void SetTimeStamp()
 		{
@@ -44,11 +59,11 @@ namespace Data.EDM
 			get { return config; }
 			set { config = value; }
 		}
-        
+
 		public double[] GetTOFIntegralArray(int index, double startTime, double endTime)
 		{
 			double[] temp = new double[points.Count];
-			for (int i = 0 ; i < points.Count ; i++) temp[i] = 
+			for (int i = 0 ; i < points.Count ; i++) temp[i] =
 								(double)((EDMPoint)points[i]).Shot.Integrate(index, startTime, endTime);
 			return temp;
 		}
@@ -60,7 +75,7 @@ namespace Data.EDM
                               (double)((EDMPoint)points[i]).Shot.GatedMean(index, startTime, endTime);
             return temp;
         }
-        
+
         public TOF GetAverageTOF(int index)
 		{
 			TOF temp = new TOF();
@@ -76,145 +91,140 @@ namespace Data.EDM
             return d;
         }
 
-        // NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        // This function takes a list of switches, defining an analysis channel, and gives the 
-        // average TOF for that analysis channel's positively contributing TOFs and the same for
-        // the negative contributors. Note that this definition may or may not line up with how 
-        // the analysis channels are defined (they may differ by a sign, which might depend on
-        // the number of switches in the channel).
-        public TOF[] GetSwitchTOFs(string[] switches, int index)
+        // This function adds background-subtracted TOFs, scaled bottom probe TOF, and asymmetry TOF to the block
+        // Also has the option of converting single point data to TOFs
+        public void AddDetectorsToBlock()
         {
-            TOF[] tofs = new TOF[2];
-            // calculate the state of the channel for each point in the block
-            int numSwitches = switches.Length;
-            int waveformLength = config.GetModulationByName(switches[0]).Waveform.Length;
-            List<bool[]> switchBits = new List<bool[]>();
-            foreach (string s in switches)
-                switchBits.Add(config.GetModulationByName(s).Waveform.Bits);
-            List<bool> channelStates = new List<bool>();
-            for (int point = 0; point < waveformLength; point++)
-            {
-                bool channelState = false;
-                for (int i = 0; i < numSwitches; i++)
-                {
-                    channelState = channelState ^ switchBits[i][point];
-                }
-                channelStates.Add(channelState);
-            }
-            // build the "on" and "off" average TOFs
-            TOF tOn = new TOF();
-            TOF tOff = new TOF();
-            for (int i = 0; i < waveformLength; i++)
-            {
-                if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-                else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-            }
-            tOn /= (waveformLength / 2);
-            tOff /= (waveformLength / 2);
-            tofs[0] = tOn;
-            tofs[1] = tOff;
-            return tofs;
+            SubtractBackgroundFromProbeDetectorTOFs();
+
+            CreateScaledBottomProbe();
+
+            ConstructAsymmetryTOF();
+
+            TOFuliseSinglePointData();
         }
 
-
-        // NOTE: this function is rendered somewhat obsolete by the BlockTOFDemodulator.
-        // This function takes a list of switches, defining an analysis channel, and gives the 
-        // average TOF for that analysis channel's positively contributing TOFs and the same for
-        // the negative contributors. Note that this definition may or may not line up with how 
-        // the analysis channels are defined (they may differ by a sign, which might depend on
-        // the number of switches in the channel).
-        public TOF[] GetSwitchTOFs(string[] switches, int index, bool normed)
+        public void AddDetectorsToMagBlock()
         {
-            TOF[] tofs = new TOF[2];
-            // calculate the state of the channel for each point in the block
-            int numSwitches = switches.Length;
-            int waveformLength = config.GetModulationByName(switches[0]).Waveform.Length;
-            List<bool[]> switchBits = new List<bool[]>();
-            foreach (string s in switches)
-                switchBits.Add(config.GetModulationByName(s).Waveform.Bits);
-            List<bool> channelStates = new List<bool>();
-            for (int point = 0; point < waveformLength; point++)
-            {
-                bool channelState = false;
-                for (int i = 0; i < numSwitches; i++)
-                {
-                    channelState = channelState ^ switchBits[i][point];
-                }
-                channelStates.Add(channelState);
-            }
-            // build the "on" and "off" average TOFs
-            TOF tOn = new TOF();
-            TOF tOff = new TOF();
-            if (!normed)
-            {
-                // if no normalisation is requested then the TOFs are added directly
-                for (int i = 0; i < waveformLength; i++)
-                {
-                    if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-                    else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]);
-                }
-            }
-            else
-            {
-                // otherwise each point's TOF is normalised to the ratio of that points norm
-                // signal (integrated over the cgate11) to the average norm signal for the block
-                double[] normIntegrals = GetTOFIntegralArray(1, 0, 3000);
-                double normMean = 0;
-                for (int j = 0; j < normIntegrals.Length; j++) normMean += normIntegrals[j];
-                normMean /= normIntegrals.Length;
-                for (int j = 0; j < normIntegrals.Length; j++) normIntegrals[j] /= normMean;
-                for (int i = 0; i < waveformLength; i++)
-                {
-                    if (channelStates[i]) tOn += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]) / normIntegrals[i];
-                    else tOff += ((TOF)((EDMPoint)Points[i]).Shot.TOFs[index]) / normIntegrals[i];
-                }
-            }
-            tOn /= (waveformLength / 2);
-            tOff /= (waveformLength / 2);
-            tofs[0] = tOn;
-            tofs[1] = tOff;
-            return tofs;
+            TOFuliseSinglePointData();
         }
 
         // this function adds a new set of detector data to the block, constructed
-        // by normalising the PMT data to the norm data. The normalisation is done
-        // by dividing the PMT tofs through by the integrated norm data. The integration
-        // is done according to the provided GatedDetectorExtractSpec.
-        //public void Normalise(GatedDetectorExtractSpec normGate)
-        //{
-        //    GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
-        //    double averageNorm = 0;
-        //    foreach (double val in normData.PointValues) averageNorm += val;
-        //    averageNorm /= normData.PointValues.Count;
+        // by calculating the asymmetry of the top and bottom detectors (which must
+        // be scaled first)
+        public void ConstructAsymmetryTOF()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                Shot shot = ((EDMPoint)points[i]).Shot;
+                int bottomScaledIndex = detectors.IndexOf("bottomProbeScaled");
+                int topIndex = detectors.IndexOf("topProbeNoBackground");
+                TOF asymmetry = ((TOF)shot.TOFs[bottomScaledIndex] - (TOF)shot.TOFs[topIndex]) / ((TOF)shot.TOFs[bottomScaledIndex] + (TOF)shot.TOFs[topIndex]);
+                asymmetry.Calibration = 1;
+                shot.TOFs.Add(asymmetry);
+            }
+            // give these data a name
+            detectors.Add("asymmetry");
+        }
 
-        //    for (int i = 0; i < points.Count; i++)
-        //    {
-        //        Shot shot = ((EDMPoint)points[i]).Shot;
-        //        TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] * (1 / averageNorm));
-        //        shot.TOFs.Add(normedTOF);
-        //    }
-        //    // give these data a name
-        //    detectors.Add("topNormed");
-        //}
+        public void ConstructAsymmetryShotNoiseTOF()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
 
-        //// this function adds a new set of detector data to the block, constructed
-        //// by calculating the asymmetry of the top and bottom detectors The integration
-        //// is done according to the provided GatedDetectorExtractSpec.
-        //public void Normalise(GatedDetectorExtractSpec normGate)
-        //{
-        //    GatedDetectorData normData = GatedDetectorData.ExtractFromBlock(this, normGate);
+                TOF bottomScaled = (TOF)shot.TOFs[detectors.IndexOf("bottomProbeScaled")];
+                TOF top = (TOF)shot.TOFs[detectors.IndexOf("topProbeNoBackground")];
 
-        //    for (int i = 0; i < points.Count; i++)
-        //    {
-        //        Shot shot = ((EDMPoint)points[i]).Shot;
-        //        TOF normedTOF = ((TOF)shot.TOFs[0]) / (normData.PointValues[i] );
-        //        shot.TOFs.Add(normedTOF);
-        //    }
-        //    // give these data a name
-        //    detectors.Add("topNormed");
-        //}
+                // Multiply TOFs by their calibrations
+                bottomScaled *= bottomScaled.Calibration;
+                top *= top.Calibration;
 
+                // Need the total signal TOF for later calculations
+                TOF total = bottomScaled + top;
 
+                // Get background counts
+                double topLaserBackground = (double)point.SinglePointData["TopDetectorBackground"] * bottomScaled.Calibration;
+                double bottomLaserBackground = (double)point.SinglePointData["BottomDetectorBackground"] * top.Calibration;
+
+                // Calculate the shot noise variance in the asymmetry detector
+                TOF asymmetryVariance =
+                    bottomScaled * bottomScaled * top * 4.0
+                    + bottomScaled * top * top * 4.0
+                    + top * top * bottomLaserBackground * 8.0
+                    + bottomScaled * bottomScaled * topLaserBackground * 8.0;
+                asymmetryVariance /= total * total * total * total;
+                shot.TOFs.Add(asymmetryVariance);
+            }
+
+            detectors.Add("asymmetryShotNoiseVariance");
+        }
+
+        // this function scales up the bottom detector to match the top
+        public void CreateScaledBottomProbe()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                Shot shot = ((EDMPoint)points[i]).Shot;
+                int bottomIndex = detectors.IndexOf("bottomProbeNoBackground");
+                int topIndex = detectors.IndexOf("topProbeNoBackground");
+                TOF bottomTOF = (TOF)shot.TOFs[bottomIndex];
+                TOF topTOF = (TOF)shot.TOFs[topIndex];
+                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF(bottomTOF, topTOF, kDetectorDistanceRatio);
+                bottomScaled.Calibration = bottomTOF.Calibration;
+                shot.TOFs.Add(bottomScaled);
+            }
+            // give these data a name
+            detectors.Add("bottomProbeScaled");
+        }
+
+        // this function subtracts the background off a TOF signal
+        // the background is taken as the mean of a background array of points
+        public void SubtractBackgroundFromProbeDetectorTOFs()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[0];
+                double bg = t.GatedMeanAndUncertainty(2800, 2900)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("BottomDetectorBackground", bg);
+            }
+            // give these data a name
+            detectors.Add("bottomProbeNoBackground");
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[1];
+                double bg = t.GatedMeanAndUncertainty(3200, 3300)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("TopDetectorBackground", bg);
+            }
+            // give these data a name
+            detectors.Add("topProbeNoBackground");
+        }
 
         // this function takes some of the single point data and adds it to the block shots as TOFs
         // with one data point in them. This allows us to use the same code to break all of the data
@@ -234,5 +244,30 @@ namespace Data.EDM
                 detectors.Add(spv);
             }
         }
+
+        // TOF-ulise all the single point detectors
+        public void TOFuliseSinglePointData()
+        {
+            EDMPoint point = (EDMPoint)points[0];
+            string[] pointDetectors = new string[point.SinglePointData.Keys.Count];
+            point.SinglePointData.Keys.CopyTo(pointDetectors, 0);
+
+            foreach (string spv in pointDetectors)
+            {
+                if (spv != "dummy") // the hashtable has "dummy" as the default entry, but we don't want it
+                {
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        EDMPoint pt = (EDMPoint)points[i];
+                        Shot shot = pt.Shot;
+                        TOF spvTOF = new TOF((double)pt.SinglePointData[spv]);
+                        shot.TOFs.Add(spvTOF);
+                    }
+                    // give these data a name
+                    detectors.Add(spv);
+                }
+            }
+        }
     }
+
 }

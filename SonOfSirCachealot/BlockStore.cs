@@ -89,7 +89,7 @@ namespace SonOfSirCachealot
                             "MiniFlux1", "MiniFlux2", "MiniFlux3", "ProbePD", "PumpPD" };
                     foreach (string detector in detectorsToExtract)
                     {
-                        BlockTOFDemodulator demod = new BlockTOFDemodulator();
+                        BlockDemodulator demod = new BlockDemodulator();
                         TOFChannelSet tcs = demod.TOFDemodulateBlock(b, b.detectors.IndexOf(detector), true);
                         byte[] tcsBytes = serializeAsByteArray(tcs);
                         DBTOFChannelSet t = new DBTOFChannelSet();
@@ -279,7 +279,7 @@ namespace SonOfSirCachealot
                                          && (dbb.clusterIndex == clusterIndex)
                                          select dbb;
                 foreach (DBBlock dbb in b) dbb.include = included;
-                dc.SubmitChanges();              
+                dc.SubmitChanges();
             }
         }
 
