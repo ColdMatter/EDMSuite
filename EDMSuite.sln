@@ -42,6 +42,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoleculeMOTHardwareControl", "MoleculeMOTHardwareControl\MoleculeMOTHardwareControl.csproj", "{5B795C2A-3D76-4F42-94DF-1E823ED7AB90}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UEDMHardwareControl", "UEDMHardwareControl\UEDMHardwareControl.csproj", "{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D} = {2B59CDCF-F5C3-4879-9CD6-A972A48E915D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDMPhaseLock2020", "EDMPhaseLock2020\EDMPhaseLock2020.csproj", "{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}"
 EndProject
@@ -1633,7 +1636,6 @@ Global
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|Any CPU.Build.0 = Debug|Any CPU
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|Mixed Platforms.Build.0 = Debug|Any CPU
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|x86.ActiveCfg = Debug|Any CPU
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ultracoldEDM|x86.Build.0 = Debug|Any CPU
 		{2B59CDCF-F5C3-4879-9CD6-A972A48E915D}.ZeemanSisyphus|Any CPU.ActiveCfg = Debug|Any CPU
