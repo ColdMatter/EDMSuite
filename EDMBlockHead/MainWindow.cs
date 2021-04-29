@@ -59,6 +59,8 @@ namespace EDMBlockHead.GUI
         private YAxis yAxis5;
         private MenuItem IntelitentTargetStepperMenuItem;
         private MenuItem stopTargetStepperMenuItem;
+        private WaveformPlot GateStart;
+        private WaveformPlot GateEnd;
 
 		private Controller controller;
 
@@ -102,9 +104,11 @@ namespace EDMBlockHead.GUI
             this.exitMenuItem = new System.Windows.Forms.MenuItem();
             this.acquireMenu = new System.Windows.Forms.MenuItem();
             this.menuItem6 = new System.Windows.Forms.MenuItem();
+            this.IntelitentTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
             this.startMenuItem = new System.Windows.Forms.MenuItem();
             this.stopMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem7 = new System.Windows.Forms.MenuItem();
+            this.stopTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
             this.menuItem9 = new System.Windows.Forms.MenuItem();
             this.menuItem10 = new System.Windows.Forms.MenuItem();
@@ -133,8 +137,8 @@ namespace EDMBlockHead.GUI
             this.tofPlot4 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.yAxis5 = new NationalInstruments.UI.YAxis();
-            this.IntelitentTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
-            this.stopTargetStepperMenuItem = new System.Windows.Forms.MenuItem();
+            this.GateStart = new NationalInstruments.UI.WaveformPlot();
+            this.GateEnd = new NationalInstruments.UI.WaveformPlot();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -215,6 +219,13 @@ namespace EDMBlockHead.GUI
             this.menuItem6.Text = "Start pattern";
             this.menuItem6.Click += new System.EventHandler(this.menuItem6_Click);
             // 
+            // IntelitentTargetStepperMenuItem
+            // 
+            this.IntelitentTargetStepperMenuItem.Index = 1;
+            this.IntelitentTargetStepperMenuItem.MdiList = true;
+            this.IntelitentTargetStepperMenuItem.Text = "Start target stepper";
+            this.IntelitentTargetStepperMenuItem.Click += new System.EventHandler(this.IntelitentTargetStepperMenuItem_Click);
+            // 
             // startMenuItem
             // 
             this.startMenuItem.Index = 2;
@@ -233,6 +244,11 @@ namespace EDMBlockHead.GUI
             this.menuItem7.Text = "Stop pattern";
             this.menuItem7.Click += new System.EventHandler(this.menuItem7_Click);
             // 
+            // stopTargetStepperMenuItem
+            // 
+            this.stopTargetStepperMenuItem.Index = 5;
+            this.stopTargetStepperMenuItem.Text = "Stop target stepper";
+            // 
             // menuItem8
             // 
             this.menuItem8.Index = 2;
@@ -248,7 +264,6 @@ namespace EDMBlockHead.GUI
             // 
             // menuItem10
             // 
-            this.menuItem10.Enabled = false;
             this.menuItem10.Index = 3;
             this.menuItem10.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem11});
@@ -320,7 +335,9 @@ namespace EDMBlockHead.GUI
             this.tofGraph2.Location = new System.Drawing.Point(242, 8);
             this.tofGraph2.Name = "tofGraph2";
             this.tofGraph2.Plots.AddRange(new NationalInstruments.UI.WaveformPlot[] {
-            this.tofPlot2});
+            this.tofPlot2,
+            this.GateStart,
+            this.GateEnd});
             this.tofGraph2.Size = new System.Drawing.Size(228, 362);
             this.tofGraph2.TabIndex = 4;
             this.tofGraph2.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -426,17 +443,16 @@ namespace EDMBlockHead.GUI
             this.yAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis5.Range = new NationalInstruments.UI.Range(-1D, 10D);
             // 
-            // IntelitentTargetStepperMenuItem
+            // GateStart
             // 
-            this.IntelitentTargetStepperMenuItem.Index = 1;
-            this.IntelitentTargetStepperMenuItem.MdiList = true;
-            this.IntelitentTargetStepperMenuItem.Text = "Start target stepper";
-            this.IntelitentTargetStepperMenuItem.Click += new System.EventHandler(this.IntelitentTargetStepperMenuItem_Click);
+            this.GateStart.CanScaleYAxis = false;
+            this.GateStart.XAxis = this.xAxis2;
+            this.GateStart.YAxis = this.yAxis2;
             // 
-            // stopTargetStepperMenuItem
+            // GateEnd
             // 
-            this.stopTargetStepperMenuItem.Index = 5;
-            this.stopTargetStepperMenuItem.Text = "Stop target stepper";
+            this.GateEnd.XAxis = this.xAxis2;
+            this.GateEnd.YAxis = this.yAxis2;
             // 
             // MainWindow
             // 
@@ -494,6 +510,12 @@ namespace EDMBlockHead.GUI
             if (tofIndex == 1) PlotY(tofGraph2, tofPlot2, data, start, inc);
             if (tofIndex == 2) PlotY(tofGraph3, tofPlot3, data, start, inc);
             if (tofIndex == 3) PlotY(tofGraph4, tofPlot4, data, start, inc);
+        }
+
+        public void PlotGates(double gateLow,double gateHigh)
+        {
+            PlotY(tofGraph2, GateStart, new double[] { 0.0, 10.0 }, gateLow, 0.1);
+            PlotY(tofGraph2, GateEnd, new double[] { 0.0, 10.0 }, gateHigh, 0.1);
         }
 
         public void AppendLeakageMeasurement(double[] northValues, double[] southValues)

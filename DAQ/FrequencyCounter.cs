@@ -20,5 +20,15 @@ namespace DAQ.HAL
         {
             get;
         }
+
+        public void WriteToCounter(string command)
+        {
+            base.Write(command);
+        }
+
+        public string ReadFromCounter()
+        {
+            return base.Read();
+        }
     }
 }

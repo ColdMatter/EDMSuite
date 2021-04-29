@@ -73,6 +73,7 @@ namespace MoleculeMOTHardwareControl.Controls
             double C = 0.000000085663516;
 
             return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;
+            
         }
 
         protected double GetSourceTemperature()

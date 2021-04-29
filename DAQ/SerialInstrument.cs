@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 namespace DAQ.HAL
 {
@@ -22,8 +23,8 @@ namespace DAQ.HAL
             serial = new SerialSession(address);
             serial.BaudRate = 9600;
             serial.DataBits = 8;
-            serial.StopBits = StopBitType.One;
-            serial.ReadTermination = SerialTerminationMethod.LastBit;
+            serial.StopBits = SerialStopBitsMode.One;
+            serial.ReadTermination = SerialTerminationMethod.HighestBit;
         }
 
         public override void Disconnect()
@@ -33,12 +34,12 @@ namespace DAQ.HAL
 
         protected override void Write(String command)
         {
-            serial.Write(command);
+            serial.RawIO.Write(command);
         }
 
         protected override string Read()
         {
-            return serial.ReadString();
+            return serial.RawIO.ReadString();
         }
     }
 }

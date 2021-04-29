@@ -20,6 +20,10 @@ namespace DAQ.HAL
             {
                 channel = value;
             }
+            get
+            {
+                return channel;
+            }
         }
 
         // returns the frequency in Hz, 1s gate time.
@@ -33,7 +37,7 @@ namespace DAQ.HAL
                     Write(":FUNC 'FREQ " + channel + "'");
                     Write(":FREQ:ARM:STAR:SOUR IMM");
                     Write(":FREQ:ARM:STOP:SOUR TIM");
-                    Write(":FREQ:ARM:STOP:TIM 1.0");
+                    Write(":FREQ:ARM:STOP:TIM 0.001");
                     Write("READ:FREQ?");
                     string fr = Read();
                     Disconnect();
@@ -45,6 +49,7 @@ namespace DAQ.HAL
                 }
             }
         }
+       
 
         public override double Amplitude
         {

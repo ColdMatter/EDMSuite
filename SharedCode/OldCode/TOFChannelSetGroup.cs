@@ -65,7 +65,7 @@
 //                for (int i = 0; i < chanSets.Count; i++) counts[i] = chanSets[i].Count;
 //                int total = 0;
 //                for (int i = 0; i < counts.Length; i++) total += counts[i];
-      
+
 //                TOFChannelSet tcs = chanSets[0] * (double)counts[0];
 //                for (int i = 1; i < chanSets.Count; i++) tcs += chanSets[i] * (double)counts[i];
 //                tcs.Count = total;

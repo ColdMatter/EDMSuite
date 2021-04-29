@@ -159,8 +159,8 @@ class Sequence():
 
 if __name__=='__main__':
     args={}
-    args['filenames']=['CaF04Feb1900_178','CaF04Feb1900_179']
-    args['dirpath']='../../data/MOTMasterData/'
+    args['filenames']=['CaF10Oct2000_150']
+    args['dirpath']=os.path.join("C:\Users\cafmot\Box Sync\CaF MOT", "MOTData","MOTMasterData")
     args['plottypes']=['-k','-r']
     sp=Sequence(args)
     sp.run()

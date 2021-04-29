@@ -1,47 +1,89 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 using EDMConfig;
+using Data;
 
 namespace Analysis.EDM
 {
     [Serializable]
     public class DemodulatedBlock
     {
-        public DateTime TimeStamp;
-        public BlockConfig Config;
-        public DemodulationConfig DemodulationConfig;
+        public DateTime TimeStamp { get; private set; }
+        public BlockConfig Config { get; private set; }
+        public DemodulationConfig DemodulationConfig { get; private set; }
 
-        public Dictionary<string, int> DetectorIndices = new Dictionary<string, int>();
-        public List<DetectorChannelValues> ChannelValues = new List<DetectorChannelValues>();
-        public Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
+        private readonly Dictionary<string, ChannelSet<TOFWithError>> TOFChannelSetDictionary = new Dictionary<string, ChannelSet<TOFWithError>>();
+        private readonly Dictionary<string, ChannelSet<PointWithError>> PointChannelSetDictionary = new Dictionary<string, ChannelSet<PointWithError>>();
+        private readonly Dictionary<string, double> DetectorCalibrations = new Dictionary<string, double>();
 
-        // This is a convenience function that pulls out the mean and error of a channel,
-        // specified by a set of switches for a given detector. This isn't the most efficient
-        // way to do it if pulling out a lot of values, but it's not bad. And it is convenient.
-        public double[] GetChannelValueAndError(string[] switches, string detector)
+        public DemodulatedBlock(DateTime timeStamp, BlockConfig config, DemodulationConfig demodulationConfig)
         {
-            int detectorIndex;
-
-            if (DetectorIndices.TryGetValue(detector, out detectorIndex))
-            {
-                DetectorChannelValues dcv = ChannelValues[detectorIndex];
-                uint channelIndex = dcv.GetChannelIndex(switches);
-                return new double[] { dcv.Values[channelIndex], dcv.Errors[channelIndex] };
-            }
-            else
-            {
-                return new double[] {0.0, 0.0};
-            }
-            
+            this.TimeStamp = timeStamp;
+            this.Config = config;
+            this.DemodulationConfig = demodulationConfig;
         }
 
-        public double[] GetSpecialChannelValueAndError(string name, string detector)
+        public PointWithError GetPointChannel(string[] switches, string detector)
         {
-            int detectorIndex = DetectorIndices[detector];
-            DetectorChannelValues dcv = ChannelValues[detectorIndex];
-            return dcv.SpecialValues[name];
+            return GetPointChannelSet(detector).GetChannel(switches);
+        }
+
+        public PointWithError GetPointChannel(string channel, string detector)
+        {
+            return GetPointChannelSet(detector).GetChannel(channel);
+        }
+
+        public TOFWithError GetTOFChannel(string[] switches, string detector)
+        {
+            return GetTOFChannelSet(detector).GetChannel(switches);
+        }
+
+        public TOFWithError GetTOFChannel(string channel, string detector)
+        {
+            return GetTOFChannelSet(detector).GetChannel(channel);
+        }
+
+        public void AddDetector(string detector, double calibration, ChannelSet<PointWithError> channelSet)
+        {
+            PointChannelSetDictionary.Add(detector, channelSet);
+            DetectorCalibrations.Add(detector, calibration);
+        }
+
+        public void AddDetector(string detector, double calibration, ChannelSet<TOFWithError> channelSet)
+        {
+            TOFChannelSetDictionary.Add(detector, channelSet);
+            DetectorCalibrations.Add(detector, calibration);
+        }
+
+        public ChannelSet<PointWithError> GetPointChannelSet(string detector)
+        {
+            return PointChannelSetDictionary[detector];
+        }
+
+        public ChannelSet<TOFWithError> GetTOFChannelSet(string detector)
+        {
+            return TOFChannelSetDictionary[detector];
+        }
+
+        public double GetCalibration(string detector)
+        {
+            return DetectorCalibrations[detector];
+        }
+
+        public List<string> Detectors
+        {
+            get
+            {
+                Dictionary<string, ChannelSet<PointWithError>>.KeyCollection keys1 = PointChannelSetDictionary.Keys;
+                Dictionary<string, ChannelSet<TOFWithError>>.KeyCollection keys2 = TOFChannelSetDictionary.Keys;
+                List<string> keyArray = new List<string>();
+                foreach (string key in keys1) keyArray.Add(key);
+                foreach (string key in keys2) keyArray.Add(key);
+                return keyArray;
+            }
         }
 
     }

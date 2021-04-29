@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
 using System.Xml.Serialization;
+
+using Analysis;
 
 namespace Data
 {
@@ -26,7 +29,7 @@ namespace Data
 
         // This helper function takes a pair of gates and trims them to the width of the
         // captured data. It returns null if the gates don't make sense.
-        private double[] TrimGates(double startTime, double endTime)
+        protected double[] TrimGates(double startTime, double endTime)
         {
             // check for swapped gates
             if (startTime > endTime) return null;
@@ -115,6 +118,31 @@ namespace Data
             return IntegrateInternal(startTime, endTime) / (endTime - startTime);
         }
 
+        public double[] GatedMeanAndUncertainty(double startTime, double endTime)
+        {
+            double[] mne = new double[2];
+
+            double[] trimmedGates = TrimGates(startTime, endTime);
+            if (trimmedGates == null) return null;
+            startTime = trimmedGates[0];
+            endTime = trimmedGates[1];
+
+            int low = (int)Math.Ceiling((startTime - gateStartTime) / clockPeriod);
+            int high = (int)Math.Floor((endTime - gateStartTime) / clockPeriod);
+
+            // check the range is sensible
+            if (low < 0) low = 0;
+            if (high > this.Length - 1) high = this.Length - 1;
+            if (low > high) return null;
+
+            RunningStatistics stats = new RunningStatistics();
+            for (int i = low; i <= high; i++) stats.Push(tofData[i]);
+
+            mne[0] = stats.Mean;
+            mne[1] = stats.StandardErrorOfSampleMean;
+            return mne;
+        }
+
         public static TOF operator +(TOF p1, TOF p2)
         {
             if (p1.ClockPeriod == p2.ClockPeriod && p1.GateStartTime == p2.GateStartTime
@@ -153,6 +181,38 @@ namespace Data
                 temp.Data[i] = -p2.Data[i];
             }
             return p1 + temp;
+        }
+
+        public static TOF operator +(TOF p1, double d)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[p1.Data.Length];
+            temp.GateStartTime = p1.GateStartTime;
+            temp.ClockPeriod = p1.ClockPeriod;
+            temp.Calibration = p1.Calibration;
+
+            for (int i = 0; i < p1.Data.Length; i++)
+            {
+                temp.Data[i] = p1.Data[i] + d;
+            }
+
+            return temp;
+        }
+
+        public static TOF operator -(TOF p1, double d)
+        {
+            TOF temp = new TOF();
+            temp.Data = new double[p1.Data.Length];
+            temp.GateStartTime = p1.GateStartTime;
+            temp.ClockPeriod = p1.ClockPeriod;
+            temp.Calibration = p1.Calibration;
+
+            for (int i = 0; i < p1.Data.Length; i++)
+            {
+                temp.Data[i] = p1.Data[i] - d;
+            }
+
+            return temp;
         }
 
         static public TOF operator *(TOF t, double d)
@@ -211,25 +271,64 @@ namespace Data
 
             for (int i = 0; i < t1.Data.Length; i++)
             {
-                temp.Data[i] = t1.Data[i] / t2.Data[i];
+                if (t1.Data[i] == 0 && t2.Data[i] == 0) temp.Data[i] = 0.0;
+                else temp.Data[i] = t1.Data[i] / t2.Data[i];
             }
             return temp;
         }
 
         static public TOF operator *(TOF t1, TOF t2)
         {
-            TOF temp = new TOF();
-            temp.Data = new double[t1.Data.Length];
-            temp.GateStartTime = t1.GateStartTime;
-            temp.ClockPeriod = t1.ClockPeriod;
-
-            for (int i = 0; i < t1.Data.Length; i++)
+            if (t1.ClockPeriod == t2.ClockPeriod && t1.GateStartTime == t2.GateStartTime
+                && t1.Length == t2.Length)
             {
-                temp.Data[i] = t1.Data[i] * t2.Data[i];
+                TOF temp = new TOF();
+                temp.Data = new double[t1.Data.Length];
+                temp.GateStartTime = t1.GateStartTime;
+                temp.ClockPeriod = t1.ClockPeriod;
+
+                for (int i = 0; i < t1.Data.Length; i++)
+                {
+                    temp.Data[i] = t1.Data[i] * t2.Data[i];
+                }
+                return temp;
             }
+            else
+            {
+                if (t1.Length == 0) return t2;
+                if (t2.Length == 0) return t1;
+                return null;
+            }
+
+            
+        }
+
+        static public TOF ScaleTOFInTimeToMatchAnotherTOF(TOF t1, TOF t2, double d)
+        {
+            TOF temp = new TOF();
+            double[] oldTimes = t1.Times.Select(x => (double)x).ToArray();
+            double[] scaledTimes = oldTimes.Select(x => x * d).ToArray();
+            int[] newTimes = new int[t2.Length];
+
+            temp.Data = new double[t2.Data.Length];
+            temp.ClockPeriod = t2.ClockPeriod;
+            temp.GateStartTime = t2.GateStartTime;
+            for (int i = 0; i < t2.Length; i++) newTimes[i] = temp.GateStartTime + i * t1.ClockPeriod;
+
+            for (int j = 0; j < t2.Length; j++)
+            {
+                int p = Array.FindIndex(scaledTimes, i => i >= (double)newTimes[j]);
+                if (p != 0) temp.Data[j] = LinearInterpolate((double)newTimes[j], scaledTimes[p - 1], scaledTimes[p], t1.Data[p - 1], t1.Data[p]);
+                else temp.Data[j] = t1.Data[j];
+            }
+
             return temp;
         }
 
+        static private double LinearInterpolate(double x, double x1, double x2, double y1, double y2)
+        {
+            return y1 + (x - x1) * (y2 - y1) / (x2 - x1);
+        }
 
         [XmlArrayItem("s")]
         public double[] Data
@@ -293,6 +392,17 @@ namespace Data
             TOF t = new TOF();
             t.Data = new double[RANDOM_TOF_SIZE];
             for (int i = 0; i < RANDOM_TOF_SIZE; i++) t.Data[i] = r.NextDouble();
+            t.Calibration = 1.0;
+            t.ClockPeriod = 10;
+            t.GateStartTime = 1800;
+            return t;
+        }
+
+        public static TOF Zero()
+        {
+            TOF t = new TOF();
+            t.Data = new double[RANDOM_TOF_SIZE];
+            for (int i = 0; i < RANDOM_TOF_SIZE; i++) t.Data[i] = 0.0;
             t.Calibration = 1.0;
             t.ClockPeriod = 10;
             t.GateStartTime = 1800;

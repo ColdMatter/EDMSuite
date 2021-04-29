@@ -30,6 +30,11 @@ namespace Utility
 			table.Add(key, value);
 		}
 
+        public void Remove(String key)
+        {
+            table.Remove(key);
+        }
+
 		public object this[String key]
 		{
 			get
@@ -42,6 +47,11 @@ namespace Utility
 				table[key] = value;
 			}
 		}
+
+        public bool Contains(String key)
+        {
+            return table.Contains(key);
+        }
 
 		[XmlIgnore]
 		public ICollection Keys

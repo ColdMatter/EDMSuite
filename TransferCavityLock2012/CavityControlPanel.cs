@@ -33,9 +33,7 @@ namespace TransferCavityLock2012
         {
             string title = sl.Name;
             TabPage newTab = new TabPage(title);
-            LockControlPanel panel = new LockControlPanel(title, sl.LowerVoltageLimit, sl.UpperVoltageLimit, sl.Gain);
-            panel.Controller = this.controller;
-            panel.CavityPanel = this;
+            LockControlPanel panel = new LockControlPanel(title, sl.LowerVoltageLimit, sl.UpperVoltageLimit, sl.Gain, this, this.controller);
             slaveLasersTab.TabPages.Add(newTab);
             newTab.Controls.Add(panel);
             slaveLasersTab.Enabled = true;

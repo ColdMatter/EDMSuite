@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using NationalInstruments.DAQmx;
-using NationalInstruments.VisaNS;
 using DAQ.Environment;
 using DAQ.HAL;
 

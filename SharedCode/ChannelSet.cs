@@ -15,33 +15,32 @@ namespace Analysis.EDM
     /// 
     /// It is used to carry the results of demodulating a single detector from a Block into its channels.
     /// </summary>
+    /// 
     [Serializable]
-    [XmlInclude(typeof(TOFChannelSet))]
     public class ChannelSet<T>
     {
-        [BsonElement("csd")]
-        private Dictionary<string, Channel<T>> ChannelDictionary = new Dictionary<string, Channel<T>>();
- 
-        public Channel<T> GetChannel(string channelName)
+        private readonly Dictionary<string, T> _channelDictionary = new Dictionary<string, T>();
+
+        public T GetChannel(string channelName)
         {
-            return ChannelDictionary[CanonicalChannelString(channelName)];
+            return _channelDictionary[CanonicalChannelString(channelName)];
         }
 
         // sometimes its more convenient to use a list of switches rather than a channel name
-        public Channel<T> GetChannel(string[] switches)
+        public T GetChannel(string[] switches)
         {
-            return ChannelDictionary[CanonicalChannelString(switches)];
+            return _channelDictionary[CanonicalChannelString(switches)];
         }
         
-        public void AddChannel(string channelName, Channel<T> channel)
+        public void AddChannel(string channelName, T channel)
         {
-            ChannelDictionary.Add(CanonicalChannelString(channelName), channel);
+            _channelDictionary.Add(CanonicalChannelString(channelName), channel);
         }
 
         // sometimes its more convenient to use a list of switches rather than a channel name
-        public void AddChannel(string[] switches, Channel<T> channel)
+        public void AddChannel(string[] switches, T channel)
         {
-            ChannelDictionary.Add(CanonicalChannelString(switches), channel);
+            _channelDictionary.Add(CanonicalChannelString(switches), channel);
         }
         
         // this sorts the channel in a channel string, giving its canonical representation.
@@ -68,15 +67,30 @@ namespace Analysis.EDM
             return sb.ToString();
         }
 
+        static public ChannelSet<T> operator +(ChannelSet<T> cs1, ChannelSet<T> cs2)
+        {
+            var csNew = new ChannelSet<T>();
+            foreach (string channelName in cs1.Channels)
+            {
+                csNew.AddChannel(channelName, cs1.GetChannel(channelName));
+            }
+            foreach(string channelName in cs2.Channels)
+            {
+                csNew.AddChannel(channelName, cs2.GetChannel(channelName));
+            }
+            return csNew;
+        }
+
         public List<string> Channels
         {
             get
             {
-                Dictionary<string, Channel<T>>.KeyCollection keys = ChannelDictionary.Keys;
+                Dictionary<string, T>.KeyCollection keys = _channelDictionary.Keys;
                 List<string> keyArray = new List<string>();
                 foreach (string key in keys) keyArray.Add(key);
                 return keyArray;
             }
         }
+
     }
 }

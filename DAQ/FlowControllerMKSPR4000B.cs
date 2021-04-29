@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 using DAQ.Environment;
 using System.Globalization;
 using System.Threading;
@@ -24,7 +25,7 @@ namespace DAQ.HAL
         #region Serial Communication Parameters
 
         protected new int BaudRate = 19200;
-        protected new Parity ParitySetting = Parity.Odd;
+        protected new SerialParity ParitySetting = SerialParity.Odd;
         protected new short DataBits = 7;
         private SerialTerminationMethod TerminationMethod = SerialTerminationMethod.TerminationCharacter;
         protected new byte TerminationCharacter = 0xd;
