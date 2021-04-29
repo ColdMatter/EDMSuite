@@ -24,7 +24,7 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
-            AddDigitalOutputChannel("aom", pgBoard, 1, 1);//
+            AddDigitalOutputChannel("aom", pgBoard, 1, 1);//`
             AddDigitalOutputChannel("aom2", pgBoard, 1, 2);//
             AddDigitalOutputChannel("shutter1", pgBoard, 1, 3);//
             AddDigitalOutputChannel("shutter2", pgBoard, 1, 4);//
@@ -60,10 +60,12 @@ namespace DAQ.HAL
 
             // map the analog input channels for "daq" card
             AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
-            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"
+            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"   unused at the moment, should be renamed
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
             //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
             AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
+            //AddAnalogInputChannel("detector1", TCLBoard + "/ai6", AITerminalConfiguration.Rse); //trying another card because of cross talks
+            //AddAnalogInputChannel("detector1", UEDMHardwareControllerBoard + "/ai10", AITerminalConfiguration.Rse); //trying another card because of cross talks
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
@@ -80,6 +82,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("SF6TemperatureMonitor", UEDMHardwareControllerBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pressureGaugeSource", UEDMHardwareControllerBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pressureGaugeBeamline", UEDMHardwareControllerBoard + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressureGaugeDetection", UEDMHardwareControllerBoard + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI11", UEDMHardwareControllerBoard + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI12", UEDMHardwareControllerBoard + "/ai12", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI13", UEDMHardwareControllerBoard + "/ai13", AITerminalConfiguration.Rse);

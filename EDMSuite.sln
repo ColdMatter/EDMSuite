@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
@@ -339,6 +339,7 @@ Global
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ultracoldEDM|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ultracoldEDM|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Any CPU.ActiveCfg = Wavemeter|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.ZeemanSisyphus|Any CPU.Build.0 = Wavemeter|Any CPU
