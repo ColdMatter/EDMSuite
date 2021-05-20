@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 250000;
+        Parameters["PatternLength"] = 100000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -32,7 +32,7 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 100000;
+        Parameters["MOTLoadTime"] = 10000;
         Parameters["ProbeImageDelay"] = 8000;
         Parameters["BackgroundImageDelay"] = 8000;
         Parameters["Frame0TriggerDuration"] = 15;
@@ -155,7 +155,7 @@ public class Patterns : MOTMasterScript
         
         //Rb cooling light
         p.AddEdge("rb3DCooling", 0, false);
-        p.AddEdge("rb3DCooling", rbMolassesEndTime, true); //switch off cooling light for magnetic trap
+        //p.AddEdge("rb3DCooling", rbMolassesEndTime, true); //switch off cooling light for magnetic trap
         //p.AddEdge("rb3DCooling", swtichAllOn, false); //switch on cooling light just before the end of sequence
         
         
@@ -201,9 +201,10 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBamAbsorptionShutter", rbMagnteticTrapStartTime - (int)Parameters["rbAbsorptionShutterClosingTime"], true); 
         p.AddEdge("rbPushBamAbsorptionShutter", cameraTrigger1 - (int)Parameters["rbAbsorptionShutterOpeningTime"], false);
         
-        p.AddEdge("rb3DMOTShutter", 0, false);
-        p.AddEdge("rb3DMOTShutter", rbMagnteticTrapStartTime - (int)Parameters["coolingShutterClosingTime"], true);
-        p.AddEdge("rb3DMOTShutter", swtichAllOn, false);
+        p.AddEdge("rb3DMOTShutter", 0, true);
+        //p.AddEdge("rb3DMOTShutter", 20000, true);
+        //p.AddEdge("rb3DMOTShutter", rbMagnteticTrapStartTime - (int)Parameters["coolingShutterClosingTime"], true);
+        //p.AddEdge("rb3DMOTShutter", swtichAllOn, false);
         
         p.AddEdge("rb2DMOTShutter", 0, false); //this shutter now closes only the 2D MOT light
         p.AddEdge("rb2DMOTShutter", rbMOTLoadTime - 1500, true);

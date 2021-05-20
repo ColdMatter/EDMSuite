@@ -389,17 +389,6 @@ namespace UEDMHardwareControl
             controller.ChangePlotYAxisScale(2);
         }
 
-        private void checkBoxCryoEnable_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxCryoEnable.Checked)
-            {
-                controller.EnableCryoDigitalControl(true);
-            }
-            else controller.EnableCryoDigitalControl(false);
-
-        }
-
-
         private void checkBoxCellTempPlot_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell Temperature", true);
@@ -479,10 +468,16 @@ namespace UEDMHardwareControl
             controller.ClearChartSeriesData(chart1, "Beamline Pressure");
         }
 
+        private void btClearDetectionPressureData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart1, "Detection Pressure");
+        }
+
         private void btClearAllPressureData_Click(object sender, EventArgs e)
         {
             controller.ClearChartSeriesData(chart1, "Source Pressure");
             controller.ClearChartSeriesData(chart1, "Beamline Pressure");
+            controller.ClearChartSeriesData(chart1, "Detection Pressure");
         }
 
         private void btStartNeonFlowActMonitor_Click(object sender, EventArgs e)
@@ -729,6 +724,14 @@ namespace UEDMHardwareControl
             }
         }
 
+        private void tbDetectionGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdateGaugesCorrectionFactors();
+            }
+        }
+
         private void tbTandPPollPeriod_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -941,6 +944,11 @@ namespace UEDMHardwareControl
             controller.EnableChartSeries(chart1, "Beamline Pressure", checkBoxBeamlinePressurePlot.Checked);
         }
 
+        private void checkBoxDetectionPressurePlot_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableChartSeries(chart1, "Detection Pressure", checkBoxDetectionPressurePlot.Checked);
+        }
+
         private void btResetPTCSVData_Click(object sender, EventArgs e)
         {
             controller.ResetPTCSVData();
@@ -992,6 +1000,26 @@ namespace UEDMHardwareControl
         private void ButtonCoolDownModeOptions_Click(object sender, EventArgs e)
         {
             controller.LoadCooldownModeOptionsDialog();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

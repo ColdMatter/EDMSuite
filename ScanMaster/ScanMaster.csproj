@@ -171,7 +171,7 @@
       <Name>SharedCode</Name>
     </ProjectReference>
     <ProjectReference Include="..\TransferCavityLock2012\TransferCavityLock2012.csproj">
-      <Project>{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}</Project>
+      <Project>{f1bf43a3-5641-4adf-81cb-35bc0d9ac423}</Project>
       <Name>TransferCavityLock2012</Name>
     </ProjectReference>
     <Reference Include="alglibnet2">

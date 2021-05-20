@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AMOTBasicMagtrapTest.cs" />
     <Compile Include="BFieldCalibration.cs" />
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />

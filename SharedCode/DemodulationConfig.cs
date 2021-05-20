@@ -82,9 +82,9 @@ namespace Analysis.EDM
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
             dc.AddGatedDetector("gnd", Gate.WideGate());
-            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            dc.AddGatedDetector("reflectedrfAmplitude", Gate.WideGate());
+            dc.AddGatedDetector("incidentrfAmplitude", Gate.WideGate());
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");
@@ -111,9 +111,9 @@ namespace Analysis.EDM
             dc.AddGatedDetector("topProbeNoBackground", Gate.WideGate());
 
             dc.AddGatedDetector("magnetometer", Gate.WideGate());
-            //dc.AddGatedDetector("rfCurrent", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf1Amplitude", Gate.WideGate());
-            //dc.AddGatedDetector("reflectedrf2Amplitude", Gate.WideGate());
+            dc.AddGatedDetector("rfCurrent", Gate.WideGate());
+            //dc.AddGatedDetector("reflectedrfAmplitude", Gate.WideGate());
+            //dc.AddGatedDetector("incidentrfAmplitude", Gate.WideGate());
 
             dc.AddPointDetector("PhaseLockFrequency");
             dc.AddPointDetector("PhaseLockError");

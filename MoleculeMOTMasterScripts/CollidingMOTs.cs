@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 410000; //300000
+        Parameters["PatternLength"] = 200000; //300000
 
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
@@ -25,23 +25,23 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["RbMOTLoadTime"] = 200;//200000
+        Parameters["RbMOTLoadTime"] = 50000;
         Parameters["FreeExpansionTime"] = 100;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
-        Parameters["TimeBetweenTriggers"] = 1800;
-        Parameters["NoOfTriggers"] = 1;
+        Parameters["TimeBetweenTriggers"] = 2300;
+        Parameters["NoOfTriggers"] = 15;
 
-        Parameters["loadingTime"] = 3000;
+        Parameters["loadingTime"] = 4000;
 
         //PMT
         Parameters["PMTTrigger"] = 5000;
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 240; //started from 250
+        Parameters["slowingAOMOnStart"] = 280; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1500
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -75,6 +75,11 @@ public class Patterns : MOTMasterScript
         Parameters["yShimLoadCurrent"] = 0.0;//-0.12
         Parameters["zShimLoadCurrent"] = 0.0;//-5.35
 
+        //Shim fields for imaging
+        Parameters["xShimImagingCurrent"] = -1.93;// -1.35 is zero
+        Parameters["yShimImagingCurrent"] = -6.74;// -1.92 is zero
+        Parameters["zShimImagingCurrent"] = -0.56;// -0.22 is zero
+
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -84,7 +89,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;//400
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityEndValue"] = 7.78; //7.78
+        Parameters["v0IntensityEndValue"] = 5.6; //7.78
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0;
@@ -98,10 +103,11 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMOffValue"] = 0.0;
 
         //Rb light
-        Parameters["ImagingFrequency"] = 1.7; //2.1
+        Parameters["ImagingFrequency"] = 1.5; //2.1
         Parameters["MOTCoolingLoadingFrequency"] = 4.6; //4.6
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
-        Parameters["RbRepumpSwitch"] = 10.0; // 0.0 will keep it on and 10.0 will switch it off
+        Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
+        Parameters["mwSwitch"] = 0.0; // greater than 5.0 will switch off the microwave
 
     }
 
@@ -135,14 +141,13 @@ public class Patterns : MOTMasterScript
 
 
         //Rb:
-        
+
         p.AddEdge("rb3DCooling", 0, false);
         p.AddEdge("rb3DCooling", lastImageTime + 1000, true);
         p.AddEdge("rb2DCooling", 0, false);
         p.AddEdge("rb2DCooling", rbMOTLoadingEndTime, true);
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", rbMOTLoadingEndTime, true);
-        
 
 
         //Turn everything back on at end of sequence:
@@ -165,6 +170,15 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
+
+        p.AddEdge("rb3DMOTShutter", 0, true);
+        p.AddEdge("rbPushBamAbsorptionShutter", 0, false);
+        p.AddEdge("rbOPShutter", 0, true);
+
+        //if ((double)Parameters["mwSwitch"] < 5.0)
+        //{
+        //p.Pulse(0, firstImageTime, lastImageTime - firstImageTime, "microwaveA");
+        //}
 
         return p;
     }
@@ -215,11 +229,16 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
+        //Shim fields for imaging
+        p.AddAnalogValue("xShimCoilCurrent", lastImageTime, (double)Parameters["xShimImagingCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", lastImageTime, (double)Parameters["yShimImagingCurrent"]);
+        p.AddAnalogValue("zShimCoilCurrent", lastImageTime, (double)Parameters["zShimImagingCurrent"]);
+
         // trigger delay
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.85);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
@@ -238,14 +257,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
 
-        /////////Switch Rb cooling detuning to the blue to heat out the atoms from the trap:
-        //p.AddAnalogValue("rb3DCoolingFrequency", seventhImageTime + 1000, 7.0);
-        ////////
-
-        //Switch Rb repump:
         p.AddAnalogValue("rbRepumpAttenuation", 0, (double)Parameters["RbRepumpSwitch"]);
-        //p.AddAnalogValue("rbRepumpAttenuation", 0, 10.0);
-        //p.AddAnalogValue("rbRepumpAttenuation", seventhImageTime + 2000, 10.0);
+        p.AddAnalogValue("rb3DCoolingAttenuation", 0, 0.0);
 
         return p;
     }

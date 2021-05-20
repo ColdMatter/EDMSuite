@@ -244,6 +244,9 @@
     <Compile Include="LeyboldPTR225PressureGauge.cs" />
     <Compile Include="PHULTRAEDMFileSystem.cs" />
     <Compile Include="PHULTRAEDMHardware.cs" />
+    <Compile Include="PatternBuilder32SingleBoard.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UEDMHardwareControllerAIs.cs" />
     <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />

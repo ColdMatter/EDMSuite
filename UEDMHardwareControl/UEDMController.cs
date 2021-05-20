@@ -39,16 +39,26 @@ namespace UEDMHardwareControl
         private static string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
         private static string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
         
+        // Temperature sensors
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
-        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource");
-        LeyboldPTR225PressureGauge beamlinePressureMonitor = new LeyboldPTR225PressureGauge("Pressure gauge beamline", "pressureGaugeBeamline");
         SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
+
+        // Pressure gauges
+        // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
+        AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
+        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource"); 
+        AgilentFRG720Gauge detectionPressureMonitor = new AgilentFRG720Gauge("Pressure gauge detection", "pressureGaugeDetection");
+
+        // Misc analogue inputs
         UEDMHardwareControllerAIs hardwareControllerAIs = new UEDMHardwareControllerAIs(AINames, AIChannelNames);
 
+        // Flow controllers
         FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
 
         Hashtable digitalTasks = new Hashtable();
         //Task cryoTriggerDigitalOutputTask;
+
+        // Heater digital outputs
         Task heatersS2TriggerDigitalOutputTask;
         Task heatersS1TriggerDigitalOutputTask;
 
@@ -618,7 +628,6 @@ namespace UEDMHardwareControl
         public void EnableOtherSourceModeUIControls(bool Enable)
         {
             // Enable user control of the cryo on/off status
-            window.EnableControl(window.checkBoxCryoEnable, Enable);
             // Enable user control of the heater setpoint when in source mode
             window.EnableControl(window.btUpdateHeaterControlStage2, Enable);
             window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
@@ -1571,7 +1580,6 @@ namespace UEDMHardwareControl
             turnHeatersOffWaitThread = new Thread(new ThreadStart(turnHeatersOffWaitWorker));
             window.EnableControl(window.btHeatersTurnOffWaitStart, false);
             window.EnableControl(window.btHeatersTurnOffWaitCancel, true);
-            window.EnableControl(window.checkBoxCryoEnable, false);
             turnHeatersOffWaitLock = new Object();
             turnHeatersOffCancelFlag = false;
             turnHeatersOffWaitThread.Start();
@@ -1611,16 +1619,23 @@ namespace UEDMHardwareControl
 
         private double lastSourcePressure;
         private double lastBeamlinePressure;
+        private double lastDetectionPressure;
         private double SourceGaugeCorrectionFactor = 4.1;
         private double BeamlineGaugeCorrectionFactor = 4.35;
+        private double DetectionGaugeCorrectionFactor = 1;
         private int pressureMovingAverageSampleLength = 10;
         private int PressureChartRollingPeriod;
         private bool PressureChartRollingPeriodSelected = false;
         private bool PressureChartRollingXAxis = false;
         private Queue<double> pressureSamplesSource = new Queue<double>();
         private Queue<double> pressureSamplesBeamline = new Queue<double>();
+        private Queue<double> pressureSamplesDetection = new Queue<double>();
         private string sourceSeries = "Source Pressure";
         private string beamlineSeries = "Beamline Pressure";
+        private string detectionSeries = "Detection Pressure";
+
+        private int numberOfPressureDataPoints = 0;
+        private int pressureDataPlotLimit = 10;
 
         public void UpdatePressureMonitor()
         {
@@ -1629,11 +1644,14 @@ namespace UEDMHardwareControl
             {
                 lastSourcePressure = sourcePressureMonitor.Pressure * SourceGaugeCorrectionFactor;
                 lastBeamlinePressure = beamlinePressureMonitor.Pressure * BeamlineGaugeCorrectionFactor;
+                lastDetectionPressure = detectionPressureMonitor.Pressure * DetectionGaugeCorrectionFactor;
             }
 
             //add samples to Queues for averaging
             pressureSamplesSource.Enqueue(lastSourcePressure);
             pressureSamplesBeamline.Enqueue(lastBeamlinePressure);
+            pressureSamplesDetection.Enqueue(lastDetectionPressure);
+
 
             //drop samples when array is larger than the moving average sample length
             while (pressureSamplesSource.Count > pressureMovingAverageSampleLength)
@@ -1644,22 +1662,30 @@ namespace UEDMHardwareControl
             {
                 pressureSamplesBeamline.Dequeue();
             }
+            while (pressureSamplesDetection.Count > pressureMovingAverageSampleLength)
+            {
+                pressureSamplesDetection.Dequeue();
+            }
 
             //average samples
             double avgPressureSource = pressureSamplesSource.Average();
             string avgPressureSourceExpForm = avgPressureSource.ToString("E");
             double avgPressureBeamline = pressureSamplesBeamline.Average();
             string avgPressureBeamlineExpForm = avgPressureBeamline.ToString("E");
+            double avgPressureDetection = pressureSamplesDetection.Average();
+            string avgPressureDetectionExpForm = avgPressureDetection.ToString("E");
 
             //update UI monitor text boxes
             window.SetTextBox(window.tbPSource, (avgPressureSourceExpForm).ToString());
             window.SetTextBox(window.tbPBeamline, (avgPressureBeamlineExpForm).ToString());
+            window.SetTextBox(window.tbPDetection, (avgPressureDetectionExpForm).ToString());
         }
 
         public void ClearPressureMonitorAv()
         {
             pressureSamplesSource.Clear();
             pressureSamplesBeamline.Clear();
+            pressureSamplesDetection.Clear();
         }
 
         public void PlotLastPressure()
@@ -1670,6 +1696,7 @@ namespace UEDMHardwareControl
 
             //plot the most recent samples
             window.AddPointToChart(window.chart1, sourceSeries, localDate, lastSourcePressure);
+            window.AddPointToChart(window.chart1, detectionSeries, localDate, lastSourcePressure);
 
             // Handle rolling time axis on pressure chart
             if (PressureChartRollingXAxis) // If the user has requested that the time axis of the chart rolls
@@ -1677,10 +1704,11 @@ namespace UEDMHardwareControl
                 UpdatePressureChartRollingTimeAxis();  // Update chart time axis
             }
         }
-        public void PlotPressureArrays(double[] SourcePressures, double[] BeamlinePressures, DateTime[] MeasurementDateTimes)
+        public void PlotPressureArrays(double[] SourcePressures, double[] BeamlinePressures, double[] DetectionPressures, DateTime[] MeasurementDateTimes)
         {
             AddArrayOfPointsToChart(window.chart1, sourceSeries, MeasurementDateTimes, SourcePressures);
             AddArrayOfPointsToChart(window.chart1, beamlineSeries, MeasurementDateTimes, BeamlinePressures);
+            AddArrayOfPointsToChart(window.chart1, detectionSeries, MeasurementDateTimes, DetectionPressures);
 
             if (PressureChartRollingXAxis)
             {
@@ -1743,6 +1771,7 @@ namespace UEDMHardwareControl
         {
             double SourceGaugeCorrectionFactorParsedValue;
             double BeamlineGaugeCorrectionFactorParsedValue;
+            double DetectionGaugeCorrectionFactorParsedValue;
 
             if (Double.TryParse(window.tbSourceGaugeCorrectionFactor.Text, out SourceGaugeCorrectionFactorParsedValue))
             {
@@ -1755,6 +1784,12 @@ namespace UEDMHardwareControl
                 BeamlineGaugeCorrectionFactor = BeamlineGaugeCorrectionFactorParsedValue; // Update beamline gauge correction factor
             }
             else MessageBox.Show("Unable to parse beamline gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+
+            if (Double.TryParse(window.tbDetectionGaugeCorrectionFactor.Text, out DetectionGaugeCorrectionFactorParsedValue))
+            {
+                DetectionGaugeCorrectionFactor = DetectionGaugeCorrectionFactorParsedValue; // Update Detection gauge correction factor
+            }
+            else MessageBox.Show("Unable to parse Detection gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
         private JSONSerializer pressureDataSerializer;
@@ -2027,6 +2062,7 @@ namespace UEDMHardwareControl
         public double[] SF6TempPlottingArray = new double[MaxPlottingArrayLength];
         public double[] SourcePressurePlottingArray = new double[MaxPlottingArrayLength];
         public double[] BeamlinePressurePlottingArray = new double[MaxPlottingArrayLength];
+        public double[] DetectionPressurePlottingArray = new double[MaxPlottingArrayLength];
         public DateTime[] DateTimePlottingArray = new DateTime[MaxPlottingArrayLength];
         // Buffer arrays for plotting
         public double[] CellTempPlottingArrayBuffer;
@@ -2036,6 +2072,7 @@ namespace UEDMHardwareControl
         public double[] SF6TempPlottingArrayBuffer;
         public double[] SourcePressurePlottingArrayBuffer;
         public double[] BeamlinePressurePlottingArrayBuffer;
+        public double[] DetectionPressurePlottingArrayBuffer;
         public DateTime[] DateTimePlottingArrayBuffer;
 
         /// <summary>
@@ -2084,6 +2121,7 @@ namespace UEDMHardwareControl
                 SF6TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastSF6Temp;
                 SourcePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastSourcePressure;
                 BeamlinePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastBeamlinePressure;
+                DetectionPressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastDetectionPressure;
                 DateTimePlottingArray[NumberOfPTMeasurementsInQueue] = MeasurementDateTimeStamp;
                 
                 ++NumberOfPTMeasurementsInQueue; // Count the number of measurements added to the plotting queue
@@ -2095,7 +2133,7 @@ namespace UEDMHardwareControl
         }
         public void SetPTCSVHeaderLine()
         {
-            csvDataTemperatureAndPressure += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "Cell Temperature (K)" + "," + "S1 Temperature (K)" + "," + "S2 Temperature (K)" + "," + "SF6 Temperature (K)" + "," + "Source Pressure (mbar)" + "," + "Beamline Pressure (mbar)" + "\r\n"; // Header lines for csv file
+            csvDataTemperatureAndPressure += "Unix Time Stamp (ms)" + "," + "Full date/time" + "," + "Cell Temperature (K)" + "," + "S1 Temperature (K)" + "," + "S2 Temperature (K)" + "," + "SF6 Temperature (K)" + "," + "Source Pressure (mbar)" + "," + "Beamline Pressure (mbar)" + "," + "Detection Pressure (mbar)" + "\r\n"; // Header lines for csv file
         }
         public void ResetPTCSVData()
         {
@@ -2132,6 +2170,7 @@ namespace UEDMHardwareControl
             if (csvDataTemperatureAndPressure == "") SetPTCSVHeaderLine();
             pressureSamplesSource.Clear();
             pressureSamplesBeamline.Clear();
+            pressureSamplesDetection.Clear();
             PTMonitorFlag = false;
             PTPlottingFlag = false;
             PTMonitorPollThread.Start();
@@ -2180,7 +2219,7 @@ namespace UEDMHardwareControl
 
                 // Append data to string (to be written to a CSV file when the user wishes to save the data)
                 Double unixTimestamp = (Double)(DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
-                string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + "," + lastCellTempString + "," + lastS1TempString + "," + lastS2TempString + "," + lastSF6TempString + "," + lastSourcePressure + "," + lastBeamlinePressure + "\r\n";
+                string csvLine = unixTimestamp + "," + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + "," + lastCellTempString + "," + lastS1TempString + "," + lastS2TempString + "," + lastSF6TempString + "," + lastSourcePressure + "," + lastBeamlinePressure + "," + lastDetectionPressure + "\r\n";
                 csvDataTemperatureAndPressure += csvLine;
 
                 // Enable/disable the heaters that are controlled using NI card digital outputs (as opposed to the self-contained LakeShore 336 heaters/sensors)
@@ -2213,6 +2252,7 @@ namespace UEDMHardwareControl
                     SF6TempPlottingArrayBuffer = new double[PlottingQueueLength];
                     SourcePressurePlottingArrayBuffer = new double[PlottingQueueLength];
                     BeamlinePressurePlottingArrayBuffer = new double[PlottingQueueLength];
+                    DetectionPressurePlottingArrayBuffer = new double[PlottingQueueLength];
                     DateTimePlottingArrayBuffer = new DateTime[PlottingQueueLength];
 
                     if (PlottingQueueLength > 0) // If no data has been recorded, then there is no need to perform this function.
@@ -2228,6 +2268,7 @@ namespace UEDMHardwareControl
                         Array.Copy(SF6TempPlottingArray, sourceIndex, SF6TempPlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         Array.Copy(SourcePressurePlottingArray, sourceIndex, SourcePressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         Array.Copy(BeamlinePressurePlottingArray, sourceIndex, BeamlinePressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
+                        Array.Copy(DetectionPressurePlottingArray, sourceIndex, DetectionPressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         Array.Copy(DateTimePlottingArray, sourceIndex, DateTimePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         
                         // Clear the temperature/pressure plotting arrays and release the lock so that measurements can continue whilst plotting is performed.
@@ -2240,6 +2281,7 @@ namespace UEDMHardwareControl
                         Array.Clear(SF6TempPlottingArray, sourceClearIndex, lengthOfDataToClear);
                         Array.Clear(SourcePressurePlottingArray, sourceClearIndex, lengthOfDataToClear);
                         Array.Clear(BeamlinePressurePlottingArray, sourceClearIndex, lengthOfDataToClear);
+                        Array.Clear(DetectionPressurePlottingArray, sourceClearIndex, lengthOfDataToClear);
                         Array.Clear(DateTimePlottingArray, sourceClearIndex, lengthOfDataToClear);
                     }
                 }
@@ -2247,7 +2289,7 @@ namespace UEDMHardwareControl
                 if (PlottingQueueLength > 0)
                 {
                     // Plot pressure data
-                    PlotPressureArrays(SourcePressurePlottingArrayBuffer, BeamlinePressurePlottingArrayBuffer, DateTimePlottingArrayBuffer);
+                    PlotPressureArrays(SourcePressurePlottingArrayBuffer, BeamlinePressurePlottingArrayBuffer, DetectionPressurePlottingArrayBuffer, DateTimePlottingArrayBuffer);
                     // Plot temperature data
                     PlotTemperatureArrays(CellTempPlottingArrayBuffer, S1TempPlottingArrayBuffer, S2TempPlottingArrayBuffer, SF6TempPlottingArrayBuffer, NeonTempPlottingArrayBuffer, DateTimePlottingArrayBuffer);
                 }
@@ -2722,6 +2764,7 @@ namespace UEDMHardwareControl
                 SF6TempPlottingArray[NumberOfPTMeasurementsInQueue] = lastSF6Temp;
                 SourcePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastSourcePressure;
                 BeamlinePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastBeamlinePressure;
+                DetectionPressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastDetectionPressure;
                 DateTimePlottingArray[NumberOfPTMeasurementsInQueue] = MeasurementDateTimeStamp;
 
                 ++NumberOfPTMeasurementsInQueue; // Count the number of measurements added to the plotting queue

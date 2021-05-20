@@ -439,7 +439,7 @@ namespace SirCachealot.Database
             // This creates a shared connection that is used for all query methods. As a result, the query
             // methods are probably not currently thread-safe (maybe, need to check).
 
-            string hostIP = "155.198.208.226";
+            string hostIP = "155.198.208.81";
             string kConnectionString = "server=" + hostIP + ";user=" + username + ";port=3306;password=" + password + ";default command timeout=300;";
             mySql = new MySqlConnection(kConnectionString);
             mySql.Open();
