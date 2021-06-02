@@ -94,6 +94,16 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void AddPointToIChart(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+            chart.Invoke(new AddPointToIChartDelegate(AddPointToIChartHelper), new object[] { chart, series, xpoint, ypoint });
+        }
+        private delegate void AddPointToIChartDelegate(Chart chart, string series, DateTime xpoint, double ypoint);
+        private void AddPointToIChartHelper(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+                chart.Series[series].Points.AddXY(xpoint, ypoint);
+        }
+
         public void ClearChartSeriesData(Chart chart, string series)
         {
             chart.Invoke(new ClearChartSeriesDataDelegate(ClearChartSeriesDataHelper), new object[] { chart, series });
@@ -1020,6 +1030,42 @@ namespace UEDMHardwareControl
         private void chart1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void updateIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitor();
+        }
+
+        private void clearIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.ClearIMonitorAv();
+            controller.ClearIMonitorChart();
+        }
+
+        private void zeroIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.CalibrateIMonitors();
+        }
+
+        private void startIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StartIMonitorPoll();
+        }
+
+        private void stopIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StopIMonitorPoll();
+        }
+
+        private void updateVMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateVMonitorUI();
+        }
+
+        private void rescaleIMonitorChartButton_Click(object sender, EventArgs e)
+        {
+            SetChartYAxisAuto(chart5);
         }
     }
 }

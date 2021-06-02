@@ -14,7 +14,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.VisaNS;
+//using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -30,8 +30,25 @@ namespace UEDMHardwareControl
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// 
+
+        #region Constants
+        //Current Leakage Monitor calibration 
+        //Convention for monitor to plate mapping:
+        //west -> monitor1
+        //east -> monitor2
+        private static double westVolt2FreqSlope = 2000;
+        private static double eastVolt2FreqSlope = 2000;
+        private static double westFreq2AmpSlope = 1;
+        private static double eastFreq2AmpSlope = 1;
+        private static double westOffset = 0;
+        private static double eastOffset = 0;
+        private static double currentMonitorMeasurementTime = 0.01;
+
+        #endregion
+
         #region Setup
-        
+
         // hardware
         private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
         private static string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
@@ -56,6 +73,20 @@ namespace UEDMHardwareControl
         FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
 
         Hashtable digitalTasks = new Hashtable();
+        Hashtable digitalInputTasks = new Hashtable();
+
+        //Leakage monitors
+        //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
+        //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
+        LeakageMonitor westLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westVolt2FreqSlope, westOffset, currentMonitorMeasurementTime);
+        LeakageMonitor eastLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastVolt2FreqSlope, eastOffset, currentMonitorMeasurementTime);
+
+        Task cPlusOutputTask;
+        Task cMinusOutputTask;
+        Task cPlusMonitorInputTask;
+        Task cMinusMonitorInputTask;
+
+
         //Task cryoTriggerDigitalOutputTask;
 
         // Heater digital outputs
@@ -111,11 +142,17 @@ namespace UEDMHardwareControl
 
             // digitial input tasks
 
+            // initialise the current leakage monitors
+            westLeakageMonitor.Initialize();
+            eastLeakageMonitor.Initialize();
+
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
+            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
+            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
 
 
@@ -146,12 +183,71 @@ namespace UEDMHardwareControl
             CoolDownModeCryoTurnOnDateTimeFlag = false;
             // Check that the LakeShore relay is set correctly 
             InitializeCryoControl();
+
+            // Set the leakage current monitor textboxes to the default values.
+            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
         }
 
         public void WindowClosing()
         {
             // Request that the PT monitoring thread stop
             StopPTMonitorPoll();
+        }
+
+        private Task CreateAnalogInputTask(string channel)
+        {
+            Task task = new Task("EDMHCIn" + channel);
+            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                task,
+                0,
+                10
+            );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
+        private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
+        {
+            Task task = new Task("EDMHCIn" + channel);
+            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                task,
+                lowRange,
+                highRange
+            );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+        private double ReadAnalogInput(Task task)
+        {
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+
+
+            double val = reader.ReadSingleSample();
+            task.Control(TaskAction.Unreserve);
+            return val;
+        }
+
+        private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
+        {
+            //Configure the timing parameters of the task
+            task.Timing.ConfigureSampleClock("", sampleRate,
+                SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, numOfSamples);
+
+            //Read in multiple samples
+            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+            double[] valArray = reader.ReadMultiSample(numOfSamples);
+            task.Control(TaskAction.Unreserve);
+
+            //Calculate the average of the samples
+            double sum = 0;
+            for (int j = 0; j < numOfSamples; j++)
+            {
+                sum = sum + valArray[j];
+            }
+            double val = sum / numOfSamples;
+            return val;
         }
 
         #region Windows API
@@ -3364,6 +3460,273 @@ namespace UEDMHardwareControl
             }
         }
 
+        #endregion
+
+        #region E field
+
+        public double LeakageMonitorMeasurementTime
+        {
+            set
+            {
+                window.SetTextBox(window.IMonitorMeasurementLengthTextBox, value.ToString());
+            }
+            get
+            {
+                return Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
+            }
+        }
+
+        public void SetLeakageMonitorMeasurementTime(double time)
+        {
+            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
+        }
+
+        public double CPlusMonitorVoltage
+        {
+            get
+            {
+                return cPlusMonitorVoltage;
+            }
+        }
+
+        public double CMinusMonitorVoltage
+        {
+            get
+            {
+                return cMinusMonitorVoltage;
+            }
+        }
+        public double NorthCurrent
+        {
+            get
+            {
+                return lastNorthCurrent;
+            }
+        }
+
+        public double SouthCurrent
+        {
+            get
+            {
+                return lastSouthCurrent;
+            }
+        }
+
+        public double LastNorthCurrent
+        {
+            get { return westLeakageMonitor.GetCurrent(); }
+        }
+
+        public double LastSouthCurrent
+        {
+            get { return eastLeakageMonitor.GetCurrent(); }
+        }
+
+        private double cPlusMonitorVoltage;
+        private double cMinusMonitorVoltage;
+        private double lastNorthCurrent;
+        private double lastSouthCurrent;
+        private double lastWestFrequency;
+        private double lastEastFrequency;
+        private Queue<double> nCurrentSamples = new Queue<double>();
+        private Queue<double> sCurrentSamples = new Queue<double>();
+        private int movingAverageSampleLength = 10;
+
+        public void UpdateVMonitor()
+        {
+            /*window.SetTextBox(window.cPlusVMonitorTextBox, 
+                (cScale * voltageController.ReadInputVoltage(cPlusChan)).ToString());
+            window.SetTextBox(window.cMinusVMonitorTextBox, 
+                (cScale * voltageController.ReadInputVoltage(cMinusChan)).ToString());
+            window.SetTextBox(window.gPlusVMonitorTextBox, 
+                (gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
+            window.SetTextBox(window.gMinusVMonitorTextBox, 
+                (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
+
+            double cMonScale = 3000;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask);
+            cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask);
+        }
+        public void UpdateVMonitorUI()
+        {
+            UpdateVMonitor();
+            window.SetTextBox(window.cPlusVMonitorTextBox, CPlusMonitorVoltage.ToString());
+            window.SetTextBox(window.cMinusVMonitorTextBox, CMinusMonitorVoltage.ToString());
+        }
+
+        public void ReconfigureIMonitors()
+        {
+            currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
+            westFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            eastFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
+            westVolt2FreqSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
+            eastVolt2FreqSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
+
+            eastLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            westLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
+            westLeakageMonitor.F2ISlope = westFreq2AmpSlope;
+            eastLeakageMonitor.F2ISlope = eastFreq2AmpSlope;
+            westLeakageMonitor.V2FSlope = westVolt2FreqSlope;
+            eastLeakageMonitor.V2FSlope = eastVolt2FreqSlope;
+        }
+
+        public void ReadIMonitor()
+        {
+            //double ground = ReadAnalogInput(groundedInputTask);
+            lastNorthCurrent = westLeakageMonitor.GetCurrent();
+            //ground = ReadAnalogInput(groundedInputTask);
+            lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+        }
+
+        private string currentSeriesEast = "Leakage Current East";
+        private string currentSeriesWest = "Leakage Current West";
+        private DateTime localDate;
+       
+        public void UpdateIMonitor()
+        {
+            ReconfigureIMonitors();
+
+            //sample the leakage current
+            //lastNorthCurrent = westLeakageMonitor.GetCurrent();
+            //lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+
+
+            //This samples the frequency
+            lastWestFrequency = westLeakageMonitor.getRawCount();
+            lastEastFrequency = eastLeakageMonitor.getRawCount();
+
+            lastNorthCurrent = ((lastWestFrequency - westOffset) / westVolt2FreqSlope);
+            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastVolt2FreqSlope);
+
+            //plot the most recent samples
+            //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
+            //            new double[] { lastNorthCurrent });
+            //window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
+            //                        new double[] { lastSouthCurrent });
+
+            //add date time
+            localDate = DateTime.Now;
+            //plot the most recent sample (UEDM Chart style)
+
+            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastSouthCurrent);
+            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastNorthCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastSouthCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastNorthCurrent);
+
+            //add samples to Queues for averaging
+            nCurrentSamples.Enqueue(lastNorthCurrent);
+            sCurrentSamples.Enqueue(lastSouthCurrent);
+
+            //drop samples when array is larger than the moving average sample length
+            while (nCurrentSamples.Count > movingAverageSampleLength)
+            {
+                nCurrentSamples.Dequeue();
+                sCurrentSamples.Dequeue();
+            }
+
+            //average samples
+            double nAvCurr = nCurrentSamples.Average();
+            double sAvCurr = sCurrentSamples.Average();
+            double nAvCurrErr = Math.Sqrt((nCurrentSamples.Sum(d => Math.Pow(d - nAvCurr, 2))) / (nCurrentSamples.Count() - 1)) / (Math.Sqrt(nCurrentSamples.Count()));
+            double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
+
+            //update text boxes
+            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+        }
+
+        public void ClearIMonitorAv()
+        {
+            nCurrentSamples.Clear();
+            sCurrentSamples.Clear();
+
+        }
+
+        public void ClearIMonitorChart()
+        {
+            ClearChartSeriesData(window.chart5, currentSeriesEast);
+            ClearChartSeriesData(window.chart5, currentSeriesWest);
+            
+        }
+
+        public void RescaleIMonitorChart()
+        {
+            window.chart5.ChartAreas[0].AxisY.Minimum = -20;
+            window.SetChartYAxisAuto(window.chart5);
+            //window.setaxisyisstartedfromzero(window.chart5, false);
+        }
+
+        public void CalibrateIMonitors()
+        {
+            ReconfigureIMonitors();
+
+            eastLeakageMonitor.SetZero();
+            westLeakageMonitor.SetZero();
+
+            westOffset = westLeakageMonitor.Offset;
+            eastOffset = eastLeakageMonitor.Offset;
+
+            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+        }
+
+        private Thread iMonitorPollThread;
+        private int iMonitorPollPeriod = 200;
+        private Object iMonitorLock;
+        private bool iMonitorFlag;
+        internal void StartIMonitorPoll()
+        {
+            iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
+            window.EnableControl(window.startIMonitorPollButton, false);
+            window.EnableControl(window.updateIMonitorButton, false);
+            window.EnableControl(window.stopIMonitorPollButton, true);
+            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+            movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
+            nCurrentSamples.Clear();
+            sCurrentSamples.Clear();
+            iMonitorLock = new Object();
+            iMonitorFlag = false;
+            iMonitorPollThread.Start();
+        }
+
+        internal void StopIMonitorPoll()
+        {
+            iMonitorFlag = true;
+            window.EnableControl(window.updateIMonitorButton, true);
+        }
+        private void IMonitorPollWorker()
+        {
+            for (; ; )
+            {
+                Thread.Sleep(iMonitorPollPeriod);
+                lock (iMonitorLock)
+                {
+                    UpdateIMonitor();
+                    UpdateVMonitorUI();
+                    if (window.logCurrentDataCheckBox.Checked)
+                    {
+                        string folder = @" C:\Users\ultraedm\Desktop\Leakage_Current_Tests\";
+                        string fileName = "Plate_Test_East_neg_West_pos_210602_01.csv";
+                        string fullPath = folder + fileName;
+                        StreamWriter w;
+                        w = new StreamWriter(fullPath, true);
+                        string output = String.Format("West, {0,5:N2}, {1,7:0.00}, East, {2,5:N2}, {3,7:0.00}, {4,8:T}, {4,8:D}, Plus, {5,5:N3}, Minus, {6,5:N3}",
+                          lastNorthCurrent, lastWestFrequency, lastSouthCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                        w.WriteLine(output);
+                        w.Close();                    
+                    }
+                    if (iMonitorFlag)
+                    {
+                        iMonitorFlag = false;
+                        break;
+                    }
+                }
+            }
+            window.EnableControl(window.startIMonitorPollButton, true);
+            window.EnableControl(window.stopIMonitorPollButton, false);
+        }
         #endregion
     }
 }

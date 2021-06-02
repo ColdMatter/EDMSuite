@@ -60,6 +60,10 @@
             System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -349,6 +353,93 @@
             this.labelDigitalOutputP02 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP01 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP00 = new System.Windows.Forms.Label();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox21 = new System.Windows.Forms.GroupBox();
+            this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.eFieldAsymmetryCheckBox = new System.Windows.Forms.CheckBox();
+            this.label37 = new System.Windows.Forms.Label();
+            this.label38 = new System.Windows.Forms.Label();
+            this.zeroPlusOneMinusBoostTextBox = new System.Windows.Forms.TextBox();
+            this.zeroPlusBoostTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.gMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.cPlusVMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.gPlusVMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.updateVMonitorButton = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.eDisableSwitching = new System.Windows.Forms.CheckBox();
+            this.label78 = new System.Windows.Forms.Label();
+            this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.eOvershootFactorTextBox = new System.Windows.Forms.TextBox();
+            this.label62 = new System.Windows.Forms.Label();
+            this.eSwitchTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label61 = new System.Windows.Forms.Label();
+            this.eBleedTimeTextBox = new System.Windows.Forms.TextBox();
+            this.label60 = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.eRampUpDelayTextBox = new System.Windows.Forms.TextBox();
+            this.label58 = new System.Windows.Forms.Label();
+            this.eRampDownDelayTextBox = new System.Windows.Forms.TextBox();
+            this.label59 = new System.Windows.Forms.Label();
+            this.eRampDownTimeTextBox = new System.Windows.Forms.TextBox();
+            this.eRampUpTimeTextBox = new System.Windows.Forms.TextBox();
+            this.fieldsOffButton = new System.Windows.Forms.Button();
+            this.switchEButton = new System.Windows.Forms.Button();
+            this.eBleedCheck = new System.Windows.Forms.CheckBox();
+            this.ePolarityCheck = new System.Windows.Forms.CheckBox();
+            this.eOnCheck = new System.Windows.Forms.CheckBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label176 = new System.Windows.Forms.Label();
+            this.updateFieldButton = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cPlusOffTextBox = new System.Windows.Forms.TextBox();
+            this.cMinusOffTextBox = new System.Windows.Forms.TextBox();
+            this.cMinusTextBox = new System.Windows.Forms.TextBox();
+            this.cPlusTextBox = new System.Windows.Forms.TextBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.rescaleIMonitorChartButton = new System.Windows.Forms.Button();
+            this.chart5 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.logCurrentDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.clearIMonitorButton = new System.Windows.Forms.Button();
+            this.southIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.label131 = new System.Windows.Forms.Label();
+            this.label130 = new System.Windows.Forms.Label();
+            this.northIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.zeroIMonitorButton = new System.Windows.Forms.Button();
+            this.label129 = new System.Windows.Forms.Label();
+            this.currentMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label128 = new System.Windows.Forms.Label();
+            this.southOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.northOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.label85 = new System.Windows.Forms.Label();
+            this.label84 = new System.Windows.Forms.Label();
+            this.southV2FSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.northV2FSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.stopIMonitorPollButton = new System.Windows.Forms.Button();
+            this.label63 = new System.Windows.Forms.Label();
+            this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
+            this.startIMonitorPollButton = new System.Windows.Forms.Button();
+            this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.southIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.northIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.updateIMonitorButton = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
             this.richTextBoxStatus = new System.Windows.Forms.RichTextBox();
             this.gbTempMonitors.SuspendLayout();
@@ -390,6 +481,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart4)).BeginInit();
             this.gbDigitalOutputs.SuspendLayout();
             this.gbDigitalOutputsPort0.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.groupBox21.SuspendLayout();
+            this.groupBox13.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
             this.groupBoxStatus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1511,6 +1610,7 @@
             this.tabControl.Controls.Add(this.tabPageLakeShore);
             this.tabControl.Controls.Add(this.tabPageSourceModes);
             this.tabControl.Controls.Add(this.tabPageADIO);
+            this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -3655,6 +3755,862 @@
             this.labelDigitalOutputP00.TabIndex = 0;
             this.labelDigitalOutputP00.Text = "P0, 0:";
             // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage1.Controls.Add(this.groupBox21);
+            this.tabPage1.Controls.Add(this.groupBox13);
+            this.tabPage1.Controls.Add(this.groupBox6);
+            this.tabPage1.Controls.Add(this.groupBox4);
+            this.tabPage1.Controls.Add(this.groupBox5);
+            this.tabPage1.Controls.Add(this.groupBox7);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(1033, 703);
+            this.tabPage1.TabIndex = 6;
+            this.tabPage1.Text = "E-field";
+            // 
+            // groupBox21
+            // 
+            this.groupBox21.Controls.Add(this.eManualStateCheckBox);
+            this.groupBox21.Location = new System.Drawing.Point(17, 231);
+            this.groupBox21.Name = "groupBox21";
+            this.groupBox21.Size = new System.Drawing.Size(184, 61);
+            this.groupBox21.TabIndex = 27;
+            this.groupBox21.TabStop = false;
+            this.groupBox21.Text = "Manual state";
+            // 
+            // eManualStateCheckBox
+            // 
+            this.eManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
+            this.eManualStateCheckBox.Name = "eManualStateCheckBox";
+            this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
+            this.eManualStateCheckBox.TabIndex = 53;
+            this.eManualStateCheckBox.Text = "State (Checked is 0=>N+)";
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.eFieldAsymmetryCheckBox);
+            this.groupBox13.Controls.Add(this.label37);
+            this.groupBox13.Controls.Add(this.label38);
+            this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
+            this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
+            this.groupBox13.Location = new System.Drawing.Point(493, 179);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(184, 113);
+            this.groupBox13.TabIndex = 41;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Supply asymmetry";
+            // 
+            // eFieldAsymmetryCheckBox
+            // 
+            this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
+            this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
+            this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
+            this.eFieldAsymmetryCheckBox.TabIndex = 38;
+            this.eFieldAsymmetryCheckBox.Text = "Enable";
+            // 
+            // label37
+            // 
+            this.label37.Location = new System.Drawing.Point(6, 83);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(84, 23);
+            this.label37.TabIndex = 37;
+            this.label37.Text = "0+1- boost (V)";
+            // 
+            // label38
+            // 
+            this.label38.Location = new System.Drawing.Point(6, 51);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(89, 23);
+            this.label38.TabIndex = 36;
+            this.label38.Text = "0+ boost (V)";
+            // 
+            // zeroPlusOneMinusBoostTextBox
+            // 
+            this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
+            this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
+            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+            this.zeroPlusOneMinusBoostTextBox.TabIndex = 1;
+            this.zeroPlusOneMinusBoostTextBox.Text = "0";
+            // 
+            // zeroPlusBoostTextBox
+            // 
+            this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
+            this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
+            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
+            this.zeroPlusBoostTextBox.TabIndex = 0;
+            this.zeroPlusBoostTextBox.Text = "0";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.gMinusVMonitorTextBox);
+            this.groupBox6.Controls.Add(this.cPlusVMonitorTextBox);
+            this.groupBox6.Controls.Add(this.gPlusVMonitorTextBox);
+            this.groupBox6.Controls.Add(this.updateVMonitorButton);
+            this.groupBox6.Controls.Add(this.label12);
+            this.groupBox6.Controls.Add(this.label13);
+            this.groupBox6.Controls.Add(this.label14);
+            this.groupBox6.Controls.Add(this.label15);
+            this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
+            this.groupBox6.Location = new System.Drawing.Point(493, 16);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(184, 153);
+            this.groupBox6.TabIndex = 24;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Voltage monitors";
+            // 
+            // gMinusVMonitorTextBox
+            // 
+            this.gMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.gMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 95);
+            this.gMinusVMonitorTextBox.Name = "gMinusVMonitorTextBox";
+            this.gMinusVMonitorTextBox.ReadOnly = true;
+            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.gMinusVMonitorTextBox.TabIndex = 43;
+            this.gMinusVMonitorTextBox.Text = "0";
+            // 
+            // cPlusVMonitorTextBox
+            // 
+            this.cPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.cPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 24);
+            this.cPlusVMonitorTextBox.Name = "cPlusVMonitorTextBox";
+            this.cPlusVMonitorTextBox.ReadOnly = true;
+            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusVMonitorTextBox.TabIndex = 42;
+            this.cPlusVMonitorTextBox.Text = "0";
+            // 
+            // gPlusVMonitorTextBox
+            // 
+            this.gPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.gPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 71);
+            this.gPlusVMonitorTextBox.Name = "gPlusVMonitorTextBox";
+            this.gPlusVMonitorTextBox.ReadOnly = true;
+            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.gPlusVMonitorTextBox.TabIndex = 41;
+            this.gPlusVMonitorTextBox.Text = "0";
+            // 
+            // updateVMonitorButton
+            // 
+            this.updateVMonitorButton.Location = new System.Drawing.Point(56, 121);
+            this.updateVMonitorButton.Name = "updateVMonitorButton";
+            this.updateVMonitorButton.Size = new System.Drawing.Size(75, 23);
+            this.updateVMonitorButton.TabIndex = 40;
+            this.updateVMonitorButton.Text = "Update";
+            this.updateVMonitorButton.Click += new System.EventHandler(this.updateVMonitorButton_Click);
+            // 
+            // label12
+            // 
+            this.label12.Location = new System.Drawing.Point(16, 95);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(80, 23);
+            this.label12.TabIndex = 39;
+            this.label12.Text = "G minus (V)";
+            // 
+            // label13
+            // 
+            this.label13.Location = new System.Drawing.Point(16, 71);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(80, 23);
+            this.label13.TabIndex = 38;
+            this.label13.Text = "G plus (V)";
+            // 
+            // label14
+            // 
+            this.label14.Location = new System.Drawing.Point(16, 48);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(80, 23);
+            this.label14.TabIndex = 37;
+            this.label14.Text = "C minus (V)";
+            // 
+            // label15
+            // 
+            this.label15.Location = new System.Drawing.Point(16, 24);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(80, 23);
+            this.label15.TabIndex = 36;
+            this.label15.Text = "C plus (V)";
+            // 
+            // cMinusVMonitorTextBox
+            // 
+            this.cMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.cMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 48);
+            this.cMinusVMonitorTextBox.Name = "cMinusVMonitorTextBox";
+            this.cMinusVMonitorTextBox.ReadOnly = true;
+            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusVMonitorTextBox.TabIndex = 33;
+            this.cMinusVMonitorTextBox.Text = "0";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.eDisableSwitching);
+            this.groupBox4.Controls.Add(this.label78);
+            this.groupBox4.Controls.Add(this.eOvershootHoldTextBox);
+            this.groupBox4.Controls.Add(this.label79);
+            this.groupBox4.Controls.Add(this.eOvershootFactorTextBox);
+            this.groupBox4.Controls.Add(this.label62);
+            this.groupBox4.Controls.Add(this.eSwitchTimeTextBox);
+            this.groupBox4.Controls.Add(this.label61);
+            this.groupBox4.Controls.Add(this.eBleedTimeTextBox);
+            this.groupBox4.Controls.Add(this.label60);
+            this.groupBox4.Controls.Add(this.label57);
+            this.groupBox4.Controls.Add(this.eRampUpDelayTextBox);
+            this.groupBox4.Controls.Add(this.label58);
+            this.groupBox4.Controls.Add(this.eRampDownDelayTextBox);
+            this.groupBox4.Controls.Add(this.label59);
+            this.groupBox4.Controls.Add(this.eRampDownTimeTextBox);
+            this.groupBox4.Controls.Add(this.eRampUpTimeTextBox);
+            this.groupBox4.Controls.Add(this.fieldsOffButton);
+            this.groupBox4.Controls.Add(this.switchEButton);
+            this.groupBox4.Controls.Add(this.eBleedCheck);
+            this.groupBox4.Controls.Add(this.ePolarityCheck);
+            this.groupBox4.Controls.Add(this.eOnCheck);
+            this.groupBox4.Location = new System.Drawing.Point(207, 16);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(280, 276);
+            this.groupBox4.TabIndex = 11;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Switch";
+            // 
+            // eDisableSwitching
+            // 
+            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
+            this.eDisableSwitching.Name = "eDisableSwitching";
+            this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
+            this.eDisableSwitching.TabIndex = 53;
+            this.eDisableSwitching.Text = "Disable switching";
+            // 
+            // label78
+            // 
+            this.label78.Location = new System.Drawing.Point(25, 215);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(115, 23);
+            this.label78.TabIndex = 52;
+            this.label78.Text = "Settle time (s)";
+            // 
+            // eOvershootHoldTextBox
+            // 
+            this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
+            this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
+            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootHoldTextBox.TabIndex = 50;
+            this.eOvershootHoldTextBox.Text = "1";
+            // 
+            // label79
+            // 
+            this.label79.Location = new System.Drawing.Point(25, 194);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(115, 23);
+            this.label79.TabIndex = 51;
+            this.label79.Text = "Overshoot factor";
+            // 
+            // eOvershootFactorTextBox
+            // 
+            this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
+            this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
+            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eOvershootFactorTextBox.TabIndex = 49;
+            this.eOvershootFactorTextBox.Text = "2";
+            // 
+            // label62
+            // 
+            this.label62.Location = new System.Drawing.Point(25, 131);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(115, 23);
+            this.label62.TabIndex = 47;
+            this.label62.Text = "Switch time (s)";
+            // 
+            // eSwitchTimeTextBox
+            // 
+            this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 128);
+            this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
+            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eSwitchTimeTextBox.TabIndex = 3;
+            this.eSwitchTimeTextBox.Text = "1";
+            // 
+            // label61
+            // 
+            this.label61.Location = new System.Drawing.Point(25, 110);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(115, 23);
+            this.label61.TabIndex = 45;
+            this.label61.Text = "Bleed time (s)";
+            // 
+            // eBleedTimeTextBox
+            // 
+            this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 107);
+            this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
+            this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eBleedTimeTextBox.TabIndex = 2;
+            this.eBleedTimeTextBox.Text = "0.01";
+            // 
+            // label60
+            // 
+            this.label60.Location = new System.Drawing.Point(25, 173);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(115, 23);
+            this.label60.TabIndex = 45;
+            this.label60.Text = "Overshoot hold (s)";
+            // 
+            // label57
+            // 
+            this.label57.Location = new System.Drawing.Point(25, 89);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(115, 23);
+            this.label57.TabIndex = 41;
+            this.label57.Text = "Ramp down delay (s)";
+            // 
+            // eRampUpDelayTextBox
+            // 
+            this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 212);
+            this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
+            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpDelayTextBox.TabIndex = 5;
+            this.eRampUpDelayTextBox.Text = "1";
+            // 
+            // label58
+            // 
+            this.label58.Location = new System.Drawing.Point(25, 68);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(115, 23);
+            this.label58.TabIndex = 40;
+            this.label58.Text = "Ramp down time (s)";
+            // 
+            // eRampDownDelayTextBox
+            // 
+            this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 86);
+            this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
+            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownDelayTextBox.TabIndex = 1;
+            this.eRampDownDelayTextBox.Text = "3";
+            // 
+            // label59
+            // 
+            this.label59.Location = new System.Drawing.Point(25, 152);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(115, 23);
+            this.label59.TabIndex = 43;
+            this.label59.Text = "Ramp up time (s)";
+            // 
+            // eRampDownTimeTextBox
+            // 
+            this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 65);
+            this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
+            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampDownTimeTextBox.TabIndex = 0;
+            this.eRampDownTimeTextBox.Text = "2";
+            // 
+            // eRampUpTimeTextBox
+            // 
+            this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 149);
+            this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
+            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eRampUpTimeTextBox.TabIndex = 4;
+            this.eRampUpTimeTextBox.Text = "2";
+            // 
+            // fieldsOffButton
+            // 
+            this.fieldsOffButton.Enabled = false;
+            this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
+            this.fieldsOffButton.Name = "fieldsOffButton";
+            this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
+            this.fieldsOffButton.TabIndex = 23;
+            this.fieldsOffButton.Text = "Zero E fields";
+            // 
+            // switchEButton
+            // 
+            this.switchEButton.Location = new System.Drawing.Point(136, 241);
+            this.switchEButton.Name = "switchEButton";
+            this.switchEButton.Size = new System.Drawing.Size(96, 23);
+            this.switchEButton.TabIndex = 22;
+            this.switchEButton.Text = "Switch E";
+            // 
+            // eBleedCheck
+            // 
+            this.eBleedCheck.Location = new System.Drawing.Point(96, 19);
+            this.eBleedCheck.Name = "eBleedCheck";
+            this.eBleedCheck.Size = new System.Drawing.Size(72, 24);
+            this.eBleedCheck.TabIndex = 21;
+            this.eBleedCheck.Text = "Bleed on";
+            // 
+            // ePolarityCheck
+            // 
+            this.ePolarityCheck.Location = new System.Drawing.Point(24, 40);
+            this.ePolarityCheck.Name = "ePolarityCheck";
+            this.ePolarityCheck.Size = new System.Drawing.Size(136, 24);
+            this.ePolarityCheck.TabIndex = 20;
+            this.ePolarityCheck.Text = "Polarity (1 is checked)";
+            // 
+            // eOnCheck
+            // 
+            this.eOnCheck.Location = new System.Drawing.Point(24, 19);
+            this.eOnCheck.Name = "eOnCheck";
+            this.eOnCheck.Size = new System.Drawing.Size(72, 24);
+            this.eOnCheck.TabIndex = 19;
+            this.eOnCheck.Text = "Field on";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.label176);
+            this.groupBox5.Controls.Add(this.updateFieldButton);
+            this.groupBox5.Controls.Add(this.label10);
+            this.groupBox5.Controls.Add(this.label11);
+            this.groupBox5.Controls.Add(this.label9);
+            this.groupBox5.Controls.Add(this.label5);
+            this.groupBox5.Controls.Add(this.cPlusOffTextBox);
+            this.groupBox5.Controls.Add(this.cMinusOffTextBox);
+            this.groupBox5.Controls.Add(this.cMinusTextBox);
+            this.groupBox5.Controls.Add(this.cPlusTextBox);
+            this.groupBox5.Location = new System.Drawing.Point(17, 16);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(184, 208);
+            this.groupBox5.TabIndex = 23;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Supplies";
+            // 
+            // label176
+            // 
+            this.label176.Location = new System.Drawing.Point(6, 178);
+            this.label176.MaximumSize = new System.Drawing.Size(200, 200);
+            this.label176.Name = "label176";
+            this.label176.Size = new System.Drawing.Size(152, 30);
+            this.label176.TabIndex = 45;
+            this.label176.Text = "Note: Bertan +ve supplies require +/- 3kV/V";
+            // 
+            // updateFieldButton
+            // 
+            this.updateFieldButton.Location = new System.Drawing.Point(42, 154);
+            this.updateFieldButton.Name = "updateFieldButton";
+            this.updateFieldButton.Size = new System.Drawing.Size(75, 23);
+            this.updateFieldButton.TabIndex = 40;
+            this.updateFieldButton.Text = "Update";
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(16, 128);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(80, 23);
+            this.label10.TabIndex = 39;
+            this.label10.Text = "C minus off (V)";
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(16, 96);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(80, 23);
+            this.label11.TabIndex = 38;
+            this.label11.Text = "C plus off (V)";
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(16, 56);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(80, 23);
+            this.label9.TabIndex = 1;
+            this.label9.Text = "C minus (V)";
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(16, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(80, 23);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "C plus (V)";
+            // 
+            // cPlusOffTextBox
+            // 
+            this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 96);
+            this.cPlusOffTextBox.Name = "cPlusOffTextBox";
+            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusOffTextBox.TabIndex = 2;
+            this.cPlusOffTextBox.Text = "0";
+            // 
+            // cMinusOffTextBox
+            // 
+            this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 128);
+            this.cMinusOffTextBox.Name = "cMinusOffTextBox";
+            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusOffTextBox.TabIndex = 3;
+            this.cMinusOffTextBox.Text = "0";
+            // 
+            // cMinusTextBox
+            // 
+            this.cMinusTextBox.Location = new System.Drawing.Point(104, 56);
+            this.cMinusTextBox.Name = "cMinusTextBox";
+            this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cMinusTextBox.TabIndex = 1;
+            this.cMinusTextBox.Text = "0";
+            // 
+            // cPlusTextBox
+            // 
+            this.cPlusTextBox.Location = new System.Drawing.Point(104, 24);
+            this.cPlusTextBox.Name = "cPlusTextBox";
+            this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
+            this.cPlusTextBox.TabIndex = 0;
+            this.cPlusTextBox.Text = "0";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.rescaleIMonitorChartButton);
+            this.groupBox7.Controls.Add(this.chart5);
+            this.groupBox7.Controls.Add(this.logCurrentDataCheckBox);
+            this.groupBox7.Controls.Add(this.clearIMonitorButton);
+            this.groupBox7.Controls.Add(this.southIMonitorErrorTextBox);
+            this.groupBox7.Controls.Add(this.label131);
+            this.groupBox7.Controls.Add(this.label130);
+            this.groupBox7.Controls.Add(this.northIMonitorErrorTextBox);
+            this.groupBox7.Controls.Add(this.label35);
+            this.groupBox7.Controls.Add(this.zeroIMonitorButton);
+            this.groupBox7.Controls.Add(this.label129);
+            this.groupBox7.Controls.Add(this.currentMonitorSampleLengthTextBox);
+            this.groupBox7.Controls.Add(this.label128);
+            this.groupBox7.Controls.Add(this.southOffsetIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.northOffsetIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.label85);
+            this.groupBox7.Controls.Add(this.label84);
+            this.groupBox7.Controls.Add(this.southV2FSlopeTextBox);
+            this.groupBox7.Controls.Add(this.northV2FSlopeTextBox);
+            this.groupBox7.Controls.Add(this.leakageMonitorSlopeTextBox);
+            this.groupBox7.Controls.Add(this.label64);
+            this.groupBox7.Controls.Add(this.stopIMonitorPollButton);
+            this.groupBox7.Controls.Add(this.label63);
+            this.groupBox7.Controls.Add(this.iMonitorPollPeriod);
+            this.groupBox7.Controls.Add(this.startIMonitorPollButton);
+            this.groupBox7.Controls.Add(this.IMonitorMeasurementLengthTextBox);
+            this.groupBox7.Controls.Add(this.label17);
+            this.groupBox7.Controls.Add(this.label16);
+            this.groupBox7.Controls.Add(this.southIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.northIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.updateIMonitorButton);
+            this.groupBox7.Controls.Add(this.label18);
+            this.groupBox7.Controls.Add(this.label19);
+            this.groupBox7.Location = new System.Drawing.Point(17, 298);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(660, 320);
+            this.groupBox7.TabIndex = 44;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Current monitors";
+            // 
+            // rescaleIMonitorChartButton
+            // 
+            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(491, 86);
+            this.rescaleIMonitorChartButton.Name = "rescaleIMonitorChartButton";
+            this.rescaleIMonitorChartButton.Size = new System.Drawing.Size(76, 21);
+            this.rescaleIMonitorChartButton.TabIndex = 77;
+            this.rescaleIMonitorChartButton.Text = "Rescale";
+            this.rescaleIMonitorChartButton.UseVisualStyleBackColor = true;
+            this.rescaleIMonitorChartButton.Click += new System.EventHandler(this.rescaleIMonitorChartButton_Click);
+            // 
+            // chart5
+            // 
+            chartArea5.AxisX.Title = "Time";
+            chartArea5.AxisY.Title = "Current (nA)";
+            chartArea5.Name = "ChartArea1";
+            this.chart5.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.chart5.Legends.Add(legend5);
+            this.chart5.Location = new System.Drawing.Point(19, 127);
+            this.chart5.Name = "chart5";
+            series20.ChartArea = "ChartArea1";
+            series20.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series20.Legend = "Legend1";
+            series20.Name = "Leakage Current East";
+            series20.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series21.ChartArea = "ChartArea1";
+            series21.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series21.Legend = "Legend1";
+            series21.Name = "Leakage Current West";
+            series21.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart5.Series.Add(series20);
+            this.chart5.Series.Add(series21);
+            this.chart5.Size = new System.Drawing.Size(633, 179);
+            this.chart5.TabIndex = 76;
+            this.chart5.Text = "chart5";
+            // 
+            // logCurrentDataCheckBox
+            // 
+            this.logCurrentDataCheckBox.AutoSize = true;
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
+            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.logCurrentDataCheckBox.TabIndex = 75;
+            this.logCurrentDataCheckBox.Text = "Log data";
+            this.logCurrentDataCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // clearIMonitorButton
+            // 
+            this.clearIMonitorButton.Location = new System.Drawing.Point(118, 76);
+            this.clearIMonitorButton.Name = "clearIMonitorButton";
+            this.clearIMonitorButton.Size = new System.Drawing.Size(39, 23);
+            this.clearIMonitorButton.TabIndex = 74;
+            this.clearIMonitorButton.Text = "Clear";
+            this.clearIMonitorButton.UseVisualStyleBackColor = true;
+            this.clearIMonitorButton.Click += new System.EventHandler(this.clearIMonitorButton_Click);
+            // 
+            // southIMonitorErrorTextBox
+            // 
+            this.southIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.southIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
+            this.southIMonitorErrorTextBox.Name = "southIMonitorErrorTextBox";
+            this.southIMonitorErrorTextBox.ReadOnly = true;
+            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.southIMonitorErrorTextBox.TabIndex = 73;
+            this.southIMonitorErrorTextBox.Text = "0";
+            // 
+            // label131
+            // 
+            this.label131.Location = new System.Drawing.Point(80, 50);
+            this.label131.Name = "label131";
+            this.label131.Size = new System.Drawing.Size(12, 23);
+            this.label131.TabIndex = 72;
+            this.label131.Text = "±";
+            // 
+            // label130
+            // 
+            this.label130.Location = new System.Drawing.Point(80, 24);
+            this.label130.Name = "label130";
+            this.label130.Size = new System.Drawing.Size(12, 23);
+            this.label130.TabIndex = 71;
+            this.label130.Text = "±";
+            // 
+            // northIMonitorErrorTextBox
+            // 
+            this.northIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.northIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
+            this.northIMonitorErrorTextBox.Name = "northIMonitorErrorTextBox";
+            this.northIMonitorErrorTextBox.ReadOnly = true;
+            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.northIMonitorErrorTextBox.TabIndex = 70;
+            this.northIMonitorErrorTextBox.Text = "0";
+            // 
+            // label35
+            // 
+            this.label35.Location = new System.Drawing.Point(163, 73);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(80, 31);
+            this.label35.TabIndex = 51;
+            this.label35.Text = "Measurement Length (S)";
+            // 
+            // zeroIMonitorButton
+            // 
+            this.zeroIMonitorButton.Location = new System.Drawing.Point(68, 76);
+            this.zeroIMonitorButton.Name = "zeroIMonitorButton";
+            this.zeroIMonitorButton.Size = new System.Drawing.Size(44, 23);
+            this.zeroIMonitorButton.TabIndex = 46;
+            this.zeroIMonitorButton.Text = "Zero";
+            this.zeroIMonitorButton.UseVisualStyleBackColor = true;
+            this.zeroIMonitorButton.Click += new System.EventHandler(this.zeroIMonitorButton_Click);
+            // 
+            // label129
+            // 
+            this.label129.Location = new System.Drawing.Point(134, 54);
+            this.label129.Name = "label129";
+            this.label129.Size = new System.Drawing.Size(47, 23);
+            this.label129.TabIndex = 69;
+            this.label129.Text = "samples";
+            // 
+            // currentMonitorSampleLengthTextBox
+            // 
+            this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(137, 31);
+            this.currentMonitorSampleLengthTextBox.Name = "currentMonitorSampleLengthTextBox";
+            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
+            this.currentMonitorSampleLengthTextBox.TabIndex = 67;
+            this.currentMonitorSampleLengthTextBox.Text = "20";
+            // 
+            // label128
+            // 
+            this.label128.Location = new System.Drawing.Point(134, 16);
+            this.label128.Name = "label128";
+            this.label128.Size = new System.Drawing.Size(47, 23);
+            this.label128.TabIndex = 68;
+            this.label128.Text = "Average";
+            // 
+            // southOffsetIMonitorTextBox
+            // 
+            this.southOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.southOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
+            this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
+            this.southOffsetIMonitorTextBox.ReadOnly = true;
+            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.southOffsetIMonitorTextBox.TabIndex = 47;
+            this.southOffsetIMonitorTextBox.Text = "0";
+            // 
+            // northOffsetIMonitorTextBox
+            // 
+            this.northOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.northOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
+            this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
+            this.northOffsetIMonitorTextBox.ReadOnly = true;
+            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.northOffsetIMonitorTextBox.TabIndex = 49;
+            this.northOffsetIMonitorTextBox.Text = "0";
+            // 
+            // label85
+            // 
+            this.label85.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label85.Location = new System.Drawing.Point(317, 41);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(82, 28);
+            this.label85.TabIndex = 66;
+            this.label85.Text = "South monitor (V/kHz)";
+            // 
+            // label84
+            // 
+            this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label84.Location = new System.Drawing.Point(317, 13);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(82, 28);
+            this.label84.TabIndex = 65;
+            this.label84.Text = "North monitor (V/kHz)";
+            // 
+            // southV2FSlopeTextBox
+            // 
+            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
+            this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
+            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.southV2FSlopeTextBox.TabIndex = 64;
+            this.southV2FSlopeTextBox.Text = "2000";
+            // 
+            // northV2FSlopeTextBox
+            // 
+            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
+            this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
+            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.northV2FSlopeTextBox.TabIndex = 63;
+            this.northV2FSlopeTextBox.Text = "2000";
+            // 
+            // leakageMonitorSlopeTextBox
+            // 
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
+            this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.leakageMonitorSlopeTextBox.TabIndex = 2;
+            this.leakageMonitorSlopeTextBox.Text = "0.200";
+            // 
+            // label64
+            // 
+            this.label64.Location = new System.Drawing.Point(317, 68);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(149, 43);
+            this.label64.TabIndex = 58;
+            this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
+            // 
+            // stopIMonitorPollButton
+            // 
+            this.stopIMonitorPollButton.Enabled = false;
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(577, 50);
+            this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
+            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopIMonitorPollButton.TabIndex = 55;
+            this.stopIMonitorPollButton.Text = "Stop poll";
+            this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
+            // 
+            // label63
+            // 
+            this.label63.Location = new System.Drawing.Point(519, 16);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(65, 23);
+            this.label63.TabIndex = 56;
+            this.label63.Text = "Poll period (ms)";
+            // 
+            // iMonitorPollPeriod
+            // 
+            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
+            this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
+            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
+            this.iMonitorPollPeriod.TabIndex = 0;
+            this.iMonitorPollPeriod.Text = "100";
+            // 
+            // startIMonitorPollButton
+            // 
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(491, 50);
+            this.startIMonitorPollButton.Name = "startIMonitorPollButton";
+            this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startIMonitorPollButton.TabIndex = 53;
+            this.startIMonitorPollButton.Text = "Start poll";
+            this.startIMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startIMonitorPollButton.Click += new System.EventHandler(this.startIMonitorPollButton_Click);
+            // 
+            // IMonitorMeasurementLengthTextBox
+            // 
+            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(244, 76);
+            this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
+            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
+            this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
+            this.IMonitorMeasurementLengthTextBox.Text = "200";
+            // 
+            // label17
+            // 
+            this.label17.Location = new System.Drawing.Point(179, 24);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(72, 23);
+            this.label17.TabIndex = 50;
+            this.label17.Text = "N offset (Hz)";
+            // 
+            // label16
+            // 
+            this.label16.Location = new System.Drawing.Point(181, 50);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(74, 23);
+            this.label16.TabIndex = 48;
+            this.label16.Text = "S offset (Hz)";
+            // 
+            // southIMonitorTextBox
+            // 
+            this.southIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.southIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.southIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
+            this.southIMonitorTextBox.Name = "southIMonitorTextBox";
+            this.southIMonitorTextBox.ReadOnly = true;
+            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.southIMonitorTextBox.TabIndex = 45;
+            this.southIMonitorTextBox.Text = "0";
+            // 
+            // northIMonitorTextBox
+            // 
+            this.northIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.northIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.northIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
+            this.northIMonitorTextBox.Name = "northIMonitorTextBox";
+            this.northIMonitorTextBox.ReadOnly = true;
+            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.northIMonitorTextBox.TabIndex = 42;
+            this.northIMonitorTextBox.Text = "0";
+            // 
+            // updateIMonitorButton
+            // 
+            this.updateIMonitorButton.Location = new System.Drawing.Point(9, 76);
+            this.updateIMonitorButton.Name = "updateIMonitorButton";
+            this.updateIMonitorButton.Size = new System.Drawing.Size(53, 23);
+            this.updateIMonitorButton.TabIndex = 40;
+            this.updateIMonitorButton.Text = "Update";
+            this.updateIMonitorButton.Click += new System.EventHandler(this.updateIMonitorButton_Click);
+            // 
+            // label18
+            // 
+            this.label18.Location = new System.Drawing.Point(6, 50);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(40, 23);
+            this.label18.TabIndex = 37;
+            this.label18.Text = "S (nA)";
+            // 
+            // label19
+            // 
+            this.label19.Location = new System.Drawing.Point(6, 24);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(40, 23);
+            this.label19.TabIndex = 36;
+            this.label19.Text = "N (nA)";
+            // 
             // groupBoxStatus
             // 
             this.groupBoxStatus.Controls.Add(this.richTextBoxStatus);
@@ -3757,6 +4713,19 @@
             this.gbDigitalOutputs.ResumeLayout(false);
             this.gbDigitalOutputsPort0.ResumeLayout(false);
             this.gbDigitalOutputsPort0.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.groupBox21.ResumeLayout(false);
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox13.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart5)).EndInit();
             this.groupBoxStatus.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -4056,5 +5025,92 @@
         public System.Windows.Forms.Button btClearDetectionPressureData;
         private System.Windows.Forms.GroupBox groupBoxStatus;
         public System.Windows.Forms.RichTextBox richTextBoxStatus;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.GroupBox groupBox21;
+        public System.Windows.Forms.CheckBox eManualStateCheckBox;
+        private System.Windows.Forms.GroupBox groupBox13;
+        public System.Windows.Forms.CheckBox eFieldAsymmetryCheckBox;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label label38;
+        public System.Windows.Forms.TextBox zeroPlusOneMinusBoostTextBox;
+        public System.Windows.Forms.TextBox zeroPlusBoostTextBox;
+        private System.Windows.Forms.GroupBox groupBox6;
+        public System.Windows.Forms.TextBox gMinusVMonitorTextBox;
+        public System.Windows.Forms.TextBox cPlusVMonitorTextBox;
+        public System.Windows.Forms.TextBox gPlusVMonitorTextBox;
+        private System.Windows.Forms.Button updateVMonitorButton;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        public System.Windows.Forms.TextBox cMinusVMonitorTextBox;
+        private System.Windows.Forms.GroupBox groupBox4;
+        public System.Windows.Forms.CheckBox eDisableSwitching;
+        private System.Windows.Forms.Label label78;
+        public System.Windows.Forms.TextBox eOvershootHoldTextBox;
+        private System.Windows.Forms.Label label79;
+        public System.Windows.Forms.TextBox eOvershootFactorTextBox;
+        private System.Windows.Forms.Label label62;
+        public System.Windows.Forms.TextBox eSwitchTimeTextBox;
+        private System.Windows.Forms.Label label61;
+        public System.Windows.Forms.TextBox eBleedTimeTextBox;
+        private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.Label label57;
+        public System.Windows.Forms.TextBox eRampUpDelayTextBox;
+        private System.Windows.Forms.Label label58;
+        public System.Windows.Forms.TextBox eRampDownDelayTextBox;
+        private System.Windows.Forms.Label label59;
+        public System.Windows.Forms.TextBox eRampDownTimeTextBox;
+        public System.Windows.Forms.TextBox eRampUpTimeTextBox;
+        public System.Windows.Forms.Button fieldsOffButton;
+        public System.Windows.Forms.Button switchEButton;
+        public System.Windows.Forms.CheckBox eBleedCheck;
+        public System.Windows.Forms.CheckBox ePolarityCheck;
+        public System.Windows.Forms.CheckBox eOnCheck;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label176;
+        private System.Windows.Forms.Button updateFieldButton;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.TextBox cPlusOffTextBox;
+        public System.Windows.Forms.TextBox cMinusOffTextBox;
+        public System.Windows.Forms.TextBox cMinusTextBox;
+        public System.Windows.Forms.TextBox cPlusTextBox;
+        private System.Windows.Forms.GroupBox groupBox7;
+        public System.Windows.Forms.CheckBox logCurrentDataCheckBox;
+        private System.Windows.Forms.Button clearIMonitorButton;
+        public System.Windows.Forms.TextBox southIMonitorErrorTextBox;
+        private System.Windows.Forms.Label label131;
+        private System.Windows.Forms.Label label130;
+        public System.Windows.Forms.TextBox northIMonitorErrorTextBox;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Button zeroIMonitorButton;
+        private System.Windows.Forms.Label label129;
+        public System.Windows.Forms.TextBox currentMonitorSampleLengthTextBox;
+        private System.Windows.Forms.Label label128;
+        public System.Windows.Forms.TextBox southOffsetIMonitorTextBox;
+        public System.Windows.Forms.TextBox northOffsetIMonitorTextBox;
+        private System.Windows.Forms.Label label85;
+        private System.Windows.Forms.Label label84;
+        public System.Windows.Forms.TextBox southV2FSlopeTextBox;
+        public System.Windows.Forms.TextBox northV2FSlopeTextBox;
+        public System.Windows.Forms.TextBox leakageMonitorSlopeTextBox;
+        private System.Windows.Forms.Label label64;
+        public System.Windows.Forms.Button stopIMonitorPollButton;
+        private System.Windows.Forms.Label label63;
+        public System.Windows.Forms.TextBox iMonitorPollPeriod;
+        public System.Windows.Forms.Button startIMonitorPollButton;
+        public System.Windows.Forms.TextBox IMonitorMeasurementLengthTextBox;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        public System.Windows.Forms.TextBox southIMonitorTextBox;
+        public System.Windows.Forms.TextBox northIMonitorTextBox;
+        public System.Windows.Forms.Button updateIMonitorButton;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        public System.Windows.Forms.DataVisualization.Charting.Chart chart5;
+        private System.Windows.Forms.Button rescaleIMonitorChartButton;
     }
 }
