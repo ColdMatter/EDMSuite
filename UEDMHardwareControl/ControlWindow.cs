@@ -94,6 +94,16 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void AddPointToIChart(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+            chart.Invoke(new AddPointToIChartDelegate(AddPointToIChartHelper), new object[] { chart, series, xpoint, ypoint });
+        }
+        private delegate void AddPointToIChartDelegate(Chart chart, string series, DateTime xpoint, double ypoint);
+        private void AddPointToIChartHelper(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+                chart.Series[series].Points.AddXY(xpoint, ypoint);
+        }
+
         public void ClearChartSeriesData(Chart chart, string series)
         {
             chart.Invoke(new ClearChartSeriesDataDelegate(ClearChartSeriesDataHelper), new object[] { chart, series });
@@ -595,7 +605,7 @@ namespace UEDMHardwareControl
 
         private void btUpdatePTPollPeriod_Click(object sender, EventArgs e)
         {
-            controller.UpdatePTMonitorPollPeriod();
+            controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
 
         #endregion
@@ -690,7 +700,7 @@ namespace UEDMHardwareControl
 
         private void btRollingTemperatureChartTimeAxis_Click(object sender, EventArgs e)
         {
-            controller.UpdateTemperatureChartRollingPeriod();
+            controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
         }
 
         private void cbEnablePressureChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
@@ -705,14 +715,14 @@ namespace UEDMHardwareControl
 
         private void btGaugesCorrectionFactors_Click(object sender, EventArgs e)
         {
-            controller.UpdateGaugesCorrectionFactors();
+            controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
         }
 
         private void tbSourceGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -720,7 +730,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -728,7 +738,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -736,7 +746,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdatePTMonitorPollPeriod();
+                controller.UpdatePTMonitorPollPeriodUsingUIValue();
             }
         }
 
@@ -752,7 +762,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateTemperatureChartRollingPeriod();
+                controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
             }
         }
 
@@ -1020,6 +1030,52 @@ namespace UEDMHardwareControl
         private void chart1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void updateIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitor();
+        }
+
+        private void clearIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.ClearIMonitorAv();
+            controller.ClearIMonitorChart();
+        }
+
+        private void zeroIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.CalibrateIMonitors();
+        }
+
+        private void startIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StartIMonitorPoll();
+        }
+
+        private void stopIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StopIMonitorPoll();
+        }
+
+        private void updateVMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateVMonitorUI();
+        }
+
+        private void rescaleIMonitorChartButton_Click(object sender, EventArgs e)
+        {
+            SetChartYAxisAuto(chart5);
+        }
+
+        private void updateFieldButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
+        {
+            controller.ResetGaugesCorrectionFactors();
         }
     }
 }
