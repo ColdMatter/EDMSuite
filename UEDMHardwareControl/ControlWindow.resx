@@ -120,6 +120,18 @@
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="labelRefreshModeInfoText.Text" xml:space="preserve">
+    <value>In this mode it is assumed that there are gases to desorb from the cryo and that it is currently turned on.
+
+Refresh mode starts by warming the source in a controlled manner: monitoring the pressure closely. If the turbo pump's safe operating limits are exceeded, heating is stopped 
+until pressure reduces. Once a predefined temperature has been reached, and the pressure has reduced to a predefined value, the desorption monitoring cycle ends and the 
+cryo turns off. The source is then heated to the user defined target temperature. Heaters will turn off at the datetime input by the user, whether or not the target temperature 
+has been reached. If the source reaches the target temperature before this datetime, then the pressure and temperature poll period can be set to a different value to reduce 
+the amount of data stored by the UEDM hardware controller.
+
+The cryo turns on at the datetime defined by the user. Cryo turn on will override the heaters if they have not yet been turned off. Ensure that manually controlled heaters are 
+disabled before starting any source mode.</value>
+  </data>
   <data name="labelWarmupModeInfoText.Text" xml:space="preserve">
     <value>In this mode it is assumed that there are gases to desorb from the cryo and that it is turned on.
 
@@ -137,18 +149,6 @@ Ensure that manually controlled heaters are disabled before starting any source 
 Cool down mode start by warming the source to a user defined temperature. The heaters will turn off at the datetime input by the user, whether or not the target temperature has 
 been reached. If the source reaches the target temperature before this datetime, then the pressure and temperature poll period can be set to a different value to reduce the 
 amount of data stored by the UEDM hardware controller.
-
-The cryo turns on at the datetime defined by the user. Cryo turn on will override the heaters if they have not yet been turned off. Ensure that manually controlled heaters are 
-disabled before starting any source mode.</value>
-  </data>
-  <data name="labelRefreshModeInfoText.Text" xml:space="preserve">
-    <value>In this mode it is assumed that there are gases to desorb from the cryo and that it is currently turned on.
-
-Refresh mode starts by warming the source in a controlled manner: monitoring the pressure closely. If the turbo pump's safe operating limits are exceeded, heating is stopped 
-until pressure reduces. Once a predefined temperature has been reached, and the pressure has reduced to a predefined value, the desorption monitoring cycle ends and the 
-cryo turns off. The source is then heated to the user defined target temperature. Heaters will turn off at the datetime input by the user, whether or not the target temperature 
-has been reached. If the source reaches the target temperature before this datetime, then the pressure and temperature poll period can be set to a different value to reduce 
-the amount of data stored by the UEDM hardware controller.
 
 The cryo turns on at the datetime defined by the user. Cryo turn on will override the heaters if they have not yet been turned off. Ensure that manually controlled heaters are 
 disabled before starting any source mode.</value>

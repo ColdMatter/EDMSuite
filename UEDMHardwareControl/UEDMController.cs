@@ -80,13 +80,13 @@ namespace UEDMHardwareControl
 
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
-
+        
         //Leakage monitors
         //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
         //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
         LeakageMonitor westLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westVolt2FreqSlope, westOffset, currentMonitorMeasurementTime);
         LeakageMonitor eastLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastVolt2FreqSlope, eastOffset, currentMonitorMeasurementTime);
-
+        
         Task cPlusOutputTask;
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
@@ -145,7 +145,7 @@ namespace UEDMHardwareControl
             CreateDigitalTask("Port01");
             CreateDigitalTask("Port02");
             CreateDigitalTask("Port03");
-
+            Console.WriteLine("here");
             // digitial input tasks
 
             // initialise the current leakage monitors
@@ -157,11 +157,9 @@ namespace UEDMHardwareControl
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            if (!Environs.Debug)
-            {
-                cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
-                cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-            }
+            
+            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
+            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
 
 
@@ -601,12 +599,16 @@ namespace UEDMHardwareControl
 
         #region Status
 
-        private string LastStatusMessage;
+        private string LastStatusMessage = "";
         private bool StatusRepeatFlag;
 
         private void UpdateStatus(string str)
         {
-            window.SetRichTextBox(window.richTextBoxStatus, str);
+            if(str!= LastStatusMessage)
+            {
+                window.AppendTextBox(window.tbStatus, str + Environment.NewLine);
+                //LastStatusMessage = str;
+            }
         }
 
         #endregion
@@ -700,23 +702,33 @@ namespace UEDMHardwareControl
         {
             if (Enable)
             {
-                // First stage heater
-                StartStage1HeaterControl(); // turn heaters setpoint loop on
-                // Second stage heater
-                StartStage2HeaterControl(); // turn heaters setpoint loop on
-                // Cell heater
-                EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 3);
+                if (!SourceModeHeatersEnabledFlag)
+                {
+                    // First stage heater
+                    StartStage1HeaterControl(); // turn heaters setpoint loop on
+                    // Second stage heater
+                    StartStage2HeaterControl(); // turn heaters setpoint loop on
+                    // Cell heater
+                    EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 3);
+
+                    SourceModeHeatersEnabledFlag = true;
+                }
             }
             else
             {
-                // First stage heater
-                StopStage1HeaterControl(); // turn heaters setpoint loop off 
-                EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
-                // Second stage heater
-                StopStage2HeaterControl(); // turn heaters setpoint loop off
-                EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
-                // Cell heater
-                EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 0);
+                if (SourceModeHeatersEnabledFlag)
+                {
+                    // First stage heater
+                    StopStage1HeaterControl(); // turn heaters setpoint loop off 
+                    EnableDigitalHeaters(1, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                    // Second stage heater
+                    StopStage2HeaterControl(); // turn heaters setpoint loop off
+                    EnableDigitalHeaters(2, false); // turn heaters off (when stopped, the setpoint loop will leave the heaters in their last enabled/disabled state)
+                    // Cell heater
+                    EnableLakeShoreHeaterOutput1or2(LakeShoreCellOutput, 0);
+
+                    SourceModeHeatersEnabledFlag = false;
+                }
             }
         }
         public void EnableWarmUpModeUIControls(bool Enable)
@@ -767,7 +779,7 @@ namespace UEDMHardwareControl
         private double CryoStartingPressure;
         private string LastSourceModeStatusMessage;
         private bool SourceModeTemperatureSetpointUpdated;
-        private bool HeatersEnabled;
+        private bool SourceModeHeatersEnabledFlag = false;
         private bool sourceModeCancelFlag;
         private bool SourceModeActive = false;
         private int DesorbingPTPollPeriod;
@@ -825,7 +837,7 @@ namespace UEDMHardwareControl
                 StopShutdown(refreshModeShutdownBlockHandle, refreshModeShutdownBlockReason);
                 RefreshModeEnableUIElements(true);
                 UpdateRefreshTemperature();
-                UpdateStatus("Refresh mode started\n");
+                UpdateStatus("Refresh mode started");
             }
             if (SourceMode == "Warmup")
             {
@@ -833,7 +845,7 @@ namespace UEDMHardwareControl
                 StopShutdown(warmupModeShutdownBlockHandle, warmupModeShutdownBlockReason);
                 WarmUpModeEnableUIElements(true);
                 UpdateWarmUpTemperature();
-                UpdateStatus("Warm up mode started\n");
+                UpdateStatus("Warm up mode started");
             }
             if (SourceMode == "Cooldown")
             {
@@ -841,7 +853,7 @@ namespace UEDMHardwareControl
                 StopShutdown(cooldownModeShutdownBlockHandle, cooldownModeShutdownBlockReason);
                 CoolDownModeEnableUIElements(true);
                 UpdateCoolDownTemperature();
-                UpdateStatus("Cool down mode started\n");
+                UpdateStatus("Cool down mode started");
             }
         }
         private void DesorbAndPumpGases()
@@ -850,13 +862,16 @@ namespace UEDMHardwareControl
             {
                 UpdatePTMonitorPollPeriod(DesorbingPTPollPeriod);
                 UpdateSourceModeHeaterSetpoints(GasEvaporationCycleTemperatureMax);
-                UpdateSourceModeStatus("Starting neon evaporation cycle");
+                UpdateSourceModeStatus("Starting desorption cycle");
             }
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
+                var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure values. This is subtracted from the poll period so that the loop is executed at the proper frequency.
                 if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that source mode be cancelled
+                
                 UpdateUITimeLeftIndicators();
+                
                 if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
@@ -876,7 +891,8 @@ namespace UEDMHardwareControl
                         UpdateSourceModeStatus("Neon evaporation cycle: temperature has reached setpoint, but pressure too high for cryo shutdown");
                     }
                 }
-
+                watch.Stop();
+                //UpdateStatus(Convert.ToString(watch.ElapsedMilliseconds));
                 Thread.Sleep(DesorbingPTPollPeriod);
             }
         }
@@ -1232,13 +1248,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Refresh mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
-                UpdateStatus("Refresh mode cancelled\n");
+                UpdateStatus("Refresh mode cancelled");
             }
             RefreshModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(refreshModeShutdownBlockHandle);
-            UpdateStatus("Refresh mode finished\n");
+            UpdateStatus("Refresh mode finished");
         }
 
         // Warm up mode
@@ -1388,13 +1404,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Warm up mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
-                UpdateStatus("Warm up mode canelled\n");
+                UpdateStatus("Warm up mode canelled");
             }
             WarmUpModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in warm up mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(warmupModeShutdownBlockHandle);
-            UpdateStatus("Warm up mode finished\n");
+            UpdateStatus("Warm up mode finished");
         }
 
         // Cool down mode
@@ -1577,13 +1593,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Cool down mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
-                UpdateStatus("Cool down mode canelled\n");
+                UpdateStatus("Cool down mode canelled");
             }
             CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in cool down mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(cooldownModeShutdownBlockHandle);
-            UpdateStatus("Cool down mode finished\n");
+            UpdateStatus("Cool down mode finished");
         }
 
         #endregion
@@ -2319,7 +2335,7 @@ namespace UEDMHardwareControl
                 PTMonitorPollWorker();
             });
             PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-
+            //PTMonitorPollThread.Priority = ThreadPriority.AboveNormal;
             // Setup pressure and temperature plotting thread
             PTPlottingThread = new Thread(() =>
             {
@@ -2399,7 +2415,7 @@ namespace UEDMHardwareControl
                     ThreadWaitPeriod = 0;
                     if (!StatusRepeatFlag)
                     {
-                        UpdateStatus("Unable to meet poll period requirement\n");
+                        UpdateStatus("Unable to meet poll period requirement");
                         StatusRepeatFlag = true;
                     }
                 }
@@ -2407,6 +2423,8 @@ namespace UEDMHardwareControl
                 {
                     StatusRepeatFlag = false;
                 }
+
+                //UpdateStatus(Convert.ToString(watch.ElapsedMilliseconds)); // Debugging
                 Thread.Sleep(ThreadWaitPeriod); // Wait until the next temperature/pressure measurements are to be made
             }
             PTMonitorPollEnableUIElements(false);
@@ -2890,7 +2908,7 @@ namespace UEDMHardwareControl
                 }
             }
         }
-
+        private bool HeatersEnabled;
         private void IsOutputEnabled(int Output)
         {
             string HeaterOutput;

@@ -47,8 +47,8 @@ namespace DAQ.HAL
            
             // add things to the info
             // the analog triggers
-            Info.Add("analogTrigger0", daqBoard + "/PFI0");
-            Info.Add("analogTrigger1", daqBoard + "/PFI1");
+            //Info.Add("analogTrigger0", daqBoard + "/PFI0");
+            //Info.Add("analogTrigger1", daqBoard + "/PFI1");
             Info.Add("phaseLockControlMethod", "analog");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
@@ -88,6 +88,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("AI13", UEDMHardwareControllerBoard + "/ai13", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI14", UEDMHardwareControllerBoard + "/ai14", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
 
             // map the digital channels of the "UEDMHardwareControllerBoard" card
             AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
@@ -96,6 +98,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
+
+            //Counter Channels
+            AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
+            AddCounterChannel("eastLeakage", UEDMHardwareControllerBoard + "/ctr1");
 
             // map the analog output channels for the "UEDMHardwareControllerBoard" card
             //AddAnalogOutputChannel("laser", Unnamed + "/ao0");
