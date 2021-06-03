@@ -605,7 +605,7 @@ namespace UEDMHardwareControl
 
         private void btUpdatePTPollPeriod_Click(object sender, EventArgs e)
         {
-            controller.UpdatePTMonitorPollPeriod();
+            controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
 
         #endregion
@@ -700,7 +700,7 @@ namespace UEDMHardwareControl
 
         private void btRollingTemperatureChartTimeAxis_Click(object sender, EventArgs e)
         {
-            controller.UpdateTemperatureChartRollingPeriod();
+            controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
         }
 
         private void cbEnablePressureChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
@@ -715,14 +715,14 @@ namespace UEDMHardwareControl
 
         private void btGaugesCorrectionFactors_Click(object sender, EventArgs e)
         {
-            controller.UpdateGaugesCorrectionFactors();
+            controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
         }
 
         private void tbSourceGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -730,7 +730,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -738,7 +738,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -746,7 +746,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdatePTMonitorPollPeriod();
+                controller.UpdatePTMonitorPollPeriodUsingUIValue();
             }
         }
 
@@ -762,7 +762,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateTemperatureChartRollingPeriod();
+                controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
             }
         }
 
@@ -1066,6 +1066,16 @@ namespace UEDMHardwareControl
         private void rescaleIMonitorChartButton_Click(object sender, EventArgs e)
         {
             SetChartYAxisAuto(chart5);
+        }
+
+        private void updateFieldButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
+        {
+            controller.ResetGaugesCorrectionFactors();
         }
     }
 }

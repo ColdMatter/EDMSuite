@@ -33,6 +33,12 @@ namespace UEDMHardwareControl
         /// 
 
         #region Constants
+
+        // Gauges
+        private double initialSourceGaugeCorrectionFactor = 4.1;
+        private double initialBeamlineGaugeCorrectionFactor = 4.35;
+        private double initialDetectionGaugeCorrectionFactor = 1;
+
         //Current Leakage Monitor calibration 
         //Convention for monitor to plate mapping:
         //west -> monitor1
@@ -151,8 +157,11 @@ namespace UEDMHardwareControl
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
-            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
+            if (!Environs.Debug)
+            {
+                cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
+                cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
+            }
 
 
 
@@ -188,8 +197,13 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
             window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
-        }
 
+            // Set initial parameters on PT monitoring tab
+            int initialPTPollPeriod = 1000;
+            UpdatePTMonitorPollPeriod(initialPTPollPeriod);
+            UpdateGaugesCorrectionFactors(initialSourceGaugeCorrectionFactor, initialBeamlineGaugeCorrectionFactor, initialDetectionGaugeCorrectionFactor);
+    }
+        
         public void WindowClosing()
         {
             // Request that the PT monitoring thread stop
@@ -585,6 +599,18 @@ namespace UEDMHardwareControl
 
         #endregion
 
+        #region Status
+
+        private string LastStatusMessage;
+        private bool StatusRepeatFlag;
+
+        private void UpdateStatus(string str)
+        {
+            window.SetRichTextBox(window.richTextBoxStatus, str);
+        }
+
+        #endregion
+
         #region Source Modes
 
         private string SourceMode;
@@ -631,9 +657,9 @@ namespace UEDMHardwareControl
         }
         public void UpdateSourceModeStatus(string StatusUpdate,string mode)
         {
-            if (StatusUpdate != LastStatusMessage)
+            if (StatusUpdate != LastSourceModeStatusMessage)
             {
-                LastStatusMessage = StatusUpdate;
+                LastSourceModeStatusMessage = StatusUpdate;
                 if (mode == "Refresh")
                 {
                     window.AppendTextBox(window.tbRefreshModeStatus, StatusUpdate + Environment.NewLine);
@@ -729,10 +755,6 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btUpdateHeaterControlStage1, Enable);
             window.EnableControl(window.btHeatersTurnOffWaitStart, Enable);
         }
-        public void SetPressureAndTemperatureMonitoringPollPeriod(int PollPeriod)
-        {
-            PTMonitorPollPeriod = PollPeriod;
-        }
 
         // Source mode parameters
         private DateTime HeatersTurnOffDateTime;
@@ -743,7 +765,7 @@ namespace UEDMHardwareControl
         private double CryoStoppingPressure;
         private double CryoStartingTemperatureMax;
         private double CryoStartingPressure;
-        private string LastStatusMessage;
+        private string LastSourceModeStatusMessage;
         private bool SourceModeTemperatureSetpointUpdated;
         private bool HeatersEnabled;
         private bool sourceModeCancelFlag;
@@ -803,6 +825,7 @@ namespace UEDMHardwareControl
                 StopShutdown(refreshModeShutdownBlockHandle, refreshModeShutdownBlockReason);
                 RefreshModeEnableUIElements(true);
                 UpdateRefreshTemperature();
+                UpdateStatus("Refresh mode started\n");
             }
             if (SourceMode == "Warmup")
             {
@@ -810,6 +833,7 @@ namespace UEDMHardwareControl
                 StopShutdown(warmupModeShutdownBlockHandle, warmupModeShutdownBlockReason);
                 WarmUpModeEnableUIElements(true);
                 UpdateWarmUpTemperature();
+                UpdateStatus("Warm up mode started\n");
             }
             if (SourceMode == "Cooldown")
             {
@@ -817,13 +841,14 @@ namespace UEDMHardwareControl
                 StopShutdown(cooldownModeShutdownBlockHandle, cooldownModeShutdownBlockReason);
                 CoolDownModeEnableUIElements(true);
                 UpdateCoolDownTemperature();
+                UpdateStatus("Cool down mode started\n");
             }
         }
         private void DesorbAndPumpGases()
         {
             if (!sourceModeCancelFlag)
             {
-                SetPressureAndTemperatureMonitoringPollPeriod(DesorbingPTPollPeriod);
+                UpdatePTMonitorPollPeriod(DesorbingPTPollPeriod);
                 UpdateSourceModeHeaterSetpoints(GasEvaporationCycleTemperatureMax);
                 UpdateSourceModeStatus("Starting neon evaporation cycle");
             }
@@ -874,7 +899,7 @@ namespace UEDMHardwareControl
                 //EnableCryoDigitalControl(false); // Turn off cryo
                 SetCryoState(false);
                 UpdateSourceModeStatus("Starting warmup - cryo turned off (" + DateTime.Now.ToString("F",CultureInfo.CreateSpecificCulture("en-UK")) + ")");
-                SetPressureAndTemperatureMonitoringPollPeriod(WarmupPTPollPeriod);
+                UpdatePTMonitorPollPeriod(WarmupPTPollPeriod);
 
                 // Monitor the pressure as the source heats up. 
                 // If the pressure gets too high for the turbo, then turn off the heaters. 
@@ -922,7 +947,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag)
             {
-                SetPressureAndTemperatureMonitoringPollPeriod(SourceModeWaitPeriod);
+                UpdatePTMonitorPollPeriod(SourceModeWaitPeriod);
                 //If the source reaches the desired temperature before the user defined heater turn off time, then wait until this time.
                 for (; ; )
                 {
@@ -970,7 +995,7 @@ namespace UEDMHardwareControl
         {
             if (!sourceModeCancelFlag)
             {
-                SetPressureAndTemperatureMonitoringPollPeriod(CoolDownPTPollPeriod);
+                UpdatePTMonitorPollPeriod(CoolDownPTPollPeriod);
                 EnableSourceModeHeaters(false); // Turn off heaters
 
                 // Wait until the (user defined) cryo turn on time is reached:
@@ -1127,16 +1152,16 @@ namespace UEDMHardwareControl
             public static Int32 DesorbingPTPollPeriod = 100;             // milli seconds
             public static Double CryoStoppingPressure = 0.00005;         // 5e-5 mbar
             public static Double RefreshingTemperature = 300;            // Kelvin
-            public static Int32 WarmupPTPollPeriod = 500;                // milli seconds
+            public static Int32 WarmupPTPollPeriod = 1000;                // milli seconds
 
             // Constants once warm up temperature has been reached
-            public static Int32 SourceModeWaitPTPollPeriod = 3000;       // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 10000;       // milli seconds
 
 
             // Cool down
             public static Double CryoStartingPressure = 0.00005;         // 5e-5 mbar
             public static Double CryoStartingTemperatureMax = 320;       // Kelvin
-            public static Int32 CoolDownPTPollPeriod = 3000;             // milli seconds
+            public static Int32 CoolDownPTPollPeriod = 15000;             // milli seconds
         }
 
         internal void StartRefreshMode()
@@ -1207,11 +1232,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Refresh mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
+                UpdateStatus("Refresh mode cancelled\n");
             }
             RefreshModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in refresh mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(refreshModeShutdownBlockHandle);
+            UpdateStatus("Refresh mode finished\n");
         }
 
         // Warm up mode
@@ -1312,8 +1339,8 @@ namespace UEDMHardwareControl
             public static Int16 S2LakeShoreHeaterOutput = 4;                     // 
             public static Int32 DesorbingPTPollPeriod = 100;                     // milli seconds
             public static Double CryoStoppingPressure = 0.00005;                 // 5e-5 mbar
-            public static Int32 WarmupPTPollPeriod = 500;                        // milli seconds
-            public static Int32 SourceModeWaitPTPollPeriod = 3000;               // milli seconds
+            public static Int32 WarmupPTPollPeriod = 1000;                       // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 10000;              // milli seconds
         }
 
         internal void StartWarmUpMode()
@@ -1361,11 +1388,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Warm up mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
+                UpdateStatus("Warm up mode canelled\n");
             }
             WarmUpModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in warm up mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(warmupModeShutdownBlockHandle);
+            UpdateStatus("Warm up mode finished\n");
         }
 
         // Cool down mode
@@ -1474,10 +1503,10 @@ namespace UEDMHardwareControl
             public static Int32 WarmupPTPollPeriod = 3000;                       // milli seconds
 
             // Wait at desired temperature constants
-            public static Int32 SourceModeWaitPTPollPeriod = 3000;               // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 10000;              // milli seconds
 
             // Cool down constants
-            public static Int32 CoolDownPTPollPeriod = 3000;                     // milli seconds
+            public static Int32 CoolDownPTPollPeriod = 15000;                    // milli seconds
             public static Double CryoStartingPressure = 0.00005;                 // 5e-5 mbar
             public static Double CryoStartingTemperatureMax = 320;               // Kelvin
         }
@@ -1548,11 +1577,13 @@ namespace UEDMHardwareControl
                 UpdateSourceModeStatus("Cool down mode cancelled\n");
                 EnableSourceModeHeaters(false); // Disable heaters
                 ResetUITimeLeftIndicators();
+                UpdateStatus("Cool down mode canelled\n");
             }
             CoolDownModeEnableUIElements(false); // Enable/disable UI elements that had been disabled/enabled whilst in cool down mode.
             SourceMode = ""; // Reset parameter
             SourceModeActive = false;
             ResetShutdown(cooldownModeShutdownBlockHandle);
+            UpdateStatus("Cool down mode finished\n");
         }
 
         #endregion
@@ -1716,9 +1747,9 @@ namespace UEDMHardwareControl
         private double lastSourcePressure;
         private double lastBeamlinePressure;
         private double lastDetectionPressure;
-        private double SourceGaugeCorrectionFactor = 4.1;
-        private double BeamlineGaugeCorrectionFactor = 4.35;
-        private double DetectionGaugeCorrectionFactor = 1;
+        private double SourceGaugeCorrectionFactor;
+        private double BeamlineGaugeCorrectionFactor;
+        private double DetectionGaugeCorrectionFactor;
         private int pressureMovingAverageSampleLength = 10;
         private int PressureChartRollingPeriod;
         private bool PressureChartRollingPeriodSelected = false;
@@ -1857,13 +1888,14 @@ namespace UEDMHardwareControl
                 {
                     PressureChartRollingPeriod = PressureChartRollingPeriodParsedValue * 1000; // Update pressure chart rolling period  //*1000 to convert seconds to ms
                     PressureChartRollingPeriodSelected = true;
+                    window.SetTextBox(window.tbRollingPressureChartTimeAxisPeriodMonitor, PressureChartRollingPeriodParsedValue.ToString());
                 }
                 else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse pressure chart rolling period string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
-        public void UpdateGaugesCorrectionFactors()
+        public void UpdateGaugesCorrectionFactorsUsingUIInputs()
         {
             double SourceGaugeCorrectionFactorParsedValue;
             double BeamlineGaugeCorrectionFactorParsedValue;
@@ -1872,20 +1904,38 @@ namespace UEDMHardwareControl
             if (Double.TryParse(window.tbSourceGaugeCorrectionFactor.Text, out SourceGaugeCorrectionFactorParsedValue))
             {
                 SourceGaugeCorrectionFactor = SourceGaugeCorrectionFactorParsedValue; // Update source gauge correction factor
+                window.SetTextBox(window.tbSourceGaugeCorrectionFactorMonitor, SourceGaugeCorrectionFactor.ToString());// Update the monitor value
             }
             else MessageBox.Show("Unable to parse source gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
 
             if (Double.TryParse(window.tbBeamlineGaugeCorrectionFactor.Text, out BeamlineGaugeCorrectionFactorParsedValue))
             {
                 BeamlineGaugeCorrectionFactor = BeamlineGaugeCorrectionFactorParsedValue; // Update beamline gauge correction factor
+                window.SetTextBox(window.tbBeamlineGaugeCorrectionFactorMonitor, BeamlineGaugeCorrectionFactor.ToString());// Update the monitor value
             }
             else MessageBox.Show("Unable to parse beamline gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
 
             if (Double.TryParse(window.tbDetectionGaugeCorrectionFactor.Text, out DetectionGaugeCorrectionFactorParsedValue))
             {
                 DetectionGaugeCorrectionFactor = DetectionGaugeCorrectionFactorParsedValue; // Update Detection gauge correction factor
+                window.SetTextBox(window.tbDetectionGaugeCorrectionFactorMonitor, DetectionGaugeCorrectionFactor.ToString());// Update the monitor value
             }
-            else MessageBox.Show("Unable to parse Detection gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+            else MessageBox.Show("Unable to parse detection gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void UpdateGaugesCorrectionFactors(double SourceCorrection, double BeamlineCorrection, double DetectorCorrection)
+        {
+            SourceGaugeCorrectionFactor = SourceCorrection; // Update source gauge correction factor
+            window.SetTextBox(window.tbSourceGaugeCorrectionFactorMonitor, SourceGaugeCorrectionFactor.ToString());// Update the monitor value
+            
+            BeamlineGaugeCorrectionFactor = BeamlineCorrection; // Update beamline gauge correction factor
+            window.SetTextBox(window.tbBeamlineGaugeCorrectionFactorMonitor, BeamlineGaugeCorrectionFactor.ToString());// Update the monitor value
+            
+            DetectionGaugeCorrectionFactor = DetectorCorrection; // Update Detection gauge correction factor
+            window.SetTextBox(window.tbDetectionGaugeCorrectionFactorMonitor, DetectionGaugeCorrectionFactor.ToString());// Update the monitor value
+        }
+        public void ResetGaugesCorrectionFactors()
+        {
+            UpdateGaugesCorrectionFactors(initialSourceGaugeCorrectionFactor, initialBeamlineGaugeCorrectionFactor, initialDetectionGaugeCorrectionFactor);
         }
 
         private JSONSerializer pressureDataSerializer;
@@ -2117,7 +2167,7 @@ namespace UEDMHardwareControl
                 window.SetChartYAxisAuto(window.chart2);
             }
         }
-        public void UpdateTemperatureChartRollingPeriod()
+        public void UpdateTemperatureChartRollingPeriodUsingUIInput()
         {
             int TemperatureChartRollingPeriodParsedValue;
             if (Int32.TryParse(window.tbRollingTemperatureChartTimeAxisPeriod.Text, out TemperatureChartRollingPeriodParsedValue))
@@ -2126,6 +2176,7 @@ namespace UEDMHardwareControl
                 {
                     TemperatureChartRollingPeriod = TemperatureChartRollingPeriodParsedValue * 1000; // Update temperature chart rolling period  //*1000 to convert seconds to ms
                     TemperatureChartRollingPeriodSelected = true;
+                    window.SetTextBox(window.tbRollingTemperatureChartTimeAxisPeriodMonitor, TemperatureChartRollingPeriodParsedValue.ToString());
                 }
                 else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
             }
@@ -2139,7 +2190,7 @@ namespace UEDMHardwareControl
 
         private Thread PTMonitorPollThread;
         private Thread PTPlottingThread;
-        private int PTMonitorPollPeriod = 1000;
+        private int PTMonitorPollPeriod;
         public static int PTMonitorPollPeriodLowerLimit = 100; // LakeShore Model 336 limited to 10 readings per second for each input.
         private bool PTMonitorFlag;
         private bool PTPlottingFlag;
@@ -2193,7 +2244,11 @@ namespace UEDMHardwareControl
 
         }
 
-        public void UpdatePTMonitorPollPeriod()
+        /// <summary>
+        /// Update the pressure and temperature monitoring poll period using the user defined value. If another form of input is needed,
+        /// consider using UpdatePTMonitorPollPeriod(int pollPeriod). This function will throw an exception if the poll period is too low.
+        /// </summary>
+        public void UpdatePTMonitorPollPeriodUsingUIValue()
         {
             int PTMonitorPollPeriodParseValue;
             if (Int32.TryParse(window.tbTandPPollPeriod.Text, out PTMonitorPollPeriodParseValue))
@@ -2201,11 +2256,26 @@ namespace UEDMHardwareControl
                 if (PTMonitorPollPeriodParseValue >= PTMonitorPollPeriodLowerLimit)
                 {
                     PTMonitorPollPeriod = PTMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    window.SetTextBox(window.tbTandPPollPeriodMonitor, PTMonitorPollPeriod.ToString());
                 }
                 else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        /// <summary>
+        /// Update the pressure and temperature monitoring poll period using int input. This function will throw an exception if the poll period is too low.
+        /// </summary>
+        /// <param name="pollPeriod"></param>
+        public void UpdatePTMonitorPollPeriod(int pollPeriod)
+        {
+            if (pollPeriod >= PTMonitorPollPeriodLowerLimit)
+            {
+                PTMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
+                window.SetTextBox(window.tbTandPPollPeriodMonitor, pollPeriod.ToString());
+            }
+            else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+        }
+
         public void UpdatePTPlottingArrays(DateTime MeasurementDateTimeStamp)
         {
             lock (PTPlottingBufferLock)
@@ -2324,7 +2394,19 @@ namespace UEDMHardwareControl
                 // Calculate and subtract from the poll period the amount of time taken to perform the contents of this loop (so that the temperature and pressure are polled at the correct frequency)
                 watch.Stop(); // Stop the stopwatch that was started at the start of the for loop
                 int ThreadWaitPeriod = PTMonitorPollPeriod - Convert.ToInt32(watch.ElapsedMilliseconds); // Subtract the time elapsed from the user defined poll period
-                if (ThreadWaitPeriod < 0) ThreadWaitPeriod = 0; // If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
+                if (ThreadWaitPeriod < 0)// If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
+                {
+                    ThreadWaitPeriod = 0;
+                    if (!StatusRepeatFlag)
+                    {
+                        UpdateStatus("Unable to meet poll period requirement\n");
+                        StatusRepeatFlag = true;
+                    }
+                }
+                else
+                {
+                    StatusRepeatFlag = false;
+                }
                 Thread.Sleep(ThreadWaitPeriod); // Wait until the next temperature/pressure measurements are to be made
             }
             PTMonitorPollEnableUIElements(false);
@@ -3532,7 +3614,7 @@ namespace UEDMHardwareControl
         private Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
 
-        public void UpdateVMonitor()
+        public void PollVMonitor()
         {
             /*window.SetTextBox(window.cPlusVMonitorTextBox, 
                 (cScale * voltageController.ReadInputVoltage(cPlusChan)).ToString());
@@ -3549,7 +3631,7 @@ namespace UEDMHardwareControl
         }
         public void UpdateVMonitorUI()
         {
-            UpdateVMonitor();
+            PollVMonitor();
             window.SetTextBox(window.cPlusVMonitorTextBox, CPlusMonitorVoltage.ToString());
             window.SetTextBox(window.cMinusVMonitorTextBox, CMinusMonitorVoltage.ToString());
         }
