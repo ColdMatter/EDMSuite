@@ -292,7 +292,7 @@ namespace DAQ.Environment
                     break;
 
 				default:
-					Hardware = new EDMHardware();
+					Hardware = new BufferClassicHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
                     //ExperimentType = "edm";

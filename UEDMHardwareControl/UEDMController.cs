@@ -43,8 +43,8 @@ namespace UEDMHardwareControl
         //Convention for monitor to plate mapping:
         //west -> monitor1
         //east -> monitor2
-        private static double westVolt2FreqSlope = 2000;
-        private static double eastVolt2FreqSlope = 2000;
+        private static double westSlope = 2000;
+        private static double eastSlope = 2000;
         private static double westFreq2AmpSlope = 1;
         private static double eastFreq2AmpSlope = 1;
         private static double westOffset = 0;
@@ -84,9 +84,9 @@ namespace UEDMHardwareControl
         //Leakage monitors
         //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
         //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
-        LeakageMonitor westLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westVolt2FreqSlope, westOffset, currentMonitorMeasurementTime);
-        LeakageMonitor eastLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastVolt2FreqSlope, eastOffset, currentMonitorMeasurementTime);
-        
+        LeakageMonitor westLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westSlope, westOffset, currentMonitorMeasurementTime);
+        LeakageMonitor eastLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastSlope, eastOffset, currentMonitorMeasurementTime);
+
         Task cPlusOutputTask;
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
@@ -229,9 +229,9 @@ namespace UEDMHardwareControl
             if (!Environs.Debug)
             {
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                task,
-                lowRange,
-                highRange
+                    task,
+                    lowRange,
+                    highRange
                 );
                 task.Control(TaskAction.Verify);
             }
@@ -3665,15 +3665,15 @@ namespace UEDMHardwareControl
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             westFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
             eastFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
-            westVolt2FreqSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
-            eastVolt2FreqSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
+            westSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
+            eastSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
 
             eastLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.F2ISlope = westFreq2AmpSlope;
             eastLeakageMonitor.F2ISlope = eastFreq2AmpSlope;
-            westLeakageMonitor.V2FSlope = westVolt2FreqSlope;
-            eastLeakageMonitor.V2FSlope = eastVolt2FreqSlope;
+            westLeakageMonitor.Slope = westSlope;
+            eastLeakageMonitor.Slope = eastSlope;
         }
 
         public void ReadIMonitor()
@@ -3701,8 +3701,8 @@ namespace UEDMHardwareControl
             lastWestFrequency = westLeakageMonitor.getRawCount();
             lastEastFrequency = eastLeakageMonitor.getRawCount();
 
-            lastNorthCurrent = ((lastWestFrequency - westOffset) / westVolt2FreqSlope);
-            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastVolt2FreqSlope);
+            lastNorthCurrent = ((lastWestFrequency - westOffset) / westSlope);
+            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
 
             //plot the most recent samples
             //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,

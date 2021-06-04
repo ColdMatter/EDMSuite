@@ -185,6 +185,10 @@ namespace DAQ.HAL
             //These need to be activated for the phase lock
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
             //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
+
+            //Leakage Monitor channels
+            AddCounterChannel("westLeakage", "/ctr0");
+            AddCounterChannel("eastLeakage", "/ctr1");
         }
 
         public override void ConnectApplications()
