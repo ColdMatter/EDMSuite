@@ -242,9 +242,12 @@ namespace UEDMHardwareControl
 
         private void SetAnalogOutput(Task task, double voltage)
         {
-            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
-            writer.WriteSingleSample(true, voltage);
-            task.Control(TaskAction.Unreserve);
+            if (!Environs.Debug)
+            {
+                AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
+                writer.WriteSingleSample(true, voltage);
+                task.Control(TaskAction.Unreserve);
+            }
         }
 
         private double ReadAnalogInput(Task task)
