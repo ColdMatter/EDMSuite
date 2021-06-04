@@ -211,24 +211,30 @@ namespace UEDMHardwareControl
         private Task CreateAnalogInputTask(string channel)
         {
             Task task = new Task("EDMHCIn" + channel);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                task,
-                0,
-                10
-            );
-            task.Control(TaskAction.Verify);
+            if (!Environs.Debug)
+            {
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    task,
+                    0,
+                    10
+                );
+                task.Control(TaskAction.Verify);
+            }
             return task;
         }
 
         private Task CreateAnalogInputTask(string channel, double lowRange, double highRange)
         {
             Task task = new Task("EDMHCIn" + channel);
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+            if (!Environs.Debug)
+            {
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
                 task,
                 lowRange,
                 highRange
-            );
-            task.Control(TaskAction.Verify);
+                );
+                task.Control(TaskAction.Verify);
+            }
             return task;
         }
         private double ReadAnalogInput(Task task)
