@@ -1077,5 +1077,10 @@ namespace UEDMHardwareControl
         {
             controller.ResetGaugesCorrectionFactors();
         }
+
+        private void clearStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StatusClearStatus();
+        }
     }
 }

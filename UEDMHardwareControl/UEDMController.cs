@@ -334,6 +334,8 @@ namespace UEDMHardwareControl
         {
             Application.Exit();
         }
+
+        // Plots
         /// <summary>
         /// Function to save image of the current state of a plot in the application. 
         /// </summary>
@@ -423,7 +425,7 @@ namespace UEDMHardwareControl
             
         }
 
-
+        // Data
         public string[] csvData;
         public void SavePlotDataToCSV(string csvContent)
         {
@@ -468,6 +470,13 @@ namespace UEDMHardwareControl
             //    csvContent += "\r\n";
             //}
         }
+
+        // Status
+        public void StatusClearStatus()
+        {
+            ClearStatus();
+        }
+
 
         #endregion
 
@@ -615,6 +624,11 @@ namespace UEDMHardwareControl
                 window.AppendTextBox(window.tbStatus, str + Environment.NewLine);
                 //LastStatusMessage = str;
             }
+        }
+
+        private void ClearStatus()
+        {
+            window.SetTextBox(window.tbStatus, "");
         }
 
         #endregion
