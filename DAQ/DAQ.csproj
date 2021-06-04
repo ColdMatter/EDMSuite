@@ -229,6 +229,7 @@
     </Compile>
     <Compile Include="Calibration.cs" />
     <Compile Include="CameraControllable.cs" />
+    <Compile Include="RhysFileSystem.cs" />
     <Compile Include="CarmeliteFileSystem.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -442,6 +443,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Newport.XPS.CommandInterface.dll" />
+    <EmbeddedResource Include="licenses.licx" />
     <Content Include="Wolfram.NETLink.dll" />
   </ItemGroup>
   <ItemGroup>

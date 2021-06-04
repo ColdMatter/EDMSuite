@@ -70,6 +70,12 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+                case "Rhys-XPS":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new RhysFileSystem();
+                    Debug = true;
+                    break;
+
 
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();

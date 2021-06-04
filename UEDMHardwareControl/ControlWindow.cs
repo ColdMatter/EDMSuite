@@ -1070,12 +1070,17 @@ namespace UEDMHardwareControl
 
         private void updateFieldButton_Click(object sender, EventArgs e)
         {
-
+            controller.UpdateVoltages();
         }
 
         private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
         {
             controller.ResetGaugesCorrectionFactors();
+        }
+
+        private void eOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
         }
     }
 }

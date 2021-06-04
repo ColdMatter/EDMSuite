@@ -2664,7 +2664,7 @@ namespace EDMHardwareControl
             window.SetTextBox(window.cPlusVMonitorTextBox, CPlusMonitorVoltage.ToString());
             window.SetTextBox(window.cMinusVMonitorTextBox, CMinusMonitorVoltage.ToString());
         }
-
+        //This is the start of the leakage monitor code (I think)?? RJ
         public double LastNorthCurrent
         {
             get { return northLeakageMonitor.GetCurrent(); }
@@ -2850,7 +2850,7 @@ namespace EDMHardwareControl
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
         }
-
+        //This is the end of the leakage monitor code (I think)?? RJ
         public void UpdateLaserPhotodiodes()
         {
             double groundValue = ReadAnalogInput(groundedInputTask);
