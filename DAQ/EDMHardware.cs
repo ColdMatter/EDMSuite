@@ -57,11 +57,10 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             Instruments.Add("rfPower", new HP438A("GPIB0::13::INSTR"));
 
-
-            // map the digital channels
-            // these channels are generally switched by the pattern generator
-            // they're all in the lower half of the pg
-            AddDigitalOutputChannel("valve", pgBoard, 0, 0);
+			// map the digital channels
+			// these channels are generally switched by the pattern generator
+			// they're all in the lower half of the pg
+			AddDigitalOutputChannel("valve", pgBoard, 0, 0);
 			AddDigitalOutputChannel("flash", pgBoard, 0, 1);
 			AddDigitalOutputChannel("q", pgBoard, 0, 2);
 			AddDigitalOutputChannel("detector", pgBoard, 0, 3);

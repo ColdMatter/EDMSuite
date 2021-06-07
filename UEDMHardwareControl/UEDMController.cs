@@ -61,7 +61,7 @@ namespace UEDMHardwareControl
 
         private static string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
         private static string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
-        
+
         // Temperature sensors
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
         SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
@@ -194,8 +194,8 @@ namespace UEDMHardwareControl
             // Initiates the voltages to the supply
             FieldsOff();
             // Set the leakage current monitor textboxes to the default values.
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
 
             // Set initial parameters on PT monitoring tab
@@ -3704,28 +3704,28 @@ namespace UEDMHardwareControl
                 return cMinusMonitorVoltage;
             }
         }
-        public double NorthCurrent
+        public double WestCurrent
         {
             get
             {
-                return lastNorthCurrent;
+                return lastWestCurrent;
             }
         }
 
-        public double SouthCurrent
+        public double EastCurrent
         {
             get
             {
-                return lastSouthCurrent;
+                return lastEastCurrent;
             }
         }
 
-        public double LastNorthCurrent
+        public double LastWestCurrent
         {
             get { return westLeakageMonitor.GetCurrent(); }
         }
 
-        public double LastSouthCurrent
+        public double LastEastCurrent
         {
             get { return eastLeakageMonitor.GetCurrent(); }
         }
@@ -3780,8 +3780,8 @@ namespace UEDMHardwareControl
         }
         private double cPlusMonitorVoltage;
         private double cMinusMonitorVoltage;
-        private double lastNorthCurrent;
-        private double lastSouthCurrent;
+        private double lastWestCurrent;
+        private double lastEastCurrent;
         private double lastWestFrequency;
         private double lastEastFrequency;
         private Queue<double> nCurrentSamples = new Queue<double>();
@@ -3815,8 +3815,8 @@ namespace UEDMHardwareControl
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             westFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
             eastFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
-            westSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
-            eastSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
+            westSlope = Double.Parse(window.westSlopeTextBox.Text);
+            eastSlope = Double.Parse(window.eastSlopeTextBox.Text);
 
             eastLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
@@ -3829,9 +3829,9 @@ namespace UEDMHardwareControl
         public void ReadIMonitor()
         {
             //double ground = ReadAnalogInput(groundedInputTask);
-            lastNorthCurrent = westLeakageMonitor.GetCurrent();
+            lastWestCurrent = westLeakageMonitor.GetCurrent();
             //ground = ReadAnalogInput(groundedInputTask);
-            lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            lastEastCurrent = eastLeakageMonitor.GetCurrent();
         }
 
         private string currentSeriesEast = "Leakage Current East";
@@ -3843,35 +3843,35 @@ namespace UEDMHardwareControl
             ReconfigureIMonitors();
 
             //sample the leakage current
-            //lastNorthCurrent = westLeakageMonitor.GetCurrent();
-            //lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            //lastWestCurrent = westLeakageMonitor.GetCurrent();
+            //lastEastCurrent = eastLeakageMonitor.GetCurrent();
 
 
             //This samples the frequency
             lastWestFrequency = westLeakageMonitor.getRawCount();
             lastEastFrequency = eastLeakageMonitor.getRawCount();
 
-            lastNorthCurrent = ((lastWestFrequency - westOffset) / westSlope);
-            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
+            lastWestCurrent = ((lastWestFrequency - westOffset) / westSlope);
+            lastEastCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
 
             //plot the most recent samples
             //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-            //            new double[] { lastNorthCurrent });
+            //            new double[] { lastWestCurrent });
             //window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
-            //                        new double[] { lastSouthCurrent });
+            //                        new double[] { lastEastCurrent });
 
             //add date time
             localDate = DateTime.Now;
             //plot the most recent sample (UEDM Chart style)
 
-            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastSouthCurrent);
+            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastEastCurrent);
             //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastNorthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastSouthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastNorthCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastEastCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastWestCurrent);
 
             //add samples to Queues for averaging
-            nCurrentSamples.Enqueue(lastNorthCurrent);
-            sCurrentSamples.Enqueue(lastSouthCurrent);
+            nCurrentSamples.Enqueue(lastWestCurrent);
+            sCurrentSamples.Enqueue(lastEastCurrent);
 
             //drop samples when array is larger than the moving average sample length
             while (nCurrentSamples.Count > movingAverageSampleLength)
@@ -3887,10 +3887,10 @@ namespace UEDMHardwareControl
             double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
 
             //update text boxes
-            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
-            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
-            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+            window.SetTextBox(window.westIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.westIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.eastIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.eastIMonitorErrorTextBox, (sAvCurrErr).ToString());
         }
 
         public void ClearIMonitorAv()
@@ -3924,8 +3924,8 @@ namespace UEDMHardwareControl
             westOffset = westLeakageMonitor.Offset;
             eastOffset = eastLeakageMonitor.Offset;
 
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
         }
 
         public string csvDataLeakage = "";
@@ -4012,7 +4012,7 @@ namespace UEDMHardwareControl
                             StreamWriter w;
                             w = new StreamWriter(leakageFileSave, true);
                             csvDataLeakage = String.Format("{4,8:D}, {4,8:T}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}",
-                                lastNorthCurrent, lastWestFrequency, lastSouthCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                                lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
                             w.WriteLine(csvDataLeakage);
                             w.Close();
                     }
