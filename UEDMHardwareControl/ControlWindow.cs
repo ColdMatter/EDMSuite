@@ -177,7 +177,7 @@ namespace UEDMHardwareControl
             if (scale == "Log")
             {
                 chart.ChartAreas[0].AxisY.IsLogarithmic = true;
-                chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0.25;
+                //chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0.1;
             }
             else
             {
