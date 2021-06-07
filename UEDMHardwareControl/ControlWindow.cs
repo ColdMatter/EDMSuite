@@ -42,6 +42,49 @@ namespace UEDMHardwareControl
             control.Enabled = enabled;
         }
 
+        public void SetComboBoxSelectedIndex(ComboBox combobox, int index)
+        {
+            combobox.Invoke(new SetComboBoxSelectedIndexDelegate(SetComboBoxSelectedIndexHelper), new object[] { combobox, index });
+        }
+        private delegate void SetComboBoxSelectedIndexDelegate(ComboBox combobox, int index);
+        private void SetComboBoxSelectedIndexHelper(ComboBox combobox, int index)
+        {
+            combobox.SelectedIndex = index;
+        }
+
+        public int GetComboBoxSelectedIndex(ComboBox combobox)
+        {
+            return (int)combobox.Invoke(new GetComboBoxSelectedIndexDelegate(GetComboBoxSelectedIndexHelper), new object[] { combobox });
+        }
+        private delegate int GetComboBoxSelectedIndexDelegate(ComboBox combobox);
+        private int GetComboBoxSelectedIndexHelper(ComboBox combobox)
+        {
+            int index = combobox.SelectedIndex;
+            return index;
+        }
+
+        public int GetComboBoxTextIndex(ComboBox combobox, string str)
+        {
+            return (int)combobox.Invoke(new GetComboBoxTextIndexDelegate(GetComboBoxTextIndexHelper), new object[] { combobox, str });
+        }
+        private delegate int GetComboBoxTextIndexDelegate(ComboBox combobox, string str);
+        private int GetComboBoxTextIndexHelper(ComboBox combobox, string str)
+        {
+            int index = combobox.FindString(str);
+            return index;
+        }
+
+        public string GetComboBoxSelectedItem(ComboBox combobox)
+        {
+            return (string)combobox.Invoke(new GetComboBoxSelectedItemDelegate(GetComboBoxSelectedItemHelper), new object[] { combobox });
+        }
+        private delegate string GetComboBoxSelectedItemDelegate(ComboBox combobox);
+        private string GetComboBoxSelectedItemHelper(ComboBox combobox)
+        {
+            string str = (string)combobox.SelectedItem; // (string) casts the returned object to a string type variable
+            return str;
+        }
+
         public void SetTextBox(TextBox box, string text)
         {
             box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
@@ -1081,6 +1124,36 @@ namespace UEDMHardwareControl
         private void clearStatusToolStripMenuItem_Click(object sender, EventArgs e)
         {
             controller.StatusClearStatus();
+        }
+
+        private void btUpdateRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateRFFrequencyUsingUIInput();
+        }
+
+        private void btIncrementRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementRFFrequencyUsingUIInput();
+        }
+
+        private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWCHAFrequencyUsingUIInput();
+        }
+
+        private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWCHAFrequencyUsingUIInput();
+        }
+
+        private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWCHAPowerUsingUIInput();
+        }
+
+        private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWCHAPowerUsingUIInput();
         }
     }
 }

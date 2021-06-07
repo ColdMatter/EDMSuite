@@ -122,92 +122,6 @@ namespace UEDMHardwareControl
         }
 
 
-        // without this method, any remote connections to this object will time out after
-        // five minutes of inactivity.
-        // It just overrides the lifetime lease system completely.
-        public override Object InitializeLifetimeService()
-        {
-            return null;
-        }
-
-        # endregion
-
-        ControlWindow window;
-
-        public void Start()
-        {
-            // Create digital output tasks
-            //CreateDigitalTask("cryoTriggerDigitalOutputTask");
-            CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
-            CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
-
-            CreateDigitalTask("Port00");
-            CreateDigitalTask("Port01");
-            CreateDigitalTask("Port02");
-            CreateDigitalTask("Port03");
-            Console.WriteLine("here");
-            // digitial input tasks
-
-            // initialise the current leakage monitors
-            westLeakageMonitor.Initialize();
-            eastLeakageMonitor.Initialize();
-
-            // analog outputs
-            //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
-
-            // analog inputs
-            //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            
-            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
-            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-
-
-
-            // make the control window
-            window = new ControlWindow();
-            window.controller = this;
-
-            Application.Run(window);
-        }
-
-        // this method runs immediately after the GUI sets up
-        internal void WindowLoaded()
-        {
-            // Set initial datetime picker values for the user interface
-            DateTime now = DateTime.Now;
-            DateTime InitialDateTime = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 4, 0, 0);
-            window.SetDateTimePickerValue(window.dateTimePickerHeatersTurnOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnCryoOn, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerWarmUpModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnCryoOn, InitialDateTime);
-            // Set flags
-            refreshModeHeaterTurnOffDateTimeFlag = false;
-            refreshModeCryoTurnOnDateTimeFlag = false;
-            warmupModeHeaterTurnOffDateTimeFlag = false;
-            CoolDownModeHeaterTurnOffDateTimeFlag = false;
-            CoolDownModeCryoTurnOnDateTimeFlag = false;
-            // Check that the LakeShore relay is set correctly 
-            InitializeCryoControl();
-
-            // Set the leakage current monitor textboxes to the default values.
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
-            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
-
-            // Set initial parameters on PT monitoring tab
-            int initialPTPollPeriod = 1000;
-            UpdatePTMonitorPollPeriod(initialPTPollPeriod);
-            UpdateGaugesCorrectionFactors(initialSourceGaugeCorrectionFactor, initialBeamlineGaugeCorrectionFactor, initialDetectionGaugeCorrectionFactor);
-    }
-        
-        public void WindowClosing()
-        {
-            // Request that the PT monitoring thread stop
-            StopPTMonitorPoll();
-        }
-
         private Task CreateAnalogInputTask(string channel)
         {
             Task task = new Task("EDMHCIn" + channel);
@@ -266,6 +180,109 @@ namespace UEDMHardwareControl
             }
             double val = sum / numOfSamples;
             return val;
+        }
+
+
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
+
+        public void SetComboBox(ComboBox combobox,string str)
+        {
+            int index = window.GetComboBoxTextIndex(combobox, str);
+            window.SetComboBoxSelectedIndex(combobox, index);
+        }
+
+        # endregion
+
+        ControlWindow window;
+
+        #region Startup
+        public void Start()
+        {
+            // Create digital output tasks
+            //CreateDigitalTask("cryoTriggerDigitalOutputTask");
+            CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
+            CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
+
+            CreateDigitalTask("Port00");
+            CreateDigitalTask("Port01");
+            CreateDigitalTask("Port02");
+            CreateDigitalTask("Port03");
+            // digitial input tasks
+
+            // initialise the current leakage monitors
+            westLeakageMonitor.Initialize();
+            eastLeakageMonitor.Initialize();
+
+            // analog outputs
+            //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
+
+            // analog inputs
+            //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
+            
+            cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
+            cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
+
+
+
+            // make the control window
+            window = new ControlWindow();
+            window.controller = this;
+
+            Application.Run(window);
+        }
+
+        // this method runs immediately after the GUI sets up
+        internal void WindowLoaded()
+        {
+            // Set initial datetime picker values for the user interface
+            DateTime now = DateTime.Now;
+            DateTime InitialDateTime = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 4, 0, 0);
+            window.SetDateTimePickerValue(window.dateTimePickerHeatersTurnOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnCryoOn, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerWarmUpModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnHeatersOff, InitialDateTime);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnCryoOn, InitialDateTime);
+            // Set flags
+            refreshModeHeaterTurnOffDateTimeFlag = false;
+            refreshModeCryoTurnOnDateTimeFlag = false;
+            warmupModeHeaterTurnOffDateTimeFlag = false;
+            CoolDownModeHeaterTurnOffDateTimeFlag = false;
+            CoolDownModeCryoTurnOnDateTimeFlag = false;
+            // Check that the LakeShore relay is set correctly 
+            InitializeCryoControl();
+
+            // Set the leakage current monitor textboxes to the default values.
+            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
+
+            // Set initial parameters on PT monitoring tab
+            int initialPTPollPeriod = 1000;
+            UpdatePTMonitorPollPeriod(initialPTPollPeriod);
+            UpdateGaugesCorrectionFactors(initialSourceGaugeCorrectionFactor, initialBeamlineGaugeCorrectionFactor, initialDetectionGaugeCorrectionFactor);
+
+            // Set comboboxes
+            SetComboBox(window.comboBoxMWCHASetpointUnit, "GHz");
+            SetComboBox(window.comboBoxMWCHAIncrementUnit, "MHz"); 
+            SetComboBox(window.comboBoxRFSetpointUnit, "MHz");
+            SetComboBox(window.comboBoxRFIncrementUnit, "kHz");
+
+
+        }
+
+        #endregion
+
+        public void WindowClosing()
+        {
+            // Request that the PT monitoring thread stop
+            StopPTMonitorPoll();
         }
 
         #region Windows API
@@ -3847,6 +3864,227 @@ namespace UEDMHardwareControl
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
         }
+        #endregion
+
+        #region Optical pumping
+
+        // RF 
+
+        public int RFFrequency;
+        public int RFFrequencyMin = 1000000; // DDS module provides sine wave of minimum frequency 1 MHz
+        public int RFFrequencyMax = 40000000; // DDS module provides sine wave of maximum frequency 40 MHz
+
+        public void UpdateRFFrequencyUsingUIInput()
+        {
+            int MetricPrefix = GetMWMetricPrefix(window.comboBoxRFSetpointUnit);
+            if (Double.TryParse(window.tbRFFrequency.Text, out double RFFrequencyParseValue))
+            {
+                if (RFFrequencyParseValue * MetricPrefix >= RFFrequencyMin)
+                {
+                    if (RFFrequencyParseValue * MetricPrefix <= RFFrequencyMax)
+                    {
+                        UpdateRFFrequency(Convert.ToInt32(RFFrequencyParseValue * MetricPrefix));
+                    }
+                    else MessageBox.Show("RF frequency too large. The maximum frequency the DDS can provide is " + RFFrequencyMax + " Hz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is "+ RFFrequencyMin+" Hz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void UpdateRFFrequency(int Frequency)
+        {
+            RFFrequency = Frequency;
+            double displayFrequency = (double)Frequency / Math.Pow(1000, 2); // displaying in MHz
+            window.SetTextBox(window.tbRFFrequencyMonitor, displayFrequency.ToString());
+            // function from DDS object (RFFrequency)
+        }
+
+        public void IncrementRFFrequencyUsingUIInput()
+        {
+            int MetricPrefix = GetMWMetricPrefix(window.comboBoxRFIncrementUnit);
+            if (Double.TryParse(window.tbRFFrequencyIncrement.Text, out double RFFrequencyIncrementParseValue))
+            {
+                if ((RFFrequencyIncrementParseValue* MetricPrefix) + RFFrequency >= RFFrequencyMin)
+                {
+                    if ((RFFrequencyIncrementParseValue* MetricPrefix) + RFFrequency <= RFFrequencyMax)
+                    {
+                        UpdateRFFrequency(Convert.ToInt32((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency));
+                    }
+                    else MessageBox.Show("RF frequency too large. The maximum frequency the DDS can provide is " + RFFrequencyMax + " Hz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is " + RFFrequencyMin + " Hz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+
+        // MW
+
+        public long MWCHAFrequency; // Hz
+        public long MWFrequencyMin = 10000000; // Windfreak synth provides sine wave of minimum frequency 10 MHz
+        public long MWFrequencyMax = 15000000000; // Windfreak synth provides sine wave of maximum frequency 15,000 MHz
+
+        public void UpdateMWCHAFrequencyUsingUIInput()
+        {
+            int MetricPrefix = GetMWMetricPrefix(window.comboBoxMWCHASetpointUnit);
+            if (double.TryParse(window.tbMWCHAFrequency.Text, out double MWFrequencyParseValue))
+            {
+                if (MWFrequencyParseValue*MetricPrefix >= MWFrequencyMin)
+                {
+                    if (MWFrequencyParseValue*MetricPrefix <= MWFrequencyMax)
+                    {
+                        UpdateMWCHAFrequency(Convert.ToInt64(MWFrequencyParseValue*MetricPrefix));
+                    }
+                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public string[] MetricPrefixes = { "k", "M", "G" };
+        public int GetMWMetricPrefix(ComboBox combobox)
+        {
+            string str = window.GetComboBoxSelectedItem(combobox);
+            string res = str.Substring(0, 1);
+            int idx = Array.FindIndex(MetricPrefixes, row => row.Contains(res));
+            int prefix = (int)Math.Pow(1000, idx + 1); // GHz is index 0, MHz is index 1, etc...
+            return prefix;
+        }
+
+        public void UpdateMWCHAFrequency(long Frequency)
+        {
+            MWCHAFrequency = Frequency;
+            double displayFrequency = (double)Frequency / Math.Pow(1000, 3); // displaying in GHz
+            window.SetTextBox(window.tbMWCHAFrequencyMonitor, displayFrequency.ToString());
+            // function from DDS object (RFFrequency)
+        }
+
+        public void IncrementMWCHAFrequencyUsingUIInput()
+        {
+            long MetricPrefix = GetMWMetricPrefix(window.comboBoxMWCHAIncrementUnit);
+            if (double.TryParse(window.tbMWCHAFrequencyIncrement.Text, out double MWFrequencyIncrementParseValue))
+            {
+                if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency >= MWFrequencyMin)
+                {
+                    if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency <= MWFrequencyMax)
+                    {
+                        UpdateMWCHAFrequency(Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency));
+                    }
+                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public double MWCHAPower; // dBm
+        public long MWPowerMin = -30; // Windfreak synth provides sine wave of minimum power -30 dBm
+        public long MWPowerMax = 20; // Windfreak synth provides sine wave of maximum power 20 dBm. However, this varies depending on the frequency.
+        public double MWPowerResolution = 0.1; // Windfreak power output can be adjusted in increments of 0.1 dBm.
+
+        public void UpdateMWCHAPowerUsingUIInput()
+        {
+            if (double.TryParse(window.tbMWCHAPower.Text, out double MWPowerParseValue))
+            {
+                if (MWPowerParseValue  >= MWPowerMin)
+                {
+                    if (MWPowerParseValue  <= MWPowerMax)
+                    {
+                        string powerString = MWPowerParseValue.ToString();
+
+                        if (powerString.Contains('.'))
+                        {
+                            string[] digits = powerString.Split('.');
+
+                            int dec0, dec1;
+                            dec0 = digits[0].Length;
+
+                            if (digits.Length == 2)
+                            {
+                                dec1 = digits[1].Length;
+                            }
+                            else
+                            {
+                                dec1 = 0;
+                            }
+
+                            if (dec1 <= 1)
+                            {
+                                UpdateMWCHAPower(MWPowerParseValue);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                            }
+                        }
+                        else
+                        {
+                            UpdateMWCHAPower(MWPowerParseValue);
+                        }
+                    }
+                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void UpdateMWCHAPower(double Power)
+        {
+            MWCHAPower = Power;
+            window.SetTextBox(window.tbMWCHAPowerMonitor, Power.ToString());
+            // function from DDS object (RFFrequency)
+        }
+
+        public void IncrementMWCHAPowerUsingUIInput()
+        {
+            if (double.TryParse(window.tbMWCHAPowerIncrement.Text, out double MWPowerParseValue))
+            {
+                if (MWCHAPower + MWPowerParseValue >= MWPowerMin)
+                {
+                    if (MWCHAPower + MWPowerParseValue <= MWPowerMax)
+                    {
+                        string powerString = MWPowerParseValue.ToString();
+
+                        if (powerString.Contains('.'))
+                        {
+                            string[] digits = powerString.Split('.');
+
+                            int dec0, dec1;
+                            dec0 = digits[0].Length;
+
+                            if (digits.Length == 2)
+                            {
+                                dec1 = digits[1].Length;
+                            }
+                            else
+                            {
+                                dec1 = 0;
+                            }
+
+                            if (dec1 <= 1)
+                            {
+                                UpdateMWCHAPower(MWCHAPower + MWPowerParseValue);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                            }
+                        }
+                        else
+                        {
+                            UpdateMWCHAPower(MWCHAPower + MWPowerParseValue);
+                        }
+                    }
+                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
         #endregion
     }
 }
