@@ -154,14 +154,13 @@ namespace UEDMHardwareControl
 
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
+            cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate");
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            
+
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-
-
 
             // make the control window
             window = new ControlWindow();
@@ -213,15 +212,15 @@ namespace UEDMHardwareControl
         private Task CreateAnalogInputTask(string channel)
         {
             Task task = new Task("EDMHCIn" + channel);
-            if (!Environs.Debug)
-            {
+            //if (!Environs.Debug)
+            //{
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
                     task,
                     0,
                     10
                 );
                 task.Control(TaskAction.Verify);
-            }
+            //}
             return task;
         }
 
@@ -240,14 +239,28 @@ namespace UEDMHardwareControl
             return task;
         }
 
+        private Task CreateAnalogOutputTask(string channel)
+        {
+            Task task = new Task("EDMHCOut" + channel);
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
+                task,
+                c.RangeLow,
+                c.RangeHigh
+                );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
+
         private void SetAnalogOutput(Task task, double voltage)
         {
-            if (!Environs.Debug)
-            {
+            //if (!Environs.Debug)
+            //{
                 AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
                 writer.WriteSingleSample(true, voltage);
                 task.Control(TaskAction.Unreserve);
-            }
+            //}
         }
 
         private double ReadAnalogInput(Task task)
@@ -256,15 +269,15 @@ namespace UEDMHardwareControl
 
             double val;
             Random rnd = new Random();
-            if (!Environs.Debug)
-            {
+            //if (!Environs.Debug)
+            //{
                 val = reader.ReadSingleSample();
                 task.Control(TaskAction.Unreserve);
-            }
-            else
-            {
-                val = rnd.NextDouble();
-            }
+            //}
+            //else
+            //{
+            //    val = rnd.NextDouble();
+            //}
             return val;
         }
 
@@ -3763,7 +3776,7 @@ namespace UEDMHardwareControl
             if (EFieldEnabled)
             {
                 CalculateVoltages();
-                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
                 SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
                 window.EnableControl(window.ePolarityCheck, false);
                 window.EnableControl(window.eBleedCheck, false);
@@ -3772,7 +3785,7 @@ namespace UEDMHardwareControl
             }
             else
             {
-                SetAnalogOutput(cPlusOutputTask, cPlusOff);
+                //SetAnalogOutput(cPlusOutputTask, cPlusOff);
                 SetAnalogOutput(cMinusOutputTask, cMinusOff);
                 window.EnableControl(window.ePolarityCheck, true);
                 window.EnableControl(window.eBleedCheck, true);
