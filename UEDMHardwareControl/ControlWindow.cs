@@ -1138,22 +1138,42 @@ namespace UEDMHardwareControl
 
         private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWCHAFrequencyUsingUIInput();
+            controller.UpdateMWFrequencyUsingUIInput(1);
         }
 
         private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWCHAFrequencyUsingUIInput();
+            controller.IncrementMWFrequencyUsingUIInput(1);
         }
 
         private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWCHAPowerUsingUIInput();
+            controller.UpdateMWPowerUsingUIInput(1);
         }
 
         private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWCHAPowerUsingUIInput();
+            controller.IncrementMWPowerUsingUIInput(1);
+        }
+
+        private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInput(2);
+        }
+
+        private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInput(2);
+        }
+
+        private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInput(2);
+        }
+
+        private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInput(2);
         }
     }
 }

@@ -270,11 +270,11 @@ namespace UEDMHardwareControl
 
             // Set comboboxes
             SetComboBox(window.comboBoxMWCHASetpointUnit, "GHz");
-            SetComboBox(window.comboBoxMWCHAIncrementUnit, "MHz"); 
+            SetComboBox(window.comboBoxMWCHAIncrementUnit, "MHz");
+            SetComboBox(window.comboBoxMWCHBSetpointUnit, "GHz");
+            SetComboBox(window.comboBoxMWCHBIncrementUnit, "MHz");
             SetComboBox(window.comboBoxRFSetpointUnit, "MHz");
             SetComboBox(window.comboBoxRFIncrementUnit, "kHz");
-
-
         }
 
         #endregion
@@ -3921,28 +3921,6 @@ namespace UEDMHardwareControl
 
         // MW
 
-        public long MWCHAFrequency; // Hz
-        public long MWFrequencyMin = 10000000; // Windfreak synth provides sine wave of minimum frequency 10 MHz
-        public long MWFrequencyMax = 15000000000; // Windfreak synth provides sine wave of maximum frequency 15,000 MHz
-
-        public void UpdateMWCHAFrequencyUsingUIInput()
-        {
-            int MetricPrefix = GetMWMetricPrefix(window.comboBoxMWCHASetpointUnit);
-            if (double.TryParse(window.tbMWCHAFrequency.Text, out double MWFrequencyParseValue))
-            {
-                if (MWFrequencyParseValue*MetricPrefix >= MWFrequencyMin)
-                {
-                    if (MWFrequencyParseValue*MetricPrefix <= MWFrequencyMax)
-                    {
-                        UpdateMWCHAFrequency(Convert.ToInt64(MWFrequencyParseValue*MetricPrefix));
-                    }
-                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
-                }
-                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
-            }
-            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
-        }
-
         public string[] MetricPrefixes = { "k", "M", "G" };
         public int GetMWMetricPrefix(ComboBox combobox)
         {
@@ -3953,24 +3931,86 @@ namespace UEDMHardwareControl
             return prefix;
         }
 
-        public void UpdateMWCHAFrequency(long Frequency)
+        public long MWCHAFrequency; // Hz
+        public long MWFrequencyMin = 10000000; // Windfreak synth provides sine wave of minimum frequency 10 MHz
+        public long MWFrequencyMax = 15000000000; // Windfreak synth provides sine wave of maximum frequency 15,000 MHz
+
+        public void UpdateMWFrequency(int channel, long Frequency)
         {
+            TextBox FrequencyMonitorTextBox;
+
+            if (channel == 1) // Windfreak channel A
+            {
+                FrequencyMonitorTextBox = window.tbMWCHAFrequencyMonitor;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencyMonitorTextBox = window.tbMWCHBFrequencyMonitor;
+            }
+
             MWCHAFrequency = Frequency;
             double displayFrequency = (double)Frequency / Math.Pow(1000, 3); // displaying in GHz
-            window.SetTextBox(window.tbMWCHAFrequencyMonitor, displayFrequency.ToString());
+            window.SetTextBox(FrequencyMonitorTextBox, displayFrequency.ToString());
             // function from DDS object (RFFrequency)
         }
 
-        public void IncrementMWCHAFrequencyUsingUIInput()
+        public void UpdateMWFrequencyUsingUIInput(int channel)
         {
-            long MetricPrefix = GetMWMetricPrefix(window.comboBoxMWCHAIncrementUnit);
-            if (double.TryParse(window.tbMWCHAFrequencyIncrement.Text, out double MWFrequencyIncrementParseValue))
+            TextBox FrequencySetpointTextBox;
+            ComboBox FrequencySetpointUnitComboBox;
+
+            if (channel == 1) // Windfreak channel A
+            {
+                FrequencySetpointTextBox = window.tbMWCHAFrequencySetpoint;
+                FrequencySetpointUnitComboBox = window.comboBoxMWCHASetpointUnit;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencySetpointTextBox = window.tbMWCHBFrequencySetpoint;
+                FrequencySetpointUnitComboBox = window.comboBoxMWCHBSetpointUnit;
+            }
+
+
+            int MetricPrefix = GetMWMetricPrefix(FrequencySetpointUnitComboBox);
+            if (double.TryParse(FrequencySetpointTextBox.Text, out double MWFrequencyParseValue))
+            {
+                if (MWFrequencyParseValue * MetricPrefix >= MWFrequencyMin)
+                {
+                    if (MWFrequencyParseValue * MetricPrefix <= MWFrequencyMax)
+                    {
+                        UpdateMWFrequency(channel, Convert.ToInt64(MWFrequencyParseValue * MetricPrefix));
+                    }
+                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void IncrementMWFrequencyUsingUIInput(int channel)
+        {
+            TextBox FrequencyIncrementTextBox;
+            ComboBox FrequencyIncrementUnitComboBox;
+
+            if (channel == 1) // Windfreak channel A
+            {
+                FrequencyIncrementTextBox = window.tbMWCHAFrequencyIncrement;
+                FrequencyIncrementUnitComboBox = window.comboBoxMWCHAIncrementUnit;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencyIncrementTextBox = window.tbMWCHBFrequencyIncrement;
+                FrequencyIncrementUnitComboBox = window.comboBoxMWCHBIncrementUnit;
+            }
+
+            long MetricPrefix = GetMWMetricPrefix(FrequencyIncrementUnitComboBox);
+            if (double.TryParse(FrequencyIncrementTextBox.Text, out double MWFrequencyIncrementParseValue))
             {
                 if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency >= MWFrequencyMin)
                 {
                     if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency <= MWFrequencyMax)
                     {
-                        UpdateMWCHAFrequency(Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency));
+                        UpdateMWFrequency(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency));
                     }
                     else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
                 }
@@ -3984,13 +4024,43 @@ namespace UEDMHardwareControl
         public long MWPowerMax = 20; // Windfreak synth provides sine wave of maximum power 20 dBm. However, this varies depending on the frequency.
         public double MWPowerResolution = 0.1; // Windfreak power output can be adjusted in increments of 0.1 dBm.
 
-        public void UpdateMWCHAPowerUsingUIInput()
+       
+        public void UpdateMWPower(int channel, double Power)
         {
-            if (double.TryParse(window.tbMWCHAPower.Text, out double MWPowerParseValue))
+            TextBox PowerSetpointTextBox;
+
+            if (channel == 1) // Windfreak channel A
             {
-                if (MWPowerParseValue  >= MWPowerMin)
+                PowerSetpointTextBox = window.tbMWCHAPowerMonitor;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerMonitor;
+            }
+
+            MWCHAPower = Power;
+            window.SetTextBox(PowerSetpointTextBox, Power.ToString());
+            // function from DDS object (RFFrequency)
+        }
+
+        public void UpdateMWPowerUsingUIInput(int channel)
+        {
+            TextBox PowerSetpointTextBox;
+
+            if (channel == 1) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerSetpoint;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerSetpoint;
+            }
+
+            if (double.TryParse(PowerSetpointTextBox.Text, out double MWPowerParseValue))
+            {
+                if (MWPowerParseValue >= MWPowerMin)
                 {
-                    if (MWPowerParseValue  <= MWPowerMax)
+                    if (MWPowerParseValue <= MWPowerMax)
                     {
                         string powerString = MWPowerParseValue.ToString();
 
@@ -4012,7 +4082,7 @@ namespace UEDMHardwareControl
 
                             if (dec1 <= 1)
                             {
-                                UpdateMWCHAPower(MWPowerParseValue);
+                                UpdateMWPower(channel, MWPowerParseValue);
                             }
                             else
                             {
@@ -4021,7 +4091,7 @@ namespace UEDMHardwareControl
                         }
                         else
                         {
-                            UpdateMWCHAPower(MWPowerParseValue);
+                            UpdateMWPower(channel, MWPowerParseValue);
                         }
                     }
                     else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
@@ -4031,16 +4101,20 @@ namespace UEDMHardwareControl
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
-        public void UpdateMWCHAPower(double Power)
+        public void IncrementMWPowerUsingUIInput(int channel)
         {
-            MWCHAPower = Power;
-            window.SetTextBox(window.tbMWCHAPowerMonitor, Power.ToString());
-            // function from DDS object (RFFrequency)
-        }
+            TextBox PowerIncrementTextBox;
 
-        public void IncrementMWCHAPowerUsingUIInput()
-        {
-            if (double.TryParse(window.tbMWCHAPowerIncrement.Text, out double MWPowerParseValue))
+            if (channel == 1) // Windfreak channel A
+            {
+                PowerIncrementTextBox = window.tbMWCHAPowerIncrement;
+            }
+            else   // Windfreak channel B
+            {
+                PowerIncrementTextBox = window.tbMWCHBPowerIncrement;
+            }
+
+            if (double.TryParse(PowerIncrementTextBox.Text, out double MWPowerParseValue))
             {
                 if (MWCHAPower + MWPowerParseValue >= MWPowerMin)
                 {
@@ -4066,7 +4140,7 @@ namespace UEDMHardwareControl
 
                             if (dec1 <= 1)
                             {
-                                UpdateMWCHAPower(MWCHAPower + MWPowerParseValue);
+                                UpdateMWPower(channel, MWCHAPower + MWPowerParseValue);
                             }
                             else
                             {
@@ -4075,7 +4149,7 @@ namespace UEDMHardwareControl
                         }
                         else
                         {
-                            UpdateMWCHAPower(MWCHAPower + MWPowerParseValue);
+                            UpdateMWPower(channel, MWCHAPower + MWPowerParseValue);
                         }
                     }
                     else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
