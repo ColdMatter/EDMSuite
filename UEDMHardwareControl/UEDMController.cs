@@ -66,6 +66,9 @@ namespace UEDMHardwareControl
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
         SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
 
+        // Microwave Synth
+        WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindthfreakSynthHD"];
+
         // Pressure gauges
         // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
         AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
@@ -3921,6 +3924,20 @@ namespace UEDMHardwareControl
 
         // MW
 
+        public int CurrentChannel;
+
+        public void SwitchMWChannel()
+        {
+            if (CurrentChannel == 1)
+            {
+                // function to switch to CHB
+            }
+            else
+            {
+                // function to switch to CHA
+            }
+        }
+
         public string[] MetricPrefixes = { "k", "M", "G" };
         public int GetMWMetricPrefix(ComboBox combobox)
         {
@@ -4025,7 +4042,14 @@ namespace UEDMHardwareControl
         public double MWPowerResolution = 0.1; // Windfreak power output can be adjusted in increments of 0.1 dBm.
 
        
-        public void UpdateMWPower(int channel, double Power)
+        public void SetMWPower(int channel, double Power)
+        {
+            MWCHAPower = Power;
+            UpdateMWPowerMonitor(channel, Power);
+            // function from DDS object (RFFrequency)
+        }
+
+        public void UpdateMWPowerMonitor(int channel, double Power)
         {
             TextBox PowerSetpointTextBox;
 
@@ -4038,9 +4062,7 @@ namespace UEDMHardwareControl
                 PowerSetpointTextBox = window.tbMWCHBPowerMonitor;
             }
 
-            MWCHAPower = Power;
             window.SetTextBox(PowerSetpointTextBox, Power.ToString());
-            // function from DDS object (RFFrequency)
         }
 
         public void UpdateMWPowerUsingUIInput(int channel)
@@ -4082,7 +4104,7 @@ namespace UEDMHardwareControl
 
                             if (dec1 <= 1)
                             {
-                                UpdateMWPower(channel, MWPowerParseValue);
+                                SetMWPower(channel, MWPowerParseValue);
                             }
                             else
                             {
@@ -4091,7 +4113,7 @@ namespace UEDMHardwareControl
                         }
                         else
                         {
-                            UpdateMWPower(channel, MWPowerParseValue);
+                            SetMWPower(channel, MWPowerParseValue);
                         }
                     }
                     else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
@@ -4140,7 +4162,7 @@ namespace UEDMHardwareControl
 
                             if (dec1 <= 1)
                             {
-                                UpdateMWPower(channel, MWCHAPower + MWPowerParseValue);
+                                SetMWPower(channel, MWCHAPower + MWPowerParseValue);
                             }
                             else
                             {
@@ -4149,7 +4171,7 @@ namespace UEDMHardwareControl
                         }
                         else
                         {
-                            UpdateMWPower(channel, MWCHAPower + MWPowerParseValue);
+                            SetMWPower(channel, MWCHAPower + MWPowerParseValue);
                         }
                     }
                     else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
@@ -4157,6 +4179,29 @@ namespace UEDMHardwareControl
                 else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void QueryMWPower(int channel)
+        {
+            TextBox PowerSetpointTextBox;
+
+            if (channel == 1) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerMonitor;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerMonitor;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            if (channel != CurrentChannel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Query the power
+            // function to query the power output of the active channel
         }
 
         #endregion

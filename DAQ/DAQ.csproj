@@ -240,6 +240,7 @@
     </Compile>
     <Compile Include="AgilentFRG720Gauge.cs" />
     <Compile Include="CENTAURFileSystem.cs" />
+    <Compile Include="WindfreakSynthHD.cs" />
     <Compile Include="HP8656BSynth.cs" />
     <Compile Include="LeyboldPTR225PressureGauge.cs" />
     <Compile Include="PHULTRAEDMFileSystem.cs" />

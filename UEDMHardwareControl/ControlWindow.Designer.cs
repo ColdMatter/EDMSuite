@@ -497,6 +497,7 @@
             this.btQueryMWCHAPower = new System.Windows.Forms.Button();
             this.btQueryMWCHBFrequency = new System.Windows.Forms.Button();
             this.btQueryMWCHBPower = new System.Windows.Forms.Button();
+            this.groupBoxWindfreaksynthhd = new System.Windows.Forms.GroupBox();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -550,6 +551,7 @@
             this.groupBoxRF.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
             this.groupBoxMWCHB.SuspendLayout();
+            this.groupBoxWindfreaksynthhd.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -767,7 +769,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1696, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(1696, 30);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -778,7 +780,7 @@
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 28);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
@@ -910,7 +912,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 28);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // statusToolStripMenuItem
@@ -5206,8 +5208,7 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
-            this.tabPagePumping.Controls.Add(this.groupBoxMWCHB);
-            this.tabPagePumping.Controls.Add(this.groupBoxMWCHA);
+            this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
             this.tabPagePumping.Location = new System.Drawing.Point(4, 25);
             this.tabPagePumping.Name = "tabPagePumping";
@@ -5217,6 +5218,7 @@
             // 
             // groupBoxMWCHA
             // 
+            this.groupBoxMWCHA.BackColor = System.Drawing.Color.Transparent;
             this.groupBoxMWCHA.Controls.Add(this.btQueryMWCHAPower);
             this.groupBoxMWCHA.Controls.Add(this.btQueryMWCHAFrequency);
             this.groupBoxMWCHA.Controls.Add(this.btIncrementMWCHAPower);
@@ -5233,7 +5235,7 @@
             this.groupBoxMWCHA.Controls.Add(this.tbMWCHAFrequencySetpoint);
             this.groupBoxMWCHA.Controls.Add(this.labelMicrowavesChannelAFrequency);
             this.groupBoxMWCHA.Controls.Add(this.tbMWCHAFrequencyMonitor);
-            this.groupBoxMWCHA.Location = new System.Drawing.Point(347, 3);
+            this.groupBoxMWCHA.Location = new System.Drawing.Point(0, 21);
             this.groupBoxMWCHA.Name = "groupBoxMWCHA";
             this.groupBoxMWCHA.Size = new System.Drawing.Size(616, 163);
             this.groupBoxMWCHA.TabIndex = 39;
@@ -5524,6 +5526,7 @@
             // 
             // groupBoxMWCHB
             // 
+            this.groupBoxMWCHB.BackColor = System.Drawing.Color.Transparent;
             this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBPower);
             this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBFrequency);
             this.groupBoxMWCHB.Controls.Add(this.btIncrementMWCHBPower);
@@ -5540,7 +5543,7 @@
             this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencySetpoint);
             this.groupBoxMWCHB.Controls.Add(this.labelMicrowavesChannelBFrequency);
             this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencyMonitor);
-            this.groupBoxMWCHB.Location = new System.Drawing.Point(347, 172);
+            this.groupBoxMWCHB.Location = new System.Drawing.Point(0, 190);
             this.groupBoxMWCHB.Name = "groupBoxMWCHB";
             this.groupBoxMWCHB.Size = new System.Drawing.Size(616, 163);
             this.groupBoxMWCHB.TabIndex = 47;
@@ -5739,6 +5742,18 @@
             this.btQueryMWCHBPower.Text = "Query";
             this.btQueryMWCHBPower.UseVisualStyleBackColor = true;
             // 
+            // groupBoxWindfreaksynthhd
+            // 
+            this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHA);
+            this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHB);
+            this.groupBoxWindfreaksynthhd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxWindfreaksynthhd.Location = new System.Drawing.Point(347, 3);
+            this.groupBoxWindfreaksynthhd.Name = "groupBoxWindfreaksynthhd";
+            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(616, 441);
+            this.groupBoxWindfreaksynthhd.TabIndex = 48;
+            this.groupBoxWindfreaksynthhd.TabStop = false;
+            this.groupBoxWindfreaksynthhd.Text = "Windfreak SynthHD";
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -5848,6 +5863,7 @@
             this.groupBoxStatus.PerformLayout();
             this.groupBoxMWCHB.ResumeLayout(false);
             this.groupBoxMWCHB.PerformLayout();
+            this.groupBoxWindfreaksynthhd.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6288,5 +6304,6 @@
         private System.Windows.Forms.Button btQueryMWCHBFrequency;
         private System.Windows.Forms.Button btQueryMWCHAPower;
         private System.Windows.Forms.Button btQueryMWCHAFrequency;
+        private System.Windows.Forms.GroupBox groupBoxWindfreaksynthhd;
     }
 }

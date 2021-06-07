@@ -137,6 +137,7 @@ namespace DAQ.HAL
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
+            Instruments.Add("WindthfreakSynthHD", new WindfreakSynthHD("ASRL5::INSTR"));
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
             
 
