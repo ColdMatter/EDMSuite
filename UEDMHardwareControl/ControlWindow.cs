@@ -167,6 +167,24 @@ namespace UEDMHardwareControl
             chart.Series[series].Enabled = enable;
         }
 
+        public bool IsChartSeriesEnabled(Chart chart)
+        {
+            return (bool)chart.Invoke(new IsChartSeriesEnabledDelegate(IsChartSeriesEnabledHelper), new object[] { chart });
+        }
+        private delegate bool IsChartSeriesEnabledDelegate(Chart chart);
+        private bool IsChartSeriesEnabledHelper(Chart chart)
+        {
+            bool enabled = false; 
+            foreach (Series ser in chart.Series)
+            {
+                if (ser.Enabled)
+                {
+                    enabled = true;
+                }
+            }
+            return enabled;
+        }
+
         public void ChangeChartYScale(Chart chart, string scale)
         {
             chart.Invoke(new ChangeChartYScaleDelegate(ChangeChartYScaleHelper), new object[] { chart, scale });
@@ -306,7 +324,7 @@ namespace UEDMHardwareControl
             dateTimePicker.Value = dateTime;
         }
 
-        public void SetCheckBox(CheckBox checkBox, bool checkedStatus)
+        public void SetCheckBoxCheckedStatus(CheckBox checkBox, bool checkedStatus)
         {
             checkBox.Invoke(new SetCheckBoxDelegate(SetCheckBoxHelper), new object[] { checkBox, checkedStatus });
         }
@@ -314,6 +332,17 @@ namespace UEDMHardwareControl
         private void SetCheckBoxHelper(CheckBox checkBox, bool checkedStatus)
         {
             checkBox.Checked = checkedStatus;
+        }
+
+        public bool GetCheckBoxCheckedStatus(CheckBox checkBox)
+        {
+            return (bool)checkBox.Invoke(new GetCheckBoxCheckedStatusDelegate(GetCheckBoxCheckedStatusHelper), new object[] { checkBox });
+        }
+        private delegate bool GetCheckBoxCheckedStatusDelegate(CheckBox checkBox);
+        private bool GetCheckBoxCheckedStatusHelper(CheckBox checkBox)
+        {
+            bool checkedStatus = checkBox.Checked;
+            return checkedStatus;
         }
 
         public void SetChartMovingAverage(Chart chart, int NumberOfPointsToAverage)

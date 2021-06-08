@@ -1660,14 +1660,14 @@ namespace UEDMHardwareControl
             if (Channel == 1)
             {
                 SetDigitalLine("heatersS1TriggerDigitalOutputTask", Enable);
-                window.SetCheckBox(window.checkBoxEnableHeatersS1, Enable);
+                window.SetCheckBoxCheckedStatus(window.checkBoxEnableHeatersS1, Enable);
             }
             else
             {
                 if (Channel == 2)
                 {
                     SetDigitalLine("heatersS2TriggerDigitalOutputTask", Enable);
-                    window.SetCheckBox(window.checkBoxEnableHeatersS2, Enable);
+                    window.SetCheckBoxCheckedStatus(window.checkBoxEnableHeatersS2, Enable);
                 }
             }
         }
@@ -1926,7 +1926,7 @@ namespace UEDMHardwareControl
                 else
                 {
                     MessageBox.Show("Please select pressure chart rolling period.", "User input exception", MessageBoxButtons.OK);
-                    window.SetCheckBox(window.cbEnablePressureChartRollingTimeAxis, false);
+                    window.SetCheckBoxCheckedStatus(window.cbEnablePressureChartRollingTimeAxis, false);
                 }
             }
             else
@@ -2214,7 +2214,7 @@ namespace UEDMHardwareControl
                 else
                 {
                     MessageBox.Show("Please select temperature chart rolling period.", "User input exception", MessageBoxButtons.OK);
-                    window.SetCheckBox(window.cbEnableTemperatureChartRollingTimeAxis, false);
+                    window.SetCheckBoxCheckedStatus(window.cbEnableTemperatureChartRollingTimeAxis, false);
                 }
             }
             else
@@ -2581,6 +2581,38 @@ namespace UEDMHardwareControl
         public void EnableChartSeries(Chart chart, string series, bool enable)
         {
             window.EnableChartSeries(chart, series, enable);
+
+            bool ChartSeriesEnabled = window.IsChartSeriesEnabled(chart);
+
+            if (!ChartSeriesEnabled)
+            {
+                if (chart == window.chart1) // Pressure chart
+                {
+                    // Disable rolling chart mode if no series are enabled in the chart
+                    bool RollingChartEnabled = window.GetCheckBoxCheckedStatus(window.cbEnablePressureChartRollingTimeAxis);
+                    if (RollingChartEnabled)
+                    {
+                        EnablePressureChartRollingTimeAxis(false);
+                        window.SetCheckBoxCheckedStatus(window.cbEnablePressureChartRollingTimeAxis, false);
+                    }
+                }
+                else
+                {
+                    if (chart == window.chart2) // Temperature chart
+                    {
+                        // Disable rolling chart mode if no series are enabled in the chart
+                        bool RollingChartEnabled = window.GetCheckBoxCheckedStatus(window.cbEnableTemperatureChartRollingTimeAxis);
+                        if (RollingChartEnabled)
+                        {
+                            EnableTemperatureChartRollingTimeAxis(false);
+                            window.SetCheckBoxCheckedStatus(window.cbEnableTemperatureChartRollingTimeAxis, false);
+                        }
+
+                    }
+                }
+            }
+
+               
         }
 
         /// <summary>
@@ -3136,7 +3168,7 @@ namespace UEDMHardwareControl
                 else
                 {
                     MessageBox.Show("Please select analogue input chart rolling period.", "User input exception", MessageBoxButtons.OK);
-                    window.SetCheckBox(window.cbEnableAnalogueInputsChartRollingTimeAxis, false);
+                    window.SetCheckBoxCheckedStatus(window.cbEnableAnalogueInputsChartRollingTimeAxis, false);
                 }
             }
             else
