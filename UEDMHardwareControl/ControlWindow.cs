@@ -1113,6 +1113,11 @@ namespace UEDMHardwareControl
         {
             controller.SwitchE();
         }
+
+        private void changePollPeriodButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitorPollPeriodUsingUIValue();
+        }
     }
 }
 #endregion

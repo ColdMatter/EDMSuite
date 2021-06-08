@@ -4192,6 +4192,7 @@ namespace UEDMHardwareControl
         private Queue<double> nCurrentSamples = new Queue<double>();
         private Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
+        
 
         public void PollVMonitor()
         {
@@ -4346,6 +4347,7 @@ namespace UEDMHardwareControl
 
         private Thread iMonitorPollThread;
         private int iMonitorPollPeriod = 200;
+        public static int iMonitorPollPeriodLowerLimit = 100;
         private Object iMonitorLock;
         private bool iMonitorFlag;
         public string leakageFileSave = "";      
@@ -4377,13 +4379,28 @@ namespace UEDMHardwareControl
             window.EnableControl(window.updateIMonitorButton, false);
             window.EnableControl(window.stopIMonitorPollButton, true);
             window.EnableControl(window.logCurrentDataCheckBox,false);
-            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriodInput.Text);
             movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
             nCurrentSamples.Clear();
             sCurrentSamples.Clear();
             iMonitorLock = new Object();
             iMonitorFlag = false;
             iMonitorPollThread.Start();
+        }
+
+        public void UpdateIMonitorPollPeriodUsingUIValue()
+        {
+            int IMonitorPollPeriodParseValue;
+            if (Int32.TryParse(window.iMonitorPollPeriodInput.Text, out IMonitorPollPeriodParseValue))
+            {
+                if (IMonitorPollPeriodParseValue >= iMonitorPollPeriodLowerLimit)
+                {
+                    iMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    window.SetTextBox(window.tbiMonitorPollPeriod, iMonitorPollPeriod.ToString());
+                }
+                else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
         internal void StopIMonitorPoll()
