@@ -177,13 +177,18 @@ namespace UEDMHardwareControl
             if (scale == "Log")
             {
                 chart.ChartAreas[0].AxisY.IsLogarithmic = true;
-                //chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0.1;
+                SetAxisYIsStartedFromZero(chart, false);
+                chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0; // A value of zero represents an "Auto" value
+                chart.ChartAreas[0].AxisY.MinorTickMark.Interval = 1;
             }
             else
             {
                 if (scale == "Linear")
                 {
                     chart.ChartAreas[0].AxisY.IsLogarithmic = false;
+                    SetAxisYIsStartedFromZero(chart, false);
+                    chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0; // A value of zero represents an "Auto" value
+                    chart.ChartAreas[0].AxisY.MinorTickMark.Interval = chart.ChartAreas[0].AxisY.MajorTickMark.Interval/10;
                 }
             }
         }
@@ -204,7 +209,7 @@ namespace UEDMHardwareControl
                 {
                     int pointsCount = chart.Series[ser.Name].Points.Count; // Number of points in the series
                     double YValue;
-                    int startPoint = pointsCount - NumberOfPointsBeingDisplayed;
+                    int startPoint = pointsCount - NumberOfPointsBeingDisplayed; // Number of points that we will not loop over
 
                     if (startPoint < 0) startPoint = 0;
 
@@ -445,93 +450,93 @@ namespace UEDMHardwareControl
 
         private void checkBoxCellTempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell Temperature", true);
-            else controller.EnableChartSeries(chart2, "Cell Temperature", false);
+            if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell", true);
+            else controller.EnableChartSeries(chart2, "Cell", false);
         }
 
         private void checkBoxS1TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxS1TempPlot.Checked) controller.EnableChartSeries(chart2, "S1 Temperature", true);
-            else controller.EnableChartSeries(chart2, "S1 Temperature", false);
+            if (checkBoxS1TempPlot.Checked) controller.EnableChartSeries(chart2, "S1", true);
+            else controller.EnableChartSeries(chart2, "S1", false);
         }
 
         private void checkBoxS2TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxS2TempPlot.Checked) controller.EnableChartSeries(chart2, "S2 Temperature", true);
-            else controller.EnableChartSeries(chart2, "S2 Temperature", false);
+            if (checkBoxS2TempPlot.Checked) controller.EnableChartSeries(chart2, "S2", true);
+            else controller.EnableChartSeries(chart2, "S2", false);
         }
 
         private void checkBoxSF6TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxSF6TempPlot.Checked) controller.EnableChartSeries(chart2, "SF6 Temperature", true);
-            else controller.EnableChartSeries(chart2, "SF6 Temperature", false);
+            if (checkBoxSF6TempPlot.Checked) controller.EnableChartSeries(chart2, "SF6", true);
+            else controller.EnableChartSeries(chart2, "SF6", false);
         }
 
         private void checkBoxNeonTempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxNeonTempPlot.Checked) controller.EnableChartSeries(chart2, "Neon Temperature", true);
-            else controller.EnableChartSeries(chart2, "Neon Temperature", false);
+            if (checkBoxNeonTempPlot.Checked) controller.EnableChartSeries(chart2, "Neon", true);
+            else controller.EnableChartSeries(chart2, "Neon", false);
         }
 
         private void btClearCellTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Cell Temperature");
+            controller.ClearChartSeriesData(chart2, "Cell");
         }
 
         private void btClearS1TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "S1 Temperature");
+            controller.ClearChartSeriesData(chart2, "S1");
         }
 
         private void btClearS2TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "S2 Temperature");
+            controller.ClearChartSeriesData(chart2, "S2");
         }
 
         private void btClearSF6TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "SF6 Temperature");
+            controller.ClearChartSeriesData(chart2, "SF6");
         }
 
         private void btClearNeonTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Neon Temperature");
+            controller.ClearChartSeriesData(chart2, "Neon");
         }
 
         private void btClearAllTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Cell Temperature");
-            controller.ClearChartSeriesData(chart2, "S1 Temperature");
-            controller.ClearChartSeriesData(chart2, "S2 Temperature");
-            controller.ClearChartSeriesData(chart2, "SF6 Temperature");
-            controller.ClearChartSeriesData(chart2, "Neon Temperature");
+            controller.ClearChartSeriesData(chart2, "Cell");
+            controller.ClearChartSeriesData(chart2, "S1");
+            controller.ClearChartSeriesData(chart2, "S2");
+            controller.ClearChartSeriesData(chart2, "SF6");
+            controller.ClearChartSeriesData(chart2, "Neon");
         }
 
         private void checkBoxSourcePressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            controller.EnableChartSeries(chart1, "Source Pressure", checkBoxSourcePressurePlot.Checked);
+            controller.EnableChartSeries(chart1, "Source", checkBoxSourcePressurePlot.Checked);
         }
 
         private void btClearSourcePressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Source Pressure");
+            controller.ClearChartSeriesData(chart1, "Source");
         }
 
         private void btClearBeamlinePressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Beamline Pressure");
+            controller.ClearChartSeriesData(chart1, "Beamline");
         }
 
         private void btClearDetectionPressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Detection Pressure");
+            controller.ClearChartSeriesData(chart1, "Detection");
         }
 
         private void btClearAllPressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Source Pressure");
-            controller.ClearChartSeriesData(chart1, "Beamline Pressure");
-            controller.ClearChartSeriesData(chart1, "Detection Pressure");
+            controller.ClearChartSeriesData(chart1, "Source");
+            controller.ClearChartSeriesData(chart1, "Beamline");
+            controller.ClearChartSeriesData(chart1, "Detection");
         }
 
         private void btStartNeonFlowActMonitor_Click(object sender, EventArgs e)
@@ -995,12 +1000,12 @@ namespace UEDMHardwareControl
 
         private void checkBoxBeamlinePressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            controller.EnableChartSeries(chart1, "Beamline Pressure", checkBoxBeamlinePressurePlot.Checked);
+            controller.EnableChartSeries(chart1, "Beamline", checkBoxBeamlinePressurePlot.Checked);
         }
 
         private void checkBoxDetectionPressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            controller.EnableChartSeries(chart1, "Detection Pressure", checkBoxDetectionPressurePlot.Checked);
+            controller.EnableChartSeries(chart1, "Detection", checkBoxDetectionPressurePlot.Checked);
         }
 
         private void btResetPTCSVData_Click(object sender, EventArgs e)

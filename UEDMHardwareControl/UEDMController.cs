@@ -245,13 +245,14 @@ namespace UEDMHardwareControl
         {
             // Set initial datetime picker values for the user interface
             DateTime now = DateTime.Now;
-            DateTime InitialDateTime = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 4, 0, 0);
-            window.SetDateTimePickerValue(window.dateTimePickerHeatersTurnOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnCryoOn, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerWarmUpModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnHeatersOff, InitialDateTime);
-            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnCryoOn, InitialDateTime);
+            DateTime InitialDateTimeForTurningOffHeaters = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 3, 0, 0);
+            DateTime InitialDateTimeForTurningOnCryo = new DateTime(now.Year, now.Month, now.AddDays(1).Day, 3, 30, 0);
+            window.SetDateTimePickerValue(window.dateTimePickerHeatersTurnOff, InitialDateTimeForTurningOffHeaters);
+            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnCryoOn, InitialDateTimeForTurningOnCryo);
+            window.SetDateTimePickerValue(window.dateTimePickerRefreshModeTurnHeatersOff, InitialDateTimeForTurningOffHeaters);
+            window.SetDateTimePickerValue(window.dateTimePickerWarmUpModeTurnHeatersOff, InitialDateTimeForTurningOffHeaters);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnHeatersOff, InitialDateTimeForTurningOffHeaters);
+            window.SetDateTimePickerValue(window.dateTimePickerCoolDownModeTurnCryoOn, InitialDateTimeForTurningOnCryo);
             // Set flags
             refreshModeHeaterTurnOffDateTimeFlag = false;
             refreshModeCryoTurnOnDateTimeFlag = false;
@@ -1813,9 +1814,9 @@ namespace UEDMHardwareControl
         private Queue<double> pressureSamplesSource = new Queue<double>();
         private Queue<double> pressureSamplesBeamline = new Queue<double>();
         private Queue<double> pressureSamplesDetection = new Queue<double>();
-        private string sourceSeries = "Source Pressure";
-        private string beamlineSeries = "Beamline Pressure";
-        private string detectionSeries = "Detection Pressure";
+        private string sourceSeries = "Source";
+        private string beamlineSeries = "Beamline";
+        private string detectionSeries = "Detection";
 
         private int numberOfPressureDataPoints = 0;
         private int pressureDataPlotLimit = 10;
@@ -2035,11 +2036,11 @@ namespace UEDMHardwareControl
         public double lastS2Temp;
         public double lastNeonTemp;
         public double lastSF6Temp;
-        private string cellTSeries = "Cell Temperature";
-        private string S1TSeries = "S1 Temperature";
-        private string S2TSeries = "S2 Temperature";
-        private string SF6TSeries = "SF6 Temperature";
-        private string neonTSeries = "Neon Temperature";
+        private string cellTSeries = "Cell";
+        private string S1TSeries = "S1";
+        private string S2TSeries = "S2";
+        private string SF6TSeries = "SF6";
+        private string neonTSeries = "Neon";
 
         public void TryParseTemperatureString(string TemperatureString, string SeriesName)
         {
@@ -2452,12 +2453,13 @@ namespace UEDMHardwareControl
                 int ThreadWaitPeriod = PTMonitorPollPeriod - Convert.ToInt32(watch.ElapsedMilliseconds); // Subtract the time elapsed from the user defined poll period
                 if (ThreadWaitPeriod < 0)// If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
                 {
-                    ThreadWaitPeriod = 0;
                     if (!StatusRepeatFlag)
                     {
-                        UpdateStatus("Unable to meet poll period requirement");
+                        string StatusUpdate = "Poll period exceeded by " + Convert.ToString(Math.Abs(ThreadWaitPeriod)) + " ms (" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss.fff tt") + ")";
+                        UpdateStatus(StatusUpdate);
                         StatusRepeatFlag = true;
                     }
+                    ThreadWaitPeriod = 0;
                 }
                 else
                 {
@@ -2550,7 +2552,6 @@ namespace UEDMHardwareControl
             {
                 string YScale = window.comboBoxPlot1ScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                 window.ChangeChartYScale(window.chart1, YScale);
-                window.SetAxisYIsStartedFromZero(window.chart1, false);
             }
             else
             {
@@ -2558,7 +2559,6 @@ namespace UEDMHardwareControl
                 {
                     string YScale = window.comboBoxPlot2ScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                     window.ChangeChartYScale(window.chart2, YScale);
-                    window.SetAxisYIsStartedFromZero(window.chart2, false);
                 }
                 else
                 {
@@ -2566,7 +2566,6 @@ namespace UEDMHardwareControl
                     {
                         string YScale = window.comboBoxAnalogueInputsChartScaleY.Text; // Read the Y scale mode chosen by the user in the UI
                         window.ChangeChartYScale(window.chart4, YScale);
-                        window.SetAxisYIsStartedFromZero(window.chart4, false);
                     }
                 }
             }
