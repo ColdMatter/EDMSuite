@@ -14,6 +14,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
+using NationalInstruments.UI.WindowsForms;
 //using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;
@@ -212,15 +213,15 @@ namespace UEDMHardwareControl
         private Task CreateAnalogInputTask(string channel)
         {
             Task task = new Task("EDMHCIn" + channel);
-            //if (!Environs.Debug)
-            //{
+            if (!Environs.Debug)
+            {
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
                     task,
                     0,
                     10
                 );
                 task.Control(TaskAction.Verify);
-            //}
+            }
             return task;
         }
 
@@ -242,25 +243,28 @@ namespace UEDMHardwareControl
         private Task CreateAnalogOutputTask(string channel)
         {
             Task task = new Task("EDMHCOut" + channel);
-            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
-            c.AddToTask(
-                task,
-                c.RangeLow,
-                c.RangeHigh
-                );
-            task.Control(TaskAction.Verify);
+            if (!Environs.Debug)
+            {
+                AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+                c.AddToTask(
+                    task,
+                    c.RangeLow,
+                    c.RangeHigh
+                    );
+                task.Control(TaskAction.Verify);
+            }
             return task;
         }
 
 
         private void SetAnalogOutput(Task task, double voltage)
         {
-            //if (!Environs.Debug)
-            //{
+            if (!Environs.Debug)
+            {
                 AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
                 writer.WriteSingleSample(true, voltage);
                 task.Control(TaskAction.Unreserve);
-            //}
+            }
         }
 
         private double ReadAnalogInput(Task task)
@@ -269,15 +273,15 @@ namespace UEDMHardwareControl
 
             double val;
             Random rnd = new Random();
-            //if (!Environs.Debug)
-            //{
+            if (!Environs.Debug)
+            {
                 val = reader.ReadSingleSample();
                 task.Control(TaskAction.Unreserve);
-            //}
-            //else
-            //{
-            //    val = rnd.NextDouble();
-            //}
+            }
+            else
+            {
+                val = rnd.NextDouble();
+            }
             return val;
         }
 
@@ -3621,6 +3625,18 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
         }
 
+        public bool ESwitchingEnabled
+        {
+            get
+            {
+                return !window.eDisableSwitching.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.eDisableSwitching, value);
+            }
+        }
+
         public bool EFieldEnabled
         {
             get
@@ -3643,6 +3659,23 @@ namespace UEDMHardwareControl
             {
                 window.SetCheckBox(window.ePolarityCheck, value);
             }
+        }
+
+        public bool EBleedEnabled
+        {
+            get
+            {
+                return window.eBleedCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.eBleedCheck, value);
+            }
+        }
+
+        public void EnableBleed(bool enabled)
+        {
+            window.SetCheckBox(window.eBleedCheck, enabled);
         }
 
         public double CPlusVoltage
@@ -3693,6 +3726,113 @@ namespace UEDMHardwareControl
             }
         }
 
+        public double ERampDownTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownTimeTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
+            }
+        }
+
+        public double EBleedTime
+        {
+            get
+            {
+                return Double.Parse(window.eBleedTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eBleedTimeTextBox, value.ToString());
+            }
+        }
+        public double ESwitchTime
+        {
+            get
+            {
+                return Double.Parse(window.eSwitchTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eSwitchTimeTextBox, value.ToString());
+            }
+        }
+        public double ERampUpTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpTimeTextBox, value.ToString());
+            }
+        }
+
+        public double EOvershootFactor
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootFactorTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootFactorTextBox, value.ToString());
+            }
+        }
+
+        public void SetEOvershootFactor(double val)
+        {
+            EOvershootFactor = val;
+        }
+
+        public double EOvershootHold
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootHoldTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootHoldTextBox, value.ToString());
+            }
+        }
+
+        public double ERampUpDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpDelayTextBox, value.ToString());
+            }
+        }
+
+        public bool EManualState
+        {
+            get
+            {
+                return window.eManualStateCheckBox.Checked;
+            }
+        }
+
         public void FieldsOff()
         {
             CPlusVoltage = 0;
@@ -3701,6 +3841,258 @@ namespace UEDMHardwareControl
             CMinusOffVoltage = 0;
             UpdateVoltages();
             EFieldEnabled = false;
+        }
+
+        private bool switchingEfield;
+        public bool SwitchingEfields
+        {
+            get
+            {
+                return switchingEfield;
+            }
+            set
+            {
+                switchingEfield = value;
+                SetDigitalLine("eSwitching", value);
+            }
+
+        }
+
+        public void SwitchE()
+        {
+            SwitchE(!EFieldPolarity);
+        }
+
+        public void SwitchEAndWait(bool state)
+        {
+            SwitchE(state);
+            switchThread.Join();
+        }
+
+        public void SwitchEAndWait()
+        {
+            SwitchEAndWait(!EFieldPolarity);
+        }
+
+
+        private bool newEPolarity;
+        private object switchingLock = new object();
+        private Thread switchThread;
+        public void SwitchE(bool state)
+        {
+            lock (switchingLock)
+            {
+                newEPolarity = state;
+                if (ESwitchingEnabled)
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                }
+                else
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorkerDummy));
+                }
+                window.EnableControl(window.switchEButton, false);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
+                switchThread.Start();
+            }
+        }
+
+        double kPositiveChargeMin = 2;
+        double kPositiveChargeMax = 20;
+        double kNegativeChargeMin = -2;
+        double kNegativeChargeMax = -20;
+
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
+        public void SwitchEWorker()
+        {
+
+            //bool startingSynthState = GreenSynthEnabled;
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
+                //switch off the synth
+                //GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down if on
+                if (EFieldEnabled)
+                {
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                }
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                // ramp back to the control point
+                RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+                                EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                window.SetLED(window.switchingLED, false);
+
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>W+) then when switching into state 0
+                // (false) the West plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // West plate should see -ve current and the East +ve
+                    if ((lastWestCurrent < kNegativeChargeMin) && (lastWestCurrent > kNegativeChargeMax)
+                        && (lastEastCurrent > kPositiveChargeMin) && (lastEastCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // West should be +ve, East -ve
+                    if ((lastEastCurrent < kNegativeChargeMin) && (lastEastCurrent > kNegativeChargeMax)
+                        && (lastWestCurrent > kPositiveChargeMin) && (lastWestCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+            }
+            //GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+        }
+
+        //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
+        public void SwitchEWorkerDummy()
+        {
+            lock (switchingLock)
+            {
+                Thread.Sleep((int)(1000 * ERampDownTime));
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                Thread.Sleep((int)(1000 * EBleedTime));
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                Thread.Sleep((int)(1000 * ERampUpTime));
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+            }
+            ESwitchDone();
+        }
+
+        public void SwitchEWorkerForIRamp()
+        {
+
+            //bool startingSynthState = GreenSynthEnabled;
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
+                //switch off the synth
+                //GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down if on
+                int eSign;
+                if (EFieldPolarity) { eSign = 1; } else { eSign = -1; }
+                if (EFieldEnabled)
+                {
+                    RampVoltages(eSign * CPlusVoltage, eSign * CPlusOffVoltage, -eSign * CMinusVoltage, -eSign * CMinusOffVoltage, 5, ERampDownTime);
+                }
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(-eSign * CPlusOffVoltage, -eSign * EOvershootFactor * cPlusToWrite,
+                               eSign * CMinusOffVoltage, eSign * EOvershootFactor * cMinusToWrite, 5, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                // ramp back to the control point
+                RampVoltages(-eSign * EOvershootFactor * cPlusToWrite, -eSign * cPlusToWrite,
+                                eSign * EOvershootFactor * cMinusToWrite, eSign * cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                window.SetLED(window.switchingLED, false);
+
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>N+) then when switching into state 0
+                // (false) the West plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // West plate should see -ve current and the East +ve
+                    if ((lastWestCurrent < kNegativeChargeMin) && (lastWestCurrent > kNegativeChargeMax)
+                        && (lastEastCurrent > kPositiveChargeMin) && (lastEastCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // West should be +ve, East -ve
+                    if ((lastEastCurrent < kNegativeChargeMin) && (lastEastCurrent > kNegativeChargeMax)
+                        && (lastWestCurrent > kPositiveChargeMin) && (lastWestCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+            }
+            //GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+        }
+        private void activateEAlarm(bool newEPolarity)
+        {
+            window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState +
+                "; West current: " + lastWestCurrent + "; East current: " + lastEastCurrent + " .");
+        }
+
+        private void ESwitchDone()
+        {
+            SwitchingEfields = false;
+            window.EnableControl(window.switchEButton, true);
+        }
+
+        // this function is, like many in this class, a little cheezy.
+        // it doesn't use update voltages, but rather writes direct to the analog outputs.
+        private void RampVoltages(double startPlus, double targetPlus, double startMinus,
+                                        double targetMinus, int numSteps, double rampTime)
+        {
+            double rampDelay = ((1000 * rampTime) / (double)numSteps);
+            double diffPlus = targetPlus - startPlus;
+            double diffMinus = targetMinus - startMinus;
+            window.SetLED(window.rampLED, true);
+            for (int i = 1; i <= numSteps; i++)
+            {
+                double newPlus = startPlus + (i * (diffPlus / numSteps));
+                double newMinus = startMinus + (i * (diffMinus / numSteps));
+                SetAnalogOutput(cPlusOutputTask, newPlus);
+                SetAnalogOutput(cMinusOutputTask, newMinus);
+                // don't sleep if no ramp delay (as sleep imposes a delay even when called with
+                // sleep time = 0).
+                if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
+                // flash the ramp LED
+                window.SetLED(window.rampLED, (i % 2) == 0);
+            }
+            window.SetLED(window.rampLED, false);
+
         }
         public double CPlusMonitorVoltage
         {
@@ -3868,9 +4260,9 @@ namespace UEDMHardwareControl
             lastEastCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
 
             //plot the most recent samples
-            //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
+            //window.PlotYAppend(window.leakageGraph, window.WestLeakagePlot,
             //            new double[] { lastWestCurrent });
-            //window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
+            //window.PlotYAppend(window.leakageGraph, window.EastLeakagePlot,
             //                        new double[] { lastEastCurrent });
 
             //add date time
@@ -3878,7 +4270,7 @@ namespace UEDMHardwareControl
             //plot the most recent sample (UEDM Chart style)
 
             //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastEastCurrent);
-            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastNorthCurrent);
+            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastWestCurrent);
             window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastEastCurrent);
             window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastWestCurrent);
 
