@@ -1118,6 +1118,16 @@ namespace UEDMHardwareControl
         {
             controller.UpdateIMonitorPollPeriodUsingUIValue();
         }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
+        }
     }
 }
 #endregion
