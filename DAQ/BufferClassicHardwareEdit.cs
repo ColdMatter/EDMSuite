@@ -14,8 +14,8 @@ namespace DAQ.HAL
         {
             // add the boards
             Boards.Add("daq", "/DAQ_PXIe_6363");
-            Boards.Add("pg", "/PG_PXIe_6535");
-            Boards.Add("tcl", "/TCL_PXI_6229");
+            Boards.Add("tcl", "/PXI1Slot4");
+            Boards.Add("pg", "/PXI1Slot6");
             Boards.Add("UEDMHardwareController", "/UEDM_Hardware_Controller_PXI_6229");  
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
@@ -23,18 +23,18 @@ namespace DAQ.HAL
             string UEDMHardwareControllerBoard = (string)Boards["UEDMHardwareController"];
 
             // map the digital channels of the "pg" card
-            AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
+            AddDigitalOutputChannel("q", pgBoard, 0, 6);//Pin 10
             AddDigitalOutputChannel("aom", pgBoard, 1, 1);//`
             AddDigitalOutputChannel("aom2", pgBoard, 1, 2);//
             AddDigitalOutputChannel("shutter1", pgBoard, 1, 3);//
             AddDigitalOutputChannel("shutter2", pgBoard, 1, 4);//
-            AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
+            AddDigitalOutputChannel("flash", pgBoard, 0, 4);//Pin 45
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
             //(0,3) pin 12 is unconnected
             //AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
             //AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
             AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
-            AddDigitalOutputChannel("valve", pgBoard, 0, 6);//
+            AddDigitalOutputChannel("valve", pgBoard, 0, 5);//
             AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
             AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7); //Pin 15 (OffShot)from pg to daq
             //digital output P 0.6 wired up, not used (Pin 48)
@@ -47,12 +47,13 @@ namespace DAQ.HAL
            
             // add things to the info
             // the analog triggers
-            //Info.Add("analogTrigger0", daqBoard + "/PFI0");
-            //Info.Add("analogTrigger1", daqBoard + "/PFI1");
+            Info.Add("analogTrigger0", daqBoard + "/PFI0");
+            Info.Add("analogTrigger1", daqBoard + "/PFI1");
             Info.Add("phaseLockControlMethod", "analog");
-            Info.Add("PGClockLine", Boards["pg"] + "/PFI4");
+            //Info.Add("PGClockLine", Boards["pg"] + "/PFI4");
+            Info.Add("PGClockCounter", "/ctr0");
             Info.Add("PatternGeneratorBoard", pgBoard);
-            Info.Add("PGType", "dedicated");
+            Info.Add("PGType", "integrated");
 
             // external triggering control
             Info.Add("PGTrigger", pgBoard + "/PFI1"); //Mapped to PFI7 on 6533 connector
@@ -88,20 +89,14 @@ namespace DAQ.HAL
             AddAnalogInputChannel("AI13", UEDMHardwareControllerBoard + "/ai13", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI14", UEDMHardwareControllerBoard + "/ai14", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
 
             // map the digital channels of the "UEDMHardwareControllerBoard" card
             AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
             AddDigitalOutputChannel("Port01", UEDMHardwareControllerBoard, 0, 1);
             AddDigitalOutputChannel("Port02", UEDMHardwareControllerBoard, 0, 2);
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
-            AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
-            AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
-
-            //Counter Channels
-            AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
-            AddCounterChannel("eastLeakage", UEDMHardwareControllerBoard + "/ctr1");
+            AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 9);
+            AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 8);
 
             // map the analog output channels for the "UEDMHardwareControllerBoard" card
             //AddAnalogOutputChannel("laser", Unnamed + "/ao0");
@@ -137,7 +132,6 @@ namespace DAQ.HAL
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
-            Instruments.Add("WindthfreakSynthHD", new WindfreakSynthHD("ASRL5::INSTR"));
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
             
 
