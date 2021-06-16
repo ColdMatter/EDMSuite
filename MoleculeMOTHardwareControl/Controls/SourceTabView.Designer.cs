@@ -33,6 +33,8 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.sf6Temperature = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkLog = new System.Windows.Forms.CheckBox();
+            this.txtSourceTemp2 = new System.Windows.Forms.TextBox();
             this.currentTemperature = new System.Windows.Forms.TextBox();
             this.cryoGroup = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -53,6 +55,8 @@
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtSourcePressure = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -104,8 +108,8 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.206687F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 21.58055F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(177, 658);
             this.tableLayoutPanel2.TabIndex = 1;
@@ -132,14 +136,36 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.txtSourcePressure);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.chkLog);
+            this.groupBox2.Controls.Add(this.txtSourceTemp2);
             this.groupBox2.Controls.Add(this.currentTemperature);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(3, 527);
+            this.groupBox2.Location = new System.Drawing.Point(3, 450);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(171, 59);
+            this.groupBox2.Size = new System.Drawing.Size(171, 136);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Source Temperature (°C)";
+            this.groupBox2.Text = "Source Temperature";
+            // 
+            // chkLog
+            // 
+            this.chkLog.AutoSize = true;
+            this.chkLog.Location = new System.Drawing.Point(6, 113);
+            this.chkLog.Name = "chkLog";
+            this.chkLog.Size = new System.Drawing.Size(100, 17);
+            this.chkLog.TabIndex = 2;
+            this.chkLog.Text = "Log Parameters";
+            this.chkLog.UseVisualStyleBackColor = true;
+            // 
+            // txtSourceTemp2
+            // 
+            this.txtSourceTemp2.Location = new System.Drawing.Point(3, 42);
+            this.txtSourceTemp2.Name = "txtSourceTemp2";
+            this.txtSourceTemp2.ReadOnly = true;
+            this.txtSourceTemp2.Size = new System.Drawing.Size(165, 20);
+            this.txtSourceTemp2.TabIndex = 1;
             // 
             // currentTemperature
             // 
@@ -329,9 +355,9 @@
             // readButton
             // 
             this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.readButton.Location = new System.Drawing.Point(51, 435);
+            this.readButton.Location = new System.Drawing.Point(39, 397);
             this.readButton.Name = "readButton";
-            this.readButton.Size = new System.Drawing.Size(75, 46);
+            this.readButton.Size = new System.Drawing.Size(99, 46);
             this.readButton.TabIndex = 3;
             this.readButton.Text = "Start Reading";
             this.readButton.UseVisualStyleBackColor = true;
@@ -364,6 +390,23 @@
             // 
             this.yAxis1.Caption = "Temperature (°C) ";
             this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleVisibleLoose;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 69);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Source Pressure";
+            // 
+            // txtSourcePressure
+            // 
+            this.txtSourcePressure.Location = new System.Drawing.Point(3, 87);
+            this.txtSourcePressure.Name = "txtSourcePressure";
+            this.txtSourcePressure.ReadOnly = true;
+            this.txtSourcePressure.Size = new System.Drawing.Size(165, 20);
+            this.txtSourcePressure.TabIndex = 4;
             // 
             // SourceTabView
             // 
@@ -421,6 +464,10 @@
         private System.Windows.Forms.Button holdButton;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox sf6Temperature;
+        private System.Windows.Forms.TextBox txtSourceTemp2;
+        private System.Windows.Forms.CheckBox chkLog;
+        private System.Windows.Forms.TextBox txtSourcePressure;
+        private System.Windows.Forms.Label label1;
 
     }
 }

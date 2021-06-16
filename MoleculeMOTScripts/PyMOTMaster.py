@@ -11,6 +11,8 @@ from System.IO import Path
 import time
 import os
 from tqdm import tqdm
+import numpy as np
+
 
 sys.path.append(Path.GetFullPath("C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\"))
 clr.AddReference("C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\MOTMaster.exe")
@@ -58,6 +60,9 @@ You can use any Python code you like to script these calls.
 3. ScanMultipleParameters(script_name, parameter_names, values)
 4. ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, channel)
 Use functionName.__doc__ for the individual doc strings.
+
+NEW! LockPointArray = mot.GetAllLockpoints() and mot.SetAllLockpoints(LockPointArray)
+Just copy LockPointArray to the One Note at the end of the day and load it the next
 ''')
 
 # some generic stuff
@@ -233,7 +238,6 @@ def ScanMicrowaveFrequency(script_name, centre_freq, num_steps, freq_range, chan
 		mm.Go()
 		end = time.time()
 		print '{0} : {1} seconds'.format(value, int(round(end-start)))
-	print values
 	print 'Finished'
 	
 def ScanMicrowaveAmplitude(script_name, values, channel):
@@ -428,3 +432,21 @@ def TCLGetSetPoint(cavityname, lasername):
 
 def TCLSetSetPoint(cavityname, lasername, setpoint):
 	tcl.SetLaserSetpoint(cavityname, lasername, setpoint)
+
+def GetAllLockpoints():
+    return [
+    ["v00Lock", np.round(TCLGetSetPoint("Hamish", "v00Lock"),3)],
+    ["v10Lock", np.round(TCLGetSetPoint("Hamish", "v10Lock"),3)],
+    ["bXLock", np.round(TCLGetSetPoint("Hamish", "bXLock"),3)],
+    ["v21Lock", np.round(TCLGetSetPoint("Carlos", "v21Lock"),3)],
+    ["v32Lock", np.round(TCLGetSetPoint("Carlos", "v32Lock"),3)],
+    ["bXBeastLock", np.round(TCLGetSetPoint("Carlos", "bXBeastLock"),3)]
+]
+
+def SetAllLockpoints(LockPointArray):
+    TCLSetSetPoint("Hamish", "v00Lock", np.double(LockPointArray[0][1]))
+    TCLSetSetPoint("Hamish", "v10Lock", np.double(LockPointArray[1][1]))
+    TCLSetSetPoint("Hamish", "bXLock", np.double(LockPointArray[2][1]))
+    TCLSetSetPoint("Carlos", "v21Lock", np.double(LockPointArray[3][1]))
+    TCLSetSetPoint("Carlos", "v32Lock", np.double(LockPointArray[4][1]))
+    TCLSetSetPoint("Carlos", "bXBeastLock", np.double(LockPointArray[5][1]))

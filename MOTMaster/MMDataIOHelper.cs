@@ -212,13 +212,32 @@ namespace MOTMaster
         private void storeDigitalPattern(string dataStoreFilePath, MOTMasterSequence sequence)
         {
             Hashtable digitalChannelsHash = DAQ.Environment.Environs.Hardware.DigitalOutputChannels;
+
+            string patternGeneratorBoard = (string)DAQ.Environment.Environs.Hardware.GetInfo("PatternGeneratorBoard");
+            Dictionary<string, string> additionalPGs = (Dictionary<string, string>)DAQ.Environment.Environs.Hardware.GetInfo("AdditionalPatternGeneratorBoards");
             Dictionary<string, int> digitalChannels = new Dictionary<string,int>();
+            string digitalPatternString;
+            Dictionary<string, int>[] additionaldigitalChannels = new Dictionary<string,int>[additionalPGs.Count];
+            string[] additionaldigitalPatternString = new string[additionalPGs.Count];
+            int pgIndex;
+
+            for (int i = 0; i < additionalPGs.Count; i++)
+                additionaldigitalChannels[i] = new Dictionary<string, int>();
+
             foreach (DictionaryEntry pair in digitalChannelsHash)
             {
-                string patternGeneratorBoard = (string)DAQ.Environment.Environs.Hardware.GetInfo("PatternGeneratorBoard");
+                
                 if (((DigitalOutputChannel)pair.Value).Device == patternGeneratorBoard)
-                {
                     digitalChannels.Add((string)pair.Key, ((DigitalOutputChannel)pair.Value).BitNumber);
+                else
+                {
+                    pgIndex = 0;
+                    foreach (string pg in additionalPGs.Values)
+                    {
+                        if (((DigitalOutputChannel)pair.Value).Device == pg && sequence.DigitalPattern.Boards.Keys.Contains<string>(pg))
+                            additionaldigitalChannels[pgIndex].Add((string)pair.Key, ((DigitalOutputChannel)pair.Value).BitNumber);
+                        pgIndex++;
+                    }
                 }
             }
 
@@ -226,11 +245,11 @@ namespace MOTMaster
             settings.UseSimpleDictionaryFormat = true; // Make format of json file {key : value} instead of {"Key": key, "Value": value}
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<string, int>), settings);
 
-            string digitalPatternString = sequence.DigitalPattern.Layout.ToString();
-
+            digitalPatternString = sequence.DigitalPattern.Boards[patternGeneratorBoard].Layout.ToString();
+            
             TextWriter output = File.CreateText(dataStoreFilePath);
+            output.Write("{\"" + patternGeneratorBoard + "\":");
             output.Write("{");
-
             output.Write("\"channels\":");
             using (MemoryStream ms = new MemoryStream())
             {
@@ -244,8 +263,37 @@ namespace MOTMaster
             output.Write(System.Web.HttpUtility.JavaScriptStringEncode(digitalPatternString));
             output.Write("\"");
 
-
             output.Write("}");
+            output.Write("}");
+
+            output.Write("\n");
+
+            pgIndex = 0;
+            foreach (string pg in additionalPGs.Values)
+            {
+                if (sequence.DigitalPattern.Boards.Keys.Contains<string>(pg))
+                {
+                    additionaldigitalPatternString[pgIndex] = sequence.DigitalPattern.Boards[pg].Layout.ToString();
+                    output.Write("{\"" + pg + "\":");
+                    output.Write("{");
+                    output.Write("\"channels\":");
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        serializer.WriteObject(ms, additionaldigitalChannels[pgIndex]);
+                        output.Write(Encoding.Default.GetString(ms.ToArray()));
+                    }
+
+                    output.Write(",");
+                    output.Write("\"pattern\":");
+                    output.Write("\"");
+                    output.Write(System.Web.HttpUtility.JavaScriptStringEncode(additionaldigitalPatternString[pgIndex]));
+                    output.Write("\"");
+
+                    output.Write("}");
+                    output.Write("}");
+                }
+            }
+
             output.Close();
         }
 

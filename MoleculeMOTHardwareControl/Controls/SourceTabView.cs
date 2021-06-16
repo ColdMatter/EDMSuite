@@ -22,9 +22,24 @@ namespace MoleculeMOTHardwareControl.Controls
 
         #region UI Update Handlers
 
+        public bool LogStatus()
+        {
+            return chkLog.Checked;
+        }
+
+        public void UpdateCurrentSourcePressure(string pressure)
+        {
+            txtSourcePressure.Text = pressure;
+        }
+
         public void UpdateCurrentSourceTemperature(string temp)
         {
             currentTemperature.Text = temp;
+        }
+
+        public void UpdateCurrentSourceTemperature2(string temp)
+        {
+            txtSourceTemp2.Text = temp;
         }
 
         public void UpdateCurrentSF6Temperature(string temp)

@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 20000;
+        Parameters["PatternLength"] = 50000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -28,7 +28,10 @@ public class Patterns : MOTMasterScript
         Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
-        
+
+        //Test
+        Parameters["ONDuration"] = 1;
+
         //PMT
         Parameters["PMTTriggerDuration"] = 10;
 
@@ -103,23 +106,31 @@ public class Patterns : MOTMasterScript
         //p.Pulse(patternStartBeforeQ, (int)Parameters["CameraTriggerTransverseTime"], (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //camera trigger for first frame
         //p.Pulse(patternStartBeforeQ, 400, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.AddEdge("dipoleTrapAOM", 0, false);
-        p.AddEdge("aoPatternTrigger", 0, true);
-        p.AddEdge("aoPatternTrigger", 100, false);
+        //p.AddEdge("aoPatternTrigger", 0, true);
+        //p.AddEdge("aoPatternTrigger", 1000, false);
         //p.AddEdge("aoPatternTrigger", 20, false);
 
+
+        p.AddEdge("slavePatternCardTrigger", 0, false);
+        p.AddEdge("slavePatternCardTrigger", 1, true);
+        p.AddEdge("slavePatternCardTrigger", (int)Parameters["ONDuration"] + 1, false);
+        //p.AddEdge("test00", 11, false);
+        //p.AddEdge("test00", 12, true);
+        //p.AddEdge("test00", 1000, false);
+        
+        
         p.AddEdge("dipoleTrapAOM", 0, false);
-        p.AddEdge("dipoleTrapAOM", 10000, true);
-        p.AddEdge("dipoleTrapAOM", 10100, false);
+        p.AddEdge("dipoleTrapAOM", 1, true);
+        p.AddEdge("dipoleTrapAOM", 2, false);
+        p.AddEdge("dipoleTrapAOM", 3, true);
+        p.AddEdge("dipoleTrapAOM", (int)Parameters["ONDuration"] + 3, false);
+        
 
-        p.AddEdge("test00", 0, false);
-        p.AddEdge("test00", 10000, true);
-        p.AddEdge("test00", 10002, false);
-        p.AddEdge("test00", 10003, true);
-        p.AddEdge("test00", 10004, false);
+        p.AddEdge("test02", 0, false);
+        p.AddEdge("test02", 1 , true);
+        p.AddEdge("test02", (int)Parameters["ONDuration"] + 1, false);
 
-        p.AddEdge("test01", 0, false);
-        p.AddEdge("test01", 9995, true);
-        p.AddEdge("test01", 10000, false);
+
         //p.AddEdge("test00", 40, false);
         //p.AddEdge("rb2DMOTShutter", 0, false);
 

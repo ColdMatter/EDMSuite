@@ -67,8 +67,8 @@ public class Patterns : MOTMasterScript
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentValueRb"] = 1.0;
-        Parameters["MOTCoilsCurrentValueCaF"] = 1.0;
+        Parameters["MOTCoilsCurrentValueRb"] = 0.65;
+        Parameters["MOTCoilsCurrentValueCaF"] = 0.65;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 0.0;//3.6
@@ -132,12 +132,14 @@ public class Patterns : MOTMasterScript
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
-
+        
         for (int t = firstImageTime; t < lastImageTime; t += (int)Parameters["TimeBetweenTriggers"])
         {
             p.Pulse(0, t, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         }
-
+        
+        // Use only incase of allignment
+        // p.Pulse(0, lastImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
 
         //Rb:

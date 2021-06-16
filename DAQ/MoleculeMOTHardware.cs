@@ -131,8 +131,13 @@ namespace DAQ.HAL
 
 
             // tweezer new digital pattern board
-            AddDigitalOutputChannel("test00", digitalPatternBoardAddress2, 0, 0);
-            AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("slavePatternCardTrigger", digitalPatternBoardAddress2, 0, 0);
+            //AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("test02", digitalPatternBoardAddress2, 0, 2);
+            AddDigitalOutputChannel("test03", digitalPatternBoardAddress2, 0, 3);
+            AddDigitalOutputChannel("test04", digitalPatternBoardAddress2, 0, 4);
+            AddDigitalOutputChannel("test10", digitalPatternBoardAddress2, 1, 0);
+            AddDigitalOutputChannel("motLightSwitch", digitalPatternBoardAddress2, 0, 1);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -179,7 +184,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
             AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
-
+            AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
 
             // TCL Config
             //TCLConfig tcl1 = new TCLConfig("Hamish");
@@ -269,18 +275,31 @@ namespace DAQ.HAL
             Info.Add("MotMasterConfiguration", mmConfig);
             Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
             Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
-            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
 
-            /********************/
-            Info.Add("PGClockLine", digitalPatternBoardAddress + "/PFI2");
-            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
-            additionalPatternBoards.Add(digitalPatternBoardAddress2, digitalPatternBoardAddress2 + "/PFI3");
+            /*****************
+            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
+            Info.Add("PGMaster_ClockLine", digitalPatternBoardAddress + "/PFI2");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string,string>();
+            additionalPatternBoards.Add(digitalPatternBoardAddress2, digitalPatternBoardAddress2);
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
-            Info.Add("PGClockLineSlave", digitalPatternBoardAddress2 + "/PFI4");
-            /********************/
+            Info.Add("PGSlave0_ClockLine", digitalPatternBoardAddress2 + "/PFI4");
+            Info.Add("PGSlave0_TriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            
+            ****************/
 
+            
+            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
+            Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
+            Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
+            additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+            Info.Add("PGSlave0ClockLine", digitalPatternBoardAddress + "/PFI2");
+            Info.Add("PGSlave0TriggerLine", digitalPatternBoardAddress + "/PFI6");
+            
+            /*********/
             //Info.Add("PGTrigger", Boards["pg"] + "/PFI2");   // trigger from "cryocooler sync" box, delay controlled from "triggerDelay" analog output
 
 

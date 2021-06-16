@@ -23,6 +23,9 @@ namespace MOTMaster.SnippetLibrary
 
         public void AddDigitalSnippet(PatternBuilder32 p, Dictionary<String, Object> parameters)
         {
+            // The (new) digital pattern card on PXI Chassis is now the master card. The following pulse triggers the (old) pattern card on PCI slot.
+            p.Pulse(0, 0, 10, "slavePatternCardTrigger"); 
+
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
             //p.AddTrigger("digitalPattern2", patternStartBeforeQ, -patternStartBeforeQ, 10, "patternBoard2Trigger");
             p.Pulse(patternStartBeforeQ, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 200, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved

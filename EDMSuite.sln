@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
@@ -857,7 +857,6 @@ Global
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|Any CPU.ActiveCfg = CaF|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|Any CPU.Build.0 = CaF|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|Mixed Platforms.ActiveCfg = CaF|Any CPU
-		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|Mixed Platforms.Build.0 = CaF|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.CaF|x86.ActiveCfg = CaF|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Any CPU.ActiveCfg = Decelerator|Any CPU
 		{F1BF43A3-5641-4ADF-81CB-35BC0D9AC423}.Debug|Any CPU.Build.0 = Decelerator|Any CPU

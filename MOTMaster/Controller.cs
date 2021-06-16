@@ -139,7 +139,7 @@ namespace MOTMaster
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
-                    pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern);
+                    pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
             pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
             
@@ -149,7 +149,7 @@ namespace MOTMaster
         {
             if (triggered == true)
             {
-                pgMaster.Configure( config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
             }
             else
             {
@@ -161,7 +161,7 @@ namespace MOTMaster
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
-                    pgs[address].Configure("pgSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true, "PGClockLineSlave");
+                    pgs[address].Configure("PGSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true);
                 i++;
             }
             

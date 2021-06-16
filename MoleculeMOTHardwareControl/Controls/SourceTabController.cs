@@ -16,6 +16,9 @@ namespace MoleculeMOTHardwareControl.Controls
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
         private AnalogSingleChannelReader sourceTempReader;
         private AnalogSingleChannelReader sf6TempReader;
+        private AnalogSingleChannelReader sourcePressureReader;
+        private AnalogSingleChannelReader sourceTempReader2;
+
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
         private bool isCycling = false;
@@ -24,6 +27,8 @@ namespace MoleculeMOTHardwareControl.Controls
         private bool isHolding = false;
         private bool maxTempReached = true;
         private System.Windows.Forms.Timer readTimer;
+
+        private static string logfilePath = (string)Environs.FileSystem.Paths["SourceLogPath"];
 
         protected override GenericView CreateControl()
         {
@@ -51,6 +56,10 @@ namespace MoleculeMOTHardwareControl.Controls
             sf6TempReader = CreateAnalogInputReader("sf6Temp");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
+
+            sourcePressureReader = CreateAnalogInputReader("sourcePressure");
+            sourceTempReader2 = CreateAnalogInputReader("sourceTemp2");
+
         }
 
         private void InitReadTimer()
@@ -76,6 +85,18 @@ namespace MoleculeMOTHardwareControl.Controls
             
         }
 
+        protected double GetSourcePressure()
+        {
+            double sourcePressureVoltage = sourcePressureReader.ReadSingleSample();
+            return Math.Pow(10, (sourcePressureVoltage - 6.8) / 0.6);
+        }
+
+        protected double GetSourceTemperature4K()
+        {
+            double sourceTemp2 = sourceTempReader2.ReadSingleSample();
+            return sourceTemp2;
+        }
+
         protected double GetSourceTemperature()
         {
             double vRef = 5.0; //vRefReader.ReadSingleSample();
@@ -95,13 +116,25 @@ namespace MoleculeMOTHardwareControl.Controls
         protected void UpdateTemperature(object anObject, EventArgs eventArgs)
         {
             double sourceTemp = GetSourceTemperature();
+            double sourceTemp2Volt = GetSourceTemperature4K();
+            double sourcePressure = GetSourcePressure();
+            double sourceTemp2Temp;
+
+            if (sourceTemp2Volt > 1.1)
+                sourceTemp2Temp = -2015.5 + (6350.82 * sourceTemp2Volt) - (7250.48 * Math.Pow(sourceTemp2Volt, 2)) + (3607.18 * Math.Pow(sourceTemp2Volt, 3)) - (664.69 * Math.Pow(sourceTemp2Volt, 4));
+            else
+                sourceTemp2Temp = 535.7 - (396.908 * sourceTemp2Volt) - (107.416 * Math.Pow(sourceTemp2Volt, 2)) + (180.776 * Math.Pow(sourceTemp2Volt, 3)) - (119.994 * Math.Pow(sourceTemp2Volt, 4));
+            
+            castView.UpdateCurrentSourceTemperature2(sourceTemp2Temp.ToString("0.##") + " K");
+            castView.UpdateCurrentSourcePressure(sourcePressure.ToString());
+
             if (sourceTemp < -34)
             {
-                castView.UpdateCurrentSourceTemperature("<-34");
+                castView.UpdateCurrentSourceTemperature("<-34 C");
             }
             else
             {
-                castView.UpdateCurrentSourceTemperature(sourceTemp.ToString("F2"));
+                castView.UpdateCurrentSourceTemperature(sourceTemp.ToString("F2") + " C");
             }
             double sf6Temp = GetSF6Temperature();
             if (sf6Temp < -34)
@@ -111,6 +144,18 @@ namespace MoleculeMOTHardwareControl.Controls
             else
             {
                 castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
+            }
+
+            if (castView.LogStatus())
+            {
+                DateTime dt = DateTime.Now;
+                String filename = dt.Date.Day.ToString() + "_" + dt.Month.ToString() + "_" + dt.Year.ToString();
+                using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(logfilePath + "" + filename + ".txt", true))
+                {
+                    file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + sourceTemp2Volt.ToString() + "\t" + sourceTemp2Temp.ToString() + "\t" + sf6Temp.ToString());
+                    file.Flush();
+                }
             }
 
             if (IsCyling)
