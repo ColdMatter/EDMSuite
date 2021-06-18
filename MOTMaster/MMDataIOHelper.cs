@@ -34,7 +34,7 @@ namespace MOTMaster
             MOTMasterSequence sequence, Dictionary<String, Object> dict, Dictionary<String, Object> report,
             string cameraAttributesPath, byte[][,] imageData, string externalFilesPath, string externalFilePattern)
         {
-            string fileTag = getDataID(element, batchNumber);
+            string fileTag = getDataID(saveFolder, element, batchNumber);
 
             saveCameraData(fileTag, saveFolder, cameraAttributesPath, imageData);
             saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, sequence);
@@ -46,7 +46,7 @@ namespace MOTMaster
         public void StoreRun(string saveFolder, int batchNumber, string pathToPattern, string pathToHardwareClass,
             MOTMasterSequence sequence, Dictionary<String, Object> dict, Dictionary<String, Object> report, string externalFilesPath, string externalFilePattern)
         {
-            string fileTag = getDataID(element, batchNumber);
+            string fileTag = getDataID(saveFolder, element, batchNumber);
 
             saveToFiles(fileTag, saveFolder, batchNumber, pathToPattern, pathToHardwareClass, dict, report, sequence);
 
@@ -321,7 +321,7 @@ namespace MOTMaster
         //    output.Write(digitalPatternString);
         //}
         
-        private string getDataID(string element, int batchNumber)
+        private string getDataID(string directory, string element, int batchNumber)
         {
             DateTime dt = DateTime.Now;
             string dateTag;
@@ -330,7 +330,7 @@ namespace MOTMaster
 
             dateTag = String.Format("{0:ddMMMyy}", dt);
             batchTag = batchNumber.ToString().PadLeft(2, '0');
-            subTag = (Directory.GetFiles(motMasterDataPath, element +
+            subTag = (Directory.GetFiles(directory, element +
                 dateTag + batchTag + "*.zip")).Length;
             string id = element + dateTag + batchTag
                 + "_" + subTag.ToString().PadLeft(3, '0');

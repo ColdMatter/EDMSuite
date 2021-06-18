@@ -421,15 +421,22 @@ namespace MOTMaster
 
         #region private stuff
 
+        private string constructSaveDirectory()
+        {
+            string dir = motMasterDataPath + DateTime.Now.ToString("yyyy/MM") + DateTime.Now.ToString("MMM/dd") + "\\";
+            System.IO.Directory.CreateDirectory(dir);
+            return dir;
+        }
+
         // ONGOING: these save functions should probably take a sequence argument
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
         private void runPattern(MOTMasterSequence sequence)
