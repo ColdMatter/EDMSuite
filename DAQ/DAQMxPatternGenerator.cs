@@ -22,6 +22,7 @@ namespace DAQ.HAL
         // this task is used to generate the sample clock on the "integrated" 6229-type PGs
         private Task counterTask;
         string clock_line;
+        private bool taskRunning;
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -31,21 +32,18 @@ namespace DAQ.HAL
 		// use this method to output a PatternList to the whole PatternList generator
 		public void OutputPattern(UInt32[] pattern)
 		{
-            writer.WriteMultiSamplePort(true, pattern);
-			// This Sleep is important (or at least it may be). It's here to guarantee that the correct PatternList is
-			// being output by the time this call returns. This is needed to make the tweak
-			// and pg scans work correctly. It has the side effect that you have to wait for
-			// at least one copy of the PatternList to output before you can do anything. This means
-			// pg scans are slowed down by a factor of two. I can't think of a better way to do
-			// it at the moment.
-			// It might be possible to speed it up by understanding the timing of the above call
-			// - when does it return ?
+            writer.WriteMultiSamplePort(false, pattern);
+            taskRunning = true;
+            pgTask.Start();
 			SleepOnePattern();
 		}
 
         public void OutputPattern(UInt32[] pattern, bool sleep)
         {
-            writer.WriteMultiSamplePort(true, pattern);
+            //writer.WriteMultiSamplePort(true, pattern);
+            writer.WriteMultiSamplePort(false, pattern);
+            taskRunning = true;
+            pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();
         }
@@ -60,8 +58,11 @@ namespace DAQ.HAL
 		
 		private void SleepOnePattern()
 		{
-			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
-			Thread.Sleep(sleepTime);
+			//int sleepTime = (int)(((double)length * 1000) / clockFrequency);
+			//Thread.Sleep(sleepTime);
+
+            //Sleep until Task is finished at which point taskRunning becomes false.
+            while (taskRunning == true) ;
 		}
 
         public void Configure(string taskName, double clockFrequency, bool loop, bool fullWidth,
@@ -219,6 +220,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
+            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
 		public void StopPattern()
@@ -226,6 +228,15 @@ namespace DAQ.HAL
             if (pgTask != null)
                 pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
+        }
+
+        private void pgTask_Done(object sender, TaskDoneEventArgs e)
+        {
+            taskRunning = false;
+            if (pgTask != null)
+            {
+                pgTask.Dispose();
+            }
         }
 	}
 }

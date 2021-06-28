@@ -27,6 +27,11 @@ namespace MoleculeMOTHardwareControl.Controls
             return chkLog.Checked;
         }
 
+        public bool SaveTraceStatus()
+        {
+            return chkSaveTrace.Checked;
+        }
+
         public void UpdateCurrentSourcePressure(string pressure)
         {
             txtSourcePressure.Text = pressure;
@@ -50,6 +55,16 @@ namespace MoleculeMOTHardwareControl.Controls
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
+        }
+        
+        public void UpdateGraph(double[] x, double[] y)
+        {
+            tempGraph.PlotXY(x, y);
+        }
+
+        public bool ToFEnabled()
+        {
+            return chkToF.Checked;
         }
 
         public void UpdateReadButton(bool state)
@@ -109,11 +124,13 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private void toggleCycling(object sender, EventArgs e)
         {
+            chkToF.Checked = false;
             castController.ToggleCycling();
         }
 
         private void toggleHolding(object sender, EventArgs e)
         {
+            chkToF.Checked = false;
             castController.ToggleHolding();
         }
 

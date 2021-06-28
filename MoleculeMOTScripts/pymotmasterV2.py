@@ -279,7 +279,8 @@ def mm_scan_single_parameter(script_name, parameter_name, values, randomize=True
     """
     dictionary = Dictionary[String, Object]()
     mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
-    random.shuffle(values)
+    if randomize:
+        random.shuffle(values)
     for value in tqdm(values):
         dictionary[parameter_name] = value
         mm.Go(dictionary)

@@ -54,6 +54,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
+        
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -384,6 +385,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, imageData, report);
+                                
                             }
                             else
                             {
@@ -394,7 +396,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, report);
-
+                                
                             }
 
 
@@ -439,6 +441,7 @@ namespace MOTMaster
             ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
+
         private void runPattern(MOTMasterSequence sequence)
         {
             initializeHardware(sequence);
@@ -538,6 +541,11 @@ namespace MOTMaster
         }
 
         #endregion
+
+        public int GetIterations()
+        {
+            return controllerWindow.GetIterations();
+        }
 
         #region CameraControl
 

@@ -11,6 +11,7 @@ namespace MoleculeMOTHardwareControl.Controls
     public abstract class GenericController : MarshalByRefObject
     {
         public GenericView view;
+        private object motMasterRem;
 
         public GenericController()
         {
@@ -39,5 +40,7 @@ namespace MoleculeMOTHardwareControl.Controls
             task.Control(TaskAction.Verify);
             return new DigitalSingleChannelWriter(task.Stream);
         }
+        
+        
     }
 }

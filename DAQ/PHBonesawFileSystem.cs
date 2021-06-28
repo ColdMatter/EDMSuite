@@ -16,6 +16,7 @@ namespace DAQ.Environment
             Paths.Add("scanMasterDataPath", "C:\\Users\\cafmot\\Box\\CaF MOT\\MOTData\\MOTScanMasterData\\");//where scan master will save data
             Paths.Add("fakeData", "C:\\ControlPrograms\\Settings\\Examples\\");
             Paths.Add("SourceLogPath", "D:\\Source_Log\\");
+            Paths.Add("ToFFilesPath", "D:\\Source_Log\\ToF_Data\\");
 
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 

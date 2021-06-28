@@ -70,7 +70,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
-            AddAnalogOutputChannel("v10Lock", tclBoard1Address + "/ao1");
+            AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
             AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
             AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
 
@@ -81,10 +81,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("refPDCarlos", tclBoard1Address + "/ai7", AITerminalConfiguration.Rse);/////////////////////////////////////////
             AddAnalogInputChannel("bXBeastPD", tclBoard1Address + "/ai9", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v21Lock", tclBoard2Address + "/ao0");
+            AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("cavityLockCarlos", tclBoard2Address + "/ao1");
+            AddAnalogOutputChannel("cavityLockCarlos", tclBoard1Address + "/ao1");
 
 
             // Digital Pattern
@@ -186,6 +186,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
+            Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
+            Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
+
+            //AddDigitalInputChannel("tofTrig", tclBoard2Address, 0, 0);
 
             // TCL Config
             //TCLConfig tcl1 = new TCLConfig("Hamish");
@@ -302,7 +306,7 @@ namespace DAQ.HAL
             /*********/
             //Info.Add("PGTrigger", Boards["pg"] + "/PFI2");   // trigger from "cryocooler sync" box, delay controlled from "triggerDelay" analog output
 
-
+           
             // ScanMaster configuration
             //Info.Add("defaultTOFRange", new double[] { 4000, 12000 }); // these entries are the two ends of the range for the upper TOF graph
             //Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph

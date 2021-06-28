@@ -55,10 +55,10 @@ namespace MOTMaster.SnippetLibrary
             (double)parameters["SlowingChirpEndValue"],
             1.0,                    // Parameters["SlowingChirpUpperThreshold"]
             -1.5,                   // Parameters["SlowingChirpLowerThreshold"]
-            1.0,                    // Parameters["weight1"]
-            -0.5,                   // Parameters["weight2"]
-            1.0 / 6.0,              // Parameters["weight3"]
-            -1.0 / 24.0);           // Parameters["weight4"]
+            1.0,                    // (double)parameters["weight1"],
+            -0.5,                   // (double)parameters["weight2"],
+            1.0/6.0,                // (double)parameters["weight3"],
+            -1.0 / 24.0);           // (double)parameters["weight4"]
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 200, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
             
 

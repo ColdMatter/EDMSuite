@@ -18,10 +18,6 @@ def main():
     parameter_names_and_bounds["SlowingChirpStartValue"] = [(-0.05, 0.05), 0.0, 'double']
     parameter_names_and_bounds["SlowingChirpEndValue"] = [(-1.5, -1.0), -1.25, 'double']
     parameter_names_and_bounds["slowingAOMOnStart"] = [(0, 500), 240, 'int']
-    #parameter_names_and_bounds["weight1"] = [(0.95, 1.05), 1.0, 'double']
-    #parameter_names_and_bounds["weight2"] = [(-0.55, -0.45), -0.5, 'double']
-    #parameter_names_and_bounds["weight3"] = [(0.0, 0.3), 0.16, 'double']
-    #parameter_names_and_bounds["weight4"] = [(-0.043, -0.038), -0.04, 'double']
 
     # attach dictionary to cache
     cache.parameter_names_and_bounds = parameter_names_and_bounds
