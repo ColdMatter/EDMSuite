@@ -28,42 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series22 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series23 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series24 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series25 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series26 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series27 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series28 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series29 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series30 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series31 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series32 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series33 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series34 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series35 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series36 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series37 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series38 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series39 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series40 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series41 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series42 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -452,6 +452,7 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.textBoxtesting = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreaksynthhd = new System.Windows.Forms.GroupBox();
             this.groupBoxMWCHA = new System.Windows.Forms.GroupBox();
             this.btQueryMWCHAPower = new System.Windows.Forms.Button();
@@ -498,6 +499,9 @@
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
             this.tbStatus = new System.Windows.Forms.TextBox();
+            this.btQueryMWSynthTemperature = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -578,7 +582,7 @@
             this.labelTS1.AutoSize = true;
             this.labelTS1.Location = new System.Drawing.Point(52, 79);
             this.labelTS1.Name = "labelTS1";
-            this.labelTS1.Size = new System.Drawing.Size(29, 17);
+            this.labelTS1.Size = new System.Drawing.Size(23, 13);
             this.labelTS1.TabIndex = 9;
             this.labelTS1.Text = "S1:";
             // 
@@ -589,7 +593,7 @@
             this.tbTS1.Location = new System.Drawing.Point(81, 77);
             this.tbTS1.Name = "tbTS1";
             this.tbTS1.ReadOnly = true;
-            this.tbTS1.Size = new System.Drawing.Size(100, 22);
+            this.tbTS1.Size = new System.Drawing.Size(100, 20);
             this.tbTS1.TabIndex = 8;
             // 
             // tbTSF6
@@ -599,7 +603,7 @@
             this.tbTSF6.Location = new System.Drawing.Point(81, 129);
             this.tbTSF6.Name = "tbTSF6";
             this.tbTSF6.ReadOnly = true;
-            this.tbTSF6.Size = new System.Drawing.Size(100, 22);
+            this.tbTSF6.Size = new System.Drawing.Size(100, 20);
             this.tbTSF6.TabIndex = 7;
             // 
             // labelTSF6
@@ -607,7 +611,7 @@
             this.labelTSF6.AutoSize = true;
             this.labelTSF6.Location = new System.Drawing.Point(46, 131);
             this.labelTSF6.Name = "labelTSF6";
-            this.labelTSF6.Size = new System.Drawing.Size(37, 17);
+            this.labelTSF6.Size = new System.Drawing.Size(29, 13);
             this.labelTSF6.TabIndex = 6;
             this.labelTSF6.Text = "SF6:";
             // 
@@ -618,7 +622,7 @@
             this.tbTNeon.Location = new System.Drawing.Point(81, 103);
             this.tbTNeon.Name = "tbTNeon";
             this.tbTNeon.ReadOnly = true;
-            this.tbTNeon.Size = new System.Drawing.Size(100, 22);
+            this.tbTNeon.Size = new System.Drawing.Size(100, 20);
             this.tbTNeon.TabIndex = 5;
             // 
             // labelTNeon
@@ -626,7 +630,7 @@
             this.labelTNeon.AutoSize = true;
             this.labelTNeon.Location = new System.Drawing.Point(39, 105);
             this.labelTNeon.Name = "labelTNeon";
-            this.labelTNeon.Size = new System.Drawing.Size(46, 17);
+            this.labelTNeon.Size = new System.Drawing.Size(36, 13);
             this.labelTNeon.TabIndex = 4;
             this.labelTNeon.Text = "Neon:";
             // 
@@ -637,7 +641,7 @@
             this.tbTS2.Location = new System.Drawing.Point(81, 51);
             this.tbTS2.Name = "tbTS2";
             this.tbTS2.ReadOnly = true;
-            this.tbTS2.Size = new System.Drawing.Size(100, 22);
+            this.tbTS2.Size = new System.Drawing.Size(100, 20);
             this.tbTS2.TabIndex = 3;
             // 
             // labelTS2
@@ -645,7 +649,7 @@
             this.labelTS2.AutoSize = true;
             this.labelTS2.Location = new System.Drawing.Point(52, 53);
             this.labelTS2.Name = "labelTS2";
-            this.labelTS2.Size = new System.Drawing.Size(29, 17);
+            this.labelTS2.Size = new System.Drawing.Size(23, 13);
             this.labelTS2.TabIndex = 2;
             this.labelTS2.Text = "S2:";
             // 
@@ -654,7 +658,7 @@
             this.labelTCell.AutoSize = true;
             this.labelTCell.Location = new System.Drawing.Point(48, 27);
             this.labelTCell.Name = "labelTCell";
-            this.labelTCell.Size = new System.Drawing.Size(35, 17);
+            this.labelTCell.Size = new System.Drawing.Size(27, 13);
             this.labelTCell.TabIndex = 1;
             this.labelTCell.Text = "Cell:";
             // 
@@ -665,7 +669,7 @@
             this.tbTCell.Location = new System.Drawing.Point(81, 25);
             this.tbTCell.Name = "tbTCell";
             this.tbTCell.ReadOnly = true;
-            this.tbTCell.Size = new System.Drawing.Size(100, 22);
+            this.tbTCell.Size = new System.Drawing.Size(100, 20);
             this.tbTCell.TabIndex = 0;
             // 
             // labelPBeamline
@@ -673,7 +677,7 @@
             this.labelPBeamline.AutoSize = true;
             this.labelPBeamline.Location = new System.Drawing.Point(22, 49);
             this.labelPBeamline.Name = "labelPBeamline";
-            this.labelPBeamline.Size = new System.Drawing.Size(70, 17);
+            this.labelPBeamline.Size = new System.Drawing.Size(53, 13);
             this.labelPBeamline.TabIndex = 2;
             this.labelPBeamline.Text = "Beamline:";
             // 
@@ -684,7 +688,7 @@
             this.tbPBeamline.Location = new System.Drawing.Point(81, 46);
             this.tbPBeamline.Name = "tbPBeamline";
             this.tbPBeamline.ReadOnly = true;
-            this.tbPBeamline.Size = new System.Drawing.Size(100, 22);
+            this.tbPBeamline.Size = new System.Drawing.Size(100, 20);
             this.tbPBeamline.TabIndex = 3;
             // 
             // groupBox1
@@ -709,7 +713,7 @@
             this.tbPDetection.Location = new System.Drawing.Point(81, 75);
             this.tbPDetection.Name = "tbPDetection";
             this.tbPDetection.ReadOnly = true;
-            this.tbPDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbPDetection.Size = new System.Drawing.Size(100, 20);
             this.tbPDetection.TabIndex = 5;
             // 
             // labelPDetection
@@ -717,7 +721,7 @@
             this.labelPDetection.AutoSize = true;
             this.labelPDetection.Location = new System.Drawing.Point(22, 78);
             this.labelPDetection.Name = "labelPDetection";
-            this.labelPDetection.Size = new System.Drawing.Size(72, 17);
+            this.labelPDetection.Size = new System.Drawing.Size(56, 13);
             this.labelPDetection.TabIndex = 4;
             this.labelPDetection.Text = "Detection:";
             // 
@@ -726,7 +730,7 @@
             this.labelPSource.AutoSize = true;
             this.labelPSource.Location = new System.Drawing.Point(31, 22);
             this.labelPSource.Name = "labelPSource";
-            this.labelPSource.Size = new System.Drawing.Size(57, 17);
+            this.labelPSource.Size = new System.Drawing.Size(44, 13);
             this.labelPSource.TabIndex = 1;
             this.labelPSource.Text = "Source:";
             // 
@@ -737,7 +741,7 @@
             this.tbPSource.Location = new System.Drawing.Point(81, 19);
             this.tbPSource.Name = "tbPSource";
             this.tbPSource.ReadOnly = true;
-            this.tbPSource.Size = new System.Drawing.Size(100, 22);
+            this.tbPSource.Size = new System.Drawing.Size(100, 20);
             this.tbPSource.TabIndex = 0;
             // 
             // menuStrip1
@@ -749,7 +753,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1272, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(1272, 24);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -760,13 +764,13 @@
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // saveToolStripMenuItem
@@ -775,7 +779,7 @@
             this.plotsToolStripMenuItem,
             this.dataToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
@@ -784,7 +788,7 @@
             this.pressureAndTemperaturePlotsToolStripMenuItem,
             this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(124, 26);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -794,7 +798,7 @@
             this.temperatureToolStripMenuItem,
             this.pressueAndTemperatureImageToolStripMenuItem});
             this.pressureAndTemperaturePlotsToolStripMenuItem.Name = "pressureAndTemperaturePlotsToolStripMenuItem";
-            this.pressureAndTemperaturePlotsToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.pressureAndTemperaturePlotsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.pressureAndTemperaturePlotsToolStripMenuItem.Text = "Pressure and temperature plots";
             // 
             // pressureToolStripMenuItem
@@ -802,13 +806,13 @@
             this.pressureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemPlotPressureChart});
             this.pressureToolStripMenuItem.Name = "pressureToolStripMenuItem";
-            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.pressureToolStripMenuItem.Text = "Pressure";
             // 
             // ToolStripMenuItemPlotPressureChart
             // 
             this.ToolStripMenuItemPlotPressureChart.Name = "ToolStripMenuItemPlotPressureChart";
-            this.ToolStripMenuItemPlotPressureChart.Size = new System.Drawing.Size(164, 26);
+            this.ToolStripMenuItemPlotPressureChart.Size = new System.Drawing.Size(131, 22);
             this.ToolStripMenuItemPlotPressureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotPressureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotPressureChart_Click);
             // 
@@ -817,20 +821,20 @@
             this.temperatureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemPlotTemperatureChart});
             this.temperatureToolStripMenuItem.Name = "temperatureToolStripMenuItem";
-            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.temperatureToolStripMenuItem.Text = "Temperature";
             // 
             // ToolStripMenuItemPlotTemperatureChart
             // 
             this.ToolStripMenuItemPlotTemperatureChart.Name = "ToolStripMenuItemPlotTemperatureChart";
-            this.ToolStripMenuItemPlotTemperatureChart.Size = new System.Drawing.Size(164, 26);
+            this.ToolStripMenuItemPlotTemperatureChart.Size = new System.Drawing.Size(131, 22);
             this.ToolStripMenuItemPlotTemperatureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotTemperatureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotTemperatureChart_Click);
             // 
             // pressueAndTemperatureImageToolStripMenuItem
             // 
             this.pressueAndTemperatureImageToolStripMenuItem.Name = "pressueAndTemperatureImageToolStripMenuItem";
-            this.pressueAndTemperatureImageToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.pressueAndTemperatureImageToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.pressueAndTemperatureImageToolStripMenuItem.Text = "Pressue and temperature Image";
             this.pressueAndTemperatureImageToolStripMenuItem.Click += new System.EventHandler(this.pressueAndTemperatureImageToolStripMenuItem_Click);
             // 
@@ -839,7 +843,7 @@
             this.neonFlowPlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.neonToolStripMenuItem});
             this.neonFlowPlotToolStripMenuItem.Name = "neonFlowPlotToolStripMenuItem";
-            this.neonFlowPlotToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.neonFlowPlotToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.neonFlowPlotToolStripMenuItem.Text = "Gas flow plots";
             // 
             // neonToolStripMenuItem
@@ -848,20 +852,20 @@
             this.ToolStripMenuItemPlotNeonFlowChart,
             this.ToolStripMenuItemSaveNeonFlowDataCSV});
             this.neonToolStripMenuItem.Name = "neonToolStripMenuItem";
-            this.neonToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.neonToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.neonToolStripMenuItem.Text = "Neon";
             // 
             // ToolStripMenuItemPlotNeonFlowChart
             // 
             this.ToolStripMenuItemPlotNeonFlowChart.Name = "ToolStripMenuItemPlotNeonFlowChart";
-            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(194, 26);
+            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemPlotNeonFlowChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotNeonFlowChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotNeonFlowChart_Click);
             // 
             // ToolStripMenuItemSaveNeonFlowDataCSV
             // 
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Name = "ToolStripMenuItemSaveNeonFlowDataCSV";
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(194, 26);
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Text = "Plot Data (CSV)";
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveNeonFlowDataCSV_Click);
             // 
@@ -870,20 +874,20 @@
             this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pressureAndTemperatureDataToolStripMenuItem});
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(124, 26);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.dataToolStripMenuItem.Text = "Data";
             // 
             // pressureAndTemperatureDataToolStripMenuItem
             // 
             this.pressureAndTemperatureDataToolStripMenuItem.Name = "pressureAndTemperatureDataToolStripMenuItem";
-            this.pressureAndTemperatureDataToolStripMenuItem.Size = new System.Drawing.Size(295, 26);
+            this.pressureAndTemperatureDataToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.pressureAndTemperatureDataToolStripMenuItem.Text = "Pressure and temperature data";
             this.pressureAndTemperatureDataToolStripMenuItem.Click += new System.EventHandler(this.pressureAndTemperatureDataToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -892,7 +896,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // statusToolStripMenuItem
@@ -900,84 +904,84 @@
             this.statusToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearStatusToolStripMenuItem});
             this.statusToolStripMenuItem.Name = "statusToolStripMenuItem";
-            this.statusToolStripMenuItem.Size = new System.Drawing.Size(132, 26);
+            this.statusToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.statusToolStripMenuItem.Text = "Status";
             // 
             // clearStatusToolStripMenuItem
             // 
             this.clearStatusToolStripMenuItem.Name = "clearStatusToolStripMenuItem";
-            this.clearStatusToolStripMenuItem.Size = new System.Drawing.Size(168, 26);
+            this.clearStatusToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.clearStatusToolStripMenuItem.Text = "Clear status";
             this.clearStatusToolStripMenuItem.Click += new System.EventHandler(this.clearStatusToolStripMenuItem_Click);
             // 
             // chart1
             // 
             this.chart1.BackColor = System.Drawing.Color.Black;
-            chartArea1.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea1.AxisX.IsStartedFromZero = false;
-            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea1.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea1.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.DimGray;
-            chartArea1.AxisX.Title = "Time";
-            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea1.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea1.AxisY.IsStartedFromZero = false;
-            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea1.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.MinorGrid.LineColor = System.Drawing.Color.DimGray;
-            chartArea1.AxisY.MinorTickMark.Enabled = true;
-            chartArea1.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.Title = "Pressure (mbar)";
-            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea1.BackColor = System.Drawing.Color.Black;
-            chartArea1.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea1.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea1.BorderColor = System.Drawing.Color.White;
-            chartArea1.CursorX.IsUserEnabled = true;
-            chartArea1.CursorX.IsUserSelectionEnabled = true;
-            chartArea1.Name = "ChartAreaPressureChart";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.BackColor = System.Drawing.Color.Black;
-            legend1.ForeColor = System.Drawing.Color.White;
-            legend1.Name = "LegendPressureChart";
-            this.chart1.Legends.Add(legend1);
+            chartArea6.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea6.AxisX.IsStartedFromZero = false;
+            chartArea6.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea6.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorGrid.Enabled = false;
+            chartArea6.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MinorGrid.LineColor = System.Drawing.Color.DimGray;
+            chartArea6.AxisX.Title = "Time";
+            chartArea6.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea6.AxisY.IsStartedFromZero = false;
+            chartArea6.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea6.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MinorGrid.LineColor = System.Drawing.Color.DimGray;
+            chartArea6.AxisY.MinorTickMark.Enabled = true;
+            chartArea6.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.Title = "Pressure (mbar)";
+            chartArea6.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.BackColor = System.Drawing.Color.Black;
+            chartArea6.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea6.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea6.BorderColor = System.Drawing.Color.White;
+            chartArea6.CursorX.IsUserEnabled = true;
+            chartArea6.CursorX.IsUserSelectionEnabled = true;
+            chartArea6.Name = "ChartAreaPressureChart";
+            this.chart1.ChartAreas.Add(chartArea6);
+            legend6.BackColor = System.Drawing.Color.Black;
+            legend6.ForeColor = System.Drawing.Color.White;
+            legend6.Name = "LegendPressureChart";
+            this.chart1.Legends.Add(legend6);
             this.chart1.Location = new System.Drawing.Point(6, 6);
             this.chart1.Name = "chart1";
-            series1.BackSecondaryColor = System.Drawing.Color.White;
-            series1.BorderColor = System.Drawing.Color.White;
-            series1.ChartArea = "ChartAreaPressureChart";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = System.Drawing.Color.White;
-            series1.CustomProperties = "EmptyPointValue=Zero";
-            series1.LabelBackColor = System.Drawing.Color.White;
-            series1.Legend = "LegendPressureChart";
-            series1.Name = "Source";
-            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series2.ChartArea = "ChartAreaPressureChart";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "LegendPressureChart";
-            series2.Name = "Beamline";
-            series3.ChartArea = "ChartAreaPressureChart";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Legend = "LegendPressureChart";
-            series3.Name = "Detection";
-            this.chart1.Series.Add(series1);
-            this.chart1.Series.Add(series2);
-            this.chart1.Series.Add(series3);
+            series22.BackSecondaryColor = System.Drawing.Color.White;
+            series22.BorderColor = System.Drawing.Color.White;
+            series22.ChartArea = "ChartAreaPressureChart";
+            series22.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series22.Color = System.Drawing.Color.White;
+            series22.CustomProperties = "EmptyPointValue=Zero";
+            series22.LabelBackColor = System.Drawing.Color.White;
+            series22.Legend = "LegendPressureChart";
+            series22.Name = "Source";
+            series22.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series23.ChartArea = "ChartAreaPressureChart";
+            series23.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series23.Legend = "LegendPressureChart";
+            series23.Name = "Beamline";
+            series24.ChartArea = "ChartAreaPressureChart";
+            series24.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series24.Legend = "LegendPressureChart";
+            series24.Name = "Detection";
+            this.chart1.Series.Add(series22);
+            this.chart1.Series.Add(series23);
+            this.chart1.Series.Add(series24);
             this.chart1.Size = new System.Drawing.Size(723, 344);
             this.chart1.TabIndex = 18;
             this.chart1.Text = "chartPressure";
-            title1.BackColor = System.Drawing.Color.Black;
-            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title1.ForeColor = System.Drawing.Color.White;
-            title1.Name = "chartTitleSourcePressure";
-            title1.Text = "Pressure";
-            this.chart1.Titles.Add(title1);
+            title5.BackColor = System.Drawing.Color.Black;
+            title5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title5.ForeColor = System.Drawing.Color.White;
+            title5.Name = "chartTitleSourcePressure";
+            title5.Text = "Pressure";
+            this.chart1.Titles.Add(title5);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             this.chart1.MouseEnter += new System.EventHandler(this.chart1_MouseEnter);
             this.chart1.MouseLeave += new System.EventHandler(this.chart1_MouseLeave);
@@ -999,7 +1003,7 @@
             this.cbTurnCryoOn.AutoSize = true;
             this.cbTurnCryoOn.Location = new System.Drawing.Point(9, 47);
             this.cbTurnCryoOn.Name = "cbTurnCryoOn";
-            this.cbTurnCryoOn.Size = new System.Drawing.Size(116, 21);
+            this.cbTurnCryoOn.Size = new System.Drawing.Size(89, 17);
             this.cbTurnCryoOn.TabIndex = 3;
             this.cbTurnCryoOn.Text = "Turn Cryo On";
             this.cbTurnCryoOn.UseVisualStyleBackColor = true;
@@ -1010,7 +1014,7 @@
             this.labelCryoState.AutoSize = true;
             this.labelCryoState.Location = new System.Drawing.Point(6, 20);
             this.labelCryoState.Name = "labelCryoState";
-            this.labelCryoState.Size = new System.Drawing.Size(78, 17);
+            this.labelCryoState.Size = new System.Drawing.Size(59, 13);
             this.labelCryoState.TabIndex = 1;
             this.labelCryoState.Text = "Cryo State:";
             // 
@@ -1021,7 +1025,7 @@
             this.tbCryoState.Location = new System.Drawing.Point(71, 17);
             this.tbCryoState.Name = "tbCryoState";
             this.tbCryoState.ReadOnly = true;
-            this.tbCryoState.Size = new System.Drawing.Size(100, 22);
+            this.tbCryoState.Size = new System.Drawing.Size(100, 20);
             this.tbCryoState.TabIndex = 0;
             this.tbCryoState.Text = "UNKNOWN";
             // 
@@ -1030,7 +1034,7 @@
             this.cbLogPressureData.AutoSize = true;
             this.cbLogPressureData.Location = new System.Drawing.Point(38, 74);
             this.cbLogPressureData.Name = "cbLogPressureData";
-            this.cbLogPressureData.Size = new System.Drawing.Size(149, 21);
+            this.cbLogPressureData.Size = new System.Drawing.Size(114, 17);
             this.cbLogPressureData.TabIndex = 17;
             this.cbLogPressureData.Text = "Log Pressure Data";
             this.cbLogPressureData.UseVisualStyleBackColor = true;
@@ -1041,7 +1045,7 @@
             this.labelPressureLogPeriod.AutoSize = true;
             this.labelPressureLogPeriod.Location = new System.Drawing.Point(35, 48);
             this.labelPressureLogPeriod.Name = "labelPressureLogPeriod";
-            this.labelPressureLogPeriod.Size = new System.Drawing.Size(102, 17);
+            this.labelPressureLogPeriod.Size = new System.Drawing.Size(75, 13);
             this.labelPressureLogPeriod.TabIndex = 16;
             this.labelPressureLogPeriod.Text = "Log Period (s):";
             // 
@@ -1049,7 +1053,7 @@
             // 
             this.tbpressureMonitorLogPeriod.Location = new System.Drawing.Point(116, 45);
             this.tbpressureMonitorLogPeriod.Name = "tbpressureMonitorLogPeriod";
-            this.tbpressureMonitorLogPeriod.Size = new System.Drawing.Size(64, 22);
+            this.tbpressureMonitorLogPeriod.Size = new System.Drawing.Size(64, 20);
             this.tbpressureMonitorLogPeriod.TabIndex = 15;
             this.tbpressureMonitorLogPeriod.Text = "60";
             // 
@@ -1075,10 +1079,10 @@
             this.tbTandPPollPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbTandPPollPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(106, 53);
-            this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbTandPPollPeriodMonitor.Name = "tbTandPPollPeriodMonitor";
             this.tbTandPPollPeriodMonitor.ReadOnly = true;
-            this.tbTandPPollPeriodMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbTandPPollPeriodMonitor.Size = new System.Drawing.Size(75, 20);
             this.tbTandPPollPeriodMonitor.TabIndex = 35;
             // 
             // btSaveAllPTDataToCSV
@@ -1116,7 +1120,7 @@
             this.labelTandPPollPeriod.AutoSize = true;
             this.labelTandPPollPeriod.Location = new System.Drawing.Point(20, 53);
             this.labelTandPPollPeriod.Name = "labelTandPPollPeriod";
-            this.labelTandPPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelTandPPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelTandPPollPeriod.TabIndex = 20;
             this.labelTandPPollPeriod.Text = "Poll period (ms):";
             // 
@@ -1124,7 +1128,7 @@
             // 
             this.tbTandPPollPeriod.Location = new System.Drawing.Point(105, 82);
             this.tbTandPPollPeriod.Name = "tbTandPPollPeriod";
-            this.tbTandPPollPeriod.Size = new System.Drawing.Size(76, 22);
+            this.tbTandPPollPeriod.Size = new System.Drawing.Size(76, 20);
             this.tbTandPPollPeriod.TabIndex = 13;
             this.tbTandPPollPeriod.Text = "1000";
             this.tbTandPPollPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTandPPollPeriod_KeyDown);
@@ -1192,9 +1196,9 @@
             this.groupBoxGaugeCorrectionFactors.Controls.Add(this.btGaugesCorrectionFactors);
             this.groupBoxGaugeCorrectionFactors.Controls.Add(this.tbSourceGaugeCorrectionFactor);
             this.groupBoxGaugeCorrectionFactors.Location = new System.Drawing.Point(0, 211);
-            this.groupBoxGaugeCorrectionFactors.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxGaugeCorrectionFactors.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxGaugeCorrectionFactors.Name = "groupBoxGaugeCorrectionFactors";
-            this.groupBoxGaugeCorrectionFactors.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxGaugeCorrectionFactors.Padding = new System.Windows.Forms.Padding(2);
             this.groupBoxGaugeCorrectionFactors.Size = new System.Drawing.Size(291, 128);
             this.groupBoxGaugeCorrectionFactors.TabIndex = 38;
             this.groupBoxGaugeCorrectionFactors.TabStop = false;
@@ -1215,10 +1219,10 @@
             this.tbDetectionGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbDetectionGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbDetectionGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(108, 72);
-            this.tbDetectionGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbDetectionGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbDetectionGaugeCorrectionFactorMonitor.Name = "tbDetectionGaugeCorrectionFactorMonitor";
             this.tbDetectionGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbDetectionGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 22);
+            this.tbDetectionGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbDetectionGaugeCorrectionFactorMonitor.TabIndex = 41;
             // 
             // tbBeamlineGaugeCorrectionFactorMonitor
@@ -1226,10 +1230,10 @@
             this.tbBeamlineGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbBeamlineGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbBeamlineGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(109, 47);
-            this.tbBeamlineGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbBeamlineGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbBeamlineGaugeCorrectionFactorMonitor.Name = "tbBeamlineGaugeCorrectionFactorMonitor";
             this.tbBeamlineGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbBeamlineGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 22);
+            this.tbBeamlineGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbBeamlineGaugeCorrectionFactorMonitor.TabIndex = 40;
             // 
             // tbSourceGaugeCorrectionFactorMonitor
@@ -1237,10 +1241,10 @@
             this.tbSourceGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbSourceGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbSourceGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(109, 23);
-            this.tbSourceGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbSourceGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbSourceGaugeCorrectionFactorMonitor.Name = "tbSourceGaugeCorrectionFactorMonitor";
             this.tbSourceGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbSourceGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 22);
+            this.tbSourceGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbSourceGaugeCorrectionFactorMonitor.TabIndex = 39;
             // 
             // labelDetectionGaugeCorrectionFactor
@@ -1248,7 +1252,7 @@
             this.labelDetectionGaugeCorrectionFactor.AutoSize = true;
             this.labelDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(49, 72);
             this.labelDetectionGaugeCorrectionFactor.Name = "labelDetectionGaugeCorrectionFactor";
-            this.labelDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(72, 17);
+            this.labelDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(56, 13);
             this.labelDetectionGaugeCorrectionFactor.TabIndex = 33;
             this.labelDetectionGaugeCorrectionFactor.Text = "Detection:";
             // 
@@ -1256,7 +1260,7 @@
             // 
             this.tbDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 72);
             this.tbDetectionGaugeCorrectionFactor.Name = "tbDetectionGaugeCorrectionFactor";
-            this.tbDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 22);
+            this.tbDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbDetectionGaugeCorrectionFactor.TabIndex = 32;
             this.tbDetectionGaugeCorrectionFactor.Text = "1";
             this.tbDetectionGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbDetectionGaugeCorrectionFactor_KeyDown);
@@ -1266,7 +1270,7 @@
             this.labelBeamlineGaugeCorrectionFactor.AutoSize = true;
             this.labelBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(51, 47);
             this.labelBeamlineGaugeCorrectionFactor.Name = "labelBeamlineGaugeCorrectionFactor";
-            this.labelBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(70, 17);
+            this.labelBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(53, 13);
             this.labelBeamlineGaugeCorrectionFactor.TabIndex = 30;
             this.labelBeamlineGaugeCorrectionFactor.Text = "Beamline:";
             // 
@@ -1274,7 +1278,7 @@
             // 
             this.tbBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 47);
             this.tbBeamlineGaugeCorrectionFactor.Name = "tbBeamlineGaugeCorrectionFactor";
-            this.tbBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 22);
+            this.tbBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbBeamlineGaugeCorrectionFactor.TabIndex = 29;
             this.tbBeamlineGaugeCorrectionFactor.Text = "4.35";
             this.tbBeamlineGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbBeamlineGaugeCorrectionFactor_KeyDown);
@@ -1284,7 +1288,7 @@
             this.labelSourceGaugeCorrectionFactor.AutoSize = true;
             this.labelSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(60, 23);
             this.labelSourceGaugeCorrectionFactor.Name = "labelSourceGaugeCorrectionFactor";
-            this.labelSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(57, 17);
+            this.labelSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(44, 13);
             this.labelSourceGaugeCorrectionFactor.TabIndex = 27;
             this.labelSourceGaugeCorrectionFactor.Text = "Source:";
             // 
@@ -1302,7 +1306,7 @@
             // 
             this.tbSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 23);
             this.tbSourceGaugeCorrectionFactor.Name = "tbSourceGaugeCorrectionFactor";
-            this.tbSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 22);
+            this.tbSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbSourceGaugeCorrectionFactor.TabIndex = 26;
             this.tbSourceGaugeCorrectionFactor.Text = "4.1";
             this.tbSourceGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSourceGaugeCorrectionFactor_KeyDown);
@@ -1312,10 +1316,10 @@
             this.tbRollingPressureChartTimeAxisPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRollingPressureChartTimeAxisPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbRollingPressureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(108, 160);
-            this.tbRollingPressureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbRollingPressureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRollingPressureChartTimeAxisPeriodMonitor.Name = "tbRollingPressureChartTimeAxisPeriodMonitor";
             this.tbRollingPressureChartTimeAxisPeriodMonitor.ReadOnly = true;
-            this.tbRollingPressureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 22);
+            this.tbRollingPressureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbRollingPressureChartTimeAxisPeriodMonitor.TabIndex = 36;
             // 
             // btClearDetectionPressureData
@@ -1335,7 +1339,7 @@
             this.checkBoxDetectionPressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxDetectionPressurePlot.Location = new System.Drawing.Point(109, 75);
             this.checkBoxDetectionPressurePlot.Name = "checkBoxDetectionPressurePlot";
-            this.checkBoxDetectionPressurePlot.Size = new System.Drawing.Size(90, 21);
+            this.checkBoxDetectionPressurePlot.Size = new System.Drawing.Size(72, 17);
             this.checkBoxDetectionPressurePlot.TabIndex = 31;
             this.checkBoxDetectionPressurePlot.Text = "Detection";
             this.checkBoxDetectionPressurePlot.UseVisualStyleBackColor = true;
@@ -1346,7 +1350,7 @@
             this.labelPressureRollingTimeAxisPeriod.AutoSize = true;
             this.labelPressureRollingTimeAxisPeriod.Location = new System.Drawing.Point(13, 160);
             this.labelPressureRollingTimeAxisPeriod.Name = "labelPressureRollingTimeAxisPeriod";
-            this.labelPressureRollingTimeAxisPeriod.Size = new System.Drawing.Size(120, 17);
+            this.labelPressureRollingTimeAxisPeriod.Size = new System.Drawing.Size(88, 13);
             this.labelPressureRollingTimeAxisPeriod.TabIndex = 24;
             this.labelPressureRollingTimeAxisPeriod.Text = "Rolling period (s):";
             // 
@@ -1354,7 +1358,7 @@
             // 
             this.tbRollingPressureChartTimeAxisPeriod.Location = new System.Drawing.Point(190, 160);
             this.tbRollingPressureChartTimeAxisPeriod.Name = "tbRollingPressureChartTimeAxisPeriod";
-            this.tbRollingPressureChartTimeAxisPeriod.Size = new System.Drawing.Size(75, 22);
+            this.tbRollingPressureChartTimeAxisPeriod.Size = new System.Drawing.Size(75, 20);
             this.tbRollingPressureChartTimeAxisPeriod.TabIndex = 23;
             this.tbRollingPressureChartTimeAxisPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRollingPressureChartTimeAxisPeriod_KeyDown);
             // 
@@ -1363,7 +1367,7 @@
             this.labelRollingPressurePlotTimeAxis.AutoSize = true;
             this.labelRollingPressurePlotTimeAxis.Location = new System.Drawing.Point(18, 189);
             this.labelRollingPressurePlotTimeAxis.Name = "labelRollingPressurePlotTimeAxis";
-            this.labelRollingPressurePlotTimeAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelRollingPressurePlotTimeAxis.Size = new System.Drawing.Size(85, 13);
             this.labelRollingPressurePlotTimeAxis.TabIndex = 21;
             this.labelRollingPressurePlotTimeAxis.Text = "Rolling time axis:";
             // 
@@ -1393,7 +1397,7 @@
             this.cbEnablePressureChartRollingTimeAxis.AutoSize = true;
             this.cbEnablePressureChartRollingTimeAxis.Location = new System.Drawing.Point(109, 189);
             this.cbEnablePressureChartRollingTimeAxis.Name = "cbEnablePressureChartRollingTimeAxis";
-            this.cbEnablePressureChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnablePressureChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnablePressureChartRollingTimeAxis.TabIndex = 22;
             this.cbEnablePressureChartRollingTimeAxis.Text = "Enable";
             this.cbEnablePressureChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -1424,7 +1428,7 @@
             this.labelClearPressurePlotData.AutoSize = true;
             this.labelClearPressurePlotData.Location = new System.Drawing.Point(25, 109);
             this.labelClearPressurePlotData.Name = "labelClearPressurePlotData";
-            this.labelClearPressurePlotData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearPressurePlotData.Size = new System.Drawing.Size(78, 13);
             this.labelClearPressurePlotData.TabIndex = 14;
             this.labelClearPressurePlotData.Text = "Clear plot data:";
             // 
@@ -1435,7 +1439,7 @@
             this.checkBoxBeamlinePressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxBeamlinePressurePlot.Location = new System.Drawing.Point(171, 50);
             this.checkBoxBeamlinePressurePlot.Name = "checkBoxBeamlinePressurePlot";
-            this.checkBoxBeamlinePressurePlot.Size = new System.Drawing.Size(88, 21);
+            this.checkBoxBeamlinePressurePlot.Size = new System.Drawing.Size(69, 17);
             this.checkBoxBeamlinePressurePlot.TabIndex = 16;
             this.checkBoxBeamlinePressurePlot.Text = "Beamline";
             this.checkBoxBeamlinePressurePlot.UseVisualStyleBackColor = true;
@@ -1448,7 +1452,7 @@
             this.checkBoxSourcePressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSourcePressurePlot.Location = new System.Drawing.Point(109, 51);
             this.checkBoxSourcePressurePlot.Name = "checkBoxSourcePressurePlot";
-            this.checkBoxSourcePressurePlot.Size = new System.Drawing.Size(75, 21);
+            this.checkBoxSourcePressurePlot.Size = new System.Drawing.Size(60, 17);
             this.checkBoxSourcePressurePlot.TabIndex = 15;
             this.checkBoxSourcePressurePlot.Text = "Source";
             this.checkBoxSourcePressurePlot.UseVisualStyleBackColor = true;
@@ -1459,7 +1463,7 @@
             this.labelSelectPressureDataToPlotChart1.AutoSize = true;
             this.labelSelectPressureDataToPlotChart1.Location = new System.Drawing.Point(7, 51);
             this.labelSelectPressureDataToPlotChart1.Name = "labelSelectPressureDataToPlotChart1";
-            this.labelSelectPressureDataToPlotChart1.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectPressureDataToPlotChart1.Size = new System.Drawing.Size(96, 13);
             this.labelSelectPressureDataToPlotChart1.TabIndex = 14;
             this.labelSelectPressureDataToPlotChart1.Text = "Select data to plot:";
             // 
@@ -1481,91 +1485,91 @@
             this.labelPlot1ScaleY.AutoSize = true;
             this.labelPlot1ScaleY.Location = new System.Drawing.Point(44, 21);
             this.labelPlot1ScaleY.Name = "labelPlot1ScaleY";
-            this.labelPlot1ScaleY.Size = new System.Drawing.Size(73, 17);
+            this.labelPlot1ScaleY.Size = new System.Drawing.Size(56, 13);
             this.labelPlot1ScaleY.TabIndex = 0;
             this.labelPlot1ScaleY.Text = "Plot scale:";
             // 
             // chart2
             // 
             this.chart2.BackColor = System.Drawing.Color.Black;
-            chartArea2.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea2.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea2.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.Title = "Time";
-            chartArea2.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea2.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea2.AxisY.IsStartedFromZero = false;
-            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea2.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea2.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.MinorTickMark.Enabled = true;
-            chartArea2.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.Title = "Temperature (K)";
-            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea2.BackColor = System.Drawing.Color.Black;
-            chartArea2.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea2.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea2.BorderColor = System.Drawing.Color.White;
-            chartArea2.Name = "ChartArea2";
-            this.chart2.ChartAreas.Add(chartArea2);
-            legend2.BackColor = System.Drawing.Color.Black;
-            legend2.ForeColor = System.Drawing.Color.White;
-            legend2.Name = "LegendChart2";
-            this.chart2.Legends.Add(legend2);
+            chartArea7.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea7.AxisX.IsStartedFromZero = false;
+            chartArea7.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea7.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX.MajorGrid.Enabled = false;
+            chartArea7.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX.Title = "Time";
+            chartArea7.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea7.AxisY.IsStartedFromZero = false;
+            chartArea7.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea7.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.MinorTickMark.Enabled = true;
+            chartArea7.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.Title = "Temperature (K)";
+            chartArea7.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.BackColor = System.Drawing.Color.Black;
+            chartArea7.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea7.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea7.BorderColor = System.Drawing.Color.White;
+            chartArea7.Name = "ChartArea2";
+            this.chart2.ChartAreas.Add(chartArea7);
+            legend7.BackColor = System.Drawing.Color.Black;
+            legend7.ForeColor = System.Drawing.Color.White;
+            legend7.Name = "LegendChart2";
+            this.chart2.Legends.Add(legend7);
             this.chart2.Location = new System.Drawing.Point(6, 352);
             this.chart2.Name = "chart2";
-            series4.BackSecondaryColor = System.Drawing.Color.White;
-            series4.BorderColor = System.Drawing.Color.White;
-            series4.ChartArea = "ChartArea2";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = System.Drawing.Color.White;
-            series4.LabelBackColor = System.Drawing.Color.White;
-            series4.Legend = "LegendChart2";
-            series4.Name = "Cell";
-            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series5.ChartArea = "ChartArea2";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Enabled = false;
-            series5.Legend = "LegendChart2";
-            series5.Name = "S2";
-            series5.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series6.ChartArea = "ChartArea2";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Enabled = false;
-            series6.Legend = "LegendChart2";
-            series6.Name = "S1";
-            series6.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series7.ChartArea = "ChartArea2";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Enabled = false;
-            series7.Legend = "LegendChart2";
-            series7.Name = "SF6";
-            series7.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series8.ChartArea = "ChartArea2";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Enabled = false;
-            series8.Legend = "LegendChart2";
-            series8.Name = "Neon";
-            series8.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart2.Series.Add(series4);
-            this.chart2.Series.Add(series5);
-            this.chart2.Series.Add(series6);
-            this.chart2.Series.Add(series7);
-            this.chart2.Series.Add(series8);
+            series25.BackSecondaryColor = System.Drawing.Color.White;
+            series25.BorderColor = System.Drawing.Color.White;
+            series25.ChartArea = "ChartArea2";
+            series25.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series25.Color = System.Drawing.Color.White;
+            series25.LabelBackColor = System.Drawing.Color.White;
+            series25.Legend = "LegendChart2";
+            series25.Name = "Cell";
+            series25.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series26.ChartArea = "ChartArea2";
+            series26.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series26.Enabled = false;
+            series26.Legend = "LegendChart2";
+            series26.Name = "S2";
+            series26.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series27.ChartArea = "ChartArea2";
+            series27.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series27.Enabled = false;
+            series27.Legend = "LegendChart2";
+            series27.Name = "S1";
+            series27.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series28.ChartArea = "ChartArea2";
+            series28.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series28.Enabled = false;
+            series28.Legend = "LegendChart2";
+            series28.Name = "SF6";
+            series28.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series29.ChartArea = "ChartArea2";
+            series29.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series29.Enabled = false;
+            series29.Legend = "LegendChart2";
+            series29.Name = "Neon";
+            series29.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart2.Series.Add(series25);
+            this.chart2.Series.Add(series26);
+            this.chart2.Series.Add(series27);
+            this.chart2.Series.Add(series28);
+            this.chart2.Series.Add(series29);
             this.chart2.Size = new System.Drawing.Size(723, 344);
             this.chart2.TabIndex = 22;
             this.chart2.Text = "chart2";
-            title2.BackColor = System.Drawing.Color.Black;
-            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title2.ForeColor = System.Drawing.Color.White;
-            title2.Name = "chartTitle2";
-            title2.Text = "Temperature";
-            this.chart2.Titles.Add(title2);
+            title6.BackColor = System.Drawing.Color.Black;
+            title6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title6.ForeColor = System.Drawing.Color.White;
+            title6.Name = "chartTitle2";
+            title6.Text = "Temperature";
+            this.chart2.Titles.Add(title6);
             // 
             // groupBox2
             // 
@@ -1602,10 +1606,10 @@
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(109, 268);
-            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Name = "tbRollingTemperatureChartTimeAxisPeriodMonitor";
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.ReadOnly = true;
-            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 22);
+            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.TabIndex = 43;
             // 
             // btRollingTemperatureChartTimeAxis
@@ -1623,7 +1627,7 @@
             this.labelTemperatureRollingTimeAxisPeriod.AutoSize = true;
             this.labelTemperatureRollingTimeAxisPeriod.Location = new System.Drawing.Point(18, 268);
             this.labelTemperatureRollingTimeAxisPeriod.Name = "labelTemperatureRollingTimeAxisPeriod";
-            this.labelTemperatureRollingTimeAxisPeriod.Size = new System.Drawing.Size(120, 17);
+            this.labelTemperatureRollingTimeAxisPeriod.Size = new System.Drawing.Size(88, 13);
             this.labelTemperatureRollingTimeAxisPeriod.TabIndex = 19;
             this.labelTemperatureRollingTimeAxisPeriod.Text = "Rolling period (s):";
             this.labelTemperatureRollingTimeAxisPeriod.Click += new System.EventHandler(this.labelTemperatureRollingTimeAxisPeriod_Click);
@@ -1632,7 +1636,7 @@
             // 
             this.tbRollingTemperatureChartTimeAxisPeriod.Location = new System.Drawing.Point(190, 269);
             this.tbRollingTemperatureChartTimeAxisPeriod.Name = "tbRollingTemperatureChartTimeAxisPeriod";
-            this.tbRollingTemperatureChartTimeAxisPeriod.Size = new System.Drawing.Size(84, 22);
+            this.tbRollingTemperatureChartTimeAxisPeriod.Size = new System.Drawing.Size(84, 20);
             this.tbRollingTemperatureChartTimeAxisPeriod.TabIndex = 18;
             this.tbRollingTemperatureChartTimeAxisPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRollingTemperatureChartTimeAxisPeriod_KeyDown);
             // 
@@ -1641,7 +1645,7 @@
             this.cbEnableTemperatureChartRollingTimeAxis.AutoSize = true;
             this.cbEnableTemperatureChartRollingTimeAxis.Location = new System.Drawing.Point(114, 297);
             this.cbEnableTemperatureChartRollingTimeAxis.Name = "cbEnableTemperatureChartRollingTimeAxis";
-            this.cbEnableTemperatureChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnableTemperatureChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnableTemperatureChartRollingTimeAxis.TabIndex = 17;
             this.cbEnableTemperatureChartRollingTimeAxis.Text = "Enable";
             this.cbEnableTemperatureChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -1652,7 +1656,7 @@
             this.labelRollingTemperaturePlotTimeAxis.AutoSize = true;
             this.labelRollingTemperaturePlotTimeAxis.Location = new System.Drawing.Point(23, 297);
             this.labelRollingTemperaturePlotTimeAxis.Name = "labelRollingTemperaturePlotTimeAxis";
-            this.labelRollingTemperaturePlotTimeAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelRollingTemperaturePlotTimeAxis.Size = new System.Drawing.Size(85, 13);
             this.labelRollingTemperaturePlotTimeAxis.TabIndex = 16;
             this.labelRollingTemperaturePlotTimeAxis.Text = "Rolling time axis:";
             // 
@@ -1661,7 +1665,7 @@
             this.checkBoxNeonTempPlot.AutoSize = true;
             this.checkBoxNeonTempPlot.Location = new System.Drawing.Point(109, 147);
             this.checkBoxNeonTempPlot.Name = "checkBoxNeonTempPlot";
-            this.checkBoxNeonTempPlot.Size = new System.Drawing.Size(95, 21);
+            this.checkBoxNeonTempPlot.Size = new System.Drawing.Size(75, 17);
             this.checkBoxNeonTempPlot.TabIndex = 15;
             this.checkBoxNeonTempPlot.Text = "Neon Line";
             this.checkBoxNeonTempPlot.UseVisualStyleBackColor = true;
@@ -1682,7 +1686,7 @@
             this.labelClearTemperaturePlotData.AutoSize = true;
             this.labelClearTemperaturePlotData.Location = new System.Drawing.Point(25, 187);
             this.labelClearTemperaturePlotData.Name = "labelClearTemperaturePlotData";
-            this.labelClearTemperaturePlotData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearTemperaturePlotData.Size = new System.Drawing.Size(78, 13);
             this.labelClearTemperaturePlotData.TabIndex = 13;
             this.labelClearTemperaturePlotData.Text = "Clear plot data:";
             // 
@@ -1742,7 +1746,7 @@
             this.checkBoxSF6TempPlot.AutoSize = true;
             this.checkBoxSF6TempPlot.Location = new System.Drawing.Point(109, 124);
             this.checkBoxSF6TempPlot.Name = "checkBoxSF6TempPlot";
-            this.checkBoxSF6TempPlot.Size = new System.Drawing.Size(86, 21);
+            this.checkBoxSF6TempPlot.Size = new System.Drawing.Size(68, 17);
             this.checkBoxSF6TempPlot.TabIndex = 7;
             this.checkBoxSF6TempPlot.Text = "SF6 Line";
             this.checkBoxSF6TempPlot.UseVisualStyleBackColor = true;
@@ -1753,7 +1757,7 @@
             this.checkBoxS2TempPlot.AutoSize = true;
             this.checkBoxS2TempPlot.Location = new System.Drawing.Point(109, 78);
             this.checkBoxS2TempPlot.Name = "checkBoxS2TempPlot";
-            this.checkBoxS2TempPlot.Size = new System.Drawing.Size(112, 21);
+            this.checkBoxS2TempPlot.Size = new System.Drawing.Size(87, 17);
             this.checkBoxS2TempPlot.TabIndex = 6;
             this.checkBoxS2TempPlot.Text = "Cryo Stage 2";
             this.checkBoxS2TempPlot.UseVisualStyleBackColor = true;
@@ -1764,7 +1768,7 @@
             this.checkBoxS1TempPlot.AutoSize = true;
             this.checkBoxS1TempPlot.Location = new System.Drawing.Point(109, 101);
             this.checkBoxS1TempPlot.Name = "checkBoxS1TempPlot";
-            this.checkBoxS1TempPlot.Size = new System.Drawing.Size(112, 21);
+            this.checkBoxS1TempPlot.Size = new System.Drawing.Size(87, 17);
             this.checkBoxS1TempPlot.TabIndex = 5;
             this.checkBoxS1TempPlot.Text = "Cryo Stage 1";
             this.checkBoxS1TempPlot.UseVisualStyleBackColor = true;
@@ -1777,7 +1781,7 @@
             this.checkBoxCellTempPlot.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxCellTempPlot.Location = new System.Drawing.Point(109, 55);
             this.checkBoxCellTempPlot.Name = "checkBoxCellTempPlot";
-            this.checkBoxCellTempPlot.Size = new System.Drawing.Size(53, 21);
+            this.checkBoxCellTempPlot.Size = new System.Drawing.Size(43, 17);
             this.checkBoxCellTempPlot.TabIndex = 4;
             this.checkBoxCellTempPlot.Text = "Cell";
             this.checkBoxCellTempPlot.UseVisualStyleBackColor = true;
@@ -1788,7 +1792,7 @@
             this.labelSelectTempDataToPlotChart2.AutoSize = true;
             this.labelSelectTempDataToPlotChart2.Location = new System.Drawing.Point(7, 56);
             this.labelSelectTempDataToPlotChart2.Name = "labelSelectTempDataToPlotChart2";
-            this.labelSelectTempDataToPlotChart2.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectTempDataToPlotChart2.Size = new System.Drawing.Size(96, 13);
             this.labelSelectTempDataToPlotChart2.TabIndex = 3;
             this.labelSelectTempDataToPlotChart2.Text = "Select data to plot:";
             // 
@@ -1810,7 +1814,7 @@
             this.labelPlot2ScaleY.AutoSize = true;
             this.labelPlot2ScaleY.Location = new System.Drawing.Point(44, 22);
             this.labelPlot2ScaleY.Name = "labelPlot2ScaleY";
-            this.labelPlot2ScaleY.Size = new System.Drawing.Size(73, 17);
+            this.labelPlot2ScaleY.Size = new System.Drawing.Size(56, 13);
             this.labelPlot2ScaleY.TabIndex = 0;
             this.labelPlot2ScaleY.Text = "Plot scale:";
             // 
@@ -1839,7 +1843,7 @@
             this.tabPagePlotting.Controls.Add(this.chart2);
             this.tabPagePlotting.Location = new System.Drawing.Point(4, 22);
             this.tabPagePlotting.Name = "tabPagePlotting";
-            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3);
             this.tabPagePlotting.Size = new System.Drawing.Size(1033, 703);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and temperature plots";
@@ -1850,7 +1854,7 @@
             this.tabPageSourceModes.Controls.Add(this.tabControl1);
             this.tabPageSourceModes.Location = new System.Drawing.Point(4, 22);
             this.tabPageSourceModes.Name = "tabPageSourceModes";
-            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSourceModes.Size = new System.Drawing.Size(1033, 703);
             this.tabPageSourceModes.TabIndex = 3;
             this.tabPageSourceModes.Text = "Source Modes";
@@ -1893,7 +1897,7 @@
             this.labelRefreshModeInfo.Location = new System.Drawing.Point(29, 13);
             this.labelRefreshModeInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelRefreshModeInfo.Name = "labelRefreshModeInfo";
-            this.labelRefreshModeInfo.Size = new System.Drawing.Size(128, 17);
+            this.labelRefreshModeInfo.Size = new System.Drawing.Size(96, 13);
             this.labelRefreshModeInfo.TabIndex = 33;
             this.labelRefreshModeInfo.Text = "Refresh mode info:";
             // 
@@ -1903,7 +1907,7 @@
             this.labelRefreshModeInfoText.Location = new System.Drawing.Point(129, 13);
             this.labelRefreshModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelRefreshModeInfoText.Name = "labelRefreshModeInfoText";
-            this.labelRefreshModeInfoText.Size = new System.Drawing.Size(1108, 170);
+            this.labelRefreshModeInfoText.Size = new System.Drawing.Size(822, 130);
             this.labelRefreshModeInfoText.TabIndex = 30;
             this.labelRefreshModeInfoText.Text = resources.GetString("labelRefreshModeInfoText.Text");
             // 
@@ -1948,7 +1952,7 @@
             this.labelRefreshModeTemperatureSetpoint.AutoSize = true;
             this.labelRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(297, 20);
             this.labelRefreshModeTemperatureSetpoint.Name = "labelRefreshModeTemperatureSetpoint";
-            this.labelRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(171, 17);
+            this.labelRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
             this.labelRefreshModeTemperatureSetpoint.TabIndex = 21;
             this.labelRefreshModeTemperatureSetpoint.Text = "Refresh Temperature (K):";
             // 
@@ -1956,7 +1960,7 @@
             // 
             this.tbRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbRefreshModeTemperatureSetpoint.Name = "tbRefreshModeTemperatureSetpoint";
-            this.tbRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbRefreshModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelRefreshModeHowLongUntilHeatersTurnOff
@@ -1964,7 +1968,7 @@
             this.labelRefreshModeHowLongUntilHeatersTurnOff.AutoSize = true;
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Name = "labelRefreshModeHowLongUntilHeatersTurnOff";
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -1975,7 +1979,7 @@
             this.tbRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbRefreshModeHowLongUntilHeatersTurnOff.Name = "tbRefreshModeHowLongUntilHeatersTurnOff";
             this.tbRefreshModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 22);
+            this.tbRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelRefreshModeTurnHeatersOff
@@ -1983,7 +1987,7 @@
             this.labelRefreshModeTurnHeatersOff.AutoSize = true;
             this.labelRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelRefreshModeTurnHeatersOff.Name = "labelRefreshModeTurnHeatersOff";
-            this.labelRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelRefreshModeTurnHeatersOff.TabIndex = 19;
             this.labelRefreshModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
@@ -1992,7 +1996,7 @@
             this.dateTimePickerRefreshModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerRefreshModeTurnHeatersOff.Name = "dateTimePickerRefreshModeTurnHeatersOff";
-            this.dateTimePickerRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerRefreshModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerRefreshModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerRefreshModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerRefreshModeTurnHeatersOff_ValueChanged);
@@ -2026,7 +2030,7 @@
             this.labelRefreshModeCryoTurnOnDateTime.AutoSize = true;
             this.labelRefreshModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
             this.labelRefreshModeCryoTurnOnDateTime.Name = "labelRefreshModeCryoTurnOnDateTime";
-            this.labelRefreshModeCryoTurnOnDateTime.Size = new System.Drawing.Size(109, 17);
+            this.labelRefreshModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
             this.labelRefreshModeCryoTurnOnDateTime.TabIndex = 11;
             this.labelRefreshModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
             // 
@@ -2035,7 +2039,7 @@
             this.labelRefreshModeHowLongUntilCryoTurnsOn.AutoSize = true;
             this.labelRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
             this.labelRefreshModeHowLongUntilCryoTurnsOn.Name = "labelRefreshModeHowLongUntilCryoTurnsOn";
-            this.labelRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(100, 34);
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
             this.labelRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 11;
             this.labelRefreshModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
             // 
@@ -2046,7 +2050,7 @@
             this.tbRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
             this.tbRefreshModeHowLongUntilCryoTurnsOn.Name = "tbRefreshModeHowLongUntilCryoTurnsOn";
             this.tbRefreshModeHowLongUntilCryoTurnsOn.ReadOnly = true;
-            this.tbRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 22);
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
             this.tbRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 16;
             // 
             // dateTimePickerRefreshModeTurnCryoOn
@@ -2054,7 +2058,7 @@
             this.dateTimePickerRefreshModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerRefreshModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
             this.dateTimePickerRefreshModeTurnCryoOn.Name = "dateTimePickerRefreshModeTurnCryoOn";
-            this.dateTimePickerRefreshModeTurnCryoOn.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerRefreshModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerRefreshModeTurnCryoOn.TabIndex = 15;
             this.dateTimePickerRefreshModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerRefreshModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerStopHeatingAndTurnCryoOn_ValueChanged);
@@ -2084,7 +2088,7 @@
             this.labelRefreshModeStatus.AutoSize = true;
             this.labelRefreshModeStatus.Location = new System.Drawing.Point(17, 280);
             this.labelRefreshModeStatus.Name = "labelRefreshModeStatus";
-            this.labelRefreshModeStatus.Size = new System.Drawing.Size(145, 17);
+            this.labelRefreshModeStatus.Size = new System.Drawing.Size(110, 13);
             this.labelRefreshModeStatus.TabIndex = 12;
             this.labelRefreshModeStatus.Text = "Refresh Mode Status:";
             // 
@@ -2113,7 +2117,7 @@
             this.labelWarmupModeInfo.Location = new System.Drawing.Point(24, 13);
             this.labelWarmupModeInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarmupModeInfo.Name = "labelWarmupModeInfo";
-            this.labelWarmupModeInfo.Size = new System.Drawing.Size(135, 17);
+            this.labelWarmupModeInfo.Size = new System.Drawing.Size(102, 13);
             this.labelWarmupModeInfo.TabIndex = 32;
             this.labelWarmupModeInfo.Text = "Warm up mode info:";
             // 
@@ -2123,7 +2127,7 @@
             this.labelWarmupModeInfoText.Location = new System.Drawing.Point(129, 13);
             this.labelWarmupModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarmupModeInfoText.Name = "labelWarmupModeInfoText";
-            this.labelWarmupModeInfoText.Size = new System.Drawing.Size(1112, 153);
+            this.labelWarmupModeInfoText.Size = new System.Drawing.Size(824, 117);
             this.labelWarmupModeInfoText.TabIndex = 31;
             this.labelWarmupModeInfoText.Text = resources.GetString("labelWarmupModeInfoText.Text");
             // 
@@ -2174,7 +2178,7 @@
             this.labelWarmUpModeStatus.AutoSize = true;
             this.labelWarmUpModeStatus.Location = new System.Drawing.Point(10, 280);
             this.labelWarmUpModeStatus.Name = "labelWarmUpModeStatus";
-            this.labelWarmUpModeStatus.Size = new System.Drawing.Size(154, 17);
+            this.labelWarmUpModeStatus.Size = new System.Drawing.Size(118, 13);
             this.labelWarmUpModeStatus.TabIndex = 24;
             this.labelWarmUpModeStatus.Text = "Warm Up Mode Status:";
             // 
@@ -2209,7 +2213,7 @@
             this.labelWarmUpModeTemperatureSetpoint.AutoSize = true;
             this.labelWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(290, 20);
             this.labelWarmUpModeTemperatureSetpoint.Name = "labelWarmUpModeTemperatureSetpoint";
-            this.labelWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(180, 17);
+            this.labelWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(134, 13);
             this.labelWarmUpModeTemperatureSetpoint.TabIndex = 21;
             this.labelWarmUpModeTemperatureSetpoint.Text = "Warm Up Temperature (K):";
             // 
@@ -2217,7 +2221,7 @@
             // 
             this.tbWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbWarmUpModeTemperatureSetpoint.Name = "tbWarmUpModeTemperatureSetpoint";
-            this.tbWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbWarmUpModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelWarmUpModeHowLongUntilHeatersTurnOff
@@ -2225,7 +2229,7 @@
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.AutoSize = true;
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.Name = "labelWarmUpModeHowLongUntilHeatersTurnOff";
-            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -2236,7 +2240,7 @@
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.Name = "tbWarmUpModeHowLongUntilHeatersTurnOff";
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 22);
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelWarmUpModeTurnHeatersOff
@@ -2244,7 +2248,7 @@
             this.labelWarmUpModeTurnHeatersOff.AutoSize = true;
             this.labelWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelWarmUpModeTurnHeatersOff.Name = "labelWarmUpModeTurnHeatersOff";
-            this.labelWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelWarmUpModeTurnHeatersOff.TabIndex = 19;
             this.labelWarmUpModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
@@ -2253,7 +2257,7 @@
             this.dateTimePickerWarmUpModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerWarmUpModeTurnHeatersOff.Name = "dateTimePickerWarmUpModeTurnHeatersOff";
-            this.dateTimePickerWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerWarmUpModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerWarmUpModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerWarmUpModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerWarmUpModeTurnHeatersOff_ValueChanged);
@@ -2283,7 +2287,7 @@
             this.labelCooldownInfo.Location = new System.Drawing.Point(17, 13);
             this.labelCooldownInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelCooldownInfo.Name = "labelCooldownInfo";
-            this.labelCooldownInfo.Size = new System.Drawing.Size(143, 17);
+            this.labelCooldownInfo.Size = new System.Drawing.Size(109, 13);
             this.labelCooldownInfo.TabIndex = 30;
             this.labelCooldownInfo.Text = "Cool down mode info:";
             // 
@@ -2293,7 +2297,7 @@
             this.labelCooldownModeInfoText.Location = new System.Drawing.Point(129, 13);
             this.labelCooldownModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelCooldownModeInfoText.Name = "labelCooldownModeInfoText";
-            this.labelCooldownModeInfoText.Size = new System.Drawing.Size(1122, 136);
+            this.labelCooldownModeInfoText.Size = new System.Drawing.Size(833, 104);
             this.labelCooldownModeInfoText.TabIndex = 29;
             this.labelCooldownModeInfoText.Text = resources.GetString("labelCooldownModeInfoText.Text");
             // 
@@ -2339,7 +2343,7 @@
             this.labelCoolDownModeTemperatureSetpoint.AutoSize = true;
             this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(298, 20);
             this.labelCoolDownModeTemperatureSetpoint.Name = "labelCoolDownModeTemperatureSetpoint";
-            this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(170, 17);
+            this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
             this.labelCoolDownModeTemperatureSetpoint.TabIndex = 21;
             this.labelCoolDownModeTemperatureSetpoint.Text = "Heating Temperature (K):";
             // 
@@ -2347,7 +2351,7 @@
             // 
             this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbCoolDownModeTemperatureSetpoint.Name = "tbCoolDownModeTemperatureSetpoint";
-            this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbCoolDownModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelCoolDownModeHowLongUntilHeatersTurnOff
@@ -2355,7 +2359,7 @@
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.AutoSize = true;
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.Name = "labelCoolDownModeHowLongUntilHeatersTurnOff";
-            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -2366,7 +2370,7 @@
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.Name = "tbCoolDownModeHowLongUntilHeatersTurnOff";
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 22);
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelCoolDownModeTurnHeatersOff
@@ -2374,7 +2378,7 @@
             this.labelCoolDownModeTurnHeatersOff.AutoSize = true;
             this.labelCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelCoolDownModeTurnHeatersOff.Name = "labelCoolDownModeTurnHeatersOff";
-            this.labelCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelCoolDownModeTurnHeatersOff.TabIndex = 19;
             this.labelCoolDownModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
@@ -2383,7 +2387,7 @@
             this.dateTimePickerCoolDownModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerCoolDownModeTurnHeatersOff.Name = "dateTimePickerCoolDownModeTurnHeatersOff";
-            this.dateTimePickerCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerCoolDownModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerCoolDownModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerCoolDownModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnHeatersOff_ValueChanged);
@@ -2417,7 +2421,7 @@
             this.labelCoolDownModeCryoTurnOnDateTime.AutoSize = true;
             this.labelCoolDownModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
             this.labelCoolDownModeCryoTurnOnDateTime.Name = "labelCoolDownModeCryoTurnOnDateTime";
-            this.labelCoolDownModeCryoTurnOnDateTime.Size = new System.Drawing.Size(109, 17);
+            this.labelCoolDownModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
             this.labelCoolDownModeCryoTurnOnDateTime.TabIndex = 11;
             this.labelCoolDownModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
             // 
@@ -2426,7 +2430,7 @@
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.AutoSize = true;
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.Name = "labelCoolDownModeHowLongUntilCryoTurnsOn";
-            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(100, 34);
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 11;
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
             // 
@@ -2437,7 +2441,7 @@
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.Name = "tbCoolDownModeHowLongUntilCryoTurnsOn";
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.ReadOnly = true;
-            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 22);
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 16;
             // 
             // dateTimePickerCoolDownModeTurnCryoOn
@@ -2445,7 +2449,7 @@
             this.dateTimePickerCoolDownModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerCoolDownModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
             this.dateTimePickerCoolDownModeTurnCryoOn.Name = "dateTimePickerCoolDownModeTurnCryoOn";
-            this.dateTimePickerCoolDownModeTurnCryoOn.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerCoolDownModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerCoolDownModeTurnCryoOn.TabIndex = 15;
             this.dateTimePickerCoolDownModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerCoolDownModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnCryoOn_ValueChanged);
@@ -2475,7 +2479,7 @@
             this.labelCoolDownModeStatus.AutoSize = true;
             this.labelCoolDownModeStatus.Location = new System.Drawing.Point(3, 280);
             this.labelCoolDownModeStatus.Name = "labelCoolDownModeStatus";
-            this.labelCoolDownModeStatus.Size = new System.Drawing.Size(162, 17);
+            this.labelCoolDownModeStatus.Size = new System.Drawing.Size(125, 13);
             this.labelCoolDownModeStatus.TabIndex = 23;
             this.labelCoolDownModeStatus.Text = "Cool Down Mode Status:";
             // 
@@ -2511,7 +2515,7 @@
             this.checkBoxMonitorPressureWhenHeating.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxMonitorPressureWhenHeating.Location = new System.Drawing.Point(25, 36);
             this.checkBoxMonitorPressureWhenHeating.Name = "checkBoxMonitorPressureWhenHeating";
-            this.checkBoxMonitorPressureWhenHeating.Size = new System.Drawing.Size(225, 21);
+            this.checkBoxMonitorPressureWhenHeating.Size = new System.Drawing.Size(171, 17);
             this.checkBoxMonitorPressureWhenHeating.TabIndex = 6;
             this.checkBoxMonitorPressureWhenHeating.Text = "Monitor pressure when heating";
             this.checkBoxMonitorPressureWhenHeating.UseVisualStyleBackColor = true;
@@ -2541,7 +2545,7 @@
             this.labelHeaterControlStatus.AutoSize = true;
             this.labelHeaterControlStatus.Location = new System.Drawing.Point(233, 20);
             this.labelHeaterControlStatus.Name = "labelHeaterControlStatus";
-            this.labelHeaterControlStatus.Size = new System.Drawing.Size(52, 17);
+            this.labelHeaterControlStatus.Size = new System.Drawing.Size(40, 13);
             this.labelHeaterControlStatus.TabIndex = 16;
             this.labelHeaterControlStatus.Text = "Status:";
             // 
@@ -2579,7 +2583,7 @@
             // 
             this.tbHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(119, 53);
             this.tbHowLongUntilHeatersTurnOff.Name = "tbHowLongUntilHeatersTurnOff";
-            this.tbHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 22);
+            this.tbHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbHowLongUntilHeatersTurnOff.TabIndex = 11;
             // 
             // labelTurnHeatersOffAt
@@ -2587,7 +2591,7 @@
             this.labelTurnHeatersOffAt.AutoSize = true;
             this.labelTurnHeatersOffAt.Location = new System.Drawing.Point(16, 27);
             this.labelTurnHeatersOffAt.Name = "labelTurnHeatersOffAt";
-            this.labelTurnHeatersOffAt.Size = new System.Drawing.Size(130, 17);
+            this.labelTurnHeatersOffAt.Size = new System.Drawing.Size(97, 13);
             this.labelTurnHeatersOffAt.TabIndex = 12;
             this.labelTurnHeatersOffAt.Text = "Turn heaters off at:";
             // 
@@ -2596,7 +2600,7 @@
             this.dateTimePickerHeatersTurnOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
             this.dateTimePickerHeatersTurnOff.Location = new System.Drawing.Point(119, 25);
             this.dateTimePickerHeatersTurnOff.Name = "dateTimePickerHeatersTurnOff";
-            this.dateTimePickerHeatersTurnOff.Size = new System.Drawing.Size(97, 22);
+            this.dateTimePickerHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerHeatersTurnOff.TabIndex = 10;
             this.dateTimePickerHeatersTurnOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             // 
@@ -2605,7 +2609,7 @@
             this.labelHowLongUntilHeatersTurnOff.AutoSize = true;
             this.labelHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(31, 51);
             this.labelHowLongUntilHeatersTurnOff.Name = "labelHowLongUntilHeatersTurnOff";
-            this.labelHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelHowLongUntilHeatersTurnOff.TabIndex = 13;
             this.labelHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -2662,7 +2666,7 @@
             this.labelHeaterSetpointStage2.AutoSize = true;
             this.labelHeaterSetpointStage2.Location = new System.Drawing.Point(18, 33);
             this.labelHeaterSetpointStage2.Name = "labelHeaterSetpointStage2";
-            this.labelHeaterSetpointStage2.Size = new System.Drawing.Size(173, 17);
+            this.labelHeaterSetpointStage2.Size = new System.Drawing.Size(128, 13);
             this.labelHeaterSetpointStage2.TabIndex = 2;
             this.labelHeaterSetpointStage2.Text = "Temperature Setpoint (K):";
             // 
@@ -2670,7 +2674,7 @@
             // 
             this.tbHeaterTempSetpointStage2.Location = new System.Drawing.Point(152, 30);
             this.tbHeaterTempSetpointStage2.Name = "tbHeaterTempSetpointStage2";
-            this.tbHeaterTempSetpointStage2.Size = new System.Drawing.Size(100, 22);
+            this.tbHeaterTempSetpointStage2.Size = new System.Drawing.Size(100, 20);
             this.tbHeaterTempSetpointStage2.TabIndex = 1;
             this.tbHeaterTempSetpointStage2.Text = "4.0";
             // 
@@ -2679,7 +2683,7 @@
             this.checkBoxEnableHeatersS2.AutoSize = true;
             this.checkBoxEnableHeatersS2.Location = new System.Drawing.Point(21, 97);
             this.checkBoxEnableHeatersS2.Name = "checkBoxEnableHeatersS2";
-            this.checkBoxEnableHeatersS2.Size = new System.Drawing.Size(181, 21);
+            this.checkBoxEnableHeatersS2.Size = new System.Drawing.Size(139, 17);
             this.checkBoxEnableHeatersS2.TabIndex = 0;
             this.checkBoxEnableHeatersS2.Text = "Enable Stage 2 Heaters";
             this.checkBoxEnableHeatersS2.UseVisualStyleBackColor = true;
@@ -2727,7 +2731,7 @@
             this.checkBoxEnableHeatersS1.AutoSize = true;
             this.checkBoxEnableHeatersS1.Location = new System.Drawing.Point(9, 97);
             this.checkBoxEnableHeatersS1.Name = "checkBoxEnableHeatersS1";
-            this.checkBoxEnableHeatersS1.Size = new System.Drawing.Size(181, 21);
+            this.checkBoxEnableHeatersS1.Size = new System.Drawing.Size(139, 17);
             this.checkBoxEnableHeatersS1.TabIndex = 7;
             this.checkBoxEnableHeatersS1.Text = "Enable Stage 1 Heaters";
             this.checkBoxEnableHeatersS1.UseVisualStyleBackColor = true;
@@ -2748,7 +2752,7 @@
             // 
             this.tbHeaterTempSetpointStage1.Location = new System.Drawing.Point(140, 30);
             this.tbHeaterTempSetpointStage1.Name = "tbHeaterTempSetpointStage1";
-            this.tbHeaterTempSetpointStage1.Size = new System.Drawing.Size(100, 22);
+            this.tbHeaterTempSetpointStage1.Size = new System.Drawing.Size(100, 20);
             this.tbHeaterTempSetpointStage1.TabIndex = 9;
             this.tbHeaterTempSetpointStage1.Text = "30.0";
             // 
@@ -2757,7 +2761,7 @@
             this.labelHeaterSetpointStage1.AutoSize = true;
             this.labelHeaterSetpointStage1.Location = new System.Drawing.Point(6, 33);
             this.labelHeaterSetpointStage1.Name = "labelHeaterSetpointStage1";
-            this.labelHeaterSetpointStage1.Size = new System.Drawing.Size(173, 17);
+            this.labelHeaterSetpointStage1.Size = new System.Drawing.Size(128, 13);
             this.labelHeaterSetpointStage1.TabIndex = 8;
             this.labelHeaterSetpointStage1.Text = "Temperature Setpoint (K):";
             // 
@@ -2768,7 +2772,7 @@
             this.tabPageFlowControllers.Controls.Add(this.gbNeonFlowController);
             this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 22);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
-            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageFlowControllers.Size = new System.Drawing.Size(1033, 703);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
@@ -2822,66 +2826,66 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(746, 166);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 17);
+            this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 33;
             this.label1.Text = "New setpoint:";
             // 
             // chart3
             // 
             this.chart3.BackColor = System.Drawing.Color.Black;
-            chartArea3.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea3.AxisX.IsStartedFromZero = false;
-            chartArea3.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea3.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea3.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea3.AxisX.Title = "Time";
-            chartArea3.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea3.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea3.AxisY.IsStartedFromZero = false;
-            chartArea3.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea3.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea3.AxisY.MajorGrid.Enabled = false;
-            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea3.AxisY.Title = "Neon Flow (SCCM)";
-            chartArea3.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea3.BackColor = System.Drawing.Color.Black;
-            chartArea3.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea3.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea3.BorderColor = System.Drawing.Color.White;
-            chartArea3.Name = "ChartAreaNeonFlowChart";
-            this.chart3.ChartAreas.Add(chartArea3);
-            legend3.BackColor = System.Drawing.Color.Black;
-            legend3.Enabled = false;
-            legend3.ForeColor = System.Drawing.Color.White;
-            legend3.Name = "LegendNeonFlowChart";
-            this.chart3.Legends.Add(legend3);
+            chartArea8.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea8.AxisX.IsStartedFromZero = false;
+            chartArea8.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea8.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea8.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisX.MajorGrid.Enabled = false;
+            chartArea8.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisX.Title = "Time";
+            chartArea8.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea8.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea8.AxisY.IsStartedFromZero = false;
+            chartArea8.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea8.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisY.MajorGrid.Enabled = false;
+            chartArea8.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisY.Title = "Neon Flow (SCCM)";
+            chartArea8.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea8.BackColor = System.Drawing.Color.Black;
+            chartArea8.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea8.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea8.BorderColor = System.Drawing.Color.White;
+            chartArea8.Name = "ChartAreaNeonFlowChart";
+            this.chart3.ChartAreas.Add(chartArea8);
+            legend8.BackColor = System.Drawing.Color.Black;
+            legend8.Enabled = false;
+            legend8.ForeColor = System.Drawing.Color.White;
+            legend8.Name = "LegendNeonFlowChart";
+            this.chart3.Legends.Add(legend8);
             this.chart3.Location = new System.Drawing.Point(6, 13);
             this.chart3.Name = "chart3";
-            series9.ChartArea = "ChartAreaNeonFlowChart";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series9.IsVisibleInLegend = false;
-            series9.Legend = "LegendNeonFlowChart";
-            series9.Name = "Neon Flow";
-            series9.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart3.Series.Add(series9);
+            series30.ChartArea = "ChartAreaNeonFlowChart";
+            series30.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series30.IsVisibleInLegend = false;
+            series30.Legend = "LegendNeonFlowChart";
+            series30.Name = "Neon Flow";
+            series30.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart3.Series.Add(series30);
             this.chart3.Size = new System.Drawing.Size(701, 324);
             this.chart3.TabIndex = 19;
             this.chart3.Text = "chartNeonFlow";
-            title3.BackColor = System.Drawing.Color.Black;
-            title3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title3.ForeColor = System.Drawing.Color.White;
-            title3.Name = "chartTitleNeonFlow";
-            title3.Text = "Neon Flow (FL)";
-            this.chart3.Titles.Add(title3);
+            title7.BackColor = System.Drawing.Color.Black;
+            title7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title7.ForeColor = System.Drawing.Color.White;
+            title7.Name = "chartTitleNeonFlow";
+            title7.Text = "Neon Flow (FL)";
+            this.chart3.Titles.Add(title7);
             // 
             // tbNewNeonFlowSetPoint
             // 
             this.tbNewNeonFlowSetPoint.Enabled = false;
             this.tbNewNeonFlowSetPoint.Location = new System.Drawing.Point(824, 163);
             this.tbNewNeonFlowSetPoint.Name = "tbNewNeonFlowSetPoint";
-            this.tbNewNeonFlowSetPoint.Size = new System.Drawing.Size(100, 22);
+            this.tbNewNeonFlowSetPoint.Size = new System.Drawing.Size(100, 20);
             this.tbNewNeonFlowSetPoint.TabIndex = 32;
             this.tbNewNeonFlowSetPoint.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbNewNeonFlowSetPoint_KeyDown);
             // 
@@ -2900,7 +2904,7 @@
             this.labelMonitorActualNeonFlow.AutoSize = true;
             this.labelMonitorActualNeonFlow.Location = new System.Drawing.Point(731, 27);
             this.labelMonitorActualNeonFlow.Name = "labelMonitorActualNeonFlow";
-            this.labelMonitorActualNeonFlow.Size = new System.Drawing.Size(123, 17);
+            this.labelMonitorActualNeonFlow.Size = new System.Drawing.Size(94, 13);
             this.labelMonitorActualNeonFlow.TabIndex = 22;
             this.labelMonitorActualNeonFlow.Text = "Monitor neon flow:";
             // 
@@ -2919,7 +2923,7 @@
             this.labelClearNeonFlowActData.AutoSize = true;
             this.labelClearNeonFlowActData.Location = new System.Drawing.Point(846, 319);
             this.labelClearNeonFlowActData.Name = "labelClearNeonFlowActData";
-            this.labelClearNeonFlowActData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearNeonFlowActData.Size = new System.Drawing.Size(78, 13);
             this.labelClearNeonFlowActData.TabIndex = 28;
             this.labelClearNeonFlowActData.Text = "Clear plot data:";
             // 
@@ -2927,7 +2931,7 @@
             // 
             this.tbNeonFlowSetpoint.Location = new System.Drawing.Point(824, 138);
             this.tbNeonFlowSetpoint.Name = "tbNeonFlowSetpoint";
-            this.tbNeonFlowSetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbNeonFlowSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbNeonFlowSetpoint.TabIndex = 31;
             // 
             // btStopNeonFlowActMonitor
@@ -2946,7 +2950,7 @@
             this.labelNeonFlowMonitorFL.AutoSize = true;
             this.labelNeonFlowMonitorFL.Location = new System.Drawing.Point(739, 116);
             this.labelNeonFlowMonitorFL.Name = "labelNeonFlowMonitorFL";
-            this.labelNeonFlowMonitorFL.Size = new System.Drawing.Size(104, 17);
+            this.labelNeonFlowMonitorFL.Size = new System.Drawing.Size(79, 13);
             this.labelNeonFlowMonitorFL.TabIndex = 23;
             this.labelNeonFlowMonitorFL.Text = "Neon flow (FL):";
             // 
@@ -2954,7 +2958,7 @@
             // 
             this.tbNeonFlowActPollPeriod.Location = new System.Drawing.Point(824, 86);
             this.tbNeonFlowActPollPeriod.Name = "tbNeonFlowActPollPeriod";
-            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(100, 22);
+            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(100, 20);
             this.tbNeonFlowActPollPeriod.TabIndex = 26;
             this.tbNeonFlowActPollPeriod.Text = "1000";
             // 
@@ -2963,7 +2967,7 @@
             this.labelNeonFlowMonitorSP.AutoSize = true;
             this.labelNeonFlowMonitorSP.Location = new System.Drawing.Point(737, 142);
             this.labelNeonFlowMonitorSP.Name = "labelNeonFlowMonitorSP";
-            this.labelNeonFlowMonitorSP.Size = new System.Drawing.Size(106, 17);
+            this.labelNeonFlowMonitorSP.Size = new System.Drawing.Size(81, 13);
             this.labelNeonFlowMonitorSP.TabIndex = 30;
             this.labelNeonFlowMonitorSP.Text = "Neon flow (SP):";
             // 
@@ -2972,7 +2976,7 @@
             this.labelNeonFlowActPollPeriod.AutoSize = true;
             this.labelNeonFlowActPollPeriod.Location = new System.Drawing.Point(737, 90);
             this.labelNeonFlowActPollPeriod.Name = "labelNeonFlowActPollPeriod";
-            this.labelNeonFlowActPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelNeonFlowActPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelNeonFlowActPollPeriod.TabIndex = 25;
             this.labelNeonFlowActPollPeriod.Text = "Poll period (ms):";
             // 
@@ -2980,7 +2984,7 @@
             // 
             this.tbNeonFlowActual.Location = new System.Drawing.Point(824, 112);
             this.tbNeonFlowActual.Name = "tbNeonFlowActual";
-            this.tbNeonFlowActual.Size = new System.Drawing.Size(100, 22);
+            this.tbNeonFlowActual.Size = new System.Drawing.Size(100, 20);
             this.tbNeonFlowActual.TabIndex = 24;
             // 
             // tabPageLakeShore
@@ -2991,7 +2995,7 @@
             this.tabPageLakeShore.Controls.Add(this.groupBox3);
             this.tabPageLakeShore.Location = new System.Drawing.Point(4, 22);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
-            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageLakeShore.Size = new System.Drawing.Size(1033, 703);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
@@ -3035,7 +3039,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(127, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 17);
+            this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Output:";
             // 
@@ -3059,7 +3063,7 @@
             this.labelAutotuneModes.AutoSize = true;
             this.labelAutotuneModes.Location = new System.Drawing.Point(254, 16);
             this.labelAutotuneModes.Name = "labelAutotuneModes";
-            this.labelAutotuneModes.Size = new System.Drawing.Size(115, 17);
+            this.labelAutotuneModes.Size = new System.Drawing.Size(88, 13);
             this.labelAutotuneModes.TabIndex = 17;
             this.labelAutotuneModes.Text = "Autotune Modes:";
             // 
@@ -3115,7 +3119,7 @@
             this.labelPIDLoopsOutputs.AutoSize = true;
             this.labelPIDLoopsOutputs.Location = new System.Drawing.Point(127, 13);
             this.labelPIDLoopsOutputs.Name = "labelPIDLoopsOutputs";
-            this.labelPIDLoopsOutputs.Size = new System.Drawing.Size(55, 17);
+            this.labelPIDLoopsOutputs.Size = new System.Drawing.Size(42, 13);
             this.labelPIDLoopsOutputs.TabIndex = 15;
             this.labelPIDLoopsOutputs.Text = "Output:";
             // 
@@ -3123,21 +3127,21 @@
             // 
             this.tbLakeShore336PIDDValueInput.Location = new System.Drawing.Point(485, 57);
             this.tbLakeShore336PIDDValueInput.Name = "tbLakeShore336PIDDValueInput";
-            this.tbLakeShore336PIDDValueInput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDDValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDDValueInput.TabIndex = 12;
             // 
             // tbLakeShore336PIDIValueInput
             // 
             this.tbLakeShore336PIDIValueInput.Location = new System.Drawing.Point(379, 57);
             this.tbLakeShore336PIDIValueInput.Name = "tbLakeShore336PIDIValueInput";
-            this.tbLakeShore336PIDIValueInput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDIValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDIValueInput.TabIndex = 11;
             // 
             // tbLakeShore336PIDPValueInput
             // 
             this.tbLakeShore336PIDPValueInput.Location = new System.Drawing.Point(273, 57);
             this.tbLakeShore336PIDPValueInput.Name = "tbLakeShore336PIDPValueInput";
-            this.tbLakeShore336PIDPValueInput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDPValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDPValueInput.TabIndex = 10;
             // 
             // btSetLakeShore336PIDvalues
@@ -3166,14 +3170,14 @@
             // 
             this.tbLakeShore336PIDDValueOutput.Location = new System.Drawing.Point(485, 29);
             this.tbLakeShore336PIDDValueOutput.Name = "tbLakeShore336PIDDValueOutput";
-            this.tbLakeShore336PIDDValueOutput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDDValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDDValueOutput.TabIndex = 7;
             // 
             // tbLakeShore336PIDIValueOutput
             // 
             this.tbLakeShore336PIDIValueOutput.Location = new System.Drawing.Point(379, 29);
             this.tbLakeShore336PIDIValueOutput.Name = "tbLakeShore336PIDIValueOutput";
-            this.tbLakeShore336PIDIValueOutput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDIValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDIValueOutput.TabIndex = 6;
             // 
             // labelLakeShore336DValue
@@ -3181,7 +3185,7 @@
             this.labelLakeShore336DValue.AutoSize = true;
             this.labelLakeShore336DValue.Location = new System.Drawing.Point(482, 13);
             this.labelLakeShore336DValue.Name = "labelLakeShore336DValue";
-            this.labelLakeShore336DValue.Size = new System.Drawing.Size(97, 17);
+            this.labelLakeShore336DValue.Size = new System.Drawing.Size(72, 13);
             this.labelLakeShore336DValue.TabIndex = 5;
             this.labelLakeShore336DValue.Text = "Derivative (%)";
             // 
@@ -3190,7 +3194,7 @@
             this.labelLakeShore336IValue.AutoSize = true;
             this.labelLakeShore336IValue.Location = new System.Drawing.Point(376, 13);
             this.labelLakeShore336IValue.Name = "labelLakeShore336IValue";
-            this.labelLakeShore336IValue.Size = new System.Drawing.Size(59, 17);
+            this.labelLakeShore336IValue.Size = new System.Drawing.Size(45, 13);
             this.labelLakeShore336IValue.TabIndex = 4;
             this.labelLakeShore336IValue.Text = "Integral:";
             // 
@@ -3198,7 +3202,7 @@
             // 
             this.tbLakeShore336PIDPValueOutput.Location = new System.Drawing.Point(273, 29);
             this.tbLakeShore336PIDPValueOutput.Name = "tbLakeShore336PIDPValueOutput";
-            this.tbLakeShore336PIDPValueOutput.Size = new System.Drawing.Size(100, 22);
+            this.tbLakeShore336PIDPValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDPValueOutput.TabIndex = 3;
             // 
             // labelLakeShore336PValue
@@ -3206,7 +3210,7 @@
             this.labelLakeShore336PValue.AutoSize = true;
             this.labelLakeShore336PValue.Location = new System.Drawing.Point(270, 13);
             this.labelLakeShore336PValue.Name = "labelLakeShore336PValue";
-            this.labelLakeShore336PValue.Size = new System.Drawing.Size(89, 17);
+            this.labelLakeShore336PValue.Size = new System.Drawing.Size(66, 13);
             this.labelLakeShore336PValue.TabIndex = 2;
             this.labelLakeShore336PValue.Text = "Proportional:";
             // 
@@ -3337,7 +3341,7 @@
             this.labelAIConversionStatus.AutoSize = true;
             this.labelAIConversionStatus.Location = new System.Drawing.Point(441, 12);
             this.labelAIConversionStatus.Name = "labelAIConversionStatus";
-            this.labelAIConversionStatus.Size = new System.Drawing.Size(52, 17);
+            this.labelAIConversionStatus.Size = new System.Drawing.Size(40, 13);
             this.labelAIConversionStatus.TabIndex = 39;
             this.labelAIConversionStatus.Text = "Status:";
             // 
@@ -3354,7 +3358,7 @@
             // 
             this.tbAI12Units.Location = new System.Drawing.Point(396, 51);
             this.tbAI12Units.Name = "tbAI12Units";
-            this.tbAI12Units.Size = new System.Drawing.Size(39, 22);
+            this.tbAI12Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI12Units.TabIndex = 37;
             this.tbAI12Units.Text = "(V)";
             // 
@@ -3362,7 +3366,7 @@
             // 
             this.tbAI13Units.Location = new System.Drawing.Point(396, 74);
             this.tbAI13Units.Name = "tbAI13Units";
-            this.tbAI13Units.Size = new System.Drawing.Size(39, 22);
+            this.tbAI13Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI13Units.TabIndex = 36;
             this.tbAI13Units.Text = "(V)";
             // 
@@ -3370,7 +3374,7 @@
             // 
             this.tbAI14Units.Location = new System.Drawing.Point(396, 97);
             this.tbAI14Units.Name = "tbAI14Units";
-            this.tbAI14Units.Size = new System.Drawing.Size(39, 22);
+            this.tbAI14Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI14Units.TabIndex = 35;
             this.tbAI14Units.Text = "(V)";
             // 
@@ -3378,7 +3382,7 @@
             // 
             this.tbAI15Units.Location = new System.Drawing.Point(396, 120);
             this.tbAI15Units.Name = "tbAI15Units";
-            this.tbAI15Units.Size = new System.Drawing.Size(39, 22);
+            this.tbAI15Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI15Units.TabIndex = 34;
             this.tbAI15Units.Text = "(V)";
             // 
@@ -3438,7 +3442,7 @@
             // 
             this.tbAI11Units.Location = new System.Drawing.Point(396, 27);
             this.tbAI11Units.Name = "tbAI11Units";
-            this.tbAI11Units.Size = new System.Drawing.Size(39, 22);
+            this.tbAI11Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI11Units.TabIndex = 29;
             this.tbAI11Units.Text = "(V)";
             // 
@@ -3460,7 +3464,7 @@
             this.labelAIConversions.AutoSize = true;
             this.labelAIConversions.Location = new System.Drawing.Point(293, 12);
             this.labelAIConversions.Name = "labelAIConversions";
-            this.labelAIConversions.Size = new System.Drawing.Size(90, 17);
+            this.labelAIConversions.Size = new System.Drawing.Size(68, 13);
             this.labelAIConversions.TabIndex = 27;
             this.labelAIConversions.Text = "Conversions:";
             // 
@@ -3469,7 +3473,7 @@
             this.labelAIMonitors.AutoSize = true;
             this.labelAIMonitors.Location = new System.Drawing.Point(194, 13);
             this.labelAIMonitors.Name = "labelAIMonitors";
-            this.labelAIMonitors.Size = new System.Drawing.Size(66, 17);
+            this.labelAIMonitors.Size = new System.Drawing.Size(50, 13);
             this.labelAIMonitors.TabIndex = 26;
             this.labelAIMonitors.Text = "Monitors:";
             // 
@@ -3477,35 +3481,35 @@
             // 
             this.tbMonitorAI13.Location = new System.Drawing.Point(195, 75);
             this.tbMonitorAI13.Name = "tbMonitorAI13";
-            this.tbMonitorAI13.Size = new System.Drawing.Size(84, 22);
+            this.tbMonitorAI13.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI13.TabIndex = 25;
             // 
             // tbMonitorAI15
             // 
             this.tbMonitorAI15.Location = new System.Drawing.Point(195, 121);
             this.tbMonitorAI15.Name = "tbMonitorAI15";
-            this.tbMonitorAI15.Size = new System.Drawing.Size(84, 22);
+            this.tbMonitorAI15.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI15.TabIndex = 24;
             // 
             // tbMonitorAI14
             // 
             this.tbMonitorAI14.Location = new System.Drawing.Point(195, 98);
             this.tbMonitorAI14.Name = "tbMonitorAI14";
-            this.tbMonitorAI14.Size = new System.Drawing.Size(84, 22);
+            this.tbMonitorAI14.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI14.TabIndex = 23;
             // 
             // tbMonitorAI12
             // 
             this.tbMonitorAI12.Location = new System.Drawing.Point(195, 52);
             this.tbMonitorAI12.Name = "tbMonitorAI12";
-            this.tbMonitorAI12.Size = new System.Drawing.Size(84, 22);
+            this.tbMonitorAI12.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI12.TabIndex = 22;
             // 
             // tbMonitorAI11
             // 
             this.tbMonitorAI11.Location = new System.Drawing.Point(195, 29);
             this.tbMonitorAI11.Name = "tbMonitorAI11";
-            this.tbMonitorAI11.Size = new System.Drawing.Size(84, 22);
+            this.tbMonitorAI11.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI11.TabIndex = 21;
             // 
             // btUpdateAnalogueInputsChartRollingAxisPeriod
@@ -3523,7 +3527,7 @@
             this.labelAnalogueInputChartRollingAxisPeriod.AutoSize = true;
             this.labelAnalogueInputChartRollingAxisPeriod.Location = new System.Drawing.Point(289, 212);
             this.labelAnalogueInputChartRollingAxisPeriod.Name = "labelAnalogueInputChartRollingAxisPeriod";
-            this.labelAnalogueInputChartRollingAxisPeriod.Size = new System.Drawing.Size(131, 17);
+            this.labelAnalogueInputChartRollingAxisPeriod.Size = new System.Drawing.Size(96, 13);
             this.labelAnalogueInputChartRollingAxisPeriod.TabIndex = 19;
             this.labelAnalogueInputChartRollingAxisPeriod.Text = "Rolling period (ms):";
             // 
@@ -3532,7 +3536,7 @@
             this.cbPlotAnalogueInputAI15.AutoSize = true;
             this.cbPlotAnalogueInputAI15.Location = new System.Drawing.Point(117, 123);
             this.cbPlotAnalogueInputAI15.Name = "cbPlotAnalogueInputAI15";
-            this.cbPlotAnalogueInputAI15.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI15.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI15.TabIndex = 15;
             this.cbPlotAnalogueInputAI15.Text = "AI15";
             this.cbPlotAnalogueInputAI15.UseVisualStyleBackColor = true;
@@ -3552,7 +3556,7 @@
             // 
             this.tbAnalogueInputsChartRollingAxisPeriod.Location = new System.Drawing.Point(391, 209);
             this.tbAnalogueInputsChartRollingAxisPeriod.Name = "tbAnalogueInputsChartRollingAxisPeriod";
-            this.tbAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(75, 22);
+            this.tbAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(75, 20);
             this.tbAnalogueInputsChartRollingAxisPeriod.TabIndex = 18;
             // 
             // labelClearAnalogueInputData
@@ -3560,7 +3564,7 @@
             this.labelClearAnalogueInputData.AutoSize = true;
             this.labelClearAnalogueInputData.Location = new System.Drawing.Point(30, 156);
             this.labelClearAnalogueInputData.Name = "labelClearAnalogueInputData";
-            this.labelClearAnalogueInputData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearAnalogueInputData.Size = new System.Drawing.Size(78, 13);
             this.labelClearAnalogueInputData.TabIndex = 13;
             this.labelClearAnalogueInputData.Text = "Clear plot data:";
             // 
@@ -3579,7 +3583,7 @@
             this.cbEnableAnalogueInputsChartRollingTimeAxis.AutoSize = true;
             this.cbEnableAnalogueInputsChartRollingTimeAxis.Location = new System.Drawing.Point(391, 183);
             this.cbEnableAnalogueInputsChartRollingTimeAxis.Name = "cbEnableAnalogueInputsChartRollingTimeAxis";
-            this.cbEnableAnalogueInputsChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnableAnalogueInputsChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnableAnalogueInputsChartRollingTimeAxis.TabIndex = 17;
             this.cbEnableAnalogueInputsChartRollingTimeAxis.Text = "Enable";
             this.cbEnableAnalogueInputsChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -3603,7 +3607,7 @@
             this.labelAnalogueInputsChartScale.AutoSize = true;
             this.labelAnalogueInputsChartScale.Location = new System.Drawing.Point(326, 156);
             this.labelAnalogueInputsChartScale.Name = "labelAnalogueInputsChartScale";
-            this.labelAnalogueInputsChartScale.Size = new System.Drawing.Size(73, 17);
+            this.labelAnalogueInputsChartScale.Size = new System.Drawing.Size(56, 13);
             this.labelAnalogueInputsChartScale.TabIndex = 0;
             this.labelAnalogueInputsChartScale.Text = "Plot scale:";
             // 
@@ -3622,7 +3626,7 @@
             this.cbPlotAnalogueInputAI11.AutoSize = true;
             this.cbPlotAnalogueInputAI11.Location = new System.Drawing.Point(117, 31);
             this.cbPlotAnalogueInputAI11.Name = "cbPlotAnalogueInputAI11";
-            this.cbPlotAnalogueInputAI11.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI11.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI11.TabIndex = 4;
             this.cbPlotAnalogueInputAI11.Text = "AI11";
             this.cbPlotAnalogueInputAI11.UseVisualStyleBackColor = true;
@@ -3633,7 +3637,7 @@
             this.labelEnableAnalogueInputChartRollingAxis.AutoSize = true;
             this.labelEnableAnalogueInputChartRollingAxis.Location = new System.Drawing.Point(297, 185);
             this.labelEnableAnalogueInputChartRollingAxis.Name = "labelEnableAnalogueInputChartRollingAxis";
-            this.labelEnableAnalogueInputChartRollingAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelEnableAnalogueInputChartRollingAxis.Size = new System.Drawing.Size(85, 13);
             this.labelEnableAnalogueInputChartRollingAxis.TabIndex = 16;
             this.labelEnableAnalogueInputChartRollingAxis.Text = "Rolling time axis:";
             // 
@@ -3652,7 +3656,7 @@
             this.labelSelectAnalogueInputsToPlot.AutoSize = true;
             this.labelSelectAnalogueInputsToPlot.Location = new System.Drawing.Point(15, 32);
             this.labelSelectAnalogueInputsToPlot.Name = "labelSelectAnalogueInputsToPlot";
-            this.labelSelectAnalogueInputsToPlot.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectAnalogueInputsToPlot.Size = new System.Drawing.Size(96, 13);
             this.labelSelectAnalogueInputsToPlot.TabIndex = 3;
             this.labelSelectAnalogueInputsToPlot.Text = "Select data to plot:";
             // 
@@ -3671,7 +3675,7 @@
             this.cbPlotAnalogueInputAI13.AutoSize = true;
             this.cbPlotAnalogueInputAI13.Location = new System.Drawing.Point(117, 77);
             this.cbPlotAnalogueInputAI13.Name = "cbPlotAnalogueInputAI13";
-            this.cbPlotAnalogueInputAI13.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI13.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI13.TabIndex = 5;
             this.cbPlotAnalogueInputAI13.Text = "AI13";
             this.cbPlotAnalogueInputAI13.UseVisualStyleBackColor = true;
@@ -3693,7 +3697,7 @@
             this.cbPlotAnalogueInputAI12.AutoSize = true;
             this.cbPlotAnalogueInputAI12.Location = new System.Drawing.Point(117, 53);
             this.cbPlotAnalogueInputAI12.Name = "cbPlotAnalogueInputAI12";
-            this.cbPlotAnalogueInputAI12.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI12.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI12.TabIndex = 6;
             this.cbPlotAnalogueInputAI12.Text = "AI12";
             this.cbPlotAnalogueInputAI12.UseVisualStyleBackColor = true;
@@ -3704,7 +3708,7 @@
             this.cbPlotAnalogueInputAI14.AutoSize = true;
             this.cbPlotAnalogueInputAI14.Location = new System.Drawing.Point(117, 100);
             this.cbPlotAnalogueInputAI14.Name = "cbPlotAnalogueInputAI14";
-            this.cbPlotAnalogueInputAI14.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI14.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI14.TabIndex = 7;
             this.cbPlotAnalogueInputAI14.Text = "AI14";
             this.cbPlotAnalogueInputAI14.UseVisualStyleBackColor = true;
@@ -3735,7 +3739,7 @@
             this.labelMonitorAnalogueInputs.AutoSize = true;
             this.labelMonitorAnalogueInputs.Location = new System.Drawing.Point(73, 461);
             this.labelMonitorAnalogueInputs.Name = "labelMonitorAnalogueInputs";
-            this.labelMonitorAnalogueInputs.Size = new System.Drawing.Size(164, 17);
+            this.labelMonitorAnalogueInputs.Size = new System.Drawing.Size(123, 13);
             this.labelMonitorAnalogueInputs.TabIndex = 29;
             this.labelMonitorAnalogueInputs.Text = "Monitor analogue inputs:";
             // 
@@ -3754,7 +3758,7 @@
             // 
             this.tbAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(96, 516);
             this.tbAnalogueMonitoringPollPeriod.Name = "tbAnalogueMonitoringPollPeriod";
-            this.tbAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(100, 22);
+            this.tbAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(100, 20);
             this.tbAnalogueMonitoringPollPeriod.TabIndex = 31;
             this.tbAnalogueMonitoringPollPeriod.Text = "1000";
             // 
@@ -3763,118 +3767,118 @@
             this.labelAnalogueMonitoringPollPeriod.AutoSize = true;
             this.labelAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(9, 519);
             this.labelAnalogueMonitoringPollPeriod.Name = "labelAnalogueMonitoringPollPeriod";
-            this.labelAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelAnalogueMonitoringPollPeriod.TabIndex = 30;
             this.labelAnalogueMonitoringPollPeriod.Text = "Poll period (ms):";
             // 
             // chart4
             // 
             this.chart4.BackColor = System.Drawing.Color.Black;
-            chartArea4.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea4.AxisX.IsStartedFromZero = false;
-            chartArea4.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea4.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea4.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea4.AxisX.MajorGrid.Enabled = false;
-            chartArea4.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea4.AxisX.Title = "Time";
-            chartArea4.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea4.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea4.AxisY.IsStartedFromZero = false;
-            chartArea4.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea4.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea4.AxisY.MajorGrid.Enabled = false;
-            chartArea4.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea4.AxisY.Title = "Value (See units indicators)";
-            chartArea4.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea4.BackColor = System.Drawing.Color.Black;
-            chartArea4.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea4.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea4.BorderColor = System.Drawing.Color.White;
-            chartArea4.Name = "ChartAreaAnalogueInputsChart";
-            this.chart4.ChartAreas.Add(chartArea4);
-            legend4.BackColor = System.Drawing.Color.Black;
-            legend4.Enabled = false;
-            legend4.ForeColor = System.Drawing.Color.White;
-            legend4.Name = "LegendAnalogueInputs";
-            this.chart4.Legends.Add(legend4);
+            chartArea9.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea9.AxisX.IsStartedFromZero = false;
+            chartArea9.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea9.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea9.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisX.MajorGrid.Enabled = false;
+            chartArea9.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisX.Title = "Time";
+            chartArea9.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea9.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea9.AxisY.IsStartedFromZero = false;
+            chartArea9.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea9.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisY.MajorGrid.Enabled = false;
+            chartArea9.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisY.Title = "Value (See units indicators)";
+            chartArea9.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea9.BackColor = System.Drawing.Color.Black;
+            chartArea9.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea9.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea9.BorderColor = System.Drawing.Color.White;
+            chartArea9.Name = "ChartAreaAnalogueInputsChart";
+            this.chart4.ChartAreas.Add(chartArea9);
+            legend9.BackColor = System.Drawing.Color.Black;
+            legend9.Enabled = false;
+            legend9.ForeColor = System.Drawing.Color.White;
+            legend9.Name = "LegendAnalogueInputs";
+            this.chart4.Legends.Add(legend9);
             this.chart4.Location = new System.Drawing.Point(6, 21);
             this.chart4.Name = "chart4";
-            series10.ChartArea = "ChartAreaAnalogueInputsChart";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Enabled = false;
-            series10.Legend = "LegendAnalogueInputs";
-            series10.Name = "AI11";
-            series10.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series11.ChartArea = "ChartAreaAnalogueInputsChart";
-            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series11.Enabled = false;
-            series11.Legend = "LegendAnalogueInputs";
-            series11.Name = "AI12";
-            series11.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series12.ChartArea = "ChartAreaAnalogueInputsChart";
-            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series12.Enabled = false;
-            series12.Legend = "LegendAnalogueInputs";
-            series12.Name = "AI13";
-            series12.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series13.ChartArea = "ChartAreaAnalogueInputsChart";
-            series13.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series13.Enabled = false;
-            series13.Legend = "LegendAnalogueInputs";
-            series13.Name = "AI14";
-            series13.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series14.ChartArea = "ChartAreaAnalogueInputsChart";
-            series14.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series14.Enabled = false;
-            series14.Legend = "LegendAnalogueInputs";
-            series14.Name = "AI15";
-            series14.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series15.ChartArea = "ChartAreaAnalogueInputsChart";
-            series15.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series15.Enabled = false;
-            series15.Legend = "LegendAnalogueInputs";
-            series15.Name = "AI11 Converted";
-            series15.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series16.ChartArea = "ChartAreaAnalogueInputsChart";
-            series16.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series16.Enabled = false;
-            series16.Legend = "LegendAnalogueInputs";
-            series16.Name = "AI12 Converted";
-            series17.ChartArea = "ChartAreaAnalogueInputsChart";
-            series17.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series17.Enabled = false;
-            series17.Legend = "LegendAnalogueInputs";
-            series17.Name = "AI13 Converted";
-            series18.ChartArea = "ChartAreaAnalogueInputsChart";
-            series18.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series18.Enabled = false;
-            series18.Legend = "LegendAnalogueInputs";
-            series18.Name = "AI14 Converted";
-            series19.ChartArea = "ChartAreaAnalogueInputsChart";
-            series19.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series19.Enabled = false;
-            series19.Legend = "LegendAnalogueInputs";
-            series19.Name = "AI15 Converted";
-            this.chart4.Series.Add(series10);
-            this.chart4.Series.Add(series11);
-            this.chart4.Series.Add(series12);
-            this.chart4.Series.Add(series13);
-            this.chart4.Series.Add(series14);
-            this.chart4.Series.Add(series15);
-            this.chart4.Series.Add(series16);
-            this.chart4.Series.Add(series17);
-            this.chart4.Series.Add(series18);
-            this.chart4.Series.Add(series19);
+            series31.ChartArea = "ChartAreaAnalogueInputsChart";
+            series31.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series31.Enabled = false;
+            series31.Legend = "LegendAnalogueInputs";
+            series31.Name = "AI11";
+            series31.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series32.ChartArea = "ChartAreaAnalogueInputsChart";
+            series32.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series32.Enabled = false;
+            series32.Legend = "LegendAnalogueInputs";
+            series32.Name = "AI12";
+            series32.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series33.ChartArea = "ChartAreaAnalogueInputsChart";
+            series33.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series33.Enabled = false;
+            series33.Legend = "LegendAnalogueInputs";
+            series33.Name = "AI13";
+            series33.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series34.ChartArea = "ChartAreaAnalogueInputsChart";
+            series34.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series34.Enabled = false;
+            series34.Legend = "LegendAnalogueInputs";
+            series34.Name = "AI14";
+            series34.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series35.ChartArea = "ChartAreaAnalogueInputsChart";
+            series35.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series35.Enabled = false;
+            series35.Legend = "LegendAnalogueInputs";
+            series35.Name = "AI15";
+            series35.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series36.ChartArea = "ChartAreaAnalogueInputsChart";
+            series36.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series36.Enabled = false;
+            series36.Legend = "LegendAnalogueInputs";
+            series36.Name = "AI11 Converted";
+            series36.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series37.ChartArea = "ChartAreaAnalogueInputsChart";
+            series37.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series37.Enabled = false;
+            series37.Legend = "LegendAnalogueInputs";
+            series37.Name = "AI12 Converted";
+            series38.ChartArea = "ChartAreaAnalogueInputsChart";
+            series38.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series38.Enabled = false;
+            series38.Legend = "LegendAnalogueInputs";
+            series38.Name = "AI13 Converted";
+            series39.ChartArea = "ChartAreaAnalogueInputsChart";
+            series39.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series39.Enabled = false;
+            series39.Legend = "LegendAnalogueInputs";
+            series39.Name = "AI14 Converted";
+            series40.ChartArea = "ChartAreaAnalogueInputsChart";
+            series40.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series40.Enabled = false;
+            series40.Legend = "LegendAnalogueInputs";
+            series40.Name = "AI15 Converted";
+            this.chart4.Series.Add(series31);
+            this.chart4.Series.Add(series32);
+            this.chart4.Series.Add(series33);
+            this.chart4.Series.Add(series34);
+            this.chart4.Series.Add(series35);
+            this.chart4.Series.Add(series36);
+            this.chart4.Series.Add(series37);
+            this.chart4.Series.Add(series38);
+            this.chart4.Series.Add(series39);
+            this.chart4.Series.Add(series40);
             this.chart4.Size = new System.Drawing.Size(864, 420);
             this.chart4.TabIndex = 20;
             this.chart4.Text = "chartAnalogueInputs";
-            title4.BackColor = System.Drawing.Color.Black;
-            title4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title4.ForeColor = System.Drawing.Color.White;
-            title4.Name = "chartTitleAnalogueInputs";
-            title4.Text = "Analogue Inputs";
-            this.chart4.Titles.Add(title4);
+            title8.BackColor = System.Drawing.Color.Black;
+            title8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title8.ForeColor = System.Drawing.Color.White;
+            title8.Name = "chartTitleAnalogueInputs";
+            title8.Text = "Analogue Inputs";
+            this.chart4.Titles.Add(title8);
             // 
             // gbDigitalOutputs
             // 
@@ -3908,7 +3912,7 @@
             this.cbDigitalOutputP03.AutoSize = true;
             this.cbDigitalOutputP03.Location = new System.Drawing.Point(47, 99);
             this.cbDigitalOutputP03.Name = "cbDigitalOutputP03";
-            this.cbDigitalOutputP03.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP03.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP03.TabIndex = 8;
             this.cbDigitalOutputP03.Text = "Enable";
             this.cbDigitalOutputP03.UseVisualStyleBackColor = true;
@@ -3919,7 +3923,7 @@
             this.cbDigitalOutputP01.AutoSize = true;
             this.cbDigitalOutputP01.Location = new System.Drawing.Point(47, 47);
             this.cbDigitalOutputP01.Name = "cbDigitalOutputP01";
-            this.cbDigitalOutputP01.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP01.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP01.TabIndex = 7;
             this.cbDigitalOutputP01.Text = "Enable";
             this.cbDigitalOutputP01.UseVisualStyleBackColor = true;
@@ -3930,7 +3934,7 @@
             this.cbDigitalOutputP02.AutoSize = true;
             this.cbDigitalOutputP02.Location = new System.Drawing.Point(47, 73);
             this.cbDigitalOutputP02.Name = "cbDigitalOutputP02";
-            this.cbDigitalOutputP02.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP02.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP02.TabIndex = 6;
             this.cbDigitalOutputP02.Text = "Enable";
             this.cbDigitalOutputP02.UseVisualStyleBackColor = true;
@@ -3941,7 +3945,7 @@
             this.cbDigitalOutputP00.AutoSize = true;
             this.cbDigitalOutputP00.Location = new System.Drawing.Point(47, 21);
             this.cbDigitalOutputP00.Name = "cbDigitalOutputP00";
-            this.cbDigitalOutputP00.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP00.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP00.TabIndex = 5;
             this.cbDigitalOutputP00.Text = "Enable";
             this.cbDigitalOutputP00.UseVisualStyleBackColor = true;
@@ -3952,7 +3956,7 @@
             this.labelDigitalOutputP03.AutoSize = true;
             this.labelDigitalOutputP03.Location = new System.Drawing.Point(6, 100);
             this.labelDigitalOutputP03.Name = "labelDigitalOutputP03";
-            this.labelDigitalOutputP03.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP03.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP03.TabIndex = 4;
             this.labelDigitalOutputP03.Text = "P0, 3:";
             // 
@@ -3961,7 +3965,7 @@
             this.labelDigitalOutputP02.AutoSize = true;
             this.labelDigitalOutputP02.Location = new System.Drawing.Point(6, 74);
             this.labelDigitalOutputP02.Name = "labelDigitalOutputP02";
-            this.labelDigitalOutputP02.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP02.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP02.TabIndex = 2;
             this.labelDigitalOutputP02.Text = "P0, 2:";
             // 
@@ -3970,7 +3974,7 @@
             this.labelDigitalOutputP01.AutoSize = true;
             this.labelDigitalOutputP01.Location = new System.Drawing.Point(6, 48);
             this.labelDigitalOutputP01.Name = "labelDigitalOutputP01";
-            this.labelDigitalOutputP01.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP01.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP01.TabIndex = 1;
             this.labelDigitalOutputP01.Text = "P0, 1:";
             // 
@@ -3979,7 +3983,7 @@
             this.labelDigitalOutputP00.AutoSize = true;
             this.labelDigitalOutputP00.Location = new System.Drawing.Point(6, 22);
             this.labelDigitalOutputP00.Name = "labelDigitalOutputP00";
-            this.labelDigitalOutputP00.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP00.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP00.TabIndex = 0;
             this.labelDigitalOutputP00.Text = "P0, 0:";
             // 
@@ -4058,7 +4062,7 @@
             // 
             this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
-            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 22);
+            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusOneMinusBoostTextBox.TabIndex = 1;
             this.zeroPlusOneMinusBoostTextBox.Text = "0";
             // 
@@ -4066,7 +4070,7 @@
             // 
             this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
-            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 22);
+            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusBoostTextBox.TabIndex = 0;
             this.zeroPlusBoostTextBox.Text = "0";
             // 
@@ -4095,7 +4099,7 @@
             this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 95);
             this.gMinusVMonitorTextBox.Name = "gMinusVMonitorTextBox";
             this.gMinusVMonitorTextBox.ReadOnly = true;
-            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.gMinusVMonitorTextBox.TabIndex = 43;
             this.gMinusVMonitorTextBox.Text = "0";
             // 
@@ -4106,7 +4110,7 @@
             this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 24);
             this.cPlusVMonitorTextBox.Name = "cPlusVMonitorTextBox";
             this.cPlusVMonitorTextBox.ReadOnly = true;
-            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusVMonitorTextBox.TabIndex = 42;
             this.cPlusVMonitorTextBox.Text = "0";
             // 
@@ -4117,7 +4121,7 @@
             this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 71);
             this.gPlusVMonitorTextBox.Name = "gPlusVMonitorTextBox";
             this.gPlusVMonitorTextBox.ReadOnly = true;
-            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.gPlusVMonitorTextBox.TabIndex = 41;
             this.gPlusVMonitorTextBox.Text = "0";
             // 
@@ -4169,7 +4173,7 @@
             this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 48);
             this.cMinusVMonitorTextBox.Name = "cMinusVMonitorTextBox";
             this.cMinusVMonitorTextBox.ReadOnly = true;
-            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusVMonitorTextBox.TabIndex = 33;
             this.cMinusVMonitorTextBox.Text = "0";
             // 
@@ -4224,7 +4228,7 @@
             // 
             this.eOvershootHoldTextBox.Location = new System.Drawing.Point(145, 170);
             this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
-            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootHoldTextBox.TabIndex = 50;
             this.eOvershootHoldTextBox.Text = "1";
             // 
@@ -4240,7 +4244,7 @@
             // 
             this.eOvershootFactorTextBox.Location = new System.Drawing.Point(145, 191);
             this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
-            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootFactorTextBox.TabIndex = 49;
             this.eOvershootFactorTextBox.Text = "2";
             // 
@@ -4256,7 +4260,7 @@
             // 
             this.eSwitchTimeTextBox.Location = new System.Drawing.Point(145, 128);
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
-            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eSwitchTimeTextBox.TabIndex = 3;
             this.eSwitchTimeTextBox.Text = "1";
             // 
@@ -4272,7 +4276,7 @@
             // 
             this.eBleedTimeTextBox.Location = new System.Drawing.Point(145, 107);
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
-            this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eBleedTimeTextBox.TabIndex = 2;
             this.eBleedTimeTextBox.Text = "0.01";
             // 
@@ -4296,7 +4300,7 @@
             // 
             this.eRampUpDelayTextBox.Location = new System.Drawing.Point(145, 212);
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
-            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpDelayTextBox.TabIndex = 5;
             this.eRampUpDelayTextBox.Text = "1";
             // 
@@ -4312,7 +4316,7 @@
             // 
             this.eRampDownDelayTextBox.Location = new System.Drawing.Point(145, 86);
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
-            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownDelayTextBox.TabIndex = 1;
             this.eRampDownDelayTextBox.Text = "3";
             // 
@@ -4328,7 +4332,7 @@
             // 
             this.eRampDownTimeTextBox.Location = new System.Drawing.Point(145, 65);
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
-            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownTimeTextBox.TabIndex = 0;
             this.eRampDownTimeTextBox.Text = "2";
             // 
@@ -4336,7 +4340,7 @@
             // 
             this.eRampUpTimeTextBox.Location = new System.Drawing.Point(145, 149);
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
-            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 22);
+            this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpTimeTextBox.TabIndex = 4;
             this.eRampUpTimeTextBox.Text = "2";
             // 
@@ -4454,7 +4458,7 @@
             // 
             this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 96);
             this.cPlusOffTextBox.Name = "cPlusOffTextBox";
-            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
             // 
@@ -4462,7 +4466,7 @@
             // 
             this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 128);
             this.cMinusOffTextBox.Name = "cMinusOffTextBox";
-            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusOffTextBox.TabIndex = 3;
             this.cMinusOffTextBox.Text = "0";
             // 
@@ -4470,7 +4474,7 @@
             // 
             this.cMinusTextBox.Location = new System.Drawing.Point(104, 56);
             this.cMinusTextBox.Name = "cMinusTextBox";
-            this.cMinusTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusTextBox.TabIndex = 1;
             this.cMinusTextBox.Text = "0";
             // 
@@ -4478,7 +4482,7 @@
             // 
             this.cPlusTextBox.Location = new System.Drawing.Point(104, 24);
             this.cPlusTextBox.Name = "cPlusTextBox";
-            this.cPlusTextBox.Size = new System.Drawing.Size(64, 22);
+            this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
             // 
@@ -4536,26 +4540,26 @@
             // 
             // chart5
             // 
-            chartArea5.AxisX.Title = "Time";
-            chartArea5.AxisY.Title = "Current (nA)";
-            chartArea5.Name = "ChartArea1";
-            this.chart5.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chart5.Legends.Add(legend5);
+            chartArea10.AxisX.Title = "Time";
+            chartArea10.AxisY.Title = "Current (nA)";
+            chartArea10.Name = "ChartArea1";
+            this.chart5.ChartAreas.Add(chartArea10);
+            legend10.Name = "Legend1";
+            this.chart5.Legends.Add(legend10);
             this.chart5.Location = new System.Drawing.Point(19, 127);
             this.chart5.Name = "chart5";
-            series20.ChartArea = "ChartArea1";
-            series20.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series20.Legend = "Legend1";
-            series20.Name = "Leakage Current East";
-            series20.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series21.ChartArea = "ChartArea1";
-            series21.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series21.Legend = "Legend1";
-            series21.Name = "Leakage Current West";
-            series21.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart5.Series.Add(series20);
-            this.chart5.Series.Add(series21);
+            series41.ChartArea = "ChartArea1";
+            series41.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series41.Legend = "Legend1";
+            series41.Name = "Leakage Current East";
+            series41.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series42.ChartArea = "ChartArea1";
+            series42.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series42.Legend = "Legend1";
+            series42.Name = "Leakage Current West";
+            series42.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart5.Series.Add(series41);
+            this.chart5.Series.Add(series42);
             this.chart5.Size = new System.Drawing.Size(633, 179);
             this.chart5.TabIndex = 76;
             this.chart5.Text = "chart5";
@@ -4565,7 +4569,7 @@
             this.logCurrentDataCheckBox.AutoSize = true;
             this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
             this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
-            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(86, 21);
+            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
             this.logCurrentDataCheckBox.TabIndex = 75;
             this.logCurrentDataCheckBox.Text = "Log data";
             this.logCurrentDataCheckBox.UseVisualStyleBackColor = true;
@@ -4587,7 +4591,7 @@
             this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
             this.southIMonitorErrorTextBox.Name = "southIMonitorErrorTextBox";
             this.southIMonitorErrorTextBox.ReadOnly = true;
-            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 22);
+            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
             this.southIMonitorErrorTextBox.TabIndex = 73;
             this.southIMonitorErrorTextBox.Text = "0";
             // 
@@ -4614,7 +4618,7 @@
             this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
             this.northIMonitorErrorTextBox.Name = "northIMonitorErrorTextBox";
             this.northIMonitorErrorTextBox.ReadOnly = true;
-            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 22);
+            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
             this.northIMonitorErrorTextBox.TabIndex = 70;
             this.northIMonitorErrorTextBox.Text = "0";
             // 
@@ -4648,7 +4652,7 @@
             // 
             this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(137, 31);
             this.currentMonitorSampleLengthTextBox.Name = "currentMonitorSampleLengthTextBox";
-            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 22);
+            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
             this.currentMonitorSampleLengthTextBox.TabIndex = 67;
             this.currentMonitorSampleLengthTextBox.Text = "20";
             // 
@@ -4667,7 +4671,7 @@
             this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
             this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
             this.southOffsetIMonitorTextBox.ReadOnly = true;
-            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.southOffsetIMonitorTextBox.TabIndex = 47;
             this.southOffsetIMonitorTextBox.Text = "0";
             // 
@@ -4678,7 +4682,7 @@
             this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
             this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
             this.northOffsetIMonitorTextBox.ReadOnly = true;
-            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 22);
+            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.northOffsetIMonitorTextBox.TabIndex = 49;
             this.northOffsetIMonitorTextBox.Text = "0";
             // 
@@ -4704,7 +4708,7 @@
             // 
             this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
             this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
-            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 22);
+            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.southV2FSlopeTextBox.TabIndex = 64;
             this.southV2FSlopeTextBox.Text = "2000";
             // 
@@ -4712,7 +4716,7 @@
             // 
             this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
             this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
-            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 22);
+            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.northV2FSlopeTextBox.TabIndex = 63;
             this.northV2FSlopeTextBox.Text = "2000";
             // 
@@ -4720,7 +4724,7 @@
             // 
             this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
             this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
-            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 22);
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.leakageMonitorSlopeTextBox.TabIndex = 2;
             this.leakageMonitorSlopeTextBox.Text = "0.200";
             // 
@@ -4755,7 +4759,7 @@
             // 
             this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
             this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
-            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 22);
+            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
             this.iMonitorPollPeriod.TabIndex = 0;
             this.iMonitorPollPeriod.Text = "100";
             // 
@@ -4773,7 +4777,7 @@
             // 
             this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(244, 76);
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
-            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 22);
+            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
             this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
             this.IMonitorMeasurementLengthTextBox.Text = "200";
             // 
@@ -4800,7 +4804,7 @@
             this.southIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
             this.southIMonitorTextBox.Name = "southIMonitorTextBox";
             this.southIMonitorTextBox.ReadOnly = true;
-            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 22);
+            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
             this.southIMonitorTextBox.TabIndex = 45;
             this.southIMonitorTextBox.Text = "0";
             // 
@@ -4811,7 +4815,7 @@
             this.northIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
             this.northIMonitorTextBox.Name = "northIMonitorTextBox";
             this.northIMonitorTextBox.ReadOnly = true;
-            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 22);
+            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
             this.northIMonitorTextBox.TabIndex = 42;
             this.northIMonitorTextBox.Text = "0";
             // 
@@ -4843,25 +4847,37 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.textBoxtesting);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
             this.tabPagePumping.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePumping.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPagePumping.Margin = new System.Windows.Forms.Padding(2);
             this.tabPagePumping.Name = "tabPagePumping";
             this.tabPagePumping.Size = new System.Drawing.Size(1033, 703);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Optical pumping";
             // 
+            // textBoxtesting
+            // 
+            this.textBoxtesting.Location = new System.Drawing.Point(144, 419);
+            this.textBoxtesting.Multiline = true;
+            this.textBoxtesting.Name = "textBoxtesting";
+            this.textBoxtesting.Size = new System.Drawing.Size(180, 94);
+            this.textBoxtesting.TabIndex = 49;
+            // 
             // groupBoxWindfreaksynthhd
             // 
+            this.groupBoxWindfreaksynthhd.Controls.Add(this.btQueryMWSynthTemperature);
+            this.groupBoxWindfreaksynthhd.Controls.Add(this.label2);
             this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHA);
+            this.groupBoxWindfreaksynthhd.Controls.Add(this.tbMWSynthTemperatureMonitor);
             this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHB);
             this.groupBoxWindfreaksynthhd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBoxWindfreaksynthhd.Location = new System.Drawing.Point(260, 2);
-            this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxWindfreaksynthhd.Name = "groupBoxWindfreaksynthhd";
-            this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(462, 358);
+            this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(462, 365);
             this.groupBoxWindfreaksynthhd.TabIndex = 48;
             this.groupBoxWindfreaksynthhd.TabStop = false;
             this.groupBoxWindfreaksynthhd.Text = "Windfreak SynthHD";
@@ -4886,9 +4902,9 @@
             this.groupBoxMWCHA.Controls.Add(this.labelMicrowavesChannelAFrequency);
             this.groupBoxMWCHA.Controls.Add(this.tbMWCHAFrequencyMonitor);
             this.groupBoxMWCHA.Location = new System.Drawing.Point(0, 17);
-            this.groupBoxMWCHA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxMWCHA.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHA.Name = "groupBoxMWCHA";
-            this.groupBoxMWCHA.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxMWCHA.Padding = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHA.Size = new System.Drawing.Size(462, 132);
             this.groupBoxMWCHA.TabIndex = 39;
             this.groupBoxMWCHA.TabStop = false;
@@ -4902,6 +4918,7 @@
             this.btQueryMWCHAPower.TabIndex = 48;
             this.btQueryMWCHAPower.Text = "Query";
             this.btQueryMWCHAPower.UseVisualStyleBackColor = true;
+            this.btQueryMWCHAPower.Click += new System.EventHandler(this.btQueryMWCHAPower_Click);
             // 
             // btQueryMWCHAFrequency
             // 
@@ -4911,6 +4928,7 @@
             this.btQueryMWCHAFrequency.TabIndex = 47;
             this.btQueryMWCHAFrequency.Text = "Query";
             this.btQueryMWCHAFrequency.UseVisualStyleBackColor = true;
+            this.btQueryMWCHAFrequency.Click += new System.EventHandler(this.btQueryMWCHAFrequency_Click);
             // 
             // btIncrementMWCHAPower
             // 
@@ -4926,7 +4944,7 @@
             // 
             this.tbMWCHAPowerIncrement.Location = new System.Drawing.Point(351, 100);
             this.tbMWCHAPowerIncrement.Name = "tbMWCHAPowerIncrement";
-            this.tbMWCHAPowerIncrement.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHAPowerIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerIncrement.TabIndex = 46;
             // 
             // btUpdateMWCHAPower
@@ -4943,7 +4961,7 @@
             // 
             this.tbMWCHAPowerSetpoint.Location = new System.Drawing.Point(351, 71);
             this.tbMWCHAPowerSetpoint.Name = "tbMWCHAPowerSetpoint";
-            this.tbMWCHAPowerSetpoint.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHAPowerSetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerSetpoint.TabIndex = 42;
             this.tbMWCHAPowerSetpoint.Text = "20";
             // 
@@ -4952,7 +4970,7 @@
             this.labelMicrowavesChannelAPower.AutoSize = true;
             this.labelMicrowavesChannelAPower.Location = new System.Drawing.Point(268, 24);
             this.labelMicrowavesChannelAPower.Name = "labelMicrowavesChannelAPower";
-            this.labelMicrowavesChannelAPower.Size = new System.Drawing.Size(120, 17);
+            this.labelMicrowavesChannelAPower.Size = new System.Drawing.Size(92, 13);
             this.labelMicrowavesChannelAPower.TabIndex = 43;
             this.labelMicrowavesChannelAPower.Text = "MW power (dBm):";
             // 
@@ -4961,10 +4979,10 @@
             this.tbMWCHAPowerMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAPowerMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWCHAPowerMonitor.Location = new System.Drawing.Point(351, 44);
-            this.tbMWCHAPowerMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbMWCHAPowerMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAPowerMonitor.Name = "tbMWCHAPowerMonitor";
             this.tbMWCHAPowerMonitor.ReadOnly = true;
-            this.tbMWCHAPowerMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbMWCHAPowerMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAPowerMonitor.TabIndex = 44;
             // 
             // comboBoxMWCHASetpointUnit
@@ -4979,9 +4997,9 @@
             "kHz",
             "Hz"});
             this.comboBoxMWCHASetpointUnit.Location = new System.Drawing.Point(196, 71);
-            this.comboBoxMWCHASetpointUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxMWCHASetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHASetpointUnit.Name = "comboBoxMWCHASetpointUnit";
-            this.comboBoxMWCHASetpointUnit.Size = new System.Drawing.Size(53, 24);
+            this.comboBoxMWCHASetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHASetpointUnit.TabIndex = 40;
             // 
             // comboBoxMWCHAIncrementUnit
@@ -4996,9 +5014,9 @@
             "kHz",
             "Hz"});
             this.comboBoxMWCHAIncrementUnit.Location = new System.Drawing.Point(196, 100);
-            this.comboBoxMWCHAIncrementUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxMWCHAIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHAIncrementUnit.Name = "comboBoxMWCHAIncrementUnit";
-            this.comboBoxMWCHAIncrementUnit.Size = new System.Drawing.Size(53, 24);
+            this.comboBoxMWCHAIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHAIncrementUnit.TabIndex = 39;
             // 
             // btIncrementMWCHAFrequency
@@ -5015,7 +5033,7 @@
             // 
             this.tbMWCHAFrequencyIncrement.Location = new System.Drawing.Point(116, 100);
             this.tbMWCHAFrequencyIncrement.Name = "tbMWCHAFrequencyIncrement";
-            this.tbMWCHAFrequencyIncrement.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHAFrequencyIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateMWCHAFrequency
@@ -5032,7 +5050,7 @@
             // 
             this.tbMWCHAFrequencySetpoint.Location = new System.Drawing.Point(116, 71);
             this.tbMWCHAFrequencySetpoint.Name = "tbMWCHAFrequencySetpoint";
-            this.tbMWCHAFrequencySetpoint.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHAFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpoint.TabIndex = 36;
             this.tbMWCHAFrequencySetpoint.Text = "14.5";
             // 
@@ -5041,7 +5059,7 @@
             this.labelMicrowavesChannelAFrequency.AutoSize = true;
             this.labelMicrowavesChannelAFrequency.Location = new System.Drawing.Point(34, 24);
             this.labelMicrowavesChannelAFrequency.Name = "labelMicrowavesChannelAFrequency";
-            this.labelMicrowavesChannelAFrequency.Size = new System.Drawing.Size(145, 17);
+            this.labelMicrowavesChannelAFrequency.Size = new System.Drawing.Size(110, 13);
             this.labelMicrowavesChannelAFrequency.TabIndex = 36;
             this.labelMicrowavesChannelAFrequency.Text = "MW frequency (GHz):";
             // 
@@ -5050,10 +5068,10 @@
             this.tbMWCHAFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWCHAFrequencyMonitor.Location = new System.Drawing.Point(117, 44);
-            this.tbMWCHAFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbMWCHAFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAFrequencyMonitor.Name = "tbMWCHAFrequencyMonitor";
             this.tbMWCHAFrequencyMonitor.ReadOnly = true;
-            this.tbMWCHAFrequencyMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbMWCHAFrequencyMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAFrequencyMonitor.TabIndex = 36;
             // 
             // groupBoxMWCHB
@@ -5076,9 +5094,9 @@
             this.groupBoxMWCHB.Controls.Add(this.labelMicrowavesChannelBFrequency);
             this.groupBoxMWCHB.Controls.Add(this.tbMWCHBFrequencyMonitor);
             this.groupBoxMWCHB.Location = new System.Drawing.Point(0, 154);
-            this.groupBoxMWCHB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxMWCHB.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHB.Name = "groupBoxMWCHB";
-            this.groupBoxMWCHB.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxMWCHB.Padding = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHB.Size = new System.Drawing.Size(462, 132);
             this.groupBoxMWCHB.TabIndex = 47;
             this.groupBoxMWCHB.TabStop = false;
@@ -5092,6 +5110,7 @@
             this.btQueryMWCHBPower.TabIndex = 49;
             this.btQueryMWCHBPower.Text = "Query";
             this.btQueryMWCHBPower.UseVisualStyleBackColor = true;
+            this.btQueryMWCHBPower.Click += new System.EventHandler(this.btQueryMWCHBPower_Click);
             // 
             // btQueryMWCHBFrequency
             // 
@@ -5101,6 +5120,7 @@
             this.btQueryMWCHBFrequency.TabIndex = 49;
             this.btQueryMWCHBFrequency.Text = "Query";
             this.btQueryMWCHBFrequency.UseVisualStyleBackColor = true;
+            this.btQueryMWCHBFrequency.Click += new System.EventHandler(this.btQueryMWCHBFrequency_Click);
             // 
             // btIncrementMWCHBPower
             // 
@@ -5116,7 +5136,7 @@
             // 
             this.tbMWCHBPowerIncrement.Location = new System.Drawing.Point(350, 102);
             this.tbMWCHBPowerIncrement.Name = "tbMWCHBPowerIncrement";
-            this.tbMWCHBPowerIncrement.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHBPowerIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBPowerIncrement.TabIndex = 46;
             // 
             // btUpdateMWCHBPower
@@ -5133,7 +5153,7 @@
             // 
             this.tbMWCHBPowerSetpoint.Location = new System.Drawing.Point(351, 72);
             this.tbMWCHBPowerSetpoint.Name = "tbMWCHBPowerSetpoint";
-            this.tbMWCHBPowerSetpoint.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHBPowerSetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBPowerSetpoint.TabIndex = 42;
             this.tbMWCHBPowerSetpoint.Text = "20";
             // 
@@ -5142,7 +5162,7 @@
             this.labelMicrowavesChannelBPower.AutoSize = true;
             this.labelMicrowavesChannelBPower.Location = new System.Drawing.Point(268, 24);
             this.labelMicrowavesChannelBPower.Name = "labelMicrowavesChannelBPower";
-            this.labelMicrowavesChannelBPower.Size = new System.Drawing.Size(120, 17);
+            this.labelMicrowavesChannelBPower.Size = new System.Drawing.Size(92, 13);
             this.labelMicrowavesChannelBPower.TabIndex = 43;
             this.labelMicrowavesChannelBPower.Text = "MW power (dBm):";
             // 
@@ -5151,10 +5171,10 @@
             this.tbMWCHBPowerMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHBPowerMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWCHBPowerMonitor.Location = new System.Drawing.Point(351, 43);
-            this.tbMWCHBPowerMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbMWCHBPowerMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHBPowerMonitor.Name = "tbMWCHBPowerMonitor";
             this.tbMWCHBPowerMonitor.ReadOnly = true;
-            this.tbMWCHBPowerMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbMWCHBPowerMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHBPowerMonitor.TabIndex = 44;
             // 
             // comboBoxMWCHBSetpointUnit
@@ -5169,9 +5189,9 @@
             "kHz",
             "Hz"});
             this.comboBoxMWCHBSetpointUnit.Location = new System.Drawing.Point(198, 72);
-            this.comboBoxMWCHBSetpointUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxMWCHBSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHBSetpointUnit.Name = "comboBoxMWCHBSetpointUnit";
-            this.comboBoxMWCHBSetpointUnit.Size = new System.Drawing.Size(53, 24);
+            this.comboBoxMWCHBSetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHBSetpointUnit.TabIndex = 40;
             // 
             // comboBoxMWCHBIncrementUnit
@@ -5186,9 +5206,9 @@
             "kHz",
             "Hz"});
             this.comboBoxMWCHBIncrementUnit.Location = new System.Drawing.Point(198, 102);
-            this.comboBoxMWCHBIncrementUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxMWCHBIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHBIncrementUnit.Name = "comboBoxMWCHBIncrementUnit";
-            this.comboBoxMWCHBIncrementUnit.Size = new System.Drawing.Size(53, 24);
+            this.comboBoxMWCHBIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHBIncrementUnit.TabIndex = 39;
             // 
             // btIncrementMWCHBFrequency
@@ -5205,7 +5225,7 @@
             // 
             this.tbMWCHBFrequencyIncrement.Location = new System.Drawing.Point(118, 102);
             this.tbMWCHBFrequencyIncrement.Name = "tbMWCHBFrequencyIncrement";
-            this.tbMWCHBFrequencyIncrement.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHBFrequencyIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateMWCHBFrequency
@@ -5222,7 +5242,7 @@
             // 
             this.tbMWCHBFrequencySetpoint.Location = new System.Drawing.Point(118, 72);
             this.tbMWCHBFrequencySetpoint.Name = "tbMWCHBFrequencySetpoint";
-            this.tbMWCHBFrequencySetpoint.Size = new System.Drawing.Size(76, 22);
+            this.tbMWCHBFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpoint.TabIndex = 36;
             this.tbMWCHBFrequencySetpoint.Text = "14.5";
             // 
@@ -5231,7 +5251,7 @@
             this.labelMicrowavesChannelBFrequency.AutoSize = true;
             this.labelMicrowavesChannelBFrequency.Location = new System.Drawing.Point(34, 24);
             this.labelMicrowavesChannelBFrequency.Name = "labelMicrowavesChannelBFrequency";
-            this.labelMicrowavesChannelBFrequency.Size = new System.Drawing.Size(145, 17);
+            this.labelMicrowavesChannelBFrequency.Size = new System.Drawing.Size(110, 13);
             this.labelMicrowavesChannelBFrequency.TabIndex = 36;
             this.labelMicrowavesChannelBFrequency.Text = "MW frequency (GHz):";
             // 
@@ -5240,10 +5260,10 @@
             this.tbMWCHBFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHBFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWCHBFrequencyMonitor.Location = new System.Drawing.Point(117, 43);
-            this.tbMWCHBFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbMWCHBFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHBFrequencyMonitor.Name = "tbMWCHBFrequencyMonitor";
             this.tbMWCHBFrequencyMonitor.ReadOnly = true;
-            this.tbMWCHBFrequencyMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbMWCHBFrequencyMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHBFrequencyMonitor.TabIndex = 36;
             // 
             // groupBoxRF
@@ -5257,9 +5277,9 @@
             this.groupBoxRF.Controls.Add(this.labelRF);
             this.groupBoxRF.Controls.Add(this.tbRFFrequencyMonitor);
             this.groupBoxRF.Location = new System.Drawing.Point(2, 2);
-            this.groupBoxRF.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxRF.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxRF.Name = "groupBoxRF";
-            this.groupBoxRF.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBoxRF.Padding = new System.Windows.Forms.Padding(2);
             this.groupBoxRF.Size = new System.Drawing.Size(254, 130);
             this.groupBoxRF.TabIndex = 0;
             this.groupBoxRF.TabStop = false;
@@ -5276,7 +5296,7 @@
             "kHz",
             "Hz"});
             this.comboBoxRFIncrementUnit.Location = new System.Drawing.Point(194, 79);
-            this.comboBoxRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFIncrementUnit.Name = "comboBoxRFIncrementUnit";
             this.comboBoxRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxRFIncrementUnit.TabIndex = 42;
@@ -5290,7 +5310,7 @@
             this.comboBoxRFSetpointUnit.Items.AddRange(new object[] {
             "MHz"});
             this.comboBoxRFSetpointUnit.Location = new System.Drawing.Point(194, 54);
-            this.comboBoxRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFSetpointUnit.Name = "comboBoxRFSetpointUnit";
             this.comboBoxRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxRFSetpointUnit.TabIndex = 41;
@@ -5309,7 +5329,7 @@
             // 
             this.tbRFFrequencyIncrement.Location = new System.Drawing.Point(114, 79);
             this.tbRFFrequencyIncrement.Name = "tbRFFrequencyIncrement";
-            this.tbRFFrequencyIncrement.Size = new System.Drawing.Size(76, 22);
+            this.tbRFFrequencyIncrement.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateRFFrequency
@@ -5326,7 +5346,7 @@
             // 
             this.tbRFFrequency.Location = new System.Drawing.Point(114, 54);
             this.tbRFFrequency.Name = "tbRFFrequency";
-            this.tbRFFrequency.Size = new System.Drawing.Size(76, 22);
+            this.tbRFFrequency.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequency.TabIndex = 36;
             this.tbRFFrequency.Text = "32";
             // 
@@ -5335,7 +5355,7 @@
             this.labelRF.AutoSize = true;
             this.labelRF.Location = new System.Drawing.Point(5, 34);
             this.labelRF.Name = "labelRF";
-            this.labelRF.Size = new System.Drawing.Size(139, 17);
+            this.labelRF.Size = new System.Drawing.Size(105, 13);
             this.labelRF.TabIndex = 36;
             this.labelRF.Text = "RF frequency (MHz):";
             // 
@@ -5344,10 +5364,10 @@
             this.tbRFFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRFFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbRFFrequencyMonitor.Location = new System.Drawing.Point(115, 32);
-            this.tbRFFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbRFFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRFFrequencyMonitor.Name = "tbRFFrequencyMonitor";
             this.tbRFFrequencyMonitor.ReadOnly = true;
-            this.tbRFFrequencyMonitor.Size = new System.Drawing.Size(75, 22);
+            this.tbRFFrequencyMonitor.Size = new System.Drawing.Size(75, 20);
             this.tbRFFrequencyMonitor.TabIndex = 36;
             // 
             // groupBoxStatus
@@ -5371,6 +5391,35 @@
             this.tbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbStatus.Size = new System.Drawing.Size(192, 144);
             this.tbStatus.TabIndex = 6;
+            // 
+            // btQueryMWSynthTemperature
+            // 
+            this.btQueryMWSynthTemperature.Location = new System.Drawing.Point(36, 307);
+            this.btQueryMWSynthTemperature.Name = "btQueryMWSynthTemperature";
+            this.btQueryMWSynthTemperature.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWSynthTemperature.TabIndex = 52;
+            this.btQueryMWSynthTemperature.Text = "Query";
+            this.btQueryMWSynthTemperature.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(33, 290);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(138, 13);
+            this.label2.TabIndex = 50;
+            this.label2.Text = "Synth temperature (Celsius):";
+            // 
+            // tbMWSynthTemperatureMonitor
+            // 
+            this.tbMWSynthTemperatureMonitor.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWSynthTemperatureMonitor.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(116, 309);
+            this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWSynthTemperatureMonitor.Name = "tbMWSynthTemperatureMonitor";
+            this.tbMWSynthTemperatureMonitor.ReadOnly = true;
+            this.tbMWSynthTemperatureMonitor.Size = new System.Drawing.Size(75, 19);
+            this.tbMWSynthTemperatureMonitor.TabIndex = 51;
             // 
             // ControlWindow
             // 
@@ -5472,7 +5521,9 @@
             this.groupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).EndInit();
             this.tabPagePumping.ResumeLayout(false);
+            this.tabPagePumping.PerformLayout();
             this.groupBoxWindfreaksynthhd.ResumeLayout(false);
+            this.groupBoxWindfreaksynthhd.PerformLayout();
             this.groupBoxMWCHA.ResumeLayout(false);
             this.groupBoxMWCHA.PerformLayout();
             this.groupBoxMWCHB.ResumeLayout(false);
@@ -5922,5 +5973,9 @@
         private System.Windows.Forms.Button btQueryMWCHAPower;
         private System.Windows.Forms.Button btQueryMWCHAFrequency;
         private System.Windows.Forms.GroupBox groupBoxWindfreaksynthhd;
+        public System.Windows.Forms.TextBox textBoxtesting;
+        private System.Windows.Forms.Button btQueryMWSynthTemperature;
+        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.TextBox tbMWSynthTemperatureMonitor;
     }
 }
