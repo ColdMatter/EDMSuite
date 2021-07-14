@@ -80,7 +80,7 @@ namespace DAQ.Environment
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();
-                    Debug = true;
+                    Debug = false;
                     //ExperimentType = "edm";
                     break;
 

@@ -117,8 +117,8 @@ namespace DAQ.HAL
 
         public void Initialize()
         {
-            if (!Environs.Debug)
-            {
+            //if (!Environs.Debug)
+            //{
                 if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
                 {
                     monitorTask = new Task("EDMHCIn" + leakageChannel);
@@ -149,7 +149,7 @@ namespace DAQ.HAL
                     counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime);
                     counterLeakageReader = new CounterReader(counterTask.Stream);
                 }
-            }
+            //}
 
 
         }
@@ -158,8 +158,8 @@ namespace DAQ.HAL
         public double getRawCount()
         {
             double raw;
-            if (!Environs.Debug)
-            {
+            //if (!Environs.Debug)
+            //{
                 try
                 {
                     if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
@@ -177,11 +177,11 @@ namespace DAQ.HAL
                 {
                     raw = offset;
                 }
-            }
-            else
-            {
-                raw = rn.NextDouble() * 5000;
-            }
+            //}
+            //else
+            //{
+            //    raw = rn.NextDouble() * 5000;
+            //}
             return raw;
         }
 

@@ -248,6 +248,7 @@
     <Compile Include="PatternBuilder32SingleBoard.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LatticeEDMHardwareControllerAIs.cs" />
     <Compile Include="UEDMHardwareControllerAIs.cs" />
     <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />
