@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 120000;
+        Parameters["PatternLength"] = 170000;
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -24,7 +24,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["RbMOTLoadTime"] = 50000;
+        Parameters["RbMOTLoadTime"] = 5000;
 
         //Blue molasses:
         Parameters["MolassesDelay"] = 100;
@@ -72,7 +72,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsCurrentRampStartValue"] = 1.0;
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.05;// -0.01; //0.21
-        Parameters["MOTCoilsCompressionValue"] = 1.0;
+        Parameters["MOTCoilsCompressionValue"] = 1.8;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
@@ -80,9 +80,9 @@ public class Patterns : MOTMasterScript
         Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         //Shim fields for OP
-        Parameters["xShimOPCurrent"] = -1.35;// 5.0
-        Parameters["yShimOPCurrent"] = 3.0;// -1.92
-        Parameters["zShimOPCurrent"] = -0.22;// -0.22 is zero
+        Parameters["xShimOPCurrent"] = -2.0;// -1.35
+        Parameters["yShimOPCurrent"] = 0.0;// 3.0
+        Parameters["zShimOPCurrent"] = 0.0;// -0.22
 
         // v0 Light Intensity
         Parameters["v0IntensityRampDuration"] = 300;
@@ -116,7 +116,7 @@ public class Patterns : MOTMasterScript
         //MQT:
         Parameters["MOTBField"] = 1.0;
         Parameters["MQTStartDelay"] = 50;
-        Parameters["MQTHoldDuration"] = 30000;
+        Parameters["MQTHoldDuration"] = 100000;
         Parameters["MQTBField"] = 1.0;
         Parameters["MQTLowFieldHoldDuration"] = 1600;
         Parameters["MQTFieldRampDuration"] = 1600;
@@ -240,8 +240,8 @@ public class Patterns : MOTMasterScript
         p.AddEdge("bXSlowingShutter", mqtStartTime + 1000 + (int)Parameters["BlowAwayDuration"], true);
         p.AddEdge("bXSlowingShutter", finalImageTime + 5000, false);
         p.Pulse(0, molassesEndTime - 1200, motRecaptureTime - molassesEndTime - 900, "v00MOTShutter"); //V00 shutter closed after optical pumping an opened for recpature into MOT
-        p.AddEdge("rb2DMOTShutter", 0, true);
-        p.AddEdge("rb2DMOTShutter", molassesEndTime + (int)Parameters["CaFOPDuration"], false);
+        //p.AddEdge("rb2DMOTShutter", 0, true);
+        //p.AddEdge("rb2DMOTShutter", molassesEndTime + (int)Parameters["CaFOPDuration"], false);
 
         //p.AddEdge("dipoleTrapAOM", 0, false);
         p.AddEdge("dipoleTrapAOM", 0, true);

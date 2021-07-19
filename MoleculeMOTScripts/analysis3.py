@@ -752,7 +752,7 @@ class Analysis():
                                      self.secondImageMeanAxialSizes,
                                      self.secondImageStdErrorAxialSizes)
                 else:
-                    self.displaySingleImageSizeVariation()
+                    self.displayDoubleImageSizeVariation()
                     
                 if self.showFirstImage:
                     self.displayImage('First Image',self.firstImage)
@@ -1261,7 +1261,7 @@ def analysisWithDefaultCaFSettings():
     analysis.gamma=1.5e6
     analysis.etaQ=0.65
     analysis.exposureTime=10e-3
-    analysis.crop=True
+    analysis.crop=False
     analysis.cropCentre=(65,65)
     analysis.cropHeight=50
     analysis.cropWidth=50
@@ -1275,7 +1275,7 @@ def analysisWithDefaultRbSettings():
     analysis.pixelSize=6.45e-6
     analysis.binSize=2
     analysis.magFactor=0.41
-    analysis.crop=True
+    analysis.crop=False
     analysis.cropCentre=(220,320)
     analysis.cropHeight=120
     analysis.cropWidth=120

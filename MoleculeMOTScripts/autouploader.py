@@ -5,9 +5,11 @@ import shutil
 from datetime import datetime
 
 # Environment variables
-LOCAL_PATH = "C:\Users\cafmot\Box Sync\CaF MOT\MOTData\MOTMasterData"
+LOCAL_PATH = "C:\Users\cafmot\Box\CaF MOT\MOTData\MOTMasterData"
 LOCAL_BACKUP_PATH = "D:\Data2021"
+LOCAL_NOTEBOOK_PATH = "D:\Analysis Notenook"
 REMOTE_PATH = "Y:\live\MOTData\MOTMasterData"
+REMOTE_NOTEBOOK_PATH = "Y:\live\Analysis Notenook"
 LOG_PATH = os.path.join("C:\ControlPrograms\EDMSuite\MoleculeMOTScripts", "autouploader.log")
 
 now = datetime.now()

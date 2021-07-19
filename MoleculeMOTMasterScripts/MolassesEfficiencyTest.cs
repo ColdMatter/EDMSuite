@@ -31,12 +31,12 @@ public class Patterns : MOTMasterScript
 
         //Blue molasses:
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 500;
+        Parameters["MolassesHoldTime"] = 200;
 
         Parameters["Frame0Trigger"] = 4000;
         
         //Recapture to MOT:
-        Parameters["MOTWaitBeforeImage"] = 300;
+        Parameters["MOTWaitBeforeImage"] = 500;// 10;//300;
 
         //Microwaves:
         Parameters["MicrowavePulseDuration"] = 7;
@@ -53,7 +53,7 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTrigger"] = 5000;
 
         //Optical pumping
-        Parameters["OPDuration"] = 40;
+        Parameters["OPDuration"] = 200;
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 180; //started from 250
@@ -86,7 +86,7 @@ public class Patterns : MOTMasterScript
         Parameters["yShimLoadCurrent"] = -1.92;//2.0;//old value// -1.92 is zero
         Parameters["zShimLoadCurrent"] = -0.22;//-0.22;//old value// -0.22 is zero
 
-        Parameters["xShimLoadCurrentOP"] = 5.0;//Bias field for Optical pumping
+        Parameters["xShimLoadCurrentOP"] = -1.35;//5.0;//Bias field for Optical pumping
         Parameters["yShimLoadCurrentOP"] = -1.92;
         Parameters["zShimLoadCurrentOP"] = -0.22;
 
@@ -98,9 +98,9 @@ public class Patterns : MOTMasterScript
         // v0 Light Intensity
         Parameters["v0IntensityRampDuration"] = 300;
         Parameters["MOTHoldTime"] = 1000;
-        Parameters["v0IntensityRampStartValue"] = 6.9;
-        Parameters["v0IntensityRampEndValue"] = 7.8; //7.78;
-        Parameters["v0IntensityMolassesValue"] = 5.6;
+        Parameters["v0IntensityRampStartValue"] = 5.6;// 6.9;
+        Parameters["v0IntensityRampEndValue"] = 8.2; //7.8;
+        Parameters["v0IntensityMolassesValue"] = 5.6;//5.6;
         Parameters["v0IntensityF0PumpValue"] = 9.3;
 
         // v0 Light Frequency
@@ -152,28 +152,21 @@ public class Patterns : MOTMasterScript
     {
         PatternBuilder32 p = new PatternBuilder32();
 
-        //int rbMOTLoadingEndTime = (int)Parameters["TCLBlockStart"] + (int)Parameters["RbMOTLoadTime"];
         int cafMOTLoadEndTime = (int)Parameters["TCLBlockStart"] + (int)Parameters["CaFMOTLoadDuration"];
-        //int firstImageTime = cafMOTLoadEndTime - 1000;
-        //int firstImageTime = (int)Parameters["TCLBlockStart"];
-        int V0IntensityRampStartTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int firstImageTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        //int firstImageTime = cafMOTLoadEndTime - (int)Parameters["Frame0TriggerDuration"];
-        int motSwitchOffTime = V0IntensityRampStartTime + (int)Parameters["MOTHoldTime"];
+        int V0IntensityRampEndTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
+        int firstImageTime = V0IntensityRampEndTime;
+        int motSwitchOffTime = V0IntensityRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motSwitchOffTime + (int)Parameters["MolassesDelay"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
         
-        int OPbiasfieldSettleTime = molassesEndTime - 100;
+        int OPbiasfieldSettleTime = molassesEndTime + 100;
 
-        int mqtStartTime = molassesEndTime + (int)Parameters["OPDuration"];
-        int microwavePulseTime = mqtStartTime + (int)Parameters["MWDelay"];
+        int mqtStartTime = OPbiasfieldSettleTime + (int)Parameters["OPDuration"];
 
-        //int microwavePulseTime = molassesEndTime + (int)Parameters["OPDuration"];
-        //int mqtStartTime = microwavePulseTime + (int)Parameters["MWDuration"];
-        
-        //int motRecaptureTime = mqtStartTime + (int)Parameters["MQTHoldDuration"];
         int motRecaptureTime = mqtStartTime;
+
         int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
+        
         int rbMQTImageTime = finalImageTime + 1100;
         
 
@@ -198,16 +191,12 @@ public class Patterns : MOTMasterScript
 
         //Microwave pulse
         //p.Pulse(0, microwavePulseTime, (int)Parameters["MWDuration"], "microwaveB");
-
         p.AddEdge("dipoleTrapAOM", 0, true);
-        p.AddEdge("dipoleTrapAOM", molassesEndTime, false);
-        p.AddEdge("dipoleTrapAOM", molassesEndTime + (int)Parameters["OPDuration"], true);
+        p.AddEdge("rb2DMOTShutter", 0, false);
+        p.AddEdge("rb2DMOTShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1700, true);//Close the shutter for Mag trap.
+        p.AddEdge("dipoleTrapAOM", OPbiasfieldSettleTime, false);
+        p.AddEdge("dipoleTrapAOM", OPbiasfieldSettleTime + (int)Parameters["OPDuration"], true);
 
-        // Blow away:
-        //p.Pulse(0, blowAwayTime, (int)Parameters["BlowAwayDuration"], "bXSlowingAOM");
-
-        //p.AddEdge("bXSlowingAOM", (int)Parameters["PatternLength"] - 1000, true); // send slowing aom high and hold it high
-        //p.AddEdge("v10SlowingAOM", (int)Parameters["PatternLength"] - 1000, true);
 
         //Camera triggers:
         //p.Pulse(firstImageTime, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
@@ -215,7 +204,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(0, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
         //Mechanical CaF shutters:
-        //p.Pulse(0, molassesStartTime - 1500, motRecaptureTime, "bXSlowingShutter"); //B-X shutter closed after blow away
+        //p.Pulse(0, molassesStartTime - 1500, 2000, "bXSlowingShutter"); //B-X shutter closed after blow away
+        p.Pulse(0, cafMOTLoadEndTime - 1500, motRecaptureTime + 1500, "bXSlowingShutter"); //B-X shutter closed after blow away
         //p.Pulse(0, molassesEndTime - 1200, motRecaptureTime - molassesEndTime - 900, "v00MOTShutter"); //V00 shutter closed after optical pumping an opened for recpature into MOT
         //p.Pulse(0, molassesEndTime - 1200, motRecaptureTime - molassesEndTime - 900, "transportTrack"); // BX optical pumping shutter. Currently using the same digital channel as the transport track! 
 
@@ -234,27 +224,22 @@ public class Patterns : MOTMasterScript
         //int rbMOTLoadingEndTime = (int)Parameters["RbMOTLoadTime"];
         
         int cafMOTLoadEndTime = (int)Parameters["CaFMOTLoadDuration"];
-        int firstImageTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int V0IntensityRampStartTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        //int firstImageTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int motSwitchOffTime = V0IntensityRampStartTime + (int)Parameters["MOTHoldTime"];
+        int V0IntensityRampEndTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
+        int firstImageTime = V0IntensityRampEndTime;
+        int motSwitchOffTime = V0IntensityRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motSwitchOffTime + (int)Parameters["MolassesDelay"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
-        int OPbiasfieldSettleTime = molassesEndTime - 100;
 
-        int mqtStartTime = molassesEndTime + (int)Parameters["OPDuration"];
-        int microwavePulseTime = mqtStartTime + (int)Parameters["MWDelay"];
+        int OPbiasfieldSettleTime = molassesEndTime + 100;
 
-        //int microwavePulseTime = molassesEndTime + (int)Parameters["OPDuration"];
-        //int mqtStartTime = microwavePulseTime + (int)Parameters["MWDuration"];
-        
-        //int rbOPStartTime = mqtStartTime - (int)Parameters["RbOPDuration"];
+        int mqtStartTime = OPbiasfieldSettleTime + (int)Parameters["OPDuration"];
 
-        //int motRecaptureTime = mqtStartTime + (int)Parameters["MQTHoldDuration"];
         int motRecaptureTime = mqtStartTime;
-        int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
-        int rbMQTImageTime = finalImageTime + 1100;
 
+        int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
+
+        int rbMQTImageTime = finalImageTime + 1100;
+        
         // Add Analog Channels
         p.AddChannel("v00Intensity");
         p.AddChannel("v00Frequency");
@@ -300,8 +285,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("v00Intensity", cafMOTLoadEndTime, (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", motSwitchOffTime, (double)Parameters["v0IntensityMolassesValue"]);
         p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityRampEndValue"]);
-
-
+        
         // v0 EOM
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["v0EOMMOTValue"]);
         
@@ -309,7 +293,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", motSwitchOffTime, 10.0 - (double)Parameters["v0FrequencyNewValue"] / (double)Parameters["calibGradient"]);//jump to blue detuning for blue molasses
         p.AddAnalogValue("v00Frequency", motRecaptureTime, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
-
+        //p.AddAnalogValue("v00Frequency", finalImageTime, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
         return p;
     }
 

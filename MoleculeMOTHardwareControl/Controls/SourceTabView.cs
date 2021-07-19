@@ -22,9 +22,29 @@ namespace MoleculeMOTHardwareControl.Controls
 
         #region UI Update Handlers
 
+        public bool LogStatus()
+        {
+            return chkLog.Checked;
+        }
+
+        public bool SaveTraceStatus()
+        {
+            return chkSaveTrace.Checked;
+        }
+
+        public void UpdateCurrentSourcePressure(string pressure)
+        {
+            txtSourcePressure.Text = pressure;
+        }
+
         public void UpdateCurrentSourceTemperature(string temp)
         {
             currentTemperature.Text = temp;
+        }
+
+        public void UpdateCurrentSourceTemperature2(string temp)
+        {
+            txtSourceTemp2.Text = temp;
         }
 
         public void UpdateCurrentSF6Temperature(string temp)
@@ -35,6 +55,16 @@ namespace MoleculeMOTHardwareControl.Controls
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
+        }
+        
+        public void UpdateGraph(double[] x, double[] y)
+        {
+            tempGraph.PlotXY(x, y);
+        }
+
+        public bool ToFEnabled()
+        {
+            return chkToF.Checked;
         }
 
         public void UpdateReadButton(bool state)
@@ -94,11 +124,13 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private void toggleCycling(object sender, EventArgs e)
         {
+            chkToF.Checked = false;
             castController.ToggleCycling();
         }
 
         private void toggleHolding(object sender, EventArgs e)
         {
+            chkToF.Checked = false;
             castController.ToggleHolding();
         }
 
