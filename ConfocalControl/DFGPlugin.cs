@@ -1098,6 +1098,13 @@ namespace ConfocalControl
         {
             try
             {
+                if (teraState != TeraScanState.stopped)
+                {
+                    var result = System.Windows.Forms.MessageBox.Show("TeraScan is already running. Quit this scan?","TeraScan Problem", System.Windows.Forms.MessageBoxButtons.YesNo);
+                    if (result == System.Windows.Forms.DialogResult.Yes) { throw new ScanAlreadyRunningException("The Scan is Already Running."); }
+                    else { throw new CancelTeraScanActionException(); }
+                }
+
                 double pointsEstimate = ScanPointsEstimate();
                 int blocks = (int)Math.Ceiling(pointsEstimate / MAXSCANPOINTS);
 
@@ -1124,10 +1131,11 @@ namespace ConfocalControl
             {
                 if (TeraScanProblem != null) TeraScanProblem(e);
             }
-            finally
-            {
-                if (TeraScanFinished != null) TeraScanFinished();
-            }
+            
+            //finally
+            //{
+            //    if (TeraScanFinished != null) TeraScanFinished();
+            //}
         }
 
 

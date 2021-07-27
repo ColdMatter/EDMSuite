@@ -858,4 +858,18 @@ namespace ConfocalControl
         #endregion
 
     }
+
+    //Here I generate the custom exceptions to deal with all the problems with the TeraScan
+
+    public class ScanAlreadyRunningException : Exception
+    {
+        public ScanAlreadyRunningException()
+        { }
+
+        public ScanAlreadyRunningException(string message) : base(message)
+        { }
+
+        public ScanAlreadyRunningException(string message, Exception inner) : base(message, inner)
+        { }
+    }
 }
