@@ -616,15 +616,18 @@ namespace ConfocalControl
             var frame = st.GetFrame(0);
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
+
+            
             if (DFGPlugin.GetController().IsRunning() && DFGPlugin.GetController().TeraScanIsRunning())
             {
-                if (DFGPlugin.GetController().TeraSegmentIsRunning())
-                {
-                    DFGPlugin.GetController().TeraScanSegmentAcquisitionEnd();
-                }
-                DFGPlugin.GetController().TeraScanAcquisitionStopping();
+            if (DFGPlugin.GetController().TeraSegmentIsRunning())
+            {
+                DFGPlugin.GetController().TeraScanSegmentAcquisitionEnd();
+            }
+            DFGPlugin.GetController().TeraScanAcquisitionStopping();
             }
             teraScanFinished();
+            
         }
 
         private void teraScanFinished()
@@ -872,4 +875,17 @@ namespace ConfocalControl
         public ScanAlreadyRunningException(string message, Exception inner) : base(message, inner)
         { }
     }
+
+    public class CancelTeraScanActionException : Exception
+    {
+        public CancelTeraScanActionException()
+        { }
+
+        public CancelTeraScanActionException(string message) : base(message)
+        { }
+
+        public CancelTeraScanActionException(string message, Exception inner) : base(message, inner)
+        { }
+    }
+    
 }

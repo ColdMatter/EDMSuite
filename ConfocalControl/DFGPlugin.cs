@@ -1100,7 +1100,7 @@ namespace ConfocalControl
             {
                 if (teraState != TeraScanState.stopped)
                 {
-                    var result = System.Windows.Forms.MessageBox.Show("TeraScan is already running. Quit this scan?","TeraScan Problem", System.Windows.Forms.MessageBoxButtons.YesNo);
+                    var result = System.Windows.Forms.MessageBox.Show("TeraScan is already running. Quit this scan?", "TeraScan Problem", System.Windows.Forms.MessageBoxButtons.YesNo);
                     if (result == System.Windows.Forms.DialogResult.Yes) { throw new ScanAlreadyRunningException("The Scan is Already Running."); }
                     else { throw new CancelTeraScanActionException(); }
                 }
@@ -1126,6 +1126,9 @@ namespace ConfocalControl
                     default:
                         break;
                 }
+            }
+            catch (CancelTeraScanActionException)
+            {
             }
             catch (Exception e)
             {
@@ -1287,6 +1290,7 @@ namespace ConfocalControl
                 throw new DaqException("Counter already running");
             }
 
+            Console.WriteLine("Starting Terascan...");
             UpdateStatusBar("TeraScan starting...");
 
             teraState = TeraScanState.running;
@@ -1342,6 +1346,7 @@ namespace ConfocalControl
             int scanRate = (int)Settings["TeraScanRate"];
             string scanUnits = (string)Settings["TeraScanUnits"];
             int reply = DFG.scan_stitch_initialise(scanType, startLambda, stopLambda, scanRate, scanUnits);
+            Console.WriteLine("Scan Stitch Initialised...");
             switch (reply)
             {
                 case 0:
@@ -1494,6 +1499,9 @@ namespace ConfocalControl
                 // Start tasks
                 analoguesTask.Start();
             }
+
+
+            Console.WriteLine("Segment Acquisition Started...");
         }
 
         private void TeraScanSegmentAcquisitionStart()
@@ -1694,6 +1702,8 @@ namespace ConfocalControl
             analoguesReader = null;
 
             UpdateStatusBar("Segment Finished");
+
+            Console.WriteLine("Segment Acquisition End");
         }
 
         private void TeraScanSegmentLaserStart()
@@ -1702,6 +1712,7 @@ namespace ConfocalControl
             string status = "scan";
             
             DFG.terascan_continue();
+            Console.WriteLine("Continue Terascan...");
             UpdateStatusBar("Laser Running...");
 
             while (teraLatestLambda < (Double)Settings["TeraScanStop"] && teraLaser != TeraLaserState.stopped)
