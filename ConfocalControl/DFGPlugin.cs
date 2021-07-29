@@ -1141,7 +1141,7 @@ namespace ConfocalControl
             //}
         }
 
-
+        //currently not reached
         public void StartMultiTeraScan()
         {
             if (IsRunning() || TimeTracePlugin.GetController().IsRunning() || FastMultiChannelRasterScan.GetController().IsRunning() || CounterOptimizationPlugin.GetController().IsRunning() || DFGPlugin.GetController().IsRunning())
@@ -1347,6 +1347,7 @@ namespace ConfocalControl
             string scanUnits = (string)Settings["TeraScanUnits"];
             int reply = DFG.scan_stitch_initialise(scanType, startLambda, stopLambda, scanRate, scanUnits);
             Console.WriteLine("Scan Stitch Initialised...");
+            TeraLaserState = TeraLaserState.running;
             switch (reply)
             {
                 case 0:
@@ -1763,6 +1764,9 @@ namespace ConfocalControl
                 }
                 else
                 {
+
+                    UpdateStatusBar("Waiting for Laser...");
+                    //Console.WriteLine("Waiting for Laser Output...");
                     continue;
                 }
             }
@@ -1771,6 +1775,7 @@ namespace ConfocalControl
             {
                 teraSegmentState = TeraScanSegmentState.running;
                 UpdateStatusBar("Segment not finished");
+                Console.WriteLine("Laser has stopped before segment came to an end.");
                 //MessageBox.Show(status);
             }
             else 
@@ -1778,6 +1783,7 @@ namespace ConfocalControl
                 teraLaser = TeraLaserState.stopped; 
                 teraSegmentState = TeraScanSegmentState.stopped;
                 UpdateStatusBar("Segment ended");
+                Console.WriteLine("Segment ended.");
             }
 
         }
@@ -1793,7 +1799,14 @@ namespace ConfocalControl
             thread.IsBackground = true;
             thread.Start();
             TeraScanSegmentAcquisitionStart();
-            while (teraLatestLambda < 0 && teraSegmentState == TeraScanSegmentState.running) { Thread.Sleep(1); }
+            while (teraLatestLambda < 0 && teraSegmentState == TeraScanSegmentState.running)
+            {
+                Thread.Sleep(100);
+                if (teraLaser != TeraLaserState.stopped)
+                {
+                    UpdateStatusBar("Laser stopped but still acquiring");
+                }
+            }
             TeraScanSegmentAcquisitionEnd();
             // SaveTeraScanData(DateTime.Today.ToString("yy-MM-dd") + "_" + DateTime.Now.ToString("HH-mm-ss") + "_teraScan_segment.txt", true);
             if (TeraSegmentScanFinished != null) { TeraSegmentScanFinished(); }
