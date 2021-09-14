@@ -171,12 +171,15 @@
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Visa, Version=5.8.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=19.1.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=17.0.0.0, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=20.7.45.49302, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
