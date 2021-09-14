@@ -4077,7 +4077,6 @@ namespace UEDMHardwareControl
         {
             MWCHAPower = Power;
             UpdateMWPowerMonitor(channel, Power);
-            // function from DDS object (RFFrequency)
         }
 
         public void UpdateMWPowerMonitor(int channel, double Power)
@@ -4115,20 +4114,23 @@ namespace UEDMHardwareControl
                 {
                     if (MWPowerParseValue <= MWPowerMax)
                     {
+                        // convert the parsed string input back to a string (this way the format is well defined)
                         string powerString = MWPowerParseValue.ToString();
-
+                        // If there is a decimal point then split the string and perform some checks
                         if (powerString.Contains('.'))
                         {
+                            // Split the string at the decimal point of the number
                             string[] digits = powerString.Split('.');
-
+                            // Initialize two variables to store the lengths of the numbers before and after the decimal point
                             int dec0, dec1;
+                            // Store the length of the number before the decimal point in variable "dec0"
                             dec0 = digits[0].Length;
-
+                            // If there is anything beyond the decimal point, store its length in variable "dec1"
                             if (digits.Length == 2)
                             {
                                 dec1 = digits[1].Length;
                             }
-                            else
+                            else // Else the input is an integer and set "dec1" to 0
                             {
                                 dec1 = 0;
                             }
@@ -4230,9 +4232,10 @@ namespace UEDMHardwareControl
             {
                 SwitchMWChannel();
             }
+        }
+        public void QueryRFMuted(int channel)
+        {
 
-            // Query the power
-            // function to query the power output of the active channel
         }
 
         #endregion

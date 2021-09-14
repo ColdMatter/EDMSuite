@@ -43,7 +43,7 @@ namespace ScanMaster.Acquire.Plugins
 			scanPatternBuilder = new CommonRamanPatternBuilder();
 			// this is a bit of a hack. I think that the time ordering code in the pattern builder
 			// should be improved.
-			scanPatternBuilder.EnforceTimeOrdering = false;
+			//scanPatternBuilder.EnforceTimeOrdering = false;
 			scanPatternBuilder.Clear();
 			scanPatternBuilder.ShotSequence(
 				(int)settings["padStart"],

@@ -56,18 +56,39 @@ namespace ScanMaster.Acquire.Plugin
 			}
 		}
 
+		//public override string ToString()
+		//{
+		//	StringBuilder sb = new StringBuilder();
+		//	ICollection keys = settings.Keys;
+		//	foreach (String key in keys)
+		//		sb.Append(settings[key].GetType().ToString() + " " + key +
+		//					" = " + settings[key] + Environment.NewLine);
+		//	return sb.ToString();
+		//}
+
+		///// Now sorting the settings alphabetically
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
 			ICollection keys = settings.Keys;
+			ArrayList OrderedKeys = new ArrayList();
+
 			foreach (String key in keys)
-				sb.Append(settings[key].GetType().ToString() + " " + key + 
+				OrderedKeys.Add(key);
+
+			OrderedKeys.Sort();
+
+			foreach (String key in OrderedKeys)
+				sb.Append(settings[key].GetType().ToString() + " " + key +
 							" = " + settings[key] + Environment.NewLine);
 			return sb.ToString();
 		}
-		#region IXmlSerializable Members
 
-		const string NS = "";//"http://j-star.org/xml/serialization";
+
+
+            #region IXmlSerializable Members
+
+            const string NS = "";//"http://j-star.org/xml/serialization";
 
 		public void WriteXml(XmlWriter w)
 		{

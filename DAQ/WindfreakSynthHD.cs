@@ -18,6 +18,12 @@ namespace DAQ.HAL
             public static String SetFrequency { get { return "f"; } }
             public static String RequestPower { get { return "W?"; } }
             public static String SetPower { get { return "W"; } }
+            public static String SetRFmuted { get { return "h?"; } }
+            public static String SetPAPowerOn { get { return "r?"; } }
+            public static String SetPLLPowerOn { get { return "E?"; } }
+            public static String RFmuted { get { return "h"; } }
+            public static String PAPowerOn { get { return "r"; } }
+            public static String PLLPowerOn { get { return "E"; } }
         }
 
         // Serial connection parameters for the Windfreak SynthHD:

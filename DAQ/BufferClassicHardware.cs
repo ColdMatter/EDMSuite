@@ -24,31 +24,34 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
-            AddDigitalOutputChannel("aom", pgBoard, 1, 1);//`
-            AddDigitalOutputChannel("aom2", pgBoard, 1, 2);//
-            AddDigitalOutputChannel("shutter1", pgBoard, 1, 3);//
-            AddDigitalOutputChannel("shutter2", pgBoard, 1, 4);//
+            AddDigitalOutputChannel("probe", pgBoard, 0, 1);
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
-            AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
-            //(0,3) pin 12 is unconnected
-            //AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
-            //AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
-            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
-            AddDigitalOutputChannel("valve", pgBoard, 0, 6);//
-            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+            AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 3); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
+            AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+
             AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7); //Pin 15 (OffShot)from pg to daq
-            //digital output P 0.6 wired up, not used (Pin 48)
+            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+
+            AddDigitalOutputChannel("ccd1", pgBoard, 1, 1);         // previously "aom"         if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ccd2", pgBoard, 1, 2);         // previously "aom2"        if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);         // previously "shutter1"    if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl2", pgBoard, 1, 4);         // previously "shutter2"    if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl3", pgBoard, 1, 5);         // previously "ttl1"        if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl4", pgBoard, 1, 6);
+            AddDigitalOutputChannel("ttl5", pgBoard, 1, 7);
+
+            
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
-            AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
+            //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
             //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
            
             // add things to the info
             // the analog triggers
-            //Info.Add("analogTrigger0", daqBoard + "/PFI0");
-            //Info.Add("analogTrigger1", daqBoard + "/PFI1");
+            Info.Add("analogTrigger0", daqBoard + "/PFI0");
+            Info.Add("analogTrigger1", daqBoard + "/PFI1");
             Info.Add("phaseLockControlMethod", "analog");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
