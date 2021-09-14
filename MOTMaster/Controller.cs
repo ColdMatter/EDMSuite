@@ -54,6 +54,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
+        
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -139,7 +140,7 @@ namespace MOTMaster
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
-                    pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern);
+                    pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
             pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
             
@@ -149,7 +150,7 @@ namespace MOTMaster
         {
             if (triggered == true)
             {
-                pgMaster.Configure( config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
             }
             else
             {
@@ -161,7 +162,7 @@ namespace MOTMaster
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
-                    pgs[address].Configure("pgSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true, "PGClockLineSlave");
+                    pgs[address].Configure("PGSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true);
                 i++;
             }
             
@@ -384,6 +385,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, imageData, report);
+                                
                             }
                             else
                             {
@@ -394,7 +396,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, report);
-
+                                
                             }
 
 
@@ -421,17 +423,25 @@ namespace MOTMaster
 
         #region private stuff
 
+        private string constructSaveDirectory()
+        {
+            string dir = motMasterDataPath + DateTime.Now.ToString("yyyy/MM") + DateTime.Now.ToString("MMM/dd") + "\\";
+            System.IO.Directory.CreateDirectory(dir);
+            return dir;
+        }
+
         // ONGOING: these save functions should probably take a sequence argument
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
+
         private void runPattern(MOTMasterSequence sequence)
         {
             initializeHardware(sequence);
@@ -531,6 +541,11 @@ namespace MOTMaster
         }
 
         #endregion
+
+        public int GetIterations()
+        {
+            return controllerWindow.GetIterations();
+        }
 
         #region CameraControl
 

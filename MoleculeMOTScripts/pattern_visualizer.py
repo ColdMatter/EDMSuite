@@ -209,7 +209,7 @@ class GUI():
 
     def _load_file_callback(self):
         filename = tk.filedialog.askopenfilename(
-                initialdir=".",
+                initialdir="C:\\Users\\cafmot\\Box Sync\\CaF MOT\\MOTData\\MOTMasterData",
                 title="Select file",
                 filetypes=(("zip files", "*.zip"), ("all files", "*.*")))
         self.filename.set(str(filename))
@@ -230,15 +230,16 @@ class GUI():
         tmax = 0
         key_list = []
         for key, val in in_dict.items():
-            out_dict[key] = {}
-            out_dict[key]['t'] = np.array(list(val.keys()), dtype=np.int)
-            out_dict[key]['V'] = np.array(list(val.values()), dtype=np.float)
-            tmax = np.max([tmax, np.max(out_dict[key]['t'])])
-            if len(out_dict[key]['t']) > 2:
-                sorted_list = out_dict[key]['t'].argsort()
-                out_dict[key]['t'] = out_dict[key]['t'][sorted_list]
-                out_dict[key]['V'] = out_dict[key]['V'][sorted_list]
-                key_list.append(key)
+            if len(val):
+                out_dict[key] = {}
+                out_dict[key]['t'] = np.array(list(val.keys()), dtype=np.int)
+                out_dict[key]['V'] = np.array(list(val.values()), dtype=np.float)
+                tmax = np.max([tmax, np.max(out_dict[key]['t'])])
+                if len(out_dict[key]['t']) > 2:
+                    sorted_list = out_dict[key]['t'].argsort()
+                    out_dict[key]['t'] = out_dict[key]['t'][sorted_list]
+                    out_dict[key]['V'] = out_dict[key]['V'][sorted_list]
+                    key_list.append(key)
         return out_dict, tmax, key_list
 
     def analog_fill(self, in_dict):

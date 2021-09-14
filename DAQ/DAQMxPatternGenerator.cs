@@ -14,6 +14,7 @@ namespace DAQ.HAL
 	public class DAQMxPatternGenerator : PatternGenerator
 	{
 		private Task pgTask;
+        private String pgTaskName;
 		private String device;
 		private DigitalSingleChannelWriter writer;
 		private double clockFrequency;
@@ -21,6 +22,7 @@ namespace DAQ.HAL
         // this task is used to generate the sample clock on the "integrated" 6229-type PGs
         private Task counterTask;
         string clock_line;
+        private bool taskRunning;
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -30,17 +32,21 @@ namespace DAQ.HAL
 		// use this method to output a PatternList to the whole PatternList generator
 		public void OutputPattern(UInt32[] pattern)
 		{
-            writer.WriteMultiSamplePort(true, pattern);
-			// This Sleep is important (or at least it may be). It's here to guarantee that the correct PatternList is
-			// being output by the time this call returns. This is needed to make the tweak
-			// and pg scans work correctly. It has the side effect that you have to wait for
-			// at least one copy of the PatternList to output before you can do anything. This means
-			// pg scans are slowed down by a factor of two. I can't think of a better way to do
-			// it at the moment.
-			// It might be possible to speed it up by understanding the timing of the above call
-			// - when does it return ?
+            writer.WriteMultiSamplePort(false, pattern);
+            taskRunning = true;
+            pgTask.Start();
 			SleepOnePattern();
 		}
+
+        public void OutputPattern(UInt32[] pattern, bool sleep)
+        {
+            //writer.WriteMultiSamplePort(true, pattern);
+            writer.WriteMultiSamplePort(false, pattern);
+            taskRunning = true;
+            pgTask.Start();
+            if(sleep==true)
+                SleepOnePattern();
+        }
 
 		// use this method to output a PatternList to half of the PatternList generator
 		public void OutputPattern(Int16[] pattern)
@@ -52,24 +58,30 @@ namespace DAQ.HAL
 		
 		private void SleepOnePattern()
 		{
-			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
-			Thread.Sleep(sleepTime);
+			//int sleepTime = (int)(((double)length * 1000) / clockFrequency);
+			//Thread.Sleep(sleepTime);
+
+            //Sleep until Task is finished at which point taskRunning becomes false.
+            while (taskRunning == true) ;
 		}
 
         public void Configure(string taskName, double clockFrequency, bool loop, bool fullWidth,
-                                    bool lowGroup, int length, bool internalClock, bool triggered, string clockLine)
+                                    bool lowGroup, int length, bool internalClock, bool triggered)
         {
             pgTask = new Task(taskName);
-            clock_line = clockLine;
+            pgTaskName = taskName;
+            clock_line = pgTaskName + "ClockLine";
             configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
         }
 
         public void Configure(double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock, bool triggered)
         {
+            //pgTask = new Task("pgTask");
+            pgTask = new Task("PG");
+            pgTaskName = "PG";
             
-            pgTask = new Task("pgTask");
-            clock_line = "PGClockLine";
+            clock_line = pgTaskName + "ClockLine";
             configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
         }
 
@@ -145,7 +157,6 @@ namespace DAQ.HAL
             }
 
             
-
             /**** Configure regeneration ****/
             
             SampleQuantityMode sqm;
@@ -170,13 +181,16 @@ namespace DAQ.HAL
 				length
 				);
 
+
+            /* Configure one of the PFI channels to output the clock signal of the master card. Required to synchronize the slaves when using multiple pattern cards */
+
+            if (pgTaskName == "PG")
+                pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
+
             /*
-            if (device == "/PXI1Slot4")
-                pgTask.ExportSignals.SampleClockOutputTerminal = device + "/PFI4";
-             
             if (device == "/Dev1")
                 pgTask.ExportSignals.SampleClockOutputTerminal = device + "/PFI2";
-            */
+           */
 
             /**** Configure buffering ****/
 
@@ -198,7 +212,7 @@ namespace DAQ.HAL
             if (triggered)
             {
                 pgTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                    (string)Environs.Hardware.GetInfo("PGTrigger"),
+                    (string)Environs.Hardware.GetInfo(pgTaskName + "TriggerLine"),
                     DigitalEdgeStartTriggerEdge.Rising);
             }
 
@@ -206,6 +220,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
+            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
 		public void StopPattern()
@@ -213,6 +228,15 @@ namespace DAQ.HAL
             if (pgTask != null)
                 pgTask.Dispose();
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
+        }
+
+        private void pgTask_Done(object sender, TaskDoneEventArgs e)
+        {
+            taskRunning = false;
+            if (pgTask != null)
+            {
+                pgTask.Dispose();
+            }
         }
 	}
 }

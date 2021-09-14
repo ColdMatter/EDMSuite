@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterToQ"] = 100;
         Parameters["HeliumShutterDuration"] = 1550;
 
-        Parameters["ExpansionTime"] = 600;
+        Parameters["ExpansionTime"] = 10;
         Parameters["MolassesDelay"] = 100;
         Parameters["MolassesHoldTime"] = 200;
         Parameters["MolassesRampDuration"] = 100;

@@ -31,7 +31,7 @@ public class Patterns : MOTMasterScript
 
         //Blue molasses:
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 500;
+        Parameters["MolassesHoldTime"] = 250;
 
         Parameters["Frame0Trigger"] = 4000;
 
@@ -234,6 +234,12 @@ public class Patterns : MOTMasterScript
         p.AddEdge("transportTrack", mqtTransferToExternalEndTime, false);
         p.AddEdge("transportTrack", 250000, true);
 
+
+        //tweezer light switch:
+        //p.AddEdge("lightSwitch", 0, true);
+        //p.AddEdge("lightSwitch", mqtStartTime, false);
+       //p.AddEdge("lightSwitch", (int)Parameters["PatternLength"] - 10000, true);
+
         //V00 AOM switch:
         p.Pulse(0, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off and V00 detuning is jumped
         p.Pulse(0, molassesEndTime, motRecaptureTime - molassesEndTime, "v00MOTAOM"); // turn off the MOT light for optical pumping and magnetic trapping. 
@@ -291,9 +297,9 @@ public class Patterns : MOTMasterScript
         int motSwitchOffTime = V0IntensityRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motSwitchOffTime + (int)Parameters["MolassesDelay"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesHoldTime"];
-        int OPbiasfieldSettleTime = molassesEndTime - 100;
+        int OPbiasfieldSettleTime = molassesEndTime + 100;
 
-        int mqtStartTime = molassesEndTime + (int)Parameters["OPDuration"];
+        int mqtStartTime = OPbiasfieldSettleTime + (int)Parameters["OPDuration"];
         int mqtTransferToExternalStartTime = mqtStartTime + (int)Parameters["IntMQTHoldDuration"];
         int mqtTransferToExternalEndTime = mqtTransferToExternalStartTime + (int)Parameters["TransferRampDurationExternalCoils"];
         //int microwavePulseTime = mqtStartTime + (int)Parameters["MWDelay"];
@@ -346,9 +352,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", mqtStartTime, (double)Parameters["MQTBField"]);
 
         
-        p.AddAnalogValue("lightSwitch", 0, 0.0);
-        p.AddAnalogValue("lightSwitch", mqtStartTime, 2.0);
-        p.AddAnalogValue("lightSwitch", (int)Parameters["PatternLength"] - 10000, 0.0);
+        p.AddAnalogValue("lightSwitch", 0, 5.0);
+        p.AddAnalogValue("lightSwitch", mqtStartTime, 0.0);
+        p.AddAnalogValue("lightSwitch", (int)Parameters["PatternLength"] - 10000, 5.0);
 
         //Ramp internal coils current down
         p.AddLinearRamp("MOTCoilsCurrent", mqtTransferToExternalStartTime, (int)Parameters["TransferRampDurationInternalCoils"], 0.0);
@@ -376,9 +382,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
-        p.AddAnalogValue("xShimCoilCurrent", OPbiasfieldSettleTime, (double)Parameters["xShimLoadCurrentOP"]);
-        p.AddAnalogValue("yShimCoilCurrent", OPbiasfieldSettleTime, (double)Parameters["yShimLoadCurrentOP"]);
-        p.AddAnalogValue("zShimCoilCurrent", OPbiasfieldSettleTime, (double)Parameters["zShimLoadCurrentOP"]);
+        p.AddAnalogValue("xShimCoilCurrent", molassesEndTime, (double)Parameters["xShimLoadCurrentOP"]);
+        p.AddAnalogValue("yShimCoilCurrent", molassesEndTime, (double)Parameters["yShimLoadCurrentOP"]);
+        p.AddAnalogValue("zShimCoilCurrent", molassesEndTime, (double)Parameters["zShimLoadCurrentOP"]);
 
         //p.AddAnalogValue("xShimCoilCurrent", mqtStartTime, (double)Parameters["xShimLoadCurrent"]);
 

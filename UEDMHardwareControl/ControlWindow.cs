@@ -1173,42 +1173,62 @@ namespace UEDMHardwareControl
 
         private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWFrequencyUsingUIInput(1);
+            controller.UpdateMWFrequencyUsingUIInput(0);
         }
 
         private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWFrequencyUsingUIInput(1);
+            controller.IncrementMWFrequencyUsingUIInput(0);
         }
 
         private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWPowerUsingUIInput(1);
+            controller.UpdateMWPowerUsingUIInput(0);
         }
 
         private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWPowerUsingUIInput(1);
+            controller.IncrementMWPowerUsingUIInput(0);
         }
 
         private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWPowerUsingUIInput(2);
+            controller.UpdateMWPowerUsingUIInput(1);
         }
 
         private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWPowerUsingUIInput(2);
+            controller.IncrementMWPowerUsingUIInput(1);
         }
 
         private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWFrequencyUsingUIInput(2);
+            controller.UpdateMWFrequencyUsingUIInput(1);
         }
 
         private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWFrequencyUsingUIInput(2);
+            controller.IncrementMWFrequencyUsingUIInput(1);
+        }
+
+        private void btQueryMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequency(0);
+        }
+
+        private void btQueryMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPower(0);
+        }
+
+        private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequency(1);
+        }
+
+        private void btQueryMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPower(1);
         }
     }
 }

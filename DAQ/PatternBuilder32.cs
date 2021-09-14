@@ -23,7 +23,7 @@ namespace DAQ.Pattern
 
         public PatternBuilder32() 
 		{
-			
+            
 		}
 
         public void AddBoard(string address)
