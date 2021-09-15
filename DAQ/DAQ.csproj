@@ -170,7 +170,10 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="Ivi.Visa, Version=5.8.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
+    <Reference Include="Ivi.Visa, Version=5.8.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\IVI Foundation\VISA\Microsoft.NET\Framework32\v2.0.50727\VISA.NET Shared Components 5.11.0\Ivi.Visa.dll</HintPath>
+    </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -428,6 +431,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WindfreakSynth.cs" />
+    <Compile Include="WindfreakSynthHD.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>
