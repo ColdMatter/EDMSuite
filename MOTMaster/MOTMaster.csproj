@@ -139,17 +139,15 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=20.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=20.7.40.49302, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.Net, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\15.0.45.49153\NationalInstruments.UI.dll</HintPath>
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\15.0.45.49153\NationalInstruments.UI.WindowsForms.dll</HintPath>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>

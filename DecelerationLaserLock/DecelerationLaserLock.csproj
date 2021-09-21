@@ -175,7 +175,7 @@
       <Name>DAQ</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
-      <Project>{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}</Project>
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
       <Name>ScanMaster</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">

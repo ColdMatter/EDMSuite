@@ -29,6 +29,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>C:\ScanMaster\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -44,8 +46,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -220,11 +220,19 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DualCCDPatternBuilder.cs" />
+    <Compile Include="DualCCDPatternPlugin.cs" />
+    <Compile Include="LeakTestPatternBuilder.cs" />
+    <Compile Include="LeakTestPatternBuilderModified.cs" />
+    <Compile Include="LeakTestPatternPlugin.cs" />
+    <Compile Include="LeakTestPatternPluginModified.cs" />
+    <Compile Include="LeakTestWithDyePatternBuilder.cs" />
+    <Compile Include="LeakTestWithDyePatternPlugin.cs" />
+    <Compile Include="NshotsPatternBuilder.cs" />
+    <Compile Include="NshotsPatternPlugin.cs" />
     <Compile Include="SingleCounterInputPlugin.cs" />
     <Compile Include="GPIBInputPlugin.cs" />
     <Compile Include="BigSkyYAGPlugin.cs" />
-    <Compile Include="DualCCDPatternBuilder.cs" />
-    <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="FlashlampsOnlyPatternPlugin.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
     <Compile Include="NIRfsgAmplitudeOutputPlugin.cs" Condition=" '$(Configuration)' == 'EDM' " />

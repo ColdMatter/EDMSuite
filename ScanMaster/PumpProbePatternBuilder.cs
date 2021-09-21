@@ -103,17 +103,17 @@ namespace ScanMaster.Acquire.Patterns
             if (tempTime > time) time = tempTime;
 			// aom1 pulse 1
 			tempTime = Pulse(startTime, aomStart1 + valveToQ, aomDuration1,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom"]).BitNumber);
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
             // aom2 pulse 1
             tempTime = Pulse(startTime, aomStart1 + valveToQ, aom2Duration1,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom2"]).BitNumber);
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 			// aom1 pulse 2
 			tempTime = Pulse(startTime, aomStart2 + valveToQ, aomDuration2,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom"]).BitNumber);
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
             // aom2 pulse 2
             tempTime = Pulse(startTime, aomStart2 + valveToQ, aomDuration2,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["aom2"]).BitNumber);
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 			// Detector trigger
 			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
