@@ -1,36 +1,36 @@
-using System;
+﻿using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
 
-namespace ScanMaster
+namespace LatticeHardwareControl
 {
 	/// <summary>
 	/// Summary description for Runner.
 	/// </summary>
 	public class Runner
 	{
-  		// This is the entry point to ScanMaster. Make a controller and pass
-		// execution to it. The controller is published to the remoting system here.
 		[STAThread]
-		static void Main() 
+		static void Main()
 		{
-			// instantiate the controller
-			Controller controller = Controller.GetController();
-			
+
+			Program controller = new Program();
+			controller = new Program();
+
 			// publish the controller to the remoting system
-			TcpChannel channel = new TcpChannel(1191);
+			TcpChannel channel = new TcpChannel(1197);
 			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 
-			// hand over to the controller
-            Application.EnableVisualStyles();
-			controller.StartApplication();
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			controller.Start();
 
 			// the application is finishing - close down the remoting channel
 			RemotingServices.Disconnect(controller);
 			ChannelServices.UnregisterChannel(channel);
 		}
+
 	}
 }

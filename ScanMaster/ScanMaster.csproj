@@ -221,6 +221,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BasicBeamFlowPatternBuilder.cs" />
     <Compile Include="SingleCounterInputPlugin.cs" />
     <Compile Include="GPIBInputPlugin.cs" />
     <Compile Include="BigSkyYAGPlugin.cs" />
@@ -424,6 +425,8 @@
     <Compile Include="TCLOutputPlugin.cs" />
     <Compile Include="TofFitter.cs" />
     <Compile Include="TTLSwitchPlugin.cs" />
+    <Compile Include="TwoShutterPatternBuilder.cs" />
+    <Compile Include="TwoShutterPatternPlugin.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Code</SubType>
     </Compile>

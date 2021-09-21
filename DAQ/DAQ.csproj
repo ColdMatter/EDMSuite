@@ -208,6 +208,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="AlicatFlowController.cs" />
     <Compile Include="AnalogInputChannel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -220,6 +221,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BigSkyYAG.cs" />
     <Compile Include="BrilliantLaser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -255,13 +257,11 @@
     <Compile Include="LakeShore336TemperatureController.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
-    <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="PHNFITCH2FileSystem.cs" />
     <Compile Include="CentaurEDMFileSystem.cs" />
     <Compile Include="CentaurEDMHardware.cs" />
     <Compile Include="RfAWGConfig.cs" />
-    <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SiliconDiodeTemperatureMonitors.cs" />
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />

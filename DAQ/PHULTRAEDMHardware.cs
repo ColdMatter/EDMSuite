@@ -43,7 +43,7 @@ namespace DAQ.HAL
 
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL4::INSTR"));
 
-            AddAnalogInputChannel("cellTemperatureMonitor", usbbreakout + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressure", usbbreakout + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("S1TemperatureMonitor", usbbreakout + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("S2TemperatureMonitor", usbbreakout + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("SF6TemperatureMonitor", usbbreakout + "/ai6", AITerminalConfiguration.Rse);
@@ -167,13 +167,16 @@ namespace DAQ.HAL
             ////lattice scanmaster
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 0, 3);
-            AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 0, 4);//connect to daq board PFI 0
+            AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 0, 8);//connect to daq board PFI 0
             //AddDigitalOutputChannel("analogtriggertest0", digitalPatternBoardAddress, 0, 4);
             AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 1);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 2);
             AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 0, 7);//
             AddDigitalOutputChannel("detector", digitalPatternBoardAddress, 0, 2);
+            AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1);
+            AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4);
+            AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);
             ////AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", usbbreakout + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt2", usbbreakout + "/ai1", AITerminalConfiguration.Rse);
@@ -209,6 +212,10 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("cMinusPlate", digitalPatternBoardAddress + "/ao1");
 
+
+            //USB Instruments
+            Instruments.Add("FlowControllers", new AlicatFlowController("ASRL12::INSTR"));
+            Instruments.Add("LatticeYAG", new BigSkyYAG("ASRL9::INSTR"));
 
             // Analog inputs
             //AddAnalogInputChannel("CavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
