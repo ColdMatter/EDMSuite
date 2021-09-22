@@ -1128,6 +1128,17 @@ namespace UEDMHardwareControl
         {
             controller.SetBleed(eBleedCheck.Checked);
         }
+
+        private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //controller.VoltageSet();
+        }
+
+        private void StartDegauss_Click(object sender, EventArgs e)
+        {
+            controller.StartDegaussPoll();
+            //controller.UpdateDegaussPulse();
+        }
     }
 }
 #endregion

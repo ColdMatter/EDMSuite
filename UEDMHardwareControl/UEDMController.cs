@@ -96,6 +96,7 @@ namespace UEDMHardwareControl
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
+        Task DegaussCoil1OutputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -162,7 +163,8 @@ namespace UEDMHardwareControl
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
             cPlusOutputTask = CreateAnalogOutputTask("cPlusPlate", voltageOutputLow, voltageOutputHigh);
-            cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
+            //cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
+            DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -216,6 +218,7 @@ namespace UEDMHardwareControl
             // Request that the PT monitoring thread stop
             StopPTMonitorPoll();
             StopIMonitorPoll();
+
         }
 
         private Task CreateAnalogInputTask(string channel)
@@ -3718,18 +3721,6 @@ namespace UEDMHardwareControl
             }
             set
             {
-                int CPlusOffVoltageParseValue;
-                if (Int32.TryParse(window.cPlusOffTextBox.Text, out CPlusOffVoltageParseValue))
-                {
-                    if ((CPlusOffVoltageParseValue >= voltageOutputLow) & (CPlusOffVoltageParseValue <= voltageOutputHigh))
-                    {
-                        iMonitorPollPeriod = CPlusOffVoltageParseValue; // Update PT monitoring poll period
-                        window.SetTextBox(window.cPlusOffTextBox, iMonitorPollPeriod.ToString());
-                    }
-                    else MessageBox.Show("Voltage Out of range for plates, try something between " + voltageOutputLow.ToString() + " and " + voltageOutputHigh.ToString(), "User input exception", MessageBoxButtons.OK);
-                }
-                else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
-
                 window.SetTextBox(window.cPlusOffTextBox, value.ToString());
             }
         }
@@ -3992,6 +3983,7 @@ namespace UEDMHardwareControl
             }
             //GreenSynthEnabled = startingSynthState;
             ESwitchDone();
+            
         }
 
         //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
@@ -4020,6 +4012,7 @@ namespace UEDMHardwareControl
         {
             SwitchingEfields = false;
             window.EnableControl(window.switchEButton, true);
+            
         }
 
         // this function is, like many in this class, a little cheezy.
@@ -4036,7 +4029,7 @@ namespace UEDMHardwareControl
                 double newPlus = startPlus + (i * (diffPlus / numSteps));
                 double newMinus = startMinus + (i * (diffMinus / numSteps));
                 SetAnalogOutput(cPlusOutputTask, newPlus);
-                SetAnalogOutput(cMinusOutputTask, newMinus);
+                //SetAnalogOutput(cMinusOutputTask, newMinus);
                 // don't sleep if no ramp delay (as sleep imposes a delay even when called with
                 // sleep time = 0).
                 if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
@@ -4121,7 +4114,7 @@ namespace UEDMHardwareControl
             {
                 CalculateVoltages();
                 SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
-                SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
                 window.EnableControl(window.ePolarityCheck, false);
                 window.EnableControl(window.eBleedCheck, false);
                 //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
@@ -4130,7 +4123,7 @@ namespace UEDMHardwareControl
             else
             {
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
-                SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                //SetAnalogOutput(cMinusOutputTask, cMinusOff);
                 window.EnableControl(window.ePolarityCheck, true);
                 window.EnableControl(window.eBleedCheck, true);
             }
@@ -4307,6 +4300,161 @@ namespace UEDMHardwareControl
             leakageFileSave = "";
         }
 
+        //RHYS DEGAUSS
+        public double DegaussFrequency
+        {
+            get
+            {
+                return Double.Parse(window.DegaussFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.DegaussAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussExpTimeConstant
+        {
+            get
+            {
+                return Double.Parse(window.ExpTimeConstantTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
+            }
+        }
+        public double LinearDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.LinearDegaussTextBox.Text)*1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
+            }
+        }
+        public double ConstDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
+            }
+        }
+        public double ExpDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
+            }
+        }
+
+        public double SineWave;
+        public double FullPulseT;
+        public double ExpOffsetT;
+        public double TimeNow;
+        public double FTicks;
+        public double ThreadStartTicks = 0;
+        public double ThreadDiff = 0;
+        public double SineOffset = 0.00;
+        public double DegaussVCalibrate = 0.83; //This is a conversion factor for the BOP supply.
+                                                //-10 -> +10V input equals full -12 -> +12A range of the BOP
+        public Stopwatch sw = new Stopwatch();
+
+        public void UpdateDegaussPulse()
+        {
+            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
+            if (TimeNow < LinearDegaussT)
+            {
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))- SineOffset;
+            }
+            else if (TimeNow < LinearDegaussT + ConstDegaussT)
+            {
+                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))-SineOffset;
+            }
+            else if (TimeNow < FullPulseT)
+            {
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))-SineOffset;
+            }
+            else
+            {
+                SineWave = 0;
+            }
+            SetAnalogOutput(DegaussCoil1OutputTask, SineWave*DegaussVCalibrate);
+        }
+
+        private Object DegaussLock;
+        private bool DegaussFlag;
+        private Thread DegaussPollThread;
+
+        internal void StartDegaussPoll()
+        {
+            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
+            DegaussLock = new Object();
+            DegaussFlag = false;
+            window.EnableControl(window.StartDegauss, false);
+            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
+            DegaussPollThread.Start();
+        }
+
+        private void DegaussPollWorker()
+        {
+            window.SetLED(window.DegaussLED, true);
+            sw.Start();
+            ThreadStartTicks = sw.ElapsedTicks;
+
+            for (; ; )
+            {
+                FTicks = sw.ElapsedTicks;
+                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
+                if (TimeNow >= (FullPulseT))
+                {
+                    DegaussFlag = true;
+                }
+                lock (DegaussLock)
+                {
+                    UpdateDegaussPulse();
+                    if (DegaussFlag)
+                    {
+                        DegaussFlag = false;
+                        SetAnalogOutput(DegaussCoil1OutputTask, 0);             
+                        window.SetLED(window.DegaussLED, false);
+                        window.EnableControl(window.StartDegauss, true);
+                        break;
+                    }           
+                }
+
+            }
+            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
+            //Console.WriteLine(ThreadDiff.ToString());
+            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            sw.Stop();
+            sw.Reset();
+        }
+        //END RHYS DEGAUSS
+
 
         private Thread iMonitorPollThread;
         private int iMonitorPollPeriod = 200;
@@ -4375,7 +4523,7 @@ namespace UEDMHardwareControl
         }
         private void IMonitorPollWorker()
         {
-            for (; ; )
+            for (; ;)
             {
                 Thread.Sleep(iMonitorPollPeriod);
                 lock (iMonitorLock)

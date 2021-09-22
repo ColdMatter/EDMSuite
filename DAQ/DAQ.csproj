@@ -223,6 +223,7 @@
     <Compile Include="BrilliantLaser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GobelinHardware.cs" />
     <Compile Include="BufferClassicHardware.cs" />
     <Compile Include="BufferGasHardware.cs">
       <SubType>Code</SubType>

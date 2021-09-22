@@ -70,6 +70,14 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+
+                case "PH-NI-LAB":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
                 case "Rhys-XPS":
                     Hardware = new BufferClassicHardware();
                     FileSystem = new RhysFileSystem();
@@ -298,7 +306,7 @@ namespace DAQ.Environment
                     break;
 
 				default:
-					Hardware = new BufferClassicHardware();
+					Hardware = new GobelinHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
                     //ExperimentType = "edm";
