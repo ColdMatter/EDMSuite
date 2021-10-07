@@ -20,7 +20,7 @@ namespace ScanMaster
 			Controller controller = Controller.GetController();
 			
 			// publish the controller to the remoting system
-			TcpChannel channel = new TcpChannel(1170);
+			TcpChannel channel = new TcpChannel(1191);
 			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 

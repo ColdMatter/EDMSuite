@@ -70,11 +70,17 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+                case "Rhys-XPS":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new RhysFileSystem();
+                    Debug = true;
+                    break;
+
 
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();
-                    Debug = true;
+                    Debug = false;
                     //ExperimentType = "edm";
                     break;
 
@@ -292,7 +298,7 @@ namespace DAQ.Environment
                     break;
 
 				default:
-					Hardware = new EDMHardware();
+					Hardware = new BufferClassicHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
                     //ExperimentType = "edm";

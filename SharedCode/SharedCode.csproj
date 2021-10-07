@@ -174,6 +174,78 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Decelerator|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Decelerator\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMAnalysis|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMAnalysis\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Buffer|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Buffer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sympathetic|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Sympathetic\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SrF|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\SrF\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BufferClassic|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\BufferClassic\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\CaF\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Wavemeter\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMTestCrate\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDM TCL\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ZeemanSisyphus\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMBlockHead\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ultracoldEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\TransferCavityLock2012\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LatticeEDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\LatticeEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Stefan|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Stefan\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <Name>ICSharpCode.SharpZipLib</Name>

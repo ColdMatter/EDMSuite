@@ -68,6 +68,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
+			patternPlugins.Add("Two Shutter", typeof(TwoShutterPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

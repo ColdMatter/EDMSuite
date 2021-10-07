@@ -611,6 +611,7 @@ namespace EDMHardwareControl
         public TextBox Coherent899ControlVoltageTextBox;
         private Button Coherent899UpdateButton;
         private Label label146;
+        private TabPage tabPage8;
         public Controller controller;
 
 		public ControlWindow()
@@ -1122,6 +1123,16 @@ namespace EDMHardwareControl
             this.stopYagFlashlampsButton = new System.Windows.Forms.Button();
             this.yagQEnableButton = new System.Windows.Forms.Button();
             this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.groupBox38 = new System.Windows.Forms.GroupBox();
+            this.Coherent899StepMinusButton = new System.Windows.Forms.Button();
+            this.Coherent899ControlVoltageStepTextBox = new System.Windows.Forms.TextBox();
+            this.label137 = new System.Windows.Forms.Label();
+            this.Coherent899StepPlusButton = new System.Windows.Forms.Button();
+            this.label140 = new System.Windows.Forms.Label();
+            this.Coherent899ControlVoltageTrackBar = new System.Windows.Forms.TrackBar();
+            this.Coherent899ControlVoltageTextBox = new System.Windows.Forms.TextBox();
+            this.Coherent899UpdateButton = new System.Windows.Forms.Button();
+            this.label146 = new System.Windows.Forms.Label();
             this.pressureMonitorGroupBox = new System.Windows.Forms.GroupBox();
             this.label121 = new System.Windows.Forms.Label();
             this.pressureMonitorLogPeriodTextBox = new System.Windows.Forms.TextBox();
@@ -1220,16 +1231,7 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.label146 = new System.Windows.Forms.Label();
-            this.Coherent899UpdateButton = new System.Windows.Forms.Button();
-            this.Coherent899ControlVoltageTextBox = new System.Windows.Forms.TextBox();
-            this.Coherent899ControlVoltageTrackBar = new System.Windows.Forms.TrackBar();
-            this.label140 = new System.Windows.Forms.Label();
-            this.Coherent899StepPlusButton = new System.Windows.Forms.Button();
-            this.label137 = new System.Windows.Forms.Label();
-            this.Coherent899ControlVoltageStepTextBox = new System.Windows.Forms.TextBox();
-            this.Coherent899StepMinusButton = new System.Windows.Forms.Button();
-            this.groupBox38 = new System.Windows.Forms.GroupBox();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -1309,6 +1311,8 @@ namespace EDMHardwareControl
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.tabPage9.SuspendLayout();
+            this.groupBox38.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Coherent899ControlVoltageTrackBar)).BeginInit();
             this.pressureMonitorGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.legend2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pressureGraph)).BeginInit();
@@ -1328,8 +1332,6 @@ namespace EDMHardwareControl
             this.groupBox26.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Coherent899ControlVoltageTrackBar)).BeginInit();
-            this.groupBox38.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -1662,7 +1664,7 @@ namespace EDMHardwareControl
             this.label176.Location = new System.Drawing.Point(6, 178);
             this.label176.MaximumSize = new System.Drawing.Size(200, 200);
             this.label176.Name = "label176";
-            this.label176.Size = new System.Drawing.Size(152, 30);
+            this.label176.Size = new System.Drawing.Size(77, 30);
             this.label176.TabIndex = 45;
             this.label176.Text = "Note: Bertan +ve supplies require +/- 3kV/V";
             // 
@@ -1783,6 +1785,7 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage10);
             this.tabControl.Controls.Add(this.rfAWGTab);
             this.tabControl.Controls.Add(this.tabPage4);
+            this.tabControl.Controls.Add(this.tabPage8);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -6131,6 +6134,103 @@ namespace EDMHardwareControl
             this.tabPage9.TabIndex = 8;
             this.tabPage9.Text = "Misc";
             // 
+            // groupBox38
+            // 
+            this.groupBox38.Controls.Add(this.Coherent899StepMinusButton);
+            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageStepTextBox);
+            this.groupBox38.Controls.Add(this.label137);
+            this.groupBox38.Controls.Add(this.Coherent899StepPlusButton);
+            this.groupBox38.Controls.Add(this.label140);
+            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageTrackBar);
+            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageTextBox);
+            this.groupBox38.Controls.Add(this.Coherent899UpdateButton);
+            this.groupBox38.Controls.Add(this.label146);
+            this.groupBox38.Location = new System.Drawing.Point(379, 15);
+            this.groupBox38.Name = "groupBox38";
+            this.groupBox38.Size = new System.Drawing.Size(299, 129);
+            this.groupBox38.TabIndex = 70;
+            this.groupBox38.TabStop = false;
+            this.groupBox38.Text = "899 Dye Laser Ctrl V";
+            // 
+            // Coherent899StepMinusButton
+            // 
+            this.Coherent899StepMinusButton.Location = new System.Drawing.Point(237, 19);
+            this.Coherent899StepMinusButton.Name = "Coherent899StepMinusButton";
+            this.Coherent899StepMinusButton.Size = new System.Drawing.Size(37, 23);
+            this.Coherent899StepMinusButton.TabIndex = 56;
+            this.Coherent899StepMinusButton.Text = "-";
+            this.Coherent899StepMinusButton.UseVisualStyleBackColor = true;
+            this.Coherent899StepMinusButton.Click += new System.EventHandler(this.Coherent899StepMinusButton_Click);
+            // 
+            // Coherent899ControlVoltageStepTextBox
+            // 
+            this.Coherent899ControlVoltageStepTextBox.Location = new System.Drawing.Point(124, 48);
+            this.Coherent899ControlVoltageStepTextBox.Name = "Coherent899ControlVoltageStepTextBox";
+            this.Coherent899ControlVoltageStepTextBox.Size = new System.Drawing.Size(64, 20);
+            this.Coherent899ControlVoltageStepTextBox.TabIndex = 55;
+            this.Coherent899ControlVoltageStepTextBox.Text = "0.1";
+            // 
+            // label137
+            // 
+            this.label137.Location = new System.Drawing.Point(16, 51);
+            this.label137.Name = "label137";
+            this.label137.Size = new System.Drawing.Size(90, 23);
+            this.label137.TabIndex = 54;
+            this.label137.Text = "Step Voltage (V)";
+            // 
+            // Coherent899StepPlusButton
+            // 
+            this.Coherent899StepPlusButton.Location = new System.Drawing.Point(194, 19);
+            this.Coherent899StepPlusButton.Name = "Coherent899StepPlusButton";
+            this.Coherent899StepPlusButton.Size = new System.Drawing.Size(37, 23);
+            this.Coherent899StepPlusButton.TabIndex = 53;
+            this.Coherent899StepPlusButton.Text = "+";
+            this.Coherent899StepPlusButton.UseVisualStyleBackColor = true;
+            this.Coherent899StepPlusButton.Click += new System.EventHandler(this.Coherent899StepPlusButton_Click);
+            // 
+            // label140
+            // 
+            this.label140.Location = new System.Drawing.Point(16, 78);
+            this.label140.Name = "label140";
+            this.label140.Size = new System.Drawing.Size(102, 23);
+            this.label140.TabIndex = 50;
+            this.label140.Text = "Voltage to laser (V)";
+            // 
+            // Coherent899ControlVoltageTrackBar
+            // 
+            this.Coherent899ControlVoltageTrackBar.Location = new System.Drawing.Point(6, 92);
+            this.Coherent899ControlVoltageTrackBar.Maximum = 500;
+            this.Coherent899ControlVoltageTrackBar.Minimum = -500;
+            this.Coherent899ControlVoltageTrackBar.Name = "Coherent899ControlVoltageTrackBar";
+            this.Coherent899ControlVoltageTrackBar.Size = new System.Drawing.Size(287, 45);
+            this.Coherent899ControlVoltageTrackBar.TabIndex = 49;
+            this.Coherent899ControlVoltageTrackBar.Scroll += new System.EventHandler(this.Coherent899ControlVoltageTrackBar_Scroll);
+            // 
+            // Coherent899ControlVoltageTextBox
+            // 
+            this.Coherent899ControlVoltageTextBox.Location = new System.Drawing.Point(124, 21);
+            this.Coherent899ControlVoltageTextBox.Name = "Coherent899ControlVoltageTextBox";
+            this.Coherent899ControlVoltageTextBox.Size = new System.Drawing.Size(64, 20);
+            this.Coherent899ControlVoltageTextBox.TabIndex = 45;
+            this.Coherent899ControlVoltageTextBox.Text = "0";
+            // 
+            // Coherent899UpdateButton
+            // 
+            this.Coherent899UpdateButton.Location = new System.Drawing.Point(194, 45);
+            this.Coherent899UpdateButton.Name = "Coherent899UpdateButton";
+            this.Coherent899UpdateButton.Size = new System.Drawing.Size(80, 23);
+            this.Coherent899UpdateButton.TabIndex = 40;
+            this.Coherent899UpdateButton.Text = "Update";
+            this.Coherent899UpdateButton.Click += new System.EventHandler(this.Coherent899UpdateButton_Click);
+            // 
+            // label146
+            // 
+            this.label146.Location = new System.Drawing.Point(16, 24);
+            this.label146.Name = "label146";
+            this.label146.Size = new System.Drawing.Size(102, 23);
+            this.label146.TabIndex = 36;
+            this.label146.Text = "Voltage to laser (V)";
+            // 
             // pressureMonitorGroupBox
             // 
             this.pressureMonitorGroupBox.Controls.Add(this.label121);
@@ -6954,11 +7054,12 @@ namespace EDMHardwareControl
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(771, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1924, 24);
             this.menuStrip1.TabIndex = 26;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -7070,107 +7171,11 @@ namespace EDMHardwareControl
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
             // 
-            // label146
-            // 
-            this.label146.Location = new System.Drawing.Point(16, 24);
-            this.label146.Name = "label146";
-            this.label146.Size = new System.Drawing.Size(102, 23);
-            this.label146.TabIndex = 36;
-            this.label146.Text = "Voltage to laser (V)";
-            // 
-            // Coherent899UpdateButton
-            // 
-            this.Coherent899UpdateButton.Location = new System.Drawing.Point(194, 45);
-            this.Coherent899UpdateButton.Name = "Coherent899UpdateButton";
-            this.Coherent899UpdateButton.Size = new System.Drawing.Size(80, 23);
-            this.Coherent899UpdateButton.TabIndex = 40;
-            this.Coherent899UpdateButton.Text = "Update";
-            this.Coherent899UpdateButton.Click += new System.EventHandler(this.Coherent899UpdateButton_Click);
-            // 
-            // Coherent899ControlVoltageTextBox
-            // 
-            this.Coherent899ControlVoltageTextBox.Location = new System.Drawing.Point(124, 21);
-            this.Coherent899ControlVoltageTextBox.Name = "Coherent899ControlVoltageTextBox";
-            this.Coherent899ControlVoltageTextBox.Size = new System.Drawing.Size(64, 20);
-            this.Coherent899ControlVoltageTextBox.TabIndex = 45;
-            this.Coherent899ControlVoltageTextBox.Text = "0";
-            // 
-            // Coherent899ControlVoltageTrackBar
-            // 
-            this.Coherent899ControlVoltageTrackBar.Location = new System.Drawing.Point(6, 92);
-            this.Coherent899ControlVoltageTrackBar.Maximum = 500;
-            this.Coherent899ControlVoltageTrackBar.Minimum = -500;
-            this.Coherent899ControlVoltageTrackBar.Name = "Coherent899ControlVoltageTrackBar";
-            this.Coherent899ControlVoltageTrackBar.Size = new System.Drawing.Size(287, 45);
-            this.Coherent899ControlVoltageTrackBar.TabIndex = 49;
-            this.Coherent899ControlVoltageTrackBar.Scroll += new System.EventHandler(this.Coherent899ControlVoltageTrackBar_Scroll);
-            // 
-            // label140
-            // 
-            this.label140.Location = new System.Drawing.Point(16, 78);
-            this.label140.Name = "label140";
-            this.label140.Size = new System.Drawing.Size(102, 23);
-            this.label140.TabIndex = 50;
-            this.label140.Text = "Voltage to laser (V)";
-            // 
-            // Coherent899StepPlusButton
-            // 
-            this.Coherent899StepPlusButton.Location = new System.Drawing.Point(194, 19);
-            this.Coherent899StepPlusButton.Name = "Coherent899StepPlusButton";
-            this.Coherent899StepPlusButton.Size = new System.Drawing.Size(37, 23);
-            this.Coherent899StepPlusButton.TabIndex = 53;
-            this.Coherent899StepPlusButton.Text = "+";
-            this.Coherent899StepPlusButton.UseVisualStyleBackColor = true;
-            this.Coherent899StepPlusButton.Click += new System.EventHandler(this.Coherent899StepPlusButton_Click);
-            // 
-            // label137
-            // 
-            this.label137.Location = new System.Drawing.Point(16, 51);
-            this.label137.Name = "label137";
-            this.label137.Size = new System.Drawing.Size(90, 23);
-            this.label137.TabIndex = 54;
-            this.label137.Text = "Step Voltage (V)";
-            // 
-            // Coherent899ControlVoltageStepTextBox
-            // 
-            this.Coherent899ControlVoltageStepTextBox.Location = new System.Drawing.Point(124, 48);
-            this.Coherent899ControlVoltageStepTextBox.Name = "Coherent899ControlVoltageStepTextBox";
-            this.Coherent899ControlVoltageStepTextBox.Size = new System.Drawing.Size(64, 20);
-            this.Coherent899ControlVoltageStepTextBox.TabIndex = 55;
-            this.Coherent899ControlVoltageStepTextBox.Text = "0.1";
-            // 
-            // Coherent899StepMinusButton
-            // 
-            this.Coherent899StepMinusButton.Location = new System.Drawing.Point(237, 19);
-            this.Coherent899StepMinusButton.Name = "Coherent899StepMinusButton";
-            this.Coherent899StepMinusButton.Size = new System.Drawing.Size(37, 23);
-            this.Coherent899StepMinusButton.TabIndex = 56;
-            this.Coherent899StepMinusButton.Text = "-";
-            this.Coherent899StepMinusButton.UseVisualStyleBackColor = true;
-            this.Coherent899StepMinusButton.Click += new System.EventHandler(this.Coherent899StepMinusButton_Click);
-            // 
-            // groupBox38
-            // 
-            this.groupBox38.Controls.Add(this.Coherent899StepMinusButton);
-            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageStepTextBox);
-            this.groupBox38.Controls.Add(this.label137);
-            this.groupBox38.Controls.Add(this.Coherent899StepPlusButton);
-            this.groupBox38.Controls.Add(this.label140);
-            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageTrackBar);
-            this.groupBox38.Controls.Add(this.Coherent899ControlVoltageTextBox);
-            this.groupBox38.Controls.Add(this.Coherent899UpdateButton);
-            this.groupBox38.Controls.Add(this.label146);
-            this.groupBox38.Location = new System.Drawing.Point(379, 15);
-            this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Size = new System.Drawing.Size(299, 129);
-            this.groupBox38.TabIndex = 70;
-            this.groupBox38.TabStop = false;
-            this.groupBox38.Text = "899 Dye Laser Ctrl V";
             // 
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(771, 626);
+            this.ClientSize = new System.Drawing.Size(1924, 1181);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -7296,6 +7301,9 @@ namespace EDMHardwareControl
             this.groupBox15.PerformLayout();
             this.tabPage9.ResumeLayout(false);
             this.tabPage9.PerformLayout();
+            this.groupBox38.ResumeLayout(false);
+            this.groupBox38.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Coherent899ControlVoltageTrackBar)).EndInit();
             this.pressureMonitorGroupBox.ResumeLayout(false);
             this.pressureMonitorGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.legend2)).EndInit();
@@ -7326,9 +7334,6 @@ namespace EDMHardwareControl
             this.tabPage4.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Coherent899ControlVoltageTrackBar)).EndInit();
-            this.groupBox38.ResumeLayout(false);
-            this.groupBox38.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -8261,6 +8266,7 @@ namespace EDMHardwareControl
         {
             controller.UpdateCoherent899ControlVoltage((Double)Coherent899ControlVoltageTrackBar.Value / 100.0);
         }
+
     }
 }
        
