@@ -273,6 +273,11 @@ namespace MoleculeMOTHardwareControl.Controls
                 chkAO1Enable.Enabled = true;
             }
         }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
  
     }
 }

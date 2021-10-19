@@ -103,13 +103,14 @@ public class Patterns : MOTMasterScript
         //p.Pulse(patternStartBeforeQ, 400, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
         //p.Pulse(patternStartBeforeQ, 0, (int)Parameters["Frame0TriggerDuration"], "test01");//New pattern card test channel
-        p.AddEdge("dipoleTrapAOM", 0, false);
         //p.AddEdge("dipoleTrapAOM", 4000, true);
 
         p.AddEdge("rb2DMOTShutter", 0, true);
         p.AddEdge("rb2DMOTShutter", 5000, false);
-        
 
+        p.AddEdge("cafOptPumpingAOM", 0, true);
+        p.AddEdge("cafOptPumpingShutter", 0, true);
+        
         return p;
     }
 

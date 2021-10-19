@@ -46,7 +46,8 @@ namespace DAQ.HAL
             //taskRunning = true;
             //pgTask.Start();
             
-            writer.WriteMultiSamplePort(true, pattern);
+            writer.WriteMultiSamplePort(false, pattern);
+            pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();
         }
