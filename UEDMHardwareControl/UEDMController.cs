@@ -3955,17 +3955,21 @@ namespace UEDMHardwareControl
 
         // MW
 
-        public int CurrentChannel;
+        public int CurrentChannel; // channel A = 0, channel B = 1
 
         public void SwitchMWChannel()
         {
             if (CurrentChannel == 1)
             {
-                // function to switch to CHB
+                // function to switch to CHA
+                microwaveSynth.SetChannel(0);
+                CurrentChannel = 0;
             }
             else
             {
-                // function to switch to CHA
+                // function to switch to CHB
+                microwaveSynth.SetChannel(1);
+                CurrentChannel = 1;
             }
         }
 
@@ -3980,26 +3984,37 @@ namespace UEDMHardwareControl
         }
 
         public long MWCHAFrequency; // Hz
+        public long MWCHBFrequency; // Hz
         public long MWFrequencyMin = 10000000; // Windfreak synth provides sine wave of minimum frequency 10 MHz
         public long MWFrequencyMax = 15000000000; // Windfreak synth provides sine wave of maximum frequency 15,000 MHz
 
         public void UpdateMWFrequency(int channel, long Frequency)
         {
             TextBox FrequencyMonitorTextBox;
-
-            if (channel == 1) // Windfreak channel A
+            if (channel == 0) // Windfreak channel A
             {
                 FrequencyMonitorTextBox = window.tbMWCHAFrequencyMonitor;
+                MWCHAFrequency = Frequency;
             }
             else   // Windfreak channel B
             {
                 FrequencyMonitorTextBox = window.tbMWCHBFrequencyMonitor;
+                MWCHBFrequency = Frequency;
             }
 
-            MWCHAFrequency = Frequency;
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Set the frequency
+            microwaveSynth.SetFrequency(Frequency); // GHz
+
+            // Update the UI
             double displayFrequency = (double)Frequency / Math.Pow(1000, 3); // displaying in GHz
             window.SetTextBox(FrequencyMonitorTextBox, displayFrequency.ToString());
-            // function from DDS object (RFFrequency)
         }
 
         public void UpdateMWFrequencyUsingUIInput(int channel)
@@ -4007,7 +4022,7 @@ namespace UEDMHardwareControl
             TextBox FrequencySetpointTextBox;
             ComboBox FrequencySetpointUnitComboBox;
 
-            if (channel == 1) // Windfreak channel A
+            if (channel == 0) // Windfreak channel A
             {
                 FrequencySetpointTextBox = window.tbMWCHAFrequencySetpoint;
                 FrequencySetpointUnitComboBox = window.comboBoxMWCHASetpointUnit;
@@ -4039,26 +4054,29 @@ namespace UEDMHardwareControl
         {
             TextBox FrequencyIncrementTextBox;
             ComboBox FrequencyIncrementUnitComboBox;
+            long CurrentFrequency;
 
-            if (channel == 1) // Windfreak channel A
+            if (channel == 0) // Windfreak channel A
             {
                 FrequencyIncrementTextBox = window.tbMWCHAFrequencyIncrement;
                 FrequencyIncrementUnitComboBox = window.comboBoxMWCHAIncrementUnit;
+                CurrentFrequency = MWCHAFrequency;
             }
             else   // Windfreak channel B
             {
                 FrequencyIncrementTextBox = window.tbMWCHBFrequencyIncrement;
                 FrequencyIncrementUnitComboBox = window.comboBoxMWCHBIncrementUnit;
+                CurrentFrequency = MWCHBFrequency;
             }
 
             long MetricPrefix = GetMWMetricPrefix(FrequencyIncrementUnitComboBox);
             if (double.TryParse(FrequencyIncrementTextBox.Text, out double MWFrequencyIncrementParseValue))
             {
-                if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency >= MWFrequencyMin)
+                if ((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency >= MWFrequencyMin)
                 {
-                    if ((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency <= MWFrequencyMax)
+                    if ((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency <= MWFrequencyMax)
                     {
-                        UpdateMWFrequency(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + MWCHAFrequency));
+                        UpdateMWFrequency(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency));
                     }
                     else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
                 }
@@ -4066,8 +4084,34 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void QueryMWFrequency(int channel)
+        {
+            // Select UI textbox that will be updated
+            TextBox FrequencySetpointMonitorTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                FrequencySetpointMonitorTextBox = window.tbMWCHAFrequencyMonitor;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencySetpointMonitorTextBox = window.tbMWCHBFrequencyMonitor;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Query the frequency
+            double frequency = microwaveSynth.QueryFrequency() / 1000; // GHz
+            window.SetTextBox(FrequencySetpointMonitorTextBox, frequency.ToString());
+
+        }
 
         public double MWCHAPower; // dBm
+        public double MWCHBPower; // dBm
         public long MWPowerMin = -30; // Windfreak synth provides sine wave of minimum power -30 dBm
         public long MWPowerMax = 20; // Windfreak synth provides sine wave of maximum power 20 dBm. However, this varies depending on the frequency.
         public double MWPowerResolution = 0.1; // Windfreak power output can be adjusted in increments of 0.1 dBm.
@@ -4075,16 +4119,37 @@ namespace UEDMHardwareControl
        
         public void SetMWPower(int channel, double Power)
         {
-            MWCHAPower = Power;
+            TextBox PowerSetpointTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerMonitor;
+                MWCHAPower = Power;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerMonitor;
+                MWCHBPower = Power;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Set the power
+            microwaveSynth.SetPower(Power);
+
+            // Update UI monitor
             UpdateMWPowerMonitor(channel, Power);
-            // function from DDS object (RFFrequency)
         }
 
         public void UpdateMWPowerMonitor(int channel, double Power)
         {
             TextBox PowerSetpointTextBox;
 
-            if (channel == 1) // Windfreak channel A
+            if (channel == 0) // Windfreak channel A
             {
                 PowerSetpointTextBox = window.tbMWCHAPowerMonitor;
             }
@@ -4099,8 +4164,7 @@ namespace UEDMHardwareControl
         public void UpdateMWPowerUsingUIInput(int channel)
         {
             TextBox PowerSetpointTextBox;
-
-            if (channel == 1) // Windfreak channel A
+            if (channel == 0) // Windfreak channel A
             {
                 PowerSetpointTextBox = window.tbMWCHAPowerSetpoint;
             }
@@ -4157,21 +4221,23 @@ namespace UEDMHardwareControl
         public void IncrementMWPowerUsingUIInput(int channel)
         {
             TextBox PowerIncrementTextBox;
-
-            if (channel == 1) // Windfreak channel A
+            double CurrentPower;
+            if (channel == 0) // Windfreak channel A
             {
                 PowerIncrementTextBox = window.tbMWCHAPowerIncrement;
+                CurrentPower = MWCHAPower;
             }
             else   // Windfreak channel B
             {
                 PowerIncrementTextBox = window.tbMWCHBPowerIncrement;
+                CurrentPower = MWCHBPower;
             }
 
             if (double.TryParse(PowerIncrementTextBox.Text, out double MWPowerParseValue))
             {
-                if (MWCHAPower + MWPowerParseValue >= MWPowerMin)
+                if (CurrentPower + MWPowerParseValue >= MWPowerMin)
                 {
-                    if (MWCHAPower + MWPowerParseValue <= MWPowerMax)
+                    if (CurrentPower + MWPowerParseValue <= MWPowerMax)
                     {
                         string powerString = MWPowerParseValue.ToString();
 
@@ -4193,7 +4259,7 @@ namespace UEDMHardwareControl
 
                             if (dec1 <= 1)
                             {
-                                SetMWPower(channel, MWCHAPower + MWPowerParseValue);
+                                SetMWPower(channel, CurrentPower + MWPowerParseValue);
                             }
                             else
                             {
@@ -4202,7 +4268,7 @@ namespace UEDMHardwareControl
                         }
                         else
                         {
-                            SetMWPower(channel, MWCHAPower + MWPowerParseValue);
+                            SetMWPower(channel, CurrentPower + MWPowerParseValue);
                         }
                     }
                     else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
@@ -4214,27 +4280,30 @@ namespace UEDMHardwareControl
 
         public void QueryMWPower(int channel)
         {
-            TextBox PowerSetpointTextBox;
-
-            if (channel == 1) // Windfreak channel A
+            // Select UI textbox that will be updated
+            TextBox PowerSetpointMonitorTextBox;
+            if (channel == 0) // Windfreak channel A
             {
-                PowerSetpointTextBox = window.tbMWCHAPowerMonitor;
+                PowerSetpointMonitorTextBox = window.tbMWCHAPowerMonitor;
             }
             else   // Windfreak channel B
             {
-                PowerSetpointTextBox = window.tbMWCHBPowerMonitor;
+                PowerSetpointMonitorTextBox = window.tbMWCHBPowerMonitor;
             }
 
             // Check WindSynthHD is on the correct channel
-            if (channel != CurrentChannel)
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
             {
                 SwitchMWChannel();
             }
 
             // Query the power
-            // function to query the power output of the active channel
-        }
+            double power = microwaveSynth.QueryPower() ; 
+            window.SetTextBox(PowerSetpointMonitorTextBox, power.ToString());
 
+        }
+        
         #endregion
     }
 }

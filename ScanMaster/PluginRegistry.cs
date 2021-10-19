@@ -51,7 +51,10 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
             patternPlugins.Add("Pump-probe Dual CCD", typeof(DualCCDPatternPlugin));
-            patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
+			patternPlugins.Add("Leak Test, Dual CCD", typeof(LeakTestPatternPlugin));
+			patternPlugins.Add("Leak Test Modified, Dual CCD", typeof(LeakTestPatternPluginModified));
+			patternPlugins.Add("Leak Test with Dye laser, Dual CCD", typeof(LeakTestWithDyePatternPlugin));
+			patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
             patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
 			patternPlugins.Add("Guide", typeof(GuidePatternPlugin));
@@ -64,6 +67,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
+			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
