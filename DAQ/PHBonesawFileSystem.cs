@@ -17,7 +17,7 @@ namespace DAQ.Environment
             Paths.Add("fakeData", "C:\\ControlPrograms\\Settings\\Examples\\");
             Paths.Add("SourceLogPath", "D:\\Source_Log\\");
             Paths.Add("ToFFilesPath", "D:\\Source_Log\\ToF_Data\\");
-
+            Paths.Add("transferCavityData", "D:\\TCL_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
             SortDataByDate = false;

@@ -133,11 +133,12 @@ namespace DAQ.HAL
             // tweezer new digital pattern board
             AddDigitalOutputChannel("slavePatternCardTrigger", digitalPatternBoardAddress2, 0, 0);
             //AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
-            AddDigitalOutputChannel("test02", digitalPatternBoardAddress2, 0, 2);
-            AddDigitalOutputChannel("test03", digitalPatternBoardAddress2, 0, 3);
-            AddDigitalOutputChannel("test04", digitalPatternBoardAddress2, 0, 4);
+            AddDigitalOutputChannel("cafOptPumpingAOM", digitalPatternBoardAddress2, 0, 2);
+            AddDigitalOutputChannel("flowEnable", digitalPatternBoardAddress2, 0, 3);
+            AddDigitalOutputChannel("cafOptPumpingShutter", digitalPatternBoardAddress2, 0, 4);
             AddDigitalOutputChannel("test10", digitalPatternBoardAddress2, 1, 0);
             AddDigitalOutputChannel("motLightSwitch", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("TransverseCoolingShutter", digitalPatternBoardAddress2, 0, 5);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -180,14 +181,22 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
             // Source
-            AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);
-            AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
-            AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddDigitalOutputChannel("cryoCooler", tclBoard2Address, 0, 0);
+            AddDigitalOutputChannel("sourceHeater", tclBoard2Address, 0, 1);
+            AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp40K", tclBoard2Address + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6FlowMonitor", tclBoard2Address + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("he6FlowMonitor", tclBoard2Address + "/ai6", AITerminalConfiguration.Rse);
+
             Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
+            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionHe", 0.2); 
+            AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
+            AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
 
             //AddDigitalInputChannel("tofTrig", tclBoard2Address, 0, 0);
 

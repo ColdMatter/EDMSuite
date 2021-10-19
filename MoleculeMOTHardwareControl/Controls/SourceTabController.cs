@@ -12,12 +12,15 @@ namespace MoleculeMOTHardwareControl.Controls
     public class SourceTabController : GenericController
     {
         private double referenceResistance = 47120; // Reference resistor for reading in temperature from source thermistor
-
+        
         private SourceTabView castView; // Convenience to avoid lots of casting in methods 
         private AnalogSingleChannelReader sourceTempReader;
         private AnalogSingleChannelReader sf6TempReader;
         private AnalogSingleChannelReader sourcePressureReader;
         private AnalogSingleChannelReader sourceTempReader2;
+        private AnalogSingleChannelReader sourceTempReader40K;
+        private AnalogSingleChannelReader sf6FlowReader;
+        private AnalogSingleChannelReader he6FlowReader;
 
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
@@ -27,26 +30,56 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private bool isHolding = false;
         private bool maxTempReached = true;
-        private double[] tofData, tofTime; 
+        private bool flowEnableFlag = false;
+        private double[] tofData, tofTime;
 
         private System.Windows.Forms.Timer readTimer;
         
         private static string logfilePath = (string)Environs.FileSystem.Paths["SourceLogPath"];
         private static string toffilePath = (string)Environs.FileSystem.Paths["ToFFilesPath"];
 
+        private int tof_timeout_count = 0;
         private string tof_signal_address, tof_trigger_address;
         private int tof_samplerate, tof_num_of_samples;
-        
         //Runs time of flight acquisition in a different thread to prevent user interface from hanging.
         System.ComponentModel.BackgroundWorker ToFWorker;
-
         //lock object is used to make sure that the two threads do not try to get the handle for the DAQ module at the same time.
         private readonly object acquisition_lock = new object();
 
+        // Analog Output limits and current voltage.
+        private double AO0Max = 5.0;
+        private double AO0Min = 0.0;
+        private double AO1Max = 5.0;
+        private double AO1Min = 0.0;
+        private double[] AOVoltage = new double[] { 0.0, 0.0 };
+
+        //Flow Conversions for flow monitor in sccm per Volt
+        double sf6FlowConversion, heFlowConversion;
+        
         protected override GenericView CreateControl()
         {
             castView = new SourceTabView(this);
             return castView;
+        }
+
+        public int SamplingRate
+        {
+            get { return tof_samplerate; }
+            set
+            {
+                this.tof_samplerate = value;
+                set_Time_Axis();
+            }
+        }
+
+        public double[] AnalogOutLimits
+        {
+            get 
+            {
+                double[] limits = new double[]{ AO0Min, AO0Max, AO1Min, AO1Max };
+                return limits;
+            }
+            
         }
 
         public bool IsCyling
@@ -58,7 +91,8 @@ namespace MoleculeMOTHardwareControl.Controls
         public bool IsHolding
         {
             get { return isHolding; }
-            set { this.isHolding = value; }
+            set
+            { this.isHolding = value; }
         }
 
         public SourceTabController()
@@ -72,6 +106,12 @@ namespace MoleculeMOTHardwareControl.Controls
 
             sourcePressureReader = CreateAnalogInputReader("sourcePressure");
             sourceTempReader2 = CreateAnalogInputReader("sourceTemp2");
+            sourceTempReader40K = CreateAnalogInputReader("sourceTemp40K");
+            sf6FlowReader = CreateAnalogInputReader("sf6FlowMonitor");
+            he6FlowReader = CreateAnalogInputReader("he6FlowMonitor");
+
+            sf6FlowConversion = (double)Environs.Hardware.GetInfo("flowConversionSF6");
+            heFlowConversion = (double)Environs.Hardware.GetInfo("flowConversionHe");
             tof_signal_address = (string)Environs.Hardware.GetInfo("ToFPMTSignal");
             tof_trigger_address = (string)Environs.Hardware.GetInfo("ToFTrigger");
             tof_samplerate = 100000;
@@ -84,13 +124,27 @@ namespace MoleculeMOTHardwareControl.Controls
 
             //Initializing an array for time axis of the Time of flight plot.
             tofTime = new double[tof_num_of_samples];
+            set_Time_Axis();
+
+            //Initialize Analog Outputs to 0V 
+            SetAnalogOutput(0, 0.0);
+            SetAnalogOutput(1, 0.0);
+        }
+
+        private void set_Time_Axis()
+        {
             for (int i = 0; i < tof_num_of_samples; i++)
-                tofTime[i]=i;
+                tofTime[i] = 1000.0 * (double)i / (double)tof_samplerate;
         }
 
         private void AcquistionFinished(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             readTimer.Start();
+            if (flowEnableFlag == true)
+            { 
+                castView.FlowEnable();
+                flowEnableFlag = false;
+            }
         }
 
         private void AcquireTOF(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -114,12 +168,21 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
                     AnalogSingleChannelReader reader = new AnalogSingleChannelReader(myTask.Stream);
                     tofData = reader.ReadMultiSample(1000);
-                    castView.UpdateGraph(tofTime, tofData);
+                    if (castView.ToFEnabled())
+                        castView.UpdateGraph(tofTime, tofData);
+                    
+                    if (castView.AutomaticFlowControlEnabled())
+                    {
+                        flowEnableFlag = true;
+                    }
+                    
+                    tof_timeout_count = 0;
                     if (castView.SaveTraceStatus())
                     {
                         using (System.IO.StreamWriter file =
                             new System.IO.StreamWriter(toffilePath + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
                         {
+                            file.WriteLine("Sampling Rate: " + tof_samplerate.ToString() + ", Number of points :" + tof_num_of_samples.ToString());
                             foreach (double line in tofData)
                                 file.WriteLine(line);
                             file.Flush();
@@ -130,6 +193,8 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
                     //If no trigger is detected within the timeout duration, this DAQmx exception is raised. 
                     //This catch clause catches this exception and prevents the program from crashing.
+                    tof_timeout_count++;
+                    
                 }
                 finally
                 {
@@ -144,7 +209,7 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             readTimer = new System.Windows.Forms.Timer();
             readTimer.Interval = 100;
-            readTimer.Tick += new EventHandler(UpdateTemperature);
+            readTimer.Tick += new EventHandler(UpdateReadings);
         }
 
         protected double ConvertVoltageToResistance(double voltage, double reference)
@@ -162,6 +227,23 @@ namespace MoleculeMOTHardwareControl.Controls
             return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;    
         }
 
+        protected double GetSF6Flow()
+        {
+            //double sf6FlowVoltage = sf6FlowReader.ReadSingleSample();
+            //return sf6FlowVoltage * sf6FlowConversion;
+            double[] sf6FlowVoltage = sf6FlowReader.ReadMultiSample(500);
+            return sf6FlowVoltage.Average() * sf6FlowConversion;
+            
+        }
+
+        protected double GetHeFlow()
+        {
+            //double heFlowVoltage = he6FlowReader.ReadSingleSample();
+            double[] heFlowVoltage = he6FlowReader.ReadMultiSample(500);
+            return heFlowVoltage.Average() * heFlowConversion;
+            
+        }
+
         protected double GetSourcePressure()
         {
             double sourcePressureVoltage = sourcePressureReader.ReadSingleSample();
@@ -170,43 +252,103 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected double GetSourceTemperature4K()
         {
-            double sourceTemp2 = sourceTempReader2.ReadSingleSample();
-            return sourceTemp2;
+            double[] ThermocoupleVoltLst = sourceTempReader2.ReadMultiSample(500);
+            double ThermocoupleVolt = ThermocoupleVoltLst.Average();
+            double temperature;
+
+            //Interpolation function (4th order polynomial) to convert voltage to temperature in K
+            if (ThermocoupleVolt > 1.1)
+                temperature = -2015.5 + (6350.82 * ThermocoupleVolt) - (7250.48 * Math.Pow(ThermocoupleVolt, 2)) + (3607.18 * Math.Pow(ThermocoupleVolt, 3)) - (664.69 * Math.Pow(ThermocoupleVolt, 4));
+            else
+                temperature = 535.7 - (396.908 * ThermocoupleVolt) - (107.416 * Math.Pow(ThermocoupleVolt, 2)) + (180.776 * Math.Pow(ThermocoupleVolt, 3)) - (119.994 * Math.Pow(ThermocoupleVolt, 4));
+            return temperature;
+
         }
 
         protected double GetSourceTemperature()
         {
-            double vRef = 5.0; //vRefReader.ReadSingleSample();
+            double vRef = 5.1; //vRefReader.ReadSingleSample();
             double sourceTempVoltage = sourceTempReader.ReadSingleSample();
+            double sourceTempResistance = ConvertVoltageToResistance(sourceTempVoltage, vRef);
+            return Convert10kResistanceToCelcius(sourceTempResistance);
+        }
+
+        protected double Get40KTemperature()
+        {
+            double vRef = 5.1; //vRefReader.ReadSingleSample();
+            double sourceTempVoltage = sourceTempReader40K.ReadSingleSample();
             double sourceTempResistance = ConvertVoltageToResistance(sourceTempVoltage, vRef);
             return Convert10kResistanceToCelcius(sourceTempResistance);
         }
 
         protected double GetSF6Temperature()
         {
-            double vRef = 5.0; //vRefReader.ReadSingleSample();
+            double vRef = 5.1; //vRefReader.ReadSingleSample();
             double sf6TempVoltage = sf6TempReader.ReadSingleSample();
             double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
             return Convert10kResistanceToCelcius(sf6TempResistance);
         }
 
-        protected void UpdateTemperature(object anObject, EventArgs eventArgs)
+        protected void UpdateReadings(object anObject, EventArgs eventArgs)
         {
             lock (acquisition_lock)
             {
                 double sourceTemp = GetSourceTemperature();
-                double sourceTemp2Volt = GetSourceTemperature4K();
+                double sourceTemp2 = GetSourceTemperature4K();
                 double sourcePressure = GetSourcePressure();
-                double sourceTemp2Temp;
+                double source40kTemp = Get40KTemperature();
+                double sf6Flow = GetSF6Flow();
+                double heFlow = GetHeFlow();
+                double sf6Temp = GetSF6Temperature();
 
-                //Interpolation function (4th order polynomial) to convert voltage to temperature in K
-                if (sourceTemp2Volt > 1.1)
-                    sourceTemp2Temp = -2015.5 + (6350.82 * sourceTemp2Volt) - (7250.48 * Math.Pow(sourceTemp2Volt, 2)) + (3607.18 * Math.Pow(sourceTemp2Volt, 3)) - (664.69 * Math.Pow(sourceTemp2Volt, 4));
-                else
-                    sourceTemp2Temp = 535.7 - (396.908 * sourceTemp2Volt) - (107.416 * Math.Pow(sourceTemp2Volt, 2)) + (180.776 * Math.Pow(sourceTemp2Volt, 3)) - (119.994 * Math.Pow(sourceTemp2Volt, 4));
+                // If time of flight trigger events fails to come for 10 consecutive times, stop trying to show the traces.
+                if (tof_timeout_count >= 15)
+                {
+                    //castView.DisableTOF();
 
-                castView.UpdateCurrentSourceTemperature2(sourceTemp2Temp.ToString("0.##") + " K");
-                castView.UpdateCurrentSourcePressure(sourcePressure.ToString());
+                    if (castView.AutomaticFlowControlEnabled())
+                        castView.FlowDisable();
+                    
+                    tof_timeout_count = 0;
+                }
+
+
+                if (IsCyling)
+                {
+                    double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
+                    if (!finishedHeating && sourceTemp2 > cycleLimit)
+                    {
+                        finishedHeating = true;
+                        SetHeaterState(false);
+                        SetCryoState(true);
+                    }
+                }
+
+                if (IsHolding)
+                {
+
+                    double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
+                    if (sourceTemp2 < cycleLimit && !maxTempReached)
+                    {
+                        SetHeaterState(true);
+                    }
+                    else if (sourceTemp2 > cycleLimit && !maxTempReached)
+                    {
+                        SetHeaterState(false);
+                        maxTempReached = true;
+                    }
+                    else if (sourceTemp2 < cycleLimit - 5 && maxTempReached)
+                    {
+                        SetHeaterState(true);
+                        maxTempReached = false;
+                    }
+                }
+                
+
+                castView.UpdateCurrentSourceTemperature2(sourceTemp2.ToString("0.##") + " K");
+                castView.UpdateCurrentSourcePressure(sourcePressure.ToString("E4"));
+                castView.UpdateFlowRates(sf6Flow, heFlow);
+                castView.UpdateAnalogOutputControls(AOVoltage[0], AOVoltage[1]);
 
                 if (sourceTemp < -34)
                 {
@@ -216,7 +358,7 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
                     castView.UpdateCurrentSourceTemperature(sourceTemp.ToString("F2") + " C");
                 }
-                double sf6Temp = GetSF6Temperature();
+                
                 if (sf6Temp < -34)
                 {
                     castView.UpdateCurrentSF6Temperature("<-34");
@@ -226,6 +368,15 @@ namespace MoleculeMOTHardwareControl.Controls
                     castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
                 }
 
+                if (source40kTemp < -34)
+                {
+                    castView.UpdateCurrentSourceTemperature40K("<-34");
+                }
+                else
+                {
+                    castView.UpdateCurrentSourceTemperature40K(source40kTemp.ToString("F2"));
+                }
+
                 if (castView.LogStatus())
                 {
                     DateTime dt = DateTime.Now;
@@ -233,7 +384,7 @@ namespace MoleculeMOTHardwareControl.Controls
                     
                     if (!System.IO.File.Exists(filename))
                     {
-                        string header = "Time \t Source_Pressure \t Source_Temperature(in Volts) \t Source_Temperature(in K) \t SF6_Temperature(in degree C)";
+                        string header = "Time \t Source_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
                         using (System.IO.StreamWriter file =
                         new System.IO.StreamWriter(filename, false))
                             file.WriteLine(header);
@@ -242,42 +393,13 @@ namespace MoleculeMOTHardwareControl.Controls
                     using (System.IO.StreamWriter file =
                         new System.IO.StreamWriter(filename, true))
                     {
-                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + sourceTemp2Volt.ToString() + "\t" + sourceTemp2Temp.ToString() + "\t" + sf6Temp.ToString());
+                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40kTemp.ToString());
                         file.Flush();
                     }
                 }
 
-                if (IsCyling)
-                {
-                    double cycleLimit = castView.GetCycleLimit();
-                    if (!finishedHeating && sourceTemp > cycleLimit)
-                    {
-                        finishedHeating = true;
-                        SetHeaterState(false);
-                        SetCryoState(true);
-                    }
-                }
-                if (IsHolding)
-                {
-                    double cycleLimit = castView.GetCycleLimit();
-                    if (sourceTemp < cycleLimit && !maxTempReached)
-                    {
-                        SetHeaterState(true);
-                    }
-                    else if (sourceTemp > cycleLimit && !maxTempReached)
-                    {
-                        SetHeaterState(false);
-                        maxTempReached = true;
-                    }
-                    else if (sourceTemp < cycleLimit - 3 && maxTempReached)
-                    {
-                        SetHeaterState(true);
-                        maxTempReached = false;
-                    }
-                }
 
-
-                if (castView.ToFEnabled())
+                if (castView.ToFEnabled() || castView.AutomaticFlowControlEnabled())
                 {
 
                     //System.Threading.Thread ToFAcquireThread = new Thread(new ThreadStart(AcquireTOF));
@@ -356,6 +478,39 @@ namespace MoleculeMOTHardwareControl.Controls
                     maxTempReached = true;
                 }
             }
+        }
+
+        public void SwitchOutputAOVoltage(int channel)
+        {
+            lock (acquisition_lock)
+            {
+                Task analogOutTask = new Task();
+                switch (channel)
+                {
+                    case 0:
+                        ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["hardwareControlAO0"]).AddToTask(analogOutTask, AO0Min, AO0Max);
+                        break;
+                    case 1:
+                        ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels["hardwareControlAO1"]).AddToTask(analogOutTask, AO1Min, AO1Max);
+                        break;
+                }
+
+                AnalogSingleChannelWriter analogwriter = new AnalogSingleChannelWriter(analogOutTask.Stream);
+                bool[] switchStatus = castView.GetAnalogOutputEnableStatus();
+                if (switchStatus[channel] == true)
+                    analogwriter.WriteSingleSample(true, AOVoltage[channel]);
+                else
+                    analogwriter.WriteSingleSample(true, 0.0);
+
+                analogOutTask.Stop();
+                analogOutTask.Dispose();
+            }
+        }
+
+        public void SetAnalogOutput(int channel, double voltage)
+        {
+            AOVoltage[channel] = voltage;
+            SwitchOutputAOVoltage(channel);
         }
         
     }
