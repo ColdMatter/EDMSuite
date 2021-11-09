@@ -28,13 +28,12 @@ namespace ScanMaster.Acquire.Plugins
 
         protected override void InitialiseCustomSettings()
         {
-            settings["aomOnStart"] = 10;
             settings["valveToQ"] = 570;
             settings["flashToQ"] = 230;
-            settings["aomOnDuration"] = 260000;
-            settings["aomOffStart"] = 10000;
-            settings["aom2OffStart"] = 140;
-            settings["aomOffDuration"] = 240020;
+            settings["ccd1Start1"] = 10;
+            settings["ccd1Start2"] = 250010;
+            settings["ccd2Start1"] = 8010;
+            settings["ccd2Start2"] = 258010;
             settings["ttlSwitchPort"] = 0;
             settings["ttlSwitchLine"] = 5;
             settings["sequenceLength"] = 4;
@@ -42,8 +41,6 @@ namespace ScanMaster.Acquire.Plugins
             settings["switchLineDelay"] = -100000;
             settings["padStart"] = 100000;
             settings["flashlampPulseLength"] = 100;
-            settings["chirpStart"] = 100;
-            settings["chirpDuration"] = 300;
             settings["flashlampPulseInterval"] = 500000;
         }
 
@@ -65,19 +62,15 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["valveToQ"],
                 (int)settings["flashToQ"],
                 (int)settings["flashlampPulseLength"],
-                (int)settings["aomOnStart"],                                                    //aomStart1
-                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aomDuration1
-                (int)settings["aomOffStart"] + (int)settings["aomOffDuration"],                 //aomStart2
-                (int)settings["aomOnDuration"] - ((int)settings["aomOffStart"]
-                - (int)settings["aomOnStart"]) - (int)settings["aomOffDuration"],               //aomDuration2
-                (int)settings["aomOffStart"] - (int)settings["aomOnStart"],                     //aom2Duration1
+                (int)settings["ccd1Start1"],
+                (int)settings["ccd1Start2"],
+                (int)settings["ccd2Start1"],
+                (int)settings["ccd2Start2"],    
                 GateStartTimePGUnits,
                 (int)settings["ttlSwitchPort"],
                 (int)settings["ttlSwitchLine"],
                 (int)settings["switchLineDuration"],
                 (int)settings["switchLineDelay"],
-                (int)settings["chirpStart"],
-                (int)settings["chirpDuration"],
                 (bool)config.switchPlugin.Settings["switchActive"]
                 );
 

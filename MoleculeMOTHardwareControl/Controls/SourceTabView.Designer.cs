@@ -30,10 +30,19 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.sf6Temperature = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txt40Ktemp = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.readButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.sf6Temperature = new System.Windows.Forms.TextBox();
             this.currentTemperature = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtSourcePressure = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.chkLog = new System.Windows.Forms.CheckBox();
+            this.txtSourceTemp2 = new System.Windows.Forms.TextBox();
             this.cryoGroup = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.cryoSwitch = new NationalInstruments.UI.WindowsForms.Switch();
@@ -44,18 +53,35 @@
             this.heaterLED = new NationalInstruments.UI.WindowsForms.Led();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cycleLimit = new System.Windows.Forms.NumericUpDown();
-            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.holdButton = new System.Windows.Forms.Button();
             this.cycleButton = new System.Windows.Forms.Button();
-            this.readButton = new System.Windows.Forms.Button();
+            this.holdButton = new System.Windows.Forms.Button();
+            this.cycleLimit = new System.Windows.Forms.NumericUpDown();
+            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
+            this.chkToF = new System.Windows.Forms.CheckBox();
             this.tempGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.chkSaveTrace = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.chkAutoFlowControl = new System.Windows.Forms.CheckBox();
+            this.chkAO1Enable = new System.Windows.Forms.CheckBox();
+            this.chkAO0Enable = new System.Windows.Forms.CheckBox();
+            this.lblAO1 = new System.Windows.Forms.Label();
+            this.lblAO0 = new System.Windows.Forms.Label();
+            this.numAO1 = new System.Windows.Forms.NumericUpDown();
+            this.numAO0 = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lblheflow = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblsf6flow = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.cryoGroup.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -68,95 +94,186 @@
             this.tableLayoutPanel5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
-            this.tableLayoutPanel7.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numAO1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAO0)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73.23529F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26.76471F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70.81481F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.18518F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tempGraph, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel6, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.97531F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.02469F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(680, 810);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 77.16049F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.83951F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(679, 810);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.groupBox3, 0, 5);
             this.tableLayoutPanel2.Controls.Add(this.groupBox2, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.cryoGroup, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.heaterGroup, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel5, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.readButton, 0, 3);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(500, 3);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(483, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 6;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(177, 658);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 1.294498F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35.76052F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 3.398058F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(193, 618);
             this.tableLayoutPanel2.TabIndex = 1;
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.sf6Temperature);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(3, 592);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(171, 63);
-            this.groupBox3.TabIndex = 5;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "SF6 Temperature (°C)";
-            // 
-            // sf6Temperature
-            // 
-            this.sf6Temperature.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sf6Temperature.Location = new System.Drawing.Point(3, 16);
-            this.sf6Temperature.Name = "sf6Temperature";
-            this.sf6Temperature.ReadOnly = true;
-            this.sf6Temperature.Size = new System.Drawing.Size(165, 20);
-            this.sf6Temperature.TabIndex = 0;
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.txt40Ktemp);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.readButton);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.sf6Temperature);
             this.groupBox2.Controls.Add(this.currentTemperature);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.txtSourcePressure);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.chkLog);
+            this.groupBox2.Controls.Add(this.txtSourceTemp2);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(3, 527);
+            this.groupBox2.Location = new System.Drawing.Point(3, 379);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(171, 59);
+            this.groupBox2.Size = new System.Drawing.Size(187, 214);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Source Temperature (°C)";
+            this.groupBox2.Text = "Source Parameters";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(2, 142);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(59, 13);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "40K Temp:";
+            // 
+            // txt40Ktemp
+            // 
+            this.txt40Ktemp.Location = new System.Drawing.Point(77, 139);
+            this.txt40Ktemp.Name = "txt40Ktemp";
+            this.txt40Ktemp.ReadOnly = true;
+            this.txt40Ktemp.Size = new System.Drawing.Size(100, 20);
+            this.txt40Ktemp.TabIndex = 10;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(2, 116);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(54, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "sf6 Temp:";
+            // 
+            // readButton
+            // 
+            this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.readButton.Location = new System.Drawing.Point(49, 18);
+            this.readButton.Name = "readButton";
+            this.readButton.Size = new System.Drawing.Size(99, 44);
+            this.readButton.TabIndex = 3;
+            this.readButton.Text = "Start Reading";
+            this.readButton.UseVisualStyleBackColor = true;
+            this.readButton.Click += new System.EventHandler(this.toggleReading);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(1, 93);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(74, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Source Temp:";
+            // 
+            // sf6Temperature
+            // 
+            this.sf6Temperature.Location = new System.Drawing.Point(77, 113);
+            this.sf6Temperature.Name = "sf6Temperature";
+            this.sf6Temperature.ReadOnly = true;
+            this.sf6Temperature.Size = new System.Drawing.Size(100, 20);
+            this.sf6Temperature.TabIndex = 7;
             // 
             // currentTemperature
             // 
-            this.currentTemperature.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.currentTemperature.Location = new System.Drawing.Point(3, 16);
+            this.currentTemperature.Location = new System.Drawing.Point(77, 68);
             this.currentTemperature.Name = "currentTemperature";
             this.currentTemperature.ReadOnly = true;
-            this.currentTemperature.Size = new System.Drawing.Size(165, 20);
-            this.currentTemperature.TabIndex = 0;
+            this.currentTemperature.Size = new System.Drawing.Size(100, 20);
+            this.currentTemperature.TabIndex = 6;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(0, 71);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(74, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Source Temp:";
+            // 
+            // txtSourcePressure
+            // 
+            this.txtSourcePressure.Location = new System.Drawing.Point(56, 166);
+            this.txtSourcePressure.Name = "txtSourcePressure";
+            this.txtSourcePressure.ReadOnly = true;
+            this.txtSourcePressure.Size = new System.Drawing.Size(121, 20);
+            this.txtSourcePressure.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(2, 168);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Pressure";
+            // 
+            // chkLog
+            // 
+            this.chkLog.AutoSize = true;
+            this.chkLog.Location = new System.Drawing.Point(2, 194);
+            this.chkLog.Name = "chkLog";
+            this.chkLog.Size = new System.Drawing.Size(100, 17);
+            this.chkLog.TabIndex = 2;
+            this.chkLog.Text = "Log Parameters";
+            this.chkLog.UseVisualStyleBackColor = true;
+            // 
+            // txtSourceTemp2
+            // 
+            this.txtSourceTemp2.Location = new System.Drawing.Point(77, 90);
+            this.txtSourceTemp2.Name = "txtSourceTemp2";
+            this.txtSourceTemp2.ReadOnly = true;
+            this.txtSourceTemp2.Size = new System.Drawing.Size(100, 20);
+            this.txtSourceTemp2.TabIndex = 1;
             // 
             // cryoGroup
             // 
             this.cryoGroup.Controls.Add(this.tableLayoutPanel4);
             this.cryoGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cryoGroup.Location = new System.Drawing.Point(3, 134);
+            this.cryoGroup.Location = new System.Drawing.Point(3, 126);
             this.cryoGroup.Name = "cryoGroup";
-            this.cryoGroup.Size = new System.Drawing.Size(171, 125);
+            this.cryoGroup.Size = new System.Drawing.Size(187, 117);
             this.cryoGroup.TabIndex = 1;
             this.cryoGroup.TabStop = false;
             this.cryoGroup.Text = "Cryo-cooler";
@@ -173,16 +290,16 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(165, 106);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(181, 98);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
             // cryoSwitch
             // 
             this.cryoSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoSwitch.Enabled = false;
-            this.cryoSwitch.Location = new System.Drawing.Point(53, 56);
+            this.cryoSwitch.Location = new System.Drawing.Point(61, 52);
             this.cryoSwitch.Name = "cryoSwitch";
-            this.cryoSwitch.Size = new System.Drawing.Size(59, 47);
+            this.cryoSwitch.Size = new System.Drawing.Size(59, 43);
             this.cryoSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.cryoSwitch.TabIndex = 0;
             this.cryoSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleCryo);
@@ -191,9 +308,9 @@
             // 
             this.cryoLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.cryoLED.Location = new System.Drawing.Point(58, 4);
+            this.cryoLED.Location = new System.Drawing.Point(66, 3);
             this.cryoLED.Name = "cryoLED";
-            this.cryoLED.Size = new System.Drawing.Size(49, 45);
+            this.cryoLED.Size = new System.Drawing.Size(49, 43);
             this.cryoLED.TabIndex = 1;
             // 
             // heaterGroup
@@ -202,7 +319,7 @@
             this.heaterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heaterGroup.Location = new System.Drawing.Point(3, 3);
             this.heaterGroup.Name = "heaterGroup";
-            this.heaterGroup.Size = new System.Drawing.Size(171, 125);
+            this.heaterGroup.Size = new System.Drawing.Size(187, 117);
             this.heaterGroup.TabIndex = 0;
             this.heaterGroup.TabStop = false;
             this.heaterGroup.Text = "Heater";
@@ -219,7 +336,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(165, 106);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(181, 98);
             this.tableLayoutPanel3.TabIndex = 0;
             this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
@@ -227,9 +344,9 @@
             // 
             this.heaterSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterSwitch.Enabled = false;
-            this.heaterSwitch.Location = new System.Drawing.Point(53, 56);
+            this.heaterSwitch.Location = new System.Drawing.Point(61, 52);
             this.heaterSwitch.Name = "heaterSwitch";
-            this.heaterSwitch.Size = new System.Drawing.Size(59, 47);
+            this.heaterSwitch.Size = new System.Drawing.Size(59, 43);
             this.heaterSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.heaterSwitch.TabIndex = 0;
             this.heaterSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeater);
@@ -238,7 +355,7 @@
             // 
             this.heaterLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.heaterLED.Location = new System.Drawing.Point(58, 5);
+            this.heaterLED.Location = new System.Drawing.Point(66, 3);
             this.heaterLED.Name = "heaterLED";
             this.heaterLED.Size = new System.Drawing.Size(49, 42);
             this.heaterLED.TabIndex = 1;
@@ -248,31 +365,56 @@
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.Controls.Add(this.groupBox1, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel7, 0, 1);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 265);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 249);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 38.60759F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 61.39241F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(171, 125);
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93.16239F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.837607F));
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(187, 117);
             this.tableLayoutPanel5.TabIndex = 2;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cycleButton);
+            this.groupBox1.Controls.Add(this.holdButton);
             this.groupBox1.Controls.Add(this.cycleLimit);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(165, 42);
+            this.groupBox1.Size = new System.Drawing.Size(181, 102);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cycle Max Temp (°C)";
             // 
+            // cycleButton
+            // 
+            this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleButton.Enabled = false;
+            this.cycleButton.Location = new System.Drawing.Point(22, 56);
+            this.cycleButton.Name = "cycleButton";
+            this.cycleButton.Size = new System.Drawing.Size(61, 40);
+            this.cycleButton.TabIndex = 2;
+            this.cycleButton.Text = "Cycle Source";
+            this.cycleButton.UseVisualStyleBackColor = true;
+            this.cycleButton.Click += new System.EventHandler(this.toggleCycling);
+            // 
+            // holdButton
+            // 
+            this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.holdButton.Enabled = false;
+            this.holdButton.Location = new System.Drawing.Point(103, 56);
+            this.holdButton.Name = "holdButton";
+            this.holdButton.Size = new System.Drawing.Size(61, 40);
+            this.holdButton.TabIndex = 3;
+            this.holdButton.Text = "Hold Source";
+            this.holdButton.UseVisualStyleBackColor = true;
+            this.holdButton.Click += new System.EventHandler(this.toggleHolding);
+            // 
             // cycleLimit
             // 
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleLimit.Location = new System.Drawing.Point(24, 12);
+            this.cycleLimit.Location = new System.Drawing.Point(34, 19);
             this.cycleLimit.Minimum = new decimal(new int[] {
             100,
             0,
@@ -287,63 +429,93 @@
             0,
             0});
             // 
-            // tableLayoutPanel7
+            // tableLayoutPanel6
             // 
-            this.tableLayoutPanel7.ColumnCount = 2;
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.Controls.Add(this.holdButton, 1, 0);
-            this.tableLayoutPanel7.Controls.Add(this.cycleButton, 0, 0);
-            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 51);
-            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
-            this.tableLayoutPanel7.RowCount = 1;
-            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(165, 71);
-            this.tableLayoutPanel7.TabIndex = 4;
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.Controls.Add(this.groupBox3, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.groupBox4, 0, 1);
+            this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
+            this.tableLayoutPanel6.RowCount = 3;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 56.56779F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 43.43221F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 134F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(474, 607);
+            this.tableLayoutPanel6.TabIndex = 3;
             // 
-            // holdButton
+            // groupBox3
             // 
-            this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.holdButton.Enabled = false;
-            this.holdButton.Location = new System.Drawing.Point(93, 13);
-            this.holdButton.Name = "holdButton";
-            this.holdButton.Size = new System.Drawing.Size(61, 44);
-            this.holdButton.TabIndex = 3;
-            this.holdButton.Text = "Hold Source";
-            this.holdButton.UseVisualStyleBackColor = true;
-            this.holdButton.Click += new System.EventHandler(this.toggleHolding);
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.cmbSamplingRate);
+            this.groupBox3.Controls.Add(this.chkToF);
+            this.groupBox3.Controls.Add(this.tempGraph);
+            this.groupBox3.Controls.Add(this.chkSaveTrace);
+            this.groupBox3.Location = new System.Drawing.Point(3, 3);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(467, 258);
+            this.groupBox3.TabIndex = 0;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "PMT - Time of flight";
             // 
-            // cycleButton
+            // label5
             // 
-            this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleButton.Enabled = false;
-            this.cycleButton.Location = new System.Drawing.Point(10, 13);
-            this.cycleButton.Name = "cycleButton";
-            this.cycleButton.Size = new System.Drawing.Size(61, 44);
-            this.cycleButton.TabIndex = 2;
-            this.cycleButton.Text = "Cycle Source";
-            this.cycleButton.UseVisualStyleBackColor = true;
-            this.cycleButton.Click += new System.EventHandler(this.toggleCycling);
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(236, 236);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(96, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Sampling rate (Hz):";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
-            // readButton
+            // cmbSamplingRate
             // 
-            this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.readButton.Location = new System.Drawing.Point(51, 435);
-            this.readButton.Name = "readButton";
-            this.readButton.Size = new System.Drawing.Size(75, 46);
-            this.readButton.TabIndex = 3;
-            this.readButton.Text = "Start Reading";
-            this.readButton.UseVisualStyleBackColor = true;
-            this.readButton.Click += new System.EventHandler(this.toggleReading);
+            this.cmbSamplingRate.FormattingEnabled = true;
+            this.cmbSamplingRate.Items.AddRange(new object[] {
+            "100",
+            "500",
+            "1000",
+            "5000",
+            "10000",
+            "20000",
+            "40000",
+            "60000",
+            "80000",
+            "100000",
+            "150000",
+            "200000",
+            "250000"});
+            this.cmbSamplingRate.Location = new System.Drawing.Point(338, 233);
+            this.cmbSamplingRate.Name = "cmbSamplingRate";
+            this.cmbSamplingRate.Size = new System.Drawing.Size(121, 21);
+            this.cmbSamplingRate.TabIndex = 4;
+            this.cmbSamplingRate.Text = "100000";
+            this.cmbSamplingRate.SelectedIndexChanged += new System.EventHandler(this.samplingRateSelect);
+            // 
+            // chkToF
+            // 
+            this.chkToF.AutoSize = true;
+            this.chkToF.Location = new System.Drawing.Point(7, 235);
+            this.chkToF.Name = "chkToF";
+            this.chkToF.Size = new System.Drawing.Size(80, 17);
+            this.chkToF.TabIndex = 3;
+            this.chkToF.Text = "Show trace";
+            this.chkToF.UseVisualStyleBackColor = true;
             // 
             // tempGraph
             // 
-            this.tempGraph.Location = new System.Drawing.Point(3, 3);
+            this.tempGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.tempGraph.Location = new System.Drawing.Point(6, 19);
             this.tempGraph.Name = "tempGraph";
             this.tempGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot1});
-            this.tempGraph.Size = new System.Drawing.Size(491, 658);
+            this.tempGraph.Size = new System.Drawing.Size(453, 202);
             this.tempGraph.TabIndex = 0;
             this.tempGraph.UseColorGenerator = true;
             this.tempGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -358,12 +530,187 @@
             // 
             // xAxis1
             // 
-            this.xAxis1.Caption = "Time";
+            this.xAxis1.Caption = "Time (ms)";
             // 
             // yAxis1
             // 
-            this.yAxis1.Caption = "Temperature (°C) ";
-            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleVisibleLoose;
+            this.yAxis1.Caption = "Voltage (V)";
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
+            // chkSaveTrace
+            // 
+            this.chkSaveTrace.AutoSize = true;
+            this.chkSaveTrace.Location = new System.Drawing.Point(93, 235);
+            this.chkSaveTrace.Name = "chkSaveTrace";
+            this.chkSaveTrace.Size = new System.Drawing.Size(79, 17);
+            this.chkSaveTrace.TabIndex = 2;
+            this.chkSaveTrace.Text = "Save to file";
+            this.chkSaveTrace.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.chkAutoFlowControl);
+            this.groupBox4.Controls.Add(this.chkAO1Enable);
+            this.groupBox4.Controls.Add(this.chkAO0Enable);
+            this.groupBox4.Controls.Add(this.lblAO1);
+            this.groupBox4.Controls.Add(this.lblAO0);
+            this.groupBox4.Controls.Add(this.numAO1);
+            this.groupBox4.Controls.Add(this.numAO0);
+            this.groupBox4.Controls.Add(this.label10);
+            this.groupBox4.Controls.Add(this.label9);
+            this.groupBox4.Controls.Add(this.lblheflow);
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.label6);
+            this.groupBox4.Controls.Add(this.lblsf6flow);
+            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox4.Location = new System.Drawing.Point(3, 270);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(447, 199);
+            this.groupBox4.TabIndex = 1;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Flow Controllers";
+            // 
+            // chkAutoFlowControl
+            // 
+            this.chkAutoFlowControl.AutoSize = true;
+            this.chkAutoFlowControl.Location = new System.Drawing.Point(10, 143);
+            this.chkAutoFlowControl.Name = "chkAutoFlowControl";
+            this.chkAutoFlowControl.Size = new System.Drawing.Size(134, 17);
+            this.chkAutoFlowControl.TabIndex = 14;
+            this.chkAutoFlowControl.Text = "Automatic Flow Control";
+            this.chkAutoFlowControl.UseVisualStyleBackColor = true;
+            // 
+            // chkAO1Enable
+            // 
+            this.chkAO1Enable.AutoSize = true;
+            this.chkAO1Enable.Location = new System.Drawing.Point(248, 112);
+            this.chkAO1Enable.Name = "chkAO1Enable";
+            this.chkAO1Enable.Size = new System.Drawing.Size(67, 17);
+            this.chkAO1Enable.TabIndex = 13;
+            this.chkAO1Enable.Text = "Flow ON";
+            this.chkAO1Enable.UseVisualStyleBackColor = true;
+            this.chkAO1Enable.CheckedChanged += new System.EventHandler(this.chkAO1Enable_CheckedChanged);
+            // 
+            // chkAO0Enable
+            // 
+            this.chkAO0Enable.AutoSize = true;
+            this.chkAO0Enable.Location = new System.Drawing.Point(10, 111);
+            this.chkAO0Enable.Name = "chkAO0Enable";
+            this.chkAO0Enable.Size = new System.Drawing.Size(67, 17);
+            this.chkAO0Enable.TabIndex = 12;
+            this.chkAO0Enable.Text = "Flow ON";
+            this.chkAO0Enable.UseVisualStyleBackColor = true;
+            this.chkAO0Enable.CheckedChanged += new System.EventHandler(this.chkAO0Enable_CheckedChanged);
+            // 
+            // lblAO1
+            // 
+            this.lblAO1.AutoSize = true;
+            this.lblAO1.Location = new System.Drawing.Point(335, 87);
+            this.lblAO1.Name = "lblAO1";
+            this.lblAO1.Size = new System.Drawing.Size(50, 13);
+            this.lblAO1.TabIndex = 11;
+            this.lblAO1.Text = "( 0.00 V )";
+            // 
+            // lblAO0
+            // 
+            this.lblAO0.AutoSize = true;
+            this.lblAO0.Location = new System.Drawing.Point(94, 88);
+            this.lblAO0.Name = "lblAO0";
+            this.lblAO0.Size = new System.Drawing.Size(53, 13);
+            this.lblAO0.TabIndex = 10;
+            this.lblAO0.Text = "( 0. 00 V )";
+            // 
+            // numAO1
+            // 
+            this.numAO1.DecimalPlaces = 2;
+            this.numAO1.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numAO1.Location = new System.Drawing.Point(248, 84);
+            this.numAO1.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numAO1.Name = "numAO1";
+            this.numAO1.Size = new System.Drawing.Size(77, 20);
+            this.numAO1.TabIndex = 9;
+            this.numAO1.ValueChanged += new System.EventHandler(this.numAO1_ValueChanged);
+            // 
+            // numAO0
+            // 
+            this.numAO0.DecimalPlaces = 2;
+            this.numAO0.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numAO0.Location = new System.Drawing.Point(10, 84);
+            this.numAO0.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numAO0.Name = "numAO0";
+            this.numAO0.Size = new System.Drawing.Size(77, 20);
+            this.numAO0.TabIndex = 8;
+            this.numAO0.ValueChanged += new System.EventHandler(this.numAO0_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(245, 67);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(128, 13);
+            this.label10.TabIndex = 7;
+            this.label10.Text = "He flow set point in sccm:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(7, 67);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(133, 13);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "SF6 flow set point in sccm:";
+            // 
+            // lblheflow
+            // 
+            this.lblheflow.AutoSize = true;
+            this.lblheflow.Location = new System.Drawing.Point(300, 27);
+            this.lblheflow.Name = "lblheflow";
+            this.lblheflow.Size = new System.Drawing.Size(62, 13);
+            this.lblheflow.TabIndex = 5;
+            this.lblheflow.Text = "0.000 sccm";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(245, 27);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "He Flow:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 27);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "SF6 Flow:";
+            // 
+            // lblsf6flow
+            // 
+            this.lblsf6flow.AutoSize = true;
+            this.lblsf6flow.Location = new System.Drawing.Point(67, 27);
+            this.lblsf6flow.Name = "lblsf6flow";
+            this.lblsf6flow.Size = new System.Drawing.Size(62, 13);
+            this.lblsf6flow.TabIndex = 4;
+            this.lblsf6flow.Text = "0.000 sccm";
             // 
             // SourceTabView
             // 
@@ -371,10 +718,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "SourceTabView";
+            this.Size = new System.Drawing.Size(794, 810);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.cryoGroup.ResumeLayout(false);
@@ -388,8 +734,14 @@
             this.tableLayoutPanel5.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).EndInit();
-            this.tableLayoutPanel7.ResumeLayout(false);
+            this.tableLayoutPanel6.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numAO1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAO0)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -416,11 +768,39 @@
         private System.Windows.Forms.NumericUpDown cycleLimit;
         private System.Windows.Forms.Button readButton;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox currentTemperature;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.Button holdButton;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox txtSourceTemp2;
+        private System.Windows.Forms.CheckBox chkLog;
+        private System.Windows.Forms.TextBox txtSourcePressure;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox sf6Temperature;
+        private System.Windows.Forms.TextBox currentTemperature;
+        private System.Windows.Forms.Label label2;
+        //private System.Windows.Forms.CheckBox chkToF;
+        private System.Windows.Forms.CheckBox chkSaveTrace;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox chkToF;
+        private System.Windows.Forms.ComboBox cmbSamplingRate;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txt40Ktemp;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblheflow;
+        private System.Windows.Forms.Label lblsf6flow;
+        private System.Windows.Forms.NumericUpDown numAO0;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown numAO1;
+        private System.Windows.Forms.Label lblAO1;
+        private System.Windows.Forms.Label lblAO0;
+        private System.Windows.Forms.CheckBox chkAO0Enable;
+        private System.Windows.Forms.CheckBox chkAO1Enable;
+        private System.Windows.Forms.CheckBox chkAutoFlowControl;
 
     }
 }

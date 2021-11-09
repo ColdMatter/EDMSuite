@@ -11,6 +11,7 @@ namespace MoleculeMOTHardwareControl.Controls
     public abstract class GenericController : MarshalByRefObject
     {
         public GenericView view;
+        private object motMasterRem;
 
         public GenericController()
         {
@@ -26,7 +27,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected AnalogSingleChannelReader CreateAnalogInputReader(string channelName)
         {
-            Task task = new Task();
+            NationalInstruments.DAQmx.Task task = new NationalInstruments.DAQmx.Task();
             ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName]).AddToTask(task, -10.0, 10.0);
             task.Control(TaskAction.Verify);
             return new AnalogSingleChannelReader(task.Stream);
@@ -34,10 +35,12 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected DigitalSingleChannelWriter CreateDigitalOutputWriter(string channelName)
         {
-            Task task = new Task();
+            NationalInstruments.DAQmx.Task task = new NationalInstruments.DAQmx.Task();
             ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[channelName]).AddToTask(task);
             task.Control(TaskAction.Verify);
             return new DigitalSingleChannelWriter(task.Stream);
         }
+        
+        
     }
 }

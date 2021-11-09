@@ -355,6 +355,7 @@ namespace TransferCavityLock2012
             return GetLaserSetpoint(getDefaultCavityName(), laserName);
         }
 
+        
         public double GetLaserVoltage(string laserName)
         {
             return GetLaserVoltage(getDefaultCavityName(), laserName);

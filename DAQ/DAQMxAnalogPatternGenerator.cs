@@ -21,18 +21,33 @@ namespace DAQ.Analog
 
         public void Configure(AnalogPatternBuilder aPattern, int clockRate)
         {
-            Configure(aPattern, clockRate, false);
+            Configure(aPattern, clockRate, false, true);
         }
 
         public void Configure(AnalogPatternBuilder aPattern, int clockRate,  bool loop)
+        {
+            Configure(aPattern, clockRate, loop, true);
+        }
+
+        public void Configure(AnalogPatternBuilder aPattern, int clockRate,  bool loop, bool internalClk)
         {
             analogOutputTask = new Task();
             foreach (string keys in aPattern.AnalogPatterns.Keys)
             {
                 AddToAnalogOutputTask(analogOutputTask, keys);
             }
-            string clockSource = "";
+            string clockSource;
 
+            if (internalClk == true)
+            {
+                clockSource = "";
+                analogOutputTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo("AOClockLine");
+            }
+            else
+                clockSource = (string)Environment.Environs.Hardware.GetInfo("AOClockLine");
+
+            
+            
             SampleQuantityMode sqm;
             if(loop)
             {

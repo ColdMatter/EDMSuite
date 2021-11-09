@@ -113,9 +113,8 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=9.2.40.82, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2010\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+    <Reference Include="NationalInstruments.DAQmx, Version=20.7.40.49302, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
+      <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
@@ -176,7 +175,7 @@
       <Name>DAQ</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
-      <Project>{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}</Project>
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
       <Name>ScanMaster</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">

@@ -215,11 +215,12 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBeam", rbMOTLoadTime, true);
 
         //Absorption probe
-        p.AddEdge("rbAbsImagingBeam", 0, true);
+        //--p.AddEdge("rbAbsImagingBeam", 0, true);
+        p.AddEdge("rbAbsImagingBeam", 0, false);
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger0, false); //turn on probe beam to image cloud after holding in mag trap for some time
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger0 + 500, true);
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false); //turn on probe beam to image cloud after holding in mag trap for some time
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 100, true);
+        //--p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false); //turn on probe beam to image cloud after holding in mag trap for some time
+        //--p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 100, true);
         //p.AddEdge("rbAbsImagingBeam", secondCameraTrigger + (int)Parameters["TriggerJitter"], false); //turn on probe beam to image what is left in the magnetic trap
         //p.AddEdge("rbAbsImagingBeam", secondCameraTrigger + (int)Parameters["TriggerJitter"] + (int)Parameters["Frame0TriggerDuration"], true);
 

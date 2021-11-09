@@ -24,24 +24,27 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
-            AddDigitalOutputChannel("aom", pgBoard, 1, 1);//
-            AddDigitalOutputChannel("aom2", pgBoard, 1, 2);//
-            AddDigitalOutputChannel("shutter1", pgBoard, 1, 3);//
-            AddDigitalOutputChannel("shutter2", pgBoard, 1, 4);//
+            AddDigitalOutputChannel("probe", pgBoard, 0, 1);
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
-            AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 3);
-            //(0,3) pin 12 is unconnected
-            //AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", pgBoard, 1, 6);// Pin 21, used to be "shutterTrig1" (triggers camera for on-shots (not wired up))
-            //AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", pgBoard, 1, 7);// Pin 22, used to be "shutterTrig2" (triggers camera for off-shots (not wired up))
-            AddDigitalOutputChannel("probe", pgBoard, 0, 1);//Pin 44 previously connected to aom (not wired up)
-            AddDigitalOutputChannel("valve", pgBoard, 0, 6);//
-            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+            AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 3); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
+            AddDigitalOutputChannel("valve", pgBoard, 0, 6);
+
             AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7); //Pin 15 (OffShot)from pg to daq
-            //digital output P 0.6 wired up, not used (Pin 48)
+            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+
+            AddDigitalOutputChannel("ccd1", pgBoard, 1, 1);         // previously "aom"         if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ccd2", pgBoard, 1, 2);         // previously "aom2"        if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);         // previously "shutter1"    if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl2", pgBoard, 1, 4);         // previously "shutter2"    if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl3", pgBoard, 1, 5);         // previously "ttl1"        if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ttl4", pgBoard, 1, 6);
+            AddDigitalOutputChannel("ttl5", pgBoard, 1, 7);
+
+            
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
-            AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
+            //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
             //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
            
@@ -60,10 +63,12 @@ namespace DAQ.HAL
 
             // map the analog input channels for "daq" card
             AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
-            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"
+            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"   unused at the moment, should be renamed
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
             //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
             AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
+            //AddAnalogInputChannel("detector1", TCLBoard + "/ai6", AITerminalConfiguration.Rse); //trying another card because of cross talks
+            //AddAnalogInputChannel("detector1", UEDMHardwareControllerBoard + "/ai10", AITerminalConfiguration.Rse); //trying another card because of cross talks
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
@@ -80,11 +85,14 @@ namespace DAQ.HAL
             AddAnalogInputChannel("SF6TemperatureMonitor", UEDMHardwareControllerBoard + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pressureGaugeSource", UEDMHardwareControllerBoard + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pressureGaugeBeamline", UEDMHardwareControllerBoard + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pressureGaugeDetection", UEDMHardwareControllerBoard + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI11", UEDMHardwareControllerBoard + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI12", UEDMHardwareControllerBoard + "/ai12", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI13", UEDMHardwareControllerBoard + "/ai13", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI14", UEDMHardwareControllerBoard + "/ai14", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
 
             // map the digital channels of the "UEDMHardwareControllerBoard" card
             AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
@@ -93,6 +101,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
+
+            //Counter Channels
+            AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
+            AddCounterChannel("eastLeakage", UEDMHardwareControllerBoard + "/ctr1");
 
             // map the analog output channels for the "UEDMHardwareControllerBoard" card
             //AddAnalogOutputChannel("laser", Unnamed + "/ao0");
@@ -128,6 +140,7 @@ namespace DAQ.HAL
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
+            Instruments.Add("WindthfreakSynthHD", new WindfreakSynthHD("ASRL5::INSTR"));
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
             
 
