@@ -211,13 +211,14 @@ Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],10^6 Sqrt[asymmetrySnWi
 
 
 (* ::Input::Initialization:: *)
-contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep},
+contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep,mwSign},
 dbStep=dblock@Config@GetModulationByName["DB"]@Step;
 magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
 phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
+mwSign=boolSign[dblock@Config@Settings["mwState"]];
 
-{#[[1]],#[[2]]/(2phaseStep),#[[3]]/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
+{#[[1]],(mwSign #[[2]])/(2phaseStep),(mwSign #[[3]])/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 ]
 
 
@@ -229,11 +230,11 @@ convertTOFToPhaseUnits[tof_,contrastTof_]:=MapThread[{#1[[1]],#1[[2]]/(2#2[[2]])
 extractPhysicalQuantities[dblock_]:=
 {
 "rawEDMWithErr"->rawEDMWithErr[dblock],
-"signedEDMWithErr"->edmSign[dblock] rawEDMWithErr[dblock],
+"signedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@rawEDMWithErr[dblock]),
 "correctedEDMWithErr"->correctedEDMWithErr[dblock],
-"signedCorrectedEDMWithErr"->edmSign[dblock] correctedEDMWithErr[dblock],
+"signedCorrectedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMWithErr[dblock]),
 "correctedEDMNoRfWithErr"->correctedEDMNoRfWithErr[dblock],
-"signedCorrectedEDMNoRfWithErr"->edmSign[dblock] correctedEDMNoRfWithErr[dblock],
+"signedCorrectedEDMNoRfWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMNoRfWithErr[dblock]),
 "contrast"->contrast[dblock]
 }
 
@@ -258,6 +259,13 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "mwState"->dbl@Config@Settings["mwState"],
 "ePlus"->dbl@Config@Settings["ePlus"],
 "eMinus"->dbl@Config@Settings["eMinus"],
+"phaseScramblerV"->dbl@Config@Settings["phaseScramblerV"],
+"bBiasV"->dbl@Config@Settings["bBiasV"],
+"RF1FCentre"->dbl@Config@GetModulationByName["RF1F"]@Centre,
+"RF2FCentre"->dbl@Config@GetModulationByName["RF2F"]@Centre,
+"RF1ACentre"->dbl@Config@GetModulationByName["RF1A"]@Centre,
+"RF2ACentre"->dbl@Config@GetModulationByName["RF2A"]@Centre,
+"RF1FCentre"->dbl@Config@GetModulationByName["RF1F"]@Centre,
 "timeStamp"->dbl@TimeStamp@Ticks,
 "hour"->dbl@TimeStamp@Hour,
 
@@ -266,7 +274,6 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cB"->getTOFChannel[{"B"},"asymmetry",dbl],
 "cDB"->getTOFChannel[{"DB"},"asymmetry",dbl],
 "cEDB"->getTOFChannel[{"E","DB"},"asymmetry",dbl],
-"cEB"->getTOFChannel[{"E","B"},"asymmetry",dbl],
 "cBDB"->getTOFChannel[{"B","DB"},"asymmetry",dbl],
 "cEBDB"->getTOFChannel[{"E","B","DB"},"asymmetry",dbl],
 
@@ -289,6 +296,8 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cDBRF2A"->getTOFChannel[{"DB","RF2A"},"asymmetry",dbl],
 "cEDBRF1F"->getTOFChannel[{"E","DB","RF1F"},"asymmetry",dbl],
 "cEDBRF2F"->getTOFChannel[{"E","DB","RF2F"},"asymmetry",dbl],
+"cBDBRF1F"->getTOFChannel[{"B","DB","RF1F"},"asymmetry",dbl],
+"cBDBRF2F"->getTOFChannel[{"B","DB","RF2F"},"asymmetry",dbl],
 
 "cPI"->getTOFChannel[{"PI"},"asymmetry",dbl],
 "cLF1"->getTOFChannel[{"LF1"},"asymmetry",dbl],
@@ -302,15 +311,20 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "BMag"->getPointChannel[{"B"},"magnetometer",dbl],
 "SIGMag"->getPointChannel[{"SIG"},"magnetometer",dbl],
 "ENorthCurrent"->getPointChannel[{"E"},"NorthCurrent",dbl],
+"SIGNorthCurrent"->getPointChannel[{"SIG"},"NorthCurrent",dbl],
 "ESouthCurrent"->getPointChannel[{"E"},"SouthCurrent",dbl],
+"SIGSouthCurrent"->getPointChannel[{"SIG"},"SouthCurrent",dbl],
+"ERfCurrent"->getPointChannel[{"E"},"rfCurrent",dbl],
+"SIGRfCurrent"->getPointChannel[{"SIG"},"rfCurrent",dbl],
+"EReflectedRfAmplitude"->getPointChannel[{"E"},"reflectedrfAmplitude",dbl],
+"SIGReflectedRfAmplitude"->getPointChannel[{"SIG"},"reflectedrfAmplitude",dbl],
+"EIncidentRfAmplitude"->getPointChannel[{"E"},"incidentrfAmplitude",dbl],
+"SIGIncidentRfAmplitude"->getPointChannel[{"SIG"},"incidentrfAmplitude",dbl],
 (*"topPD"\[Rule]getPointChannel[{"SIG"},"topPD",dbl],
 "bottomPD"\[Rule]getPointChannel[{"SIG"},"bottomPD",dbl]*)
 
-"fullChannelTable"->({#,weightedMeanOfTOFWithError[getTOFChannel[#,"asymmetry",dbl],2760,2960]}&/@getChannels[getSwitches[dbl]]),
-"fullChannelTablePhaseUnits"->({#,weightedMeanOfTOFWithError[convertTOFToPhaseUnits[getTOFChannel[#,"asymmetry",dbl],contrast[dbl]],2760,2960]}&/@getChannels[getSwitches[dbl]]),
-"magChannelTable"->({#,getPointChannel[#,"magnetometer",dbl]}&/@getChannels[getSwitches[dbl]]),
-"northCurrentChannelTable"->({#,getPointChannel[#,"NorthCurrent",dbl]}&/@getChannels[getSwitches[dbl]]),
-"southCurrentChannelTable"->({#,getPointChannel[#,"SouthCurrent",dbl]}&/@getChannels[getSwitches[dbl]])
+"fullChannelTable"->({#,weightedMeanOfTOFWithError[getTOFChannel[#,"asymmetry",dbl],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}])),
+"fullChannelTablePhaseUnits"->({#,weightedMeanOfTOFWithError[convertTOFToPhaseUnits[getTOFChannel[#,"asymmetry",dbl],contrast[dbl]],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}]))
 }
 ]
 
