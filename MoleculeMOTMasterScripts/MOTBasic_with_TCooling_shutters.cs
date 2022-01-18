@@ -34,6 +34,7 @@ public class Patterns : MOTMasterScript
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 180; //180
+        Parameters["PMTTrigger"] = 5000;
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -58,9 +59,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;//3.6
-        Parameters["yShimLoadCurrent"] = 0.0;//-0.12
-        Parameters["zShimLoadCurrent"] = 0.0;//-5.35
+        Parameters["xShimLoadCurrent"] = 2.3;//
+        Parameters["yShimLoadCurrent"] = 3.3;//
+        Parameters["zShimLoadCurrent"] = 0.0;//
 
 
         // v0 Light Switch
@@ -82,6 +83,7 @@ public class Patterns : MOTMasterScript
         // v0 F=1 (dodgy code using an analogue output to control a TTL)
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
+        Parameters["shutters"] = 0.0;
 
 
 
@@ -96,20 +98,27 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
+        p.Pulse(patternStartBeforeQ, 5000, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
 
         //p.Pulse(patternStartBeforeQ, (int)Parameters["CameraTriggerTransverseTime"], (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //camera trigger for first frame
         //p.Pulse(patternStartBeforeQ, 400, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
         //p.Pulse(patternStartBeforeQ, 0, (int)Parameters["Frame0TriggerDuration"], "test01");//New pattern card test channel
+        p.AddEdge("dipoleTrapAOM", 0, false);
         //p.AddEdge("dipoleTrapAOM", 4000, true);
 
         p.AddEdge("rb2DMOTShutter", 0, true);
         p.AddEdge("rb2DMOTShutter", 5000, false);
 
-        p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
-        p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
-        
+
+        if ((double)Parameters["shutters"] > 5.0)
+        {
+            p.AddEdge("v00MOTShutter", 0, true);
+        }
+        else
+        {
+            p.AddEdge("v00MOTShutter", 0, false);
+        }
         return p;
     }
 

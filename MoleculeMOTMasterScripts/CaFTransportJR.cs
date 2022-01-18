@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 500000;
+        Parameters["PatternLength"] = 1000000;
         //Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         //Parameters["TCLBlockDuration"] = 8000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
@@ -44,6 +44,7 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 100;
+        Parameters["Frame0TriggerDurationRbCam"] = 100;
 
         //
         Parameters["CaFMOTLoadDuration"] = 5000;
@@ -53,7 +54,7 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTrigger"] = 5000;
 
         //Optical pumping
-        Parameters["OPDuration"] = 150;
+        Parameters["OPDuration"] = 75;
         Parameters["OPEnable"] = 1;
 
         // Slowing
@@ -103,6 +104,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampEndValue"] = 8.2;// 7. for 20% power for 600mw in software ; //7.8;
         Parameters["v0IntensityMolassesValue"] = 5.6;//5.6;
         Parameters["v0IntensityF0PumpValue"] = 9.3;
+        Parameters["v0IntensityTweezerChamber"] = 5.6;
 
         // v0 Light Frequency
         Parameters["v0FrequencyMOTValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -113,7 +115,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
         Parameters["v0FrequencyNewValue"] = 20.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
         Parameters["v0FrequencyOPValue"] = 2.0;
-        Parameters["v0FrequencyImagingValue"] = 0.0;
+        Parameters["v0FrequencyImagingValue"] = 0.0;//20.0;
         //v0aomCalibrationValues
         Parameters["calibGradient"] = 11.4;
 
@@ -128,16 +130,22 @@ public class Patterns : MOTMasterScript
         //Transport MQT:
         Parameters["ExtMQTHoldDuration"] = 180000;
         Parameters["TransferRampDurationExternalCoils"] = 10000;
-        Parameters["ExternalMagTrapRampEndValue"] = 5.6;
+        Parameters["ExternalMagTrapRampEndValue"] = 10.0;//5.6;
         Parameters["TransferRampDurationInternalCoils"] = 10000;
         Parameters["RampDownTimeTransportTrap"] = 10000;
         Parameters["TrackReturn"] = 300000;
         Parameters["RampUpDurationIntMagTrapTweezer"] = 10000;
-        Parameters["CurrentEndValueIntMagTrapTweezer"] = 0.625;
-        Parameters["DurationIntMagTrapTweezer"] = 100;
+        Parameters["CurrentEndValueIntMagTrapTweezer"] = 2.5;// 0.625;
+        Parameters["DurationIntMagTrapTweezer"] = 10000;//10000;
 
         //Tweezer MOT
-        Parameters["TweezerMOTDuration"] = 2000;//10000;
+        Parameters["TweezerMOTDuration"] = 10;//2000;//10000;
+
+        //Tweezer Molasses
+        Parameters["TweezerMolassesDuration"] = 10;//10000;
+        Parameters["ExansionDuration"] = 1;//10000;
+        
+ 
 
         // v0 pumping EOM
         Parameters["v0EOMMOTValue"] = 4.85;
@@ -178,14 +186,16 @@ public class Patterns : MOTMasterScript
         int rampUpInternalTweezerMagTrap = mqtExternalEndTime;
         int InternalTweezerMagTrapEndTime = rampUpInternalTweezerMagTrap + (int)Parameters["RampUpDurationIntMagTrapTweezer"] + (int)Parameters["DurationIntMagTrapTweezer"];
         int tweezerMOTcoilsSwitchofftime = InternalTweezerMagTrapEndTime + (int)Parameters["TweezerMOTDuration"];
-
+        int tweezerMolassesStartTime = tweezerMOTcoilsSwitchofftime + (int)Parameters["ExansionDuration"];
 
         //int motRecaptureTime = tweezerMOTcoilsSwitchofftime - 1500;
         //int motRecaptureTime = tweezerMOTcoilsSwitchofftime + 100; 
-        int motRecaptureTime = mqtExternalEndTime - 1000;
+        //int motRecaptureTime = mqtExternalEndTime - 1000;
 
-        int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
-        //int finalImageTime = tweezerMOTcoilsSwitchofftime + 100;
+        int motRecaptureTime = tweezerMolassesStartTime + (int)Parameters["TweezerMolassesDuration"];
+
+        //int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
+        int finalImageTime = tweezerMOTcoilsSwitchofftime + (int)Parameters["ExansionDuration"] + (int)Parameters["TweezerMolassesDuration"];
         int rbMQTImageTime = finalImageTime + 1100;
         
         //Dummy Yag shots to cheat the source:
@@ -205,9 +215,9 @@ public class Patterns : MOTMasterScript
 
         //V00 AOM switch:
         p.Pulse(0, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off and V00 detuning is jumped
-        p.Pulse(0, molassesEndTime, motRecaptureTime - molassesEndTime, "v00MOTAOM"); // turn off the MOT light for optical pumping and magnetic trapping. 
-        //p.Pulse(0, molassesEndTime, rbMQTImageTime - molassesEndTime, "v00MOTAOM"); // turn off the MOT light for optical pumping and magnetic trapping. 
-        //p.Pulse(0, molassesEndTime, (mqtTransferToExternalStartTime - 1000) - molassesEndTime, "v00MOTAOM");
+        //p.Pulse(0, molassesEndTime, motRecaptureTime - molassesEndTime, "v00MOTAOM"); // turn off the MOT light for optical pumping and magnetic trapping. 
+        p.Pulse(0, molassesEndTime, tweezerMolassesStartTime - molassesEndTime, "v00MOTAOM"); // Molasses in tweezer chamber
+        
 
         //Microwave pulse
         //p.Pulse(0, microwavePulseTime, (int)Parameters["MWDuration"], "microwaveB");
@@ -216,10 +226,12 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rb2DMOTShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1700, true);//Close the shutter for Mag trap.
 
         p.AddEdge("cafOptPumpingAOM", 0, false);
+        //p.AddEdge("cafOptPumpingAOM", 0, true);
+
         p.AddEdge("cafOptPumpingShutter", 0, true);
         if ((int)Parameters["OPEnable"] == 1 && (int)Parameters["OPDuration"] > 0)
         {
-            p.AddEdge("cafOptPumpingShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1200, false);
+            p.AddEdge("cafOptPumpingShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1200+500, false);
             p.AddEdge("cafOptPumpingAOM", OPbiasfieldSettleTime, true);
             p.AddEdge("cafOptPumpingAOM", OPbiasfieldSettleTime + (int)Parameters["OPDuration"], false);
 
@@ -232,14 +244,17 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("transportTrack", tweezerMOTcoilsSwitchofftime - 1000, true);
         
         p.Pulse(0, firstImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of MOT at full intensity
-        p.Pulse(0, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); // camera trigger
+        p.Pulse(0, finalImageTime, (int)Parameters["Frame0TriggerDurationRbCam"], "rbAbsImgCamTrig"); // camera trigger
 
 
         //Mechanical CaF shutters:
         p.Pulse(0, cafMOTLoadEndTime - 1500, motRecaptureTime + 1500, "bXSlowingShutter");
-        if (motRecaptureTime - molassesEndTime + 1200 > 0)
-            p.Pulse(0, molassesEndTime - 1950, motRecaptureTime - molassesEndTime + 1200, "v00MOTShutter"); //V00 shutter closed after optical pumping an opened for recpature into MOT
-        
+        //if (motRecaptureTime - molassesEndTime + 1200 > 0)
+        if (tweezerMOTcoilsSwitchofftime - molassesEndTime + 1200 > 0)
+        { 
+            //p.Pulse(0, molassesEndTime - 1950, motRecaptureTime - molassesEndTime + 1200, "v00MOTShutter"); //V00 shutter closed after optical pumping an opened for recpature into MOT
+            p.Pulse(0, molassesEndTime - 1950, tweezerMolassesStartTime - molassesEndTime + 1200, "v00MOTShutter"); //V00 shutter closed after optical pumping an opened for recpature into MOT
+        }
         p.AddEdge("TransverseCoolingShutter", 0, false);
         p.AddEdge("TransverseCoolingShutter", cafMOTLoadEndTime, true);//Close the shutter for Mag trap.
 
@@ -279,14 +294,16 @@ public class Patterns : MOTMasterScript
         int rampUpInternalTweezerMagTrap = mqtExternalEndTime;
         int InternalTweezerMagTrapEndTime = rampUpInternalTweezerMagTrap + (int)Parameters["RampUpDurationIntMagTrapTweezer"] + (int)Parameters["DurationIntMagTrapTweezer"];
         int tweezerMOTcoilsSwitchofftime = InternalTweezerMagTrapEndTime + (int)Parameters["TweezerMOTDuration"];
+        int tweezerMolassesStartTime = tweezerMOTcoilsSwitchofftime + (int)Parameters["ExansionDuration"];
 
-
-        //int motRecaptureTime = tweezerMOTcoilsSwitchofftime - 1500; 
+        //int motRecaptureTime = tweezerMOTcoilsSwitchofftime - 1500;
         //int motRecaptureTime = tweezerMOTcoilsSwitchofftime + 100; 
-        int motRecaptureTime = mqtExternalEndTime - 1000; 
-        int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
-        //int finalImageTime = tweezerMOTcoilsSwitchofftime + 100;
+        //int motRecaptureTime = mqtExternalEndTime - 1000;
 
+        int motRecaptureTime = tweezerMolassesStartTime + (int)Parameters["TweezerMolassesDuration"];
+
+        //int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
+        int finalImageTime = tweezerMOTcoilsSwitchofftime + (int)Parameters["ExansionDuration"] + (int)Parameters["TweezerMolassesDuration"];
         int rbMQTImageTime = finalImageTime + 1100;
 
         // Add Analog Channels
@@ -326,7 +343,9 @@ public class Patterns : MOTMasterScript
         //p.AddAnalogValue("MOTCoilsCurrent", motRecaptureTime, (double)Parameters["MOTCoilsCurrentRampStartValue"]);
         //p.AddAnalogValue("MOTCoilsCurrent", finalImageTime +1000, -0.1);
 
+        p.AddAnalogValue("transferCoils", 0, -0.1);
         //Ramp up the current of external coils
+        p.AddAnalogValue("transferCoils", mqtTransferToExternalStartTime - 5000, 0.15);
         p.AddLinearRamp("transferCoils", mqtTransferToExternalStartTime, (int)Parameters["TransferRampDurationExternalCoils"], (double)Parameters["ExternalMagTrapRampEndValue"]);
 
         //Ramp down transport coils
@@ -335,10 +354,13 @@ public class Patterns : MOTMasterScript
 
         //Internal Coils in tweezer chamber ramp up 
         p.AddAnalogValue("TweezerMOTCoils", 0, -0.1);
+        
+
         p.AddLinearRamp("TweezerMOTCoils", rampUpInternalTweezerMagTrap, (int)Parameters["RampUpDurationIntMagTrapTweezer"], (double)Parameters["CurrentEndValueIntMagTrapTweezer"]);
         p.AddAnalogValue("TweezerMOTCoils", tweezerMOTcoilsSwitchofftime, -0.1);
 
-
+        //p.AddAnalogValue("TweezerMOTCoils", motRecaptureTime, (double)Parameters["CurrentEndValueIntMagTrapTweezer"]);
+        //p.AddAnalogValue("TweezerMOTCoils", finalImageTime + 1000, -0.1);
 
         //p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", mqtStartTime, 5.0);
@@ -367,6 +389,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", cafMOTLoadEndTime, (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", motSwitchOffTime, (double)Parameters["v0IntensityMolassesValue"]);
+        p.AddAnalogValue("v00Intensity", mqtTransferToExternalStartTime, (double)Parameters["v0IntensityTweezerChamber"]);
         //p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityRampEndValue"]);
         //p.AddAnalogValue("v00Intensity", motRecaptureTime, 5.6);
         //p.AddAnalogValue("v00Intensity", mqtTransferToExternalStartTime - 1000, (double)Parameters["v0IntensityRampEndValue"]);
@@ -377,7 +400,7 @@ public class Patterns : MOTMasterScript
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", motSwitchOffTime, 10.0 - (double)Parameters["v0FrequencyNewValue"] / (double)Parameters["calibGradient"]);//jump to blue detuning for blue molasses
-        p.AddAnalogValue("v00Frequency", motRecaptureTime - 100, 10.0 - (double)Parameters["v0FrequencyImagingValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
+        //p.AddAnalogValue("v00Frequency", motRecaptureTime, 10.0 - (double)Parameters["v0FrequencyImagingValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
         //p.AddAnalogValue("v00Frequency", finalImageTime, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
         //p.AddAnalogValue("v00Frequency", mqtTransferToExternalStartTime - 1100, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
 

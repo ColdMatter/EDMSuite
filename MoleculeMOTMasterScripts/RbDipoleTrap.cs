@@ -44,9 +44,9 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 1.4;
+        Parameters["ImagingFrequency"] = 2.6;
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
-        Parameters["MOTCoolingLoadingFrequency"] = 4.0;//5.4 usewd to be
+        Parameters["MOTCoolingLoadingFrequency"] = 4.4;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.6
 
         //PMT
@@ -110,11 +110,11 @@ public class Patterns : MOTMasterScript
         Parameters["Det"] = 4.9;
 
         Parameters["FreeExpTime"] = 800;
-        Parameters["MolassesEndFrequency"] = 0.5;
-        Parameters["MolassesRampDuration"] = 1000;
+        Parameters["MolassesEndFrequency"] = 2.5;
+        Parameters["MolassesRampDuration"] = 500;
         Parameters["MolassesHoldDuration"] = 200;
 
-        Parameters["DipoleTrapDuration"] = 10000;
+        Parameters["DipoleTrapDuration"] = 100;
 
     }
 
@@ -140,8 +140,8 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("rb3DCooling", 0, false);
         p.AddEdge("rb3DCooling", molassesEndTime, true);
-        p.AddEdge("rb3DCooling", cameraTrigger1, false);
-        p.AddEdge("rb3DCooling", cameraTrigger1 + 50, true);
+        //p.AddEdge("rb3DCooling", cameraTrigger1, false);
+        //p.AddEdge("rb3DCooling", cameraTrigger1 + 500, true);
         p.AddEdge("rb2DCooling", 0, false);
         p.AddEdge("rb2DCooling", rbMOTLoadTime, true);
         p.AddEdge("rbPushBeam", 0, false);
@@ -160,12 +160,13 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
-        //p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false);
-        //p.AddEdge("rbAbsImagingBeam", cameraTrigger1 + 10, true);
+        p.AddEdge("rbAbsImagingBeam", molassesEndTime, false);
+        p.AddEdge("rbAbsImagingBeam", molassesEndTime + 100, true);
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger2, false);
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 10, true);
 
-        p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, molassesEndTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, molassesEndTime , (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
 
         // Abs image
         //p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
@@ -177,6 +178,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbOPShutter", 0, true);
         p.AddEdge("rb2DMOTShutter", 0, true);
 
+        p.AddEdge("dipoleTrapAOM", 0, true);
+        p.AddEdge("dipoleTrapAOM", rbMOTSwitchOffTime + (int)Parameters["MolassesRampDuration"], false);
+        p.AddEdge("dipoleTrapAOM", cameraTrigger1 - 100, true);
 
 
         return p;
@@ -231,7 +235,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
         p.AddLinearRamp("rb3DCoolingFrequency", rbMOTSwitchOffTime, (int)Parameters["MolassesRampDuration"], (double)Parameters["MolassesEndFrequency"]);
-        p.AddAnalogValue("rb3DCoolingFrequency", cameraTrigger1 - 100, 5.5);
+        p.AddAnalogValue("rb3DCoolingFrequency", cameraTrigger1 - 100, 7.0);
         return p;
     }
 

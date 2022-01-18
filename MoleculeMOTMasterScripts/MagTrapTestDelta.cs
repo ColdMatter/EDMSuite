@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 270000;//170000
+        Parameters["PatternLength"] = 200000;//170000
         //Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         //Parameters["TCLBlockDuration"] = 8000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
@@ -88,8 +88,8 @@ public class Patterns : MOTMasterScript
         Parameters["zShimLoadCurrent"] = -0.22;//-0.22;//old value// -0.22 is zero
 
         Parameters["xShimLoadCurrentOP"] = -2.0;//Bias field for Optical pumping
-        Parameters["yShimLoadCurrentOP"] = 10.0;
-        Parameters["zShimLoadCurrentOP"] = -1.7;
+        Parameters["yShimLoadCurrentOP"] = 5.0;
+        Parameters["zShimLoadCurrentOP"] = 0.0;
 
         //Shim fields for imaging
         Parameters["xShimImagingCurrent"] = -1.93;// -1.35 is zero
@@ -127,8 +127,8 @@ public class Patterns : MOTMasterScript
 
         //MQT:
         Parameters["MQTStartDelay"] = 50;
-        Parameters["MQTHoldDuration"] = 10000;
-        Parameters["MQTBField"] = 1.5;
+        Parameters["MQTHoldDuration"] = 10000;//10000;
+        Parameters["MQTBField"] = 1.0;
         Parameters["MQTLowFieldHoldDuration"] = 1600;
         Parameters["MQTFieldRampDuration"] = 1600;
 
@@ -163,8 +163,8 @@ public class Patterns : MOTMasterScript
         //int firstImageTime = cafMOTLoadEndTime - 1000;
         //int firstImageTime = (int)Parameters["TCLBlockStart"];
         int V0IntensityRampEndTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        int firstImageTime = cafMOTLoadEndTime - 1000;
-        //int firstImageTime = V0IntensityRampEndTime;// cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
+        //int firstImageTime = cafMOTLoadEndTime - 1000;
+        int firstImageTime = V0IntensityRampEndTime;// cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
 
         //int cmotStartTime = V0IntensityRampEndTime + (int)Parameters["MOTHoldTime"];
         //int motSwitchOffTime = cmotStartTime + (int)Parameters["CMOTRampDuration"] + (int)Parameters["CMOTHoldDuration"];
@@ -218,7 +218,7 @@ public class Patterns : MOTMasterScript
 
         if ((int)Parameters["OPEnable"] == 1 && (int)Parameters["OPDuration"] > 0)
         {
-            p.AddEdge("cafOptPumpingShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1200, false);
+            p.AddEdge("cafOptPumpingShutter", OPbiasfieldSettleTime + (int)Parameters["OPDuration"] - 1200-200, false);
             p.AddEdge("cafOptPumpingAOM", OPbiasfieldSettleTime, true);
             p.AddEdge("cafOptPumpingAOM", OPbiasfieldSettleTime + (int)Parameters["OPDuration"], false);
 
@@ -251,9 +251,8 @@ public class Patterns : MOTMasterScript
         //int rbMOTLoadingEndTime = (int)Parameters["RbMOTLoadTime"];
 
         int cafMOTLoadEndTime = (int)Parameters["CaFMOTLoadDuration"];
-        int firstImageTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
         int V0IntensityRampEndTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
-        //int firstImageTime = cafMOTLoadEndTime + (int)Parameters["v0IntensityRampDuration"];
+        int firstImageTime = V0IntensityRampEndTime;
         //int cmotStartTime = V0IntensityRampEndTime + (int)Parameters["MOTHoldTime"];
         //int motSwitchOffTime = cmotStartTime +  (int)Parameters["CMOTRampDuration"] + (int)Parameters["CMOTHoldDuration"];
 
@@ -320,7 +319,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", cafMOTLoadEndTime, (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", motSwitchOffTime, (double)Parameters["v0IntensityMolassesValue"]);
-        //p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityRampEndValue"]);
+        p.AddAnalogValue("v00Intensity", motRecaptureTime, (double)Parameters["v0IntensityRampEndValue"]);
 
         // v0 EOM
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["v0EOMMOTValue"]);

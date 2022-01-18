@@ -28,8 +28,8 @@ public class Patterns : MOTMasterScript
 
 
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 600; //1200
-        Parameters["MicrowavePulseDuration"] = 5;// 15;
+        Parameters["MolassesHoldTime"] = 100; //1200
+        Parameters["MicrowavePulseDuration"] = 10;// 15;
         Parameters["WaitBeforeRecapture"] = 100;
         Parameters["MOTWaitBeforeImage"] = 10;
 
@@ -71,37 +71,33 @@ public class Patterns : MOTMasterScript
         Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         //Shim fields for OP
-        Parameters["xShimOPCurrent"] = -1.35;// -1.35 is zero
-        Parameters["yShimOPCurrent"] = 2.0;// -1.92 is zero
-        Parameters["zShimOPCurrent"] = -0.22;// -0.22 is zero
+        Parameters["xShimOPCurrent"] = -2.0;// -1.35 is zero
+        Parameters["yShimOPCurrent"] = 10.0;// -1.92 is zero
+        Parameters["zShimOPCurrent"] = -3.0;// -0.22 is zero
 
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampDuration"] = 500;
+        Parameters["v0IntensityRampDuration"] = 300;
         Parameters["MOTHoldTime"] = 1000;
         Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityRampEndValue"] = 7.3;
+        Parameters["v0IntensityRampEndValue"] = 8.0;
         Parameters["v0IntensityMolassesValue"] = 5.6;
         Parameters["v0IntensityF0PumpValue"] = 9.3; //9.3
 
-        // v0 Light Frequency
-        Parameters["v0FrequencyMOTValue"] = 0.0; //set this to 0.0 for 114.1MHz 
-        Parameters["v0FrequencyF0PumpValue"] = 2.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
-
+        
         // v0 pumping EOM
-        Parameters["v0EOMMOTValue"] = 4.85;
+        Parameters["v0EOMMOTValue"] = 4.8;
         Parameters["v0EOMPumpValue"] = 1.7; //2.5
         Parameters["v0F0PumpDuration"] = 50;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
         Parameters["v0FrequencyNewValue"] = 22.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
-        Parameters["v0FrequencyOPValue"] = 4.0;
 
         //v0aomCalibrationValues
         Parameters["calibGradient"] = 11.4;
 
-        Parameters["PumpDuration"] = 150;
+        Parameters["PumpDuration"] = 1500;
 
         
 
@@ -126,23 +122,25 @@ public class Patterns : MOTMasterScript
 
 
         //Microwave pulse:
-        p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveB");
+        //p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
 
         //V00 AOM switch:
         p.Pulse(patternStartBeforeQ, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off and V00 detuning is jumped
         p.Pulse(patternStartBeforeQ, pumpStartTime, motRecaptureTime - pumpStartTime, "v00MOTAOM"); // turn off the MOT light for microwave pulse
 
-        p.Pulse(patternStartBeforeQ, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
+        //p.Pulse(patternStartBeforeQ, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
         p.Pulse(patternStartBeforeQ, firstImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger for picture of MOT at 20 percent intensity
-        p.Pulse(patternStartBeforeQ, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
+        //p.Pulse(patternStartBeforeQ, finalImageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // camera trigger
 
-        //p.AddEdge("dipoleTrapAOM", 0, false);
+        p.AddEdge("cafOptPumpingShutter", 0, true);
+        //p.AddEdge("cafOptPumpingShutter", pumpStartTime + (int)Parameters["PumpDuration"] - 1200, false);
 
-        p.AddEdge("dipoleTrapAOM", 0, true);
-        p.AddEdge("dipoleTrapAOM", patternStartBeforeQ + pumpStartTime, false);
-        p.AddEdge("dipoleTrapAOM", patternStartBeforeQ + pumpEndTime, true);
+        //p.AddEdge("cafOptPumpingAOM", 0, true);
+        p.AddEdge("cafOptPumpingAOM", 0, false);
+        //p.AddEdge("cafOptPumpingAOM", patternStartBeforeQ + pumpStartTime, true);
+        //p.AddEdge("cafOptPumpingAOM", patternStartBeforeQ + pumpEndTime, false);
 
-        p.AddEdge("rb2DMOTShutter", 0, true);
+        //p.AddEdge("rb2DMOTShutter", 0, true);
 
         return p;
     }

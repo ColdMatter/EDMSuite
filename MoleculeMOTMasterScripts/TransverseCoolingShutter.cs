@@ -26,14 +26,14 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
-        Parameters["Frame0TriggerDuration"] = 1000;
+        Parameters["Frame0TriggerDuration"] = 10;
         Parameters["CameraTriggerTransverseTime"] = 120;
 
         //PMT
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 200; //started from 280
+        Parameters["slowingAOMOnStart"] = 180; //started from 280
         Parameters["PMTTrigger"] = 5000;
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1520
@@ -59,8 +59,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;//3.6
-        Parameters["yShimLoadCurrent"] = 0.0;//-0.12
+        Parameters["xShimLoadCurrent"] = 10.0;//3.6
+        Parameters["yShimLoadCurrent"] = 10.0;//-0.12
         Parameters["zShimLoadCurrent"] = 0.0;//-5.35
 
 
@@ -98,21 +98,20 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["CameraTriggerTransverseTime"], (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         p.AddEdge("dipoleTrapAOM", 0, false);
 
-
         if ((double)Parameters["bxBeastShutter"] > 5.0)
         {
-            p.AddEdge("rb2DMOTShutter", 0, true);
+            p.AddEdge("cafOptPumpingAOM", 0, true); // fasle to stop doppler
+            p.AddEdge("cafOptPumpingShutter", 0, false); // true to stop subdoppler
         }
         else
         {
-            p.AddEdge("rb2DMOTShutter", 0, false);
-            p.AddEdge("rb2DMOTShutter", 8000, true);
-
+            p.AddEdge("cafOptPumpingAOM", 0, false);
+            p.AddEdge("cafOptPumpingShutter", 0, true);
         }
 
         return p;
@@ -158,7 +157,7 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 5.0);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.8);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

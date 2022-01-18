@@ -151,7 +151,7 @@ def sincFit(x,y,sigma=None):
 def injector(fileNoStart,fileNoStop,NoImages,
              fileNameString,
              fileSkip=1,
-             remotePath="//PH-TEW105/Users/rfmot/Desktop/AbsImages/",
+             remotePath="//PH-BSRIVATH/Users/CaFMOT/Desktop/AbsImages",
              dirPath="C:/Users/cafmot/Box Sync/CaF MOT/MOTData/MOTMasterData/"):
     imgs=os.listdir(remotePath)
     imgs.sort(key=natural_keys)

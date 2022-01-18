@@ -69,6 +69,7 @@
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
     <Compile Include="ChirpTest.cs" />
     <Compile Include="F2MF2Levitation.cs" />
+    <Compile Include="FreeSpaceImagingTest.cs" />
     <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
     <Compile Include="DualSpeciesMagTrap.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="ImageSlowingBeam.cs" />
     <Compile Include="MagneticTrapNumber.cs" />
     <Compile Include="MagTrapTemp.cs" />
-    <Compile Include="MagTrapTestDelta.cs" />
     <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
     <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
     <Compile Include="MicrowavePulseExperimental.cs" />
