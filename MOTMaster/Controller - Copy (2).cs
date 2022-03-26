@@ -70,7 +70,6 @@ namespace MOTMaster
         DAQMxPatternGenerator pgMaster;
         Dictionary<string, DAQMxPatternGenerator> pgs;
         DAQMxAnalogPatternGenerator apg;
-        //DAQMxAnalogPatternGenerator apgSecond;
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -110,7 +109,6 @@ namespace MOTMaster
             
 
             apg = new DAQMxAnalogPatternGenerator();
-            // apgSecond = new DAQMxAnalogPatternGenerator();
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -139,7 +137,6 @@ namespace MOTMaster
         private void run(MOTMasterSequence sequence)
         {
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            //apgSecond.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -168,9 +165,8 @@ namespace MOTMaster
                     pgs[address].Configure("PGSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true);
                 i++;
             }
-
+            
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false, true);
-            // apgSecond.Configure("SecondAO", sequence.AnalogPattern, config.AnalogPatternClockFrequency, false, true);
         }
 
 
@@ -182,7 +178,6 @@ namespace MOTMaster
                 pg.StopPattern();
             }
             apg.StopPattern();
-            // apgSecond.StopPattern();
         }
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {

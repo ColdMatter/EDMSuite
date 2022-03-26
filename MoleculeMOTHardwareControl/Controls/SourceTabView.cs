@@ -336,6 +336,11 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             castController.FlowTimeOut = (int)numFlowTimeout.Value;
         }
+
+        private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        {
+
+        }
  
     }
 }

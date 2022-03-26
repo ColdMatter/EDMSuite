@@ -83,6 +83,8 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
 
+        Parameters["repumpVoltage"] = 0.0;
+
 
 
     }
@@ -107,11 +109,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rb2DMOTShutter", 0, true);
         p.AddEdge("rb2DMOTShutter", 5000, false);
 
-        p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
-        p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
+        p.AddEdge("cafOptPumpingAOM", 0, false); // false for switch off
+        p.AddEdge("cafOptPumpingShutter", 0, false); // true for switch off
 
-        //p.AddEdge("motLightSwitch", 0, true);
-        
         return p;
     }
 
@@ -131,6 +131,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
+        p.AddChannel("rbAbsImagingFrequency");
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -139,6 +140,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
 
+
+        // 548 nm scanning
+        p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["repumpVoltage"]);
 
 
         // B Field
@@ -155,7 +159,7 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.4); // 4.4
+        p.AddAnalogValue("v00EOMAmp", 0, 4.4);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

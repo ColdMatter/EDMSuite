@@ -56,6 +56,11 @@ namespace DAQ.HAL
             string digitalPatternBoardAddress2 = "/PXI1Slot4";
             Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
 
+            
+            string analogPatternBoardName2 = "analogPattern2";
+            string analogPatternBoardAddress2 = "/PXI1Slot7";
+            Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
+            
 
             // Channel Declarations
 
@@ -180,18 +185,26 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
             AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
+            // New Ananlog board
+            AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
+
             // Source
             AddDigitalOutputChannel("cryoCooler", tclBoard2Address, 0, 0);
             AddDigitalOutputChannel("sourceHeater", tclBoard2Address, 0, 1);
+            AddDigitalOutputChannel("sf6Valve", tclBoard2Address, 0, 2);
+            AddDigitalOutputChannel("heValve", tclBoard2Address, 0, 3);
+
             AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("MOTPressure", tclBoard2Address + "/ai8", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("sourceTemp40K", tclBoard2Address + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6FlowMonitor", tclBoard2Address + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("he6FlowMonitor", tclBoard2Address + "/ai6", AITerminalConfiguration.Rse);
 
             Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
+            Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
             Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
             Info.Add("flowConversionHe", 0.2); 
@@ -290,6 +303,9 @@ namespace DAQ.HAL
             Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
+
+            Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI6");
+            Info.Add("SecondAOClockLine", analogPatternBoardAddress2 + "/PFI3");
 
             /*****************
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);

@@ -73,6 +73,9 @@
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.chkSaveTrace = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.numFlowTimeout = new System.Windows.Forms.NumericUpDown();
+            this.chkAutoValveControl = new System.Windows.Forms.CheckBox();
             this.chkHeValve = new System.Windows.Forms.CheckBox();
             this.chkSF6Valve = new System.Windows.Forms.CheckBox();
             this.chkAutoFlowControl = new System.Windows.Forms.CheckBox();
@@ -88,9 +91,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.lblsf6flow = new System.Windows.Forms.Label();
-            this.chkAutoValveControl = new System.Windows.Forms.CheckBox();
-            this.numFlowTimeout = new System.Windows.Forms.NumericUpDown();
-            this.label14 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -109,9 +109,9 @@
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO0)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -600,6 +600,7 @@
             this.xAxis1});
             this.tempGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
+            this.tempGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tempGraph_PlotDataChanged);
             // 
             // scatterPlot1
             // 
@@ -653,6 +654,48 @@
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Flow Controllers";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(10, 171);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(73, 13);
+            this.label14.TabIndex = 19;
+            this.label14.Text = "Timeout (ms) :";
+            // 
+            // numFlowTimeout
+            // 
+            this.numFlowTimeout.Location = new System.Drawing.Point(89, 169);
+            this.numFlowTimeout.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numFlowTimeout.Minimum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numFlowTimeout.Name = "numFlowTimeout";
+            this.numFlowTimeout.Size = new System.Drawing.Size(58, 20);
+            this.numFlowTimeout.TabIndex = 18;
+            this.numFlowTimeout.Value = new decimal(new int[] {
+            30000,
+            0,
+            0,
+            0});
+            this.numFlowTimeout.ValueChanged += new System.EventHandler(this.numFlowTimeout_ValueChanged);
+            // 
+            // chkAutoValveControl
+            // 
+            this.chkAutoValveControl.AutoSize = true;
+            this.chkAutoValveControl.Location = new System.Drawing.Point(160, 148);
+            this.chkAutoValveControl.Name = "chkAutoValveControl";
+            this.chkAutoValveControl.Size = new System.Drawing.Size(139, 17);
+            this.chkAutoValveControl.TabIndex = 17;
+            this.chkAutoValveControl.Text = "Automatic Valve Control";
+            this.chkAutoValveControl.UseVisualStyleBackColor = true;
             // 
             // chkHeValve
             // 
@@ -818,48 +861,6 @@
             this.lblsf6flow.TabIndex = 4;
             this.lblsf6flow.Text = "0.000 sccm";
             // 
-            // chkAutoValveControl
-            // 
-            this.chkAutoValveControl.AutoSize = true;
-            this.chkAutoValveControl.Location = new System.Drawing.Point(160, 148);
-            this.chkAutoValveControl.Name = "chkAutoValveControl";
-            this.chkAutoValveControl.Size = new System.Drawing.Size(139, 17);
-            this.chkAutoValveControl.TabIndex = 17;
-            this.chkAutoValveControl.Text = "Automatic Valve Control";
-            this.chkAutoValveControl.UseVisualStyleBackColor = true;
-            // 
-            // numFlowTimeout
-            // 
-            this.numFlowTimeout.Location = new System.Drawing.Point(89, 169);
-            this.numFlowTimeout.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.numFlowTimeout.Minimum = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
-            this.numFlowTimeout.Name = "numFlowTimeout";
-            this.numFlowTimeout.Size = new System.Drawing.Size(58, 20);
-            this.numFlowTimeout.TabIndex = 18;
-            this.numFlowTimeout.Value = new decimal(new int[] {
-            30000,
-            0,
-            0,
-            0});
-            this.numFlowTimeout.ValueChanged += new System.EventHandler(this.numFlowTimeout_ValueChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 171);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(73, 13);
-            this.label14.TabIndex = 19;
-            this.label14.Text = "Timeout (ms) :";
-            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -888,9 +889,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.tempGraph)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO0)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).EndInit();
             this.ResumeLayout(false);
 
         }

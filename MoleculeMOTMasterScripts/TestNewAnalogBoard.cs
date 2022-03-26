@@ -111,7 +111,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
         //p.AddEdge("motLightSwitch", 0, true);
-        
+
         return p;
     }
 
@@ -131,6 +131,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
+        //p.AddChannel("newAnalogTest");
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -156,6 +157,9 @@ public class Patterns : MOTMasterScript
 
         // F=0
         p.AddAnalogValue("v00EOMAmp", 0, 4.4); // 4.4
+
+        // Test New Ananlog Board
+        //p.AddAnalogValue("newAnalogTest", 0, 4.4);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

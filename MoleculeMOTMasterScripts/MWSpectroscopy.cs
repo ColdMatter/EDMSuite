@@ -28,8 +28,9 @@ public class Patterns : MOTMasterScript
 
 
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 300; //1200
-        Parameters["MicrowavePulseDuration"] = 7;// 15;
+        Parameters["MolassesHoldTime"] = 600; //1200
+        Parameters["MicrowavePulseDuration"] = 10;// 15;
+        Parameters["SecondMicrowavePulseDuration"] = 11;// 15;
         Parameters["WaitBeforeRecapture"] = 100;
         Parameters["MOTWaitBeforeImage"] = 10;
         Parameters["xShimZeemanSplitValue"] = 0.0;
@@ -67,7 +68,7 @@ public class Patterns : MOTMasterScript
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
-        Parameters["yShimLoadCurrent"] = 2.0;// -1.92 is zero
+        Parameters["yShimLoadCurrent"] = 2.2;// -1.92 is zero // 2.0
         Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         // v0 Light Intensity
@@ -84,9 +85,9 @@ public class Patterns : MOTMasterScript
         Parameters["v0FrequencyF0PumpValue"] = 2.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         // v0 pumping EOM
-        Parameters["v0EOMMOTValue"] = 4.85;
-        Parameters["v0EOMPumpValue"] = 1.7; //2.5
-        Parameters["v0F0PumpDuration"] = 50;
+        Parameters["v0EOMMOTValue"] = 4.4;
+        Parameters["v0EOMPumpValue"] = 1.0; //2.5
+        Parameters["v0F0PumpDuration"] = 100;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
@@ -111,13 +112,15 @@ public class Patterns : MOTMasterScript
         int v0F0PumpStartTime = molassesEndTime;
         int v0F0PumpEndTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int microwavePulseTime = v0F0PumpEndTime + 80;
-        int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
+        int secondMicrowavePulseTime = microwavePulseTime + 5 + (int)Parameters["MicrowavePulseDuration"];
+        int motRecaptureTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
         int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns. 
 
 
         //Microwave pulse:
         p.Pulse(patternStartBeforeQ, microwavePulseTime, (int)Parameters["MicrowavePulseDuration"], "microwaveA");
+        p.Pulse(patternStartBeforeQ, secondMicrowavePulseTime, (int)Parameters["SecondMicrowavePulseDuration"], "microwaveB");
 
         //V00 AOM switch:
         p.Pulse(patternStartBeforeQ, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); // pulse off the MOT light whilst MOT fields are turning off and V00 detuning is jumped
@@ -145,7 +148,8 @@ public class Patterns : MOTMasterScript
         int v0F0PumpStartTime = molassesEndTime;
         int v0F0PumpEndTime = v0F0PumpStartTime + (int)Parameters["v0F0PumpDuration"];
         int microwavePulseTime = v0F0PumpEndTime + 80;
-        int motRecaptureTime = microwavePulseTime + (int)Parameters["MicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
+        int secondMicrowavePulseTime = microwavePulseTime + 5 + (int)Parameters["MicrowavePulseDuration"];
+        int motRecaptureTime = secondMicrowavePulseTime + (int)Parameters["SecondMicrowavePulseDuration"] + (int)Parameters["WaitBeforeRecapture"];
         int finalImageTime = motRecaptureTime + (int)Parameters["MOTWaitBeforeImage"];
 
         // Add Analog Channels

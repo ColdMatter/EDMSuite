@@ -44,7 +44,7 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 2.7;
+        Parameters["ImagingFrequency"] = 0.0;
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
         Parameters["MOTCoolingLoadingFrequency"] = 5.0;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.6
@@ -155,7 +155,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         
 
-        p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
+        p.AddEdge("rbAbsImagingBeam", 0, false); //Absorption imaging probe
 
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false);
         //p.AddEdge("rbAbsImagingBeam", cameraTrigger1 + 10, true);
@@ -164,7 +164,7 @@ public class Patterns : MOTMasterScript
 
         // Abs image
         //p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
-        //p.Pulse(0, rbMOTSwitchOffTime + 2000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, rbMOTSwitchOffTime + 2000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //trigger camera to take image of probe
         //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //trigger camera to take image of background rbAbsImgCamTrig
 
