@@ -318,7 +318,8 @@ namespace DAQ.HAL
             
             ****************/
 
-            
+            Info.Add("FirstAnalogBoard", analogPatternBoardAddress);
+            Info.Add("SecondAnalogBoard", analogPatternBoardAddress2);
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");

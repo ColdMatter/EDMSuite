@@ -44,7 +44,6 @@ namespace DAQ.Analog
         {
             Dictionary<int, double> d = new Dictionary<int, double>();
             AnalogPatterns.Add(channelName, d);
-
         }
 
         public void AddAnalogValue(string channel, int time, double value)

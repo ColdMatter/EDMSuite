@@ -17,6 +17,8 @@ namespace DAQ.Analog
     public class AnalogPatternBuilder
     {
         [DataMember]
+        public int PatternLength;
+        public string[] ChannelNames;
         private Dictionary<string, AnalogPatternBuilderSingleBoard> boards = new Dictionary<string, AnalogPatternBuilderSingleBoard>();
         public Dictionary<string, AnalogPatternBuilderSingleBoard> Boards
         {
@@ -24,14 +26,24 @@ namespace DAQ.Analog
             set { boards = value; }
         }
 
-        public AnalogPatternBuilder()
+        public AnalogPatternBuilder(string[] channelNames, int patternLength)
         {
+            ChannelNames = channelNames;
+            PatternLength = patternLength;
+        }
 
+        public AnalogPatternBuilder(int patternLength)
+        {
+            AddBoard((string)Environs.Hardware.GetInfo("FirstAnalogBoard"));
+            PatternLength = patternLength;
         }
 
         public void AddBoard(string address)
         {
-            Boards.Add(address, new AnalogPatternBuilderSingleBoard());
+            Boards.Add(address, new AnalogPatternBuilderSingleBoard(
+                PatternLength
+                )
+            );
         }
 
         public AnalogPatternBuilderSingleBoard GetBoard(AnalogOutputChannel channel)
@@ -47,26 +59,27 @@ namespace DAQ.Analog
         public void AddChannel(string channelName)
         {
             
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).AddChannel(channel.BitNumber);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddChannel(channelName);
 
         }
 
         public void AddAnalogValue(string channelName, int time, double value)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).AddAnalogValue(channel.BitNumber, time, value);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddAnalogValue(channelName, time, value);
         }
 
         //value is the voltage during the pulse
         //finalValue is the voltage AFTER the pulse.
         public void AddAnalogPulse(string channelName, int startTime, int duration, double value, double finalValue)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).AddAnalogPulse(channel.BitNumber, startTime, duration, value, finalValue);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddAnalogPulse(channelName, startTime, duration, value, finalValue);
         }
 
-        /** Return the minimum length array of the longest pattern. */
+        /** Return the minimum length array of the longest pattern.
+         * Only copied it from the PatternBuilder32.cs, dont think it is required
         public int GetMinimumLength()
         {
             AnalogPatternBuilderSingleBoard[] boardsList = Boards.Values.ToArray();
@@ -78,59 +91,48 @@ namespace DAQ.Analog
             }
             return minLengths.Max();
         }
-        
+        */
         public double GetValue(string channelName, int time)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            return GetBoard(channel).GetValue(channel.BitNumber, time);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            return GetBoard(channel).GetValue(channelName, time);
         }
         
         public void AddLinearRamp(string channelName, int startTime, int steps, double finalValue)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).AddLinearRamp(channel.BitNumber, startTime, steps, finalValue);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddLinearRamp(channelName, startTime, steps, finalValue);
         }
 
         public void AddPolynomialRamp(string channelName, int startTime, int stopTime,
             double finalValue, double upperThresholdValue, double lowerThresholdValue,
             double weight1, double weight2, double weight3, double weight4)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).AddPolynomialRamp(channel.BitNumber, startTime, stopTime,
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddPolynomialRamp(channelName, startTime, stopTime,
                 finalValue, upperThresholdValue, lowerThresholdValue,
                 weight1, weight2, weight3, weight4);
         }
 
-        public double[,] BuildPattern()
+        public void BuildPattern()
         {
-            Pattern = new double[AnalogPatterns.Count, PatternLength];
-            ICollection<string> keys = AnalogPatterns.Keys; // will it send all the keys?
-            int i = 0;
             foreach (AnalogPatternBuilderSingleBoard board in Boards.Values)
             {
-                foreach (string key in keys)
-                {
-                    double[] d = board.buildSinglePattern(key);
-                    for (int j = 0; j < PatternLength; j++)
-                    {
-                        Pattern[i, j] = d[j];
-                    }
-                    i++;
-                }
+                board.BuildPattern();
             }
-
-            return Pattern;
         }
 
         public void SwitchOffAtEndOfPattern(string channelName)
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).SwitchOffAtEndOfPattern(channel.BitNumber);
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).SwitchOffAtEndOfPattern(channelName);
         }
         public void SwitchAllOffAtEndOfPattern()
         {
-            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannel[channelName];
-            GetBoard(channel).SwitchAllOffAtEndOfPattern();
+            foreach (AnalogPatternBuilderSingleBoard board in Boards.Values)
+            {
+                board.SwitchAllOffAtEndOfPattern();
+            }
         }
     }
 }

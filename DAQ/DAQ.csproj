@@ -213,6 +213,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AnalogPatternBuilder.cs" />
+    <Compile Include="AnalogPatternBuilderSingleBoard.cs" />
     <Compile Include="AnapicoSYN420.cs" />
     <Compile Include="AnritsuVNA.cs" />
     <Compile Include="AssemblyInfo.cs">

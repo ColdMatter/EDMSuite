@@ -139,7 +139,10 @@ namespace MOTMaster
         private void run(MOTMasterSequence sequence)
         {
             apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            //apgSecond.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
+            /*
+            apg.OutputPatternAndWait(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("FirstAnalogBoard")].Pattern);
+            apgSecond.OutputPatternAndWait(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("SecondAnalogBoard")].Pattern);
+            */
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -170,7 +173,10 @@ namespace MOTMaster
             }
 
             apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false, true);
-            // apgSecond.Configure("SecondAO", sequence.AnalogPattern, config.AnalogPatternClockFrequency, false, true);
+            /*
+            apg.Configure(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("FirstAnalogBoard")], config.AnalogPatternClockFrequency, false, true);
+            apgSecond.Configure("SecondAO", sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("SecondAnalogBoard")], config.AnalogPatternClockFrequency, false, true);
+            */
         }
 
 
