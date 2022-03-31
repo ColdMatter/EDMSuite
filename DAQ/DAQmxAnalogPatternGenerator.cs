@@ -22,17 +22,17 @@ namespace DAQ.Analog
         string clock_line;
         string pattern_trigger;
 
-        public void Configure(AnalogPatternBuilder aPattern, int clockRate)
+        public void Configure(AnalogPatternBuilderSingleBoard aPattern, int clockRate)
         {
             Configure(aPattern, clockRate, false, true);
         }
 
-        public void Configure(AnalogPatternBuilder aPattern, int clockRate,  bool loop)
+        public void Configure(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop)
         {
             Configure(aPattern, clockRate, loop, true);
         }
 
-        public void Configure(string taskName, AnalogPatternBuilder aPattern, int clockRate, bool loop, bool internalClk)
+        public void Configure(string taskName, AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
         {
             analogOutputTask = new Task(taskName);
             analogTaskName = taskName;
@@ -41,7 +41,7 @@ namespace DAQ.Analog
             configure_AO(aPattern, clockRate, loop, internalClk);
         }
 
-        public void Configure(AnalogPatternBuilder aPattern, int clockRate, bool loop, bool internalClk)
+        public void Configure(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
         {
             analogOutputTask = new Task("AO");
             analogTaskName = "AO";
@@ -50,12 +50,24 @@ namespace DAQ.Analog
             configure_AO(aPattern, clockRate, loop, internalClk);
         }
 
-        public void configure_AO(AnalogPatternBuilder aPattern, int clockRate,  bool loop, bool internalClk)
+        public void configure_AO(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
         {
 
             foreach (string keys in aPattern.AnalogPatterns.Keys)
             {
                 AddToAnalogOutputTask(analogOutputTask, keys);
+            }
+
+            string clockSource;
+
+            if (internalClk == true)
+            {
+                clockSource = "";
+                analogOutputTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
+            }
+            else
+            {
+                clockSource = (string)Environment.Environs.Hardware.GetInfo(clock_line);
             }
 
             SampleQuantityMode sqm;
@@ -71,31 +83,17 @@ namespace DAQ.Analog
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
             }
 
-            string clockSource;
-
-            if (internalClk == true)
-            {
-                clockSource = "";
-                analogOutputTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
-            }
-            else
-            {
-                clockSource = (string)Environment.Environs.Hardware.GetInfo(clock_line);
-            }
-
             analogOutputTask.Timing.ConfigureSampleClock(
                     clockSource,
                     clockRate,
                     SampleClockActiveEdge.Rising,
                     sqm,
                     aPattern.PatternLength);
-            
-            //if (analogTaskName == "AO")
-            //{
+
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo(pattern_trigger),
                 DigitalEdgeStartTriggerEdge.Rising);
-            //}
+            
 
             
             analogOutputTask.Control(TaskAction.Verify);

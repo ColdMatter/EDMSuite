@@ -69,8 +69,8 @@ namespace MOTMaster
 
         DAQMxPatternGenerator pgMaster;
         Dictionary<string, DAQMxPatternGenerator> pgs;
-        DAQMxAnalogPatternGenerator apg;
-        //DAQMxAnalogPatternGenerator apgSecond;
+        Dictionary<string, DAQMxAnalogPatternGenerator> analogs;
+        Dictionary<string, string> analogBoards;
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -106,11 +106,17 @@ namespace MOTMaster
                     pgs[address] = new DAQMxPatternGenerator(address);
                 }
             }
-            
-            
 
-            apg = new DAQMxAnalogPatternGenerator();
-            // apgSecond = new DAQMxAnalogPatternGenerator();
+            analogBoards = (Dictionary<string, string>)Environs.Hardware.GetInfo("AnalogBoards");
+            analogs = new Dictionary<string, DAQMxAnalogPatternGenerator>();
+            if (analogBoards != null)
+            {
+                foreach (string address in analogBoards.Values)
+                {
+                    analogs[address] = new DAQMxAnalogPatternGenerator();
+                }
+            }
+
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -138,11 +144,15 @@ namespace MOTMaster
 
         private void run(MOTMasterSequence sequence)
         {
-            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            /*
-            apg.OutputPatternAndWait(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("FirstAnalogBoard")].Pattern);
-            apgSecond.OutputPatternAndWait(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("SecondAnalogBoard")].Pattern);
-            */
+            foreach (string address in analogs.Keys)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogs[address].OutputPatternAndWait(sequence.AnalogPattern.Boards[address].Pattern);
+                }
+
+            }
+            
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -172,13 +182,20 @@ namespace MOTMaster
                 i++;
             }
 
-            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false, true);
-            /*
-            apg.Configure(sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("FirstAnalogBoard")], config.AnalogPatternClockFrequency, false, true);
-            apgSecond.Configure("SecondAO", sequence.AnalogPattern.Boards[(string)Environs.Hardware.GetInfo("SecondAnalogBoard")], config.AnalogPatternClockFrequency, false, true);
-            */
+            int j = 0;
+            foreach (KeyValuePair<string, string> kvp in analogBoards)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
+                {
+                    analogs[kvp.Value].Configure(
+                            kvp.Key,
+                            sequence.AnalogPattern.Boards[kvp.Value],
+                            config.AnalogPatternClockFrequency, false, true);
+                    j++;
+                }
+                    
+            }
         }
-
 
         private void releaseHardware()
         {
@@ -187,8 +204,10 @@ namespace MOTMaster
             {
                 pg.StopPattern();
             }
-            apg.StopPattern();
-            // apgSecond.StopPattern();
+            foreach (DAQMxAnalogPatternGenerator apg in analogs.Values)
+            {
+                apg.StopPattern();
+            }
         }
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {

@@ -185,7 +185,13 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
             AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
-            // New Ananlog board
+            /* New Ananlog board
+             * This specific channel "newAnalogTest" has been added to the
+             * LoadMoleculeMOT, LoadMoleculeMOTNoSlowingEdge and LoadMoleculeMOTDualSpecies
+             * inside the MOTMaster folder to make the old scripts compatible with both boards
+             * If you plan on changing the name make sure you change it inside
+             * those files too.
+            */
             AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
 
             // Source
@@ -299,11 +305,12 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
-            Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
+            
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
 
+            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
+            Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
             Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI6");
             Info.Add("SecondAOClockLine", analogPatternBoardAddress2 + "/PFI3");
 
@@ -318,8 +325,12 @@ namespace DAQ.HAL
             
             ****************/
 
-            Info.Add("FirstAnalogBoard", analogPatternBoardAddress);
-            Info.Add("SecondAnalogBoard", analogPatternBoardAddress2);
+            
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("AO", analogPatternBoardAddress);
+            analogBoards.Add("SecondAO", analogPatternBoardAddress2);
+            Info.Add("AnalogBoards", analogBoards);
+
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
