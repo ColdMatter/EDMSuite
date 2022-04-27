@@ -11,7 +11,7 @@ Guide to installing EDMSuite
   •	These can all be found on the NI website, requires a log-in
 3.	Install Measurement Studio for Visual Studio 2019:
   •	Then download it here: https://www.ni.com/en-gb/support/downloads/software-products/download.measurement-studio.html#305938
-  •	After downloading, go to NI License Manager and activate the Enterprise edition of MS2019 with the license number M61X46163
+  •	After downloading, go to NI License Manager and activate the Enterprise edition of MS2019 with a license number. Please ask around or go to Box folder for the number ;)
   •	After installing, check that there is Measurement Studio appearing under the “Extensions” menu in Visual Studio, and check that it is licensed (under “Licenses”)
   [The order is important. You must have VS first and NI packages next.]
 4.	Install the latest version of Git
