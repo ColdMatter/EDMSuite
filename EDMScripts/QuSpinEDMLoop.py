@@ -44,7 +44,7 @@ def prompt(text):
 	sys.stdout.write(text)
 	return sys.stdin.readline().strip()
 
-def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
+def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
@@ -53,7 +53,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bh.StartPattern()
 	#hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
-	#hc.UpdateProbeAOMFreqMonitor()
+	#hc.UpdateProbeAOMV()
 	#hc.UpdatePumpAOMFreqMonitor()
 	#hc.CheckPiMonitor()
 	#print("Measuring polarizer angle")
@@ -66,14 +66,15 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	print("Bias: " + str(hc.BiasCurrent))
 	print("B step: " + str(abs(hc.FlipStepCurrent)))
 	print("DB step: " + str(abs(hc.CalStepCurrent)))
+	print("Phase Lock Error (deg): "+ str(pl.PhaseError))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	#bc = loadBlockConfig(settingsPath + "default.xml")
-	bc = loadBlockConfig(settingsPath + "QuspinTest_With_dB_noDB.xml")
+	bc = loadBlockConfig(settingsPath + "default.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
 	bc.Settings["rfState"] = rfState
+	bc.Settings["mwState"] = mwState
 	bc.Settings["phaseScramblerV"] = scramblerV
 	bc.Settings["ePlus"] = hc.CPlusMonitorVoltage * hc.CPlusMonitorScale
 	bc.Settings["eMinus"] = hc.CMinusMonitorVoltage * hc.CMinusMonitorScale
@@ -81,6 +82,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bc.Settings["greenDCFM"] = hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
 	bc.Settings["greenFreq"] = hc.GreenSynthOnFrequency
+	bc.Settings["rf1CentreTime"] = sm.GetPGSetting("rf1CentreTime")
+	bc.Settings["rf2CentreTime"] = sm.GetPGSetting("rf2CentreTime")
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
 	bc.GetModulationByName("DB").Step = abs(hc.CalStepCurrent)/1000
@@ -104,14 +107,18 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bc.GetModulationByName("RF2F").Step = hc.RF2FMStep
 	bc.GetModulationByName("RF2F").PhysicalCentre = hc.RF2FrequencyCentre
 	bc.GetModulationByName("RF2F").PhysicalStep = hc.RF2FrequencyStep
-
+	# laser frequency stuff goes here
+	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre
+	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep
 	# generate the waveform codes
 	print("Generating waveform codes ...")
 	eWave = bc.GetModulationByName("E").Waveform
 	eWave.Name = "E"
-	lf1Wave = bc.GetModulationByName("LF1").Waveform
-	lf1Wave.Name = "LF1"
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave, lf1Wave), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F") )
+	##lf1Wave = bc.GetModulationByName("LF1").Waveform
+	##lf1Wave.Name = "LF1"
+	##mwWave = bc.GetModulationByName("MW").Waveform
+	##mwWave.Name = "MW"
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB","PI","RF1A","RF2A","RF1F","RF2F","LF1") )
 	bc.GetModulationByName("B").Waveform = ws["B"]
 	bc.GetModulationByName("DB").Waveform = ws["DB"]
 	bc.GetModulationByName("PI").Waveform = ws["PI"]
@@ -119,10 +126,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bc.GetModulationByName("RF2A").Waveform = ws["RF2A"]
 	bc.GetModulationByName("RF1F").Waveform = ws["RF1F"]
 	bc.GetModulationByName("RF2F").Waveform = ws["RF2F"]
-	# change the inversions of the static codes E 
+	bc.GetModulationByName("LF1").Waveform = ws["LF1"]	
+	# change the inversions of the static codes E
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# Do the same for the microwave channel
-	#bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	# bc.GetModulationByName("MW").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 	# print the waveform codes
 	# printWaveformCode(bc, "E")
 	# printWaveformCode(bc, "B")
@@ -142,17 +150,15 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV):
 	bc.Settings["eSwitchTime"] = hc.ESwitchTime
 	bc.Settings["eRampUpTime"] = hc.ERampUpTime
 	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
-	# this is for legacy analysis compatibility
-	bc.Settings["eDischargeTime"] = hc.ERampDownTime + hc.ERampDownDelay
-	bc.Settings["eChargeTime"] = hc.ERampUpTime + hc.ERampUpDelay
+	bc.Settings["eOvershootFactor"] = hc.EOvershootFactor
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
-	# number of times to step the target looking for a good target spot
-	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000;
+	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
+	bc.Settings["maximumNumberOfTimesToStepTarget"] = 2000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 300.0;
-	bc.Settings["targetStepperGateStartTime"] = 2340.0;
-	bc.Settings["targetStepperGateEndTime"] = 2540.0;
+	bc.Settings["minimumSignalToRun"] = 100.0
+	bc.Settings["targetStepperGateStartTime"] = 2380.0
+	bc.Settings["targetStepperGateEndTime"] = 2580.0
 	return bc
 
 # lock gains
@@ -397,7 +403,7 @@ def QuSpinGo():
 	hc.EnableGreenSynth( True )
 	print("leakage monitors calibrated")
 
-	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV)
+	bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV)
 
 	# loop and take data
 	blockIndex = 0
@@ -438,7 +444,7 @@ def QuSpinGo():
 		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
 
-		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, scramblerV)
+		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV)
 
 		#hc.EnableAnapicoListSweep( True )
 		#print("ListSweep for microwaves enabled")
