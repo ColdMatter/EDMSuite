@@ -70,6 +70,14 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+
+                case "PH-ULTRAEDM":
+                    Hardware = new PHULTRAEDMHardware();
+                    FileSystem = new PHULTRAEDMFileSystem();
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
                 case "Centaur":
                     Hardware = new CentaurEDMHardware();
                     FileSystem = new CentaurEDMFileSystem();

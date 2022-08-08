@@ -25,7 +25,7 @@ BeginPackage["SEDM4`TOF`","SEDM4`Statistics`"];
 
 (* ::Input::Initialization:: *)
 getTrimmedMeanAndErrTOFChannel::usage="getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_] takes a list of TOF channels (with errors), calculates the trimmed mean and its standard error of each point of the TOF across all the channels via bootstrapping, and returns the result as a TOF with errors.";
-weightedMeanOfTOFWithError::usage="weightedMeanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the weighted mean and its standard error."
+weightedMeanOfTOFWithError::usage="weightedMeanOfTOFWithError[tofWithError_,gateLow_,gateHigh] takes a TOF with errors and returns the weighted mean and its standard error, within the gate times specified. If no gate times are specified it just returns the weighted mean from the whole TOF."
 meanOfTOFWithError::usage="meanOfTOFWithError[tofWithError_] takes a TOF with errors and returns the mean and its standard error."
 
 
@@ -55,6 +55,13 @@ Transpose[{times,First/@tme,Last/@tme}]
 
 (* ::Input::Initialization:: *)
 weightedMeanOfTOFWithError[tofWithError_]:=weightedMean[{#[[2]],#[[3]]}&/@tofWithError]
+
+
+(* ::Input::Initialization:: *)
+weightedMeanOfTOFWithError[tofWithError_,trimLow_,trimHigh_]:=Module[{trimmedTof},
+trimmedTof=Select[tofWithError,trimLow<=#[[1]]<=trimHigh&];
+weightedMean[{#[[2]],#[[3]]}&/@trimmedTof]
+]
 
 
 (* ::Input::Initialization:: *)

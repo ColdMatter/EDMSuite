@@ -85,9 +85,10 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MagTrapStartTime"], (int)Parameters["MagTrapDuration"], "motAOM"); 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MagTrapStartTime"] + (int)Parameters["MagTrapDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.      
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["MagTrapStartTime"], (int)Parameters["MagTrapDuration"], "motAOM"); 
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["MagTrapStartTime"] + (int)Parameters["MagTrapDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
 
         return p;

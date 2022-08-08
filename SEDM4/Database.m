@@ -63,6 +63,10 @@ getTOFChannelValues::usage="getTOFChannelValues[channel, detector, dblock] gives
 getTOFChannelErrors::usage="getTOFChannelErrors[channel, detector, dblock] gives the TOF channel errors for the detector in a demodulated block dblock."
 getTOFChannel::usage="getTOFChannel[channel, detector, dblock] gives the TOF channel for the detector in a demodulated block dblock in the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(value\), \(i\)]\), \!\(\*SubscriptBox[\(error\), \(i\)]\)}...}."
 
+(*Getting the list of switches from a block*)
+getSwitches::usage=
+"getSwitches[dblock] returns the list of switches used in the block."
+
 (*Finding blocks from hard disk*)
 getClusterFiles::usage="getClusterFiles[clusterName_] returns a list of files that belong to the named cluster. It expects the files to be stored in the standard structure. It doesn't query the database - it really looks for files on your hard disk.";
 getBlockFile::usage="getBlockFile[clusterName_, clusterIndex_] returns the filename for the block identified by its cluster name and index. It will only return a value if you have that block in your data root.";
@@ -156,6 +160,9 @@ getTOFChannelTimes[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,det
 getTOFChannelValues[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,detector]@Data
 getTOFChannelErrors[channel_,detector_,dblock_]:=dblock@GetTOFChannel[channel,detector]@Errors
 getTOFChannel[channel_,detector_,dblock_]:=Transpose[{getTOFChannelTimes[channel,detector,dblock],getTOFChannelValues[channel,detector,dblock],getTOFChannelErrors[channel,detector,dblock]}]
+
+
+getSwitches[dblock_]:=Join[dblock@Config@AnalogModulations[#]@Name&/@Range[0,dblock@Config@AnalogModulations@Count-1],dblock@Config@DigitalModulations[#]@Name&/@Range[0,dblock@Config@DigitalModulations@Count-1]]
 
 
 (* ::Input::Initialization:: *)

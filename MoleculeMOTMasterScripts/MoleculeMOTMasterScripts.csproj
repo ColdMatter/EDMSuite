@@ -63,11 +63,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AMOTBasicMagtrapTest.cs" />
     <Compile Include="BFieldCalibration.cs" />
     <Compile Include="BlueMOT.cs" />
     <Compile Include="BlueMOTAfterBlueMolasses.cs" />
     <Compile Include="ChirpTest.cs" />
     <Compile Include="F2MF2Levitation.cs" />
+    <Compile Include="FreeSpaceImagingTest.cs" />
     <Compile Include="MagTrapCompress.cs" />
     <Compile Include="DetuningTemperature.cs" />
     <Compile Include="DualSpeciesMagTrap.cs" />

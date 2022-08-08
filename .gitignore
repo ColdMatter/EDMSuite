@@ -9,3 +9,4 @@ iamjoe.sh
 *.orig
 .vs
 *.pyc
+*/.vscode

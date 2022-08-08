@@ -20,7 +20,7 @@
 
 
 (* ::Input::Initialization:: *)
-BeginPackage["SEDM4`Analysis`","SEDM4`EDMSuite`","SEDM4`Polarisation`","SEDM4`Database`","SEDM4`Blind`","SEDM4`Statistics`","NETLink`","JLink`"];
+BeginPackage["SEDM4`Analysis`","SEDM4`EDMSuite`","SEDM4`Polarisation`","SEDM4`Database`","SEDM4`TOF`","SEDM4`Blind`","SEDM4`Statistics`","NETLink`","JLink`"];
 
 
 (* ::Input::Initialization:: *)
@@ -28,6 +28,8 @@ BeginPackage["SEDM4`Analysis`","SEDM4`EDMSuite`","SEDM4`Polarisation`","SEDM4`Da
 basis::usage="";
 edmWaveform::usage="";
 boolSign::usage="";
+chan::usage="";
+getChannels::usage="";
 
 (*Functions to extract data from a block*)
 integrateTOF::usage="Takes a block and integrates to TOF profiles for the specified detector. The Boolean parameter returnIntegral determines whether the returned values are the integrals (in V \[Mu]s) or the average values (in V).";
@@ -45,6 +47,8 @@ contrast::usage="contrast[dblock_] returns the contrast of the interferometer as
 edmSn::usage="edmSn[dblock_] returns the shot-noise-limited uncertainty in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
 edmSnNoLaserBackground::usage="edmSnNoLaserBackground[dblock_] returns the shot-noise-limited uncertainty (without factoring in the laser scatter background) in the EDM value as a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}.";
 snPPMPerChannel::usage="snPPMPerChannel[dblock_] returns the shot-noise-limited uncertainty in a typical channel in parts per million, in a TOF of the form {{\!\(\*SubscriptBox[\(time\), \(i\)]\), \!\(\*SubscriptBox[\(shotNoiseUncertainty\), \(i\)]\)}...}."
+
+convertTOFToPhaseUnits::usage=""
 
 (*Main functions used to extract all quantities of interest for a demodulated block*)
 extractPhysicalQuantities::usage="extractPhysicalQuantities[dblock_] takes a demodulated block and extracts the uncorrected and corrected edms, the contrast, and the shot-noise sensitivities for both the edm and the channels.";
@@ -81,9 +85,13 @@ edmWaveform[code_]:= Module[{numWave},numWave=\!\(
 \*SuperscriptBox[\(2\), \(Length[code]\)]], \ Table[1, {
 \*SuperscriptBox[\(2\), \(Length[code]\)]}]]\)\);
 (#==1)&/@numWave
-];
+];		
 
 boolSign[bool_]:=If[bool,1,-1]
+
+chan[n_,switches_]:=Pick[switches,Thread[IntegerDigits[n,2,Length[switches]]==1]]
+
+getChannels[switches_]:=DeleteCases[Join[{#}&/@{"SIG"},chan[#,switches]&/@Range[1,2^Length[switches]-1]],{"E","B"}]
 
 
 (* ::Input::Initialization:: *)
@@ -214,6 +222,10 @@ phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 
 
 (* ::Input::Initialization:: *)
+convertTOFToPhaseUnits[tof_,contrastTof_]:=MapThread[{#1[[1]],#1[[2]]/(2#2[[2]]),#1[[2]]/(2#2[[2]]) Sqrt[(#1[[3]]/#1[[2]])^2+(#2[[3]]/#2[[2]])^2]}&,{tof,contrastTof}]
+
+
+(* ::Input::Initialization:: *)
 extractPhysicalQuantities[dblock_]:=
 {
 "rawEDMWithErr"->rawEDMWithErr[dblock],
@@ -258,12 +270,47 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cBDB"->getTOFChannel[{"B","DB"},"asymmetry",dbl],
 "cEBDB"->getTOFChannel[{"E","B","DB"},"asymmetry",dbl],
 
+"cRF1F"->getTOFChannel[{"RF1F"},"asymmetry",dbl],
+"cRF2F"->getTOFChannel[{"RF2F"},"asymmetry",dbl],
+"cRF1A"->getTOFChannel[{"RF1A"},"asymmetry",dbl],
+"cRF2A"->getTOFChannel[{"RF2A"},"asymmetry",dbl],
+
+"cBRF1F"->getTOFChannel[{"B","RF1F"},"asymmetry",dbl],
+"cBRF2F"->getTOFChannel[{"B","RF2F"},"asymmetry",dbl],
+"cDBRF1F"->getTOFChannel[{"DB","RF1F"},"asymmetry",dbl],
+"cDBRF2F"->getTOFChannel[{"DB","RF2F"},"asymmetry",dbl],
+"cERF1F"->getTOFChannel[{"E","RF1F"},"asymmetry",dbl],
+"cERF2F"->getTOFChannel[{"E","RF2F"},"asymmetry",dbl],
+"cERF1A"->getTOFChannel[{"E","RF1A"},"asymmetry",dbl],
+"cERF2A"->getTOFChannel[{"E","RF2A"},"asymmetry",dbl],
+"cBRF1A"->getTOFChannel[{"B","RF1A"},"asymmetry",dbl],
+"cBRF2A"->getTOFChannel[{"B","RF2A"},"asymmetry",dbl],
+"cDBRF1A"->getTOFChannel[{"DB","RF1A"},"asymmetry",dbl],
+"cDBRF2A"->getTOFChannel[{"DB","RF2A"},"asymmetry",dbl],
+"cEDBRF1F"->getTOFChannel[{"E","DB","RF1F"},"asymmetry",dbl],
+"cEDBRF2F"->getTOFChannel[{"E","DB","RF2F"},"asymmetry",dbl],
+
+"cPI"->getTOFChannel[{"PI"},"asymmetry",dbl],
+"cLF1"->getTOFChannel[{"LF1"},"asymmetry",dbl],
+"cBLF1"->getTOFChannel[{"B","LF1"},"asymmetry",dbl],
+"cDBLF1"->getTOFChannel[{"DB","LF1"},"asymmetry",dbl],
+
 "cSIGTop"->getTOFChannel[{"SIG"},"topProbeNoBackground",dbl],
 "cSIGBottom"->getTOFChannel[{"SIG"},"bottomProbeScaled",dbl],
 
-"EMag"->getPointChannel[{"E"},"magnetometer",dbl]
+"EMag"->getPointChannel[{"E"},"magnetometer",dbl],
+"BMag"->getPointChannel[{"B"},"magnetometer",dbl],
+"SIGMag"->getPointChannel[{"SIG"},"magnetometer",dbl],
+"ENorthCurrent"->getPointChannel[{"E"},"NorthCurrent",dbl],
+"ESouthCurrent"->getPointChannel[{"E"},"SouthCurrent",dbl],
 (*"topPD"\[Rule]getPointChannel[{"SIG"},"topPD",dbl],
 "bottomPD"\[Rule]getPointChannel[{"SIG"},"bottomPD",dbl]*)
+
+"fullChannelTable"->({#,weightedMeanOfTOFWithError[getTOFChannel[#,"asymmetry",dbl],2760,2960]}&/@getChannels[getSwitches[dbl]]),
+"fullChannelTablePhaseUnits"->({#,weightedMeanOfTOFWithError[convertTOFToPhaseUnits[getTOFChannel[#,"asymmetry",dbl],contrast[dbl]],2760,2960]}&/@getChannels[getSwitches[dbl]]),
+"magChannelTable"->({#,getPointChannel[#,"magnetometer",dbl]}&/@getChannels[getSwitches[dbl]]),
+"northCurrentChannelTable"->({#,getPointChannel[#,"NorthCurrent",dbl]}&/@getChannels[getSwitches[dbl]]),
+"southCurrentChannelTable"->({#,getPointChannel[#,"SouthCurrent",dbl]}&/@getChannels[getSwitches[dbl]])
 }
 ]
 

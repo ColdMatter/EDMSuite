@@ -46,20 +46,15 @@ namespace MOTMaster
 
         #region Class members
 
-        private static string
-            motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
-        private static string
-            daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
-        private static string
-            scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
-        private static string
-            motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
-        private static string
-            cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
-        private static string
-            hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
+        private static string motMasterPath = (string)Environs.FileSystem.Paths["MOTMasterEXEPath"] + "//MotMaster.exe";
+        private static string daqPath = (string)Environs.FileSystem.Paths["daqDLLPath"];
+        private static string scriptListPath = (string)Environs.FileSystem.Paths["scriptListPath"];
+        private static string motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
+        private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
+        private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
+        
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -68,12 +63,14 @@ namespace MOTMaster
         public enum RunningState { stopped, running};
         public RunningState status = RunningState.stopped;
         public bool triggered = false;
-
+        string pgMasterName;
 
         ControllerWindow controllerWindow;
 
-        DAQMxPatternGenerator pg;
-        DAQMxAnalogPatternGenerator apg;
+        DAQMxPatternGenerator pgMaster;
+        Dictionary<string, DAQMxPatternGenerator> pgs;
+        Dictionary<string, DAQMxAnalogPatternGenerator> analogs;
+        Dictionary<string, string> analogBoards;
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -98,8 +95,28 @@ namespace MOTMaster
             controllerWindow = new ControllerWindow();
             controllerWindow.controller = this;
 
-            pg = new DAQMxPatternGenerator((string)Environs.Hardware.GetInfo("PatternGeneratorBoard"));
-            apg = new DAQMxAnalogPatternGenerator();
+            pgMasterName = (string)Environs.Hardware.GetInfo("PatternGeneratorBoard");
+            pgMaster = new DAQMxPatternGenerator(pgMasterName);
+            Dictionary<string, string> additionalPGs = (Dictionary<string, string>)Environs.Hardware.GetInfo("AdditionalPatternGeneratorBoards");
+            pgs = new Dictionary<string, DAQMxPatternGenerator>();
+            if (additionalPGs != null)
+            {
+                foreach (string address in additionalPGs.Keys)
+                {
+                    pgs[address] = new DAQMxPatternGenerator(address);
+                }
+            }
+
+            analogBoards = (Dictionary<string, string>)Environs.Hardware.GetInfo("AnalogBoards");
+            analogs = new Dictionary<string, DAQMxAnalogPatternGenerator>();
+            if (analogBoards != null)
+            {
+                foreach (string address in analogBoards.Values)
+                {
+                    analogs[address] = new DAQMxAnalogPatternGenerator();
+                }
+            }
+
 
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
@@ -127,33 +144,79 @@ namespace MOTMaster
 
         private void run(MOTMasterSequence sequence)
         {
-            apg.OutputPatternAndWait(sequence.AnalogPattern.Pattern);
-            pg.OutputPattern(sequence.DigitalPattern.Pattern);
+            foreach (string address in analogs.Keys)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogs[address].OutputPatternAndWait(sequence.AnalogPattern.Boards[address].Pattern);
+                }
+
+            }
+            
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                    pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
+            }
+            pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
+            
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
             if (triggered == true)
             {
-                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, true);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
             }
             else
             {
-                pg.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Pattern.Length, true, false);
+                pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, false);
             }
 
-            apg.Configure(sequence.AnalogPattern, config.AnalogPatternClockFrequency, false);
-        }
+            int i = 0;
+            
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                    pgs[address].Configure("PGSlave" + i.ToString(), config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[address].Pattern.Length, false, true);
+                i++;
+            }
 
+            int j = 0;
+            foreach (KeyValuePair<string, string> kvp in analogBoards)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
+                {
+                    analogs[kvp.Value].Configure(
+                            kvp.Key,
+                            sequence.AnalogPattern.Boards[kvp.Value],
+                            config.AnalogPatternClockFrequency, false, true);
+                    j++;
+                }
+                    
+            }
+        }
 
         private void releaseHardware()
         {
-            pg.StopPattern();
-            apg.StopPattern();
+            pgMaster.StopPattern();
+            foreach (DAQMxPatternGenerator pg in pgs.Values)
+            {
+                pg.StopPattern();
+            }
+            foreach (DAQMxAnalogPatternGenerator apg in analogs.Values)
+            {
+                apg.StopPattern();
+            }
         }
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {
-            sequence.DigitalPattern.Clear(); //No clearing required for analog (I think).
+            sequence.DigitalPattern.Boards[pgMasterName].Clear(); //No clearing required for analog (I think).
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                    sequence.DigitalPattern.Boards[address].Clear();
+            }
         }
         private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
         {
@@ -195,7 +258,7 @@ namespace MOTMaster
         /// - MOTMaster initializes the hardware, faffs a little to prepare the patterns in the 
         /// builders (e.g. calls "BuildPattern"), and sends the pattern to Hardware.
         /// 
-        /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved 
+        /// -Note that the analog stuff needs a trigger to start!!!! Make sure one of your digital lines is reserved
         /// for triggering the analog pattern.
         /// 
         /// - Once the experiment is finished, MM releases the hardware.
@@ -352,6 +415,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, imageData, report);
+                                
                             }
                             else
                             {
@@ -362,7 +426,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, report);
-
+                                
                             }
 
 
@@ -389,17 +453,25 @@ namespace MOTMaster
 
         #region private stuff
 
+        private string constructSaveDirectory()
+        {
+            string dir = motMasterDataPath + DateTime.Now.ToString("yyyy/MM") + DateTime.Now.ToString("MMM/dd") + "\\";
+            System.IO.Directory.CreateDirectory(dir);
+            return dir;
+        }
+
         // ONGOING: these save functions should probably take a sequence argument
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, byte[][,] imageData, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, cameraAttributesPath, imageData, externalFilesPath, config.ExternalFilePattern);
         }
         private void save(MOTMasterSequence sequence, MOTMasterScript script, string pathToPattern, Dictionary<String, Object> report)
         {
-            ioHelper.StoreRun(motMasterDataPath, controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
+            ioHelper.StoreRun(constructSaveDirectory(), controllerWindow.GetSaveBatchNumber(), pathToPattern, hardwareClassPath,
                 sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
+
         private void runPattern(MOTMasterSequence sequence)
         {
             initializeHardware(sequence);
@@ -499,6 +571,11 @@ namespace MOTMaster
         }
 
         #endregion
+
+        public int GetIterations()
+        {
+            return controllerWindow.GetIterations();
+        }
 
         #region CameraControl
 

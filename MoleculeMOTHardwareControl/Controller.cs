@@ -23,10 +23,11 @@ namespace MoleculeMOTHardwareControl
         public Dictionary<string, GenericController> tabs = new Dictionary<string, GenericController>()
         {
             //{ "Windfreak Synthesizer", new WindfreakTabController((WindfreakSynth)Environs.Hardware.Instruments["windfreak"]) },
-            { "Gigatronics Synthesizer 1", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 1"]) },
-            { "Gigatronics Synthesizer 2", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 2"]) },
-            { "XPS Track", new TrackController() },
-            { "Source", new SourceTabController() }
+            { "General Hardware", new SourceTabController() },
+            //{ "Gigatronics Synthesizer 1", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 1"]) },
+            //{ "Gigatronics Synthesizer 2", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 2"]) },
+            { "XPS Track", new TrackController() }
+            
         };
 
         // Without this method, any remote connections to this object will time out after
