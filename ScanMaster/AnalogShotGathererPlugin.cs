@@ -33,7 +33,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionStarting()
 		{
-			// configure the analog input
+			// configure the analog input n 
 			inputTask = new Task("analog gatherer " /*+ (string)settings["channel"]*/);
 
 			// new analog channel, range -10 to 10 volts

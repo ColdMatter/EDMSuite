@@ -13,6 +13,7 @@ namespace EDMBlockHead.Acquire.Channels
 	public class AnalogSwitchedChannel : SwitchedChannel
 	{
 		public string Channel;
+		public double Offset;
 
 		private bool currentState = false;
 		private Task analogTask;
@@ -30,7 +31,7 @@ namespace EDMBlockHead.Acquire.Channels
 				if (!Environs.Debug)
 				{
 					double step = ((AnalogModulation)Modulation).Step;
-					double valToWrite = ((AnalogModulation)Modulation).Centre + (value ? step : -step);
+					double valToWrite = ((AnalogModulation)Modulation).Centre + (value ? step : -step) + this.Offset;
 					writer.WriteSingleSample(true, valToWrite);
 				}	
 			}
@@ -41,7 +42,7 @@ namespace EDMBlockHead.Acquire.Channels
 			if (!Environs.Debug)
 			{
 				analogTask = new Task(Channel);
-				((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[Channel]).AddToTask(analogTask, 0, 5);
+				((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[Channel]).AddToTask(analogTask, -5, 5);
 				analogTask.Control(TaskAction.Verify);
 				writer = new AnalogSingleChannelWriter(analogTask.Stream);
 			}
