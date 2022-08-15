@@ -13,12 +13,10 @@ namespace WavemeterLockServer
     
     public class Controller : MarshalByRefObject
     {
-        public Boolean bAvail = false;
-        public Boolean bMeas = false;
-        public Boolean tcpOpen = false;
-        public double test = 123;
+        public Boolean bAvail;
+        public Boolean bMeas;
 
-        private Form1 ui;
+        private ServerForm ui;
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -33,7 +31,7 @@ namespace WavemeterLockServer
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ui = new Form1();
+            ui = new ServerForm();
             ui.controller = this;
             Application.Run(ui);
         }
@@ -84,7 +82,7 @@ namespace WavemeterLockServer
                     
                 default: // no error
                     w = Math.Round(w, (int)WLM.GetWLMVersion(0) - 2);
-                    return Convert.ToString(Math.Round(WLM.GetWavelengthNum(n, w), (int)WLM.GetWLMVersion(0) - 2)) + "  nm";
+                    return Convert.ToString(Math.Round(WLM.GetWavelengthNum(n, 0), (int)WLM.GetWLMVersion(0) - 2)) + "  nm";
             }
 
         }

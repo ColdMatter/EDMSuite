@@ -182,10 +182,8 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=19.6.40.1, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=21.5.0.49251, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -216,6 +214,7 @@
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
     <Compile Include="AlFFileSystem.cs" />
+    <Compile Include="WMLServerHardware.cs" />
     <Compile Include="AlFHardware.cs" />
     <Compile Include="AnalogInputChannel.cs">
       <SubType>Code</SubType>

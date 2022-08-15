@@ -99,12 +99,12 @@ namespace WavemeterLock
 
         public Dictionary<string, Laser> lasers;
         WavemeterLockLaserControllable wml;
-        private Form1 ui;
+        private LockForm ui;
         public void start()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ui = new Form1();
+            ui = new LockForm();
             ui.controller = this;
             Application.Run(ui);
 
@@ -118,8 +118,7 @@ namespace WavemeterLock
 
         public ControllerState WMLState = ControllerState.STOPPED;
 
-
-        Laser laser = new Laser("WMLOut");
+        Laser laser = new Laser("WavemeterLock1");
 
         //Displace the wavelength of the target laser.
         public string displayWL(int num)
