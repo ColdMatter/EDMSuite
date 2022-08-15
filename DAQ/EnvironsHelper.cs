@@ -299,7 +299,7 @@ namespace DAQ.Environment
 
                 case "IC-CZC136CFDJ":
                     Hardware = new WMLServerHardware();
-                    FileSystem = new FileSystem();
+                    FileSystem = new WMLServerFileSystem();
                     Debug = false;
                     break;
 

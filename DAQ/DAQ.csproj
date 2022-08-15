@@ -213,6 +213,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="WMLServerFileSystem.cs" />
     <Compile Include="AlFFileSystem.cs" />
     <Compile Include="WMLServerHardware.cs" />
     <Compile Include="AlFHardware.cs" />
