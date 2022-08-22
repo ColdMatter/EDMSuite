@@ -8,37 +8,27 @@ using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
 using System.Runtime.Remoting;
 using System.Collections.Generic;
+using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
     public class WMLServerHardware : DAQ.HAL.Hardware
     {
+       
         public WMLServerHardware()
         {
-            // add the boards
-            string PatternBoardName = "pg";
-            string PatternBoardAddress = "/PXI1Slot4";
-            Boards.Add(PatternBoardName, PatternBoardAddress);
-            Info.Add("PatternGeneratorBoard", PatternBoardAddress);
-            Info.Add("PGType", "integrated");
-            Info.Add("PGClockCounter", "/ctr0");
-            Info.Add("PGClockLine", PatternBoardAddress + "/PFI4");
+            Boards.Add("WMLBoard", "/Dev1");
+            string WMLBoard = (string)Boards["WMLBoard"];
 
+            AddAnalogOutputChannel("WavemeterLock1", WMLBoard + "/ao0", 0, 5);
+            AddAnalogOutputChannel("WavemeterLock2", WMLBoard + "/ao1", 0, 5);
 
-            // Test analog signals
-            AddAnalogInputChannel("testIn", PatternBoardAddress + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogOutputChannel("testOut", PatternBoardAddress + "/ao0", -10, 10);
-            AddAnalogOutputChannel("WavemeterLock1", "/Dev1" + "/ao1", 0, 5);
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("WMLServer");
+            
+            wmlConfig.AddSlaveLaser("SlaveLaser1", "WavemeterLock1");//name, channel
+            wmlConfig.AddSlaveLaser("SlaveLaser2", "WavemeterLock2");
 
-           
-
-            // map the digital channels of the "pg" card
-            AddDigitalOutputChannel("q", PatternBoardAddress, 0, 1);//Pin 
-            AddDigitalOutputChannel("flash", PatternBoardAddress, 0, 2);
-            AddDigitalOutputChannel("valve", PatternBoardAddress, 0, 3);
-            AddDigitalOutputChannel("detector", PatternBoardAddress, 0, 4);
-            AddDigitalOutputChannel("ttlSwitch", PatternBoardAddress, 0, 5);
-            AddDigitalOutputChannel("detectorprime", PatternBoardAddress, 0, 6);
+            Info.Add("WMLServer", wmlConfig);
 
         }
 

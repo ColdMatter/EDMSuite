@@ -80,6 +80,15 @@
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LockControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LockControlPanel.Designer.cs">
+      <DependentUpon>LockControlPanel.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="LockControlPanel.resx">
+      <DependentUpon>LockControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LockForm.resx">
       <DependentUpon>LockForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -17,14 +17,11 @@ namespace DAQ.WavemeterLock
 
         private string laserChannelName;
 
-        public DAQMxWavemeterLockLaserControlHelper()
-        {
-            laserChannelName = "laser";
-        }
+        
 
-        public DAQMxWavemeterLockLaserControlHelper(string laser)
+        public DAQMxWavemeterLockLaserControlHelper(string channel)
         {
-            laserChannelName = laser;
+            laserChannelName = channel;
         }
 
 

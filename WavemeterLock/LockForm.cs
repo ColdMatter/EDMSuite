@@ -14,107 +14,73 @@ namespace WavemeterLock
     public partial class LockForm : Form
     {
         public Controller controller;
+        Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
+
         public LockForm()
         {
             InitializeComponent();
         }
 
-
-        private int channelNumber = 0;
-        bool lockOn = false;
-        double setFrequency = 0;
-
-        private void lockButton_Click(object sender, EventArgs e)
+        public void AddLaserControlPanel(string laserName, string channel)
         {
-            setFrequency = Convert.ToDouble(SetPoint.Text);
-            controller.setFrequency(setFrequency);
-
-            if (!lockOn)
-            {
-                if (SetPoint != null && !string.IsNullOrWhiteSpace(SetPoint.Text))
-                {
-                    lockOn = true;
-                    lockMsg.Text = "Lock On";
-                    setFrequency = Convert.ToDouble(SetPoint.Text);
-                    controller.EngageLock();
-                    SetPoint.Enabled = false;
-                }
-                else
-                {
-                    lockMsg.Text = "Null Input!";
-                }
-            }
-
-            else
-            {
-                lockOn = false;
-                lockMsg.Text = "Lock Off";
-                controller.DisengageLock();
-                SetPoint.Enabled = true;
-            }
-
+            TabPage newTab = new TabPage(laserName);
+            LockControlPanel panel = new LockControlPanel(laserName, channel, controller);
+            panelList.Add(laserName, panel);
+            newTab.Controls.Add(panel);
+            lockTab.TabPages.Add(newTab);
+            panel.Enabled = false;
 
         }
 
-        private void showButton_Click(object sender, EventArgs e)
-        {
-            channelNumber = Convert.ToInt32(LockChannelNumber.Text);
-            controller.setChannel(channelNumber);
-        }
-
-        private void PGainSet_Click(object sender, EventArgs e)
-        {
-            controller.setPGain(Convert.ToDouble(PGain.Text));
-        }
-
-        private void IGainSet_Click(object sender, EventArgs e)
-        {
-            controller.setIGain(Convert.ToDouble(IGain.Text));
-        }
-
-        private void resetBtn_Click(object sender, EventArgs e)
-        {
-            controller.resetOutput();
-        }
-
-        private void stepUpBtn_Click(object sender, EventArgs e)
-        {
-            setFrequency += Convert.ToDouble(stepSize.Text)/1000000;
-            controller.setFrequency(setFrequency);
-            SetPoint.Text = Convert.ToString(setFrequency);
-        }
-
-        private void stepDownBtn_Click(object sender, EventArgs e)
-        {
-            setFrequency -= Convert.ToDouble(stepSize.Text)/1000000;
-            controller.setFrequency(setFrequency);
-            SetPoint.Text = Convert.ToString(setFrequency);
-        }
-
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
-
-            displayWL.Text = controller.displayWL(channelNumber);
-            displayFreq.Text = controller.displayFreq(channelNumber);
-            loopCount.Text = Convert.ToString(controller.getLoopCount());
-            laserState.Text = controller.getLaserState();
-            frequencyError.Text = Convert.ToString(1000000 * controller.gerFrequencyError());
-            channelNum.Text = controller.getChannelNum();
-            TestLable.Text = " ";
-
-            if (!lockOn)
+            foreach(string slavePanel in panelList.Keys)
             {
-                lockButton.Text = "Lock";
-
+                panelList[slavePanel].updatePanel();
             }
+
+            if(controller.WMLState == Controller.ControllerState.RUNNING)
+            {
+                wmlLED.Value = true;
+                masterBttn.Text = "Stop WML";
+                
+            }
+
             else
             {
-                lockButton.Text = "Unlock";
+                wmlLED.Value = false;
+                masterBttn.Text = "Start WML";
             }
-            VOut.Text = Convert.ToString(controller.getOutputvoltage());
+
+                  
         }
 
+        private void masterBttn_Click(object sender, EventArgs e)
+        {
+            if (controller.WMLState == Controller.ControllerState.RUNNING)
+            {
+                controller.WMLState = Controller.ControllerState.STOPPED;
+                foreach(LockControlPanel panel in panelList.Values)
+                {
+                    panel.Enabled = false;
+                }
+            }
 
+            else
+            {
+                controller.WMLState = Controller.ControllerState.RUNNING;
+                controller.startWML();
+                foreach (LockControlPanel panel in panelList.Values)
+                {
+                    panel.Enabled = true;
+                }
+            }
+
+
+        }
+
+       
 
         private void LockChannelNumber_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
         {
@@ -150,6 +116,16 @@ namespace WavemeterLock
         }
 
         private void TestLable_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LockForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lockTab_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

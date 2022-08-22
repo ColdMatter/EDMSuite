@@ -17,7 +17,8 @@ namespace WavemeterLock
         [STAThread]
         static void Main()
         {
-            Controller controller = new Controller();
+            
+            Controller controller = new Controller("WMLServer");
             controller.start();
         }
     }

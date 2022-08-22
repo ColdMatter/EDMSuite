@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace WavemeterLock
 {
@@ -14,14 +15,14 @@ namespace WavemeterLock
     /// </summary>
     public class Laser
     {
+
         public double PGain { get; set; }
         public double IGain { get; set; }
         public string Name;
         public string FeedbackChannel { get; set; }
         public int WLMChannel { get; set; }
         public double summedWavelengthDifference = 0;
-
-        private WavemeterLockLaserControllable laser;
+        private DAQMxWavemeterLockLaserControlHelper laser;
 
         public enum LaserState
         {
@@ -72,31 +73,38 @@ namespace WavemeterLock
                 {
                     currentVoltage = value;
                 }
-                laser.SetLaserVoltage(currentVoltage);
+                if (lState == LaserState.LOCKED)
+                {
+                    laser.SetLaserVoltage(currentVoltage);
+                }
+                
             }
             
         }
 
-        public Laser(string feedbackChannel)
+        public Laser(string name, string feedbackChannel, DAQMxWavemeterLockLaserControlHelper chelper)
         {
-            laser = new DAQMxWavemeterLockLaserControlHelper(feedbackChannel);
+            laser = chelper;
             lState = LaserState.FREE;
-            Name = feedbackChannel;
+            Name = name;
             FeedbackChannel = feedbackChannel;
             laser.ConfigureSetLaserVoltage(0.0);
+           
         }
+
 
 
         public void Lock()
         {
             lState = LaserState.LOCKED;
-            
         }
 
         public void DisengageLock()
         {
             lState = LaserState.FREE;
         }
+
+        
 
        
       
@@ -112,7 +120,7 @@ namespace WavemeterLock
 
         public virtual void ResetOutput()
         {
-            CurrentVoltage = 0;
+            currentVoltage = 0;
             summedWavelengthDifference = 0;
             FrequencyError = 0;
         }
