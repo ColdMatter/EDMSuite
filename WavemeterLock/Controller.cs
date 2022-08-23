@@ -27,6 +27,7 @@ namespace WavemeterLock
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
         private double freqTolerance = 0.5;//THz
+        string faultyLaser;
 
         private List<double> scanTimes;
         public int numScanAverages = 1000;
@@ -361,7 +362,8 @@ namespace WavemeterLock
                         if (Math.Abs(getFrequency(laser.WLMChannel) - laser.setFrequency)>freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
                         {
                             laser.DisengageLock();
-                            MessageBox.Show("You messed up! Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                            Thread msgThread = new Thread(errorMsg);
+                            msgThread.Start();
                         }
                         laser.UpdateLock();
                         if (miniLoopcount > 30)
@@ -380,7 +382,10 @@ namespace WavemeterLock
             endLoop();
         }
 
-        
+        public void errorMsg()
+        {
+            MessageBox.Show("You messed up! Laser " + faultyLaser + " lock disengaged due to wavemeter reading error or large frequency jump.");
+        }
 
 
 
