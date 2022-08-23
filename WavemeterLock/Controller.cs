@@ -361,6 +361,7 @@ namespace WavemeterLock
                     {
                         if (Math.Abs(getFrequency(laser.WLMChannel) - laser.setFrequency)>freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
                         {
+                            faultyLaser = slave;
                             laser.DisengageLock();
                             Thread msgThread = new Thread(errorMsg);
                             msgThread.Start();
