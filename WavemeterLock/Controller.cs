@@ -10,6 +10,9 @@ using DAQ.HAL;
 using DAQ.Environment;
 using DAQ.WavemeterLock;
 using System.Threading;
+using System.Drawing;
+using System.Diagnostics;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace WavemeterLock
 {
@@ -19,9 +22,15 @@ namespace WavemeterLock
 
         private string computer;
         private string name;
-        private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+        private string hostName = "IC-CZC136CFDJ";
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
+        public int colorParameter = 0;
+        private double freqTolerance = 0.5;//THz
+
+        private List<double> scanTimes;
+        public int numScanAverages = 1000;
+
 
         #region Set up TCP channel
 
@@ -43,34 +52,14 @@ namespace WavemeterLock
 
         public string acquireWavelength(int channelNum) //Display wavelength
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
-            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
-            {
-                if (addr.AddressFamily == AddressFamily.InterNetwork)
-                    name = addr.ToString();
-            }
-
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
-
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1984" + "/controller.rem"));
+            
             return wavemeterContrller.displayWavelength(channelNum);
 
         }
 
         public double getWavelength(int channelNum) //Return wavelength in nm
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
-            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
-            {
-                if (addr.AddressFamily == AddressFamily.InterNetwork)
-                    name = addr.ToString();
-            }
-
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
+            
 
             return wavemeterContrller.getWavelength(channelNum);
 
@@ -78,34 +67,14 @@ namespace WavemeterLock
 
         public string acquireFrequency(int channelNum) //Display frequency
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
-            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
-            {
-                if (addr.AddressFamily == AddressFamily.InterNetwork)
-                    name = addr.ToString();
-            }
-
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
-
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1984" + "/controller.rem"));
+            
             return wavemeterContrller.displayFrequency(channelNum);
 
         }
 
         public double getFrequency(int channelNum) //Return frequency in THz
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
-            foreach (var addr in Dns.GetHostEntry(computer).AddressList)
-            {
-                if (addr.AddressFamily == AddressFamily.InterNetwork)
-                    name = addr.ToString();
-            }
-
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
+           
 
             return wavemeterContrller.getFrequency(channelNum);
 
@@ -114,6 +83,7 @@ namespace WavemeterLock
 
         public Dictionary<string, Laser> lasers;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
+        public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
         private LockForm ui;
         public WavemeterLockConfig config;
 
@@ -122,7 +92,39 @@ namespace WavemeterLock
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
 
         }
+        
+        public Color selectColor(int par)//Asign a plot line color for each laser
+        {
+            switch (par)
+            {
+                case 0:
+                    return Color.FromName("Yellow");
 
+                case 1:
+                    return Color.FromName("Lime");
+
+                case 2:
+                    return Color.FromName("Red"); 
+
+                case 3:
+                    return Color.FromName("Blue");
+
+                case 4:
+                    return Color.FromName("Pink");
+
+                case 5:
+                    return Color.FromName("Cyan");
+
+                case 6:
+                    return Color.FromName("Aqua");
+
+                default:
+                    return Color.FromName("White");
+
+
+            }
+                
+        }
 
 
         public void start()
@@ -148,7 +150,7 @@ namespace WavemeterLock
 
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
-                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser]);
+                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
                 helper.Add(slaveLaser, new DAQMxWavemeterLockLaserControlHelper(config.slaveLasers[slaveLaser]));
             }
 
@@ -157,6 +159,7 @@ namespace WavemeterLock
                 string laser = entry.Key;
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
+                slave.WLMChannel = config.channelNumbers[laser];
 
             }
 
@@ -264,6 +267,8 @@ namespace WavemeterLock
             else return "Unlocked";
         }
 
+        
+
         public bool returnLaserState(string slavename){
             Laser laser = lasers[slavename];
             if (laser.lState == Laser.LaserState.LOCKED)
@@ -298,9 +303,23 @@ namespace WavemeterLock
             laser.DisengageLock();
         }
 
-        
+
 
         #endregion
+
+        private void updateLockRate(Stopwatch stopWatch)
+        {
+            double elapsedTime = stopWatch.Elapsed.TotalSeconds;
+            scanTimes.Add(elapsedTime);
+            if (scanTimes.Count > numScanAverages)
+            {
+                double averageScanTime = scanTimes.Sum() / scanTimes.Count;
+                double averageUpdateRate = 1 / averageScanTime;
+                ui.UpdateLockRate(averageUpdateRate);
+                scanTimes = new List<double>();
+            }
+            
+        }
 
         public void updateFrequency(Laser laser)
         {
@@ -308,12 +327,13 @@ namespace WavemeterLock
         }
         private void endLoop()
         {
+            loopcount = 0;
             foreach (string laser in lasers.Keys)
             {
                 if (lasers[laser].lState != Laser.LaserState.FREE)
                 {
                     lasers[laser].DisengageLock();
-                    lasers[laser].DisposeLaserControl();
+                    //lasers[laser].DisposeLaserControl();
                 }
             }
             
@@ -322,7 +342,12 @@ namespace WavemeterLock
         
         private void mainLoop()
         {
-            
+            scanTimes = new List<double>();
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            loopcount = 0;
+            int miniLoopcount = 0;
+
             while (WMLState!= ControllerState.STOPPED)
             {
                 foreach(string slave in lasers.Keys)
@@ -330,16 +355,29 @@ namespace WavemeterLock
                     Laser laser = lasers[slave];
                     updateFrequency(laser);
                     loopcount++;
+                    miniLoopcount++;
                     if(laser.lState == Laser.LaserState.LOCKED)
                     {
+                        if (Math.Abs(getFrequency(laser.WLMChannel) - laser.setFrequency)>freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+                        {
+                            laser.DisengageLock();
+                            MessageBox.Show("You messed up! Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                        }
                         laser.UpdateLock();
+                        if (miniLoopcount > 30)
+                        {
+                            panelList[slave].AppendToErrorGraph(loopcount, 1000000 * laser.FrequencyError);
+                            miniLoopcount = 0;
+                        }
                     }
                 }
-                
+                updateLockRate(stopWatch);
+
+                stopWatch.Reset();
+                stopWatch.Start();
             }
 
             endLoop();
-            loopcount = 0;
         }
 
         

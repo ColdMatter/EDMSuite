@@ -56,6 +56,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Remoting" />
@@ -86,6 +87,7 @@
     <Compile Include="LockControlPanel.Designer.cs">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIHelper.cs" />
     <EmbeddedResource Include="LockControlPanel.resx">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </EmbeddedResource>

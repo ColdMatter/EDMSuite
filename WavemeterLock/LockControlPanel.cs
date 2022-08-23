@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace WavemeterLock
 {
@@ -18,43 +19,52 @@ namespace WavemeterLock
         private int channelNumber = 0;
         double setFrequency = 0;
         public Controller controller;
+        public double scale = 10000;
         
 
-        public LockControlPanel(string name, string AnalogChannel, Controller controller)
+        public LockControlPanel(string name, string AnalogChannel, int wavemeterChannel, Controller controller)
         {
             this.name = name;
             this.controller = controller;
             analogChannel = AnalogChannel;
+            channelNumber = wavemeterChannel;
             InitializeComponent();
-            
+            controller.panelList.Add(name, this);
+            lockChannelNum.Text = Convert.ToString(channelNumber);
+
         }
 
 
         private void LockControlPanel_Load(object sender, EventArgs e)
         {
-            
+            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
+            errorPlot.LineColor = controller.selectColor(controller.colorParameter);
+            controller.colorParameter++;
+            setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
+            SetPoint.Text = Convert.ToString(setFrequency);
         }
 
         public void updatePanel()
         {
-
             displayWL.Text = controller.displayWL(channelNumber);
             displayFreq.Text = controller.displayFreq(channelNumber);
             lockMsg.Text = controller.getLaserState(name);
             frequencyError.Text = Convert.ToString(1000000 * controller.gerFrequencyError(name));
-
+            VOut.Text = Convert.ToString(controller.getOutputvoltage(name));
 
             if (!controller.returnLaserState(name))
             {
                 lockButton.Text = "Lock";
-
+                lockLED.Value = false;
+                SetPoint.Enabled = true;
             }
             else
             {
                 lockButton.Text = "Unlock";
+                lockLED.Value = true;
+                SetPoint.Enabled = false;
             }
 
-            VOut.Text = Convert.ToString(controller.getOutputvoltage(name));
         }
 
         #region Events
@@ -72,7 +82,7 @@ namespace WavemeterLock
                     lockLED.Value = true;
                     setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
-                    SetPoint.Enabled = false;
+                    ClearErrorGraph();
                 }
                 else
                 {
@@ -85,27 +95,12 @@ namespace WavemeterLock
                 lockMsg.Text = "Lock Off";
                 lockLED.Value = false;
                 controller.DisengageLock(name);
-                SetPoint.Enabled = true;
             }
 
 
         }
 
-        private void showButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                channelNumber = Convert.ToInt32(LockChannelNumber.Text);
-                controller.setChannel(name, channelNumber);
-                errorMsg.Text = "";
-            }
-            catch (FormatException)
-            {
-                errorMsg.Text = "Format Error!";
-            }
-
-            
-        }
+        
 
         private void PGainSet_Click(object sender, EventArgs e)
         {
@@ -122,6 +117,11 @@ namespace WavemeterLock
             controller.resetOutput(name);
         }
 
+        private void resetGraph_Click(object sender, EventArgs e)
+        {
+            UIHelper.ClearGraph(errorScatterGraph);
+        }
+
         private void stepUpBtn_Click(object sender, EventArgs e)
         {
             setFrequency += Convert.ToDouble(stepSize.Text) / 1000000;
@@ -136,6 +136,35 @@ namespace WavemeterLock
             SetPoint.Text = Convert.ToString(setFrequency);
         }
 
+        private void scaleUp_click(object sender, EventArgs e)
+        {
+            scale *= 0.25;
+            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
+        }
+
+        private void scaleDown_click(object sender, EventArgs e)
+        {
+            scale *= 4;
+            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
+            
+        }
+
         #endregion
+
+
+        #region Error signal Plot
+        public void AppendToErrorGraph(double lockCount, double error)//In MHz
+        {
+            UIHelper.appendPointToScatterGraph(errorScatterGraph, errorPlot, lockCount, error);
+        }
+
+        public void ClearErrorGraph()
+        {
+            UIHelper.ClearGraph(errorScatterGraph);
+        }
+            #endregion
+            private void errorScatterGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        {
+        }
     }
 }

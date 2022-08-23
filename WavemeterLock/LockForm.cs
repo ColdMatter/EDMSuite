@@ -21,10 +21,10 @@ namespace WavemeterLock
             InitializeComponent();
         }
 
-        public void AddLaserControlPanel(string laserName, string channel)
+        public void AddLaserControlPanel(string laserName, string channel, int wavemeterChannle)
         {
             TabPage newTab = new TabPage(laserName);
-            LockControlPanel panel = new LockControlPanel(laserName, channel, controller);
+            LockControlPanel panel = new LockControlPanel(laserName, channel, wavemeterChannle, controller);
             panelList.Add(laserName, panel);
             newTab.Controls.Add(panel);
             lockTab.TabPages.Add(newTab);
@@ -32,7 +32,12 @@ namespace WavemeterLock
 
         }
 
-        
+        public void UpdateLockRate(double time)
+        {
+            UIHelper.SetTextBox(updateRateTextBox, Convert.ToString(Convert.ToInt32(time)));
+        }
+
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             foreach(string slavePanel in panelList.Keys)
@@ -126,6 +131,11 @@ namespace WavemeterLock
         }
 
         private void lockTab_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxLockRate_Enter(object sender, EventArgs e)
         {
 
         }

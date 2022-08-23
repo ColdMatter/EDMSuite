@@ -89,6 +89,8 @@ namespace WavemeterLock
             Name = name;
             FeedbackChannel = feedbackChannel;
             laser.ConfigureSetLaserVoltage(0.0);
+            PGain = 0;
+            IGain = 0;
            
         }
 
@@ -120,9 +122,8 @@ namespace WavemeterLock
 
         public virtual void ResetOutput()
         {
-            currentVoltage = 0;
+            currentVoltage = PGain * FrequencyError;
             summedWavelengthDifference = 0;
-            FrequencyError = 0;
         }
 
         public void DisposeLaserControl()

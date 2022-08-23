@@ -20,13 +20,14 @@ namespace DAQ.WavemeterLock
             name = "Default";
         }
 
-        public Dictionary<string, string> slaveLasers = new Dictionary<string, string>();//Name, Channel Name
-       
+        public Dictionary<string, string> slaveLasers = new Dictionary<string, string>();//Name, Analog channel Name
+        public Dictionary<string, int> channelNumbers = new Dictionary<string, int>();//Name, Wavemeter channel number
 
-        
-        public void AddSlaveLaser(string name, string channel)
+
+        public void AddSlaveLaser(string name, string channel, int num)
         {
             slaveLasers.Add(name, channel);
+            channelNumbers.Add(name, num);
         }
 
        

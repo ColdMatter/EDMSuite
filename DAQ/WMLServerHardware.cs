@@ -25,8 +25,8 @@ namespace DAQ.HAL
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("WMLServer");
             
-            wmlConfig.AddSlaveLaser("SlaveLaser1", "WavemeterLock1");//name, channel
-            wmlConfig.AddSlaveLaser("SlaveLaser2", "WavemeterLock2");
+            wmlConfig.AddSlaveLaser("SlaveLaser1", "WavemeterLock1",1);//name, analog, wavemeter channel
+            wmlConfig.AddSlaveLaser("SlaveLaser2", "WavemeterLock2",4);
 
             Info.Add("WMLServer", wmlConfig);
 
