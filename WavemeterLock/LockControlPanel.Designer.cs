@@ -123,7 +123,7 @@ namespace WavemeterLock
             // displayFreq
             // 
             this.displayFreq.AutoSize = true;
-            this.displayFreq.Location = new System.Drawing.Point(121, 46);
+            this.displayFreq.Location = new System.Drawing.Point(110, 46);
             this.displayFreq.Name = "displayFreq";
             this.displayFreq.Size = new System.Drawing.Size(32, 13);
             this.displayFreq.TabIndex = 61;
@@ -134,9 +134,9 @@ namespace WavemeterLock
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(53, 86);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(88, 13);
+            this.label10.Size = new System.Drawing.Size(65, 13);
             this.label10.TabIndex = 60;
-            this.label10.Text = "Wavelength (nm)";
+            this.label10.Text = "Wavelength";
             // 
             // resetBtn
             // 
@@ -196,7 +196,7 @@ namespace WavemeterLock
             // VOut
             // 
             this.VOut.AutoSize = true;
-            this.VOut.Location = new System.Drawing.Point(121, 106);
+            this.VOut.Location = new System.Drawing.Point(110, 106);
             this.VOut.Name = "VOut";
             this.VOut.Size = new System.Drawing.Size(32, 13);
             this.VOut.TabIndex = 48;
@@ -279,14 +279,14 @@ namespace WavemeterLock
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(53, 55);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(89, 13);
+            this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 38;
-            this.label3.Text = "Frequency (THz):";
+            this.label3.Text = "Frequency:";
             // 
             // displayWL
             // 
             this.displayWL.AutoSize = true;
-            this.displayWL.Location = new System.Drawing.Point(121, 77);
+            this.displayWL.Location = new System.Drawing.Point(110, 77);
             this.displayWL.Name = "displayWL";
             this.displayWL.Size = new System.Drawing.Size(32, 13);
             this.displayWL.TabIndex = 37;
@@ -336,6 +336,7 @@ namespace WavemeterLock
             // 
             // errorPlot
             // 
+            this.errorPlot.HistoryCapacity = 2000;
             this.errorPlot.XAxis = this.xAxis1;
             this.errorPlot.YAxis = this.yAxis1;
             // 
@@ -344,7 +345,6 @@ namespace WavemeterLock
             this.xAxis1.AutoSpacing = false;
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
             this.xAxis1.Range = new NationalInstruments.UI.Range(0D, 1000000D);
-            this.xAxis1.Visible = false;
             // 
             // scaleDown
             // 

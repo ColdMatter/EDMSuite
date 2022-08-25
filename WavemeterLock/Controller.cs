@@ -26,7 +26,7 @@ namespace WavemeterLock
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
-        private double freqTolerance = 0.5;//THz
+        private double freqTolerance = 0.5;//Frequency change tolerance in THz
         string faultyLaser;
 
         private List<double> scanTimes;
@@ -85,6 +85,7 @@ namespace WavemeterLock
         public Dictionary<string, Laser> lasers;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
+        public Dictionary<string, double> timeList = new Dictionary<string,double>();
         private LockForm ui;
         public WavemeterLockConfig config;
 
@@ -153,6 +154,7 @@ namespace WavemeterLock
             {
                 ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
                 helper.Add(slaveLaser, new DAQMxWavemeterLockLaserControlHelper(config.slaveLasers[slaveLaser]));
+                timeList.Add(slaveLaser, 0);
             }
 
             foreach (KeyValuePair<string, string> entry in config.slaveLasers)//Enter value in dictionary according to config
@@ -367,9 +369,10 @@ namespace WavemeterLock
                             msgThread.Start();
                         }
                         laser.UpdateLock();
-                        if (miniLoopcount > 30)
+                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;
+                        if (miniLoopcount > 50)
                         {
-                            panelList[slave].AppendToErrorGraph(loopcount, 1000000 * laser.FrequencyError);
+                            panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * laser.FrequencyError);
                             miniLoopcount = 0;
                         }
                     }

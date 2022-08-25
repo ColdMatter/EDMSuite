@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace WavemeterLock
 {
@@ -19,7 +18,7 @@ namespace WavemeterLock
         private int channelNumber = 0;
         double setFrequency = 0;
         public Controller controller;
-        public double scale = 10000;
+        public double scale = 10;
         
 
         public LockControlPanel(string name, string AnalogChannel, int wavemeterChannel, Controller controller)
@@ -49,8 +48,8 @@ namespace WavemeterLock
             displayWL.Text = controller.displayWL(channelNumber);
             displayFreq.Text = controller.displayFreq(channelNumber);
             lockMsg.Text = controller.getLaserState(name);
-            frequencyError.Text = Convert.ToString(1000000 * controller.gerFrequencyError(name));
-            VOut.Text = Convert.ToString(controller.getOutputvoltage(name));
+            frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
+            VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
 
             if (!controller.returnLaserState(name))
             {
@@ -82,7 +81,6 @@ namespace WavemeterLock
                     lockLED.Value = true;
                     setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
-                    ClearErrorGraph();
                 }
                 else
                 {
@@ -120,6 +118,7 @@ namespace WavemeterLock
         private void resetGraph_Click(object sender, EventArgs e)
         {
             UIHelper.ClearGraph(errorScatterGraph);
+            controller.timeList[name] = 0;
         }
 
         private void stepUpBtn_Click(object sender, EventArgs e)
