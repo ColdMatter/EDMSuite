@@ -51,17 +51,29 @@ namespace WavemeterLock
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
 
-            if (!controller.returnLaserState(name))
+            if (controller.returnLaserState(name)==0)//Not locked
             {
                 lockButton.Text = "Lock";
                 lockLED.Value = false;
                 SetPoint.Enabled = true;
+                setAsReading.Enabled = true;
+                offsetSet.Enabled = true;
             }
-            else
+            else if(controller.returnLaserState(name)==1)//Locked
             {
                 lockButton.Text = "Unlock";
                 lockLED.Value = true;
                 SetPoint.Enabled = false;
+                setAsReading.Enabled = false;
+                offsetSet.Enabled = false;
+            }
+            else//Out of range
+            {
+                lockButton.Text = "Unlock";
+                lockLED.Value = false;
+                SetPoint.Enabled = false;
+                setAsReading.Enabled = false;
+                offsetSet.Enabled = false;
             }
 
         }
@@ -73,7 +85,7 @@ namespace WavemeterLock
             setFrequency = Convert.ToDouble(SetPoint.Text);
             controller.setFrequency(name, setFrequency);
 
-            if (!controller.returnLaserState(name))
+            if (!Convert.ToBoolean(controller.returnLaserState(name)==1))
             {
                 if (SetPoint != null && !string.IsNullOrWhiteSpace(SetPoint.Text))
                 {
@@ -108,6 +120,17 @@ namespace WavemeterLock
         private void IGainSet_Click(object sender, EventArgs e)
         {
             controller.setIGain(name, Convert.ToDouble(IGain.Text));
+        }
+        private void offsetSet_Click(object sender, EventArgs e)
+        {
+            double g = Convert.ToDouble(offset.Text);
+            controller.lasers[name].offsetVoltage = g;
+            controller.resetOutput(name);
+        }
+
+        private void setAsReading_Click(object sender, EventArgs e)
+        {
+            controller.lasers[name].setFrequency = Convert.ToDouble(controller.getFrequency(channelNumber));
         }
 
         private void resetBtn_Click(object sender, EventArgs e)
@@ -164,6 +187,11 @@ namespace WavemeterLock
             #endregion
             private void errorScatterGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
+        }
+
+        private void controlPanel_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

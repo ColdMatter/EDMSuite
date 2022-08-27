@@ -20,13 +20,14 @@ namespace WavemeterLock
         public double IGain { get; set; }
         public string Name;
         public string FeedbackChannel { get; set; }
+        public double offsetVoltage { get; set; }
         public int WLMChannel { get; set; }
         public double summedWavelengthDifference = 0;
         private DAQMxWavemeterLockLaserControlHelper laser;
 
         public enum LaserState
         {
-            FREE, LOCKED
+            FREE, LOCKED, OUTOFRANGE
         };
 
         public LaserState lState = LaserState.FREE;
@@ -64,20 +65,23 @@ namespace WavemeterLock
                 if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so WML doesn't crash
                 {
                     currentVoltage = LowerVoltageLimit;
+                    lState = LaserState.OUTOFRANGE;
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
+                    lState = LaserState.OUTOFRANGE;
                 }
                 else
                 {
                     currentVoltage = value;
-                }
-                if (lState == LaserState.LOCKED)
-                {
-                    laser.SetLaserVoltage(currentVoltage);
+                    if (lState == LaserState.OUTOFRANGE)
+                        lState = LaserState.LOCKED;//If output voltage returns back to range, identify laser as locked
                 }
                 
+                    laser.SetLaserVoltage(currentVoltage);
+                
+               
             }
             
         }
@@ -91,6 +95,7 @@ namespace WavemeterLock
             laser.ConfigureSetLaserVoltage(0.0);
             PGain = 0;
             IGain = 0;
+            offsetVoltage = 0;
            
         }
 
@@ -116,13 +121,17 @@ namespace WavemeterLock
             {
                 FrequencyError = currentFrequency - setFrequency;
                 summedWavelengthDifference += FrequencyError;
-                CurrentVoltage = IGain * summedWavelengthDifference + PGain * FrequencyError;
+                CurrentVoltage = IGain * summedWavelengthDifference + PGain * FrequencyError + offsetVoltage;
             }
+            
         }
+
+        
 
         public virtual void ResetOutput()
         {
-            currentVoltage = PGain * FrequencyError;
+            CurrentVoltage = PGain * FrequencyError + offsetVoltage;
+            CurrentVoltage = currentVoltage;
             summedWavelengthDifference = 0;
         }
 

@@ -11,7 +11,7 @@ namespace DAQ.WavemeterLock
     public class DAQMxWavemeterLockLaserControlHelper : WavemeterLockLaserControllable
     {
         //In this helper, there is a single analog output channel for controlling the laser. each slave laser class must have one.
-        private Task outputLaserTask; //Some stuff to let you write to laser
+        public Task outputLaserTask; //Some stuff to let you write to laser
         private AnalogOutputChannel laserChannel;
         private AnalogSingleChannelWriter laserWriter;
 
@@ -49,9 +49,9 @@ namespace DAQ.WavemeterLock
 
         public void SetLaserVoltage(double voltage)
         {
+            outputLaserTask.Stop();
             outputLaserTask.Start();
             laserWriter.WriteSingleSample(true, voltage);
-            outputLaserTask.Stop();
         }
         public void DisposeLaserTask()
         {
