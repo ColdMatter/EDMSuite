@@ -69,6 +69,13 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
 			patternPlugins.Add("Two Shutter", typeof(TwoShutterPatternPlugin));
+			patternPlugins.Add("Four Shutter", typeof(FourShutterPatternPlugin));
+			patternPlugins.Add("Four Shutter Edit", typeof(FourShutterPatternPluginEdit));
+			patternPlugins.Add("Find V2", typeof(FindV2PatternPlugin));
+			patternPlugins.Add("Find V3", typeof(FindV3PatternPlugin));
+			patternPlugins.Add("Velocity Measurement (Slowed)", typeof(VelocityMeasSlowedPatternPlugin));
+			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
+			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

@@ -22,10 +22,10 @@ namespace ScanMaster.Acquire.Plugins
 	/// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class TwoShutterPatternPlugin : SupersonicPGPluginBase
+	public class VelocityMeasSlowedPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private TwoShutterPatternBuilder scanPatternBuilder;
+		private VelocityMeasSlowedPatternBuilder scanPatternBuilder;
 		[NonSerialized]
 		private FlashlampPatternBuilder flashlampPatternBuilder;
 		[NonSerialized]
@@ -36,27 +36,30 @@ namespace ScanMaster.Acquire.Plugins
 		protected override void InitialiseCustomSettings()
 		{
 			settings["ttlSwitchPort"] = 0;
+			settings["sequenceLength"] = 4;
 			settings["ttlSwitchLine"] = 0;
-			settings["sequenceLength"] = 2;
 			settings["switchLineDuration"] = 500000;
-			settings["switchLineDelay"] = 0;
-			settings["padStart"] = 0;
-			settings["padShots"] = 0;
+			settings["Probe1ShutterDelay"] = 0;
+			settings["padStart"] = 11800;
 			settings["flashlampPulseLength"] = 100;
 			settings["shutterPulseLength"] = 1000;
 			settings["flashlampPulseInterval"] = 500000;
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
-			settings["shutterPulseLength"] = 2000;
-			settings["shutteroffDelay"] = 480000;
-			settings["shutter1offdelay"] = 480000;
-			settings["shutterslowdelay"] = 10000;
-			settings["ShutterslowPulseLength"] = 20000;
+			settings["ShutterPulseLength"] = 2000;
+			settings["shutter1offdelay"] = 900000;
+			settings["shutterslowdelay"] = 21800;
+			settings["shutterV1delay"] = 10000;
+			settings["shutterV2delay"] = 10000;
+			settings["DurationV0"] = 100;
+			settings["DurationV1"] = 40000;
+			settings["DurationV2"] = 40000;
+			settings["Probe2ShutterDelay"] = 0;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new TwoShutterPatternBuilder();
+			scanPatternBuilder = new VelocityMeasSlowedPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -65,27 +68,30 @@ namespace ScanMaster.Acquire.Plugins
 			scanPatternBuilder.ShotSequence(
 				(int)settings["padStart"],
 				(int)settings["sequenceLength"],
-				(int)settings["padShots"],
 				(int)settings["padStart"],
 				(int)settings["flashlampPulseInterval"],
 				(int)settings["valvePulseLength"],
 				(int)settings["valveToQ"],
 				(int)settings["flashToQ"],
 				(int)settings["flashlampPulseLength"],
-				(int)settings["shutterPulseLength"],
+				(int)settings["ShutterPulseLength"],
 				GateStartTimePGUnits,
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
 				(int)settings["switchLineDuration"],
-				(int)settings["switchLineDelay"],
-				(int)settings["shutteroffDelay"],
+				(int)settings["Probe1ShutterDelay"],
+				(int)settings["Probe2ShutterDelay"],
 				(int)settings["shutter1offdelay"],
 				(int)settings["shutterslowdelay"],
-				(int)settings["ShutterslowPulseLength"],
+				(int)settings["shutterV1delay"],
+				(int)settings["shutterV2delay"],
+				(int)settings["DurationV0"],
+				(int)settings["DurationV1"],
+				(int)settings["DurationV2"],
 				(bool)config.switchPlugin.Settings["switchActive"]
 				);
 
-			scanPatternBuilder.BuildPattern(((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
+			scanPatternBuilder.BuildPattern((1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);
 
 			return scanPatternBuilder;

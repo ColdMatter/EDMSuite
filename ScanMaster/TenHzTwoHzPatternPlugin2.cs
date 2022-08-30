@@ -22,10 +22,10 @@ namespace ScanMaster.Acquire.Plugins
 	/// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class TwoShutterPatternPlugin : SupersonicPGPluginBase
+	public class TenHzTwoHzPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private TwoShutterPatternBuilder scanPatternBuilder;
+		private TenHzTwoHzPatternBuilder scanPatternBuilder;
 		[NonSerialized]
 		private FlashlampPatternBuilder flashlampPatternBuilder;
 		[NonSerialized]
@@ -37,26 +37,24 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 0;
-			settings["sequenceLength"] = 2;
-			settings["switchLineDuration"] = 500000;
+			settings["sequenceLength"] = 10;
+			settings["switchLineDuration"] = 100000;
 			settings["switchLineDelay"] = 0;
 			settings["padStart"] = 0;
 			settings["padShots"] = 0;
 			settings["flashlampPulseLength"] = 100;
 			settings["shutterPulseLength"] = 1000;
-			settings["flashlampPulseInterval"] = 500000;
+			settings["flashlampPulseInterval"] = 100000;
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
 			settings["shutterPulseLength"] = 2000;
-			settings["shutteroffDelay"] = 480000;
-			settings["shutter1offdelay"] = 480000;
-			settings["shutterslowdelay"] = 10000;
-			settings["ShutterslowPulseLength"] = 20000;
+			settings["shutteroffDelay"] = 4000;
+
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new TwoShutterPatternBuilder();
+			scanPatternBuilder = new TenHzTwoHzPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -79,9 +77,6 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["switchLineDuration"],
 				(int)settings["switchLineDelay"],
 				(int)settings["shutteroffDelay"],
-				(int)settings["shutter1offdelay"],
-				(int)settings["shutterslowdelay"],
-				(int)settings["ShutterslowPulseLength"],
 				(bool)config.switchPlugin.Settings["switchActive"]
 				);
 

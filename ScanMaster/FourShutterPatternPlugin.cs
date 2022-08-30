@@ -22,10 +22,10 @@ namespace ScanMaster.Acquire.Plugins
 	/// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class TwoShutterPatternPlugin : SupersonicPGPluginBase
+	public class FourShutterPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private TwoShutterPatternBuilder scanPatternBuilder;
+		private FourShutterPatternBuilder scanPatternBuilder;
 		[NonSerialized]
 		private FlashlampPatternBuilder flashlampPatternBuilder;
 		[NonSerialized]
@@ -52,11 +52,15 @@ namespace ScanMaster.Acquire.Plugins
 			settings["shutter1offdelay"] = 480000;
 			settings["shutterslowdelay"] = 10000;
 			settings["ShutterslowPulseLength"] = 20000;
+			settings["shutterV1delay"] = 6000;
+			settings["shutterV2delay"] = 6000;
+			settings["V2OnTime"] = 5000;
+			settings["DurationV1"] = 20000;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new TwoShutterPatternBuilder();
+			scanPatternBuilder = new FourShutterPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -82,6 +86,10 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["shutter1offdelay"],
 				(int)settings["shutterslowdelay"],
 				(int)settings["ShutterslowPulseLength"],
+				(int)settings["shutterV1delay"],
+				(int)settings["shutterV2delay"],
+				(int)settings["V2OnTime"],
+				(int)settings["DurationV1"],
 				(bool)config.switchPlugin.Settings["switchActive"]
 				);
 

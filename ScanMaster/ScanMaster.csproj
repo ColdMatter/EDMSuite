@@ -332,6 +332,16 @@
     </Compile>
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
+    <Compile Include="FindV2PatternBuilder.cs" />
+    <Compile Include="FindV2PatternPlugin.cs" />
+    <Compile Include="FindV3PatternBuilder.cs" />
+    <Compile Include="FindV3PatternPlugin.cs" />
+    <Compile Include="FourShutterPatternBuilder.cs" />
+    <Compile Include="FourShutterPatternBuilderEdit.cs" />
+    <Compile Include="FourShutterPatternBuilderFindV1.cs" />
+    <Compile Include="FourShutterPatternPlugin.cs" />
+    <Compile Include="FourShutterPatternPluginEdit.cs" />
+    <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />
     <Compile Include="LeakTestPatternBuilderModified.cs" />
     <Compile Include="LeakTestPatternPlugin.cs" />
@@ -356,6 +366,8 @@
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
+    <Compile Include="TenHzTwoHzPatternBuilder2.cs" />
+    <Compile Include="TenHzTwoHzPatternPlugin2.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -543,6 +555,8 @@
     <Compile Include="TTLSwitchPlugin.cs" />
     <Compile Include="TwoShutterPatternBuilder.cs" />
     <Compile Include="TwoShutterPatternPlugin.cs" />
+    <Compile Include="VelocityMeasSlowedPatternBuilder3.cs" />
+    <Compile Include="VelocityMeasSlowedPatternPlugin.cs" />
     <Compile Include="Viewer.cs">
       <SubType>Code</SubType>
     </Compile>
