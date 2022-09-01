@@ -272,15 +272,13 @@ namespace WavemeterLock
 
         
 
-        public int returnLaserState(string slavename){
+        public bool returnLaserState(string slavename){
             Laser laser = lasers[slavename];
             if (laser.lState == Laser.LaserState.LOCKED)
-                return 1;
-            else if (laser.lState == Laser.LaserState.OUTOFRANGE)
-            {
-                return 2;
-            }
-            else return 0;
+                return true;
+            else 
+                return false;
+            
             }
 
         public string getChannelNum(string slavename)
@@ -363,7 +361,7 @@ namespace WavemeterLock
                     updateFrequency(laser);
                     loopcount++;
                     miniLoopcount++;
-                    if(!Convert.ToBoolean(laser.lState == Laser.LaserState.FREE))
+                    if(laser.lState == Laser.LaserState.LOCKED)
                     {
                         if (Math.Abs(getFrequency(laser.WLMChannel) - laser.setFrequency)>freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
                         {

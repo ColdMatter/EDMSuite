@@ -35,6 +35,7 @@ namespace WavemeterLock
         public virtual double setFrequency { get; set; }
         public double currentFrequency { get; set; }
         public double FrequencyError { get; set; }
+        public bool isOutOfRange { get; set; }
 
         public double UpperVoltageLimit
         {
@@ -65,23 +66,20 @@ namespace WavemeterLock
                 if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so WML doesn't crash
                 {
                     currentVoltage = LowerVoltageLimit;
-                    lState = LaserState.OUTOFRANGE;
+                    isOutOfRange = true;
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
-                    lState = LaserState.OUTOFRANGE;
+                    isOutOfRange = true;
                 }
                 else
                 {
                     currentVoltage = value;
-                    if (lState == LaserState.OUTOFRANGE)
-                        lState = LaserState.LOCKED;//If output voltage returns back to range, identify laser as locked
+                    isOutOfRange = false;
                 }
-                
                     laser.SetLaserVoltage(currentVoltage);
                 
-               
             }
             
         }
@@ -96,6 +94,7 @@ namespace WavemeterLock
             PGain = 0;
             IGain = 0;
             offsetVoltage = 0;
+            isOutOfRange = false;
            
         }
 

@@ -41,6 +41,7 @@ namespace WavemeterLock
             controller.colorParameter++;
             setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
             SetPoint.Text = Convert.ToString(setFrequency);
+            labelOutOfRange.Visible = false;
         }
 
         public void updatePanel()
@@ -51,7 +52,13 @@ namespace WavemeterLock
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
 
-            if (controller.returnLaserState(name)==0)//Not locked
+            if (controller.lasers[name].isOutOfRange)
+            {
+                labelOutOfRange.Visible = true;
+            }
+            else labelOutOfRange.Visible = false;
+
+            if (!controller.returnLaserState(name))//Not locked
             {
                 lockButton.Text = "Lock";
                 lockLED.Value = false;
@@ -59,7 +66,7 @@ namespace WavemeterLock
                 setAsReading.Enabled = true;
                 offsetSet.Enabled = true;
             }
-            else if(controller.returnLaserState(name)==1)//Locked
+            else //Locked
             {
                 lockButton.Text = "Unlock";
                 lockLED.Value = true;
@@ -67,14 +74,7 @@ namespace WavemeterLock
                 setAsReading.Enabled = false;
                 offsetSet.Enabled = false;
             }
-            else//Out of range
-            {
-                lockButton.Text = "Unlock";
-                lockLED.Value = false;
-                SetPoint.Enabled = false;
-                setAsReading.Enabled = false;
-                offsetSet.Enabled = false;
-            }
+           
 
         }
 
@@ -85,7 +85,7 @@ namespace WavemeterLock
             setFrequency = Convert.ToDouble(SetPoint.Text);
             controller.setFrequency(name, setFrequency);
 
-            if (!Convert.ToBoolean(controller.returnLaserState(name)==1))
+            if (!controller.returnLaserState(name))
             {
                 if (SetPoint != null && !string.IsNullOrWhiteSpace(SetPoint.Text))
                 {
@@ -190,6 +190,11 @@ namespace WavemeterLock
         }
 
         private void controlPanel_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxLaserInfo_Enter(object sender, EventArgs e)
         {
 
         }
