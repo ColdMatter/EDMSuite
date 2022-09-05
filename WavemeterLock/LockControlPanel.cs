@@ -130,7 +130,10 @@ namespace WavemeterLock
 
         private void setAsReading_Click(object sender, EventArgs e)
         {
-            controller.lasers[name].setFrequency = Convert.ToDouble(controller.getFrequency(channelNumber));
+            double currentFreq = Math.Round(controller.getFrequency(channelNumber),6);
+            setFrequency = currentFreq;
+            controller.lasers[name].setFrequency = currentFreq;
+            SetPoint.Text = Convert.ToString(currentFreq);
         }
 
         private void resetBtn_Click(object sender, EventArgs e)

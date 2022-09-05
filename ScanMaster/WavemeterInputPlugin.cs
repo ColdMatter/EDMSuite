@@ -30,7 +30,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseSettings()
 		{
-			settings["channel"] =  2;
+			settings["channel"] =  3;
 			settings["computer"] = "IC-CZC136CFDJ";
 		}
 

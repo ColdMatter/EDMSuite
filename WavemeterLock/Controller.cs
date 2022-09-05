@@ -28,12 +28,14 @@ namespace WavemeterLock
         public int colorParameter = 0;
         private double freqTolerance = 0.5;//Frequency change tolerance in THz
         string faultyLaser;
+        public double updateRate = 100;
+        public int miniLoop = 50;
 
         private List<double> scanTimes;
-        public int numScanAverages = 1000;
+        public int numScanAverages = 100;
 
 
-        #region Set up TCP channel
+        #region Set up TCP channel and remote methods
 
         public void initializeTCPChannel()
         {
@@ -80,6 +82,28 @@ namespace WavemeterLock
             return wavemeterContrller.getFrequency(channelNum);
 
         }
+
+        //Methods for ScanMaster
+        public void setSlaveFrequency(string name, double freq)
+        {
+            lasers[name].setFrequency = freq;
+        }
+
+        public double getSlaveFrequency(string name)
+        {
+            return lasers[name].currentFrequency;
+        }
+
+        public void setSlaveVoltage(string name, double v)
+        {
+            lasers[name].CurrentVoltage = v;
+        }
+
+        public double getSlaveVoltage(string name)
+        {
+            return lasers[name].CurrentVoltage;
+        }
+
         #endregion
 
         public Dictionary<string, Laser> lasers;
@@ -95,7 +119,7 @@ namespace WavemeterLock
 
         }
         
-        public Color selectColor(int par)//Asign a plot line color for each laser
+        public Color selectColor(int par)//Assign a plot line color for each laser
         {
             switch (par)
             {
@@ -145,6 +169,7 @@ namespace WavemeterLock
             Thread mainThread = new Thread(new ThreadStart(mainLoop));
             mainThread.Start();
         }
+
 
         public void initializeLasers()
         {
@@ -372,7 +397,7 @@ namespace WavemeterLock
                         }
                         laser.UpdateLock();
                         timeList[slave] += stopWatch.Elapsed.TotalSeconds;
-                        if (miniLoopcount > 50)
+                        if (miniLoopcount > miniLoop)
                         {
                             panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * laser.FrequencyError);
                             miniLoopcount = 0;
@@ -380,6 +405,7 @@ namespace WavemeterLock
 
                     }
                 }
+                
                 updateLockRate(stopWatch);
 
                 stopWatch.Reset();

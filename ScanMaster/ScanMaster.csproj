@@ -29,7 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>C:\ScanMaster\</PublishUrl>
     <Install>true</Install>
@@ -186,6 +186,10 @@
       <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
       <Name>WavemeterLockServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WavemeterLock\WavemeterLock.csproj">
+      <Project>{e091da4c-f52b-47e3-9670-a36c4f16ecf7}</Project>
+      <Name>WavemeterLock</Name>
+    </ProjectReference>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
@@ -230,6 +234,7 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="WavemeterInputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
