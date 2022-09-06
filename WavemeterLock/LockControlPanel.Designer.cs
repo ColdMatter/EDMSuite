@@ -510,7 +510,7 @@ namespace WavemeterLock
             this.Controls.Add(this.groupBoxErrorPlot);
             this.Controls.Add(this.groupBoxLaserInfo);
             this.Name = "LockControlPanel";
-            this.Size = new System.Drawing.Size(679, 553);
+            this.Size = new System.Drawing.Size(679, 522);
             this.Load += new System.EventHandler(this.LockControlPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();

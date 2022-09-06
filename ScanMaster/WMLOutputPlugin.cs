@@ -32,13 +32,15 @@ namespace ScanMaster.Acquire.Plugins
 
         protected override void InitialiseSettings()
         {
-            settings["name"] = "laser";
+            settings["laser"] = "laser";
             settings["computer"] = hostName;
             settings["WMLConfig"] = "WMLConfig";
             settings["rampSteps"] = 100;
             settings["scannedParameter"] = "setpoint";
             settings["setVoltageWaitTime"] = 50;
             settings["setSetPointWaitTime"] = 500;
+            settings["range"] = 10;
+            settings["offset"] = 0.0; //Frequency offset in THz
         }
 
 
@@ -82,8 +84,8 @@ namespace ScanMaster.Acquire.Plugins
 
             scanParameter = 0;
 
-            initialVoltage = wmlController .getSlaveVoltage((string)settings["name"]);
-            initialFrequency = wmlController.getSlaveFrequency((string)settings["name"]);
+            initialVoltage = wmlController.getSlaveVoltage((string)settings["laser"]);
+            initialFrequency = wmlController.getSlaveFrequency((string)settings["laser"]);
             if (scannedParameter == "voltage")
             {
                 wmlController.DisengageLock((string)settings["name"]);
@@ -96,7 +98,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             if ((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup")
             {
-                rampV((double)settings["end"], scannedParameter);
+                rampV((double)settings["start"]+ (double)settings["range"]/1000, scannedParameter);
             }
 
         }
@@ -116,7 +118,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             if ((string)settings["scanMode"] == "down")
             {
-                rampV((double)settings["end"], scannedParameter);
+                rampV((double)settings["start"] + (double)settings["range"] / 1000, scannedParameter);
             }
             //all other cases, do nothing
         }
@@ -151,11 +153,11 @@ namespace ScanMaster.Acquire.Plugins
             switch (scannedOutput)
             {
                 case "setpoint":
-                    wmlController.setSlaveFrequency((string)settings["name"], f);
+                    wmlController.setSlaveFrequency((string)settings["laser"], f/1000 + (double)settings["offset"]);
                     Thread.Sleep((int)settings["setSetPointWaitTime"]);
                     break;
                 case "voltage":
-                    wmlController.setSlaveVoltage((string)settings["name"], f);
+                    wmlController.setSlaveVoltage((string)settings["laser"], f);
                     Thread.Sleep((int)settings["setVoltageWaitTime"]);
                     break;
             }
@@ -168,14 +170,14 @@ namespace ScanMaster.Acquire.Plugins
             switch (scannedOutput)
             {
                 case "setpoint":
-                    wmlController.setSlaveFrequency((string)settings["name"], f);
+                    wmlController.setSlaveFrequency((string)settings["laser"], f/1000 + (double)settings["offset"]);
                     // since we are moving the set point by quite a distance, wait for WML to move the laser to it by waiting 10x longer than usual
                     Thread.Sleep(10 * (int)settings["setSetPointWaitTime"]);
                     break;
                 case "voltage":
                     for (int i = 1; i <= (int)settings["rampSteps"]; i++)
                     {
-                        wmlController.setSlaveVoltage((string)settings["name"], initialVoltage - (i * (initialVoltage - f) / (int)settings["rampSteps"]));
+                        wmlController.setSlaveVoltage((string)settings["laser"], initialVoltage - (i * (initialVoltage - f) / (int)settings["rampSteps"]));
                         Thread.Sleep((int)settings["setVoltageWaitTime"]);
                     }
                     break;

@@ -22,6 +22,7 @@ namespace ScanMaster.Acquire.Plugin
 		private Hashtable shotGathererPlugins = new Hashtable();
 		private Hashtable analogInputPlugins = new Hashtable();
         private Hashtable gpibInputPlugins = new Hashtable();
+		private Hashtable wmlOutputPlugins = new Hashtable();
 
 		private PluginRegistry()
 		{
@@ -172,6 +173,11 @@ namespace ScanMaster.Acquire.Plugin
         public String[] GetGPIBPlugins()
         {
             return GetPluginNameList(gpibInputPlugins);
+        }
+
+		public WMLOutputPlugin GetWMLPlugins(string type)
+        {
+			return (WMLOutputPlugin)InstantiatePlugin(wmlOutputPlugins, type);
         }
 
 		private object InstantiatePlugin(Hashtable plugins, String type)

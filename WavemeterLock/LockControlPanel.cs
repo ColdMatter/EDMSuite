@@ -16,7 +16,6 @@ namespace WavemeterLock
         public string name;
         public string analogChannel;
         private int channelNumber = 0;
-        double setFrequency = 0;
         public Controller controller;
         public double scale = 10;
         
@@ -39,8 +38,8 @@ namespace WavemeterLock
             errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             errorPlot.LineColor = controller.selectColor(controller.colorParameter);
             controller.colorParameter++;
-            setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
-            SetPoint.Text = Convert.ToString(setFrequency);
+            controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
+            SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
             labelOutOfRange.Visible = false;
         }
 
@@ -51,6 +50,7 @@ namespace WavemeterLock
             lockMsg.Text = controller.getLaserState(name);
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
+            SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
 
             if (controller.lasers[name].isOutOfRange)
             {
@@ -82,8 +82,8 @@ namespace WavemeterLock
 
         private void lockButton_Click(object sender, EventArgs e)
         {
-            setFrequency = Convert.ToDouble(SetPoint.Text);
-            controller.setFrequency(name, setFrequency);
+            controller.lasers[name].setFrequency = Convert.ToDouble(SetPoint.Text);
+            controller.setFrequency(name, controller.lasers[name].setFrequency);
 
             if (!controller.returnLaserState(name))
             {
@@ -91,7 +91,7 @@ namespace WavemeterLock
                 {
                     lockMsg.Text = "Lock On";
                     lockLED.Value = true;
-                    setFrequency = Convert.ToDouble(SetPoint.Text);
+                    controller.lasers[name].setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
                 }
                 else
@@ -131,7 +131,6 @@ namespace WavemeterLock
         private void setAsReading_Click(object sender, EventArgs e)
         {
             double currentFreq = Math.Round(controller.getFrequency(channelNumber),6);
-            setFrequency = currentFreq;
             controller.lasers[name].setFrequency = currentFreq;
             SetPoint.Text = Convert.ToString(currentFreq);
         }
@@ -149,16 +148,12 @@ namespace WavemeterLock
 
         private void stepUpBtn_Click(object sender, EventArgs e)
         {
-            setFrequency += Convert.ToDouble(stepSize.Text) / 1000000;
-            controller.setFrequency(name, setFrequency);
-            SetPoint.Text = Convert.ToString(setFrequency);
+            controller.lasers[name].setFrequency += Convert.ToDouble(stepSize.Text) / 1000000;
         }
 
         private void stepDownBtn_Click(object sender, EventArgs e)
         {
-            setFrequency -= Convert.ToDouble(stepSize.Text) / 1000000;
-            controller.setFrequency(name, setFrequency);
-            SetPoint.Text = Convert.ToString(setFrequency);
+            controller.lasers[name].setFrequency -= Convert.ToDouble(stepSize.Text) / 1000000;
         }
 
         private void scaleUp_click(object sender, EventArgs e)
