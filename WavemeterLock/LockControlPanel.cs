@@ -50,7 +50,10 @@ namespace WavemeterLock
             lockMsg.Text = controller.getLaserState(name);
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
-            SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
+            if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
+            {
+                SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
+            }
 
             if (controller.lasers[name].isOutOfRange)
             {
