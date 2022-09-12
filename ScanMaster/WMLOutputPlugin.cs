@@ -24,7 +24,6 @@ namespace ScanMaster.Acquire.Plugins
         private string name;
         private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
         private string scannedParameter;
-        private double initialFrequency = 0.0;
         private double initialVoltage = 0.0;
         [NonSerialized]
         private WavemeterLock.Controller wmlController;
@@ -40,7 +39,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["setVoltageWaitTime"] = 50;
             settings["setSetPointWaitTime"] = 500;
             settings["range"] = 10;
-            settings["offset"] = 0.0; //Frequency offset in THz
+            settings["offset"] = 0; //Frequency offset in THz
         }
 
 
@@ -85,7 +84,7 @@ namespace ScanMaster.Acquire.Plugins
             scanParameter = 0;
 
             initialVoltage = wmlController.getSlaveVoltage((string)settings["laser"]);
-            initialFrequency = wmlController.getSlaveFrequency((string)settings["laser"]);
+
             if (scannedParameter == "voltage")
             {
                 wmlController.DisengageLock((string)settings["name"]);
@@ -133,7 +132,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             if (scannedParameter == "setpoint")
             {
-                rampV(initialFrequency, "setpoint");
+                rampV(0, "setpoint");
             }
         }
 
