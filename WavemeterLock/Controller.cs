@@ -19,7 +19,7 @@ namespace WavemeterLock
 
         private string computer;
         private string name;
-        private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+        private string hostName = "IC-CZC136CFDJ";
 
         private WavemeterLockServer.Controller wavemeterContrller;
 

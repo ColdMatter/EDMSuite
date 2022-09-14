@@ -83,7 +83,7 @@ namespace WavemeterLock
             lState = LaserState.FREE;
             Name = feedbackChannel;
             FeedbackChannel = feedbackChannel;
-            laser.ConfigureSetLaserVoltage(0.0);
+            //laser.ConfigureSetLaserVoltage(0.0);
         }
 
 

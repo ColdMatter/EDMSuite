@@ -32,6 +32,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			settings["channel"] =  2;
 			settings["computer"] = "IC-CZC136CFDJ";
+			settings["freqOffset"] = 662.61;
 		}
 
 		public override void AcquisitionStarting()
@@ -71,7 +72,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = wavemeterContrller.getFrequency((int)settings["channel"]);
+					latestData = wavemeterContrller.getFrequency((int)settings["channel"]) - (double)settings["freqOffset"];
 				}
 			}
 		}

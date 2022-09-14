@@ -81,7 +81,7 @@ namespace DAQ.HAL
             Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
-            Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+            Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
             yag = new BrilliantLaser("ASRL13::INSTR");
