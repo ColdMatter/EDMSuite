@@ -22,6 +22,7 @@ The code that makes up the trunk today has seen contributions from:
 
 * Aki Matsushima
 * Anne Cournol
+* Chris Ho
 * Chris Sinclair
 * Devin Dunseith
 * Dhiren Kara
@@ -31,6 +32,7 @@ The code that makes up the trunk today has seen contributions from:
 * Michael Tarbutt
 * Nick Bulleid
 * Sean Tokunaga
+* Simon Swarbrick
 
 In addition, early versions of this code, that pre-date this repository, or never made it to the trunk, were contributed to by:
 

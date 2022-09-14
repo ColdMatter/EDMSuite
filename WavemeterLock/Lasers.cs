@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace WavemeterLock
 {
@@ -14,18 +15,19 @@ namespace WavemeterLock
     /// </summary>
     public class Laser
     {
+
         public double PGain { get; set; }
         public double IGain { get; set; }
         public string Name;
         public string FeedbackChannel { get; set; }
+        public double offsetVoltage { get; set; }
         public int WLMChannel { get; set; }
         public double summedWavelengthDifference = 0;
-
-        private WavemeterLockLaserControllable laser;
+        private DAQMxWavemeterLockLaserControlHelper laser;
 
         public enum LaserState
         {
-            FREE, LOCKED
+            FREE, LOCKED, OUTOFRANGE
         };
 
         public LaserState lState = LaserState.FREE;
@@ -33,6 +35,7 @@ namespace WavemeterLock
         public virtual double setFrequency { get; set; }
         public double currentFrequency { get; set; }
         public double FrequencyError { get; set; }
+        public bool isOutOfRange { get; set; }
 
         public double UpperVoltageLimit
         {
@@ -63,40 +66,51 @@ namespace WavemeterLock
                 if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so WML doesn't crash
                 {
                     currentVoltage = LowerVoltageLimit;
+                    isOutOfRange = true;
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
+                    isOutOfRange = true;
                 }
                 else
                 {
                     currentVoltage = value;
+                    isOutOfRange = false;
                 }
-                laser.SetLaserVoltage(currentVoltage);
+                    laser.SetLaserVoltage(currentVoltage);
+                
             }
             
         }
 
-        public Laser(string feedbackChannel)
+        public Laser(string name, string feedbackChannel, DAQMxWavemeterLockLaserControlHelper chelper)
         {
-            laser = new DAQMxWavemeterLockLaserControlHelper(feedbackChannel);
+            laser = chelper;
             lState = LaserState.FREE;
-            Name = feedbackChannel;
+            Name = name;
             FeedbackChannel = feedbackChannel;
-            //laser.ConfigureSetLaserVoltage(0.0);
+            laser.ConfigureSetLaserVoltage(0.0);
+            PGain = 0;
+            IGain = 0;
+            offsetVoltage = 0;
+            isOutOfRange = false;
+           
         }
+
 
 
         public void Lock()
         {
             lState = LaserState.LOCKED;
-            
         }
 
         public void DisengageLock()
         {
             lState = LaserState.FREE;
         }
+
+        
 
        
       
@@ -106,15 +120,18 @@ namespace WavemeterLock
             {
                 FrequencyError = currentFrequency - setFrequency;
                 summedWavelengthDifference += FrequencyError;
-                CurrentVoltage = IGain * summedWavelengthDifference + PGain * FrequencyError;
+                CurrentVoltage = IGain * summedWavelengthDifference + PGain * FrequencyError + offsetVoltage;
             }
+            
         }
+
+        
 
         public virtual void ResetOutput()
         {
-            CurrentVoltage = 0;
+            CurrentVoltage = PGain * FrequencyError + offsetVoltage;
+            CurrentVoltage = currentVoltage;
             summedWavelengthDifference = 0;
-            FrequencyError = 0;
         }
 
         public void DisposeLaserControl()

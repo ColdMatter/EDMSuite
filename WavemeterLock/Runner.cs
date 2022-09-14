@@ -17,7 +17,14 @@ namespace WavemeterLock
         [STAThread]
         static void Main()
         {
-            Controller controller = new Controller();
+            int channelNumber = 6666;
+            Controller controller = new Controller("WMLServer");
+
+            // publish the controller to the remoting system
+            TcpChannel clientChannel = new TcpChannel(channelNumber);
+            ChannelServices.RegisterChannel(clientChannel, false);
+            RemotingServices.Marshal(controller, "controller.rem");
+            
             controller.start();
         }
     }

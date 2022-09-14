@@ -22,7 +22,7 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private double latestData;
 		[NonSerialized]
-		private WavemeterLockServer.Controller wavemeterContrller;
+		private WavemeterLock.Controller wavemeterContrller;
 		[NonSerialized]
 		private string serverComputerName;
 		[NonSerialized]
@@ -30,9 +30,9 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseSettings()
 		{
-			settings["channel"] =  2;
+			settings["laser"] =  "Laser";
 			settings["computer"] = "IC-CZC136CFDJ";
-			settings["freqOffset"] = 662.61;
+			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 
 		public override void AcquisitionStarting()
@@ -49,7 +49,7 @@ namespace ScanMaster.Acquire.Plugins
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 
-				wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + ipAddr + ":" + "1984" + "/controller.rem"));
+				wavemeterContrller = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + ipAddr + ":" + "6666" + "/controller.rem"));
 			}
 			
 		}
@@ -72,7 +72,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = wavemeterContrller.getFrequency((int)settings["channel"]) - (double)settings["freqOffset"];
+					latestData = 1000*(wavemeterContrller.getSlaveFrequency((string)settings["laser"]) - (double)settings["offset"]);
 				}
 			}
 		}

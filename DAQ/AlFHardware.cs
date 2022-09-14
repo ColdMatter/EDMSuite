@@ -2,7 +2,7 @@
 using System.Collections;
 
 using NationalInstruments.DAQmx;
-
+using DAQ.WavemeterLock;
 using DAQ.Pattern;
 using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
@@ -30,7 +30,12 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("testOut", PatternBoardAddress + "/ao0", -10, 10);
             AddAnalogOutputChannel("WMLOut", PatternBoardAddress + "/ao1", -10, 10);
 
-           
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("WMLServer");
+
+
+            wmlConfig.AddSlaveLaser("VECSEL", "WMLOut", 3);//name, analog, wavemeter channel
+
+            Info.Add("WMLServer", wmlConfig);
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", PatternBoardAddress, 0, 1);//Pin 
