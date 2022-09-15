@@ -28,10 +28,12 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private string ipAddr;
 
+		private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+
 		protected override void InitialiseSettings()
 		{
 			settings["laser"] =  "Laser";
-			settings["computer"] = "IC-CZC136CFDJ";
+			settings["computer"] = hostName;
 			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 

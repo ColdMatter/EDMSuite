@@ -38,8 +38,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["scannedParameter"] = "setpoint";
             settings["setVoltageWaitTime"] = 50;
             settings["setSetPointWaitTime"] = 500;
-            settings["range"] = 10;
-            settings["offset"] = 0; //Frequency offset in THz
+            settings["offset"] = 0.0; //Frequency offset in THz
         }
 
 
@@ -97,7 +96,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             if ((string)settings["scanMode"] == "down" || (string)settings["scanMode"] == "downup")
             {
-                rampV((double)settings["start"]+ (double)settings["range"]/1000, scannedParameter);
+                rampV((double)settings["start"]+ (double)settings["end"]/1000, scannedParameter);
             }
 
         }
@@ -117,7 +116,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             if ((string)settings["scanMode"] == "down")
             {
-                rampV((double)settings["start"] + (double)settings["range"] / 1000, scannedParameter);
+                rampV((double)settings["start"] + (double)settings["end"] / 1000.0, scannedParameter);
             }
             //all other cases, do nothing
         }
@@ -152,7 +151,7 @@ namespace ScanMaster.Acquire.Plugins
             switch (scannedOutput)
             {
                 case "setpoint":
-                    wmlController.setSlaveFrequency((string)settings["laser"], f/1000 + (double)settings["offset"]);
+                    wmlController.setSlaveFrequency((string)settings["laser"], f/1000.0 + (double)settings["offset"]);
                     Thread.Sleep((int)settings["setSetPointWaitTime"]);
                     break;
                 case "voltage":
