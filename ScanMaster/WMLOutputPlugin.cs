@@ -14,6 +14,12 @@ using System.Net.Sockets;
 
 namespace ScanMaster.Acquire.Plugins
 {
+    /// <summary>
+	/// A plugin to step the WavemeterLock setpoint frequency
+    /// Mostly ripped off from TCL
+    /// Scans from offset(THz)+start(GHz) to offset(THz)+end(GHz) in setpoint mode
+    /// Scans from start(V) to end(V) in voltage mode
+	/// </summary>
     [Serializable]
     public class WMLOutputPlugin : ScanOutputPlugin
     {

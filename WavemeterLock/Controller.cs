@@ -22,11 +22,11 @@ namespace WavemeterLock
 
         private string computer;
         private string name;
-        private string hostName = "IC-CZC136CFDJ";
+        private string hostName = "IC-CZC136CFDJ";//Change this if the server is changed
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
-        private double freqTolerance = 0.5;//Frequency change tolerance in THz
+        private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
         public double updateRate = 100;
         public int miniLoop = 50;
@@ -175,9 +175,9 @@ namespace WavemeterLock
         }
 
 
-        public void initializeLasers()
+        public void initializeLasers()//For each laser in configuration, create a control panel in main form
         {
-            lasers = new Dictionary<string, Laser>(); //A dictionary to store slave lasers
+            lasers = new Dictionary<string, Laser>(); 
 
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
@@ -186,7 +186,7 @@ namespace WavemeterLock
                 timeList.Add(slaveLaser, 0);
             }
 
-            foreach (KeyValuePair<string, string> entry in config.slaveLasers)//Enter value in dictionary according to config
+            foreach (KeyValuePair<string, string> entry in config.slaveLasers)
             {
                 string laser = entry.Key;
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
@@ -413,7 +413,7 @@ namespace WavemeterLock
 
                 }
 
-                if (miniLoopcount > miniLoop)
+                if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
                 {
                     foreach (string slave in lasers.Keys)
                     {

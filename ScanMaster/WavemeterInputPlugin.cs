@@ -14,7 +14,7 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
 	/// <summary>
-	/// A plugin to capture analog data using an E-series board.
+	/// A plugin to capture wavemeter reading from WavemeterLock. Returns measured frequency-offset in GHz.
 	/// </summary>
 	[Serializable]
 	public class WavemeterInputPlugin : AnalogInputPlugin
