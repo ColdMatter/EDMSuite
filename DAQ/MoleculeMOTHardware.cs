@@ -56,6 +56,11 @@ namespace DAQ.HAL
             string digitalPatternBoardAddress2 = "/PXI1Slot4";
             Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
 
+            
+            string analogPatternBoardName2 = "analogPattern2";
+            string analogPatternBoardAddress2 = "/PXI1Slot7";
+            Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
+            
 
             // Channel Declarations
 
@@ -133,11 +138,12 @@ namespace DAQ.HAL
             // tweezer new digital pattern board
             AddDigitalOutputChannel("slavePatternCardTrigger", digitalPatternBoardAddress2, 0, 0);
             //AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
-            AddDigitalOutputChannel("test02", digitalPatternBoardAddress2, 0, 2);
-            AddDigitalOutputChannel("test03", digitalPatternBoardAddress2, 0, 3);
-            AddDigitalOutputChannel("test04", digitalPatternBoardAddress2, 0, 4);
+            AddDigitalOutputChannel("cafOptPumpingAOM", digitalPatternBoardAddress2, 0, 2);
+            AddDigitalOutputChannel("flowEnable", digitalPatternBoardAddress2, 0, 3);
+            AddDigitalOutputChannel("cafOptPumpingShutter", digitalPatternBoardAddress2, 0, 4);
             AddDigitalOutputChannel("test10", digitalPatternBoardAddress2, 1, 0);
             AddDigitalOutputChannel("motLightSwitch", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("TransverseCoolingShutter", digitalPatternBoardAddress2, 0, 5);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -179,15 +185,37 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
             AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
+            /* New Ananlog board
+             * This specific channel "newAnalogTest" has been added to the
+             * LoadMoleculeMOT, LoadMoleculeMOTNoSlowingEdge and LoadMoleculeMOTDualSpecies
+             * inside the MOTMaster folder to make the old scripts compatible with both boards
+             * If you plan on changing the name make sure you change it inside
+             * those files too.
+            */
+            AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
+
             // Source
-            AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);
-            AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
-            AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddDigitalOutputChannel("cryoCooler", tclBoard2Address, 0, 0);
+            AddDigitalOutputChannel("sourceHeater", tclBoard2Address, 0, 1);
+            AddDigitalOutputChannel("sf6Valve", tclBoard2Address, 0, 2);
+            AddDigitalOutputChannel("heValve", tclBoard2Address, 0, 3);
+
+            AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("MOTPressure", tclBoard2Address + "/ai8", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp40K", tclBoard2Address + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6FlowMonitor", tclBoard2Address + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("he6FlowMonitor", tclBoard2Address + "/ai6", AITerminalConfiguration.Rse);
+
             Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
+            Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
+            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionHe", 0.2); 
+            AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
+            AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
 
             //AddDigitalInputChannel("tofTrig", tclBoard2Address, 0, 0);
 
@@ -277,10 +305,14 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
-            Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
+            
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
+
+            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
+            Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
+            Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI6");
+            Info.Add("SecondAOClockLine", analogPatternBoardAddress2 + "/PFI3");
 
             /*****************
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
@@ -294,6 +326,11 @@ namespace DAQ.HAL
             ****************/
 
             
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("AO", analogPatternBoardAddress);
+            analogBoards.Add("SecondAO", analogPatternBoardAddress2);
+            Info.Add("AnalogBoards", analogBoards);
+
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");

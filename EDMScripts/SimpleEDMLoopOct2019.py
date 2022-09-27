@@ -51,11 +51,19 @@ def prompt(text):
 
 def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV):
 	fileSystem = Environs.FileSystem
+	#fl.StopFieldLock()
+	#print("B field lock OFF")
 	print("Measuring parameters ...")
 	bh.StopPattern()
 	hc.UpdateRFPowerMonitor()
+	print("Waiting 0s for YAG laser head to cool down..")
+	#System.Threading.Thread.Sleep(90000)
 	#hc.UpdateRFFrequencyMonitor()
 	bh.StartPattern()
+	#print("Waiting for YAG to start ...")
+	#System.Threading.Thread.Sleep(5000)
+	#fl.LockField()
+	#print("B field lock ON")
 	hc.UpdateBCurrentMonitor()
 	hc.UpdateVMonitor()
 	hc.UpdateProbeAOMV()
@@ -74,7 +82,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	print("Phase Lock Error (deg): "+ str(pl.PhaseError))
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "lfFreqStepTest05Nov19_try2.xml")
+	bc = loadBlockConfig(settingsPath + "default.xml")
 	bc.Settings["cluster"] = cluster
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -113,8 +121,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	bc.GetModulationByName("RF2F").PhysicalCentre = hc.RF2FrequencyCentre
 	bc.GetModulationByName("RF2F").PhysicalStep = hc.RF2FrequencyStep
 	# laser frequency stuff goes here
-	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre;
-	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep;
+	bc.GetModulationByName("LF1").PhysicalCentre = hc.ProbeAOMFrequencyCentre
+	bc.GetModulationByName("LF1").PhysicalStep = hc.ProbeAOMFrequencyStep
 	# generate the waveform codes
 	print("Generating waveform codes ...")
 	eWave = bc.GetModulationByName("E").Waveform
@@ -161,9 +169,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 200.0
-	bc.Settings["targetStepperGateStartTime"] = 2380.0
-	bc.Settings["targetStepperGateEndTime"] = 2580.0
+	bc.Settings["minimumSignalToRun"] = 150.0
+	bc.Settings["targetStepperGateStartTime"] = 2450.0
+	bc.Settings["targetStepperGateEndTime"] = 2650.0
+	bc.Settings["liveAnalysisGateLow"] = 2800.0
+	bc.Settings["liveAnalysisGateHigh"] = 3000.0
 	return bc
 
 # lock gains
@@ -227,13 +237,13 @@ def updateLocks(bState):
 		newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
 		hc.SetRF2AttCentre( newRF2A )
 		# RFF  locks
-		deltaRF1F = - (10.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
+		deltaRF1F = - (4.0/4.0) * (rf1fValue / dbValue) * kRFFVoltsPerCal
 		deltaRF1F = windowValue(deltaRF1F, -kRFFMaxChange, kRFFMaxChange)
 		print "Attempting to change RF1F by " + str(deltaRF1F) + " V."
 		newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 		hc.SetRF1FMCentre( newRF1F )
 		#
-		deltaRF2F = - (10.0/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
+		deltaRF2F = - (0.2/4.0) * (rf2fValue / dbValue) * kRFFVoltsPerCal
 		deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 		print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 		newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
@@ -302,7 +312,7 @@ def updateLocksNL(bState, mwState):
 	newRF1A = windowValue( hc.RF1AttCentre - deltaRF1A, hc.RF1AttStep, 5 - hc.RF1AttStep)
 	hc.SetRF1AttCentre( newRF1A )
 	#
-	deltaRF2A = - (6.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
+	deltaRF2A = - (3.0/3.0) * rf2adbdbValue * kRFAVoltsPerCal
 	deltaRF2A = windowValue(deltaRF2A, -kRFAMaxChange, kRFAMaxChange)
 	print "Attempting to change RF2A by " + str(deltaRF2A) + " V."
 	newRF2A = windowValue( hc.RF2AttCentre - deltaRF2A, hc.RF2AttStep, 5 - hc.RF2AttStep )
@@ -314,15 +324,16 @@ def updateLocksNL(bState, mwState):
 	newRF1F = windowValue( hc.RF1FMCentre - deltaRF1F, hc.RF1FMStep, 5 - hc.RF1FMStep)
 	hc.SetRF1FMCentre( newRF1F )
 	#
-	deltaRF2F = - (10.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
+	deltaRF2F = - (1.0/4.0) * rf2fdbdbValue * kRFFVoltsPerCal
 	deltaRF2F = windowValue(deltaRF2F, -kRFFMaxChange, kRFFMaxChange)
 	print "Attempting to change RF2F by " + str(deltaRF2F) + " V."
 	newRF2F = windowValue( hc.RF2FMCentre - deltaRF2F, hc.RF2FMStep, 5 - hc.RF2FMStep )
 	hc.SetRF2FMCentre( newRF2F )
 
 	#Laser frequency lock using TCL
-	#deltaLF1setpoint = 0.5 * (lf1dbdbValue)
-	deltaLF1setpoint = 0.25 * (lf1dbdbValue)	
+	#deltaLF1setpoint = 0.25 * (lf1dbdbValue)
+	maxLF1SetPointChange = 0.005
+	deltaLF1setpoint = windowValue( 0.25 * (lf1dbdbValue), -maxLF1SetPointChange, maxLF1SetPointChange )
 	print "Attempting to change tclProbe setpoint by " + str(deltaLF1setpoint) + " V."
 	tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT",tclProbe.GetLaserSetpoint("ProbeCavity", "TopticaSHGPZT") +deltaLF1setpoint)
 
@@ -373,7 +384,7 @@ def EDMGo():
 	mwState = hc.MWManualState
 	print("mw-state: " + str(mwState))
 	# this is to make sure the B current monitor is in a sensible state
-	#hc.UpdateBCurrentMonitor()
+	hc.UpdateBCurrentMonitor()
 	# randomise Ramsey phase
 	scramblerV = 0.97156 * r.NextDouble()
 	hc.SetScramblerVoltage(scramblerV)
@@ -415,19 +426,22 @@ def EDMGo():
 		saveBlockConfig(tempConfigFile, bc)
 		System.Threading.Thread.Sleep(500)
 		print("Loading temp config.")
-		# hc.GreenSynthEnabled = False
+		hc.EnableGreenSynth( False )
 		bh.LoadConfig(tempConfigFile)
 		# take the block and save it
 		print("Running Target Stepper ...")
-		#bh.StartTargetStepperAndWait()
+		#fl.StopFieldLock()
+		bh.StartTargetStepperAndWait()
 		print("Target Stepper finished")
-		# hc.GreenSynthEnabled = True
-		#if bh.TargetHealthy == False:
-			#print("Unable to find acceptable spot")
-			#print("Stopping Cluster")
-			#hc.EnableEField( False )
-			#bh.StopPattern()
-			#break
+		hc.EnableGreenSynth( True )
+		if bh.TargetHealthy == False:
+			print("Unable to find acceptable spot")
+			print("Stopping Cluster")
+			hc.EnableEField( False )
+			#fl.StopFieldLock()
+			bh.StopPattern()
+			break
+		#fl.LockField()
 		print("Running Block ...")
 		bh.AcquireAndWait()
 		print("Done.")
@@ -443,12 +457,12 @@ def EDMGo():
 		File.Delete(tempConfigFile)
 		checkYAGAndFix()
 		blockIndex = blockIndex + 1
-		# updateLocksNL(bState, mwState)
+		updateLocksNL(bState, mwState)
 		# randomise Ramsey phase
 		scramblerV = 0.97156 * r.NextDouble()
 		hc.SetScramblerVoltage(scramblerV)
-		print("setting green synth amp to: " + str(3.8 + blockIndex % 4))
-		hc.SetGreenSynthAmp(3.8 + blockIndex % 4)
+		#print("setting green synth amp to: " + str(3.8 + blockIndex % 4))
+		#hc.SetGreenSynthAmp(3.8 + blockIndex % 4)
 
 		bc = measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramblerV)
 		#pmtChannelValues = bh.DBlock.ChannelValues[0]

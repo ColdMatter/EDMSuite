@@ -4,6 +4,8 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
 
+using DAQ.Environment;
+
 namespace ScanMaster
 {
 	/// <summary>

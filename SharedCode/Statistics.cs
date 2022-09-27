@@ -41,7 +41,7 @@ namespace Analysis
             int trim = (int)Math.Floor(trimLevel * length);
             temp.Sort();
 
-            for (int i = 0; i < trim; i++) temp.RemoveAt(length - 1); // removes the largest values one by one
+            for (int i = 0; i < trim; i++) temp.RemoveAt(temp.Count - 1); // removes the largest values one by one
             for (int i = 0; i < trim; i++) temp.RemoveAt(0); // removes the smallest values one by one
 
             return Mean(temp.ToArray());
@@ -58,7 +58,7 @@ namespace Analysis
         public static double[] BootstrappedTrimmedMeanAndError(double[] values, double trimLevel, int numReplicates)
         {
             double[] trimmedMeans = new double[numReplicates];
-            for (int i = 1; i < numReplicates; i++) trimmedMeans[i] = Mean(BootstrapReplicate(values));
+            for (int i = 1; i < numReplicates; i++) trimmedMeans[i] = TrimmedMean(BootstrapReplicate(values), trimLevel);
 
             double[] tME = new double[2];
             tME[0] = Mean(trimmedMeans);

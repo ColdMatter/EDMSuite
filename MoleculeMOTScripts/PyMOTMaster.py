@@ -426,6 +426,18 @@ def ScanTCLSetPoint(script_name, cavityName, laserName,  values):
 	print 'Finished'
 	return 0
 
+def ScanSF6Flow(script_name, values):
+	mm.SetScriptPath('C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts\\' + script_name + '.cs')
+	for value in values:
+		hc.tabs["General Hardware"].SetAnalogOutput(0, value * 5)
+		time.sleep(10.0)
+		start = time.time()
+		mm.Go()
+		end = time.time()
+		print '{0} : {1} seconds'.format(value, end-start)
+	print 'Finished'
+	return 0
+
 def TCLGetSetPoint(cavityname, lasername):
 	Value = tcl.GetLaserSetpoint(cavityname, lasername)
 	return Value

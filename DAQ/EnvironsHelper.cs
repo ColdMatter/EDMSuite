@@ -297,8 +297,20 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-				default:
-					Hardware = new BufferClassicHardware();
+                case "ALF":
+                    Hardware = new AlFHardware();
+                    FileSystem = new AlFFileSystem();
+                    Debug = false;
+                    break;
+
+                case "IC-CZC136CFDJ":
+                    Hardware = new WMLServerHardware();
+                    FileSystem = new WMLServerFileSystem();
+                    Debug = false;
+                    break;
+
+                default:
+					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();
 					Debug = true;
                     //ExperimentType = "edm";

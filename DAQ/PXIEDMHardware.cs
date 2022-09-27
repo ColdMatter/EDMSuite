@@ -38,12 +38,12 @@ namespace DAQ.HAL
             Boards.Add("analogIn2", "/PXI1Slot17");
             Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2");
-            // this drives the rf attenuators
-            Boards.Add("usbDAQ1", "/Dev2");
+            Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
             Boards.Add("analogIn", "/PXI1Slot15");
-            Boards.Add("usbDAQ2", "/Dev4");
+            //Boards.Add("usbDAQ2", "/Dev4");
             Boards.Add("usbDAQ3", "/Dev1");
             Boards.Add("usbDAQ4", "/Dev3");
+
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
             string rfAWG = (string)Boards["rfAWG"];
@@ -54,7 +54,7 @@ namespace DAQ.HAL
             string aoBoard = (string)Boards["aoBoard"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
             string analogIn = (string)Boards["analogIn"];
-            string usbDAQ2 = (string)Boards["usbDAQ2"];
+            //string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbDAQ3 = (string)Boards["usbDAQ3"];
             string usbDAQ4 = (string)Boards["usbDAQ4"];
             string doBoard = (string)Boards["doBoard"];
@@ -119,9 +119,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("attenuatorSelect", pgBoard, 0, 5);    // This line selects the attenuator voltage
             // sent to the voltage-controlled attenuator.
             AddDigitalOutputChannel("piFlip", pgBoard, 1, 1);
-            //AddDigitalOutputChannel("ttlSwitch", pgBoard, 1, 3);	// This is the output that the pg
-            // will switch if it's switch scanning.
-            AddDigitalOutputChannel("ttlSwitch", pgBoard, 3, 5);	// This is the output that the pg
+            AddDigitalOutputChannel("bSwitch", pgBoard, 1, 3);
+            AddDigitalOutputChannel("ttlSwitch", pgBoard, 3, 5);	// This is the output that the pg board outputs if we are switch-scanning
             AddDigitalOutputChannel("scramblerEnable", pgBoard, 1, 4);
             
             //RF Counter Control (single pole 4 throw)
@@ -154,13 +153,18 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("notEPol", usbDAQ4, 0, 5);
             AddDigitalOutputChannel("eBleed", usbDAQ4, 0, 6);
             AddDigitalOutputChannel("eSwitching", usbDAQ4, 0, 7);
+            AddDigitalOutputChannel("eSwitch", usbDAQ4, 0, 0);
 
 
             // these digitial outputs are are not switched during the pattern
-            AddDigitalOutputChannel("argonShutter", usbDAQ4, 0, 0);
+            //AddDigitalOutputChannel("argonShutter", usbDAQ4, 0, 0);
             AddDigitalOutputChannel("patternTTL", usbDAQ4, 0, 2);
             AddDigitalOutputChannel("rfPowerAndFreqSelectSwitch", usbDAQ4, 0, 3);
             AddDigitalOutputChannel("targetStepper", usbDAQ4, 0, 1); ;
+
+            // for test shield measurement July 2021
+            AddDigitalOutputChannel("testPlateVoltageGate", doBoard, 0, 1);
+            AddDigitalOutputChannel("testPlateVoltageTTL", doBoard, 0, 2);
 
 
             // map the analog channels
@@ -193,28 +197,29 @@ namespace DAQ.HAL
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("reflectedrf1Amplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("reflectedrf2Amplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("reflectedrfAmplitude", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("incidentrfAmplitude", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("rfCurrent", analogIn + "/ai7 ", AITerminalConfiguration.Differential);
+
+            //AddAnalogInputChannel("quSpinFU_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFU_Z", analogIn + "/ai5", AITerminalConfiguration.Differential);
 
             AddAnalogInputChannel("middlePenningGauge", daqBoard + "/ai15", AITerminalConfiguration.Rse); //nothing is connected here; only here bc hardware controller needs it to build
 
             //temp inputs used for magnetic noise diagnosis in test shield, cables are labelled "00EW"
-            AddAnalogInputChannel("quSpinFS_Y", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinFS_Z", analogIn + "/ai6", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFS_Y", analogIn + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFS_Z", analogIn + "/ai6", AITerminalConfiguration.Differential);
             //mag inputs for quspins inside the chamber
-            AddAnalogInputChannel("quSpinFV_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinFV_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinB0_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinB0_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEV_Y", analogIn + "/ai6", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinEV_Z", analogIn2 + "/ai1", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEW_Y", analogIn + "/ai5", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEW_Z", analogIn + "/ai7", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFV_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFV_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEW_Y", analogIn2 + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEW_Z", analogIn2 + "/ai3", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinB0_Y", analogIn2 + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinB0_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinEX_Y", analogIn2 + "/ai4", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinEX_Z", analogIn2 + "/ai5", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEU_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinEU_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEV_Y", analogIn2 + "/ai6", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinEV_Z", analogIn2 + "/ai7", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery2", analogIn2 + "/ai7", AITerminalConfiguration.Differential);//temp move to have battery on both DAQs to monitor
 
             
@@ -225,12 +230,13 @@ namespace DAQ.HAL
 
             //This analog input is broken, we assign this as a dummy so we don't break the rest of the code
             AddAnalogInputChannel("laserPowerMeter", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
-
+            
+            AddAnalogOutputChannel("piFlipVoltage", aoBoard + "/ao20");
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
             AddAnalogOutputChannel("bScan", aoBoard + "/ao2");
 
             //Coherent 899 dye laser ctrl voltage
-            AddAnalogOutputChannel("Coherent899ControlVoltage", aoBoard + "/ao12", -5, 5);
+            AddAnalogOutputChannel("Coherent899ControlVoltage", aoBoard + "/ao12", -10, 10);
 
             // B field control
             //AddAnalogOutputChannel("steppingBBias", usbDAQ4 + "/ao0", 0, 5);
@@ -240,13 +246,16 @@ namespace DAQ.HAL
             // rf rack control
             //AddAnalogInputChannel("rfPower", usbDAQ1 + "/ai0", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("rf1Attenuator", usbDAQ1 + "/ao0", 0, 5);
-            AddAnalogOutputChannel("rf2Attenuator", usbDAQ1 + "/ao1", 0, 5);
-            AddAnalogOutputChannel("rf1FM", usbDAQ2 + "/ao0", 0, 5);
-            AddAnalogOutputChannel("rf2FM", usbDAQ2 + "/ao1", 0, 5);
+            AddAnalogOutputChannel("rf1Attenuator", aoBoard + "/ao26", 0, 5);
+            AddAnalogOutputChannel("rf2Attenuator", aoBoard + "/ao27", 0, 5);
+            AddAnalogOutputChannel("rf1FM", aoBoard + "/ao21", -5, 5);
+            AddAnalogOutputChannel("rf2FM", aoBoard + "/ao22", -5, 5);
 
             //Source control
             AddAnalogOutputChannel("valveCtrlVoltage", aoBoard+"/ao14", 0,8);
+
+            //ECDL piezo control
+            AddAnalogOutputChannel("blueECDLPiezoVoltage", aoBoard + "/ao30", 0, 10);
 
             // E field control and monitoring
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
@@ -256,16 +265,27 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao1", 0, 10);
             AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao0", 0, 10); //Use these two lines for the applied kilovolts supply which provides 1kV/V 
-            
+
             //AddAnalogOutputChannel("cPlus", usbDAQ3 + "/ao1", 0,3.5);//these last two are for use with the bertan HV supply which requires 0 to -5V control voltage for 0 to +15kV output on the positive box
             //AddAnalogOutputChannel("cMinus", usbDAQ3 + "/ao0", -3.5,0);
-            
+
+            //Degauss output
+            AddAnalogOutputChannel("DegaussCoil1", aoBoard + "/ao31", -10, 10);
+
+            //Magnetic field feedback
+            AddAnalogInputChannel("feedbackMagnetometer", analogIn2 + "/ai1", AITerminalConfiguration.Differential);
+            //AddAnalogOutputChannel("feedbackCoils", aoBoard + "/ao31", -10, 10);
 
             // map the counter channels
             AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
             AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
             //AddCounterChannel("northLeakage", counterBoard + "/ctr0");
             //AddCounterChannel("southLeakage", counterBoard + "/ctr1");
+
+            // magnetic field feedback
+            AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogOutputChannel("bFieldFeedbackOutput", usbDAQ1 + "/ao1", 0, 5);
+            AddCounterChannel("bFieldFeedbackClock", usbDAQ1 + "/pfi0");
 
 
             // Cavity inputs for the cavity that controls the Pump lasers
@@ -332,7 +352,7 @@ namespace DAQ.HAL
             //Info.Add("DefaultCavity", tcl2);
             
             //probe AOM control
-            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", 0, 10);
+            AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", -10, 10);
             AddAnalogOutputChannel("probeAOMamp", aoBoard + "/ao28", 0, 10);
 
             //Obselete Laser control

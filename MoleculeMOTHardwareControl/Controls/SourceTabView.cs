@@ -13,6 +13,8 @@ namespace MoleculeMOTHardwareControl.Controls
     public partial class SourceTabView : MoleculeMOTHardwareControl.Controls.GenericView
     {
         protected SourceTabController castController;
+        double sf6flowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionSF6");
+        double heflowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionHe");
 
         public SourceTabView(SourceTabController controllerInstance) : base(controllerInstance)
         {
@@ -32,14 +34,44 @@ namespace MoleculeMOTHardwareControl.Controls
             return chkSaveTrace.Checked;
         }
 
+        public void UpdateAnalogOutputControls(double V0, double V1)
+        {
+            lblAO0.Text = "(" + V0.ToString("F2") + " V )";
+            lblAO1.Text = "(" + V1.ToString("F2") + " V )";
+            numAO0.Value = (decimal)(V0 * sf6flowconversion);
+            numAO1.Value = (decimal)(V1 * heflowconversion);
+        }
+
+        public void UpdateFlowRates(double sf6Flow, double HeFlow)
+        {
+            lblsf6flow.Text = sf6Flow.ToString("F3") + " sccm";
+            lblheflow.Text = HeFlow.ToString("F3") + " sccm";
+        }
+
+        public bool[] GetAnalogOutputEnableStatus()
+        {
+            bool[] status = new bool[] { chkAO0Enable.Checked, chkAO1Enable.Checked };
+            return status;
+        }
+
         public void UpdateCurrentSourcePressure(string pressure)
         {
             txtSourcePressure.Text = pressure;
         }
 
+        public void UpdateCurrentMOTPressure(string pressure)
+        {
+            txtMOTchamberPressure.Text = pressure;
+        }
+
         public void UpdateCurrentSourceTemperature(string temp)
         {
             currentTemperature.Text = temp;
+        }
+
+        public void UpdateCurrentSourceTemperature40K(string temp)
+        {
+            txt40Ktemp.Text = temp;
         }
 
         public void UpdateCurrentSourceTemperature2(string temp)
@@ -65,6 +97,58 @@ namespace MoleculeMOTHardwareControl.Controls
         public bool ToFEnabled()
         {
             return chkToF.Checked;
+        }
+        public bool AutomaticFlowControlEnabled()
+        {
+            return chkAutoFlowControl.Checked;
+        }
+
+        public void DisableAutomaticFlowControl()
+        {
+            chkAutoFlowControl.Checked = false;
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;
+        }
+
+        public bool AutomaticValveControlEnabled()
+        {
+            return chkAutoValveControl.Checked;
+        }
+
+        public void DisableAutomaticValveControl()
+        {
+            chkAutoValveControl.Checked = false;
+            chkSF6Valve.Checked = false;
+            chkHeValve.Checked = false;
+        }
+
+        public void DisableTOF()
+        {
+            chkToF.Checked = false;
+        }
+
+        public void FlowEnable()
+        {
+            chkAO0Enable.Checked = true;
+            chkAO1Enable.Checked = true;
+        }
+
+        public void FlowDisable()
+        {
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;
+        }
+
+        public void ValveOpen()
+        {
+            chkSF6Valve.Checked = true;
+            chkHeValve.Checked = true;
+        }
+
+        public void ValveClose()
+        {
+            chkSF6Valve.Checked = false;
+            chkHeValve.Checked = false;
         }
 
         public void UpdateReadButton(bool state)
@@ -117,6 +201,11 @@ namespace MoleculeMOTHardwareControl.Controls
 
         #region UI Event Handlers
 
+        private void samplingRateSelect(object sender, EventArgs e)
+        {
+            castController.SamplingRate = Int32.Parse(cmbSamplingRate.Text);
+        }
+
         private void toggleReading(object sender, EventArgs e)
         {
             castController.ToggleReading();
@@ -125,12 +214,18 @@ namespace MoleculeMOTHardwareControl.Controls
         private void toggleCycling(object sender, EventArgs e)
         {
             chkToF.Checked = false;
+            chkAutoFlowControl.Checked = false;
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;
             castController.ToggleCycling();
         }
 
         private void toggleHolding(object sender, EventArgs e)
         {
             chkToF.Checked = false;
+            chkAutoFlowControl.Checked = false;
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;
             castController.ToggleHolding();
         }
 
@@ -151,6 +246,98 @@ namespace MoleculeMOTHardwareControl.Controls
         #endregion
 
         private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void numAO0_ValueChanged(object sender, EventArgs e)
+        {
+
+            double Vset = (double)numAO0.Value / sf6flowconversion;
+            castController.SetAnalogOutput(0, Vset);
+        }
+
+        private void numAO1_ValueChanged(object sender, EventArgs e)
+        {
+            double Vset = (double)numAO1.Value / heflowconversion;
+            castController.SetAnalogOutput(1, Vset);
+        }
+
+        private void chkAO0Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.SwitchOutputAOVoltage(0);
+        }
+
+        private void chkAO1Enable_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.SwitchOutputAOVoltage(1);
+        }
+
+        private void chkToF_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkToF.Checked)
+                chkSaveTrace.Enabled = true;
+            else
+            { 
+                chkSaveTrace.Enabled = false;
+                chkSaveTrace.Checked = false;
+            }
+        }
+
+        private void numPlotMax_ValueChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void chkAutoFlowControl_CheckedChanged(object sender, EventArgs e)
+        {
+            if(chkAutoFlowControl.Checked)
+            {
+                chkAO0Enable.Enabled = false;
+                chkAO1Enable.Enabled = false;
+            }
+            else
+            {
+                chkAO0Enable.Enabled = true;
+                chkAO1Enable.Enabled = true;
+            }
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbPlotChannel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            castController.SetPlotChannel(cmbPlotChannel.SelectedIndex);
+        }
+
+        private void chkAutoScale_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAutoScale.Checked)
+                tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.AutoScaleLoose;
+            else
+                tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
+        }
+
+        private void chkSF6Valve_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.ToggleDigitalOutput(2, chkSF6Valve.Checked);
+        }
+
+        private void chkHeValve_CheckedChanged(object sender, EventArgs e)
+        {
+
+            castController.ToggleDigitalOutput(3, chkHeValve.Checked);
+        }
+
+        private void numFlowTimeout_ValueChanged(object sender, EventArgs e)
+        {
+            castController.FlowTimeOut = (int)numFlowTimeout.Value;
+        }
+
+        private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }

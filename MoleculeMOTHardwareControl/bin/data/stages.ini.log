@@ -1,0 +1,139 @@
+﻿[IMS1200LM@XPS-DRV02]
+; --- Global stage parameters
+; --- <Stage.GenericInformation>
+SmartStageName=IMS1200LM
+Unit=mm
+ConfigurationComment=1000m/s2
+ControllerCompatibility = XPS
+; --- Motor driver parameters
+; --- <Driver.DRV02>
+DriverName=XPS-DRV02
+DriverMotorResistance=2.8; Ohm
+DriverMotorInductance=0.018; Henry
+DriverMaximumPeakCurrent=5; Amp
+DriverMaximumRMSCurrent=2.5; Amp
+DriverRMSIntegrationTime=15; Sec
+DriverThermistanceThreshold=1000; Ohm
+DriverCutOffFrequency=100; Hz
+; --- Driver command interface parameters
+; --- <MotorDriverInterface.AnalogSin120Acceleration>
+MotorDriverInterface=AnalogSin120Acceleration
+DelayAfterMotorOnToSetClosedLoop = 0.05 ; sec   # Not used in all firmwares
+ScalingAcceleration=14223.158; original value 3455.346, Unit/Sec2
+AccelerationLimit=13617.917; orig value 3276.621, Unit/Sec2
+MagneticTrackPeriod=24; Unit
+MagneticTrackPositionAtHomeMode = Disabled ; # Not used by standard XPS-Q firmware
+MagneticTrackPositionAtHome = 0 ; Units # Not used by standard XPS-Q firmware
+InitializationAccelerationLevel=15; Percent
+InitializationFrequency = 50 ; Hz   # Not used in all firmwares
+; --- Position encoder interface parameters
+; --- <Encoder.AnalogInterpolated>
+EncoderType=AnalogInterpolated
+LinearEncoderCorrection=0; Ppm
+EncoderZMPlug=Driver
+EncoderInterpolationFactor=4000
+EncoderScalePitch=0.02; Unit
+EncoderSinusOffset=0; Volt
+EncoderCosinusOffset=0; Volt
+EncoderPhaseCompensation=0;--- deg
+EncoderDifferentialGain=0
+PositionerMappingFileName=
+PositionerMappingLineNumber=0
+PositionerMappingMaxPositionError=0; Unit
+EncoderIndexOffset=0; Unit
+EncoderHardInterpolatorErrorCheck = Enabled ; # Only used by ISA CIE # Only used by ISA CIE 
+EncoderSinCosRadiusCheck = Enabled ; # Only used by PCI CIE 
+CurrentPositionFilterSelect = 3.1 ; KHz # Only used by PCI CIE 
+PCOPositionFilterSelect = 5000 ; KHz # Only used by PCI CIE
+; --- Travels and servitudes type parameters
+; --- <Servitudes.StandardEORDriverPlug>
+ServitudesType=StandardEORDriverPlug
+MinimumTargetPosition=-47;-49 Max!
+MaximumTargetPosition=383.6;394 Max!
+HomePreset=0; Unit
+; --- Backlash parameters
+; --- <Backlash.Standard>
+Backlash=0; Unit
+CurrentVelocityCutOffFrequency=50; Hz
+CurrentAccelerationCutOffFrequency=50; Hz
+; --- Profile generator parameters
+; --- <Profiler.Sgamma>
+MaximumVelocity=1000; Unit/Sec
+JogMaximumVelocity = 1000 ; Unit/Sec # Not used by standard XPS-Q firmware
+MaximumAcceleration=1000; can do up to 3500 Unit/Sec2, but this is unreliable
+JogMaximumAcceleration = 1000 ; Unit/Sec² # Not used by standard XPS-Q firmware
+EmergencyDecelerationMultiplier=4
+MinimumJerkTime=0.04; Sec
+MaximumJerkTime=0.4; Sec
+TrackingCutOffFrequency=25; Hz
+; --- Home search process parameters
+; --- <HomeSearch.MechanicalZeroAndIndexHomeSearch>
+HomeSearchSequenceType=MechanicalZeroAndIndexHomeSearch
+HomeSearchMaximumVelocity=50; Unit/Sec
+HomeSearchMaximumAcceleration=100; Unit/Sec2
+HomeSearchTimeOut=130; Sec
+HomingSensorOffset=0; Unit
+; --- Position servo loop parameters
+; --- <Corrector.PIDFFAcceleration>
+CorrectorType=PIDFFAcceleration
+ClosedLoopStatus=Closed
+FatalFollowingError=3; Unit
+KP=89861.424
+KI=3472101.428
+KD=726.782
+KS=0.8
+GKP=0
+GKD=0
+GKI=0
+KForm=0.3; Unit
+IntegrationTime=1000; Sec
+DerivativeFilterCutOffFrequency=300; Hz
+DeadBandThreshold=0; Unit
+KFeedForwardAcceleration=0.95
+NotchFrequency1=0; Hz
+NotchBandwidth1=0; Hz
+NotchGain1=0
+NotchFrequency2=0; Hz
+NotchBandwidth2=0; Hz
+NotchGain2=0
+KFeedForwardJerk=0
+; --- PreFeedForward filter parameters (PP version)
+; --- <PreFeedForwardFilter.CompensationSystemPreFeedForward>
+CompensationSpatialPeriodicNotchsStep1=0;  Units (PP version)
+CompensationSpatialPeriodicNotchsBandwidth1=0; Hz (PP version)
+CompensationSpatialPeriodicNotchsGain1=0; (PP version)
+CompensationSpatialPeriodicNotchsStep2=0;  Units (PP version)
+CompensationSpatialPeriodicNotchsBandwidth2=0; Hz (PP version)
+CompensationSpatialPeriodicNotchsGain2=0; (PP version)
+CompensationSpatialPeriodicNotchsStep3=0;  Units (PP version)
+CompensationSpatialPeriodicNotchsBandwidth3=0;  Hz (PP version)
+CompensationSpatialPeriodicNotchsGain3=0; (PP version)
+CompensationFrequencyNotchsFrequency1=0; Hz (PP version)
+CompensationFrequencyNotchsBandwidth1=0; Hz (PP version)
+CompensationFrequencyNotchsGain1=0; (PP version)
+CompensationFrequencyNotchsFrequency2=0; Hz (PP version)
+CompensationFrequencyNotchsBandwidth2=0; Hz (PP version)
+CompensationFrequencyNotchsGain2=0; (PP version)
+CompensationFrequencyNotchsFrequency3=0; Hz (PP version)
+CompensationFrequencyNotchsBandwidth3=0; Hz (PP version)
+CompensationFrequencyNotchsGain3=0; (PP version)
+; --- PostFeedForward filter parameters (PP version)
+; --- <PostFeedForwardFilter.CompensationSystemPostFeedForward>
+CompensationNotchModeFr1=0; Hz (PP version)
+CompensationNotchModeFa1=0; Hz (PP version)
+CompensationNotchModeZr1=0; (PP version)
+CompensationNotchModeZa1=0; (PP version)
+CompensationNotchModeFr2=0; Hz (PP version)
+CompensationNotchModeFa2=0; Hz (PP version)
+CompensationNotchModeZr2=0; (PP version)
+CompensationNotchModeZa2=0; (PP version)
+CompensationPhaseCorrectionFn1=0; Hz (PP version)
+CompensationPhaseCorrectionFd1=0; Hz (PP version)
+CompensationPhaseCorrectionGain1=0; (PP version)
+CompensationPhaseCorrectionFn2=0; Hz (PP version)
+CompensationPhaseCorrectionFd2=0; Hz (PP version)
+CompensationPhaseCorrectionGain2=0; (PP version)
+CompensationLowPassFilterCutOffFrequency=0; Hz (PP version)
+; --- Motion done parameters
+; --- <MotionDone.Theoretical>
+MotionDoneMode=Theoretical

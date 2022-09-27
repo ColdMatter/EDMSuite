@@ -162,6 +162,7 @@
             this.xAxis3});
             this.CavityVoltageReadScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis3});
+            this.CavityVoltageReadScatterGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.CavityVoltageReadScatterGraph_PlotDataChanged);
             // 
             // cavityDataPlot
             // 

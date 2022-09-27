@@ -35,15 +35,18 @@ namespace DAQ.HAL
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
             //pgTask.Start();
-            writer.WriteMultiSamplePort(true, pattern);
-			SleepOnePattern();
+			//SleepOnePattern();
+            
+            OutputPattern(pattern, true);
 		}
 
         public void OutputPattern(UInt32[] pattern, bool sleep)
         {
-            writer.WriteMultiSamplePort(true, pattern);
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
+            //pgTask.Start();
+            
+            writer.WriteMultiSamplePort(true, pattern);
             //pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();
@@ -53,18 +56,26 @@ namespace DAQ.HAL
 		public void OutputPattern(Int16[] pattern)
 		{
 			writer.WriteMultiSamplePort(true, pattern);
-			// see above
 			SleepOnePattern();
 		}
 		
 		private void SleepOnePattern()
 		{
-            int sleepTime = (int)(((double)length * 1000) / clockFrequency);
-            Thread.Sleep(sleepTime);
+            // This Sleep is important (or at least it may be). It's here to guarantee that the correct PatternList is
+            // being output by the time this call returns. This is needed to make the tweak
+            // and pg scans work correctly. It has the side effect that you have to wait for
+            // at least one copy of the PatternList to output before you can do anything. This means
+            // pg scans are slowed down by a factor of two. I can't think of a better way to do
+            // it at the moment.
+            // It might be possible to speed it up by understanding the timing of the above call
+            // - when does it return ?
+
+			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
+			Thread.Sleep(sleepTime);
 
             //Sleep until Task is finished at which point taskRunning becomes false.
             //while (taskRunning == true) ;
-        }
+		}
 
         public void Configure(string taskName, double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock, bool triggered)

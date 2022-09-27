@@ -263,9 +263,13 @@ namespace TransferCavityLock2012
             }
         }
 
+
         #endregion
 
-       
+        private void CavityVoltageReadScatterGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
     }
 }
 

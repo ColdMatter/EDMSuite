@@ -18,7 +18,7 @@ namespace EDMBlockHead
     {
         private Controller controller;
 
-        private const int kNumReplicates = 200;
+        private const int kNumReplicates = 5000;
         private const double trimLevel = 0.05;
         private Random r = new Random();
         List<double> edms;
@@ -117,8 +117,8 @@ namespace EDMBlockHead
             AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
             AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
             AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
-            AppendToTopPDScatter(new double[] { blockCount }, new double[] { analysis.TopPDSIG[0]});
-            AppendToBottomPDScatter(new double[] { blockCount }, new double[] { analysis.BottomPDSIG[0]});
+            //AppendToTopPDScatter(new double[] { blockCount }, new double[] { analysis.TopPDSIG[0]});
+            //AppendToBottomPDScatter(new double[] { blockCount }, new double[] { analysis.BottomPDSIG[0]});
 
             blockCount = blockCount + 1;
         }
