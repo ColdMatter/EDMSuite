@@ -68,12 +68,15 @@ namespace DAQ.HAL
             AddAnalogInputChannel("Probemaster", digitalPatternBoardAddress + "/ai14", AITerminalConfiguration.Rse); //tick this is the 780nm photodiode
             AddAnalogInputChannel("Probep1", digitalPatternBoardAddress + "/ai12", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input
             AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - slowing laser
+            AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //this photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
 
 
             // Lasers locked to Probe cavity
             AddAnalogOutputChannel("slowingLaser", digitalPatternBoardAddress + "/ao2", 0, 10);
             AddAnalogOutputChannel("LatticeProbeLaser", digitalPatternBoardAddress + "/ao1", 0, 10); //tick //this is the analogue ouput port on the DAQ card for the frequency feedback of the laser (piezo in our case)
             AddAnalogOutputChannel("ProbeCavityLengthVoltage", digitalPatternBoardAddress + "/ao0", 0, 10); //tick //this is the voltage that stabilises the length of the cavity
+            AddAnalogOutputChannel("v3laser", digitalPatternBoardAddress + "/ao3", 0, 10);
+
 
             //
 
@@ -93,7 +96,8 @@ namespace DAQ.HAL
 
             tclConfigProbe.AddCavity(probe);
             tclConfigProbe.Cavities[probe].AddSlaveLaser("LatticeProbeLaser", "Probep1");
-            tclConfigProbe.Cavities[probe].AddSlaveLaser("slowingLaser", "Probep2");
+            tclConfigProbe.Cavities[probe].AddSlaveLaser("slowingLaser", "Probep3");
+            tclConfigProbe.Cavities[probe].AddSlaveLaser("v3laser", "Probep2");
 
             tclConfigProbe.Cavities[probe].MasterLaser = "Probemaster";
             tclConfigProbe.Cavities[probe].RampOffset = "ProbeCavityLengthVoltage";
@@ -102,6 +106,8 @@ namespace DAQ.HAL
             tclConfigProbe.Cavities[probe].AddFSRCalibration("LatticeProbeLaser", 3.84);
             tclConfigProbe.Cavities[probe].AddDefaultGain("slowingLaser", 0.1);
             tclConfigProbe.Cavities[probe].AddFSRCalibration("slowingLaser", 3.84);
+            tclConfigProbe.Cavities[probe].AddDefaultGain("v3laser", 0.1);
+            tclConfigProbe.Cavities[probe].AddFSRCalibration("v3laser", 3.84);
 
             //Info.Add("TCLConfigPump", tclConfigPump);
             Info.Add("TCLConfigProbe", tclConfigProbe);

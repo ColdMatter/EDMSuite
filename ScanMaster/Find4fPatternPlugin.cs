@@ -22,10 +22,10 @@ namespace ScanMaster.Acquire.Plugins
 	/// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class FindV3PatternPlugin : SupersonicPGPluginBase
+	public class Find4fPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private FindV3PatternBuilder scanPatternBuilder;
+		private Find4fPatternBuilder scanPatternBuilder;
 		[NonSerialized]
 		private FlashlampPatternBuilder flashlampPatternBuilder;
 		[NonSerialized]
@@ -38,7 +38,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 0;
 			settings["sequenceLength"] = 2;
-			settings["switchLineDuration"] = 500000;
+			settings["switchLineDuration"] = 250000;
 			settings["switchLineDelay"] = 0;
 			settings["padStart"] = 11800;
 			settings["padShots"] = 0;
@@ -48,20 +48,20 @@ namespace ScanMaster.Acquire.Plugins
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
 			settings["shutterPulseLength"] = 2000;
-			settings["shutteroffdelay"] = 450000;
-			settings["shutter1offdelay"] = 450000;
-			settings["shutterslowdelay"] = 10000;
-			settings["DurationV0"] = 6000;
-			settings["shutterV1delay"] = 0;
-			settings["shutterV2delay"] = 0;
-			settings["DurationV2"] = 5000;
+			settings["DurationV3"] = 200000;
+			settings["DurationIR"] = 200000;
+			settings["shutterV0delay"] = 21800;
+			settings["DurationV0"] = 4000;
+			settings["shutterV1delay"] = 10000;
+			settings["shutterV2delay"] = 10000;
+			settings["DurationV2"] = 40000;
 			settings["DurationV1"] = 40000;
-			settings["v3delaytime"] = 14000;
+			settings["v3delaytime"] = 5000;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new FindV3PatternBuilder();
+			scanPatternBuilder = new Find4fPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
@@ -82,8 +82,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
 				(int)settings["switchLineDuration"],
-				(int)settings["shutteroffdelay"],
-				(int)settings["shutterslowdelay"],
+				(int)settings["DurationV3"],
+				(int)settings["shutterV0delay"],
 				(int)settings["DurationV0"],
 				(int)settings["shutterV1delay"],
 				(int)settings["shutterV2delay"],
@@ -91,7 +91,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["DurationV1"],
 				(bool)config.switchPlugin.Settings["switchActive"],
 				(int)settings["switchLineDelay"], 
-				(int)settings["shutter1offdelay"],
+				(int)settings["DurationIR"],
 				(int)settings["v3delaytime"]
 				);
 

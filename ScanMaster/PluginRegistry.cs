@@ -73,6 +73,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Four Shutter Edit", typeof(FourShutterPatternPluginEdit));
 			patternPlugins.Add("Find V2", typeof(FindV2PatternPlugin));
 			patternPlugins.Add("Find V3", typeof(FindV3PatternPlugin));
+			patternPlugins.Add("Find 4f", typeof(Find4fPatternPlugin));
 			patternPlugins.Add("Velocity Measurement (Slowed)", typeof(VelocityMeasSlowedPatternPlugin));
 			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
 			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));

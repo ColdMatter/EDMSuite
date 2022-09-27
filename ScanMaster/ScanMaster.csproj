@@ -334,6 +334,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Find4fPatternBuilder.cs" />
+    <Compile Include="Find4fPatternPlugin.cs" />
     <Compile Include="WavemeterInputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
