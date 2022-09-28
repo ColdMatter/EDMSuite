@@ -44,6 +44,7 @@ namespace WavemeterLockServer
                 s[n] = controller.displayWavelength(n+1);
             }
             
+            //This seems stupid but I couldn't find a better way to do it
            label1.Text = s[0];
            label2.Text = s[1];
            label3.Text = s[2];
@@ -52,7 +53,6 @@ namespace WavemeterLockServer
            label6.Text = s[5];
            label7.Text = s[6];
            label8.Text = s[7];
-           label10.Text = "Operation Status: " + Convert.ToString(WLM.GetOperationState(0)) + ":" + Convert.ToString(WLM.cAdjustment) + "," + Convert.ToString(WLM.cMeasurement) + "," + Convert.ToString(WLM.cStop);
 
             // check whether server is available and apply the text of the Open/Close button
 
@@ -85,6 +85,43 @@ namespace WavemeterLockServer
                 btnStart.Text = "Start Measurement";
             }
 
+
+            //Check if there's any remote connection
+            //This seems stupid too, please let me know if you have a better way to do this -- Qinshu
+            if (controller.remoteConnection[0])
+                led1.Value = true;
+            else
+                led1.Value = false;
+
+            if (controller.remoteConnection[1])
+                led2.Value = true;
+            else
+                led2.Value = false;
+
+            if (controller.remoteConnection[2])
+                led3.Value = true;
+            else
+                led3.Value = false;
+
+            if (controller.remoteConnection[3])
+                led4.Value = true;
+            else
+                led4.Value = false;
+
+            if (controller.remoteConnection[4])
+                led5.Value = true;
+            else
+                led5.Value = false;
+
+            if (controller.remoteConnection[5])
+                led6.Value = true;
+            else
+                led6.Value = false;
+
+            if (controller.remoteConnection[6])
+                led7.Value = true;
+            else
+                led7.Value = false;
 
         }
 
@@ -122,6 +159,16 @@ namespace WavemeterLockServer
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void test_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void led2_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
 
         }

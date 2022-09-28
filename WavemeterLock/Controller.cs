@@ -175,6 +175,11 @@ namespace WavemeterLock
         }
 
 
+        public void indicateRemoteConnection(int channelNum, bool status)
+        {
+            wavemeterContrller.changeConnectionStatus(channelNum,status);
+        }
+
         public void initializeLasers()//For each laser in configuration, create a control panel in main form
         {
             lasers = new Dictionary<string, Laser>(); 

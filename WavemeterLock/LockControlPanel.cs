@@ -94,6 +94,7 @@ namespace WavemeterLock
                 {
                     lockMsg.Text = "Lock On";
                     lockLED.Value = true;
+                    controller.indicateRemoteConnection(channelNumber, true);
                     controller.lasers[name].setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
                 }
@@ -107,6 +108,7 @@ namespace WavemeterLock
             {
                 lockMsg.Text = "Lock Off";
                 lockLED.Value = false;
+                controller.indicateRemoteConnection(channelNumber, false);
                 controller.DisengageLock(name);
             }
 
