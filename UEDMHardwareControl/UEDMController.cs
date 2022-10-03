@@ -53,7 +53,7 @@ namespace UEDMHardwareControl
         private static double currentMonitorMeasurementTime = 0.01;
 
         //HV plates
-        private static double voltageOutputHigh = 4.3;
+        private static double voltageOutputHigh = 7;
         private static double voltageOutputLow = 0;
 
         #endregion
@@ -163,11 +163,14 @@ namespace UEDMHardwareControl
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
             cPlusOutputTask = CreateAnalogOutputTask("cPlusPlate", voltageOutputLow, voltageOutputHigh);
-            //cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
+            cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
             DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
+
+            //set the degaussing channel to 0 V offset
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
 
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
@@ -3928,7 +3931,7 @@ namespace UEDMHardwareControl
                 //switch off the synth
                 //GreenSynthEnabled = false;
                 // we always switch, even if it's into the same state.
-                window.SetLED(window.switchingLED, true);
+                //window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
                 // ramp the field down if on
                 if (EFieldEnabled)
@@ -3957,7 +3960,7 @@ namespace UEDMHardwareControl
                 // monitor the tail of the charging current to make sure the switches are
                 // working as they should (see spring2009 fiasco!)
                 Thread.Sleep((int)(1000 * ERampUpDelay));
-                window.SetLED(window.switchingLED, false);
+                //window.SetLED(window.switchingLED, false);
 
                 // check that the switch was ok (i.e. that the relays really switched)
                 // If the manual state is true (0=>W+) then when switching into state 0
@@ -4023,20 +4026,20 @@ namespace UEDMHardwareControl
             double rampDelay = ((1000 * rampTime) / (double)numSteps);
             double diffPlus = targetPlus - startPlus;
             double diffMinus = targetMinus - startMinus;
-            window.SetLED(window.rampLED, true);
+            //window.SetLED(window.rampLED, true);
             for (int i = 1; i <= numSteps; i++)
             {
                 double newPlus = startPlus + (i * (diffPlus / numSteps));
                 double newMinus = startMinus + (i * (diffMinus / numSteps));
                 SetAnalogOutput(cPlusOutputTask, newPlus);
-                //SetAnalogOutput(cMinusOutputTask, newMinus);
+                SetAnalogOutput(cMinusOutputTask, newMinus);
                 // don't sleep if no ramp delay (as sleep imposes a delay even when called with
                 // sleep time = 0).
                 if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
                 // flash the ramp LED
-                window.SetLED(window.rampLED, (i % 2) == 0);
+                //window.SetLED(window.rampLED, (i % 2) == 0);
             }
-            window.SetLED(window.rampLED, false);
+            //window.SetLED(window.rampLED, false);
 
         }
         public double CPlusMonitorVoltage
@@ -4113,7 +4116,8 @@ namespace UEDMHardwareControl
             if (EFieldEnabled)
             {
                 CalculateVoltages();
-                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampUpTime);
+                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
                 //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
                 window.EnableControl(window.ePolarityCheck, false);
                 window.EnableControl(window.eBleedCheck, false);
@@ -4123,7 +4127,7 @@ namespace UEDMHardwareControl
             else
             {
                 SetAnalogOutput(cPlusOutputTask, cPlusOff);
-                //SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                SetAnalogOutput(cMinusOutputTask, cMinusOff);
                 window.EnableControl(window.ePolarityCheck, true);
                 window.EnableControl(window.eBleedCheck, true);
             }
@@ -4162,6 +4166,10 @@ namespace UEDMHardwareControl
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
 
             double cMonScale = 3;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            double cSRate = 40;
+            int integersamples = 2;
+            //cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask, cSRate, integersamples);
+            //cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask, cSRate, integersamples);
             cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask);
             cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask);
         }
@@ -4377,8 +4385,8 @@ namespace UEDMHardwareControl
         public double FTicks;
         public double ThreadStartTicks = 0;
         public double ThreadDiff = 0;
-        public double SineOffset = 0.00;
-        public double DegaussVCalibrate = 0.83; //This is a conversion factor for the BOP supply.
+        public double SineOffset = -0.001;
+        public double DegaussVCalibrate = 1.0; //This is a conversion factor for the BOP supply.
                                                 //-10 -> +10V input equals full -12 -> +12A range of the BOP
         public Stopwatch sw = new Stopwatch();
 
@@ -4387,21 +4395,22 @@ namespace UEDMHardwareControl
             ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
             if (TimeNow < LinearDegaussT)
             {
-                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))- SineOffset;
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000)) + SineOffset;
             }
             else if (TimeNow < LinearDegaussT + ConstDegaussT)
             {
-                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))-SineOffset;
+                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))+SineOffset;
             }
             else if (TimeNow < FullPulseT)
             {
-                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))-SineOffset;
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))+SineOffset;
             }
             else
             {
-                SineWave = 0;
+                SineWave = SineOffset;
             }
             SetAnalogOutput(DegaussCoil1OutputTask, SineWave*DegaussVCalibrate);
+            //SetAnalogOutput(DegaussCoil1OutputTask, + SineOffset);
         }
 
         private Object DegaussLock;
@@ -4421,7 +4430,7 @@ namespace UEDMHardwareControl
 
         private void DegaussPollWorker()
         {
-            window.SetLED(window.DegaussLED, true);
+            //window.SetLED(window.DegaussLED, true);
             sw.Start();
             ThreadStartTicks = sw.ElapsedTicks;
 
@@ -4439,8 +4448,8 @@ namespace UEDMHardwareControl
                     if (DegaussFlag)
                     {
                         DegaussFlag = false;
-                        SetAnalogOutput(DegaussCoil1OutputTask, 0);             
-                        window.SetLED(window.DegaussLED, false);
+                        SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);             
+                        //window.SetLED(window.DegaussLED, false);
                         window.EnableControl(window.StartDegauss, true);
                         break;
                     }           
@@ -4449,7 +4458,7 @@ namespace UEDMHardwareControl
             }
             //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
             //Console.WriteLine(ThreadDiff.ToString());
-            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
             sw.Stop();
             sw.Reset();
         }

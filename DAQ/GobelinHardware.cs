@@ -13,7 +13,7 @@ namespace DAQ.HAL
         public GobelinHardware()
         {
             // add the boards
-            Boards.Add("daq", "/PXI1Slot6_2");
+            Boards.Add("daq", "/PXI1Slot3");
             string daqBoard = (string)Boards["daq"];
 
 
@@ -41,8 +41,8 @@ namespace DAQ.HAL
 
             // map the analog output channels for the "daq" card
             AddAnalogOutputChannel("cPlusPlate", daqBoard + "/ao0");
-            //AddAnalogOutputChannel("cMinusPlate", daqBoard + "/ao1");
-            AddAnalogOutputChannel("DegaussCoil1", daqBoard + "/ao1");
+            AddAnalogOutputChannel("cMinusPlate", daqBoard + "/ao1"); //there are only two Analogue outputs on the board. Switch one to A02 if not using it.
+            AddAnalogOutputChannel("DegaussCoil1", daqBoard + "/ao2");
             
 
 

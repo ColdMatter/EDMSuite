@@ -373,8 +373,8 @@
             this.StartDegauss = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
-            this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
+            //this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
+            //this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -470,7 +470,7 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
-            this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
+            //this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
             this.label23 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
@@ -515,8 +515,8 @@
             this.gbDigitalOutputsPort0.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -525,7 +525,7 @@
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
             this.groupBoxStatus.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).BeginInit();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -3932,8 +3932,8 @@
             this.tabPage1.Controls.Add(this.groupBox8);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.switchingLED);
-            this.tabPage1.Controls.Add(this.rampLED);
+            //this.tabPage1.Controls.Add(this.switchingLED);
+            //this.tabPage1.Controls.Add(this.rampLED);
             this.tabPage1.Controls.Add(this.groupBox21);
             this.tabPage1.Controls.Add(this.groupBox13);
             this.tabPage1.Controls.Add(this.groupBox6);
@@ -3950,7 +3950,7 @@
             // 
             this.groupBox8.Controls.Add(this.label24);
             this.groupBox8.Controls.Add(this.label23);
-            this.groupBox8.Controls.Add(this.DegaussLED);
+            //this.groupBox8.Controls.Add(this.DegaussLED);
             this.groupBox8.Controls.Add(this.label22);
             this.groupBox8.Controls.Add(this.label21);
             this.groupBox8.Controls.Add(this.label20);
@@ -4063,23 +4063,23 @@
             // 
             // switchingLED
             // 
-            this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.switchingLED.Location = new System.Drawing.Point(497, 55);
-            this.switchingLED.Margin = new System.Windows.Forms.Padding(2);
-            this.switchingLED.Name = "switchingLED";
-            this.switchingLED.OffColor = System.Drawing.Color.Maroon;
-            this.switchingLED.OnColor = System.Drawing.Color.Red;
-            this.switchingLED.Size = new System.Drawing.Size(33, 28);
-            this.switchingLED.TabIndex = 46;
+            //this.switchingled.ledstyle = nationalinstruments.ui.ledstyle.round3d;
+            //this.switchingled.location = new system.drawing.point(497, 55);
+            //this.switchingled.margin = new system.windows.forms.padding(2);
+            //this.switchingled.name = "switchingled";
+            //this.switchingled.offcolor = system.drawing.color.maroon;
+            //this.switchingled.oncolor = system.drawing.color.red;
+            //this.switchingled.size = new system.drawing.size(33, 28);
+            //this.switchingled.tabindex = 46;
             // 
             // rampLED
             // 
-            this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(497, 23);
-            this.rampLED.Margin = new System.Windows.Forms.Padding(2);
-            this.rampLED.Name = "rampLED";
-            this.rampLED.Size = new System.Drawing.Size(33, 28);
-            this.rampLED.TabIndex = 45;
+            //this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.rampLED.Location = new System.Drawing.Point(497, 23);
+            //this.rampLED.Margin = new System.Windows.Forms.Padding(2);
+            //this.rampLED.Name = "rampLED";
+            ///this.rampLED.Size = new System.Drawing.Size(33, 28);
+            //this.rampLED.TabIndex = 45;
             // 
             // groupBox21
             // 
@@ -5051,11 +5051,11 @@
             // 
             // DegaussLED
             // 
-            this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.DegaussLED.Location = new System.Drawing.Point(282, 124);
-            this.DegaussLED.Name = "DegaussLED";
-            this.DegaussLED.Size = new System.Drawing.Size(32, 34);
-            this.DegaussLED.TabIndex = 92;
+            //this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.DegaussLED.Location = new System.Drawing.Point(282, 124);
+            //this.DegaussLED.Name = "DegaussLED";
+            //this.DegaussLED.Size = new System.Drawing.Size(32, 34);
+            //this.DegaussLED.TabIndex = 92;
             // 
             // label23
             // 
@@ -5166,8 +5166,8 @@
             this.tabPage1.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
@@ -5182,7 +5182,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).EndInit();
             this.groupBoxStatus.ResumeLayout(false);
             this.groupBoxStatus.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5576,8 +5576,8 @@
         private System.Windows.Forms.Button btResetGaugesCorrectionFactors;
         public System.Windows.Forms.TextBox tbRollingTemperatureChartTimeAxisPeriodMonitor;
         public System.Windows.Forms.TextBox tbStatus;
-        public NationalInstruments.UI.WindowsForms.Led rampLED;
-        public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        //public NationalInstruments.UI.WindowsForms.Led rampLED;
+        //public NationalInstruments.UI.WindowsForms.Led switchingLED;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.TextBox tbiMonitorPollPeriod;
@@ -5596,7 +5596,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label21;
-        public NationalInstruments.UI.WindowsForms.Led DegaussLED;
+        //public NationalInstruments.UI.WindowsForms.Led DegaussLED;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label24;
     }
