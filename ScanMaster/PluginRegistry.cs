@@ -29,6 +29,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("No scan", typeof(NullOutputPlugin));
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
+			scanOutputPlugins.Add("Windfriek synth frequency output", typeof(WindfriekSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));

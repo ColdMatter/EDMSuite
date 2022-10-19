@@ -180,7 +180,7 @@
     <Reference Include="NationalInstruments.DAQmx, Version=20.7.45.49302, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Visa, Version=21.0.0.49304, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -431,6 +431,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WindfreakSynth.cs" />
+    <Compile Include="AD9850DDS.cs" />
     <Compile Include="WindfreakSynthHD.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
