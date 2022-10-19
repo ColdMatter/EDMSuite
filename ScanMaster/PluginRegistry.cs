@@ -22,6 +22,7 @@ namespace ScanMaster.Acquire.Plugin
 		private Hashtable shotGathererPlugins = new Hashtable();
 		private Hashtable analogInputPlugins = new Hashtable();
         private Hashtable gpibInputPlugins = new Hashtable();
+		private Hashtable wmlOutputPlugins = new Hashtable();
 
 		private PluginRegistry()
 		{
@@ -33,6 +34,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
+			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
@@ -43,7 +45,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
             scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
 #endif
-            // switchOutputPlugins
+			// switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
             switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));
 			// patternPlugins
@@ -83,6 +85,7 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
+			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
             //GPIB Input plugins
             gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
             gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
@@ -171,6 +174,11 @@ namespace ScanMaster.Acquire.Plugin
         public String[] GetGPIBPlugins()
         {
             return GetPluginNameList(gpibInputPlugins);
+        }
+
+		public WMLOutputPlugin GetWMLPlugins(string type)
+        {
+			return (WMLOutputPlugin)InstantiatePlugin(wmlOutputPlugins, type);
         }
 
 		private object InstantiatePlugin(Hashtable plugins, String type)

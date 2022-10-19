@@ -92,10 +92,10 @@ namespace ScanMaster.Acquire
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
 					{
 						// calculate the new scan parameter and move the scan along
-                        config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
-                       
+						config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
+
 						// check for a change in the pg parameters
-						lock(this)
+						lock (this)
 						{
 							if (tweakFlag)
 							{

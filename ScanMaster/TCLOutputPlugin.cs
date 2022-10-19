@@ -177,7 +177,7 @@ namespace ScanMaster.Acquire.Plugins
                 case "voltage":
                     for (int i = 1; i <= (int)settings["rampSteps"]; i++)
                     {
-                        tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], scanParameter - (i * (scanParameter - v) / (int)settings["rampSteps"]));
+                        tclController.SetLaserOutputVoltage((string)settings["cavity"], (string)settings["channel"], initialVoltage - (i * (initialVoltage - v) / (int)settings["rampSteps"]));
                         tclController.RefreshVoltageOnUI((string)settings["cavity"], (string)settings["channel"]);
                         Thread.Sleep((int)settings["setVoltageWaitTime"]);
                     }

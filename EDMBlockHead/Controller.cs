@@ -44,8 +44,6 @@ namespace EDMBlockHead
         BlockDemodulator blockDemodulator = new BlockDemodulator();
         public DemodulatedBlock DBlock;
         public QuickEDMAnalysis AnalysedDBlock;
-        private double GateLow= QuickEDMAnalysis.GATE_LOW;
-        private double GateHigh = QuickEDMAnalysis.GATE_HIGH;
 
         private bool haveBlock = false;
 
@@ -244,10 +242,11 @@ namespace EDMBlockHead
             config.Settings["bBiasV"] = 0.1;
 
             config.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
-            config.Settings["minimumSignalToRun"] = 300.0;
-            config.Settings["targetStepperGateStartTime"] = 2340.0;
-            config.Settings["targetStepperGateEndTime"] = 2540.0;
-
+            config.Settings["minimumSignalToRun"] = 200.0;
+            config.Settings["targetStepperGateStartTime"] = 2380.0;
+            config.Settings["targetStepperGateEndTime"] = 2580.0;
+            config.Settings["liveAnalysisGateLow"] = 2900.0;
+            config.Settings["liveAnalysisGateHigh"] = 3100.0;
 
         }
 
@@ -413,7 +412,7 @@ namespace EDMBlockHead
             mainWindow.AppendToTextArea("Demodulating block.");
             b.AddDetectorsToBlock();
             DBlock = blockDemodulator.QuickDemodulateBlock(b);
-            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
+            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
             liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
             //config.g
@@ -474,10 +473,10 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                mainWindow.PlotGates(GateLow, GateHigh);
+                mainWindow.PlotGates(2800,3000);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                tof = (TOF)data.TOFs[5];
+                tof = (TOF)data.TOFs[3];
                 mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs

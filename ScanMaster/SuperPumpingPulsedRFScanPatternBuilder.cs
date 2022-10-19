@@ -26,30 +26,31 @@ namespace ScanMaster.Acquire.Patterns
         int mwSelectTopProbeChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["mwSelectTopProbeChannel"]).BitNumber;
         int mwSelectBottomProbeChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["mwSelectBottomProbeChannel"]).BitNumber;
         int rfPumpSwitchChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["pumprfSwitch"]).BitNumber;
+        int bSwitchChannel = ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["bSwitch"]).BitNumber;
 	
 		public int ShotSequence( int startTime, int numberOfOnOffShots, int padShots, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger,
-			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipTime,
+			int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length, int piFlipCentreTime, int piFlipLength,
             int fmCentreTime, int fmLength, int attCentreTime, int attLength, int scramblerCentreTime,
             int scramblerLength, int rf1BlankingCentreTime, int rf1BlankingLength, 
             int rf2BlankingCentreTime, int rf2BlankingLength, int pumprfCentreTime, int pumprfLength, 
             int pumpmwCentreTime, int pumpmwLength, int bottomProbemwCentreTime, int bottomProbemwLength, 
-            int topProbemwCentreTime, int topProbemwLength, bool modulateOn) 
+            int topProbemwCentreTime, int topProbemwLength, int bCentreTime, int bLength, bool modulateOn) 
 		{
 		
 			int time = startTime;
             
 			// Disable rf
 			AddEdge(rfSwitchChannel, 0, false);
-			AddEdge(piChannel, 0, true);
+			AddEdge(piChannel, 0, false);
 		
 			for (int i = 0 ; i < numberOfOnOffShots ; i++ ) 
 			{
 				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+						rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipCentreTime, piFlipLength, fmCentreTime, fmLength,
                         attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
                         rf2BlankingCentreTime, rf2BlankingLength, pumprfCentreTime,  pumprfLength, pumpmwCentreTime,  pumpmwLength, 
-                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime,  topProbemwLength, true);
+                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime,  topProbemwLength, bCentreTime, bLength, true);
 				time += flashlampPulseInterval;
 
                 // flip the "switch-scan" TTL line (if we need to)
@@ -70,18 +71,18 @@ namespace ScanMaster.Acquire.Patterns
                 if (modulateOn)
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipCentreTime, piFlipLength, fmCentreTime, fmLength,
                         attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
                         rf2BlankingCentreTime, rf2BlankingLength, pumprfCentreTime, pumprfLength, pumpmwCentreTime, pumpmwLength,
-                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime, topProbemwLength, false);
+                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime, topProbemwLength, bCentreTime, bLength, false);
                 }
                 else
                 {
                     Shot(time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger,
-                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipTime, fmCentreTime, fmLength,
+                        rf1CentreTime, rf1Length, rf2CentreTime, rf2Length, piFlipCentreTime, piFlipLength, fmCentreTime, fmLength,
                         attCentreTime, attLength, scramblerCentreTime, scramblerLength, rf1BlankingCentreTime, rf1BlankingLength,
                         rf2BlankingCentreTime, rf2BlankingLength, pumprfCentreTime, pumprfLength, pumpmwCentreTime, pumpmwLength,
-                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime, topProbemwLength, true);
+                        bottomProbemwCentreTime, bottomProbemwLength, topProbemwCentreTime, topProbemwLength, bCentreTime, bLength, true);
                 }
                 time += flashlampPulseInterval;
 
@@ -111,17 +112,17 @@ namespace ScanMaster.Acquire.Patterns
 
 		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ,
 			int delayToDetectorTrigger, int rf1CentreTime, int rf1Length, int rf2CentreTime, int rf2Length,
-            int piFlipTime, int fmCentreTime, int fmLength, int attCentreTime, int attLength,
+            int piFlipCentreTime, int piFlipLength, int fmCentreTime, int fmLength, int attCentreTime, int attLength,
             int scramblerCentreTime, int scramblerLength, int rf1BlankingCentreTime , int rf1BlankingLength,
             int rf2BlankingCentreTime, int rf2BlankingLength, int pumprfCentreTime, int pumprfLength,
             int pumpmwCentreTime, int pumpmwLength, int bottomProbemwCentreTime, int bottomProbemwLength,
-            int topProbemwCentreTime, int topProbemwLength, bool modulated)  
+            int topProbemwCentreTime, int topProbemwLength, int bCentreTime, int bLength, bool modulated)  
 		{
 			int time = 0;
 			int tempTime = 0;
 
-			// piFlip off
-			AddEdge(piChannel, startTime, false);
+			// piFlip off - don't need this now that we are applying the pi-flip using dcfm
+			// AddEdge(piChannel, startTime, false);
 
 			// valve pulse
 			tempTime = Pulse(startTime, 0, valvePulseLength,
@@ -194,9 +195,16 @@ namespace ScanMaster.Acquire.Patterns
             tempTime = Pulse(startTime, valveToQ + scramblerCentreTime - (scramblerLength / 2),
                                 scramblerLength, scramblerChannel);
             if (tempTime > time) time = tempTime;
-            
-            // piFlip on
-            AddEdge(piChannel, startTime + valveToQ + piFlipTime, true);
+
+            // pulse pi flip
+            tempTime = Pulse(startTime, valveToQ + piFlipCentreTime - (piFlipLength / 2), piFlipLength, piChannel);
+
+            // pulse B-field
+            tempTime = Pulse(startTime, valveToQ + bCentreTime - (bLength / 2), bLength, bSwitchChannel);
+            if (tempTime > time) time = tempTime;
+
+            // piFlip on - don't need this now that we are applying the pi-flip using dcfm
+            // AddEdge(piChannel, startTime + valveToQ + piFlipTime, true);
 
 
             // enable microwaves for bottom probe region

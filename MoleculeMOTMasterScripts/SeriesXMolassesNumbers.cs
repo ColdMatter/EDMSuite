@@ -30,12 +30,12 @@ public class Patterns : MOTMasterScript
         Parameters["CameraExposure"] = 1000;
 
         // Delays
-        Parameters["MolassesDelay"] = 100;
+        Parameters["MolassesDelay"] = 600;
         Parameters["WaitBeforeImage"] = 500;
         Parameters["MOTRecaptureDelay"] = 100;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 240; //started from 250
+        Parameters["slowingAOMOnStart"] = 180; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
         Parameters["slowingAOMOffStart"] = 1520;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
@@ -71,16 +71,16 @@ public class Patterns : MOTMasterScript
         Parameters["MOTHoldDuration"] = 2000;
         Parameters["CMOTRampDuration"] = 800;
         Parameters["CMOTHoldDuration"] = 100;
-        Parameters["MolassesHoldDuration"] = 300;
+        Parameters["MolassesHoldDuration"] = 600;
 
         // v0 Light Frequency (0.0 for 114.1MHz)
         Parameters["v0FrequencyMOTValue"] = 0.0;
         Parameters["v0FrequencyCMOTValue"] = 3.5;
-        Parameters["v0FrequencyMolassesValue"] = 18.0;
+        Parameters["v0FrequencyMolassesValue"] = 22.0;
 
         // B field
         Parameters["MOTFieldValue"] = 1.0;
-        Parameters["CMOTFieldValue"] = 2.8;
+        Parameters["CMOTFieldValue"] = 1.0;
 
         // OP
         Parameters["OPDuration"] = 150;
@@ -169,7 +169,8 @@ public class Patterns : MOTMasterScript
         // v0 Frequency
         p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyMOTValue"] / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", cmotRampStartTime, 10.0 - (double)Parameters["v0FrequencyCMOTValue"] / (double)Parameters["calibGradient"]);
-        p.AddAnalogValue("v00Frequency", cmotEndTime, 10.0 - (double)Parameters["v0FrequencyMolassesValue"] / (double)Parameters["calibGradient"]);
+        p.AddLinearRamp("v00Frequency", cmotEndTime, 100, 10.0 - (double)Parameters["v0FrequencyMolassesValue"] / (double)Parameters["calibGradient"]);
+        //p.AddAnalogValue("v00Frequency", cmotEndTime + 100, 10.0 - (double)Parameters["v0FrequencyMolassesValue"] / (double)Parameters["calibGradient"]);
         p.AddAnalogValue("v00Frequency", molassesEndTime, 10.0 - (double)Parameters["v0FrequencyMOTValue"] / (double)Parameters["calibGradient"]);
         // v0 frequency with EOM
         p.AddAnalogValue("v00EOMAmp", 0, 4.85);

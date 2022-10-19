@@ -12,10 +12,7 @@ namespace Analysis.EDM
     [Serializable]
     public class QuickEDMAnalysis
     {
-        // asymmetry gates
-        public static double GATE_LOW = 2760;
-        public static double GATE_HIGH = 2960;
-
+                
         // constants
         private static double plateSpacing = 1.2;
         private static double electronCharge = 1.6022 * Math.Pow(10, -19);
@@ -62,10 +59,10 @@ namespace Analysis.EDM
         public double[] LF1DB;
         public double[] LF1DBDB;
 
-        public double[] TopPDSIG;
-        public double[] BottomPDSIG;
+        //public double[] TopPDSIG;
+        //public double[] BottomPDSIG;
 
-        public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock)
+        public static QuickEDMAnalysis AnalyseDBlock(DemodulatedBlock dblock, double GATE_LOW, double GATE_HIGH)
         {
             QuickEDMAnalysis analysis = new QuickEDMAnalysis();
 
@@ -74,7 +71,7 @@ namespace Analysis.EDM
             double dbStep = ((AnalogModulation)config.GetModulationByName("DB")).Step;
             double magCal = (double)config.Settings["magnetCalibration"];
             double eField = cField((double)config.Settings["ePlus"], (double)config.Settings["eMinus"]);//arguments are in volts not kV
-            double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9)) /
+            double edmFactor = (bohrMagneton * dbStep * magCal * Math.Pow(10, -9) * 100) /
                         (electronCharge * saturatedEffectiveField * polarisationFactor(eField));
             //Add in interferometer length instead of 800 10^-6 after testing is done with old blocks
             double dbPhaseStep = dbStep * magCal * Math.Pow(10, -9) * bohrMagneton * 800 * Math.Pow(10, -6) / hbar;
@@ -131,8 +128,8 @@ namespace Analysis.EDM
             analysis.LF1DBDB = dblock.GetTOFChannel("LF1DBDB", "asymmetry").GatedWeightedMeanAndUncertainty(GATE_LOW, GATE_HIGH);
 
             //probe photodiode monitors
-            analysis.TopPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "topPD"));
-            analysis.BottomPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "bottomPD"));
+            //analysis.TopPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "topPD"));
+            //analysis.BottomPDSIG = ConvertPointToArray(dblock.GetPointChannel(new string[] {"SIG"}, "bottomPD"));
             return analysis;
         }
 

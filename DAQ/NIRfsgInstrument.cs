@@ -4,6 +4,9 @@ using NationalInstruments.Visa;
 using NationalInstruments.ModularInstruments.NIRfsg;
 using NationalInstruments.ModularInstruments.SystemServices.DeviceServices;
 
+using Ivi.Visa;
+
+using DAQ.Environment;
 using DAQ.Environment;
 
 using System.Windows.Forms;

@@ -31,7 +31,7 @@ public class Patterns : MOTMasterScript
 
         //Blue molasses:
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 200;
+        Parameters["MolassesHoldTime"] = 1000;
 
         Parameters["Frame0Trigger"] = 4000;
         
@@ -96,10 +96,10 @@ public class Patterns : MOTMasterScript
         Parameters["zShimImagingCurrent"] = -0.56;// -0.22 is zero
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampDuration"] = 300;
+        Parameters["v0IntensityRampDuration"] = 500;
         Parameters["MOTHoldTime"] = 1000;
         Parameters["v0IntensityRampStartValue"] = 5.6;// 6.9;
-        Parameters["v0IntensityRampEndValue"] = 8.2; //7.8;
+        Parameters["v0IntensityRampEndValue"] = 7.78; //7.8;
         Parameters["v0IntensityMolassesValue"] = 5.6;//5.6;
         Parameters["v0IntensityF0PumpValue"] = 9.3;
 

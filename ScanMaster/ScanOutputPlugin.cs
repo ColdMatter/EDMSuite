@@ -17,6 +17,7 @@ namespace ScanMaster.Acquire.Plugin
     XmlInclude(typeof(PGOutputPlugin)),
     XmlInclude(typeof(TCLOutputPlugin)),
 	XmlInclude(typeof(WindfriekSynthFrequencyOutputPlugin))
+	XmlInclude(typeof(WMLOutputPlugin))
 #if DECELERATOR
     ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif

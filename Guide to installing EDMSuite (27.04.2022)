@@ -1,0 +1,32 @@
+Guide to installing EDMSuite
+1.	Install Visual Studio 2019 Enterprise: 
+  • https://azureforeducation.microsoft.com/devtools 
+  •	Under “Software” tab, find product key generation on right hand side of screen
+  • Needs to be Enterprise version
+2.	Install the following NI drivers:
+  •	NI-DAQmx
+  •	NI-VISA
+  •	NI-488.2 (for GPIB)
+  •	NI-Serial
+  •	These can all be found on the NI website, requires a log-in
+3.	Install Measurement Studio for Visual Studio 2019:
+  •	Then download it here: https://www.ni.com/en-gb/support/downloads/software-products/download.measurement-studio.html#305938
+  •	After downloading, go to NI License Manager and activate the Enterprise edition of MS2019 with a license number. Please ask around or go to Box folder for the number ;)
+  •	After installing, check that there is Measurement Studio appearing under the “Extensions” menu in Visual Studio, and check that it is licensed (under “Licenses”)
+	You also need to install the vsix to see Measurement Studio in VS! Click on the vsix in C:\Program Files (x86)\National Instruments\Measurement Studio\VS2019
+  [The order is important. You must have VS first and NI packages next.]
+4.	Install the latest version of Git
+5.	Clone the EDMSuite repository
+  •	Navigate to the folder where you intend to put EDMSuite, right click and select “Git Bash here”
+  •	Type in “git clone https://github.com/ColdMatter/EDMSuite/”
+6.	Open the EDMSuite project (“EDMSuite.sln” in the main EDMSuite folder)
+7.	Connect the chassis and check if the modules are reachable in NI MAX 
+    [Special case: If the computer crashes when clicking any module including input channels, this may mean the Data Memory Access (DMA) protection is on. It can be turned off in the menu before Windows is loaded (by press F10 quickly or something…)]
+8.	Add information about the new computer to DAQ:
+  •	Modify the EnvironsHelper.cs in the DAQ project to create a new account
+  •	Create Hardware and FileSystem files in the DAQ project. Fake data is needed to build some of the applications. In this case [Paths.Add("fakeData", "E:\\Data\\Examples\\");] is to be added to the paths, and the file folder should be created accordingly.
+  [There are more details about the codes in the old inversion of instruction. However, there is also a HardwareController file in that instruction which is no longer needed now.]
+9.	Select the appropriate build configuration or create a new one
+  •	Found in Build -> Configuration Manager
+  •	For now, check only the boxes for DAQ and SharedCode under Build
+10.	Build solution and hope it works!
