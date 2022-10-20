@@ -74,7 +74,8 @@
     <ManifestKeyFile>UEDMHardwareControl_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>UEDMIcon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
     <OutputPath>bin\ScanMaster\</OutputPath>
@@ -145,6 +146,7 @@
     <EmbeddedResource Include="CooldownModeOptionsDialog.resx">
       <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="WarmUpModeOptionsDialog.resx">
       <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>

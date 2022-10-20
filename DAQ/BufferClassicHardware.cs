@@ -98,6 +98,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
+            AddDigitalOutputChannel("ePol", UEDMHardwareControllerBoard, );
+            AddDigitalOutputChannel("notEPol", UEDMHardwareControllerBoard, );
+            AddDigitalOutputChannel("eBleed", UEDMHardwareControllerBoard, );
 
             //Counter Channels
             AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
