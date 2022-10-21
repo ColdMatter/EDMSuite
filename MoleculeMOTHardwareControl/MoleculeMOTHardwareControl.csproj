@@ -109,6 +109,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlF|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AlF\</OutputPath>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DAQ, Version=1.0.7835.16894, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -117,10 +124,11 @@
     <Reference Include="MOTMaster">
       <HintPath>..\MOTMaster\bin\CaF\MOTMaster.exe</HintPath>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=19.5.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.DAQmx.dll</HintPath>
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.40.49247, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=x86">
+      <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=15.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

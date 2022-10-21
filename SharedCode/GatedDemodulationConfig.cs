@@ -103,8 +103,8 @@ namespace Analysis.EDM
             gateConfig.AddGate("gnd", Gate.WideGate());
             gateConfig.AddGate("battery", Gate.WideGate());
             gateConfig.AddGate("rfCurrent", Gate.WideGate());
-            gateConfig.AddGate("reflectedrf1Amplitude", Gate.WideGate());
-            gateConfig.AddGate("reflectedrf2Amplitude", Gate.WideGate());
+            //gateConfig.AddGate("reflectedrf1Amplitude", Gate.WideGate());
+            //gateConfig.AddGate("reflectedrf2Amplitude", Gate.WideGate());
             gateConfig.AddGate("bottomProbeNoBackground", new Gate(2390, 2490, true));
             gateConfig.AddGate("bottomProbe", new Gate(2390, 2490, true));
             gateConfig.AddGate("topProbe", new Gate(gateConfig.LiveAnalysisGateTimeStartScaled, gateConfig.LiveAnalysisGateTimeEndScaled, true));

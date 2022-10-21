@@ -29,14 +29,14 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 3); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 
-            AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7); //Pin 15 (OffShot)from pg to daq
-            AddDigitalOutputChannel("detector", pgBoard, 1, 0); //Pin 16 (onShot)from pg to daq
+            AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7);    //Pin 15 (OffShot)from pg to daq
+            AddDigitalOutputChannel("detector", pgBoard, 1, 0);         //Pin 16 (onShot)from pg to daq
 
-            AddDigitalOutputChannel("ccd1", pgBoard, 1, 1);         // previously "aom"         if problem, chnage in the plugin, not here
-            AddDigitalOutputChannel("ccd2", pgBoard, 1, 2);         // previously "aom2"        if problem, chnage in the plugin, not here
-            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);         // previously "shutter1"    if problem, chnage in the plugin, not here
-            AddDigitalOutputChannel("ttl2", pgBoard, 1, 4);         // previously "shutter2"    if problem, chnage in the plugin, not here
-            AddDigitalOutputChannel("ttl3", pgBoard, 1, 5);         // previously "ttl1"        if problem, chnage in the plugin, not here
+            AddDigitalOutputChannel("ccd1", pgBoard, 1, 1);         // previously "aom"         if problem, change in the plugin, not here
+            AddDigitalOutputChannel("ccd2", pgBoard, 1, 2);         // previously "aom2"        if problem, change in the plugin, not here
+            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);         // previously "shutter1"    if problem, change in the plugin, not here
+            AddDigitalOutputChannel("ttl2", pgBoard, 1, 4);         // previously "shutter2"    if problem, change in the plugin, not here
+            AddDigitalOutputChannel("ttl3", pgBoard, 1, 5);         // previously "ttl1"        if problem, change in the plugin, not here
             AddDigitalOutputChannel("ttl4", pgBoard, 1, 6);
             AddDigitalOutputChannel("ttl5", pgBoard, 1, 7);
 
@@ -77,6 +77,7 @@ namespace DAQ.HAL
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("v2laser", daqBoard + "/ao1"); //pin 21
+            AddAnalogOutputChannel("cPlus", daqBoard + "/ao2");
 
             // map the analog input channels for the "UEDMHardwareControllerBoard" card
             AddAnalogInputChannel("cellTemperatureMonitor", UEDMHardwareControllerBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -125,6 +126,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai8", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai9", AITerminalConfiguration.Rse); unused
             AddAnalogInputChannel("IRp1_v2laser", TCLBoard + "/ai10", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("IRp2_v3laser", TCLBoard + "/ai16", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("IRmaster", TCLBoard + "/ai11", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai16", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai17", AITerminalConfiguration.Rse); unused
@@ -137,16 +139,19 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v1laser", TCLBoard + "/ao1");
             AddAnalogOutputChannel("probelaser", TCLBoard + "/ao2", 0, 10);
             AddAnalogOutputChannel("v0laser", TCLBoard + "/ao3", 0, 10);
+            AddAnalogOutputChannel("v3laser", daqBoard + "/ao2", 0, 3);
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
-            Instruments.Add("WindthfreakSynthHD", new WindfreakSynthHD("ASRL5::INSTR"));
+            Instruments.Add("WindfreakOpticalPumping", new WindfreakSynthHD("ASRL6::INSTR"));
+            Instruments.Add("WindfreakDetection", new WindfreakSynthHD("ASRL9::INSTR"));
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
-            
+            Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
 
-// TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
-// multiple cavities share a single ramp (BaseRamp analog input) + trigger
-// Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
+
+            // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
+            // multiple cavities share a single ramp (BaseRamp analog input) + trigger
+            // Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLBoard + "/PFI0";
             tclConfig.BaseRamp = "VIScavityRampMonitor";
@@ -182,7 +187,10 @@ namespace DAQ.HAL
             tclConfig.Cavities[IRCavity].AddSlaveLaser("v2laser", "IRp1_v2laser");
             tclConfig.Cavities[IRCavity].AddDefaultGain("v2laser", 0.2);
             tclConfig.Cavities[IRCavity].AddFSRCalibration("v2laser", 3.84);
-            
+            tclConfig.Cavities[IRCavity].AddSlaveLaser("v3laser", "IRp2_v3laser");
+            tclConfig.Cavities[IRCavity].AddDefaultGain("v3laser", 0.1);
+            tclConfig.Cavities[IRCavity].AddFSRCalibration("v3laser", 3.84);
+
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
 

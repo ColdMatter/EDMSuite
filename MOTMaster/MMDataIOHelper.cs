@@ -14,6 +14,8 @@ using System.Windows.Forms;
 
 using DAQ;
 using DAQ.HAL;
+using DAQ.Environment;
+using DAQ.Analog;
 
 namespace MOTMaster
 {
@@ -113,7 +115,7 @@ namespace MOTMaster
             Dictionary<String, Object> dict, Dictionary<String, Object> report, MOTMasterSequence sequence)
         {
             storeDigitalPattern(saveFolder + fileTag + "_digitalPattern.json", sequence);
-            storeAnalogPattern(saveFolder + fileTag + "_analogPattern.json", sequence);
+            storeAnalogPattern(saveFolder + fileTag, sequence);
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
@@ -314,27 +316,24 @@ namespace MOTMaster
 
         private void storeAnalogPattern(string dataStoreFilePath, MOTMasterSequence sequence)
         {
-            Dictionary<String, Dictionary<Int32, Double>> analogPatterns = sequence.AnalogPattern.AnalogPatterns;
-
-            var settings = new DataContractJsonSerializerSettings();
-            settings.UseSimpleDictionaryFormat = true; // Make format of json file {key : value} instead of {"Key": key, "Value": value}
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<String, Dictionary<Int32, Double>>), settings);
-            TextWriter output = File.CreateText(dataStoreFilePath);
-            using (MemoryStream ms = new MemoryStream())
+            foreach (KeyValuePair<string, AnalogPatternBuilderSingleBoard> kvp in sequence.AnalogPattern.Boards)
             {
-                serializer.WriteObject(ms, analogPatterns);
-                output.Write(Encoding.Default.GetString(ms.ToArray()));
-                output.Close();
+                Dictionary<String, Dictionary<Int32, Double>> analogPatterns = kvp.Value.AnalogPatterns;
+                var settings = new DataContractJsonSerializerSettings();
+                settings.UseSimpleDictionaryFormat = true; // Make format of json file {key : value} instead of {"Key": key, "Value": value}
+
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Dictionary<String, Dictionary<Int32, Double>>), settings);
+                string singleDataStoreFilePath = dataStoreFilePath + "_" + kvp.Key.Split('/')[1] + "_analogPattern.json";
+        
+                TextWriter output = File.CreateText(singleDataStoreFilePath);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    serializer.WriteObject(ms, analogPatterns);
+                    output.Write(Encoding.Default.GetString(ms.ToArray()));
+                    output.Close();
+                }
             }
         }
-
-        //private void storeAnalogPattern(string dataStoreFilePath, MOTMasterSequence sequence)
-        //{
-        //    TextWriter output = File.CreateText(dataStoreFilePath);
-        //    string analogPattern = sequence.AnalogPattern.AnalogPatterns;
-        //    output.Write(digitalPatternString);
-        //}
         
         private string getDataID(string directory, string element, int batchNumber)
         {

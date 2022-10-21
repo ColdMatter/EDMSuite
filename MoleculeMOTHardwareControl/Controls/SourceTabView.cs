@@ -59,6 +59,11 @@ namespace MoleculeMOTHardwareControl.Controls
             txtSourcePressure.Text = pressure;
         }
 
+        public void UpdateCurrentMOTPressure(string pressure)
+        {
+            txtMOTchamberPressure.Text = pressure;
+        }
+
         public void UpdateCurrentSourceTemperature(string temp)
         {
             currentTemperature.Text = temp;
@@ -105,6 +110,18 @@ namespace MoleculeMOTHardwareControl.Controls
             chkAO1Enable.Checked = false;
         }
 
+        public bool AutomaticValveControlEnabled()
+        {
+            return chkAutoValveControl.Checked;
+        }
+
+        public void DisableAutomaticValveControl()
+        {
+            chkAutoValveControl.Checked = false;
+            chkSF6Valve.Checked = false;
+            chkHeValve.Checked = false;
+        }
+
         public void DisableTOF()
         {
             chkToF.Checked = false;
@@ -120,6 +137,18 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             chkAO0Enable.Checked = false;
             chkAO1Enable.Checked = false;
+        }
+
+        public void ValveOpen()
+        {
+            chkSF6Valve.Checked = true;
+            chkHeValve.Checked = true;
+        }
+
+        public void ValveClose()
+        {
+            chkSF6Valve.Checked = false;
+            chkHeValve.Checked = false;
         }
 
         public void UpdateReadButton(bool state)
@@ -275,6 +304,40 @@ namespace MoleculeMOTHardwareControl.Controls
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbPlotChannel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            castController.SetPlotChannel(cmbPlotChannel.SelectedIndex);
+        }
+
+        private void chkAutoScale_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAutoScale.Checked)
+                tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.AutoScaleLoose;
+            else
+                tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
+        }
+
+        private void chkSF6Valve_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.ToggleDigitalOutput(2, chkSF6Valve.Checked);
+        }
+
+        private void chkHeValve_CheckedChanged(object sender, EventArgs e)
+        {
+
+            castController.ToggleDigitalOutput(3, chkHeValve.Checked);
+        }
+
+        private void numFlowTimeout_ValueChanged(object sender, EventArgs e)
+        {
+            castController.FlowTimeOut = (int)numFlowTimeout.Value;
+        }
+
+        private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }

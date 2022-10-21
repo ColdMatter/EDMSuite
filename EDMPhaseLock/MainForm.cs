@@ -414,9 +414,9 @@ namespace EDMPhaseLock
             analogOutputTask = new Task("phase lock analog output");
 			AnalogOutputChannel outputChannel = 
 					(AnalogOutputChannel) Environs.Hardware.AnalogOutputChannels["phaseLockAnalogOutput"];
-				outputChannel.AddToTask(analogOutputTask, VCO_LOW, VCO_HIGH);
-				analogWriter = new AnalogSingleChannelWriter(analogOutputTask.Stream);
-				analogWriter.WriteSingleSample(true, VCO_CENTRAL); // start out with the central value
+			outputChannel.AddToTask(analogOutputTask, VCO_LOW, VCO_HIGH);
+			analogWriter = new AnalogSingleChannelWriter(analogOutputTask.Stream);
+			analogWriter.WriteSingleSample(true, VCO_CENTRAL); // start out with the central value
         }
 
 		ArrayList deviationPlotData;

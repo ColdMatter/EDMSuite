@@ -86,9 +86,9 @@ public class Patterns : MOTMasterScript
         Parameters["yShimLoadCurrent"] = -1.92;//2.0;//old value// -1.92 is zero
         Parameters["zShimLoadCurrent"] = -0.22;//-0.22;//old value// -0.22 is zero
 
-        Parameters["xShimLoadCurrentOP"] = -1.35;//Bias field for Optical pumping
-        Parameters["yShimLoadCurrentOP"] = 3.0;//-1.92;
-        Parameters["zShimLoadCurrentOP"] = -0.22;
+        Parameters["xShimLoadCurrentOP"] = -2.0;//Bias field for Optical pumping
+        Parameters["yShimLoadCurrentOP"] = 10.0;
+        Parameters["zShimLoadCurrentOP"] = -5.0;
 
         //Shim fields for imaging
         Parameters["xShimImagingCurrent"] = -1.93;// -1.35 is zero
