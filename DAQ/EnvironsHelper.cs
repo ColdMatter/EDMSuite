@@ -71,6 +71,20 @@ namespace DAQ.Environment
 			switch (computerName)
 			{
 
+                case "PH-NI-LAB":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
+                case "Rhys-XPS":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new RhysFileSystem();
+                    Debug = true;
+                    break;
+
+
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();

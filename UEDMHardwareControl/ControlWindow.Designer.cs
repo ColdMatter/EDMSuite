@@ -368,6 +368,19 @@
             this.labelDigitalOutputP01 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP00 = new System.Windows.Forms.Label();
             this.tabPageEfield = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.LinearDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.ExpTimeConstantTextBox = new System.Windows.Forms.TextBox();
+            this.label899 = new System.Windows.Forms.Label();
+            this.label799 = new System.Windows.Forms.Label();
+            this.label699 = new System.Windows.Forms.Label();
+            this.DegaussFreqTextBox = new System.Windows.Forms.TextBox();
+            this.DegaussAmpTextBox = new System.Windows.Forms.TextBox();
+            this.StartDegauss = new System.Windows.Forms.Button();
+            this.label499 = new System.Windows.Forms.Label();
+            this.label299 = new System.Windows.Forms.Label();
+            //this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
+            //this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -421,36 +434,38 @@
             this.cMinusTextBox = new System.Windows.Forms.TextBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.tbiMonitorPollPeriod = new System.Windows.Forms.TextBox();
+            this.changePollPeriodButton = new System.Windows.Forms.Button();
             this.rescaleIMonitorChartButton = new System.Windows.Forms.Button();
             this.chart5 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.logCurrentDataCheckBox = new System.Windows.Forms.CheckBox();
             this.clearIMonitorButton = new System.Windows.Forms.Button();
-            this.southIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.eastIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
             this.label131 = new System.Windows.Forms.Label();
             this.label130 = new System.Windows.Forms.Label();
-            this.northIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.westIMonitorErrorTextBox = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.zeroIMonitorButton = new System.Windows.Forms.Button();
             this.label129 = new System.Windows.Forms.Label();
             this.currentMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
             this.label128 = new System.Windows.Forms.Label();
-            this.southOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
-            this.northOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.eastOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.westOffsetIMonitorTextBox = new System.Windows.Forms.TextBox();
             this.label85 = new System.Windows.Forms.Label();
             this.label84 = new System.Windows.Forms.Label();
-            this.southV2FSlopeTextBox = new System.Windows.Forms.TextBox();
-            this.northV2FSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.eastSlopeTextBox = new System.Windows.Forms.TextBox();
+            this.westSlopeTextBox = new System.Windows.Forms.TextBox();
             this.leakageMonitorSlopeTextBox = new System.Windows.Forms.TextBox();
             this.label64 = new System.Windows.Forms.Label();
             this.stopIMonitorPollButton = new System.Windows.Forms.Button();
             this.label63 = new System.Windows.Forms.Label();
-            this.iMonitorPollPeriod = new System.Windows.Forms.TextBox();
+            this.iMonitorPollPeriodInput = new System.Windows.Forms.TextBox();
             this.startIMonitorPollButton = new System.Windows.Forms.Button();
             this.IMonitorMeasurementLengthTextBox = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.southIMonitorTextBox = new System.Windows.Forms.TextBox();
-            this.northIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.eastIMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.westIMonitorTextBox = new System.Windows.Forms.TextBox();
             this.updateIMonitorButton = new System.Windows.Forms.Button();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
@@ -563,6 +578,14 @@
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
             this.tbStatus = new System.Windows.Forms.TextBox();
+            this.ConstDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.ExpDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            //this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -604,6 +627,10 @@
             this.gbDigitalOutputs.SuspendLayout();
             this.gbDigitalOutputsPort0.SuspendLayout();
             this.tabPageEfield.SuspendLayout();
+            this.tabPageEfield.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -620,6 +647,7 @@
             this.groupBoxMWCHB.SuspendLayout();
             this.groupBoxRF.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).BeginInit();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -4106,7 +4134,10 @@
             // 
             // tabPageEfield
             // 
-            this.tabPageEfield.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageEfield.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageEfield.Controls.Add(this.groupBox8);
+            this.tabPageEfield.Controls.Add(this.label499);
+            this.tabPageEfield.Controls.Add(this.label299);
             this.tabPageEfield.Controls.Add(this.groupBox21);
             this.tabPageEfield.Controls.Add(this.groupBox13);
             this.tabPageEfield.Controls.Add(this.groupBox6);
@@ -4118,6 +4149,141 @@
             this.tabPageEfield.Size = new System.Drawing.Size(1033, 703);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label24);
+            this.groupBox8.Controls.Add(this.label23);
+            //this.groupBox8.Controls.Add(this.DegaussLED);
+            this.groupBox8.Controls.Add(this.label22);
+            this.groupBox8.Controls.Add(this.label21);
+            this.groupBox8.Controls.Add(this.label20);
+            this.groupBox8.Controls.Add(this.ExpDegaussTextBox);
+            this.groupBox8.Controls.Add(this.ConstDegaussTextBox);
+            this.groupBox8.Controls.Add(this.LinearDegaussTextBox);
+            this.groupBox8.Controls.Add(this.ExpTimeConstantTextBox);
+            this.groupBox8.Controls.Add(this.label8);
+            this.groupBox8.Controls.Add(this.label7);
+            this.groupBox8.Controls.Add(this.label6);
+            this.groupBox8.Controls.Add(this.DegaussAmpTextBox);
+            this.groupBox8.Controls.Add(this.DegaussFreqTextBox);
+            this.groupBox8.Controls.Add(this.StartDegauss);
+            this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox8.Location = new System.Drawing.Point(497, 126);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(329, 166);
+            this.groupBox8.TabIndex = 49;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Degaussing Coils";
+            // 
+            // LinearDegaussTextBox
+            // 
+            this.LinearDegaussTextBox.Location = new System.Drawing.Point(277, 38);
+            this.LinearDegaussTextBox.Name = "LinearDegaussTextBox";
+            this.LinearDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.LinearDegaussTextBox.TabIndex = 86;
+            this.LinearDegaussTextBox.Text = "1";
+            // 
+            // ExpTimeConstantTextBox
+            // 
+            this.ExpTimeConstantTextBox.Location = new System.Drawing.Point(108, 90);
+            this.ExpTimeConstantTextBox.Name = "ExpTimeConstantTextBox";
+            this.ExpTimeConstantTextBox.Size = new System.Drawing.Size(41, 20);
+            this.ExpTimeConstantTextBox.TabIndex = 85;
+            this.ExpTimeConstantTextBox.Text = "1";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 93);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(93, 13);
+            this.label8.TabIndex = 84;
+            this.label8.Text = "ExpTime Constant";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 41);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(79, 13);
+            this.label7.TabIndex = 83;
+            this.label7.Text = "Frequency (Hz)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 67);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(88, 13);
+            this.label6.TabIndex = 82;
+            this.label6.Text = "Amplitude (Amps)";
+            // 
+            // DegaussFreqTextBox
+            // 
+            this.DegaussFreqTextBox.Location = new System.Drawing.Point(108, 38);
+            this.DegaussFreqTextBox.Name = "DegaussFreqTextBox";
+            this.DegaussFreqTextBox.Size = new System.Drawing.Size(41, 20);
+            this.DegaussFreqTextBox.TabIndex = 81;
+            this.DegaussFreqTextBox.Text = "5";
+            // 
+            // DegaussAmpTextBox
+            // 
+            this.DegaussAmpTextBox.Location = new System.Drawing.Point(108, 64);
+            this.DegaussAmpTextBox.Name = "DegaussAmpTextBox";
+            this.DegaussAmpTextBox.Size = new System.Drawing.Size(41, 20);
+            this.DegaussAmpTextBox.TabIndex = 80;
+            this.DegaussAmpTextBox.Text = "8";
+            // 
+            // StartDegauss
+            // 
+            this.StartDegauss.Location = new System.Drawing.Point(9, 128);
+            this.StartDegauss.Name = "StartDegauss";
+            this.StartDegauss.Size = new System.Drawing.Size(140, 22);
+            this.StartDegauss.TabIndex = 79;
+            this.StartDegauss.Text = "Degauss Start";
+            this.StartDegauss.UseVisualStyleBackColor = true;
+            this.StartDegauss.Click += new System.EventHandler(this.StartDegauss_Click);
+            // 
+            // label4
+            // 
+            this.label499.AutoSize = true;
+            this.label499.Location = new System.Drawing.Point(533, 61);
+            this.label499.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label499.Name = "label499";
+            this.label499.Size = new System.Drawing.Size(96, 13);
+            this.label499.TabIndex = 48;
+            this.label499.Text = "Switching Ongoing";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(533, 28);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(92, 13);
+            this.label2.TabIndex = 47;
+            this.label2.Text = "Ramping Ongoing";
+            // 
+            // switchingLED
+            // 
+            //this.switchingled.ledstyle = nationalinstruments.ui.ledstyle.round3d;
+            //this.switchingled.location = new system.drawing.point(497, 55);
+            //this.switchingled.margin = new system.windows.forms.padding(2);
+            //this.switchingled.name = "switchingled";
+            //this.switchingled.offcolor = system.drawing.color.maroon;
+            //this.switchingled.oncolor = system.drawing.color.red;
+            //this.switchingled.size = new system.drawing.size(33, 28);
+            //this.switchingled.tabindex = 46;
+            // 
+            // rampLED
+            // 
+            //this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.rampLED.Location = new System.Drawing.Point(497, 23);
+            //this.rampLED.Margin = new System.Windows.Forms.Padding(2);
+            //this.rampLED.Name = "rampLED";
+            ///this.rampLED.Size = new System.Drawing.Size(33, 28);
+            //this.rampLED.TabIndex = 45;
             // 
             // groupBox21
             // 
@@ -4144,9 +4310,9 @@
             this.groupBox13.Controls.Add(this.label38);
             this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
-            this.groupBox13.Location = new System.Drawing.Point(493, 179);
+            this.groupBox13.Location = new System.Drawing.Point(832, 177);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(184, 113);
+            this.groupBox13.Size = new System.Drawing.Size(184, 115);
             this.groupBox13.TabIndex = 41;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Supply asymmetry";
@@ -4202,7 +4368,8 @@
             this.groupBox6.Controls.Add(this.label14);
             this.groupBox6.Controls.Add(this.label15);
             this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
-            this.groupBox6.Location = new System.Drawing.Point(493, 16);
+            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox6.Location = new System.Drawing.Point(832, 17);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(184, 153);
             this.groupBox6.TabIndex = 24;
@@ -4463,12 +4630,12 @@
             // 
             // fieldsOffButton
             // 
-            this.fieldsOffButton.Enabled = false;
             this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
             this.fieldsOffButton.Name = "fieldsOffButton";
             this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
             this.fieldsOffButton.TabIndex = 23;
             this.fieldsOffButton.Text = "Zero E fields";
+            this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
             // 
             // switchEButton
             // 
@@ -4477,6 +4644,7 @@
             this.switchEButton.Size = new System.Drawing.Size(96, 23);
             this.switchEButton.TabIndex = 22;
             this.switchEButton.Text = "Switch E";
+            this.switchEButton.Click += new System.EventHandler(this.switchEButton_Click);
             // 
             // eBleedCheck
             // 
@@ -4485,6 +4653,7 @@
             this.eBleedCheck.Size = new System.Drawing.Size(72, 24);
             this.eBleedCheck.TabIndex = 21;
             this.eBleedCheck.Text = "Bleed on";
+            this.eBleedCheck.CheckedChanged += new System.EventHandler(this.eBleedCheck_CheckedChanged);
             // 
             // ePolarityCheck
             // 
@@ -4493,6 +4662,7 @@
             this.ePolarityCheck.Size = new System.Drawing.Size(136, 24);
             this.ePolarityCheck.TabIndex = 20;
             this.ePolarityCheck.Text = "Polarity (1 is checked)";
+            this.ePolarityCheck.CheckedChanged += new System.EventHandler(this.ePolarityCheck_CheckedChanged);
             // 
             // eOnCheck
             // 
@@ -4501,6 +4671,7 @@
             this.eOnCheck.Size = new System.Drawing.Size(72, 24);
             this.eOnCheck.TabIndex = 19;
             this.eOnCheck.Text = "Field on";
+            this.eOnCheck.CheckedChanged += new System.EventHandler(this.eOnCheck_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -4578,6 +4749,7 @@
             this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
+            this.cPlusOffTextBox.TextChanged += new System.EventHandler(this.cPlusOffTextBox_TextChanged);
             // 
             // cMinusOffTextBox
             // 
@@ -4605,49 +4777,72 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.tbiMonitorPollPeriod);
+            this.groupBox7.Controls.Add(this.changePollPeriodButton);
             this.groupBox7.Controls.Add(this.rescaleIMonitorChartButton);
             this.groupBox7.Controls.Add(this.chart5);
             this.groupBox7.Controls.Add(this.logCurrentDataCheckBox);
             this.groupBox7.Controls.Add(this.clearIMonitorButton);
-            this.groupBox7.Controls.Add(this.southIMonitorErrorTextBox);
+            this.groupBox7.Controls.Add(this.eastIMonitorErrorTextBox);
             this.groupBox7.Controls.Add(this.label131);
             this.groupBox7.Controls.Add(this.label130);
-            this.groupBox7.Controls.Add(this.northIMonitorErrorTextBox);
+            this.groupBox7.Controls.Add(this.westIMonitorErrorTextBox);
             this.groupBox7.Controls.Add(this.label35);
             this.groupBox7.Controls.Add(this.zeroIMonitorButton);
             this.groupBox7.Controls.Add(this.label129);
             this.groupBox7.Controls.Add(this.currentMonitorSampleLengthTextBox);
             this.groupBox7.Controls.Add(this.label128);
-            this.groupBox7.Controls.Add(this.southOffsetIMonitorTextBox);
-            this.groupBox7.Controls.Add(this.northOffsetIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.eastOffsetIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.westOffsetIMonitorTextBox);
             this.groupBox7.Controls.Add(this.label85);
             this.groupBox7.Controls.Add(this.label84);
-            this.groupBox7.Controls.Add(this.southV2FSlopeTextBox);
-            this.groupBox7.Controls.Add(this.northV2FSlopeTextBox);
+            this.groupBox7.Controls.Add(this.eastSlopeTextBox);
+            this.groupBox7.Controls.Add(this.westSlopeTextBox);
             this.groupBox7.Controls.Add(this.leakageMonitorSlopeTextBox);
             this.groupBox7.Controls.Add(this.label64);
             this.groupBox7.Controls.Add(this.stopIMonitorPollButton);
             this.groupBox7.Controls.Add(this.label63);
-            this.groupBox7.Controls.Add(this.iMonitorPollPeriod);
+            this.groupBox7.Controls.Add(this.iMonitorPollPeriodInput);
             this.groupBox7.Controls.Add(this.startIMonitorPollButton);
             this.groupBox7.Controls.Add(this.IMonitorMeasurementLengthTextBox);
             this.groupBox7.Controls.Add(this.label17);
             this.groupBox7.Controls.Add(this.label16);
-            this.groupBox7.Controls.Add(this.southIMonitorTextBox);
-            this.groupBox7.Controls.Add(this.northIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.eastIMonitorTextBox);
+            this.groupBox7.Controls.Add(this.westIMonitorTextBox);
             this.groupBox7.Controls.Add(this.updateIMonitorButton);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.label19);
             this.groupBox7.Location = new System.Drawing.Point(17, 298);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(660, 320);
+            this.groupBox7.Size = new System.Drawing.Size(999, 391);
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
             // 
+            // tbiMonitorPollPeriod
+            // 
+            this.tbiMonitorPollPeriod.BackColor = System.Drawing.Color.Black;
+            this.tbiMonitorPollPeriod.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbiMonitorPollPeriod.Location = new System.Drawing.Point(916, 15);
+            this.tbiMonitorPollPeriod.Name = "tbiMonitorPollPeriod";
+            this.tbiMonitorPollPeriod.ReadOnly = true;
+            this.tbiMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
+            this.tbiMonitorPollPeriod.TabIndex = 44;
+            this.tbiMonitorPollPeriod.Text = "0";
+            // 
+            // changePollPeriodButton
+            // 
+            this.changePollPeriodButton.Location = new System.Drawing.Point(824, 38);
+            this.changePollPeriodButton.Name = "changePollPeriodButton";
+            this.changePollPeriodButton.Size = new System.Drawing.Size(75, 23);
+            this.changePollPeriodButton.TabIndex = 78;
+            this.changePollPeriodButton.Text = "Update";
+            this.changePollPeriodButton.UseVisualStyleBackColor = true;
+            this.changePollPeriodButton.Click += new System.EventHandler(this.changePollPeriodButton_Click);
+            // 
             // rescaleIMonitorChartButton
             // 
-            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(491, 86);
+            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(505, 82);
             this.rescaleIMonitorChartButton.Name = "rescaleIMonitorChartButton";
             this.rescaleIMonitorChartButton.Size = new System.Drawing.Size(76, 21);
             this.rescaleIMonitorChartButton.TabIndex = 77;
@@ -4657,13 +4852,45 @@
             // 
             // chart5
             // 
+            this.chart5.BackColor = System.Drawing.Color.Black;
+            chartArea5.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea5.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
             chartArea5.AxisX.Title = "Time";
+            chartArea5.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
             chartArea5.AxisY.Title = "Current (nA)";
+            chartArea5.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.BackColor = System.Drawing.Color.Black;
+            chartArea5.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea5.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea5.BorderColor = System.Drawing.Color.White;
             chartArea5.Name = "ChartArea1";
             this.chart5.ChartAreas.Add(chartArea5);
+            legend5.Alignment = System.Drawing.StringAlignment.Center;
+            legend5.BackColor = System.Drawing.Color.Black;
+            legend5.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend5.ForeColor = System.Drawing.Color.White;
+            legend5.IsEquallySpacedItems = true;
             legend5.Name = "Legend1";
+            legend5.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
             this.chart5.Legends.Add(legend5);
-            this.chart5.Location = new System.Drawing.Point(19, 127);
+            this.chart5.Location = new System.Drawing.Point(9, 114);
             this.chart5.Name = "chart5";
             series20.ChartArea = "ChartArea1";
             series20.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -4677,14 +4904,14 @@
             series21.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
             this.chart5.Series.Add(series20);
             this.chart5.Series.Add(series21);
-            this.chart5.Size = new System.Drawing.Size(633, 179);
+            this.chart5.Size = new System.Drawing.Size(973, 261);
             this.chart5.TabIndex = 76;
             this.chart5.Text = "chart5";
             // 
             // logCurrentDataCheckBox
             // 
             this.logCurrentDataCheckBox.AutoSize = true;
-            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(752, 88);
             this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
             this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
             this.logCurrentDataCheckBox.TabIndex = 75;
@@ -4701,16 +4928,16 @@
             this.clearIMonitorButton.UseVisualStyleBackColor = true;
             this.clearIMonitorButton.Click += new System.EventHandler(this.clearIMonitorButton_Click);
             // 
-            // southIMonitorErrorTextBox
+            // eastIMonitorErrorTextBox
             // 
-            this.southIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
-            this.southIMonitorErrorTextBox.Name = "southIMonitorErrorTextBox";
-            this.southIMonitorErrorTextBox.ReadOnly = true;
-            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
-            this.southIMonitorErrorTextBox.TabIndex = 73;
-            this.southIMonitorErrorTextBox.Text = "0";
+            this.eastIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
+            this.eastIMonitorErrorTextBox.Name = "eastIMonitorErrorTextBox";
+            this.eastIMonitorErrorTextBox.ReadOnly = true;
+            this.eastIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.eastIMonitorErrorTextBox.TabIndex = 73;
+            this.eastIMonitorErrorTextBox.Text = "0";
             // 
             // label131
             // 
@@ -4728,16 +4955,16 @@
             this.label130.TabIndex = 71;
             this.label130.Text = "±";
             // 
-            // northIMonitorErrorTextBox
+            // westIMonitorErrorTextBox
             // 
-            this.northIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
-            this.northIMonitorErrorTextBox.Name = "northIMonitorErrorTextBox";
-            this.northIMonitorErrorTextBox.ReadOnly = true;
-            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
-            this.northIMonitorErrorTextBox.TabIndex = 70;
-            this.northIMonitorErrorTextBox.Text = "0";
+            this.westIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
+            this.westIMonitorErrorTextBox.Name = "westIMonitorErrorTextBox";
+            this.westIMonitorErrorTextBox.ReadOnly = true;
+            this.westIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.westIMonitorErrorTextBox.TabIndex = 70;
+            this.westIMonitorErrorTextBox.Text = "0";
             // 
             // label35
             // 
@@ -4781,27 +5008,27 @@
             this.label128.TabIndex = 68;
             this.label128.Text = "Average";
             // 
-            // southOffsetIMonitorTextBox
+            // eastOffsetIMonitorTextBox
             // 
-            this.southOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
-            this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
-            this.southOffsetIMonitorTextBox.ReadOnly = true;
-            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.southOffsetIMonitorTextBox.TabIndex = 47;
-            this.southOffsetIMonitorTextBox.Text = "0";
+            this.eastOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
+            this.eastOffsetIMonitorTextBox.Name = "eastOffsetIMonitorTextBox";
+            this.eastOffsetIMonitorTextBox.ReadOnly = true;
+            this.eastOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eastOffsetIMonitorTextBox.TabIndex = 47;
+            this.eastOffsetIMonitorTextBox.Text = "0";
             // 
-            // northOffsetIMonitorTextBox
+            // westOffsetIMonitorTextBox
             // 
-            this.northOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
-            this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
-            this.northOffsetIMonitorTextBox.ReadOnly = true;
-            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.northOffsetIMonitorTextBox.TabIndex = 49;
-            this.northOffsetIMonitorTextBox.Text = "0";
+            this.westOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
+            this.westOffsetIMonitorTextBox.Name = "westOffsetIMonitorTextBox";
+            this.westOffsetIMonitorTextBox.ReadOnly = true;
+            this.westOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.westOffsetIMonitorTextBox.TabIndex = 49;
+            this.westOffsetIMonitorTextBox.Text = "0";
             // 
             // label85
             // 
@@ -4810,7 +5037,7 @@
             this.label85.Name = "label85";
             this.label85.Size = new System.Drawing.Size(82, 28);
             this.label85.TabIndex = 66;
-            this.label85.Text = "South monitor (V/kHz)";
+            this.label85.Text = "East monitor (Hz/nA)";
             // 
             // label84
             // 
@@ -4819,23 +5046,23 @@
             this.label84.Name = "label84";
             this.label84.Size = new System.Drawing.Size(82, 28);
             this.label84.TabIndex = 65;
-            this.label84.Text = "North monitor (V/kHz)";
+            this.label84.Text = "West monitor (Hz/nA)";
             // 
-            // southV2FSlopeTextBox
+            // eastSlopeTextBox
             // 
-            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
-            this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
-            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.southV2FSlopeTextBox.TabIndex = 64;
-            this.southV2FSlopeTextBox.Text = "2000";
+            this.eastSlopeTextBox.Location = new System.Drawing.Point(405, 38);
+            this.eastSlopeTextBox.Name = "eastSlopeTextBox";
+            this.eastSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.eastSlopeTextBox.TabIndex = 64;
+            this.eastSlopeTextBox.Text = "2000";
             // 
-            // northV2FSlopeTextBox
+            // westSlopeTextBox
             // 
-            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
-            this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
-            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.northV2FSlopeTextBox.TabIndex = 63;
-            this.northV2FSlopeTextBox.Text = "2000";
+            this.westSlopeTextBox.Location = new System.Drawing.Point(405, 15);
+            this.westSlopeTextBox.Name = "westSlopeTextBox";
+            this.westSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.westSlopeTextBox.TabIndex = 63;
+            this.westSlopeTextBox.Text = "2000";
             // 
             // leakageMonitorSlopeTextBox
             // 
@@ -4856,7 +5083,7 @@
             // stopIMonitorPollButton
             // 
             this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(577, 50);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(903, 84);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
             this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopIMonitorPollButton.TabIndex = 55;
@@ -4866,23 +5093,23 @@
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(519, 16);
+            this.label63.Location = new System.Drawing.Point(821, 15);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(65, 23);
+            this.label63.Size = new System.Drawing.Size(104, 30);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
-            // iMonitorPollPeriod
+            // iMonitorPollPeriodInput
             // 
-            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
-            this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
-            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
-            this.iMonitorPollPeriod.TabIndex = 0;
-            this.iMonitorPollPeriod.Text = "100";
+            this.iMonitorPollPeriodInput.Location = new System.Drawing.Point(916, 41);
+            this.iMonitorPollPeriodInput.Name = "iMonitorPollPeriodInput";
+            this.iMonitorPollPeriodInput.Size = new System.Drawing.Size(64, 20);
+            this.iMonitorPollPeriodInput.TabIndex = 0;
+            this.iMonitorPollPeriodInput.Text = "100";
             // 
             // startIMonitorPollButton
             // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(491, 50);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(821, 84);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
             this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startIMonitorPollButton.TabIndex = 53;
@@ -4896,7 +5123,7 @@
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
             this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
             this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
-            this.IMonitorMeasurementLengthTextBox.Text = "200";
+            this.IMonitorMeasurementLengthTextBox.Text = "0.01";
             // 
             // label17
             // 
@@ -4904,7 +5131,7 @@
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(72, 23);
             this.label17.TabIndex = 50;
-            this.label17.Text = "N offset (Hz)";
+            this.label17.Text = "W offset (Hz)";
             // 
             // label16
             // 
@@ -4912,29 +5139,29 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(74, 23);
             this.label16.TabIndex = 48;
-            this.label16.Text = "S offset (Hz)";
+            this.label16.Text = "E offset (Hz)";
             // 
-            // southIMonitorTextBox
+            // eastIMonitorTextBox
             // 
-            this.southIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
-            this.southIMonitorTextBox.Name = "southIMonitorTextBox";
-            this.southIMonitorTextBox.ReadOnly = true;
-            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
-            this.southIMonitorTextBox.TabIndex = 45;
-            this.southIMonitorTextBox.Text = "0";
+            this.eastIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
+            this.eastIMonitorTextBox.Name = "eastIMonitorTextBox";
+            this.eastIMonitorTextBox.ReadOnly = true;
+            this.eastIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.eastIMonitorTextBox.TabIndex = 45;
+            this.eastIMonitorTextBox.Text = "0";
             // 
-            // northIMonitorTextBox
+            // westIMonitorTextBox
             // 
-            this.northIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
-            this.northIMonitorTextBox.Name = "northIMonitorTextBox";
-            this.northIMonitorTextBox.ReadOnly = true;
-            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
-            this.northIMonitorTextBox.TabIndex = 42;
-            this.northIMonitorTextBox.Text = "0";
+            this.westIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
+            this.westIMonitorTextBox.Name = "westIMonitorTextBox";
+            this.westIMonitorTextBox.ReadOnly = true;
+            this.westIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.westIMonitorTextBox.TabIndex = 42;
+            this.westIMonitorTextBox.Text = "0";
             // 
             // updateIMonitorButton
             // 
@@ -6204,6 +6431,76 @@
             this.tbStatus.Size = new System.Drawing.Size(192, 144);
             this.tbStatus.TabIndex = 6;
             // 
+            // ConstDegaussTextBox
+            // 
+            this.ConstDegaussTextBox.Location = new System.Drawing.Point(277, 64);
+            this.ConstDegaussTextBox.Name = "ConstDegaussTextBox";
+            this.ConstDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.ConstDegaussTextBox.TabIndex = 87;
+            this.ConstDegaussTextBox.Text = "1";
+            // 
+            // ExpDegaussTextBox
+            // 
+            this.ExpDegaussTextBox.Location = new System.Drawing.Point(277, 90);
+            this.ExpDegaussTextBox.Name = "ExpDegaussTextBox";
+            this.ExpDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.ExpDegaussTextBox.TabIndex = 88;
+            this.ExpDegaussTextBox.Text = "2";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(178, 41);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(93, 13);
+            this.label20.TabIndex = 89;
+            this.label20.Text = "1. Linear Ramp (s)";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(178, 67);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(75, 13);
+            this.label21.TabIndex = 90;
+            this.label21.Text = "2. Constant (s)";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(178, 93);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(85, 13);
+            this.label22.TabIndex = 91;
+            this.label22.Text = "3. Exp Decay (s)";
+            // 
+            // DegaussLED
+            // 
+            //this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.DegaussLED.Location = new System.Drawing.Point(282, 124);
+            //this.DegaussLED.Name = "DegaussLED";
+            //this.DegaussLED.Size = new System.Drawing.Size(32, 34);
+            //this.DegaussLED.TabIndex = 92;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(182, 133);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(92, 13);
+            this.label23.TabIndex = 93;
+            this.label23.Text = "Degauss Ongoing";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(205, 16);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(91, 13);
+            this.label24.TabIndex = 94;
+            this.label24.Text = "Envelope Timings";
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6291,6 +6588,11 @@
             this.gbDigitalOutputsPort0.ResumeLayout(false);
             this.gbDigitalOutputsPort0.PerformLayout();
             this.tabPageEfield.ResumeLayout(false);
+            this.tabPageEfield.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
@@ -6320,6 +6622,7 @@
             this.groupBoxRF.PerformLayout();
             this.groupBoxStatus.ResumeLayout(false);
             this.groupBoxStatus.PerformLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6673,32 +6976,32 @@
         private System.Windows.Forms.GroupBox groupBox7;
         public System.Windows.Forms.CheckBox logCurrentDataCheckBox;
         private System.Windows.Forms.Button clearIMonitorButton;
-        public System.Windows.Forms.TextBox southIMonitorErrorTextBox;
+        public System.Windows.Forms.TextBox eastIMonitorErrorTextBox;
         private System.Windows.Forms.Label label131;
         private System.Windows.Forms.Label label130;
-        public System.Windows.Forms.TextBox northIMonitorErrorTextBox;
+        public System.Windows.Forms.TextBox westIMonitorErrorTextBox;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Button zeroIMonitorButton;
         private System.Windows.Forms.Label label129;
         public System.Windows.Forms.TextBox currentMonitorSampleLengthTextBox;
         private System.Windows.Forms.Label label128;
-        public System.Windows.Forms.TextBox southOffsetIMonitorTextBox;
-        public System.Windows.Forms.TextBox northOffsetIMonitorTextBox;
+        public System.Windows.Forms.TextBox eastOffsetIMonitorTextBox;
+        public System.Windows.Forms.TextBox westOffsetIMonitorTextBox;
         private System.Windows.Forms.Label label85;
         private System.Windows.Forms.Label label84;
-        public System.Windows.Forms.TextBox southV2FSlopeTextBox;
-        public System.Windows.Forms.TextBox northV2FSlopeTextBox;
+        public System.Windows.Forms.TextBox eastSlopeTextBox;
+        public System.Windows.Forms.TextBox westSlopeTextBox;
         public System.Windows.Forms.TextBox leakageMonitorSlopeTextBox;
         private System.Windows.Forms.Label label64;
         public System.Windows.Forms.Button stopIMonitorPollButton;
         private System.Windows.Forms.Label label63;
-        public System.Windows.Forms.TextBox iMonitorPollPeriod;
+        public System.Windows.Forms.TextBox iMonitorPollPeriodInput;
         public System.Windows.Forms.Button startIMonitorPollButton;
         public System.Windows.Forms.TextBox IMonitorMeasurementLengthTextBox;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
-        public System.Windows.Forms.TextBox southIMonitorTextBox;
-        public System.Windows.Forms.TextBox northIMonitorTextBox;
+        public System.Windows.Forms.TextBox eastIMonitorTextBox;
+        public System.Windows.Forms.TextBox westIMonitorTextBox;
         public System.Windows.Forms.Button updateIMonitorButton;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
@@ -6826,5 +7129,28 @@
         public System.Windows.Forms.TextBox tbMWCHBFrequencySetpointDetection;
         private System.Windows.Forms.Label label20;
         public System.Windows.Forms.TextBox tbMWCHBFrequencyMonitorDetection;
+        //public NationalInstruments.UI.WindowsForms.Led rampLED;
+        //public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        private System.Windows.Forms.Label label499;
+        private System.Windows.Forms.Label label299;
+        public System.Windows.Forms.TextBox tbiMonitorPollPeriod;
+        public System.Windows.Forms.Button changePollPeriodButton;
+        public System.Windows.Forms.Button StartDegauss;
+        private System.Windows.Forms.GroupBox groupBox8;
+        public System.Windows.Forms.TextBox DegaussAmpTextBox;
+        public System.Windows.Forms.TextBox DegaussFreqTextBox;
+        private System.Windows.Forms.Label label899;
+        private System.Windows.Forms.Label label799;
+        private System.Windows.Forms.Label label699;
+        public System.Windows.Forms.TextBox ExpTimeConstantTextBox;
+        public System.Windows.Forms.TextBox LinearDegaussTextBox;
+        public System.Windows.Forms.TextBox ConstDegaussTextBox;
+        public System.Windows.Forms.TextBox ExpDegaussTextBox;
+        private System.Windows.Forms.Label label209;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        //public NationalInstruments.UI.WindowsForms.Led DegaussLED;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
     }
 }
