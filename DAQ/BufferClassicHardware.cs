@@ -95,6 +95,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
 
+            //map the analog output channels for the "UEDMHardwareControllerBoard" card
+            AddAnalogOutputChannel("cPlusPlate", UEDMHardwareControllerBoard + "/ao0");
+            AddAnalogOutputChannel("cMinusPlate", UEDMHardwareControllerBoard + "/ao1");
+            AddAnalogOutputChannel("DegaussCoil1", UEDMHardwareControllerBoard + "/ao2");
+
             // map the digital channels of the "UEDMHardwareControllerBoard" card
             AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
             AddDigitalOutputChannel("Port01", UEDMHardwareControllerBoard, 0, 1);
@@ -102,6 +107,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
+            AddDigitalOutputChannel("ePol", UEDMHardwareControllerBoard, 0, 5);
+            AddDigitalOutputChannel("notEPol", UEDMHardwareControllerBoard, 0, 6);
+            AddDigitalOutputChannel("eBleed", UEDMHardwareControllerBoard, 0, 7);
 
             //Counter Channels
             AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
@@ -197,6 +205,7 @@ namespace DAQ.HAL
             //These need to be activated for the phase lock
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
             //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
+
         }
 
         public override void ConnectApplications()

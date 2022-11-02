@@ -3,17 +3,30 @@ using DAQ.HAL;
 using Data;
 using NationalInstruments.DAQmx;
 using System;
+using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-//using NationalInstruments.VisaNS;
-using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Lifetime;
 using System.Threading;
 using System.Windows.Forms;
+using NationalInstruments;
+using NationalInstruments.DAQmx;
+using NationalInstruments.UI.WindowsForms;
+//using NationalInstruments.VisaNS;
+using System.Linq;
+using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using DAQ.HAL;
+using DAQ.Environment;
+using System.Diagnostics;
+using Data;
 
 namespace UEDMHardwareControl
 {
@@ -35,13 +48,17 @@ namespace UEDMHardwareControl
         //Convention for monitor to plate mapping:
         //west -> monitor1
         //east -> monitor2
-        private static double westVolt2FreqSlope = 2000;
-        private static double eastVolt2FreqSlope = 2000;
+        private static double westSlope = 2000;
+        private static double eastSlope = 2000;
         private static double westFreq2AmpSlope = 1;
         private static double eastFreq2AmpSlope = 1;
         private static double westOffset = 0;
         private static double eastOffset = 0;
         private static double currentMonitorMeasurementTime = 0.01;
+
+        //HV plates
+        private static double voltageOutputHigh = 7;
+        private static double voltageOutputLow = 0;
 
         #endregion
 
@@ -85,13 +102,14 @@ namespace UEDMHardwareControl
         //Leakage monitors
         //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
         //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
-        LeakageMonitor westLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westVolt2FreqSlope, westOffset, currentMonitorMeasurementTime);
-        LeakageMonitor eastLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastVolt2FreqSlope, eastOffset, currentMonitorMeasurementTime);
+        LeakageMonitor westLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westSlope, westOffset, currentMonitorMeasurementTime);
+        LeakageMonitor eastLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastSlope, eastOffset, currentMonitorMeasurementTime);
 
         Task cPlusOutputTask;
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
+        Task DegaussCoil1OutputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -196,6 +214,19 @@ namespace UEDMHardwareControl
             return task;
         }
 
+        private Task CreateAnalogOutputTask(string channel, double rangeLow, double rangeHigh)
+        {
+            Task task = new Task("EDMHCOut" + channel);
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
+                task,
+                rangeLow,
+                rangeHigh
+                );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
         private void SetAnalogOutput(Task task, double voltage)
         {
             AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
@@ -229,6 +260,7 @@ namespace UEDMHardwareControl
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
 
+            CreateDigitalTask("ePol");
             CreateDigitalTask("Port00");
             CreateDigitalTask("Port01");
             CreateDigitalTask("Port02");
@@ -241,14 +273,18 @@ namespace UEDMHardwareControl
 
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
+            cPlusOutputTask = CreateAnalogOutputTask("cPlusPlate", voltageOutputLow, voltageOutputHigh);
+            cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
+            DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
 
+            //set the degaussing channel to 0 V offset
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-
-            cPlusOutputTask = CreateAnalogOutputTask("cPlus");
 
             // make the control window
             window = new ControlWindow();
@@ -279,9 +315,11 @@ namespace UEDMHardwareControl
             // Check that the LakeShore relay is set correctly 
             InitializeCryoControl();
 
+            // Initiates the voltages to the supply
+            FieldsOff();
             // Set the leakage current monitor textboxes to the default values.
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
 
             // Set initial parameters on PT monitoring tab
@@ -318,6 +356,8 @@ namespace UEDMHardwareControl
         {
             // Request that the PT monitoring thread stop
             StopPTMonitorPoll();
+            StopIMonitorPoll();
+
         }
 
         #region Windows API
@@ -474,7 +514,7 @@ namespace UEDMHardwareControl
                     }
                 }
             }
-
+            
         }
 
         // Data
@@ -729,7 +769,7 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.tbCoolDownModeHowLongUntilHeatersTurnOff, ""); // Clear textbox
             }
         }
-        public void UpdateSourceModeStatus(string StatusUpdate, string mode)
+        public void UpdateSourceModeStatus(string StatusUpdate,string mode)
         {
             if (StatusUpdate != LastSourceModeStatusMessage)
             {
@@ -3769,6 +3809,409 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
         }
 
+        public bool ESwitchingEnabled
+        {
+            get
+            {
+                return !window.eDisableSwitching.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eDisableSwitching, value);
+            }
+        }
+
+        public bool EFieldEnabled
+        {
+            get
+            {
+                return window.eOnCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eOnCheck, value);
+            }
+        }
+
+        public bool EFieldPolarity
+        {
+            get
+            {
+                return window.ePolarityCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.ePolarityCheck, value);
+            }
+        }
+
+        public bool EBleedEnabled
+        {
+            get
+            {
+                return window.eBleedCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eBleedCheck, value);
+            }
+        }
+
+        public void EnableBleed(bool enabled)
+        {
+            window.SetCheckBoxCheckedStatus(window.eBleedCheck, enabled);
+        }
+
+        public double CPlusVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cPlusTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cPlusTextBox, value.ToString());
+            }
+        }
+
+        public double CMinusVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cMinusTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cMinusTextBox, value.ToString());
+            }
+        }
+
+        public double CPlusOffVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cPlusOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cPlusOffTextBox, value.ToString());
+            }
+        }
+
+        public double CMinusOffVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cMinusOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cMinusOffTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownTimeTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
+            }
+        }
+
+        public double EBleedTime
+        {
+            get
+            {
+                return Double.Parse(window.eBleedTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eBleedTimeTextBox, value.ToString());
+            }
+        }
+        public double ESwitchTime
+        {
+            get
+            {
+                return Double.Parse(window.eSwitchTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eSwitchTimeTextBox, value.ToString());
+            }
+        }
+        public double ERampUpTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpTimeTextBox, value.ToString());
+            }
+        }
+
+        public double EOvershootFactor
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootFactorTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootFactorTextBox, value.ToString());
+            }
+        }
+
+        public void SetEOvershootFactor(double val)
+        {
+            EOvershootFactor = val;
+        }
+
+        public double EOvershootHold
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootHoldTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootHoldTextBox, value.ToString());
+            }
+        }
+
+        public double ERampUpDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpDelayTextBox, value.ToString());
+            }
+        }
+
+        public bool EManualState
+        {
+            get
+            {
+                return window.eManualStateCheckBox.Checked;
+            }
+        }
+
+        public void FieldsOff()
+        {
+            CPlusOffVoltage = 0;
+            CMinusOffVoltage = 0;
+            RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+            CPlusVoltage = 0;
+            CMinusVoltage = 0;
+            //UpdateVoltages();
+            EFieldEnabled = false;
+        }
+
+        private bool switchingEfield;
+        public bool SwitchingEfields
+        {
+            get
+            {
+                return switchingEfield;
+            }
+            set
+            {
+                switchingEfield = value;
+                //SetDigitalLine("eSwitching", value);
+            }
+
+        }
+
+        public void SwitchE()
+        {
+            SwitchE(!EFieldPolarity);
+        }
+
+        public void SwitchEAndWait(bool state)
+        {
+            SwitchE(state);
+            switchThread.Join();
+        }
+
+        public void SwitchEAndWait()
+        {
+            SwitchEAndWait(!EFieldPolarity);
+        }
+
+
+        private bool newEPolarity;
+        private object switchingLock = new object();
+        private Thread switchThread;
+        public void SwitchE(bool state)
+        {
+            lock (switchingLock)
+            {
+                newEPolarity = state;
+                if (ESwitchingEnabled)
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                }
+                else
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorkerDummy));
+                }
+                window.EnableControl(window.switchEButton, false);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
+                switchThread.Start();
+            }
+        }
+
+        double kPositiveChargeMin = 2;
+        double kPositiveChargeMax = 20;
+        double kNegativeChargeMin = -2;
+        double kNegativeChargeMax = -20;
+
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
+        public void SwitchEWorker()
+        {
+
+            //bool startingSynthState = GreenSynthEnabled;
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
+                //switch off the synth
+                //GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                //window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down if on
+                if (EFieldEnabled)
+                {
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                }
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                // ramp back to the control point
+                RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+                                EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                //window.SetLED(window.switchingLED, false);
+
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>W+) then when switching into state 0
+                // (false) the West plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // West plate should see -ve current and the East +ve
+                    if ((lastWestCurrent < kNegativeChargeMin) && (lastWestCurrent > kNegativeChargeMax)
+                        && (lastEastCurrent > kPositiveChargeMin) && (lastEastCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // West should be +ve, East -ve
+                    if ((lastEastCurrent < kNegativeChargeMin) && (lastEastCurrent > kNegativeChargeMax)
+                        && (lastWestCurrent > kPositiveChargeMin) && (lastWestCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+            }
+            //GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+            
+        }
+
+        //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
+        public void SwitchEWorkerDummy()
+        {
+            lock (switchingLock)
+            {
+                Thread.Sleep((int)(1000 * ERampDownTime));
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                Thread.Sleep((int)(1000 * EBleedTime));
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                Thread.Sleep((int)(1000 * ERampUpTime));
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+            }
+            ESwitchDone();
+        }
+
+        private void activateEAlarm(bool newEPolarity)
+        {
+            window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState +
+                "; West current: " + lastWestCurrent + "; East current: " + lastEastCurrent + " .");
+        }
+
+        private void ESwitchDone()
+        {
+            SwitchingEfields = false;
+            window.EnableControl(window.switchEButton, true);
+            
+        }
+
+        // this function is, like many in this class, a little cheezy.
+        // it doesn't use update voltages, but rather writes direct to the analog outputs.
+        private void RampVoltages(double startPlus, double targetPlus, double startMinus,
+                                        double targetMinus, int numSteps, double rampTime)
+        {
+            double rampDelay = ((1000 * rampTime) / (double)numSteps);
+            double diffPlus = targetPlus - startPlus;
+            double diffMinus = targetMinus - startMinus;
+            //window.SetLED(window.rampLED, true);
+            for (int i = 1; i <= numSteps; i++)
+            {
+                double newPlus = startPlus + (i * (diffPlus / numSteps));
+                double newMinus = startMinus + (i * (diffMinus / numSteps));
+                SetAnalogOutput(cPlusOutputTask, newPlus);
+                SetAnalogOutput(cMinusOutputTask, newMinus);
+                // don't sleep if no ramp delay (as sleep imposes a delay even when called with
+                // sleep time = 0).
+                if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
+                // flash the ramp LED
+                //window.SetLED(window.rampLED, (i % 2) == 0);
+            }
+            //window.SetLED(window.rampLED, false);
+
+        }
         public double CPlusMonitorVoltage
         {
             get
@@ -3784,41 +4227,102 @@ namespace UEDMHardwareControl
                 return cMinusMonitorVoltage;
             }
         }
-        public double NorthCurrent
+        public double WestCurrent
         {
             get
             {
-                return lastNorthCurrent;
+                return lastWestCurrent;
             }
         }
 
-        public double SouthCurrent
+        public double EastCurrent
         {
             get
             {
-                return lastSouthCurrent;
+                return lastEastCurrent;
             }
         }
 
-        public double LastNorthCurrent
+        public double LastWestCurrent
         {
             get { return westLeakageMonitor.GetCurrent(); }
         }
 
-        public double LastSouthCurrent
+        public double LastEastCurrent
         {
             get { return eastLeakageMonitor.GetCurrent(); }
         }
 
+        // functions for applying voltage to the spellman supplies
+
+        // ** E-field asymmetry is currently disabled as not implemented consistently
+        // calculate the asymmetric field values
+        private void CalculateVoltages()
+        {
+            cPlusToWrite = CPlusVoltage;
+            cMinusToWrite = CMinusVoltage;
+            if (window.eFieldAsymmetryCheckBox.Checked)
+            {
+                if (EFieldPolarity == false)
+                {
+                    cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                    cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
+                }
+                else
+                {
+                    cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                }
+            }
+        }
+
+        private double cPlusToWrite;
+        private double cMinusToWrite;
+
+        public void UpdateVoltages()
+        {
+            //Checks if E field enable box is checked or not before setting the fields
+            double cPlusOff = CPlusOffVoltage;
+            double cMinusOff = CMinusOffVoltage;
+            if (EFieldEnabled)
+            {
+                CalculateVoltages();
+                RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampUpTime);
+                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
+                //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+                //SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+            }
+            else
+            {
+                SetAnalogOutput(cPlusOutputTask, cPlusOff);
+                SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                window.EnableControl(window.ePolarityCheck, true);
+                window.EnableControl(window.eBleedCheck, true);
+            }
+        }
+
+        public void SetEPolarity(bool state)
+        {
+            SetDigitalLine("ePol", state);
+            //SetDigitalLine("notEPol", !state);
+        }
+
+        public void SetBleed(bool enable)
+        {
+            //SetDigitalLine("eBleed", !enable);
+        }
         private double cPlusMonitorVoltage;
         private double cMinusMonitorVoltage;
-        private double lastNorthCurrent;
-        private double lastSouthCurrent;
+        private double lastWestCurrent;
+        private double lastEastCurrent;
         private double lastWestFrequency;
         private double lastEastFrequency;
         private Queue<double> nCurrentSamples = new Queue<double>();
         private Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
+
 
         public void PollVMonitor()
         {
@@ -3831,7 +4335,11 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.gMinusVMonitorTextBox, 
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
 
-            double cMonScale = 3000;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            double cMonScale = 3;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            double cSRate = 40;
+            int integersamples = 2;
+            //cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask, cSRate, integersamples);
+            //cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask, cSRate, integersamples);
             cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask);
             cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask);
         }
@@ -3847,23 +4355,23 @@ namespace UEDMHardwareControl
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             westFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
             eastFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
-            westVolt2FreqSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
-            eastVolt2FreqSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
+            westSlope = Double.Parse(window.westSlopeTextBox.Text);
+            eastSlope = Double.Parse(window.eastSlopeTextBox.Text);
 
             eastLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.F2ISlope = westFreq2AmpSlope;
             eastLeakageMonitor.F2ISlope = eastFreq2AmpSlope;
-            westLeakageMonitor.V2FSlope = westVolt2FreqSlope;
-            eastLeakageMonitor.V2FSlope = eastVolt2FreqSlope;
+            westLeakageMonitor.Slope = westSlope;
+            eastLeakageMonitor.Slope = eastSlope;
         }
 
         public void ReadIMonitor()
         {
             //double ground = ReadAnalogInput(groundedInputTask);
-            lastNorthCurrent = westLeakageMonitor.GetCurrent();
+            lastWestCurrent = westLeakageMonitor.GetCurrent();
             //ground = ReadAnalogInput(groundedInputTask);
-            lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            lastEastCurrent = eastLeakageMonitor.GetCurrent();
         }
 
         private string currentSeriesEast = "Leakage Current East";
@@ -3875,35 +4383,35 @@ namespace UEDMHardwareControl
             ReconfigureIMonitors();
 
             //sample the leakage current
-            //lastNorthCurrent = westLeakageMonitor.GetCurrent();
-            //lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            //lastWestCurrent = westLeakageMonitor.GetCurrent();
+            //lastEastCurrent = eastLeakageMonitor.GetCurrent();
 
 
             //This samples the frequency
             lastWestFrequency = westLeakageMonitor.getRawCount();
             lastEastFrequency = eastLeakageMonitor.getRawCount();
 
-            lastNorthCurrent = ((lastWestFrequency - westOffset) / westVolt2FreqSlope);
-            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastVolt2FreqSlope);
+            lastWestCurrent = ((lastWestFrequency - westOffset) / westSlope);
+            lastEastCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
 
             //plot the most recent samples
-            //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-            //            new double[] { lastNorthCurrent });
-            //window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
-            //                        new double[] { lastSouthCurrent });
+            //window.PlotYAppend(window.leakageGraph, window.WestLeakagePlot,
+            //            new double[] { lastWestCurrent });
+            //window.PlotYAppend(window.leakageGraph, window.EastLeakagePlot,
+            //                        new double[] { lastEastCurrent });
 
             //add date time
             localDate = DateTime.Now;
             //plot the most recent sample (UEDM Chart style)
 
-            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastSouthCurrent);
-            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastNorthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastSouthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastNorthCurrent);
+            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastEastCurrent);
+            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastWestCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastEastCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastWestCurrent);
 
             //add samples to Queues for averaging
-            nCurrentSamples.Enqueue(lastNorthCurrent);
-            sCurrentSamples.Enqueue(lastSouthCurrent);
+            nCurrentSamples.Enqueue(lastWestCurrent);
+            sCurrentSamples.Enqueue(lastEastCurrent);
 
             //drop samples when array is larger than the moving average sample length
             while (nCurrentSamples.Count > movingAverageSampleLength)
@@ -3919,10 +4427,10 @@ namespace UEDMHardwareControl
             double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
 
             //update text boxes
-            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
-            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
-            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+            window.SetTextBox(window.westIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.westIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.eastIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.eastIMonitorErrorTextBox, (sAvCurrErr).ToString());
         }
 
         public void ClearIMonitorAv()
@@ -3956,21 +4464,210 @@ namespace UEDMHardwareControl
             westOffset = westLeakageMonitor.Offset;
             eastOffset = eastLeakageMonitor.Offset;
 
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
+        }
+
+        public string csvDataLeakage = "";
+        public void SetLeakageCSVHeaderLine()
+        {
+            csvDataLeakage += "Date" + "," + "Time" + "," + "West Current" + "," + "West Frequency" + "," + "East Current" + "," + "East Frequency" + "," + "cPlusMonitorVoltage" + "," + "cMinusMonitorVoltage";
+        }
+        public void ClearLeakageFileSave()
+        {
+            leakageFileSave = "";
+        }
+
+        //RHYS DEGAUSS
+        public double DegaussFrequency
+        {
+            get
+            {
+                return Double.Parse(window.DegaussFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.DegaussAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussExpTimeConstant
+        {
+            get
+            {
+                return Double.Parse(window.ExpTimeConstantTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
+            }
+        }
+        public double LinearDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.LinearDegaussTextBox.Text)*1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
+            }
+        }
+        public double ConstDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
+            }
+        }
+        public double ExpDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
+            }
+        }
+
+        public double SineWave;
+        public double FullPulseT;
+        public double ExpOffsetT;
+        public double TimeNow;
+        public double FTicks;
+        public double ThreadStartTicks = 0;
+        public double ThreadDiff = 0;
+        public double SineOffset = -0.001;
+        public double DegaussVCalibrate = 1.0; //This is a conversion factor for the BOP supply.
+                                                //-10 -> +10V input equals full -12 -> +12A range of the BOP
+        public Stopwatch sw = new Stopwatch();
+
+        public void UpdateDegaussPulse()
+        {
+            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
+            if (TimeNow < LinearDegaussT)
+            {
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000)) + SineOffset;
+            }
+            else if (TimeNow < LinearDegaussT + ConstDegaussT)
+            {
+                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))+SineOffset;
+            }
+            else if (TimeNow < FullPulseT)
+            {
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))+SineOffset;
+            }
+            else
+            {
+                SineWave = SineOffset;
+            }
+            SetAnalogOutput(DegaussCoil1OutputTask, SineWave*DegaussVCalibrate);
+            //SetAnalogOutput(DegaussCoil1OutputTask, + SineOffset);
+        }
+
+        private Object DegaussLock;
+        private bool DegaussFlag;
+        private Thread DegaussPollThread;
+
+        internal void StartDegaussPoll()
+        {
+            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
+            DegaussLock = new Object();
+            DegaussFlag = false;
+            window.EnableControl(window.StartDegauss, false);
+            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
+            DegaussPollThread.Start();
+        }
+
+        private void DegaussPollWorker()
+        {
+            //window.SetLED(window.DegaussLED, true);
+            sw.Start();
+            ThreadStartTicks = sw.ElapsedTicks;
+
+            for (; ; )
+            {
+                FTicks = sw.ElapsedTicks;
+                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
+                if (TimeNow >= (FullPulseT))
+                {
+                    DegaussFlag = true;
+                }
+                lock (DegaussLock)
+                {
+                    UpdateDegaussPulse();
+                    if (DegaussFlag)
+                    {
+                        DegaussFlag = false;
+                        SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);             
+                        //window.SetLED(window.DegaussLED, false);
+                        window.EnableControl(window.StartDegauss, true);
+                        break;
+                    }           
+                }
+
+            }
+            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
+            //Console.WriteLine(ThreadDiff.ToString());
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+            sw.Stop();
+            sw.Reset();
         }
 
         private Thread iMonitorPollThread;
         private int iMonitorPollPeriod = 200;
+        public static int iMonitorPollPeriodLowerLimit = 100;
         private Object iMonitorLock;
         private bool iMonitorFlag;
+        public string leakageFileSave = "";
         internal void StartIMonitorPoll()
         {
+            if (window.logCurrentDataCheckBox.Checked)
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "CSV|*.csv";
+                saveFileDialog1.Title = "Save a CSV File";
+                saveFileDialog1.ShowDialog();
+                leakageFileSave += saveFileDialog1.FileName;
+                if (leakageFileSave != "")
+                {
+                    if (csvDataLeakage == "") SetLeakageCSVHeaderLine();
+                    StreamWriter w;
+                    w = new StreamWriter(leakageFileSave, true);
+                    w.WriteLine(csvDataLeakage);
+                    w.Close();
+                }
+                else
+                {
+                    window.logCurrentDataCheckBox.Checked = false;
+                }
+            }
+
             iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
             window.EnableControl(window.startIMonitorPollButton, false);
             window.EnableControl(window.updateIMonitorButton, false);
             window.EnableControl(window.stopIMonitorPollButton, true);
-            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+            window.EnableControl(window.logCurrentDataCheckBox, false);
+            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriodInput.Text);
             movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
             nCurrentSamples.Clear();
             sCurrentSamples.Clear();
@@ -3979,36 +4676,55 @@ namespace UEDMHardwareControl
             iMonitorPollThread.Start();
         }
 
+        public void UpdateIMonitorPollPeriodUsingUIValue()
+        {
+            int IMonitorPollPeriodParseValue;
+            if (Int32.TryParse(window.iMonitorPollPeriodInput.Text, out IMonitorPollPeriodParseValue))
+            {
+                if (IMonitorPollPeriodParseValue >= iMonitorPollPeriodLowerLimit)
+                {
+                    iMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    window.SetTextBox(window.tbiMonitorPollPeriod, iMonitorPollPeriod.ToString());
+                }
+                else MessageBox.Show("Poll period value too small. The leakage monitors can only be polled every " + iMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
         internal void StopIMonitorPoll()
         {
             iMonitorFlag = true;
             window.EnableControl(window.updateIMonitorButton, true);
+            window.EnableControl(window.logCurrentDataCheckBox, true);
+            ClearLeakageFileSave();
         }
         private void IMonitorPollWorker()
         {
-            for (; ; )
+            for (; ;)
             {
                 Thread.Sleep(iMonitorPollPeriod);
                 lock (iMonitorLock)
                 {
                     UpdateIMonitor();
                     UpdateVMonitorUI();
+
+                    if (iMonitorFlag)
+                    {
+                        iMonitorFlag = false;
+                        break;
+                    }
+
                     if (window.logCurrentDataCheckBox.Checked)
                     {
                         string folder = @" C:\Users\ultraedm\Desktop\Leakage_Current_Tests\";
                         string fileName = "Plate_Test_East_neg_West_pos_210602_01.csv";
                         string fullPath = folder + fileName;
                         StreamWriter w;
-                        w = new StreamWriter(fullPath, true);
-                        string output = String.Format("West, {0,5:N2}, {1,7:0.00}, East, {2,5:N2}, {3,7:0.00}, {4,8:T}, {4,8:D}, Plus, {5,5:N3}, Minus, {6,5:N3}",
-                          lastNorthCurrent, lastWestFrequency, lastSouthCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
-                        w.WriteLine(output);
+                        w = new StreamWriter(leakageFileSave, true);
+                        csvDataLeakage = String.Format("{4,8:D}, {4,8:T}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}",
+                            lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                        w.WriteLine(csvDataLeakage);
                         w.Close();
-                    }
-                    if (iMonitorFlag)
-                    {
-                        iMonitorFlag = false;
-                        break;
                     }
                 }
             }

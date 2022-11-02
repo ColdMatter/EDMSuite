@@ -361,6 +361,29 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
+        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void AddAlert(string alertText)
+        {
+            Invoke(new AddAlertDelegate(AddAlertHelper), new object[] { alertText });
+        }
+        private delegate void AddAlertDelegate(string alertText);
+        private void AddAlertHelper(string alertText)
+        {
+            BackColor = System.Drawing.Color.Red;
+            WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            tbStatus.AppendText(DateTime.Now.ToString() + " " + alertText + "\n");
+        }
 
         # endregion
 
@@ -685,8 +708,6 @@ namespace UEDMHardwareControl
         {
             controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
-
-        #endregion
 
         private void checkBoxMonitorPressureWhenHeating_CheckedChanged(object sender, EventArgs e)
         {
@@ -1148,7 +1169,7 @@ namespace UEDMHardwareControl
 
         private void updateFieldButton_Click(object sender, EventArgs e)
         {
-            controller.SetCPlus(Convert.ToDouble(cPlusTextBox.Text));
+            controller.UpdateVoltages();
         }
 
         private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
@@ -1421,5 +1442,46 @@ namespace UEDMHardwareControl
             controller.UpdateMWSynthTemperatureDetection();
         }
 
+        private void eOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
+        }
+
+        private void fieldsOffButton_Click(object sender, EventArgs e)
+        {
+            controller.FieldsOff();
+        }
+
+        private void switchEButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchE();
+        }
+
+        private void changePollPeriodButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitorPollPeriodUsingUIValue();
+        }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
+        }
+
+        private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //controller.VoltageSet();
+        }
+
+        private void StartDegauss_Click(object sender, EventArgs e)
+        {
+            controller.StartDegaussPoll();
+            //controller.UpdateDegaussPulse();
+        }
     }
 }
+#endregion
