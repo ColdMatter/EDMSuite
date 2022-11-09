@@ -274,6 +274,8 @@ namespace WavemeterLock
         internal void setPGain(string slavename, double g)
         {
             Laser laser = lasers[slavename];
+            double oldPGain = laser.PGain;
+            laser.summedWavelengthDifference = laser.summedWavelengthDifference * oldPGain / g; //Scale summed error to prevent overshoot
             laser.PGain = g;
         }
 
@@ -413,7 +415,7 @@ namespace WavemeterLock
                 {
                     if (lasers[slave].lState == Laser.LaserState.LOCKED)
                     {
-                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;
+                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;//
                     }
 
                 }
