@@ -274,14 +274,18 @@ namespace WavemeterLock
         internal void setPGain(string slavename, double g)
         {
             Laser laser = lasers[slavename];
-            double oldPGain = laser.PGain;
-            laser.summedWavelengthDifference = laser.summedWavelengthDifference * oldPGain / g; //Scale summed error to prevent overshoot
             laser.PGain = g;
+            
         }
 
         internal void setIGain(string slavename, double g)
         {
             Laser laser = lasers[slavename];
+            double oldIGain = laser.IGain;
+            if (g != 0)
+            {
+                laser.summedWavelengthDifference = laser.summedWavelengthDifference * oldIGain / g; //Scale summed error to prevent overshoot
+            }
             laser.IGain = g;
         }
 
