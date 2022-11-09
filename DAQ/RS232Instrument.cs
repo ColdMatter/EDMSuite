@@ -33,7 +33,7 @@ namespace DAQ.HAL
         {
             Connect(SerialTerminationMethod.HighestBit);
         }
-        protected void Connect(SerialTerminationMethod method)
+        protected void Connect(SerialTerminationMethod ReadTerminationMethod)
         {
             if (!Environs.Debug)
             {
@@ -45,7 +45,27 @@ namespace DAQ.HAL
                     serial.StopBits = StopBit;
                     serial.Parity = ParitySetting;
                     serial.FlowControl = FlowControl; 
-                    serial.ReadTermination = method;
+                    serial.ReadTermination = ReadTerminationMethod;
+                    serial.TerminationCharacter = TerminationCharacter;
+                }
+                connected = true;
+            }
+        }
+
+        protected void Connect(SerialTerminationMethod ReadTerminationMethod, SerialTerminationMethod WriteTerminationMethod)
+        {
+            if (!Environs.Debug)
+            {
+                if (!Environs.Debug)
+                {
+                    serial = new SerialSession(address);
+                    serial.BaudRate = BaudRate;
+                    serial.DataBits = DataBits;
+                    serial.StopBits = StopBit;
+                    serial.Parity = ParitySetting;
+                    serial.FlowControl = FlowControl;
+                    serial.ReadTermination = ReadTerminationMethod;
+                    serial.WriteTermination = WriteTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
                 }
                 connected = true;

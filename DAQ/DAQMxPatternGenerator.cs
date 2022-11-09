@@ -32,23 +32,24 @@ namespace DAQ.HAL
 		// use this method to output a PatternList to the whole PatternList generator
 		public void OutputPattern(UInt32[] pattern)
 		{
+            //////////////////////////
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
             //pgTask.Start();
-			//SleepOnePattern();
-            
-            OutputPattern(pattern, true);
+            //////////////////////////
+            writer.WriteMultiSamplePort(true, pattern);
+			SleepOnePattern();
 		}
 
         public void OutputPattern(UInt32[] pattern, bool sleep)
         {
+            writer.WriteMultiSamplePort(true, pattern);
+            //////////////////////////
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
             //pgTask.Start();
-            
-            writer.WriteMultiSamplePort(true, pattern);
-            //pgTask.Start();
-            if(sleep==true)
+            //////////////////////////
+            if (sleep==true)
                 SleepOnePattern();
         }
 
@@ -73,6 +74,7 @@ namespace DAQ.HAL
 			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
 			Thread.Sleep(sleepTime);
 
+            //////////////////////////
             //Sleep until Task is finished at which point taskRunning becomes false.
             //while (taskRunning == true) ;
 		}

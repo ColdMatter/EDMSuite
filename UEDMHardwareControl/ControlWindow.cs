@@ -361,6 +361,29 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
+        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void AddAlert(string alertText)
+        {
+            Invoke(new AddAlertDelegate(AddAlertHelper), new object[] { alertText });
+        }
+        private delegate void AddAlertDelegate(string alertText);
+        private void AddAlertHelper(string alertText)
+        {
+            BackColor = System.Drawing.Color.Red;
+            WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            tbStatus.AppendText(DateTime.Now.ToString() + " " + alertText + "\n");
+        }
 
         # endregion
 
@@ -685,8 +708,6 @@ namespace UEDMHardwareControl
         {
             controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
-
-        #endregion
 
         private void checkBoxMonitorPressureWhenHeating_CheckedChanged(object sender, EventArgs e)
         {
@@ -1148,7 +1169,7 @@ namespace UEDMHardwareControl
 
         private void updateFieldButton_Click(object sender, EventArgs e)
         {
-
+            controller.UpdateVoltages();
         }
 
         private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
@@ -1230,5 +1251,237 @@ namespace UEDMHardwareControl
         {
             controller.QueryMWPower(1);
         }
+
+        private void cbCHARFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(0, cbCHARFMuted.Checked);
+        }
+
+        private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(1, cbCHBRFMuted.Checked);
+        }
+
+        private void cbCHAPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(0, cbCHAPAPoweredOn.Checked);
+        }
+
+        private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
+        }
+
+        private void cbCHAPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(0, cbCHAPLLPoweredOn.Checked);
+        }
+
+        private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
+        }
+
+        private void btCHAFRMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHBRFMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHAPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHBPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHAPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btCHBPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btQueryMWSynthTemperature_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperature();
+        }
+
+        private void btQueryRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryRFFrequency();
+        }
+
+        private void btClearCoolDownModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbCoolDownModeStatus, "");
+        }
+
+        private void btClearWarmUpModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbWarmUpModeStatus, "");
+        }
+
+        private void btClearRefreshModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbRefreshModeStatus, "");
+        }
+
+        private void groupBoxWindfreaksynthhd_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxMWCHA_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btUpdateMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btUpdateMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btQueryMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(0);
+        }
+
+        private void btQueryMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(0);
+        }
+
+        private void btQueryMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(1);
+        }
+
+        private void btQueryMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(1);
+        }
+
+        private void cbCHARFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(0, cbCHARFMutedDetection.Checked);
+        }
+
+        private void cbCHBRFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(1, cbCHBRFMutedDetection.Checked);
+        }
+
+        private void cbCHAPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(0, cbCHAPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(1, cbCHBPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHAPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(0, cbCHAPLLPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(1, cbCHBPLLPoweredOnDetection.Checked);
+        }
+
+        private void btQueryMWSynthTemperatureDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperatureDetection();
+        }
+
+        private void eOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
+        }
+
+        private void fieldsOffButton_Click(object sender, EventArgs e)
+        {
+            controller.FieldsOff();
+        }
+
+        private void switchEButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchE();
+        }
+
+        private void changePollPeriodButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitorPollPeriodUsingUIValue();
+        }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
+        }
+
+        private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //controller.VoltageSet();
+        }
+
+        private void StartDegauss_Click(object sender, EventArgs e)
+        {
+            controller.StartDegaussPoll();
+            //controller.UpdateDegaussPulse();
+        }
     }
 }
+#endregion

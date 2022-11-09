@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DAQ.Environment;
+using DAQ.HAL;
+using Data;
+using NationalInstruments.DAQmx;
+using System;
 using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +18,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
+using NationalInstruments.UI.WindowsForms;
 //using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;
@@ -43,13 +48,17 @@ namespace UEDMHardwareControl
         //Convention for monitor to plate mapping:
         //west -> monitor1
         //east -> monitor2
-        private static double westVolt2FreqSlope = 2000;
-        private static double eastVolt2FreqSlope = 2000;
+        private static double westSlope = 2000;
+        private static double eastSlope = 2000;
         private static double westFreq2AmpSlope = 1;
         private static double eastFreq2AmpSlope = 1;
         private static double westOffset = 0;
         private static double eastOffset = 0;
         private static double currentMonitorMeasurementTime = 0.01;
+
+        //HV plates
+        private static double voltageOutputHigh = 7;
+        private static double voltageOutputLow = 0;
 
         #endregion
 
@@ -61,18 +70,24 @@ namespace UEDMHardwareControl
 
         private static string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
         private static string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
-        
+
         // Temperature sensors
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
         SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
 
-        // Microwave Synth
-        WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindthfreakSynthHD"];
+        // Microwave Synth for Optical pumping
+        WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakOpticalPumping"];
+
+        // Microwave Synth for Detection
+        WindfreakSynthHD microwaveSynthDetection = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakDetection"];
+
+        // RF DDS
+        AD9850DDS RFDDS = (AD9850DDS)Environs.Hardware.Instruments["AD9850DDS"];
 
         // Pressure gauges
         // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
         AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
-        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource"); 
+        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource");
         AgilentFRG720Gauge detectionPressureMonitor = new AgilentFRG720Gauge("Pressure gauge detection", "pressureGaugeDetection");
 
         // Misc analogue inputs
@@ -83,17 +98,18 @@ namespace UEDMHardwareControl
 
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
-        
+
         //Leakage monitors
         //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
         //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
-        LeakageMonitor westLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westVolt2FreqSlope, westOffset, currentMonitorMeasurementTime);
-        LeakageMonitor eastLeakageMonitor =  new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastVolt2FreqSlope, eastOffset, currentMonitorMeasurementTime);
-        
+        LeakageMonitor westLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westSlope, westOffset, currentMonitorMeasurementTime);
+        LeakageMonitor eastLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastSlope, eastOffset, currentMonitorMeasurementTime);
+
         Task cPlusOutputTask;
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
+        Task DegaussCoil1OutputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -185,6 +201,38 @@ namespace UEDMHardwareControl
             return val;
         }
 
+        private Task CreateAnalogOutputTask(string channel)
+        {
+            Task task = new Task("EDMHCOut" + channel);
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
+                task,
+                c.RangeLow,
+                c.RangeHigh
+                );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
+        private Task CreateAnalogOutputTask(string channel, double rangeLow, double rangeHigh)
+        {
+            Task task = new Task("EDMHCOut" + channel);
+            AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
+            c.AddToTask(
+                task,
+                rangeLow,
+                rangeHigh
+                );
+            task.Control(TaskAction.Verify);
+            return task;
+        }
+
+        private void SetAnalogOutput(Task task, double voltage)
+        {
+            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(task.Stream);
+            writer.WriteSingleSample(true, voltage);
+            task.Control(TaskAction.Unreserve);
+        }
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -194,7 +242,7 @@ namespace UEDMHardwareControl
             return null;
         }
 
-        public void SetComboBox(ComboBox combobox,string str)
+        public void SetComboBox(ComboBox combobox, string str)
         {
             int index = window.GetComboBoxTextIndex(combobox, str);
             window.SetComboBoxSelectedIndex(combobox, index);
@@ -212,6 +260,7 @@ namespace UEDMHardwareControl
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
 
+            CreateDigitalTask("ePol");
             CreateDigitalTask("Port00");
             CreateDigitalTask("Port01");
             CreateDigitalTask("Port02");
@@ -224,14 +273,18 @@ namespace UEDMHardwareControl
 
             // analog outputs
             //bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
+            cPlusOutputTask = CreateAnalogOutputTask("cPlusPlate", voltageOutputLow, voltageOutputHigh);
+            cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
+            DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            
+
+            //set the degaussing channel to 0 V offset
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
-
-
 
             // make the control window
             window = new ControlWindow();
@@ -262,9 +315,11 @@ namespace UEDMHardwareControl
             // Check that the LakeShore relay is set correctly 
             InitializeCryoControl();
 
+            // Initiates the voltages to the supply
+            FieldsOff();
             // Set the leakage current monitor textboxes to the default values.
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, currentMonitorMeasurementTime.ToString());
 
             // Set initial parameters on PT monitoring tab
@@ -272,6 +327,7 @@ namespace UEDMHardwareControl
             UpdatePTMonitorPollPeriod(initialPTPollPeriod);
             UpdateGaugesCorrectionFactors(initialSourceGaugeCorrectionFactor, initialBeamlineGaugeCorrectionFactor, initialDetectionGaugeCorrectionFactor);
 
+            // Set initial parameters on Optical pumping tab
             // Set comboboxes
             SetComboBox(window.comboBoxMWCHASetpointUnit, "GHz");
             SetComboBox(window.comboBoxMWCHAIncrementUnit, "MHz");
@@ -279,6 +335,19 @@ namespace UEDMHardwareControl
             SetComboBox(window.comboBoxMWCHBIncrementUnit, "MHz");
             SetComboBox(window.comboBoxRFSetpointUnit, "MHz");
             SetComboBox(window.comboBoxRFIncrementUnit, "kHz");
+            // Set checkboxes
+            QueryRFMute(0);
+            QueryRFMute(1);
+            QueryPAPowerOn(0);
+            QueryPAPowerOn(1);
+            QueryPLLPowerOn(0);
+            QueryPLLPowerOn(1);
+            // Set textboxes
+            QueryMWPower(0);
+            QueryMWPower(1);
+            QueryMWFrequency(0);
+            QueryMWFrequency(1);
+
         }
 
         #endregion
@@ -287,6 +356,8 @@ namespace UEDMHardwareControl
         {
             // Request that the PT monitoring thread stop
             StopPTMonitorPoll();
+            StopIMonitorPoll();
+
         }
 
         #region Windows API
@@ -338,7 +409,7 @@ namespace UEDMHardwareControl
                 }
                 else
                 {
-                    MessageBox.Show("ResetShutdown Failed","Resetting Windows API shutdown block",MessageBoxButtons.OKCancel);
+                    MessageBox.Show("ResetShutdown Failed", "Resetting Windows API shutdown block", MessageBoxButtons.OKCancel);
                 }
             }
             catch (Exception ext)
@@ -461,7 +532,7 @@ namespace UEDMHardwareControl
                 {
                     // Using stream writer class the chart points are exported. Create an instance of the stream writer class.
                     System.IO.StreamWriter file = new System.IO.StreamWriter(saveFileDialog1.FileName);
-                    
+
                     // Write the datapoints into the file.
                     file.WriteLine(csvContent);
 
@@ -640,7 +711,7 @@ namespace UEDMHardwareControl
 
         private void UpdateStatus(string str)
         {
-            if(str!= LastStatusMessage)
+            if (str != LastStatusMessage)
             {
                 window.AppendTextBox(window.tbStatus, str + Environment.NewLine);
                 //LastStatusMessage = str;
@@ -910,9 +981,9 @@ namespace UEDMHardwareControl
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure values. This is subtracted from the poll period so that the loop is executed at the proper frequency.
                 if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that source mode be cancelled
-                
+
                 UpdateUITimeLeftIndicators();
-                
+
                 if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                 {
                     if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
@@ -955,7 +1026,7 @@ namespace UEDMHardwareControl
                 }
                 //EnableCryoDigitalControl(false); // Turn off cryo
                 SetCryoState(false);
-                UpdateSourceModeStatus("Starting warmup - cryo turned off (" + DateTime.Now.ToString("F",CultureInfo.CreateSpecificCulture("en-UK")) + ")");
+                UpdateSourceModeStatus("Starting warmup - cryo turned off (" + DateTime.Now.ToString("F", CultureInfo.CreateSpecificCulture("en-UK")) + ")");
                 UpdatePTMonitorPollPeriod(WarmupPTPollPeriod);
 
                 // Monitor the pressure as the source heats up. 
@@ -1022,8 +1093,8 @@ namespace UEDMHardwareControl
                         UpdateSourceModeHeaterSetpoints(WarmUpTemperatureSetpoint); // Set heater setpoints to user defined value
                         SourceModeTemperatureSetpointUpdated = false; //Reset the flag
                     }
-                    
-                    
+
+
                     // Check is the source pressure is within safe limits for the turbomolecular pump:
                     if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
                     {
@@ -1041,7 +1112,7 @@ namespace UEDMHardwareControl
                             EnableSourceModeHeaters(false); // Disable heaters
                         }
                     }
-                    
+
 
                     UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
                     Thread.Sleep(SourceModeWaitPeriod); // Iterate the loop according to this time interval
@@ -1154,7 +1225,7 @@ namespace UEDMHardwareControl
         {
             string mode = "Refresh";
             UpdateSourceModeStatus("Refresh mode constants updated. Here are the current settings:", mode);
-            UpdateSourceModeStatus("TurbomolecularPumpUpperPressureLimit = "+ SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit.ToString("E3")+" mbar", mode);
+            UpdateSourceModeStatus("TurbomolecularPumpUpperPressureLimit = " + SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit.ToString("E3") + " mbar", mode);
             UpdateSourceModeStatus("GasEvaporationCycleTemperatureMax = " + SourceRefreshConstants.GasEvaporationCycleTemperatureMax.ToString("E3") + " K", mode);
             UpdateSourceModeStatus("DesorbingPTPollPeriod = " + SourceRefreshConstants.DesorbingPTPollPeriod.ToString() + " ms", mode);
             UpdateSourceModeStatus("CryoStoppingPressure = " + SourceRefreshConstants.CryoStoppingPressure.ToString("E3") + " mbar", mode);
@@ -1193,7 +1264,7 @@ namespace UEDMHardwareControl
             else UpdateSourceModeStatus("Refresh mode options opened, but not changed.", "Refresh");
             changeRefreshModeOptionsDialog.Dispose();
         }
-        
+
 
         public static class SourceRefreshConstants
         {
@@ -1212,7 +1283,7 @@ namespace UEDMHardwareControl
             public static Int32 WarmupPTPollPeriod = 1000;                // milli seconds
 
             // Constants once warm up temperature has been reached
-            public static Int32 SourceModeWaitPTPollPeriod = 10000;       // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 15000;       // milli seconds
 
 
             // Cool down
@@ -1397,7 +1468,7 @@ namespace UEDMHardwareControl
             public static Int32 DesorbingPTPollPeriod = 100;                     // milli seconds
             public static Double CryoStoppingPressure = 0.00005;                 // 5e-5 mbar
             public static Int32 WarmupPTPollPeriod = 1000;                       // milli seconds
-            public static Int32 SourceModeWaitPTPollPeriod = 10000;              // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 15000;              // milli seconds
         }
 
         internal void StartWarmUpMode()
@@ -1560,7 +1631,7 @@ namespace UEDMHardwareControl
             public static Int32 WarmupPTPollPeriod = 3000;                       // milli seconds
 
             // Wait at desired temperature constants
-            public static Int32 SourceModeWaitPTPollPeriod = 10000;              // milli seconds
+            public static Int32 SourceModeWaitPTPollPeriod = 15000;              // milli seconds
 
             // Cool down constants
             public static Int32 CoolDownPTPollPeriod = 15000;                    // milli seconds
@@ -1939,7 +2010,7 @@ namespace UEDMHardwareControl
         public void UpdatePressureChartRollingPeriod()
         {
             int PressureChartRollingPeriodParsedValue;
-            if (Int32.TryParse(window.tbRollingPressureChartTimeAxisPeriod.Text, out PressureChartRollingPeriodParsedValue)) 
+            if (Int32.TryParse(window.tbRollingPressureChartTimeAxisPeriod.Text, out PressureChartRollingPeriodParsedValue))
             {
                 if (PTMonitorPollPeriod <= PressureChartRollingPeriodParsedValue * 1000)  //*1000 to convert seconds to ms
                 {
@@ -1983,10 +2054,10 @@ namespace UEDMHardwareControl
         {
             SourceGaugeCorrectionFactor = SourceCorrection; // Update source gauge correction factor
             window.SetTextBox(window.tbSourceGaugeCorrectionFactorMonitor, SourceGaugeCorrectionFactor.ToString());// Update the monitor value
-            
+
             BeamlineGaugeCorrectionFactor = BeamlineCorrection; // Update beamline gauge correction factor
             window.SetTextBox(window.tbBeamlineGaugeCorrectionFactorMonitor, BeamlineGaugeCorrectionFactor.ToString());// Update the monitor value
-            
+
             DetectionGaugeCorrectionFactor = DetectorCorrection; // Update Detection gauge correction factor
             window.SetTextBox(window.tbDetectionGaugeCorrectionFactorMonitor, DetectionGaugeCorrectionFactor.ToString());// Update the monitor value
         }
@@ -2047,7 +2118,7 @@ namespace UEDMHardwareControl
             double temporaryTemperatureVariable;
             if (Double.TryParse(TemperatureString, out temporaryTemperatureVariable))
             {
-                if(SeriesName == S1TSeries)
+                if (SeriesName == S1TSeries)
                 {
                     lastS1Temp = temporaryTemperatureVariable;
                 }
@@ -2330,7 +2401,15 @@ namespace UEDMHardwareControl
                 PTMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                 window.SetTextBox(window.tbTandPPollPeriodMonitor, pollPeriod.ToString());
             }
-            else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+            else
+            {
+                // Present user with error message
+                string Title = "User input exception";
+                string Msg = "Poll period value too small. The temperature and pressure can only " +
+                "be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limitin" +
+                "g factor is communication with the LakeShore temperature controller.";
+                MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+            }
         }
 
         public void UpdatePTPlottingArrays(DateTime MeasurementDateTimeStamp)
@@ -2346,7 +2425,7 @@ namespace UEDMHardwareControl
                 BeamlinePressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastBeamlinePressure;
                 DetectionPressurePlottingArray[NumberOfPTMeasurementsInQueue] = lastDetectionPressure;
                 DateTimePlottingArray[NumberOfPTMeasurementsInQueue] = MeasurementDateTimeStamp;
-                
+
                 ++NumberOfPTMeasurementsInQueue; // Count the number of measurements added to the plotting queue
             }
         }
@@ -2433,7 +2512,7 @@ namespace UEDMHardwareControl
 
                 // Update the data plotting queue
                 UpdatePTPlottingArrays(MeasurementDateTimeStamp);
-                    
+
                 if (PTMonitorFlag)
                 {
                     PTMonitorFlag = false;
@@ -2446,11 +2525,12 @@ namespace UEDMHardwareControl
                 csvDataTemperatureAndPressure += csvLine;
 
                 // Enable/disable the heaters that are controlled using NI card digital outputs (as opposed to the self-contained LakeShore 336 heaters/sensors)
-                ControlHeaters(); 
+                ControlHeaters();
 
-                // Calculate and subtract from the poll period the amount of time taken to perform the contents of this loop (so that the temperature and pressure are polled at the correct frequency)
+                // Subtract from the poll period the amount of time taken to perform the contents of this loop (so that the temperature and pressure are polled at the correct frequency)
                 watch.Stop(); // Stop the stopwatch that was started at the start of the for loop
-                int ThreadWaitPeriod = PTMonitorPollPeriod - Convert.ToInt32(watch.ElapsedMilliseconds); // Subtract the time elapsed from the user defined poll period
+                int TimeElapsedMeasuringPT = Convert.ToInt32(watch.ElapsedMilliseconds);
+                int ThreadWaitPeriod = PTMonitorPollPeriod - TimeElapsedMeasuringPT; // Subtract the time elapsed from the user defined poll period
                 if (ThreadWaitPeriod < 0)// If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
                 {
                     if (!StatusRepeatFlag)
@@ -2466,8 +2546,34 @@ namespace UEDMHardwareControl
                     StatusRepeatFlag = false;
                 }
 
-                //UpdateStatus(Convert.ToString(watch.ElapsedMilliseconds)); // Debugging
-                Thread.Sleep(ThreadWaitPeriod); // Wait until the next temperature/pressure measurements are to be made
+                //Thread.Sleep(ThreadWaitPeriod);
+                var ThreadPollSteppingWatch = System.Diagnostics.Stopwatch.StartNew();
+                int ThreadPollPeriodStep = 75;
+                int StartingPTMonitorPollPeriod = PTMonitorPollPeriod;
+                int ii = 1;
+                while (((ii * ThreadPollPeriodStep / PTMonitorPollPeriodLowerLimit) + 2) * PTMonitorPollPeriodLowerLimit < ThreadWaitPeriod)
+                {
+                    Thread.Sleep(ThreadPollPeriodStep);
+                    ii++;
+                    if (PTMonitorPollPeriod != StartingPTMonitorPollPeriod)
+                    {
+                        // Calculate updated thread wait
+                        ThreadWaitPeriod = PTMonitorPollPeriod - TimeElapsedMeasuringPT;
+                        StartingPTMonitorPollPeriod = PTMonitorPollPeriod;
+                    }
+                }
+                ThreadPollSteppingWatch.Stop();
+                int TimeElapsedSteppingPollPeriod = Convert.ToInt32(ThreadPollSteppingWatch.ElapsedMilliseconds);
+                int RemainingTimeToSleep = ThreadWaitPeriod - TimeElapsedSteppingPollPeriod;
+                if (RemainingTimeToSleep > 0)
+                {
+                    Thread.Sleep(RemainingTimeToSleep);
+                }
+                else
+                {
+                    //string StatusUpdate = "Poll period exceeded";
+                    //UpdateStatus(StatusUpdate);
+                }
             }
             PTMonitorPollEnableUIElements(false);
         }
@@ -2476,7 +2582,28 @@ namespace UEDMHardwareControl
             int PlottingQueueLength = 0;
             for (; ; )
             {
-                Thread.Sleep(PTMonitorPollPeriod); // Wait until more data is taken
+                //Thread.Sleep(PTMonitorPollPeriod); // Wait until more data is taken
+                var ThreadPollSteppingWatch = System.Diagnostics.Stopwatch.StartNew();
+                int ThreadPollPeriodStep = 75;
+                int StartingPTMonitorPollPeriod = PTMonitorPollPeriod;
+                int ii = 1;
+                while (((ii * ThreadPollPeriodStep / PTMonitorPollPeriodLowerLimit) + 2) * PTMonitorPollPeriodLowerLimit < PTMonitorPollPeriod)
+                {
+                    Thread.Sleep(ThreadPollPeriodStep);
+                    ii++;
+                }
+                ThreadPollSteppingWatch.Stop();
+                int TimeElapsedSteppingPollPeriod = Convert.ToInt32(ThreadPollSteppingWatch.ElapsedMilliseconds);
+                int RemainingTimeToSleep = PTMonitorPollPeriod - TimeElapsedSteppingPollPeriod;
+                if (RemainingTimeToSleep > 0)
+                {
+                    Thread.Sleep(RemainingTimeToSleep);
+                }
+                else
+                {
+                    //string StatusUpdate = "Plotting Poll period exceeded";
+                    //UpdateStatus(StatusUpdate);
+                }
 
                 lock (PTPlottingBufferLock) // Use lock to prevent new measurements being added to the plotting queue whilst the plotting function is in operation.
                 {
@@ -2508,7 +2635,7 @@ namespace UEDMHardwareControl
                         Array.Copy(BeamlinePressurePlottingArray, sourceIndex, BeamlinePressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         Array.Copy(DetectionPressurePlottingArray, sourceIndex, DetectionPressurePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
                         Array.Copy(DateTimePlottingArray, sourceIndex, DateTimePlottingArrayBuffer, destinationIndex, lengthOfDataToCopy);
-                        
+
                         // Clear the temperature/pressure plotting arrays and release the lock so that measurements can continue whilst plotting is performed.
                         int sourceClearIndex = Convert.ToInt32(sourceIndex);
                         int lengthOfDataToClear = Convert.ToInt32(lengthOfDataToCopy);
@@ -2611,8 +2738,38 @@ namespace UEDMHardwareControl
                     }
                 }
             }
+            else // Update the y-axis to account for the change in displayed series
+            {
+                if (chart == window.chart1) // Pressure chart
+                {
+                    bool RollingChartEnabled = window.GetCheckBoxCheckedStatus(window.cbEnablePressureChartRollingTimeAxis);
+                    if (RollingChartEnabled)
+                    {
+                        UpdatePressureChartRollingYAxis();
+                    }
+                    else
+                    {
+                        window.SetChartYAxisAuto(chart);
+                    }
+                }
+                else
+                {
+                    if (chart == window.chart2) // Temperature chart
+                    {
+                        bool RollingChartEnabled = window.GetCheckBoxCheckedStatus(window.cbEnableTemperatureChartRollingTimeAxis);
+                        if (RollingChartEnabled)
+                        {
+                            UpdateTemperatureChartRollingYAxis();
+                        }
+                        else
+                        {
+                            window.SetChartYAxisAuto(chart);
+                        }
 
-               
+                    }
+                }
+            }
+
         }
 
         /// <summary>
@@ -2987,7 +3144,7 @@ namespace UEDMHardwareControl
             {
                 HeaterOutput = tempController.QueryHeaterRange(Output);
             }
-            
+
             string trimResponse = HeaterOutput.Trim();// Trim in case there are unexpected white spaces.
             string status = trimResponse.Substring(0, 1); // Take the first character of the string.
             if (status == "1") HeatersEnabled = true; // Heater Output is on
@@ -3059,7 +3216,7 @@ namespace UEDMHardwareControl
                 AI13Measurement = aiData[2];
                 AI14Measurement = aiData[3];
                 AI15Measurement = aiData[4];
-                
+
                 // Record data in arrays for plotting in a different thread
                 AI11[NumberOfAIMeasurementsInQueue] = AI11Measurement;
                 AI12[NumberOfAIMeasurementsInQueue] = AI12Measurement;
@@ -3193,7 +3350,7 @@ namespace UEDMHardwareControl
         }
         public void ClearAllAIChartSeries()
         {
-            foreach (string SeriesName in AISeries) 
+            foreach (string SeriesName in AISeries)
             {
                 ClearChartSeriesData(window.chart4, SeriesName);
             }
@@ -3241,7 +3398,7 @@ namespace UEDMHardwareControl
 
                 double outputResistance = KnownResistor * ((Vin / Voltage) - 1);
 
-                return outputResistance; 
+                return outputResistance;
             }
             public static double[] OhmMeterSeriesConversion(double[] Voltages)
             {
@@ -3268,7 +3425,7 @@ namespace UEDMHardwareControl
         public void EnableConvertedAISeriesWorker(string AnalogueInputName, string AIConversionMethodName)
         {
             SetAIConversionStatusTextBox("");
-            
+
             int ConversionMethodIndex = Array.IndexOf(AIConversionMethodsNames, AIConversionMethodName);
             string Units = AIConversionUnits[ConversionMethodIndex];
 
@@ -3321,9 +3478,9 @@ namespace UEDMHardwareControl
         {
             double[] AIYValues;
             DateTime[] AIXValues;
-           
+
             int pointsCount = window.chart4.Series[AnalogueInputSeriesName].Points.Count; // Number of points in the series
-            AIYValues = new double[pointsCount]; 
+            AIYValues = new double[pointsCount];
             AIXValues = new DateTime[pointsCount];
 
             for (int i = 0; i < pointsCount; ++i) // Annoyingly, there doesn't seem to be a way to simply get all of the YValues using one function. One must loop over the datapoints individually and extract the information that you want.
@@ -3420,7 +3577,7 @@ namespace UEDMHardwareControl
         {
             window.SetTextBox(window.tbAIConversionStatus, StatusUpdate);
         }
-        
+
         private Thread AnalogueInputsMonitorPollThread;
         private Thread AnalogueInputsPlottingThread;
         private int AnalogueInputsMonitorPollPeriod = 1000;
@@ -3430,12 +3587,12 @@ namespace UEDMHardwareControl
         private Object AnalogueInputsMonitorLock;
         private string[] AISeries = { "AI11", "AI12", "AI13", "AI14", "AI15" }; // Names of series used in analogue inputs chart
         private string[] AIConversionSeries = { "AI11 Converted", "AI12 Converted", "AI13 Converted", "AI14 Converted", "AI15 Converted" }; // Names of converted series used in analogue inputs chart
-        private bool[] AIConversionEnabled = { false, false, false, false, false}; // Flags to indicate whether or not the user has requested that an analogue input be converted using some pre-defined method
-        private string[] CurrentAIConversionMethods = { "None", "None", "None", "None", "None"};
+        private bool[] AIConversionEnabled = { false, false, false, false, false }; // Flags to indicate whether or not the user has requested that an analogue input be converted using some pre-defined method
+        private string[] CurrentAIConversionMethods = { "None", "None", "None", "None", "None" };
         private string[] AIConversionMethodsNames = { "None", "Ohm Meter" }; // Names of methods that can be applied to the AI data
-        private string[] AIConversionUnits = { "(V)", "(Ohms)"}; // Units of converted values
+        private string[] AIConversionUnits = { "(V)", "(Ohms)" }; // Units of converted values
         public string csvDataAnalogueInputs = "";
-        
+
         // Plotting variables
         private readonly object AIPlottingBufferLock = new object();
         private readonly object AIChartSeriesLock = new object();
@@ -3467,21 +3624,21 @@ namespace UEDMHardwareControl
             AnalogueInputsMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
             AnalogueInputsPlottingThread = new Thread(new ThreadStart(AnalogueInputsPlottingWorker));
             AnalogueInputsPlottingThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            
+
             AnalogueInputsMonitorPollPeriod = Int32.Parse(window.tbAnalogueMonitoringPollPeriod.Text);
             EnableAnalogueInputsMonitoringUIControls(true); // Enable/disable UI elements that the user should/shouldn't interact with whilst this process in running
             AnalogueInputsMonitorLock = new Object();
             AnalogueInputsMonitorFlag = false;
             AnalogueInputsPlottingFlag = false;
             SetAnalogueInputsCSVHeaderLine();
-            
+
             // Start monitoring and plotting threads
             AnalogueInputsMonitorPollThread.Start();
             AnalogueInputsPlottingThread.Start();
         }
         internal void StopAnalogueInputsMonitorPoll()
         {
-            
+
 
             UEDMSavePlotDataDialog saveAIDataDialog = new UEDMSavePlotDataDialog("Save data message", "Would you like to save the analogue inputs data now? \n\nThe data will not be cleared.");
             saveAIDataDialog.ShowDialog();
@@ -3652,6 +3809,409 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
         }
 
+        public bool ESwitchingEnabled
+        {
+            get
+            {
+                return !window.eDisableSwitching.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eDisableSwitching, value);
+            }
+        }
+
+        public bool EFieldEnabled
+        {
+            get
+            {
+                return window.eOnCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eOnCheck, value);
+            }
+        }
+
+        public bool EFieldPolarity
+        {
+            get
+            {
+                return window.ePolarityCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.ePolarityCheck, value);
+            }
+        }
+
+        public bool EBleedEnabled
+        {
+            get
+            {
+                return window.eBleedCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eBleedCheck, value);
+            }
+        }
+
+        public void EnableBleed(bool enabled)
+        {
+            window.SetCheckBoxCheckedStatus(window.eBleedCheck, enabled);
+        }
+
+        public double CPlusVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cPlusTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cPlusTextBox, value.ToString());
+            }
+        }
+
+        public double CMinusVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cMinusTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cMinusTextBox, value.ToString());
+            }
+        }
+
+        public double CPlusOffVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cPlusOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cPlusOffTextBox, value.ToString());
+            }
+        }
+
+        public double CMinusOffVoltage
+        {
+            get
+            {
+                return Double.Parse(window.cMinusOffTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.cMinusOffTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownTimeTextBox, value.ToString());
+            }
+        }
+
+        public double ERampDownDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampDownDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
+            }
+        }
+
+        public double EBleedTime
+        {
+            get
+            {
+                return Double.Parse(window.eBleedTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eBleedTimeTextBox, value.ToString());
+            }
+        }
+        public double ESwitchTime
+        {
+            get
+            {
+                return Double.Parse(window.eSwitchTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eSwitchTimeTextBox, value.ToString());
+            }
+        }
+        public double ERampUpTime
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpTimeTextBox, value.ToString());
+            }
+        }
+
+        public double EOvershootFactor
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootFactorTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootFactorTextBox, value.ToString());
+            }
+        }
+
+        public void SetEOvershootFactor(double val)
+        {
+            EOvershootFactor = val;
+        }
+
+        public double EOvershootHold
+        {
+            get
+            {
+                return Double.Parse(window.eOvershootHoldTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eOvershootHoldTextBox, value.ToString());
+            }
+        }
+
+        public double ERampUpDelay
+        {
+            get
+            {
+                return Double.Parse(window.eRampUpDelayTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.eRampUpDelayTextBox, value.ToString());
+            }
+        }
+
+        public bool EManualState
+        {
+            get
+            {
+                return window.eManualStateCheckBox.Checked;
+            }
+        }
+
+        public void FieldsOff()
+        {
+            CPlusOffVoltage = 0;
+            CMinusOffVoltage = 0;
+            RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+            CPlusVoltage = 0;
+            CMinusVoltage = 0;
+            //UpdateVoltages();
+            EFieldEnabled = false;
+        }
+
+        private bool switchingEfield;
+        public bool SwitchingEfields
+        {
+            get
+            {
+                return switchingEfield;
+            }
+            set
+            {
+                switchingEfield = value;
+                //SetDigitalLine("eSwitching", value);
+            }
+
+        }
+
+        public void SwitchE()
+        {
+            SwitchE(!EFieldPolarity);
+        }
+
+        public void SwitchEAndWait(bool state)
+        {
+            SwitchE(state);
+            switchThread.Join();
+        }
+
+        public void SwitchEAndWait()
+        {
+            SwitchEAndWait(!EFieldPolarity);
+        }
+
+
+        private bool newEPolarity;
+        private object switchingLock = new object();
+        private Thread switchThread;
+        public void SwitchE(bool state)
+        {
+            lock (switchingLock)
+            {
+                newEPolarity = state;
+                if (ESwitchingEnabled)
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                }
+                else
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorkerDummy));
+                }
+                window.EnableControl(window.switchEButton, false);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
+                switchThread.Start();
+            }
+        }
+
+        double kPositiveChargeMin = 2;
+        double kPositiveChargeMax = 20;
+        double kNegativeChargeMin = -2;
+        double kNegativeChargeMax = -20;
+
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
+        public void SwitchEWorker()
+        {
+
+            //bool startingSynthState = GreenSynthEnabled;
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
+                //switch off the synth
+                //GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                //window.SetLED(window.switchingLED, true);
+                // Add any asymmetry
+                // ramp the field down if on
+                if (EFieldEnabled)
+                {
+                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime);
+                }
+                // set as disabled
+                EFieldEnabled = false;
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                CalculateVoltages();
+                // ramp the field up to the overshoot voltage
+                RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
+                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime);
+                // impose the overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                // ramp back to the control point
+                RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+                                EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
+                // set as enabled
+                EFieldEnabled = true;
+                // monitor the tail of the charging current to make sure the switches are
+                // working as they should (see spring2009 fiasco!)
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+                //window.SetLED(window.switchingLED, false);
+
+                // check that the switch was ok (i.e. that the relays really switched)
+                // If the manual state is true (0=>W+) then when switching into state 0
+                // (false) the West plate should be at positive potential. So there should
+                // be a positive current flowing.
+                if (newEPolarity == EManualState) // if only C had a logical xor operator!
+                {
+                    // if the machine state is the same as the new switch state then the
+                    // West plate should see -ve current and the East +ve
+                    if ((lastWestCurrent < kNegativeChargeMin) && (lastWestCurrent > kNegativeChargeMax)
+                        && (lastEastCurrent > kPositiveChargeMin) && (lastEastCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+                else
+                {
+                    // West should be +ve, East -ve
+                    if ((lastEastCurrent < kNegativeChargeMin) && (lastEastCurrent > kNegativeChargeMax)
+                        && (lastWestCurrent > kPositiveChargeMin) && (lastWestCurrent < kPositiveChargeMax))
+                    { }
+                    //else activateEAlarm(newEPolarity);
+                }
+            }
+            //GreenSynthEnabled = startingSynthState;
+            ESwitchDone();
+            
+        }
+
+        //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
+        public void SwitchEWorkerDummy()
+        {
+            lock (switchingLock)
+            {
+                Thread.Sleep((int)(1000 * ERampDownTime));
+                Thread.Sleep((int)(1000 * ERampDownDelay));
+                Thread.Sleep((int)(1000 * EBleedTime));
+                Thread.Sleep((int)(1000 * ESwitchTime));
+                Thread.Sleep((int)(1000 * ERampUpTime));
+                Thread.Sleep((int)(1000 * EOvershootHold));
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+            }
+            ESwitchDone();
+        }
+
+        private void activateEAlarm(bool newEPolarity)
+        {
+            window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState +
+                "; West current: " + lastWestCurrent + "; East current: " + lastEastCurrent + " .");
+        }
+
+        private void ESwitchDone()
+        {
+            SwitchingEfields = false;
+            window.EnableControl(window.switchEButton, true);
+            
+        }
+
+        // this function is, like many in this class, a little cheezy.
+        // it doesn't use update voltages, but rather writes direct to the analog outputs.
+        private void RampVoltages(double startPlus, double targetPlus, double startMinus,
+                                        double targetMinus, int numSteps, double rampTime)
+        {
+            double rampDelay = ((1000 * rampTime) / (double)numSteps);
+            double diffPlus = targetPlus - startPlus;
+            double diffMinus = targetMinus - startMinus;
+            //window.SetLED(window.rampLED, true);
+            for (int i = 1; i <= numSteps; i++)
+            {
+                double newPlus = startPlus + (i * (diffPlus / numSteps));
+                double newMinus = startMinus + (i * (diffMinus / numSteps));
+                SetAnalogOutput(cPlusOutputTask, newPlus);
+                SetAnalogOutput(cMinusOutputTask, newMinus);
+                // don't sleep if no ramp delay (as sleep imposes a delay even when called with
+                // sleep time = 0).
+                if (rampTime != 0.0) Thread.Sleep((int)rampDelay);
+                // flash the ramp LED
+                //window.SetLED(window.rampLED, (i % 2) == 0);
+            }
+            //window.SetLED(window.rampLED, false);
+
+        }
         public double CPlusMonitorVoltage
         {
             get
@@ -3667,41 +4227,102 @@ namespace UEDMHardwareControl
                 return cMinusMonitorVoltage;
             }
         }
-        public double NorthCurrent
+        public double WestCurrent
         {
             get
             {
-                return lastNorthCurrent;
+                return lastWestCurrent;
             }
         }
 
-        public double SouthCurrent
+        public double EastCurrent
         {
             get
             {
-                return lastSouthCurrent;
+                return lastEastCurrent;
             }
         }
 
-        public double LastNorthCurrent
+        public double LastWestCurrent
         {
             get { return westLeakageMonitor.GetCurrent(); }
         }
 
-        public double LastSouthCurrent
+        public double LastEastCurrent
         {
             get { return eastLeakageMonitor.GetCurrent(); }
         }
 
+        // functions for applying voltage to the spellman supplies
+
+        // ** E-field asymmetry is currently disabled as not implemented consistently
+        // calculate the asymmetric field values
+        private void CalculateVoltages()
+        {
+            cPlusToWrite = CPlusVoltage;
+            cMinusToWrite = CMinusVoltage;
+            if (window.eFieldAsymmetryCheckBox.Checked)
+            {
+                if (EFieldPolarity == false)
+                {
+                    cPlusToWrite += Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                    cPlusToWrite += Double.Parse(window.zeroPlusBoostTextBox.Text);
+                }
+                else
+                {
+                    cMinusToWrite -= Double.Parse(window.zeroPlusOneMinusBoostTextBox.Text);
+                }
+            }
+        }
+
+        private double cPlusToWrite;
+        private double cMinusToWrite;
+
+        public void UpdateVoltages()
+        {
+            //Checks if E field enable box is checked or not before setting the fields
+            double cPlusOff = CPlusOffVoltage;
+            double cMinusOff = CMinusOffVoltage;
+            if (EFieldEnabled)
+            {
+                CalculateVoltages();
+                RampVoltages(CPlusOffVoltage, CPlusVoltage, CMinusOffVoltage, CMinusVoltage, 20, ERampUpTime);
+                //SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                //SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+                window.EnableControl(window.ePolarityCheck, false);
+                window.EnableControl(window.eBleedCheck, false);
+                //SetAnalogOutput(cPlusOutputTask, CPlusVoltage);
+                //SetAnalogOutput(cMinusOutputTask, CMinusVoltage);
+            }
+            else
+            {
+                SetAnalogOutput(cPlusOutputTask, cPlusOff);
+                SetAnalogOutput(cMinusOutputTask, cMinusOff);
+                window.EnableControl(window.ePolarityCheck, true);
+                window.EnableControl(window.eBleedCheck, true);
+            }
+        }
+
+        public void SetEPolarity(bool state)
+        {
+            SetDigitalLine("ePol", state);
+            //SetDigitalLine("notEPol", !state);
+        }
+
+        public void SetBleed(bool enable)
+        {
+            //SetDigitalLine("eBleed", !enable);
+        }
         private double cPlusMonitorVoltage;
         private double cMinusMonitorVoltage;
-        private double lastNorthCurrent;
-        private double lastSouthCurrent;
+        private double lastWestCurrent;
+        private double lastEastCurrent;
         private double lastWestFrequency;
         private double lastEastFrequency;
         private Queue<double> nCurrentSamples = new Queue<double>();
         private Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
+
 
         public void PollVMonitor()
         {
@@ -3714,7 +4335,11 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.gMinusVMonitorTextBox, 
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
 
-            double cMonScale = 3000;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            double cMonScale = 3;//This converts the reading from the 1:10 V output to the full 30 kV range of the spellman PS (in volts)
+            double cSRate = 40;
+            int integersamples = 2;
+            //cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask, cSRate, integersamples);
+            //cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask, cSRate, integersamples);
             cPlusMonitorVoltage = cMonScale * ReadAnalogInput(cPlusMonitorInputTask);
             cMinusMonitorVoltage = cMonScale * ReadAnalogInput(cMinusMonitorInputTask);
         }
@@ -3730,63 +4355,63 @@ namespace UEDMHardwareControl
             currentMonitorMeasurementTime = Double.Parse(window.IMonitorMeasurementLengthTextBox.Text);
             westFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
             eastFreq2AmpSlope = Double.Parse(window.leakageMonitorSlopeTextBox.Text);
-            westVolt2FreqSlope = Double.Parse(window.northV2FSlopeTextBox.Text);
-            eastVolt2FreqSlope = Double.Parse(window.southV2FSlopeTextBox.Text);
+            westSlope = Double.Parse(window.westSlopeTextBox.Text);
+            eastSlope = Double.Parse(window.eastSlopeTextBox.Text);
 
             eastLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.MeasurementTime = currentMonitorMeasurementTime;
             westLeakageMonitor.F2ISlope = westFreq2AmpSlope;
             eastLeakageMonitor.F2ISlope = eastFreq2AmpSlope;
-            westLeakageMonitor.V2FSlope = westVolt2FreqSlope;
-            eastLeakageMonitor.V2FSlope = eastVolt2FreqSlope;
+            westLeakageMonitor.Slope = westSlope;
+            eastLeakageMonitor.Slope = eastSlope;
         }
 
         public void ReadIMonitor()
         {
             //double ground = ReadAnalogInput(groundedInputTask);
-            lastNorthCurrent = westLeakageMonitor.GetCurrent();
+            lastWestCurrent = westLeakageMonitor.GetCurrent();
             //ground = ReadAnalogInput(groundedInputTask);
-            lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            lastEastCurrent = eastLeakageMonitor.GetCurrent();
         }
 
         private string currentSeriesEast = "Leakage Current East";
         private string currentSeriesWest = "Leakage Current West";
         private DateTime localDate;
-       
+
         public void UpdateIMonitor()
         {
             ReconfigureIMonitors();
 
             //sample the leakage current
-            //lastNorthCurrent = westLeakageMonitor.GetCurrent();
-            //lastSouthCurrent = eastLeakageMonitor.GetCurrent();
+            //lastWestCurrent = westLeakageMonitor.GetCurrent();
+            //lastEastCurrent = eastLeakageMonitor.GetCurrent();
 
 
             //This samples the frequency
             lastWestFrequency = westLeakageMonitor.getRawCount();
             lastEastFrequency = eastLeakageMonitor.getRawCount();
 
-            lastNorthCurrent = ((lastWestFrequency - westOffset) / westVolt2FreqSlope);
-            lastSouthCurrent = ((lastEastFrequency - eastOffset) / eastVolt2FreqSlope);
+            lastWestCurrent = ((lastWestFrequency - westOffset) / westSlope);
+            lastEastCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
 
             //plot the most recent samples
-            //window.PlotYAppend(window.leakageGraph, window.northLeakagePlot,
-            //            new double[] { lastNorthCurrent });
-            //window.PlotYAppend(window.leakageGraph, window.southLeakagePlot,
-            //                        new double[] { lastSouthCurrent });
+            //window.PlotYAppend(window.leakageGraph, window.WestLeakagePlot,
+            //            new double[] { lastWestCurrent });
+            //window.PlotYAppend(window.leakageGraph, window.EastLeakagePlot,
+            //                        new double[] { lastEastCurrent });
 
             //add date time
             localDate = DateTime.Now;
             //plot the most recent sample (UEDM Chart style)
 
-            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastSouthCurrent);
-            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastNorthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastSouthCurrent);
-            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastNorthCurrent);
+            //window.chart5.Series[currentSeriesEast].Points.AddXY(localDate, lastEastCurrent);
+            //window.chart5.Series[currentSeriesWest].Points.AddXY(localDate, lastWestCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesEast, localDate, lastEastCurrent);
+            window.AddPointToIChart(window.chart5, currentSeriesWest, localDate, lastWestCurrent);
 
             //add samples to Queues for averaging
-            nCurrentSamples.Enqueue(lastNorthCurrent);
-            sCurrentSamples.Enqueue(lastSouthCurrent);
+            nCurrentSamples.Enqueue(lastWestCurrent);
+            sCurrentSamples.Enqueue(lastEastCurrent);
 
             //drop samples when array is larger than the moving average sample length
             while (nCurrentSamples.Count > movingAverageSampleLength)
@@ -3802,10 +4427,10 @@ namespace UEDMHardwareControl
             double sAvCurrErr = Math.Sqrt((sCurrentSamples.Sum(d => Math.Pow(d - sAvCurr, 2))) / (sCurrentSamples.Count() - 1)) / (Math.Sqrt(sCurrentSamples.Count()));
 
             //update text boxes
-            window.SetTextBox(window.northIMonitorTextBox, (nAvCurr).ToString());
-            window.SetTextBox(window.northIMonitorErrorTextBox, (nAvCurrErr).ToString());
-            window.SetTextBox(window.southIMonitorTextBox, (sAvCurr).ToString());
-            window.SetTextBox(window.southIMonitorErrorTextBox, (sAvCurrErr).ToString());
+            window.SetTextBox(window.westIMonitorTextBox, (nAvCurr).ToString());
+            window.SetTextBox(window.westIMonitorErrorTextBox, (nAvCurrErr).ToString());
+            window.SetTextBox(window.eastIMonitorTextBox, (sAvCurr).ToString());
+            window.SetTextBox(window.eastIMonitorErrorTextBox, (sAvCurrErr).ToString());
         }
 
         public void ClearIMonitorAv()
@@ -3819,7 +4444,7 @@ namespace UEDMHardwareControl
         {
             ClearChartSeriesData(window.chart5, currentSeriesEast);
             ClearChartSeriesData(window.chart5, currentSeriesWest);
-            
+
         }
 
         public void RescaleIMonitorChart()
@@ -3839,21 +4464,210 @@ namespace UEDMHardwareControl
             westOffset = westLeakageMonitor.Offset;
             eastOffset = eastLeakageMonitor.Offset;
 
-            window.SetTextBox(window.southOffsetIMonitorTextBox, eastOffset.ToString());
-            window.SetTextBox(window.northOffsetIMonitorTextBox, westOffset.ToString());
+            window.SetTextBox(window.eastOffsetIMonitorTextBox, eastOffset.ToString());
+            window.SetTextBox(window.westOffsetIMonitorTextBox, westOffset.ToString());
+        }
+
+        public string csvDataLeakage = "";
+        public void SetLeakageCSVHeaderLine()
+        {
+            csvDataLeakage += "Date" + "," + "Time" + "," + "West Current" + "," + "West Frequency" + "," + "East Current" + "," + "East Frequency" + "," + "cPlusMonitorVoltage" + "," + "cMinusMonitorVoltage";
+        }
+        public void ClearLeakageFileSave()
+        {
+            leakageFileSave = "";
+        }
+
+        //RHYS DEGAUSS
+        public double DegaussFrequency
+        {
+            get
+            {
+                return Double.Parse(window.DegaussFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.DegaussAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussExpTimeConstant
+        {
+            get
+            {
+                return Double.Parse(window.ExpTimeConstantTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
+            }
+        }
+        public double LinearDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.LinearDegaussTextBox.Text)*1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
+            }
+        }
+        public double ConstDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
+            }
+        }
+        public double ExpDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
+            }
+        }
+
+        public double SineWave;
+        public double FullPulseT;
+        public double ExpOffsetT;
+        public double TimeNow;
+        public double FTicks;
+        public double ThreadStartTicks = 0;
+        public double ThreadDiff = 0;
+        public double SineOffset = -0.001;
+        public double DegaussVCalibrate = 1.0; //This is a conversion factor for the BOP supply.
+                                                //-10 -> +10V input equals full -12 -> +12A range of the BOP
+        public Stopwatch sw = new Stopwatch();
+
+        public void UpdateDegaussPulse()
+        {
+            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
+            if (TimeNow < LinearDegaussT)
+            {
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000)) + SineOffset;
+            }
+            else if (TimeNow < LinearDegaussT + ConstDegaussT)
+            {
+                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))+SineOffset;
+            }
+            else if (TimeNow < FullPulseT)
+            {
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))+SineOffset;
+            }
+            else
+            {
+                SineWave = SineOffset;
+            }
+            SetAnalogOutput(DegaussCoil1OutputTask, SineWave*DegaussVCalibrate);
+            //SetAnalogOutput(DegaussCoil1OutputTask, + SineOffset);
+        }
+
+        private Object DegaussLock;
+        private bool DegaussFlag;
+        private Thread DegaussPollThread;
+
+        internal void StartDegaussPoll()
+        {
+            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
+            DegaussLock = new Object();
+            DegaussFlag = false;
+            window.EnableControl(window.StartDegauss, false);
+            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
+            DegaussPollThread.Start();
+        }
+
+        private void DegaussPollWorker()
+        {
+            //window.SetLED(window.DegaussLED, true);
+            sw.Start();
+            ThreadStartTicks = sw.ElapsedTicks;
+
+            for (; ; )
+            {
+                FTicks = sw.ElapsedTicks;
+                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
+                if (TimeNow >= (FullPulseT))
+                {
+                    DegaussFlag = true;
+                }
+                lock (DegaussLock)
+                {
+                    UpdateDegaussPulse();
+                    if (DegaussFlag)
+                    {
+                        DegaussFlag = false;
+                        SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);             
+                        //window.SetLED(window.DegaussLED, false);
+                        window.EnableControl(window.StartDegauss, true);
+                        break;
+                    }           
+                }
+
+            }
+            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
+            //Console.WriteLine(ThreadDiff.ToString());
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+            sw.Stop();
+            sw.Reset();
         }
 
         private Thread iMonitorPollThread;
         private int iMonitorPollPeriod = 200;
+        public static int iMonitorPollPeriodLowerLimit = 100;
         private Object iMonitorLock;
         private bool iMonitorFlag;
+        public string leakageFileSave = "";
         internal void StartIMonitorPoll()
         {
+            if (window.logCurrentDataCheckBox.Checked)
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "CSV|*.csv";
+                saveFileDialog1.Title = "Save a CSV File";
+                saveFileDialog1.ShowDialog();
+                leakageFileSave += saveFileDialog1.FileName;
+                if (leakageFileSave != "")
+                {
+                    if (csvDataLeakage == "") SetLeakageCSVHeaderLine();
+                    StreamWriter w;
+                    w = new StreamWriter(leakageFileSave, true);
+                    w.WriteLine(csvDataLeakage);
+                    w.Close();
+                }
+                else
+                {
+                    window.logCurrentDataCheckBox.Checked = false;
+                }
+            }
+
             iMonitorPollThread = new Thread(new ThreadStart(IMonitorPollWorker));
             window.EnableControl(window.startIMonitorPollButton, false);
             window.EnableControl(window.updateIMonitorButton, false);
             window.EnableControl(window.stopIMonitorPollButton, true);
-            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriod.Text);
+            window.EnableControl(window.logCurrentDataCheckBox, false);
+            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriodInput.Text);
             movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
             nCurrentSamples.Clear();
             sCurrentSamples.Clear();
@@ -3862,41 +4676,65 @@ namespace UEDMHardwareControl
             iMonitorPollThread.Start();
         }
 
+        public void UpdateIMonitorPollPeriodUsingUIValue()
+        {
+            int IMonitorPollPeriodParseValue;
+            if (Int32.TryParse(window.iMonitorPollPeriodInput.Text, out IMonitorPollPeriodParseValue))
+            {
+                if (IMonitorPollPeriodParseValue >= iMonitorPollPeriodLowerLimit)
+                {
+                    iMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    window.SetTextBox(window.tbiMonitorPollPeriod, iMonitorPollPeriod.ToString());
+                }
+                else MessageBox.Show("Poll period value too small. The leakage monitors can only be polled every " + iMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
         internal void StopIMonitorPoll()
         {
             iMonitorFlag = true;
             window.EnableControl(window.updateIMonitorButton, true);
+            window.EnableControl(window.logCurrentDataCheckBox, true);
+            ClearLeakageFileSave();
         }
         private void IMonitorPollWorker()
         {
-            for (; ; )
+            for (; ;)
             {
                 Thread.Sleep(iMonitorPollPeriod);
                 lock (iMonitorLock)
                 {
                     UpdateIMonitor();
                     UpdateVMonitorUI();
+
+                    if (iMonitorFlag)
+                    {
+                        iMonitorFlag = false;
+                        break;
+                    }
+
                     if (window.logCurrentDataCheckBox.Checked)
                     {
                         string folder = @" C:\Users\ultraedm\Desktop\Leakage_Current_Tests\";
                         string fileName = "Plate_Test_East_neg_West_pos_210602_01.csv";
                         string fullPath = folder + fileName;
                         StreamWriter w;
-                        w = new StreamWriter(fullPath, true);
-                        string output = String.Format("West, {0,5:N2}, {1,7:0.00}, East, {2,5:N2}, {3,7:0.00}, {4,8:T}, {4,8:D}, Plus, {5,5:N3}, Minus, {6,5:N3}",
-                          lastNorthCurrent, lastWestFrequency, lastSouthCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
-                        w.WriteLine(output);
-                        w.Close();                    
-                    }
-                    if (iMonitorFlag)
-                    {
-                        iMonitorFlag = false;
-                        break;
+                        w = new StreamWriter(leakageFileSave, true);
+                        csvDataLeakage = String.Format("{4,8:D}, {4,8:T}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}",
+                            lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                        w.WriteLine(csvDataLeakage);
+                        w.Close();
                     }
                 }
             }
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
+        }
+
+        public void SetCPlus(double v)
+        {
+            SetAnalogOutput(cPlusOutputTask, v);
         }
         #endregion
 
@@ -3910,26 +4748,25 @@ namespace UEDMHardwareControl
 
         public void UpdateRFFrequencyUsingUIInput()
         {
-            int MetricPrefix = GetMWMetricPrefix(window.comboBoxRFSetpointUnit);
             if (Double.TryParse(window.tbRFFrequency.Text, out double RFFrequencyParseValue))
             {
-                if (RFFrequencyParseValue * MetricPrefix >= RFFrequencyMin)
+                if (RFFrequencyParseValue * 1000000 >= RFFrequencyMin)
                 {
-                    if (RFFrequencyParseValue * MetricPrefix <= RFFrequencyMax)
+                    if (RFFrequencyParseValue * 1000000 <= RFFrequencyMax)
                     {
-                        UpdateRFFrequency(Convert.ToInt32(RFFrequencyParseValue * MetricPrefix));
+                        UpdateRFFrequency(Convert.ToInt32(RFFrequencyParseValue * 1000000));
                     }
                     else MessageBox.Show("RF frequency too large. The maximum frequency the DDS can provide is " + RFFrequencyMax + " Hz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is "+ RFFrequencyMin+" Hz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is " + RFFrequencyMin + " Hz.", "User input exception", MessageBoxButtons.OK);
             }
-            else MessageBox.Show("Unable to parse string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+            else MessageBox.Show("Unable to parse string. Ensure that a double has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
         public void UpdateRFFrequency(int Frequency)
         {
             RFFrequency = Frequency;
-            double displayFrequency = (double)Frequency / Math.Pow(1000, 2); // displaying in MHz
+            double displayFrequency = (double)Frequency / Math.Pow(10, 6); // displaying in MHz
             window.SetTextBox(window.tbRFFrequencyMonitor, displayFrequency.ToString());
             // function from DDS object (RFFrequency)
         }
@@ -3939,9 +4776,9 @@ namespace UEDMHardwareControl
             int MetricPrefix = GetMWMetricPrefix(window.comboBoxRFIncrementUnit);
             if (Double.TryParse(window.tbRFFrequencyIncrement.Text, out double RFFrequencyIncrementParseValue))
             {
-                if ((RFFrequencyIncrementParseValue* MetricPrefix) + RFFrequency >= RFFrequencyMin)
+                if ((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency >= RFFrequencyMin)
                 {
-                    if ((RFFrequencyIncrementParseValue* MetricPrefix) + RFFrequency <= RFFrequencyMax)
+                    if ((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency <= RFFrequencyMax)
                     {
                         UpdateRFFrequency(Convert.ToInt32((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency));
                     }
@@ -3951,9 +4788,30 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+        public void QueryRFFrequency()
+        {
+            // Query the frequency
+            string frequency = RFDDS.QueryFrequency(); 
+            if (Int32.TryParse(frequency,out RFFrequency))
+            {
+                double RFFrequencyMHz = RFFrequency / Math.Pow(10, 6);
+                window.SetTextBox(window.tbRFFrequencyMonitor, RFFrequencyMHz.ToString());
+            }
+            else
+            {
+                window.SetTextBox(window.tbRFStatus, frequency);
+            }
+        }
 
 
         // MW
+
+        // Microwave Windfreak SynthHD temperature
+        public void UpdateMWSynthTemperature()
+        {
+            double SynthTemperature = microwaveSynth.QueryTemperature();
+            window.SetTextBox(window.tbMWSynthTemperatureMonitor, SynthTemperature.ToString());
+        }
 
         public int CurrentChannel; // channel A = 0, channel B = 1
 
@@ -3983,11 +4841,12 @@ namespace UEDMHardwareControl
             return prefix;
         }
 
+        // Microwave frequency constants
         public long MWCHAFrequency; // Hz
         public long MWCHBFrequency; // Hz
         public long MWFrequencyMin = 10000000; // Windfreak synth provides sine wave of minimum frequency 10 MHz
         public long MWFrequencyMax = 15000000000; // Windfreak synth provides sine wave of maximum frequency 15,000 MHz
-
+        // Microwave frequency functions
         public void UpdateMWFrequency(int channel, long Frequency)
         {
             TextBox FrequencyMonitorTextBox;
@@ -4016,7 +4875,6 @@ namespace UEDMHardwareControl
             double displayFrequency = (double)Frequency / Math.Pow(1000, 3); // displaying in GHz
             window.SetTextBox(FrequencyMonitorTextBox, displayFrequency.ToString());
         }
-
         public void UpdateMWFrequencyUsingUIInput(int channel)
         {
             TextBox FrequencySetpointTextBox;
@@ -4049,7 +4907,6 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
-
         public void IncrementMWFrequencyUsingUIInput(int channel)
         {
             TextBox FrequencyIncrementTextBox;
@@ -4110,13 +4967,13 @@ namespace UEDMHardwareControl
 
         }
 
+        // Microwave power constants
         public double MWCHAPower; // dBm
         public double MWCHBPower; // dBm
         public long MWPowerMin = -30; // Windfreak synth provides sine wave of minimum power -30 dBm
         public long MWPowerMax = 20; // Windfreak synth provides sine wave of maximum power 20 dBm. However, this varies depending on the frequency.
         public double MWPowerResolution = 0.1; // Windfreak power output can be adjusted in increments of 0.1 dBm.
-
-       
+        // Microwave power functions
         public void SetMWPower(int channel, double Power)
         {
             TextBox PowerSetpointTextBox;
@@ -4144,7 +5001,6 @@ namespace UEDMHardwareControl
             // Update UI monitor
             UpdateMWPowerMonitor(channel, Power);
         }
-
         public void UpdateMWPowerMonitor(int channel, double Power)
         {
             TextBox PowerSetpointTextBox;
@@ -4160,7 +5016,6 @@ namespace UEDMHardwareControl
 
             window.SetTextBox(PowerSetpointTextBox, Power.ToString());
         }
-
         public void UpdateMWPowerUsingUIInput(int channel)
         {
             TextBox PowerSetpointTextBox;
@@ -4217,7 +5072,6 @@ namespace UEDMHardwareControl
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
-
         public void IncrementMWPowerUsingUIInput(int channel)
         {
             TextBox PowerIncrementTextBox;
@@ -4263,7 +5117,10 @@ namespace UEDMHardwareControl
                             }
                             else
                             {
-                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                                string Title = "User input exception";
+                                string Msg = "Power resolution too fine. The minimum power step" +
+                                    " the Windfreak can provide is " + MWPowerResolution + " dBm.";
+                                MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                             }
                         }
                         else
@@ -4271,13 +5128,30 @@ namespace UEDMHardwareControl
                             SetMWPower(channel, CurrentPower + MWPowerParseValue);
                         }
                     }
-                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                    else
+                    {
+                        string Title = "User input exception";
+                        string Msg = "Power too large. The maximum power the Windfreak can" +
+                            " provide is " + MWPowerMax + " dBm.";
+                        MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+                    }
                 }
-                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+                else
+                {
+                    string Title = "User input exception";
+                    string Msg = "Power too small. The minimum frequency the Windfreak can" +
+                        " provide is " + MWPowerMin + " dBm.";
+                    MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+                }
             }
-            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+            else
+            {
+                string Title = "User input exception";
+                string Msg = "Unable to parse string. Ensure that a number has been written" +
+                    ", with no additional non-numeric characters.";
+                MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+            }
         }
-
         public void QueryMWPower(int channel)
         {
             // Select UI textbox that will be updated
@@ -4299,11 +5173,664 @@ namespace UEDMHardwareControl
             }
 
             // Query the power
-            double power = microwaveSynth.QueryPower() ; 
+            double power = microwaveSynth.QueryPower();
             window.SetTextBox(PowerSetpointMonitorTextBox, power.ToString());
+        }
+
+
+        // Microwave RF Mute
+        public void QueryRFMute(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox RFMuteCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                RFMuteCheckbox = window.cbCHARFMuted;
+            }
+            else   // Windfreak channel B
+            {
+                RFMuteCheckbox = window.cbCHBRFMuted;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Query the RF mute
+            bool RFMuted = microwaveSynth.QueryRFMute();
+            window.SetCheckBoxCheckedStatus(RFMuteCheckbox, RFMuted);
+        }
+        public void SetRFMute(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Set the RF mute
+            microwaveSynth.SetRFMute(Enable);
+
+            // Check for changes
+            QueryRFMute(channel);
+            QueryPAPowerOn(channel);
+            QueryPLLPowerOn(channel);
+        }
+        public void RFMuteInfoMessage()
+        {
+            string Title = "Help";
+            string Msg = "The SynthHD output power can be muted without fully powering down " +
+                "the PLL and output amplifier stages. The amount of muting depends on frequency.";
+            MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+        }
+
+        // Microwave PA power on
+        public void QueryPAPowerOn(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox PAPoweredOnCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PAPoweredOnCheckbox = window.cbCHAPAPoweredOn;
+            }
+            else   // Windfreak channel B
+            {
+                PAPoweredOnCheckbox = window.cbCHBPAPoweredOn;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Query the PA power status
+            bool PAPowerOn = microwaveSynth.QueryPAPowerOn();
+            window.SetCheckBoxCheckedStatus(PAPoweredOnCheckbox, PAPowerOn);
+        }
+        public void SetPAPower(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Set the PA power
+            microwaveSynth.SetPAPowerOn(Enable);
+
+            // Check for changes
+            QueryRFMute(channel);
+            QueryPAPowerOn(channel);
+            QueryPLLPowerOn(channel);
+        }
+        public void PAPowerInfoMessage()
+        {
+            string Title = "Help";
+            string Msg = "The SynthHD output power stage can be powered down without fully " +
+                "powering down the PLL and output amplifier stages. This command enables " +
+                "and disables the linear regulator that supplies the VGA output power stage" +
+                " to save energy. The amount of muting depends on frequency.  The SynthHD " +
+                "software GUI uses this command and the “E” command to toggle the output RF" +
+                " on and off. ";
+            MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+        }
+
+
+        // Microwave PLL power on
+        public void QueryPLLPowerOn(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox PLLPoweredOnCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PLLPoweredOnCheckbox = window.cbCHAPLLPoweredOn;
+            }
+            else   // Windfreak channel B
+            {
+                PLLPoweredOnCheckbox = window.cbCHBPLLPoweredOn;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Query the PLL power status
+            bool PLLPowerOn = microwaveSynth.QueryPLLPowerOn();
+            window.SetCheckBoxCheckedStatus(PLLPoweredOnCheckbox, PLLPowerOn);
+        }
+        public void SetPLLPower(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynth.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannel();
+            }
+
+            // Set the PLL power
+            microwaveSynth.SetPLLPowerOn(Enable);
+
+            // Check for changes
+            QueryRFMute(channel);
+            QueryPAPowerOn(channel);
+            QueryPLLPowerOn(channel);
+        }
+        public void PLLPowerInfoMessage()
+        {
+            string Title = "Help";
+            string Msg = "The SynthHD PLL can be powered down for absolute minimum" +
+                "noise on the output connector. This command enables and disables " +
+                "the PLL and VCO to save energy and can take 20mS to boot up. The " +
+                "SynthHD software GUI uses the “r” command and the “E” command to " +
+                "toggle the output RF on and off.";
+            MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+        }
+
+        #endregion
+
+
+        #region Microwave for detection
+        /// This could be rewritten to use more common functions for both windfrieks (see region optical pumping), but quicker way for now
+        /// Also many lines could already be gathered in fonctions in the optical pumping section
+
+        // Microwave Windfreak SynthHD temperature
+        public void UpdateMWSynthTemperatureDetection()
+        {
+            double SynthTemperatureDetection = microwaveSynthDetection.QueryTemperature();
+            window.SetTextBox(window.tbMWSynthTemperatureMonitorDetection, SynthTemperatureDetection.ToString());
+        }
+
+        public int CurrentChannelDetection; // channel A = 0, channel B = 1
+
+        public void SwitchMWChannelDetection()
+        {
+            if (CurrentChannelDetection == 1)
+            {
+                // function to switch to CHA
+                microwaveSynthDetection.SetChannel(0);
+                CurrentChannelDetection = 0;
+            }
+            else
+            {
+                // function to switch to CHB
+                microwaveSynthDetection.SetChannel(1);
+                CurrentChannelDetection = 1;
+            }
+        }
+
+        // Microwave frequency constants
+        public long MWCHAFrequencyDetection; // Hz
+        public long MWCHBFrequencyDetection; // Hz
+
+        // Microwave frequency functions
+        public void UpdateMWFrequencyDetection(int channel, long Frequency)
+        {
+            TextBox FrequencyMonitorTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                FrequencyMonitorTextBox = window.tbMWCHAFrequencyMonitorDetection;
+                MWCHAFrequencyDetection = Frequency;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencyMonitorTextBox = window.tbMWCHBFrequencyMonitorDetection;
+                MWCHBFrequencyDetection = Frequency;
+            }
+
+            // Check WindSynthHD is on the correct channel)
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Set the frequency
+            microwaveSynthDetection.SetFrequency(Frequency); // Hz
+
+            // Update the UI
+            double displayFrequency = (double)Frequency / Math.Pow(1000, 3); // displaying in GHz
+            window.SetTextBox(FrequencyMonitorTextBox, displayFrequency.ToString());
+        }
+
+        public void UpdateMWFrequencyUsingUIInputDetection(int channel)
+        {
+            TextBox FrequencySetpointTextBox;
+            ComboBox FrequencySetpointUnitComboBox;
+
+            if (channel == 0) // Windfreak channel A
+            {
+                FrequencySetpointTextBox = window.tbMWCHAFrequencySetpointDetection;
+                FrequencySetpointUnitComboBox = window.comboBoxMWCHASetpointUnitDetection;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencySetpointTextBox = window.tbMWCHBFrequencySetpointDetection;
+                FrequencySetpointUnitComboBox = window.comboBoxMWCHBSetpointUnitDetection;
+            }
+
+
+            int MetricPrefix = GetMWMetricPrefix(FrequencySetpointUnitComboBox);
+            if (double.TryParse(FrequencySetpointTextBox.Text, out double MWFrequencyParseValue))
+            {
+                if (MWFrequencyParseValue * MetricPrefix >= MWFrequencyMin)
+                {
+                    if (MWFrequencyParseValue * MetricPrefix <= MWFrequencyMax)
+                    {
+                        UpdateMWFrequencyDetection(channel, Convert.ToInt64(MWFrequencyParseValue * MetricPrefix));
+                    }
+                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void IncrementMWFrequencyUsingUIInputDetection(int channel)
+        {
+            TextBox FrequencyIncrementTextBox;
+            ComboBox FrequencyIncrementUnitComboBox;
+            long CurrentFrequency;
+
+            if (channel == 0) // Windfreak channel A
+            {
+                FrequencyIncrementTextBox = window.tbMWCHAFrequencyIncrementDetection;
+                FrequencyIncrementUnitComboBox = window.comboBoxMWCHAIncrementUnitDetection;
+                CurrentFrequency = MWCHAFrequencyDetection;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencyIncrementTextBox = window.tbMWCHBFrequencyIncrementDetection;
+                FrequencyIncrementUnitComboBox = window.comboBoxMWCHBIncrementUnitDetection;
+                CurrentFrequency = MWCHBFrequencyDetection;
+            }
+
+            long MetricPrefix = GetMWMetricPrefix(FrequencyIncrementUnitComboBox);
+            if (double.TryParse(FrequencyIncrementTextBox.Text, out double MWFrequencyIncrementParseValue))
+            {
+                if ((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency >= MWFrequencyMin)
+                {
+                    if ((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency <= MWFrequencyMax)
+                    {
+                        UpdateMWFrequencyDetection(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency));
+                    }
+                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void QueryMWFrequencyDetection(int channel)
+        {
+            // Select UI textbox that will be updated
+            TextBox FrequencySetpointMonitorTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                FrequencySetpointMonitorTextBox = window.tbMWCHAFrequencyMonitorDetection;
+            }
+            else   // Windfreak channel B
+            {
+                FrequencySetpointMonitorTextBox = window.tbMWCHBFrequencyMonitorDetection;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Query the frequency
+            double frequency = microwaveSynthDetection.QueryFrequency() / 1000; // GHz
+            window.SetTextBox(FrequencySetpointMonitorTextBox, frequency.ToString());
 
         }
-        
+
+        // Microwave power constants
+        public double MWCHAPowerDetection; // dBm
+        public double MWCHBPowerDetection; // dBm
+        // Microwave power functions
+        public void SetMWPowerDetection(int channel, double Power)
+        {
+            TextBox PowerSetpointTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerMonitorDetection;
+                MWCHAPowerDetection = Power;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerMonitorDetection;
+                MWCHBPowerDetection = Power;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Set the power
+            microwaveSynthDetection.SetPower(Power);
+
+            // Update UI monitor
+            UpdateMWPowerMonitorDetection(channel, Power);
+        }
+        public void UpdateMWPowerMonitorDetection(int channel, double Power)
+        {
+            TextBox PowerSetpointTextBox;
+
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerMonitorDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerMonitorDetection;
+            }
+
+            window.SetTextBox(PowerSetpointTextBox, Power.ToString());
+        }
+        public void UpdateMWPowerUsingUIInputDetection(int channel)
+        {
+            TextBox PowerSetpointTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerSetpointTextBox = window.tbMWCHAPowerSetpointDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointTextBox = window.tbMWCHBPowerSetpointDetection;
+            }
+
+            if (double.TryParse(PowerSetpointTextBox.Text, out double MWPowerParseValue))
+            {
+                if (MWPowerParseValue >= MWPowerMin)
+                {
+                    if (MWPowerParseValue <= MWPowerMax)
+                    {
+                        string powerString = MWPowerParseValue.ToString();
+
+                        if (powerString.Contains('.'))
+                        {
+                            string[] digits = powerString.Split('.');
+
+                            int dec0, dec1;
+                            dec0 = digits[0].Length;
+
+                            if (digits.Length == 2)
+                            {
+                                dec1 = digits[1].Length;
+                            }
+                            else
+                            {
+                                dec1 = 0;
+                            }
+
+                            if (dec1 <= 1)
+                            {
+                                SetMWPowerDetection(channel, MWPowerParseValue);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                            }
+                        }
+                        else
+                        {
+                            SetMWPowerDetection(channel, MWPowerParseValue);
+                        }
+                    }
+                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                }
+                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+        public void IncrementMWPowerUsingUIInputDetection(int channel)
+        {
+            TextBox PowerIncrementTextBox;
+            double CurrentPower;
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerIncrementTextBox = window.tbMWCHAPowerIncrementDetection;
+                CurrentPower = MWCHAPowerDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PowerIncrementTextBox = window.tbMWCHBPowerIncrementDetection;
+                CurrentPower = MWCHBPowerDetection;
+            }
+
+            if (double.TryParse(PowerIncrementTextBox.Text, out double MWPowerParseValue))
+            {
+                if (CurrentPower + MWPowerParseValue >= MWPowerMin)
+                {
+                    if (CurrentPower + MWPowerParseValue <= MWPowerMax)
+                    {
+                        string powerString = MWPowerParseValue.ToString();
+
+                        if (powerString.Contains('.'))
+                        {
+                            string[] digits = powerString.Split('.');
+
+                            int dec0, dec1;
+                            dec0 = digits[0].Length;
+
+                            if (digits.Length == 2)
+                            {
+                                dec1 = digits[1].Length;
+                            }
+                            else
+                            {
+                                dec1 = 0;
+                            }
+
+                            if (dec1 <= 1)
+                            {
+                                SetMWPowerDetection(channel, CurrentPower + MWPowerParseValue);
+                            }
+                            else
+                            {
+                                string Title = "User input exception";
+                                string Msg = "Power resolution too fine. The minimum power step" +
+                                    " the Windfreak can provide is " + MWPowerResolution + " dBm.";
+                                MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+                            }
+                        }
+                        else
+                        {
+                            SetMWPowerDetection(channel, CurrentPower + MWPowerParseValue);
+                        }
+                    }
+                    else
+                    {
+                        string Title = "User input exception";
+                        string Msg = "Power too large. The maximum power the Windfreak can" +
+                            " provide is " + MWPowerMax + " dBm.";
+                        MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+                    }
+                }
+                else
+                {
+                    string Title = "User input exception";
+                    string Msg = "Power too small. The minimum frequency the Windfreak can" +
+                        " provide is " + MWPowerMin + " dBm.";
+                    MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                string Title = "User input exception";
+                string Msg = "Unable to parse string. Ensure that a number has been written" +
+                    ", with no additional non-numeric characters.";
+                MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
+            }
+        }
+        public void QueryMWPowerDetection(int channel)
+        {
+            // Select UI textbox that will be updated
+            TextBox PowerSetpointMonitorTextBox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PowerSetpointMonitorTextBox = window.tbMWCHAPowerMonitorDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PowerSetpointMonitorTextBox = window.tbMWCHBPowerMonitorDetection;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Query the power
+            double power = microwaveSynthDetection.QueryPower();
+            window.SetTextBox(PowerSetpointMonitorTextBox, power.ToString());
+        }
+
+
+        // Microwave RF Mute
+        public void QueryRFMuteDetection(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox RFMuteCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                RFMuteCheckbox = window.cbCHARFMutedDetection;
+            }
+            else   // Windfreak channel B
+            {
+                RFMuteCheckbox = window.cbCHBRFMutedDetection;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Query the RF mute
+            bool RFMuted = microwaveSynthDetection.QueryRFMute();
+            window.SetCheckBoxCheckedStatus(RFMuteCheckbox, RFMuted);
+        }
+        public void SetRFMuteDetection(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Set the RF mute
+            microwaveSynthDetection.SetRFMute(Enable);
+
+            // Check for changes
+            QueryRFMuteDetection(channel);
+            QueryPAPowerOnDetection(channel);
+            QueryPLLPowerOnDetection(channel);
+        }
+
+        // Microwave PA power on
+        public void QueryPAPowerOnDetection(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox PAPoweredOnCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PAPoweredOnCheckbox = window.cbCHAPAPoweredOnDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PAPoweredOnCheckbox = window.cbCHBPAPoweredOnDetection;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Query the PA power status
+            bool PAPowerOn = microwaveSynthDetection.QueryPAPowerOn();
+            window.SetCheckBoxCheckedStatus(PAPoweredOnCheckbox, PAPowerOn);
+        }
+        public void SetPAPowerDetection(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Set the PA power
+            microwaveSynthDetection.SetPAPowerOn(Enable);
+
+            // Check for changes
+            QueryRFMuteDetection(channel);
+            QueryPAPowerOnDetection(channel);
+            QueryPLLPowerOnDetection(channel);
+        }
+
+        // Microwave PLL power on
+        public void QueryPLLPowerOnDetection(int channel)
+        {
+            // Select UI checkbox that will be updated
+            CheckBox PLLPoweredOnCheckbox;
+            if (channel == 0) // Windfreak channel A
+            {
+                PLLPoweredOnCheckbox = window.cbCHAPLLPoweredOnDetection;
+            }
+            else   // Windfreak channel B
+            {
+                PLLPoweredOnCheckbox = window.cbCHBPLLPoweredOnDetection;
+            }
+
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Query the PLL power status
+            bool PLLPowerOn = microwaveSynthDetection.QueryPLLPowerOn();
+            window.SetCheckBoxCheckedStatus(PLLPoweredOnCheckbox, PLLPowerOn);
+        }
+        public void SetPLLPowerDetection(int channel, bool Enable)
+        {
+            // Check WindSynthHD is on the correct channel
+            int ChannelQuery = microwaveSynthDetection.QueryChannel();
+            if (ChannelQuery != channel)
+            {
+                SwitchMWChannelDetection();
+            }
+
+            // Set the PLL power
+            microwaveSynthDetection.SetPLLPowerOn(Enable);
+
+            // Check for changes
+            QueryRFMuteDetection(channel);
+            QueryPAPowerOnDetection(channel);
+            QueryPLLPowerOnDetection(channel);
+        }
+
         #endregion
     }
 }
