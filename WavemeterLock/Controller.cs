@@ -18,11 +18,10 @@ namespace WavemeterLock
 {
     public class Controller : MarshalByRefObject
     {
-
-
+    
         private string computer;
         private string name;
-        private string hostName = "IC-CZC136CFDJ";//Change this if the server is changed
+        private int hostTCPChannel;
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
@@ -39,18 +38,14 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
                     name = addr.ToString();
             }
 
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
-
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1984" + "/controller.rem"));
+            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
+            
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -117,9 +112,11 @@ namespace WavemeterLock
         private LockForm ui;
         public WavemeterLockConfig config;
 
-        public Controller(string configName)
+        public Controller(string configName, string hostName, int channelNumber)
         {
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
+            computer = hostName;
+            hostTCPChannel = channelNumber;
 
         }
         
@@ -406,6 +403,7 @@ namespace WavemeterLock
                             faultyLaser = slave;
                             lasers[slave].DisengageLock();
                             Thread msgThread = new Thread(errorMsg);
+                            indicateRemoteConnection(lasers[slave].WLMChannel, false);
                             msgThread.Start();
                         }
                         lasers[slave].UpdateLock();
