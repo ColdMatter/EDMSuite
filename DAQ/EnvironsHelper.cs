@@ -303,6 +303,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "IC-CZC225B85M":
+                    Hardware = new AlFHardware();
+                    FileSystem = new AlFFileSystem();
+                    Debug = false;
+                    break;
+
                 default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

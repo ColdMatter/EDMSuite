@@ -13,7 +13,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace TransferCavityLock2012
+namespace TransferCavityLock2023
 {
     /// <summary>
     /// A class for locking the laser using a transfer cavity.
@@ -388,7 +388,7 @@ namespace TransferCavityLock2012
         }
 
         private List<Laser> AllLasers
-        { 
+        {
             // List all lasers controlled by this instance
             get
             {
@@ -426,15 +426,15 @@ namespace TransferCavityLock2012
         private void updateGUIForMasterLaser(MasterLaser laser, double[] rampData)
         {
             double[] laserScanData = laser.LatestScanData;
-            if (laser.Fit != null)
+            if (laser.peakLocation != null)
             {
-                double[] fitPoints = CavityScanFitHelper.CreatePointsFromFit(rampData, laser.Fit);
-                ui.DisplayMasterData(laser.ParentCavity.Name, rampData, laserScanData, fitPoints);
+                double peakLocation = (double) laser.peakLocation;
+                ui.DisplayMasterData(laser.ParentCavity.Name, rampData, laserScanData, peakLocation);
                 if (laser.IsLocked)
                 {
                     double summedVoltage = laser.CurrentVoltage;
                     ui.SetSummedVoltageTextBox(laser.ParentCavity.Name, summedVoltage);
-                    ui.SetVoltageIntoCavityTextBox(laser.ParentCavity.Name, summedVoltage + laser.Fit.Centre);
+                    ui.SetVoltageIntoCavityTextBox(laser.ParentCavity.Name, summedVoltage + peakLocation);
                 }
             }
             else
@@ -446,10 +446,10 @@ namespace TransferCavityLock2012
         private void updateGUIForSlaveLaser(SlaveLaser laser, double[] rampData)
         {
             double[] laserScanData = laser.LatestScanData;
-            if (laser.Fit != null)
+            if (laser.peakLocation != null)
             {
-                double[] fitPoints = CavityScanFitHelper.CreatePointsFromFit(rampData, laser.Fit);
-                ui.DisplaySlaveData(laser.ParentCavity.Name, laser.Name, rampData, laserScanData, fitPoints);
+                double peakLocation = (double)laser.peakLocation;
+                ui.DisplaySlaveData(laser.ParentCavity.Name, laser.Name, rampData, laserScanData, peakLocation);
                 if (laser.LockCount > 0)
                 {
                     ui.SetLaserVoltageTextBox(laser.ParentCavity.Name, laser.Name, laser.CurrentVoltage);
@@ -473,8 +473,8 @@ namespace TransferCavityLock2012
             // Trying to be consistent with old format here
             if (laser is SlaveLaser)
             {
-                double slaveCentre = laser.Fit != null ? laser.Fit.Centre : 0;
-                double masterCentre = laser.ParentCavity.Master.Fit != null ? laser.ParentCavity.Master.Fit.Centre : 0;
+                double slaveCentre = laser.peakLocation != null ? (double) laser.peakLocation : 0;
+                double masterCentre = laser.ParentCavity.Master.peakLocation != null ? (double) laser.ParentCavity.Master.peakLocation : 0;
 
                 if (ui.logCheckBox.Checked && serializer != null)
                 {
@@ -490,7 +490,7 @@ namespace TransferCavityLock2012
             }
         }
 
-        private void updateLockRate(Stopwatch stopWatch)
+        private double updateLockRate(Stopwatch stopWatch)
         {
             double elapsedTime = stopWatch.Elapsed.TotalSeconds;
             scanTimes.Add(elapsedTime);
@@ -500,7 +500,7 @@ namespace TransferCavityLock2012
             }
             double averageScanTime = scanTimes.Sum() / scanTimes.Count;
             double averageUpdateRate = 1 / averageScanTime;
-            ui.UpdateLockRate(averageUpdateRate);
+            return averageUpdateRate;
         }
 
         private void endLoop()
@@ -529,6 +529,7 @@ namespace TransferCavityLock2012
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
+                bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
                 TCLReadData rawData = acquireData(scanParameters);
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
 
@@ -548,23 +549,26 @@ namespace TransferCavityLock2012
                 }
 
                 // GUI updates and logging
-                if (!ui.dissableGUIupdateCheckBox.Checked)
+                if (updateGUI)
                 {
                     updateRampPlot(rampData);
                 }
                 foreach (Laser laser in AllLasers)
                 {
-                    if (!ui.dissableGUIupdateCheckBox.Checked)
+                    if (updateGUI)
                     {
                         updateGUIForLaser(laser, rampData);
                     }
-                    if (ui.logCheckBox.Checked && laser.IsLocked)
+                    if (updateGUI)
                     {
                         logLaserParams(laser);
                     }
                 }
-                updateLockRate(stopWatch);
-
+                double averageUpdateRate = updateLockRate(stopWatch);
+                if (updateGUI || loopCount % 100 == 0)
+                {
+                    ui.UpdateLockRate(averageUpdateRate);
+                }
                 stopWatch.Reset();
                 stopWatch.Start();
                 loopCount++;

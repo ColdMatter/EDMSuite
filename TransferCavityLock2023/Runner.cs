@@ -5,7 +5,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 
-namespace TransferCavityLock2012
+namespace TransferCavityLock2023
 {
     static class Runner
     {
