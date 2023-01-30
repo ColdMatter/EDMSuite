@@ -43,6 +43,12 @@ namespace TransferCavityLock2023
 
         public TCLConfig config;
 
+        private Mutex dataMutex;
+        private object acquiredData;
+
+        private Mutex controlMutex;
+        private bool cleanup;
+
         public Dictionary<string, Cavity> Cavities; // Stores all the laser classes.
         private Dictionary<string, int> aiChannelsLookup; // All ai channels, including the cavity and the master.
         private Dictionary<string, int> diChannelsLookup; // All di channels for blocking lock for particular laser
@@ -382,9 +388,18 @@ namespace TransferCavityLock2023
             tcl.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
         }
 
-        private TCLReadData acquireData(ScanParameters sp)
+        private void acquireData(ScanParameters sp)
         {
-            return tcl.Read(sp.Steps);
+            while (true)
+            {
+                dataMutex.WaitOne();
+                acquiredData = tcl.Read(sp.Steps);
+                dataMutex.ReleaseMutex();
+                controlMutex.WaitOne();
+                if (cleanup) break;
+                controlMutex.ReleaseMutex();
+            }
+            controlMutex.ReleaseMutex();
         }
 
         private List<Laser> AllLasers
@@ -518,6 +533,12 @@ namespace TransferCavityLock2023
 
         private void mainLoop()
         {
+            dataMutex = new Mutex();
+            acquiredData = false;
+
+            controlMutex = new Mutex();
+            cleanup = false;
+
             initialiseAIHardware(scanParameters);
             ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
 
@@ -526,11 +547,25 @@ namespace TransferCavityLock2023
             stopWatch.Start();
             int loopCount = 0;
 
+            controlMutex.WaitOne();
+            Thread DAQThread = new Thread(new ThreadStart(() => acquireData(scanParameters)));
+            DAQThread.Start();
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
+                dataMutex.WaitOne();
+                if (!(acquiredData is TCLReadData))
+                {
+                    dataMutex.ReleaseMutex();
+                    continue;
+                }
+                TCLReadData rawData = (TCLReadData) acquiredData;
+                controlMutex.ReleaseMutex();
+                dataMutex.ReleaseMutex();
+                controlMutex.WaitOne();
+
+
                 bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
-                TCLReadData rawData = acquireData(scanParameters);
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
 
                 // Fitting
@@ -573,6 +608,9 @@ namespace TransferCavityLock2023
                 stopWatch.Start();
                 loopCount++;
             }
+            cleanup = true;
+            controlMutex.ReleaseMutex();
+            DAQThread.Join();
             endLoop();
         }
         #endregion

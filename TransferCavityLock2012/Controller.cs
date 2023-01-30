@@ -43,6 +43,12 @@ namespace TransferCavityLock2012
 
         public TCLConfig config;
 
+        private Mutex dataMutex;
+        private object acquiredData;
+
+        private Mutex controlMutex;
+        private bool cleanup;
+
         public Dictionary<string, Cavity> Cavities; // Stores all the laser classes.
         private Dictionary<string, int> aiChannelsLookup; // All ai channels, including the cavity and the master.
         private Dictionary<string, int> diChannelsLookup; // All di channels for blocking lock for particular laser
@@ -382,9 +388,18 @@ namespace TransferCavityLock2012
             tcl.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
         }
 
-        private TCLReadData acquireData(ScanParameters sp)
+        private void acquireData(ScanParameters sp)
         {
-            return tcl.Read(sp.Steps);
+            while (true)
+            {
+                dataMutex.WaitOne();
+                acquiredData = tcl.Read(sp.Steps);
+                dataMutex.ReleaseMutex();
+                controlMutex.WaitOne();
+                if (cleanup) break;
+                controlMutex.ReleaseMutex();
+            }
+            controlMutex.ReleaseMutex();
         }
 
         private List<Laser> AllLasers
@@ -490,7 +505,7 @@ namespace TransferCavityLock2012
             }
         }
 
-        private void updateLockRate(Stopwatch stopWatch)
+        private double updateLockRate(Stopwatch stopWatch)
         {
             double elapsedTime = stopWatch.Elapsed.TotalSeconds;
             scanTimes.Add(elapsedTime);
@@ -500,7 +515,7 @@ namespace TransferCavityLock2012
             }
             double averageScanTime = scanTimes.Sum() / scanTimes.Count;
             double averageUpdateRate = 1 / averageScanTime;
-            ui.UpdateLockRate(averageUpdateRate);
+            return averageUpdateRate;
         }
 
         private void endLoop()
@@ -518,6 +533,12 @@ namespace TransferCavityLock2012
 
         private void mainLoop()
         {
+            dataMutex = new Mutex();
+            acquiredData = false;
+
+            controlMutex = new Mutex();
+            cleanup = false;
+
             initialiseAIHardware(scanParameters);
             ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
 
@@ -526,10 +547,26 @@ namespace TransferCavityLock2012
             stopWatch.Start();
             int loopCount = 0;
 
+            controlMutex.WaitOne();
+            Thread DAQThread = new Thread(new ThreadStart(() => acquireData(scanParameters)));
+            DAQThread.Start();
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
-                TCLReadData rawData = acquireData(scanParameters);
+                dataMutex.WaitOne();
+                if (!(acquiredData is TCLReadData))
+                {
+                    dataMutex.ReleaseMutex();
+                    continue;
+                }
+                TCLReadData rawData = (TCLReadData)acquiredData;
+                controlMutex.ReleaseMutex();
+                dataMutex.ReleaseMutex();
+
+                controlMutex.WaitOne(); // Possible race condition?
+
+
+                bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
 
                 // Fitting
@@ -548,27 +585,33 @@ namespace TransferCavityLock2012
                 }
 
                 // GUI updates and logging
-                if (!ui.dissableGUIupdateCheckBox.Checked)
+                if (updateGUI)
                 {
                     updateRampPlot(rampData);
                 }
                 foreach (Laser laser in AllLasers)
                 {
-                    if (!ui.dissableGUIupdateCheckBox.Checked)
+                    if (updateGUI)
                     {
                         updateGUIForLaser(laser, rampData);
                     }
-                    if (ui.logCheckBox.Checked && laser.IsLocked)
+                    if (updateGUI)
                     {
                         logLaserParams(laser);
                     }
                 }
-                updateLockRate(stopWatch);
-
+                double averageUpdateRate = updateLockRate(stopWatch);
+                if (updateGUI || loopCount % 100 == 0)
+                {
+                    ui.UpdateLockRate(averageUpdateRate);
+                }
                 stopWatch.Reset();
                 stopWatch.Start();
                 loopCount++;
             }
+            cleanup = true;
+            controlMutex.ReleaseMutex();
+            DAQThread.Join();
             endLoop();
         }
         #endregion
