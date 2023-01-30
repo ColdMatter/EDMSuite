@@ -553,17 +553,17 @@ namespace TransferCavityLock2023
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
+                controlMutex.ReleaseMutex();
                 dataMutex.WaitOne();
                 if (!(acquiredData is TCLReadData))
                 {
                     dataMutex.ReleaseMutex();
+                    controlMutex.WaitOne();
                     continue;
                 }
-                controlMutex.ReleaseMutex();
-                TCLReadData rawData = (TCLReadData) acquiredData;
-                dataMutex.ReleaseMutex();
                 controlMutex.WaitOne();
-
+                TCLReadData rawData = (TCLReadData)acquiredData;
+                dataMutex.ReleaseMutex();
 
                 bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);

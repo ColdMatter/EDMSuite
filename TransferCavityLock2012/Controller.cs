@@ -553,15 +553,16 @@ namespace TransferCavityLock2012
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
+                controlMutex.ReleaseMutex();
                 dataMutex.WaitOne();
                 if (!(acquiredData is TCLReadData))
                 {
                     dataMutex.ReleaseMutex();
+                    controlMutex.WaitOne();
                     continue;
                 }
                 controlMutex.WaitOne();
                 TCLReadData rawData = (TCLReadData)acquiredData;
-                controlMutex.ReleaseMutex();
                 dataMutex.ReleaseMutex();
 
 
