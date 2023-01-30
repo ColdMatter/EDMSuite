@@ -559,11 +559,11 @@ namespace TransferCavityLock2012
                     dataMutex.ReleaseMutex();
                     continue;
                 }
+                controlMutex.WaitOne();
                 TCLReadData rawData = (TCLReadData)acquiredData;
                 controlMutex.ReleaseMutex();
                 dataMutex.ReleaseMutex();
 
-                controlMutex.WaitOne(); // Possible race condition?
 
 
                 bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;

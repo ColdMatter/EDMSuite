@@ -559,8 +559,8 @@ namespace TransferCavityLock2023
                     dataMutex.ReleaseMutex();
                     continue;
                 }
-                TCLReadData rawData = (TCLReadData) acquiredData;
                 controlMutex.ReleaseMutex();
+                TCLReadData rawData = (TCLReadData) acquiredData;
                 dataMutex.ReleaseMutex();
                 controlMutex.WaitOne();
 
