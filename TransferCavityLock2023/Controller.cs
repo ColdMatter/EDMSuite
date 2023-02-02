@@ -390,10 +390,15 @@ namespace TransferCavityLock2023
 
         private void acquireData(ScanParameters sp)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             while (true)
             {
                 dataMutex.WaitOne();
-                acquiredData = tcl.Read(sp.Steps);
+                Console.WriteLine(stopWatch.Elapsed);
+                acquiredData = tcl.Read(sp.Steps); // this step cost most of the time
+                Console.WriteLine(stopWatch.Elapsed);
+                Console.WriteLine();
                 dataMutex.ReleaseMutex();
                 controlMutex.WaitOne();
                 if (cleanup) break;
@@ -541,7 +546,6 @@ namespace TransferCavityLock2023
 
             initialiseAIHardware(scanParameters);
             ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
-
             scanTimes = new List<double>();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -554,20 +558,22 @@ namespace TransferCavityLock2023
             {
                 // Read data
                 controlMutex.ReleaseMutex();
-                dataMutex.WaitOne();
+                dataMutex.WaitOne(); // 0.01s are costed by waiting here
+                
                 if (!(acquiredData is TCLReadData))
                 {
                     dataMutex.ReleaseMutex();
                     controlMutex.WaitOne();
                     continue;
                 }
+
                 controlMutex.WaitOne();
                 TCLReadData rawData = (TCLReadData)acquiredData;
                 dataMutex.ReleaseMutex();
 
                 bool updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
-
+                
                 // Fitting
                 double[] rampData = scanData.GetRampData();
                 foreach (Laser laser in AllLasers)
@@ -599,11 +605,13 @@ namespace TransferCavityLock2023
                         logLaserParams(laser);
                     }
                 }
+
                 double averageUpdateRate = updateLockRate(stopWatch);
                 if (updateGUI || loopCount % 100 == 0)
                 {
                     ui.UpdateLockRate(averageUpdateRate);
                 }
+
                 stopWatch.Reset();
                 stopWatch.Start();
                 loopCount++;

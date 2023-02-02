@@ -71,7 +71,7 @@ namespace DAQ
             List<DataPoint> processed = new List<DataPoint> { };
             for (int i = 2; i < data.Count() - 2; ++i)
             {
-                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + data[i+2].y)/10));
+                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y)/10));
             }
 
 
@@ -80,14 +80,19 @@ namespace DAQ
             while (high - low > 1)
             {
                 int mid = (high + low) / 2;
-                if (data[mid].y > 0)
+                if (processed[mid].y > 0)
                 {
                     low = mid;
+                } else
+                {
+                    high = mid;
                 }
             }
 
-            return processed[low].x -processed[low].y * (processed[high].x - processed[low].x) * (processed[high].y - processed[low].y);
+            //throw new Exception();
 
+            return processed[low].x - processed[low].y * (processed[high].x - processed[low].x) / (processed[high].y - processed[low].y);
+            
         }
 
         public static double findPeak(double[] xdata, double[] data)

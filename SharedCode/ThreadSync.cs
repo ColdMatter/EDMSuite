@@ -100,8 +100,9 @@ namespace Data
 
         public void JoinThreads()
         {
-            if (inControl) SwitchToData();
+            if (!inControl) SwitchToControl();
             finishThread = true;
+            SwitchToData();
             foreach (Thread thread in threads)
             {
                 thread.Join();
