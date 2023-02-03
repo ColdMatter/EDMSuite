@@ -220,6 +220,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="GobelinHardware.cs" />
+    <Compile Include="RhysFileSystem.cs" />
     <Compile Include="PeakFinder.cs" />
     <Compile Include="WavemeterLockConfig.cs" />
     <Compile Include="WMLServerFileSystem.cs" />
@@ -448,6 +450,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WindfreakSynth.cs" />
+    <Compile Include="AD9850DDS.cs" />
+    <Compile Include="WindfreakSynthHD.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -25,7 +25,7 @@ BeginPackage["SEDM4`Blind`"];
 (* DO NOT CHEAT AND LOOK AT WHAT THE BLIND EDM IS !!!!!! *)
 (*Old Blind
 blindEDM=Uncompress["1:eJxTTMoPKprQden3z9Y2KwArHwbc"];*)
-blindEDM=Uncompress["1:eJxTTMoPKpqityF3joqaFQAh0gS2"];
+blindEDM=0;
 EndPackage[];
 
 

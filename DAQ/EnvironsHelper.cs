@@ -41,6 +41,20 @@ namespace DAQ.Environment
 		public bool Debug;
         private string computer;
 
+        /// <summary>
+        /// TCP channel for wavemeter lock server.
+        /// This is the channel that the wavemeter server brodcast the measured frequency.
+        /// Add this to the computer config on which you run the wavemeter server and wavemeter lock.
+        /// </summary>
+        public int serverTCPChannel;
+
+        /// <summary>
+        /// TCP channel for wavemeter lock.
+        /// This is the channel shared between wavemeter lock and scan master.
+        /// Add this to the computer config on which you run the wavemeter lock and scan master.
+        /// </summary>
+        public int wavemeterLockTCPChannel;
+
        	/// <summary>
 		/// Experiment type is for code that needs to know what experiment it's running on.
 		/// </summary>
@@ -70,6 +84,20 @@ namespace DAQ.Environment
 			
 			switch (computerName)
 			{
+
+                case "PH-NI-LAB":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
+                case "Rhys-XPS":
+                    Hardware = new BufferClassicHardware();
+                    FileSystem = new RhysFileSystem();
+                    Debug = true;
+                    break;
+
 
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();
@@ -301,6 +329,8 @@ namespace DAQ.Environment
                     Hardware = new WMLServerHardware();
                     FileSystem = new WMLServerFileSystem();
                     Debug = false;
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 6666;
                     break;
 
                 case "IC-CZC225B85M":
