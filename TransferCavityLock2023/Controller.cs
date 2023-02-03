@@ -395,10 +395,7 @@ namespace TransferCavityLock2023
             while (true)
             {
                 dataMutex.WaitOne();
-                Console.WriteLine(stopWatch.Elapsed);
                 acquiredData = tcl.Read(sp.Steps); // this step cost most of the time
-                Console.WriteLine(stopWatch.Elapsed);
-                Console.WriteLine();
                 dataMutex.ReleaseMutex();
                 controlMutex.WaitOne();
                 if (cleanup) break;
