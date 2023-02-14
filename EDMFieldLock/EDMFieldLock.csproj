@@ -135,6 +135,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\CaFBEC\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">

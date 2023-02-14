@@ -31,6 +31,7 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(MOTPatternPlugin)),
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
      XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
+     XmlInclude(typeof(CaFBECPatternPlugin)),
 	 XmlInclude(typeof(NshotsPatternPlugin)),]
      //XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin

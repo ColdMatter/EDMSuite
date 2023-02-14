@@ -150,17 +150,77 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\CaFBEC\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ivi.DCPwr, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Dmm, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Driver, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Fgen, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Scope, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Swtch, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
+    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NIDCPower.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NIDmm.Fx45, Version=19.0.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NIFgen.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NIScope.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NISwitch.Fx45, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=3.2.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

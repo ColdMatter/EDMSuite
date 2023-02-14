@@ -115,6 +115,15 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\CaFBEC\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">

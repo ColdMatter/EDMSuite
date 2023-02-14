@@ -2,6 +2,7 @@
 using System.Collections;
 
 using NationalInstruments.DAQmx;
+using NationalInstruments;
 
 using DAQ.Pattern;
 using DAQ.TransferCavityLock2012;

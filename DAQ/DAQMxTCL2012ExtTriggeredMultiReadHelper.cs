@@ -41,7 +41,7 @@ namespace DAQ.TransferCavityLock2012
         public DAQMxTCL2012ExtTriggeredMultiReadHelper(string[] inputs) // Legacy compatability!
         {
             this.analogInputs = inputs;
-            trigger = "analogTrigger2";
+            trigger = "analogTrigger0";
         }
 
         #region Methods for configuring the hardware

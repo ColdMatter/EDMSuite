@@ -116,6 +116,17 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\CaFBEC\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DAQ, Version=1.0.7835.16894, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
