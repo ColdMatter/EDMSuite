@@ -225,13 +225,15 @@
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.DAQmx, Version=19.6.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NationalInstruments.ModularInstruments.Common, Version=22.5.45.49180, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System">

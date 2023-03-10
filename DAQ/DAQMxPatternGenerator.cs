@@ -32,24 +32,23 @@ namespace DAQ.HAL
 		// use this method to output a PatternList to the whole PatternList generator
 		public void OutputPattern(UInt32[] pattern)
 		{
-            //////////////////////////
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
             //pgTask.Start();
-            //////////////////////////
-            writer.WriteMultiSamplePort(true, pattern);
-			SleepOnePattern();
+			//SleepOnePattern();
+            
+            OutputPattern(pattern, true);
 		}
 
         public void OutputPattern(UInt32[] pattern, bool sleep)
         {
-            writer.WriteMultiSamplePort(true, pattern);
-            //////////////////////////
             //writer.WriteMultiSamplePort(false, pattern);
             //taskRunning = true;
             //pgTask.Start();
-            //////////////////////////
-            if (sleep==true)
+            
+            writer.WriteMultiSamplePort(false, pattern);
+            pgTask.Start();
+            if(sleep==true)
                 SleepOnePattern();
         }
 
@@ -74,7 +73,6 @@ namespace DAQ.HAL
 			int sleepTime = (int)(((double)length * 1000) / clockFrequency);
 			Thread.Sleep(sleepTime);
 
-            //////////////////////////
             //Sleep until Task is finished at which point taskRunning becomes false.
             //while (taskRunning == true) ;
 		}
@@ -198,8 +196,8 @@ namespace DAQ.HAL
 
             /* Configure one of the PFI channels to output the clock signal of the master card. Required to synchronize the slaves when using multiple pattern cards */
 
-            //if (pgTaskName == "PG")
-            //    pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
+            if (pgTaskName == "PG")
+                pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
 
             /*
             if (device == "/Dev1")
@@ -234,7 +232,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
-            //pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
+            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
 		public void StopPattern()

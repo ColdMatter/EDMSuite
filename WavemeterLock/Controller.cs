@@ -28,7 +28,8 @@ namespace WavemeterLock
         private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
         public double updateRate = 100;
-        public int miniLoop = 50;
+        public int miniLoop = 5;
+        public int threadSleepTime = 5;
 
         private List<double> scanTimes;
         public int numScanAverages = 100;
@@ -387,6 +388,8 @@ namespace WavemeterLock
             scanTimes = new List<double>();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            Stopwatch stopWatchGraph = new Stopwatch();
+            stopWatchGraph.Start();
             loopcount = 0;
             int miniLoopcount = 0;
 
@@ -413,17 +416,19 @@ namespace WavemeterLock
                 loopcount++;
                 miniLoopcount++;
 
-                foreach (string slave in lasers.Keys)
-                {
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
-                    {
-                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;//
-                    }
-
-                }
+            
 
                 if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
                 {
+                    foreach (string slave in lasers.Keys)
+                    {
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
+                        {
+                            timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
+                            stopWatchGraph.Restart();
+                        }
+
+                    }
                     foreach (string slave in lasers.Keys)
                     {
                         panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
@@ -431,11 +436,10 @@ namespace WavemeterLock
                     }
                 }
 
-
+                Thread.Sleep(threadSleepTime);
                 updateLockRate(stopWatch);
 
-                stopWatch.Reset();
-                stopWatch.Start();
+                stopWatch.Restart();
             }
 
             endLoop();
