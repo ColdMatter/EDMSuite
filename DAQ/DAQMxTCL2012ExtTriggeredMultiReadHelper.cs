@@ -46,7 +46,7 @@ namespace DAQ.TransferCavityLock2012
 
         #region Methods for configuring the hardware
 
-
+ 
         public void ConfigureHardware(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
         {
             if (digitalInputs.Length > 0)

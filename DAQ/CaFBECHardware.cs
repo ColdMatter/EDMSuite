@@ -10,6 +10,7 @@ using NationalInstruments;
 using NationalInstruments.DAQmx;
 
 using DAQ.Pattern;
+using DAQ.Remoting;
 using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
@@ -20,12 +21,12 @@ namespace DAQ.HAL
         public CaFBECHardware()
         {
 
-            Boards.Add("pg", "/PXI1Slot5");  // generating molecular source and receive signals, PXI-6229 connector 0
-            Boards.Add("tcl", "/PXI1Slot6");  // TCL analog inputs, PXI-6221
+            Boards.Add("patternGenerator", "/PXI1Slot5");  // generating molecular source and receive signals, PXI-6229 connector 0
+            Boards.Add("tclInput", "/PXI1Slot6");  // TCL analog inputs, PXI-6221
             Boards.Add("tclOutput", "/PXI1Slot4");  // TCL analog outputs, PXI-6722
 
-            string pgBoard = (string)Boards["pg"];
-            string TCLBoard = (string)Boards["tcl"];
+            string pgBoard = (string)Boards["patternGenerator"];
+            string TCLInput = (string)Boards["tclInput"];
             string TCLOutput = (string)Boards["tclOutput"];
 
             // string TCLBoard = (string)Boards["tcl"];
@@ -33,74 +34,60 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 3);
-            AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
+            AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
+            // AddDigitalOutputChannel("ttl1", pgBoard, 1, 1);
+            // AddDigitalOutputChannel("ttl2", pgBoard, 1, 3);
+            AddDigitalOutputChannel("probe", pgBoard, 0, 29);
+
             // AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
             // AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
 
-         
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
             //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
 
-            // add things to the info
-            // the analog triggers
-            Info.Add("analogTrigger0", TCLBoard + "/PFI0");
-            Info.Add("PatternGeneratorBoard", pgBoard);
-
-      
-
             // map the analog input channels for "pg" card
-            AddAnalogInputChannel("HeliumIn", pgBoard + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("SF6In", pgBoard + "/ai1", AITerminalConfiguration.Rse);
+            // AddAnalogInputChannel("HeliumIn", pgBoard + "/ai0", AITerminalConfiguration.Rse);
+            // AddAnalogInputChannel("SF6In", pgBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", pgBoard + "/ai2", AITerminalConfiguration.Rse);
 
-
-
             // map the analog output channels for "daq" card
-            AddAnalogOutputChannel("HeliumOut", pgBoard + "/ao0");
-            AddAnalogOutputChannel("SF6Out", pgBoard + "/ao1"); 
+            AddAnalogOutputChannel("slowingRamp", pgBoard + "/ao1", -10, 10);
+            AddAnalogOutputChannel("laser", pgBoard + "/ao0", -10, 10);
 
+            Info.Add("PGType", "integrated");
+            Info.Add("PGClockCounter", "/ctr0");
+            Info.Add("analogTrigger0", pgBoard + "/PFI0");
+            Info.Add("PGClockLine", pgBoard + "/PFI2");
+            Info.Add("PatternGeneratorBoard", pgBoard);
 
+            //TCL Input channels
+            AddAnalogInputChannel("sumVolt", TCLInput + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);    
+            AddAnalogInputChannel("v00Signal", TCLInput + "/ai3", AITerminalConfiguration.Rse);    
+            AddAnalogInputChannel("v10Signal", TCLInput + "/ai10", AITerminalConfiguration.Rse);    
+            AddAnalogInputChannel("bXSignal", TCLInput + "/ai15", AITerminalConfiguration.Rse);
 
-            // Counter Channels
-            // AddCounterChannel("westLeakage", UEDMHardwareControllerBoard + "/ctr0");
-            // AddCounterChannel("eastLeakage", UEDMHardwareControllerBoard + "/ctr1");
+            AddAnalogInputChannel("southSignal", TCLInput + "/ai6", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v21Signal", TCLInput + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v32Signal", TCLInput + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
-
-
-            // map the analog input channels for the tcl card
-            AddAnalogInputChannel("sumVolt", TCLBoard + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("mOTv023master", TCLBoard + "/ai10", AITerminalConfiguration.Rse);    // PD A, reference laser
-            AddAnalogInputChannel("mOTv0", TCLBoard + "/ai1", AITerminalConfiguration.Rse);    // PD B, 606 nm, also the probe laser for molecules
-            AddAnalogInputChannel("mOTv2", TCLBoard + "/ai4", AITerminalConfiguration.Rse);    // PD E, 628 nm
-            AddAnalogInputChannel("mOTv3", TCLBoard + "/ai5", AITerminalConfiguration.Rse);    // PD D, 628 nm
-
-            
-
-            // map the analog output channels for the tcl card
-            AddAnalogOutputChannel("cavityOffset", TCLOutput + "/ao0");
-            AddAnalogOutputChannel("mOTv0Laser", TCLOutput + "/ao1");    
-            AddAnalogOutputChannel("mOTv2Laser", TCLOutput + "/ao2");
-            AddAnalogOutputChannel("mOTv3Laser", TCLOutput + "/ao3");
-
-
-            // add the GPIB/RS232/USB instruments
-            // Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
-            // Instruments.Add("WindfreakOpticalPumping", new WindfreakSynthHD("ASRL6::INSTR"));
-            // Instruments.Add("WindfreakDetection", new WindfreakSynthHD("ASRL9::INSTR"));
-            // Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
-            // Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
-
-
-            // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
-            // multiple cavities share a single ramp (BaseRamp analog input) + trigger
-            // Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
+            //TCL Output Channels
+            AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
+            AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3");
+            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4");
+            AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7");
+            AddAnalogOutputChannel("southOffset", TCLOutput + "/ao1");
+            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5");
+            AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6");
+            AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0");
 
             TCLConfig tclConfig = new TCLConfig("TCL");
-            tclConfig.Trigger = TCLBoard + "/PFI0";
+            tclConfig.Trigger = TCLInput + "/PFI0";
             //tclConfig.Trigger = "analogTrigger0";
             tclConfig.BaseRamp = "sumVolt";
             tclConfig.TCPChannel = 1190;
@@ -112,36 +99,41 @@ namespace DAQ.HAL
             tclConfig.MaximumNLMFSteps = 20;
             //tclConfig.TriggerOnRisingEdge = true;
 
-            string MOTv023Cavity = "MOTv023Cavity";
-            tclConfig.AddCavity(MOTv023Cavity);
-            tclConfig.Cavities[MOTv023Cavity].RampOffset = "cavityOffset";
-            tclConfig.Cavities[MOTv023Cavity].MasterLaser = "mOTv023master";
-            // tclConfig.Cavities[MOTv023Cavity].AddDefaultGain("MOTv023master", 0.2);
-            tclConfig.Cavities[MOTv023Cavity].AddSlaveLaser("mOTv0Laser", "mOTv0"); //analog output channel name, analog input channel name
-            tclConfig.Cavities[MOTv023Cavity].AddDefaultGain("mOTv0Laser", 0.2);
-            tclConfig.Cavities[MOTv023Cavity].AddFSRCalibration("mOTv0Laser", 3.84);
-            tclConfig.Cavities[MOTv023Cavity].AddSlaveLaser("mOTv2Laser", "mOTv2");
-            tclConfig.Cavities[MOTv023Cavity].AddDefaultGain("mOTv2Laser", 0.2);
-            tclConfig.Cavities[MOTv023Cavity].AddFSRCalibration("mOTv2Laser", 3.84);
-            tclConfig.Cavities[MOTv023Cavity].AddSlaveLaser("mOTv3Laser", "mOTv3");
-            tclConfig.Cavities[MOTv023Cavity].AddDefaultGain("mOTv3Laser", 0.2);
-            tclConfig.Cavities[MOTv023Cavity].AddFSRCalibration("mOTv3Laser", 3.84);
+            string northCavity = "NorthCavity";
+            tclConfig.AddCavity(northCavity);
+            tclConfig.Cavities[northCavity].RampOffset = "northOffset";
+            tclConfig.Cavities[northCavity].MasterLaser = "northSignal";
+            //Use format: AddSlaveLaser(analog output channel name, analog input channel name)
+            tclConfig.Cavities[northCavity].AddSlaveLaser("v00Lock", "v00Signal");
+            tclConfig.Cavities[northCavity].AddDefaultGain("v00Lock", 0.2);
+            tclConfig.Cavities[northCavity].AddFSRCalibration("v00Lock", 3.84);
+            tclConfig.Cavities[northCavity].AddSlaveLaser("v10Lock", "v10Signal");
+            tclConfig.Cavities[northCavity].AddDefaultGain("v10Lock", 0.2);
+            tclConfig.Cavities[northCavity].AddFSRCalibration("v10Lock", 3.84);
+            tclConfig.Cavities[northCavity].AddSlaveLaser("bXLock", "bXSignal");
+            tclConfig.Cavities[northCavity].AddDefaultGain("bXLock", 0.2);
+            tclConfig.Cavities[northCavity].AddFSRCalibration("bXLock", 3.84);
 
+            string southCavity = "SouthCavity";
+            tclConfig.AddCavity(southCavity);
+            tclConfig.Cavities[southCavity].RampOffset = "southOffset";
+            tclConfig.Cavities[southCavity].MasterLaser = "southSignal";
+            tclConfig.Cavities[southCavity].AddSlaveLaser("v21Lock", "v21Signal"); //analog output channel name, analog input channel name
+            tclConfig.Cavities[southCavity].AddDefaultGain("v21Lock", 0.2);
+            tclConfig.Cavities[southCavity].AddFSRCalibration("v21Lock", 3.84);
+            tclConfig.Cavities[southCavity].AddSlaveLaser("v32Lock", "v32Signal");
+            tclConfig.Cavities[southCavity].AddDefaultGain("v32Lock", 0.2);
+            tclConfig.Cavities[southCavity].AddFSRCalibration("v32Lock", 3.84);
+            tclConfig.Cavities[southCavity].AddSlaveLaser("v11Lock", "v11Signal");
+            tclConfig.Cavities[southCavity].AddDefaultGain("v11Lock", 0.2);
+            tclConfig.Cavities[southCavity].AddFSRCalibration("v11Lock", 3.84);
 
-            // string MOTv1Cavity = "MOTv1Cavity";
-            // tclConfig.AddCavity(MOTv1Cavity);
-            // tclConfig.Cavities[MOTv1Cavity].RampOffset = "IRrampfb";
-            // tclConfig.Cavities[MOTv1Cavity].MasterLaser = "IRmaster";
-            // tclConfig.Cavities[MOTv1Cavity].AddDefaultGain("IRmaster", 0.2);
-            // tclConfig.Cavities[MOTv1Cavity].AddSlaveLaser("v2laser", "IRp1_v2laser");
-            // tclConfig.Cavities[MOTv1Cavity].AddDefaultGain("v2laser", 0.2);
-            // tclConfig.Cavities[MOTv1Cavity].AddFSRCalibration("v2laser", 3.84);
-            // tclConfig.Cavities[MOTv1Cavity].AddSlaveLaser("v3laser", "IRp2_v3laser");
-            // tclConfig.Cavities[MOTv1Cavity].AddDefaultGain("v3laser", 0.1);
-            // tclConfig.Cavities[MOTv1Cavity].AddFSRCalibration("v3laser", 3.84);
 
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
+            Info.Add("analogTrigger1", TCLInput + "/PFI0");
+
+
 
 
 
@@ -149,6 +141,33 @@ namespace DAQ.HAL
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
             //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
 
+
+            // MOTMaster configuration
+            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            mmConfig.ExternalFilePattern = "*.tif";
+            Info.Add("MotMasterConfiguration", mmConfig);
+
+            // Info.Add("PGType", "dedicated");
+            Info.Add("Element", "CaFBEC");
+
+            // Info.Add("AOPatternTrigger", pgBoard + "/PFI4"); //PFI6
+            // Info.Add("AOClockLine", pgBoard + "/PFI6"); //PFI6
+            // Info.Add("SecondAOPatternTrigger", pgBoard + "/PFI6");
+            // Info.Add("SecondAOClockLine", pgBoard + "/PFI3");
+
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            // analogBoards.Add("AO", pgBoard);
+            // analogBoards.Add("SecondAO", pgBoard);
+            // Info.Add("AnalogBoards", analogBoards);
+
+            // Info.Add("PatternGeneratorBoard", pgBoard);
+            // Info.Add("PGClockLine", pgBoard + "/PFI4");
+            // Info.Add("PGTriggerLine", pgBoard + "/PFI3");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
+            // additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
+            // Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+            // Info.Add("PGSlave0ClockLine", digitalPatternBoardAddress + "/PFI2");
+            // Info.Add("PGSlave0TriggerLine", digitalPatternBoardAddress + "/PFI6");
         }
 
         public override void ConnectApplications()

@@ -33,9 +33,9 @@ namespace DAQ.HAL
 		public void OutputPattern(UInt32[] pattern)
 		{
             //////////////////////////
-            //writer.WriteMultiSamplePort(false, pattern);
-            //taskRunning = true;
-            //pgTask.Start();
+            // writer.WriteMultiSamplePort(false, pattern);
+            // taskRunning = true;
+            // pgTask.Start();
             //////////////////////////
             writer.WriteMultiSamplePort(true, pattern);
 			SleepOnePattern();
@@ -45,9 +45,9 @@ namespace DAQ.HAL
         {
             writer.WriteMultiSamplePort(true, pattern);
             //////////////////////////
-            //writer.WriteMultiSamplePort(false, pattern);
-            //taskRunning = true;
-            //pgTask.Start();
+            // writer.WriteMultiSamplePort(false, pattern);
+            // taskRunning = true;
+            // pgTask.Start();
             //////////////////////////
             if (sleep==true)
                 SleepOnePattern();

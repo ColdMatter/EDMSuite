@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 
 using NationalInstruments.DAQmx;
-
+using WavemeterLockServer;
 using DAQ.Environment;
 using DAQ.HAL;
 
@@ -22,18 +22,18 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private double latestData;
 		[NonSerialized]
-		private WavemeterLock.Controller wavemeterContrller;
+		private WavemeterLockServer.Controller wavemeterContrller;
 		[NonSerialized]
 		private string serverComputerName;
 		[NonSerialized]
 		private string ipAddr;
 
-		private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+		private string hostName = (String)System.Environment.GetEnvironmentVariables()["IC-CZC136CFDJ"];
 
 		protected override void InitialiseSettings()
 		{
-			settings["laser"] =  "Laser";
-			settings["computer"] = hostName;
+			settings["channel"] =  1;
+			settings["computer"] = "IC-CZC136CFDJ";
 			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 
@@ -42,16 +42,16 @@ namespace ScanMaster.Acquire.Plugins
             if (!Environs.Debug)
             {
 				serverComputerName = (string)settings["computer"];
-
-				foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
+				
+				/*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
 				{
 					if (addr.AddressFamily == AddressFamily.InterNetwork)
 						ipAddr = addr.ToString();
-				}
+				}*/
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 
-				wavemeterContrller = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + ipAddr + ":" + eHelper.wavemeterLockTCPChannel + "/controller.rem"));
+				wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + "172.22.118.255" + ":" + "1984" + "/controller.rem"));
 			}
 			
 		}
@@ -74,7 +74,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = 1000*(wavemeterContrller.getSlaveFrequency((string)settings["laser"]) - (double)settings["offset"]);
+					latestData = 1000*(wavemeterContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
 				}
 			}
 		}

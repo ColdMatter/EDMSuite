@@ -190,8 +190,10 @@ namespace ScanMaster.GUI
             this.xAxis6 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
             this.normSigGateHigh = new NationalInstruments.UI.XYCursor();
+            this.normBgGateLow = new NationalInstruments.UI.XYCursor();
             this.tofOnPlot2 = new NationalInstruments.UI.WaveformPlot();
             this.yAxis4 = new NationalInstruments.UI.YAxis();
+            this.normBgGateHigh = new NationalInstruments.UI.XYCursor();
             this.tofOffPlot2 = new NationalInstruments.UI.WaveformPlot();
             this.tofOffAveragePlot2 = new NationalInstruments.UI.WaveformPlot();
             this.tofFitPlot2 = new NationalInstruments.UI.WaveformPlot();
@@ -212,8 +214,6 @@ namespace ScanMaster.GUI
             this.toolStripPropertyEditor2 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPropertyEditor3 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
-            this.normBgGateLow = new NationalInstruments.UI.XYCursor();
-            this.normBgGateHigh = new NationalInstruments.UI.XYCursor();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
@@ -234,11 +234,11 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.normSigGateLow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.normSigGateHigh)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.normBgGateLow)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.normBgGateHigh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraphNormed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.normBgGateLow)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.normBgGateHigh)).BeginInit();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -323,6 +323,7 @@ namespace ScanMaster.GUI
             this.xAxis3});
             this.pmtGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.pmtYAxis});
+            this.pmtGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.pmtGraph_PlotDataChanged);
             // 
             // pmtLowCursor
             // 
@@ -790,6 +791,14 @@ namespace ScanMaster.GUI
             this.normSigGateHigh.Plot = this.tofOnAveragePlot2;
             this.normSigGateHigh.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
+            // normBgGateLow
+            // 
+            this.normBgGateLow.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.normBgGateLow.LabelVisible = true;
+            this.normBgGateLow.LineStyle = NationalInstruments.UI.LineStyle.Dot;
+            this.normBgGateLow.Plot = this.tofOnPlot2;
+            this.normBgGateLow.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
+            // 
             // tofOnPlot2
             // 
             this.tofOnPlot2.LineColor = System.Drawing.Color.Blue;
@@ -798,6 +807,15 @@ namespace ScanMaster.GUI
             this.tofOnPlot2.PointStyle = NationalInstruments.UI.PointStyle.Plus;
             this.tofOnPlot2.XAxis = this.xAxis6;
             this.tofOnPlot2.YAxis = this.yAxis4;
+            // 
+            // normBgGateHigh
+            // 
+            this.normBgGateHigh.Color = System.Drawing.Color.Lime;
+            this.normBgGateHigh.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.normBgGateHigh.LabelVisible = true;
+            this.normBgGateHigh.LineStyle = NationalInstruments.UI.LineStyle.Dot;
+            this.normBgGateHigh.Plot = this.tofOnPlot2;
+            this.normBgGateHigh.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
             // 
             // tofOffPlot2
             // 
@@ -961,23 +979,6 @@ namespace ScanMaster.GUI
             this.toolStripPropertyEditor3.Source = new NationalInstruments.UI.PropertyEditorSource(this.tofGraph, "Annotations");
             this.toolStripPropertyEditor3.Text = "(Collection)";
             // 
-            // normBgGateLow
-            // 
-            this.normBgGateLow.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
-            this.normBgGateLow.LabelVisible = true;
-            this.normBgGateLow.LineStyle = NationalInstruments.UI.LineStyle.Dot;
-            this.normBgGateLow.Plot = this.tofOnPlot2;
-            this.normBgGateLow.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
-            // 
-            // normBgGateHigh
-            // 
-            this.normBgGateHigh.Color = System.Drawing.Color.Lime;
-            this.normBgGateHigh.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
-            this.normBgGateHigh.LabelVisible = true;
-            this.normBgGateHigh.LineStyle = NationalInstruments.UI.LineStyle.Dot;
-            this.normBgGateHigh.Plot = this.tofOnPlot2;
-            this.normBgGateHigh.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
-            // 
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1031,11 +1032,11 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.normSigGateLow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.normSigGateHigh)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.normBgGateLow)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.normBgGateHigh)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraphNormed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.normBgGateLow)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.normBgGateHigh)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1477,6 +1478,9 @@ namespace ScanMaster.GUI
 
         }
 
+        private void pmtGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
 
-	}
+        }
+    }
 }

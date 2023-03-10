@@ -117,7 +117,6 @@ namespace MOTMaster
                 }
             }
 
-
             if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
                 "tcp://localhost:1172/controller.rem");
 
