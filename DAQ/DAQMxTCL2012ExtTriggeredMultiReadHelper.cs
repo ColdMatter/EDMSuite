@@ -18,6 +18,7 @@ namespace DAQ.TransferCavityLock2012
         private string[] analogInputs;
         private string[] digitalInputs;
         private string trigger;
+        private List<bool> inverted = new List<bool> { };
 
         private Task readAIsTask;
         private Task readDIsTask;
@@ -59,10 +60,11 @@ namespace DAQ.TransferCavityLock2012
         private void ConfigureReadAI(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart) //AND CAVITY VOLTAGE!!! 
         {
             readAIsTask = new Task("readAIsTask");
-
+            this.inverted.Clear();
             foreach (string inputName in analogInputs)
             {
                 AnalogInputChannel channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputName];
+                this.inverted.Add(((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[inputName]).invert);
                 channel.AddToTask(readAIsTask, 0, 10);
             }
 
@@ -132,6 +134,15 @@ namespace DAQ.TransferCavityLock2012
             }
             data.AnalogData = analogReader.ReadMultiSample(numberOfMeasurements);
 
+            for (int i = 0; i < data.AnalogData.GetLength(0); ++i)
+            {
+                if (!inverted[i]) continue;
+                for (int j = 0; j < data.AnalogData.GetLength(1); ++j)
+                {
+                    data.AnalogData[i, j] *= -1;
+                }
+            }
+            
             if (digitalInputs.Length > 0)
             {
                 readDIsTask.Stop();

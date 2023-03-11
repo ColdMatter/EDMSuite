@@ -58,7 +58,7 @@ namespace DAQ.HAL
 
             //TCL configuration for pump cavity: 13/01/2021 (Chris)
             TCLConfig tclConfigPump = new TCLConfig("Pump");
-            tclConfigPump.Trigger = tclBoardPump + "/PFI0";
+            tclConfigPump.Trigger = tclBoardPump + "/PFI8";
             tclConfigPump.BaseRamp = "PumpCavityRampVoltage";
             tclConfigPump.TCPChannel = 1191;
             tclConfigPump.DefaultScanPoints = 500;

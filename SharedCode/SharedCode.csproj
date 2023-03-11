@@ -179,6 +179,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2023\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <Name>ICSharpCode.SharpZipLib</Name>
@@ -204,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="ThreadSync.cs" />
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="GateManager.cs" />
     <Compile Include="PointWithError.cs" />
@@ -313,7 +319,6 @@
     <Content Include="alglibnet2.dll" />
     <Content Include="ICSharpCode.SharpZipLib.dll" />
     <Content Include="MongoDB.Bson.dll" />
-    <EmbeddedResource Include="licenses.licx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
