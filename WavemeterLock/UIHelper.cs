@@ -53,11 +53,11 @@ namespace WavemeterLock
         {
             led.OnColor = color;
         }
-
+                                            
         public static void EnableControl(Control control, bool enabled)
         {
             control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
-        }
+        }                                                                                                                          
         private delegate void EnableControlDelegate(Control control, bool enabled);
         private static void EnableControlHelper(Control control, bool enabled)
         {
@@ -79,7 +79,7 @@ namespace WavemeterLock
         private delegate void PlotXYDelegate(double[] x, double[] y);
         public static void appendPointToScatterGraph(Graph graph, ScatterPlot plot, double x, double y)
         {
-            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
+                                                       graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
         }
 
         private delegate void ClearDataDelegate();

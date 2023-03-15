@@ -12943,6 +12943,12 @@
         <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.AllInstances.ReadRemoteSenseErrorChannelsGet">
             <summary>Sets the Shim of DaqStream.get_ReadRemoteSenseErrorChannels()</summary>
         </member>
+        <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.AllInstances.ReadReverseVoltageErrorChannelsExistGet">
+            <summary>Sets the Shim of DaqStream.get_ReadReverseVoltageErrorChannelsExist()</summary>
+        </member>
+        <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.AllInstances.ReadReverseVoltageErrorChannelsGet">
+            <summary>Sets the Shim of DaqStream.get_ReadReverseVoltageErrorChannels()</summary>
+        </member>
         <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.AllInstances.ReadSleepTimeGet">
             <summary>Sets the Shim of DaqStream.get_ReadSleepTime()</summary>
         </member>
@@ -13287,6 +13293,12 @@
         </member>
         <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.ReadRemoteSenseErrorChannelsGet">
             <summary>Sets the Shim of DaqStream.get_ReadRemoteSenseErrorChannels()</summary>
+        </member>
+        <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.ReadReverseVoltageErrorChannelsExistGet">
+            <summary>Sets the Shim of DaqStream.get_ReadReverseVoltageErrorChannelsExist()</summary>
+        </member>
+        <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.ReadReverseVoltageErrorChannelsGet">
+            <summary>Sets the Shim of DaqStream.get_ReadReverseVoltageErrorChannels()</summary>
         </member>
         <member name="P:NationalInstruments.DAQmx.Fakes.ShimDaqStream.ReadSleepTimeGet">
             <summary>Sets the Shim of DaqStream.get_ReadSleepTime()</summary>

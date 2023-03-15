@@ -87,7 +87,6 @@ namespace WavemeterLockServer
 
 
             //Check if there's any remote connection
-            //This seems stupid too, please let me know if you have a better way to do this -- Qinshu
             if (controller.remoteConnection[0])
                 led1.Value = true;
             else
@@ -169,6 +168,11 @@ namespace WavemeterLockServer
         }
 
         private void led2_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+
+        }
+
+        private void led3_StateChanged(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
 
         }
