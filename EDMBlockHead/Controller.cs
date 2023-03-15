@@ -245,8 +245,8 @@ namespace EDMBlockHead
             config.Settings["minimumSignalToRun"] = 200.0;
             config.Settings["targetStepperGateStartTime"] = 2380.0;
             config.Settings["targetStepperGateEndTime"] = 2580.0;
-            config.Settings["liveAnalysisGateLow"] = 2800.0;
-            config.Settings["liveAnalysisGateHigh"] = 3000.0;
+            config.Settings["liveAnalysisGateLow"] = 2900.0;
+            config.Settings["liveAnalysisGateHigh"] = 3100.0;
 
         }
 

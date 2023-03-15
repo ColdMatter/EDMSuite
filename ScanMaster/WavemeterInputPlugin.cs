@@ -14,7 +14,7 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
 	/// <summary>
-	/// A plugin to capture analog data using an E-series board.
+	/// A plugin to capture wavemeter reading from WavemeterLock. Returns measured frequency-offset in GHz.
 	/// </summary>
 	[Serializable]
 	public class WavemeterInputPlugin : AnalogInputPlugin
@@ -22,16 +22,19 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private double latestData;
 		[NonSerialized]
-		private WavemeterLockServer.Controller wavemeterContrller;
+		private WavemeterLock.Controller wavemeterContrller;
 		[NonSerialized]
 		private string serverComputerName;
 		[NonSerialized]
 		private string ipAddr;
 
+		private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+
 		protected override void InitialiseSettings()
 		{
-			settings["channel"] =  2;
-			settings["computer"] = "IC-CZC136CFDJ";
+			settings["laser"] =  "Laser";
+			settings["computer"] = hostName;
+			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 
 		public override void AcquisitionStarting()
@@ -48,7 +51,7 @@ namespace ScanMaster.Acquire.Plugins
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 
-				wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + ipAddr + ":" + "1984" + "/controller.rem"));
+				wavemeterContrller = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + ipAddr + ":" + "6666" + "/controller.rem"));
 			}
 			
 		}
@@ -71,7 +74,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = wavemeterContrller.getFrequency((int)settings["channel"]);
+					latestData = 1000*(wavemeterContrller.getSlaveFrequency((string)settings["laser"]) - (double)settings["offset"]);
 				}
 			}
 		}

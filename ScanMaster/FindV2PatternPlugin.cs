@@ -57,6 +57,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["DurationV2"] = 5000;
 			settings["DurationV1"] = 40000;
 			settings["v3delaytime"] = 14000;
+			settings["DurationIR"] = 50000;			
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -92,7 +93,8 @@ namespace ScanMaster.Acquire.Plugins
 				(bool)config.switchPlugin.Settings["switchActive"],
 				(int)settings["switchLineDelay"], 
 				(int)settings["shutter1offdelay"],
-				(int)settings["v3delaytime"]
+				(int)settings["v3delaytime"],
+				(int)settings["DurationIR"]
 				);
 
 			scanPatternBuilder.BuildPattern(((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

@@ -38,6 +38,7 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(FindV2PatternPlugin)),
 	 XmlInclude(typeof(FindV3PatternPlugin)),
 	 XmlInclude(typeof(Find4fPatternPlugin)),
+	 XmlInclude(typeof(Find4fNewPatternPlugin)),
 	 XmlInclude(typeof(TenHzTwoHzPatternPlugin)),
 	 XmlInclude(typeof(VelocityMeasSlowedPatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),]

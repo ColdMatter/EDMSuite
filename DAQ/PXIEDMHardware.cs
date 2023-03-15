@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Runtime.Remoting;
 using NationalInstruments.DAQmx;
-
+using DAQ.WavemeterLock;
 using DAQ.Pattern;
 using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
@@ -81,7 +81,7 @@ namespace DAQ.HAL
             Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
-            Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+            Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
             // YAG laser
             yag = new BrilliantLaser("ASRL13::INSTR");
@@ -256,6 +256,10 @@ namespace DAQ.HAL
 
             //ECDL piezo control
             AddAnalogOutputChannel("blueECDLPiezoVoltage", aoBoard + "/ao30", 0, 10);
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("WMLServer");
+            wmlConfig.AddSlaveLaser("BlueECDL", "blueECDLPiezoVoltage", 3);//name, analog, wavemeter channel
+
+            Info.Add("WMLServer", wmlConfig);
 
             // E field control and monitoring
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);

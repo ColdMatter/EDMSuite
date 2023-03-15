@@ -22,18 +22,22 @@ namespace WavemeterLock
 
         private string computer;
         private string name;
-        private string hostName = "IC-CZC136CFDJ";
+        //private string hostName = "IC-CZC136CFDJ";//Change this if the server is changed ic-czc136cfdj
+        //private string hostName = "PH-ULTRAEDM";
+        private string hostName = "IC-CZC222C0F4";
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
-        private double freqTolerance = 0.5;//Frequency change tolerance in THz
+        private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
+        public double updateRate = 100;
+        public int miniLoop = 50;
 
         private List<double> scanTimes;
-        public int numScanAverages = 1000;
+        public int numScanAverages = 100;
 
 
-        #region Set up TCP channel
+        #region Set up TCP channel and remote methods
 
         public void initializeTCPChannel()
         {
@@ -48,7 +52,7 @@ namespace WavemeterLock
 
             EnvironsHelper eHelper = new EnvironsHelper(computer);
 
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1984" + "/controller.rem"));
+            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1995" + "/controller.rem"));
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -80,6 +84,32 @@ namespace WavemeterLock
             return wavemeterContrller.getFrequency(channelNum);
 
         }
+
+        //Methods for ScanMaster
+        public void setSlaveFrequency(string name, double freq)
+        {
+            lasers[name].setFrequency = freq;
+        }
+
+        public double getSlaveFrequency(string name)
+        {
+            return lasers[name].currentFrequency;
+        }
+
+        public void setSlaveVoltage(string name, double v)
+        {
+            lasers[name].CurrentVoltage = v;
+        }
+
+        public double getSlaveVoltage(string name)
+        {
+            return lasers[name].CurrentVoltage;
+        }
+
+        public void updateSetpoint(string name)
+        {
+        }
+
         #endregion
 
         public Dictionary<string, Laser> lasers;
@@ -95,7 +125,7 @@ namespace WavemeterLock
 
         }
         
-        public Color selectColor(int par)//Asign a plot line color for each laser
+        public Color selectColor(int par)//Assign a plot line color for each laser
         {
             switch (par)
             {
@@ -146,9 +176,10 @@ namespace WavemeterLock
             mainThread.Start();
         }
 
-        public void initializeLasers()
+
+        public void initializeLasers()//For each laser in configuration, create a control panel in main form
         {
-            lasers = new Dictionary<string, Laser>(); //A dictionary to store slave lasers
+            lasers = new Dictionary<string, Laser>(); 
 
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
@@ -157,7 +188,7 @@ namespace WavemeterLock
                 timeList.Add(slaveLaser, 0);
             }
 
-            foreach (KeyValuePair<string, string> entry in config.slaveLasers)//Enter value in dictionary according to config
+            foreach (KeyValuePair<string, string> entry in config.slaveLasers)
             {
                 string laser = entry.Key;
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
@@ -272,15 +303,13 @@ namespace WavemeterLock
 
         
 
-        public int returnLaserState(string slavename){
+        public bool returnLaserState(string slavename){
             Laser laser = lasers[slavename];
             if (laser.lState == Laser.LaserState.LOCKED)
-                return 1;
-            else if (laser.lState == Laser.LaserState.OUTOFRANGE)
-            {
-                return 2;
-            }
-            else return 0;
+                return true;
+            else 
+                return false;
+            
             }
 
         public string getChannelNum(string slavename)
@@ -357,31 +386,45 @@ namespace WavemeterLock
 
             while (WMLState!= ControllerState.STOPPED)
             {
-                foreach(string slave in lasers.Keys)
+                foreach (string slave in lasers.Keys)
                 {
-                    Laser laser = lasers[slave];
-                    updateFrequency(laser);
-                    loopcount++;
-                    miniLoopcount++;
-                    if(!Convert.ToBoolean(laser.lState == Laser.LaserState.FREE))
+                    updateFrequency(lasers[slave]);
+                    
+                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
                     {
-                        if (Math.Abs(getFrequency(laser.WLMChannel) - laser.setFrequency)>freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+                        if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
                         {
                             faultyLaser = slave;
-                            laser.DisengageLock();
+                            lasers[slave].DisengageLock();
                             Thread msgThread = new Thread(errorMsg);
                             msgThread.Start();
                         }
-                        laser.UpdateLock();
-                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;
-                        if (miniLoopcount > 50)
-                        {
-                            panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * laser.FrequencyError);
-                            miniLoopcount = 0;
-                        }
-
+                        lasers[slave].UpdateLock();
                     }
                 }
+
+                loopcount++;
+                miniLoopcount++;
+
+                foreach (string slave in lasers.Keys)
+                {
+                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
+                    {
+                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;
+                    }
+
+                }
+
+                if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
+                {
+                    foreach (string slave in lasers.Keys)
+                    {
+                        panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
+                        miniLoopcount = 0;
+                    }
+                }
+
+
                 updateLockRate(stopWatch);
 
                 stopWatch.Reset();

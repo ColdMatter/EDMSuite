@@ -169,11 +169,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, rfState, mwState, scramb
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
 	bc.Settings["maximumNumberOfTimesToStepTarget"] = 4000
 	# minimum signal in the first detector, in Vus
-	bc.Settings["minimumSignalToRun"] = 150.0
+	bc.Settings["minimumSignalToRun"] = 100.0
 	bc.Settings["targetStepperGateStartTime"] = 2450.0
 	bc.Settings["targetStepperGateEndTime"] = 2650.0
-	bc.Settings["liveAnalysisGateLow"] = 2800.0
-	bc.Settings["liveAnalysisGateHigh"] = 3000.0
+	bc.Settings["liveAnalysisGateLow"] = 2900.0
+	bc.Settings["liveAnalysisGateHigh"] = 3100.0
 	return bc
 
 # lock gains

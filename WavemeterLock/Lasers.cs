@@ -11,7 +11,7 @@ using System.Threading;
 namespace WavemeterLock
 {
     /// <summary>
-    /// A base class to represent commonalities of Slave and Master lasers.
+    /// A base class to represent slave lasers.
     /// </summary>
     public class Laser
     {
@@ -32,9 +32,10 @@ namespace WavemeterLock
 
         public LaserState lState = LaserState.FREE;
 
-        public virtual double setFrequency { get; set; }
-        public double currentFrequency { get; set; }
-        public double FrequencyError { get; set; }
+        public virtual double setFrequency { get; set; } //THz
+        public double currentFrequency { get; set; } //THz
+        public double FrequencyError { get; set; } //THz
+        public bool isOutOfRange { get; set; } //Mark if output voltage is out of range
 
         public double UpperVoltageLimit
         {
@@ -62,26 +63,23 @@ namespace WavemeterLock
 
             set
             {
-                if (value < LowerVoltageLimit) // Want to make sure we don't try to send voltage that is too high or low so WML doesn't crash
+                if (value < LowerVoltageLimit) //Keeps output voltage in the range of the board
                 {
                     currentVoltage = LowerVoltageLimit;
-                    lState = LaserState.OUTOFRANGE;
+                    isOutOfRange = true;
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
-                    lState = LaserState.OUTOFRANGE;
+                    isOutOfRange = true;
                 }
                 else
                 {
                     currentVoltage = value;
-                    if (lState == LaserState.OUTOFRANGE)
-                        lState = LaserState.LOCKED;//If output voltage returns back to range, identify laser as locked
+                    isOutOfRange = false;
                 }
-                
                     laser.SetLaserVoltage(currentVoltage);
                 
-               
             }
             
         }
@@ -96,6 +94,7 @@ namespace WavemeterLock
             PGain = 0;
             IGain = 0;
             offsetVoltage = 0;
+            isOutOfRange = false;
            
         }
 
@@ -128,7 +127,7 @@ namespace WavemeterLock
 
         
 
-        public virtual void ResetOutput()
+        public virtual void ResetOutput() //Clear the I lock output
         {
             CurrentVoltage = PGain * FrequencyError + offsetVoltage;
             CurrentVoltage = currentVoltage;

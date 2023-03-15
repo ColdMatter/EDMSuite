@@ -309,6 +309,12 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "IC-CZC222C0F4":
+                    Hardware = new WMLServerHuxleyHardware();
+                    FileSystem = new WMLServerHuxleyFileSystem();
+                    Debug = false;
+                    break;
+
                 default:
 					Hardware = new EDMHardware();
 					FileSystem = new FileSystem();

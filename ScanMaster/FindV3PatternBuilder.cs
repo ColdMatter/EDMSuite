@@ -20,9 +20,9 @@ namespace ScanMaster.Acquire.Patterns
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
 
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
-			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int ShutterPulseLength, int delayToDetectorTrigger,
+			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0, 
-			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime)
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, int DurationIR, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime)
 		{
 			int time;
 			if (padStart == 0)
@@ -43,8 +43,10 @@ namespace ScanMaster.Acquire.Patterns
 					//Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
 					//Pulse(time, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
 
-					Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
-					Pulse(time, shutter1offdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber);
+					//IR shutter
+					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the IR shutter. The newport ones need a pulse to turn on and one to turn off
+					Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber); // this is the IR shutter
+
 
 					//v0stuff
 					Pulse(time, shutterslowdelay - padStart - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//v0 aom//turns it off 3ms before (for 3ms) v0 is on then off after v0 is pulse and this is the v0 think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
@@ -73,7 +75,17 @@ namespace ScanMaster.Acquire.Patterns
 				else //else do a normal shot with the switch line high. e.f 0,2,4,6 it hits this one first
 				{
 					Pulse(time, v3delaytime, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this is v3 this line seems to not work
-					
+
+					int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
+					// first the pulse with the switch line high
+					//Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
+					//Pulse(time, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
+
+					//IR shutter
+					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the IR shutter. The newport ones need a pulse to turn on and one to turn off
+					Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber); // this is the IR shutter
+
+
 					//v0stuff
 					Pulse(time, shutterslowdelay-padStart-3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//v0 aom//turns it off 3ms before (for 3ms) v0 is on then off after v0 is pulse and this is the v0 think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
 					Pulse(time, shutterslowdelay - padStart+ DurationV0,3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//v0 aom

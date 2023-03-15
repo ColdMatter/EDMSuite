@@ -19,7 +19,8 @@ namespace WavemeterLockServer
 
         static void Main()
         {
-            int channelNumber = 1984;
+            //int channelNumber = 1984;
+            int channelNumber = 1992;
             Controller controller = new Controller();
 
             // publish the controller to the remoting system

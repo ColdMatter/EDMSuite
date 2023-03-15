@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAQ.WavemeterLock
 {
+    /// <summary>
+    /// Configuration for wavemeterlock
+    /// </summary>
     public class WavemeterLockConfig
     {
         public string name;

@@ -73,13 +73,14 @@ namespace WavemeterLock
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.setAsReading = new System.Windows.Forms.Button();
+            this.offset = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.offsetSet = new System.Windows.Forms.Button();
             this.resetGraph = new System.Windows.Forms.Button();
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
-            this.offsetSet = new System.Windows.Forms.Button();
-            this.offset = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.setAsReading = new System.Windows.Forms.Button();
+            this.labelOutOfRange = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
@@ -182,7 +183,7 @@ namespace WavemeterLock
             // frequencyError
             // 
             this.frequencyError.AutoSize = true;
-            this.frequencyError.Location = new System.Drawing.Point(148, 150);
+            this.frequencyError.Location = new System.Drawing.Point(148, 115);
             this.frequencyError.Name = "frequencyError";
             this.frequencyError.Size = new System.Drawing.Size(13, 13);
             this.frequencyError.TabIndex = 54;
@@ -191,7 +192,7 @@ namespace WavemeterLock
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(26, 150);
+            this.label8.Location = new System.Drawing.Point(26, 115);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(116, 13);
             this.label8.TabIndex = 53;
@@ -200,7 +201,7 @@ namespace WavemeterLock
             // VOut
             // 
             this.VOut.AutoSize = true;
-            this.VOut.Location = new System.Drawing.Point(110, 123);
+            this.VOut.Location = new System.Drawing.Point(110, 147);
             this.VOut.Name = "VOut";
             this.VOut.Size = new System.Drawing.Size(32, 13);
             this.VOut.TabIndex = 48;
@@ -209,7 +210,7 @@ namespace WavemeterLock
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(26, 123);
+            this.label5.Location = new System.Drawing.Point(26, 147);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(82, 13);
             this.label5.TabIndex = 47;
@@ -400,6 +401,43 @@ namespace WavemeterLock
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
             // 
+            // setAsReading
+            // 
+            this.setAsReading.Location = new System.Drawing.Point(304, 60);
+            this.setAsReading.Name = "setAsReading";
+            this.setAsReading.Size = new System.Drawing.Size(85, 23);
+            this.setAsReading.TabIndex = 75;
+            this.setAsReading.Text = "Set as reading";
+            this.setAsReading.UseVisualStyleBackColor = true;
+            this.setAsReading.Click += new System.EventHandler(this.setAsReading_Click);
+            // 
+            // offset
+            // 
+            this.offset.Location = new System.Drawing.Point(69, 156);
+            this.offset.Name = "offset";
+            this.offset.Size = new System.Drawing.Size(59, 20);
+            this.offset.TabIndex = 76;
+            this.offset.Text = "0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(15, 161);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(54, 13);
+            this.label7.TabIndex = 75;
+            this.label7.Text = "Offset (V):";
+            // 
+            // offsetSet
+            // 
+            this.offsetSet.Location = new System.Drawing.Point(161, 156);
+            this.offsetSet.Name = "offsetSet";
+            this.offsetSet.Size = new System.Drawing.Size(75, 23);
+            this.offsetSet.TabIndex = 75;
+            this.offsetSet.Text = "Set";
+            this.offsetSet.UseVisualStyleBackColor = true;
+            this.offsetSet.Click += new System.EventHandler(this.offsetSet_Click);
+            // 
             // resetGraph
             // 
             this.resetGraph.Location = new System.Drawing.Point(339, 98);
@@ -422,6 +460,7 @@ namespace WavemeterLock
             // 
             // groupBoxLaserInfo
             // 
+            this.groupBoxLaserInfo.Controls.Add(this.labelOutOfRange);
             this.groupBoxLaserInfo.Controls.Add(this.label1);
             this.groupBoxLaserInfo.Controls.Add(this.lockChannelNum);
             this.groupBoxLaserInfo.Controls.Add(this.displayFreq);
@@ -438,43 +477,17 @@ namespace WavemeterLock
             this.groupBoxLaserInfo.TabIndex = 74;
             this.groupBoxLaserInfo.TabStop = false;
             this.groupBoxLaserInfo.Text = "Laser Status";
+            this.groupBoxLaserInfo.Enter += new System.EventHandler(this.groupBoxLaserInfo_Enter);
             // 
-            // offsetSet
+            // labelOutOfRange
             // 
-            this.offsetSet.Location = new System.Drawing.Point(161, 156);
-            this.offsetSet.Name = "offsetSet";
-            this.offsetSet.Size = new System.Drawing.Size(75, 23);
-            this.offsetSet.TabIndex = 75;
-            this.offsetSet.Text = "Set";
-            this.offsetSet.UseVisualStyleBackColor = true;
-            this.offsetSet.Click += new System.EventHandler(this.offsetSet_Click);
-            // 
-            // offset
-            // 
-            this.offset.Location = new System.Drawing.Point(69, 156);
-            this.offset.Name = "offset";
-            this.offset.Size = new System.Drawing.Size(59, 20);
-            this.offset.TabIndex = 76;
-            this.offset.Text = "0";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 161);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(54, 13);
-            this.label7.TabIndex = 75;
-            this.label7.Text = "Offset (V):";
-            // 
-            // setAsReading
-            // 
-            this.setAsReading.Location = new System.Drawing.Point(304, 60);
-            this.setAsReading.Name = "setAsReading";
-            this.setAsReading.Size = new System.Drawing.Size(85, 23);
-            this.setAsReading.TabIndex = 75;
-            this.setAsReading.Text = "Set as reading";
-            this.setAsReading.UseVisualStyleBackColor = true;
-            this.setAsReading.Click += new System.EventHandler(this.setAsReading_Click);
+            this.labelOutOfRange.AutoSize = true;
+            this.labelOutOfRange.ForeColor = System.Drawing.Color.Red;
+            this.labelOutOfRange.Location = new System.Drawing.Point(110, 166);
+            this.labelOutOfRange.Name = "labelOutOfRange";
+            this.labelOutOfRange.Size = new System.Drawing.Size(74, 13);
+            this.labelOutOfRange.TabIndex = 75;
+            this.labelOutOfRange.Text = "Out of Range!";
             // 
             // LockControlPanel
             // 
@@ -497,7 +510,7 @@ namespace WavemeterLock
             this.Controls.Add(this.groupBoxErrorPlot);
             this.Controls.Add(this.groupBoxLaserInfo);
             this.Name = "LockControlPanel";
-            this.Size = new System.Drawing.Size(679, 553);
+            this.Size = new System.Drawing.Size(679, 522);
             this.Load += new System.EventHandler(this.LockControlPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
@@ -553,5 +566,6 @@ namespace WavemeterLock
         private Label label7;
         private Button offsetSet;
         private Button setAsReading;
+        private Label labelOutOfRange;
     }
 }

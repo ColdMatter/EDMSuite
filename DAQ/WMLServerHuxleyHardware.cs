@@ -12,22 +12,22 @@ using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
-    public class WMLServerHardware : DAQ.HAL.Hardware
+    public class WMLServerHuxleyHardware : DAQ.HAL.Hardware
     {
        
-        public WMLServerHardware()
+        public WMLServerHuxleyHardware()
         {
-            Boards.Add("WMLBoard", "/Dev1");
-            string WMLBoard = (string)Boards["WMLBoard"];
+            //Boards.Add("WMLBoard", "/Dev1");
+            //string WMLBoard = (string)Boards["WMLBoard"];
 
-            AddAnalogOutputChannel("WavemeterLock1", WMLBoard + "/ao0", 0, 5);
-            AddAnalogOutputChannel("WavemeterLock2", WMLBoard + "/ao1", 0, 5);
+            //AddAnalogOutputChannel("WavemeterLock1", WMLBoard + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("WavemeterLock2", WMLBoard + "/ao1", 0, 5);
 
             //Configuration for wavemeterlock
-            WavemeterLockConfig wmlConfig = new WavemeterLockConfig();
-            wmlConfig.AddSlaveLaser("SlaveLaser1", "WavemeterLock1",6);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddSlaveLaser("SlaveLaser2", "WavemeterLock2", 3);
-            Info.Add("WMLServer", wmlConfig);
+            //WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            //wmlConfig.AddSlaveLaser("SlaveLaser1", "WavemeterLock1",6);//Laser name, analog channel, wavemeter channel
+            //wmlConfig.AddSlaveLaser("SlaveLaser2", "WavemeterLock2", 3);
+            //Info.Add("Default", wmlConfig);
 
         }
 

@@ -85,7 +85,16 @@ namespace WavemeterLock
 
         }
 
-       
+        private void rateSetBtn_Click (object sender, EventArgs e)
+        {
+            double rate = Convert.ToDouble(setRate.Text);
+            controller.updateRate = rate;
+            controller.numScanAverages = Convert.ToInt32(rate);
+            controller.miniLoop = Convert.ToInt32(rate/10);
+
+        }
+
+
 
         private void LockChannelNumber_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
         {

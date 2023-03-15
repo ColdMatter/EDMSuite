@@ -124,6 +124,8 @@ namespace EDMBlockHead.GUI
             this.tofPlot2 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis2 = new NationalInstruments.UI.XAxis();
             this.yAxis2 = new NationalInstruments.UI.YAxis();
+            this.GateStart = new NationalInstruments.UI.WaveformPlot();
+            this.GateEnd = new NationalInstruments.UI.WaveformPlot();
             this.tofGraph3 = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.tofPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
@@ -137,8 +139,6 @@ namespace EDMBlockHead.GUI
             this.tofPlot4 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
             this.yAxis5 = new NationalInstruments.UI.YAxis();
-            this.GateStart = new NationalInstruments.UI.WaveformPlot();
-            this.GateEnd = new NationalInstruments.UI.WaveformPlot();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.progressTank)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph2)).BeginInit();
@@ -344,6 +344,7 @@ namespace EDMBlockHead.GUI
             this.xAxis2});
             this.tofGraph2.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis2});
+            this.tofGraph2.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.tofGraph2_PlotDataChanged);
             // 
             // tofPlot2
             // 
@@ -356,6 +357,17 @@ namespace EDMBlockHead.GUI
             // 
             this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 2D);
+            // 
+            // GateStart
+            // 
+            this.GateStart.CanScaleYAxis = false;
+            this.GateStart.XAxis = this.xAxis2;
+            this.GateStart.YAxis = this.yAxis2;
+            // 
+            // GateEnd
+            // 
+            this.GateEnd.XAxis = this.xAxis2;
+            this.GateEnd.YAxis = this.yAxis2;
             // 
             // tofGraph3
             // 
@@ -442,17 +454,6 @@ namespace EDMBlockHead.GUI
             // 
             this.yAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis5.Range = new NationalInstruments.UI.Range(-1D, 10D);
-            // 
-            // GateStart
-            // 
-            this.GateStart.CanScaleYAxis = false;
-            this.GateStart.XAxis = this.xAxis2;
-            this.GateStart.YAxis = this.yAxis2;
-            // 
-            // GateEnd
-            // 
-            this.GateEnd.XAxis = this.xAxis2;
-            this.GateEnd.YAxis = this.yAxis2;
             // 
             // MainWindow
             // 
@@ -650,7 +651,9 @@ namespace EDMBlockHead.GUI
 
         }
 
+        private void tofGraph2_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
 
-
+        }
     }
 }

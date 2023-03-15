@@ -7,6 +7,7 @@ using DAQ.Pattern;
 using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
+using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
@@ -30,6 +31,7 @@ namespace DAQ.HAL
             string ExtraBoard = "/PXI1Slot5";
             //string usbbreakout = "/Dev4";
 
+            Boards.Add("daq", "/PXI1Slot5");
             Boards.Add("tclBoardProbe", "/PXI1Slot5");
             Boards.Add("pg", "/PXI1Slot6");
             //Boards.Add("tclBoardPump", "/PXI1Slot6");
@@ -67,47 +69,77 @@ namespace DAQ.HAL
             AddAnalogInputChannel("ProbeCavityRampVoltage", digitalPatternBoardAddress + "/ai8", AITerminalConfiguration.Rse); //tick this is the ramp impute
             AddAnalogInputChannel("Probemaster", digitalPatternBoardAddress + "/ai14", AITerminalConfiguration.Rse); //tick this is the 780nm photodiode
             AddAnalogInputChannel("Probep1", digitalPatternBoardAddress + "/ai12", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input
-            AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - slowing laser
-            AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //this photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
-
+            AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - v3
+            AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
+            //AddAnalogInputChannel("Probep4", digitalPatternBoardAddress + "/ai13", AITerminalConfiguration.Rse); //v2 photodiode slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
+           // AddAnalogInputChannel("Probep5", digitalPatternBoardAddress + "/ai19", AITerminalConfiguration.Rse); //used for the attisse
 
             // Lasers locked to Probe cavity
-            AddAnalogOutputChannel("slowingLaser", digitalPatternBoardAddress + "/ao2", 0, 10);
+            AddAnalogOutputChannel("slowingLaser", digitalPatternBoardAddress + "/ao2", -4, 4); // connected to slowing v0 now
             AddAnalogOutputChannel("LatticeProbeLaser", digitalPatternBoardAddress + "/ao1", 0, 10); //tick //this is the analogue ouput port on the DAQ card for the frequency feedback of the laser (piezo in our case)
-            AddAnalogOutputChannel("ProbeCavityLengthVoltage", digitalPatternBoardAddress + "/ao0", 0, 10); //tick //this is the voltage that stabilises the length of the cavity
+            AddAnalogOutputChannel("ProbeCavityLengthVoltage", digitalPatternBoardAddress + "/ao0", -9, 0); //tick //this is the voltage that stabilises the length of the cavity (needs to have 0 because thats where its intialises)
             AddAnalogOutputChannel("v3laser", digitalPatternBoardAddress + "/ao3", 0, 10);
-
-
+            //AddAnalogOutputChannel("mattisse", ExtraBoard + "/ao1", 0, 10);
             //
 
+            // V2 cavity inputs
+            AddAnalogInputChannel("V2CavityRampVoltage", digitalPatternBoardAddress + "/ai4", AITerminalConfiguration.Rse); //tick this is the ramp input
+            AddAnalogInputChannel("V2CavityMaster", digitalPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse); //tick this is the 780nm photodiode
+            AddAnalogInputChannel("V2CavityP1", digitalPatternBoardAddress + "/ai5", AITerminalConfiguration.Rse); //tick //this is the v2 laser photodiode input
 
+            //Outputs for V2 cavity
+            AddAnalogOutputChannel("V2CavityLengthVoltage", ExtraBoard + "/ao1", -10, 10);  //this is the voltage that stabilises the length of the cavity
+            AddAnalogOutputChannel("v2laser", ExtraBoard + "/ao0", 0, 10);
+
+
+            //Configuration for wavemeterlock
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("V2Laser", "v2laser", 1);//Laser name, analog channel, wavemeter channel
+            Info.Add("Default", wmlConfig);
 
             //TCL coniguration for Lattice EDM
             TCLConfig tclConfigProbe = new TCLConfig("Probe");
             tclConfigProbe.Trigger = digitalPatternBoardAddress + "/PFI0";
             tclConfigProbe.BaseRamp = "ProbeCavityRampVoltage";
             tclConfigProbe.TCPChannel = 1190;
-            tclConfigProbe.DefaultScanPoints = 2400 * 1 / 4;
+            tclConfigProbe.DefaultScanPoints = 1100;
             tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
             tclConfigProbe.AnalogSampleRate = 245000 * 1 / 8;//reduce number 12/3/21 by factr 10
             tclConfigProbe.MaximumNLMFSteps = 20;
             tclConfigProbe.TriggerOnRisingEdge = true;
+            
             string probe = "ProbeCavity";
-
             tclConfigProbe.AddCavity(probe);
             tclConfigProbe.Cavities[probe].AddSlaveLaser("LatticeProbeLaser", "Probep1");
             tclConfigProbe.Cavities[probe].AddSlaveLaser("slowingLaser", "Probep3");
             tclConfigProbe.Cavities[probe].AddSlaveLaser("v3laser", "Probep2");
+            //tclConfigProbe.Cavities[probe].AddSlaveLaser("v2laser", "Probep4");
+            //tclConfigProbe.Cavities[probe].AddSlaveLaser("mattisse", "Probep5");
 
             tclConfigProbe.Cavities[probe].MasterLaser = "Probemaster";
             tclConfigProbe.Cavities[probe].RampOffset = "ProbeCavityLengthVoltage";
-            tclConfigProbe.Cavities[probe].AddDefaultGain("Master", 0.4);
+            tclConfigProbe.Cavities[probe].AddDefaultGain("Master", -0.04);
             tclConfigProbe.Cavities[probe].AddDefaultGain("LatticeProbeLaser", 1.00);
             tclConfigProbe.Cavities[probe].AddFSRCalibration("LatticeProbeLaser", 3.84);
             tclConfigProbe.Cavities[probe].AddDefaultGain("slowingLaser", 0.1);
             tclConfigProbe.Cavities[probe].AddFSRCalibration("slowingLaser", 3.84);
             tclConfigProbe.Cavities[probe].AddDefaultGain("v3laser", 0.1);
             tclConfigProbe.Cavities[probe].AddFSRCalibration("v3laser", 3.84);
+            //tclConfigProbe.Cavities[probe].AddDefaultGain("v2laser", 0.1);
+            //tclConfigProbe.Cavities[probe].AddFSRCalibration("v2laser", 3.84);
+            //tclConfigProbe.Cavities[probe].AddDefaultGain("mattisse", 0.1);
+           // tclConfigProbe.Cavities[probe].AddFSRCalibration("mattisse", 3.84);
+
+            string v2cavity = "V2Cavity";
+            tclConfigProbe.AddCavity(v2cavity);
+            tclConfigProbe.Cavities[v2cavity].AddSlaveLaser("v2laser", "V2CavityP1");
+
+            tclConfigProbe.Cavities[v2cavity].MasterLaser = "V2CavityMaster";
+            tclConfigProbe.Cavities[v2cavity].RampOffset = "V2CavityLengthVoltage";
+            tclConfigProbe.Cavities[v2cavity].AddDefaultGain("Master", -0.04);
+            tclConfigProbe.Cavities[v2cavity].AddDefaultGain("v2laser", 1.00);
+            tclConfigProbe.Cavities[v2cavity].AddFSRCalibration("v2laser", 3.84);
+
 
             //Info.Add("TCLConfigPump", tclConfigPump);
             Info.Add("TCLConfigProbe", tclConfigProbe);
@@ -207,6 +239,7 @@ namespace DAQ.HAL
             ////AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", ExtraBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt2", ExtraBoard + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("photodiode", ExtraBoard + "/ai6", AITerminalConfiguration.Differential);
             AddDigitalOutputChannel("shutterslow2", digitalPatternBoardAddress, 0, 12);
             ////AddAnalogInputChannel("VISp2_probelaser", tclBoardProbe + "/ai3", AITerminalConfiguration.Rse);
             ////AddAnalogOutputChannel("probelaser", tclBoardProbe + "/ao2", 0, 10);
@@ -232,11 +265,16 @@ namespace DAQ.HAL
 
 
             //Counter Channels
+
+            AddCounterChannel("pmtCounter", ExtraBoard + "/ctr0");  // channel used for photon counting PFI8 is source, PFI9 is gate 
+            AddCounterChannel("sample clock", ExtraBoard + "/ctr1"); // channel used for photon counting PFI13 is output 
+
+
             AddCounterChannel("westLeakage", digitalPatternBoardAddress+"/ctr0");
             AddCounterChannel("eastLeakage", digitalPatternBoardAddress+"/ctr1");
 
             AddAnalogInputChannel("cPlusMonitor", digitalPatternBoardAddress + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("cMinusMonitor", digitalPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("cMinusMonitor", digitalPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);
 
             AddAnalogOutputChannel("cMinusPlate", digitalPatternBoardAddress + "/ao1");
 
