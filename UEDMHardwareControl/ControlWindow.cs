@@ -1582,5 +1582,7 @@ namespace UEDMHardwareControl
             cmdLib.RelativeMove(DeviceKey, 4, -Stepsize4);
             lbl_Motor4location.Text = (initialposition4 -= Stepsize4).ToString();
         }
+
+        #endregion
     }
 }
