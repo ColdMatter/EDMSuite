@@ -102,7 +102,7 @@ namespace DAQ.Environment
                 case "PH-ULTRAEDM":
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();
-                    Debug = true;
+                    Debug = false;
                     //ExperimentType = "edm";
                     break;
 
@@ -336,6 +336,12 @@ namespace DAQ.Environment
                 case "IC-CZC225B85M":
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
+                    Debug = false;
+                    break;
+
+                case "IC-CZC222C0F4":
+                    Hardware = new WMLServerHuxleyHardware();
+                    FileSystem = new WMLServerHuxleyFileSystem();
                     Debug = false;
                     break;
 

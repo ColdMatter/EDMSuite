@@ -67,7 +67,7 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
             Info.Add("Default", wmlConfig);
             Info.Add("TCLDefault", tclConfigMBR);
-            Info.Add("defaultcavity", tclConfigMBR);
+            Info.Add("DefaultCavity", tclConfigMBR);
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", PatternBoardAddress, 0, 1);//Pin 

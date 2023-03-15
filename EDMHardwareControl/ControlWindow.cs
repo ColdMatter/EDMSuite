@@ -2160,7 +2160,7 @@ namespace EDMHardwareControl
             this.label131.Name = "label131";
             this.label131.Size = new System.Drawing.Size(12, 23);
             this.label131.TabIndex = 72;
-            this.label131.Text = "±";
+            this.label131.Text = "?";
             // 
             // label130
             // 
@@ -2168,7 +2168,7 @@ namespace EDMHardwareControl
             this.label130.Name = "label130";
             this.label130.Size = new System.Drawing.Size(12, 23);
             this.label130.TabIndex = 71;
-            this.label130.Text = "±";
+            this.label130.Text = "?";
             // 
             // northIMonitorErrorTextBox
             // 
@@ -7557,7 +7557,7 @@ namespace EDMHardwareControl
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(771, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1924, 24);
             this.menuStrip1.TabIndex = 26;
             this.menuStrip1.Text = "menuStrip1";
             // 
