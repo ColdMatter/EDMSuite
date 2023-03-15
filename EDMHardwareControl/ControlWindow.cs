@@ -1180,6 +1180,8 @@ namespace EDMHardwareControl
             this.yagQEnableButton = new System.Windows.Forms.Button();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.groupBox45 = new System.Windows.Forms.GroupBox();
+            this.label190 = new System.Windows.Forms.Label();
+            this.OffsetTextBox = new System.Windows.Forms.TextBox();
             this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
             this.DegaussStartButton = new System.Windows.Forms.Button();
             this.ExpDegaussTextBox = new System.Windows.Forms.TextBox();
@@ -1314,8 +1316,6 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.OffsetTextBox = new System.Windows.Forms.TextBox();
-            this.label190 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -6388,6 +6388,22 @@ namespace EDMHardwareControl
             this.groupBox45.TabStop = false;
             this.groupBox45.Text = "Degausser";
             // 
+            // label190
+            // 
+            this.label190.Location = new System.Drawing.Point(16, 101);
+            this.label190.Name = "label190";
+            this.label190.Size = new System.Drawing.Size(102, 23);
+            this.label190.TabIndex = 66;
+            this.label190.Text = "Offset (V)";
+            // 
+            // OffsetTextBox
+            // 
+            this.OffsetTextBox.Location = new System.Drawing.Point(117, 100);
+            this.OffsetTextBox.Name = "OffsetTextBox";
+            this.OffsetTextBox.Size = new System.Drawing.Size(64, 20);
+            this.OffsetTextBox.TabIndex = 65;
+            this.OffsetTextBox.Text = "-0.002";
+            // 
             // DegaussLED
             // 
             this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
@@ -7652,22 +7668,6 @@ namespace EDMHardwareControl
             // 
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
-            // 
-            // OffsetTextBox
-            // 
-            this.OffsetTextBox.Location = new System.Drawing.Point(117, 100);
-            this.OffsetTextBox.Name = "OffsetTextBox";
-            this.OffsetTextBox.Size = new System.Drawing.Size(64, 20);
-            this.OffsetTextBox.TabIndex = 65;
-            this.OffsetTextBox.Text = "-0.002";
-            // 
-            // label190
-            // 
-            this.label190.Location = new System.Drawing.Point(16, 101);
-            this.label190.Name = "label190";
-            this.label190.Size = new System.Drawing.Size(102, 23);
-            this.label190.TabIndex = 66;
-            this.label190.Text = "Offset (V)";
             // 
             // ControlWindow
             // 
