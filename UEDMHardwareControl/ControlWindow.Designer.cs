@@ -178,6 +178,7 @@
             this.tabPageSourceModes = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageRefreshMode = new System.Windows.Forms.TabPage();
+            this.btClearRefreshModeStatus = new System.Windows.Forms.Button();
             this.labelRefreshModeInfo = new System.Windows.Forms.Label();
             this.labelRefreshModeInfoText = new System.Windows.Forms.Label();
             this.btRefreshModeOptions = new System.Windows.Forms.Button();
@@ -199,6 +200,7 @@
             this.tbRefreshModeStatus = new System.Windows.Forms.TextBox();
             this.labelRefreshModeStatus = new System.Windows.Forms.Label();
             this.tabPageWarmUpMode = new System.Windows.Forms.TabPage();
+            this.btClearWarmUpModeStatus = new System.Windows.Forms.Button();
             this.labelWarmupModeInfo = new System.Windows.Forms.Label();
             this.labelWarmupModeInfoText = new System.Windows.Forms.Label();
             this.ButtonWarmUpModeOptions = new System.Windows.Forms.Button();
@@ -215,6 +217,7 @@
             this.labelWarmUpModeTurnHeatersOff = new System.Windows.Forms.Label();
             this.dateTimePickerWarmUpModeTurnHeatersOff = new System.Windows.Forms.DateTimePicker();
             this.tabPageCoolDownMode = new System.Windows.Forms.TabPage();
+            this.btClearCoolDownModeStatus = new System.Windows.Forms.Button();
             this.labelCooldownInfo = new System.Windows.Forms.Label();
             this.labelCooldownModeInfoText = new System.Windows.Forms.Label();
             this.ButtonCoolDownModeOptions = new System.Windows.Forms.Button();
@@ -365,6 +368,19 @@
             this.labelDigitalOutputP01 = new System.Windows.Forms.Label();
             this.labelDigitalOutputP00 = new System.Windows.Forms.Label();
             this.tabPageEfield = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.LinearDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.ExpTimeConstantTextBox = new System.Windows.Forms.TextBox();
+            this.label899 = new System.Windows.Forms.Label();
+            this.label799 = new System.Windows.Forms.Label();
+            this.label699 = new System.Windows.Forms.Label();
+            this.DegaussFreqTextBox = new System.Windows.Forms.TextBox();
+            this.DegaussAmpTextBox = new System.Windows.Forms.TextBox();
+            this.StartDegauss = new System.Windows.Forms.Button();
+            this.label499 = new System.Windows.Forms.Label();
+            this.label299 = new System.Windows.Forms.Label();
+            //this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
+            //this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -452,11 +468,59 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
-            this.textBoxtesting = new System.Windows.Forms.TextBox();
+            this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
+            this.btQueryMWSynthTemperatureDetection = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHAPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
+            this.cbCHAPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
+            this.cbCHARFMutedDetection = new System.Windows.Forms.CheckBox();
+            this.btQueryMWCHAPowerDetection = new System.Windows.Forms.Button();
+            this.btQueryMWCHAFrequencyDetection = new System.Windows.Forms.Button();
+            this.btIncrementMWCHAPowerDetection = new System.Windows.Forms.Button();
+            this.tbMWCHAPowerIncrementDetection = new System.Windows.Forms.TextBox();
+            this.btUpdateMWCHAPowerDetection = new System.Windows.Forms.Button();
+            this.tbMWCHAPowerSetpointDetection = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tbMWCHAPowerMonitorDetection = new System.Windows.Forms.TextBox();
+            this.comboBoxMWCHASetpointUnitDetection = new System.Windows.Forms.ComboBox();
+            this.comboBoxMWCHAIncrementUnitDetection = new System.Windows.Forms.ComboBox();
+            this.btIncrementMWCHAFrequencyDetection = new System.Windows.Forms.Button();
+            this.tbMWCHAFrequencyIncrementDetection = new System.Windows.Forms.TextBox();
+            this.btUpdateMWCHAFrequencyDetection = new System.Windows.Forms.Button();
+            this.tbMWCHAFrequencySetpointDetection = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbMWCHAFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
+            this.tbMWSynthTemperatureMonitorDetection = new System.Windows.Forms.TextBox();
+            this.groupBoxMWCHBdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHBPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
+            this.cbCHBPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
+            this.cbCHBRFMutedDetection = new System.Windows.Forms.CheckBox();
+            this.btQueryMWCHBPowerDetection = new System.Windows.Forms.Button();
+            this.btQueryMWCHBFrequencyDetection = new System.Windows.Forms.Button();
+            this.btIncrementMWCHBPowerDetection = new System.Windows.Forms.Button();
+            this.tbMWCHBPowerIncrementDetection = new System.Windows.Forms.TextBox();
+            this.btUpdateMWCHBPowerDetection = new System.Windows.Forms.Button();
+            this.tbMWCHBPowerSetpointDetection = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tbMWCHBPowerMonitorDetection = new System.Windows.Forms.TextBox();
+            this.comboBoxMWCHBSetpointUnitDetection = new System.Windows.Forms.ComboBox();
+            this.comboBoxMWCHBIncrementUnitDetection = new System.Windows.Forms.ComboBox();
+            this.btIncrementMWCHBFrequencyDetection = new System.Windows.Forms.Button();
+            this.tbMWCHBFrequencyIncrementDetection = new System.Windows.Forms.TextBox();
+            this.btUpdateMWCHBFrequencyDetection = new System.Windows.Forms.Button();
+            this.tbMWCHBFrequencySetpointDetection = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.tbMWCHBFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreaksynthhd = new System.Windows.Forms.GroupBox();
             this.btQueryMWSynthTemperature = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBoxMWCHA = new System.Windows.Forms.GroupBox();
+            this.btCHAPLLPowerOnInfo = new System.Windows.Forms.Button();
+            this.btCHAPAPowerOnInfo = new System.Windows.Forms.Button();
+            this.btCHAFRMuteInfo = new System.Windows.Forms.Button();
+            this.cbCHAPAPoweredOn = new System.Windows.Forms.CheckBox();
+            this.cbCHAPLLPoweredOn = new System.Windows.Forms.CheckBox();
             this.cbCHARFMuted = new System.Windows.Forms.CheckBox();
             this.btQueryMWCHAPower = new System.Windows.Forms.Button();
             this.btQueryMWCHAFrequency = new System.Windows.Forms.Button();
@@ -476,6 +540,12 @@
             this.tbMWCHAFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHB = new System.Windows.Forms.GroupBox();
+            this.btCHBPLLPowerOnInfo = new System.Windows.Forms.Button();
+            this.btCHBPAPowerOnInfo = new System.Windows.Forms.Button();
+            this.btCHBRFMuteInfo = new System.Windows.Forms.Button();
+            this.cbCHBPLLPoweredOn = new System.Windows.Forms.CheckBox();
+            this.cbCHBPAPoweredOn = new System.Windows.Forms.CheckBox();
+            this.cbCHBRFMuted = new System.Windows.Forms.CheckBox();
             this.btQueryMWCHBPower = new System.Windows.Forms.Button();
             this.btQueryMWCHBFrequency = new System.Windows.Forms.Button();
             this.btIncrementMWCHBPower = new System.Windows.Forms.Button();
@@ -493,6 +563,9 @@
             this.labelMicrowavesChannelBFrequency = new System.Windows.Forms.Label();
             this.tbMWCHBFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxRF = new System.Windows.Forms.GroupBox();
+            this.labelRFStatus = new System.Windows.Forms.Label();
+            this.tbRFStatus = new System.Windows.Forms.TextBox();
+            this.btQueryRFFrequency = new System.Windows.Forms.Button();
             this.comboBoxRFIncrementUnit = new System.Windows.Forms.ComboBox();
             this.comboBoxRFSetpointUnit = new System.Windows.Forms.ComboBox();
             this.btIncrementRFFrequency = new System.Windows.Forms.Button();
@@ -503,6 +576,14 @@
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxStatus = new System.Windows.Forms.GroupBox();
             this.tbStatus = new System.Windows.Forms.TextBox();
+            this.ConstDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.ExpDegaussTextBox = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            //this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -544,6 +625,10 @@
             this.gbDigitalOutputs.SuspendLayout();
             this.gbDigitalOutputsPort0.SuspendLayout();
             this.tabPageEfield.SuspendLayout();
+            this.tabPageEfield.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -552,11 +637,15 @@
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
             this.tabPagePumping.SuspendLayout();
+            this.groupBoxWindfreakDetection.SuspendLayout();
+            this.groupBoxMWCHAdetection.SuspendLayout();
+            this.groupBoxMWCHBdetection.SuspendLayout();
             this.groupBoxWindfreaksynthhd.SuspendLayout();
             this.groupBoxMWCHA.SuspendLayout();
             this.groupBoxMWCHB.SuspendLayout();
             this.groupBoxRF.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).BeginInit();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -923,18 +1012,21 @@
             chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
             chartArea1.AxisX.LabelStyle.Format = "HH:mm:ss";
             chartArea1.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisX.MinorGrid.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MinorGrid.Enabled = true;
+            chartArea1.AxisX.MinorTickMark.Enabled = true;
+            chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
             chartArea1.AxisX.Title = "Time";
             chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
             chartArea1.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
             chartArea1.AxisY.IsStartedFromZero = false;
             chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LabelStyle.Format = "e1";
             chartArea1.AxisY.LineColor = System.Drawing.Color.White;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.MinorGrid.LineColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisY.MinorGrid.Enabled = true;
             chartArea1.AxisY.MinorTickMark.Enabled = true;
             chartArea1.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
             chartArea1.AxisY.Title = "Pressure (mbar)";
@@ -943,8 +1035,13 @@
             chartArea1.BackImageTransparentColor = System.Drawing.Color.Black;
             chartArea1.BackSecondaryColor = System.Drawing.Color.White;
             chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.CursorX.Interval = 100D;
+            chartArea1.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
             chartArea1.CursorX.IsUserEnabled = true;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.CursorY.Interval = 1E-08D;
+            chartArea1.CursorY.IsUserEnabled = true;
+            chartArea1.CursorY.IsUserSelectionEnabled = true;
             chartArea1.Name = "ChartAreaPressureChart";
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.BackColor = System.Drawing.Color.Black;
@@ -965,6 +1062,7 @@
             series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
             series2.ChartArea = "ChartAreaPressureChart";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Enabled = false;
             series2.Legend = "LegendPressureChart";
             series2.Name = "Beamline";
             series3.ChartArea = "ChartAreaPressureChart";
@@ -1436,9 +1534,9 @@
             // checkBoxBeamlinePressurePlot
             // 
             this.checkBoxBeamlinePressurePlot.AutoSize = true;
-            this.checkBoxBeamlinePressurePlot.Checked = true;
-            this.checkBoxBeamlinePressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxBeamlinePressurePlot.Location = new System.Drawing.Point(171, 50);
+            this.checkBoxBeamlinePressurePlot.Margin = new System.Windows.Forms.Padding(6);
+            this.checkBoxBeamlinePressurePlot.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxBeamlinePressurePlot.Name = "checkBoxBeamlinePressurePlot";
             this.checkBoxBeamlinePressurePlot.Size = new System.Drawing.Size(69, 17);
             this.checkBoxBeamlinePressurePlot.TabIndex = 16;
@@ -1500,11 +1598,15 @@
             chartArea2.AxisX.LineColor = System.Drawing.Color.White;
             chartArea2.AxisX.MajorGrid.Enabled = false;
             chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisX.MinorTickMark.Enabled = true;
+            chartArea2.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
             chartArea2.AxisX.Title = "Time";
             chartArea2.AxisX.TitleForeColor = System.Drawing.Color.White;
             chartArea2.AxisY.InterlacedColor = System.Drawing.Color.Black;
             chartArea2.AxisY.IsStartedFromZero = false;
             chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea2.AxisY.LabelStyle.Format = "000.0";
             chartArea2.AxisY.LineColor = System.Drawing.Color.White;
             chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             chartArea2.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
@@ -1516,6 +1618,13 @@
             chartArea2.BackImageTransparentColor = System.Drawing.Color.Black;
             chartArea2.BackSecondaryColor = System.Drawing.Color.White;
             chartArea2.BorderColor = System.Drawing.Color.White;
+            chartArea2.CursorX.Interval = 100D;
+            chartArea2.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea2.CursorX.IsUserEnabled = true;
+            chartArea2.CursorX.IsUserSelectionEnabled = true;
+            chartArea2.CursorY.Interval = 0.01D;
+            chartArea2.CursorY.IsUserEnabled = true;
+            chartArea2.CursorY.IsUserSelectionEnabled = true;
             chartArea2.Name = "ChartArea2";
             this.chart2.ChartAreas.Add(chartArea2);
             legend2.BackColor = System.Drawing.Color.Black;
@@ -1830,9 +1939,9 @@
             this.tabControl.Controls.Add(this.tabPageEfield);
             this.tabControl.Controls.Add(this.tabPagePumping);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
-            this.tabControl.Name = "tabControl";
+            this.tabControl.Size = new System.Drawing.Size(1041, 741);
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1041, 729);
+            this.tabControl.Size = new System.Drawing.Size(1909, 1346);
             this.tabControl.TabIndex = 23;
             // 
             // tabPagePlotting
@@ -1875,6 +1984,7 @@
             // tabPageRefreshMode
             // 
             this.tabPageRefreshMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageRefreshMode.Controls.Add(this.btClearRefreshModeStatus);
             this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeInfo);
             this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeInfoText);
             this.tabPageRefreshMode.Controls.Add(this.btRefreshModeOptions);
@@ -1891,6 +2001,16 @@
             this.tabPageRefreshMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageRefreshMode.TabIndex = 0;
             this.tabPageRefreshMode.Text = "Refresh Mode";
+            // 
+            // btClearRefreshModeStatus
+            // 
+            this.btClearRefreshModeStatus.Location = new System.Drawing.Point(50, 304);
+            this.btClearRefreshModeStatus.Name = "btClearRefreshModeStatus";
+            this.btClearRefreshModeStatus.Size = new System.Drawing.Size(75, 23);
+            this.btClearRefreshModeStatus.TabIndex = 34;
+            this.btClearRefreshModeStatus.Text = "Clear";
+            this.btClearRefreshModeStatus.UseVisualStyleBackColor = true;
+            this.btClearRefreshModeStatus.Click += new System.EventHandler(this.btClearRefreshModeStatus_Click);
             // 
             // labelRefreshModeInfo
             // 
@@ -2096,6 +2216,7 @@
             // tabPageWarmUpMode
             // 
             this.tabPageWarmUpMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageWarmUpMode.Controls.Add(this.btClearWarmUpModeStatus);
             this.tabPageWarmUpMode.Controls.Add(this.labelWarmupModeInfo);
             this.tabPageWarmUpMode.Controls.Add(this.labelWarmupModeInfoText);
             this.tabPageWarmUpMode.Controls.Add(this.ButtonWarmUpModeOptions);
@@ -2109,8 +2230,19 @@
             this.tabPageWarmUpMode.Name = "tabPageWarmUpMode";
             this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabPageWarmUpMode.Size = new System.Drawing.Size(1022, 671);
-            this.tabPageWarmUpMode.TabIndex = 1;
+            // 
+            // btClearWarmUpModeStatus
+            // 
+            this.btClearWarmUpModeStatus.Location = new System.Drawing.Point(51, 304);
+            this.btClearWarmUpModeStatus.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btClearWarmUpModeStatus.Name = "btClearWarmUpModeStatus";
+            this.btClearWarmUpModeStatus.Size = new System.Drawing.Size(75, 23);
+            this.btClearWarmUpModeStatus.TabIndex = 33;
+            this.btClearWarmUpModeStatus.Text = "Clear";
+            this.btClearWarmUpModeStatus.UseVisualStyleBackColor = true;
+            this.btClearWarmUpModeStatus.Click += new System.EventHandler(this.btClearWarmUpModeStatus_Click);
             this.tabPageWarmUpMode.Text = "Warm Up Mode";
+>>>>>>>>> Temporary merge branch 2
             // 
             // labelWarmupModeInfo
             // 
@@ -2266,6 +2398,7 @@
             // tabPageCoolDownMode
             // 
             this.tabPageCoolDownMode.BackColor = System.Drawing.Color.Silver;
+            this.tabPageCoolDownMode.Controls.Add(this.btClearCoolDownModeStatus);
             this.tabPageCoolDownMode.Controls.Add(this.labelCooldownInfo);
             this.tabPageCoolDownMode.Controls.Add(this.labelCooldownModeInfoText);
             this.tabPageCoolDownMode.Controls.Add(this.ButtonCoolDownModeOptions);
@@ -2279,8 +2412,19 @@
             this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabPageCoolDownMode.Name = "tabPageCoolDownMode";
             this.tabPageCoolDownMode.Size = new System.Drawing.Size(1022, 671);
-            this.tabPageCoolDownMode.TabIndex = 2;
+            // 
+            // btClearCoolDownModeStatus
+            // 
+            this.btClearCoolDownModeStatus.Location = new System.Drawing.Point(51, 304);
+            this.btClearCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btClearCoolDownModeStatus.Name = "btClearCoolDownModeStatus";
+            this.btClearCoolDownModeStatus.Size = new System.Drawing.Size(75, 23);
+            this.btClearCoolDownModeStatus.TabIndex = 31;
+            this.btClearCoolDownModeStatus.Text = "Clear";
+            this.btClearCoolDownModeStatus.UseVisualStyleBackColor = true;
+            this.btClearCoolDownModeStatus.Click += new System.EventHandler(this.btClearCoolDownModeStatus_Click);
             this.tabPageCoolDownMode.Text = "Cool Down Mode";
+>>>>>>>>> Temporary merge branch 2
             // 
             // labelCooldownInfo
             // 
@@ -3990,7 +4134,10 @@
             // 
             // tabPageEfield
             // 
-            this.tabPageEfield.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPageEfield.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageEfield.Controls.Add(this.groupBox8);
+            this.tabPageEfield.Controls.Add(this.label499);
+            this.tabPageEfield.Controls.Add(this.label299);
             this.tabPageEfield.Controls.Add(this.groupBox21);
             this.tabPageEfield.Controls.Add(this.groupBox13);
             this.tabPageEfield.Controls.Add(this.groupBox6);
@@ -4000,8 +4147,143 @@
             this.tabPageEfield.Location = new System.Drawing.Point(4, 22);
             this.tabPageEfield.Name = "tabPageEfield";
             this.tabPageEfield.Size = new System.Drawing.Size(1033, 703);
-            this.tabPageEfield.TabIndex = 6;
-            this.tabPageEfield.Text = "E-field";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label24);
+            this.groupBox8.Controls.Add(this.label23);
+            //this.groupBox8.Controls.Add(this.DegaussLED);
+            this.groupBox8.Controls.Add(this.label22);
+            this.groupBox8.Controls.Add(this.label21);
+            this.groupBox8.Controls.Add(this.label20);
+            this.groupBox8.Controls.Add(this.ExpDegaussTextBox);
+            this.groupBox8.Controls.Add(this.ConstDegaussTextBox);
+            this.groupBox8.Controls.Add(this.LinearDegaussTextBox);
+            this.groupBox8.Controls.Add(this.ExpTimeConstantTextBox);
+            this.groupBox8.Controls.Add(this.label8);
+            this.groupBox8.Controls.Add(this.label7);
+            this.groupBox8.Controls.Add(this.label6);
+            this.groupBox8.Controls.Add(this.DegaussAmpTextBox);
+            this.groupBox8.Controls.Add(this.DegaussFreqTextBox);
+            this.groupBox8.Controls.Add(this.StartDegauss);
+            this.groupBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox8.Location = new System.Drawing.Point(497, 126);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(329, 166);
+            this.groupBox8.TabIndex = 49;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Degaussing Coils";
+            // 
+            // LinearDegaussTextBox
+            // 
+            this.LinearDegaussTextBox.Location = new System.Drawing.Point(277, 38);
+            this.LinearDegaussTextBox.Name = "LinearDegaussTextBox";
+            this.LinearDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.LinearDegaussTextBox.TabIndex = 86;
+            this.LinearDegaussTextBox.Text = "1";
+            // 
+            // ExpTimeConstantTextBox
+            // 
+            this.ExpTimeConstantTextBox.Location = new System.Drawing.Point(108, 90);
+            this.ExpTimeConstantTextBox.Name = "ExpTimeConstantTextBox";
+            this.ExpTimeConstantTextBox.Size = new System.Drawing.Size(41, 20);
+            this.ExpTimeConstantTextBox.TabIndex = 85;
+            this.ExpTimeConstantTextBox.Text = "1";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 93);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(93, 13);
+            this.label8.TabIndex = 84;
+            this.label8.Text = "ExpTime Constant";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 41);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(79, 13);
+            this.label7.TabIndex = 83;
+            this.label7.Text = "Frequency (Hz)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 67);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(88, 13);
+            this.label6.TabIndex = 82;
+            this.label6.Text = "Amplitude (Amps)";
+            // 
+            // DegaussFreqTextBox
+            // 
+            this.DegaussFreqTextBox.Location = new System.Drawing.Point(108, 38);
+            this.DegaussFreqTextBox.Name = "DegaussFreqTextBox";
+            this.DegaussFreqTextBox.Size = new System.Drawing.Size(41, 20);
+            this.DegaussFreqTextBox.TabIndex = 81;
+            this.DegaussFreqTextBox.Text = "5";
+            // 
+            // DegaussAmpTextBox
+            // 
+            this.DegaussAmpTextBox.Location = new System.Drawing.Point(108, 64);
+            this.DegaussAmpTextBox.Name = "DegaussAmpTextBox";
+            this.DegaussAmpTextBox.Size = new System.Drawing.Size(41, 20);
+            this.DegaussAmpTextBox.TabIndex = 80;
+            this.DegaussAmpTextBox.Text = "8";
+            // 
+            // StartDegauss
+            // 
+            this.StartDegauss.Location = new System.Drawing.Point(9, 128);
+            this.StartDegauss.Name = "StartDegauss";
+            this.StartDegauss.Size = new System.Drawing.Size(140, 22);
+            this.StartDegauss.TabIndex = 79;
+            this.StartDegauss.Text = "Degauss Start";
+            this.StartDegauss.UseVisualStyleBackColor = true;
+            this.StartDegauss.Click += new System.EventHandler(this.StartDegauss_Click);
+            // 
+            // label4
+            // 
+            this.label499.AutoSize = true;
+            this.label499.Location = new System.Drawing.Point(533, 61);
+            this.label499.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label499.Name = "label499";
+            this.label499.Size = new System.Drawing.Size(96, 13);
+            this.label499.TabIndex = 48;
+            this.label499.Text = "Switching Ongoing";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(533, 28);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(92, 13);
+            this.label2.TabIndex = 47;
+            this.label2.Text = "Ramping Ongoing";
+            // 
+            // switchingLED
+            // 
+            //this.switchingled.ledstyle = nationalinstruments.ui.ledstyle.round3d;
+            //this.switchingled.location = new system.drawing.point(497, 55);
+            //this.switchingled.margin = new system.windows.forms.padding(2);
+            //this.switchingled.name = "switchingled";
+            //this.switchingled.offcolor = system.drawing.color.maroon;
+            //this.switchingled.oncolor = system.drawing.color.red;
+            //this.switchingled.size = new system.drawing.size(33, 28);
+            //this.switchingled.tabindex = 46;
+            // 
+            // rampLED
+            // 
+            //this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.rampLED.Location = new System.Drawing.Point(497, 23);
+            //this.rampLED.Margin = new System.Windows.Forms.Padding(2);
+            //this.rampLED.Name = "rampLED";
+            ///this.rampLED.Size = new System.Drawing.Size(33, 28);
+            //this.rampLED.TabIndex = 45;
+            this.rampLED.Size = new System.Drawing.Size(61, 52);
+            this.rampLED.TabIndex = 45;
             // 
             // groupBox21
             // 
@@ -4026,11 +4308,11 @@
             this.groupBox13.Controls.Add(this.eFieldAsymmetryCheckBox);
             this.groupBox13.Controls.Add(this.label37);
             this.groupBox13.Controls.Add(this.label38);
-            this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
-            this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
-            this.groupBox13.Location = new System.Drawing.Point(493, 179);
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(184, 113);
+            this.groupBox13.Location = new System.Drawing.Point(832, 177);
+            this.groupBox13.Location = new System.Drawing.Point(1525, 327);
+            this.groupBox13.Size = new System.Drawing.Size(184, 115);
+            this.groupBox13.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox13.Size = new System.Drawing.Size(337, 209);
             this.groupBox13.TabIndex = 41;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Supply asymmetry";
@@ -4084,9 +4366,10 @@
             this.groupBox6.Controls.Add(this.label12);
             this.groupBox6.Controls.Add(this.label13);
             this.groupBox6.Controls.Add(this.label14);
-            this.groupBox6.Controls.Add(this.label15);
-            this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
-            this.groupBox6.Location = new System.Drawing.Point(493, 16);
+            this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox6.Location = new System.Drawing.Point(832, 17);
+            this.groupBox6.Location = new System.Drawing.Point(1525, 31);
+            this.groupBox6.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(184, 153);
             this.groupBox6.TabIndex = 24;
@@ -4345,10 +4628,9 @@
             this.eRampUpTimeTextBox.TabIndex = 4;
             this.eRampUpTimeTextBox.Text = "2";
             // 
-            // fieldsOffButton
-            // 
-            this.fieldsOffButton.Enabled = false;
             this.fieldsOffButton.Location = new System.Drawing.Point(24, 241);
+            this.fieldsOffButton.Location = new System.Drawing.Point(44, 445);
+            this.fieldsOffButton.Margin = new System.Windows.Forms.Padding(6);
             this.fieldsOffButton.Name = "fieldsOffButton";
             this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
             this.fieldsOffButton.TabIndex = 23;
@@ -4462,6 +4744,7 @@
             this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
+            this.cPlusOffTextBox.TextChanged += new System.EventHandler(this.cPlusOffTextBox_TextChanged);
             // 
             // cMinusOffTextBox
             // 
@@ -4522,16 +4805,37 @@
             this.groupBox7.Controls.Add(this.updateIMonitorButton);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.label19);
-            this.groupBox7.Location = new System.Drawing.Point(17, 298);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(660, 320);
+            this.groupBox7.Size = new System.Drawing.Size(999, 391);
+            this.groupBox7.Padding = new System.Windows.Forms.Padding(6);
+            this.groupBox7.Size = new System.Drawing.Size(1832, 722);
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Current monitors";
+            // tbiMonitorPollPeriod
             // 
-            // rescaleIMonitorChartButton
+            this.tbiMonitorPollPeriod.BackColor = System.Drawing.Color.Black;
+            this.tbiMonitorPollPeriod.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbiMonitorPollPeriod.Location = new System.Drawing.Point(916, 15);
+            this.tbiMonitorPollPeriod.Name = "tbiMonitorPollPeriod";
+            this.tbiMonitorPollPeriod.ReadOnly = true;
+            this.tbiMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
+            this.tbiMonitorPollPeriod.TabIndex = 44;
+            this.tbiMonitorPollPeriod.Text = "0";
             // 
-            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(491, 86);
+            // changePollPeriodButton
+            // 
+            this.changePollPeriodButton.Location = new System.Drawing.Point(824, 38);
+            this.changePollPeriodButton.Name = "changePollPeriodButton";
+            this.changePollPeriodButton.Size = new System.Drawing.Size(75, 23);
+            this.changePollPeriodButton.TabIndex = 78;
+            this.changePollPeriodButton.Text = "Update";
+            this.changePollPeriodButton.UseVisualStyleBackColor = true;
+            this.changePollPeriodButton.Click += new System.EventHandler(this.changePollPeriodButton_Click);
+            // 
+            this.changePollPeriodButton.Click += new System.EventHandler(this.changePollPeriodButton_Click);
+            // 
+            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(505, 82);
+            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(926, 151);
+            this.rescaleIMonitorChartButton.Margin = new System.Windows.Forms.Padding(6);
             this.rescaleIMonitorChartButton.Name = "rescaleIMonitorChartButton";
             this.rescaleIMonitorChartButton.Size = new System.Drawing.Size(76, 21);
             this.rescaleIMonitorChartButton.TabIndex = 77;
@@ -4545,9 +4849,9 @@
             chartArea5.AxisY.Title = "Current (nA)";
             chartArea5.Name = "ChartArea1";
             this.chart5.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chart5.Legends.Add(legend5);
-            this.chart5.Location = new System.Drawing.Point(19, 127);
+            this.chart5.Location = new System.Drawing.Point(9, 114);
+            this.chart5.Location = new System.Drawing.Point(17, 210);
+            this.chart5.Margin = new System.Windows.Forms.Padding(6);
             this.chart5.Name = "chart5";
             series20.ChartArea = "ChartArea1";
             series20.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -4559,16 +4863,16 @@
             series21.Legend = "Legend1";
             series21.Name = "Leakage Current West";
             series21.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart5.Series.Add(series20);
+            this.chart5.Size = new System.Drawing.Size(973, 261);
             this.chart5.Series.Add(series21);
-            this.chart5.Size = new System.Drawing.Size(633, 179);
+            this.chart5.Size = new System.Drawing.Size(1784, 482);
             this.chart5.TabIndex = 76;
             this.chart5.Text = "chart5";
             // 
             // logCurrentDataCheckBox
-            // 
-            this.logCurrentDataCheckBox.AutoSize = true;
-            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(580, 86);
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(752, 88);
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(1379, 163);
+            this.logCurrentDataCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
             this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
             this.logCurrentDataCheckBox.TabIndex = 75;
@@ -4585,16 +4889,16 @@
             this.clearIMonitorButton.UseVisualStyleBackColor = true;
             this.clearIMonitorButton.Click += new System.EventHandler(this.clearIMonitorButton_Click);
             // 
-            // southIMonitorErrorTextBox
-            // 
-            this.southIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
-            this.southIMonitorErrorTextBox.Name = "southIMonitorErrorTextBox";
-            this.southIMonitorErrorTextBox.ReadOnly = true;
-            this.southIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
-            this.southIMonitorErrorTextBox.TabIndex = 73;
-            this.southIMonitorErrorTextBox.Text = "0";
+            this.eastIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
+            this.eastIMonitorErrorTextBox.Name = "eastIMonitorErrorTextBox";
+            this.eastIMonitorErrorTextBox.ReadOnly = true;
+            this.eastIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.eastIMonitorErrorTextBox.TabIndex = 73;
+            this.eastIMonitorErrorTextBox.Text = "0";
+            this.eastIMonitorErrorTextBox.TabIndex = 73;
+            this.eastIMonitorErrorTextBox.Text = "0";
             // 
             // label131
             // 
@@ -4612,16 +4916,16 @@
             this.label130.TabIndex = 71;
             this.label130.Text = "±";
             // 
-            // northIMonitorErrorTextBox
-            // 
-            this.northIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
-            this.northIMonitorErrorTextBox.Name = "northIMonitorErrorTextBox";
-            this.northIMonitorErrorTextBox.ReadOnly = true;
-            this.northIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
-            this.northIMonitorErrorTextBox.TabIndex = 70;
-            this.northIMonitorErrorTextBox.Text = "0";
+            this.westIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
+            this.westIMonitorErrorTextBox.Name = "westIMonitorErrorTextBox";
+            this.westIMonitorErrorTextBox.ReadOnly = true;
+            this.westIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
+            this.westIMonitorErrorTextBox.TabIndex = 70;
+            this.westIMonitorErrorTextBox.Text = "0";
+            this.westIMonitorErrorTextBox.TabIndex = 70;
+            this.westIMonitorErrorTextBox.Text = "0";
             // 
             // label35
             // 
@@ -4665,27 +4969,27 @@
             this.label128.TabIndex = 68;
             this.label128.Text = "Average";
             // 
-            // southOffsetIMonitorTextBox
+            this.eastOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
+            this.eastOffsetIMonitorTextBox.Name = "eastOffsetIMonitorTextBox";
+            this.eastOffsetIMonitorTextBox.ReadOnly = true;
+            this.eastOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.eastOffsetIMonitorTextBox.TabIndex = 47;
+            this.eastOffsetIMonitorTextBox.Text = "0";
+            this.eastOffsetIMonitorTextBox.TabIndex = 47;
+            this.eastOffsetIMonitorTextBox.Text = "0";
             // 
-            this.southOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
-            this.southOffsetIMonitorTextBox.Name = "southOffsetIMonitorTextBox";
-            this.southOffsetIMonitorTextBox.ReadOnly = true;
-            this.southOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.southOffsetIMonitorTextBox.TabIndex = 47;
-            this.southOffsetIMonitorTextBox.Text = "0";
-            // 
-            // northOffsetIMonitorTextBox
-            // 
-            this.northOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
-            this.northOffsetIMonitorTextBox.Name = "northOffsetIMonitorTextBox";
-            this.northOffsetIMonitorTextBox.ReadOnly = true;
-            this.northOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
-            this.northOffsetIMonitorTextBox.TabIndex = 49;
-            this.northOffsetIMonitorTextBox.Text = "0";
+            this.westOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
+            this.westOffsetIMonitorTextBox.Name = "westOffsetIMonitorTextBox";
+            this.westOffsetIMonitorTextBox.ReadOnly = true;
+            this.westOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
+            this.westOffsetIMonitorTextBox.TabIndex = 49;
+            this.westOffsetIMonitorTextBox.Text = "0";
+            this.westOffsetIMonitorTextBox.TabIndex = 49;
+            this.westOffsetIMonitorTextBox.Text = "0";
             // 
             // label85
             // 
@@ -4705,21 +5009,21 @@
             this.label84.TabIndex = 65;
             this.label84.Text = "North monitor (V/kHz)";
             // 
-            // southV2FSlopeTextBox
+            this.eastSlopeTextBox.Location = new System.Drawing.Point(405, 38);
+            this.eastSlopeTextBox.Name = "eastSlopeTextBox";
+            this.eastSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.eastSlopeTextBox.TabIndex = 64;
+            this.eastSlopeTextBox.Text = "2000";
+            this.eastSlopeTextBox.TabIndex = 64;
+            this.eastSlopeTextBox.Text = "2000";
             // 
-            this.southV2FSlopeTextBox.Location = new System.Drawing.Point(405, 38);
-            this.southV2FSlopeTextBox.Name = "southV2FSlopeTextBox";
-            this.southV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.southV2FSlopeTextBox.TabIndex = 64;
-            this.southV2FSlopeTextBox.Text = "2000";
-            // 
-            // northV2FSlopeTextBox
-            // 
-            this.northV2FSlopeTextBox.Location = new System.Drawing.Point(405, 10);
-            this.northV2FSlopeTextBox.Name = "northV2FSlopeTextBox";
-            this.northV2FSlopeTextBox.Size = new System.Drawing.Size(65, 20);
-            this.northV2FSlopeTextBox.TabIndex = 63;
-            this.northV2FSlopeTextBox.Text = "2000";
+            this.westSlopeTextBox.Location = new System.Drawing.Point(405, 15);
+            this.westSlopeTextBox.Name = "westSlopeTextBox";
+            this.westSlopeTextBox.Size = new System.Drawing.Size(65, 20);
+            this.westSlopeTextBox.TabIndex = 63;
+            this.westSlopeTextBox.Text = "2000";
+            this.westSlopeTextBox.TabIndex = 63;
+            this.westSlopeTextBox.Text = "2000";
             // 
             // leakageMonitorSlopeTextBox
             // 
@@ -4738,9 +5042,9 @@
             this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
             // 
             // stopIMonitorPollButton
-            // 
-            this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(577, 50);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(903, 84);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(1656, 155);
+            this.stopIMonitorPollButton.Margin = new System.Windows.Forms.Padding(6);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
             this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopIMonitorPollButton.TabIndex = 55;
@@ -4748,25 +5052,25 @@
             this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
             this.stopIMonitorPollButton.Click += new System.EventHandler(this.stopIMonitorPollButton_Click);
             // 
-            // label63
-            // 
-            this.label63.Location = new System.Drawing.Point(519, 16);
+            this.label63.Location = new System.Drawing.Point(821, 15);
+            this.label63.Location = new System.Drawing.Point(1505, 28);
+            this.label63.Size = new System.Drawing.Size(104, 30);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(65, 23);
+            this.label63.Size = new System.Drawing.Size(191, 55);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
-            // iMonitorPollPeriod
+            this.iMonitorPollPeriodInput.Location = new System.Drawing.Point(916, 41);
+            this.iMonitorPollPeriodInput.Name = "iMonitorPollPeriodInput";
+            this.iMonitorPollPeriodInput.Size = new System.Drawing.Size(64, 20);
+            this.iMonitorPollPeriodInput.TabIndex = 0;
+            this.iMonitorPollPeriodInput.Text = "100";
+            this.iMonitorPollPeriodInput.TabIndex = 0;
+            this.iMonitorPollPeriodInput.Text = "100";
             // 
-            this.iMonitorPollPeriod.Location = new System.Drawing.Point(590, 13);
-            this.iMonitorPollPeriod.Name = "iMonitorPollPeriod";
-            this.iMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
-            this.iMonitorPollPeriod.TabIndex = 0;
-            this.iMonitorPollPeriod.Text = "100";
-            // 
-            // startIMonitorPollButton
-            // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(491, 50);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(821, 84);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(1505, 155);
+            this.startIMonitorPollButton.Margin = new System.Windows.Forms.Padding(6);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
             this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startIMonitorPollButton.TabIndex = 53;
@@ -4798,27 +5102,27 @@
             this.label16.TabIndex = 48;
             this.label16.Text = "S offset (Hz)";
             // 
-            // southIMonitorTextBox
+            this.eastIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.eastIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.eastIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
+            this.eastIMonitorTextBox.Name = "eastIMonitorTextBox";
+            this.eastIMonitorTextBox.ReadOnly = true;
+            this.eastIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.eastIMonitorTextBox.TabIndex = 45;
+            this.eastIMonitorTextBox.Text = "0";
+            this.eastIMonitorTextBox.TabIndex = 45;
+            this.eastIMonitorTextBox.Text = "0";
             // 
-            this.southIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.southIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.southIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
-            this.southIMonitorTextBox.Name = "southIMonitorTextBox";
-            this.southIMonitorTextBox.ReadOnly = true;
-            this.southIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
-            this.southIMonitorTextBox.TabIndex = 45;
-            this.southIMonitorTextBox.Text = "0";
-            // 
-            // northIMonitorTextBox
-            // 
-            this.northIMonitorTextBox.BackColor = System.Drawing.Color.Black;
-            this.northIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.northIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
-            this.northIMonitorTextBox.Name = "northIMonitorTextBox";
-            this.northIMonitorTextBox.ReadOnly = true;
-            this.northIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
-            this.northIMonitorTextBox.TabIndex = 42;
-            this.northIMonitorTextBox.Text = "0";
+            this.westIMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.westIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.westIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
+            this.westIMonitorTextBox.Name = "westIMonitorTextBox";
+            this.westIMonitorTextBox.ReadOnly = true;
+            this.westIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
+            this.westIMonitorTextBox.TabIndex = 42;
+            this.westIMonitorTextBox.Text = "0";
+            this.westIMonitorTextBox.TabIndex = 42;
+            this.westIMonitorTextBox.Text = "0";
             // 
             // updateIMonitorButton
             // 
@@ -4848,23 +5152,518 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
-            this.tabPagePumping.Controls.Add(this.textBoxtesting);
+            this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
             this.tabPagePumping.Location = new System.Drawing.Point(4, 22);
             this.tabPagePumping.Margin = new System.Windows.Forms.Padding(2);
             this.tabPagePumping.Name = "tabPagePumping";
-            this.tabPagePumping.Size = new System.Drawing.Size(1033, 703);
+            this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
-            this.tabPagePumping.Text = "Optical pumping";
+            this.tabPagePumping.Text = "Microwaves";
             // 
-            // textBoxtesting
+            // groupBoxWindfreakDetection
             // 
-            this.textBoxtesting.Location = new System.Drawing.Point(144, 419);
-            this.textBoxtesting.Multiline = true;
-            this.textBoxtesting.Name = "textBoxtesting";
-            this.textBoxtesting.Size = new System.Drawing.Size(180, 94);
-            this.textBoxtesting.TabIndex = 49;
+            this.groupBoxWindfreakDetection.Controls.Add(this.btQueryMWSynthTemperatureDetection);
+            this.groupBoxWindfreakDetection.Controls.Add(this.label4);
+            this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWCHAdetection);
+            this.groupBoxWindfreakDetection.Controls.Add(this.tbMWSynthTemperatureMonitorDetection);
+            this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWCHBdetection);
+            this.groupBoxWindfreakDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxWindfreakDetection.Location = new System.Drawing.Point(260, 367);
+            this.groupBoxWindfreakDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxWindfreakDetection.Name = "groupBoxWindfreakDetection";
+            this.groupBoxWindfreakDetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxWindfreakDetection.Size = new System.Drawing.Size(633, 334);
+            this.groupBoxWindfreakDetection.TabIndex = 49;
+            this.groupBoxWindfreakDetection.TabStop = false;
+            this.groupBoxWindfreakDetection.Text = "Windfreak for Detection";
+            // 
+            // btQueryMWSynthTemperatureDetection
+            // 
+            this.btQueryMWSynthTemperatureDetection.Location = new System.Drawing.Point(36, 307);
+            this.btQueryMWSynthTemperatureDetection.Name = "btQueryMWSynthTemperatureDetection";
+            this.btQueryMWSynthTemperatureDetection.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWSynthTemperatureDetection.TabIndex = 52;
+            this.btQueryMWSynthTemperatureDetection.Text = "Query";
+            this.btQueryMWSynthTemperatureDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWSynthTemperatureDetection.Click += new System.EventHandler(this.btQueryMWSynthTemperatureDetection_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(33, 290);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(138, 13);
+            this.label4.TabIndex = 50;
+            this.label4.Text = "Synth temperature (Celsius):";
+            // 
+            // groupBoxMWCHAdetection
+            // 
+            this.groupBoxMWCHAdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPAPoweredOnDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPLLPoweredOnDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.cbCHARFMutedDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btQueryMWCHAPowerDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btQueryMWCHAFrequencyDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btIncrementMWCHAPowerDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAPowerIncrementDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btUpdateMWCHAPowerDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAPowerSetpointDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.label6);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAPowerMonitorDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.comboBoxMWCHASetpointUnitDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.comboBoxMWCHAIncrementUnitDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btIncrementMWCHAFrequencyDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAFrequencyIncrementDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.btUpdateMWCHAFrequencyDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAFrequencySetpointDetection);
+            this.groupBoxMWCHAdetection.Controls.Add(this.label7);
+            this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAFrequencyMonitorDetection);
+            this.groupBoxMWCHAdetection.Location = new System.Drawing.Point(0, 17);
+            this.groupBoxMWCHAdetection.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHAdetection.Name = "groupBoxMWCHAdetection";
+            this.groupBoxMWCHAdetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(629, 132);
+            this.groupBoxMWCHAdetection.TabIndex = 39;
+            this.groupBoxMWCHAdetection.TabStop = false;
+            this.groupBoxMWCHAdetection.Text = "Channel A";
+            // 
+            // cbCHAPAPoweredOnDetection
+            // 
+            this.cbCHAPAPoweredOnDetection.AutoSize = true;
+            this.cbCHAPAPoweredOnDetection.Location = new System.Drawing.Point(463, 74);
+            this.cbCHAPAPoweredOnDetection.Name = "cbCHAPAPoweredOnDetection";
+            this.cbCHAPAPoweredOnDetection.Size = new System.Drawing.Size(99, 17);
+            this.cbCHAPAPoweredOnDetection.TabIndex = 51;
+            this.cbCHAPAPoweredOnDetection.Text = "PA powered on";
+            this.cbCHAPAPoweredOnDetection.UseVisualStyleBackColor = true;
+            this.cbCHAPAPoweredOnDetection.CheckedChanged += new System.EventHandler(this.cbCHAPAPoweredOnDetection_CheckedChanged);
+            // 
+            // cbCHAPLLPoweredOnDetection
+            // 
+            this.cbCHAPLLPoweredOnDetection.AutoSize = true;
+            this.cbCHAPLLPoweredOnDetection.Location = new System.Drawing.Point(463, 103);
+            this.cbCHAPLLPoweredOnDetection.Name = "cbCHAPLLPoweredOnDetection";
+            this.cbCHAPLLPoweredOnDetection.Size = new System.Drawing.Size(104, 17);
+            this.cbCHAPLLPoweredOnDetection.TabIndex = 50;
+            this.cbCHAPLLPoweredOnDetection.Text = "PLL powered on";
+            this.cbCHAPLLPoweredOnDetection.UseVisualStyleBackColor = true;
+            this.cbCHAPLLPoweredOnDetection.CheckedChanged += new System.EventHandler(this.cbCHAPLLPoweredOnDetection_CheckedChanged);
+            // 
+            // cbCHARFMutedDetection
+            // 
+            this.cbCHARFMutedDetection.AutoSize = true;
+            this.cbCHARFMutedDetection.Location = new System.Drawing.Point(463, 47);
+            this.cbCHARFMutedDetection.Name = "cbCHARFMutedDetection";
+            this.cbCHARFMutedDetection.Size = new System.Drawing.Size(72, 17);
+            this.cbCHARFMutedDetection.TabIndex = 49;
+            this.cbCHARFMutedDetection.Text = "RF muted";
+            this.cbCHARFMutedDetection.UseVisualStyleBackColor = true;
+            this.cbCHARFMutedDetection.CheckedChanged += new System.EventHandler(this.cbCHARFMutedDetection_CheckedChanged);
+            // 
+            // btQueryMWCHAPowerDetection
+            // 
+            this.btQueryMWCHAPowerDetection.Location = new System.Drawing.Point(271, 41);
+            this.btQueryMWCHAPowerDetection.Name = "btQueryMWCHAPowerDetection";
+            this.btQueryMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWCHAPowerDetection.TabIndex = 48;
+            this.btQueryMWCHAPowerDetection.Text = "Query";
+            this.btQueryMWCHAPowerDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWCHAPowerDetection.Click += new System.EventHandler(this.btQueryMWCHAPowerDetection_Click);
+            // 
+            // btQueryMWCHAFrequencyDetection
+            // 
+            this.btQueryMWCHAFrequencyDetection.Location = new System.Drawing.Point(37, 41);
+            this.btQueryMWCHAFrequencyDetection.Name = "btQueryMWCHAFrequencyDetection";
+            this.btQueryMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWCHAFrequencyDetection.TabIndex = 47;
+            this.btQueryMWCHAFrequencyDetection.Text = "Query";
+            this.btQueryMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWCHAFrequencyDetection.Click += new System.EventHandler(this.btQueryMWCHAFrequencyDetection_Click);
+            // 
+            // btIncrementMWCHAPowerDetection
+            // 
+            this.btIncrementMWCHAPowerDetection.Location = new System.Drawing.Point(271, 98);
+            this.btIncrementMWCHAPowerDetection.Name = "btIncrementMWCHAPowerDetection";
+            this.btIncrementMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btIncrementMWCHAPowerDetection.TabIndex = 45;
+            this.btIncrementMWCHAPowerDetection.Text = "Increment";
+            this.btIncrementMWCHAPowerDetection.UseVisualStyleBackColor = true;
+            this.btIncrementMWCHAPowerDetection.Click += new System.EventHandler(this.btIncrementMWCHAPowerDetection_Click);
+            // 
+            // tbMWCHAPowerIncrementDetection
+            // 
+            this.tbMWCHAPowerIncrementDetection.Location = new System.Drawing.Point(351, 100);
+            this.tbMWCHAPowerIncrementDetection.Name = "tbMWCHAPowerIncrementDetection";
+            this.tbMWCHAPowerIncrementDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHAPowerIncrementDetection.TabIndex = 46;
+            // 
+            // btUpdateMWCHAPowerDetection
+            // 
+            this.btUpdateMWCHAPowerDetection.Location = new System.Drawing.Point(271, 68);
+            this.btUpdateMWCHAPowerDetection.Name = "btUpdateMWCHAPowerDetection";
+            this.btUpdateMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateMWCHAPowerDetection.TabIndex = 41;
+            this.btUpdateMWCHAPowerDetection.Text = "Update";
+            this.btUpdateMWCHAPowerDetection.UseVisualStyleBackColor = true;
+            this.btUpdateMWCHAPowerDetection.Click += new System.EventHandler(this.btUpdateMWCHAPowerDetection_Click);
+            // 
+            // tbMWCHAPowerSetpointDetection
+            // 
+            this.tbMWCHAPowerSetpointDetection.Location = new System.Drawing.Point(351, 71);
+            this.tbMWCHAPowerSetpointDetection.Name = "tbMWCHAPowerSetpointDetection";
+            this.tbMWCHAPowerSetpointDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHAPowerSetpointDetection.TabIndex = 42;
+            this.tbMWCHAPowerSetpointDetection.Text = "-10";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(268, 24);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(92, 13);
+            this.label6.TabIndex = 43;
+            this.label6.Text = "MW power (dBm):";
+            // 
+            // tbMWCHAPowerMonitorDetection
+            // 
+            this.tbMWCHAPowerMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWCHAPowerMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWCHAPowerMonitorDetection.Location = new System.Drawing.Point(351, 44);
+            this.tbMWCHAPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWCHAPowerMonitorDetection.Name = "tbMWCHAPowerMonitorDetection";
+            this.tbMWCHAPowerMonitorDetection.ReadOnly = true;
+            this.tbMWCHAPowerMonitorDetection.Size = new System.Drawing.Size(75, 19);
+            this.tbMWCHAPowerMonitorDetection.TabIndex = 44;
+            // 
+            // comboBoxMWCHASetpointUnitDetection
+            // 
+            this.comboBoxMWCHASetpointUnitDetection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxMWCHASetpointUnitDetection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxMWCHASetpointUnitDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWCHASetpointUnitDetection.FormattingEnabled = true;
+            this.comboBoxMWCHASetpointUnitDetection.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWCHASetpointUnitDetection.Location = new System.Drawing.Point(196, 71);
+            this.comboBoxMWCHASetpointUnitDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxMWCHASetpointUnitDetection.Name = "comboBoxMWCHASetpointUnitDetection";
+            this.comboBoxMWCHASetpointUnitDetection.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxMWCHASetpointUnitDetection.TabIndex = 40;
+            // 
+            // comboBoxMWCHAIncrementUnitDetection
+            // 
+            this.comboBoxMWCHAIncrementUnitDetection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxMWCHAIncrementUnitDetection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxMWCHAIncrementUnitDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWCHAIncrementUnitDetection.FormattingEnabled = true;
+            this.comboBoxMWCHAIncrementUnitDetection.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWCHAIncrementUnitDetection.Location = new System.Drawing.Point(196, 100);
+            this.comboBoxMWCHAIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxMWCHAIncrementUnitDetection.Name = "comboBoxMWCHAIncrementUnitDetection";
+            this.comboBoxMWCHAIncrementUnitDetection.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxMWCHAIncrementUnitDetection.TabIndex = 39;
+            // 
+            // btIncrementMWCHAFrequencyDetection
+            // 
+            this.btIncrementMWCHAFrequencyDetection.Location = new System.Drawing.Point(37, 98);
+            this.btIncrementMWCHAFrequencyDetection.Name = "btIncrementMWCHAFrequencyDetection";
+            this.btIncrementMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btIncrementMWCHAFrequencyDetection.TabIndex = 37;
+            this.btIncrementMWCHAFrequencyDetection.Text = "Increment";
+            this.btIncrementMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btIncrementMWCHAFrequencyDetection.Click += new System.EventHandler(this.btIncrementMWCHAFrequencyDetection_Click);
+            // 
+            // tbMWCHAFrequencyIncrementDetection
+            // 
+            this.tbMWCHAFrequencyIncrementDetection.Location = new System.Drawing.Point(116, 100);
+            this.tbMWCHAFrequencyIncrementDetection.Name = "tbMWCHAFrequencyIncrementDetection";
+            this.tbMWCHAFrequencyIncrementDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHAFrequencyIncrementDetection.TabIndex = 38;
+            // 
+            // btUpdateMWCHAFrequencyDetection
+            // 
+            this.btUpdateMWCHAFrequencyDetection.Location = new System.Drawing.Point(36, 68);
+            this.btUpdateMWCHAFrequencyDetection.Name = "btUpdateMWCHAFrequencyDetection";
+            this.btUpdateMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateMWCHAFrequencyDetection.TabIndex = 36;
+            this.btUpdateMWCHAFrequencyDetection.Text = "Update";
+            this.btUpdateMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btUpdateMWCHAFrequencyDetection.Click += new System.EventHandler(this.btUpdateMWCHAFrequencyDetection_Click);
+            // 
+            // tbMWCHAFrequencySetpointDetection
+            // 
+            this.tbMWCHAFrequencySetpointDetection.Location = new System.Drawing.Point(116, 71);
+            this.tbMWCHAFrequencySetpointDetection.Name = "tbMWCHAFrequencySetpointDetection";
+            this.tbMWCHAFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHAFrequencySetpointDetection.TabIndex = 36;
+            this.tbMWCHAFrequencySetpointDetection.Text = "14.467242";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(34, 24);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(110, 13);
+            this.label7.TabIndex = 36;
+            this.label7.Text = "MW frequency (GHz):";
+            // 
+            // tbMWCHAFrequencyMonitorDetection
+            // 
+            this.tbMWCHAFrequencyMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWCHAFrequencyMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWCHAFrequencyMonitorDetection.Location = new System.Drawing.Point(117, 44);
+            this.tbMWCHAFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWCHAFrequencyMonitorDetection.Name = "tbMWCHAFrequencyMonitorDetection";
+            this.tbMWCHAFrequencyMonitorDetection.ReadOnly = true;
+            this.tbMWCHAFrequencyMonitorDetection.Size = new System.Drawing.Size(75, 19);
+            this.tbMWCHAFrequencyMonitorDetection.TabIndex = 36;
+            // 
+            // tbMWSynthTemperatureMonitorDetection
+            // 
+            this.tbMWSynthTemperatureMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWSynthTemperatureMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(116, 309);
+            this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWSynthTemperatureMonitorDetection.Name = "tbMWSynthTemperatureMonitorDetection";
+            this.tbMWSynthTemperatureMonitorDetection.ReadOnly = true;
+            this.tbMWSynthTemperatureMonitorDetection.Size = new System.Drawing.Size(75, 19);
+            this.tbMWSynthTemperatureMonitorDetection.TabIndex = 51;
+            // 
+            // groupBoxMWCHBdetection
+            // 
+            this.groupBoxMWCHBdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPLLPoweredOnDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPAPoweredOnDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBRFMutedDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btQueryMWCHBPowerDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btQueryMWCHBFrequencyDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btIncrementMWCHBPowerDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBPowerIncrementDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btUpdateMWCHBPowerDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBPowerSetpointDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.label8);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBPowerMonitorDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.comboBoxMWCHBSetpointUnitDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.comboBoxMWCHBIncrementUnitDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btIncrementMWCHBFrequencyDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBFrequencyIncrementDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.btUpdateMWCHBFrequencyDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBFrequencySetpointDetection);
+            this.groupBoxMWCHBdetection.Controls.Add(this.label20);
+            this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBFrequencyMonitorDetection);
+            this.groupBoxMWCHBdetection.Location = new System.Drawing.Point(-1, 154);
+            this.groupBoxMWCHBdetection.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHBdetection.Name = "groupBoxMWCHBdetection";
+            this.groupBoxMWCHBdetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(629, 132);
+            this.groupBoxMWCHBdetection.TabIndex = 47;
+            this.groupBoxMWCHBdetection.TabStop = false;
+            this.groupBoxMWCHBdetection.Text = "Channel B";
+            // 
+            // cbCHBPLLPoweredOnDetection
+            // 
+            this.cbCHBPLLPoweredOnDetection.AutoSize = true;
+            this.cbCHBPLLPoweredOnDetection.Location = new System.Drawing.Point(463, 103);
+            this.cbCHBPLLPoweredOnDetection.Name = "cbCHBPLLPoweredOnDetection";
+            this.cbCHBPLLPoweredOnDetection.Size = new System.Drawing.Size(104, 17);
+            this.cbCHBPLLPoweredOnDetection.TabIndex = 52;
+            this.cbCHBPLLPoweredOnDetection.Text = "PLL powered on";
+            this.cbCHBPLLPoweredOnDetection.UseVisualStyleBackColor = true;
+            this.cbCHBPLLPoweredOnDetection.CheckedChanged += new System.EventHandler(this.cbCHBPLLPoweredOnDetection_CheckedChanged);
+            // 
+            // cbCHBPAPoweredOnDetection
+            // 
+            this.cbCHBPAPoweredOnDetection.AutoSize = true;
+            this.cbCHBPAPoweredOnDetection.Location = new System.Drawing.Point(463, 74);
+            this.cbCHBPAPoweredOnDetection.Name = "cbCHBPAPoweredOnDetection";
+            this.cbCHBPAPoweredOnDetection.Size = new System.Drawing.Size(99, 17);
+            this.cbCHBPAPoweredOnDetection.TabIndex = 51;
+            this.cbCHBPAPoweredOnDetection.Text = "PA powered on";
+            this.cbCHBPAPoweredOnDetection.UseVisualStyleBackColor = true;
+            this.cbCHBPAPoweredOnDetection.CheckedChanged += new System.EventHandler(this.cbCHBPAPoweredOnDetection_CheckedChanged);
+            // 
+            // cbCHBRFMutedDetection
+            // 
+            this.cbCHBRFMutedDetection.AutoSize = true;
+            this.cbCHBRFMutedDetection.Location = new System.Drawing.Point(463, 45);
+            this.cbCHBRFMutedDetection.Name = "cbCHBRFMutedDetection";
+            this.cbCHBRFMutedDetection.Size = new System.Drawing.Size(72, 17);
+            this.cbCHBRFMutedDetection.TabIndex = 50;
+            this.cbCHBRFMutedDetection.Text = "RF muted";
+            this.cbCHBRFMutedDetection.UseVisualStyleBackColor = true;
+            this.cbCHBRFMutedDetection.CheckedChanged += new System.EventHandler(this.cbCHBRFMutedDetection_CheckedChanged);
+            // 
+            // btQueryMWCHBPowerDetection
+            // 
+            this.btQueryMWCHBPowerDetection.Location = new System.Drawing.Point(271, 41);
+            this.btQueryMWCHBPowerDetection.Name = "btQueryMWCHBPowerDetection";
+            this.btQueryMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWCHBPowerDetection.TabIndex = 49;
+            this.btQueryMWCHBPowerDetection.Text = "Query";
+            this.btQueryMWCHBPowerDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWCHBPowerDetection.Click += new System.EventHandler(this.btQueryMWCHBPowerDetection_Click);
+            // 
+            // btQueryMWCHBFrequencyDetection
+            // 
+            this.btQueryMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 41);
+            this.btQueryMWCHBFrequencyDetection.Name = "btQueryMWCHBFrequencyDetection";
+            this.btQueryMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btQueryMWCHBFrequencyDetection.TabIndex = 49;
+            this.btQueryMWCHBFrequencyDetection.Text = "Query";
+            this.btQueryMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btQueryMWCHBFrequencyDetection.Click += new System.EventHandler(this.btQueryMWCHBFrequencyDetection_Click);
+            // 
+            // btIncrementMWCHBPowerDetection
+            // 
+            this.btIncrementMWCHBPowerDetection.Location = new System.Drawing.Point(271, 99);
+            this.btIncrementMWCHBPowerDetection.Name = "btIncrementMWCHBPowerDetection";
+            this.btIncrementMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btIncrementMWCHBPowerDetection.TabIndex = 45;
+            this.btIncrementMWCHBPowerDetection.Text = "Increment";
+            this.btIncrementMWCHBPowerDetection.UseVisualStyleBackColor = true;
+            this.btIncrementMWCHBPowerDetection.Click += new System.EventHandler(this.btIncrementMWCHBPowerDetection_Click);
+            // 
+            // tbMWCHBPowerIncrementDetection
+            // 
+            this.tbMWCHBPowerIncrementDetection.Location = new System.Drawing.Point(350, 102);
+            this.tbMWCHBPowerIncrementDetection.Name = "tbMWCHBPowerIncrementDetection";
+            this.tbMWCHBPowerIncrementDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHBPowerIncrementDetection.TabIndex = 46;
+            // 
+            // btUpdateMWCHBPowerDetection
+            // 
+            this.btUpdateMWCHBPowerDetection.Location = new System.Drawing.Point(271, 70);
+            this.btUpdateMWCHBPowerDetection.Name = "btUpdateMWCHBPowerDetection";
+            this.btUpdateMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateMWCHBPowerDetection.TabIndex = 41;
+            this.btUpdateMWCHBPowerDetection.Text = "Update";
+            this.btUpdateMWCHBPowerDetection.UseVisualStyleBackColor = true;
+            this.btUpdateMWCHBPowerDetection.Click += new System.EventHandler(this.btUpdateMWCHBPowerDetection_Click);
+            // 
+            // tbMWCHBPowerSetpointDetection
+            // 
+            this.tbMWCHBPowerSetpointDetection.Location = new System.Drawing.Point(351, 72);
+            this.tbMWCHBPowerSetpointDetection.Name = "tbMWCHBPowerSetpointDetection";
+            this.tbMWCHBPowerSetpointDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHBPowerSetpointDetection.TabIndex = 42;
+            this.tbMWCHBPowerSetpointDetection.Text = "-10";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(268, 24);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(92, 13);
+            this.label8.TabIndex = 43;
+            this.label8.Text = "MW power (dBm):";
+            // 
+            // tbMWCHBPowerMonitorDetection
+            // 
+            this.tbMWCHBPowerMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWCHBPowerMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWCHBPowerMonitorDetection.Location = new System.Drawing.Point(351, 43);
+            this.tbMWCHBPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWCHBPowerMonitorDetection.Name = "tbMWCHBPowerMonitorDetection";
+            this.tbMWCHBPowerMonitorDetection.ReadOnly = true;
+            this.tbMWCHBPowerMonitorDetection.Size = new System.Drawing.Size(75, 19);
+            this.tbMWCHBPowerMonitorDetection.TabIndex = 44;
+            // 
+            // comboBoxMWCHBSetpointUnitDetection
+            // 
+            this.comboBoxMWCHBSetpointUnitDetection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxMWCHBSetpointUnitDetection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxMWCHBSetpointUnitDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWCHBSetpointUnitDetection.FormattingEnabled = true;
+            this.comboBoxMWCHBSetpointUnitDetection.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWCHBSetpointUnitDetection.Location = new System.Drawing.Point(198, 72);
+            this.comboBoxMWCHBSetpointUnitDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxMWCHBSetpointUnitDetection.Name = "comboBoxMWCHBSetpointUnitDetection";
+            this.comboBoxMWCHBSetpointUnitDetection.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxMWCHBSetpointUnitDetection.TabIndex = 40;
+            // 
+            // comboBoxMWCHBIncrementUnitDetection
+            // 
+            this.comboBoxMWCHBIncrementUnitDetection.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxMWCHBIncrementUnitDetection.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxMWCHBIncrementUnitDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMWCHBIncrementUnitDetection.FormattingEnabled = true;
+            this.comboBoxMWCHBIncrementUnitDetection.Items.AddRange(new object[] {
+            "GHz",
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxMWCHBIncrementUnitDetection.Location = new System.Drawing.Point(198, 102);
+            this.comboBoxMWCHBIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxMWCHBIncrementUnitDetection.Name = "comboBoxMWCHBIncrementUnitDetection";
+            this.comboBoxMWCHBIncrementUnitDetection.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxMWCHBIncrementUnitDetection.TabIndex = 39;
+            // 
+            // btIncrementMWCHBFrequencyDetection
+            // 
+            this.btIncrementMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 99);
+            this.btIncrementMWCHBFrequencyDetection.Name = "btIncrementMWCHBFrequencyDetection";
+            this.btIncrementMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btIncrementMWCHBFrequencyDetection.TabIndex = 37;
+            this.btIncrementMWCHBFrequencyDetection.Text = "Increment";
+            this.btIncrementMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btIncrementMWCHBFrequencyDetection.Click += new System.EventHandler(this.btIncrementMWCHBFrequencyDetection_Click);
+            // 
+            // tbMWCHBFrequencyIncrementDetection
+            // 
+            this.tbMWCHBFrequencyIncrementDetection.Location = new System.Drawing.Point(118, 102);
+            this.tbMWCHBFrequencyIncrementDetection.Name = "tbMWCHBFrequencyIncrementDetection";
+            this.tbMWCHBFrequencyIncrementDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHBFrequencyIncrementDetection.TabIndex = 38;
+            // 
+            // btUpdateMWCHBFrequencyDetection
+            // 
+            this.btUpdateMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 70);
+            this.btUpdateMWCHBFrequencyDetection.Name = "btUpdateMWCHBFrequencyDetection";
+            this.btUpdateMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateMWCHBFrequencyDetection.TabIndex = 36;
+            this.btUpdateMWCHBFrequencyDetection.Text = "Update";
+            this.btUpdateMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
+            this.btUpdateMWCHBFrequencyDetection.Click += new System.EventHandler(this.btUpdateMWCHBFrequencyDetection_Click);
+            // 
+            // tbMWCHBFrequencySetpointDetection
+            // 
+            this.tbMWCHBFrequencySetpointDetection.Location = new System.Drawing.Point(118, 72);
+            this.tbMWCHBFrequencySetpointDetection.Name = "tbMWCHBFrequencySetpointDetection";
+            this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
+            this.tbMWCHBFrequencySetpointDetection.TabIndex = 36;
+            this.tbMWCHBFrequencySetpointDetection.Text = "14.5";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(34, 24);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(110, 13);
+            this.label20.TabIndex = 36;
+            this.label20.Text = "MW frequency (GHz):";
+            // 
+            // tbMWCHBFrequencyMonitorDetection
+            // 
+            this.tbMWCHBFrequencyMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbMWCHBFrequencyMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbMWCHBFrequencyMonitorDetection.Location = new System.Drawing.Point(117, 43);
+            this.tbMWCHBFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
+            this.tbMWCHBFrequencyMonitorDetection.Name = "tbMWCHBFrequencyMonitorDetection";
+            this.tbMWCHBFrequencyMonitorDetection.ReadOnly = true;
+            this.tbMWCHBFrequencyMonitorDetection.Size = new System.Drawing.Size(75, 19);
+            this.tbMWCHBFrequencyMonitorDetection.TabIndex = 36;
             // 
             // groupBoxWindfreaksynthhd
             // 
@@ -4878,10 +5677,11 @@
             this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxWindfreaksynthhd.Name = "groupBoxWindfreaksynthhd";
             this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(633, 365);
+            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(633, 336);
             this.groupBoxWindfreaksynthhd.TabIndex = 48;
             this.groupBoxWindfreaksynthhd.TabStop = false;
-            this.groupBoxWindfreaksynthhd.Text = "Windfreak SynthHD";
+            this.groupBoxWindfreaksynthhd.Text = "Windfreak for Optical Pumping";
+            this.groupBoxWindfreaksynthhd.Enter += new System.EventHandler(this.groupBoxWindfreaksynthhd_Enter);
             // 
             // btQueryMWSynthTemperature
             // 
@@ -4891,6 +5691,7 @@
             this.btQueryMWSynthTemperature.TabIndex = 52;
             this.btQueryMWSynthTemperature.Text = "Query";
             this.btQueryMWSynthTemperature.UseVisualStyleBackColor = true;
+            this.btQueryMWSynthTemperature.Click += new System.EventHandler(this.btQueryMWSynthTemperature_Click);
             // 
             // label2
             // 
@@ -4904,6 +5705,11 @@
             // groupBoxMWCHA
             // 
             this.groupBoxMWCHA.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHA.Controls.Add(this.btCHAPLLPowerOnInfo);
+            this.groupBoxMWCHA.Controls.Add(this.btCHAPAPowerOnInfo);
+            this.groupBoxMWCHA.Controls.Add(this.btCHAFRMuteInfo);
+            this.groupBoxMWCHA.Controls.Add(this.cbCHAPAPoweredOn);
+            this.groupBoxMWCHA.Controls.Add(this.cbCHAPLLPoweredOn);
             this.groupBoxMWCHA.Controls.Add(this.cbCHARFMuted);
             this.groupBoxMWCHA.Controls.Add(this.btQueryMWCHAPower);
             this.groupBoxMWCHA.Controls.Add(this.btQueryMWCHAFrequency);
@@ -4928,17 +5734,71 @@
             this.groupBoxMWCHA.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHA.TabIndex = 39;
             this.groupBoxMWCHA.TabStop = false;
-            this.groupBoxMWCHA.Text = "Microwaves: Windfreak Channel A";
+            this.groupBoxMWCHA.Text = "Channel A";
+            this.groupBoxMWCHA.Enter += new System.EventHandler(this.groupBoxMWCHA_Enter);
+            // 
+            // btCHAPLLPowerOnInfo
+            // 
+            this.btCHAPLLPowerOnInfo.Location = new System.Drawing.Point(568, 99);
+            this.btCHAPLLPowerOnInfo.Name = "btCHAPLLPowerOnInfo";
+            this.btCHAPLLPowerOnInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHAPLLPowerOnInfo.TabIndex = 54;
+            this.btCHAPLLPowerOnInfo.Text = "?";
+            this.btCHAPLLPowerOnInfo.UseVisualStyleBackColor = true;
+            this.btCHAPLLPowerOnInfo.Click += new System.EventHandler(this.btCHAPLLPowerOnInfo_Click);
+            // 
+            // btCHAPAPowerOnInfo
+            // 
+            this.btCHAPAPowerOnInfo.Location = new System.Drawing.Point(568, 70);
+            this.btCHAPAPowerOnInfo.Name = "btCHAPAPowerOnInfo";
+            this.btCHAPAPowerOnInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHAPAPowerOnInfo.TabIndex = 53;
+            this.btCHAPAPowerOnInfo.Text = "?";
+            this.btCHAPAPowerOnInfo.UseVisualStyleBackColor = true;
+            this.btCHAPAPowerOnInfo.Click += new System.EventHandler(this.btCHAPAPowerOnInfo_Click);
+            // 
+            // btCHAFRMuteInfo
+            // 
+            this.btCHAFRMuteInfo.Location = new System.Drawing.Point(539, 43);
+            this.btCHAFRMuteInfo.Name = "btCHAFRMuteInfo";
+            this.btCHAFRMuteInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHAFRMuteInfo.TabIndex = 52;
+            this.btCHAFRMuteInfo.Text = "?";
+            this.btCHAFRMuteInfo.UseVisualStyleBackColor = true;
+            this.btCHAFRMuteInfo.Click += new System.EventHandler(this.btCHAFRMuteInfo_Click);
+            // 
+            // cbCHAPAPoweredOn
+            // 
+            this.cbCHAPAPoweredOn.AutoSize = true;
+            this.cbCHAPAPoweredOn.Location = new System.Drawing.Point(463, 74);
+            this.cbCHAPAPoweredOn.Name = "cbCHAPAPoweredOn";
+            this.cbCHAPAPoweredOn.Size = new System.Drawing.Size(99, 17);
+            this.cbCHAPAPoweredOn.TabIndex = 51;
+            this.cbCHAPAPoweredOn.Text = "PA powered on";
+            this.cbCHAPAPoweredOn.UseVisualStyleBackColor = true;
+            this.cbCHAPAPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHAPAPoweredOn_CheckedChanged);
+            // 
+            // cbCHAPLLPoweredOn
+            // 
+            this.cbCHAPLLPoweredOn.AutoSize = true;
+            this.cbCHAPLLPoweredOn.Location = new System.Drawing.Point(463, 103);
+            this.cbCHAPLLPoweredOn.Name = "cbCHAPLLPoweredOn";
+            this.cbCHAPLLPoweredOn.Size = new System.Drawing.Size(104, 17);
+            this.cbCHAPLLPoweredOn.TabIndex = 50;
+            this.cbCHAPLLPoweredOn.Text = "PLL powered on";
+            this.cbCHAPLLPoweredOn.UseVisualStyleBackColor = true;
+            this.cbCHAPLLPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHAPLLPoweredOn_CheckedChanged);
             // 
             // cbCHARFMuted
             // 
             this.cbCHARFMuted.AutoSize = true;
-            this.cbCHARFMuted.Location = new System.Drawing.Point(442, 46);
+            this.cbCHARFMuted.Location = new System.Drawing.Point(463, 47);
             this.cbCHARFMuted.Name = "cbCHARFMuted";
             this.cbCHARFMuted.Size = new System.Drawing.Size(72, 17);
             this.cbCHARFMuted.TabIndex = 49;
             this.cbCHARFMuted.Text = "RF muted";
             this.cbCHARFMuted.UseVisualStyleBackColor = true;
+            this.cbCHARFMuted.CheckedChanged += new System.EventHandler(this.cbCHARFMuted_CheckedChanged);
             // 
             // btQueryMWCHAPower
             // 
@@ -4993,7 +5853,7 @@
             this.tbMWCHAPowerSetpoint.Name = "tbMWCHAPowerSetpoint";
             this.tbMWCHAPowerSetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerSetpoint.TabIndex = 42;
-            this.tbMWCHAPowerSetpoint.Text = "20";
+            this.tbMWCHAPowerSetpoint.Text = "-10";
             // 
             // labelMicrowavesChannelAPower
             // 
@@ -5082,7 +5942,7 @@
             this.tbMWCHAFrequencySetpoint.Name = "tbMWCHAFrequencySetpoint";
             this.tbMWCHAFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpoint.TabIndex = 36;
-            this.tbMWCHAFrequencySetpoint.Text = "14.5";
+            this.tbMWCHAFrequencySetpoint.Text = "14.4754";
             // 
             // labelMicrowavesChannelAFrequency
             // 
@@ -5118,6 +5978,12 @@
             // groupBoxMWCHB
             // 
             this.groupBoxMWCHB.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHB.Controls.Add(this.btCHBPLLPowerOnInfo);
+            this.groupBoxMWCHB.Controls.Add(this.btCHBPAPowerOnInfo);
+            this.groupBoxMWCHB.Controls.Add(this.btCHBRFMuteInfo);
+            this.groupBoxMWCHB.Controls.Add(this.cbCHBPLLPoweredOn);
+            this.groupBoxMWCHB.Controls.Add(this.cbCHBPAPoweredOn);
+            this.groupBoxMWCHB.Controls.Add(this.cbCHBRFMuted);
             this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBPower);
             this.groupBoxMWCHB.Controls.Add(this.btQueryMWCHBFrequency);
             this.groupBoxMWCHB.Controls.Add(this.btIncrementMWCHBPower);
@@ -5141,7 +6007,70 @@
             this.groupBoxMWCHB.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHB.TabIndex = 47;
             this.groupBoxMWCHB.TabStop = false;
-            this.groupBoxMWCHB.Text = "Microwaves: Windfreak Channel B";
+            this.groupBoxMWCHB.Text = "Channel B";
+            // 
+            // btCHBPLLPowerOnInfo
+            // 
+            this.btCHBPLLPowerOnInfo.Location = new System.Drawing.Point(568, 100);
+            this.btCHBPLLPowerOnInfo.Name = "btCHBPLLPowerOnInfo";
+            this.btCHBPLLPowerOnInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHBPLLPowerOnInfo.TabIndex = 56;
+            this.btCHBPLLPowerOnInfo.Text = "?";
+            this.btCHBPLLPowerOnInfo.UseVisualStyleBackColor = true;
+            this.btCHBPLLPowerOnInfo.Click += new System.EventHandler(this.btCHBPLLPowerOnInfo_Click);
+            // 
+            // btCHBPAPowerOnInfo
+            // 
+            this.btCHBPAPowerOnInfo.Location = new System.Drawing.Point(568, 70);
+            this.btCHBPAPowerOnInfo.Name = "btCHBPAPowerOnInfo";
+            this.btCHBPAPowerOnInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHBPAPowerOnInfo.TabIndex = 55;
+            this.btCHBPAPowerOnInfo.Text = "?";
+            this.btCHBPAPowerOnInfo.UseVisualStyleBackColor = true;
+            this.btCHBPAPowerOnInfo.Click += new System.EventHandler(this.btCHBPAPowerOnInfo_Click);
+            // 
+            // btCHBRFMuteInfo
+            // 
+            this.btCHBRFMuteInfo.Location = new System.Drawing.Point(539, 41);
+            this.btCHBRFMuteInfo.Name = "btCHBRFMuteInfo";
+            this.btCHBRFMuteInfo.Size = new System.Drawing.Size(23, 23);
+            this.btCHBRFMuteInfo.TabIndex = 55;
+            this.btCHBRFMuteInfo.Text = "?";
+            this.btCHBRFMuteInfo.UseVisualStyleBackColor = true;
+            this.btCHBRFMuteInfo.Click += new System.EventHandler(this.btCHBRFMuteInfo_Click);
+            // 
+            // cbCHBPLLPoweredOn
+            // 
+            this.cbCHBPLLPoweredOn.AutoSize = true;
+            this.cbCHBPLLPoweredOn.Location = new System.Drawing.Point(463, 103);
+            this.cbCHBPLLPoweredOn.Name = "cbCHBPLLPoweredOn";
+            this.cbCHBPLLPoweredOn.Size = new System.Drawing.Size(104, 17);
+            this.cbCHBPLLPoweredOn.TabIndex = 52;
+            this.cbCHBPLLPoweredOn.Text = "PLL powered on";
+            this.cbCHBPLLPoweredOn.UseVisualStyleBackColor = true;
+            this.cbCHBPLLPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHBPLLPoweredOn_CheckedChanged);
+            // 
+            // cbCHBPAPoweredOn
+            // 
+            this.cbCHBPAPoweredOn.AutoSize = true;
+            this.cbCHBPAPoweredOn.Location = new System.Drawing.Point(463, 74);
+            this.cbCHBPAPoweredOn.Name = "cbCHBPAPoweredOn";
+            this.cbCHBPAPoweredOn.Size = new System.Drawing.Size(99, 17);
+            this.cbCHBPAPoweredOn.TabIndex = 51;
+            this.cbCHBPAPoweredOn.Text = "PA powered on";
+            this.cbCHBPAPoweredOn.UseVisualStyleBackColor = true;
+            this.cbCHBPAPoweredOn.CheckedChanged += new System.EventHandler(this.cbCHBPAPoweredOn_CheckedChanged);
+            // 
+            // cbCHBRFMuted
+            // 
+            this.cbCHBRFMuted.AutoSize = true;
+            this.cbCHBRFMuted.Location = new System.Drawing.Point(463, 45);
+            this.cbCHBRFMuted.Name = "cbCHBRFMuted";
+            this.cbCHBRFMuted.Size = new System.Drawing.Size(72, 17);
+            this.cbCHBRFMuted.TabIndex = 50;
+            this.cbCHBRFMuted.Text = "RF muted";
+            this.cbCHBRFMuted.UseVisualStyleBackColor = true;
+            this.cbCHBRFMuted.CheckedChanged += new System.EventHandler(this.cbCHBRFMuted_CheckedChanged);
             // 
             // btQueryMWCHBPower
             // 
@@ -5196,7 +6125,7 @@
             this.tbMWCHBPowerSetpoint.Name = "tbMWCHBPowerSetpoint";
             this.tbMWCHBPowerSetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBPowerSetpoint.TabIndex = 42;
-            this.tbMWCHBPowerSetpoint.Text = "20";
+            this.tbMWCHBPowerSetpoint.Text = "-10";
             // 
             // labelMicrowavesChannelBPower
             // 
@@ -5309,6 +6238,9 @@
             // 
             // groupBoxRF
             // 
+            this.groupBoxRF.Controls.Add(this.labelRFStatus);
+            this.groupBoxRF.Controls.Add(this.tbRFStatus);
+            this.groupBoxRF.Controls.Add(this.btQueryRFFrequency);
             this.groupBoxRF.Controls.Add(this.comboBoxRFIncrementUnit);
             this.groupBoxRF.Controls.Add(this.comboBoxRFSetpointUnit);
             this.groupBoxRF.Controls.Add(this.btIncrementRFFrequency);
@@ -5321,10 +6253,37 @@
             this.groupBoxRF.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxRF.Name = "groupBoxRF";
             this.groupBoxRF.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBoxRF.Size = new System.Drawing.Size(254, 130);
+            this.groupBoxRF.Size = new System.Drawing.Size(254, 188);
             this.groupBoxRF.TabIndex = 0;
             this.groupBoxRF.TabStop = false;
             this.groupBoxRF.Text = "Radio Frequency";
+            // 
+            // labelRFStatus
+            // 
+            this.labelRFStatus.AutoSize = true;
+            this.labelRFStatus.Location = new System.Drawing.Point(52, 132);
+            this.labelRFStatus.Name = "labelRFStatus";
+            this.labelRFStatus.Size = new System.Drawing.Size(40, 13);
+            this.labelRFStatus.TabIndex = 56;
+            this.labelRFStatus.Text = "Status:";
+            // 
+            // tbRFStatus
+            // 
+            this.tbRFStatus.Location = new System.Drawing.Point(98, 129);
+            this.tbRFStatus.Multiline = true;
+            this.tbRFStatus.Name = "tbRFStatus";
+            this.tbRFStatus.Size = new System.Drawing.Size(133, 54);
+            this.tbRFStatus.TabIndex = 49;
+            // 
+            // btQueryRFFrequency
+            // 
+            this.btQueryRFFrequency.Location = new System.Drawing.Point(18, 51);
+            this.btQueryRFFrequency.Name = "btQueryRFFrequency";
+            this.btQueryRFFrequency.Size = new System.Drawing.Size(75, 23);
+            this.btQueryRFFrequency.TabIndex = 55;
+            this.btQueryRFFrequency.Text = "Query";
+            this.btQueryRFFrequency.UseVisualStyleBackColor = true;
+            this.btQueryRFFrequency.Click += new System.EventHandler(this.btQueryRFFrequency_Click);
             // 
             // comboBoxRFIncrementUnit
             // 
@@ -5336,7 +6295,7 @@
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxRFIncrementUnit.Location = new System.Drawing.Point(194, 79);
+            this.comboBoxRFIncrementUnit.Location = new System.Drawing.Point(178, 102);
             this.comboBoxRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFIncrementUnit.Name = "comboBoxRFIncrementUnit";
             this.comboBoxRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
@@ -5350,7 +6309,7 @@
             this.comboBoxRFSetpointUnit.FormattingEnabled = true;
             this.comboBoxRFSetpointUnit.Items.AddRange(new object[] {
             "MHz"});
-            this.comboBoxRFSetpointUnit.Location = new System.Drawing.Point(194, 54);
+            this.comboBoxRFSetpointUnit.Location = new System.Drawing.Point(178, 76);
             this.comboBoxRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFSetpointUnit.Name = "comboBoxRFSetpointUnit";
             this.comboBoxRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
@@ -5358,7 +6317,7 @@
             // 
             // btIncrementRFFrequency
             // 
-            this.btIncrementRFFrequency.Location = new System.Drawing.Point(34, 76);
+            this.btIncrementRFFrequency.Location = new System.Drawing.Point(17, 99);
             this.btIncrementRFFrequency.Name = "btIncrementRFFrequency";
             this.btIncrementRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btIncrementRFFrequency.TabIndex = 37;
@@ -5368,14 +6327,14 @@
             // 
             // tbRFFrequencyIncrement
             // 
-            this.tbRFFrequencyIncrement.Location = new System.Drawing.Point(114, 79);
+            this.tbRFFrequencyIncrement.Location = new System.Drawing.Point(98, 102);
             this.tbRFFrequencyIncrement.Name = "tbRFFrequencyIncrement";
             this.tbRFFrequencyIncrement.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateRFFrequency
             // 
-            this.btUpdateRFFrequency.Location = new System.Drawing.Point(34, 52);
+            this.btUpdateRFFrequency.Location = new System.Drawing.Point(17, 75);
             this.btUpdateRFFrequency.Name = "btUpdateRFFrequency";
             this.btUpdateRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btUpdateRFFrequency.TabIndex = 36;
@@ -5385,7 +6344,7 @@
             // 
             // tbRFFrequency
             // 
-            this.tbRFFrequency.Location = new System.Drawing.Point(114, 54);
+            this.tbRFFrequency.Location = new System.Drawing.Point(98, 76);
             this.tbRFFrequency.Name = "tbRFFrequency";
             this.tbRFFrequency.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequency.TabIndex = 36;
@@ -5394,7 +6353,7 @@
             // labelRF
             // 
             this.labelRF.AutoSize = true;
-            this.labelRF.Location = new System.Drawing.Point(5, 34);
+            this.labelRF.Location = new System.Drawing.Point(16, 34);
             this.labelRF.Name = "labelRF";
             this.labelRF.Size = new System.Drawing.Size(105, 13);
             this.labelRF.TabIndex = 36;
@@ -5404,7 +6363,7 @@
             // 
             this.tbRFFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRFFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRFFrequencyMonitor.Location = new System.Drawing.Point(115, 32);
+            this.tbRFFrequencyMonitor.Location = new System.Drawing.Point(98, 54);
             this.tbRFFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRFFrequencyMonitor.Name = "tbRFFrequencyMonitor";
             this.tbRFFrequencyMonitor.ReadOnly = true;
@@ -5433,12 +6392,82 @@
             this.tbStatus.Size = new System.Drawing.Size(192, 144);
             this.tbStatus.TabIndex = 6;
             // 
+            // ConstDegaussTextBox
+            // 
+            this.ConstDegaussTextBox.Location = new System.Drawing.Point(277, 64);
+            this.ConstDegaussTextBox.Name = "ConstDegaussTextBox";
+            this.ConstDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.ConstDegaussTextBox.TabIndex = 87;
+            this.ConstDegaussTextBox.Text = "1";
+            // 
+            // ExpDegaussTextBox
+            // 
+            this.ExpDegaussTextBox.Location = new System.Drawing.Point(277, 90);
+            this.ExpDegaussTextBox.Name = "ExpDegaussTextBox";
+            this.ExpDegaussTextBox.Size = new System.Drawing.Size(47, 20);
+            this.ExpDegaussTextBox.TabIndex = 88;
+            this.ExpDegaussTextBox.Text = "2";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(178, 41);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(93, 13);
+            this.label20.TabIndex = 89;
+            this.label20.Text = "1. Linear Ramp (s)";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(178, 67);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(75, 13);
+            this.label21.TabIndex = 90;
+            this.label21.Text = "2. Constant (s)";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(178, 93);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(85, 13);
+            this.label22.TabIndex = 91;
+            this.label22.Text = "3. Exp Decay (s)";
+            // 
+            // DegaussLED
+            // 
+            //this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            //this.DegaussLED.Location = new System.Drawing.Point(282, 124);
+            //this.DegaussLED.Name = "DegaussLED";
+            //this.DegaussLED.Size = new System.Drawing.Size(32, 34);
+            //this.DegaussLED.TabIndex = 92;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(182, 133);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(92, 13);
+            this.label23.TabIndex = 93;
+            this.label23.Text = "Degauss Ongoing";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(205, 16);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(91, 13);
+            this.label24.TabIndex = 94;
+            this.label24.Text = "Envelope Timings";
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1272, 771);
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1272, 763);
+            this.ClientSize = new System.Drawing.Size(2316, 1396);
             this.Controls.Add(this.groupBoxStatus);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.gbTemperatureandPressureMonitoringControl);
@@ -5518,8 +6547,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart4)).EndInit();
             this.gbDigitalOutputs.ResumeLayout(false);
             this.gbDigitalOutputsPort0.ResumeLayout(false);
-            this.gbDigitalOutputsPort0.PerformLayout();
+            this.tabPageEfield.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.tabPageEfield.ResumeLayout(false);
+>>>>>>>>> Temporary merge branch 2
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
@@ -5533,7 +6567,12 @@
             this.groupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).EndInit();
             this.tabPagePumping.ResumeLayout(false);
-            this.tabPagePumping.PerformLayout();
+            this.groupBoxWindfreakDetection.ResumeLayout(false);
+            this.groupBoxWindfreakDetection.PerformLayout();
+            this.groupBoxMWCHAdetection.ResumeLayout(false);
+            this.groupBoxMWCHAdetection.PerformLayout();
+            this.groupBoxMWCHBdetection.ResumeLayout(false);
+            this.groupBoxMWCHBdetection.PerformLayout();
             this.groupBoxWindfreaksynthhd.ResumeLayout(false);
             this.groupBoxWindfreaksynthhd.PerformLayout();
             this.groupBoxMWCHA.ResumeLayout(false);
@@ -5544,6 +6583,7 @@
             this.groupBoxRF.PerformLayout();
             this.groupBoxStatus.ResumeLayout(false);
             this.groupBoxStatus.PerformLayout();
+            //((System.ComponentModel.ISupportInitialize)(this.DegaussLED)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5985,10 +7025,93 @@
         private System.Windows.Forms.Button btQueryMWCHAPower;
         private System.Windows.Forms.Button btQueryMWCHAFrequency;
         private System.Windows.Forms.GroupBox groupBoxWindfreaksynthhd;
-        public System.Windows.Forms.TextBox textBoxtesting;
+        public System.Windows.Forms.TextBox tbRFStatus;
         private System.Windows.Forms.Button btQueryMWSynthTemperature;
-        private System.Windows.Forms.Label label2;
-        public System.Windows.Forms.TextBox tbMWSynthTemperatureMonitor;
+        public System.Windows.Forms.CheckBox cbCHARFMuted;
+        public System.Windows.Forms.CheckBox cbCHAPAPoweredOn;
+        public System.Windows.Forms.CheckBox cbCHAPLLPoweredOn;
+        public System.Windows.Forms.CheckBox cbCHBPLLPoweredOn;
+        public System.Windows.Forms.CheckBox cbCHBPAPoweredOn;
+        public System.Windows.Forms.CheckBox cbCHBRFMuted;
+        private System.Windows.Forms.Button btCHAPLLPowerOnInfo;
+        private System.Windows.Forms.Button btCHAPAPowerOnInfo;
+        private System.Windows.Forms.Button btCHAFRMuteInfo;
+        private System.Windows.Forms.Button btCHBPLLPowerOnInfo;
+        private System.Windows.Forms.Button btCHBPAPowerOnInfo;
+        private System.Windows.Forms.Button btCHBRFMuteInfo;
+        private System.Windows.Forms.Button btQueryRFFrequency;
+        public System.Windows.Forms.Button btClearRefreshModeStatus;
+        private System.Windows.Forms.Button btClearWarmUpModeStatus;
+        private System.Windows.Forms.Button btClearCoolDownModeStatus;
+        private System.Windows.Forms.Label labelRFStatus;
+        private System.Windows.Forms.GroupBox groupBoxWindfreakDetection;
+        private System.Windows.Forms.Button btQueryMWSynthTemperatureDetection;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.GroupBox groupBoxMWCHAdetection;
+        public System.Windows.Forms.CheckBox cbCHAPAPoweredOnDetection;
+        public System.Windows.Forms.CheckBox cbCHAPLLPoweredOnDetection;
+        public System.Windows.Forms.CheckBox cbCHARFMutedDetection;
+        private System.Windows.Forms.Button btQueryMWCHAPowerDetection;
+        private System.Windows.Forms.Button btQueryMWCHAFrequencyDetection;
+        private System.Windows.Forms.Button btIncrementMWCHAPowerDetection;
+        public System.Windows.Forms.TextBox tbMWCHAPowerIncrementDetection;
+        private System.Windows.Forms.Button btUpdateMWCHAPowerDetection;
+        public System.Windows.Forms.TextBox tbMWCHAPowerSetpointDetection;
+        private System.Windows.Forms.Label label6;
+        public System.Windows.Forms.TextBox tbMWCHAPowerMonitorDetection;
+        public System.Windows.Forms.ComboBox comboBoxMWCHASetpointUnitDetection;
+        public System.Windows.Forms.ComboBox comboBoxMWCHAIncrementUnitDetection;
+        private System.Windows.Forms.Button btIncrementMWCHAFrequencyDetection;
+        public System.Windows.Forms.TextBox tbMWCHAFrequencyIncrementDetection;
+        private System.Windows.Forms.Button btUpdateMWCHAFrequencyDetection;
+        public System.Windows.Forms.TextBox tbMWCHAFrequencySetpointDetection;
+        private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.TextBox tbMWCHAFrequencyMonitorDetection;
+        public System.Windows.Forms.TextBox tbMWSynthTemperatureMonitorDetection;
+        private System.Windows.Forms.GroupBox groupBoxMWCHBdetection;
+        public System.Windows.Forms.CheckBox cbCHBPLLPoweredOnDetection;
+        public System.Windows.Forms.CheckBox cbCHBPAPoweredOnDetection;
+        public System.Windows.Forms.CheckBox cbCHBRFMutedDetection;
+        private System.Windows.Forms.Button btQueryMWCHBPowerDetection;
+        private System.Windows.Forms.Button btQueryMWCHBFrequencyDetection;
+        private System.Windows.Forms.Button btIncrementMWCHBPowerDetection;
+        public System.Windows.Forms.TextBox tbMWCHBPowerIncrementDetection;
+        private System.Windows.Forms.Button btUpdateMWCHBPowerDetection;
+        public System.Windows.Forms.TextBox tbMWCHBPowerSetpointDetection;
+        private System.Windows.Forms.Label label8;
+        public System.Windows.Forms.TextBox tbMWCHBPowerMonitorDetection;
+        public System.Windows.Forms.ComboBox comboBoxMWCHBSetpointUnitDetection;
+        public System.Windows.Forms.ComboBox comboBoxMWCHBIncrementUnitDetection;
+        private System.Windows.Forms.Button btIncrementMWCHBFrequencyDetection;
+        public System.Windows.Forms.TextBox tbMWCHBFrequencyIncrementDetection;
+        private System.Windows.Forms.Button btUpdateMWCHBFrequencyDetection;
+        public System.Windows.Forms.TextBox tbMWCHBFrequencySetpointDetection;
+        private System.Windows.Forms.Label label20;
+        public System.Windows.Forms.TextBox tbMWCHBFrequencyMonitorDetection;
+        //public NationalInstruments.UI.WindowsForms.Led rampLED;
+        //public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        private System.Windows.Forms.Label label499;
+        private System.Windows.Forms.Label label299;
+        public System.Windows.Forms.TextBox tbiMonitorPollPeriod;
+        public System.Windows.Forms.Button changePollPeriodButton;
+        public System.Windows.Forms.Button StartDegauss;
+        private System.Windows.Forms.GroupBox groupBox8;
+        public System.Windows.Forms.TextBox DegaussAmpTextBox;
+        public System.Windows.Forms.TextBox DegaussFreqTextBox;
+        private System.Windows.Forms.Label label899;
+        private System.Windows.Forms.Label label799;
+        private System.Windows.Forms.Label label699;
+        public System.Windows.Forms.TextBox ExpTimeConstantTextBox;
+        public System.Windows.Forms.TextBox LinearDegaussTextBox;
+        public System.Windows.Forms.TextBox ConstDegaussTextBox;
+        public System.Windows.Forms.TextBox ExpDegaussTextBox;
+        private System.Windows.Forms.Label label209;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        //public NationalInstruments.UI.WindowsForms.Led DegaussLED;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
         private System.Windows.Forms.CheckBox cbCHARFMuted;
+>>>>>>>>> Temporary merge branch 2
     }
 }

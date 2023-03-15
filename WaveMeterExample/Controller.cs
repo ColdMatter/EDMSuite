@@ -17,6 +17,7 @@ namespace WavemeterLockServer
         public Boolean bMeas;
 
         private ServerForm ui;
+        public bool[] remoteConnection = new bool [7];//an array of boolean to show if the channel is being used by wavemeterLock remotely
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -34,8 +35,16 @@ namespace WavemeterLockServer
             ui = new ServerForm();
             ui.controller = this;
             Application.Run(ui);
+            for (int i = 0; i < 7; i++)
+                remoteConnection[i] = false;
+
         }
 
+
+        public void changeConnectionStatus(int channelNum, bool status)
+        {
+            remoteConnection[channelNum-1] = status;
+        }
 
         public double getWavelength(int channelNum)//Returns wavelength (nm)
         {

@@ -18,20 +18,18 @@ namespace WavemeterLock
 {
     public class Controller : MarshalByRefObject
     {
-
-
+    
         private string computer;
         private string name;
-        //private string hostName = "IC-CZC136CFDJ";//Change this if the server is changed ic-czc136cfdj
-        //private string hostName = "PH-ULTRAEDM";
-        private string hostName = "IC-CZC222C0F4";
+        private int hostTCPChannel;
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
         public int colorParameter = 0;
         private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
         public double updateRate = 100;
-        public int miniLoop = 50;
+        public int miniLoop = 5;
+        public int threadSleepTime = 5;
 
         private List<double> scanTimes;
         public int numScanAverages = 100;
@@ -41,18 +39,14 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            computer = hostName;
-            IPHostEntry hostInfo = Dns.GetHostEntry(computer);
-
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
                     name = addr.ToString();
             }
 
-            EnvironsHelper eHelper = new EnvironsHelper(computer);
-
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + "1995" + "/controller.rem"));
+            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
+            
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -119,9 +113,11 @@ namespace WavemeterLock
         private LockForm ui;
         public WavemeterLockConfig config;
 
-        public Controller(string configName)
+        public Controller(string configName, string hostName, int channelNumber)
         {
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
+            computer = hostName;
+            hostTCPChannel = channelNumber;
 
         }
         
@@ -176,6 +172,11 @@ namespace WavemeterLock
             mainThread.Start();
         }
 
+
+        public void indicateRemoteConnection(int channelNum, bool status)
+        {
+            wavemeterContrller.changeConnectionStatus(channelNum,status);
+        }
 
         public void initializeLasers()//For each laser in configuration, create a control panel in main form
         {
@@ -272,11 +273,17 @@ namespace WavemeterLock
         {
             Laser laser = lasers[slavename];
             laser.PGain = g;
+            
         }
 
         internal void setIGain(string slavename, double g)
         {
             Laser laser = lasers[slavename];
+            double oldIGain = laser.IGain;
+            if (g != 0)
+            {
+                laser.summedWavelengthDifference = laser.summedWavelengthDifference * oldIGain / g; //Scale summed error to prevent overshoot
+            }
             laser.IGain = g;
         }
 
@@ -381,6 +388,8 @@ namespace WavemeterLock
             scanTimes = new List<double>();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            Stopwatch stopWatchGraph = new Stopwatch();
+            stopWatchGraph.Start();
             loopcount = 0;
             int miniLoopcount = 0;
 
@@ -397,6 +406,7 @@ namespace WavemeterLock
                             faultyLaser = slave;
                             lasers[slave].DisengageLock();
                             Thread msgThread = new Thread(errorMsg);
+                            indicateRemoteConnection(lasers[slave].WLMChannel, false);
                             msgThread.Start();
                         }
                         lasers[slave].UpdateLock();
@@ -406,17 +416,19 @@ namespace WavemeterLock
                 loopcount++;
                 miniLoopcount++;
 
-                foreach (string slave in lasers.Keys)
-                {
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
-                    {
-                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;
-                    }
-
-                }
+            
 
                 if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
                 {
+                    foreach (string slave in lasers.Keys)
+                    {
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
+                        {
+                            timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
+                            stopWatchGraph.Restart();
+                        }
+
+                    }
                     foreach (string slave in lasers.Keys)
                     {
                         panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
@@ -424,11 +436,10 @@ namespace WavemeterLock
                     }
                 }
 
-
+                Thread.Sleep(threadSleepTime);
                 updateLockRate(stopWatch);
 
-                stopWatch.Reset();
-                stopWatch.Start();
+                stopWatch.Restart();
             }
 
             endLoop();

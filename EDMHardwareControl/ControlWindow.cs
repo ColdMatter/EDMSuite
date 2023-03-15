@@ -1763,7 +1763,7 @@ namespace EDMHardwareControl
             this.label176.Location = new System.Drawing.Point(6, 178);
             this.label176.MaximumSize = new System.Drawing.Size(200, 200);
             this.label176.Name = "label176";
-            this.label176.Size = new System.Drawing.Size(77, 30);
+            this.label176.Size = new System.Drawing.Size(152, 30);
             this.label176.TabIndex = 45;
             this.label176.Text = "Note: Bertan +ve supplies require +/- 3kV/V";
             // 
@@ -1884,7 +1884,6 @@ namespace EDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage10);
             this.tabControl.Controls.Add(this.rfAWGTab);
             this.tabControl.Controls.Add(this.tabPage4);
-            this.tabControl.Controls.Add(this.tabPage8);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -7538,7 +7537,6 @@ namespace EDMHardwareControl
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -7674,7 +7672,7 @@ namespace EDMHardwareControl
             // ControlWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(1924, 1181);
+            this.ClientSize = new System.Drawing.Size(771, 626);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
