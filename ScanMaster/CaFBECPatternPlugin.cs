@@ -36,11 +36,11 @@ namespace ScanMaster.Acquire.Plugins
             settings["flashlampPulseInterval"] = 200000;
             settings["sequenceLength"] = 2;
             settings["padStart"] = 20000;
-            settings["switchLineDuration"] = 25000;
-            settings["switchLineDelay"] = -2000;
+            settings["switchLineDuration"] = 5000;
+            settings["switchLineDelay"] = 660;
 
-            settings["chirpStart"] = 100;
-            settings["chirpDuration"] = 300;
+            settings["chirpStart"] = 2000;
+            settings["chirpDuration"] = 10000;
 
             settings["TTL2StartTimes"] = "10000";
             settings["TTL2Durations"] = "5000";

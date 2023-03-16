@@ -51,7 +51,7 @@ namespace ScanMaster.Acquire.Patterns
 
                     // Pulse(time, switchLineDelay, switchLineDuration, switchChannel);
                     Pulse(time, switchLineDelay, switchLineDuration,
-                        ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["probe"]).BitNumber);
+                        ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["531aom"]).BitNumber);
                     Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration,  "analogPatternTrigger");
                 }
 
@@ -108,7 +108,7 @@ namespace ScanMaster.Acquire.Patterns
             if (tempTime > time) time = tempTime;
             
             // Chirp slowing 531
-            tempTime = Pulse(startTime, flashToQ + chirpStart, chirpDuration,
+            tempTime = Pulse(startTime, chirpStart, chirpDuration,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["chirpTrigger"]).BitNumber);
             if (tempTime > time) time = tempTime;
             

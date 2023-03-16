@@ -39,7 +39,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 20);
             AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
             AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
-            AddDigitalOutputChannel("probe", pgBoard, 0, 29);
+            AddDigitalOutputChannel("531aom", pgBoard, 0, 29);
 
             // AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
             // AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
@@ -61,7 +61,7 @@ namespace DAQ.HAL
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("analogTrigger0", pgBoard + "/PFI0");
-            Info.Add("PGClockLine", pgBoard + "/PFI2");
+            // Info.Add("PGClockLine", pgBoard + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
 
             //TCL Input channels
@@ -94,7 +94,7 @@ namespace DAQ.HAL
             tclConfig.DefaultScanPoints =  1000;
             tclConfig.AnalogSampleRate = 15000;
             tclConfig.SlaveVoltageLowerLimit = 0.0;
-            tclConfig.SlaveVoltageUpperLimit = 10.0;
+            tclConfig.SlaveVoltageUpperLimit = 4.0;
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfig.MaximumNLMFSteps = 20;
             //tclConfig.TriggerOnRisingEdge = true;
