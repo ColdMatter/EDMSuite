@@ -81,11 +81,13 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Velocity Measurement (Slowed)", typeof(VelocityMeasSlowedPatternPlugin));
 			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
 			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
+			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
 			yagPlugins.Add("Not-so-Brilliant YAG", typeof(NotInTheLeastBitBrilliantYAGPlugin));
             yagPlugins.Add("Quanta-Ray", typeof(QuantaRayYAGPlugin));
+			yagPlugins.Add("Big-Sky", typeof(BigSkyYAGPlugin));
 			// shotGathererPlugins
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));

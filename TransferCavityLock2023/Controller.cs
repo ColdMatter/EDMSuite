@@ -81,7 +81,7 @@ namespace TransferCavityLock2023
         {
             initializeCavityControl();
 
-            initializeAIs();
+            initializeIs();
 
             defaultScanPoints = config.DefaultScanPoints;
 
@@ -94,7 +94,7 @@ namespace TransferCavityLock2023
             Application.Run(ui);
         }
 
-        private void initializeAIs()
+        private void initializeIs()
         {
             Dictionary<string, string> analogs = new Dictionary<string, string>();
             Dictionary<string, string> digitals = new Dictionary<string, string>();

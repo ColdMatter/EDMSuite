@@ -32,6 +32,8 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
      XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
 	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(YAGFirePatternPlugin)),
+	 XmlInclude(typeof(NshotsPatternPlugin)),
 	 XmlInclude(typeof(TwoShutterPatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPluginEdit)),

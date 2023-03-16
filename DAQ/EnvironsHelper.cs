@@ -336,6 +336,7 @@ namespace DAQ.Environment
                 case "IC-CZC225B85M":
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
+                    serverTCPChannel = 1984;
                     Debug = false;
                     break;
 
