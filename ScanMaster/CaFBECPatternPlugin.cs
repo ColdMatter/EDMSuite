@@ -37,7 +37,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["sequenceLength"] = 2;
             settings["padStart"] = 20000;
             settings["switchLineDuration"] = 25000;
-            settings["switchLineDelay"] = -20000;
+            settings["switchLineDelay"] = -2000;
 
             settings["chirpStart"] = 100;
             settings["chirpDuration"] = 300;
@@ -45,6 +45,10 @@ namespace ScanMaster.Acquire.Plugins
             settings["TTL2StartTimes"] = "10000";
             settings["TTL2Durations"] = "5000";
             settings["TTL2Repetitions"] = "1";
+
+            settings["TTL1StartTimes"] = "10000";
+            settings["TTL1Durations"] = "5000";
+            settings["TTL1Repetitions"] = "1";
         }
 
         protected override void DoAcquisitionStarting()

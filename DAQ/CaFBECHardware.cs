@@ -36,8 +36,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", pgBoard, 0, 3);
             AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
-            // AddDigitalOutputChannel("ttl1", pgBoard, 1, 1);
-            // AddDigitalOutputChannel("ttl2", pgBoard, 1, 3);
+            AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 20);
+            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
+            AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
             AddDigitalOutputChannel("probe", pgBoard, 0, 29);
 
             // AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
@@ -55,7 +56,6 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pmt", pgBoard + "/ai2", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
-            AddAnalogOutputChannel("slowingRamp", pgBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("laser", pgBoard + "/ao0", -10, 10);
 
             Info.Add("PGType", "integrated");

@@ -62,6 +62,7 @@ namespace ScanMaster.Acquire.Patterns
                     Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration, "analogPatternTrigger");
                     
                     // now with the switch line low, if modulation is true (otherwise another with line high)
+                    /*
                     if (modulation)
                     {
                         // Console.WriteLine("Low");
@@ -73,6 +74,7 @@ namespace ScanMaster.Acquire.Patterns
                         Pulse(time, switchLineDelay, SWITCHLINEDURARION, switchChannel);
                         Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration, "analogPatternTrigger");
                     }
+                    */
                 }
 
                 time += flashlampPulseInterval;
@@ -103,14 +105,15 @@ namespace ScanMaster.Acquire.Patterns
             // Q pulse
             tempTime = Pulse(startTime, flashToQ, Q_PULSE_LENGTH,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
-
             if (tempTime > time) time = tempTime;
-            tempTime = Pulse(startTime, chirpStart, chirpDuration,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["chirpTrigger"]).BitNumber);
             
+            // Chirp slowing 531
+            tempTime = Pulse(startTime, flashToQ + chirpStart, chirpDuration,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["chirpTrigger"]).BitNumber);
             if (tempTime > time) time = tempTime;
+            
             // Detector trigger
-            tempTime = Pulse(startTime, delayToDetectorTrigger + flashToQ, DETECTOR_TRIGGER_LENGTH,
+            tempTime = Pulse(startTime, delayToDetectorTrigger, DETECTOR_TRIGGER_LENGTH,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
             if (tempTime > time) time = tempTime;
 
