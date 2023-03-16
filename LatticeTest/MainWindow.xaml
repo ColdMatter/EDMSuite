@@ -1,0 +1,14 @@
+﻿<Window x:Class="LatticeTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LatticeTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="Turn cryo on" HorizontalAlignment="Left" Height="111" Margin="83,29,0,0" VerticalAlignment="Top" Width="215" Click="Button_Click"/>
+        <Button Content="Turn cryo off" HorizontalAlignment="Left" Height="99" Margin="417,41,0,0" VerticalAlignment="Top" Width="247" Click="Button_Click_1"/>
+
+    </Grid>
+</Window>

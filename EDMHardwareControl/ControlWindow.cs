@@ -1180,6 +1180,8 @@ namespace EDMHardwareControl
             this.yagQEnableButton = new System.Windows.Forms.Button();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.groupBox45 = new System.Windows.Forms.GroupBox();
+            this.label190 = new System.Windows.Forms.Label();
+            this.OffsetTextBox = new System.Windows.Forms.TextBox();
             this.DegaussLED = new NationalInstruments.UI.WindowsForms.Led();
             this.DegaussStartButton = new System.Windows.Forms.Button();
             this.ExpDegaussTextBox = new System.Windows.Forms.TextBox();
@@ -1314,8 +1316,6 @@ namespace EDMHardwareControl
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.rfsgStatusTimer = new System.Windows.Forms.Timer(this.components);
-            this.OffsetTextBox = new System.Windows.Forms.TextBox();
-            this.label190 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
@@ -2160,7 +2160,7 @@ namespace EDMHardwareControl
             this.label131.Name = "label131";
             this.label131.Size = new System.Drawing.Size(12, 23);
             this.label131.TabIndex = 72;
-            this.label131.Text = "±";
+            this.label131.Text = "?";
             // 
             // label130
             // 
@@ -2168,7 +2168,7 @@ namespace EDMHardwareControl
             this.label130.Name = "label130";
             this.label130.Size = new System.Drawing.Size(12, 23);
             this.label130.TabIndex = 71;
-            this.label130.Text = "±";
+            this.label130.Text = "?";
             // 
             // northIMonitorErrorTextBox
             // 
@@ -6388,6 +6388,22 @@ namespace EDMHardwareControl
             this.groupBox45.TabStop = false;
             this.groupBox45.Text = "Degausser";
             // 
+            // label190
+            // 
+            this.label190.Location = new System.Drawing.Point(16, 101);
+            this.label190.Name = "label190";
+            this.label190.Size = new System.Drawing.Size(102, 23);
+            this.label190.TabIndex = 66;
+            this.label190.Text = "Offset (V)";
+            // 
+            // OffsetTextBox
+            // 
+            this.OffsetTextBox.Location = new System.Drawing.Point(117, 100);
+            this.OffsetTextBox.Name = "OffsetTextBox";
+            this.OffsetTextBox.Size = new System.Drawing.Size(64, 20);
+            this.OffsetTextBox.TabIndex = 65;
+            this.OffsetTextBox.Text = "-0.002";
+            // 
             // DegaussLED
             // 
             this.DegaussLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
@@ -7541,7 +7557,7 @@ namespace EDMHardwareControl
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(771, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1924, 24);
             this.menuStrip1.TabIndex = 26;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -7652,22 +7668,6 @@ namespace EDMHardwareControl
             // 
             this.rfsgStatusTimer.Interval = 1;
             this.rfsgStatusTimer.Tick += new System.EventHandler(this.rfsgStatusTimer_Tick);
-            // 
-            // OffsetTextBox
-            // 
-            this.OffsetTextBox.Location = new System.Drawing.Point(117, 100);
-            this.OffsetTextBox.Name = "OffsetTextBox";
-            this.OffsetTextBox.Size = new System.Drawing.Size(64, 20);
-            this.OffsetTextBox.TabIndex = 65;
-            this.OffsetTextBox.Text = "-0.002";
-            // 
-            // label190
-            // 
-            this.label190.Location = new System.Drawing.Point(16, 101);
-            this.label190.Name = "label190";
-            this.label190.Size = new System.Drawing.Size(102, 23);
-            this.label190.TabIndex = 66;
-            this.label190.Text = "Offset (V)";
             // 
             // ControlWindow
             // 

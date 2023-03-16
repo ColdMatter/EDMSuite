@@ -145,7 +145,6 @@ namespace EDMFieldLock
             // 
             // yAxis1
             // 
-            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
             this.yAxis1.Range = new NationalInstruments.UI.Range(-10D, 10D);
             // 
             // outputGraph
@@ -445,7 +444,7 @@ namespace EDMFieldLock
 		private int sampleCounter = 0;
 
 		// constants
-		const double FIELD_PER_VOLT_INPUT = 1000;		// in units of nT/V
+		const double FIELD_PER_VOLT_INPUT = 1/8.1;		// in units of nT/V
 		const int SAMPLE_CLOCK_RATE = 50;
 		const int SAMPLE_MULTI_READ = 25;				// this is how many samples to read at a time, sets a limit on bandwidth - lower for more bandwidth but higher computer load
 		const int GUI_UPDATE_EVERY = 1;					// if you multiply this by SAMPLE_MULTI_READ and divide by SAMPLE_CLOCK_RATE you get the GUI update interval in seconds

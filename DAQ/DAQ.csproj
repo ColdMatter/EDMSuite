@@ -167,6 +167,74 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Decelerator|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Decelerator\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMAnalysis|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMAnalysis\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Buffer|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Buffer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sympathetic|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Sympathetic\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SrF|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\SrF\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'BufferClassic|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\BufferClassic\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaF|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\CaF\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMTestCrate|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMTestCrate\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDM TCL|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDM TCL\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZeemanSisyphus|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ZeemanSisyphus\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EDMBlockHead|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\EDMBlockHead\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ultracoldEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\ScanMaster\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\TransferCavityLock2012\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LatticeEDM|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\LatticeEDM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Stefan|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Stefan\</OutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlF|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\AlF\</OutputPath>
@@ -519,7 +587,9 @@
     <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -554,7 +624,7 @@
     <Compile Include="LeyboldGraphixController.cs" />
     <Compile Include="RhysFileSystem.cs" />
     <Compile Include="PeakFinder.cs" />
-    <Compile Include="TriggerDifferenceLockable.cs" />
+    <Compile Include="AlicatFlowController.cs" />
     <Compile Include="WavemeterLockConfig.cs" />
     <Compile Include="WMLServerFileSystem.cs" />
     <Compile Include="AlFFileSystem.cs" />
@@ -573,6 +643,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BigSkyYAG.cs" />
     <Compile Include="BrilliantLaser.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -602,19 +673,18 @@
     <Compile Include="PatternBuilder32SingleBoard.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LatticeEDMHardwareControllerAIs.cs" />
     <Compile Include="UEDMHardwareControllerAIs.cs" />
     <Compile Include="FlowControllerMKSPR4000B.cs" />
     <Compile Include="EnvironsHelper.cs" />
     <Compile Include="LakeShore336TemperatureController.cs" />
     <Compile Include="LeyboldPTR225Gauge.cs" />
     <Compile Include="MoleculeMOTHardware.cs" />
-    <Compile Include="NIPXI5670.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="PHBonesawFileSystem.cs" />
     <Compile Include="PHNFITCH2FileSystem.cs" />
     <Compile Include="CentaurEDMFileSystem.cs" />
     <Compile Include="CentaurEDMHardware.cs" />
     <Compile Include="RfAWGConfig.cs" />
-    <Compile Include="NIRfsgInstrument.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="SiliconDiodeTemperatureMonitors.cs" />
     <Compile Include="SRSDS345Synth.cs" />
     <Compile Include="TCLEDMFileSystem.cs" />
@@ -784,6 +854,8 @@
     <Compile Include="WindfreakSynth.cs" />
     <Compile Include="AD9850DDS.cs" />
     <Compile Include="WindfreakSynthHD.cs" />
+    <Compile Include="WMLServerHuxleyFileSystem.cs" />
+    <Compile Include="WMLServerHuxleyHardware.cs" />
     <Compile Include="YAGLaser.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -597,9 +597,34 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="DualAomPatternBuilder.cs" />
+    <Compile Include="DualAomPatternPlugin.cs" />
+    <Compile Include="Find4fNewPatternBuilder.cs" />
+    <Compile Include="Find4fNewPatternPlugin.cs" />
+    <Compile Include="Find4fPatternBuilder.cs" />
+    <Compile Include="Find4fPatternPlugin.cs" />
+    <Compile Include="FindV2PatternBuilder.cs" />
+    <Compile Include="FindV2PatternPlugin.cs" />
+    <Compile Include="FindV3PatternBuilder.cs" />
+    <Compile Include="FindV3PatternPlugin.cs" />
+    <Compile Include="FourShutterPatternBuilder.cs" />
+    <Compile Include="FourShutterPatternBuilderEdit.cs" />
+    <Compile Include="FourShutterPatternBuilderFindV1.cs" />
+    <Compile Include="FourShutterPatternPlugin.cs" />
+    <Compile Include="FourShutterPatternPluginEdit.cs" />
+    <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
+    <Compile Include="PumpProbeDualCCDPatternBuilder.cs" />
+    <Compile Include="PumpProbeDualCCDPatternPlugin.cs" />
+    <Compile Include="TenHzTwoHzPatternBuilder2.cs" />
+    <Compile Include="TenHzTwoHzPatternPlugin2.cs" />
+    <Compile Include="TwoShutterPatternBuilder.cs" />
+    <Compile Include="TwoShutterPatternPlugin.cs" />
+    <Compile Include="VelocityMeasSlowedPatternBuilder3.cs" />
+    <Compile Include="VelocityMeasSlowedPatternPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="WavemeterInputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />

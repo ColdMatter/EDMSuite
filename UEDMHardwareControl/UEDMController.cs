@@ -23,10 +23,7 @@ using NationalInstruments.UI.WindowsForms;
 using System.Linq;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
-using DAQ.HAL;
-using DAQ.Environment;
 using System.Diagnostics;
-using Data;
 
 namespace UEDMHardwareControl
 {
@@ -40,8 +37,8 @@ namespace UEDMHardwareControl
         #region Constants
 
         // Gauges
-        private double initialSourceGaugeCorrectionFactor = 4.1;
-        private double initialBeamlineGaugeCorrectionFactor = 4.35;
+        private double initialSourceGaugeCorrectionFactor = 1;
+        private double initialBeamlineGaugeCorrectionFactor = 1;
         private double initialDetectionGaugeCorrectionFactor = 1;
 
         //Current Leakage Monitor calibration 
@@ -110,6 +107,7 @@ namespace UEDMHardwareControl
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
         Task DegaussCoil1OutputTask;
+        Task bBoxAnalogOutputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -276,12 +274,13 @@ namespace UEDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlusPlate", voltageOutputLow, voltageOutputHigh);
             cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
             DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
+            bBoxAnalogOutputTask = CreateAnalogOutputTask("BScan");
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
 
             //set the degaussing channel to 0 V offset
-            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+            SetAnalogOutput(DegaussCoil1OutputTask, 0.011);
 
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
@@ -884,11 +883,13 @@ namespace UEDMHardwareControl
         private DateTime HeatersTurnOffDateTime;
         private DateTime CryoTurnOnDateTime;
         private double GasEvaporationCycleTemperatureMax;
+        private double SourceTemperatureMax = 305;
         private double TurbomolecularPumpUpperPressureLimit;
         private double WarmUpTemperatureSetpoint;
         private double CryoStoppingPressure;
         private double CryoStartingTemperatureMax;
         private double CryoStartingPressure;
+        private double TempCount;
         private string LastSourceModeStatusMessage;
         private bool SourceModeTemperatureSetpointUpdated;
         private bool SourceModeHeatersEnabledFlag = false;
@@ -983,24 +984,48 @@ namespace UEDMHardwareControl
                 if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that source mode be cancelled
 
                 UpdateUITimeLeftIndicators();
-
-                if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
+                
+                //These if statements are to turn on the heaters if the source temperature is below set point temperture and to protect the source from overheating and pressure spike events
+                if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
                 {
-                    if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
+                    // If either the cell, S1 or S2 sensor reads above the maximum operating temperature (or if a sensor reads zero) then disable the heaters and cancel the source mode
+                    // To avoid cancelling the source mode due to erronous spikes/ drops in the sensor reading, lets count the number of times the sensor reads higher than the max temperature (or zero).
+                    //If more than 5 events are counted in a row then we can assume this is a real event and turn off the heaters and cancel the source mode
+                    TempCount = TempCount + 1;      
+                    if (TempCount >= 5) 
                     {
-                        EnableSourceModeHeaters(false); // Disable heaters
+                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        {
+                            System.Diagnostics.Debug.WriteLine(TempCount);
+                            EnableSourceModeHeaters(false); // disable heaters
+                            UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber temperature is above the safe operating limit (" + SourceTemperatureMax.ToString() + " Kelvin). Check sensor connections and heater set points");
+                            sourceModeCancelFlag = true;
+                            break;
+                        }
+
                     }
                 }
                 else
                 {
-                    EnableSourceModeHeaters(true); // Enable heaters
-                    if (lastS2Temp >= GasEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = GasEvaporationCycleTemperatureMax)
+                    TempCount = 0; //If the temperature sensors all read below the max safe operating tempearure, reset temp count to zero
+                    if (lastSourcePressure >= TurbomolecularPumpUpperPressureLimit) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
                     {
-                        if (lastSourcePressure <= CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                        if (Stage1HeaterControlFlag & Stage2HeaterControlFlag)
                         {
-                            break;
+                            EnableSourceModeHeaters(false); // Disable heaters
                         }
-                        UpdateSourceModeStatus("Neon evaporation cycle: temperature has reached setpoint, but pressure too high for cryo shutdown");
+                    }
+                    else
+                    {
+                        EnableSourceModeHeaters(true); // Enable heaters
+                        if (lastS2Temp >= GasEvaporationCycleTemperatureMax) // Check if the S2 temperature has reached the end of the neon evaporation cycle (there should be little neon left to evaporate after S2 temperature = GasEvaporationCycleTemperatureMax)
+                        {
+                            if (lastSourcePressure <= CryoStoppingPressure) // If the pressure is low enough that the cryo cooler can be turned off, then break the for loop.
+                            {
+                                break;
+                            }
+                            UpdateSourceModeStatus("Neon evaporation cycle: temperature has reached setpoint, but pressure too high for cryo shutdown");
+                        }
                     }
                 }
                 watch.Stop();
@@ -1046,27 +1071,72 @@ namespace UEDMHardwareControl
                         SourceModeTemperatureSetpointUpdated = false; // Reset the flag
                     }
 
-                    // Check is the source pressure is within safe limits for the turbomolecular pump:
-                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                    // First Check that the heaters have not gone above the maximum temp limit and then check is the source pressure is within safe limits for the turbomolecular pump:
+                    if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
                     {
-                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        // If either the cell, S1 or S2 sensor reads above the maximum operating temperature (or if a sensor reads zero) then disable the heaters and cancel the source mode
+                        // To avoid cancelling the source mode due to erronous spikes/ drops in the sensor reading, lets count the number of times the sensor reads higher than the max temperature (or zero).
+                        //If more than 10 events are counted in a row then we can assume this is a real event and turn off the heaters and cancel the source mode
+                        TempCount = TempCount + 1;
+                        if (TempCount >= 10)
                         {
-                            EnableSourceModeHeaters(true); // Enable heaters
+                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                            {
+                                System.Diagnostics.Debug.WriteLine(TempCount);
+                                EnableSourceModeHeaters(false); // disable heaters
+                                UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber temperature is above/below the safe operating limit (" + SourceTemperatureMax.ToString() + " Kelvin). Check sensor connections and heater set points");
+                                sourceModeCancelFlag = true;
+                                break;
+                            }
+
                         }
-                        if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
-                        {
-                            break;
-                        }
-                        UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
                     }
-                    else // If the pressure is high, then turn the heaters off
+                    else
                     {
-                        UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
-                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        TempCount = 0; //If the temperature sensors all read below the max safe operating tempearure, reset temp count to zero
+                        if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
                         {
-                            EnableSourceModeHeaters(false); // disable heaters
+                            if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                            {
+                                EnableSourceModeHeaters(true); // Enable heaters
+                            }
+                            if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
+                            {
+                                break;
+                            }
+                            UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
+                        }
+                        else // If the pressure is high, then turn the heaters off
+                        {
+                            UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                            {
+                                EnableSourceModeHeaters(false); // disable heaters
+                            }
                         }
                     }
+
+                        //if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                        //{
+                        //    if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        //    {
+                        //        EnableSourceModeHeaters(true); // Enable heaters
+                        //    }
+                        //    if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
+                        //    {
+                        //        break;
+                        //    }
+                        //    UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
+                        //}
+                        //else // If the pressure is high, then turn the heaters off
+                        //{
+                        //    UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                        //    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        //    {
+                        //        EnableSourceModeHeaters(false); // disable heaters
+                        //    }
+                        //}
+                        //Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
                     Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
                 }
             }
@@ -1095,23 +1165,48 @@ namespace UEDMHardwareControl
                     }
 
 
-                    // Check is the source pressure is within safe limits for the turbomolecular pump:
-                    if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                    // First Check that the heaters have not gone above the maximum temp limit and then check is the source pressure is within safe limits for the turbomolecular pump
+                    if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
                     {
-                        if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                        // If either the cell, S1 or S2 sensor reads above the maximum operating temperature (or if a sensor reads zero) then disable the heaters and cancel the source mode
+                        // To avoid cancelling the source mode due to erronous spikes/ drops in the sensor reading, lets count the number of times the sensor reads higher than the max temperature (or zero).
+                        //If more than 5 events are counted in a row then we can assume this is a real event and turn off the heaters and cancel the source mode
+                        TempCount = TempCount + 1;
+                        if (TempCount >= 10)
                         {
-                            EnableSourceModeHeaters(true); // Enable heaters
+                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                            {
+                                System.Diagnostics.Debug.WriteLine(TempCount.ToString());
+                                EnableSourceModeHeaters(false); // disable heaters
+                                UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber temperature is above the safe operating limit (" + SourceTemperatureMax.ToString() + " Kelvin)");
+                                sourceModeCancelFlag = true;
+                                break;
+                            }
+
                         }
-                        UpdateSourceModeStatus("Heating to/waiting at temperature setpoint (" + WarmUpTemperatureSetpoint + " Kelvin)"); // Update source mode status textbox
+                    
                     }
-                    else // If the pressure is high, then turn the heaters off
+                    else
                     {
-                        UpdateSourceModeStatus("Heating to/waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
-                        if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                        TempCount = 0; //If the temperature sensors all read below the max safe operating tempearure, reset temp count to zero
+                        if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
                         {
-                            EnableSourceModeHeaters(false); // Disable heaters
+                            if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                            {
+                                EnableSourceModeHeaters(true); // Enable heaters
+                            }
+                            UpdateSourceModeStatus("Heating to/waiting at temperature setpoint (" + WarmUpTemperatureSetpoint + " Kelvin)"); // Update source mode status textbox
+                        }
+                        else // If the pressure is high, then turn the heaters off
+                        {
+                            UpdateSourceModeStatus("Heating to/waiting at " + WarmUpTemperatureSetpoint + " Kelvin. Heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                            if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                            {
+                                EnableSourceModeHeaters(false); // Disable heaters
+                            }
                         }
                     }
+                    
 
 
                     UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
@@ -1272,15 +1367,16 @@ namespace UEDMHardwareControl
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;                          // 8e-4 mbar
             public static Int32 PTPollPeriodMinimum = UEDMController.PTMonitorPollPeriodLowerLimit;      // ms
             public static Double CryoMaxTemperatureWhenTurnedOff = 335;                                  // K
+            public static Double TempCount = 0;                                                          //Counts the number of loops above the maximum temperature limit
 
             // Warm up constants
-            public static Double GasEvaporationCycleTemperatureMax = 40; // Kelvin
+            public static Double GasEvaporationCycleTemperatureMax = 40; // 40 Kelvin
             public static Int16 S1LakeShoreHeaterOutput = 3;             // Output number on the LakeShore temperature controller
             public static Int16 S2LakeShoreHeaterOutput = 4;             // Output number on the LakeShore temperature controller
             public static Int32 DesorbingPTPollPeriod = 100;             // milli seconds
             public static Double CryoStoppingPressure = 0.00005;         // 5e-5 mbar
             public static Double RefreshingTemperature = 300;            // Kelvin
-            public static Int32 WarmupPTPollPeriod = 1000;                // milli seconds
+            public static Int32 WarmupPTPollPeriod = 1000;               // milli seconds
 
             // Constants once warm up temperature has been reached
             public static Int32 SourceModeWaitPTPollPeriod = 15000;       // milli seconds
@@ -1308,11 +1404,18 @@ namespace UEDMHardwareControl
                             {
                                 if (SourceModeTemperatureSetpointUpdated)
                                 {
-                                    refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
-                                    SourceMode = "Refresh";
-                                    refreshModeLock = new Object();
-                                    sourceModeCancelFlag = false;
-                                    refreshModeThread.Start();
+                                    if (SourceTemperatureMax >= WarmUpTemperatureSetpoint)
+                                    {
+                                        refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
+                                        SourceMode = "Refresh";
+                                        refreshModeLock = new Object();
+                                        sourceModeCancelFlag = false;
+                                        refreshModeThread.Start();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Refresh temperature (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating Temperature (" + SourceTemperatureMax.ToString() + " Kelvin).\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                                    }
                                 }
                                 else
                                 {
@@ -1460,6 +1563,7 @@ namespace UEDMHardwareControl
             // Global constants
             public static Double TurbomolecularPumpUpperPressureLimit = 0.0008;                      // 8e-4 mbar
             public static Int32 PTPollPeriodMinimum = UEDMController.PTMonitorPollPeriodLowerLimit;  // ms
+            public static Double TempCount = 0;                                                          //Counts the number of loops above the maximum temperature limit
 
             // Warmup constants
             public static Double GasEvaporationCycleTemperatureMax = 40;         // Kelvin
@@ -1480,11 +1584,18 @@ namespace UEDMHardwareControl
                 {
                     if (warmupModeTemperatureSetpointUpdated)
                     {
-                        warmupModeThread = new Thread(new ThreadStart(warmupModeWorker));
-                        SourceMode = "Warmup";
-                        warmupModeLock = new Object();
-                        sourceModeCancelFlag = false;
-                        warmupModeThread.Start();
+                        if (SourceTemperatureMax >= WarmUpTemperatureSetpoint)
+                        {
+                            warmupModeThread = new Thread(new ThreadStart(warmupModeWorker));
+                            SourceMode = "Warmup";
+                            warmupModeLock = new Object();
+                            sourceModeCancelFlag = false;
+                            warmupModeThread.Start();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Warm up temperature (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating temperature (" + SourceTemperatureMax.ToString() + " Kelvin).\n\nWarm up mode not started.", "Warm up Mode Exception", MessageBoxButtons.OK);
+                        }
                     }
                     else
                     {
@@ -1792,7 +1903,6 @@ namespace UEDMHardwareControl
         }
         public void ControlHeaters()
         {
-
             if (lastSourcePressure >= SourceRefreshConstants.TurbomolecularPumpUpperPressureLimit & monitorPressureWhenHeating) // If the pressure is too high, then the heaters should be disabled so that the turbomolecular pump is not damaged
             {
                 window.SetTextBox(window.tbHeaterControlStatus, "Pressure above safe limit for turbo. Heaters disabled.");
@@ -1804,21 +1914,47 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.tbHeaterControlStatus, "");
                 if (Stage2HeaterControlFlag)
                 {
-                    if (Double.Parse(lastS2TempString) < Stage2TemperatureSetpoint)
+                    if (SourceTemperatureMax >= Stage2TemperatureSetpoint)
                     {
-                        EnableDigitalHeaters(2, true);
+                        if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
+                        {
+                            EnableDigitalHeaters(2, false); // disable heater
+                            window.SetTextBox(window.tbHeaterControlStatus, "Heating source: S2 heater disabled because the source chamber temperature is above the safe operating limit (" + SourceTemperatureMax.ToString() + " Kelvin) or a sensor reads zero. Check temperature sensor connections and temp set point");
+                        }
+                        else
+                        {
+                            if (Double.Parse(lastS2TempString) < Stage2TemperatureSetpoint)
+                            {
+                                EnableDigitalHeaters(2, true);
+                            }
+                            else EnableDigitalHeaters(2, false);
+                        }
                     }
-                    else EnableDigitalHeaters(2, false);
-                }
-                if (Stage1HeaterControlFlag)
-                {
-                    if (Double.Parse(lastS1TempString) < Stage1TemperatureSetpoint)
-                    {
-                        EnableDigitalHeaters(1, true);
-                    }
-                    else EnableDigitalHeaters(1, false);
+                    else MessageBox.Show("S2 Temperature setpoint (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating temperature (" + SourceTemperatureMax.ToString() + " Kelvin)");
                 }
 
+                if (Stage1HeaterControlFlag)
+                {
+                    if (SourceTemperatureMax >= Stage2TemperatureSetpoint)
+                    {
+                        if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
+                        {
+                            EnableDigitalHeaters(1, false); // disable heater
+                            window.SetTextBox(window.tbHeaterControlStatus, "Heating source: S1 heater disabled because the source chamber temperature is above the safe operating limit (" + SourceTemperatureMax.ToString() + " Kelvin) or a sensor reads zero. Check temperature sensor connections and temp set point");
+                        }
+                        else
+                        {
+                            if (Double.Parse(lastS1TempString) < Stage1TemperatureSetpoint)
+                            {
+                                EnableDigitalHeaters(1, true);
+                            }
+                            else EnableDigitalHeaters(1, false);
+                        }
+                    }
+                    else MessageBox.Show("S2 Temperature setpoint (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating temperature (" + SourceTemperatureMax.ToString() + " Kelvin).");
+                }
+
+                
             }
         }
 
@@ -2168,8 +2304,8 @@ namespace UEDMHardwareControl
                 lastCellTempString = TemperatureArray[0]; // LakeShore Input A
                 lastNeonTempString = TemperatureArray[1]; // LakeShore Input B
                 lastS2TempString = TemperatureArray[2];   // LakeShore Input C
-                lastSF6TempString = TemperatureArray[3];  // LakeShore Input D
-                lastS1TempString = TemperatureArray[4];   // LakeShore Input D1
+                lastSF6TempString = TemperatureArray[3];  // LakeShore Input D1
+                lastS1TempString = TemperatureArray[4];   // LakeShore Input D2
 
                 // Update window textboxes so that the user can see the most recent temperature measurement
                 window.SetTextBox(window.tbTCell, lastCellTempString);
@@ -3809,6 +3945,23 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.IMonitorMeasurementLengthTextBox, time.ToString());
         }
 
+        public bool LeakageCurrentLogCheck
+        {
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.logCurrentDataCheckBox, value);
+            }
+            get
+            {
+                return window.logCurrentDataCheckBox.Checked;
+            }
+        }
+
+        public void SetLeakageCurrentLogCheck(bool checkedStatus)
+        {
+            window.SetCheckBoxCheckedStatus(window.logCurrentDataCheckBox, checkedStatus);
+        }
+
         public bool ESwitchingEnabled
         {
             get
@@ -3874,6 +4027,11 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetCPlusVoltage(Double voltage)
+        {
+            window.SetTextBox(window.cPlusTextBox, voltage.ToString());
+        }
+
         public double CMinusVoltage
         {
             get
@@ -3884,6 +4042,11 @@ namespace UEDMHardwareControl
             {
                 window.SetTextBox(window.cMinusTextBox, value.ToString());
             }
+        }
+
+        public void SetCMinusVoltage(Double voltage)
+        {
+            window.SetTextBox(window.cMinusTextBox, voltage.ToString());
         }
 
         public double CPlusOffVoltage
@@ -3897,6 +4060,10 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.cPlusOffTextBox, value.ToString());
             }
         }
+        public void SetCPlusOffVoltage(Double voltage)
+        {
+            window.SetTextBox(window.cPlusOffTextBox, voltage.ToString());
+        }
 
         public double CMinusOffVoltage
         {
@@ -3908,6 +4075,10 @@ namespace UEDMHardwareControl
             {
                 window.SetTextBox(window.cMinusOffTextBox, value.ToString());
             }
+        }
+        public void SetCMinusOffVoltage(Double voltage)
+        {
+            window.SetTextBox(window.cMinusOffTextBox, voltage.ToString());
         }
 
         public double ERampDownTime
@@ -4478,168 +4649,30 @@ namespace UEDMHardwareControl
             leakageFileSave = "";
         }
 
-        //RHYS DEGAUSS
-        public double DegaussFrequency
-        {
-            get
-            {
-                return Double.Parse(window.DegaussFreqTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
-            }
-        }
-
-        public double DegaussAmplitude
-        {
-            get
-            {
-                return Double.Parse(window.DegaussAmpTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
-            }
-        }
-
-        public double DegaussExpTimeConstant
-        {
-            get
-            {
-                return Double.Parse(window.ExpTimeConstantTextBox.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
-            }
-        }
-        public double LinearDegaussT
-        {
-            get
-            {
-                return Double.Parse(window.LinearDegaussTextBox.Text)*1000; //This gets the time and converts to ms
-            }
-            set
-            {
-                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
-            }
-        }
-        public double ConstDegaussT
-        {
-            get
-            {
-                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
-            }
-            set
-            {
-                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
-            }
-        }
-        public double ExpDegaussT
-        {
-            get
-            {
-                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
-            }
-            set
-            {
-                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
-            }
-        }
-
-        public double SineWave;
-        public double FullPulseT;
-        public double ExpOffsetT;
-        public double TimeNow;
-        public double FTicks;
-        public double ThreadStartTicks = 0;
-        public double ThreadDiff = 0;
-        public double SineOffset = -0.001;
-        public double DegaussVCalibrate = 1.0; //This is a conversion factor for the BOP supply.
-                                                //-10 -> +10V input equals full -12 -> +12A range of the BOP
-        public Stopwatch sw = new Stopwatch();
-
-        public void UpdateDegaussPulse()
-        {
-            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
-            if (TimeNow < LinearDegaussT)
-            {
-                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000)) + SineOffset;
-            }
-            else if (TimeNow < LinearDegaussT + ConstDegaussT)
-            {
-                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow/1000))+SineOffset;
-            }
-            else if (TimeNow < FullPulseT)
-            {
-                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow/1000))+SineOffset;
-            }
-            else
-            {
-                SineWave = SineOffset;
-            }
-            SetAnalogOutput(DegaussCoil1OutputTask, SineWave*DegaussVCalibrate);
-            //SetAnalogOutput(DegaussCoil1OutputTask, + SineOffset);
-        }
-
-        private Object DegaussLock;
-        private bool DegaussFlag;
-        private Thread DegaussPollThread;
-
-        internal void StartDegaussPoll()
-        {
-            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
-            DegaussLock = new Object();
-            DegaussFlag = false;
-            window.EnableControl(window.StartDegauss, false);
-            SetAnalogOutput(DegaussCoil1OutputTask, 0);
-            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
-            DegaussPollThread.Start();
-        }
-
-        private void DegaussPollWorker()
-        {
-            //window.SetLED(window.DegaussLED, true);
-            sw.Start();
-            ThreadStartTicks = sw.ElapsedTicks;
-
-            for (; ; )
-            {
-                FTicks = sw.ElapsedTicks;
-                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
-                if (TimeNow >= (FullPulseT))
-                {
-                    DegaussFlag = true;
-                }
-                lock (DegaussLock)
-                {
-                    UpdateDegaussPulse();
-                    if (DegaussFlag)
-                    {
-                        DegaussFlag = false;
-                        SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);             
-                        //window.SetLED(window.DegaussLED, false);
-                        window.EnableControl(window.StartDegauss, true);
-                        break;
-                    }           
-                }
-
-            }
-            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
-            //Console.WriteLine(ThreadDiff.ToString());
-            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
-            sw.Stop();
-            sw.Reset();
-        }
-
         private Thread iMonitorPollThread;
-        private int iMonitorPollPeriod = 200;
-        public static int iMonitorPollPeriodLowerLimit = 100;
+
+        public int iMonitorPollPeriod
+        {
+            get
+            {
+                return int.Parse(window.iMonitorPollPeriodInput.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.iMonitorPollPeriodInput, value.ToString());
+            }
+        }
+
+        public void SetiMonitorPollPeriod(int time)
+        {
+            window.SetTextBox(window.iMonitorPollPeriodInput, time.ToString());
+        }
+
+        private static int iMonitorPollPeriodLowerLimit = 100;
         private Object iMonitorLock;
         private bool iMonitorFlag;
         public string leakageFileSave = "";
-        internal void StartIMonitorPoll()
+        public void StartIMonitorPoll()
         {
             if (window.logCurrentDataCheckBox.Checked)
             {
@@ -4691,7 +4724,7 @@ namespace UEDMHardwareControl
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
 
-        internal void StopIMonitorPoll()
+        public void StopIMonitorPoll()
         {
             iMonitorFlag = true;
             window.EnableControl(window.updateIMonitorButton, true);
@@ -4736,6 +4769,201 @@ namespace UEDMHardwareControl
         {
             SetAnalogOutput(cPlusOutputTask, v);
         }
+        #endregion
+
+        #region B field
+
+        public double DegaussFrequency
+        {
+            get
+            {
+                return Double.Parse(window.DegaussFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.DegaussAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussExpTimeConstant
+        {
+            get
+            {
+                return Double.Parse(window.ExpTimeConstantTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
+            }
+        }
+        public double LinearDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.LinearDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
+            }
+        }
+        public double ConstDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
+            }
+        }
+        public double ExpDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
+            }
+        }
+
+        public double SineOffset
+        {
+            get
+            {
+                return Double.Parse(window.SineOffsetTextBox.Text) / 1000; //This gets the offset in mV and converts to V
+            }
+            set
+            {
+                window.SetTextBox(window.SineOffsetTextBox, value.ToString());
+            }
+        }
+
+        public double SineWave;
+        public double FullPulseT;
+        public double ExpOffsetT;
+        public double TimeNow;
+        public double FTicks;
+        public double ThreadStartTicks = 0;
+        public double ThreadDiff = 0;
+        //public double SineOffset = 0.011;
+        public double DegaussVCalibrate = 1.0; //This is a conversion factor for the BOP supply.
+                                               //-10 -> +10V input equals full -12 -> +12A range of the BOP
+        public Stopwatch sw = new Stopwatch();
+
+        public void UpdateDegaussPulse()
+        {
+            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
+            if (TimeNow < LinearDegaussT)
+            {
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow / 1000)) + SineOffset;
+            }
+            else if (TimeNow < LinearDegaussT + ConstDegaussT)
+            {
+                SineWave = DegaussAmplitude * Math.Sin((2.0 * Math.PI) * DegaussFrequency * (TimeNow / 1000)) + SineOffset;
+            }
+            else if (TimeNow < FullPulseT)
+            {
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * (TimeNow / 1000)) + SineOffset;
+            }
+            else
+            {
+                SineWave = SineOffset;
+            }
+            SetAnalogOutput(DegaussCoil1OutputTask, SineWave * DegaussVCalibrate);
+            //SetAnalogOutput(DegaussCoil1OutputTask, + SineOffset);
+        }
+
+        private Object DegaussLock;
+        private bool DegaussFlag;
+        private Thread DegaussPollThread;
+
+        internal void StartDegaussPoll()
+        {
+            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
+            DegaussLock = new Object();
+            DegaussFlag = false;
+            window.EnableControl(window.StartDegauss, false);
+            SetAnalogOutput(DegaussCoil1OutputTask, 0);
+            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
+            DegaussPollThread.Start();
+        }
+
+        private void DegaussPollWorker()
+        {
+            //window.SetLED(window.DegaussLED, true);
+            sw.Start();
+            ThreadStartTicks = sw.ElapsedTicks;
+
+            for (; ; )
+            {
+                FTicks = sw.ElapsedTicks;
+                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
+                if (TimeNow >= (FullPulseT))
+                {
+                    DegaussFlag = true;
+                }
+                lock (DegaussLock)
+                {
+                    UpdateDegaussPulse();
+                    if (DegaussFlag)
+                    {
+                        DegaussFlag = false;
+                        SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+                        //window.SetLED(window.DegaussLED, false);
+                        window.EnableControl(window.StartDegauss, true);
+                        break;
+                    }
+                }
+
+            }
+            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
+            //Console.WriteLine(ThreadDiff.ToString());
+            SetAnalogOutput(DegaussCoil1OutputTask, SineOffset);
+            sw.Stop();
+            sw.Reset();
+        }
+
+        public void SetScanningBVoltage()
+        {
+            double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
+            SetAnalogOutput(bBoxAnalogOutputTask, bBoxVoltage);
+        }
+
+        public void SetScanningBVoltage(double v)
+        {
+            window.SetTextBox(window.scanningBVoltageBox, v.ToString());
+            SetAnalogOutput(bBoxAnalogOutputTask, v);
+        }
+
+        public void SetScanningBZero()
+        {
+            window.SetTextBox(window.scanningBVoltageBox, "0.0");
+            SetScanningBVoltage();
+        }
+
+        public void SetScanningBFS()
+        {
+            window.SetTextBox(window.scanningBVoltageBox, "5.0");
+            SetScanningBVoltage();
+        }
+
+
         #endregion
 
         #region Optical pumping
