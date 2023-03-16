@@ -38,14 +38,33 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
+
+            /*bool fail = true;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
+                {
                     name = addr.ToString();
+                    try
+                    {
+                        wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
+                        wavemeterContrller.getFrequency(1);
+                        // 172.22.118.255
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    {
+                        continue;
+                    }
+                    fail = false;
+                    break;
+                }
             }
 
+            if (fail) throw new Exception("All connections failed");*/
+            name = Microsoft.VisualBasic.Interaction.InputBox("WML Server IP Addr", "WML Server IP Addr", "172.22.118.255", 0, 0);
             wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
-            
+
+
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -156,9 +175,9 @@ namespace WavemeterLock
 
         public void start()
         {
-            initializeTCPChannel();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            initializeTCPChannel();
             ui = new LockForm();
             ui.controller = this;
             initializeLasers();

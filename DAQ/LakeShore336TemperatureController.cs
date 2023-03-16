@@ -58,7 +58,6 @@ namespace DAQ.HAL
             return String.Concat(Command, "\n"); // Concatenate the command and carriage return "\n".
         }
 
-
         #region LakeShore 336 Temperature Query
 
         /// <summary>
@@ -82,6 +81,21 @@ namespace DAQ.HAL
         {
             if (TUnit == "K") { return String.Concat("K", CommandTypes.RequestTemperature); } // check if the temperature unit requested was kelvin. If yes, concatenate "K" with the temperature request command
             else { return String.Concat("C", CommandTypes.RequestTemperature); } // If no, concatenate "C" with the temperature request command to select Celsius units
+        }
+
+        public string GetChannelName(string channel)
+        {
+            string resp = "";
+            if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
+            if (!Environs.Debug)
+            {
+                serial.RawIO.Write("INNAME? " + channel + "\n");
+                
+                resp = System.Text.Encoding.UTF8.GetString(serial.RawIO.Read());
+                
+            }
+            Disconnect();
+            return resp.Trim();
         }
 
         ///<summary>

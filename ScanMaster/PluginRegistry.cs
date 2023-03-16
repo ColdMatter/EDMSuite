@@ -71,11 +71,13 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
+			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
 			yagPlugins.Add("Not-so-Brilliant YAG", typeof(NotInTheLeastBitBrilliantYAGPlugin));
             yagPlugins.Add("Quanta-Ray", typeof(QuantaRayYAGPlugin));
+			yagPlugins.Add("Big-Sky", typeof(BigSkyYAGPlugin));
 			// shotGathererPlugins
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
