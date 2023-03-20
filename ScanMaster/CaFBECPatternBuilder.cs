@@ -106,7 +106,12 @@ namespace ScanMaster.Acquire.Patterns
             tempTime = Pulse(startTime, flashToQ, Q_PULSE_LENGTH,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
             if (tempTime > time) time = tempTime;
-            
+
+            // Block slowing 531 and v10
+            tempTime = Pulse(startTime, chirpStart-100, chirpDuration+200,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["blockTCLTrigger"]).BitNumber);
+            if (tempTime > time) time = tempTime;
+
             // Chirp slowing 531
             tempTime = Pulse(startTime, chirpStart, chirpDuration,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["chirpTrigger"]).BitNumber);

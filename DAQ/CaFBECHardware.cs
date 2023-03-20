@@ -37,6 +37,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 20);
+            AddDigitalOutputChannel("blockTCLTrigger", pgBoard, 0, 26);
             AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
             AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
             AddDigitalOutputChannel("531aom", pgBoard, 0, 29);
@@ -61,7 +62,7 @@ namespace DAQ.HAL
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("analogTrigger0", pgBoard + "/PFI0");
-            // Info.Add("PGClockLine", pgBoard + "/PFI2");
+            Info.Add("PGClockLine", pgBoard + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
 
             //TCL Input channels
@@ -76,6 +77,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v32Signal", TCLInput + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
+            AddDigitalInputChannel("blockBXflag", TCLInput, 0, 1);  //J17 J50
+
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
             AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3");
@@ -88,7 +91,7 @@ namespace DAQ.HAL
 
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
-            //tclConfig.Trigger = "analogTrigger0";
+            // tclConfig.Trigger = "analogTrigger0";
             tclConfig.BaseRamp = "sumVolt";
             tclConfig.TCPChannel = 1190;
             tclConfig.DefaultScanPoints =  1000;
@@ -97,7 +100,7 @@ namespace DAQ.HAL
             tclConfig.SlaveVoltageUpperLimit = 4.0;
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
             tclConfig.MaximumNLMFSteps = 20;
-            //tclConfig.TriggerOnRisingEdge = true;
+            tclConfig.TriggerOnRisingEdge = true;
 
             string northCavity = "NorthCavity";
             tclConfig.AddCavity(northCavity);
@@ -110,9 +113,12 @@ namespace DAQ.HAL
             tclConfig.Cavities[northCavity].AddSlaveLaser("v10Lock", "v10Signal");
             tclConfig.Cavities[northCavity].AddDefaultGain("v10Lock", 0.2);
             tclConfig.Cavities[northCavity].AddFSRCalibration("v10Lock", 3.84);
+            // tclConfig.Cavities[northCavity].AddLockBlocker("v10Lock", "blockBXflag");
             tclConfig.Cavities[northCavity].AddSlaveLaser("bXLock", "bXSignal");
             tclConfig.Cavities[northCavity].AddDefaultGain("bXLock", 0.2);
             tclConfig.Cavities[northCavity].AddFSRCalibration("bXLock", 3.84);
+            tclConfig.Cavities[northCavity].AddLockBlocker("v00Lock", "blockBXflag");
+            // tclConfig.Cavities[northCavity].AddLockBlocker(TCLOutput + "/ao3", "blockBXflag");    // for test
 
             string southCavity = "SouthCavity";
             tclConfig.AddCavity(southCavity);
@@ -131,7 +137,7 @@ namespace DAQ.HAL
 
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
-            Info.Add("analogTrigger1", TCLInput + "/PFI0");
+            // Info.Add("analogTrigger0", TCLInput + "/PFI0");
 
 
 

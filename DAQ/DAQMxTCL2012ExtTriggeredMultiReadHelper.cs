@@ -68,6 +68,7 @@ namespace DAQ.TransferCavityLock2012
 
             SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
             DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
+            // DigitalEdgeStartTriggerEdge triggerEdge = DigitalEdgeStartTriggerEdge.Rising;
 
             if (!autostart)
             {
@@ -96,12 +97,12 @@ namespace DAQ.TransferCavityLock2012
 
             SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
             DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
-
+            
             // Get the device that the analog inputs are on so we can use sample clock as well to sync timing
             string device = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[analogInputs[0]]).Device;
 
             readDIsTask.Timing.ConfigureSampleClock(device + "/ai/SampleClock", sampleRate, clockEdge, SampleQuantityMode.FiniteSamples, numberOfMeasurements);
-            readDIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(device + "/ai/StartTrigger", triggerEdge);
+            // readDIsTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(device + "/ai/StartTrigger", triggerEdge);
 
             readDIsTask.Control(TaskAction.Verify);
             digitalReader = new DigitalMultiChannelReader(readDIsTask.Stream);
