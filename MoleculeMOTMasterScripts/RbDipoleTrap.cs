@@ -46,7 +46,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["ImagingFrequency"] = 2.6;
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
-        Parameters["MOTCoolingLoadingFrequency"] = 4.4;//5.4 usewd to be
+        Parameters["MOTCoolingLoadingFrequency"] = 4.6;//16/03/2023
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.6
 
         //PMT
@@ -79,9 +79,13 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
-        Parameters["yShimLoadCurrent"] = -1.92;// -1.92 is zero
-        Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
+        // Shim fields update 16/03/2023
+        Parameters["xShimLoadCurrent"] = -1.00;
+        Parameters["yShimLoadCurrent"] = -1.92;
+        Parameters["zShimLoadCurrent"] = -0.60;
+        //Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
+        //Parameters["yShimLoadCurrent"] = -1.92;// -1.92 is zero
+        //Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         //Shim fields for imaging
 

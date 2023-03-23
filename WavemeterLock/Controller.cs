@@ -79,7 +79,7 @@ namespace WavemeterLock
 
         }
 
-        //Methods for ScanMaster
+        //Remote Methods
         public void setSlaveFrequency(string name, double freq)
         {
             lasers[name].setFrequency = freq;
@@ -425,10 +425,9 @@ namespace WavemeterLock
                         if (lasers[slave].lState == Laser.LaserState.LOCKED)
                         {
                             timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
-                            stopWatchGraph.Restart();
                         }
-
                     }
+                    stopWatchGraph.Restart();
                     foreach (string slave in lasers.Keys)
                     {
                         panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
