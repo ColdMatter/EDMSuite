@@ -1,4 +1,4 @@
-﻿# edm_init.py - sets up the IronPython environment ready for scripting
+﻿# uedm_init.py - sets up the IronPython environment ready for scripting
 # the edm control software.
 
 import clr
@@ -9,7 +9,7 @@ from System.IO import Path
 sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\ultracoldEDM\\"))
 clr.AddReferenceToFile("ScanMaster.exe")
 sys.path.append(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("UEDMHardwareControl.exe")
+clr.AddReferenceToFile("UltracoldEDMHardwareControl.exe")
 clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
 sys.path.append(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\ultracoldEDM\\"))
@@ -30,7 +30,10 @@ class typedproxy(object):
         proxyType = object.__getattribute__(self, 'proxyType')
         obj = object.__getattribute__(self, 'obj')
         return getattr(proxyType, attr).__get__(obj, proxyType)
-
+    def __setattribute__(self, attr):
+        proxyType = object.__setattribute__(self, 'proxyType')
+        obj = object.__setattribute__(self, 'obj')
+        return setattr(proxyType, attr).__set__(obj, proxyType)
 
 # create connections to the control programs
 import System
@@ -39,7 +42,7 @@ import UEDMHardwareControl
 import TransferCavityLock2012
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
-hc = typedproxy(System.Activator.GetObject(UEDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), UEDMHardwareControl.Controller)
+hc = typedproxy(System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/controller.rem'), UEDMHardwareControl.UEDMController)
 tclProbe = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://155.198.206.242:1190/controller.rem'), TransferCavityLock2012.Controller)
 
 # usage message
@@ -62,10 +65,10 @@ Available scripts:''')
 import nt
 pp = Path.GetFullPath("..\\UEDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "edm_init.py" and e != "winforms.py"]
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py"]
 for i in range(len(scriptsToLoad)):
-            print str(i) + ": " + scriptsToLoad[i]
-print ""
+            print(str(i) + ": " + scriptsToLoad[i])
+print("")
 
 def run(i):
 	global run_script

@@ -28,7 +28,8 @@ namespace WavemeterLock
         private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
         public double updateRate = 100;
-        public int miniLoop = 50;
+        public int miniLoop = 5;
+        public int threadSleepTime = 5;
 
         private List<double> scanTimes;
         public int numScanAverages = 100;
@@ -38,14 +39,33 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
+
+            /*bool fail = true;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
+                {
                     name = addr.ToString();
+                    try
+                    {
+                        wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
+                        wavemeterContrller.getFrequency(1);
+                        // 172.22.118.255
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    {
+                        continue;
+                    }
+                    fail = false;
+                    break;
+                }
             }
 
+            if (fail) throw new Exception("All connections failed");*/
+            name = Microsoft.VisualBasic.Interaction.InputBox("WML Server IP Addr", "WML Server IP Addr", "172.22.118.255", 0, 0);
             wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
-            
+
+
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -78,7 +98,7 @@ namespace WavemeterLock
 
         }
 
-        //Methods for ScanMaster
+        //Remote Methods
         public void setSlaveFrequency(string name, double freq)
         {
             lasers[name].setFrequency = freq;
@@ -156,9 +176,9 @@ namespace WavemeterLock
 
         public void start()
         {
-            initializeTCPChannel();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            initializeTCPChannel();
             ui = new LockForm();
             ui.controller = this;
             initializeLasers();
@@ -387,6 +407,8 @@ namespace WavemeterLock
             scanTimes = new List<double>();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+            Stopwatch stopWatchGraph = new Stopwatch();
+            stopWatchGraph.Start();
             loopcount = 0;
             int miniLoopcount = 0;
 
@@ -413,17 +435,18 @@ namespace WavemeterLock
                 loopcount++;
                 miniLoopcount++;
 
-                foreach (string slave in lasers.Keys)
-                {
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
-                    {
-                        timeList[slave] += stopWatch.Elapsed.TotalSeconds;//
-                    }
-
-                }
+            
 
                 if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
                 {
+                    foreach (string slave in lasers.Keys)
+                    {
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
+                        {
+                            timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
+                        }
+                    }
+                    stopWatchGraph.Restart();
                     foreach (string slave in lasers.Keys)
                     {
                         panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
@@ -431,11 +454,10 @@ namespace WavemeterLock
                     }
                 }
 
-
+                Thread.Sleep(threadSleepTime);
                 updateLockRate(stopWatch);
 
-                stopWatch.Reset();
-                stopWatch.Start();
+                stopWatch.Restart();
             }
 
             endLoop();

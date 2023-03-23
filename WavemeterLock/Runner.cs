@@ -18,7 +18,7 @@ namespace WavemeterLock
         [STAThread]
         static void Main()
         {
-            string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+            string hostName = "IC-CZC136CFDJ";
             EnvironsHelper eHelper = new EnvironsHelper(hostName);
             int serverChannelNumber = eHelper.wavemeterLockTCPChannel;
             int hostChannelNumber = eHelper.serverTCPChannel;
