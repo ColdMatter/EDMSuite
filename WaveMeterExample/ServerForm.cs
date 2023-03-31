@@ -3,6 +3,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
+using System.ComponentModel;
 using wlmData; // a namespace with a "WLM" class covering the header of the wlmData.dll since headers and includes are not supported by C#
 
 
@@ -14,11 +15,12 @@ namespace WavemeterLockServer
     {
 
         public Controller controller;
-
-        
-        public ServerForm()
+        public ServerForm(Controller _controller)
         {
             InitializeComponent();
+            controller = _controller;
+            controller.measurementAcquired += () => { updatePannel(); };
+            //controller.measurementAcquired += () => { controller.indicateNewMeasurement(); };
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -31,32 +33,52 @@ namespace WavemeterLockServer
             controller.startMeasure();
         }
 
+        
 
-
-        private void timer1_Tick(object sender, EventArgs e)
+        public void SetTextField(Control box, string text)
         {
-            
+            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
+        }
+
+        private delegate void SetTextDelegate(Control box, string text);
+
+        private void SetTextHelper(Control box, string text)
+        {
+            box.Text = text;
+        }
+
+        public void UpdateRenderedObject<T>(T obj, Action<T> updateFunc) where T : Control
+        {
+            obj.Invoke(new UpdateObjectDelegate<T>(UpdateObject), new object[] { obj, updateFunc });
+        }
+
+        private delegate void UpdateObjectDelegate<T>(T obj, Action<T> updateFunc) where T : Control;
+
+        private void UpdateObject<T>(T obj, Action<T> updateFunc) where T : Control
+        {
+            updateFunc(obj);
+        }
+
+        public void updatePannel()
+        {
             string[] s = new string[8];
             double[] w = new double[8];
 
             for (int n = 0; n < 8; n++)
             {
-                s[n] = controller.displayWavelength(n+1);
+                s[n] = controller.displayWavelength(n + 1);
             }
-            
-            //This seems stupid but I couldn't find a better way to do it
-           label1.Text = s[0];
-           label2.Text = s[1];
-           label3.Text = s[2];
-           label4.Text = s[3];
-           label5.Text = s[4];
-           label6.Text = s[5];
-           label7.Text = s[6];
-           label8.Text = s[7];
 
-            // check whether server is available and apply the text of the Open/Close button
+            //Shows the wavelength of each channel
+            SetTextField(label1, s[0]);
+            SetTextField(label2, s[1]);
+            SetTextField(label3, s[2]);
+            SetTextField(label4, s[3]);
+            SetTextField(label5, s[4]);
+            SetTextField(label6, s[5]);
+            SetTextField(label7, s[6]);
+            SetTextField(label8, s[7]);
 
-            controller.bAvail = Convert.ToBoolean(WLM.Instantiate(WLM.cInstCheckForWLM, 0, 0, 0));
 
             if (WLM.GetOperationState(0) == 2)
                 controller.bMeas = true;
@@ -65,26 +87,39 @@ namespace WavemeterLockServer
 
             if (controller.bAvail)
             {
-                btnOpen.Text = "Close Server";
-                btnStart.Enabled = true;
+                SetTextField(btnOpen, "Close Server");
+                //btnOpen.Text = "Close Server";
+                UpdateRenderedObject(btnStart, (Button but) => { but.Enabled = true; });
+                //btnStart.Enabled = true;
             }
             else
             {
-                btnOpen.Text = "Open Server";
-                btnStart.Enabled = false;
+                SetTextField(btnOpen, "Open Server");
+                //btnOpen.Text = "Open Server";
+                UpdateRenderedObject(btnStart, (Button but) => { but.Enabled = false; });
+                //btnStart.Enabled = false;
             }
 
             // check whether measurement is running and apply the text of the Start/Stop button
             controller.bMeas = (WLM.GetOperationState(0) != 0);
             if (controller.bMeas)
             {
-                btnStart.Text = "Stop Measurement";
+                SetTextField(btnStart, "Stop Measurement");
+                //btnStart.Text = "Stop Measurement";
             }
             else
             {
-                btnStart.Text = "Start Measurement";
+                SetTextField(btnStart, "Start Measurement");
+                //btnStart.Text = "Start Measurement";
             }
 
+
+            
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //updatePannel();
 
             //Check if there's any remote connection
             if (controller.remoteConnection[0])
@@ -122,9 +157,20 @@ namespace WavemeterLockServer
             else
                 led7.Value = false;
 
+            if (controller.remoteConnection[7])
+                led8.Value = true;
+            else
+                led8.Value = false;
+
         }
 
-        
+        private void ServerForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            if (controller.measurementStatus.Count != 0)
+            {
+
+            }
+        }
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -176,5 +222,17 @@ namespace WavemeterLockServer
         {
 
         }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
     }
 }

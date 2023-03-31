@@ -109,6 +109,7 @@ namespace WavemeterLock
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LockForm";
             this.Text = "Wavemeter Lock";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LockForm_Closing);
             this.Load += new System.EventHandler(this.LockForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.wmlLED)).EndInit();
             this.groupBoxLockRate.ResumeLayout(false);

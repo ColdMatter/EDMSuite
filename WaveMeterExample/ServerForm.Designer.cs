@@ -57,6 +57,7 @@
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.led5 = new NationalInstruments.UI.WindowsForms.Led();
             this.label9 = new System.Windows.Forms.Label();
+            this.led8 = new NationalInstruments.UI.WindowsForms.Led();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.led1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -72,6 +73,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.led6)).BeginInit();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.led5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led8)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOpen
@@ -168,6 +170,7 @@
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Channel 3 ";
+            this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
             // led3
             // 
@@ -217,6 +220,7 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.led8);
             this.groupBox5.Controls.Add(this.label8);
             this.groupBox5.Location = new System.Drawing.Point(676, 258);
             this.groupBox5.Name = "groupBox5";
@@ -232,6 +236,7 @@
             this.label8.Size = new System.Drawing.Size(168, 18);
             this.label8.TabIndex = 2;
             this.label8.Text = "xxxxxxxxxxx";
+            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // label5
             // 
@@ -327,6 +332,15 @@
             this.label9.TabIndex = 3;
             this.label9.Text = "Red LED indicates the wavemeter lock is on, do not turn off server.";
             // 
+            // led8
+            // 
+            this.led8.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led8.Location = new System.Drawing.Point(155, 19);
+            this.led8.Name = "led8";
+            this.led8.OnColor = System.Drawing.Color.Crimson;
+            this.led8.Size = new System.Drawing.Size(30, 30);
+            this.led8.TabIndex = 21;
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -347,6 +361,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ServerForm";
             this.Text = "Wavemeter Lock Server";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerForm_Closing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.led1)).EndInit();
@@ -363,6 +378,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.led6)).EndInit();
             this.groupBox8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.led5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.led8)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -397,6 +413,7 @@
         private NationalInstruments.UI.WindowsForms.Led led6;
         private NationalInstruments.UI.WindowsForms.Led led5;
         private System.Windows.Forms.Label label9;
+        private NationalInstruments.UI.WindowsForms.Led led8;
     }
 }
 
