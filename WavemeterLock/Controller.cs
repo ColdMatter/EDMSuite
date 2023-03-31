@@ -21,6 +21,7 @@ namespace WavemeterLock
     
         private string computer;
         private string name;
+        string thisComputerName;
         private int hostTCPChannel;
         public int loopcount = 0;
         private WavemeterLockServer.Controller wavemeterContrller;
@@ -28,9 +29,8 @@ namespace WavemeterLock
         private double freqTolerance = 0.5;//Frequency jump tolerance in THz
         string faultyLaser;
         public double updateRate = 100;
-        public int miniLoop = 5;
-        public int threadSleepTime = 5;
-
+        Stopwatch stopWatch = new Stopwatch();
+        Stopwatch stopWatchGraph = new Stopwatch();
         private List<double> scanTimes;
         public int numScanAverages = 100;
 
@@ -39,33 +39,26 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
+            computer = "IC-CZC136CFDJ";
+            EnvironsHelper eHelper = new EnvironsHelper(computer);
+            hostTCPChannel = eHelper.serverTCPChannel;
 
-            /*bool fail = true;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
                 {
                     name = addr.ToString();
-                    try
-                    {
-                        wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
-                        wavemeterContrller.getFrequency(1);
-                        // 172.22.118.255
-                    }
-                    catch (System.Net.Sockets.SocketException)
-                    {
-                        continue;
-                    }
-                    fail = false;
-                    break;
                 }
             }
-
-            if (fail) throw new Exception("All connections failed");*/
-            name = Microsoft.VisualBasic.Interaction.InputBox("WML Server IP Addr", "WML Server IP Addr", "172.22.118.255", 0, 0);
+            
             wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
 
-
+            //Register in remote server
+            thisComputerName = Environment.MachineName.ToString();
+            wavemeterContrller.registerWavemeterLock(thisComputerName);
+            
+            //This throws a security exception
+            //wavemeterContrller.measurementAcquired += () => { updateLockMaster(); };
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -132,6 +125,7 @@ namespace WavemeterLock
         private LockForm ui;
         public WavemeterLockConfig config;
 
+        //Constructor
         public Controller(string configName, string hostName, int channelNumber)
         {
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
@@ -363,6 +357,7 @@ namespace WavemeterLock
         {
             Laser laser = lasers[slavename];
             laser.DisengageLock();
+            wavemeterContrller.changeConnectionStatus(laser.WLMChannel, false);
         }
 
 
@@ -387,6 +382,34 @@ namespace WavemeterLock
         {
             laser.currentFrequency = getFrequency(laser.WLMChannel);
         }
+
+        private void polling()
+        {
+            if (WMLState != ControllerState.STOPPED)
+            {
+                if (wavemeterContrller.getMeasurementStatus(thisComputerName))
+                {
+                    updateLockMaster();
+                    wavemeterContrller.resetMeasurementStatus(thisComputerName);
+                }
+            }
+
+            else endLoop();
+        }
+
+        private void mainLoop()
+        {
+            scanTimes = new List<double>();
+            stopWatch.Restart();
+            stopWatchGraph.Restart();
+            loopcount = 0;
+
+            while (true)
+            {
+                polling();
+            }
+        }
+
         private void endLoop()
         {
             loopcount = 0;
@@ -401,26 +424,20 @@ namespace WavemeterLock
             
         }
 
-        
-        private void mainLoop()
+        private void updateLockMaster()
         {
-            scanTimes = new List<double>();
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            Stopwatch stopWatchGraph = new Stopwatch();
-            stopWatchGraph.Start();
-            loopcount = 0;
-            int miniLoopcount = 0;
-
-            while (WMLState!= ControllerState.STOPPED)
+            if (WMLState != ControllerState.STOPPED)
             {
                 foreach (string slave in lasers.Keys)
                 {
+
                     updateFrequency(lasers[slave]);
-                    
+
                     if (lasers[slave].lState == Laser.LaserState.LOCKED)
                     {
+
                         if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+
                         {
                             faultyLaser = slave;
                             lasers[slave].DisengageLock();
@@ -428,39 +445,35 @@ namespace WavemeterLock
                             indicateRemoteConnection(lasers[slave].WLMChannel, false);
                             msgThread.Start();
                         }
-                        lasers[slave].UpdateLock();
+                        else
+                        {
+                            lasers[slave].UpdateLock();
+                        }
                     }
                 }
 
                 loopcount++;
-                miniLoopcount++;
 
-            
-
-                if (miniLoopcount > miniLoop)//Update error graph for every miniLoop amount of data points
+                //Calculate the time
+                foreach (string slave in lasers.Keys)
                 {
-                    foreach (string slave in lasers.Keys)
+                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
                     {
-                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
-                        {
-                            timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
-                        }
-                    }
-                    stopWatchGraph.Restart();
-                    foreach (string slave in lasers.Keys)
-                    {
-                        panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
-                        miniLoopcount = 0;
+                        timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
                     }
                 }
 
-                Thread.Sleep(threadSleepTime);
-                updateLockRate(stopWatch);
+                stopWatchGraph.Restart();
 
+                foreach (string slave in lasers.Keys)
+                {
+                    panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
+                }
+
+                updateLockRate(stopWatch);
                 stopWatch.Restart();
             }
-
-            endLoop();
+            
         }
 
         public void errorMsg()

@@ -79,7 +79,7 @@ namespace WavemeterLock
         private delegate void PlotXYDelegate(double[] x, double[] y);
         public static void appendPointToScatterGraph(Graph graph, ScatterPlot plot, double x, double y)
         {
-                                                       graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
+            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
         }
 
         private delegate void ClearDataDelegate();
