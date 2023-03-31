@@ -40,6 +40,7 @@ namespace WavemeterLock
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            
             foreach(string slavePanel in panelList.Keys)
             {
                 panelList[slavePanel].updatePanel();
@@ -140,6 +141,14 @@ namespace WavemeterLock
         private void groupBoxLockRate_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void LockForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            foreach (Laser laser in controller.lasers.Values)
+            {
+                controller.DisengageLock(laser.Name);
+            }
         }
     }
 }

@@ -75,9 +75,11 @@ namespace DAQ.HAL
             AddDigitalInputChannel("v00LockBlockFlag", tclBoard1Address, 0, 1);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
+            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
             AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
+            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2"); 
+            //AddAnalogOutputChannel("rbD1Frequency", tclBoard1Address + "/ao0"); //Reused Channel 14/03/23
+
             AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
 
 
@@ -90,7 +92,8 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("cavityLockCarlos", tclBoard1Address + "/ao1");
+            AddAnalogOutputChannel("cavityLockCarlos", tclBoard1Address + "/ao1"); //Reused for Rb Repump Wavemeter Lock 20/03/23
+            //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
 
 
             // Digital Pattern
@@ -124,6 +127,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
+            AddDigitalOutputChannel("UVFlashSwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
             AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
@@ -174,8 +178,9 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
             AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
             AddAnalogOutputChannel("rb3DCoolingAttenuation", analogPatternBoardAddress + "/ao0");
-            AddAnalogOutputChannel("rbD1Frequency", analogPatternBoardAddress + "/ao5");
-            //AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5");
+
+            //AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5"); //Highjacked for D1 attenuation 21/03/2023
+            AddAnalogOutputChannel("rbD1CoolingAttenuation", analogPatternBoardAddress + "/ao5");
             AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("rbRepumpOffsetLock", analogPatternBoardAddress + "/ao10");
 
@@ -224,7 +229,9 @@ namespace DAQ.HAL
 
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 4);//Laser name, analog channel, wavemeter channel
+            //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 4);//Laser name, analog channel, wavemeter channel
+            //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
+            
             Info.Add("Default", wmlConfig);
 
 

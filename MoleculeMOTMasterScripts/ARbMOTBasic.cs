@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["PushBeamFrequency"] = 5.0;
-
+        Parameters["UVLightShutOff"] = 0;
 
         Parameters["MOTHoldTime"] = 0;
         Parameters["TurnAllLightOn"] = 1000;
@@ -43,9 +43,11 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 3.4;
+        Parameters["ImagingFrequency"] = 1.45;
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
-        Parameters["MOTCoolingLoadingFrequency"] = 4.0; //  03/03/2023
+        //Parameters["MOTCoolingLoadingFrequency"] = 3.4; //  13/03/2023
+        //Parameters["MOTCoolingLoadingFrequency"] = 4.0;
+        Parameters["MOTCoolingLoadingFrequency"] = 4.6; //13/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 4.60; //  06/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 5.0;// it was 5.0 @ 27.04.2022
         //Parameters["MOTCoolingLoadingFrequency"] = 4.3;
@@ -117,8 +119,9 @@ public class Patterns : MOTMasterScript
         Parameters["FluorescenceImageDelay"] = 0;
 
         Parameters["Det"] = 4.9;
+        Parameters["Dummy"] = 0.0;
 
-        Parameters["FreeExpTime"] = 300;
+        Parameters["FreeExpTime"] = 1;
         Parameters["image2DMOTTime"] = 100;
         Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
 
@@ -153,17 +156,20 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rb2DCooling", rbMOTLoadTime, true);
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", rbMOTLoadTime - 200, true);
-
+        p.AddEdge("rbD1CoolingSwitch", 0, true);
         p.AddEdge("rbRepump", 0, false);
 
+        //p.AddEdge("UVFlashSwitch", 0, true);
+        p.AddEdge("UVFlashSwitch", 0, false);
+        //p.AddEdge("UVFlashSwitch", rbMOTLoadTime - (int)Parameters["UVLightShutOff"], true);
 
-        
+
         //Turn everything back on at end of sequence:
 
         p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-
+        p.AddEdge("UVFlashSwitch", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], true);
 
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
