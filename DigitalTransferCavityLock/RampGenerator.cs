@@ -86,7 +86,9 @@ namespace DigitalTransferCavityLock
             Offset = offset;
 
             rampTask = new Task("Ramp task");
-            AOChannel outChannel = rampTask.AOChannels.CreateVoltageChannel(RampOut.PhysicalChannel, RampOut.Name, offset, offset + amplitude, AOVoltageUnits.Volts);
+            if (offset < RampOut.RangeLow || offset + amplitude > RampOut.RangeHigh || offset > RampOut.RangeHigh || offset + amplitude < RampOut.RangeLow)
+                throw new Exception("Ramp cannot exceed output channel limits");
+            AOChannel outChannel = rampTask.AOChannels.CreateVoltageChannel(RampOut.PhysicalChannel, RampOut.Name, Math.Min(offset, offset + amplitude), Math.Max(offset, offset + amplitude), AOVoltageUnits.Volts);
             rampTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(SyncCounter.PhysicalChannel + "InternalOutput", DigitalEdgeStartTriggerEdge.Rising);
             List<double> rampPattern = new List<double>();
             double val = offset;
