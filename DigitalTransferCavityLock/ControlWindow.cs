@@ -34,10 +34,8 @@ namespace DigitalTransferCavityLock
 
         private void ControlWindow_Load(object sender, EventArgs e)
         {
-            controller.CreateRampTask();
-            controller.CreateCounterTasks();
             controller.window = this;
-            (new Thread(new ThreadStart(controller.Update))).Start();
+            controller.windowLoaded();
         }
 
         public void UpdateRenderedObject<T>(T obj, Action<T> updateFunc) where T : Control
@@ -69,72 +67,44 @@ namespace DigitalTransferCavityLock
 
         }
 
-        private void LockReference_CheckedChanged(object sender, EventArgs e)
+        private void RampFreq_TextChanged(object sender, EventArgs e)
         {
-            if (LockReference.Checked)
+            //SetTextField(RampFreq, Convert.ToString((double)500000 / controller.rampGen.GetSamplesPerHalfPeriod(Convert.ToDouble(RampFreq.Text))));
+        }
+
+        private void RampOffset_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RampAmplitude_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void StartRamp_CheckedChanged(object sender, EventArgs e)
+        {
+            if (StartRamp.Checked)
             {
-                controller.reference.ArmLock(Convert.ToDouble(this.refLockLocV.Text));
-                this.UpdateRenderedObject(this.LockSlave, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.refLockLocV, (Control a) => { a.Enabled = false; });
+                int halfP = controller.rampGen.SetUpTasks(Convert.ToDouble(RampAmplitude.Text), Convert.ToDouble(RampFreq.Text), Convert.ToDouble(RampOffset.Text));
+                SetTextField(RampFreq, Convert.ToString((double)500000 / halfP));
+                UpdateRenderedObject(RampAmplitude, (Control c) => { c.Enabled = false; });
+                UpdateRenderedObject(RampFreq, (Control c) => { c.Enabled = false; });
+                UpdateRenderedObject(RampOffset, (Control c) => { c.Enabled = false; });
+                (new Thread(new ThreadStart(controller.Update))).Start();
             }
             else
             {
-                controller.reference.DisarmLock();
-                this.UpdateRenderedObject(this.LockSlave, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.refLockLocV, (Control a) => { a.Enabled = true; });
+                controller.rampGen.StopTasks();
+                UpdateRenderedObject(RampAmplitude, (Control c) => { c.Enabled = true; });
+                UpdateRenderedObject(RampFreq, (Control c) => { c.Enabled = true; });
+                UpdateRenderedObject(RampOffset, (Control c) => { c.Enabled = true; });
             }
         }
 
-        private void LockSlave_CheckedChanged(object sender, EventArgs e)
+        private void RampFreq_Leave(object sender, EventArgs e)
         {
-            if (LockSlave.Checked)
-            {
-                controller.slave.ArmLock(Convert.ToDouble(this.slaveLockLocV.Text), Convert.ToDouble(slaveGain.Text));
-                this.UpdateRenderedObject(this.LockReference, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.slaveLockLocV, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = false; });
-            }
-            else
-            {
-                controller.slave.DisarmLock();
-                this.UpdateRenderedObject(this.LockReference, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.slaveLockLocV, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = true; });
-            }
+            //SetTextField(RampFreq, Convert.ToString((double)500000 / controller.rampGen.GetSamplesPerHalfPeriod(Convert.ToDouble(RampFreq.Text))));
         }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void SlaveVoltageFeedback_TextChanged(object sender, EventArgs e)
-        {
-            //controller.slave.CurrentVoltage = Convert.ToDouble(RefVoltageFeedback.Text);
-            //this.SetTextField(this.SlaveVoltageFeedback, Convert.ToString(controller.slave.CurrentVoltage));
-        }
-
-        private void RefVoltageFeedback_TextChanged(object sender, EventArgs e)
-        {
-            //controller.reference.CurrentVoltage = Convert.ToDouble(RefVoltageFeedback.Text);
-            //this.SetTextField(this.RefVoltageFeedback, Convert.ToString(controller.reference.CurrentVoltage));
-        }
-
-        private void SlaveVoltageFeedback_Leave(object sender, EventArgs e)
-        {
-            controller.slave.CurrentVoltage = Convert.ToDouble(SlaveVoltageFeedback.Text);
-            this.SetTextField(this.SlaveVoltageFeedback, Convert.ToString(controller.slave.CurrentVoltage));
-        }
-
-        private void RefVoltageFeedback_Leave(object sender, EventArgs e)
-        {
-            controller.reference.CurrentVoltage = Convert.ToDouble(RefVoltageFeedback.Text);
-            this.SetTextField(this.RefVoltageFeedback, Convert.ToString(controller.reference.CurrentVoltage));
-        }
-
     }
 }

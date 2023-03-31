@@ -18,6 +18,15 @@ namespace AlFHardwareControl
         public LeyboldGraphixController leybold = (LeyboldGraphixController)Environs.Hardware.Instruments["LeyboldGraphix"];
         public Eurotherm3504Instrument eurotherm = (Eurotherm3504Instrument)Environs.Hardware.Instruments["Eurotherm"];
 
+        public bool interlocksActive = true;
+        public bool InterlocksActive
+        {
+            get
+            {
+                return interlocksActive;
+            }
+        }
+
         public AlFController()
         {
             Application.SetCompatibleTextRenderingDefault(false);
@@ -50,7 +59,6 @@ namespace AlFHardwareControl
 
         public void WindowLoaded()
         {
-            UpdateLakeshoreNames();
             UpdateLakeshoreTemperature();
             (new Thread(() => UpdateData())).Start();
         }
@@ -89,6 +97,7 @@ namespace AlFHardwareControl
             {
                 pressure1Name = leybold.ReadValue("1;5");
                 pressure2Name = leybold.ReadValue("2;5");
+                pressure3Name = leybold.ReadValue("3;5");
             }
         }
 
@@ -99,10 +108,12 @@ namespace AlFHardwareControl
             {
                 pressure1 = leybold.ReadValue("1;29");
                 pressure2 = leybold.ReadValue("2;29");
+                pressure3 = leybold.ReadValue("3;29");
             }
 
             window.SetTextField(window.P1, pressure1 + " mbar");
             window.SetTextField(window.P2, pressure2 + " mbar");
+            window.SetTextField(window.P3, pressure3 + " mbar");
 
         }
 
@@ -136,7 +147,7 @@ namespace AlFHardwareControl
                 loop1Out = eurotherm.GetActiveOut(0);
                 loop2Out = eurotherm.GetActiveOut(1);
             }
-            bool OK_Cryo = window.CryoStatus.Text == "OFF";
+            bool OK_Cryo = window.CryoStatus.Text == "OFF" || !InterlocksActive;
             if (loop1Off)
             {
                 window.SetTextField(window.Loop1Status, "OFF");
@@ -171,14 +182,13 @@ namespace AlFHardwareControl
 
             window.UpdateRenderedObject(window.Loop1Out, (ProgressBar bar) => { bar.Value = (int)loop1Out; });
             window.UpdateRenderedObject(window.Loop2Out, (ProgressBar bar) => { bar.Value = (int)loop2Out; });
-
         }
 
         private void UpdateCryoState()
         {
 
-            bool OK_pressure = Convert.ToDouble(pressure1) < 1e-4;
-            bool OK_heaters = !(window.Loop1Status.Text == "ON" || window.Loop2Status.Text == "ON");
+            bool OK_pressure = Convert.ToDouble(pressure1) < 1e-4 || !InterlocksActive;
+            bool OK_heaters = !(window.Loop1Status.Text == "ON" || window.Loop2Status.Text == "ON") || !InterlocksActive;
             bool CRYO_off = false;
             lock (lakeshore)
             {

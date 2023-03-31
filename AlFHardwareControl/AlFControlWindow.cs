@@ -60,6 +60,7 @@ namespace AlFHardwareControl
 
             this.P1Name.Text = controller.pressure1Name;
             this.P2Name.Text = controller.pressure2Name;
+            this.P3Name.Text = controller.pressure3Name;
 
             AddTemperature();
             AddPressure();
@@ -100,10 +101,10 @@ namespace AlFHardwareControl
                 return controller.pressure3;
             });
 
-            //tScheduler.AddResource(P3Name.Text + " Pressure", () =>
-            //{
-            //    return controller.pressure1;
-            //});
+            tScheduler.AddResource(P3Name.Text + " Pressure", () =>
+            {
+                return controller.pressure3;
+            });
 
             tScheduler.AddResource("Type-K Loop 1", () =>
             {
@@ -144,18 +145,18 @@ namespace AlFHardwareControl
                     tScheduler.UpdateEventLog("Cryo already engaged!");
                     return;
                 }
-                if (Loop1Status.Text == "ON" || Loop2Status.Text == "ON")
+                if ((Loop1Status.Text == "ON" || Loop2Status.Text == "ON") && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on cryo while heaters are actve!");
                     return;
                 }
-                if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF))
+                if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 {
                     // Add new event once implemented
                     tScheduler.UpdateEventLog("Pressure of " + controller.pressure1 + " mbar is too high to engage cryo.");
                     if (!discard)
                     {
-                        tScheduler.AddEvent(new ResourceEvent(tScheduler, "Src Pressure", "<", CRYO_SHUTOFF, "Turn on cryo", false));
+                        tScheduler.AddEvent(new ResourceEvent(tScheduler, P1Name.Text + " Pressure", "<", CRYO_SHUTOFF, "Turn on cryo", false));
                         tScheduler.UpdateEventLog("Rescheduling \"Turn on cryo\" for when Src Pressure < 1e-4");
                     }
                     return;
@@ -176,14 +177,14 @@ namespace AlFHardwareControl
 
             tScheduler.AddTask("Turn on Loop 1", (bool discard) =>
             {
-                if (controller.loop1PV > TYPE_K_SHUTOFF)
+                if (controller.loop1PV > TYPE_K_SHUTOFF && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop1PV + " C is too high to turn on heater!");
                     if (!discard)
                         tScheduler.UpdateEventLog("No reason to create an event in case the temperature goes below the maximum allowed!");
                     return;
                 }
-                if (this.CryoStatus.Text == "ON")
+                if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on Loop 1 while Cryo is ON!");
                     return;
@@ -198,14 +199,14 @@ namespace AlFHardwareControl
 
             tScheduler.AddTask("Turn on Loop 2", (bool discard) =>
             {
-                if (controller.loop2PV > TYPE_K_SHUTOFF)
+                if (controller.loop2PV > TYPE_K_SHUTOFF && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop2PV + " C is too high to turn on heater!");
                     if (!discard)
                         tScheduler.UpdateEventLog("No reason to create an event in case the temperature goes below the maximum allowed!");
                     return;
                 }
-                if (this.CryoStatus.Text == "ON")
+                if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on Loop 2 while Cryo is ON!");
                     return;
@@ -240,12 +241,12 @@ namespace AlFHardwareControl
 
             tScheduler.AddTask("Turn on heaters", (bool discard) =>
             {
-                if (this.CryoStatus.Text == "ON")
+                if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on heaters while Cryo is ON!");
                     return;
                 }
-                if (controller.loop1PV > TYPE_K_SHUTOFF)
+                if (controller.loop1PV > TYPE_K_SHUTOFF && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop1PV + " C is too high to turn on heater!");
                     if (!discard)
@@ -260,7 +261,7 @@ namespace AlFHardwareControl
                 this.Loop1Engage_Click(null, new EventArgs());
 
                 Loop2:
-                if (controller.loop2PV > TYPE_K_SHUTOFF)
+                if (controller.loop2PV > TYPE_K_SHUTOFF && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop2PV + " C is too high to turn on heater!");
                     if (!discard)
@@ -310,10 +311,10 @@ namespace AlFHardwareControl
                 string tempB = this.TempB.Text.Trim(new char[] { 'K', ' ', '+' });
                 string tempC = this.TempC.Text.Trim(new char[] { 'K', ' ', '+' });
                 string tempD = this.TempD.Text.Trim(new char[] { 'K', ' ', '+' });
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(tempA) != 0) obj.Series[this.LabelA.Text].Points.AddXY(localDate, tempA); });
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(tempB) != 0) obj.Series[this.LabelB.Text].Points.AddXY(localDate, tempB); });
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(tempC) != 0) obj.Series[this.LabelC.Text].Points.AddXY(localDate, tempC); });
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(tempD) != 0) obj.Series[this.LabelD.Text].Points.AddXY(localDate, tempD); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelA.Text].Points.AddXY(localDate, tempA); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelB.Text].Points.AddXY(localDate, tempB); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelC.Text].Points.AddXY(localDate, tempC); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelD.Text].Points.AddXY(localDate, tempD); });
 
 
             });
@@ -367,13 +368,15 @@ namespace AlFHardwareControl
 
                 DateTime localDate = DateTime.Now;
 
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(controller.pressure1) != 0) obj.Series[controller.pressure1Name].Points.AddXY(localDate, controller.pressure1); });
-                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { if (Convert.ToDouble(controller.pressure2) != 0) obj.Series[controller.pressure2Name].Points.AddXY(localDate, controller.pressure2); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[controller.pressure1Name].Points.AddXY(localDate, controller.pressure1); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[controller.pressure2Name].Points.AddXY(localDate, controller.pressure2); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[controller.pressure3Name].Points.AddXY(localDate, controller.pressure3); });
 
 
             });
             pressureGrapher.DataGraph.Series.Add(controller.pressure1Name).ChartType = SeriesChartType.Line;
             pressureGrapher.DataGraph.Series.Add(controller.pressure2Name).ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add(controller.pressure3Name).ChartType = SeriesChartType.Line;
 
             foreach (Series series in pressureGrapher.DataGraph.Series)
             {
@@ -488,10 +491,8 @@ namespace AlFHardwareControl
 
         private void EngageCryo_Click(object sender, EventArgs e)
         {
-            if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF))
-            {
+            if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 return;
-            }
             UpdateRenderedObject(this.EngageCryo, (Button but) => { but.Enabled = false; });
             /*
             UpdateRenderedObject(this.DisengageCryo, (Button but) => { but.Enabled = true; });
@@ -518,10 +519,11 @@ namespace AlFHardwareControl
 
         private void Loop1Engage_Click(object sender, EventArgs e)
         {
-            if(controller.loop1PV > TYPE_K_SHUTOFF) return;
+            if(controller.loop1PV > TYPE_K_SHUTOFF && controller.InterlocksActive) return;
             UpdateRenderedObject(this.Loop1Engage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
+                controller.eurotherm.SetHeaterShutoff(0, false);
                 controller.eurotherm.SetAMSwitch(0, false);
             }
         }
@@ -533,15 +535,17 @@ namespace AlFHardwareControl
             {
                 controller.eurotherm.SetAMSwitch(0, true);
                 controller.eurotherm.SetManOut(0, 0);
+                controller.eurotherm.SetHeaterShutoff(0, true);
             }
         }
 
         private void Loop2Engage_Click(object sender, EventArgs e)
         {
-            if (controller.loop2PV > TYPE_K_SHUTOFF) return;
+            if (controller.loop2PV > TYPE_K_SHUTOFF && controller.InterlocksActive) return;
             UpdateRenderedObject(this.Loop2Engage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
+                controller.eurotherm.SetHeaterShutoff(1, false);
                 controller.eurotherm.SetAMSwitch(1, false);
             }
         }
@@ -553,7 +557,26 @@ namespace AlFHardwareControl
             {
                 controller.eurotherm.SetAMSwitch(1, true);
                 controller.eurotherm.SetManOut(1, 0);
+                controller.eurotherm.SetHeaterShutoff(1, true);
             }
+        }
+
+        private void SafetyInterlockEngage_Click(object sender, EventArgs e)
+        {
+            this.SetTextField(this.SafetyInterlockStatus, "ACTIVE");
+            controller.interlocksActive = true;
+            this.UpdateRenderedObject(this.SafetyInterlockEngage, (Button but) => { but.Enabled = false; });
+            this.UpdateRenderedObject(this.SafetyInterlockDisengage, (Button but) => { but.Enabled = true; });
+            this.BackColor = SystemColors.Control;
+        }
+
+        private void SafetyInterlockDisengage_Click(object sender, EventArgs e)
+        {
+            this.SetTextField(this.SafetyInterlockStatus, "DEFEATED");
+            controller.interlocksActive = false;
+            this.UpdateRenderedObject(this.SafetyInterlockEngage, (Button but) => { but.Enabled = true; });
+            this.UpdateRenderedObject(this.SafetyInterlockDisengage, (Button but) => { but.Enabled = false; });
+            this.BackColor = SystemColors.ControlDark;
         }
     }
 }

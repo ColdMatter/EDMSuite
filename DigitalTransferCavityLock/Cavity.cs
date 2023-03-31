@@ -14,7 +14,7 @@ namespace DigitalTransferCavityLock
         {
             if (!locked)
                 return;
-            CurrentVoltage = CurrentVoltage - 0.1*VoltageError;
+            CurrentVoltage = CurrentVoltage - 0.1 * LockError;
         }
     }
 }

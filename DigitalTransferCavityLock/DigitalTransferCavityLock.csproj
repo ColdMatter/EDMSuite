@@ -103,11 +103,28 @@
     <Compile Include="ControlWindow.Designer.cs">
       <DependentUpon>ControlWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="CounterReader.cs" />
     <Compile Include="DTCLLockable.cs" />
     <Compile Include="Cavity.cs" />
     <Compile Include="Laser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RampGenerator.cs" />
+    <Compile Include="CavityControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CavityControl.Designer.cs">
+      <DependentUpon>CavityControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SlaveLaserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SlaveLaserControl.Designer.cs">
+      <DependentUpon>SlaveLaserControl.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CavityControl.resx">
+      <DependentUpon>CavityControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ControlWindow.resx">
       <DependentUpon>ControlWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +138,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SlaveLaserControl.resx">
+      <DependentUpon>SlaveLaserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

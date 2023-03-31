@@ -12,24 +12,25 @@ namespace DigitalTransferCavityLock
         protected AnalogSingleChannelWriter outputWriter;
         private string feedback;
         protected bool locked = false;
-        protected double lockLevel;
+        public double LockLevel;
+        public double gain;
         public DTCLLockable(Func<double> _resource, string _feedback)
         {
             resource = _resource;
             feedback = _feedback;
 
-            output = new Task("Feedback to " + _feedback);
+            output = new Task("Feedback to " + ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[feedback]).Name);
             FeedbackChannel.AddToTask(output, MinVoltage, MaxVoltage);
             output.Control(TaskAction.Verify);
             outputWriter = new AnalogSingleChannelWriter(output.Stream);
 
         }
 
-        public double LockLevel
+        public bool Locked
         {
             get
             {
-                return lockLevel;
+                return locked;
             }
         }
 
@@ -77,19 +78,22 @@ namespace DigitalTransferCavityLock
             }
         }
 
-        public virtual double VoltageError
+        public virtual double LockError
         {
             get
             {
-                return lockLevel - resource();
+                return LockLevel - resource();
             }
         }
 
-        public void ArmLock(double LockLevel)
+        public void ArmLock(double _LockLevel, double Gain)
         {
+
             locked = true;
-            lockLevel = LockLevel;
+            LockLevel = _LockLevel;
+            gain = Gain;
         }
+
         public void DisarmLock()
         {
             locked = false;

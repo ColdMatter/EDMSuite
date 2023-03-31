@@ -149,6 +149,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LatticeEDM|AnyCPU'">
     <OutputPath>bin\LatticeEDM\</OutputPath>
@@ -619,6 +621,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="DTCLCavityConfig.cs" />
+    <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
     <Compile Include="GobelinHardware.cs" />
     <Compile Include="LeyboldGraphixController.cs" />
