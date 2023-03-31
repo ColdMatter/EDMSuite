@@ -114,7 +114,7 @@ namespace DigitalTransferCavityLock
                 laser.ArmLock(Convert.ToDouble(this.slaveLockLocV.Text), Convert.ToDouble(slaveGain.Text));
                 this.UpdateRenderedObject(cavity.LockReference, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = false; });
-                //this.UpdateRenderedObject(this.slaveLockLocV, (Control a) => { a.Enabled = false; });
+                this.UpdateRenderedObject(this.InputEnable, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = false; });
             }
             else
@@ -122,7 +122,7 @@ namespace DigitalTransferCavityLock
                 laser.DisarmLock();
                 cavity.UpdateAfterSlaveUnlock();
                 this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = true; });
-                // this.UpdateRenderedObject(this.slaveLockLocV, (Control a) => { a.Enabled = true; });
+                this.UpdateRenderedObject(this.InputEnable, (Control a) => { a.Enabled = true; });
                 this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = true; });
             }
         }
