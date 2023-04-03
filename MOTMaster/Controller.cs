@@ -118,14 +118,14 @@ namespace MOTMaster
             }
 
 
-            if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
-                "tcp://localhost:1172/controller.rem");
+            //if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+            //    "tcp://localhost:1172/controller.rem");
 
-            if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
-                "tcp://localhost:1172/controller.rem");
+            //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
+            //    "tcp://localhost:1172/controller.rem");
 
-            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1172/controller.rem");
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //    "tcp://localhost:1172/controller.rem");
 
             
             ioHelper = new MMDataIOHelper(motMasterDataPath, 
@@ -363,17 +363,17 @@ namespace MOTMaster
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                    try
-                    {
-                        if (config.CameraUsed) prepareCameraControl();
+                    //try
+                    //{
+                        //if (config.CameraUsed) prepareCameraControl();
 
-                        if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
+                        //if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
 
-                        if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+                        //if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
                         buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
-                        if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+                        //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
                         watch.Start();
 
@@ -397,49 +397,24 @@ namespace MOTMaster
                         //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                         if (saveEnable)
                         {
-                            if (config.CameraUsed)
-                            {
-                                waitUntilCameraAquisitionIsDone();
-                                try
-                                {
-                                    checkDataArrived();
-                                }
-                                catch (DataNotArrivedFromHardwareControllerException)
-                                {
-                                    return;
-                                }
-                                Dictionary<String, Object> report = null;
-                                if (config.ReporterUsed)
-                                {
-                                    report = GetExperimentReport();
-                                }
+                            Dictionary<String, Object> report = null;
+                            //if (config.ReporterUsed)
+                            //{
+                            //    report = GetExperimentReport();
+                            //}
 
-                                save(sequence, script, scriptPath, imageData, report);
-                                
-                            }
-                            else
-                            {
-                                Dictionary<String, Object> report = null;
-                                if (config.ReporterUsed)
-                                {
-                                    report = GetExperimentReport();
-                                }
-
-                                save(sequence, script, scriptPath, report);
-                                
-                            }
-
+                            save(sequence, script, scriptPath, report);
 
                         }
-                        if (config.CameraUsed) finishCameraControl();
-                        if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                        //if (config.CameraUsed) finishCameraControl();
+                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
 
                         if (!config.Debug) clearDigitalPattern(sequence);
-                    }
-                    catch (System.Net.Sockets.SocketException e)
-                    {
-                        MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
-                    }
+                    //}
+                    //catch (System.Net.Sockets.SocketException e)
+                    //{
+                    //    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+                    //}
                 }
                 else
                 {
