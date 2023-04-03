@@ -46,8 +46,8 @@ namespace DAQ.HAL
             //taskRunning = true;
             //pgTask.Start();
             
-            writer.WriteMultiSamplePort(true, pattern);
-            //pgTask.Start();
+            writer.WriteMultiSamplePort(false, pattern);
+            pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();
         }
@@ -196,8 +196,8 @@ namespace DAQ.HAL
 
             /* Configure one of the PFI channels to output the clock signal of the master card. Required to synchronize the slaves when using multiple pattern cards */
 
-            //if (pgTaskName == "PG")
-            //    pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
+            if (pgTaskName == "PG")
+                pgTask.ExportSignals.SampleClockOutputTerminal = (string)Environment.Environs.Hardware.GetInfo(clock_line);
 
             /*
             if (device == "/Dev1")
@@ -232,7 +232,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
-            //pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
+            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
 		public void StopPattern()

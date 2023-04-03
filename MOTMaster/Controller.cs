@@ -54,13 +54,13 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-        
+
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
 
-        public enum RunningState { stopped, running};
+        public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
         public bool triggered = false;
         string pgMasterName;
@@ -127,8 +127,8 @@ namespace MOTMaster
             //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
             //    "tcp://localhost:1172/controller.rem");
 
-            
-            ioHelper = new MMDataIOHelper(motMasterDataPath, 
+
+            ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
             ScriptLookupAndDisplay();
@@ -152,14 +152,14 @@ namespace MOTMaster
                 }
 
             }
-            
+
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
                     pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
             pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
-            
+
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
@@ -174,7 +174,7 @@ namespace MOTMaster
             }
 
             int i = 0;
-            
+
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -193,7 +193,7 @@ namespace MOTMaster
                             config.AnalogPatternClockFrequency, false, true);
                     j++;
                 }
-                    
+
             }
         }
 
@@ -278,9 +278,9 @@ namespace MOTMaster
         ///  argument for Run(Dictionary<>).        ///  
         /// 
         /// </summary>
-      
-       
-        
+
+
+
         private bool saveEnable = true;
         public void SaveToggle(System.Boolean value)
         {
@@ -291,7 +291,7 @@ namespace MOTMaster
         public void SetBatchNumber(Int32 number)
         {
             batchNumber = number;
-            controllerWindow.WriteToSaveBatchTextBox(number);  
+            controllerWindow.WriteToSaveBatchTextBox(number);
         }
         public void SetIterations(Int32 number)
         {
@@ -323,14 +323,14 @@ namespace MOTMaster
             runThread = new Thread(new ThreadStart(this.Go));
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Normal;
-            
+
             runThread.Start();
         }
 
         public Thread Run(Dictionary<String, Object> dict)
         {
             var t = new Thread(() => Go(dict));
-           // status = RunningState.running;
+            // status = RunningState.running;
             t.Start();
             //t.Join(); //Blocks calling thread until finished so that doesn't return until finished
             return null;
@@ -397,13 +397,38 @@ namespace MOTMaster
                         //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                         if (saveEnable)
                         {
-                            Dictionary<String, Object> report = null;
-                            //if (config.ReporterUsed)
-                            //{
-                            //    report = GetExperimentReport();
-                            //}
+                            if (config.CameraUsed)
+                            {
+                                waitUntilCameraAquisitionIsDone();
+                                try
+                                {
+                                    checkDataArrived();
+                                }
+                                catch (DataNotArrivedFromHardwareControllerException)
+                                {
+                                    return;
+                                }
+                                Dictionary<String, Object> report = null;
+                                if (config.ReporterUsed)
+                                {
+                                    report = GetExperimentReport();
+                                }
 
-                            save(sequence, script, scriptPath, report);
+                                save(sequence, script, scriptPath, imageData, report);
+
+                            }
+                            else
+                            {
+                                Dictionary<String, Object> report = null;
+                                if (config.ReporterUsed)
+                                {
+                                    report = GetExperimentReport();
+                                }
+
+                                save(sequence, script, scriptPath, report);
+
+                            }
+
 
                         }
                         //if (config.CameraUsed) finishCameraControl();
@@ -423,7 +448,7 @@ namespace MOTMaster
                 status = RunningState.stopped;
             }
         }
-        
+
         #endregion
 
         #region private stuff
@@ -464,7 +489,7 @@ namespace MOTMaster
                 if (dict != null)
                 {
                     script.EditDictionary(dict);
-                    
+
                 }
                 return script;
             }
@@ -476,7 +501,7 @@ namespace MOTMaster
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
         }
-       
+
         #endregion
 
         #region Compiler & Loading DLLs
@@ -573,7 +598,7 @@ namespace MOTMaster
             LLEThread.Start();
 
         }
-        
+
         bool imagesRecieved = false;
         /*private byte[,] imageData;
         private void grabImage()
@@ -631,7 +656,7 @@ namespace MOTMaster
             return experimentReporter.GetExperimentReport();
         }
 
-        
+
         #endregion
 
         #region Translation stage

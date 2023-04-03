@@ -37,8 +37,6 @@ namespace WavemeterLock
             this.wmlLED = new NationalInstruments.UI.WindowsForms.Led();
             this.groupBoxLockRate = new System.Windows.Forms.GroupBox();
             this.updateRateTextBox = new System.Windows.Forms.TextBox();
-            this.setUpdateRateBtn = new System.Windows.Forms.Button();
-            this.setRate = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.wmlLED)).BeginInit();
             this.groupBoxLockRate.SuspendLayout();
             this.SuspendLayout();
@@ -99,30 +97,11 @@ namespace WavemeterLock
             this.updateRateTextBox.TabIndex = 0;
             this.updateRateTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // setUpdateRateBtn
-            // 
-            this.setUpdateRateBtn.Location = new System.Drawing.Point(417, 21);
-            this.setUpdateRateBtn.Name = "setUpdateRateBtn";
-            this.setUpdateRateBtn.Size = new System.Drawing.Size(75, 23);
-            this.setUpdateRateBtn.TabIndex = 7;
-            this.setUpdateRateBtn.Text = "Set";
-            this.setUpdateRateBtn.UseVisualStyleBackColor = true;
-            this.setUpdateRateBtn.Click += new System.EventHandler(this.rateSetBtn_Click);
-            // 
-            // setRate
-            // 
-            this.setRate.Location = new System.Drawing.Point(335, 23);
-            this.setRate.Name = "setRate";
-            this.setRate.Size = new System.Drawing.Size(66, 20);
-            this.setRate.TabIndex = 8;
-            // 
             // LockForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(680, 568);
-            this.Controls.Add(this.setRate);
-            this.Controls.Add(this.setUpdateRateBtn);
             this.Controls.Add(this.groupBoxLockRate);
             this.Controls.Add(this.wmlLED);
             this.Controls.Add(this.masterBttn);
@@ -130,12 +109,12 @@ namespace WavemeterLock
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LockForm";
             this.Text = "Wavemeter Lock";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LockForm_Closing);
             this.Load += new System.EventHandler(this.LockForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.wmlLED)).EndInit();
             this.groupBoxLockRate.ResumeLayout(false);
             this.groupBoxLockRate.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -147,8 +126,6 @@ namespace WavemeterLock
         private NationalInstruments.UI.WindowsForms.Led wmlLED;
         private System.Windows.Forms.GroupBox groupBoxLockRate;
         private System.Windows.Forms.TextBox updateRateTextBox;
-        private System.Windows.Forms.Button setUpdateRateBtn;
-        private System.Windows.Forms.TextBox setRate;
     }
 }
 
