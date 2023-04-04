@@ -37,7 +37,7 @@ namespace DAQ.HAL
             //Boards.Add("doBoard", "/PXI1Slot11");
             //Boards.Add("analogIn2", "/PXI1Slot17");
             //Boards.Add("counter", "/PXI1Slot16");
-            Boards.Add("aoBoard", "/PXI1Slot2");
+            Boards.Add("aoBoard", "/PXI1Slot2"); //PXI6723
             //Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
             //Boards.Add("analogIn", "/PXI1Slot15");
             //Boards.Add("usbDAQ2", "/Dev4");
@@ -82,6 +82,7 @@ namespace DAQ.HAL
             //Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
             Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+
             Info.Add("AOPatternTrigger", aoBoard + "/PFI6"); 
             Info.Add("AOClockLine", aoBoard + "/PFI5");
 
@@ -405,6 +406,7 @@ namespace DAQ.HAL
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", aoBoard);
+            //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();

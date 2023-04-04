@@ -586,12 +586,8 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=20.1.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -621,6 +617,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="AnalogStaticBuilderSingleBoard.cs" />
+    <Compile Include="AnalogStaticBuilder.cs" />
+    <Compile Include="DAQMxStaticAnalogGenerator.cs" />
+    <Compile Include="DAQMxPatternGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
@@ -752,9 +754,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DAQMxChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DAQMxPatternGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataFaker.cs">

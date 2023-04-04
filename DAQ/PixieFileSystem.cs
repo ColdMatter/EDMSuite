@@ -13,9 +13,8 @@ namespace DAQ
             Paths.Add("scanMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\general\\");
             Paths.Add("fakeData", "D:\\OneDrive - Imperial College London\\Data\\examples\\");
             Paths.Add("transferCavityData", "D:\\OneDrive - Imperial College London\\Data\\transfer cavity\\");
-
             Paths.Add("MOTMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\mot_master_data\\");
-            Paths.Add("scriptListPath", "D:\\EDMSuite\\MoleculeMOTMasterScripts");
+            Paths.Add("scriptListPath", "D:\\EDMSuite\\TweezerMOTMasterScripts");
             Paths.Add("daqDLLPath", "D:\\EDMSuite\\DAQ\\bin\\EDM\\daq.dll");
             Paths.Add("MOTMasterExePath", "D:\\EDMSuite\\MOTMaster\\bin\\EDM\\");
             Paths.Add("ExternalFilesPath", "D:\\Temp_Camera_Images\\");

@@ -70,7 +70,9 @@ namespace MOTMaster
         DAQMxPatternGenerator pgMaster;
         Dictionary<string, DAQMxPatternGenerator> pgs;
         Dictionary<string, DAQMxAnalogPatternGenerator> analogs;
+        Dictionary<string, DAQMxAnalogStaticGenerator> staticAnalogs;
         Dictionary<string, string> analogBoards;
+        Dictionary<string, string> staticAnalogBoards;
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -117,6 +119,16 @@ namespace MOTMaster
                 }
             }
 
+            staticAnalogBoards = (Dictionary<string, string>)Environs.Hardware.GetInfo("StaticAnalogBoards");
+            staticAnalogs = new Dictionary<string, DAQMxAnalogStaticGenerator>();
+            if (staticAnalogBoards != null)
+            {
+                foreach (string address in staticAnalogBoards.Values)
+                {
+                    staticAnalogs[address] = new DAQMxAnalogStaticGenerator();
+                }
+            }
+            
 
             //if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
@@ -153,6 +165,15 @@ namespace MOTMaster
 
             }
 
+            foreach (string address in staticAnalogs.Keys)
+            {
+                if (sequence.AnalogStatic.Boards.ContainsKey(address))
+                {
+                    staticAnalogs[address].OutputStaticValueAndWait(sequence.AnalogStatic.Boards[address].StaticPattern);
+                }
+
+            }
+
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -183,17 +204,36 @@ namespace MOTMaster
             }
 
             int j = 0;
-            foreach (KeyValuePair<string, string> kvp in analogBoards)
-            {
-                if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
-                {
-                    analogs[kvp.Value].Configure(
-                            kvp.Key,
-                            sequence.AnalogPattern.Boards[kvp.Value],
-                            config.AnalogPatternClockFrequency, false, true);
-                    j++;
-                }
 
+            if (analogBoards != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in analogBoards)
+                {
+                    if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
+                    {
+                        analogs[kvp.Value].Configure(
+                                kvp.Key,
+                                sequence.AnalogPattern.Boards[kvp.Value],
+                                config.AnalogPatternClockFrequency, false, true);
+                        j++;
+                    }
+
+                }
+            }
+            int k = 0;
+            if (staticAnalogBoards != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in staticAnalogBoards)
+                {
+                    if (sequence.AnalogStatic.Boards.ContainsKey(kvp.Value))
+                    {
+                        staticAnalogs[kvp.Value].Configure(
+                                kvp.Key,
+                                sequence.AnalogStatic.Boards[kvp.Value],
+                                config.AnalogPatternClockFrequency, false, true);
+                        k++;
+                    }
+                }
             }
         }
 
@@ -500,6 +540,7 @@ namespace MOTMaster
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
+            sequence.AnalogStatic.BuildPattern();
         }
 
         #endregion
