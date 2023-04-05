@@ -73,7 +73,7 @@ namespace WavemeterLockServer
 
         }
 
-       
+        #region Remote Methods
         public void changeConnectionStatus(int channelNum, bool status)
         {
             remoteConnection[channelNum - 1] = status;
@@ -91,6 +91,14 @@ namespace WavemeterLockServer
                 measurementStatus.Remove(computerName);
                 measurementStatus.Add(computerName, false);
             }
+
+            ui.addStringToListBox(computerName);
+        }
+
+        public void removeWavemeterLock(string computerName)
+        {
+            measurementStatus.Remove(computerName);
+            ui.deleteStringToListBox(computerName);
         }
 
         public void indicateNewMeasurement()
@@ -202,8 +210,8 @@ namespace WavemeterLockServer
 
         }
 
-        
-       
+        #endregion
+
 
 
         public void startServer()

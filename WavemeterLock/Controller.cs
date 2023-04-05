@@ -32,14 +32,14 @@ namespace WavemeterLock
         Stopwatch stopWatch = new Stopwatch();
         Stopwatch stopWatchGraph = new Stopwatch();
         private List<double> scanTimes;
-        public int numScanAverages = 100;
+        public int numScanAverages = 5;
 
 
         #region Set up TCP channel and remote methods
 
         public void initializeTCPChannel()
         {
-            computer = "IC-CZC136CFDJ";
+            computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
             hostTCPChannel = eHelper.serverTCPChannel;
 
@@ -131,7 +131,6 @@ namespace WavemeterLock
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
             computer = hostName;
             hostTCPChannel = channelNumber;
-
         }
         
         public Color selectColor(int par)//Assign a plot line color for each laser
@@ -222,9 +221,6 @@ namespace WavemeterLock
         };
 
         public ControllerState WMLState = ControllerState.STOPPED;
-
-
-
 
 
         #region methods
@@ -475,6 +471,12 @@ namespace WavemeterLock
             }
             
         }
+
+        public void removeWavemeterLock()
+        {
+            wavemeterContrller.removeWavemeterLock(thisComputerName);
+        }
+
 
         public void errorMsg()
         {
