@@ -125,6 +125,7 @@ The goal of future updates:
 
 ## Update Log
 
+* [v 1.0.1] April 5th 2023: Added a list in server showing connected clients
 * [v 1.0.0] April 1st 2023: Change Wavemeter Lock update method from polling to measurement triggered, updated readme.md
 
 
