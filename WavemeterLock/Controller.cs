@@ -437,7 +437,7 @@ namespace WavemeterLock
 
                 foreach (string slave in lasers.Keys)
                 {
-                    if (lockBlocked != null)
+                    if (lockBlocked.ContainsKey(slave))
                     {
                         checkBlockStatus(slave);
                         updateFrequency(lasers[slave]);
