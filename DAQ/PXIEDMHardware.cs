@@ -151,7 +151,6 @@ namespace DAQ.HAL
             // these channel are usually software switched - they are on the AO board
             AddAnalogOutputChannel("steppingBBias", aoBoard + "/ao8", -10, 10);
 
-
             /*
             AddDigitalOutputChannel("notB", aoBoard, 0, 1);
 
@@ -400,6 +399,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("VCO155Freq", aoBoard + "/ao18", 0, 10);
             */
 
+
+            AddAnalogOutputChannel("WavemeterLockTest", aoBoard + "/ao9", -10, 10);
+            AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
+
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
@@ -412,7 +415,10 @@ namespace DAQ.HAL
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
-
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("TestLaser", "WavemeterLockTest", 1);
+            wmlConfig.AddLockBlock("TestLaser", "WavemeterLockBlockTest");
+            Info.Add("Default", wmlConfig);
         }
 
     }

@@ -25,6 +25,7 @@ namespace DAQ.WavemeterLock
 
         public Dictionary<string, string> slaveLasers = new Dictionary<string, string>();//Name, Analog channel Name
         public Dictionary<string, int> channelNumbers = new Dictionary<string, int>();//Name, Wavemeter channel number
+        public Dictionary<string, string> lockBlockFlag = new Dictionary<string, string>();//Name, Digital channel name
 
 
         public void AddSlaveLaser(string name, string channel, int num)
@@ -33,7 +34,10 @@ namespace DAQ.WavemeterLock
             channelNumbers.Add(name, num);
         }
 
-       
+        public void AddLockBlock(string name, string channel)
+        {
+            lockBlockFlag.Add(name, channel);
+        }
 
 
     }

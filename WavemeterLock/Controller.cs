@@ -119,7 +119,9 @@ namespace WavemeterLock
         #endregion
 
         public Dictionary<string, Laser> lasers;
+        public Dictionary<string, bool> lockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
+        public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
         public Dictionary<string, double> timeList = new Dictionary<string,double>();
         private LockForm ui;
@@ -192,7 +194,8 @@ namespace WavemeterLock
 
         public void initializeLasers()//For each laser in configuration, create a control panel in main form
         {
-            lasers = new Dictionary<string, Laser>(); 
+            lasers = new Dictionary<string, Laser>();
+            lockBlocked = new Dictionary<string, bool>();
 
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
@@ -210,7 +213,14 @@ namespace WavemeterLock
 
             }
 
-            Dictionary<string, string> analogs = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> entry in config.lockBlockFlag)
+            {
+                string laser = entry.Key;
+                blockHelper.Add(laser, new DAQMxWavemeterLockBlockHelper(laser, config.lockBlockFlag[laser]));
+                lockBlocked.Add(laser, false);
+            }
+
+                Dictionary<string, string> analogs = new Dictionary<string, string>();
 
             
         }
@@ -424,29 +434,63 @@ namespace WavemeterLock
         {
             if (WMLState != ControllerState.STOPPED)
             {
+
                 foreach (string slave in lasers.Keys)
                 {
+                    if (lockBlocked != null)
+                    {
+                        checkBlockStatus(slave);
+                        updateFrequency(lasers[slave]);
 
-                    updateFrequency(lasers[slave]);
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
+                        {
 
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
+
+                            if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+
+                            {
+                                faultyLaser = slave;
+                                lasers[slave].DisengageLock();
+                                Thread msgThread = new Thread(errorMsg);
+                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                                msgThread.Start();
+                            }
+                            else
+                            {
+                                lasers[slave].UpdateLock();
+                            }
+                        }
+
+                        else
+                            lasers[slave].UpdateBlockedLock();
+                    }
+
+                    else
                     {
 
-                        if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+                        updateFrequency(lasers[slave]);
 
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
                         {
-                            faultyLaser = slave;
-                            lasers[slave].DisengageLock();
-                            Thread msgThread = new Thread(errorMsg);
-                            indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                            msgThread.Start();
-                        }
-                        else
-                        {
-                            lasers[slave].UpdateLock();
+
+
+                            if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+
+                            {
+                                faultyLaser = slave;
+                                lasers[slave].DisengageLock();
+                                Thread msgThread = new Thread(errorMsg);
+                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                                msgThread.Start();
+                            }
+                            else
+                            {
+                                lasers[slave].UpdateLock();
+                            }
                         }
                     }
                 }
+            }
 
                 loopcount++;
 
@@ -468,7 +512,7 @@ namespace WavemeterLock
 
                 updateLockRate(stopWatch);
                 stopWatch.Restart();
-            }
+            
             
         }
 
@@ -477,6 +521,10 @@ namespace WavemeterLock
             wavemeterContrller.removeWavemeterLock(thisComputerName);
         }
 
+        void checkBlockStatus(string laser)
+        {
+            lockBlocked[laser] = blockHelper[laser].isBlocked;
+        }
 
         public void errorMsg()
         {
