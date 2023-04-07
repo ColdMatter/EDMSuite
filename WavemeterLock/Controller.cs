@@ -192,27 +192,28 @@ namespace WavemeterLock
             wavemeterContrller.changeConnectionStatus(channelNum,status);
         }
 
-        public void initializeLasers()//For each laser in configuration, create a control panel in main form
+        public void initializeLasers()
         {
             lasers = new Dictionary<string, Laser>();
             lockBlocked = new Dictionary<string, bool>();
 
+            //Config hardware channel and time stamp
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
-                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
                 helper.Add(slaveLaser, new DAQMxWavemeterLockLaserControlHelper(config.slaveLasers[slaveLaser]));
                 timeList.Add(slaveLaser, 0);
             }
 
+            //Create instances of class Laser, register lasers in controller's dictionary
             foreach (KeyValuePair<string, string> entry in config.slaveLasers)
             {
                 string laser = entry.Key;
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
                 slave.WLMChannel = config.channelNumbers[laser];
-
             }
 
+            //Config lock block
             foreach (KeyValuePair<string, string> entry in config.lockBlockFlag)
             {
                 string laser = entry.Key;
@@ -220,6 +221,7 @@ namespace WavemeterLock
                 lockBlocked.Add(laser, false);
             }
 
+            //Config initial set points and gains
             foreach (KeyValuePair<string, double> entry in config.setPoints)
             {
                 string laser = entry.Key;
@@ -238,6 +240,10 @@ namespace WavemeterLock
                 lasers[laser].IGain = config.IGains[laser];
             }
 
+            foreach (string slaveLaser in config.slaveLasers.Keys)
+            {
+                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
+            }
 
         }
 

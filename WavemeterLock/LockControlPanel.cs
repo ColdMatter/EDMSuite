@@ -29,6 +29,8 @@ namespace WavemeterLock
             InitializeComponent();
             controller.panelList.Add(name, this);
             lockChannelNum.Text = Convert.ToString(channelNumber);
+            PGain.Text = controller.lasers[name].PGain.ToString();
+            IGain.Text = controller.lasers[name].IGain.ToString();
 
         }
 
@@ -50,8 +52,6 @@ namespace WavemeterLock
             lockMsg.Text = controller.getLaserState(name);
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
-            PGain.Text = controller.lasers[name].PGain.ToString();
-            IGain.Text = controller.lasers[name].IGain.ToString();
             if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
             {
                 SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
