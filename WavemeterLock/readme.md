@@ -65,8 +65,13 @@ Here are the things you need to have before installing Wavemeter Lock.
    wmlConfig.AddLockBlock("YourLaserName", "YourDigitalChannel");
    ```
    Then YourLaserName lock will be blocked if you send a high signal to YourDigitalChannel.
+   
+6. To config the initial setpoints and gains, in DAQ/ClientHardware.cs, add
+   ```sh
+   wmlConfig.AddLaserConfiguration("YourLaserName", SetFrequencyInTHz, PGain, IGain);
+   ```
 
-6. In the hardware config class of client computer DAQ/ClientHardware.cs, add the configuration you just created.
+7. In the hardware config class of client computer DAQ/ClientHardware.cs, add the configuration you just created.
    ```sh
    Info.Add("Default", wmlConfig);
    ```
@@ -131,6 +136,7 @@ The goal of future updates:
 
 ## Update Log
 
+* [v 1.0.3] April 7th 2023: Added laser initial configuration. You can now set the default set frequency and gains. It is useful if you have multiple lasers with known optimized setpoints and gains.
 * [v 1.0.2] April 6th 2023: Added lock block function. Wavemeter lock can now be blocked via an external TTL signal, you can use it to temporarily chirp or modulate your laser.
 * [v 1.0.1] April 5th 2023: Added a list in server showing connected clients
 * [v 1.0.0] April 1st 2023: Changed Wavemeter Lock update method from polling to measurement triggered, updated readme.md
