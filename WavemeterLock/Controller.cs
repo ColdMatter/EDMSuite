@@ -220,9 +220,25 @@ namespace WavemeterLock
                 lockBlocked.Add(laser, false);
             }
 
-                Dictionary<string, string> analogs = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, double> entry in config.setPoints)
+            {
+                string laser = entry.Key;
+                lasers[laser].setFrequency = config.setPoints[laser];
+            }
 
-            
+            foreach (KeyValuePair<string, double> entry in config.pGains)
+            {
+                string laser = entry.Key;
+                lasers[laser].PGain = config.pGains[laser];
+            }
+
+            foreach (KeyValuePair<string, double> entry in config.IGains)
+            {
+                string laser = entry.Key;
+                lasers[laser].IGain = config.IGains[laser];
+            }
+
+
         }
 
         public enum ControllerState
@@ -488,6 +504,9 @@ namespace WavemeterLock
                                 lasers[slave].UpdateLock();
                             }
                         }
+
+                        else
+                            lasers[slave].UpdateBlockedLock();
                     }
                 }
             }

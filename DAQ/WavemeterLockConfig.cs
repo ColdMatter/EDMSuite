@@ -26,6 +26,9 @@ namespace DAQ.WavemeterLock
         public Dictionary<string, string> slaveLasers = new Dictionary<string, string>();//Name, Analog channel Name
         public Dictionary<string, int> channelNumbers = new Dictionary<string, int>();//Name, Wavemeter channel number
         public Dictionary<string, string> lockBlockFlag = new Dictionary<string, string>();//Name, Digital channel name
+        public Dictionary<string, double> setPoints = new Dictionary<string, double>();//Laser setpoint
+        public Dictionary<string, double> pGains = new Dictionary<string, double>();//P gains
+        public Dictionary<string, double> IGains = new Dictionary<string, double>();//I gains
 
 
         public void AddSlaveLaser(string name, string channel, int num)
@@ -39,6 +42,12 @@ namespace DAQ.WavemeterLock
             lockBlockFlag.Add(name, channel);
         }
 
+        public void AddLaserConfiguration(string name, double setPoint, double PGain, double IGain)
+        {
+            setPoints.Add(name, setPoint);
+            pGains.Add(name, PGain);
+            IGains.Add(name, IGain);
+        }
 
     }
 }

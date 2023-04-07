@@ -38,7 +38,7 @@ namespace WavemeterLock
             errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             errorPlot.LineColor = controller.selectColor(controller.colorParameter);
             controller.colorParameter++;
-            controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
+            //controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
             SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
             labelOutOfRange.Visible = false;
         }
@@ -50,6 +50,8 @@ namespace WavemeterLock
             lockMsg.Text = controller.getLaserState(name);
             frequencyError.Text = Convert.ToString(Math.Round(1000000 * controller.gerFrequencyError(name),6));
             VOut.Text = Convert.ToString(Math.Round(controller.getOutputvoltage(name),6));
+            PGain.Text = controller.lasers[name].PGain.ToString();
+            IGain.Text = controller.lasers[name].IGain.ToString();
             if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
             {
                 SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);

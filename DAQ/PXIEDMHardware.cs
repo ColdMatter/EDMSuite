@@ -400,7 +400,8 @@ namespace DAQ.HAL
             */
 
 
-            AddAnalogOutputChannel("WavemeterLockTest", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
             AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
 
             MMConfig mmConfig = new MMConfig(false, false, true, false);
@@ -416,8 +417,11 @@ namespace DAQ.HAL
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser", "WavemeterLockTest", 1);
-            wmlConfig.AddLockBlock("TestLaser", "WavemeterLockBlockTest");
+            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
+            wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTest");
+            wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
+            wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
             Info.Add("Default", wmlConfig);
         }
 
