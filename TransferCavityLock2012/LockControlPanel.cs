@@ -33,11 +33,13 @@ namespace TransferCavityLock2012
             InitializeComponent();
         }
 
-        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit, double gain)
+        public LockControlPanel(string name, double lowerVoltageLimit, double upperVoltageLimit, double gain, CavityControlPanel cavity, Controller controller)
         {
             this.name = name;
             this.upperVoltageLimit = upperVoltageLimit;
             this.lowerVoltageLimit = lowerVoltageLimit;
+            this.CavityPanel = cavity;
+            this.Controller = controller;
             InitializeComponent();
             this.GainTextbox.Text = gain.ToString();
         }

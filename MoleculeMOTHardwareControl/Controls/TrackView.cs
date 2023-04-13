@@ -18,7 +18,7 @@ namespace MoleculeMOTHardwareControl.Controls
     public partial class TrackView : MoleculeMOTHardwareControl.Controls.GenericView
     {
         protected TrackController castController;
-        
+            
         public TrackView(TrackController controllerInstance)
             : base(controllerInstance)
         {
@@ -50,6 +50,8 @@ namespace MoleculeMOTHardwareControl.Controls
                 this.GroupStatusChanged += new ChangedCurrentGroupStateHandler(CurrentGroupStateHandlerChanged);
                 this.ErrorMessageChanged += new ChangedLabelErrorMessageHandler(ErrorMessageHandlerChanged);           
             }
+
+           
         }
 
         const int DEFAULT_TIMEOUT = 10000;
@@ -157,6 +159,7 @@ namespace MoleculeMOTHardwareControl.Controls
         private void CurrentPositionHandlerChanged(double[] currentValues)
         {
             string strPosition = currentValues[0].ToString("F2", CultureInfo.CurrentCulture.NumberFormat);
+            
             textBoxPosition.BeginInvoke(
                    new Action(() =>
                    {
@@ -907,10 +910,11 @@ namespace MoleculeMOTHardwareControl.Controls
         }
         private bool running = false;
 
-        public void TCLscript(string arg1, string arg2)
+        public void TCLscript(string arg1, string arg2, string arg3)
         {
             if (!arg1.Equals("")) textBoxSource.Text = arg1;
             if (!arg2.Equals("")) textBoxTweezer.Text = arg2;
+            if (!arg3.Equals("")) textBoxIterations.Text = arg3;
             string rslt, err = "";        
             ErrorMessageHandlerChanged("");
             if (!RBTrigger.Checked)
@@ -932,7 +936,7 @@ namespace MoleculeMOTHardwareControl.Controls
                 ErrorMessageHandlerChanged("Source posistion is bigger than tweezer position!");
                 return;
             }
-            string args = textBoxSource.Text + "," + textBoxTweezer.Text;
+            string args = textBoxSource.Text + "," + textBoxTweezer.Text + "," + textBoxIterations.Text;
             m_xpsInterface.TCLScriptExecuteAndWait("TransportTrapProgramm1.tcl", "script1", args, out rslt, out err);
             ErrorMessageHandlerChanged(err);
             running = false;
@@ -940,10 +944,15 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private void buttonRunTCL_Click(object sender, EventArgs e)
         {
-            TCLscript("", "");
+            TCLscript("", "", "");
         }
 
         private void RBTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
         {
 
         }

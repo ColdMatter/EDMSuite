@@ -30,6 +30,8 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBoxIterations = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.textBoxTweezer = new System.Windows.Forms.TextBox();
             this.RBTrigger = new System.Windows.Forms.RadioButton();
@@ -73,8 +75,6 @@
             this.RBManual = new System.Windows.Forms.RadioButton();
             this.textBoxTarget = new System.Windows.Forms.TextBox();
             this.buttonMoveTo = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.textBox6 = new System.Windows.Forms.TextBox();
             this.label_MessageCommunication = new System.Windows.Forms.Label();
             this.label_GroupStatusDescription = new System.Windows.Forms.Label();
             this.label_ErrorMessage = new System.Windows.Forms.Label();
@@ -83,7 +83,6 @@
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -106,6 +105,8 @@
             // groupBox4
             // 
             this.groupBox4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.groupBox4.Controls.Add(this.label13);
+            this.groupBox4.Controls.Add(this.textBoxIterations);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.textBoxTweezer);
             this.groupBox4.Controls.Add(this.RBTrigger);
@@ -118,6 +119,26 @@
             this.groupBox4.TabIndex = 6;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Triggered positioning";
+            // 
+            // label13
+            // 
+            this.label13.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(247, 22);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(50, 13);
+            this.label13.TabIndex = 38;
+            this.label13.Text = "Iterations";
+            this.label13.Click += new System.EventHandler(this.label13_Click);
+            // 
+            // textBoxIterations
+            // 
+            this.textBoxIterations.Location = new System.Drawing.Point(303, 19);
+            this.textBoxIterations.Name = "textBoxIterations";
+            this.textBoxIterations.Size = new System.Drawing.Size(31, 20);
+            this.textBoxIterations.TabIndex = 37;
+            this.textBoxIterations.Text = "0";
+            this.textBoxIterations.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label15
             // 
@@ -587,48 +608,31 @@
             this.buttonMoveTo.UseVisualStyleBackColor = true;
             this.buttonMoveTo.Click += new System.EventHandler(this.buttonMoveTo_Click);
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.textBox6);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(9, 520);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(668, 56);
-            this.flowLayoutPanel1.TabIndex = 2;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox6.Location = new System.Drawing.Point(3, 3);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(644, 20);
-            this.textBox6.TabIndex = 0;
-            // 
             // label_MessageCommunication
             // 
             this.label_MessageCommunication.AutoSize = true;
-            this.label_MessageCommunication.Location = new System.Drawing.Point(39, 614);
+            this.label_MessageCommunication.Location = new System.Drawing.Point(41, 542);
             this.label_MessageCommunication.Name = "label_MessageCommunication";
-            this.label_MessageCommunication.Size = new System.Drawing.Size(41, 13);
+            this.label_MessageCommunication.Size = new System.Drawing.Size(13, 13);
             this.label_MessageCommunication.TabIndex = 3;
-            this.label_MessageCommunication.Text = "label13";
+            this.label_MessageCommunication.Text = "0";
             // 
             // label_GroupStatusDescription
             // 
             this.label_GroupStatusDescription.AutoSize = true;
-            this.label_GroupStatusDescription.Location = new System.Drawing.Point(42, 665);
+            this.label_GroupStatusDescription.Location = new System.Drawing.Point(41, 581);
             this.label_GroupStatusDescription.Name = "label_GroupStatusDescription";
-            this.label_GroupStatusDescription.Size = new System.Drawing.Size(13, 13);
+            this.label_GroupStatusDescription.Size = new System.Drawing.Size(37, 13);
             this.label_GroupStatusDescription.TabIndex = 4;
-            this.label_GroupStatusDescription.Text = "0";
+            this.label_GroupStatusDescription.Text = "Status";
             // 
             // label_ErrorMessage
             // 
             this.label_ErrorMessage.AutoSize = true;
             this.label_ErrorMessage.Location = new System.Drawing.Point(41, 713);
             this.label_ErrorMessage.Name = "label_ErrorMessage";
-            this.label_ErrorMessage.Size = new System.Drawing.Size(41, 13);
+            this.label_ErrorMessage.Size = new System.Drawing.Size(0, 13);
             this.label_ErrorMessage.TabIndex = 5;
-            this.label_ErrorMessage.Text = "label13";
             // 
             // TrackView
             // 
@@ -637,7 +641,6 @@
             this.Controls.Add(this.label_ErrorMessage);
             this.Controls.Add(this.label_GroupStatusDescription);
             this.Controls.Add(this.label_MessageCommunication);
-            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "TrackView";
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -649,8 +652,6 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -703,10 +704,10 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox textBoxSource;
         private System.Windows.Forms.Button buttonRunTCL;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Label label_MessageCommunication;
         private System.Windows.Forms.Label label_GroupStatusDescription;
         private System.Windows.Forms.Label label_ErrorMessage;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBoxIterations;
     }
 }

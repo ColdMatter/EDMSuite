@@ -75,7 +75,7 @@ namespace ScanMaster.Acquire.Plugins
 				);
 			
 						
-			 loadFlashlampPattern();
+			loadFlashlampPattern();
 		}
 
 		public override void ScanStarting()

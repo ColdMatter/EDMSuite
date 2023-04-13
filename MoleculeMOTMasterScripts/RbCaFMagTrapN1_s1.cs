@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 250000; //100000
+        Parameters["PatternLength"] = 160000; //100000
         Parameters["TCLBlockStart"] = 2000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 8000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -37,8 +37,8 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesRampDuration"] = 200;
         Parameters["v0F0PumpDuration"] = 10;
         Parameters["MOTPictureTriggerTime"] = 4000;
-        Parameters["MicrowavePulseDuration"] = 7;
-        Parameters["SecondMicrowavePulseDuration"] = 7;
+        Parameters["MicrowavePulseDuration"] = 9;
+        Parameters["SecondMicrowavePulseDuration"] = 5;
         Parameters["ThirdMicrowavePulseDuration"] = 0;
         Parameters["MagTrapDuration"] = 30000;
         Parameters["WaitBeforeRecapture"] = 100;
@@ -83,7 +83,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentRbMOTLoadingValue"] = 0.5;
         Parameters["CaFMOTLoadGradient"] = 1.0;
         Parameters["MOTCoilsCurrentRampEndValue"] = 1.5;
-        Parameters["MOTCoilsCurrentRampDuration"] = 9000;
+        Parameters["MOTCoilsCurrentRampDuration"] = 9000;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Parameters["MOTCoilsCurrentMolassesValue"] = -0.05; //-0.05
         Parameters["MOTCoilsCurrentMagTrapValue"] = 1.2;// 1.2;// 0.6;
 
@@ -245,7 +245,7 @@ public class Patterns : MOTMasterScript
         //Rb mechanical shutters:
         p.AddEdge("rb2DMOTShutter", 0, true);
         //p.AddEdge("rb2DMOTShutter", atomMOTLoadingEndTime, true); //turn on probe beam to image cloud after holding in mag trap for some time
-        //p.AddEdge("rb2DMOTShutter", swtichAllOn, false);
+        p.AddEdge("rb2DMOTShutter", swtichAllOn, false);
 
         p.AddEdge("rbPushBamAbsorptionShutter", 0, false);
         p.AddEdge("rbPushBamAbsorptionShutter", atomMOTLoadingEndTime - (int)Parameters["rbAbsorptionShutterClosingTime"], true);

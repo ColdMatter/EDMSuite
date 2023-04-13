@@ -21,6 +21,8 @@ namespace ScanMaster.Acquire.Plugin
 		private Hashtable yagPlugins = new Hashtable();
 		private Hashtable shotGathererPlugins = new Hashtable();
 		private Hashtable analogInputPlugins = new Hashtable();
+        private Hashtable gpibInputPlugins = new Hashtable();
+		private Hashtable wmlOutputPlugins = new Hashtable();
 
 		private PluginRegistry()
 		{
@@ -28,9 +30,11 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("No scan", typeof(NullOutputPlugin));
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
+			scanOutputPlugins.Add("Windfriek synth frequency output", typeof(WindfriekSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
+			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
@@ -41,7 +45,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
             scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
 #endif
-            // switchOutputPlugins
+			// switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
             switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));
 			// patternPlugins
@@ -50,7 +54,10 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Common raman", typeof(CommonRamanPatternPlugin));
 			patternPlugins.Add("Pump-probe", typeof(PumpProbePatternPlugin));
             patternPlugins.Add("Pump-probe Dual CCD", typeof(DualCCDPatternPlugin));
-            patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
+			patternPlugins.Add("Leak Test, Dual CCD", typeof(LeakTestPatternPlugin));
+			patternPlugins.Add("Leak Test Modified, Dual CCD", typeof(LeakTestPatternPluginModified));
+			patternPlugins.Add("Leak Test with Dye laser, Dual CCD", typeof(LeakTestWithDyePatternPlugin));
+			patternPlugins.Add("Pulsed rf scan with super pumping", typeof(SuperPumpingPulsedRFScanPatternPlugin));
             patternPlugins.Add("Super pumping pattern without pulsed rf", typeof(SuperPumpingPatternPlugin));
 			patternPlugins.Add("Deceleration", typeof(DecelerationPatternPlugin));
 			patternPlugins.Add("Guide", typeof(GuidePatternPlugin));
@@ -63,11 +70,24 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
+			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
+			patternPlugins.Add("Two Shutter", typeof(TwoShutterPatternPlugin));
+			patternPlugins.Add("Four Shutter", typeof(FourShutterPatternPlugin));
+			patternPlugins.Add("Four Shutter Edit", typeof(FourShutterPatternPluginEdit));
+			patternPlugins.Add("Find V2", typeof(FindV2PatternPlugin));
+			patternPlugins.Add("Find V3", typeof(FindV3PatternPlugin));
+			patternPlugins.Add("Find 4f", typeof(Find4fPatternPlugin));
+			patternPlugins.Add("Find 4f New", typeof(Find4fNewPatternPlugin));
+			patternPlugins.Add("Velocity Measurement (Slowed)", typeof(VelocityMeasSlowedPatternPlugin));
+			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
+			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
+			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
 			yagPlugins.Add("Not-so-Brilliant YAG", typeof(NotInTheLeastBitBrilliantYAGPlugin));
             yagPlugins.Add("Quanta-Ray", typeof(QuantaRayYAGPlugin));
+			yagPlugins.Add("Big-Sky", typeof(BigSkyYAGPlugin));
 			// shotGathererPlugins
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
@@ -77,6 +97,13 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
+			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
+            //GPIB Input plugins
+            gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
+            gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
+            gpibInputPlugins.Add("GPIB input", typeof(GPIBInputPlugin));
+            
+
 #if DECELERATOR
             analogInputPlugins.Add("Deceleration hardware analog input", typeof(DecelerationHardwareAnalogInputPlugin));
 #endif
@@ -143,11 +170,28 @@ namespace ScanMaster.Acquire.Plugin
 		{
 			return (AnalogInputPlugin)InstantiatePlugin(analogInputPlugins, type);
 		}
+
+
 		
 		public String[] GetAnalogPlugins()
 		{
 			return GetPluginNameList(analogInputPlugins);
 		}
+
+        public GPIBInputPlugin GetGPIBPlugin(String type)
+        {
+            return (GPIBInputPlugin)InstantiatePlugin(gpibInputPlugins, type);
+        }
+
+        public String[] GetGPIBPlugins()
+        {
+            return GetPluginNameList(gpibInputPlugins);
+        }
+
+		public WMLOutputPlugin GetWMLPlugins(string type)
+        {
+			return (WMLOutputPlugin)InstantiatePlugin(wmlOutputPlugins, type);
+        }
 
 		private object InstantiatePlugin(Hashtable plugins, String type)
 		{

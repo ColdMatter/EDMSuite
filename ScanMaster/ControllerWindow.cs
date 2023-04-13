@@ -298,7 +298,7 @@ namespace ScanMaster.GUI
             // 
             // statusBar1
             // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 405);
+            this.statusBar1.Location = new System.Drawing.Point(0, 406);
             this.statusBar1.Name = "statusBar1";
             this.statusBar1.Size = new System.Drawing.Size(778, 22);
             this.statusBar1.SizingGrip = false;
@@ -396,14 +396,14 @@ namespace ScanMaster.GUI
             // 
             this.profileListBox.Location = new System.Drawing.Point(8, 32);
             this.profileListBox.Name = "profileListBox";
-            this.profileListBox.Size = new System.Drawing.Size(232, 264);
+            this.profileListBox.Size = new System.Drawing.Size(232, 251);
             this.profileListBox.TabIndex = 14;
             this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
             // 
             // ControllerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(778, 427);
+            this.ClientSize = new System.Drawing.Size(778, 428);
             this.Controls.Add(this.renameButton);
             this.Controls.Add(this.currentProfileLabel);
             this.Controls.Add(this.commandTextBox);

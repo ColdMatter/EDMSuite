@@ -8,15 +8,19 @@ namespace DAQ
 	{
         public PixieFileSystem()
 		{
-			Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/10.4/mathkernel.exe");
-			Paths.Add("settingsPath","d:\\Box Sync\\EDM\\Data\\settings\\");
-            Paths.Add("scanMasterDataPath", "d:\\Box Sync\\EDM\\Data\\general\\");
-            Paths.Add("edmDataPath", "d:\\Box Sync\\EDM\\Data\\sedm\\v3\\");
-            Paths.Add("fakeData", "d:\\Box Sync\\EDM\\Data\\examples\\");
-            Paths.Add("transferCavityData", "d:\\Box Sync\\EDM\\Data\\transfer cavity\\");
+			//Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/10.4/mathkernel.exe");
+			Paths.Add("settingsPath", "D:\\OneDrive - Imperial College London\\Data\\settings\\");
+            Paths.Add("scanMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\general\\");
+            Paths.Add("fakeData", "D:\\OneDrive - Imperial College London\\Data\\examples\\");
+            Paths.Add("transferCavityData", "D:\\OneDrive - Imperial College London\\Data\\transfer cavity\\");
+            Paths.Add("MOTMasterDataPath", "D:\\OneDrive - Imperial College London\\Data\\mot_master_data\\");
+            Paths.Add("scriptListPath", "D:\\EDMSuite\\TweezerMOTMasterScripts");
+            Paths.Add("daqDLLPath", "D:\\EDMSuite\\DAQ\\bin\\EDM\\daq.dll");
+            Paths.Add("MOTMasterExePath", "D:\\EDMSuite\\MOTMaster\\bin\\EDM\\");
+            Paths.Add("ExternalFilesPath", "D:\\Temp_Camera_Images\\");
+            Paths.Add("HardwareClassPath", "D:\\EDMSuite\\DAQ\\PXIEDMHardware.cs");
 
-			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
-			DataSearchPaths.Add(Paths["edmDataPath"]);
+			DataSearchPaths.Add(Paths["MOTMasterDataPath"]);
 			
 			SortDataByDate = true;
 		}

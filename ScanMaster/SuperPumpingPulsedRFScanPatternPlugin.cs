@@ -32,7 +32,8 @@ namespace ScanMaster.Acquire.Plugins
 			settings["fmLength"] = 650;
             settings["attCentreTime"] = 700;
             settings["attLength"] = 700;
-			settings["piFlipTime"] = 1400;
+			settings["piFlipCentreTime"] = 1600;
+			settings["piFlipLength"] = 50;
             settings["scramblerCentreTime"] = 1400;
             settings["scramblerLength"] = 200;
             settings["rf1BlankingCentreTime"] = 1400;
@@ -47,6 +48,8 @@ namespace ScanMaster.Acquire.Plugins
             settings["bottomProbemwLength"] = 200;
             settings["topProbemwCentreTime"] = 2700; 
             settings["topProbemwLength"]= 200;
+			settings["bLength"] = 500;
+			settings["bCentreTime"] = 1300;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -72,7 +75,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["rf1Length"],
 				(int)settings["rf2CentreTime"],
 				(int)settings["rf2Length"],
-				(int)settings["piFlipTime"],
+				(int)settings["piFlipCentreTime"],
+				(int)settings["piFlipLength"],
 				(int)settings["fmCentreTime"],
 				(int)settings["fmLength"],
                 (int)settings["attCentreTime"],
@@ -91,6 +95,8 @@ namespace ScanMaster.Acquire.Plugins
                 (int)settings["bottomProbemwLength"], 
                 (int)settings["topProbemwCentreTime"], 
                 (int)settings["topProbemwLength"],
+				(int)settings["bCentreTime"],
+				(int)settings["bLength"],
                 (bool)config.switchPlugin.Settings["switchActive"]
 				);
             scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]

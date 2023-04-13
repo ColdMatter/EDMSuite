@@ -16,7 +16,10 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(CommonRamanPatternPlugin)),
 	 XmlInclude(typeof(PulsedRFScanPatternPlugin)),
      XmlInclude(typeof(DualCCDPatternPlugin)),
-     XmlInclude(typeof(SuperPumpingPulsedRFScanPatternPlugin)),
+	 XmlInclude(typeof(LeakTestPatternPlugin)),
+	 XmlInclude(typeof(LeakTestPatternPluginModified)),
+	 XmlInclude(typeof(LeakTestWithDyePatternPlugin)),
+	 XmlInclude(typeof(SuperPumpingPulsedRFScanPatternPlugin)),
      XmlInclude(typeof(SuperPumpingPatternPlugin)),
 	 XmlInclude(typeof(PumpProbePatternPlugin)),
      XmlInclude(typeof(DualAblationPatternPlugin)),
@@ -27,7 +30,20 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(ImagingPatternPlugin)),
      XmlInclude(typeof(MOTPatternPlugin)),
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
-     XmlInclude(typeof(ZeemanSisyphusPatternPlugin))]
+     XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
+	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(YAGFirePatternPlugin)),
+	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(TwoShutterPatternPlugin)),
+	 XmlInclude(typeof(FourShutterPatternPlugin)),
+	 XmlInclude(typeof(FourShutterPatternPluginEdit)),
+	 XmlInclude(typeof(FindV2PatternPlugin)),
+	 XmlInclude(typeof(FindV3PatternPlugin)),
+	 XmlInclude(typeof(Find4fPatternPlugin)),
+	 XmlInclude(typeof(Find4fNewPatternPlugin)),
+	 XmlInclude(typeof(TenHzTwoHzPatternPlugin)),
+	 XmlInclude(typeof(VelocityMeasSlowedPatternPlugin)),
+	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),]
      //XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{

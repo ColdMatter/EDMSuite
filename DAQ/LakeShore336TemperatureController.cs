@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 using DAQ.Environment;
 using System.Threading;
 
@@ -38,7 +39,7 @@ namespace DAQ.HAL
         // Serial connection parameters for the LakeShore Model 336 Temperature Controller:
         protected new int BaudRate = 57600; // Device can accept higher data transfer rate than default for class of 9600
         protected new short DataBits = 7;
-        protected new Parity ParitySetting = Parity.Odd;
+        protected new SerialParity ParitySetting = SerialParity.Odd;
 
         /// <summary>
         /// Constructor for this class
@@ -49,14 +50,13 @@ namespace DAQ.HAL
         {
             base.BaudRate = 57600;
             base.DataBits = 7;
-            base.ParitySetting = Parity.Odd;
+            base.ParitySetting = SerialParity.Odd;
         }
 
         private string SetLineFeed(string Command)
         {
             return String.Concat(Command, "\n"); // Concatenate the command and carriage return "\n".
         }
-
 
         #region LakeShore 336 Temperature Query
 
@@ -81,6 +81,21 @@ namespace DAQ.HAL
         {
             if (TUnit == "K") { return String.Concat("K", CommandTypes.RequestTemperature); } // check if the temperature unit requested was kelvin. If yes, concatenate "K" with the temperature request command
             else { return String.Concat("C", CommandTypes.RequestTemperature); } // If no, concatenate "C" with the temperature request command to select Celsius units
+        }
+
+        public string GetChannelName(string channel)
+        {
+            string resp = "";
+            if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
+            if (!Environs.Debug)
+            {
+                serial.RawIO.Write("INNAME? " + channel + "\n");
+                
+                resp = System.Text.Encoding.UTF8.GetString(serial.RawIO.Read());
+                
+            }
+            Disconnect();
+            return resp.Trim();
         }
 
         ///<summary>

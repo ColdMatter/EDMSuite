@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using Newport.USBComm;//rhys removed 15/02
+using NewFocus.Picomotor; //rhys removed 15/02
 
 namespace UEDMHardwareControl
 {
@@ -40,6 +42,49 @@ namespace UEDMHardwareControl
         private void EnableControlHelper(Control control, bool enabled)
         {
             control.Enabled = enabled;
+        }
+
+        public void SetComboBoxSelectedIndex(ComboBox combobox, int index)
+        {
+            combobox.Invoke(new SetComboBoxSelectedIndexDelegate(SetComboBoxSelectedIndexHelper), new object[] { combobox, index });
+        }
+        private delegate void SetComboBoxSelectedIndexDelegate(ComboBox combobox, int index);
+        private void SetComboBoxSelectedIndexHelper(ComboBox combobox, int index)
+        {
+            combobox.SelectedIndex = index;
+        }
+
+        public int GetComboBoxSelectedIndex(ComboBox combobox)
+        {
+            return (int)combobox.Invoke(new GetComboBoxSelectedIndexDelegate(GetComboBoxSelectedIndexHelper), new object[] { combobox });
+        }
+        private delegate int GetComboBoxSelectedIndexDelegate(ComboBox combobox);
+        private int GetComboBoxSelectedIndexHelper(ComboBox combobox)
+        {
+            int index = combobox.SelectedIndex;
+            return index;
+        }
+
+        public int GetComboBoxTextIndex(ComboBox combobox, string str)
+        {
+            return (int)combobox.Invoke(new GetComboBoxTextIndexDelegate(GetComboBoxTextIndexHelper), new object[] { combobox, str });
+        }
+        private delegate int GetComboBoxTextIndexDelegate(ComboBox combobox, string str);
+        private int GetComboBoxTextIndexHelper(ComboBox combobox, string str)
+        {
+            int index = combobox.FindString(str);
+            return index;
+        }
+
+        public string GetComboBoxSelectedItem(ComboBox combobox)
+        {
+            return (string)combobox.Invoke(new GetComboBoxSelectedItemDelegate(GetComboBoxSelectedItemHelper), new object[] { combobox });
+        }
+        private delegate string GetComboBoxSelectedItemDelegate(ComboBox combobox);
+        private string GetComboBoxSelectedItemHelper(ComboBox combobox)
+        {
+            string str = (string)combobox.SelectedItem; // (string) casts the returned object to a string type variable
+            return str;
         }
 
         public void SetTextBox(TextBox box, string text)
@@ -94,6 +139,16 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void AddPointToIChart(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+            chart.Invoke(new AddPointToIChartDelegate(AddPointToIChartHelper), new object[] { chart, series, xpoint, ypoint });
+        }
+        private delegate void AddPointToIChartDelegate(Chart chart, string series, DateTime xpoint, double ypoint);
+        private void AddPointToIChartHelper(Chart chart, string series, DateTime xpoint, double ypoint)
+        {
+                chart.Series[series].Points.AddXY(xpoint, ypoint);
+        }
+
         public void ClearChartSeriesData(Chart chart, string series)
         {
             chart.Invoke(new ClearChartSeriesDataDelegate(ClearChartSeriesDataHelper), new object[] { chart, series });
@@ -114,6 +169,24 @@ namespace UEDMHardwareControl
             chart.Series[series].Enabled = enable;
         }
 
+        public bool IsChartSeriesEnabled(Chart chart)
+        {
+            return (bool)chart.Invoke(new IsChartSeriesEnabledDelegate(IsChartSeriesEnabledHelper), new object[] { chart });
+        }
+        private delegate bool IsChartSeriesEnabledDelegate(Chart chart);
+        private bool IsChartSeriesEnabledHelper(Chart chart)
+        {
+            bool enabled = false; 
+            foreach (Series ser in chart.Series)
+            {
+                if (ser.Enabled)
+                {
+                    enabled = true;
+                }
+            }
+            return enabled;
+        }
+
         public void ChangeChartYScale(Chart chart, string scale)
         {
             chart.Invoke(new ChangeChartYScaleDelegate(ChangeChartYScaleHelper), new object[] { chart, scale });
@@ -124,12 +197,18 @@ namespace UEDMHardwareControl
             if (scale == "Log")
             {
                 chart.ChartAreas[0].AxisY.IsLogarithmic = true;
+                SetAxisYIsStartedFromZero(chart, false);
+                chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0; // A value of zero represents an "Auto" value
+                chart.ChartAreas[0].AxisY.MinorTickMark.Interval = 1;
             }
             else
             {
                 if (scale == "Linear")
                 {
                     chart.ChartAreas[0].AxisY.IsLogarithmic = false;
+                    SetAxisYIsStartedFromZero(chart, false);
+                    chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0; // A value of zero represents an "Auto" value
+                    chart.ChartAreas[0].AxisY.MinorTickMark.Interval = chart.ChartAreas[0].AxisY.MajorTickMark.Interval/10;
                 }
             }
         }
@@ -150,7 +229,7 @@ namespace UEDMHardwareControl
                 {
                     int pointsCount = chart.Series[ser.Name].Points.Count; // Number of points in the series
                     double YValue;
-                    int startPoint = pointsCount - NumberOfPointsBeingDisplayed;
+                    int startPoint = pointsCount - NumberOfPointsBeingDisplayed; // Number of points that we will not loop over
 
                     if (startPoint < 0) startPoint = 0;
 
@@ -247,7 +326,7 @@ namespace UEDMHardwareControl
             dateTimePicker.Value = dateTime;
         }
 
-        public void SetCheckBox(CheckBox checkBox, bool checkedStatus)
+        public void SetCheckBoxCheckedStatus(CheckBox checkBox, bool checkedStatus)
         {
             checkBox.Invoke(new SetCheckBoxDelegate(SetCheckBoxHelper), new object[] { checkBox, checkedStatus });
         }
@@ -255,6 +334,17 @@ namespace UEDMHardwareControl
         private void SetCheckBoxHelper(CheckBox checkBox, bool checkedStatus)
         {
             checkBox.Checked = checkedStatus;
+        }
+
+        public bool GetCheckBoxCheckedStatus(CheckBox checkBox)
+        {
+            return (bool)checkBox.Invoke(new GetCheckBoxCheckedStatusDelegate(GetCheckBoxCheckedStatusHelper), new object[] { checkBox });
+        }
+        private delegate bool GetCheckBoxCheckedStatusDelegate(CheckBox checkBox);
+        private bool GetCheckBoxCheckedStatusHelper(CheckBox checkBox)
+        {
+            bool checkedStatus = checkBox.Checked;
+            return checkedStatus;
         }
 
         public void SetChartMovingAverage(Chart chart, int NumberOfPointsToAverage)
@@ -273,6 +363,29 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
+        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void AddAlert(string alertText)
+        {
+            Invoke(new AddAlertDelegate(AddAlertHelper), new object[] { alertText });
+        }
+        private delegate void AddAlertDelegate(string alertText);
+        private void AddAlertHelper(string alertText)
+        {
+            BackColor = System.Drawing.Color.Red;
+            WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            tbStatus.AppendText(DateTime.Now.ToString() + " " + alertText + "\n");
+        }
 
         # endregion
 
@@ -320,7 +433,14 @@ namespace UEDMHardwareControl
             controller.SavePlotImage(chart3);
         }
 
-
+        //Step mirrors initial parameters
+        static int initialposition1 = 0;
+        static int initialposition2 = 0;
+        static int initialposition3 = 0;
+        static int initialposition4 = 0;
+        CmdLib8742 cmdLib = new CmdLib8742(); //rhys removed 15/02
+        //End-----------------------------------------------------
+        //--------------------------------------------------------
 
         // Pressure monitoring
         /// <summary>
@@ -389,100 +509,95 @@ namespace UEDMHardwareControl
             controller.ChangePlotYAxisScale(2);
         }
 
-        private void checkBoxCryoEnable_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxCryoEnable.Checked)
-            {
-                controller.EnableCryoDigitalControl(true);
-            }
-            else controller.EnableCryoDigitalControl(false);
-
-        }
-
-
         private void checkBoxCellTempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell Temperature", true);
-            else controller.EnableChartSeries(chart2, "Cell Temperature", false);
+            if (checkBoxCellTempPlot.Checked) controller.EnableChartSeries(chart2, "Cell", true);
+            else controller.EnableChartSeries(chart2, "Cell", false);
         }
 
         private void checkBoxS1TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxS1TempPlot.Checked) controller.EnableChartSeries(chart2, "S1 Temperature", true);
-            else controller.EnableChartSeries(chart2, "S1 Temperature", false);
+            if (checkBoxS1TempPlot.Checked) controller.EnableChartSeries(chart2, "S1", true);
+            else controller.EnableChartSeries(chart2, "S1", false);
         }
 
         private void checkBoxS2TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxS2TempPlot.Checked) controller.EnableChartSeries(chart2, "S2 Temperature", true);
-            else controller.EnableChartSeries(chart2, "S2 Temperature", false);
+            if (checkBoxS2TempPlot.Checked) controller.EnableChartSeries(chart2, "S2", true);
+            else controller.EnableChartSeries(chart2, "S2", false);
         }
 
         private void checkBoxSF6TempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxSF6TempPlot.Checked) controller.EnableChartSeries(chart2, "SF6 Temperature", true);
-            else controller.EnableChartSeries(chart2, "SF6 Temperature", false);
+            if (checkBoxSF6TempPlot.Checked) controller.EnableChartSeries(chart2, "SF6", true);
+            else controller.EnableChartSeries(chart2, "SF6", false);
         }
 
         private void checkBoxNeonTempPlot_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxNeonTempPlot.Checked) controller.EnableChartSeries(chart2, "Neon Temperature", true);
-            else controller.EnableChartSeries(chart2, "Neon Temperature", false);
+            if (checkBoxNeonTempPlot.Checked) controller.EnableChartSeries(chart2, "Neon", true);
+            else controller.EnableChartSeries(chart2, "Neon", false);
         }
 
         private void btClearCellTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Cell Temperature");
+            controller.ClearChartSeriesData(chart2, "Cell");
         }
 
         private void btClearS1TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "S1 Temperature");
+            controller.ClearChartSeriesData(chart2, "S1");
         }
 
         private void btClearS2TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "S2 Temperature");
+            controller.ClearChartSeriesData(chart2, "S2");
         }
 
         private void btClearSF6TempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "SF6 Temperature");
+            controller.ClearChartSeriesData(chart2, "SF6");
         }
 
         private void btClearNeonTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Neon Temperature");
+            controller.ClearChartSeriesData(chart2, "Neon");
         }
 
         private void btClearAllTempData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart2, "Cell Temperature");
-            controller.ClearChartSeriesData(chart2, "S1 Temperature");
-            controller.ClearChartSeriesData(chart2, "S2 Temperature");
-            controller.ClearChartSeriesData(chart2, "SF6 Temperature");
-            controller.ClearChartSeriesData(chart2, "Neon Temperature");
+            controller.ClearChartSeriesData(chart2, "Cell");
+            controller.ClearChartSeriesData(chart2, "S1");
+            controller.ClearChartSeriesData(chart2, "S2");
+            controller.ClearChartSeriesData(chart2, "SF6");
+            controller.ClearChartSeriesData(chart2, "Neon");
         }
 
         private void checkBoxSourcePressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            controller.EnableChartSeries(chart1, "Source Pressure", checkBoxSourcePressurePlot.Checked);
+            controller.EnableChartSeries(chart1, "Source", checkBoxSourcePressurePlot.Checked);
         }
 
         private void btClearSourcePressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Source Pressure");
+            controller.ClearChartSeriesData(chart1, "Source");
         }
 
         private void btClearBeamlinePressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Beamline Pressure");
+            controller.ClearChartSeriesData(chart1, "Beamline");
+        }
+
+        private void btClearDetectionPressureData_Click(object sender, EventArgs e)
+        {
+            controller.ClearChartSeriesData(chart1, "Detection");
         }
 
         private void btClearAllPressureData_Click(object sender, EventArgs e)
         {
-            controller.ClearChartSeriesData(chart1, "Source Pressure");
-            controller.ClearChartSeriesData(chart1, "Beamline Pressure");
+            controller.ClearChartSeriesData(chart1, "Source");
+            controller.ClearChartSeriesData(chart1, "Beamline");
+            controller.ClearChartSeriesData(chart1, "Detection");
         }
 
         private void btStartNeonFlowActMonitor_Click(object sender, EventArgs e)
@@ -529,22 +644,22 @@ namespace UEDMHardwareControl
 
         private void btStartHeaterControlStage2_Click(object sender, EventArgs e)
         {
-            controller.StartStage2DigitalHeaterControl();
+            controller.StartStage2HeaterControl();
         }
 
         private void btStartHeaterControlStage1_Click(object sender, EventArgs e)
         {
-            controller.StartStage1DigitalHeaterControl();
+            controller.StartStage1HeaterControl();
         }
 
         private void btStopHeaterControlStage1_Click(object sender, EventArgs e)
         {
-            controller.StopStage1DigitalHeaterControl();
+            controller.StopStage1HeaterControl();
         }
 
         private void btStopHeaterControlStage2_Click(object sender, EventArgs e)
         {
-            controller.StopStage2DigitalHeaterControl();
+            controller.StopStage2HeaterControl();
         }
 
         private void btHeatersTurnOffWaitStart_Click(object sender, EventArgs e)
@@ -566,12 +681,6 @@ namespace UEDMHardwareControl
         private void btCancelRefreshMode_Click(object sender, EventArgs e)
         {
             controller.CancelRefreshMode();
-        }
-
-        private void checkBoxRefreshSourceAtRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxRefreshSourceAtRoomTemperature.Checked) controller.EnableRefreshModeRoomTemperature(true);
-            else controller.EnableRefreshModeRoomTemperature(false);
         }
 
         private void dateTimePickerRefreshModeTurnHeatersOff_ValueChanged(object sender, EventArgs e)
@@ -606,10 +715,8 @@ namespace UEDMHardwareControl
 
         private void btUpdatePTPollPeriod_Click(object sender, EventArgs e)
         {
-            controller.UpdatePTMonitorPollPeriod();
+            controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
-
-        #endregion
 
         private void checkBoxMonitorPressureWhenHeating_CheckedChanged(object sender, EventArgs e)
         {
@@ -647,12 +754,6 @@ namespace UEDMHardwareControl
             controller.QueryAutotuneStatus();
         }
 
-        private void checkBoxWarmUpSourceToRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxWarmUpSourceToRoomTemperature.Checked) controller.EnableWarmUpModeRoomTemperature(true);
-            else controller.EnableWarmUpModeRoomTemperature(false);
-        }
-
         private void btWarmUpModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
         {
             controller.UpdateWarmUpTemperature();
@@ -667,12 +768,6 @@ namespace UEDMHardwareControl
         private void btCancelWarmUpMode_Click(object sender, EventArgs e)
         {
             controller.CancelWarmUpMode();
-        }
-
-        private void checkBoxCoolDownSourceAtRoomTemperature_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxCoolDownSourceAtRoomTemperature.Checked) controller.EnableCoolDownModeRoomTemperature(true);
-            else controller.EnableCoolDownModeRoomTemperature(false);
         }
 
         private void btCoolDownModeTemperatureSetpointUpdate_Click(object sender, EventArgs e)
@@ -713,7 +808,7 @@ namespace UEDMHardwareControl
 
         private void btRollingTemperatureChartTimeAxis_Click(object sender, EventArgs e)
         {
-            controller.UpdateTemperatureChartRollingPeriod();
+            controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
         }
 
         private void cbEnablePressureChartRollingTimeAxis_CheckedChanged(object sender, EventArgs e)
@@ -728,14 +823,14 @@ namespace UEDMHardwareControl
 
         private void btGaugesCorrectionFactors_Click(object sender, EventArgs e)
         {
-            controller.UpdateGaugesCorrectionFactors();
+            controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
         }
 
         private void tbSourceGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -743,7 +838,15 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateGaugesCorrectionFactors();
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
+            }
+        }
+
+        private void tbDetectionGaugeCorrectionFactor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                controller.UpdateGaugesCorrectionFactorsUsingUIInputs();
             }
         }
 
@@ -751,7 +854,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdatePTMonitorPollPeriod();
+                controller.UpdatePTMonitorPollPeriodUsingUIValue();
             }
         }
 
@@ -767,7 +870,7 @@ namespace UEDMHardwareControl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                controller.UpdateTemperatureChartRollingPeriod();
+                controller.UpdateTemperatureChartRollingPeriodUsingUIInput();
             }
         }
 
@@ -956,7 +1059,12 @@ namespace UEDMHardwareControl
 
         private void checkBoxBeamlinePressurePlot_CheckedChanged(object sender, EventArgs e)
         {
-            controller.EnableChartSeries(chart1, "Beamline Pressure", checkBoxBeamlinePressurePlot.Checked);
+            controller.EnableChartSeries(chart1, "Beamline", checkBoxBeamlinePressurePlot.Checked);
+        }
+
+        private void checkBoxDetectionPressurePlot_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableChartSeries(chart1, "Detection", checkBoxDetectionPressurePlot.Checked);
         }
 
         private void btResetPTCSVData_Click(object sender, EventArgs e)
@@ -997,8 +1105,484 @@ namespace UEDMHardwareControl
 
         }
 
+        private void btRefreshModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadRefreshModeOptionsDialog();
+        }
 
+        private void ButtonWarmUpModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadWarmupModeOptionsDialog();
+        }
 
-        
+        private void ButtonCoolDownModeOptions_Click(object sender, EventArgs e)
+        {
+            controller.LoadCooldownModeOptionsDialog();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitor();
+        }
+
+        private void clearIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.ClearIMonitorAv();
+            controller.ClearIMonitorChart();
+        }
+
+        private void zeroIMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.CalibrateIMonitors();
+        }
+
+        private void startIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StartIMonitorPoll();
+        }
+
+        private void stopIMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StopIMonitorPoll();
+        }
+
+        private void updateVMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateVMonitorUI();
+        }
+
+        private void rescaleIMonitorChartButton_Click(object sender, EventArgs e)
+        {
+            SetChartYAxisAuto(chart5);
+        }
+
+        private void updateFieldButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
+        }
+
+        private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
+        {
+            controller.ResetGaugesCorrectionFactors();
+        }
+
+        private void clearStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.StatusClearStatus();
+        }
+
+        private void btUpdateRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateRFFrequencyUsingUIInput();
+        }
+
+        private void btIncrementRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementRFFrequencyUsingUIInput();
+        }
+
+        private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInput(0);
+        }
+
+        private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInput(0);
+        }
+
+        private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInput(0);
+        }
+
+        private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInput(0);
+        }
+
+        private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInput(1);
+        }
+
+        private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInput(1);
+        }
+
+        private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInput(1);
+        }
+
+        private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInput(1);
+        }
+
+        private void btQueryMWCHAFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequency(0);
+        }
+
+        private void btQueryMWCHAPower_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPower(0);
+        }
+
+        private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequency(1);
+        }
+
+        private void btQueryMWCHBPower_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPower(1);
+        }
+
+        private void cbCHARFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(0, cbCHARFMuted.Checked);
+        }
+
+        private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(1, cbCHBRFMuted.Checked);
+        }
+
+        private void cbCHAPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(0, cbCHAPAPoweredOn.Checked);
+        }
+
+        private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
+        }
+
+        private void cbCHAPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(0, cbCHAPLLPoweredOn.Checked);
+        }
+
+        private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
+        }
+
+        private void btCHAFRMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHBRFMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHAPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHBPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHAPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btCHBPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btQueryMWSynthTemperature_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperature();
+        }
+
+        private void btQueryRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryRFFrequency();
+        }
+
+        private void btClearCoolDownModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbCoolDownModeStatus, "");
+        }
+
+        private void btClearWarmUpModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbWarmUpModeStatus, "");
+        }
+
+        private void btClearRefreshModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbRefreshModeStatus, "");
+        }
+
+        private void groupBoxWindfreaksynthhd_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxMWCHA_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btUpdateMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btUpdateMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btQueryMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(0);
+        }
+
+        private void btQueryMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(0);
+        }
+
+        private void btQueryMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(1);
+        }
+
+        private void btQueryMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(1);
+        }
+
+        private void cbCHARFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(0, cbCHARFMutedDetection.Checked);
+        }
+
+        private void cbCHBRFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(1, cbCHBRFMutedDetection.Checked);
+        }
+
+        private void cbCHAPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(0, cbCHAPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(1, cbCHBPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHAPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(0, cbCHAPLLPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(1, cbCHBPLLPoweredOnDetection.Checked);
+        }
+
+        private void btQueryMWSynthTemperatureDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperatureDetection();
+        }
+
+        private void eOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
+        }
+
+        private void fieldsOffButton_Click(object sender, EventArgs e)
+        {
+            controller.FieldsOff();
+        }
+
+        private void switchEButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchE();
+        }
+
+        private void changePollPeriodButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitorPollPeriodUsingUIValue();
+        }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
+        }
+
+        private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //controller.VoltageSet();
+        }
+
+        private void StartDegauss_Click(object sender, EventArgs e)
+        {
+            controller.StartDegaussPoll();
+            //controller.UpdateDegaussPulse();
+        }
+
+        private void scanningBUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBVoltage();
+        }
+
+        private void scanningBZeroButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBZero();
+        }
+
+        private void scanningBFSButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBFS();
+        }
+
+        private void labelCooldownModeInfoText_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_FindDevice_Click(object sender, EventArgs e)
+        {
+            cmdLib.DiscoverDevices();
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            Show_DeviceKey.Text = DeviceKey;
+        }
+
+        private void btn_Motor1Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            cmdLib.RelativeMove(DeviceKey, 1, Stepsize1);
+            lbl_Motor1location.Text = (initialposition1 += Stepsize1).ToString();
+        }
+
+        private void btn_Motor1Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            cmdLib.RelativeMove(DeviceKey, 1, -Stepsize1);
+            lbl_Motor1location.Text = (initialposition1 -= Stepsize1).ToString();
+        }
+
+        private void btn_Motor2Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            cmdLib.RelativeMove(DeviceKey, 2, Stepsize2);
+            lbl_Motor2location.Text = (initialposition2 += Stepsize2).ToString();
+        }
+
+        private void btn_Motor2Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            cmdLib.RelativeMove(DeviceKey, 2, -Stepsize2);
+            lbl_Motor2location.Text = (initialposition2 -= Stepsize2).ToString();
+        }
+
+        private void btn_Motor3Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            cmdLib.RelativeMove(DeviceKey, 3, Stepsize3);
+            lbl_Motor3location.Text = (initialposition3 += Stepsize3).ToString();
+        }
+
+        private void btn_Motor3Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            cmdLib.RelativeMove(DeviceKey, 3, -Stepsize3);
+            lbl_Motor3location.Text = (initialposition3 -= Stepsize3).ToString();
+        }
+
+        private void btn_Motor4Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            cmdLib.RelativeMove(DeviceKey, 4, Stepsize4);
+            lbl_Motor4location.Text = (initialposition4 += Stepsize4).ToString();
+        }
+
+        private void btn_Motor4Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            cmdLib.RelativeMove(DeviceKey, 4, -Stepsize4);
+            lbl_Motor4location.Text = (initialposition4 -= Stepsize4).ToString();
+        }
+
+        #endregion
     }
 }

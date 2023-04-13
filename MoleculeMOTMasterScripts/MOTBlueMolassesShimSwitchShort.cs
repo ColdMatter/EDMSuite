@@ -26,9 +26,9 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["MOTSwitchOffTime"] = 6300;
-        Parameters["ExpansionTime"] = 100;
+        Parameters["ExpansionTime"] = 500;
         Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 1000;
+        Parameters["MolassesHoldTime"] = 600;
         Parameters["MolassesRampDuration"] = 200;
 
         // Camera
@@ -40,20 +40,20 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 260; //started from 250
+        Parameters["slowingAOMOnStart"] = 240; //started from 250
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1520;//started from 1500
+        Parameters["slowingAOMOffStart"] = 1520;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1520;
+        Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 360;
-        Parameters["SlowingChirpDuration"] = 1160;
-        Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -1.25;
+        Parameters["SlowingChirpStartTime"] = 380;// 380;
+        Parameters["SlowingChirpDuration"] = 1160; //1160
+        Parameters["SlowingChirpStartValue"] = 0.0;//0.0
+        Parameters["SlowingChirpEndValue"] = -1.25; //-1.25
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42; //1.1;
@@ -70,17 +70,18 @@ public class Patterns : MOTMasterScript
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = 6.0;// 1.195; // 1.202;// 1.219;
-        Parameters["yShimLoadCurrent"] = 4.0;// -0.155; //2.4
+        Parameters["yShimLoadCurrent"] = 0.0;// -0.155; //2.4
         Parameters["zShimLoadCurrent"] = 1.5; //0.26
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5500;
         Parameters["v0IntensityRampDuration"] = 400;
-        Parameters["v0IntensityRampStartValue"] = 5.8;
-        Parameters["v0IntensityRampEndValue"] = 8.465;
-        Parameters["v0IntensityMolassesValue"] = 5.8;
-        Parameters["v0IntensityMolassesValue2"] = 5.8;
+        Parameters["v0IntensityRampStartValue"] = 5.6;
+        Parameters["v0IntensityRampEndValue"] = 7.78;
+        Parameters["v0IntensityMolassesValue"] = 5.6;
+        Parameters["v0IntensityMolassesValue2"] = 5.6;
 
+        /*
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
         Parameters["v0FrequencyNewValue"] = 20.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
@@ -93,6 +94,16 @@ public class Patterns : MOTMasterScript
         // v0 F=1 (dodgy code using an analogue output to control a TTL)
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
+         */
+
+        // v0 Light Frequency
+        Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
+        Parameters["v0FrequencyNewValue"] = 20.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
+
+        //v0aomCalibrationValues
+        Parameters["calibGradient"] = 11.4;
+
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -155,18 +166,18 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityRampEndValue"]);
         p.AddAnalogValue("v00Intensity", molassesStartTime, (double)Parameters["v0IntensityMolassesValue"]);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.4);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.83);
-        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 8.09);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 50, 7.02);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 100, 7.5);
+        p.AddAnalogValue("v00Intensity", molassesRampTime + 150, 7.78);
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.7);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.1);
 
         // v0 Frequency Ramp
-        p.AddAnalogValue("v00Frequency", 0, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);
-        p.AddAnalogValue("v00Frequency", (int)Parameters["MOTSwitchOffTime"], ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyNewValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]);//jump to blue detuning
-        p.AddAnalogValue("v00Frequency", cameraTriggerTime, ((double)Parameters["lockAomFrequency"] - (double)Parameters["v0FrequencyStartValue"] / 2 - (double)Parameters["calibOffset"]) / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging 
+        p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]);
+        p.AddAnalogValue("v00Frequency", (int)Parameters["MOTSwitchOffTime"], 10.0 - (double)Parameters["v0FrequencyNewValue"] / (double)Parameters["calibGradient"]);//jump to blue detuning
+        p.AddAnalogValue("v00Frequency", cameraTriggerTime, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]); //jump aom frequency back to normal for imaging
 
 
         return p;

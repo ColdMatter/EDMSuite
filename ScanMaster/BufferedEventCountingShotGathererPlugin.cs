@@ -66,8 +66,8 @@ namespace ScanMaster.Acquire.Plugins
 				0, 
 				CICountEdgesCountDirection.Up);
 
-			//The counting buffer is triggered by a sample clock, which will be routed to the gate pin of ctr0 (PFI9)
-			//The number of samples to collect is determined by the "gateLength" setting. We add 1 to this,
+			// The counting buffer is triggered by a sample clock, which will be routed to the gate pin of ctr0 (PFI9)
+			// The number of samples to collect is determined by the "gateLength" setting. We add 1 to this,
 			// since the first count is not synchronized to anything and will be discarded
 			countingTask.Timing.ConfigureSampleClock(
 				(string)Environs.Hardware.Boards["daq"] + "/PFI9", 

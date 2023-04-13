@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 200000;
+        Parameters["PatternLength"] = 100000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -32,17 +32,17 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 100000;
-        Parameters["ProbeImageDelay"] = 5000;
-        Parameters["BackgroundImageDelay"] = 5000;
+        Parameters["MOTLoadTime"] = 10000;
+        Parameters["ProbeImageDelay"] = 8000;
+        Parameters["BackgroundImageDelay"] = 8000;
         Parameters["Frame0TriggerDuration"] = 15;
         Parameters["FirstImageDelay"] = 200;
         Parameters["FreeExpansionTime"] = 0;
-        Parameters["WaitBeforeImage"] = 100;
+        Parameters["WaitBeforeImage"] = 0;
 
 
         //Rb light
-        Parameters["ImagingFrequency"] = 3.0; //Resonance at aroun 2.65
+        Parameters["ImagingFrequency"] = 2.7;
         Parameters["MOTCoolingLoadingFrequency"] = 4.4;//5.4 usewd to be
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
         Parameters["RbCoolingFrequencyCMOT"] = 3.8;
@@ -77,18 +77,18 @@ public class Patterns : MOTMasterScript
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentValue"] = 0.5;//1.0; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
         Parameters["CaFMOTLoadGradient"] = 1.0;
         Parameters["CMOTRampDuration"] = 1000;
         Parameters["CMOTEndValue"] = 1.5;
         Parameters["RbCMOTHoldTime"] = 1300;
-        Parameters["MagTrapGradient"] = 1.2;
-        Parameters["MagneticTrapDuration"] = 30000;
+        Parameters["MagTrapGradient"] = 1.0;
+        Parameters["MagneticTrapDuration"] = 50000;
 
         //arijit: added
         Parameters["RbFirstCMOTHoldTime"] = 3500;
         Parameters["RbMOTHoldTime"] = 500;
-        Parameters["CameraTriggerDelayAfterFirstImage"] = 5000;
+        Parameters["CameraTriggerDelayAfterFirstImage"] = 8000;
         
 
 
@@ -117,11 +117,11 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMOffValue"] = 0.0;
 
         //Rb mechanical shutter closing times:
-        Parameters["coolingShutterClosingTime"] = 1600; // 1690 to fully close
+        Parameters["coolingShutterClosingTime"] = 1680; // 1680
         Parameters["repumpShutterClosingTime"] = 150; //this shutter now shutters the optical pumping light  !!!
         Parameters["repumpShutterOpeningTime"] = 216; //this shutter now shutters the optical pumping light !!!
-        Parameters["rbAbsorptionShutterClosingTime"] = 300; //to fully close
-        Parameters["rbAbsorptionShutterOpeningTime"] = 296; //to fully close
+        Parameters["rbAbsorptionShutterClosingTime"] = 370; //to fully close
+        Parameters["rbAbsorptionShutterOpeningTime"] = 162; //to fully close
         Parameters["rbOpticalPumpingAnd2DMOTClosingTime"] = 1500; //this shutter now closes only the 2D MOT light!!!
 
 
@@ -155,7 +155,7 @@ public class Patterns : MOTMasterScript
         
         //Rb cooling light
         p.AddEdge("rb3DCooling", 0, false);
-        p.AddEdge("rb3DCooling", rbMolassesEndTime, true); //switch off cooling light for magnetic trap
+        //p.AddEdge("rb3DCooling", rbMolassesEndTime, true); //switch off cooling light for magnetic trap
         //p.AddEdge("rb3DCooling", swtichAllOn, false); //switch on cooling light just before the end of sequence
         
         
@@ -189,7 +189,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //1st camera frame
         //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //2nd camera frame
         //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //3rd camera frame
-
+        p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //Fl camera
+        
 
 
 
@@ -199,14 +200,16 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBamAbsorptionShutter", 0, false);
         p.AddEdge("rbPushBamAbsorptionShutter", rbMagnteticTrapStartTime - (int)Parameters["rbAbsorptionShutterClosingTime"], true); 
         p.AddEdge("rbPushBamAbsorptionShutter", cameraTrigger1 - (int)Parameters["rbAbsorptionShutterOpeningTime"], false);
-
-        p.AddEdge("rb3DMOTShutter", 0, false);
-        p.AddEdge("rb3DMOTShutter", rbMagnteticTrapStartTime - (int)Parameters["coolingShutterClosingTime"], true);
-        p.AddEdge("rb3DMOTShutter", swtichAllOn, false);
-
-        p.AddEdge("rb2DMOTShutter", 0, true); //this shutter now closes only the 2D MOT light
-        p.AddEdge("rb2DMOTShutter", (int)Parameters["MOTLoadTime"] - (int)Parameters["rbOpticalPumpingAnd2DMOTClosingTime"], false);
-        p.AddEdge("rb2DMOTShutter", swtichAllOn, true);
+        
+        p.AddEdge("rb3DMOTShutter", 0, true);
+        //p.AddEdge("rb3DMOTShutter", 20000, true);
+        //p.AddEdge("rb3DMOTShutter", rbMagnteticTrapStartTime - (int)Parameters["coolingShutterClosingTime"], true);
+        //p.AddEdge("rb3DMOTShutter", swtichAllOn, false);
+        
+        p.AddEdge("rb2DMOTShutter", 0, false); //this shutter now closes only the 2D MOT light
+        p.AddEdge("rb2DMOTShutter", rbMOTLoadTime - 1500, true);
+        p.AddEdge("rb2DMOTShutter", swtichAllOn, false);
+        //p.AddEdge("rb2DMOTShutter", swtichAllOn, true);
 
         p.AddEdge("rbOPShutter", 0, false); //this shutter now shutters only the optical pumping light
         p.AddEdge("rbOPShutter", rbMagnteticTrapStartTime + (int)Parameters["OpticalPumpingDuration"] - (int)Parameters["repumpShutterClosingTime"], true);

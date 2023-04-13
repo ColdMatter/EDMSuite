@@ -1,6 +1,7 @@
 ﻿using System;
 
-using NationalInstruments.VisaNS;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 using DAQ.Environment;
 
@@ -14,11 +15,11 @@ namespace DAQ.HAL
         // These are overrideable by child classes
         protected int BaudRate = 9600;
         protected short DataBits = 8;
-        protected StopBitType StopBit = StopBitType.One;
-        protected Parity ParitySetting = Parity.None;
-        protected FlowControlTypes FlowControl = FlowControlTypes.None;
+        protected SerialStopBitsMode StopBit = SerialStopBitsMode.One;
+        protected SerialParity ParitySetting = SerialParity.None;
+        protected SerialFlowControlModes FlowControl = SerialFlowControlModes.None;
         protected byte TerminationCharacter = 0xa;
-        
+
         protected SerialSession serial;
         protected string address;
         protected bool connected = false;
@@ -30,9 +31,9 @@ namespace DAQ.HAL
 
         public override void Connect()
         {
-            Connect(SerialTerminationMethod.LastBit);
+            Connect(SerialTerminationMethod.HighestBit);
         }
-        protected void Connect(SerialTerminationMethod method)
+        protected void Connect(SerialTerminationMethod ReadTerminationMethod)
         {
             if (!Environs.Debug)
             {
@@ -43,8 +44,28 @@ namespace DAQ.HAL
                     serial.DataBits = DataBits;
                     serial.StopBits = StopBit;
                     serial.Parity = ParitySetting;
-                    serial.FlowControl = FlowControl; 
-                    serial.ReadTermination = method;
+                    serial.FlowControl = FlowControl;
+                    serial.ReadTermination = ReadTerminationMethod;
+                    serial.TerminationCharacter = TerminationCharacter;
+                }
+                connected = true;
+            }
+        }
+
+        protected void Connect(SerialTerminationMethod ReadTerminationMethod, SerialTerminationMethod WriteTerminationMethod)
+        {
+            if (!Environs.Debug)
+            {
+                if (!Environs.Debug)
+                {
+                    serial = new SerialSession(address);
+                    serial.BaudRate = BaudRate;
+                    serial.DataBits = DataBits;
+                    serial.StopBits = StopBit;
+                    serial.Parity = ParitySetting;
+                    serial.FlowControl = FlowControl;
+                    serial.ReadTermination = ReadTerminationMethod;
+                    serial.WriteTermination = WriteTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
                 }
                 connected = true;
@@ -60,37 +81,39 @@ namespace DAQ.HAL
         protected override void Write(string command)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             Disconnect();
         }
 
         protected void Write(byte[] command)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             Disconnect();
         }
 
         protected void Write(string command, bool stayOpen)
         {
             if (!connected) Connect();
-            if (!Environs.Debug) serial.Write(command);
+            if (!Environs.Debug) serial.RawIO.Write(command);
             if (!stayOpen) Disconnect();
         }
 
         protected string Query(string q)
         {
-            return serial.Query(q);
+            serial.RawIO.Write(q);
+            return serial.RawIO.ReadString();
+            //return serial.Query(q);
         }
 
         protected override string Read()
         {
-            return serial.ReadString();
+            return serial.RawIO.ReadString();
         }
 
         protected string Read(int bytes)
         {
-            return serial.ReadString(bytes);
+            return serial.RawIO.ReadString(bytes);
         }
 
         protected void Clear()
@@ -98,7 +121,7 @@ namespace DAQ.HAL
             serial.Clear();
         }
 
-        protected double QueryDouble(string q)
+        public double QueryDouble(string q)
         {
             double d = 0.0;
             if (!connected) Connect();
@@ -106,5 +129,22 @@ namespace DAQ.HAL
             Disconnect();
             return d;
         }
+
+        public void rawWrite(string Command)
+        {
+            if (!connected) Connect();
+            Write(Command);
+            Disconnect();
+        }
+
+        public string rawQuery(string Command)
+        {
+            string resp = "";
+            if (!connected) Connect();
+            if (!Environs.Debug) resp = Query(Command + "");
+            Disconnect();
+            return resp;
+        }
+
     }
 }

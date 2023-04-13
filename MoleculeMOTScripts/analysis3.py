@@ -11,6 +11,7 @@ import numpy as np
 import os,zipfile
 from PIL import Image
 from scipy.optimize import curve_fit
+from scipy import optimize
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import scipy.constants as cn
@@ -21,11 +22,15 @@ import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 linear=lambda x,m,c: m*x+c
-exponential=lambda x,a,c,s: a*np.exp(-(x-c)/s)
-exponentialOffset=lambda x,a,c,s,o: a*np.exp(-(x-c)/s)+o
+exponential=lambda x,s: np.exp(-(x)/s)
+exponentialOffset=lambda x,a,c,s: a*np.exp(-(x-c)/s)
+exponentialAmp=lambda x,a,s: a*np.exp(-x/s)
+exponentialAmpDelay=lambda x,a,c,s: a*np.exp(-(x-c)/s)
+exponentialAmpDelayOffset=lambda x,a,c,s,o: a*np.exp(-(x-c)/s)+o
 gaussian=lambda x,a,c,s: a*np.exp(-(x-c)**2/(2*s**2))
-gaussianOffset=lambda x,a,c,s,o: a*np.exp(-(x-c)**2/(2*s**2))+o
-invSinc=lambda x,a,b,c,d: a-b*np.sinc((x-c)*d)
+gaussianOffset=lambda x,a,c,s,o: np.abs(a)*np.exp(-(x-c)**2/(2*s**2))+o
+invSinc=lambda x,a,b,c,d: a-np.abs(b)*np.sinc((x-c)*d)
+sinc=lambda x,a,b,c,d: a+np.abs(b)*np.sinc((x-c)*d)
 
 def atoi(text):
     return int(text) if text.isdigit() else text
@@ -50,7 +55,7 @@ def expFit(x,y,sigma=None):
     a_trial=np.max(y)
     c_trial=x[np.argmax(y)]
     s_trial=np.abs((x[-1]-x[0])/np.log(np.abs(y[-1]/y[0])))
-    p0=[a_trial,c_trial,s_trial]
+    p0=[s_trial]
     try:
         popt,pcov=curve_fit(exponential,x,y,sigma=sigma,p0=p0)
         isFit=True
@@ -65,9 +70,22 @@ def expFitOffset(x,y,sigma=None):
     o_trial=np.min(y)
     c_trial=x[np.argmax(y)]
     s_trial=np.abs((x[-1]-x[0])/np.log(np.abs(y[-1]/y[0])))
-    p0=[a_trial,c_trial,s_trial,o_trial]
+    p0=[a_trial,c_trial,s_trial]
     try:
-        popt,pcov=curve_fit(exponentialOffset,x,y,sigma=sigma,p0=p0)
+        popt,pcov=curve_fit(exponentialOffset,x,y,sigma=sigma,p0=p0,absolute_sigma=True)
+        isFit=True
+    except:
+        popt=np.array(p0)
+        pcov=np.zeros((4,4))
+        isFit=False
+    return popt,np.diag(pcov),isFit
+
+def expAmpFit(x,y,sigma=None):
+    a_trial=np.max(y)
+    s_trial=100000#np.abs((x[-1]-x[0])/np.log(np.abs(y[-1]/y[0])))
+    p0=[a_trial,s_trial]
+    try:
+        popt,pcov=curve_fit(exponentialAmp,x,y,sigma=sigma,p0=p0,absolute_sigma=True)
         isFit=True
     except:
         popt=np.array(p0)
@@ -77,9 +95,10 @@ def expFitOffset(x,y,sigma=None):
 
 def gaussianFit(x,y,sigma=None):
     loc_trial=np.argmax(y)
+    halfmax_y = np.max(y)/2.0
     a_trial=y[loc_trial]
     c_trial=x[loc_trial]
-    s_trial=np.max(x)/2.0
+    s_trial=np.abs(x[0]-x[1])*len(y[y>halfmax_y])/2.0
     p0=[a_trial,c_trial,s_trial]
     try:
         popt,pcov=curve_fit(gaussian,x,y,sigma=sigma,p0=p0)
@@ -92,10 +111,11 @@ def gaussianFit(x,y,sigma=None):
 
 def gaussianFitOffset(x,y,sigma=None):
     loc_trial=np.argmax(y)
+    halfmax_y = np.max(y)/2.0
+    o_trial=np.min(y)
     a_trial=y[loc_trial]
     c_trial=x[loc_trial]
-    o_trial=np.min(y)
-    s_trial=np.max(x)/2.0
+    s_trial=np.abs(x[0]-x[1])*len(y[y>halfmax_y])/2.0
     p0=[a_trial,c_trial,s_trial,o_trial]
     try:
         popt,pcov=curve_fit(gaussianOffset,x,y,sigma=sigma,p0=p0)
@@ -107,7 +127,7 @@ def gaussianFitOffset(x,y,sigma=None):
     return popt,np.diag(pcov),isFit
 
 def invSincFit(x,y,sigma=None):
-    p0=[np.max(y),np.min(y),np.mean(x),200]
+    p0=[np.max(y),np.min(y),x[np.argmin(y)],200]
     try:
         popt,pcov=curve_fit(invSinc,x,y,sigma=sigma,p0=p0)
         isFit=True
@@ -117,16 +137,28 @@ def invSincFit(x,y,sigma=None):
         isFit=False
     return popt,np.diag(pcov),isFit
 
+def sincFit(x,y,sigma=None):
+    p0=[np.min(y),np.max(y),x[np.argmax(y)],200]
+    try:
+        popt,pcov=curve_fit(sinc,x,y,sigma=sigma,p0=p0)
+        isFit=True
+    except:
+        popt=np.array(p0)
+        pcov=np.zeros((4,4))
+        isFit=False
+    return popt,np.diag(pcov),isFit
+
 def injector(fileNoStart,fileNoStop,NoImages,
              fileNameString,
-             remotePath="//PH-TEW105/Users/rfmot/Desktop/AbsImages/",
+             fileSkip=1,
+             remotePath="//PH-BSRIVATH/Users/CaFMOT/Desktop/AbsImages",
              dirPath="C:/Users/cafmot/Box Sync/CaF MOT/MOTData/MOTMasterData/"):
     imgs=os.listdir(remotePath)
     imgs.sort(key=natural_keys)
-    if len(imgs)==(fileNoStop-fileNoStart+1)*NoImages:
+    if len(imgs)==(fileNoStop-fileNoStart+1)*NoImages/fileSkip:
         print('Inserting images to the zip files...')
         l=0
-        for fileNo in range(fileNoStart,fileNoStop+1):
+        for fileNo in range(fileNoStart,fileNoStop+1, fileSkip):
             filepath=os.path.join(dirPath,fileNameString+'_'+str(fileNo).zfill(3)+'.zip')
             with zipfile.ZipFile(filepath, 'a') as archive:
                 files=archive.namelist()
@@ -200,18 +232,54 @@ class Analysis():
             paramDict[key.decode("utf-8")]=tempDict[key]
         return np.array(imgs),paramDict
 
+    def readFromZipCaFRb(self,fileNo, prefix):
+        archive=zipfile.ZipFile(self.getFilepath(fileNo),'r')
+        imgs=[]
+        files=archive.namelist()
+        files.sort(key=natural_keys)
+        for f in files:
+            if ((f[-3:]=='tif') and (f[0]==prefix)):
+                if self.diffStr=='':
+                    with archive.open(f) as filename:
+                        imgs.append(np.array(Image.open(filename),dtype=float))
+                elif f[0]==self.diffStr:
+                    with archive.open(f) as filename:
+                        imgs.append(np.array(Image.open(filename),dtype=float))
+            if f[-14:]=='parameters.txt':
+                with archive.open(f) as filename:
+                    scriptParams=filename.readlines()
+            if f[-18:]=='hardwareReport.txt':
+                with archive.open(f) as filename:
+                    hardwareParams=filename.readlines()
+        tempDict={}
+        for param in scriptParams:
+            paramSplit=param.split(b'\t')
+            tempDict[paramSplit[0]]=np.float(paramSplit[1])
+        for param in hardwareParams:
+            paramSplit=param.split(b'\t')
+            tempDict[paramSplit[0]]=np.float(paramSplit[1]) if \
+                                paramSplit[1].isdigit() else paramSplit[1]
+        paramDict={}
+        for key in tempDict:
+            paramDict[key.decode("utf-8")]=tempDict[key]
+        return np.array(imgs),paramDict
+
     def getImagesFromOneTriggerData(self,fileNo):
         imgs,paramsDict=self.readFromZip(fileNo)
-        return imgs,paramsDict
+        return imgs[1:],paramsDict
     
     def getImagesFromTwoTriggerData(self,fileNo):
         imgs,paramsDict=self.readFromZip(fileNo)
-        return imgs[::2,:,:],imgs[1::2,:,:],paramsDict
+        return imgs[2::2,:,:],imgs[3::2,:,:],paramsDict
 
     def getImagesFromThreeTriggerData(self,fileNo):
         imgs,paramsDict=self.readFromZip(fileNo)
         return imgs[0::3,:,:],imgs[1::3,:,:],imgs[2::3,:,:],paramsDict
-    
+
+    def getImagesFromFourTriggerData(self,fileNo):
+        imgs,paramsDict=self.readFromZip(fileNo)
+        return imgs[0::4,:,:],imgs[1::4,:,:],imgs[2::4,:,:],imgs[3::4,:,:],paramsDict
+
     def getAvgImageFromOneTriggerData(self,fileNo):
         imgs,_=self.getImagesFromOneTriggerData(fileNo)
         return np.mean(imgs,axis=0)
@@ -228,18 +296,24 @@ class Analysis():
                np.mean(thirdImages,axis=0)
 
     def cropImages(self,imageArray):
-        h_top=int(self.cropCentre[0]-self.cropHeight/2)
-        h_bottom=int(self.cropCentre[0]+self.cropHeight/2)
-        w_left=int(self.cropCentre[1]-self.cropWidth/2)
-        w_right=int(self.cropCentre[1]+self.cropWidth/2)
-        return imageArray[:,h_top:h_bottom,w_left:w_right]
+        if self.crop:
+            h_top=int(self.cropCentre[0]-self.cropHeight/2)
+            h_bottom=int(self.cropCentre[0]+self.cropHeight/2)
+            w_left=int(self.cropCentre[1]-self.cropWidth/2)
+            w_right=int(self.cropCentre[1]+self.cropWidth/2)
+            return imageArray[:,h_top:h_bottom,w_left:w_right]
+        else:
+            return imageArray
     
     def cropSingleImage(self,imageArray):
-        h_top=self.cropCentre[1]-self.cropHeight/2
-        h_bottom=self.cropCentre[1]+self.cropHeight/2
-        w_left=self.cropCentre[0]-self.cropWidth/2
-        w_right=self.cropCentre[0]+self.cropWidth/2
-        return imageArray[h_top:h_bottom,w_left:w_right]
+        if self.crop:
+            h_top=self.cropCentre[1]-self.cropHeight/2
+            h_bottom=self.cropCentre[1]+self.cropHeight/2
+            w_left=self.cropCentre[0]-self.cropWidth/2
+            w_right=self.cropCentre[0]+self.cropWidth/2
+            return imageArray[h_top:h_bottom,w_left:w_right]
+        else:
+            return imageArray
 
     def getImageNumber(self,imageArray):
         totalCount=np.sum(imageArray,axis=(1,2))
@@ -254,10 +328,10 @@ class Analysis():
         axialYLength=len(axialY)
         radialX=self.pixelSize*(self.binSize/self.magFactor)*np.arange(0,radialYLength)
         axialX=self.pixelSize*(self.binSize/self.magFactor)*np.arange(0,axialYLength)
-        smoothRadialY=savgol_filter(radialY,self.smoothingWindow,3)
-        smoothAxialY=savgol_filter(axialY,self.smoothingWindow,3)
-        radialpopt,radialpcov,radialIsFit=gaussianFitOffset(radialX,smoothRadialY)
-        axialpopt,axialpcov,axialIsFit=gaussianFitOffset(axialX,smoothAxialY)
+        smoothRadialY=radialY#savgol_filter(radialY,self.smoothingWindow,3)
+        smoothAxialY=axialY#savgol_filter(axialY,self.smoothingWindow,3)
+        radialpopt,radialpcov,radialIsFit=gaussianFitOffset(radialX,radialY)
+        axialpopt,axialpcov,axialIsFit=gaussianFitOffset(axialX,axialY)
         return radialX,radialY,\
                radialpopt,radialIsFit,\
                axialX,axialY,\
@@ -292,22 +366,24 @@ class Analysis():
                np.array(axialisfits)
 
     def singleImageProcessing(self,fileNo,fileNoBG,param):
-        imagesBG=self.getAvgImageFromOneTriggerData(fileNoBG)
         images,paramsDict=self.getImagesFromOneTriggerData(fileNo)
-        imageSubBG=images-imagesBG
+        if fileNoBG is not None:
+            imagesBG=self.getAvgImageFromOneTriggerData(fileNoBG)
+            images=images-imagesBG
         if self.crop:
-            imageSubBG=self.cropImages(imageSubBG)
-        return imageSubBG,paramsDict[param]
+            images=self.cropImages(images)
+        return images,paramsDict[param]
 
     def doubleImageProcessing(self,fileNo,fileNoBG,param):
-        firstImageAvgBG,secondImageAvgBG=self.getAvgImageFromTwoTriggerData(fileNoBG)
         firstImages,secondImages,paramsDict=self.getImagesFromTwoTriggerData(fileNo)
-        firstImagesSubBG=firstImages-firstImageAvgBG
-        secondImagesSubBG=secondImages-secondImageAvgBG
+        if fileNoBG is not None:
+            firstImageAvgBG,secondImageAvgBG=self.getAvgImageFromTwoTriggerData(fileNoBG)
+            firstImages=firstImages-firstImageAvgBG
+            secondImages=secondImages-secondImageAvgBG
         if self.crop:
-            firstImagesSubBG=self.cropImages(firstImagesSubBG)
-            secondImagesSubBG=self.cropImages(secondImagesSubBG)
-        return firstImagesSubBG,secondImagesSubBG,paramsDict[param]
+            firstImages=self.cropImages(firstImages)
+            secondImages=self.cropImages(secondImages)
+        return firstImages, secondImages, paramsDict[param]
 
     def trippleImageProcessing(self,fileNo,param):
         clouds,probes,bgs,paramsDict=self.getImagesFromThreeTriggerData(fileNo)
@@ -320,6 +396,9 @@ class Analysis():
         od[od == np.inf] = 0.0
         if self.crop:
             od=self.cropImages(od)
+        if self.od_correction:
+            od_s = 8
+            od = od+np.log((1-np.exp(-od_s))/(1-np.exp(od-od_s)))
         return od,paramsDict[param]
 
     def singleImageNumberRange(self,fileNoStart,fileNoStop,fileNoBG,param):
@@ -468,8 +547,6 @@ class Analysis():
         self.paramVals=np.array(paramsValList,dtype=float)
         
     def trippleImageNumberRange(self,fileNoStart,fileNoStop,fileNoBG,param):
-        s0=(1+4*(self.detuningInVolt*self.detuningFrequencyScaling)**2/\
-            self.gamma**2)/(3*self.lamda**2/(2*np.pi))
         numbersList=[]
         paramsValList=[]
         images=[]
@@ -477,7 +554,7 @@ class Analysis():
             if fileNo not in self.fileNoExclude:
                 od,paramsVal=self.trippleImageProcessing(fileNo,param)
                 numbers=(self.pixelSize*(self.binSize/self.magFactor))**2*\
-                        np.sum(od,axis=(1,2))*s0
+                        np.sum(od,axis=(1,2))*self.s0
                 images.append(od)
                 numbersList.append(numbers)
                 paramsValList.append(paramsVal)
@@ -675,7 +752,7 @@ class Analysis():
                                      self.secondImageMeanAxialSizes,
                                      self.secondImageStdErrorAxialSizes)
                 else:
-                    self.displaySingleImageSizeVariation()
+                    self.displayDoubleImageSizeVariation()
                     
                 if self.showFirstImage:
                     self.displayImage('First Image',self.firstImage)
@@ -769,8 +846,7 @@ class Analysis():
             a='a: {0:.3f}\n'.format(popt[0]/self.yScale)
             c='c: {0:.3f}\n'.format(popt[1]/self.xScale)
             s='s: {0:.3f}\n'.format(popt[2]/self.xScale)
-            o='o: {0:.3f}\n'.format(popt[3]/self.yScale)
-            ax.text(1.05,0.3,funcText+a+c+s+o,transform=ax.transAxes,wrap=True)
+            ax.text(1.05,0.3,funcText+a+c+s,transform=ax.transAxes,wrap=True)
         if fitType=='gaussian':
             popt,diagpcov,isFit=gaussianFit(paramVals,numbers,stdErrorNumbers)
             yFit=gaussian(paramValsFine,*popt)
@@ -800,6 +876,24 @@ class Analysis():
             c='c: {0:.3f}\n'.format(popt[2]/self.xScale)
             d='d: {0:.3f}\n'.format(popt[3]/self.xScale)
             ax.text(1.05,0.3,funcText+a+b+c+d,transform=ax.transAxes,wrap=True)
+        if fitType=='sinc':
+            popt,diagpcov,isFit=sincFit(paramVals,numbers,stdErrorNumbers)
+            yFit=sinc(paramValsFine,*popt)
+            self.fitParams=popt
+            funcText='Fit Func:\ny(x,b,c,d)=b*sinc((x-c)*d)\n'
+            a='a: {0:.3f}\n'.format(popt[0]/self.yScale)
+            b='b: {0:.3f}\n'.format(popt[1]/self.yScale)
+            c='c: {0:.3f}\n'.format(popt[2]/self.xScale)
+            d='d: {0:.3f}\n'.format(popt[3]/self.xScale)
+            ax.text(1.05,0.3,funcText+a+b+c+d,transform=ax.transAxes,wrap=True)
+        if fitType=='expAmp':
+            popt,diagpcov,isFit=expAmpFit(paramVals,numbers,stdErrorNumbers)
+            yFit=exponentialAmp(paramValsFine,*popt)
+            self.fitParams=popt
+            funcText='Fit Func:\ny(x,a,s)=a*exp(-x/s)\n'
+            a='a: {0:.3f}+-{1:.3f}\n'.format(popt[0]/self.yScale,np.sqrt(diagpcov[0])/self.yScale)
+            s='s: {0:.3f}+-{1:.3f}\n'.format(popt[1]/self.xScale,np.sqrt(diagpcov[1])/self.xScale)
+            ax.text(1.05,0.3,funcText+a+s,transform=ax.transAxes,wrap=True)
         # TODO: add lorengian and inverted gaussian
         ax.errorbar(paramVals/self.xScale,
                     numbers/self.yScale,
@@ -909,11 +1003,13 @@ class Analysis():
     def singleImageLifetimes(self,fileNoStart,fileNoStop,
                              fileNoBG,param,shotsPerImage,t0,dt):
         bg,_=self.readFromZip(fileNoBG)
-        noShots=len(bg)/shotsPerImage
-        t=np.array([t0+i*dt for i in range(shotsPerImage)])
+        noShots=int(int(np.shape(bg)[0])/shotsPerImage)
+        bg=np.mean(bg,axis=0)
+        t=np.array([t0+i*dt for i in range(0,shotsPerImage-1)])
         tI=np.linspace(np.min(t),np.max(t),100)
         paramsValList=[]
         lifetimesList=[]
+        errorList=[]
         for fileNo in range(fileNoStart,fileNoStop+1):
             images,paramsDict=self.readFromZip(fileNo)
             paramsValList.append(paramsDict[param])
@@ -922,30 +1018,32 @@ class Analysis():
             N_list=[]
             for i in range(noShots):
                 imageArray=images[k:k+shotsPerImage,:,:]
-                N=self.getImageNumber(imageArray)
-                N=N/N[0]
+                N=self.getImageNumber(self.cropImages(imageArray))
+                N=N[1:]/N[1]
                 N_list.append(N)
                 k+=shotsPerImage
             N_mean=np.mean(N_list,axis=0)
             N_std=np.std(N_list,axis=0)/np.sqrt(noShots)
             popt,diagpcov,isFit=expFit(t,N_mean)
-            lifetimesList.append(popt[2])
+            lifetimesList.append(popt[0])
+            errorList.append(np.sqrt(diagpcov[0]))
         self.singleImageLifetimesList=np.array(lifetimesList)
+        self.singleImageLifetimesError=np.array(errorList)
         self.paramVals=np.array(paramsValList)
         if fileNoStart==fileNoStop:
             fig,ax=plt.subplots(1,1,figsize=self.figSizePlot)
             ax.errorbar(t/self.xScale,N_mean,yerr=N_std,fmt='og')
             ax.plot(tI/self.xScale,exponential(tI,*popt),'-k')
-            ax.legend(['lifetime :{0:.3} [s.u.]'.format(popt[2]/self.xScale),'numbers'])
+            ax.legend(['lifetime :{0:.3}'.format(popt[0]/self.xScale)+u"\u00B1"+"{0:.3f} [s.u]".format(np.sqrt(diagpcov[0])/self.xScale),'numbers'])
             ax.set_xlabel(self.xLabel)
             ax.set_ylabel(self.yLabel)
 
     def lifetime(self,paramVals,meanNumbers,stdErrorNumbers):
         paramValsFine=np.linspace(np.min(paramVals),np.max(paramVals),100)
-        popt,diagpcov,isFit=expFit(paramVals,meanNumbers,stdErrorNumbers)
-        bound_upper = exponential(paramValsFine, *(popt + np.sqrt(diagpcov)))
-        bound_lower = exponential(paramValsFine, *(popt - np.sqrt(diagpcov)))
-        yFit=exponential(paramValsFine,*popt)
+        popt,diagpcov,isFit=expFitOffset(paramVals,meanNumbers,stdErrorNumbers)
+        bound_upper = exponentialOffset(paramValsFine, *(popt + np.sqrt(diagpcov)))
+        bound_lower = exponentialOffset(paramValsFine, *(popt - np.sqrt(diagpcov)))
+        yFit=exponentialOffset(paramValsFine,*popt)
         self.fitParams=popt
         fig,ax=plt.subplots(figsize=self.figSizePlot)
         ax.errorbar(paramVals/self.xScale,meanNumbers/self.yScale,
@@ -963,105 +1061,110 @@ class Analysis():
         
 
     def displayImageNumbersVariation(self,paramVals,numbers,stdErrorNumbers):
-        fig,ax=plt.subplots(figsize=self.figSizePlot)
-        ax.errorbar(paramVals/self.xScale,
-                    numbers/self.yScale,
-                    yerr=stdErrorNumbers/self.yScale,
-                    fmt=self.fmtP)
-        ax.set_xlabel(self.xLabel)
-        ax.set_ylabel(self.yLabel)
+        if self.display:
+            fig,ax=plt.subplots(figsize=self.figSizePlot)
+            ax.errorbar(paramVals/self.xScale,
+                        numbers/self.yScale,
+                        yerr=stdErrorNumbers/self.yScale,
+                        fmt=self.fmtP)
+            ax.set_xlabel(self.xLabel)
+            ax.set_ylabel(self.yLabel)
 
     def displaySingleImageSizeVariation(self):
-        fig,ax=plt.subplots(1,1,figsize=self.figSizePlot)
-        fig.subplots_adjust(hspace=0.01,wspace=0.01)
-        
-        ax.errorbar(self.paramVals/self.xScale,
-                    self.firstImageMeanRadialSizes/self.yScale,
-                    yerr=self.firstImageStdErrorRadialSizes/self.yScale,
-                    fmt=self.fmtP)
-        ax.errorbar(self.paramVals/self.xScale,
-                    self.firstImageMeanAxialSizes/self.yScale,
-                    yerr=self.firstImageStdErrorAxialSizes/self.yScale,
-                    fmt=self.fmtS)
-        ax.legend(['Radial','Axial'])
-        ax.set_xlabel(self.xLabel)
-        ax.set_ylabel(self.yLabel)
+        if self.display:
+            fig,ax=plt.subplots(1,1,figsize=self.figSizePlot)
+            fig.subplots_adjust(hspace=0.01,wspace=0.01)
+            
+            ax.errorbar(self.paramVals/self.xScale,
+                        self.firstImageMeanRadialSizes/self.yScale,
+                        yerr=self.firstImageStdErrorRadialSizes/self.yScale,
+                        fmt=self.fmtP)
+            ax.errorbar(self.paramVals/self.xScale,
+                        self.firstImageMeanAxialSizes/self.yScale,
+                        yerr=self.firstImageStdErrorAxialSizes/self.yScale,
+                        fmt=self.fmtS)
+            ax.legend(['Radial','Axial'])
+            ax.set_xlabel(self.xLabel)
+            ax.set_ylabel(self.yLabel)
 
     def displayDoubleImageSizeVariation(self):
-        fig,ax=plt.subplots(1,2,figsize=self.figSizePlot)
-        fig.subplots_adjust(hspace=0.01,wspace=0.01)
-        ax[1].yaxis.tick_right()
-        ax[1].yaxis.set_label_position("right")
-        
-        ax[0].set_title('First Image')
-        ax[0].errorbar(self.paramVals/self.xScale,
-                    self.firstImageMeanRadialSizes/self.yScale,
-                    yerr=self.firstImageStdErrorRadialSizes/self.yScale,
-                    fmt=self.fmtP)
-        ax[0].errorbar(self.paramVals/self.xScale,
-                    self.firstImageMeanAxialSizes/self.yScale,
-                    yerr=self.firstImageStdErrorAxialSizes/self.yScale,
-                    fmt=self.fmtS)
-        
-        ax[1].set_title('Second Image')
-        ax[1].errorbar(self.paramVals/self.xScale,
-                    self.secondImageMeanRadialSizes/self.yScale,
-                    yerr=self.secondImageStdErrorRadialSizes/self.yScale,
-                    fmt=self.fmtP)
-        ax[1].errorbar(self.paramVals/self.xScale,
-                    self.secondImageMeanAxialSizes/self.yScale,
-                    yerr=self.secondImageStdErrorAxialSizes/self.yScale,
-                    fmt=self.fmtS)
-        
-        ax[0].legend(['Radial','Axial'])
-        ax[0].set_xlabel(self.xLabel)
-        ax[0].set_ylabel(self.yLabel)
-        ax[1].legend(['Radial','Axial'])
-        ax[1].set_xlabel(self.xLabel)
-        ax[1].set_ylabel(self.yLabel)
+        if self.display:
+            fig,ax=plt.subplots(1,2,figsize=self.figSizePlot)
+            fig.subplots_adjust(hspace=0.01,wspace=0.01)
+            ax[1].yaxis.tick_right()
+            ax[1].yaxis.set_label_position("right")
+            
+            ax[0].set_title('First Image')
+            ax[0].errorbar(self.paramVals/self.xScale,
+                        self.firstImageMeanRadialSizes/self.yScale,
+                        yerr=self.firstImageStdErrorRadialSizes/self.yScale,
+                        fmt=self.fmtP)
+            ax[0].errorbar(self.paramVals/self.xScale,
+                        self.firstImageMeanAxialSizes/self.yScale,
+                        yerr=self.firstImageStdErrorAxialSizes/self.yScale,
+                        fmt=self.fmtS)
+            
+            ax[1].set_title('Second Image')
+            ax[1].errorbar(self.paramVals/self.xScale,
+                        self.secondImageMeanRadialSizes/self.yScale,
+                        yerr=self.secondImageStdErrorRadialSizes/self.yScale,
+                        fmt=self.fmtP)
+            ax[1].errorbar(self.paramVals/self.xScale,
+                        self.secondImageMeanAxialSizes/self.yScale,
+                        yerr=self.secondImageStdErrorAxialSizes/self.yScale,
+                        fmt=self.fmtS)
+            
+            ax[0].legend(['Radial','Axial'])
+            ax[0].set_xlabel(self.xLabel)
+            ax[0].set_ylabel(self.yLabel)
+            ax[1].legend(['Radial','Axial'])
+            ax[1].set_xlabel(self.xLabel)
+            ax[1].set_ylabel(self.yLabel)
 
     def displayImage(self,title,images):
-        l,m,_,_=np.shape(images)
-        fig,ax=plt.subplots(l,m,figsize=self.figSizeImage,
-                            sharex=True,sharey=True)
-        fig.tight_layout(rect=[0, 0.01, 1, 0.95])
-        fig.suptitle(title)
-        fig.subplots_adjust(hspace=0.01,wspace=0)
-        minn=np.min(images)
-        maxx=np.max(images)
-        for i in range(l):
-            for j in range(m):
-                im=ax[i,j].imshow(images[i,j,:,:],cmap='jet',
-                                interpolation='nearest',vmin=minn,vmax=maxx)
-                ax[i,j].axis('off')
-        fig.colorbar(im, ax=ax.ravel().tolist(),orientation='horizontal')
+        if self.display:
+            l,m,_,_=np.shape(images)
+            fig,ax=plt.subplots(l,m,figsize=self.figSizeImage,
+                                sharex=True,sharey=True)
+            fig.tight_layout(rect=[0, 0.01, 1, 0.95])
+            fig.suptitle(title)
+            fig.subplots_adjust(hspace=0.01,wspace=0)
+            minn=np.min(images)
+            maxx=np.max(images)
+            for i in range(l):
+                for j in range(m):
+                    im=ax[i,j].imshow(images[i,j,:,:],cmap='jet',
+                                    interpolation='nearest',vmin=minn,vmax=maxx)
+                    ax[i,j].axis('off')
+            fig.colorbar(im, ax=ax.ravel().tolist(),orientation='horizontal')
 
     def displaySizeFits(self,title,radialX,radialY,axialX,axialY,
                         radialFitParams,axialFitParams):
-        l,m,_=np.shape(radialFitParams)        
-        fig,ax=plt.subplots(l,m,figsize=self.figSizeImage,sharex=True)
-        fig.tight_layout(rect=[0, 0.01, 1, 0.95])
-        fig.suptitle(title)
-        fig.subplots_adjust(hspace=0.01,wspace=0.01)
-        for i in range(l):
-            for j in range(m):
-                radialYFits=gaussianOffset(radialX[i,j,:],
-                                           *radialFitParams[i,j,:])
-                axialYFits=gaussianOffset(axialX[i,j,:],
-                                           *axialFitParams[i,j,:])
-                ax[i,j].plot(radialX[i,j,:]*1e3,
-                             radialY[i,j,:],'--k')
-                ax[i,j].plot(axialX[i,j,:]*1e3,
-                             axialY[i,j,:],'--r')
-                ax[i,j].plot(radialX[i,j,:]*1e3,
-                             radialYFits,'-k')
-                ax[i,j].plot(axialX[i,j,:]*1e3,
-                             axialYFits,'-r')
-                ax[i,j].set_yticks([])
-                if i==l-1:
-                    ax[i,j].set_xlabel('distance [mm]')
-                if i==0 and j==0:
-                    ax[i,j].legend(['Radial','Axial','RadialFit','AxialFit'])
+        if self.display:
+            l,m,_=np.shape(radialFitParams)        
+            fig,ax=plt.subplots(l,m,figsize=self.figSizeImage,sharex=True)
+            fig.tight_layout(rect=[0, 0.01, 1, 0.95])
+            fig.suptitle(title)
+            fig.subplots_adjust(hspace=0.01,wspace=0.01)
+            for i in range(l):
+                for j in range(m):
+                    radialYFits=gaussianOffset(radialX[i,j,:],
+                                            *radialFitParams[i,j,:])
+                    axialYFits=gaussianOffset(axialX[i,j,:],
+                                            *axialFitParams[i,j,:])
+                    ax[i,j].plot(radialX[i,j,:]*1e3,
+                                radialY[i,j,:],'--k')
+                    ax[i,j].plot(axialX[i,j,:]*1e3,
+                                axialY[i,j,:],'--r')
+                    ax[i,j].plot(radialX[i,j,:]*1e3,
+                                radialYFits,'-k')
+                    ax[i,j].plot(axialX[i,j,:]*1e3,
+                                axialYFits,'-r')
+                    ax[i,j].set_yticks([])
+                    if i==l-1:
+                        ax[i,j].set_xlabel('distance [mm]')
+                    if i==0 and j==0:
+                        ax[i,j].legend(['Radial','Axial','RadialFit','AxialFit'])
     
     
     def __call__(self,
@@ -1091,6 +1194,8 @@ class Analysis():
                  xScale=1e2,
                  yScale=1,
                  smoothingWindow=11,
+                 od_correction=False,
+                 display=True,
                  **kwargs):
         self.imagingType=imagingType
         self.trigType=trigType
@@ -1114,6 +1219,13 @@ class Analysis():
         self.fileNoExclude=fileNoExclude
         self.smoothingWindow=smoothingWindow
         self.kwargs=kwargs
+        self.od_correction = od_correction
+        self.display = display
+        self.extParamVals = np.array(extParamVals)
+        if hasattr(self, 'detuningInVolt'):
+            if self.detuningInVolt != 'None':
+                self.s0=(1+4*(self.detuningInVolt*self.detuningFrequencyScaling)**2/\
+                    self.gamma**2)/(3*self.lamda**2/(2*np.pi))
         if requirement=='Number':
             self.getNumber(fileNoStart,fileNoStop,fileNoBg,param)
         elif requirement=='Size':
@@ -1149,11 +1261,13 @@ def analysisWithDefaultCaFSettings():
     analysis.gamma=1.5e6
     analysis.etaQ=0.65
     analysis.exposureTime=10e-3
-    analysis.crop=True
-    analysis.cropCentre=(53,70)
-    analysis.cropHeight=105
-    analysis.cropWidth=105
+    analysis.crop=False
+    analysis.cropCentre=(65,65)
+    analysis.cropHeight=50
+    analysis.cropWidth=50
     analysis.massInAMU=59
+    analysis.diffStr='C'
+    analysis.smoothingWindow=11
     return analysis
 
 def analysisWithDefaultRbSettings():
@@ -1161,7 +1275,7 @@ def analysisWithDefaultRbSettings():
     analysis.pixelSize=6.45e-6
     analysis.binSize=2
     analysis.magFactor=0.41
-    analysis.crop=True
+    analysis.crop=False
     analysis.cropCentre=(220,320)
     analysis.cropHeight=120
     analysis.cropWidth=120
@@ -1170,6 +1284,8 @@ def analysisWithDefaultRbSettings():
     analysis.gamma=6e6
     analysis.lamda=780e-9
     analysis.massInAMU=86.9
+    analysis.diffStr='R'
+    analysis.smoothingWindow=11
     return analysis
 
 if __name__=='__main__':

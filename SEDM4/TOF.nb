@@ -1,0 +1,342 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[     12547,        334]
+NotebookOptionsPosition[      9826,        273]
+NotebookOutlinePosition[     10233,        290]
+CellTagsIndexPosition[     10190,        287]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["SEDM4 TOF", "Title",
+ CellChangeTimes->{{3.422794344323*^9, 3.422794344429*^9}, 
+   3.779617226668539*^9, {3.7814263518298388`*^9, 
+   3.7814263520293674`*^9}},ExpressionUUID->"c427497a-2fcf-41fd-bd2b-\
+ad7e7df3bfca"],
+
+Cell["Functions to manipulate time-of-flight channels. ", "Text",
+ CellChangeTimes->{{3.781426355141642*^9, 3.7814263660215626`*^9}, {
+  3.7814265116275625`*^9, 
+  3.7814265163952656`*^9}},ExpressionUUID->"510b3918-b8ff-4f81-b81e-\
+a923a891c86d"],
+
+Cell[CellGroupData[{
+
+Cell["Package starts", "Section",ExpressionUUID->"eba95917-3c96-4b62-a758-d8d38b68e125"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BeginPackage", "[", 
+   RowBox[{"\"\<SEDM4`TOF`\>\"", ",", "\"\<SEDM4`Statistics`\>\""}], "]"}], 
+  ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.422794872608*^9, 3.4227948938*^9}, 
+   3.779617133339408*^9, {3.780747817737241*^9, 3.78074781798392*^9}, {
+   3.7814263717608204`*^9, 
+   3.781426371947275*^9}},ExpressionUUID->"3cb3bae2-a082-430d-9fc8-\
+874309f8b08d"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"getTrimmedMeanAndErrTOFChannel", "::", "usage"}], "=", 
+   "\"\<getTrimmedMeanAndErrTOFChannel[tofWithErrChannels_] takes a list of \
+TOF channels (with errors), calculates the trimmed mean and its standard \
+error of each point of the TOF across all the channels via bootstrapping, and \
+returns the result as a TOF with errors.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"weightedMeanOfTOFWithError", "::", "usage"}], "=", 
+  "\"\<weightedMeanOfTOFWithError[tofWithError_,gateLow_,gateHigh] takes a \
+TOF with errors and returns the weighted mean and its standard error, within \
+the gate times specified. If no gate times are specified it just returns the \
+weighted mean from the whole TOF.\>\""}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"meanOfTOFWithError", "::", "usage"}], "=", 
+  "\"\<meanOfTOFWithError[tofWithError_] takes a TOF with errors and returns \
+the mean and its standard error.\>\""}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.3943416188269997`*^9, 3.394341618993*^9}, {
+   3.394346947429*^9, 3.39434697604*^9}, {3.425015906085*^9, 
+   3.4250159110109997`*^9}, {3.779617144684536*^9, 3.779617159787726*^9}, 
+   3.780735868889795*^9, {3.7807359572968254`*^9, 3.7807359855057755`*^9}, 
+   3.780736016946349*^9, {3.780736134873084*^9, 3.780736148140405*^9}, {
+   3.781350152247616*^9, 3.781350183654125*^9}, {3.7814262405530596`*^9, 
+   3.781426276805375*^9}, {3.7814263818566637`*^9, 3.781426382326905*^9}, {
+   3.7814268241272697`*^9, 3.7814269190114717`*^9}, {3.78704594889997*^9, 
+   3.7870459571087112`*^9}, 3.7870461963462343`*^9, {3.8229785070326834`*^9, 
+   3.822978535105834*^9}},ExpressionUUID->"53c76ba5-9f2e-4ada-ba11-\
+fbc84cb55cdb"],
+
+Cell[CellGroupData[{
+
+Cell["Exposed package variables", "Subsection",ExpressionUUID->"0449b6a0-fc53-43d8-bf98-74a82330151e"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"a602d88b-c2ab-40e5-923f-be823f96fa76"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Private", "Section",ExpressionUUID->"616ee540-c424-493f-a0af-7fb7b20aeb4d"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}], ";"}]], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"ee664934-6947-47c4-bd1d-29815013c83c"],
+
+Cell[CellGroupData[{
+
+Cell["Local Constants", "Subsection",ExpressionUUID->"808a3aa7-8aec-4e6a-92bb-26297cc632dc"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.564132669732877*^9, 3.564132671237027*^9}, {
+   3.5641516908294735`*^9, 3.5641516936997604`*^9}, {3.77961721222012*^9, 
+   3.7796172122993603`*^9}, 3.7814261077119007`*^9, {3.781426165701045*^9, 
+   3.781426173999151*^9}, 
+   3.7814263859565134`*^9},ExpressionUUID->"aa24f7ec-76b3-47ce-977d-\
+bf1af196599c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Messages", "Subsection",ExpressionUUID->"bd924d82-91fe-4e67-85f4-66952c82e4dc"],
+
+Cell[BoxData[""], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.4227949076689997`*^9, {3.779617217476095*^9, 3.7796172175472846`*^9}, 
+   3.781426387486616*^9},ExpressionUUID->"0d048526-a1c3-4a1b-ad65-\
+9a572910ae5d"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Functions", "Section",ExpressionUUID->"2a1018b1-d25e-4624-a806-1d8fa4da6fe6"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getTrimmedMeanAndErrTOFChannel", "[", "tofWithErrChannels_", "]"}],
+   ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"times", ",", "tme"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"times", "=", 
+      RowBox[{"First", "/@", 
+       RowBox[{
+       "tofWithErrChannels", "\[LeftDoubleBracket]", "1", 
+        "\[RightDoubleBracket]"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"tme", "=", 
+      RowBox[{"trimmedMeanAndBSErr", "/@", 
+       RowBox[{"(", 
+        RowBox[{"Transpose", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+             "&"}], "/@", "#"}], "&"}], "/@", "tofWithErrChannels"}], "]"}], 
+        ")"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"Transpose", "[", 
+      RowBox[{"{", 
+       RowBox[{"times", ",", 
+        RowBox[{"First", "/@", "tme"}], ",", 
+        RowBox[{"Last", "/@", "tme"}]}], "}"}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.780736124663975*^9, 3.7807361267474856`*^9}, {
+   3.7807471194762287`*^9, 3.7807471411578712`*^9}, {3.7807472582641354`*^9, 
+   3.780747260876047*^9}, {3.780747479207451*^9, 3.7807474923322973`*^9}, {
+   3.7807477956525917`*^9, 3.780747807855975*^9}, {3.7813512641172743`*^9, 
+   3.7813513431412964`*^9}, {3.7813513987751784`*^9, 
+   3.7813513998099327`*^9}, {3.7813515474965243`*^9, 3.781351550981764*^9}, 
+   3.781426820967882*^9},ExpressionUUID->"0153a9a0-102d-4199-91da-\
+a8a0b27c8d60"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"weightedMeanOfTOFWithError", "[", "tofWithError_", "]"}], ":=", 
+  RowBox[{"weightedMean", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+       ",", 
+       RowBox[{"#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+      "}"}], "&"}], "/@", "tofWithError"}], "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.781350088435996*^9, 
+  3.7813501458736725`*^9}},ExpressionUUID->"ded89815-4a8d-4bf8-946e-\
+0614b2af069b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"weightedMeanOfTOFWithError", "[", 
+   RowBox[{"tofWithError_", ",", "trimLow_", ",", "trimHigh_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "trimmedTof", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"trimmedTof", "=", 
+      RowBox[{"Select", "[", 
+       RowBox[{"tofWithError", ",", 
+        RowBox[{
+         RowBox[{"trimLow", "\[LessEqual]", 
+          RowBox[{"#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}],
+           "\[LessEqual]", "trimHigh"}], "&"}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"weightedMean", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}],
+           ",", 
+          RowBox[{
+          "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+         "}"}], "&"}], "/@", "trimmedTof"}], "]"}]}]}], "\[IndentingNewLine]",
+    "]"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.781350088435996*^9, 3.7813501458736725`*^9}, {
+  3.822978383074088*^9, 
+  3.8229784389134007`*^9}},ExpressionUUID->"71c07fd6-d98d-4122-a6d0-\
+0019485e9ef4"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"meanOfTOFWithError", "[", "tofWithError_", "]"}], ":=", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"Mean", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+       "&"}], "/@", "tofWithError"}], "]"}], ",", 
+    SqrtBox[
+     FractionBox[
+      RowBox[{"Plus", "@@", 
+       RowBox[{"(", 
+        SuperscriptBox[
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}], 
+            "&"}], "/@", "tofWithError"}], ")"}], "2"], ")"}]}], 
+      SuperscriptBox[
+       RowBox[{"Length", "[", "tofWithError", "]"}], "2"]]]}], 
+   "}"}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.781350088435996*^9, 3.7813501458736725`*^9}, {
+  3.7870459052101235`*^9, 3.787045943970907*^9}, {3.7870459986458716`*^9, 
+  3.787046023800628*^9}, {3.7870460588195095`*^9, 
+  3.7870461009773083`*^9}},ExpressionUUID->"31031706-3d28-4e42-ac61-\
+9cb1f2c6592f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Package ends", "Section",
+ CellChangeTimes->{{3.7814261198351555`*^9, 
+  3.7814261211586943`*^9}},ExpressionUUID->"0a122524-b2d4-468e-9934-\
+3e567f77f499"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"End", "[", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"EndPackage", "[", "]"}], ";"}]}], "Input",
+ InitializationCell->
+  True,ExpressionUUID->"01fe72b9-de23-486c-b651-d23945190dac"]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{1008, 830},
+WindowMargins->{{Automatic, 203}, {67, Automatic}},
+Magnification:>1.5 Inherited,
+FrontEndVersion->"12.0 for Microsoft Windows (64-bit) (April 8, 2019)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[567, 22, 223, 4, 146, "Title",ExpressionUUID->"c427497a-2fcf-41fd-bd2b-ad7e7df3bfca"],
+Cell[793, 28, 246, 4, 52, "Text",ExpressionUUID->"510b3918-b8ff-4f81-b81e-a923a891c86d"],
+Cell[CellGroupData[{
+Cell[1064, 36, 88, 0, 99, "Section",ExpressionUUID->"eba95917-3c96-4b62-a758-d8d38b68e125"],
+Cell[1155, 38, 420, 10, 67, "Input",ExpressionUUID->"3cb3bae2-a082-430d-9fc8-874309f8b08d",
+ InitializationCell->True],
+Cell[1578, 50, 1752, 29, 474, "Input",ExpressionUUID->"53c76ba5-9f2e-4ada-ba11-fbc84cb55cdb",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[3355, 83, 102, 0, 80, "Subsection",ExpressionUUID->"0449b6a0-fc53-43d8-bf98-74a82330151e"],
+Cell[3460, 85, 111, 2, 67, "Input",ExpressionUUID->"a602d88b-c2ab-40e5-923f-be823f96fa76",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3620, 93, 81, 0, 99, "Section",ExpressionUUID->"616ee540-c424-493f-a0af-7fb7b20aeb4d"],
+Cell[3704, 95, 177, 4, 67, "Input",ExpressionUUID->"ee664934-6947-47c4-bd1d-29815013c83c",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[3906, 103, 92, 0, 80, "Subsection",ExpressionUUID->"808a3aa7-8aec-4e6a-92bb-26297cc632dc"],
+Cell[4001, 105, 383, 7, 67, "Input",ExpressionUUID->"aa24f7ec-76b3-47ce-977d-bf1af196599c",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4421, 117, 85, 0, 80, "Subsection",ExpressionUUID->"bd924d82-91fe-4e67-85f4-66952c82e4dc"],
+Cell[4509, 119, 231, 5, 67, "Input",ExpressionUUID->"0d048526-a1c3-4a1b-ad65-9a572910ae5d",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4789, 130, 83, 0, 99, "Section",ExpressionUUID->"2a1018b1-d25e-4624-a806-1d8fa4da6fe6"],
+Cell[4875, 132, 1654, 40, 242, "Input",ExpressionUUID->"0153a9a0-102d-4199-91da-a8a0b27c8d60",
+ InitializationCell->True],
+Cell[6532, 174, 577, 15, 97, "Input",ExpressionUUID->"ded89815-4a8d-4bf8-946e-0614b2af069b",
+ InitializationCell->True],
+Cell[7112, 191, 1204, 31, 184, "Input",ExpressionUUID->"71c07fd6-d98d-4122-a6d0-0019485e9ef4",
+ InitializationCell->True],
+Cell[8319, 224, 1045, 29, 160, "Input",ExpressionUUID->"31031706-3d28-4e42-ac61-9cb1f2c6592f",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9401, 258, 161, 3, 99, "Section",ExpressionUUID->"0a122524-b2d4-468e-9934-3e567f77f499"],
+Cell[9565, 263, 233, 6, 97, "Input",ExpressionUUID->"01fe72b9-de23-486c-b651-d23945190dac",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

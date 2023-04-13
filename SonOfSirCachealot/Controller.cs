@@ -24,16 +24,16 @@ namespace SonOfSirCachealot
     {
         // for static logging methods
         private static Controller controller;
- 
+
         // UI
         internal MainWindow mainWindow;
         System.Threading.Timer statusMonitorTimer;
- 
+
         // Database
         public BlockStore BlockStore;
         HttpListener listener;
         Thread requestHandlerThread;
- 
+
         // This method is called before the main form is created.
         // Don't do any UI stuff here!
         internal void Initialise()
@@ -167,7 +167,7 @@ namespace SonOfSirCachealot
         {
             return BlockStore.Monitor.GetStats();
         }
-  
+
         private string GetDatabaseStats()
         {
             return "";

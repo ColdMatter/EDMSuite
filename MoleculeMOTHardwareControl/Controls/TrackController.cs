@@ -30,9 +30,9 @@ namespace MoleculeMOTHardwareControl.Controls
             return report;
         }
 
-        public void TCLscript(double arg1, double arg2)
+        public void TCLscript(double arg1, double arg2, double arg3)
         {
-            castView.TCLscript(arg1.ToString(), arg2.ToString());
+            castView.TCLscript(arg1.ToString(), arg2.ToString(), arg3.ToString());
         }
         
 

@@ -43,6 +43,8 @@ namespace EDMBlockHead
         BlockSerializer blockSerializer = new BlockSerializer();
         BlockDemodulator blockDemodulator = new BlockDemodulator();
         public DemodulatedBlock DBlock;
+        public QuickEDMAnalysis AnalysedDBlock;
+
         private bool haveBlock = false;
 
         // State information
@@ -140,7 +142,7 @@ namespace EDMBlockHead
             AnalogModulation b = new AnalogModulation();
             b.Name = "B";
             b.Waveform = new Waveform("B Modulation", CODE_LENGTH);
-            b.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, false, true };
+            b.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, true };
             b.DelayAfterSwitch = 5;
             b.Centre = 0;
             b.Step = 0.46;
@@ -158,7 +160,7 @@ namespace EDMBlockHead
             AnalogModulation rf1A = new AnalogModulation();
             rf1A.Name = "RF1A";
             rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
-            rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, true, true, false };
             rf1A.DelayAfterSwitch = 0;
             rf1A.Centre = 1.5;
             rf1A.Step = 0.1;
@@ -167,7 +169,7 @@ namespace EDMBlockHead
             AnalogModulation rf2A = new AnalogModulation();
             rf2A.Name = "RF2A";
             rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
-            rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, true, false, true, false };
             rf2A.DelayAfterSwitch = 0;
             rf2A.Centre = 2.5;
             rf2A.Step = 0.1;
@@ -176,7 +178,7 @@ namespace EDMBlockHead
             AnalogModulation rf1F = new AnalogModulation();
             rf1F.Name = "RF1F";
             rf1F.Waveform = new Waveform("rf1 frequency modulation", CODE_LENGTH);
-            rf1F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf1F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, true, false, false, true, false };
             rf1F.DelayAfterSwitch = 0;
             rf1F.Centre = 2.5;
             rf1F.Step = 0.1;
@@ -185,20 +187,20 @@ namespace EDMBlockHead
             AnalogModulation rf2F = new AnalogModulation();
             rf2F.Name = "RF2F";
             rf2F.Waveform = new Waveform("rf2 frequency modulation", CODE_LENGTH);
-            rf2F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            rf2F.Waveform.Code = new bool[] { false, false, false, false, false, false, true, false, false, false, true, false };
             rf2F.DelayAfterSwitch = 0;
             rf2F.Centre = 2.5;
             rf2F.Step = 0.1;
             config.AnalogModulations.Add(rf2F);
 
-            //AnalogModulation lf1 = new AnalogModulation();
-            //lf1.Name = "LF1";
-            //lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
-            //lf1.Waveform.Code = new bool[] { false, true, false, true, false, false, false, false, false, false, false, false };
-            //lf1.DelayAfterSwitch = 0;
-            //lf1.Centre = 2.5;
-            //lf1.Step = 0.05;
-            //config.AnalogModulations.Add(lf1);
+            AnalogModulation lf1 = new AnalogModulation();
+            lf1.Name = "LF1";
+            lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
+            lf1.Waveform.Code = new bool[] { false, false, false, true, false, false, false, true, false,false, false, true };
+            lf1.DelayAfterSwitch = 0;
+            lf1.Centre = 8.58;
+            lf1.Step = 0.05;
+            config.AnalogModulations.Add(lf1);
 
             //AnalogModulation lf2 = new AnalogModulation();
             //lf2.Name = "LF2";
@@ -240,10 +242,11 @@ namespace EDMBlockHead
             config.Settings["bBiasV"] = 0.1;
 
             config.Settings["maximumNumberOfTimesToStepTarget"] = 1000;
-            config.Settings["minimumSignalToRun"] = 300.0;
-            config.Settings["targetStepperGateStartTime"] = 2340.0;
-            config.Settings["targetStepperGateEndTime"] = 2540.0;
-
+            config.Settings["minimumSignalToRun"] = 200.0;
+            config.Settings["targetStepperGateStartTime"] = 2380.0;
+            config.Settings["targetStepperGateEndTime"] = 2580.0;
+            config.Settings["liveAnalysisGateLow"] = 2900.0;
+            config.Settings["liveAnalysisGateHigh"] = 3100.0;
 
         }
 
@@ -316,21 +319,21 @@ namespace EDMBlockHead
 
         public void StartPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.SelectProfile("Scan B");
             scanMaster.OutputPattern();
         }
 
         public void StartNoMoleculesPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.SelectProfile("Scan B without molecules");
             scanMaster.OutputPattern();
         }
 
         public void StopPattern()
         {
-            ScanMaster.Controller scanMaster = new ScanMaster.Controller();
+            ScanMaster.Controller scanMaster = ScanMaster.Controller.GetController();
             scanMaster.StopPatternOutput();
         }
 
@@ -407,10 +410,10 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            // "cgate11Fixed" for Ar, "centreFixedKr" for Kr
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("wgate5", b); // was cgate11fixed
-            DBlock = blockDemodulator.DemodulateBlock(b, dc); // blockDemodulator.DemodulateBlock(b, dc);
-            liveViewer.AddDBlock(DBlock);
+            b.AddDetectorsToBlock();
+            DBlock = blockDemodulator.QuickDemodulateBlock(b);
+            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
+            liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
             //config.g
             haveBlock = true;
@@ -439,9 +442,10 @@ namespace EDMBlockHead
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating magnetic data block.");
-            DemodulationConfig dc = DemodulationConfig.GetStandardDemodulationConfig("magnetometers", b);
-            DBlock = blockDemodulator.DemodulateMagDataBlock(b, dc);
-            // liveViewer.AddDBlock(DBlock);
+            b.AddDetectorsToMagBlock();
+            //DBlock = blockDemodulator.QuickDemodulateBlock(b);
+            //AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock);
+            //liveViewer.AddAnalysedDBlock(AnalysedDBlock);
 
             haveBlock = true;
             appState = AppState.stopped;
@@ -469,9 +473,10 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
+                mainWindow.PlotGates(2800,3000);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                tof = (TOF)data.TOFs[5];
+                tof = (TOF)data.TOFs[3];
                 mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs
@@ -580,9 +585,9 @@ namespace EDMBlockHead
 
         internal void ActuallyTestLiveAnalysis()
         {
-            for (int i = 1; i <= 20; i++)
+            for (int i = 0; i <= 44; i++)
             {
-                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2009\\April2009\\30apr0900_";
+                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2019\\November2019\\13Nov1903_";
                 BlockSerializer bs = new BlockSerializer();
                 Block b = bs.DeserializeBlockFromZippedXML(fileRoot + (i.ToString()) + ".zip", "block.xml");
                 AcquisitionFinished(b);

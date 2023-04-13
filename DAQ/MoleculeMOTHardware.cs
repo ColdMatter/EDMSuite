@@ -8,6 +8,7 @@ using DAQ.Remoting;
 using DAQ.TransferCavityLock2012;
 using System.Runtime.Remoting;
 using System.Collections.Generic;
+using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
@@ -52,6 +53,16 @@ namespace DAQ.HAL
             Boards.Add(usbBoard2Name, usbBoard2Address);
 
 
+            string digitalPatternBoardName2 = "digitalPattern2";
+            string digitalPatternBoardAddress2 = "/PXI1Slot4";
+            Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
+
+            
+            string analogPatternBoardName2 = "analogPattern2";
+            string analogPatternBoardAddress2 = "/PXI1Slot7";
+            Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
+            
+
             // Channel Declarations
 
             AddAnalogInputChannel("ramp", tclBoard1Address + "/ai4", AITerminalConfiguration.Rse);
@@ -59,25 +70,30 @@ namespace DAQ.HAL
             // Hamish
             AddAnalogInputChannel("v00PD", tclBoard1Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v10PD", tclBoard1Address + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("bXPD", tclBoard1Address + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("bXPD", tclBoard1Address + "/ai2", AITerminalConfiguration.Rse);////////////////////////////////////////////////////
             AddDigitalInputChannel("bXLockBlockFlag", tclBoard1Address, 0, 0);
             AddDigitalInputChannel("v00LockBlockFlag", tclBoard1Address, 0, 1);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");
-            AddAnalogOutputChannel("v10Lock", tclBoard1Address + "/ao1");
-            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
+            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
+            AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
+            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2"); 
+            //AddAnalogOutputChannel("rbD1Frequency", tclBoard1Address + "/ao0"); //Reused Channel 14/03/23
+
             AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
 
 
             // Carlos
             AddAnalogInputChannel("v21PD", tclBoard1Address + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v32PD", tclBoard1Address + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("refPDCarlos", tclBoard1Address + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("refPDCarlos", tclBoard1Address + "/ai7", AITerminalConfiguration.Rse);/////////////////////////////////////////
+            AddAnalogInputChannel("bXBeastPD", tclBoard1Address + "/ai9", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v21Lock", tclBoard2Address + "/ao0");
+            AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
-            AddAnalogOutputChannel("cavityLockCarlos", tclBoard2Address + "/ao1");
+            AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
+            AddAnalogOutputChannel("cavityLockCarlos", tclBoard1Address + "/ao1"); //Reused for Rb Repump Wavemeter Lock 20/03/23
+            //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
 
 
             // Digital Pattern
@@ -111,16 +127,29 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
+            AddDigitalOutputChannel("UVFlashSwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
             AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
+
+            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
             AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
+            
             AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
+            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
+            AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress, 3, 4);
+            AddDigitalOutputChannel("rbD1CoolingSwitch", digitalPatternBoardAddress2, 1, 1);
 
 
-
-
-
+            // tweezer new digital pattern board
+            AddDigitalOutputChannel("slavePatternCardTrigger", digitalPatternBoardAddress2, 0, 0);
+            //AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("cafOptPumpingAOM", digitalPatternBoardAddress2, 0, 2);
+            AddDigitalOutputChannel("flowEnable", digitalPatternBoardAddress2, 0, 3);
+            AddDigitalOutputChannel("cafOptPumpingShutter", digitalPatternBoardAddress2, 0, 4);
+            AddDigitalOutputChannel("test10", digitalPatternBoardAddress2, 1, 0);
+            AddDigitalOutputChannel("motLightSwitch", digitalPatternBoardAddress2, 0, 1);
+            AddDigitalOutputChannel("TransverseCoolingShutter", digitalPatternBoardAddress2, 0, 5);
 
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
@@ -131,10 +160,12 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
-            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
+            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21"); 
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
+            AddAnalogOutputChannel("lightSwitch", analogPatternBoardAddress + "/ao19");
+
 
             // Old Rb Analog Pattern
             AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23"); // from old setup
@@ -143,19 +174,68 @@ namespace DAQ.HAL
 
             // New Rb
             AddAnalogOutputChannel("rb3DCoolingFrequency", analogPatternBoardAddress + "/ao1");
-            AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
+            AddAnalogOutputChannel("rbD1VCO", analogPatternBoardAddress + "/ao3");
+            //AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
             AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
             AddAnalogOutputChannel("rb3DCoolingAttenuation", analogPatternBoardAddress + "/ao0");
-            AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5");
-            AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
 
+            //AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5"); //Highjacked for D1 attenuation 21/03/2023
+            AddAnalogOutputChannel("rbD1CoolingAttenuation", analogPatternBoardAddress + "/ao5");
+            AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
+            AddAnalogOutputChannel("rbRepumpOffsetLock", analogPatternBoardAddress + "/ao10");
+
+            // Transfer coil
+            AddAnalogOutputChannel("transferCoils", analogPatternBoardAddress + "/ao6");
+            AddAnalogOutputChannel("transferCoilsShunt1", analogPatternBoardAddress + "/ao7");
+            AddAnalogOutputChannel("transferCoilsShunt2", analogPatternBoardAddress + "/ao27");
+
+            // Tweezer MOT coils
+
+            AddAnalogOutputChannel("speedbumpCoils", analogPatternBoardAddress + "/ao20");
+            AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
+            AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
+
+            /* New Ananlog board
+             * This specific channel "newAnalogTest" has been added to the
+             * LoadMoleculeMOT, LoadMoleculeMOTNoSlowingEdge and LoadMoleculeMOTDualSpecies
+             * inside the MOTMaster folder to make the old scripts compatible with both boards
+             * If you plan on changing the name make sure you change it inside
+             * those files too.
+            */
+            AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
 
             // Source
-            AddDigitalOutputChannel("cryoCooler", usbBoard2Address, 0, 0);
-            AddDigitalOutputChannel("sourceHeater", usbBoard2Address, 0, 1);
-            AddAnalogInputChannel("sourceTemp", usbBoard2Address + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddDigitalOutputChannel("cryoCooler", tclBoard2Address, 0, 0);
+            AddDigitalOutputChannel("sourceHeater", tclBoard2Address, 0, 1);
+            AddDigitalOutputChannel("sf6Valve", tclBoard2Address, 0, 2);
+            AddDigitalOutputChannel("heValve", tclBoard2Address, 0, 3);
 
+            AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("MOTPressure", tclBoard2Address + "/ai8", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp40K", tclBoard2Address + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6FlowMonitor", tclBoard2Address + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("he6FlowMonitor", tclBoard2Address + "/ai6", AITerminalConfiguration.Rse);
+
+            Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
+            Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
+            Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
+            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionHe", 0.2); 
+            AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
+            AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
+
+
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 4);//Laser name, analog channel, wavemeter channel
+            //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
+            
+            Info.Add("Default", wmlConfig);
+
+
+            //AddDigitalInputChannel("tofTrig", tclBoard2Address, 0, 0);
 
             // TCL Config
             //TCLConfig tcl1 = new TCLConfig("Hamish");
@@ -201,7 +281,7 @@ namespace DAQ.HAL
             tclConfig.TCPChannel = 1190;
             tclConfig.DefaultScanPoints = 1000;
             tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
-            tclConfig.AnalogSampleRate = 62000;
+            tclConfig.AnalogSampleRate = 55000;//62000
             string hamish = "Hamish";
             string carlos = "Carlos";
             
@@ -224,26 +304,63 @@ namespace DAQ.HAL
             tclConfig.AddCavity(carlos);
             tclConfig.Cavities[carlos].AddSlaveLaser("v21Lock", "v21PD");
             tclConfig.Cavities[carlos].AddSlaveLaser("v32Lock", "v32PD");
+            tclConfig.Cavities[carlos].AddSlaveLaser("bXBeastLock", "bXBeastPD");
             tclConfig.Cavities[carlos].MasterLaser = "refPDCarlos";
             tclConfig.Cavities[carlos].RampOffset = "cavityLockCarlos";
             tclConfig.Cavities[carlos].AddDefaultGain("Master", 1.0);
             tclConfig.Cavities[carlos].AddDefaultGain("v21Lock", -0.2);
             tclConfig.Cavities[carlos].AddDefaultGain("v32Lock", 1.0);
+            tclConfig.Cavities[carlos].AddDefaultGain("bXBeastLock", 1.0);
             tclConfig.Cavities[carlos].AddFSRCalibration("v21Lock", 3.7); //This is an approximate guess
             tclConfig.Cavities[carlos].AddFSRCalibration("v32Lock", 3.7);
+            tclConfig.Cavities[carlos].AddFSRCalibration("bXBeastLock", 4.5);
 
             Info.Add("TCLConfig", tclConfig);
-
+            Info.Add("DefaultCavity", tclConfig);
 
 
             // MOTMaster configuration
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
-            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
+            
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
+
+            Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
+            Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
+            Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI6");
+            Info.Add("SecondAOClockLine", analogPatternBoardAddress2 + "/PFI3");
+
+            /*
+            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress);
+            Info.Add("PGMaster_ClockLine", digitalPatternBoardAddress + "/PFI2");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string,string>();
+            additionalPatternBoards.Add(digitalPatternBoardAddress2, digitalPatternBoardAddress2);
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+            Info.Add("PGSlave0_ClockLine", digitalPatternBoardAddress2 + "/PFI4");
+            Info.Add("PGSlave0_TriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            
+            */
+
+            
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("AO", analogPatternBoardAddress);
+            analogBoards.Add("SecondAO", analogPatternBoardAddress2);
+            Info.Add("AnalogBoards", analogBoards);
+            
+            Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
+            Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
+            Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
+            additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+            Info.Add("PGSlave0ClockLine", digitalPatternBoardAddress + "/PFI2");
+            Info.Add("PGSlave0TriggerLine", digitalPatternBoardAddress + "/PFI6");
+
+
+
+            /*********/
             //Info.Add("PGTrigger", Boards["pg"] + "/PFI2");   // trigger from "cryocooler sync" box, delay controlled from "triggerDelay" analog output
 
 

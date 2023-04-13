@@ -146,7 +146,16 @@ namespace ScanMaster
 					continue;
 				}
 
-				// changing group
+
+                if (command == "set gpib")
+                {
+                    String[] plugins = PluginRegistry.GetRegistry().GetGPIBPlugins();
+                    int r = ChoosePluginDialog(plugins);
+                    if (r != -1) manager.CurrentProfile.AcquisitorConfig.SetGPIBPlugin(plugins[r]);
+                    continue;
+                }
+                
+                // changing group
 				if (command.StartsWith("set group")) 
 				{
 					String[] bits = command.Split(new char[] {' '});
@@ -198,6 +207,13 @@ namespace ScanMaster
 					manager.Window.WriteLine(settings);
 					continue;
 				}
+                if (command == "gpib")
+                {
+                    String settings = sr.ListSettings(manager.CurrentProfile.AcquisitorConfig.gpibPlugin);
+                    manager.Window.WriteLine(settings);
+                    continue;
+                }
+
 				if (command == "gui")
 				{
 					manager.Window.WriteLine("tofUpdate " + manager.CurrentProfile.GUIConfig.updateTOFsEvery);
@@ -210,7 +226,7 @@ namespace ScanMaster
 				// changing plugin settings
 				if (command.StartsWith("out:") | command.StartsWith("analog:") | command.StartsWith("pg:")
 					| command.StartsWith("yag:") | command.StartsWith("switch:") | command.StartsWith("shot:")
-					| command.StartsWith("gui:"))
+					| command.StartsWith("gui:") | command.StartsWith("gpib:"))
 				{
 					String[] bits = command.Split(new char[] {':', ' '});
 					if (bits.Length != 3) 

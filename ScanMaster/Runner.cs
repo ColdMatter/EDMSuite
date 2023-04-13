@@ -4,6 +4,8 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
 
+using DAQ.Environment;
+
 namespace ScanMaster
 {
 	/// <summary>
@@ -20,7 +22,7 @@ namespace ScanMaster
 			Controller controller = Controller.GetController();
 			
 			// publish the controller to the remoting system
-			TcpChannel channel = new TcpChannel(1170);
+			TcpChannel channel = new TcpChannel(1191);
 			ChannelServices.RegisterChannel(channel, false);
 			RemotingServices.Marshal(controller, "controller.rem");
 

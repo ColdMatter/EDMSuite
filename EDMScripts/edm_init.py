@@ -16,6 +16,12 @@ clr.AddReferenceToFile("DAQ.dll")
 clr.AddReferenceToFile("SharedCode.dll")
 sys.path.append(Path.GetFullPath("..\\SirCachealot\\bin\\EDM\\"))
 clr.AddReferenceToFile("SirCachealot.exe")
+sys.path.append(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\EDM\\"))
+clr.AddReferenceToFile("TransferCavityLock.exe")
+sys.path.append(Path.GetFullPath("..\\EDMPhaseLock\\bin\\EDM\\"))
+clr.AddReferenceToFile("EDMPhaseLock.exe")
+sys.path.append(Path.GetFullPath("..\\EDMFieldLock\\bin\\EDM\\"))
+clr.AddReferenceToFile("EDMFieldLock.exe")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")
@@ -40,16 +46,22 @@ import ScanMaster
 import EDMBlockHead
 import EDMHardwareControl
 import SirCachealot
+import TransferCavityLock2012
+import EDMPhaseLock
+import EDMFieldLock
 
 sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1170/controller.rem'), ScanMaster.Controller)
 bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(EDMHardwareControl.Controller, 'tcp://localhost:1172/controller.rem'), EDMHardwareControl.Controller)
 sc = typedproxy(System.Activator.GetObject(SirCachealot.Controller, 'tcp://localhost:1180/controller.rem'), SirCachealot.Controller)
+tclProbe = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://155.198.206.242:1190/controller.rem'), TransferCavityLock2012.Controller)
+pl = typedproxy(System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem'), EDMPhaseLock.MainForm)
+fl = typedproxy(System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem'), EDMFieldLock.MainForm)
 
 # usage message
 print('EDM interactive scripting control')
 print('''
-The variables sm, bh, and hc are pre-assigned to the ScanMaster, BlockHead
+The variables sm, bh, pl, fl and hc are pre-assigned to the ScanMaster, BlockHead, EDMPhaseLock, EDMFieldLock
 and EDMHardwareControl Controller objects respectively. You can call any of
 these objects methods, for example: sm.AcquireAndWait(5). Look at the c#
 code to see which remote methods are available. You can use any Python code

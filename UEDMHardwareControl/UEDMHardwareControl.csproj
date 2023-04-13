@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UEDMHardwareControl</RootNamespace>
     <AssemblyName>UltracoldEDMHardwareControl</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -50,19 +50,22 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
     <OutputPath>bin\ultracoldEDM\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
     <StartupObject>UEDMHardwareControl.Runner</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
@@ -74,7 +77,8 @@
     <ManifestKeyFile>UEDMHardwareControl_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>UEDMIcon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
     <OutputPath>bin\ScanMaster\</OutputPath>
@@ -82,17 +86,158 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlF|AnyCPU'">
+    <OutputPath>bin\AlF\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
+    <OutputPath>bin\TransferCavityLock2023\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\ultracoldEDM\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|x64'">
+    <OutputPath>bin\x64\ScanMaster\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|x64'">
+    <OutputPath>bin\x64\TransferCavityLock2012\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlF|x64'">
+    <OutputPath>bin\x64\AlF\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|x64'">
+    <OutputPath>bin\x64\TransferCavityLock2023\</OutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\ultracoldEDM\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|x86'">
+    <OutputPath>bin\x86\ScanMaster\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|x86'">
+    <OutputPath>bin\x86\TransferCavityLock2012\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlF|x86'">
+    <OutputPath>bin\x86\AlF\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|x86'">
+    <OutputPath>bin\x86\TransferCavityLock2023\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=17.5.40.49153, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=18.6.45.0, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="CmdLib">
+      <HintPath>..\..\Desktop\stepmirror\CmdLib.dll</HintPath>
+    </Reference>
+    <Reference Include="CmdLib8742">
+      <HintPath>..\..\Desktop\stepmirror\CmdLib8742.dll</HintPath>
+    </Reference>
+    <Reference Include="DeviceIOLib">
+      <HintPath>..\..\Desktop\stepmirror\DeviceIOLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\National Instruments\MeasurementStudioVS2012\DotNET\Assemblies\Current\NationalInstruments.VisaNS.dll</HintPath>
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
     </Reference>
+    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NpEthernet">
+      <HintPath>..\..\Desktop\stepmirror\NpEthernet.dll</HintPath>
+    </Reference>
+    <Reference Include="NpSerial">
+      <HintPath>..\..\Desktop\stepmirror\NpSerial.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4" />
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -102,8 +247,29 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UsbDllWrap">
+      <HintPath>..\..\Desktop\stepmirror\UsbDllWrap.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CooldownModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CooldownModeOptionsDialog.Designer.cs">
+      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WarmUpModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WarmUpModeOptionsDialog.Designer.cs">
+      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RefreshModeOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RefreshModeOptionsDialog.Designer.cs">
+      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UEDMRunner.cs" />
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
@@ -122,6 +288,13 @@
     <EmbeddedResource Include="ControlWindow.resx">
       <DependentUpon>ControlWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CooldownModeOptionsDialog.resx">
+      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="WarmUpModeOptionsDialog.resx">
+      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -132,6 +305,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="RefreshModeOptionsDialog.resx">
+      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UEDMSavePlotDataDialog.resx">
       <DependentUpon>UEDMSavePlotDataDialog.cs</DependentUpon>
     </EmbeddedResource>

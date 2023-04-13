@@ -9,11 +9,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Runtime.Remoting.Lifetime;
 using System.Windows.Forms;
-using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.VisaNS;
+//using NationalInstruments.UI;
+//using NationalInstruments.UI.WindowsForms;
+//using NationalInstruments.Visa;
 using System.Linq;
 
 using DAQ.HAL;
@@ -70,7 +69,7 @@ namespace EDMHardwareControl
 
         // hardware
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
-        Synth redSynth = (Synth)Environs.Hardware.Instruments["red"];
+        HP3325BSynth redSynth = (HP3325BSynth)Environs.Hardware.Instruments["red"];
         //ICS4861A voltageController = (ICS4861A)Environs.Hardware.Instruments["4861"];
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
         Agilent53131A rfCounter = (Agilent53131A)Environs.Hardware.Instruments["rfCounter"];
@@ -79,7 +78,8 @@ namespace EDMHardwareControl
         SerialDAQ bfieldCntrl = (SerialDAQ)Environs.Hardware.Instruments["BfieldController"];
         SerialMotorControllerBCD probePolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["probePolControl"];
         SerialMotorControllerBCD pumpPolCont = (SerialMotorControllerBCD)Environs.Hardware.Instruments["pumpPolControl"];
-        AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapico"];
+        AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapicoSYN420"];
+        //AnapicoSYN420 anapico = (AnapicoSYN420)Environs.Hardware.Instruments["anapicoSYN420"];
         NIPXI5670 rfAWG = (NIPXI5670)Environs.Hardware.Instruments["rfAWG"];
         
 
@@ -97,24 +97,29 @@ namespace EDMHardwareControl
         Task steppingBBiasAnalogOutputTask;
         Task pumpAOMAnalogOutputTask;
         Task probeAOMAnalogOutputTask;
+        Task probeAOMampAnalogOutputTask;
         Task rf1AttenuatorOutputTask;
         Task rf2AttenuatorOutputTask;
         Task rf1FMOutputTask;
         Task rf2FMOutputTask;
-        Task probeMonitorInputTask;
-        Task pumpMonitorInputTask;
+        Task topPDInputTask;
+        Task bottomPDInputTask;
         Task cPlusOutputTask;
         Task cMinusOutputTask;
         Task cPlusMonitorInputTask;
         Task cMinusMonitorInputTask;
         //Task rfPowerMonitorInputTask;
         Task phaseScramblerVoltageOutputTask;
+        Task piFlipVoltageOutputTask;
         Task miniFlux1MonitorInputTask;
         Task miniFlux2MonitorInputTask;
         Task miniFlux3MonitorInputTask;
         Task groundedInputTask;
         Task piMonitorTask;
         Task i2ErrorSignalInputTask;
+        Task laserPowerMeterInputTask;
+        Task valveMonitorVoltageAnalogInputTask;
+        Task valveCtrlVoltageAnalogOutputTask;
         Task i2BiasOutputTask;
         Task uWaveDCFMAnalogOutputTask;
         //Task uWaveMixerAnalogOutputTask;
@@ -127,6 +132,15 @@ namespace EDMHardwareControl
         Task pumpMicrowaveMixerVoltageAnalogOutputTask;
         Task bottomProbeMicrowaveMixerVoltageAnalogOutputTask;
         Task topProbeMicrowaveMixerVoltageAnalogOutputTask;
+        Task bart921XInputTask;
+        Task bart921YInputTask;
+        Task bart921ZInputTask;
+        Task bart200XInputTask;
+        Task bart200YInputTask;
+        Task bart200ZInputTask;
+        Task Coherent899AnalogOutputTask;
+        Task BlueECDLPiezoVoltageOutputTask;
+        Task DegaussCoil1OutputTask;
 
         ControlWindow window;
 
@@ -147,6 +161,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("ePol");
             CreateDigitalTask("notEPol");
             CreateDigitalTask("eBleed");
+            CreateDigitalTask("eSwitch");
             CreateDigitalTask("rfSwitch");
             CreateDigitalTask("pumprfSwitch");
             CreateDigitalTask("rfPowerAndFreqSelectSwitch");
@@ -164,7 +179,7 @@ namespace EDMHardwareControl
             CreateDigitalTask("piFlip");
             CreateDigitalTask("piFlipEnable");
             CreateDigitalTask("notPIFlipEnable");
-            CreateDigitalTask("argonShutter");
+            //CreateDigitalTask("argonShutter");
             CreateDigitalTask("targetStepper");
             //CreateDigitalTask("rfCountSwBit1");
             //CreateDigitalTask("rfCountSwBit2");
@@ -175,6 +190,9 @@ namespace EDMHardwareControl
             CreateDigitalTask("eSwitching");
             CreateDigitalTask("patternTTL");
             CreateDigitalTask("mwSwitching");
+
+            CreateDigitalTask("testPlateVoltageTTL");
+            CreateDigitalTask("testPlateVoltageGate");
 
             // digitial input tasks
 
@@ -190,9 +208,11 @@ namespace EDMHardwareControl
             // analog outputs
             bBoxAnalogOutputTask = CreateAnalogOutputTask("bScan");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
+            valveCtrlVoltageAnalogOutputTask = CreateAnalogOutputTask("valveCtrlVoltage");
             //flPZTVAnalogOutputTask = CreateAnalogOutputTask("899ExternalScan");
             pumpAOMAnalogOutputTask = CreateAnalogOutputTask("pumpAOM");
             probeAOMAnalogOutputTask = CreateAnalogOutputTask("probeAOM");
+            probeAOMampAnalogOutputTask = CreateAnalogOutputTask("probeAOMamp");
             rf1AttenuatorOutputTask = CreateAnalogOutputTask("rf1Attenuator");
             rf2AttenuatorOutputTask = CreateAnalogOutputTask("rf2Attenuator");
             rf1FMOutputTask = CreateAnalogOutputTask("rf1FM");
@@ -200,6 +220,7 @@ namespace EDMHardwareControl
             cPlusOutputTask = CreateAnalogOutputTask("cPlus");
             cMinusOutputTask = CreateAnalogOutputTask("cMinus");
             phaseScramblerVoltageOutputTask = CreateAnalogOutputTask("phaseScramblerVoltage");
+            piFlipVoltageOutputTask = CreateAnalogOutputTask("piFlipVoltage");
             //flPZT2TempOutputTask = CreateAnalogOutputTask("flPZT2Temp");
             //flPZT2CurOutputTask = CreateAnalogOutputTask("flPZT2Cur");
             //flAOMAnalogOutputTask = CreateAnalogOutputTask("fibreAOM");
@@ -215,13 +236,13 @@ namespace EDMHardwareControl
             pumpMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("pumpMixerV");
             bottomProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("bottomProbeMixerV");
             topProbeMicrowaveMixerVoltageAnalogOutputTask = CreateAnalogOutputTask("topProbeMixerV");
-
-
-            
+            Coherent899AnalogOutputTask = CreateAnalogOutputTask("Coherent899ControlVoltage");
+            BlueECDLPiezoVoltageOutputTask = CreateAnalogOutputTask("blueECDLPiezoVoltage");
+            DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1");
 
             // analog inputs
-            probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-            pumpMonitorInputTask = CreateAnalogInputTask("pumpPD", 0, 5);
+            topPDInputTask = CreateAnalogInputTask("topPD", 0, 5);
+            bottomPDInputTask = CreateAnalogInputTask("bottomPD", 0, 5);
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
             //rfPowerMonitorInputTask = CreateAnalogInputTask("rfPower");
@@ -235,7 +256,17 @@ namespace EDMHardwareControl
             //diodeRefCavInputTask = CreateAnalogInputTask("diodeLaserRefCavity");
             //diodeCurrentMonInputTask = CreateAnalogInputTask("diodeLaserCurrent");
             i2ErrorSignalInputTask = CreateAnalogInputTask("iodine");
+            laserPowerMeterInputTask = CreateAnalogInputTask("laserPowerMeter");
+            valveMonitorVoltageAnalogInputTask = CreateAnalogInputTask("valveMonVoltage");
             
+            //temporary input tasks for diagnosing magnetic noise
+            /*bart921XInputTask = CreateAnalogInputTask("Bart921_X");
+            bart921YInputTask = CreateAnalogInputTask("Bart921_Y");
+            bart921ZInputTask = CreateAnalogInputTask("Bart921_Z");
+            bart200XInputTask = CreateAnalogInputTask("Bart200_X");
+            bart200YInputTask = CreateAnalogInputTask("Bart200_Y");
+            bart200ZInputTask = CreateAnalogInputTask("Bart200_Z");*/
+
 
             // make the control window
             window = new ControlWindow();
@@ -316,7 +347,9 @@ namespace EDMHardwareControl
         private double ReadAnalogInput(Task task)
         {
             AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
-            double val = reader.ReadSingleSample();
+            
+            
+          double val = reader.ReadSingleSample();
             task.Control(TaskAction.Unreserve);
             return val;
         }
@@ -412,10 +445,11 @@ namespace EDMHardwareControl
             public double vco161Amp;
             public double vco30Amp;
             public double vco155Amp;
-            public double vco161Freq;
+            //public double vco161Freq;
             public double vco30Freq;
             public double vco155Freq;
-            public double anapicoCWFreq;
+            public double anapicoCWFreqCH1;
+            public double anapicoCWFreqCH2;
             public double pumpmwDwellOnTime;
             public double pumpmwDwellOffTime;
             public double bottomProbemwDwellOnTime;
@@ -424,7 +458,15 @@ namespace EDMHardwareControl
             public double topProbemwDwellOffTime;
             public double anapicof0Freq;
             public double anapicof1Freq;
-
+            public double probeAOM;
+            public double probeAOMamp;
+            public double probeAOMstep;
+            public double valveCtrlVoltage;
+            public double piFlipVoltage;
+            public bool piFlipVoltageRelativeRf1;
+            public bool piFlipVoltageRelativeRf2;
+            public bool piFlipVoltageRelative0V;
+            
         }
 
         public void SaveParametersWithDialog()
@@ -487,10 +529,11 @@ namespace EDMHardwareControl
             dataStore.vco161Amp = VCO161AmpVoltage;
             dataStore.vco155Amp = VCO155AmpVoltage;
             dataStore.vco30Amp = VCO30AmpVoltage;
-            dataStore.vco161Freq = VCO161FreqVoltage;
+            //dataStore.vco161Freq = VCO161FreqVoltage;
             dataStore.vco155Freq = VCO155FreqVoltage;
             dataStore.vco30Freq = VCO30FreqVoltage;
-            dataStore.anapicoCWFreq = AnapicoCWFrequency;
+            dataStore.anapicoCWFreqCH1 = AnapicoCWFrequencyCH1;
+            dataStore.anapicoCWFreqCH2 = AnapicoCWFrequencyCH2;
             dataStore.anapicof0Freq = AnapicoFrequency0;
             dataStore.anapicof1Freq = AnapicoFrequency1;
             dataStore.pumpmwDwellOnTime = AnapicoPumpMWDwellOnTime;
@@ -499,6 +542,14 @@ namespace EDMHardwareControl
             dataStore.bottomProbemwDwellOffTime = AnapicoBottomProbeMWDwellOffTime;
             dataStore.topProbemwDwellOnTime = AnapicoTopProbeMWDwellOnTime;
             dataStore.topProbemwDwellOffTime = AnapicoTopProbeMWDwellOffTime;
+            dataStore.probeAOM = ProbeAOMFrequencyCentre;
+            dataStore.probeAOMstep = ProbeAOMFrequencyStep;
+            dataStore.probeAOMamp = ProbeAOMamp;
+            dataStore.valveCtrlVoltage = ValveCtrlVoltage;
+            dataStore.piFlipVoltage = PiFlipVoltage;
+            dataStore.piFlipVoltageRelative0V = PiFlipVoltageRelative0V;
+            dataStore.piFlipVoltageRelativeRf1 = PiFlipVoltageRelativeRF1;
+            dataStore.piFlipVoltageRelativeRf2 = PiFlipVoltageRelativeRF2;
 
 
             // serialize it
@@ -572,10 +623,11 @@ namespace EDMHardwareControl
                 VCO161AmpVoltage = dataStore.vco161Amp;
                 VCO155AmpVoltage = dataStore.vco155Amp;
                 VCO30AmpVoltage = dataStore.vco30Amp;
-                VCO161FreqVoltage = dataStore.vco161Freq;
+                //VCO161FreqVoltage = dataStore.vco161Freq;
                 VCO155FreqVoltage = dataStore.vco155Freq;
                 VCO30FreqVoltage = dataStore.vco30Freq;
-                AnapicoCWFrequency = dataStore.anapicoCWFreq;
+                AnapicoCWFrequencyCH1 = dataStore.anapicoCWFreqCH1;
+                AnapicoCWFrequencyCH2 = dataStore.anapicoCWFreqCH2;
                 AnapicoFrequency0 = dataStore.anapicof0Freq;
                 AnapicoFrequency1 = dataStore.anapicof1Freq;
                 AnapicoPumpMWDwellOnTime = dataStore.pumpmwDwellOnTime;
@@ -584,6 +636,13 @@ namespace EDMHardwareControl
                 AnapicoBottomProbeMWDwellOffTime = dataStore.bottomProbemwDwellOffTime;
                 AnapicoTopProbeMWDwellOnTime = dataStore.topProbemwDwellOnTime;
                 AnapicoTopProbeMWDwellOffTime = dataStore.topProbemwDwellOffTime;
+                ProbeAOMamp = dataStore.probeAOMamp;
+                ValveCtrlVoltage = dataStore.valveCtrlVoltage;
+                PiFlipVoltage = dataStore.piFlipVoltage;
+                PiFlipVoltageRelative0V = dataStore.piFlipVoltageRelative0V;
+                PiFlipVoltageRelativeRF1 = dataStore.piFlipVoltageRelativeRf1;
+                PiFlipVoltageRelativeRF2 = dataStore.piFlipVoltageRelativeRf2;
+                Console.Out.WriteLine(dataStore.valveCtrlVoltage);
 
             }
             catch (Exception)
@@ -753,6 +812,18 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool ESuppliesConnected
+        {
+            get
+            {
+                return !window.eSwitchCheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.eSwitchCheckBox, !value);
+            }
+        }
+
         public void EnableBleed(bool enabled)
         {
             window.SetCheckBox(window.eBleedCheck, enabled);
@@ -761,6 +832,12 @@ namespace EDMHardwareControl
         public void ChangePolarity(bool polarity)
         {
             window.SetCheckBox(window.ePolarityCheck, polarity);
+        }
+
+        public void SetEFieldVoltages(double v)
+        {
+            CPlusVoltage = v;
+            CMinusVoltage = v;
         }
 
         public double CPlusVoltage
@@ -844,6 +921,8 @@ namespace EDMHardwareControl
             }
         }
 
+       
+
         public double ProbeAOMFrequencyStep
         {
             get
@@ -851,6 +930,8 @@ namespace EDMHardwareControl
                 return Double.Parse(window.probeAOMFreqStepTextBox.Text);
             }
         }
+
+        
 
         /* This is something of a cheesy hack. It lets the edm script check to see if the YAG
           * laser has failed.
@@ -875,6 +956,11 @@ namespace EDMHardwareControl
             }
         }
 
+        public void SetERampDownTime(double t)
+        {
+            ERampDownTime = t;
+        }
+
         public double ERampDownDelay
         {
             get
@@ -885,6 +971,11 @@ namespace EDMHardwareControl
             {
                 window.SetTextBox(window.eRampDownDelayTextBox, value.ToString());
             }
+        }
+
+        public void SetERampDownDelay(double t)
+        {
+            ERampDownDelay = t;
         }
 
         public double EBleedTime
@@ -898,6 +989,12 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.eBleedTimeTextBox, value.ToString());
             }
         }
+
+        public void SetEBleedTime(double t)
+        {
+            EBleedTime = t;
+        }
+
         public double ESwitchTime
         {
             get
@@ -909,6 +1006,12 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.eSwitchTimeTextBox, value.ToString());
             }
         }
+
+        public void SetESwitchTime(double t)
+        {
+            ESwitchTime = t;
+        }
+
         public double ERampUpTime
         {
             get
@@ -919,6 +1022,11 @@ namespace EDMHardwareControl
             {
                 window.SetTextBox(window.eRampUpTimeTextBox, value.ToString());
             }
+        }
+
+        public void SetERampUpTime(double t)
+        {
+            ERampUpTime = t;
         }
 
         public double EOvershootFactor
@@ -933,6 +1041,11 @@ namespace EDMHardwareControl
             }
         }
 
+        public void SetEOvershootFactor(double val)
+        {
+            EOvershootFactor = val;
+        }
+
         public double EOvershootHold
         {
             get
@@ -945,6 +1058,11 @@ namespace EDMHardwareControl
             }
         }
 
+        public void SetEOvershootHold(double t)
+        {
+            EOvershootHold = t;
+        }
+
         public double ERampUpDelay
         {
             get
@@ -954,6 +1072,68 @@ namespace EDMHardwareControl
             set
             {
                 window.SetTextBox(window.eRampUpDelayTextBox, value.ToString());
+            }
+        }
+
+        public void SetERampUpDelay(double t)
+        {
+            ERampUpDelay = t;
+        }
+        public double RF1Power
+        {
+            get
+            {
+                // make sure rf switch is off (this routes power to the measurement devices)
+                window.SetCheckBox(window.rfSwitchEnableCheck, true);
+                window.SetCheckBox(window.rfSwitchEnableCheck, false);
+                // rf1 - switch box off and then on to make sure it fires the checkChanged event
+                window.SetCheckBox(window.attenuatorSelectCheck, false);
+                window.SetCheckBox(window.attenuatorSelectCheck, true);
+                return rfPower.Power;
+            }
+        }
+
+        public double RF2Power
+        {
+            get
+            {
+                // make sure rf switch is off (this routes power to the measurement devices)
+                window.SetCheckBox(window.rfSwitchEnableCheck, true);
+                window.SetCheckBox(window.rfSwitchEnableCheck, false);
+                // rf2 - switch box on and then off to make sure it fires the checkChanged event
+                window.SetCheckBox(window.attenuatorSelectCheck, true);
+                window.SetCheckBox(window.attenuatorSelectCheck, false);
+                return rfPower.Power;
+            }
+        }
+
+        public double RF1Frequency
+        {
+            get
+            {
+                rfCounter.Channel = 2;
+                // make sure rf switch is off (this routes power to the measurement devices)
+                window.SetCheckBox(window.rfSwitchEnableCheck, true);
+                window.SetCheckBox(window.rfSwitchEnableCheck, false);
+                // rf1 - switch box off and then on to make sure it fires the checkChanged event
+                window.SetCheckBox(window.fmSelectCheck, false);
+                window.SetCheckBox(window.fmSelectCheck, true);
+                return rfCounter.Frequency;
+            }
+        }
+
+        public double RF2Frequency
+        {
+            get
+            {
+                rfCounter.Channel = 2;
+                // make sure rf switch is off (this routes power to the measurement devices)
+                window.SetCheckBox(window.rfSwitchEnableCheck, true);
+                window.SetCheckBox(window.rfSwitchEnableCheck, false);
+                // rf2 - switch box on and then off to make sure it fires the checkChanged event
+                window.SetCheckBox(window.fmSelectCheck, true);
+                window.SetCheckBox(window.fmSelectCheck, false);
+                return rfCounter.Frequency;
             }
         }
 
@@ -1061,10 +1241,22 @@ namespace EDMHardwareControl
             }
             set
             {
+                SetprobeAOMVoltage(value);
                 window.SetTextBox(window.probeAOMVTextBox, value.ToString());
             }
         }
 
+        public double ProbeAOMamp
+        {
+            get
+            {
+                return Double.Parse(window.probeAOMampnumericUpDown.Text);
+            }
+            set {
+                window.SetNumericUpDown(window.probeAOMampnumericUpDown, value);
+                UpdateProbeAOMamp(value);
+            }
+        }
        
 
         public double probeAOMStep
@@ -1230,11 +1422,13 @@ namespace EDMHardwareControl
             }
             set
             {
+                UpdateVCO161AmpVoltage(value);
                 window.SetTextBox(window.VCO161AmpVoltageTextBox, value.ToString());
+
             }
         }
 
-        public double VCO161FreqVoltage
+        /*public double VCO161FreqVoltage
         {
             get
             {
@@ -1244,7 +1438,7 @@ namespace EDMHardwareControl
             {
                 window.SetTextBox(window.VCO161FreqTextBox, value.ToString());
             }
-        }
+        }*/
 
         public double VCO30AmpVoltage
         {
@@ -1278,6 +1472,7 @@ namespace EDMHardwareControl
             }
             set
             {
+                UpdateVCO155AmpVoltage(value);
                 window.SetTextBox(window.VCO155AmpVoltageTextBox, value.ToString());
             }
         }
@@ -1306,7 +1501,7 @@ namespace EDMHardwareControl
             }
         }
 
-        public double VCO161FreqIncrement
+        /*public double VCO161FreqIncrement
         {
             get
             {
@@ -1316,7 +1511,7 @@ namespace EDMHardwareControl
             {
                 window.SetTextBox(window.VCO161FreqStepTextBox, value.ToString());
             }
-        }
+        }*/
 
         public double VCO30AmpIncrement
         {
@@ -1449,15 +1644,27 @@ namespace EDMHardwareControl
             }
         }
 
-        public double AnapicoCWFrequency
+        public double AnapicoCWFrequencyCH1
         {
             get
             {
-                return Double.Parse(window.anapicoCwFreqBox.Text);
+                return Double.Parse(window.anapicoCwCh1FreqBox.Text);
             }
             set
             {
-                window.SetTextBox(window.anapicoCwFreqBox, value.ToString());
+                window.SetTextBox(window.anapicoCwCh1FreqBox, value.ToString());
+            }
+        }
+
+        public double AnapicoCWFrequencyCH2
+        {
+            get
+            {
+                return Double.Parse(window.anapicoCwCh2FreqBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.anapicoCwCh2FreqBox, value.ToString());
             }
         }
 
@@ -1710,12 +1917,72 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool phaseFlip1State
+        {
+            get
+            {
+                return window.phaseFlip1CheckBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBox(window.phaseFlip1CheckBox, value);
+            }
+        }
+
         private double piFlipMonVoltage;
         public double PiFlipMonVoltage
         {
             get
             {
                 return piFlipMonVoltage;
+            }
+        }
+
+        public double PiFlipVoltage
+        {
+            get
+            {
+                return Double.Parse(window.piFlipVoltageTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.piFlipVoltageTextBox, value.ToString());
+            }
+        }
+
+        public bool PiFlipVoltageRelativeRF1
+        {
+            get
+            {
+                return window.piRelativeRf1FMRB.Checked;
+            }
+            set
+            {
+                window.SetRadioButton(window.piRelativeRf1FMRB, value);
+            }
+        }
+
+        public bool PiFlipVoltageRelativeRF2
+        {
+            get
+            {
+                return window.piRelativeRf2FMRB.Checked;
+            }
+            set
+            {
+                window.SetRadioButton(window.piRelativeRf2FMRB, value);
+            }
+        }
+
+        public bool PiFlipVoltageRelative0V
+        {
+            get
+            {
+                return window.piRelative0VRB.Checked;
+            }
+            set
+            {
+                window.SetRadioButton(window.piRelative0VRB, value);
             }
         }
 
@@ -1925,6 +2192,14 @@ namespace EDMHardwareControl
             }
         }
 
+        public bool MWManualState
+        {
+            get
+            {
+                return window.microwaveStateCheckBox.Checked;
+            }
+        }
+
         public double E0PlusBoost
         {
             get
@@ -1984,6 +2259,12 @@ namespace EDMHardwareControl
             this.lf1State = lf1State;
 
             SetAnalogOutput(probeAOMAnalogOutputTask, calculateProbeAOMFrequency(lf1State));
+        }
+
+        public void UpdateProbeAOMamp(double val)
+        {
+            
+            SetAnalogOutput(probeAOMampAnalogOutputTask, val);
         }
 
         private bool lf2State;
@@ -2061,6 +2342,9 @@ namespace EDMHardwareControl
                 window.EnableControl(window.switchEButton, false);
                 window.EnableControl(window.ePolarityCheck, false);
                 window.EnableControl(window.eBleedCheck, false);
+                //Test: Fast E-Switch scheme
+                window.EnableControl(window.eSwitchCheckBox, false);
+                //End Test
                 switchThread.Start();
             }
         }
@@ -2074,7 +2358,72 @@ namespace EDMHardwareControl
         // It also switches off the Synth to prevent rf discharges while the fields are off
         public void SwitchEWorker()
         {
-            
+
+            //bool startingSynthState = GreenSynthEnabled;
+            //lock (switchingLock)
+            //{
+            //    // raise flag for switching E-fields
+            //    SwitchingEfields = true;
+            //    //switch off the synth
+            //    GreenSynthEnabled = false;
+            //    // we always switch, even if it's into the same state.
+            //    window.SetLED(window.switchingLED, true);
+            //    // Add any asymmetry
+            //    // ramp the field down if on
+            //    if (EFieldEnabled)
+            //    {
+            //        RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime); 
+            //    }
+            //    // set as disabled
+            //    EFieldEnabled = false;
+            //    Thread.Sleep((int)(1000 * ERampDownDelay));
+            //    EBleedEnabled = true;
+            //    Thread.Sleep((int)(1000 * EBleedTime));
+            //    EBleedEnabled = false;
+            //    EFieldPolarity = newEPolarity;
+            //    Thread.Sleep((int)(1000 * ESwitchTime));
+            //    CalculateVoltages();
+            //    // ramp the field up to the overshoot voltage
+            //    RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
+            //                    CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime); 
+            //    // impose the overshoot delay
+            //    Thread.Sleep((int)(1000 * EOvershootHold));
+            //    // ramp back to the control point
+            //    RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
+            //                    EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
+            //    // set as enabled
+            //    EFieldEnabled = true;
+            //    // monitor the tail of the charging current to make sure the switches are
+            //    // working as they should (see spring2009 fiasco!)
+            //    Thread.Sleep((int)(1000 * ERampUpDelay)); 
+            //    window.SetLED(window.switchingLED, false);
+
+            //    // check that the switch was ok (i.e. that the relays really switched)
+            //    // If the manual state is true (0=>N+) then when switching into state 0
+            //    // (false) the North plate should be at positive potential. So there should
+            //    // be a positive current flowing.
+            //    if (newEPolarity == EManualState) // if only C had a logical xor operator!
+            //    {
+            //        // if the machine state is the same as the new switch state then the
+            //        // North plate should see -ve current and the South +ve
+            //        if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
+            //            && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
+            //        { }
+            //        //else activateEAlarm(newEPolarity);
+            //    }
+            //    else
+            //    {
+            //        // North should be +ve, South -ve
+            //        if ((lastSouthCurrent < kNegativeChargeMin) && (lastSouthCurrent > kNegativeChargeMax)
+            //            && (lastNorthCurrent > kPositiveChargeMin) && (lastNorthCurrent < kPositiveChargeMax))
+            //        { }
+            //        //else activateEAlarm(newEPolarity);
+            //    }
+            //}
+            //GreenSynthEnabled = startingSynthState;
+            //ESwitchDone();
+
+            //Test: Fast E-field switch
             bool startingSynthState = GreenSynthEnabled;
             lock (switchingLock)
             {
@@ -2084,57 +2433,38 @@ namespace EDMHardwareControl
                 GreenSynthEnabled = false;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
-                // Add any asymmetry
-                // ramp the field down if on
-                if (EFieldEnabled)
-                {
-                    RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 20, ERampDownTime); 
-                }
-                // set as disabled
-                EFieldEnabled = false;
-                Thread.Sleep((int)(1000 * ERampDownDelay));
+
+                // disconnect supplies from plates - impose 100ms wait time
+                ESuppliesConnected = false;
+                Thread.Sleep(100);
+
+                CalculateVoltages();
+                // set supplies to overshoot voltage
+                SetAnalogOutput(cPlusOutputTask, cPlusToWrite * EOvershootFactor);
+                SetAnalogOutput(cMinusOutputTask, cMinusToWrite * EOvershootFactor);
+
+                // bleed charges on plates
                 EBleedEnabled = true;
                 Thread.Sleep((int)(1000 * EBleedTime));
                 EBleedEnabled = false;
+                // switch E polarity
                 EFieldPolarity = newEPolarity;
                 Thread.Sleep((int)(1000 * ESwitchTime));
-                CalculateVoltages();
-                // ramp the field up to the overshoot voltage
-                RampVoltages(CPlusOffVoltage, EOvershootFactor * cPlusToWrite,
-                                CMinusOffVoltage, EOvershootFactor * cMinusToWrite, 20, ERampUpTime); 
-                // impose the overshoot delay
-                Thread.Sleep((int)(1000 * EOvershootHold));
-                // ramp back to the control point
-                RampVoltages(EOvershootFactor * cPlusToWrite, cPlusToWrite,
-                                EOvershootFactor * cMinusToWrite, cMinusToWrite, 5, 0);
-                // set as enabled
-                EFieldEnabled = true;
-                // monitor the tail of the charging current to make sure the switches are
-                // working as they should (see spring2009 fiasco!)
-                Thread.Sleep((int)(1000 * ERampUpDelay)); 
-                window.SetLED(window.switchingLED, false);
 
-                // check that the switch was ok (i.e. that the relays really switched)
-                // If the manual state is true (0=>N+) then when switching into state 0
-                // (false) the North plate should be at positive potential. So there should
-                // be a positive current flowing.
-                if (newEPolarity == EManualState) // if only C had a logical xor operator!
-                {
-                    // if the machine state is the same as the new switch state then the
-                    // North plate should see -ve current and the South +ve
-                    if ((lastNorthCurrent < kNegativeChargeMin) && (lastNorthCurrent > kNegativeChargeMax)
-                        && (lastSouthCurrent > kPositiveChargeMin) && (lastSouthCurrent < kPositiveChargeMax))
-                    { }
-                    //else activateEAlarm(newEPolarity);
-                }
-                else
-                {
-                    // North should be +ve, South -ve
-                    if ((lastSouthCurrent < kNegativeChargeMin) && (lastSouthCurrent > kNegativeChargeMax)
-                        && (lastNorthCurrent > kPositiveChargeMin) && (lastNorthCurrent < kPositiveChargeMax))
-                    { }
-                    //else activateEAlarm(newEPolarity);
-                }
+                // connect supplies to plates
+                ESuppliesConnected = true;
+                Thread.Sleep(100);
+
+                // overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+
+                // set voltage back to control point
+                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+
+                window.SetLED(window.switchingLED, false);
             }
             GreenSynthEnabled = startingSynthState;
             ESwitchDone();
@@ -2235,6 +2565,8 @@ namespace EDMHardwareControl
         {
             SwitchingEfields = false; 
             window.EnableControl(window.switchEButton, true);
+
+            window.EnableControl(window.eSwitchCheckBox, true);
         }
 
         // this function is, like many in this class, a little cheezy.
@@ -2309,6 +2641,32 @@ namespace EDMHardwareControl
             }
         }
 
+        public void PrepareForBScan()
+        {
+            EFieldEnabled = true;
+            UpdateVMonitorUI();
+            EnableAnapico(true);
+            UpdateAnapicoRAMList(true);
+            EnableAnapicoListSweep(true);
+            SetAttenutatorVoltages();
+            SetFMVoltages();
+            UpdateVCO161AmpV();
+            EnableGreenSynth(true);
+        }
+
+        public void PrepareForP12ProbeWithoutIF()
+        {
+            EFieldEnabled = true;
+            UpdateVMonitorUI();
+            EnableAnapico(true);
+            UpdateAnapicoRAMList(true);
+            EnableAnapicoListSweep(true);
+            SetAttenutatorVoltages();
+            SetFMVoltages();
+            UpdateVCO161AmpV();
+            EnableGreenSynth(false);
+        }
+
         public void SetCPlusVoltage(double voltage)
         {
             CPlusVoltage = voltage;
@@ -2332,8 +2690,8 @@ namespace EDMHardwareControl
             window.SetRadioButton(window.rf1FMPlusRB, true);
             SetFMVoltages();
             Thread.Sleep(100);
-            // The synth is connected to channel three
-            rfCounter.Channel = 3;
+            // The synth is connected to channel two
+            rfCounter.Channel = 2;
             double rf1PlusFreq = rfCounter.Frequency;
             window.SetTextBox(window.rf1PlusFreqMon, String.Format("{0:F0}", rf1PlusFreq));
             window.SetRadioButton(window.rf1FMMinusRB, true);
@@ -2539,8 +2897,10 @@ namespace EDMHardwareControl
                 (gScale * voltageController.ReadInputVoltage(gPlusChan)).ToString());
             window.SetTextBox(window.gMinusVMonitorTextBox, 
                 (gScale * voltageController.ReadInputVoltage(gMinusChan)).ToString());*/
-            cPlusMonitorVoltage = ReadAnalogInput(cPlusMonitorInputTask);
-            cMinusMonitorVoltage = -ReadAnalogInput(cMinusMonitorInputTask);
+
+            double cMonScale = 10.0;//This converts the reading at the 1:10,000 divider to kilovolts
+            cPlusMonitorVoltage = cMonScale*ReadAnalogInput(cPlusMonitorInputTask);
+            cMinusMonitorVoltage = cMonScale*ReadAnalogInput(cMinusMonitorInputTask);
         }
         public void UpdateVMonitorUI()
         {
@@ -2738,9 +3098,9 @@ namespace EDMHardwareControl
         public void UpdateLaserPhotodiodes()
         {
             double groundValue = ReadAnalogInput(groundedInputTask);
-            probePDVoltage = ReadAnalogInput(probeMonitorInputTask);
+            probePDVoltage = ReadAnalogInput(topPDInputTask);
             groundValue = ReadAnalogInput(groundedInputTask);
-            pumpPDVoltage = ReadAnalogInput(pumpMonitorInputTask);
+            pumpPDVoltage = ReadAnalogInput(bottomPDInputTask);
         }
 
         public void UpdateLaserPhotodiodesUI()
@@ -2945,6 +3305,45 @@ namespace EDMHardwareControl
             Thread.Sleep(5);
         }
 
+        private double valveCtrlVoltage;
+
+        public double ValveCtrlVoltage
+        {
+            get { return valveCtrlVoltage; }
+            set
+            {
+                valveCtrlVoltage = value;
+                window.valveControlVoltageNumericUpDown.Value = (Decimal)value;
+                UpdateValveControlVoltage(value);
+                UpdateValveMonitor();
+            }
+        }
+
+        public void UpdateValveControlVoltage(double val)
+        {
+            valveCtrlVoltage = val;
+            SetAnalogOutput(valveCtrlVoltageAnalogOutputTask, val);
+        }
+
+        private double valveMonitorVoltage;
+        public double ValveMonitorVoltage
+        {
+            get
+            {
+                return valveMonitorVoltage;
+            }
+        }
+
+        public void UpdateValveMonitor()
+        {
+            valveMonitorVoltage = ReadAnalogInput(valveMonitorVoltageAnalogInputTask); 
+        }
+
+        public void UpdateValveMonitorUI()
+        {
+            UpdateValveMonitor();
+            window.SetTextBox(window.valveMonitorTextBox, valveMonitorVoltage.ToString());        
+        }
 
         public void UpdateProbeAOMFreqMonitor()
         {
@@ -2956,7 +3355,7 @@ namespace EDMHardwareControl
                 window.SetRadioButton(window.probeAOMStepPlusButton, true);
                 UpdateProbeAOMV();
                 Thread.Sleep(10);
-                rfCounter.Channel = 2;
+                rfCounter.Channel = 3;
                 for (int i = 1; i <= averages; i++)
                 {
                     I2PlusFreq = I2PlusFreq+rfCounter.Frequency;
@@ -3030,6 +3429,29 @@ namespace EDMHardwareControl
         //    window.SetTextBox(window.pumpPolarizerAngleTextBox, theta.ToString());
         //    UpdatePumpPolarizerAngle();
         //}
+
+        public void SetGreenSynthFrequency(double value)
+        {
+            try
+            {
+                greenSynth.Connect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Disconnect error: " + e.Message);
+            }
+            greenSynth.Frequency = value;
+            window.SetTextBox(window.greenOnFreqBox, String.Format("{0:F2}", value));
+            try
+            {
+                greenSynth.Disconnect();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Disconnect error: " + e.Message);
+            }
+        }
+        
 
         public void EnableGreenSynth(bool enable)
         {
@@ -3162,6 +3584,11 @@ namespace EDMHardwareControl
             SetDigitalLine("eBleed", !enable);
         }
 
+        public void SetESwitch(bool connected)
+        {
+            SetDigitalLine("eSwitch", connected);
+        }
+
         public void SetBFlip(bool enable)
         {
             SetDigitalLine("b", enable);
@@ -3200,12 +3627,20 @@ namespace EDMHardwareControl
             SetDigitalLine("scramblerEnable", enable);
         }
 
-
-
-        public void SetArgonShutter(bool enable)
+        public void SetTestPlateVoltageGate(bool enable)
         {
-            SetDigitalLine("argonShutter", enable);
+            SetDigitalLine("testPlateVoltageGate", enable);
         }
+
+        public void SetTestPlateVoltageTTL(bool enable)
+        {
+            SetDigitalLine("testPlateVoltageTTL", enable);
+        }
+
+        //public void SetArgonShutter(bool enable)
+        //{
+        //    SetDigitalLine("argonShutter", enable);
+        //}
 
         
 
@@ -3450,7 +3885,26 @@ namespace EDMHardwareControl
 
         }
 
+        public void SetPiFlipVoltage()
+        {
+            double piFlipVoltage = Double.Parse(window.piFlipVoltageTextBox.Text);
+            double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
+            double rf2FMVoltage = Double.Parse(window.rf2FMVoltage.Text);
 
+            if (window.piRelativeRf1FMRB.Checked) piFlipVoltage = rf1FMVoltage + piFlipVoltage;
+            if (window.piRelativeRf2FMRB.Checked) piFlipVoltage = rf2FMVoltage + piFlipVoltage;
+            if (piFlipVoltage > 1.2) piFlipVoltage = 1.2;
+            if (piFlipVoltage < -1.2) piFlipVoltage = -1.2;
+
+            SetAnalogOutput(piFlipVoltageOutputTask, piFlipVoltage);
+        }
+
+
+        public void SetPiFlipVoltage(double v)
+        {
+            window.SetTextBox(window.piFlipVoltageTextBox, v.ToString()); 
+            SetAnalogOutput(piFlipVoltageOutputTask, v);
+        }
 
 
         public void SetScramblerVoltage()
@@ -3529,6 +3983,10 @@ namespace EDMHardwareControl
         {
             GreenSynthOnAmplitude = windowVoltage(amp, -30, 16);
         }
+        public void SetGreenSynthFreq(double freq)
+        {
+            GreenSynthOnFrequency = windowVoltage(freq, 168, 180);
+        }
         public void SetRF1AttCentre(double v)
         {
             RF1AttCentre = windowVoltage(v, 0, 5);
@@ -3567,7 +4025,32 @@ namespace EDMHardwareControl
             SetAnalogOutput(rf2AttenuatorOutputTask, rf2AttenuatorVoltage);
         }
 
-        internal void SetFMVoltages()
+        public void Setrf1AttenuatorVoltage(double voltage)
+        {
+            rf1AttenuatorVoltage = voltage;
+        }
+
+        public double rf1AttenuatorVoltage
+        {
+            get { return  Double.Parse(window.rf1AttenuatorVoltageTextBox.Text);}
+            set 
+            {
+                window.rf1AttenuatorVoltageTextBox.Text = value.ToString();
+                SetAttenutatorVoltages();
+            }
+        }
+
+        public double rf2AttenuatorVoltage
+        {
+            get { return Double.Parse(window.rf2AttenuatorVoltageTextBox.Text); }
+            set
+            {
+                window.rf2AttenuatorVoltageTextBox.Text = value.ToString();
+                SetAttenutatorVoltages();
+            }
+        }
+
+        public void SetFMVoltages()
         {
             double rf1FMVoltage = Double.Parse(window.rf1FMVoltage.Text);
             if (window.rf1FMMinusRB.Checked) rf1FMVoltage -= Double.Parse(window.rf1FMIncTextBox.Text);
@@ -3598,11 +4081,11 @@ namespace EDMHardwareControl
             window.VCO161AmpVoltageTextBox.Text = pztVoltage.ToString();
         }
 
-        public void UpdateVCO161FreqVoltage(double pztVoltage)
+        /*public void UpdateVCO161FreqVoltage(double pztVoltage)
         {
             SetAnalogOutput(VCO161FreqAnalogOutputTask, pztVoltage);
             window.VCO161FreqTextBox.Text = pztVoltage.ToString();
-        }
+        }*/
 
         public void UpdateVCO30AmpVoltage(double pztVoltage)
         {
@@ -3636,13 +4119,13 @@ namespace EDMHardwareControl
             window.VCO161AmpTrackBar.Value = 100 * (int)pztVoltage;
         }
 
-        public void UpdateVCO161FreqV()
+        /*public void UpdateVCO161FreqV()
         {
             double pztVoltage = VCO161FreqVoltage;
             pztVoltage = windowVoltage(pztVoltage, 0, 10);
             SetAnalogOutput(VCO161FreqAnalogOutputTask, pztVoltage);
             window.VCO161FreqTrackBar.Value = 100 * (int)pztVoltage;
-        }
+        }*/
 
         public void UpdateVCO30AmpV()
         {
@@ -3701,7 +4184,7 @@ namespace EDMHardwareControl
             window.VCO161AmpTrackBar.Value = 100 * (int)newPZTVoltage;
         }
 
-        public void TweakVCO161FreqV()
+        /*public void TweakVCO161FreqV()
         {
             double pztVoltage = VCO161FreqVoltage;
             pztVoltage = windowVoltage(pztVoltage, 0, 10);
@@ -3711,7 +4194,7 @@ namespace EDMHardwareControl
             SetAnalogOutput(VCO161FreqAnalogOutputTask, newPZTVoltage);
             window.VCO161FreqTextBox.Text = newPZTVoltage.ToString();
             window.VCO161FreqTrackBar.Value = 100 * (int)newPZTVoltage;
-        }
+        }*/
 
         public void TweakVCO30AmpV()
         {
@@ -3830,10 +4313,12 @@ namespace EDMHardwareControl
         public void EnableAnapico(bool enable)
         {
             UpdateAnapicoRAMList(MwSwitchState);
+            //UpdateAnapicoSYN420RAMList(MwSwitchState);
             anapico.Connect();
             if (enable)
             {
-                anapico.CWFrequency = AnapicoCWFrequency;
+                anapico.CWFrequencyCH1 = AnapicoCWFrequencyCH1;
+                anapico.CWFrequencyCH2 = AnapicoCWFrequencyCH2;
                 anapico.Enabled = true;
             }
             else
@@ -3843,10 +4328,17 @@ namespace EDMHardwareControl
             anapico.Disconnect();
         }
 
-        public void UpdateAnapicoCW()
+        public void UpdateAnapicoCWCH1()
         {
             anapico.Connect();
-            anapico.CWFrequency = AnapicoCWFrequency;
+            anapico.CWFrequencyCH1 = AnapicoCWFrequencyCH1;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoCWCH2()
+        {
+            anapico.Connect();
+            anapico.CWFrequencyCH2 = AnapicoCWFrequencyCH2;
             anapico.Disconnect();
         }
 
@@ -3862,7 +4354,7 @@ namespace EDMHardwareControl
                 anapico.Connect();
                 if (trueState)
                 {
-                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
+                    string list = AnapicoCWFrequencyCH1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
                         + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString("E") + ";" + AnapicoBottomProbeMWDwellOffTime.ToString("E") + "\r\n"
                         + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString("E") + ";" + AnapicoTopProbeMWDwellOffTime.ToString("E") + "\r\n";
 
@@ -3881,7 +4373,7 @@ namespace EDMHardwareControl
                 }
                 else
                 {
-                    string list = AnapicoFrequency1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                    string list = AnapicoCWFrequencyCH1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
                         + AnapicoFrequency1.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
                         + AnapicoFrequency0.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
 
@@ -3910,6 +4402,51 @@ namespace EDMHardwareControl
             }
         }
 
+        /*public void UpdateAnapicoSYN420RAMList(bool trueState)
+        {
+            //The anapico has a fixed output power of +23dBm, so writing power values to the RAM does nothing. Channel 1 is sent to the pump region and bottom probe, and Ch2 is sent to the top probe.
+            try
+            {
+                string[] chList = new string[2];
+
+                bool currentMwListSweepStatus = MwListSweepEnabled;
+                MwListSweepEnabled = false;
+                anapico.Connect();
+                if (trueState)
+                {
+                    string ch1list = AnapicoCWFrequency.ToString() + ";23;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";23;" + AnapicoBottomProbeMWDwellOnTime.ToString("E") + ";" + AnapicoBottomProbeMWDwellOffTime.ToString("E") + "\r\n";
+
+                    string ch2list = AnapicoFrequency1.ToString() + ";23;" + (AnapicoPumpMWDwellOnTime + AnapicoPumpMWDwellOffTime + AnapicoBottomProbeMWDwellOnTime + AnapicoBottomProbeMWDwellOffTime + AnapicoTopProbeMWDwellOnTime).ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    chList[0] = ch2list;
+                    chList[1] = ch1list;
+                    
+                }
+                else
+                {
+                    string ch1list = AnapicoCWFrequency.ToString() + ";23;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";23;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n";
+                    string ch2list = AnapicoFrequency0.ToString() + ";23;" + (AnapicoPumpMWDwellOnTime + AnapicoPumpMWDwellOffTime + AnapicoBottomProbeMWDwellOnTime + AnapicoBottomProbeMWDwellOffTime + AnapicoTopProbeMWDwellOnTime).ToString() +";" +  AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    chList[0] = ch2list;
+                    chList[1] = ch1list;
+
+                }
+                anapico.WriteList(chList);
+
+                anapico.Disconnect();
+                MwListSweepEnabled = currentMwListSweepStatus;
+            }
+            catch
+            {
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
+            }
+        }*/
+
         public void EnableAnapicoListSweep(bool enable)
         {
             anapico.Connect();
@@ -3923,6 +4460,8 @@ namespace EDMHardwareControl
             }
             anapico.Disconnect();
         }
+
+
 
         // When reading a list to RAM, the data is transferred according to the IEEE 488.2 Definite Length Block Response Data format.
         // This is #<number of digits that follows this><number of data bytes><data>
@@ -3953,6 +4492,44 @@ namespace EDMHardwareControl
 
             anapico.Disconnect();
         }
+
+        public void GetAnapicoCWFreqs()
+        {
+            anapico.Connect();
+            string displayList = "CH1 CW Freq: " + Convert.ToString(anapico.CWFrequencyCH1) + " Hz\r\n" + "CH2 CW Freq: " + Convert.ToString(anapico.CWFrequencyCH2) + " Hz";
+            AnapicoCurrentList = displayList;
+            anapico.Disconnect();
+        }
+
+        /*public void GetAnapicoSYN420CurrentList()
+        {
+            anapico.Connect();
+            string[] chList = anapico.ReadChannelList();
+            string[] displayList = new string[anapico.NumberOfChannels];
+            for (int i = 0; i < anapico.NumberOfChannels; i++)
+            {
+                int numDigits = Convert.ToInt32(chList[i][1].ToString());
+                string subList = chList[i].Substring(numDigits + 2);
+                char[] delimiters = { ';', '\r', '\n' };
+                string[] splitList = subList.Split(delimiters);
+
+                string chDisplayList = string.Empty;
+
+                for (int j = 0; j < splitList.Length / 4; ++j)
+                {
+                    int k = 4 * j;
+                    string num = Convert.ToString(j + 1);
+                    chDisplayList += "Output "+(i+1).ToString()+":" + "\r\n"+ "Frequency " + num + " (Hz): " + splitList[k] + "\r\n"
+                    + "Dwell on time " + num + " (s): " + splitList[k + 2] + "\r\n"
+                    + "Dwell off time " + num + " (s): " + splitList[k + 3] + "\r\n";
+                }
+                displayList[i] = chDisplayList;
+            }
+
+            AnapicoCurrentList = string.Join("\r\n", displayList);
+
+            anapico.Disconnect();
+        }*/
 
         private bool switchingMw;
         public bool SwitchingMw
@@ -4521,6 +5098,305 @@ namespace EDMHardwareControl
                 window.SetTextBox(window.rfAWGTestTextBox, sw.ElapsedMilliseconds.ToString());
             }
         }
+
+        //Coherent 899 laser control
+        public double Coherent899LaserVoltage
+        {
+            get
+            {
+                return Double.Parse(window.Coherent899ControlVoltageTextBox.Text);
+            }
+            set
+            {
+                UpdateCoherent899ControlVoltage(value);
+                window.SetTextBox(window.Coherent899ControlVoltageTextBox, value.ToString());
+
+            }
+        }
+
+        private int plus899Voltage = 0;
+        private int minus899Voltage = 0;
+
+        public void IncreaseCoherent899Voltage()
+        {
+            plus899Voltage++;
+        }
+
+        public void DecreaseCoherent899Voltage()
+        {
+            minus899Voltage++;
+        }
+
+        public double Coherent899ControlVoltageIncrement
+        {
+            get
+            {
+                return Double.Parse(window.Coherent899ControlVoltageStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.Coherent899ControlVoltageStepTextBox, value.ToString());
+            }
+        }
+
+        public void TweakCoherent899Voltage()
+        {
+            double pztVoltage = Coherent899LaserVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            double newPZTVoltage = pztVoltage + Coherent899ControlVoltageIncrement * (plus899Voltage - minus899Voltage);
+            plus899Voltage = 0;
+            minus899Voltage = 0;
+            SetAnalogOutput(Coherent899AnalogOutputTask, newPZTVoltage);
+            window.Coherent899ControlVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.Coherent899ControlVoltageTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void UpdateCoherent899ControlVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(Coherent899AnalogOutputTask, pztVoltage);
+            window.Coherent899ControlVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateCoherent899ControlV()
+        {
+            double pztVoltage = Coherent899LaserVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            SetAnalogOutput(Coherent899AnalogOutputTask, pztVoltage);
+            window.Coherent899ControlVoltageTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        //Blue ECDL laser control
+        public double BlueECDLPiezoVoltage
+        {
+            get
+            {
+                return Double.Parse(window.BlueECDLPiezoVoltageTextBox.Text);
+            }
+            set
+            {
+                UpdateBlueECDLPiezoVoltage(value);
+                window.SetTextBox(window.BlueECDLPiezoVoltageTextBox, value.ToString());
+
+            }
+        }
+
+        private int plusBlueECDLVoltage = 0;
+        private int minusBlueECDLVoltage = 0;
+
+        public void IncreaseBlueECDLPiezoVoltage()
+        {
+            plusBlueECDLVoltage++;
+        }
+
+        public void DecreaseBlueECDLPiezoVoltage()
+        {
+            minusBlueECDLVoltage++;
+        }
+
+        public double BlueECDLPiezoVoltageIncrement
+        {
+            get
+            {
+                return Double.Parse(window.BlueECDLPiezoVoltageStepTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.BlueECDLPiezoVoltageStepTextBox, value.ToString());
+            }
+        }
+
+        public void TweakBlueECDLPiezoVoltage()
+        {
+            double pztVoltage = BlueECDLPiezoVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            double newPZTVoltage = pztVoltage + BlueECDLPiezoVoltageIncrement * (plusBlueECDLVoltage - minusBlueECDLVoltage);
+            plusBlueECDLVoltage = 0;
+            minusBlueECDLVoltage = 0;
+            SetAnalogOutput(BlueECDLPiezoVoltageOutputTask, newPZTVoltage);
+            window.BlueECDLPiezoVoltageTextBox.Text = newPZTVoltage.ToString();
+            window.BlueECDLPiezoVoltageTrackBar.Value = 100 * (int)newPZTVoltage;
+        }
+
+        public void UpdateBlueECDLPiezoVoltage(double pztVoltage)
+        {
+            SetAnalogOutput(BlueECDLPiezoVoltageOutputTask, pztVoltage);
+            window.BlueECDLPiezoVoltageTextBox.Text = pztVoltage.ToString();
+        }
+
+        public void UpdateBlueECDLPiezoV()
+        {
+            double pztVoltage = BlueECDLPiezoVoltage;
+            pztVoltage = windowVoltage(pztVoltage, -5, 5);
+            SetAnalogOutput(BlueECDLPiezoVoltageOutputTask, pztVoltage);
+            window.BlueECDLPiezoVoltageTrackBar.Value = 100 * (int)pztVoltage;
+        }
+
+        //DEGAUSSER
+
+        public double DegaussFrequency
+        {
+            get
+            {
+                return Double.Parse(window.DegaussFreqTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussFreqTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussAmplitude
+        {
+            get
+            {
+                return Double.Parse(window.DegaussAmpTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.DegaussAmpTextBox, value.ToString());
+            }
+        }
+
+        public double SineOffset
+        {
+            get
+            {
+                return Double.Parse(window.OffsetTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.OffsetTextBox, value.ToString());
+            }
+        }
+
+        public double DegaussExpTimeConstant
+        {
+            get
+            {
+                return Double.Parse(window.ExpTimeConstantTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.ExpTimeConstantTextBox, value.ToString());
+            }
+        }
+        public double LinearDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.LinearDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.LinearDegaussTextBox, value.ToString());
+            }
+        }
+        public double ConstDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ConstDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ConstDegaussTextBox, value.ToString());
+            }
+        }
+        public double ExpDegaussT
+        {
+            get
+            {
+                return Double.Parse(window.ExpDegaussTextBox.Text) * 1000; //This gets the time and converts to ms
+            }
+            set
+            {
+                window.SetTextBox(window.ExpDegaussTextBox, value.ToString());
+            }
+        }
+
+        public double SineWave;
+        public double FullPulseT;
+        public double ExpOffsetT;
+        public double TimeNow;
+        public double FTicks;
+        public double ThreadStartTicks = 0;
+        public double ThreadDiff = 0;
+        //public double SineOffset = -0.002;
+        public Stopwatch sw = new Stopwatch();
+
+        public void UpdateDegaussPulse()
+        {
+            ExpOffsetT = TimeNow - (LinearDegaussT + ConstDegaussT);
+            if (TimeNow < LinearDegaussT)
+            {
+                SineWave = (TimeNow / LinearDegaussT) * DegaussAmplitude * Math.Sin(2 * Math.PI * DegaussFrequency * TimeNow / 1000) - SineOffset;
+            }
+            else if (TimeNow < LinearDegaussT + ConstDegaussT)
+            {
+                SineWave = DegaussAmplitude * Math.Sin(2 * Math.PI * DegaussFrequency * TimeNow / 1000) - SineOffset;
+            }
+            else if (TimeNow < FullPulseT)
+            {
+                SineWave = DegaussAmplitude * Math.Exp(-(ExpOffsetT / 1000) * (1 / DegaussExpTimeConstant)) * Math.Sin(2 * Math.PI * DegaussFrequency * TimeNow / 1000) - SineOffset;
+            }
+            else
+            {
+                SineWave = -SineOffset;
+            }
+            SetAnalogOutput(DegaussCoil1OutputTask, SineWave);
+        }
+
+        private Object DegaussLock;
+        private bool DegaussFlag;
+        private Thread DegaussPollThread;
+
+        internal void StartDegaussPoll()
+        {
+            DegaussPollThread = new Thread(new ThreadStart(DegaussPollWorker));
+            DegaussLock = new Object();
+            DegaussFlag = false;
+            window.EnableControl(window.DegaussStartButton, false);
+            SetAnalogOutput(DegaussCoil1OutputTask, -SineOffset);
+            FullPulseT = LinearDegaussT + ConstDegaussT + ExpDegaussT;
+            DegaussPollThread.Start();
+        }
+
+        private void DegaussPollWorker()
+        {
+            window.SetLED(window.DegaussLED, true);
+            sw.Start();
+            ThreadStartTicks = sw.ElapsedTicks;
+
+            for (; ; )
+            {
+                FTicks = sw.ElapsedTicks;
+                TimeNow = ((FTicks - ThreadStartTicks) / 1E+4);
+                if (TimeNow >= (FullPulseT))
+                {
+                    DegaussFlag = true;
+                }
+                lock (DegaussLock)
+                {
+                    UpdateDegaussPulse();
+                    if (DegaussFlag)
+                    {
+                        DegaussFlag = false;
+                        SetAnalogOutput(DegaussCoil1OutputTask, -SineOffset);
+                        window.SetLED(window.DegaussLED, false);
+                        window.EnableControl(window.DegaussStartButton, true);
+                        break;
+                    }
+                }
+
+            }
+            //ThreadDiff = (sw.ElapsedTicks - ThreadStartTicks) / 1E+4;
+            //Console.WriteLine(ThreadDiff.ToString());
+            SetAnalogOutput(DegaussCoil1OutputTask, -SineOffset);
+            sw.Stop();
+            sw.Reset();
+        }
+
+        //END DEGAUSSER
 
         #endregion
 
