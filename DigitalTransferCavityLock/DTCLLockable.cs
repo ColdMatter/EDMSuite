@@ -23,6 +23,7 @@ namespace DigitalTransferCavityLock
             FeedbackChannel.AddToTask(output, MinVoltage, MaxVoltage);
             output.Control(TaskAction.Verify);
             outputWriter = new AnalogSingleChannelWriter(output.Stream);
+            CurrentVoltage = 0;
 
         }
 
@@ -98,7 +99,12 @@ namespace DigitalTransferCavityLock
         {
             locked = false;
         }
-        public abstract void UpdateLock();
+        public virtual void UpdateLock()
+        {
+            if (!locked)
+                return;
+            CurrentVoltage = CurrentVoltage + LockError * gain;
+        }
 
 
     }

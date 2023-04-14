@@ -106,7 +106,7 @@ namespace DigitalTransferCavityLock
             {
                 cavity.ArmLock(Convert.ToDouble(this.refLockLocV.Text), Convert.ToDouble(this.Gain.Text));
                 this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = false; });
+                //this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = false; });
                 foreach (SlaveLaserControl laser in slaveLasers)
                     if(laser.InputEnable.Checked)
                         laser.UpdateRenderedObject(laser.LockSlave ,(Control a) => { a.Enabled = true; });
@@ -116,7 +116,7 @@ namespace DigitalTransferCavityLock
             {
                 cavity.DisarmLock();
                 this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = true; });
+                //this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = true; });
                 foreach (SlaveLaserControl laser in slaveLasers)
                     laser.UpdateRenderedObject(laser.LockSlave, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.EnableData, (Control a) => { a.Enabled = true; });
@@ -136,6 +136,8 @@ namespace DigitalTransferCavityLock
             {
                 this.UpdateRenderedObject(this.LockReference, (Control c) => { c.Enabled = true; });
                 cavityCounter.SetUpTask(rampGen.periodMS);
+                cavityCounter.fail = true;
+                cavityCounter.ready = true;
             }
             else
             {
@@ -158,6 +160,40 @@ namespace DigitalTransferCavityLock
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Gain_Leave(object sender, EventArgs e)
+        {
+            cavity.gain = Convert.ToDouble(Gain.Text);
+        }
+
+        public void UpdateRampPlot(ControlWindow win)
+        {
+            List<double> x = new List<double>();
+            List<double> y = new List<double>();
+            y.Add(rampGen.Offset);
+            y.Add(rampGen.Offset + 0.25*rampGen.Amplitude);
+            y.Add(rampGen.Offset + 0.50*rampGen.Amplitude);
+            y.Add(rampGen.Offset + 0.75*rampGen.Amplitude);
+            y.Add(rampGen.Offset + 1.00*rampGen.Amplitude);
+            if (this.EnableData.Checked)
+            {
+                x.Add(cavityCounter.dataMS);
+                x.Add(cavityCounter.dataMS);
+                x.Add(cavityCounter.dataMS);
+                x.Add(cavityCounter.dataMS);
+                x.Add(cavityCounter.dataMS);
+            }
+            else
+            {
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+            }
+            win.UpdateRenderedObject<NationalInstruments.UI.WindowsForms.ScatterGraph>(win.PeakPlot, (NationalInstruments.UI.WindowsForms.ScatterGraph g) => { g.Plots[1].PlotXY(x.ToArray(), y.ToArray()); });
+            ((SlaveLaserControl)SlaveLasersTabs.SelectedTab.Controls[0]).UpdateRampPlot(win);
         }
     }
 }

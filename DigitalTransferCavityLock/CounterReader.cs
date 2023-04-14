@@ -67,12 +67,16 @@ namespace DigitalTransferCavityLock
             counterTask.Timing.ConfigureSampleClock(SamplingChannel.PhysicalChannel, 10000000, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, 1);
             counterTask.Stream.Buffer.InputBufferSize = 2;
             counterTask.Triggers.ArmStartTrigger.ConfigureDigitalEdgeTrigger(syncChannel, DigitalEdgeArmStartTriggerEdge.Rising);
+            //counterTask.Triggers.ArmStartTrigger.ConfigureNone();
             counterTask.Stream.Timeout = (int)Math.Ceiling(periodMS / 2);
+            //counterTask.SampleComplete += (object ob, SampleCompleteEventArgs e) => { ReadCallback(); };
+            //counterTask.SampleClock += (object ob, SampleClockEventArgs e) => { ReadCallback(); };
 
             counterTask.Control(TaskAction.Verify);
             counterTask.Control(TaskAction.Commit);
-
             dataReader = new CounterSingleChannelReader(counterTask.Stream);
+            //counterTask.Start();
+
         }
 
         public double dataMS = 0;
@@ -92,7 +96,7 @@ namespace DigitalTransferCavityLock
             {
                 dataMS = 1000 * dataReader.EndReadSingleSampleUInt32(res) / refClockFreq;
             }
-            catch (DaqException)
+            catch (DaqException e)
             {
                 fail = true;
             }

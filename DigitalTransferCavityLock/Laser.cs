@@ -22,7 +22,7 @@ namespace DigitalTransferCavityLock
             }
         }
 
-        public override void UpdateLock()
+        public override void UpdateLock() // Without this override performance is drastically worse. 
         {
             if (!locked)
                 return;

@@ -58,6 +58,7 @@ namespace DAQ.HAL
             AddCounterChannel("SyncCounter", "/PXI1Slot5/ctr1");
             AddCounterChannel("RbCounter", "/PXI1Slot5/ctr2");
             AddCounterChannel("MBRCounter", "/PXI1Slot5/ctr3");
+            AddCounterChannel("ResetOut", "/PXI1Slot5/PFI2");
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
@@ -95,6 +96,7 @@ namespace DAQ.HAL
             dtclconfig.rampOut = "DTCLRampOut";
             dtclconfig.timebaseChannel = "20MHzTimebase";
             dtclconfig.timebaseFrequency = 20000000;
+            //dtclconfig.resetOut = "ResetOut";
 
             dtclconfig.AddCavity("tclCavity");
             dtclconfig.cavities["tclCavity"].ConfigureMasterLaser("RbReferenceLaser", "tclCavityLengthVoltage", "RbCounter", "10MHzRefClock", 10000000);

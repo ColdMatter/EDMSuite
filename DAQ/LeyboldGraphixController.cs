@@ -51,11 +51,26 @@ namespace DAQ.HAL
             return crc;
         }
 
+        private void AttemptReset()
+        {
+            if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
+            if (!Environs.Debug)
+            {
+                List<byte> s = new List<byte>();
+                s.Add(SpecialCharacters["EOT"]);
+                serial.RawIO.Write(s.ToArray());
+                serial.RawIO.Read();
+            }
+
+            Disconnect();
+        }
+
         private Response Send(List<byte> s)
         {
             int attempt = 0;
         func_start:
             attempt++;
+            if (attempt % 2 == 0) AttemptReset();
             if (attempt > 5) throw new Exception("More than 5 failed CRCs. Try restarting the controller.");
             List<byte> resp = new List<byte> { };
             if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);

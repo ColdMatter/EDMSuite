@@ -22,7 +22,7 @@ namespace DigitalTransferCavityLock
         public void windowLoaded()
         {
             DTCLConfig config = (DTCLConfig)Environs.Hardware.GetInfo("DTCLConfig");
-            rampGen = new RampGenerator(config.rampOut, config.synchronisationCounter, config.TimebaseChannel.PhysicalChannel, config.timebaseFrequency);
+            rampGen = new RampGenerator(config.rampOut, config.synchronisationCounter, config.TimebaseChannel.PhysicalChannel, config.timebaseFrequency, this, config.resetOut);
             window.RampAmplitude.Text = config.defaultRampAmplitude.ToString();
             window.RampOffset.Text = config.defaultRampOffset.ToString();
             window.RampFreq.Text = config.defaultRampFrequency.ToString();
@@ -34,7 +34,7 @@ namespace DigitalTransferCavityLock
 
                 cControl.Gain.Text = config.defaultCavityGain.ToString();
 
-                TabPage tp = new TabPage(cControl.Name);
+                TabPage tp = new TabPage(cControl.CavityName);
                 tp.Controls.Add(cControl);
                 window.CavityTabs.TabPages.Add(tp);
                 cavities.Add(cControl);
@@ -50,11 +50,10 @@ namespace DigitalTransferCavityLock
             }
         }
 
-        private int loopCount = 0;
+        public int loopCount = 0;
 
         public void ReadSamples()
         {
-            loopCount++;
             bool updateGUI = !window.GUIDisable.Checked || loopCount % ((int)500000 / rampGen.samplesPerHalfPeriod) == 0;
             foreach (CavityControl cavity in cavities)
                 cavity.InitDAQ();
@@ -73,15 +72,25 @@ namespace DigitalTransferCavityLock
         }
 
         public Stopwatch watch = new Stopwatch();
+        public bool ready = true;
+        public bool updateReady = false;
+        public bool close = false;
         public void Update()
         {
-            while (window.StartRamp.Checked)
-            {   
-                watch.Start();
+            while (window.StartRamp.Checked && !close)
+            {
+                Thread.Sleep(0);
+                if (!updateReady) continue;
+                if (/*!ready ||*/ loopCount % 2 == 1) continue;
+                updateReady = false;
+                //ready = false;
                 ReadSamples();
+                window.UpdatePlot();
                 watch.Stop();
                 UpdateLockRate(watch);
                 watch.Reset();
+                watch.Start();
+                //ready = true;
             }
         }
 

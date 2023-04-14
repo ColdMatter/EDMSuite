@@ -29,6 +29,7 @@ namespace DigitalTransferCavityLock
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.GUIDisable = new System.Windows.Forms.CheckBox();
             this.LockRate = new System.Windows.Forms.TextBox();
@@ -42,8 +43,15 @@ namespace DigitalTransferCavityLock
             this.RampFreq = new System.Windows.Forms.TextBox();
             this.labelrampfreq = new System.Windows.Forms.Label();
             this.CavityTabs = new System.Windows.Forms.TabControl();
+            this.PeakPlot = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.rampPlot = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis1 = new NationalInstruments.UI.XAxis();
+            this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.refPeak = new NationalInstruments.UI.ScatterPlot();
+            this.slavePeak = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PeakPlot)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -169,28 +177,75 @@ namespace DigitalTransferCavityLock
             // 
             // CavityTabs
             // 
-            this.CavityTabs.Location = new System.Drawing.Point(13, 208);
+            this.CavityTabs.Location = new System.Drawing.Point(13, 326);
             this.CavityTabs.Name = "CavityTabs";
             this.CavityTabs.SelectedIndex = 0;
             this.CavityTabs.Size = new System.Drawing.Size(288, 584);
             this.CavityTabs.TabIndex = 6;
             // 
+            // PeakPlot
+            // 
+            this.PeakPlot.Location = new System.Drawing.Point(13, 207);
+            this.PeakPlot.Name = "PeakPlot";
+            this.PeakPlot.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.rampPlot,
+            this.refPeak,
+            this.slavePeak});
+            this.PeakPlot.Size = new System.Drawing.Size(288, 113);
+            this.PeakPlot.TabIndex = 7;
+            this.PeakPlot.UseColorGenerator = true;
+            this.PeakPlot.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis1});
+            this.PeakPlot.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis1});
+            // 
+            // rampPlot
+            // 
+            this.rampPlot.HistoryCapacity = 10000;
+            this.rampPlot.XAxis = this.xAxis1;
+            this.rampPlot.YAxis = this.yAxis1;
+            // 
+            // xAxis1
+            // 
+            this.xAxis1.AutoMinorDivisionFrequency = 1000;
+            this.xAxis1.MinorDivisions.Interval = 0.001D;
+            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleExact;
+            // 
+            // yAxis1
+            // 
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleExact;
+            // 
+            // refPeak
+            // 
+            this.refPeak.XAxis = this.xAxis1;
+            this.refPeak.YAxis = this.yAxis1;
+            // 
+            // slavePeak
+            // 
+            this.slavePeak.XAxis = this.xAxis1;
+            this.slavePeak.YAxis = this.yAxis1;
+            // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(313, 799);
+            this.ClientSize = new System.Drawing.Size(313, 922);
+            this.Controls.Add(this.PeakPlot);
             this.Controls.Add(this.CavityTabs);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "ControlWindow";
             this.Text = "Digital Transfer Cavity Lock";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlWindow_FormClosing);
             this.Load += new System.EventHandler(this.ControlWindow_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PeakPlot)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -210,6 +265,12 @@ namespace DigitalTransferCavityLock
         public System.Windows.Forms.TextBox RampFreq;
         private System.Windows.Forms.Label labelrampfreq;
         public System.Windows.Forms.TabControl CavityTabs;
+        private NationalInstruments.UI.XAxis xAxis1;
+        private NationalInstruments.UI.YAxis yAxis1;
+        public NationalInstruments.UI.ScatterPlot refPeak;
+        public NationalInstruments.UI.ScatterPlot slavePeak;
+        public NationalInstruments.UI.WindowsForms.ScatterGraph PeakPlot;
+        public NationalInstruments.UI.ScatterPlot rampPlot;
     }
 }
 

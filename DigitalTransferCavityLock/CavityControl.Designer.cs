@@ -30,6 +30,8 @@ namespace DigitalTransferCavityLock
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Gain = new System.Windows.Forms.TextBox();
             this.EnableData = new System.Windows.Forms.CheckBox();
             this.RefVoltageFeedback = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -41,8 +43,6 @@ namespace DigitalTransferCavityLock
             this.refLocMS = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.SlaveLasersTabs = new System.Windows.Forms.TabControl();
-            this.label3 = new System.Windows.Forms.Label();
-            this.Gain = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +66,25 @@ namespace DigitalTransferCavityLock
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Reference Control";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 64);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Gain";
+            // 
+            // Gain
+            // 
+            this.Gain.Location = new System.Drawing.Point(169, 61);
+            this.Gain.Name = "Gain";
+            this.Gain.Size = new System.Drawing.Size(100, 20);
+            this.Gain.TabIndex = 0;
+            this.Gain.Text = "0";
+            this.Gain.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.Gain.Leave += new System.EventHandler(this.Gain_Leave);
             // 
             // EnableData
             // 
@@ -167,24 +186,6 @@ namespace DigitalTransferCavityLock
             this.SlaveLasersTabs.SelectedIndex = 0;
             this.SlaveLasersTabs.Size = new System.Drawing.Size(275, 386);
             this.SlaveLasersTabs.TabIndex = 5;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 64);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Gain";
-            // 
-            // Gain
-            // 
-            this.Gain.Location = new System.Drawing.Point(169, 61);
-            this.Gain.Name = "Gain";
-            this.Gain.Size = new System.Drawing.Size(100, 20);
-            this.Gain.TabIndex = 0;
-            this.Gain.Text = "0";
-            this.Gain.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // CavityControl
             // 

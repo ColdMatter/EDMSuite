@@ -100,11 +100,25 @@ namespace DigitalTransferCavityLock
                 UpdateRenderedObject(RampFreq, (Control c) => { c.Enabled = true; });
                 UpdateRenderedObject(RampOffset, (Control c) => { c.Enabled = true; });
             }
+            controller.rampGen.UpdateRampPlot(this, StartRamp.Checked);
         }
 
         private void RampFreq_Leave(object sender, EventArgs e)
         {
             //SetTextField(RampFreq, Convert.ToString((double)500000 / controller.rampGen.GetSamplesPerHalfPeriod(Convert.ToDouble(RampFreq.Text))));
+        }
+
+
+        public void UpdatePlot()
+        {
+            UpdateRenderedObject(CavityTabs, (TabControl c) => { ((CavityControl)c.SelectedTab.Controls[0]).UpdateRampPlot(this); });
+        }
+
+        private void ControlWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.rampGen.StopTasks();
+            controller.close = true;
+            Thread.Sleep(100);
         }
     }
 }
