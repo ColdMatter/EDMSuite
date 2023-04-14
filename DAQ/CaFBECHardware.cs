@@ -36,8 +36,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", pgBoard, 0, 3);
             AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
-            AddDigitalOutputChannel("chirpTrigger", pgBoard, 0, 20);
-            AddDigitalOutputChannel("blockTCLTrigger", pgBoard, 0, 26);
+            AddDigitalOutputChannel("slowingSwitch", pgBoard, 0, 31);
+            AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);  // send a TTL during which the TCL feedback is blocked, and the chirping voltage is summed up.
             AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
             AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
             AddDigitalOutputChannel("531aom", pgBoard, 0, 29);
@@ -78,16 +78,17 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
             AddDigitalInputChannel("blockBXflag", TCLInput, 0, 1);  //J17 J50
+            AddDigitalInputChannel("blockV10flag", TCLInput, 0, 2);  // J49 J50
 
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
-            AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3");
-            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4");
-            AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7");
+            AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3", -1, 1);
+            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4", - 1, 1);
+            AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7", 0, 10);
             AddAnalogOutputChannel("southOffset", TCLOutput + "/ao1");
-            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5");
-            AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6");
-            AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0");
+            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5", -1, 1);
+            AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6", -1, 1);
+            AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0", -1, 1);
 
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
@@ -113,11 +114,11 @@ namespace DAQ.HAL
             tclConfig.Cavities[northCavity].AddSlaveLaser("v10Lock", "v10Signal");
             tclConfig.Cavities[northCavity].AddDefaultGain("v10Lock", 0.2);
             tclConfig.Cavities[northCavity].AddFSRCalibration("v10Lock", 3.84);
-            // tclConfig.Cavities[northCavity].AddLockBlocker("v10Lock", "blockBXflag");
+            tclConfig.Cavities[northCavity].AddLockBlocker("v10Lock", "blockV10flag");
             tclConfig.Cavities[northCavity].AddSlaveLaser("bXLock", "bXSignal");
             tclConfig.Cavities[northCavity].AddDefaultGain("bXLock", 0.2);
             tclConfig.Cavities[northCavity].AddFSRCalibration("bXLock", 3.84);
-            tclConfig.Cavities[northCavity].AddLockBlocker("v00Lock", "blockBXflag");
+            tclConfig.Cavities[northCavity].AddLockBlocker("bXLock", "blockBXflag");
             // tclConfig.Cavities[northCavity].AddLockBlocker(TCLOutput + "/ao3", "blockBXflag");    // for test
 
             string southCavity = "SouthCavity";
@@ -149,7 +150,7 @@ namespace DAQ.HAL
 
 
             // MOTMaster configuration
-            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            MMConfig mmConfig = new MMConfig(false, false, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
 
@@ -162,16 +163,15 @@ namespace DAQ.HAL
             // Info.Add("SecondAOClockLine", pgBoard + "/PFI3");
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
-            // analogBoards.Add("AO", pgBoard);
-            // analogBoards.Add("SecondAO", pgBoard);
-            // Info.Add("AnalogBoards", analogBoards);
+            // analogBoards.Add("AO", aoBoard);
+            // analogBoards.Add("SecondAO", aoBoard2);
+            Info.Add("AnalogBoards", analogBoards);
 
-            // Info.Add("PatternGeneratorBoard", pgBoard);
             // Info.Add("PGClockLine", pgBoard + "/PFI4");
             // Info.Add("PGTriggerLine", pgBoard + "/PFI3");
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
-            // additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
-            // Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+            //additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
             // Info.Add("PGSlave0ClockLine", digitalPatternBoardAddress + "/PFI2");
             // Info.Add("PGSlave0TriggerLine", digitalPatternBoardAddress + "/PFI6");
         }

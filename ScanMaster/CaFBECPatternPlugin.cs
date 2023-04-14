@@ -33,14 +33,15 @@ namespace ScanMaster.Acquire.Plugins
             settings["ttlSwitchLine"] = 5;
             settings["switchLineDuration"] = 100;
             settings["flashlampPulseLength"] = 100;
-            settings["flashlampPulseInterval"] = 200000;
+            settings["flashlampPulseInterval"] = 500000;    // in microsecond
             settings["sequenceLength"] = 2;
-            settings["padStart"] = 20000;
-            settings["switchLineDuration"] = 5000;
-            settings["switchLineDelay"] = 660;
+            // settings["padStart"] = 20000;     // start time in microsecond
+            settings["aomLineDuration"] = 10000;    // in microsecond
+            settings["aomLineDelay"] = 2000;    // in microsecond
+            settings["padStart"] = 0;
 
             settings["chirpStart"] = 2000;
-            settings["chirpDuration"] = 10000;
+            settings["chirpDuration"] = 20000;
 
             settings["TTL2StartTimes"] = "10000";
             settings["TTL2Durations"] = "5000";
@@ -90,8 +91,8 @@ namespace ScanMaster.Acquire.Plugins
                 GateStartTimePGUnits,
                 (int)settings["ttlSwitchPort"],
                 (int)settings["ttlSwitchLine"],
-                (int)settings["switchLineDuration"],
-                (int)settings["switchLineDelay"],
+                (int)settings["aomLineDuration"],
+                (int)settings["aomLineDelay"],
                 (int)settings["chirpStart"],
                 (int)settings["chirpDuration"],
                 (bool)config.switchPlugin.Settings["switchActive"]

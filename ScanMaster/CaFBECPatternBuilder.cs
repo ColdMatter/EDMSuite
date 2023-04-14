@@ -21,11 +21,12 @@ namespace ScanMaster.Acquire.Patterns
         public int ShotSequence(int startTime, int NumberOfShots, int flashlampPulseInterval, int flashToQ, int flashlampPulseLength, 
             int[] ttl1StartTimes, int[] ttl1Durations, int[] ttl1Repetitions,
             int[] ttl2StartTimes, int[] ttl2Durations, int[] ttl2Repetitions, 
-            int delayToDetectorTrigger, int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, int chirpStart, int chirpDuration, bool modulation)
+            int delayToDetectorTrigger, int ttlSwitchPort, int ttlSwitchLine, int aomLineDuration, int aomLineDelay, int chirpStart, int chirpDuration, bool modulation)
         {
 
             int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
             int time = startTime;
+            // int time = 0;
             
             for (int ShotIndex = 0; ShotIndex < NumberOfShots; ShotIndex++)
             {
@@ -50,17 +51,21 @@ namespace ScanMaster.Acquire.Patterns
                     // first the pulse with the switch line high
 
                     // Pulse(time, switchLineDelay, switchLineDuration, switchChannel);
-                    Pulse(time, switchLineDelay, switchLineDuration,
+                    Pulse(time, aomLineDelay, aomLineDuration,
                         ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["531aom"]).BitNumber);
-                    Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration,  "analogPatternTrigger");
+                    Shotwithchirp(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration,  "analogPatternTrigger");
+                    // Pulse(time, chirpStart + 2 * chirpDuration, flashlampPulseInterval - (chirpStart + 2 * chirpDuration),
+                            // ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["531aom"]).BitNumber);
                 }
 
 
                 ///// OFF SHOTS /////
                 if (ShotIndex % 2 == 1)
                 {
-                    Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, chirpStart, chirpDuration, "analogPatternTrigger");
-                    
+                    // Pulse(time, chirpStart + 2 * chirpDuration, flashlampPulseInterval - (chirpStart + 2 * chirpDuration), ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["531aom"]).BitNumber);
+                    Shotonly(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "analogPatternTrigger");
+
+
                     // now with the switch line low, if modulation is true (otherwise another with line high)
                     /*
                     if (modulation)
@@ -93,7 +98,36 @@ namespace ScanMaster.Acquire.Patterns
         }
         */
 
-        public int Shot(int startTime, int flashToQ, int flashlampPulseLength, int delayToDetectorTrigger, int chirpStart, int chirpDuration, string detectorTriggerSource)
+        public int Shotwithchirp(int startTime, int flashToQ, int flashlampPulseLength, int delayToDetectorTrigger, int chirpStart, int chirpDuration, string detectorTriggerSource)
+        {
+            int time = 0;
+            int tempTime = 0;
+
+            // Flash pulse
+            tempTime = Pulse(startTime, startTime, flashlampPulseLength,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
+            if (tempTime > time) time = tempTime;
+            // Q pulse
+            tempTime = Pulse(startTime, flashToQ, Q_PULSE_LENGTH,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
+            if (tempTime > time) time = tempTime;
+
+            // Block slowing 531 and v10
+            tempTime = Pulse(startTime, chirpStart, chirpDuration,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["blockTCL"]).BitNumber);
+            if (tempTime > time) time = tempTime;
+
+            
+            // Detector trigger
+            tempTime = Pulse(startTime, delayToDetectorTrigger, DETECTOR_TRIGGER_LENGTH,
+                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
+            if (tempTime > time) time = tempTime;
+
+
+            return time;
+        }
+
+        public int Shotonly(int startTime, int flashToQ, int flashlampPulseLength, int delayToDetectorTrigger, string detectorTriggerSource)
         {
             int time = 0;
             int tempTime = 0;
@@ -107,16 +141,6 @@ namespace ScanMaster.Acquire.Patterns
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
             if (tempTime > time) time = tempTime;
 
-            // Block slowing 531 and v10
-            tempTime = Pulse(startTime, chirpStart-100, chirpDuration+200,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["blockTCLTrigger"]).BitNumber);
-            if (tempTime > time) time = tempTime;
-
-            // Chirp slowing 531
-            tempTime = Pulse(startTime, chirpStart, chirpDuration,
-                ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["chirpTrigger"]).BitNumber);
-            if (tempTime > time) time = tempTime;
-            
             // Detector trigger
             tempTime = Pulse(startTime, delayToDetectorTrigger, DETECTOR_TRIGGER_LENGTH,
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
