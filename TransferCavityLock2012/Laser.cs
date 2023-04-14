@@ -22,7 +22,7 @@ namespace TransferCavityLock2012
         public String PhotoDiodeChannel;
         public Cavity ParentCavity;
         private TransferCavityLock2012LaserControllable laser;
-        protected bool lockBlocked;
+        protected bool lockBlocked;  //protected : The type or member can be accessed only by code in the same class , or in a class that is derived from that class
 
         public enum LaserState
         {
@@ -110,6 +110,7 @@ namespace TransferCavityLock2012
         {
             LatestScanData = scanData;
             lockBlocked = shouldBlock;
+            System.Console.WriteLine(shouldBlock);
             if (!lockBlocked)
             {
                 switch (lState)
@@ -125,6 +126,7 @@ namespace TransferCavityLock2012
                             newFit = FitUsingDataForBestGuess(rampData, scanData);
                         }
                         Fit = newFit;
+                        // System.Console.WriteLine("locked");
                         break;
 
                     case LaserState.LOCKING:
@@ -134,8 +136,11 @@ namespace TransferCavityLock2012
 
                     case LaserState.FREE:
                         break;
+                        
                 }
             }
+
+            // else System.Console.WriteLine("lockbreak");
         }
 
         protected LorentzianFit FitWithPreviousAsBestGuess(double[] rampData, double[] scanData)

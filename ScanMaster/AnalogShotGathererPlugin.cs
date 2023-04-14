@@ -87,7 +87,10 @@ namespace ScanMaster.Acquire.Plugins
 				if (!Environs.Debug) 
 				{
 					inputTask.Start();
+					Console.WriteLine(0);
+					Console.WriteLine((int)settings["gateLength"]);
 					latestData = reader.ReadMultiSample((int)settings["gateLength"]);
+					Console.WriteLine(1);
 					inputTask.Stop();
 				}
 			}

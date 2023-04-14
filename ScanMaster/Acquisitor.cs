@@ -75,7 +75,7 @@ namespace ScanMaster.Acquire
 				config.switchPlugin.AcquisitionStarting();
 				config.yagPlugin.AcquisitionStarting();
 				config.analogPlugin.AcquisitionStarting();
-                config.gpibPlugin.AcquisitionStarting();
+				config.gpibPlugin.AcquisitionStarting();
 
 				for (int scanNumber = 0 ;; scanNumber++)
 				{

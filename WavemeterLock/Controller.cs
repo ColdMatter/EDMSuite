@@ -32,14 +32,14 @@ namespace WavemeterLock
         Stopwatch stopWatch = new Stopwatch();
         Stopwatch stopWatchGraph = new Stopwatch();
         private List<double> scanTimes;
-        public int numScanAverages = 100;
+        public int numScanAverages = 5;
 
 
         #region Set up TCP channel and remote methods
 
         public void initializeTCPChannel()
         {
-            computer = "IC-CZC136CFDJ";
+            computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
             hostTCPChannel = eHelper.serverTCPChannel;
 
@@ -119,7 +119,9 @@ namespace WavemeterLock
         #endregion
 
         public Dictionary<string, Laser> lasers;
+        public Dictionary<string, bool> lockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
+        public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
         public Dictionary<string, double> timeList = new Dictionary<string,double>();
         private LockForm ui;
@@ -131,7 +133,6 @@ namespace WavemeterLock
             config = (WavemeterLockConfig)Environs.Hardware.GetInfo(configName);
             computer = hostName;
             hostTCPChannel = channelNumber;
-
         }
         
         public Color selectColor(int par)//Assign a plot line color for each laser
@@ -191,29 +192,59 @@ namespace WavemeterLock
             wavemeterContrller.changeConnectionStatus(channelNum,status);
         }
 
-        public void initializeLasers()//For each laser in configuration, create a control panel in main form
+        public void initializeLasers()
         {
-            lasers = new Dictionary<string, Laser>(); 
+            lasers = new Dictionary<string, Laser>();
+            lockBlocked = new Dictionary<string, bool>();
 
+            //Config hardware channel and time stamp
             foreach (string slaveLaser in config.slaveLasers.Keys)
             {
-                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
                 helper.Add(slaveLaser, new DAQMxWavemeterLockLaserControlHelper(config.slaveLasers[slaveLaser]));
                 timeList.Add(slaveLaser, 0);
             }
 
+            //Create instances of class Laser, register lasers in controller's dictionary
             foreach (KeyValuePair<string, string> entry in config.slaveLasers)
             {
                 string laser = entry.Key;
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
                 slave.WLMChannel = config.channelNumbers[laser];
-
             }
 
-            Dictionary<string, string> analogs = new Dictionary<string, string>();
+            //Config lock block
+            foreach (KeyValuePair<string, string> entry in config.lockBlockFlag)
+            {
+                string laser = entry.Key;
+                blockHelper.Add(laser, new DAQMxWavemeterLockBlockHelper(laser, config.lockBlockFlag[laser]));
+                lockBlocked.Add(laser, false);
+            }
 
-            
+            //Config initial set points and gains
+            foreach (KeyValuePair<string, double> entry in config.setPoints)
+            {
+                string laser = entry.Key;
+                lasers[laser].setFrequency = config.setPoints[laser];
+            }
+
+            foreach (KeyValuePair<string, double> entry in config.pGains)
+            {
+                string laser = entry.Key;
+                lasers[laser].PGain = config.pGains[laser];
+            }
+
+            foreach (KeyValuePair<string, double> entry in config.IGains)
+            {
+                string laser = entry.Key;
+                lasers[laser].IGain = config.IGains[laser];
+            }
+
+            foreach (string slaveLaser in config.slaveLasers.Keys)
+            {
+                ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
+            }
+
         }
 
         public enum ControllerState
@@ -222,9 +253,6 @@ namespace WavemeterLock
         };
 
         public ControllerState WMLState = ControllerState.STOPPED;
-
-
-
 
 
         #region methods
@@ -428,29 +456,66 @@ namespace WavemeterLock
         {
             if (WMLState != ControllerState.STOPPED)
             {
+
                 foreach (string slave in lasers.Keys)
                 {
+                    if (lockBlocked.ContainsKey(slave))
+                    {
+                        checkBlockStatus(slave);
+                        updateFrequency(lasers[slave]);
 
-                    updateFrequency(lasers[slave]);
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
+                        {
 
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
+
+                            if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+
+                            {
+                                faultyLaser = slave;
+                                lasers[slave].DisengageLock();
+                                Thread msgThread = new Thread(errorMsg);
+                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                                msgThread.Start();
+                            }
+                            else
+                            {
+                                lasers[slave].UpdateLock();
+                            }
+                        }
+
+                        else
+                            lasers[slave].UpdateBlockedLock();
+                    }
+
+                    else
                     {
 
-                        if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+                        updateFrequency(lasers[slave]);
 
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED)
                         {
-                            faultyLaser = slave;
-                            lasers[slave].DisengageLock();
-                            Thread msgThread = new Thread(errorMsg);
-                            indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                            msgThread.Start();
+
+
+                            if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
+
+                            {
+                                faultyLaser = slave;
+                                lasers[slave].DisengageLock();
+                                Thread msgThread = new Thread(errorMsg);
+                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                                msgThread.Start();
+                            }
+                            else
+                            {
+                                lasers[slave].UpdateLock();
+                            }
                         }
+
                         else
-                        {
-                            lasers[slave].UpdateLock();
-                        }
+                            lasers[slave].UpdateBlockedLock();
                     }
                 }
+            }
 
                 loopcount++;
 
@@ -472,8 +537,18 @@ namespace WavemeterLock
 
                 updateLockRate(stopWatch);
                 stopWatch.Restart();
-            }
             
+            
+        }
+
+        public void removeWavemeterLock()
+        {
+            wavemeterContrller.removeWavemeterLock(thisComputerName);
+        }
+
+        void checkBlockStatus(string laser)
+        {
+            lockBlocked[laser] = blockHelper[laser].isBlocked;
         }
 
         public void errorMsg()

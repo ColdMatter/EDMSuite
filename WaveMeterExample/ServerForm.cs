@@ -33,6 +33,15 @@ namespace WavemeterLockServer
             controller.startMeasure();
         }
 
+        public void addStringToListBox(string clientName)
+        {
+            listBox1.Items.Add(clientName);
+        }
+
+        public void deleteStringToListBox(string clientName)
+        {
+            listBox1.Items.Remove(clientName);
+        }
         
 
         public void SetTextField(Control box, string text)
@@ -84,7 +93,8 @@ namespace WavemeterLockServer
                 controller.bMeas = true;
             else controller.bMeas = false;
 
-
+            // check whether wavemeter is running and apply the text of the Open/Close button
+            controller.bAvail = (WLM.Instantiate(WLM.cInstCheckForWLM, 0, 0, 0) > 0);
             if (controller.bAvail)
             {
                 SetTextField(btnOpen, "Close Server");
@@ -233,6 +243,9 @@ namespace WavemeterLockServer
 
         }
 
-        
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
