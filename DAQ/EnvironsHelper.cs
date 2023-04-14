@@ -174,7 +174,14 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-#if EDM
+                case "IC-CZC202DMH1":
+                    Hardware = new CaFBECHardware();
+                    FileSystem = new CaFBECFileSystem();
+                    Debug = false;
+                    //ExperimentType = "edm";
+                    break;
+
+                #if EDM
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();

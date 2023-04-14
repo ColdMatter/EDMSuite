@@ -473,6 +473,8 @@ namespace MOTMaster
                         }
                         //if (config.CameraUsed) finishCameraControl();
                         //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                        //if (config.CameraUsed) finishCameraControl();
+                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
 
                         if (!config.Debug) clearDigitalPattern(sequence);
                     //}

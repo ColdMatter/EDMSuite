@@ -82,6 +82,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
 			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
 			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
+			patternPlugins.Add("CaFBEC", typeof(CaFBECPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
