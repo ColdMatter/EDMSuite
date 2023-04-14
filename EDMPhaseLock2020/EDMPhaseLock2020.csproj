@@ -45,6 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\TransferCavityLock2023\</OutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\CaFBEC\</OutputPath>

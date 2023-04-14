@@ -622,6 +622,8 @@
     <Compile Include="Agilent33250Synth.cs" />
     <Compile Include="AnalogStaticBuilderSingleBoard.cs" />
     <Compile Include="AnalogStaticBuilder.cs" />
+    <Compile Include="CaFBECFileSystem.cs" />
+    <Compile Include="CaFBECHardware.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
     <Compile Include="DAQMxPatternGenerator.cs">
