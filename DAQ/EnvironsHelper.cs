@@ -178,6 +178,8 @@ namespace DAQ.Environment
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1234;
                     //ExperimentType = "edm";
                     break;
 

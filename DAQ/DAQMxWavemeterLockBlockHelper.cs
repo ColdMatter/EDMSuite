@@ -34,9 +34,9 @@ namespace DAQ.WavemeterLock
             diChannel =
                     (DigitalInputChannel)Environs.Hardware.DigitalInputChannels[digitalChannelName];
             diChannel.AddToTask(readDItask);
-            readDItask.Timing.ConfigureChangeDetection(diChannel.PhysicalChannel, diChannel.PhysicalChannel, SampleQuantityMode.ContinuousSamples);
-            readDItask.SynchronizeCallbacks = true;
-            readDItask.DigitalChangeDetection += readDItask_DigitalChangeDetection;
+            //readDItask.Timing.ConfigureChangeDetection(diChannel.PhysicalChannel, diChannel.PhysicalChannel, SampleQuantityMode.ContinuousSamples);
+            //readDItask.SynchronizeCallbacks = true;
+            //readDItask.DigitalChangeDetection += readDItask_DigitalChangeDetection;
             readDItask.Control(TaskAction.Verify);
             reader = new DigitalSingleChannelReader(readDItask.Stream);
             readDItask.Start();
@@ -45,8 +45,13 @@ namespace DAQ.WavemeterLock
 
         private void readDItask_DigitalChangeDetection(object sender, DigitalChangeDetectionEventArgs e)
         {
-            bool[] data = reader.ReadSingleSampleMultiLine();
-            isBlocked = !data[0];
+            bool data = reader.ReadSingleSampleSingleLine();
+            isBlocked = !data;
+        }
+
+        public void checkLockBlockStatus()
+        {
+            isBlocked = reader.ReadSingleSampleSingleLine();
         }
 
     }

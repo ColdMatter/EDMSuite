@@ -81,6 +81,7 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
+            this.TestLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
@@ -382,6 +383,7 @@ namespace WavemeterLock
             // 
             // controlPanel
             // 
+            this.controlPanel.Controls.Add(this.TestLabel);
             this.controlPanel.Controls.Add(this.setAsReading);
             this.controlPanel.Controls.Add(this.offset);
             this.controlPanel.Controls.Add(this.label7);
@@ -489,6 +491,16 @@ namespace WavemeterLock
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
             // 
+            // TestLabel
+            // 
+            this.TestLabel.AutoSize = true;
+            this.TestLabel.Location = new System.Drawing.Point(353, 163);
+            this.TestLabel.Name = "TestLabel";
+            this.TestLabel.Size = new System.Drawing.Size(33, 13);
+            this.TestLabel.TabIndex = 77;
+            this.TestLabel.Text = "None";
+            this.TestLabel.Click += new System.EventHandler(this.label12_Click);
+            // 
             // LockControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -567,5 +579,6 @@ namespace WavemeterLock
         private Button offsetSet;
         private Button setAsReading;
         private Label labelOutOfRange;
+        private Label TestLabel;
     }
 }
