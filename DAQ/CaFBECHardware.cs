@@ -77,7 +77,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v32Signal", TCLInput + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
-            AddDigitalInputChannel("blockBXflag", TCLInput, 0, 3);  //PFI 1, receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
+            AddDigitalInputChannel("blockBXflag", TCLInput, 1, 1);  //PFI 1, receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
             // AddDigitalInputChannel("blockV10flag", TCLInput, 0, 2);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
 
             //TCL Output Channels
@@ -95,9 +95,11 @@ namespace DAQ.HAL
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("v00", "v00Lock", 1);
             wmlConfig.AddSlaveLaser("BXSlowing", "bXLock", 2);
+            wmlConfig.AddSlaveLaser("v10", "v10Lock", 3);
             wmlConfig.AddLockBlock("BXSlowing", "blockBXflag");
-            wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -100);
-            wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 100);
+            wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
+            wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 300);
+            wmlConfig.AddLaserConfiguration("v10", 476.958908, -10, -500);
             Info.Add("Default", wmlConfig);
 
             /*
