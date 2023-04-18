@@ -377,7 +377,7 @@ namespace WavemeterLock
         public void EngageLock(string slavename)
         {
             Laser laser = lasers[slavename];
-            laser.ResetOutput();
+            //laser.ResetOutput();
             laser.Lock();
         }
 

@@ -151,6 +151,7 @@ namespace WavemeterLock
             }
 
             controller.removeWavemeterLock();
+            Application.Exit();
         }
     }
 }

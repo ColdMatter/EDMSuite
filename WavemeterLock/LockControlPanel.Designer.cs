@@ -81,12 +81,14 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.TestLabel = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
             this.groupBoxErrorPlot.SuspendLayout();
             this.groupBoxLaserInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).BeginInit();
             this.SuspendLayout();
             // 
             // stepDown
@@ -148,9 +150,9 @@ namespace WavemeterLock
             // 
             this.resetBtn.Location = new System.Drawing.Point(254, 156);
             this.resetBtn.Name = "resetBtn";
-            this.resetBtn.Size = new System.Drawing.Size(95, 23);
+            this.resetBtn.Size = new System.Drawing.Size(43, 23);
             this.resetBtn.TabIndex = 59;
-            this.resetBtn.Text = "Reset Output";
+            this.resetBtn.Text = "Reset";
             this.resetBtn.UseVisualStyleBackColor = true;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
@@ -383,7 +385,8 @@ namespace WavemeterLock
             // 
             // controlPanel
             // 
-            this.controlPanel.Controls.Add(this.TestLabel);
+            this.controlPanel.Controls.Add(this.LEDBlockIndicator);
+            this.controlPanel.Controls.Add(this.label12);
             this.controlPanel.Controls.Add(this.setAsReading);
             this.controlPanel.Controls.Add(this.offset);
             this.controlPanel.Controls.Add(this.label7);
@@ -491,15 +494,24 @@ namespace WavemeterLock
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
             // 
-            // TestLabel
+            // label12
             // 
-            this.TestLabel.AutoSize = true;
-            this.TestLabel.Location = new System.Drawing.Point(353, 163);
-            this.TestLabel.Name = "TestLabel";
-            this.TestLabel.Size = new System.Drawing.Size(33, 13);
-            this.TestLabel.TabIndex = 77;
-            this.TestLabel.Text = "None";
-            this.TestLabel.Click += new System.EventHandler(this.label12_Click);
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(316, 161);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(49, 13);
+            this.label12.TabIndex = 78;
+            this.label12.Text = "Blocked:";
+            // 
+            // LEDBlockIndicator
+            // 
+            this.LEDBlockIndicator.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.LEDBlockIndicator.Location = new System.Drawing.Point(366, 156);
+            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
+            this.LEDBlockIndicator.OffColor = System.Drawing.Color.Lime;
+            this.LEDBlockIndicator.OnColor = System.Drawing.Color.Crimson;
+            this.LEDBlockIndicator.Size = new System.Drawing.Size(23, 23);
+            this.LEDBlockIndicator.TabIndex = 79;
             // 
             // LockControlPanel
             // 
@@ -531,6 +543,7 @@ namespace WavemeterLock
             this.groupBoxErrorPlot.ResumeLayout(false);
             this.groupBoxLaserInfo.ResumeLayout(false);
             this.groupBoxLaserInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -579,6 +592,7 @@ namespace WavemeterLock
         private Button offsetSet;
         private Button setAsReading;
         private Label labelOutOfRange;
-        private Label TestLabel;
+        private Label label12;
+        private NationalInstruments.UI.WindowsForms.Led LEDBlockIndicator;
     }
 }
