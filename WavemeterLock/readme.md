@@ -78,7 +78,11 @@ Here are the things you need to have before installing Wavemeter Lock.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Frequently occured issues
 
+* License issue: 
+  Delete WavemeterLock/Properties/licenses.licx. 
+  In Visual Studio, click Extension drop down menu, select Measurement Studio, refresh license.
 
 ## Operation
 
@@ -136,6 +140,7 @@ The goal of future updates:
 
 ## Update Log
 
+* [v 1.0.4] April 18th: Changed lock block digital channel reading method from event triggered to polling, increased stability and made compatible with PFI channels.
 * [v 1.0.3] April 7th 2023: Added laser initial configuration. You can now set the default set frequency and gains. It is useful if you have multiple lasers with known optimized setpoints and gains.
 * [v 1.0.2] April 6th 2023: Added lock block function. Wavemeter lock can now be blocked via an external TTL signal, you can use it to temporarily chirp or modulate your laser.
 * [v 1.0.1] April 5th 2023: Added a list in server showing connected clients
