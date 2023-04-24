@@ -13,15 +13,15 @@ namespace DigitalTransferCavityLock
     {
 
         public Cavity cavity;
-        public CounterReader cavityCounter;
+        public CounterReaderHelper cavityCounter;
         public RampGenerator rampGen;
-        public List<SlaveLaserControl> slaveLasers = new List<SlaveLaserControl> { };
+        public Dictionary<string,SlaveLaserControl> slaveLasers = new Dictionary<string, SlaveLaserControl> { };
         public string CavityName;
         public CavityControl(string name, string feedback, string counter, string samplingClock, string refClock, double _refClockFreq, string sync, RampGenerator _rampGen)
         {
             InitializeComponent();
             CavityName = name;
-            cavityCounter = new CounterReader(counter, samplingClock, refClock, _refClockFreq, sync);
+            cavityCounter = new CounterReaderHelper(counter, samplingClock, refClock, _refClockFreq, sync);
             cavity = new Cavity(() => { return cavityCounter.dataMS; }, feedback);
             rampGen = _rampGen;
         }
@@ -30,7 +30,7 @@ namespace DigitalTransferCavityLock
         {
             TabPage tp = new TabPage(sl.laserName);
             tp.Controls.Add(sl);
-            slaveLasers.Add(sl);
+            slaveLasers.Add(sl.laserName,sl);
             this.SlaveLasersTabs.Controls.Add(tp);
         }
 
@@ -43,7 +43,7 @@ namespace DigitalTransferCavityLock
                 cavityCounter.fail = true;
                 cavityCounter.ready = true;
             }
-            foreach (SlaveLaserControl sl in slaveLasers)
+            foreach (SlaveLaserControl sl in slaveLasers.Values)
                 sl.InitDAQ();
         }
 
@@ -59,7 +59,7 @@ namespace DigitalTransferCavityLock
             if(cavity.Locked)
                 this.SetTextField(this.RefVoltageFeedback, cavity.CurrentVoltage.ToString());
 
-            foreach (SlaveLaserControl sl in slaveLasers)
+            foreach (SlaveLaserControl sl in slaveLasers.Values)
                 sl.UpdateData(updateGUI);
 
             if (!updateGUI) return;
@@ -107,7 +107,7 @@ namespace DigitalTransferCavityLock
                 cavity.ArmLock(Convert.ToDouble(this.refLockLocV.Text), Convert.ToDouble(this.Gain.Text));
                 this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = false; });
                 //this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = false; });
-                foreach (SlaveLaserControl laser in slaveLasers)
+                foreach (SlaveLaserControl laser in slaveLasers.Values)
                     if(laser.InputEnable.Checked)
                         laser.UpdateRenderedObject(laser.LockSlave ,(Control a) => { a.Enabled = true; });
                 this.UpdateRenderedObject(this.EnableData, (Control a) => { a.Enabled = false; });
@@ -117,7 +117,7 @@ namespace DigitalTransferCavityLock
                 cavity.DisarmLock();
                 this.UpdateRenderedObject(this.RefVoltageFeedback, (Control a) => { a.Enabled = true; });
                 //this.UpdateRenderedObject(this.Gain, (Control a) => { a.Enabled = true; });
-                foreach (SlaveLaserControl laser in slaveLasers)
+                foreach (SlaveLaserControl laser in slaveLasers.Values)
                     laser.UpdateRenderedObject(laser.LockSlave, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.EnableData, (Control a) => { a.Enabled = true; });
             }
@@ -125,7 +125,7 @@ namespace DigitalTransferCavityLock
 
         public void UpdateAfterSlaveUnlock()
         {
-            foreach (SlaveLaserControl laser in slaveLasers)
+            foreach (SlaveLaserControl laser in slaveLasers.Values)
                 if (laser.LockSlave.Checked) return;
             this.UpdateRenderedObject(this.LockReference, (Control c) => { c.Enabled = true; });
         }

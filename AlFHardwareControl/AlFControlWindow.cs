@@ -72,8 +72,8 @@ namespace AlFHardwareControl
         private void AddSafetyInterlocks()
         {
             // Heater Shutoff
-            Func<bool> Loop1On = () => { return Loop1Status.Text == "ON"; };
-            Func<bool> Loop2On = () => { return Loop2Status.Text == "ON"; };
+            Func<bool> Loop1On = () => { return Loop1Status.Text == "ON" && controller.interlocksActive; };
+            Func<bool> Loop2On = () => { return Loop2Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> heaterOn = () => { return Loop1On() || Loop2On(); };
             tSched.AddEvent(new SafetyInterlock(tSched, LabelA.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
             tSched.AddEvent(new SafetyInterlock(tSched, LabelB.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
@@ -81,7 +81,7 @@ namespace AlFHardwareControl
             tSched.AddEvent(new SafetyInterlock(tSched, LabelD.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
 
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 1", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 1", Loop1On));
-            tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 2", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 2", Loop1On));
+            tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 2", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 2", Loop2On));
 
         }
 
@@ -134,6 +134,11 @@ namespace AlFHardwareControl
             tScheduler.AddResource(this.LabelD.Text + " Temperature", () =>
             {
                 return TempD.Text.Trim(new char[] { 'K', ' ', '+' });
+            });
+
+            tScheduler.AddResource("Cryo state", () =>
+            {
+                return this.CryoStatus.Text;
             });
             #endregion
 
@@ -489,7 +494,7 @@ namespace AlFHardwareControl
 
         }
 
-        private void EngageCryo_Click(object sender, EventArgs e)
+        private void EngageCryo_Click(object sender, EventArgs eargs)
         {
             if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 return;
@@ -500,11 +505,18 @@ namespace AlFHardwareControl
             */
             lock (controller.lakeshore)
             {
-                controller.lakeshore.SetRelayParameters(1, 1);
+                try
+                {
+                    controller.lakeshore.SetRelayParameters(1, 1);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
+                }
             }
         }
 
-        private void DisengageCryo_Click(object sender, EventArgs e)
+        private void DisengageCryo_Click(object sender, EventArgs eargs)
         {
             /*
             UpdateRenderedObject(this.DisengageCryo, (Button but) => { but.Enabled = false; });
@@ -513,51 +525,86 @@ namespace AlFHardwareControl
             */
             lock (controller.lakeshore)
             {
-                controller.lakeshore.SetRelayParameters(1, 0);
+                try
+                {
+                    controller.lakeshore.SetRelayParameters(1, 0);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
+                }
             }
         }
 
-        private void Loop1Engage_Click(object sender, EventArgs e)
+        private void Loop1Engage_Click(object sender, EventArgs eargs)
         {
             if(controller.loop1PV > TYPE_K_SHUTOFF && controller.InterlocksActive) return;
             UpdateRenderedObject(this.Loop1Engage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
-                controller.eurotherm.SetHeaterShutoff(0, false);
-                controller.eurotherm.SetAMSwitch(0, false);
+                try
+                {
+                    controller.eurotherm.SetHeaterShutoff(0, false);
+                    controller.eurotherm.SetAMSwitch(0, false);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             }
         }
 
-        private void Loop1Disengage_Click(object sender, EventArgs e)
+        private void Loop1Disengage_Click(object sender, EventArgs eargs)
         {
             UpdateRenderedObject(this.Loop1Disengage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
-                controller.eurotherm.SetAMSwitch(0, true);
-                controller.eurotherm.SetManOut(0, 0);
-                controller.eurotherm.SetHeaterShutoff(0, true);
+                try
+                {
+                    controller.eurotherm.SetHeaterShutoff(0, true);
+                    controller.eurotherm.SetAMSwitch(0, true);
+                    controller.eurotherm.SetManOut(0, 0);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             }
         }
 
-        private void Loop2Engage_Click(object sender, EventArgs e)
+        private void Loop2Engage_Click(object sender, EventArgs eargs)
         {
             if (controller.loop2PV > TYPE_K_SHUTOFF && controller.InterlocksActive) return;
             UpdateRenderedObject(this.Loop2Engage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
-                controller.eurotherm.SetHeaterShutoff(1, false);
-                controller.eurotherm.SetAMSwitch(1, false);
+                try
+                {
+                    controller.eurotherm.SetHeaterShutoff(1, false);
+                    controller.eurotherm.SetAMSwitch(1, false);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             }
         }
 
-        private void Loop2Disengage_Click(object sender, EventArgs e)
+        private void Loop2Disengage_Click(object sender, EventArgs eargs)
         {
             UpdateRenderedObject(this.Loop2Disengage, (Button but) => { but.Enabled = false; });
             lock (controller.eurotherm)
             {
-                controller.eurotherm.SetAMSwitch(1, true);
-                controller.eurotherm.SetManOut(1, 0);
-                controller.eurotherm.SetHeaterShutoff(1, true);
+                try
+                {
+                    controller.eurotherm.SetHeaterShutoff(1, true);
+                    controller.eurotherm.SetAMSwitch(1, true);
+                    controller.eurotherm.SetManOut(1, 0);
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    this.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             }
         }
 

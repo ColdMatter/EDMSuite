@@ -27,6 +27,8 @@ namespace DAQ.DigitalTransferCavityLock
 
         public string resetOut = "";
 
+        public int TCPChannel = 2555;
+
         public CounterChannel ResetOut
         {
             get

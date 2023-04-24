@@ -7,7 +7,7 @@ using NationalInstruments.DAQmx;
 
 namespace DigitalTransferCavityLock
 {
-    public class CounterReader
+    public class CounterReaderHelper
     {
 
         public string counterChannel;
@@ -40,7 +40,7 @@ namespace DigitalTransferCavityLock
             }
         }*/
 
-        public CounterReader(string counter, string samplingClock, string refClock, double _refClockFreq, string sync)
+        public CounterReaderHelper(string counter, string samplingClock, string refClock, double _refClockFreq, string sync)
         {
             counterChannel = counter;
             samplingChannel = samplingClock;

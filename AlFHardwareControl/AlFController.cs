@@ -218,16 +218,37 @@ namespace AlFHardwareControl
 
             ThreadSync DAQ_sync = new ThreadSync();
             DAQ_sync.CreateDelegateThread(() => {
-                UpdateLakeshoreTemperature();
-                UpdateCryoState();
+                try
+                {
+                    UpdateLakeshoreTemperature();
+                    UpdateCryoState();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
+                }
             });
 
             DAQ_sync.CreateDelegateThread(() => {
-                UpdatePressure();
-            });
+                try
+                {
+                    UpdatePressure();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with Leybold pressure controller:" + e.ToString());
+                }
+        });
 
             DAQ_sync.CreateDelegateThread(() => {
-                UpdateTypeK();
+                try
+                {
+                    UpdateTypeK();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             });
 
             DAQ_sync.SwitchToData();

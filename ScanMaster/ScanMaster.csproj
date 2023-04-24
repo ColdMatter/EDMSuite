@@ -538,6 +538,10 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DigitalTransferCavityLock\DigitalTransferCavityLock.csproj">
+      <Project>{5e693c98-6205-4be6-a9d2-3ca4484c41a6}</Project>
+      <Name>DigitalTransferCavityLock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
@@ -560,7 +564,10 @@
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -622,6 +629,7 @@
     <Compile Include="FourShutterPatternPlugin.cs" />
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
+    <Compile Include="DTCLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
     <Compile Include="CaFBECPatternBuilder.cs" />
@@ -860,7 +868,6 @@
     <Compile Include="CaFBECPatternPlugin.cs" />
     <Compile Include="ZeemanSisyphusPatternPlugin.cs" />
     <Content Include="App.ico" />
-    <Content Include="Properties\licenses.licx.txt" />
     <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>

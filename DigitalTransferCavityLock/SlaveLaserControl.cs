@@ -13,7 +13,7 @@ namespace DigitalTransferCavityLock
     {
         public string laserName;
         public Laser laser;
-        public CounterReader laserCounter;
+        public CounterReaderHelper laserCounter;
         public RampGenerator rampGen;
         public CavityControl cavity;
 
@@ -25,7 +25,7 @@ namespace DigitalTransferCavityLock
             laserName = name;
             cavity = _cavity;
             laser = new Laser(() => { return laserCounter.dataMS; }, feedback, cavity.cavity);
-            laserCounter = new CounterReader(counter, samplingClock, refClock, _refClockFreq, sync);
+            laserCounter = new CounterReaderHelper(counter, samplingClock, refClock, _refClockFreq, sync);
             rampGen = _rampGen;
             VToMHz = ((DTCLConfig)Environs.Hardware.GetInfo("DTCLConfig")).MHzConv;
         }
