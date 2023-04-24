@@ -377,7 +377,7 @@ namespace WavemeterLock
         public void EngageLock(string slavename)
         {
             Laser laser = lasers[slavename];
-            laser.ResetOutput();
+            //laser.ResetOutput();
             laser.Lock();
         }
 
@@ -463,6 +463,7 @@ namespace WavemeterLock
                     {
                         checkBlockStatus(slave);
                         updateFrequency(lasers[slave]);
+                        panelList[slave].updateLockBlockStatus(lockBlocked[slave]);
 
                         if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
                         {
@@ -548,6 +549,7 @@ namespace WavemeterLock
 
         void checkBlockStatus(string laser)
         {
+            blockHelper[laser].checkLockBlockStatus();
             lockBlocked[laser] = blockHelper[laser].isBlocked;
         }
 

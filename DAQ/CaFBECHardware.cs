@@ -8,7 +8,7 @@ using System.Collections;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-
+using DAQ.WavemeterLock;
 using DAQ.Pattern;
 using DAQ.Remoting;
 using DAQ.TransferCavityLock2012;
@@ -37,10 +37,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("slowingSwitch", pgBoard, 0, 31);
-            AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);  // send a TTL during which the TCL feedback is blocked, and the chirping voltage is summed up.
-            AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
-            AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
-            AddDigitalOutputChannel("531aom", pgBoard, 0, 29);
+            AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);  // send a TTL during which the chirping function is generated, the TCL feedback is blocked, and the chirping voltage is summed up.
+            // AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
+            // AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
+            AddDigitalOutputChannel("531aom", pgBoard, 0, 23);
 
             // AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
             // AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
@@ -54,7 +54,7 @@ namespace DAQ.HAL
             // map the analog input channels for "pg" card
             // AddAnalogInputChannel("HeliumIn", pgBoard + "/ai0", AITerminalConfiguration.Rse);
             // AddAnalogInputChannel("SF6In", pgBoard + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pmt", pgBoard + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("pmt", TCLInput + "/ai0", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("laser", pgBoard + "/ao0", -10, 10);
@@ -70,15 +70,15 @@ namespace DAQ.HAL
             AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);    
             AddAnalogInputChannel("v00Signal", TCLInput + "/ai3", AITerminalConfiguration.Rse);    
             AddAnalogInputChannel("v10Signal", TCLInput + "/ai10", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("bXSignal", TCLInput + "/ai15", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("bXSignal", TCLInput + "/ai14", AITerminalConfiguration.Rse);
 
             AddAnalogInputChannel("southSignal", TCLInput + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v21Signal", TCLInput + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v32Signal", TCLInput + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
-            AddDigitalInputChannel("blockBXflag", TCLInput, 0, 1);  //J17 J50
-            AddDigitalInputChannel("blockV10flag", TCLInput, 0, 2);  // J49 J50
+            AddDigitalInputChannel("blockBXflag", TCLInput, 1, 1);  //PFI 1, receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
+            // AddDigitalInputChannel("blockV10flag", TCLInput, 0, 2);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
 
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
@@ -90,6 +90,19 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6", -1, 1);
             AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0", -1, 1);
 
+            //Wavemeter Lock config
+
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("v00", "v00Lock", 1);
+            wmlConfig.AddSlaveLaser("BXSlowing", "bXLock", 2);
+            wmlConfig.AddSlaveLaser("v10", "v10Lock", 3);
+            wmlConfig.AddLockBlock("BXSlowing", "blockBXflag");
+            wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
+            wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 300);
+            wmlConfig.AddLaserConfiguration("v10", 476.958908, -10, -500);
+            Info.Add("Default", wmlConfig);
+
+            /*
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
             // tclConfig.Trigger = "analogTrigger0";
@@ -140,7 +153,7 @@ namespace DAQ.HAL
             Info.Add("DefaultCavity", tclConfig);
             // Info.Add("analogTrigger0", TCLInput + "/PFI0");
 
-
+            */
 
 
 

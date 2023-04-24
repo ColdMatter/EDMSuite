@@ -78,7 +78,11 @@ Here are the things you need to have before installing Wavemeter Lock.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Frequently occured issues
 
+* License issue: 
+  Delete WavemeterLock/Properties/licenses.licx. 
+  In Visual Studio, click Extension drop down menu, select Measurement Studio, refresh license.
 
 ## Operation
 
@@ -91,21 +95,19 @@ Here are the things you need to have before installing Wavemeter Lock.
 
 ## EDMSuite Compatibility
 
-As part of the EDMSuite, Wavemeter Lock should be communicate with other projects.
+As part of the EDMSuite, Wavemeter Lock should communicate with other projects seamlessly.
 
 Currently constructed plugins:
 * ScanMaster, read frequency and scan setpoint
-* MOTMaster via python, scan setpoint
+* MOTMaster via python, scan setpoint (via a wrapper, to be improved)
 
-Plugins to be constructed:
-* MOTMaster, direct plugins
 
 ## Current issues
 * Remote event subscribtion from client to server in WavemeterLock/Controller.cs
    ```sh
    wavemeterContrller.measurementAcquired += () => { updateLockMaster(); };
    ```
-   raises a system.security exception. It was circumvented by creating a shared dictionary between clients and server. 
+   raises a system.security exception. It was circumvented by creating a shared dictionary between clients and server, but it will be nice to make it work in the future. 
 
 * The callback process was established in WavemeterLockServer/Controller.cs as follows:
    ```sh
@@ -122,20 +124,21 @@ Plugins to be constructed:
             }
          }
    ```
- The measurement acquired event was raised only when channel 1 gets a new reading.And the build-in callback process in general didn't work as they stated in the manual, or I made some mistakes.
+ The measurement acquired event was raised only when channel 1 gets a new reading. And the build-in callback process in general didn't work as they stated in the manual, or I made some mistakes.
 
 ## Update Roadmap
 The goal of future updates:
 - Add a RMS noise pannel
 - Add log data function
 - Add autocalibration function
-- Construct MOTMaster plugin
+- Add lock update rate on the server pannel
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Update Log
 
+* [v 1.0.4] April 18th 2023: Changed lock block digital channel reading method from event triggered to polling, increased stability and made compatible with PFI channels.
 * [v 1.0.3] April 7th 2023: Added laser initial configuration. You can now set the default set frequency and gains. It is useful if you have multiple lasers with known optimized setpoints and gains.
 * [v 1.0.2] April 6th 2023: Added lock block function. Wavemeter lock can now be blocked via an external TTL signal, you can use it to temporarily chirp or modulate your laser.
 * [v 1.0.1] April 5th 2023: Added a list in server showing connected clients

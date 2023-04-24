@@ -18,7 +18,7 @@ namespace WavemeterLock
         private int channelNumber = 0;
         public Controller controller;
         public double scale = 10;
-        
+        public bool lockBlocked = false;
 
         public LockControlPanel(string name, string AnalogChannel, int wavemeterChannel, Controller controller)
         {
@@ -83,6 +83,23 @@ namespace WavemeterLock
 
         }
 
+        public void updateLockBlockStatus(bool status)
+        {
+            lockBlocked = status;
+            LEDBlockIndicator.Value = status;
+        }
+
+        public void SetTextField(Control box, string text)
+        {
+            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
+        }
+
+        private delegate void SetTextDelegate(Control box, string text);
+
+        private void SetTextHelper(Control box, string text)
+        {
+            box.Text = text;
+        }
         #region Events
 
         private void lockButton_Click(object sender, EventArgs e)
@@ -200,6 +217,11 @@ namespace WavemeterLock
         }
 
         private void groupBoxLaserInfo_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }

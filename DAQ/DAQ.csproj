@@ -631,11 +631,9 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="DAQMxPatternGenerator - Copy.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
-    <Compile Include="DAQMxPatternGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
