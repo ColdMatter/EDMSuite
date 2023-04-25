@@ -631,7 +631,7 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
-    <Compile Include="DAQMxPatternGenerator - Copy.cs" />
+    <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
     <Compile Include="DTCLCavityConfig.cs" />
