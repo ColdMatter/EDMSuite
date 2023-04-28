@@ -35,6 +35,11 @@ namespace AlFHardwareControl
             {
                 return Convert.ToDouble(a) > Convert.ToDouble(b);
             });
+            
+            this.AddComparison("is", (string a, string b) =>
+            {
+                return a == b;
+            });
 
             (new Thread(new ThreadStart(UpdateTasks))).Start();
         }
@@ -111,6 +116,7 @@ namespace AlFHardwareControl
                 box.AppendText("] ");
                 box.AppendText(update);
                 box.AppendText("\n");
+                box.ScrollToCaret();
             });
         }
 

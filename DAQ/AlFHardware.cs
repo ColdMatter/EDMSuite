@@ -25,6 +25,7 @@ namespace DAQ.HAL
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI14");
             Info.Add("analogTrigger0", (string)Boards["pg"] + "/PFI0");
+            Info.Add("ScanMasterConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\ScanProfils.xml");
 
 
             // Input signals
@@ -46,8 +47,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);//Pin 
             AddDigitalOutputChannel("valve", (string)Boards["pg"], 0, 2);
             AddDigitalOutputChannel("detector", (string)Boards["pg"], 0, 3);
-            AddDigitalOutputChannel("ttlSwitch", (string)Boards["pg"], 0, 4);
-            AddDigitalOutputChannel("detectorprime", (string)Boards["pg"], 0, 5);
+            //AddDigitalOutputChannel("discharge", (string)Boards["pg"], 0, 4);
+            //AddDigitalOutputChannel("valve2", (string)Boards["pg"], 0, 5);
+            //AddDigitalOutputChannel("ttlSwitch", (string)Boards["pg"], 0, 4);
+            //AddDigitalOutputChannel("detectorprime", (string)Boards["pg"], 0, 5);
 
 
             // Misc channels

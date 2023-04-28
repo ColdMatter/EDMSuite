@@ -71,7 +71,7 @@ namespace DAQ.HAL
         func_start:
             attempt++;
             if (attempt % 2 == 0) AttemptReset();
-            if (attempt > 5) throw new Exception("More than 5 failed CRCs. Try restarting the controller.");
+            if (attempt > 5) throw new Ivi.Visa.NativeVisaException(0,"More than 5 failed CRCs. Try restarting the controller.");
             List<byte> resp = new List<byte> { };
             if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
             if (!Environs.Debug)
@@ -105,7 +105,7 @@ namespace DAQ.HAL
                 Response resp = Send(s);
                 if (resp.ack) return resp.resp;
             }
-            throw new Exception("No valid response after 5 tries");
+            throw new Ivi.Visa.NativeVisaException(0,"No valid response after 5 tries");
         }
 
         public string ReadValue(string s)

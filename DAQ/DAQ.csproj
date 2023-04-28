@@ -146,6 +146,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
     <OutputPath>bin\ScanMaster\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
@@ -884,7 +886,6 @@
     </Content>
     <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
-    <EmbeddedResource Include="licenses.licx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
