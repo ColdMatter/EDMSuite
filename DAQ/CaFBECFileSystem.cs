@@ -18,12 +18,13 @@ namespace DAQ
 			Paths.Add("CaFBECData", "E: \\Data");
 			Paths.Add("fakeData", "C: \\ControlPrograms\\Examples");
 
-			Paths.Add("MOTMasterDataPath", "E:\\Data\\mot_master_data\\");
-			Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaFBEC\\daq.dll");
+			Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\OneDrive - Imperial College London\\datasync\\cafbec\\mot_master_data\\");
+			Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
 			Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaFBEC\\");
-			Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\Temp_camera_images\\");
+			Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\Temp_camera_images");
 			Paths.Add("HardwareClassPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\CaFBECHardware.cs");
-			Paths.Add("scriptListPath", "C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts");
+			Paths.Add("scriptListPath", "C:\\ControlPrograms\\EDMSuite\\BECMOTMasterScripts\\");
+			Paths.Add("ToFFilesPath", "C:\\Users\\cafmot\\Documents\\ToF_Data\\");
 
 			DataSearchPaths.Add(Paths["CaFBECData"]);
 			DataSearchPaths.Add(Paths["fakeData"]);

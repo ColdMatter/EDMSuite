@@ -38,18 +38,13 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("slowingSwitch", pgBoard, 0, 31);
             AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);  // send a TTL during which the chirping function is generated, the TCL feedback is blocked, and the chirping voltage is summed up.
-            // AddDigitalOutputChannel("ttl1", pgBoard, 1, 3);
-            // AddDigitalOutputChannel("ttl2", pgBoard, 1, 6);
-            AddDigitalOutputChannel("531aom", pgBoard, 0, 23);
-
-            // AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
-            // AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
-
-            // map the digital channels of the "daq" card
-            // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
-            //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
-            //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
-
+            
+            AddDigitalOutputChannel("slowingAOM", pgBoard, 0, 23);
+            AddDigitalOutputChannel("slowingRepumpAOM", pgBoard, 0, 24);
+            AddDigitalOutputChannel("coolingAOM", pgBoard, 0, 22);
+            
+            //Info.Add("ToFTrigger", pgBoard + "/PFI1");
+            //Info.Add("ToFPMTSignal", pgBoard + "/ai0");
 
             // map the analog input channels for "pg" card
             // AddAnalogInputChannel("HeliumIn", pgBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -57,7 +52,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pmt", TCLInput + "/ai0", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
-            AddAnalogOutputChannel("laser", pgBoard + "/ao0", -10, 10);
+            AddAnalogOutputChannel("slowingChirp", pgBoard + "/ao0", -10, 10);
+            AddAnalogOutputChannel("slowingRepumpChirp", pgBoard + "/ao1", -10, 10);
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
@@ -78,7 +74,9 @@ namespace DAQ.HAL
             AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
 
             AddDigitalInputChannel("blockBXflag", TCLInput, 1, 1);  //PFI 1, receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
-            // AddDigitalInputChannel("blockV10flag", TCLInput, 0, 2);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
+            AddDigitalInputChannel("blockV10flag", TCLInput, 2, 6);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
+
+            AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 14);
 
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
@@ -90,13 +88,40 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6", -1, 1);
             AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0", -1, 1);
 
+
+            // Remove when hardware controller starts working
+
+            AddDigitalOutputChannel("cryoCooler", TCLInput, 0, 0);
+            AddDigitalOutputChannel("sourceHeater", TCLInput, 0, 1);
+            AddDigitalOutputChannel("sf6Valve", TCLInput, 0, 2);
+            AddDigitalOutputChannel("heValve", TCLInput, 0, 3);
+
+            AddAnalogInputChannel("sourceTemp", TCLInput + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6Temp", TCLInput + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourcePressure", TCLInput + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("MOTPressure", TCLInput + "/ai8", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp2", TCLInput + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp40K", TCLInput + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6FlowMonitor", TCLInput + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("he6FlowMonitor", TCLInput + "/ai6", AITerminalConfiguration.Rse);
+
+            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionHe", 0.2);
+            AddAnalogOutputChannel("hardwareControlAO0", TCLInput + "/ao0");
+            AddAnalogOutputChannel("hardwareControlAO1", TCLInput + "/ao1");
+
+            Info.Add("ToFPMTSignal", TCLInput + "/ai13");
+            Info.Add("ToFTrigger", TCLInput + "/PFI1");
+
+
             //Wavemeter Lock config
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("v00", "v00Lock", 1);
+            wmlConfig.AddSlaveLaser("v00", "v00Lock", 4);
             wmlConfig.AddSlaveLaser("BXSlowing", "bXLock", 2);
             wmlConfig.AddSlaveLaser("v10", "v10Lock", 3);
             wmlConfig.AddLockBlock("BXSlowing", "blockBXflag");
+            wmlConfig.AddLockBlock("V10", "blockV10flag");
             wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
             wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 300);
             wmlConfig.AddLaserConfiguration("v10", 476.958908, -10, -500);
@@ -157,11 +182,6 @@ namespace DAQ.HAL
 
 
 
-            //These need to be activated for the phase lock
-            //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
-            //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
-
-
             // MOTMaster configuration
             MMConfig mmConfig = new MMConfig(false, false, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
@@ -170,13 +190,15 @@ namespace DAQ.HAL
             // Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaFBEC");
 
-            // Info.Add("AOPatternTrigger", pgBoard + "/PFI4"); //PFI6
-            // Info.Add("AOClockLine", pgBoard + "/PFI6"); //PFI6
+            //Info.Add("AOPatternTrigger", pgBoard + "/PFI4"); //PFI6
+            //Info.Add("AOClockLine", pgBoard + "/PFI6"); //PFI6
             // Info.Add("SecondAOPatternTrigger", pgBoard + "/PFI6");
             // Info.Add("SecondAOClockLine", pgBoard + "/PFI3");
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
-            // analogBoards.Add("AO", aoBoard);
+            analogBoards.Add("AO", pgBoard);
+            Info.Add("AOPatternTrigger", pgBoard + "/PFI0"); //PFI6
+            Info.Add("AOClockLine", pgBoard + "/PFI5"); //PFI6
             // analogBoards.Add("SecondAO", aoBoard2);
             Info.Add("AnalogBoards", analogBoards);
 
@@ -195,14 +217,6 @@ namespace DAQ.HAL
             // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
             // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
-
-
-
-
-
-
-
-
 
     }
  
