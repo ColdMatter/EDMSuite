@@ -148,12 +148,12 @@ namespace AlFHardwareControl
                 if (this.CryoStatus.Text == "ON")
                 {
                     tScheduler.UpdateEventLog("Cryo already engaged!");
-                    return;
+                    return null;
                 }
                 if ((Loop1Status.Text == "ON" || Loop2Status.Text == "ON") && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on cryo while heaters are actve!");
-                    return;
+                    return null;
                 }
                 if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 {
@@ -163,11 +163,12 @@ namespace AlFHardwareControl
                     {
                         tScheduler.AddEvent(new ResourceEvent(tScheduler, P1Name.Text + " Pressure", "<", CRYO_SHUTOFF, "Turn on cryo", false));
                         tScheduler.UpdateEventLog("Rescheduling \"Turn on cryo\" for when Src Pressure < 1e-4");
+                        return null;
                     }
-                    return;
+                    return new ResourceCondition(P1Name.Text + " Pressure", " < ", CRYO_SHUTOFF);
                 }
                 this.EngageCryo_Click(null, new EventArgs());
-
+                return null;
             });
 
             tScheduler.AddTask("Turn off cryo", (bool discard) =>
@@ -175,9 +176,10 @@ namespace AlFHardwareControl
                 if (this.CryoStatus.Text == "OFF")
                 {
                     tScheduler.UpdateEventLog("Cryo is already OFF!");
-                    return;
+                    return null;
                 }
                 this.DisengageCryo_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn on Loop 1", (bool discard) =>
@@ -187,19 +189,20 @@ namespace AlFHardwareControl
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop1PV + " C is too high to turn on heater!");
                     if (!discard)
                         tScheduler.UpdateEventLog("No reason to create an event in case the temperature goes below the maximum allowed!");
-                    return;
+                    return null;
                 }
                 if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on Loop 1 while Cryo is ON!");
-                    return;
+                    return new ResourceCondition("Cryo state", "is", "OFF");
                 }
                 if (Loop1Status.Text == "ON")
                 {
                     tScheduler.UpdateEventLog("Loop 1 is already ON!");
-                    return;
+                    return null;
                 }
                 this.Loop1Engage_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn on Loop 2", (bool discard) =>
@@ -209,19 +212,20 @@ namespace AlFHardwareControl
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop2PV + " C is too high to turn on heater!");
                     if (!discard)
                         tScheduler.UpdateEventLog("No reason to create an event in case the temperature goes below the maximum allowed!");
-                    return;
+                    return null;
                 }
                 if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on Loop 2 while Cryo is ON!");
-                    return;
+                    return new ResourceCondition("Cryo state", "is", "OFF");
                 }
                 if (Loop2Status.Text == "ON")
                 {
                     tScheduler.UpdateEventLog("Loop 2 is already ON!");
-                    return;
+                    return null;
                 }
                 this.Loop2Engage_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn off Loop 1", (bool discard) =>
@@ -229,9 +233,10 @@ namespace AlFHardwareControl
                 if (Loop1Status.Text == "OFF")
                 {
                     tScheduler.UpdateEventLog("Loop 1 is already OFF!");
-                    return;
+                    return null;
                 }
                 this.Loop1Disengage_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn off Loop 2", (bool discard) =>
@@ -239,9 +244,10 @@ namespace AlFHardwareControl
                 if (Loop2Status.Text == "OFF")
                 {
                     tScheduler.UpdateEventLog("Loop 2 is already OFF!");
-                    return;
+                    return null;
                 }
                 this.Loop2Disengage_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn on heaters", (bool discard) =>
@@ -249,7 +255,7 @@ namespace AlFHardwareControl
                 if (this.CryoStatus.Text == "ON" && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on heaters while Cryo is ON!");
-                    return;
+                    return new ResourceCondition("Cryo state", "is", "OFF");
                 }
                 if (controller.loop1PV > TYPE_K_SHUTOFF && controller.InterlocksActive)
                 {
@@ -271,14 +277,15 @@ namespace AlFHardwareControl
                     tScheduler.UpdateEventLog("Type-K temperature of " + controller.loop2PV + " C is too high to turn on heater!");
                     if (!discard)
                         tScheduler.UpdateEventLog("No reason to create an event in case the temperature goes below the maximum allowed!");
-                    return;
+                    return null;
                 }
                 if (Loop2Status.Text == "ON")
                 {
                     tScheduler.UpdateEventLog("Loop 2 is already ON!");
-                    return;
+                    return null;
                 }
                 this.Loop2Engage_Click(null, new EventArgs());
+                return null;
             });
 
             tScheduler.AddTask("Turn off heaters", (bool discard) =>
@@ -294,9 +301,10 @@ namespace AlFHardwareControl
                 if (Loop2Status.Text == "OFF")
                 {
                     tScheduler.UpdateEventLog("Loop 2 is already OFF!");
-                    return;
+                    return null;
                 }
                 this.Loop2Disengage_Click(null, new EventArgs());
+                return null;
             });
             #endregion
 

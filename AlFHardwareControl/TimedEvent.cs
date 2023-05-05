@@ -13,7 +13,7 @@ namespace AlFHardwareControl
     public partial class TimedEvent : UserControl
     {
         private TaskScheduler scheduler;
-        private Action<bool> action;
+        private Func<bool, object> action;
         public TimedEvent(TaskScheduler _scheduler, DateTime scheduledFor, string taskName, bool interlockFail)
         {
             InitializeComponent();

@@ -30,14 +30,14 @@ namespace AlFHardwareControl
         private void InitializeComponent()
         {
             this.BoundingBox = new System.Windows.Forms.GroupBox();
+            this.Comparison = new System.Windows.Forms.TextBox();
+            this.Resource = new System.Windows.Forms.TextBox();
+            this.Value = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.TaskName = new System.Windows.Forms.TextBox();
             this.Dismiss = new System.Windows.Forms.Button();
             this.DiscardTimedSchedOnInterlockFail = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.Value = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.Resource = new System.Windows.Forms.TextBox();
-            this.Comparison = new System.Windows.Forms.TextBox();
             this.BoundingBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,43 +58,21 @@ namespace AlFHardwareControl
             this.BoundingBox.TabStop = false;
             this.BoundingBox.Text = "Resource Event";
             // 
-            // TaskName
+            // Comparison
             // 
-            this.TaskName.Enabled = false;
-            this.TaskName.Location = new System.Drawing.Point(166, 42);
-            this.TaskName.Name = "TaskName";
-            this.TaskName.Size = new System.Drawing.Size(200, 20);
-            this.TaskName.TabIndex = 9;
+            this.Comparison.Enabled = false;
+            this.Comparison.Location = new System.Drawing.Point(284, 15);
+            this.Comparison.Name = "Comparison";
+            this.Comparison.Size = new System.Drawing.Size(21, 20);
+            this.Comparison.TabIndex = 14;
             // 
-            // Dismiss
+            // Resource
             // 
-            this.Dismiss.Location = new System.Drawing.Point(228, 82);
-            this.Dismiss.Name = "Dismiss";
-            this.Dismiss.Size = new System.Drawing.Size(138, 23);
-            this.Dismiss.TabIndex = 8;
-            this.Dismiss.Text = "Dismiss";
-            this.Dismiss.UseVisualStyleBackColor = true;
-            this.Dismiss.Click += new System.EventHandler(this.Dismiss_Click);
-            // 
-            // DiscardTimedSchedOnInterlockFail
-            // 
-            this.DiscardTimedSchedOnInterlockFail.AutoSize = true;
-            this.DiscardTimedSchedOnInterlockFail.Enabled = false;
-            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(9, 86);
-            this.DiscardTimedSchedOnInterlockFail.Name = "DiscardTimedSchedOnInterlockFail";
-            this.DiscardTimedSchedOnInterlockFail.Size = new System.Drawing.Size(157, 17);
-            this.DiscardTimedSchedOnInterlockFail.TabIndex = 7;
-            this.DiscardTimedSchedOnInterlockFail.Text = "Discard on Interlock Failiure";
-            this.DiscardTimedSchedOnInterlockFail.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 45);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Scheduled Task";
+            this.Resource.Enabled = false;
+            this.Resource.Location = new System.Drawing.Point(166, 15);
+            this.Resource.Name = "Resource";
+            this.Resource.Size = new System.Drawing.Size(112, 20);
+            this.Resource.TabIndex = 13;
             // 
             // Value
             // 
@@ -113,21 +91,43 @@ namespace AlFHardwareControl
             this.label4.TabIndex = 10;
             this.label4.Text = "Condition";
             // 
-            // Resource
+            // TaskName
             // 
-            this.Resource.Enabled = false;
-            this.Resource.Location = new System.Drawing.Point(166, 15);
-            this.Resource.Name = "Resource";
-            this.Resource.Size = new System.Drawing.Size(112, 20);
-            this.Resource.TabIndex = 13;
+            this.TaskName.Enabled = false;
+            this.TaskName.Location = new System.Drawing.Point(166, 42);
+            this.TaskName.Name = "TaskName";
+            this.TaskName.Size = new System.Drawing.Size(200, 20);
+            this.TaskName.TabIndex = 9;
             // 
-            // Comparison
+            // Dismiss
             // 
-            this.Comparison.Enabled = false;
-            this.Comparison.Location = new System.Drawing.Point(284, 15);
-            this.Comparison.Name = "Comparison";
-            this.Comparison.Size = new System.Drawing.Size(21, 20);
-            this.Comparison.TabIndex = 14;
+            this.Dismiss.Location = new System.Drawing.Point(3, 82);
+            this.Dismiss.Name = "Dismiss";
+            this.Dismiss.Size = new System.Drawing.Size(138, 23);
+            this.Dismiss.TabIndex = 8;
+            this.Dismiss.Text = "Dismiss";
+            this.Dismiss.UseVisualStyleBackColor = true;
+            this.Dismiss.Click += new System.EventHandler(this.Dismiss_Click);
+            // 
+            // DiscardTimedSchedOnInterlockFail
+            // 
+            this.DiscardTimedSchedOnInterlockFail.AutoSize = true;
+            this.DiscardTimedSchedOnInterlockFail.Enabled = false;
+            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(209, 86);
+            this.DiscardTimedSchedOnInterlockFail.Name = "DiscardTimedSchedOnInterlockFail";
+            this.DiscardTimedSchedOnInterlockFail.Size = new System.Drawing.Size(157, 17);
+            this.DiscardTimedSchedOnInterlockFail.TabIndex = 7;
+            this.DiscardTimedSchedOnInterlockFail.Text = "Discard on Interlock Failiure";
+            this.DiscardTimedSchedOnInterlockFail.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 45);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(85, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Scheduled Task";
             // 
             // ResourceEvent
             // 

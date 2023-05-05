@@ -131,11 +131,20 @@
       <DependentUpon>AlFControlWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="AlFController.cs" />
+    <Compile Include="MacroConfiguration.cs" />
+    <Compile Include="MacroConfigurationCollection.cs" />
     <Compile Include="DataGrapher.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataGrapher.Designer.cs">
       <DependentUpon>DataGrapher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceCondition.cs" />
+    <Compile Include="MacroEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MacroEditor.Designer.cs">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ResourceEvent.cs">
       <SubType>UserControl</SubType>
@@ -148,6 +157,12 @@
     </Compile>
     <Compile Include="SafetyInterlock.Designer.cs">
       <DependentUpon>SafetyInterlock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacroEvent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MacroEvent.Designer.cs">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
     </Compile>
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
@@ -169,8 +184,17 @@
     <EmbeddedResource Include="DataGrapher.resx">
       <DependentUpon>DataGrapher.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MacroEditor.resx">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourceEvent.resx">
       <DependentUpon>ResourceEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEvent.resx">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SafetyInterlock.resx">
+      <DependentUpon>SafetyInterlock.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimedEvent.resx">
       <DependentUpon>TimedEvent.cs</DependentUpon>

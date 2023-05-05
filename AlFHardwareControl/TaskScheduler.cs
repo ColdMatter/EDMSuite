@@ -4,26 +4,36 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Threading;
+using DAQ.Environment;
+using System.Xml.Serialization;
 
 namespace AlFHardwareControl
 {
     public partial class TaskScheduler : UserControl
     {
 
-        public Dictionary<string, Action<bool>> Tasks = new Dictionary<string, Action<bool>>();
+        public Dictionary<string, Func<bool, object>> Tasks = new Dictionary<string, Func<bool, object>>();
         public Dictionary<string, Func<string>> Resources = new Dictionary<string, Func<string>>();
 
         public delegate bool ComparisonFunc(string a, string b);
         public Dictionary<string, ComparisonFunc> Comparisons = new Dictionary<string, ComparisonFunc>();
+
+        public MacroConfigurationCollection macroCollection;
 
         public TaskScheduler()
         {
             InitializeComponent();
             this.TimeSchedDate.Value = DateTime.Now;
 
+            this.AddTask("", (bool discard) =>
+            {
+                return null;
+            });
+
             this.AddTask("Print Time", (bool discard) =>
             {
                 this.UpdateEventLog("The time is: " + DateTime.Now.ToString());
+                return null;
             });
 
             this.AddComparison("<", (string a, string b) =>
@@ -41,6 +51,26 @@ namespace AlFHardwareControl
                 return a == b;
             });
 
+
+            try
+            {
+                System.IO.FileStream fs = System.IO.File.Open((string)Environs.Hardware.GetInfo("MacroConfig"), System.IO.FileMode.Open);
+                XmlSerializer s = new XmlSerializer(typeof(MacroConfigurationCollection));
+                macroCollection = (MacroConfigurationCollection)s.Deserialize(fs);
+                fs.Close();
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                macroCollection = new MacroConfigurationCollection();
+            }
+
+            macroCollection.UndoSerialization();
+            this.macrosDropbox.Items.Clear();
+            foreach (MacroConfiguration macro in macroCollection)
+                this.macrosDropbox.Items.Add(macro.Name);
+            if (this.macrosDropbox.Items.Count > 0)
+                this.macrosDropbox.SelectedIndex = 0;
+
             (new Thread(new ThreadStart(UpdateTasks))).Start();
         }
 
@@ -50,6 +80,7 @@ namespace AlFHardwareControl
             this.ResourcePicker.Items.Add(name);
             this.ResourcePicker.SelectedIndex = 0;
         }
+
         public void AddComparison(string name, ComparisonFunc resource)
         {
             Comparisons.Add(name, resource);
@@ -67,7 +98,7 @@ namespace AlFHardwareControl
             return Comparisons[name];
         }
 
-        public void AddTask(string name, Action<bool> action)
+        public void AddTask(string name, Func<bool, object> action)
         {
             Tasks.Add(name, action);
             this.SchedulerTasksPicker1.Items.Add(name);
@@ -103,8 +134,25 @@ namespace AlFHardwareControl
                     uc.UpdateEvent();
                 }
 
+                foreach (MacroEvent uc in ScheduledEventsPanel.Controls.OfType<MacroEvent>())
+                {
+                    uc.UpdateEvent();
+                }
+
                 System.Threading.Thread.Sleep(1000);
             }
+        }
+
+        public void UpdateMacros()
+        {
+            this.Invoke((Action)(() =>
+            {
+                this.macrosDropbox.Items.Clear();
+                foreach (MacroConfiguration macro in macroCollection)
+                    this.macrosDropbox.Items.Add(macro.Name);
+                if (this.macrosDropbox.Items.Count > 0)
+                    this.macrosDropbox.SelectedIndex = 0;
+            }));
         }
 
         public void UpdateEventLog(string update)
@@ -208,6 +256,29 @@ namespace AlFHardwareControl
             UpdateEventLog("Scheduling \"" + this.ResourceSchedTask.Text + "\" for when " + this.ResourcePicker.Text + " " + this.ConditionTypePicker.Text + " " + this.Value.Text);
             AddEvent(new ResourceEvent(this, this.ResourcePicker.Text, this.ConditionTypePicker.Text, this.Value.Text, this.ResourceSchedTask.Text, this.ResourceEventDiscard.Checked));
 
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void editMacro_Click(object sender, EventArgs e)
+        {
+            UpdateRenderedObject(macroGroupBox, (Control c) => { c.Enabled = false; });
+            MacroEditor mEditor = new MacroEditor(macroCollection,this);
+            (new Thread(new ThreadStart(() => { Application.Run(mEditor); }))).Start();
+        }
+
+        private void runMacro_Click(object sender, EventArgs e)
+        {
+            UpdateEventLog("Scheduling \"" + this.macrosDropbox.SelectedItem + "\".");
+            AddEvent(new MacroEvent(this, this.macrosDropbox.SelectedIndex));
         }
     }
 }

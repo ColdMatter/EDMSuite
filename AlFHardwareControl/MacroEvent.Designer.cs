@@ -1,7 +1,7 @@
 ﻿
 namespace AlFHardwareControl
 {
-    partial class TimedEvent
+    partial class MacroEvent
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,37 +30,46 @@ namespace AlFHardwareControl
         private void InitializeComponent()
         {
             this.BoundingBox = new System.Windows.Forms.GroupBox();
-            this.TaskName = new System.Windows.Forms.TextBox();
+            this.MacroName = new System.Windows.Forms.TextBox();
+            this.ActiveTasks = new System.Windows.Forms.ListBox();
             this.Dismiss = new System.Windows.Forms.Button();
-            this.DiscardTimedSchedOnInterlockFail = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.TimeSchedDate = new System.Windows.Forms.DateTimePicker();
+            this.Repeat = new System.Windows.Forms.CheckBox();
             this.BoundingBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // BoundingBox
             // 
-            this.BoundingBox.Controls.Add(this.TaskName);
+            this.BoundingBox.Controls.Add(this.Repeat);
+            this.BoundingBox.Controls.Add(this.MacroName);
+            this.BoundingBox.Controls.Add(this.ActiveTasks);
             this.BoundingBox.Controls.Add(this.Dismiss);
-            this.BoundingBox.Controls.Add(this.DiscardTimedSchedOnInterlockFail);
             this.BoundingBox.Controls.Add(this.label2);
             this.BoundingBox.Controls.Add(this.label1);
-            this.BoundingBox.Controls.Add(this.TimeSchedDate);
             this.BoundingBox.Location = new System.Drawing.Point(0, 0);
             this.BoundingBox.Name = "BoundingBox";
             this.BoundingBox.Size = new System.Drawing.Size(372, 111);
             this.BoundingBox.TabIndex = 8;
             this.BoundingBox.TabStop = false;
-            this.BoundingBox.Text = "Timed Event";
+            this.BoundingBox.Text = "Macro";
             // 
-            // TaskName
+            // MacroName
             // 
-            this.TaskName.Enabled = false;
-            this.TaskName.Location = new System.Drawing.Point(166, 42);
-            this.TaskName.Name = "TaskName";
-            this.TaskName.Size = new System.Drawing.Size(200, 20);
-            this.TaskName.TabIndex = 9;
+            this.MacroName.Enabled = false;
+            this.MacroName.Location = new System.Drawing.Point(195, 16);
+            this.MacroName.Name = "MacroName";
+            this.MacroName.Size = new System.Drawing.Size(171, 20);
+            this.MacroName.TabIndex = 10;
+            // 
+            // ActiveTasks
+            // 
+            this.ActiveTasks.Enabled = false;
+            this.ActiveTasks.FormattingEnabled = true;
+            this.ActiveTasks.Location = new System.Drawing.Point(195, 42);
+            this.ActiveTasks.Name = "ActiveTasks";
+            this.ActiveTasks.Size = new System.Drawing.Size(171, 56);
+            this.ActiveTasks.TabIndex = 9;
             // 
             // Dismiss
             // 
@@ -72,51 +81,41 @@ namespace AlFHardwareControl
             this.Dismiss.UseVisualStyleBackColor = true;
             this.Dismiss.Click += new System.EventHandler(this.Dismiss_Click);
             // 
-            // DiscardTimedSchedOnInterlockFail
-            // 
-            this.DiscardTimedSchedOnInterlockFail.AutoSize = true;
-            this.DiscardTimedSchedOnInterlockFail.Enabled = false;
-            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(209, 86);
-            this.DiscardTimedSchedOnInterlockFail.Name = "DiscardTimedSchedOnInterlockFail";
-            this.DiscardTimedSchedOnInterlockFail.Size = new System.Drawing.Size(157, 17);
-            this.DiscardTimedSchedOnInterlockFail.TabIndex = 7;
-            this.DiscardTimedSchedOnInterlockFail.Text = "Discard on Interlock Failiure";
-            this.DiscardTimedSchedOnInterlockFail.UseVisualStyleBackColor = true;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 45);
+            this.label2.Location = new System.Drawing.Point(6, 42);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 13);
+            this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 0;
-            this.label2.Text = "Scheduled Task";
+            this.label2.Text = "Active Tasks";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 13);
+            this.label1.Size = new System.Drawing.Size(68, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Scheduled Time";
+            this.label1.Text = "Macro Name";
             // 
-            // TimeSchedDate
+            // Repeat
             // 
-            this.TimeSchedDate.CustomFormat = "yyyy/MM/dd HH:mm:ss";
-            this.TimeSchedDate.Enabled = false;
-            this.TimeSchedDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.TimeSchedDate.Location = new System.Drawing.Point(166, 16);
-            this.TimeSchedDate.Name = "TimeSchedDate";
-            this.TimeSchedDate.Size = new System.Drawing.Size(200, 20);
-            this.TimeSchedDate.TabIndex = 2;
+            this.Repeat.AutoSize = true;
+            this.Repeat.Enabled = false;
+            this.Repeat.Location = new System.Drawing.Point(9, 59);
+            this.Repeat.Name = "Repeat";
+            this.Repeat.Size = new System.Drawing.Size(61, 17);
+            this.Repeat.TabIndex = 11;
+            this.Repeat.Text = "Repeat";
+            this.Repeat.UseVisualStyleBackColor = true;
             // 
-            // TimedEvent
+            // MacroEvent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.BoundingBox);
-            this.Name = "TimedEvent";
+            this.Name = "MacroEvent";
             this.Size = new System.Drawing.Size(372, 111);
             this.BoundingBox.ResumeLayout(false);
             this.BoundingBox.PerformLayout();
@@ -129,9 +128,9 @@ namespace AlFHardwareControl
         private System.Windows.Forms.GroupBox BoundingBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DateTimePicker TimeSchedDate;
-        private System.Windows.Forms.CheckBox DiscardTimedSchedOnInterlockFail;
         private System.Windows.Forms.Button Dismiss;
-        private System.Windows.Forms.TextBox TaskName;
+        private System.Windows.Forms.TextBox MacroName;
+        private System.Windows.Forms.ListBox ActiveTasks;
+        private System.Windows.Forms.CheckBox Repeat;
     }
 }

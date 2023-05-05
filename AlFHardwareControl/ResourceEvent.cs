@@ -13,7 +13,7 @@ namespace AlFHardwareControl
     public partial class ResourceEvent : UserControl
     {
         protected TaskScheduler scheduler;
-        protected Action<bool> action;
+        protected Func<bool,object> action;
         protected Func<string> resource;
 
         [Obsolete("Designer only", true)]
