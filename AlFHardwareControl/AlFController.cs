@@ -9,7 +9,7 @@ using Data;
 
 namespace AlFHardwareControl
 {
-    public class AlFController
+    public class AlFController : MarshalByRefObject
     {
 
         private AlFControlWindow window;
@@ -40,10 +40,12 @@ namespace AlFHardwareControl
             Application.Run(window);
         }
 
+        #region Resource related functions
         public string nameA;
         public string nameB;
         public string nameC;
         public string nameD;
+
 
         public void UpdateLakeshoreNames()
         {
@@ -57,10 +59,12 @@ namespace AlFHardwareControl
 
         }
 
+        public Thread UpdateThread; 
         public void WindowLoaded()
         {
             UpdateLakeshoreTemperature();
-            (new Thread(() => UpdateData())).Start();
+            UpdateThread = new Thread(() => UpdateData());
+            UpdateThread.Start();
         }
 
         private void UpdateLakeshoreTemperature()
@@ -213,10 +217,11 @@ namespace AlFHardwareControl
 
         }
 
+        public bool exiting = false;
+        public ThreadSync DAQ_sync = new ThreadSync();
         private void UpdateData()
         {
 
-            ThreadSync DAQ_sync = new ThreadSync();
             DAQ_sync.CreateDelegateThread(() => {
                 try
                 {
@@ -238,7 +243,7 @@ namespace AlFHardwareControl
                 {
                     window.tSched.UpdateEventLog("Error in communicating with Leybold pressure controller:" + e.ToString());
                 }
-        });
+            });
 
             DAQ_sync.CreateDelegateThread(() => {
                 try
@@ -252,7 +257,7 @@ namespace AlFHardwareControl
             });
 
             DAQ_sync.SwitchToData();
-            for (; ; )
+            while (!exiting)
             {
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 DAQ_sync.SwitchToControl();
@@ -266,7 +271,13 @@ namespace AlFHardwareControl
                 if (watch.ElapsedMilliseconds < 500)
                     Thread.Sleep((int)(500 - watch.ElapsedMilliseconds));
             }
+            DAQ_sync.JoinThreads();
         }
 
+        #endregion
+
+        #region External Control
+
+        #endregion
     }
 }

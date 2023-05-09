@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace AlFHardwareControl
 {
-    public partial class MacroEvent : UserControl
+    public partial class MacroEvent : UserControl, ITaskSchedulerEvent
     {
         private TaskScheduler scheduler;
         MacroConfiguration macro;

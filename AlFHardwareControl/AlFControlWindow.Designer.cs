@@ -650,6 +650,7 @@
             this.MaximizeBox = false;
             this.Name = "AlFControlWindow";
             this.Text = "AlF Control";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AlFControlWindow_FormClosing);
             this.Load += new System.EventHandler(this.AlFControlWindow_Load);
             this.groupBox1.ResumeLayout(false);
             this.TemperatureLayout.ResumeLayout(false);

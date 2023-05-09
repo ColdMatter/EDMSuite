@@ -18,8 +18,12 @@ namespace AlFHardwareControl
         public delegate bool ComparisonFunc(string a, string b);
         public Dictionary<string, ComparisonFunc> Comparisons = new Dictionary<string, ComparisonFunc>();
 
+        public Dictionary<string, Func<List<string>, Func<bool, object>>> taskCommands = new Dictionary<string, Func<List<string>, Func<bool, object>>>();
+        public Dictionary<string, Func<List<string>, Func<string>>> resourceCommands = new Dictionary<string, Func<List<string>, Func<string>>>();
+
         public MacroConfigurationCollection macroCollection;
 
+        public Thread UpdateThread;
         public TaskScheduler()
         {
             InitializeComponent();
@@ -71,7 +75,8 @@ namespace AlFHardwareControl
             if (this.macrosDropbox.Items.Count > 0)
                 this.macrosDropbox.SelectedIndex = 0;
 
-            (new Thread(new ThreadStart(UpdateTasks))).Start();
+            UpdateThread = new Thread(new ThreadStart(UpdateTasks));
+            UpdateThread.Start();
         }
 
         public void AddResource(string name, Func<string> resource)
@@ -124,11 +129,12 @@ namespace AlFHardwareControl
         {
             for(; ; )
             {
-                foreach(TimedEvent uc in ScheduledEventsPanel.Controls.OfType<TimedEvent>())
+                foreach(ITaskSchedulerEvent uc in ScheduledEventsPanel.Controls.OfType<ITaskSchedulerEvent>())
                 {
                     uc.UpdateEvent();
                 }
 
+                /*
                 foreach (ResourceEvent uc in ScheduledEventsPanel.Controls.OfType<ResourceEvent>())
                 {
                     uc.UpdateEvent();
@@ -137,7 +143,7 @@ namespace AlFHardwareControl
                 foreach (MacroEvent uc in ScheduledEventsPanel.Controls.OfType<MacroEvent>())
                 {
                     uc.UpdateEvent();
-                }
+                }*/
 
                 System.Threading.Thread.Sleep(1000);
             }
@@ -168,16 +174,36 @@ namespace AlFHardwareControl
             });
         }
 
-        public void AddEvent<T>(T uc) where T : UserControl
+        public void AddEvent<T>(T uc) where T : UserControl, ITaskSchedulerEvent
         {
             UpdateRenderedObject(this.ScheduledEventsPanel, (Panel box) => { box.Controls.Add(uc); box.Controls.SetChildIndex(uc, 0); });
             UpdateScheduledLayout();
         }
 
-        public void RemoveEvent<T>(T uc) where T : UserControl
+        public void RemoveEvent<T>(T uc) where T : UserControl, ITaskSchedulerEvent
         {
             UpdateRenderedObject(this.ScheduledEventsPanel, (Panel box) => { box.Controls.Remove(uc); });
             UpdateScheduledLayout();
+        }
+
+        /// <summary>
+        /// Parses command strings. These have the form "!command param1 param2"
+        /// Space is considered a delimiter between the tokens. Quotes can be used
+        /// to have longer tokens. [] can be used to refer to a variable in a dictionary. Using quotes here are possible
+        /// but not necessary. A resource can be prefaced with # to indicate that it should match all of the
+        /// keys in the data dictionary and it should be expanded. Example command would be:
+        /// !run #[Turn off.*]
+        /// For a dictionary having keys "Turn off A", "Turn off B" and "Do C" this will expand to:
+        /// !run "Turn off A" "Turn off B"
+        /// </summary>
+        /// <returns>
+        /// A tokenised list of the command
+        /// </returns>
+        public List<string> ParseCommand(List<string> dictionaryKeys)
+        {
+            List<string> parsedCommand = new List<string>();
+
+            return parsedCommand;
         }
 
         public void SetTextField(Control box, string text)
@@ -279,6 +305,11 @@ namespace AlFHardwareControl
         {
             UpdateEventLog("Scheduling \"" + this.macrosDropbox.SelectedItem + "\".");
             AddEvent(new MacroEvent(this, this.macrosDropbox.SelectedIndex));
+        }
+
+        public void Exit()
+        {
+            UpdateThread.Abort();
         }
     }
 }

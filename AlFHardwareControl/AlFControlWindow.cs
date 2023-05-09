@@ -633,5 +633,13 @@ namespace AlFHardwareControl
             this.UpdateRenderedObject(this.SafetyInterlockDisengage, (Button but) => { but.Enabled = false; });
             this.BackColor = SystemColors.ControlDark;
         }
+
+        private void AlFControlWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.exiting = true;
+            controller.UpdateThread.Abort();
+            controller.DAQ_sync.AbortThreads();
+            tSched.Exit();
+        }
     }
 }

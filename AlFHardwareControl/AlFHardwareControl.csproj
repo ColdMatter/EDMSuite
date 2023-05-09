@@ -112,6 +112,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -164,6 +165,7 @@
     <Compile Include="MacroEvent.Designer.cs">
       <DependentUpon>MacroEvent.cs</DependentUpon>
     </Compile>
+    <Compile Include="ITaskSchedulerEvent.cs" />
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
     </Compile>
