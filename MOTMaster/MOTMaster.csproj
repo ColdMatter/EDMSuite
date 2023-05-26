@@ -458,7 +458,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChirpTestBuilder.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>

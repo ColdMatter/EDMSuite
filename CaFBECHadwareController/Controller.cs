@@ -24,7 +24,8 @@ namespace CaFBECHadwareController
         {
 
             { "General Hardware", new SourceTabController() },
-          
+            { "Temperature&Pressure", new TPTabController() }
+
         };
 
         // Without this method, any remote connections to this object will time out after

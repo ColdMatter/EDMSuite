@@ -51,6 +51,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,6 +74,13 @@
     </Compile>
     <Compile Include="Controls\SourceTabView.Designer.cs">
       <DependentUpon>SourceTabView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TPTabColtroller.cs" />
+    <Compile Include="Controls\TPTabView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TPTabView.designer.cs">
+      <DependentUpon>TPTabView.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlWindow.cs">
       <SubType>Form</SubType>
@@ -104,6 +112,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SourceTabView.resx">
       <DependentUpon>SourceTabView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TPTabView.resx">
+      <DependentUpon>TPTabView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlWindow.resx">
       <DependentUpon>ControlWindow.cs</DependentUpon>
