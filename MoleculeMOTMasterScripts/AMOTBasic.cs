@@ -110,8 +110,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
-        //p.AddEdge("motLightSwitch", 0, true);
-        
+        p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
+        p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
+
         return p;
     }
 

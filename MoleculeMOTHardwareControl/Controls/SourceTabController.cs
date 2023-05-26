@@ -268,7 +268,7 @@ namespace MoleculeMOTHardwareControl.Controls
             double B = 0.000234711863267;
             double C = 0.000000085663516;
 
-            return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;    
+            return 1 / (A + B * Math.Log(resistance) + C * Math.Pow(Math.Log(resistance), 3)) - 273.15;
         }
 
         protected double GetSF6Flow()
@@ -333,9 +333,10 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected double GetSF6Temperature()
         {
-            double vRef = 5.1; //vRefReader.ReadSingleSample();
+            // double vRef = 5.1; //vRefReader.ReadSingleSample();
             double sf6TempVoltage = sf6TempReader.ReadSingleSample();
-            double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
+            double sf6TempResistance = sf6TempVoltage * 100000;
+            // ConvertVoltageToResistance(sf6TempVoltage, vRef);
             return Convert10kResistanceToCelcius(sf6TempResistance);
         }
 
