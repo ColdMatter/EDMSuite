@@ -25,6 +25,7 @@ namespace WavemeterLock
         public double summedWavelengthDifference = 0;
         private DAQMxWavemeterLockLaserControlHelper laser;
 
+        public bool isBlocked = false;
         public enum LaserState
         {
             FREE, LOCKED, OUTOFRANGE
@@ -125,7 +126,12 @@ namespace WavemeterLock
             
         }
 
-        
+        public virtual void UpdateBlockedLock()
+        {
+            FrequencyError = currentFrequency - setFrequency;
+        }
+
+
 
         public virtual void ResetOutput() //Clear the I lock output
         {

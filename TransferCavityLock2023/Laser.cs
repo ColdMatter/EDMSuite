@@ -107,6 +107,7 @@ namespace TransferCavityLock2023
             get { return lState == LaserState.LOCKED; }
         }
 
+        public double? prev = 0;
         public virtual void UpdateScan(double[] rampData, double[] scanData, bool shouldBlock)
         {
             LatestScanData = scanData;
@@ -129,6 +130,9 @@ namespace TransferCavityLock2023
                         peakLocation = null;
                         break;
                 }
+                if (peakLocation == null || Double.IsNaN((double)peakLocation))
+                    peakLocation = prev;
+                prev = peakLocation;
             }
         }
 

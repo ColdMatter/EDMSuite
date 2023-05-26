@@ -23,14 +23,16 @@ namespace DAQ.HAL
             public ushort ManualOutput;
             public ushort AMSwitch;
             public ushort ActiveOutput;
+            public ushort HeaterShutoff;
 
-            public Loop(ushort ProcessValueAddr, ushort SetPointAddr, ushort ManualOutputAddr, ushort AMSwitchAddr, ushort ActiveOutAddr)
+            public Loop(ushort ProcessValueAddr, ushort SetPointAddr, ushort ManualOutputAddr, ushort AMSwitchAddr, ushort ActiveOutAddr, ushort HeaterShutoffAddr)
             {
                 ProcessValue = ProcessValueAddr;
                 SetPoint = SetPointAddr;
                 ManualOutput = ManualOutputAddr;
                 AMSwitch = AMSwitchAddr;
                 ActiveOutput = ActiveOutAddr;
+                HeaterShutoff = HeaterShutoffAddr;
             }
         }
 
@@ -45,14 +47,14 @@ namespace DAQ.HAL
             InstrumentAddress = address;
         }
 
-        public void AddLoop(ushort ProcessValueAddr, ushort SetPointAddr, ushort ManualOutputAddr, ushort AMSwitchAddr, ushort ActiveOutAddr)
+        public void AddLoop(ushort ProcessValueAddr, ushort SetPointAddr, ushort ManualOutputAddr, ushort AMSwitchAddr, ushort ActiveOutAddr, ushort HeaterShutoffAddr)
         {
-            Loops.Add(new Loop(ProcessValueAddr, SetPointAddr, ManualOutputAddr, AMSwitchAddr, ActiveOutAddr));
+            Loops.Add(new Loop(ProcessValueAddr, SetPointAddr, ManualOutputAddr, AMSwitchAddr, ActiveOutAddr, HeaterShutoffAddr));
         }
 
-        public void AddLoop(ushort offset)
+        public void AddLoop(ushort offset, ushort HeaterShutoffAddr)
         {
-            Loops.Add(new Loop((ushort)(ProcessValue + offset), (ushort)(SetPoint + offset), (ushort)(ManualOutput + offset), (ushort)(AMSwitch + offset), (ushort)(ActiveOutput + offset)));
+            Loops.Add(new Loop((ushort)(ProcessValue + offset), (ushort)(SetPoint + offset), (ushort)(ManualOutput + offset), (ushort)(AMSwitch + offset), (ushort)(ActiveOutput + offset), HeaterShutoffAddr));
         }
 
 
@@ -187,7 +189,21 @@ namespace DAQ.HAL
             short PV = 0;
             PV |= (short)(data[0] << 8);
             PV |= (short)(data[1] & 0xFF);
-            return (double)PV / 10;
+            return (double)PV / 100;
+        }
+
+        public void SetHeaterShutoff(int loop, bool Man)
+        {
+            if (Environs.Debug) return;
+            WriteWord(Loops[loop].HeaterShutoff, Man ? (ushort)0x01 : (ushort)0x00);
+        }
+
+        public bool GetHeaterShutoff(int loop)
+        {
+            if (Environs.Debug) return false;
+            List<byte> data = ReadWords(Loops[loop].HeaterShutoff, 1);
+            return data[1] == 0x1;
+
         }
 
         public void SetAMSwitch(int loop, bool Man)

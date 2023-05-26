@@ -149,6 +149,9 @@ namespace WavemeterLock
             {
                 controller.DisengageLock(laser.Name);
             }
+
+            controller.removeWavemeterLock();
+            Application.Exit();
         }
     }
 }

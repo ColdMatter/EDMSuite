@@ -34,6 +34,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
+            scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));
 			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
@@ -82,6 +83,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
 			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
 			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
+			patternPlugins.Add("CaFBEC", typeof(CaFBECPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

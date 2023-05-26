@@ -50,8 +50,8 @@ namespace DAQ.Environment
 
         /// <summary>
         /// TCP channel for wavemeter lock.
-        /// This is the channel shared between wavemeter lock and scan master.
-        /// Add this to the computer config on which you run the wavemeter lock and scan master.
+        /// This is the channel shared between wavemeter lock and other programmes.
+        /// Add this to the computer config on which you run the wavemeter lock.
         /// </summary>
         public int wavemeterLockTCPChannel;
 
@@ -174,11 +174,22 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-#if EDM
+                case "IC-CZC202DMH1":
+                    Hardware = new CaFBECHardware();
+                    FileSystem = new CaFBECFileSystem();
+                    Debug = false;
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1234;
+                    //ExperimentType = "edm";
+                    break;
+
+                #if EDM
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
+                    wavemeterLockTCPChannel = 1012;
+                    serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
 #endif

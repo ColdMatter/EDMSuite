@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using WavemeterLockServer;
 using NationalInstruments.DAQmx;
-
+using WavemeterLockServer;
 using DAQ.Environment;
 using DAQ.HAL;
 
@@ -28,7 +28,7 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private string ipAddr;
 
-		private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+		private string hostName = (String)System.Environment.GetEnvironmentVariables()["IC-CZC136CFDJ"];
 
 		protected override void InitialiseSettings()
 		{
@@ -42,12 +42,12 @@ namespace ScanMaster.Acquire.Plugins
             if (!Environs.Debug)
             {
 				serverComputerName = (string)settings["computer"];
-
-				foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
+				
+				/*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
 				{
 					if (addr.AddressFamily == AddressFamily.InterNetwork)
 						ipAddr = addr.ToString();
-				}
+				}*/
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 

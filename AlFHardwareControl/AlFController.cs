@@ -9,7 +9,7 @@ using Data;
 
 namespace AlFHardwareControl
 {
-    public class AlFController
+    public class AlFController : MarshalByRefObject
     {
 
         private AlFControlWindow window;
@@ -17,6 +17,15 @@ namespace AlFHardwareControl
         public LakeShore336TemperatureController lakeshore = (LakeShore336TemperatureController)Environs.Hardware.Instruments["Lakeshore"];
         public LeyboldGraphixController leybold = (LeyboldGraphixController)Environs.Hardware.Instruments["LeyboldGraphix"];
         public Eurotherm3504Instrument eurotherm = (Eurotherm3504Instrument)Environs.Hardware.Instruments["Eurotherm"];
+
+        public bool interlocksActive = true;
+        public bool InterlocksActive
+        {
+            get
+            {
+                return interlocksActive;
+            }
+        }
 
         public AlFController()
         {
@@ -31,10 +40,12 @@ namespace AlFHardwareControl
             Application.Run(window);
         }
 
+        #region Resource related functions
         public string nameA;
         public string nameB;
         public string nameC;
         public string nameD;
+
 
         public void UpdateLakeshoreNames()
         {
@@ -48,11 +59,12 @@ namespace AlFHardwareControl
 
         }
 
+        public Thread UpdateThread; 
         public void WindowLoaded()
         {
-            UpdateLakeshoreNames();
             UpdateLakeshoreTemperature();
-            (new Thread(() => UpdateData())).Start();
+            UpdateThread = new Thread(() => UpdateData());
+            UpdateThread.Start();
         }
 
         private void UpdateLakeshoreTemperature()
@@ -89,6 +101,7 @@ namespace AlFHardwareControl
             {
                 pressure1Name = leybold.ReadValue("1;5");
                 pressure2Name = leybold.ReadValue("2;5");
+                pressure3Name = leybold.ReadValue("3;5");
             }
         }
 
@@ -99,10 +112,12 @@ namespace AlFHardwareControl
             {
                 pressure1 = leybold.ReadValue("1;29");
                 pressure2 = leybold.ReadValue("2;29");
+                pressure3 = leybold.ReadValue("3;29");
             }
 
             window.SetTextField(window.P1, pressure1 + " mbar");
             window.SetTextField(window.P2, pressure2 + " mbar");
+            window.SetTextField(window.P3, pressure3 + " mbar");
 
         }
 
@@ -136,7 +151,7 @@ namespace AlFHardwareControl
                 loop1Out = eurotherm.GetActiveOut(0);
                 loop2Out = eurotherm.GetActiveOut(1);
             }
-            bool OK_Cryo = window.CryoStatus.Text == "OFF";
+            bool OK_Cryo = window.CryoStatus.Text == "OFF" || !InterlocksActive;
             if (loop1Off)
             {
                 window.SetTextField(window.Loop1Status, "OFF");
@@ -171,14 +186,13 @@ namespace AlFHardwareControl
 
             window.UpdateRenderedObject(window.Loop1Out, (ProgressBar bar) => { bar.Value = (int)loop1Out; });
             window.UpdateRenderedObject(window.Loop2Out, (ProgressBar bar) => { bar.Value = (int)loop2Out; });
-
         }
 
         private void UpdateCryoState()
         {
 
-            bool OK_pressure = Convert.ToDouble(pressure1) < 1e-4;
-            bool OK_heaters = !(window.Loop1Status.Text == "ON" || window.Loop2Status.Text == "ON");
+            bool OK_pressure = Convert.ToDouble(pressure1) < 1e-4 || !InterlocksActive;
+            bool OK_heaters = !(window.Loop1Status.Text == "ON" || window.Loop2Status.Text == "ON") || !InterlocksActive;
             bool CRYO_off = false;
             lock (lakeshore)
             {
@@ -203,25 +217,47 @@ namespace AlFHardwareControl
 
         }
 
+        public bool exiting = false;
+        public ThreadSync DAQ_sync = new ThreadSync();
         private void UpdateData()
         {
 
-            ThreadSync DAQ_sync = new ThreadSync();
             DAQ_sync.CreateDelegateThread(() => {
-                UpdateLakeshoreTemperature();
-                UpdateCryoState();
+                try
+                {
+                    UpdateLakeshoreTemperature();
+                    UpdateCryoState();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
+                }
             });
 
             DAQ_sync.CreateDelegateThread(() => {
-                UpdatePressure();
+                try
+                {
+                    UpdatePressure();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with Leybold pressure controller:" + e.ToString());
+                }
             });
 
             DAQ_sync.CreateDelegateThread(() => {
-                UpdateTypeK();
+                try
+                {
+                    UpdateTypeK();
+                }
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                {
+                    window.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
+                }
             });
 
             DAQ_sync.SwitchToData();
-            for (; ; )
+            while (!exiting)
             {
                 System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                 DAQ_sync.SwitchToControl();
@@ -235,7 +271,13 @@ namespace AlFHardwareControl
                 if (watch.ElapsedMilliseconds < 500)
                     Thread.Sleep((int)(500 - watch.ElapsedMilliseconds));
             }
+            DAQ_sync.JoinThreads();
         }
 
+        #endregion
+
+        #region External Control
+
+        #endregion
     }
 }

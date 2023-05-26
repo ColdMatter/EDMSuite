@@ -9,8 +9,8 @@ namespace DAQ.Environment
 	{
 		public AlFFileSystem()
 		{
-			Paths.Add("fakeData", "C:\\Users\\alfultra\\Desktop\\Data\\Examples\\");
-			Paths.Add("scanMasterDataPath", "C:\\Users\\alfultra\\Desktop\\Data\\");
+			Paths.Add("fakeData", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\Examples\\");
+			Paths.Add("scanMasterDataPath", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\");
 
 			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 			DataSearchPaths.Add(Paths["fakeData"]);

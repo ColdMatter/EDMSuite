@@ -146,9 +146,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
     <OutputPath>bin\ScanMaster\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2012|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2012\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LatticeEDM|AnyCPU'">
     <OutputPath>bin\LatticeEDM\</OutputPath>
@@ -242,6 +246,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2023\</OutputPath>
@@ -581,10 +586,13 @@
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
@@ -619,6 +627,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="AnalogStaticBuilderSingleBoard.cs" />
+    <Compile Include="AnalogStaticBuilder.cs" />
+    <Compile Include="CaFBECFileSystem.cs" />
+    <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="DAQMxPatternGenerator.cs" />
+    <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
+    <Compile Include="DAQMxStaticAnalogGenerator.cs" />
+    <Compile Include="DTCLCavityConfig.cs" />
+    <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
     <Compile Include="GobelinHardware.cs" />
     <Compile Include="LeyboldGraphixController.cs" />
@@ -748,9 +765,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DAQMxChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DAQMxPatternGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataFaker.cs">

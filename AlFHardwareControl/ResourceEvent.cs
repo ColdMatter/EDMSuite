@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace AlFHardwareControl
 {
-    public partial class ResourceEvent : UserControl
+    public partial class ResourceEvent : UserControl, ITaskSchedulerEvent
     {
         protected TaskScheduler scheduler;
-        protected Action<bool> action;
+        protected Func<bool,object> action;
         protected Func<string> resource;
 
         [Obsolete("Designer only", true)]
@@ -35,9 +35,19 @@ namespace AlFHardwareControl
             this.Comparison.Text = comparison;
             this.Value.Text = comparisonValue;
             this.TaskName.Text = taskName;
-            resource = scheduler.GetResource(_resource);
             this.DiscardTimedSchedOnInterlockFail.Checked = interlockFail;
             action = scheduler.Tasks[taskName];
+
+            try
+            {
+                resource = scheduler.GetResource(_resource);
+            }
+            catch (KeyNotFoundException e)
+            {
+                scheduler.UpdateEventLog("No resource named " + _resource + " exists! Discarding malformed event.");
+                scheduler.RemoveEvent(this);
+                scheduler.UpdateScheduledLayout();
+            }
         }
 
         public virtual void UpdateEvent()

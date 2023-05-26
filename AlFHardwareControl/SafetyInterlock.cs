@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace AlFHardwareControl
 {
@@ -22,7 +23,15 @@ namespace AlFHardwareControl
 
         public override void UpdateEvent()
         {
-            if (!FailCond()) return;
+            if (!FailCond())
+            {
+                this.Invoke((Action) delegate { this.BackColor = SystemColors.ControlDark; });
+                return;
+            }
+            else
+            {
+                this.Invoke((Action) delegate { this.BackColor = SystemColors.Control; });
+            }
             if (scheduler.GetComparison(this.Comparison.Text)(resource(), this.Value.Text))
             {
                 scheduler.UpdateEventLog("Safety Interlock \"" + this.TaskName.Text + "\" set to occur when " + this.Resource.Text + " " + this.Comparison.Text + " " + this.Value.Text + " triggered!");
