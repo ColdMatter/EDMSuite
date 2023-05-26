@@ -69,9 +69,9 @@ namespace DAQ
         public static double peakLocator(List<DataPoint> data)
         {
             List<DataPoint> processed = new List<DataPoint> { };
-            for (int i = 3; i < data.Count() - 3; ++i)
+            for (int i = 2; i < data.Count()-2; ++i)
             {
-                processed.Add(new DataPoint(data[i].x,(-3*data[i-3].y -2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y + 3 * data[i + 3].y) /28));
+                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y) /10));
             }
 
 
@@ -111,7 +111,7 @@ namespace DAQ
                         cachedData.Add(new DataPoint(xdata[i], data[i]));
                         break;
                     case PeakFinderStateMachine.State.WAITING:
-                        if (cachedData.Count() >= 8)
+                        if (cachedData.Count() >= 6)
                         {
                             return peakLocator(cachedData);
                         }

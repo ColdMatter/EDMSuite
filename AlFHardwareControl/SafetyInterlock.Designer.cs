@@ -29,10 +29,32 @@ namespace AlFHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.BoundingBox.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // BoundingBox
+            // 
+            this.BoundingBox.Enabled = false;
+            this.BoundingBox.Text = "Safety Interlock";
+            // 
+            // DiscardTimedSchedOnInterlockFail
+            // 
+            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(209, 86);
+            // 
+            // Dismiss
+            // 
+            this.Dismiss.Enabled = false;
+            this.Dismiss.Location = new System.Drawing.Point(3, 82);
+            // 
+            // SafetyInterlock
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            base.BoundingBox.Text = "Safety Interlock";
-            base.Dismiss.Enabled = false;
+            this.Name = "SafetyInterlock";
+            this.BoundingBox.ResumeLayout(false);
+            this.BoundingBox.PerformLayout();
+            this.ResumeLayout(false);
+
         }
 
         #endregion

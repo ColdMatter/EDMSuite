@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace AlFHardwareControl
 {
-    public partial class TimedEvent : UserControl
+    public partial class TimedEvent : UserControl, ITaskSchedulerEvent
     {
         private TaskScheduler scheduler;
-        private Action<bool> action;
+        private Func<bool, object> action;
         public TimedEvent(TaskScheduler _scheduler, DateTime scheduledFor, string taskName, bool interlockFail)
         {
             InitializeComponent();

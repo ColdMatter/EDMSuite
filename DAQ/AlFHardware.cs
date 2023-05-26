@@ -23,9 +23,10 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", "/PXI1Slot5");
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
-            Info.Add("PGClockLine", Boards["pg"] + "/PFI14");
+            Info.Add("PGClockLine", Boards["pg"] + "/PFI15");
             Info.Add("analogTrigger0", (string)Boards["pg"] + "/PFI0");
             Info.Add("ScanMasterConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\ScanProfils.xml");
+            Info.Add("MacroConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\Macros.xml");
 
 
             // Input signals
@@ -62,6 +63,8 @@ namespace DAQ.HAL
             AddCounterChannel("RbCounter", "/PXI1Slot5/ctr2");
             AddCounterChannel("MBRCounter", "/PXI1Slot5/ctr3");
             AddCounterChannel("ResetOut", "/PXI1Slot5/PFI2");
+            AddCounterChannel("PMT_Edges", "/PXI1Slot5/ctr3");
+            AddCounterChannel("sample clock", "/PXI1Slot5/ctr2");
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
@@ -70,7 +73,7 @@ namespace DAQ.HAL
             TCLConfig tclConfigMBR = new TCLConfig("MBR-Ref");
             tclConfigMBR.Trigger = Boards["daq"] + "/PFI8";
             tclConfigMBR.BaseRamp = "tclCavityRampVoltage";
-            tclConfigMBR.TCPChannel = 1191;
+            tclConfigMBR.TCPChannel = 1192;
             tclConfigMBR.DefaultScanPoints = 500;
             tclConfigMBR.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
             tclConfigMBR.AnalogSampleRate = 61250;

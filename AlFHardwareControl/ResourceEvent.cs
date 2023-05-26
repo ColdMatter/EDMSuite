@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace AlFHardwareControl
 {
-    public partial class ResourceEvent : UserControl
+    public partial class ResourceEvent : UserControl, ITaskSchedulerEvent
     {
         protected TaskScheduler scheduler;
-        protected Action<bool> action;
+        protected Func<bool,object> action;
         protected Func<string> resource;
 
         [Obsolete("Designer only", true)]

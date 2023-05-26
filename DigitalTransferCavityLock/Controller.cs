@@ -125,6 +125,14 @@ namespace DigitalTransferCavityLock
             });
         }
 
+        public void UnLockLaser(string cavity, string laser)
+        {
+            cavities[cavity].UpdateRenderedObject(cavities[cavity], (CavityControl cc) =>
+            {
+                cc.slaveLasers[laser].LockSlave.Checked = false;
+            });
+        }
+
         #endregion
     }
 }
