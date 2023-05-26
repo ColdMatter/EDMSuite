@@ -376,6 +376,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", -10, 10);
             AddAnalogOutputChannel("probeAOMamp", aoBoard + "/ao28", 0, 10);
 
+
             //Obselete Laser control
             AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao20", 0, 10);
             AddAnalogOutputChannel("fibreAmpPwr", aoBoard + "/ao3");
@@ -402,6 +403,7 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
             AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
+            AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
             AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
 
             MMConfig mmConfig = new MMConfig(false, false, true, false);
@@ -419,7 +421,7 @@ namespace DAQ.HAL
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
             wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
-            wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTest");
+            wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
             wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
             Info.Add("Default", wmlConfig);
