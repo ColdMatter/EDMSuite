@@ -284,8 +284,8 @@ public class Patterns : MOTMasterScript
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
         p.AddChannel("rb3DCoolingAttenuation");
-        p.AddChannel("rbRepumpFrequency");
-        p.AddChannel("rbRepumpAttenuation");
+        //p.AddChannel("rbRepumpFrequency");
+        //p.AddChannel("rbRepumpAttenuation");
         p.AddChannel("rbAbsImagingFrequency");
         p.AddChannel("rbOffsetLock");
         p.AddChannel("transferCoils");
@@ -334,12 +334,12 @@ public class Patterns : MOTMasterScript
 
         //Rb Laser detunings for loading the MOT
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
-        p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
+        //p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
         //Rb laser detunings for CMOT steps:
         p.AddAnalogValue("rb3DCoolingFrequency", rbCMOTStartTime, (double)Parameters["RbCoolingFrequencyCMOT"]);
-        p.AddAnalogValue("rbRepumpFrequency", rbCMOTStartTime, (double)Parameters["RbRepumpFrequencyCMOT"]);
+        //p.AddAnalogValue("rbRepumpFrequency", rbCMOTStartTime, (double)Parameters["RbRepumpFrequencyCMOT"]);
 
         //Rb molasses:
         p.AddLinearRamp("rb3DCoolingFrequency", rbMolassesStartTime, (int)Parameters["RbMolassesDuration"], (double)Parameters["RbMolassesEndDetuning"]);
@@ -347,9 +347,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbOffsetLock", 0, 1.1);
 
 
-        p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
-        p.AddAnalogValue("yShimCoilCurrent", startMotionTime, 5.0);//This is now used to trigger the translation stage of the transport coils
-        p.AddAnalogValue("yShimCoilCurrent", startMotionTime + 100, 0.0);
+        //p.AddAnalogValue("yShimCoilCurrent", 0, 0.0);
+        //p.AddAnalogValue("yShimCoilCurrent", startMotionTime, 5.0);//This is now used to trigger the translation stage of the transport coils
+        //p.AddAnalogValue("yShimCoilCurrent", startMotionTime + 100, 0.0);
 
 
 
