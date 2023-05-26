@@ -58,7 +58,6 @@ namespace WavemeterLock
             catch(Exception e)
             {
                 connectionError(e);
-                Environment.Exit(1);
             }
             //Register in remote server
             thisComputerName = Environment.MachineName.ToString();
@@ -70,7 +69,6 @@ namespace WavemeterLock
             catch(Exception e)
             {
                 connectionError(e);
-                Environment.Exit(1);
             }
             //This throws a security exception
             //wavemeterContrller.measurementAcquired += () => { updateLockMaster(); };
@@ -79,15 +77,9 @@ namespace WavemeterLock
         public string acquireWavelength(int channelNum) //Display wavelength
         {
             string display = null;
-            try
-            {
-                display = wavemeterContrller.displayWavelength(channelNum);
-            }
-            catch(Exception e)
-            {
-                connectionError(e);
-                Environment.Exit(1);
-            }
+            
+            display = wavemeterContrller.displayWavelength(channelNum);
+            
             return display;
 
         }
@@ -439,18 +431,11 @@ namespace WavemeterLock
         {
             if (WMLState != ControllerState.STOPPED)
             {
-                try
-                {
-                    if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
-                    {
-                        updateLockMaster();
-                        wavemeterContrller.resetMeasurementStatus(thisComputerName);
-                    }
-                }
-                catch(Exception e)
-                {
-                    connectionError(e);
-                    Environment.Exit(1);
+                if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
+                    
+                { 
+                    updateLockMaster();
+                    wavemeterContrller.resetMeasurementStatus(thisComputerName);
                 }
             }
 
@@ -593,6 +578,16 @@ namespace WavemeterLock
         public void connectionError(Exception e)
         {
             MessageBox.Show($"Connection failed: {e.Message}");
+            if (Application.MessageLoop)
+            {
+                // WinForms app
+                Application.Exit();
+            }
+            else
+            {
+                // Console app
+                Environment.Exit(1);
+            }
         }
 
 
