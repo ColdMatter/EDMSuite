@@ -420,10 +420,10 @@ namespace DAQ.HAL
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
-            wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
-            wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
-            wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
-            wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
+            //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
+            //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
+            //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
+            //wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
             Info.Add("Default", wmlConfig);
         }
 
