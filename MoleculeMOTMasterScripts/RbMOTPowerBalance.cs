@@ -33,7 +33,7 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 100000;
+        Parameters["MOTLoadTime"] = 50000;
         Parameters["CameraTriggerDelayAfterFirstImage"] = 15000;
         Parameters["Frame0TriggerDuration"] = 5;
         Parameters["TriggerJitter"] = 3;
