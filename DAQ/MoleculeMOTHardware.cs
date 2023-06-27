@@ -25,41 +25,41 @@ namespace DAQ.HAL
 
             //Boards
             string digitalPatternBoardName = "digitalPattern";
-            string digitalPatternBoardAddress = "/Dev1";
+            string digitalPatternBoardAddress = "/Dev1";//PCI-6534
             Boards.Add(digitalPatternBoardName, digitalPatternBoardAddress);
 
             string analogPatternBoardName = "analogPattern";
-            string analogPatternBoardAddress = "/PXI1Slot2"; //7
+            string analogPatternBoardAddress = "/PXI1Slot2"; //PXIe-6738
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
 
             string tclBoard1Name = "tclBoard1";
-            string tclBoard1Address = "/PXI1Slot3";
+            string tclBoard1Address = "/PXI1Slot3";//PXIe-6738
             Boards.Add(tclBoard1Name, tclBoard1Address);
 
             string tclBoard2Name = "tclBoard2";
-            string tclBoard2Address = "/PXI1Slot8";
+            string tclBoard2Address = "/PXI1Slot8"; //PXI-6221
             Boards.Add(tclBoard2Name, tclBoard2Address);
 
             string tclBoard3Name = "tclBoard3";
-            string tclBoard3Address = "/PXI1Slot6";
+            string tclBoard3Address = "/PXI1Slot6";//PXI-6229
             Boards.Add(tclBoard3Name, tclBoard3Address);
 
             string usbBoard1Name = "usbBoard1";
-            string usbBoard1Address = "/Dev2";
+            string usbBoard1Address = "/Dev2";//USB-6009
             Boards.Add(usbBoard1Name, usbBoard1Address);
 
             string usbBoard2Name = "usbBoard2";
-            string usbBoard2Address = "/Dev3";
+            string usbBoard2Address = "/Dev3";//USB-6008
             Boards.Add(usbBoard2Name, usbBoard2Address);
 
 
             string digitalPatternBoardName2 = "digitalPattern2";
-            string digitalPatternBoardAddress2 = "/PXI1Slot4";
+            string digitalPatternBoardAddress2 = "/PXI1Slot4";//PXI-6535
             Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
 
             
             string analogPatternBoardName2 = "analogPattern2";
-            string analogPatternBoardAddress2 = "/PXI1Slot7";
+            string analogPatternBoardAddress2 = "/PXI1Slot7";//PXI-6723
             Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
             
 
@@ -194,7 +194,7 @@ namespace DAQ.HAL
             // Tweezer MOT coils
 
             AddAnalogOutputChannel("speedbumpCoils", analogPatternBoardAddress + "/ao20");
-            AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29");
+            AddAnalogOutputChannel("DipoleTrapLaserControl", analogPatternBoardAddress + "/ao29"); //Dipole trap DDS attenuation
             AddAnalogOutputChannel("TweezerMOTCoils", analogPatternBoardAddress + "/ao28");
 
             /* New Ananlog board
@@ -211,13 +211,17 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("sourceHeater", tclBoard2Address, 0, 1);
             AddDigitalOutputChannel("sf6Valve", tclBoard2Address, 0, 2);
             AddDigitalOutputChannel("heValve", tclBoard2Address, 0, 3);
+            AddDigitalOutputChannel("sourceHeater40K", tclBoard2Address, 0, 4);
+            AddDigitalOutputChannel("sourceHeaterMaster", tclBoard2Address, 0, 5);
 
             AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", tclBoard2Address + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("MOTPressure", tclBoard2Address + "/ai8", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp2", tclBoard2Address + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp3", tclBoard2Address + "/ai10", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourceTemp40K", tclBoard2Address + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourceTemp40KDiode", tclBoard2Address + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6FlowMonitor", tclBoard2Address + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("he6FlowMonitor", tclBoard2Address + "/ai6", AITerminalConfiguration.Rse);
 

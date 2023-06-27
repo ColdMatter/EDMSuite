@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 170000;
+        Parameters["PatternLength"] = 200000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["PushBeamFrequency"] = 5.0;
-        Parameters["UVLightShutOff"] = 0;
+
 
         Parameters["MOTHoldTime"] = 0;
         Parameters["TurnAllLightOn"] = 1000;
@@ -34,25 +34,21 @@ public class Patterns : MOTMasterScript
         // Camera
         Parameters["MOTLoadTime"] = 100000;
         Parameters["CameraTriggerDelayAfterFirstImage"] = 15000;
-        Parameters["Frame0TriggerDuration"] = 5;
+        Parameters["Frame0TriggerDuration"] = 1;
         Parameters["TriggerJitter"] = 3;
         Parameters["OPDuration"] = 0;
+        Parameters["FreeExpansionTime"] = 1;
         Parameters["ImageDelay"] = 0;
 
 
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 2.7; //2.91 resonance
+        Parameters["ImagingFrequency"] = 3.0;
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
-        //Parameters["MOTCoolingLoadingFrequency"] = 3.4; //  13/03/2023
-        //Parameters["MOTCoolingLoadingFrequency"] = 4.1;
         Parameters["MOTCoolingLoadingFrequency"] = 4.6; //13/03/2023
-        //Parameters["MOTCoolingLoadingFrequency"] = 4.60; //  06/03/2023
-        //Parameters["MOTCoolingLoadingFrequency"] = 5.0;// it was 5.0 @ 27.04.2022
-        //Parameters["MOTCoolingLoadingFrequency"] = 4.3;
-
         Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.6
+        Parameters["RepumpImagingFrequency"] = 6.6;
 
         //PMT
         Parameters["PMTTrigger"] = 5000;
@@ -81,20 +77,24 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 100000;
-        Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
+        Parameters["MOTCoilsCurrentValue"] = 0.5;//1.0; // 0.65;
 
         // Shim fields
-        /*        Parameters["xShimLoadCurrent"] = -1.0;// -1.35 is zero
-                Parameters["yShimLoadCurrent"] = -1.0;// -1.92 is zero
-                Parameters["zShimLoadCurrent"] = -0.0;// -0.56,   -0.22 is zero */
-        Parameters["xShimLoadCurrent"] = -1.35;// -1.35 is zero
-        Parameters["yShimLoadCurrent"] = -1.92;// -1.92 is zero
-        Parameters["zShimLoadCurrent"] = -0.3;// -0.56,   -0.22 is zero
+        //Parameters["xShimLoadCurrent"] = 0.0;// -1.35 is zero
+        //Parameters["yShimLoadCurrent"] = 10.0;// -1.92 is zero
+        //Parameters["zShimLoadCurrent"] = 1.5;// -0.56,   -0.22 is zero
 
-        //Shim fields for imaging
-        Parameters["xShimImagingCurrent"] = -1.93;
-        Parameters["yShimImagingCurrent"] = -6.74;
-        Parameters["zShimImagingCurrent"] = -0.56;
+        Parameters["xShimLoadCurrent"] = -10.0;// -1.35 is zero
+        Parameters["yShimLoadCurrent"] = -5.0;// -1.92 is zero
+        Parameters["zShimLoadCurrent"] = -2.0;// -0.56,   -0.22 is zero
+
+        Parameters["xShimMolassesCurrent"] = -2.0;
+        Parameters["yShimMolassesCurrent"] = -1.92;
+        Parameters["zShimMolassesCurrent"] = -0.3;
+
+        //Parameters["xShimLoadCurrent"] = -8.0;// -1.35 is zero
+        //Parameters["yShimLoadCurrent"] = 5.0;// -1.92 is zero
+        //Parameters["zShimLoadCurrent"] = -0.5;// -0.56,   -0.22 is zero
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -119,17 +119,37 @@ public class Patterns : MOTMasterScript
         Parameters["FluorescenceImageDelay"] = 0;
 
         Parameters["Det"] = 4.9;
-        Parameters["Dummy"] = 0.0;
 
-        Parameters["FreeExpTime"] = 100;
         Parameters["image2DMOTTime"] = 100;
         Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
 
-        Parameters["CoolingAttenuation"] = 0.0;
-        Parameters["RepumpAttenuation"] = 0.0;
-        //Parameters["RbOffsetLockSetPoint"] = 0.925;//1.23;// 0.87;
-        Parameters["RbOffsetLockSetPoint"] = 0.88;
-        Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
+        Parameters["MolassesDuration"] = 5000;
+        Parameters["MolassesFrequency"] = 3.0;
+        Parameters["DipoleTrapHoldTime"] = 4000;
+        Parameters["ODTDelay"] = 200;
+
+        Parameters["DarkMOTDuration"] = 3000;
+        Parameters["DarkMOTField"] = 0.5;
+        Parameters["DarkMOTRepumpIntensityRampDuration"] = 5000;
+        Parameters["ModulationPeriod"] = 16.6;
+
+        Parameters["LatticeRampDuration"] = 1000;
+        Parameters["DarkMOTCoolingDetuning"] = 2.5;
+
+        Parameters["DipoleTrapRampDuration"] = 10000;
+        Parameters["DipoleTrapRampEndIntensity"] = 2.0;
+        Parameters["RampStartDelay"] = 600;
+
+        Parameters["GrayMolassesDelay"] = 400;
+        Parameters["GrayMolassesDuration"] = 40;
+
+        Parameters["FrequencyJumpValue"] = -0.95;
+        Parameters["CoolingLaserFrequencyJumpValue"] = 4.3; //4.5; 
+        Parameters["GrayMolassesCoolingLightIntensity"] = 0.0;
+        Parameters["GrayMolassesRepumpLightIntensity"] = 0.0;
+
+        Parameters["ModulationDelay"] = 10;
+        Parameters["ModulationDuration"] = 5000;
 
     }
 
@@ -138,39 +158,32 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int rbMOTLoadTime = patternStartBeforeQ + (int)Parameters["MOTLoadTime"];
-        int rbMOTSwitchOffTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
-        int cameraTrigger1 = rbMOTSwitchOffTime + (int)Parameters["FreeExpTime"];
+        int rbDARKMOTStartTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
+        int rbDARKMOTEndTime = rbDARKMOTStartTime + (int)Parameters["DarkMOTDuration"];
+        int cameraTrigger1 = rbDARKMOTEndTime + (int)Parameters["FreeExpansionTime"];
         int cameraTrigger2 = cameraTrigger1 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //probe image
         int cameraTrigger3 = cameraTrigger2 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //bg
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
-        //   p.AddEdge("v00Shutter", 0, true);
-        //p.Pulse(patternStartBeforeQ, 3000 - 1400, 10000, "bXSlowingShutter"); //Takes 14ms to start closing
-
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.AddEdge("rbAbsImagingBeam", 0, false);
 
         //Rb:
 
         p.AddEdge("rb3DCooling", 0, false);
-        p.AddEdge("rb3DCooling", rbMOTSwitchOffTime, true);
+        p.AddEdge("rb3DCooling", rbDARKMOTEndTime, true);
+
         p.AddEdge("rb2DCooling", 0, false);
         p.AddEdge("rb2DCooling", rbMOTLoadTime, true);
+
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", rbMOTLoadTime - 200, true);
-        p.AddEdge("rbD1CoolingSwitch", 0, true);
+
         p.AddEdge("rbRepump", 0, false);
-        p.AddEdge("rbRepump", rbMOTSwitchOffTime, true);
+        p.AddEdge("rbRepump", rbDARKMOTStartTime, true);
 
-        
+        p.AddEdge("rbOpticalPumpingAOM", 0, false);
+        p.AddEdge("rbOpticalPumpingAOM", rbDARKMOTEndTime, true);
 
 
-        //Turn everything back on at end of sequence:
-
-        p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("rbRepump", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
 
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
@@ -180,18 +193,15 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 10, true);
 
         // Abs image
-        //p.Pulse(0, 94000, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
-        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background rbAbsImgCamTrig
+        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
+        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
+        // Fluorescence image
+        p.Pulse(0, rbDARKMOTEndTime - 100, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(0, rbDARKMOTEndTime - 100, 5, "cameraTrigger");
+        //p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
-        p.Pulse(0, cameraTrigger1 - 2000 , (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-
-        p.AddEdge("rb3DMOTShutter", 0, true);
-        p.AddEdge("rbOPShutter", 0, true);
-        p.AddEdge("rb2DMOTShutter", 0, true);
-
-        p.AddEdge("rbOpticalPumpingAOM", 0, true);
+        p.AddEdge("dipoleTrapAOM", 0, false);
 
         p.AddEdge("microwaveB", 0, false);
 
@@ -202,53 +212,52 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
         int rbMOTLoadTime = (int)Parameters["MOTLoadTime"];
-        int rbMOTSwitchOffTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
-        int cameraTrigger1 = rbMOTSwitchOffTime + (int)Parameters["FreeExpTime"];
+        int rbDARKMOTStartTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
+        int rbDARKMOTEndTime = rbDARKMOTStartTime + (int)Parameters["DarkMOTDuration"];
+        int cameraTrigger1 = rbDARKMOTEndTime + (int)Parameters["FreeExpansionTime"];
         int cameraTrigger2 = cameraTrigger1 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //probe image
         int cameraTrigger3 = cameraTrigger2 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //bg
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
-        
-        p.AddChannel("v00Intensity");
-        p.AddChannel("v00Frequency");
+
         p.AddChannel("xShimCoilCurrent");
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
-        p.AddChannel("v00EOMAmp");
-        p.AddChannel("v00Chirp");
 
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
-        p.AddChannel("rb3DCoolingAttenuation");
-        
+        //p.AddChannel("rb3DCoolingAttenuation");
         p.AddChannel("rbAbsImagingFrequency");
         p.AddChannel("rbRepumpOffsetLock");
         p.AddChannel("rbOffsetLock");
 
-        
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
+        p.AddAnalogValue("xShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["xShimMolassesCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["yShimMolassesCurrent"]);
+        p.AddAnalogValue("zShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["zShimMolassesCurrent"]);
+
+
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]); //switch on MOT coils to load Rb MOT
-        p.AddAnalogValue("MOTCoilsCurrent", rbMOTSwitchOffTime, -0.05); //switch off coils after MOT is loaded
-
-        //Rb Laser intensities
-        p.AddAnalogValue("rb3DCoolingAttenuation", 0, (double)Parameters["CoolingAttenuation"]);
-
+        p.AddAnalogValue("MOTCoilsCurrent", rbDARKMOTStartTime, (double)Parameters["DarkMOTField"]);
+        p.AddAnalogValue("MOTCoilsCurrent", rbDARKMOTEndTime, -0.05); //switch off coils after MOT is loaded
 
         //Rb Laser detunings
-        p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
-        p.AddAnalogValue("rbRepumpOffsetLock", 0, (double)Parameters["RbRepumpOffsetLockSetPoint"]);
+        p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
 
-        p.AddAnalogValue("rbOffsetLock", 0, (double)Parameters["RbOffsetLockSetPoint"]);
+        p.AddAnalogValue("rbRepumpOffsetLock", 0, 1.55);
+
+        p.AddAnalogValue("rbOffsetLock", 0, 0.925);
         
+
         return p;
     }
 

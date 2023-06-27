@@ -30,3 +30,5 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe.con
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Ivi.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.csproj.CopyComplete
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\bdc-comm-92.exe
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.UI.Styles3D.dll

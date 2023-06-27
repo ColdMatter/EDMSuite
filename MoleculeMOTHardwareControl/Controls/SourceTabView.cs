@@ -74,9 +74,19 @@ namespace MoleculeMOTHardwareControl.Controls
             txt40Ktemp.Text = temp;
         }
 
+        public void UpdateCurrentSourceTemperature40K2(string temp)
+        {
+            txt40Ktemp2.Text = temp;
+        }
+
         public void UpdateCurrentSourceTemperature2(string temp)
         {
             txtSourceTemp2.Text = temp;
+        }
+
+        public void UpdateCurrentSourceTemperature3(string temp)
+        {
+            txtSourceTemp3.Text = temp;
         }
 
         public void UpdateCurrentSF6Temperature(string temp)
@@ -168,6 +178,11 @@ namespace MoleculeMOTHardwareControl.Controls
             cycleButton.Enabled = state;
         }
 
+        public void UpdateHoldButton40K(bool state)
+        {
+            holdButton40K.Text = state ? "Heat and Hold" : "Stop Holding";
+        }
+
         public void EnableControls(bool state)
         {
             heaterSwitch.Enabled = state;
@@ -188,6 +203,12 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterLED.Value = state;
         }
 
+        public void SetHeaterState40K(bool state)
+        {
+            heaterSwitch40K.Value = state;
+            heaterLED40K.Value = state;
+        }
+
         #endregion
 
         #region UI Query Handlers
@@ -195,6 +216,11 @@ namespace MoleculeMOTHardwareControl.Controls
         public double GetCycleLimit()
         {
             return (double)cycleLimit.Value;
+        }
+
+        public double GetCycleLimit40K()
+        {
+            return (double)cycleLimit40K.Value;
         }
 
         #endregion
@@ -229,6 +255,16 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.ToggleHolding();
         }
 
+        private void toggleHolding40K(object sender, EventArgs e)
+        {
+            /*
+            chkToF.Checked = false;
+            chkAutoFlowControl.Checked = false;
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;*/
+            castController.ToggleHolding40K();
+        }
+
         private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
             bool state = heaterSwitch.Value;
@@ -236,6 +272,12 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.SetHeaterState(state);
         }
 
+        private void toggleHeater40K(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+            bool state = heaterSwitch40K.Value;
+            heaterLED40K.Value = state;
+            castController.SetHeaterState40K(state);
+        }
         private void toggleCryo(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
             bool state = cryoSwitch.Value;
@@ -341,6 +383,50 @@ namespace MoleculeMOTHardwareControl.Controls
         {
 
         }
- 
+
+        private void heaterGroup_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void sf6Temperature_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void currentTemperature_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSourceTemp2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSourceTemp3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt40Ktemp_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt40Ktemp2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SourceTabView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
