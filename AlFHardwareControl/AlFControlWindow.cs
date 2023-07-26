@@ -75,6 +75,9 @@ namespace AlFHardwareControl
             Func<bool> Loop1On = () => { return Loop1Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> Loop2On = () => { return Loop2Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> heaterOn = () => { return Loop1On() || Loop2On(); };
+
+
+
             tSched.AddEvent(new SafetyInterlock(tSched, LabelA.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
             tSched.AddEvent(new SafetyInterlock(tSched, LabelB.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
             tSched.AddEvent(new SafetyInterlock(tSched, LabelC.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
@@ -82,6 +85,7 @@ namespace AlFHardwareControl
 
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 1", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 1", Loop1On));
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 2", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 2", Loop2On));
+            tSched.AddEvent(new SafetyInterlock(tSched, "Cryo state", "is", "ON", "Turn off heaters", heaterOn));
 
         }
 
@@ -153,7 +157,7 @@ namespace AlFHardwareControl
                 if ((Loop1Status.Text == "ON" || Loop2Status.Text == "ON") && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on cryo while heaters are actve!");
-                    return null;
+                    return null; // Fix
                 }
                 if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 {

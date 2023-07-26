@@ -186,6 +186,16 @@ namespace AlFHardwareControl
             UpdateScheduledLayout();
         }
 
+
+        #region Command Parsing
+
+        private struct Token
+        {
+            string value;
+            bool regex;
+            bool dictionary;
+
+        }
         /// <summary>
         /// Parses command strings. These have the form "!command param1 param2"
         /// Space is considered a delimiter between the tokens. Quotes can be used
@@ -199,12 +209,25 @@ namespace AlFHardwareControl
         /// <returns>
         /// A tokenised list of the command
         /// </returns>
-        public List<string> ParseCommand(List<string> dictionaryKeys)
+        private List<Token> ParseCommand(string command)
         {
-            List<string> parsedCommand = new List<string>();
+            List<Token> parsedCommand = new List<Token>();
+
+            bool escaped = false;
+            bool regex = false;
+            bool dictionary = false;
+
+            foreach (char c in command)
+            {
+
+            }
+
+
 
             return parsedCommand;
         }
+
+        #endregion
 
         public void SetTextField(Control box, string text)
         {

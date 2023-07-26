@@ -20,6 +20,7 @@ namespace DAQ.HAL
             // add the boards
             Boards.Add("daq", "/PXI1Slot4");
             Boards.Add("pg", "/PXI1Slot5");
+            Boards.Add("analog", "/PXI1Slot6");
             Info.Add("PatternGeneratorBoard", "/PXI1Slot5");
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
@@ -36,12 +37,13 @@ namespace DAQ.HAL
             AddAnalogInputChannel("PMT", (string)Boards["pg"] + "/ai1", AITerminalConfiguration.Rse);
 
             // Output signals
-            AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -4, 4);
-            AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
-            AddAnalogOutputChannel("testOut", (string)Boards["daq"] + "/ao1", -10, 10);
-            AddAnalogOutputChannel("WMLOut", (string)Boards["daq"] + "/ao1", 0, 10);
-            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["daq"]+"/ao0", 0, 10);
-            AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
+            AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
+            //AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
+            //AddAnalogOutputChannel("testOut", (string)Boards["daq"] + "/ao1", -10, 10);
+            //AddAnalogOutputChannel("WMLOut", (string)Boards["pg"] + "/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL1_PZO", (string)Boards["daq"]+"/ao1", 0, 10);
+            //AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("flash", (string)Boards["pg"], 0, 0);
@@ -88,12 +90,15 @@ namespace DAQ.HAL
             tclConfigMBR.Cavities[tclCavity].AddDefaultGain("Master", 0.3);
             tclConfigMBR.Cavities[tclCavity].AddDefaultGain("tclOut", -0.2);
             tclConfigMBR.Cavities[tclCavity].AddFSRCalibration("tclOut", 3.84);
-       
 
 
-            wmlConfig.AddSlaveLaser("VECSEL", "WMLOut", 5);//name, analog, wavemeter channel
-            wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
-            wmlConfig.AddSlaveLaser("MBR", "tclOut", 6);
+
+            wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 8);
+            wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
+            wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 8);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390855,-2000,-1600);
+            wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
+            wmlConfig.AddLaserConfiguration("MBR", 384.234493, 500, 2000);
             Info.Add("Default", wmlConfig);
             Info.Add("TCLDefault", tclConfigMBR);
             Info.Add("DefaultCavity", tclConfigMBR);

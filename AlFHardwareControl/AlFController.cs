@@ -145,8 +145,11 @@ namespace AlFHardwareControl
         {
             lock (eurotherm)
             {
-                loop1Off = eurotherm.GetAMSwitch(0);
-                loop2Off = eurotherm.GetAMSwitch(1);
+                //loop1Off = eurotherm.GetAMSwitch(0);
+                //loop2Off = eurotherm.GetAMSwitch(1);
+
+                loop1Off = eurotherm.GetHeaterShutoff(0);
+                loop2Off = eurotherm.GetHeaterShutoff(1);
 
                 loop1Out = eurotherm.GetActiveOut(0);
                 loop2Out = eurotherm.GetActiveOut(1);
