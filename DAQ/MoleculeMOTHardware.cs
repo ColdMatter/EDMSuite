@@ -151,6 +151,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("motLightSwitch", digitalPatternBoardAddress2, 0, 1);
             AddDigitalOutputChannel("TransverseCoolingShutter", digitalPatternBoardAddress2, 0, 5);
 
+            AddDigitalOutputChannel("TweezerChamberRbMOTAOMs", digitalPatternBoardAddress2, 1, 3);
+
             // Analog Pattern
             AddAnalogOutputChannel("slowingChirp", analogPatternBoardAddress + "/ao8");
             AddAnalogOutputChannel("v00Intensity", analogPatternBoardAddress + "/ao9");

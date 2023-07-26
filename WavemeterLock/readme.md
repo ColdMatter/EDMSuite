@@ -39,11 +39,12 @@ Here are the things you need to have before installing Wavemeter Lock.
    ```
    Of course replace 0000 with your favourite four digit integer. The wavemeterlock server setup is done.
 
-2. In DAQ/EnvironHelper.cs, under the config of the client computer, add the same TCP channel number, then add another TCP channel for Wavemeter Lock to hand over its controller.
+2. In DAQ/EnvironHelper.cs, under the config of the client computer, add the name of the server computer for this client, add the same TCP channel number, then add another TCP channel for Wavemeter Lock to hand over its controller.
    ```sh
    case "ClientComputerName":
       Hardware = new ClientComputerHardware();
       FileSystem = new ClientComputerFileSystem();
+      serverComputerName = "ServerComputerName";
       serverTCPChannel = 0000;
       wavemeterLockTCPChannel = 1111;
       break;
@@ -64,7 +65,7 @@ Here are the things you need to have before installing Wavemeter Lock.
    ```sh
    wmlConfig.AddLockBlock("YourLaserName", "YourDigitalChannel");
    ```
-   Then YourLaserName lock will be blocked if you send a high signal to YourDigitalChannel.
+   Then YourLaserName lock will be blocked if you send a high digital signal to YourDigitalChannel.
    
 6. To config the initial setpoints and gains, in DAQ/ClientHardware.cs, add
    ```sh
@@ -81,8 +82,13 @@ Here are the things you need to have before installing Wavemeter Lock.
 ## Frequently occured issues
 
 * License issue: 
+
   Delete WavemeterLock/Properties/licenses.licx. 
   In Visual Studio, click Extension drop down menu, select Measurement Studio, refresh license.
+  
+* Wavemeter lock stops updating:
+
+  Make sure the switch mode is on, and channel 1 is reading normally. The server only triggers an event when channel 1 gets a new reading for some reason.
 
 ## Operation
 
@@ -127,7 +133,7 @@ Currently constructed plugins:
  The measurement acquired event was raised only when channel 1 gets a new reading. And the build-in callback process in general didn't work as they stated in the manual, or I made some mistakes.
 
 ## Update Roadmap
-The goal of future updates:
+The goal for future updates:
 - Add a RMS noise pannel
 - Add log data function
 - Add autocalibration function
@@ -138,6 +144,8 @@ The goal of future updates:
 
 ## Update Log
 
+* [v 1.1.0] May 30st 2023: Made compatable with more than one servers running at the same time.
+* [v 1.0.5] May 26th 2023: Added an error message upon initial connection failure.
 * [v 1.0.4] April 18th 2023: Changed lock block digital channel reading method from event triggered to polling, increased stability and made compatible with PFI channels.
 * [v 1.0.3] April 7th 2023: Added laser initial configuration. You can now set the default set frequency and gains. It is useful if you have multiple lasers with known optimized setpoints and gains.
 * [v 1.0.2] April 6th 2023: Added lock block function. Wavemeter lock can now be blocked via an external TTL signal, you can use it to temporarily chirp or modulate your laser.

@@ -42,7 +42,6 @@ namespace WavemeterLock
             computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
             hostTCPChannel = eHelper.serverTCPChannel;
-
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
@@ -50,21 +49,38 @@ namespace WavemeterLock
                     name = addr.ToString();
                 }
             }
-            
-            wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
 
+            try
+            {
+                wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
+            }
+
+            catch(Exception e)
+            {
+                connectionError(e);
+            }
             //Register in remote server
             thisComputerName = Environment.MachineName.ToString();
-            wavemeterContrller.registerWavemeterLock(thisComputerName);
-            
+
+            try
+            {
+                wavemeterContrller.registerWavemeterLock(thisComputerName);
+            }
+            catch(Exception e)
+            {
+                connectionError(e);
+            }
             //This throws a security exception
             //wavemeterContrller.measurementAcquired += () => { updateLockMaster(); };
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
         {
+            string display = null;
             
-            return wavemeterContrller.displayWavelength(channelNum);
+            display = wavemeterContrller.displayWavelength(channelNum);
+            
+            return display;
 
         }
 
@@ -415,8 +431,9 @@ namespace WavemeterLock
         {
             if (WMLState != ControllerState.STOPPED)
             {
-                if (wavemeterContrller.getMeasurementStatus(thisComputerName))
-                {
+                if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
+                    
+                { 
                     updateLockMaster();
                     wavemeterContrller.resetMeasurementStatus(thisComputerName);
                 }
@@ -556,6 +573,21 @@ namespace WavemeterLock
         public void errorMsg()
         {
             MessageBox.Show("You messed up! Laser " + faultyLaser + " lock disengaged due to wavemeter reading error or large frequency jump.");
+        }
+
+        public void connectionError(Exception e)
+        {
+            MessageBox.Show($"Connection failed: {e.Message}");
+            if (Application.MessageLoop)
+            {
+                // WinForms app
+                Application.Exit();
+            }
+            else
+            {
+                // Console app
+                Environment.Exit(1);
+            }
         }
 
 

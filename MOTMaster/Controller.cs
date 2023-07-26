@@ -52,10 +52,8 @@ namespace MOTMaster
         private static string motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-
-
+        
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
@@ -417,7 +415,7 @@ namespace MOTMaster
 
                         watch.Start();
 
-                        if (controllerWindow.RunUntilStoppedState)
+                    if (controllerWindow.RunUntilStoppedState)
                         {
                             while (status == RunningState.running)
                             {

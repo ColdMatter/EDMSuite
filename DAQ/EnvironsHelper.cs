@@ -42,6 +42,13 @@ namespace DAQ.Environment
         private string computer;
 
         /// <summary>
+        /// Computer name for wavemeter lock server.
+        /// This is the name of the computer on which your wavemeter server is running.
+        /// Add this to the computer config on which you run the wavemeter server and wavemeter lock.
+        /// </summary>
+        public string serverComputerName;
+
+        /// <summary>
         /// TCP channel for wavemeter lock server.
         /// This is the channel that the wavemeter server brodcast the measured frequency.
         /// Add this to the computer config on which you run the wavemeter server and wavemeter lock.
@@ -154,6 +161,8 @@ namespace DAQ.Environment
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
+                    serverComputerName = "IC-CZC136CFDJ";
+                    serverTCPChannel = 1984;
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
@@ -178,6 +187,7 @@ namespace DAQ.Environment
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
+                    serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1234;
                     //ExperimentType = "edm";
@@ -188,6 +198,7 @@ namespace DAQ.Environment
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
+                    serverComputerName = "IC-CZC136CFDJ";
                     wavemeterLockTCPChannel = 1012;
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";

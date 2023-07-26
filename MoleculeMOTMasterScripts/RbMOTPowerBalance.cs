@@ -29,7 +29,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["MOTHoldTime"] = 0;
         Parameters["TurnAllLightOn"] = 1000;
-        Parameters["MagneticFieldRampTime"] = 200000;
+        Parameters["MagneticFieldRampTime"] = 300000;
 
 
         // Camera

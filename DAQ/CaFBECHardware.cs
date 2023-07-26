@@ -21,9 +21,9 @@ namespace DAQ.HAL
         public CaFBECHardware()
         {
 
-            Boards.Add("patternGenerator", "/PXI1Slot5");  // generating molecular source and receive signals, PXI-6229 connector 0
-            Boards.Add("tclInput", "/PXI1Slot6");  // TCL analog inputs, PXI-6221
-            Boards.Add("tclOutput", "/PXI1Slot4");  // TCL analog outputs, PXI-6722
+            Boards.Add("patternGenerator", "/PXI1Slot3");  // generating molecular source and receive signals, PXI-6229 connector 0
+            Boards.Add("tclInput", "/PXI1Slot4");  // TCL analog inputs, PXI-6221
+            Boards.Add("tclOutput", "/PXI1Slot2");  // TCL analog outputs, PXI-6722
 
             string pgBoard = (string)Boards["patternGenerator"];
             string TCLInput = (string)Boards["tclInput"];
@@ -42,18 +42,20 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("slowingAOM", pgBoard, 0, 23);
             AddDigitalOutputChannel("slowingRepumpAOM", pgBoard, 0, 24);
             AddDigitalOutputChannel("coolingAOM", pgBoard, 0, 22);
-            
+            AddDigitalOutputChannel("shutterV2", pgBoard, 0, 12);
+
             //Info.Add("ToFTrigger", pgBoard + "/PFI1");
             //Info.Add("ToFPMTSignal", pgBoard + "/ai0");
 
             // map the analog input channels for "pg" card
             // AddAnalogInputChannel("HeliumIn", pgBoard + "/ai0", AITerminalConfiguration.Rse);
             // AddAnalogInputChannel("SF6In", pgBoard + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("pmt", TCLInput + "/ai0", AITerminalConfiguration.Rse);
+            // AddAnalogInputChannel("pmt", TCLInput + "/ai0", AITerminalConfiguration.Rse);
 
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("slowingChirp", pgBoard + "/ao0", -10, 10);
             AddAnalogOutputChannel("slowingRepumpChirp", pgBoard + "/ao1", -10, 10);
+            AddAnalogOutputChannel("motCoils", pgBoard + "/ao2", -10, 10);
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
@@ -84,7 +86,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4", - 1, 1);
             AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7", 0, 10);
             AddAnalogOutputChannel("southOffset", TCLOutput + "/ao1");
-            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5", -1, 1);
+            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5", 0, 10);
             AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6", -1, 1);
             AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0", -1, 1);
 
@@ -120,11 +122,13 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("v00", "v00Lock", 4);
             wmlConfig.AddSlaveLaser("BXSlowing", "bXLock", 2);
             wmlConfig.AddSlaveLaser("v10", "v10Lock", 3);
+            wmlConfig.AddSlaveLaser("v21", "v21Lock", 8);
             wmlConfig.AddLockBlock("BXSlowing", "blockBXflag");
             wmlConfig.AddLockBlock("V10", "blockV10flag");
             wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
             wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 300);
             wmlConfig.AddLaserConfiguration("v10", 476.958908, -10, -500);
+            wmlConfig.AddLaserConfiguration("v21", 477.299380, -10, -500);
             Info.Add("Default", wmlConfig);
 
             /*
@@ -209,6 +213,9 @@ namespace DAQ.HAL
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
             // Info.Add("PGSlave0ClockLine", digitalPatternBoardAddress + "/PFI2");
             // Info.Add("PGSlave0TriggerLine", digitalPatternBoardAddress + "/PFI6");
+
+
+            Instruments.Add("Lakeshore", new LakeShore336TemperatureController("ASRL12::INSTR"));
         }
 
         public override void ConnectApplications()
