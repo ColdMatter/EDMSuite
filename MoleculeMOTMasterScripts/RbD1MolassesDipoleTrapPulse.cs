@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 200000;
+        Parameters["PatternLength"] = 250000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -84,9 +84,9 @@ public class Patterns : MOTMasterScript
         //Parameters["yShimLoadCurrent"] = 10.0;// -1.92 is zero
         //Parameters["zShimLoadCurrent"] = 1.5;// -0.56,   -0.22 is zero
 
-        Parameters["xShimLoadCurrent"] = -1.35;//-10.0;// -1.35 is zero
+        Parameters["xShimLoadCurrent"] = -1.90;
         Parameters["yShimLoadCurrent"] = -1.92;//-5.0;// -1.92 is zero
-        Parameters["zShimLoadCurrent"] = -0.56;//-2.0;// -0.56,   -0.22 is zero
+        Parameters["zShimLoadCurrent"] = -0.55;//-2.0;// -0.56,   -0.22 is zero
 
         Parameters["xShimMolassesCurrent"] = -2.0;
         Parameters["yShimMolassesCurrent"] = -1.92;
@@ -152,9 +152,16 @@ public class Patterns : MOTMasterScript
         Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
 
         Parameters["ModulationDelay"] = 10;
-        Parameters["ModulationDuration"] = 5000;
         Parameters["DipoleTrapHoldTime"] = 6000;
-        Parameters["ReumpingDuration"] = 30;
+        Parameters["RbD1VCOFrequency"] = 1.5; //96 MHz
+        Parameters["RbD1VCOEndFrequency"] = 1.5;
+        Parameters["RbD1Attenuation"] = 6.0;
+        Parameters["RbD1AttenuationRamp"] = 10.0;
+        Parameters["D1MolassesDuration"] = 30000;
+        Parameters["MolassesRampDuration"] = 0;
+        Parameters["MolassesPulseInterval"] = 0;
+        Parameters["EvolutionInDipoleTrap"] = 10000;
+        Parameters["numberOfPulses"] = 1;
 
     }
 
@@ -165,12 +172,13 @@ public class Patterns : MOTMasterScript
         int rbMOTLoadTime = patternStartBeforeQ + (int)Parameters["MOTLoadTime"];
         int rbDARKMOTStartTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
         int rbDARKMOTEndTime = rbDARKMOTStartTime + (int)Parameters["DarkMOTDuration"];
-        int dipoleTrapEndTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"];
+        int d1MolassesDuration = (int)Parameters["D1MolassesDuration"] + (int)Parameters["MolassesRampDuration"];
+        int dipoleTrapEndTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"] + d1MolassesDuration + (int)Parameters["EvolutionInDipoleTrap"];
         int freeExpansionEndTime = dipoleTrapEndTime + (int)Parameters["FreeExpansionTime"];
         int cameraTrigger1 = freeExpansionEndTime;
-        //int cameraTrigger1 = freeExpansionEndTime + (int)Parameters["ReumpingDuration"];
         int cameraTrigger2 = cameraTrigger1 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //probe image
         int cameraTrigger3 = cameraTrigger2 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //bg
+        int D1MolassesStartTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
 
@@ -205,10 +213,10 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("rbAbsImagingBeam", rbDARKMOTEndTime, false);
         //p.AddEdge("rbAbsImagingBeam", rbDARKMOTEndTime + 5, true);
 
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false);
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger1 + 5, true);
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger2, false);
-        p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 5, true);
+        //p.AddEdge("rbAbsImagingBeam", cameraTrigger1, false);
+        //p.AddEdge("rbAbsImagingBeam", cameraTrigger1 + 5, true);
+        //p.AddEdge("rbAbsImagingBeam", cameraTrigger2, false);
+        //p.AddEdge("rbAbsImagingBeam", cameraTrigger2 + 5, true);
 
         // Abs image
         //p.Pulse(0, rbDARKMOTEndTime, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
@@ -224,16 +232,24 @@ public class Patterns : MOTMasterScript
         p.AddEdge("dipoleTrapAOM", rbDARKMOTStartTime, true);
         p.AddEdge("dipoleTrapAOM", dipoleTrapEndTime, false);
 
-        p.AddEdge("microwaveB", 0, false);
-
         p.AddEdge("rbD1CoolingSwitch", 0, true);
+
+        
+        p.AddEdge("rbD1CoolingSwitch", D1MolassesStartTime, false);
+        p.AddEdge("rbD1CoolingSwitch", D1MolassesStartTime + d1MolassesDuration, true);
+        
+        
+
+        //p.AddEdge("rbD1CoolingSwitch", D1MolassesStartTime, false);
+        //p.AddEdge("rbD1CoolingSwitch", D1MolassesStartTime + (int)Parameters["D1MolassesDuration"], true);
+        //p.AddEdge("rbD1CoolingSwitch", D1MolassesStartTime + (int)Parameters["D1MolassesDuration"] + Parameters["MolassesPulseInterval"], false);
+
+        p.AddEdge("microwaveB", 0, false);
 
         p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rbRepump", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("rbD1CoolingSwitch", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-
 
         return p;
     }
@@ -241,16 +257,17 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
-        int rbMOTLoadTime = patternStartBeforeQ + (int)Parameters["MOTLoadTime"];
+        int rbMOTLoadTime = (int)Parameters["MOTLoadTime"];
         int rbDARKMOTStartTime = rbMOTLoadTime + (int)Parameters["MOTHoldTime"];
         int rbDARKMOTEndTime = rbDARKMOTStartTime + (int)Parameters["DarkMOTDuration"];
-        int dipoleTrapEndTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"];
+        int d1MolassesDuration = (int)Parameters["D1MolassesDuration"] + (int)Parameters["MolassesRampDuration"];
+        int dipoleTrapEndTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"] + d1MolassesDuration + (int)Parameters["EvolutionInDipoleTrap"];
         int freeExpansionEndTime = dipoleTrapEndTime + (int)Parameters["FreeExpansionTime"];
         int cameraTrigger1 = freeExpansionEndTime;
-        //int cameraTrigger1 = freeExpansionEndTime + (int)Parameters["ReumpingDuration"];
         int cameraTrigger2 = cameraTrigger1 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //probe image
         int cameraTrigger3 = cameraTrigger2 + (int)Parameters["CameraTriggerDelayAfterFirstImage"]; //bg
+        int D1MolassesStartTime = rbDARKMOTEndTime + (int)Parameters["DipoleTrapHoldTime"];
+
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
@@ -266,7 +283,8 @@ public class Patterns : MOTMasterScript
         p.AddChannel("rbAbsImagingFrequency");
         p.AddChannel("rbRepumpOffsetLock");
         p.AddChannel("rbOffsetLock");
-
+        p.AddChannel("rbD1CoolingAttenuation");
+        p.AddChannel("rbD1VCO");
         p.AddChannel("DipoleTrapLaserControl");
 
         // Shim Fields
@@ -275,8 +293,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
 
         p.AddAnalogValue("xShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("zShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["xShimLoadCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["yShimLoadCurrent"]);
+        p.AddAnalogValue("zShimCoilCurrent", rbDARKMOTEndTime, (double)Parameters["zShimLoadCurrent"]);
 
 
         // B Field
@@ -294,7 +312,15 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rbOffsetLock", 0, (double)Parameters["RbOffsetLockSetPoint"]);
 
         p.AddAnalogValue("DipoleTrapLaserControl", 0, 10.0);
-        
+
+        p.AddAnalogValue("rbD1VCO", 0, (double)Parameters["RbD1VCOFrequency"]);
+        //p.AddLinearRamp("rbD1VCO", D1MolassesStartTime + (int)Parameters["D1MolassesDuration"], 
+        //    (int)Parameters["MolassesRampDuration"], (double)Parameters["RbD1VCOEndFrequency"]);
+
+        //p.AddAnalogValue("rbD1CoolingAttenuation", 0, (double)Parameters["RbD1Attenuation"]);
+        p.AddAnalogValue("rbD1CoolingAttenuation", 0, (double)Parameters["RbD1Attenuation"]);
+        //p.AddLinearRamp("rbD1VCO", D1MolassesStartTime,
+        //     (int)Parameters["D1MolassesDuration"], (double)Parameters["RbD1AttenuationRamp"]);
 
         return p;
     }

@@ -127,7 +127,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
-            AddDigitalOutputChannel("UVFlashSwitch", digitalPatternBoardAddress2, 1, 2);
+            AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
             AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
@@ -235,7 +235,8 @@ namespace DAQ.HAL
 
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 4);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
             
             Info.Add("Default", wmlConfig);

@@ -163,6 +163,7 @@ namespace DAQ.Environment
                     FileSystem = new PHBonesawFileSystem();
                     serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 6666;
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
