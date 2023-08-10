@@ -54,6 +54,7 @@ public class Patterns : MOTMasterScript
         Parameters["RbCoolingIntensityRampDuration"] = 0;
 
         //DARK SPOT MOT:
+        //Parameters["DARKMOTDuration"] = 1200;
         Parameters["DARKMOTDuration"] = 1200;
 
 
@@ -86,10 +87,15 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0;//1.0; // 0.65;
 
         // Shim fields
+        // Shim fields update 16/03/2023
+        Parameters["xShimImagingCurrent"] = -1.00;
+        Parameters["yShimImagingCurrent"] = -1.92;
+        Parameters["zShimImagingCurrent"] = -0.60;
+        /*
         Parameters["xShimImagingCurrent"] = -1.93;// -1.35 is zero
         Parameters["yShimImagingCurrent"] = -6.74;// -1.92 is zero
         Parameters["zShimImagingCurrent"] = -0.56;// -0.22 is zero
-
+        */
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -111,6 +117,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMStartValue"] = 5.0;
         Parameters["v0F1AOMOffValue"] = 0.0;
 
+        Parameters["Dummy"] = 0.0;
 
     }
 
@@ -135,22 +142,24 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("rb3DCooling", 0, false);
         p.AddEdge("rb3DCooling", rbDARKMOTEndTime, true);
+        p.AddEdge("rb3DCooling", cameraTrigger1, false);
         p.AddEdge("rb2DCooling", 0, false);
         p.AddEdge("rb2DCooling", rbMOTLoadTime, true);
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", rbMOTLoadTime, true);
-
+        p.AddEdge("rbD1CoolingSwitch", 0, true);
 
         p.AddEdge("rbRepump", 0, false);
+        //p.AddEdge("rbRepump", rbDARKMOTEndTime, true);
         p.AddEdge("rbRepump", rbDARKMOTStartTime, true);
-        p.AddEdge("rbRepump", cameraTrigger1 - 50, false);
 
-        p.AddEdge("rbOpticalPumpingAOM", 0, true); //Using thic channel for controlling DARK SPOT repump AOM
-
+        p.AddEdge("rbOpticalPumpingAOM", 0, false); //Using thic channel for controlling DARK SPOT repump AOM
+        //p.AddEdge("rbOpticalPumpingAOM", cameraTrigger1, true);
 
         //Turn everything back on at end of sequence:
 
-        p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
+        //p.AddEdge("rbRepump", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
+        //p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         //p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
 
@@ -170,7 +179,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background
 
         //CaF camera trigger:
-        //p.Pulse(0, rbMOTLoadTime - 100, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
 
         p.AddEdge("rb3DMOTShutter", 0, true);
@@ -202,7 +211,7 @@ public class Patterns : MOTMasterScript
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
         p.AddChannel("rb3DCoolingAttenuation");
-        p.AddChannel("rbRepumpFrequency");
+        //p.AddChannel("rbRepumpFrequency");
         p.AddChannel("rbRepumpAttenuation");
         p.AddChannel("rbAbsImagingFrequency");
 
@@ -221,7 +230,7 @@ public class Patterns : MOTMasterScript
 
         //Rb Laser detunings
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
-        p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
+        //p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
         return p;

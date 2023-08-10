@@ -55,6 +55,7 @@ extractPhysicalQuantities::usage="extractPhysicalQuantities[dblock_] takes a dem
 extractShotNoise::usage="";
 extractSummaryData::usage="extractSummaryData[dblock_] takes a demodulated block and extracts the physical quantities, basic configuration data such as timestamps and manual states, as well as any channels of interest. Edit this function to add/remove channels of interest.";
 correctBlock::usage="Not functional currently, but will be developed at a later date to correct for systematic shifts on a block-by-block basis.";
+extractCorrectionParams::usage="";
 
 
 (* ::Input::Initialization:: *)
@@ -217,12 +218,15 @@ Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],10^6 Sqrt[asymmetrySnWi
 
 (* ::Input::Initialization:: *)
 contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep,mwSign},
+contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep,mwSign},
 dbStep=dblock@Config@GetModulationByName["DB"]@Step;
 magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
 phaseStep=(bohrMagneton*dbStep*magCal*10^-9*interferometerLength)/hbar;
 mwSign=boolSign[dblock@Config@Settings["mwState"]];
+mwSign=boolSign[dblock@Config@Settings["mwState"]];
 
+{#[[1]],(mwSign #[[2]])/(2phaseStep),(mwSign #[[3]])/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 {#[[1]],(mwSign #[[2]])/(2phaseStep),(mwSign #[[3]])/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 ]
 
@@ -236,21 +240,40 @@ extractPhysicalQuantities[dblock_]:=
 {
 "rawEDMWithErr"->rawEDMWithErr[dblock],
 "signedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@rawEDMWithErr[dblock]),
+"signedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@rawEDMWithErr[dblock]),
 "correctedEDMWithErr"->correctedEDMWithErr[dblock],
 "signedCorrectedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMWithErr[dblock]),
+"signedCorrectedEDMWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMWithErr[dblock]),
 "correctedEDMNoRfWithErr"->correctedEDMNoRfWithErr[dblock],
+"signedCorrectedEDMNoRfWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMNoRfWithErr[dblock]),
 "signedCorrectedEDMNoRfWithErr"->({#[[1]],#[[2]]edmSign[dblock],#[[3]]}&/@correctedEDMNoRfWithErr[dblock]),
 "contrast"->contrast[dblock]
 }
 
 
 (* ::Input::Initialization:: *)
-extractShotNoise[dblock_]:=
-{
-"edmSn"->edmSn[dblock],
-"edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],
-"snPPMPerChannel"->snPPMPerChannel[dblock]
-}
+extractShotNoise[dblock_]:={"edmSn"->edmSn[dblock],"edmSnNoLaserBackground"->edmSnNoLaserBackground[dblock],"snPPMPerChannel"->snPPMPerChannel[dblock]}
+
+
+(* ::Input::Initialization:: *)
+extractCorrectionParams[dbl_]:=Module[{\[Phi]dB,\[Delta]RF1F,\[Delta]RF2F,\[Delta]RF1AdB,\[Delta]RF2AdB,\[Delta]RF1A,\[Delta]RF2A,\[Delta]LF1,\[Alpha]RF1F,\[Alpha]RF2F,\[Alpha]RF1A,\[Alpha]RF2A,\[Alpha]LF1,c},
+\[Phi]dB=bohrMagneton/hbar 10^-6 (dbl@Config@Settings["rf2CentreTime"]-dbl@Config@Settings["rf1CentreTime"])*10^-9 dbl@Config@Settings["magnetCalibration"] dbl@Config@AnalogModulations[1]@PhysicalStep;
+c=Mean[Around[#[[2]],#[[3]]]&/@contrast[dbl]][[1]];
+\[Delta]RF1F=dbl@Config@GetModulationByName["RF1F"]@PhysicalStep(*Hz*);
+\[Delta]RF2F=dbl@Config@GetModulationByName["RF2F"]@PhysicalStep(*Hz*);
+\[Delta]RF1AdB=dbl@Config@GetModulationByName["RF1A"]@PhysicalStep(*dB*);
+\[Delta]RF2AdB=dbl@Config@GetModulationByName["RF2A"]@PhysicalStep(*dB*);
+\[Delta]RF1A=10^(\[Delta]RF1AdB/20)-1;(*amplitude ratio*)
+\[Delta]RF2A=10^(\[Delta]RF2AdB/20)-1;(*amplitude ratio*)
+\[Delta]LF1=10^-6 dbl@Config@GetModulationByName["LF1"]@PhysicalStep(*MHz*);
+\[Alpha]RF1F=-48 10^-12 ;(*Hz^-2*)
+\[Alpha]RF2F=-35 10^-12 ;(*Hz^-2*)
+\[Alpha]RF1A=-1.056;(*dimensionless*)
+\[Alpha]RF2A=-0.342;(*dimensionless*)
+\[Alpha]LF1=-0.8 10^-3(*MHz^-2*);
+{"\[Phi]dB"->\[Phi]dB,"\[Delta]RF1F"->\[Delta]RF1F,"\[Delta]RF2F"->\[Delta]RF2F,"\[Delta]RF1A"->\[Delta]RF1A,"\[Delta]RF2A"->\[Delta]RF2A,"\[Delta]LF1"->\[Delta]LF1,
+"\[Alpha]RF1F"->\[Alpha]RF1F,"\[Alpha]RF2F"->\[Alpha]RF2F,"\[Alpha]RF1A"->\[Alpha]RF1A,"\[Alpha]RF2A"->\[Alpha]RF2A,"\[Alpha]LF1"->\[Alpha]LF1,
+"\[Gamma]RF1F"->4\[Alpha]RF1F \[Delta]RF1F^2 \[Phi]dB,"\[Gamma]RF2F"->4\[Alpha]RF2F \[Delta]RF2F^2 \[Phi]dB,"\[Gamma]RF1A"->4\[Alpha]RF1A \[Delta]RF1A^2 \[Phi]dB,"\[Gamma]RF2A"->4 \[Alpha]RF2A \[Delta]RF2A^2 \[Phi]dB,"\[Gamma]LF1"->4 \[Alpha]LF1 \[Delta]LF1^2 \[Phi]dB}]
 
 
 (* ::Input::Initialization:: *)
@@ -285,6 +308,13 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "RF1ACentre"->dbl@Config@GetModulationByName["RF1A"]@Centre,
 "RF2ACentre"->dbl@Config@GetModulationByName["RF2A"]@Centre,
 "LF1Centre"->10^-6 dbl@Config@GetModulationByName["LF1"]@Centre,
+"phaseScramblerV"->dbl@Config@Settings["phaseScramblerV"],
+"bBiasV"->dbl@Config@Settings["bBiasV"],
+"RF1FCentre"->dbl@Config@GetModulationByName["RF1F"]@Centre,
+"RF2FCentre"->dbl@Config@GetModulationByName["RF2F"]@Centre,
+"RF1ACentre"->dbl@Config@GetModulationByName["RF1A"]@Centre,
+"RF2ACentre"->dbl@Config@GetModulationByName["RF2A"]@Centre,
+"LF1Centre"->10^-6 dbl@Config@GetModulationByName["LF1"]@Centre,
 "timeStamp"->dbl@TimeStamp@Ticks,
 "hour"->dbl@TimeStamp@Hour,
 "analysisGateMinTime"->dbl@Config@Settings["topProbemwCentreTime"]-dbl@Config@Settings["topProbemwLength"]/2,
@@ -293,7 +323,15 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cSIG"->getTOFChannel[{"SIG"},"asymmetry",dbl],
 "cE"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E"},"asymmetry",dbl]),
 "cB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B"},"asymmetry",dbl]),
+"cE"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E"},"asymmetry",dbl]),
+"cB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B"},"asymmetry",dbl]),
 "cDB"->getTOFChannel[{"DB"},"asymmetry",dbl],
+"cEDB"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB"},"asymmetry",dbl]),
+"cBDB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB"},"asymmetry",dbl]),
+"cEBDB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","B","DB"},"asymmetry",dbl]),
+
+(*EDM CHANNEL: REMOVE WHEN BLIND RE-APPLIED - CHRIS 14 JUNE 2022*)
+"cEB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","B"},"asymmetry",dbl]),
 "cEDB"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB"},"asymmetry",dbl]),
 "cBDB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB"},"asymmetry",dbl]),
 "cEBDB"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","B","DB"},"asymmetry",dbl]),
@@ -305,6 +343,19 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cRF2F"->getTOFChannel[{"RF2F"},"asymmetry",dbl],
 "cRF1A"->getTOFChannel[{"RF1A"},"asymmetry",dbl],
 "cRF2A"->getTOFChannel[{"RF2A"},"asymmetry",dbl],
+"cLF1"->getTOFChannel[{"LF1"},"asymmetry",dbl],
+
+"cBRF1F"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","RF1F"},"asymmetry",dbl]),
+"cBRF2F"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","RF2F"},"asymmetry",dbl]),
+"cBRF1A"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","RF1A"},"asymmetry",dbl]),
+"cBRF2A"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","RF2A"},"asymmetry",dbl]),
+"cBLF1"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","LF1"},"asymmetry",dbl]),
+
+"cERF1F"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","RF1F"},"asymmetry",dbl]),
+"cERF2F"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","RF2F"},"asymmetry",dbl]),
+"cERF1A"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","RF1A"},"asymmetry",dbl]),
+"cERF2A"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","RF2A"},"asymmetry",dbl]),
+"cELF1"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","LF1"},"asymmetry",dbl]),
 "cLF1"->getTOFChannel[{"LF1"},"asymmetry",dbl],
 
 "cBRF1F"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","RF1F"},"asymmetry",dbl]),
@@ -340,9 +391,26 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "cPI"->getTOFChannel[{"PI"},"asymmetry",dbl],
 "cEPI"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","PI"},"asymmetry",dbl]),
 
+"cEDBRF1F"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB","RF1F"},"asymmetry",dbl]),
+"cEDBRF2F"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB","RF2F"},"asymmetry",dbl]),
+"cEDBRF1A"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB","RF1A"},"asymmetry",dbl]),
+"cEDBRF2A"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB","RF2A"},"asymmetry",dbl]),
+"cEDBLF1"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","DB","LF1"},"asymmetry",dbl]),
+
+"cBDBRF1F"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB","RF1F"},"asymmetry",dbl]),
+"cBDBRF2F"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB","RF2F"},"asymmetry",dbl]),
+"cBDBRF1A"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB","RF1A"},"asymmetry",dbl]),
+"cBDBRF2A"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB","RF2A"},"asymmetry",dbl]),
+"cBDBLF1"->({#[[1]],boolSign[dbl@Config@Settings["bState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"B","DB","LF1"},"asymmetry",dbl]),
+
+"cPI"->getTOFChannel[{"PI"},"asymmetry",dbl],
+"cEPI"->({#[[1]],boolSign[dbl@Config@Settings["eState"]]#[[2]],#[[3]]}&/@getTOFChannel[{"E","PI"},"asymmetry",dbl]),
+
 "cSIGTop"->getTOFChannel[{"SIG"},"topProbeNoBackground",dbl],
 "cSIGBottom"->getTOFChannel[{"SIG"},"bottomProbeScaled",dbl],
 
+"EMag"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"magnetometer",dbl],
+"BMag"->boolSign[dbl@Config@Settings["bState"]]getPointChannel[{"B"},"magnetometer",dbl],
 "EMag"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"magnetometer",dbl],
 "BMag"->boolSign[dbl@Config@Settings["bState"]]getPointChannel[{"B"},"magnetometer",dbl],
 "SIGMag"->getPointChannel[{"SIG"},"magnetometer",dbl],
@@ -356,9 +424,21 @@ extractSummaryData[dbl_]:=Join[extractPhysicalQuantities[dbl],extractShotNoise[d
 "SIGReflectedRfAmplitude"->getPointChannel[{"SIG"},"reflectedrfAmplitude",dbl],
 "EIncidentRfAmplitude"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"incidentrfAmplitude",dbl],
 "SIGIncidentRfAmplitude"->getPointChannel[{"SIG"},"incidentrfAmplitude",dbl],
+"ENorthCurrent"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"NorthCurrent",dbl],
+"SIGNorthCurrent"->getPointChannel[{"SIG"},"NorthCurrent",dbl],
+"ESouthCurrent"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"SouthCurrent",dbl],
+"SIGSouthCurrent"->getPointChannel[{"SIG"},"SouthCurrent",dbl],
+"ERfCurrent"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"rfCurrent",dbl],
+"SIGRfCurrent"->getPointChannel[{"SIG"},"rfCurrent",dbl],
+"EReflectedRfAmplitude"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"reflectedrfAmplitude",dbl],
+"SIGReflectedRfAmplitude"->getPointChannel[{"SIG"},"reflectedrfAmplitude",dbl],
+"EIncidentRfAmplitude"->boolSign[dbl@Config@Settings["eState"]]getPointChannel[{"E"},"incidentrfAmplitude",dbl],
+"SIGIncidentRfAmplitude"->getPointChannel[{"SIG"},"incidentrfAmplitude",dbl],
 (*"topPD"\[Rule]getPointChannel[{"SIG"},"topPD",dbl],
 "bottomPD"\[Rule]getPointChannel[{"SIG"},"bottomPD",dbl]*)
 
+"fullChannelTable"->({#,weightedMeanOfTOFWithError[getTOFChannel[#,"asymmetry",dbl],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}])),
+"fullChannelTablePhaseUnits"->({#,weightedMeanOfTOFWithError[convertTOFToPhaseUnits[getTOFChannel[#,"asymmetry",dbl],contrast[dbl]],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}]))
 "fullChannelTable"->({#,weightedMeanOfTOFWithError[getTOFChannel[#,"asymmetry",dbl],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}])),
 "fullChannelTablePhaseUnits"->({#,weightedMeanOfTOFWithError[convertTOFToPhaseUnits[getTOFChannel[#,"asymmetry",dbl],contrast[dbl]],2760,2960]}&/@(DeleteCases[getChannels[getSwitches[dbl]],{"B","E"}]))
 }

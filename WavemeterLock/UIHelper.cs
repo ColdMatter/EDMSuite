@@ -53,11 +53,11 @@ namespace WavemeterLock
         {
             led.OnColor = color;
         }
-
+                                            
         public static void EnableControl(Control control, bool enabled)
         {
             control.Invoke(new EnableControlDelegate(EnableControlHelper), new object[] { control, enabled });
-        }
+        }                                                                                                                          
         private delegate void EnableControlDelegate(Control control, bool enabled);
         private static void EnableControlHelper(Control control, bool enabled)
         {

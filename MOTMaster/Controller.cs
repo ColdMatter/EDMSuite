@@ -52,15 +52,13 @@ namespace MOTMaster
         private static string motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
         
-
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
 
-        public enum RunningState { stopped, running};
+        public enum RunningState { stopped, running };
         public RunningState status = RunningState.stopped;
         public bool triggered = false;
         string pgMasterName;
@@ -70,7 +68,9 @@ namespace MOTMaster
         DAQMxPatternGenerator pgMaster;
         Dictionary<string, DAQMxPatternGenerator> pgs;
         Dictionary<string, DAQMxAnalogPatternGenerator> analogs;
+        Dictionary<string, DAQMxAnalogStaticGenerator> staticAnalogs;
         Dictionary<string, string> analogBoards;
+        Dictionary<string, string> staticAnalogBoards;
 
         CameraControllable camera = null;
         TranslationStageControllable tstage = null;
@@ -117,18 +117,28 @@ namespace MOTMaster
                 }
             }
 
-
-            if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
-                "tcp://localhost:1172/controller.rem");
-
-            if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
-                "tcp://localhost:1172/controller.rem");
-
-            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1172/controller.rem");
-
+            staticAnalogBoards = (Dictionary<string, string>)Environs.Hardware.GetInfo("StaticAnalogBoards");
+            staticAnalogs = new Dictionary<string, DAQMxAnalogStaticGenerator>();
+            if (staticAnalogBoards != null)
+            {
+                foreach (string address in staticAnalogBoards.Values)
+                {
+                    staticAnalogs[address] = new DAQMxAnalogStaticGenerator();
+                }
+            }
             
-            ioHelper = new MMDataIOHelper(motMasterDataPath, 
+
+            //if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
+            //    "tcp://localhost:1172/controller.rem");
+
+            //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
+            //    "tcp://localhost:1172/controller.rem");
+
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //    "tcp://localhost:1172/controller.rem");
+
+
+            ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
             ScriptLookupAndDisplay();
@@ -152,14 +162,23 @@ namespace MOTMaster
                 }
 
             }
-            
+
+            foreach (string address in staticAnalogs.Keys)
+            {
+                if (sequence.AnalogStatic.Boards.ContainsKey(address))
+                {
+                    staticAnalogs[address].OutputStaticValueAndWait(sequence.AnalogStatic.Boards[address].StaticPattern);
+                }
+
+            }
+
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
                     pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
             pgMaster.OutputPattern(sequence.DigitalPattern.Boards[pgMasterName].Pattern);
-            
+
         }
 
         private void initializeHardware(MOTMasterSequence sequence)
@@ -174,7 +193,7 @@ namespace MOTMaster
             }
 
             int i = 0;
-            
+
             foreach (string address in pgs.Keys)
             {
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
@@ -183,17 +202,36 @@ namespace MOTMaster
             }
 
             int j = 0;
-            foreach (KeyValuePair<string, string> kvp in analogBoards)
+
+            if (analogBoards != null)
             {
-                if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
+                foreach (KeyValuePair<string, string> kvp in analogBoards)
                 {
-                    analogs[kvp.Value].Configure(
-                            kvp.Key,
-                            sequence.AnalogPattern.Boards[kvp.Value],
-                            config.AnalogPatternClockFrequency, false, true);
-                    j++;
+                    if (sequence.AnalogPattern.Boards.ContainsKey(kvp.Value))
+                    {
+                        analogs[kvp.Value].Configure(
+                                kvp.Key,
+                                sequence.AnalogPattern.Boards[kvp.Value],
+                                config.AnalogPatternClockFrequency, false, true);
+                        j++;
+                    }
+
                 }
-                    
+            }
+            int k = 0;
+            if (staticAnalogBoards != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in staticAnalogBoards)
+                {
+                    if (sequence.AnalogStatic.Boards.ContainsKey(kvp.Value))
+                    {
+                        staticAnalogs[kvp.Value].Configure(
+                                kvp.Key,
+                                sequence.AnalogStatic.Boards[kvp.Value],
+                                config.AnalogPatternClockFrequency, false, true);
+                        k++;
+                    }
+                }
             }
         }
 
@@ -278,9 +316,9 @@ namespace MOTMaster
         ///  argument for Run(Dictionary<>).        ///  
         /// 
         /// </summary>
-      
-       
-        
+
+
+
         private bool saveEnable = true;
         public void SaveToggle(System.Boolean value)
         {
@@ -291,7 +329,7 @@ namespace MOTMaster
         public void SetBatchNumber(Int32 number)
         {
             batchNumber = number;
-            controllerWindow.WriteToSaveBatchTextBox(number);  
+            controllerWindow.WriteToSaveBatchTextBox(number);
         }
         public void SetIterations(Int32 number)
         {
@@ -323,14 +361,14 @@ namespace MOTMaster
             runThread = new Thread(new ThreadStart(this.Go));
             runThread.Name = "MOTMaster Controller";
             runThread.Priority = ThreadPriority.Normal;
-            
+
             runThread.Start();
         }
 
         public Thread Run(Dictionary<String, Object> dict)
         {
             var t = new Thread(() => Go(dict));
-           // status = RunningState.running;
+            // status = RunningState.running;
             t.Start();
             //t.Join(); //Blocks calling thread until finished so that doesn't return until finished
             return null;
@@ -363,21 +401,21 @@ namespace MOTMaster
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                    try
-                    {
-                        if (config.CameraUsed) prepareCameraControl();
+                    //try
+                    //{
+                        //if (config.CameraUsed) prepareCameraControl();
 
-                        if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
+                        //if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
 
-                        if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+                        //if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
                         buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
-                        if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+                        //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
                         watch.Start();
 
-                        if (controllerWindow.RunUntilStoppedState)
+                    if (controllerWindow.RunUntilStoppedState)
                         {
                             while (status == RunningState.running)
                             {
@@ -415,7 +453,7 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, imageData, report);
-                                
+
                             }
                             else
                             {
@@ -426,20 +464,22 @@ namespace MOTMaster
                                 }
 
                                 save(sequence, script, scriptPath, report);
-                                
+
                             }
 
 
                         }
-                        if (config.CameraUsed) finishCameraControl();
-                        if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                        //if (config.CameraUsed) finishCameraControl();
+                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                        //if (config.CameraUsed) finishCameraControl();
+                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
 
                         if (!config.Debug) clearDigitalPattern(sequence);
-                    }
-                    catch (System.Net.Sockets.SocketException e)
-                    {
-                        MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
-                    }
+                    //}
+                    //catch (System.Net.Sockets.SocketException e)
+                    //{
+                    //    MessageBox.Show("CameraControllable not found. \n Is there a hardware controller running? \n \n" + e.Message, "Remoting Error");
+                    //}
                 }
                 else
                 {
@@ -448,7 +488,7 @@ namespace MOTMaster
                 status = RunningState.stopped;
             }
         }
-        
+
         #endregion
 
         #region private stuff
@@ -489,7 +529,7 @@ namespace MOTMaster
                 if (dict != null)
                 {
                     script.EditDictionary(dict);
-                    
+
                 }
                 return script;
             }
@@ -500,8 +540,9 @@ namespace MOTMaster
         {
             sequence.DigitalPattern.BuildPattern(patternLength);
             sequence.AnalogPattern.BuildPattern();
+            sequence.AnalogStatic.BuildPattern();
         }
-       
+
         #endregion
 
         #region Compiler & Loading DLLs
@@ -598,7 +639,7 @@ namespace MOTMaster
             LLEThread.Start();
 
         }
-        
+
         bool imagesRecieved = false;
         /*private byte[,] imageData;
         private void grabImage()
@@ -656,7 +697,7 @@ namespace MOTMaster
             return experimentReporter.GetExperimentReport();
         }
 
-        
+
         #endregion
 
         #region Translation stage

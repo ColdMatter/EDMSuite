@@ -46,8 +46,8 @@ namespace DAQ.HAL
             //taskRunning = true;
             //pgTask.Start();
             
-            writer.WriteMultiSamplePort(true, pattern);
-            //pgTask.Start();
+            writer.WriteMultiSamplePort(false, pattern);
+            pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();
         }
@@ -232,7 +232,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
-            //pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
+            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
 		public void StopPattern()

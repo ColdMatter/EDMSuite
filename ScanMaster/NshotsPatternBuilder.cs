@@ -46,7 +46,7 @@ namespace ScanMaster.Acquire.Patterns
 
                 ///// A pulse that is high 2 shots, low 2 shots /////
                 /// This allows to easily use this plugin for detecting with 2ccds alternatively
-                if (ShotIndex % 4 == 0)
+                if ((ShotIndex % 4 == 0) && (NumberOfShots % 4 == 0))
                 {
                     Pulse(time, switchLineDelay, 2 * flashlampPulseInterval - 1000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["probe"]).BitNumber);
                 }

@@ -12,5 +12,6 @@ namespace MOTMaster
     {
         public PatternBuilder32 DigitalPattern;
         public AnalogPatternBuilder AnalogPattern;
+        public AnalogStaticBuilder AnalogStatic;
     }
 }

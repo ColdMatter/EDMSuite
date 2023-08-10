@@ -200,7 +200,11 @@ add/remove channels of interest.\>\""}], ";"}], "\[IndentingNewLine]",
     RowBox[{
      RowBox[{"correctBlock", "::", "usage"}], "=", 
      "\"\<Not functional currently, but will be developed at a later date to \
-correct for systematic shifts on a block-by-block basis.\>\""}], 
+correct for systematic shifts on a block-by-block basis.\>\""}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"extractCorrectionParams", "::", "usage"}], "=", "\"\<\>\""}], 
     ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.3950549198786383`*^9, 3.3950549341686387`*^9}, {
@@ -242,7 +246,8 @@ correct for systematic shifts on a block-by-block basis.\>\""}],
    3.78325235375144*^9, {3.7860130016709747`*^9, 3.786013010090358*^9}, 
    3.786539891645837*^9, {3.7865427837521753`*^9, 3.7865427894984665`*^9}, {
    3.822980581568443*^9, 3.8229805929157104`*^9}, {3.823846357716805*^9, 
-   3.823846362119894*^9}},ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-\
+   3.823846362119894*^9}, {3.8678193846827197`*^9, 
+   3.867819404796283*^9}},ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-\
 5c2bd9dcbd43"],
 
 Cell[CellGroupData[{
@@ -286,6 +291,12 @@ Cell[BoxData[{
     SuperscriptBox["10", 
      RowBox[{"-", "34"}]]}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{
+   RowBox[{"saturatedEffectiveField", "=", 
+    RowBox[{"26", "*", 
+     SuperscriptBox["10", "9"]}]}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{"GV", "/", "cm"}], "*)"}]}], "\[IndentingNewLine]", 
   RowBox[{
    RowBox[{"saturatedEffectiveField", "=", 
     RowBox[{"26", "*", 
@@ -736,6 +747,9 @@ Cell[BoxData[
     "]"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.422963259962*^9, 3.422963287705*^9}, 
+   3.780138216118199*^9, {3.8293711501732993`*^9, 3.8293711528770704`*^9}, {
+   3.829371224028792*^9, 
+   3.829371225124859*^9}},ExpressionUUID->"d703e08a-581b-4146-8b76-\
    3.780138216118199*^9, {3.8293711501732993`*^9, 3.8293711528770704`*^9}, {
    3.829371224028792*^9, 
    3.829371225124859*^9}},ExpressionUUID->"d703e08a-581b-4146-8b76-\
@@ -1291,6 +1305,8 @@ Cell[BoxData[
      RowBox[{
      "dbStep", ",", "magCal", ",", "interferometerLength", ",", "phaseStep", 
       ",", "mwSign"}], "}"}], ",", "\[IndentingNewLine]", 
+     "dbStep", ",", "magCal", ",", "interferometerLength", ",", "phaseStep", 
+      ",", "mwSign"}], "}"}], ",", "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{"dbStep", "=", 
       RowBox[{"dblock", "@", 
@@ -1328,6 +1344,12 @@ Cell[BoxData[
        RowBox[{"dblock", "@", 
         RowBox[{"Config", "@", 
          RowBox[{"Settings", "[", "\"\<mwState\>\"", "]"}]}]}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"mwSign", "=", 
+      RowBox[{"boolSign", "[", 
+       RowBox[{"dblock", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{"Settings", "[", "\"\<mwState\>\"", "]"}]}]}], "]"}]}], ";", 
      "\[IndentingNewLine]", "\[IndentingNewLine]", 
      RowBox[{
       RowBox[{
@@ -1339,8 +1361,14 @@ Cell[BoxData[
           RowBox[{"mwSign", " ", 
            RowBox[{
            "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+          RowBox[{"mwSign", " ", 
+           RowBox[{
+           "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
           RowBox[{"2", "phaseStep"}]], ",", 
          FractionBox[
+          RowBox[{"mwSign", " ", 
+           RowBox[{
+           "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
           RowBox[{"mwSign", " ", 
            RowBox[{
            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
@@ -1357,6 +1385,9 @@ Cell[BoxData[
    3.780476792199581*^9}, {3.780476859864443*^9, 3.780476863327649*^9}, {
    3.7804769124171367`*^9, 3.78047691272696*^9}, 3.7804770019461155`*^9, {
    3.7807487197765207`*^9, 3.7807487347744093`*^9}, {3.780748832977425*^9, 
+   3.780748850181177*^9}, {3.781346764378212*^9, 3.7813468050041547`*^9}, {
+   3.8293713479104657`*^9, 
+   3.829371367903001*^9}},ExpressionUUID->"1992f70e-ee69-436c-ad20-\
    3.780748850181177*^9}, {3.781346764378212*^9, 3.7813468050041547`*^9}, {
    3.8293713479104657`*^9, 
    3.829371367903001*^9}},ExpressionUUID->"1992f70e-ee69-436c-ad20-\
@@ -1442,6 +1473,21 @@ Cell[BoxData[
           "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
          "}"}], "&"}], "/@", 
        RowBox[{"rawEDMWithErr", "[", "dblock", "]"}]}], ")"}]}], ",", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}],
+           ",", 
+          RowBox[{
+           RowBox[{
+           "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+           RowBox[{"edmSign", "[", "dblock", "]"}]}], ",", 
+          RowBox[{
+          "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+         "}"}], "&"}], "/@", 
+       RowBox[{"rawEDMWithErr", "[", "dblock", "]"}]}], ")"}]}], ",", 
     "\[IndentingNewLine]", 
     RowBox[{"\"\<correctedEDMWithErr\>\"", "\[Rule]", 
      RowBox[{"correctedEDMWithErr", "[", "dblock", "]"}]}], ",", 
@@ -1462,11 +1508,42 @@ Cell[BoxData[
           "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
          "}"}], "&"}], "/@", 
        RowBox[{"correctedEDMWithErr", "[", "dblock", "]"}]}], ")"}]}], ",", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}],
+           ",", 
+          RowBox[{
+           RowBox[{
+           "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+           RowBox[{"edmSign", "[", "dblock", "]"}]}], ",", 
+          RowBox[{
+          "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+         "}"}], "&"}], "/@", 
+       RowBox[{"correctedEDMWithErr", "[", "dblock", "]"}]}], ")"}]}], ",", 
     "\[IndentingNewLine]", 
     RowBox[{"\"\<correctedEDMNoRfWithErr\>\"", "\[Rule]", 
      RowBox[{"correctedEDMNoRfWithErr", "[", "dblock", "]"}]}], ",", 
     "\[IndentingNewLine]", 
     RowBox[{"\"\<signedCorrectedEDMNoRfWithErr\>\"", "\[Rule]", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}],
+           ",", 
+          RowBox[{
+           RowBox[{
+           "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}], 
+           RowBox[{"edmSign", "[", "dblock", "]"}]}], ",", 
+          RowBox[{
+          "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+         "}"}], "&"}], "/@", 
+       RowBox[{"correctedEDMNoRfWithErr", "[", "dblock", "]"}]}], ")"}]}], 
+    ",", "\[IndentingNewLine]", 
      RowBox[{"(", 
       RowBox[{
        RowBox[{
@@ -1515,22 +1592,22 @@ Cell[BoxData[
    3.786542773182146*^9}, 3.786543170898777*^9, {3.8296230263066154`*^9, 
    3.829623076350318*^9}, {3.829627324077612*^9, 
    3.8296273352178173`*^9}},ExpressionUUID->"b75263c9-969c-45c5-96a3-\
+   3.786542773182146*^9}, 3.786543170898777*^9, {3.8296230263066154`*^9, 
+   3.829623076350318*^9}, {3.829627324077612*^9, 
+   3.8296273352178173`*^9}},ExpressionUUID->"b75263c9-969c-45c5-96a3-\
 cac3892a928d"],
 
 Cell[BoxData[
  RowBox[{
   RowBox[{"extractShotNoise", "[", "dblock_", "]"}], ":=", 
-  "\[IndentingNewLine]", 
-  RowBox[{"{", "\[IndentingNewLine]", 
+  RowBox[{"{", 
    RowBox[{
     RowBox[{"\"\<edmSn\>\"", "\[Rule]", 
-     RowBox[{"edmSn", "[", "dblock", "]"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"edmSn", "[", "dblock", "]"}]}], ",", 
     RowBox[{"\"\<edmSnNoLaserBackground\>\"", "\[Rule]", 
      RowBox[{"edmSnNoLaserBackground", "[", "dblock", "]"}]}], ",", 
-    "\[IndentingNewLine]", 
     RowBox[{"\"\<snPPMPerChannel\>\"", "\[Rule]", 
-     RowBox[{"snPPMPerChannel", "[", "dblock", "]"}]}]}], 
-   "\[IndentingNewLine]", "}"}]}]], "Input",
+     RowBox[{"snPPMPerChannel", "[", "dblock", "]"}]}]}], "}"}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.399652418021*^9, 3.399652487085*^9}, {3.399652569873*^9,
     3.3996525705880003`*^9}, {3.399652711455*^9, 3.399652712832*^9}, {
@@ -1788,12 +1865,85 @@ Cell[BoxData[
           RowBox[{
            RowBox[{"GetModulationByName", "[", "\"\<LF1\>\"", "]"}], "@", 
            "Centre"}]}]}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<phaseScramblerV\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{"Settings", "[", "\"\<phaseScramblerV\>\"", "]"}]}]}]}], ",",
+       "\[IndentingNewLine]", 
+      RowBox[{"\"\<bBiasV\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{"Settings", "[", "\"\<bBiasV\>\"", "]"}]}]}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<RF1FCentre\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{
+          RowBox[{"GetModulationByName", "[", "\"\<RF1F\>\"", "]"}], "@", 
+          "Centre"}]}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<RF2FCentre\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{
+          RowBox[{"GetModulationByName", "[", "\"\<RF2F\>\"", "]"}], "@", 
+          "Centre"}]}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<RF1ACentre\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{
+          RowBox[{"GetModulationByName", "[", "\"\<RF1A\>\"", "]"}], "@", 
+          "Centre"}]}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<RF2ACentre\>\"", "\[Rule]", 
+       RowBox[{"dbl", "@", 
+        RowBox[{"Config", "@", 
+         RowBox[{
+          RowBox[{"GetModulationByName", "[", "\"\<RF2A\>\"", "]"}], "@", 
+          "Centre"}]}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<LF1Centre\>\"", "\[Rule]", 
+       RowBox[{
+        SuperscriptBox["10", 
+         RowBox[{"-", "6"}]], 
+        RowBox[{"dbl", "@", 
+         RowBox[{"Config", "@", 
+          RowBox[{
+           RowBox[{"GetModulationByName", "[", "\"\<LF1\>\"", "]"}], "@", 
+           "Centre"}]}]}]}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<timeStamp\>\"", "\[Rule]", 
        RowBox[{"dbl", "@", 
         RowBox[{"TimeStamp", "@", "Ticks"}]}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<hour\>\"", "\[Rule]", 
        RowBox[{"dbl", "@", 
         RowBox[{"TimeStamp", "@", "Hour"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<analysisGateMinTime\>\"", "\[Rule]", 
+       RowBox[{
+        RowBox[{"dbl", "@", 
+         RowBox[{"Config", "@", 
+          RowBox[{"Settings", "[", "\"\<topProbemwCentreTime\>\"", "]"}]}]}], 
+        "-", 
+        RowBox[{
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<topProbemwLength\>\"", "]"}]}]}], 
+         "/", "2"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<analysisGateMaxTime\>\"", "\[Rule]", 
+       RowBox[{"Floor", "[", 
+        RowBox[{
+         RowBox[{
+          FractionBox["detBDistance", "detADistance"], 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"dbl", "@", 
+             RowBox[{"Config", "@", 
+              RowBox[{
+              "Settings", "[", "\"\<bottomProbemwCentreTime\>\"", "]"}]}]}], 
+            "+", 
+            RowBox[{
+             RowBox[{"dbl", "@", 
+              RowBox[{"Config", "@", 
+               RowBox[{
+               "Settings", "[", "\"\<bottomProbemwLength\>\"", "]"}]}]}], "/",
+              "2"}]}], ")"}]}], ",", "10"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<analysisGateMinTime\>\"", "\[Rule]", 
        RowBox[{
         RowBox[{"dbl", "@", 
@@ -1852,7 +2002,51 @@ Cell[BoxData[
           RowBox[{
            RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
            "dbl"}], "]"}]}], ")"}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+           "dbl"}], "]"}]}], ")"}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<cB\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", "\"\<B\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+           "dbl"}], "]"}]}], ")"}]}], ",", "\[IndentingNewLine]", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -1904,8 +2098,54 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", 
       RowBox[{"\"\<cBDB\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -1995,6 +2235,70 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<E\>\"", ",", "\"\<B\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<B\>\"", ",", "\"\<DB\>\""}], "}"}],
+            ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"EDM", " ", 
+        RowBox[{"CHANNEL", ":", " ", 
+         RowBox[{
+          RowBox[{"REMOVE", " ", "WHEN", " ", "BLIND", " ", "RE"}], "-", 
+          "APPLIED", " ", "-", " ", 
+          RowBox[{"CHRIS", " ", "14", " ", "JUNE", " ", "2022"}]}]}]}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEB\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<B\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cRF1F\>\"", "\[Rule]", 
        RowBox[{"getTOFChannel", "[", 
@@ -2020,8 +2324,36 @@ Cell[BoxData[
        RowBox[{"getTOFChannel", "[", 
         RowBox[{
          RowBox[{"{", "\"\<LF1\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cLF1\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<LF1\>\"", "}"}], ",", "\"\<asymmetry\>\"", ",", 
          "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cBRF1F\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -2070,6 +2402,29 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<B\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", 
       RowBox[{"\"\<cBRF1A\>\"", "\[Rule]", 
        RowBox[{"(", 
@@ -2095,7 +2450,55 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<B\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+      RowBox[{"\"\<cBRF1A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBRF2A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<RF2A\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       RowBox[{"\"\<cBRF2A\>\"", "\[Rule]", 
        RowBox[{"(", 
         RowBox[{
@@ -2146,7 +2549,55 @@ Cell[BoxData[
             RowBox[{"\"\<B\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBLF1\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cERF1F\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -2195,6 +2646,29 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<E\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", 
       RowBox[{"\"\<cERF1A\>\"", "\[Rule]", 
        RowBox[{"(", 
@@ -2220,8 +2694,54 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{"\"\<E\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
            "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<RF1A\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
       "\[IndentingNewLine]", 
       RowBox[{"\"\<cERF2A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<RF2A\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -2276,12 +2796,44 @@ Cell[BoxData[
         RowBox[{
          RowBox[{"{", 
           RowBox[{"\"\<DB\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
+      RowBox[{"\"\<cELF1\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF1F\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF1F\>\""}], "}"}], ",", 
          "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
       "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBRF2F\>\"", "\[Rule]", 
       RowBox[{"\"\<cDBRF2F\>\"", "\[Rule]", 
        RowBox[{"getTOFChannel", "[", 
         RowBox[{
          RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
           RowBox[{"\"\<DB\>\"", ",", "\"\<RF2F\>\""}], "}"}], ",", 
          "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
       "\[IndentingNewLine]", 
@@ -2306,7 +2858,38 @@ Cell[BoxData[
           RowBox[{"\"\<DB\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
          "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cDBLF1\>\"", "\[Rule]", 
+       RowBox[{"getTOFChannel", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\"\<DB\>\"", ",", "\"\<LF1\>\""}], "}"}], ",", 
+         "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cEDBRF1F\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF1F\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
        RowBox[{"(", 
         RowBox[{
          RowBox[{
@@ -2556,6 +3139,230 @@ Cell[BoxData[
             RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<LF1\>\""}], 
             "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
       ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF2F\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEDBRF1A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF1A\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEDBRF2A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF2A\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cEDBLF1\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<DB\>\"", ",", "\"\<LF1\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBDBRF1F\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF1F\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBDBRF2F\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF2F\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBDBRF1A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF1A\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBDBRF2A\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<RF2A\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<cBDBLF1\>\"", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<B\>\"", ",", "\"\<DB\>\"", ",", "\"\<LF1\>\""}], 
+            "}"}], ",", "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], 
+      ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"\"\<cPI\>\"", "\[Rule]", 
        RowBox[{"getTOFChannel", "[", 
         RowBox[{
@@ -2563,7 +3370,30 @@ Cell[BoxData[
          "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<cEPI\>\"", "\[Rule]", 
        RowBox[{"(", 
+      RowBox[{"\"\<cEPI\>\"", "\[Rule]", 
+       RowBox[{"(", 
         RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}], ",", 
+            RowBox[{
+             RowBox[{"boolSign", "[", 
+              RowBox[{"dbl", "@", 
+               RowBox[{"Config", "@", 
+                RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+             RowBox[{
+             "#", "\[LeftDoubleBracket]", "2", "\[RightDoubleBracket]"}]}], 
+            ",", 
+            RowBox[{
+            "#", "\[LeftDoubleBracket]", "3", "\[RightDoubleBracket]"}]}], 
+           "}"}], "&"}], "/@", 
+         RowBox[{"getTOFChannel", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"\"\<E\>\"", ",", "\"\<PI\>\""}], "}"}], ",", 
+           "\"\<asymmetry\>\"", ",", "dbl"}], "]"}]}], ")"}]}], ",", 
          RowBox[{
           RowBox[{"{", 
            RowBox[{
@@ -2608,7 +3438,25 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
           "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
+          "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<BMag\>\"", "\[Rule]", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<bState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<B\>\"", "}"}], ",", "\"\<magnetometer\>\"", ",", 
+          "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
        RowBox[{
         RowBox[{"boolSign", "[", 
          RowBox[{"dbl", "@", 
@@ -2637,6 +3485,19 @@ Cell[BoxData[
        RowBox[{"getPointChannel", "[", 
         RowBox[{
          RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<NorthCurrent\>\"", ",", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<NorthCurrent\>\"", ",", 
+          "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGNorthCurrent\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<NorthCurrent\>\"", ",", 
          "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<ESouthCurrent\>\"", "\[Rule]", 
        RowBox[{
@@ -2652,7 +3513,68 @@ Cell[BoxData[
        RowBox[{"getPointChannel", "[", 
         RowBox[{
          RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<SouthCurrent\>\"", ",", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<SouthCurrent\>\"", ",", 
+          "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGSouthCurrent\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<SouthCurrent\>\"", ",", 
          "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<ERfCurrent\>\"", "\[Rule]", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<rfCurrent\>\"", ",", 
+          "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGRfCurrent\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", "\"\<rfCurrent\>\"", ",", 
+         "dbl"}], "]"}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<EReflectedRfAmplitude\>\"", "\[Rule]", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", 
+          "\"\<reflectedrfAmplitude\>\"", ",", "dbl"}], "]"}]}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGReflectedRfAmplitude\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", 
+         "\"\<reflectedrfAmplitude\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\"\<EIncidentRfAmplitude\>\"", "\[Rule]", 
+       RowBox[{
+        RowBox[{"boolSign", "[", 
+         RowBox[{"dbl", "@", 
+          RowBox[{"Config", "@", 
+           RowBox[{"Settings", "[", "\"\<eState\>\"", "]"}]}]}], "]"}], 
+        RowBox[{"getPointChannel", "[", 
+         RowBox[{
+          RowBox[{"{", "\"\<E\>\"", "}"}], ",", "\"\<incidentrfAmplitude\>\"",
+           ",", "dbl"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+      RowBox[{"\"\<SIGIncidentRfAmplitude\>\"", "\[Rule]", 
+       RowBox[{"getPointChannel", "[", 
+        RowBox[{
+         RowBox[{"{", "\"\<SIG\>\"", "}"}], ",", 
+         "\"\<incidentrfAmplitude\>\"", ",", "dbl"}], "]"}]}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{"\"\<ERfCurrent\>\"", "\[Rule]", 
        RowBox[{
         RowBox[{"boolSign", "[", 
@@ -2733,6 +3655,14 @@ Cell[BoxData[
             RowBox[{"{", 
              RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}]}], "]"}], ")"}]}],
          ")"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"(", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{
+            RowBox[{"getChannels", "[", 
+             RowBox[{"getSwitches", "[", "dbl", "]"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}]}], "]"}], ")"}]}],
+         ")"}]}], ",", "\[IndentingNewLine]", 
       RowBox[{"\"\<fullChannelTablePhaseUnits\>\"", "\[Rule]", 
        RowBox[{"(", 
         RowBox[{
@@ -2748,6 +3678,15 @@ Cell[BoxData[
                 ",", 
                 RowBox[{"contrast", "[", "dbl", "]"}]}], "]"}], ",", "2760", 
               ",", "2960"}], "]"}]}], "}"}], "&"}], "/@", 
+         RowBox[{"(", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{
+            RowBox[{"getChannels", "[", 
+             RowBox[{"getSwitches", "[", "dbl", "]"}], "]"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"\"\<B\>\"", ",", "\"\<E\>\""}], "}"}]}], "]"}], ")"}]}],
+         ")"}]}]}], "\[IndentingNewLine]", "}"}]}], "\[IndentingNewLine]", 
+   "]"}]}]], "Input",
          RowBox[{"(", 
           RowBox[{"DeleteCases", "[", 
            RowBox[{
@@ -3751,17 +4690,17 @@ Cell[CellGroupData[{
 Cell[999, 37, 88, 0, 99, "Section",ExpressionUUID->"71ab4cc4-329b-4b32-bcce-8f89e4a775c2"],
 Cell[1090, 39, 752, 15, 97, "Input",ExpressionUUID->"40c034a3-5d6d-4643-9c16-36ef5f2e3e16",
  InitializationCell->True],
-Cell[1845, 56, 9333, 189, 1257, "Input",ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-5c2bd9dcbd43",
+Cell[1845, 56, 9521, 194, 1286, "Input",ExpressionUUID->"7a5cbff9-7f49-4cf6-bfa0-5c2bd9dcbd43",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[11203, 249, 102, 0, 80, "Subsection",ExpressionUUID->"84103005-c40e-4959-9496-8674e239bdec"],
-Cell[11308, 251, 111, 2, 67, "Input",ExpressionUUID->"21c06b5a-fbe2-4e50-9f8b-ad7aca1d0e34",
+Cell[11391, 254, 102, 0, 80, "Subsection",ExpressionUUID->"84103005-c40e-4959-9496-8674e239bdec"],
+Cell[11496, 256, 111, 2, 67, "Input",ExpressionUUID->"21c06b5a-fbe2-4e50-9f8b-ad7aca1d0e34",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11468, 259, 81, 0, 99, "Section",ExpressionUUID->"ce078900-2f75-42de-a665-3183f4611d33"],
-Cell[11552, 261, 177, 4, 67, "Input",ExpressionUUID->"22ab6b4f-be7a-4d20-8fd7-eabcbffdd909",
+Cell[11656, 264, 81, 0, 99, "Section",ExpressionUUID->"ce078900-2f75-42de-a665-3183f4611d33"],
+Cell[11740, 266, 177, 4, 67, "Input",ExpressionUUID->"22ab6b4f-be7a-4d20-8fd7-eabcbffdd909",
  InitializationCell->True],
 Cell[CellGroupData[{
 Cell[11754, 269, 92, 0, 80, "Subsection",ExpressionUUID->"42f9c215-a5f6-4323-9168-b8e421c4f64e"],

@@ -3,9 +3,9 @@ using System.Collections;
 using System.Xml.Serialization;
 using System.Net;
 using System.Net.Sockets;
-
+using WavemeterLockServer;
 using NationalInstruments.DAQmx;
-
+using WavemeterLockServer;
 using DAQ.Environment;
 using DAQ.HAL;
 
@@ -14,7 +14,7 @@ using ScanMaster.Acquire.Plugin;
 namespace ScanMaster.Acquire.Plugins
 {
 	/// <summary>
-	/// A plugin to capture analog data using an E-series board.
+	/// A plugin to capture wavemeter reading from WavemeterLock. Returns measured frequency-offset in GHz.
 	/// </summary>
 	[Serializable]
 	public class WavemeterInputPlugin : AnalogInputPlugin
@@ -22,16 +22,19 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private double latestData;
 		[NonSerialized]
-		private WavemeterLockServer.Controller wavemeterContrller;
+		private WavemeterLockServer.Controller wavemeterServerContrller;
 		[NonSerialized]
 		private string serverComputerName;
 		[NonSerialized]
 		private string ipAddr;
 
+		private string hostName = (String)System.Environment.GetEnvironmentVariables()["IC-CZC136CFDJ"];
+
 		protected override void InitialiseSettings()
 		{
-			settings["channel"] =  2;
-			settings["computer"] = "IC-CZC136CFDJ";
+			settings["channel"] =  1;
+			settings["computer"] = hostName;
+			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 
 		public override void AcquisitionStarting()
@@ -39,16 +42,16 @@ namespace ScanMaster.Acquire.Plugins
             if (!Environs.Debug)
             {
 				serverComputerName = (string)settings["computer"];
-
-				foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
+				
+				/*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
 				{
 					if (addr.AddressFamily == AddressFamily.InterNetwork)
 						ipAddr = addr.ToString();
-				}
+				}*/
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 
-				wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + ipAddr + ":" + "1984" + "/controller.rem"));
+				wavemeterServerContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + ipAddr + ":" + eHelper.wavemeterLockTCPChannel + "/controller.rem"));
 			}
 			
 		}
@@ -71,7 +74,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = wavemeterContrller.getFrequency((int)settings["channel"]);
+					latestData = 1000*(wavemeterServerContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
 				}
 			}
 		}

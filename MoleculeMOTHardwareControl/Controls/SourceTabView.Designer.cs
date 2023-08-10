@@ -466,7 +466,7 @@
             this.cycleLimit.Size = new System.Drawing.Size(120, 20);
             this.cycleLimit.TabIndex = 3;
             this.cycleLimit.Value = new decimal(new int[] {
-            40,
+            10,
             0,
             0,
             0});

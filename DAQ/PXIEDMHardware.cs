@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Runtime.Remoting;
 using NationalInstruments.DAQmx;
-
+using DAQ.WavemeterLock;
 using DAQ.Pattern;
 using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
@@ -32,60 +32,64 @@ namespace DAQ.HAL
         {
 
             // add the boards
-            Boards.Add("daq", "/PXI1Slot18");
-            Boards.Add("pg", "/PXI1Slot10");
-            Boards.Add("doBoard", "/PXI1Slot11");
-            Boards.Add("analogIn2", "/PXI1Slot17");
-            Boards.Add("counter", "/PXI1Slot16");
-            Boards.Add("aoBoard", "/PXI1Slot2");
-            Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
-            Boards.Add("analogIn", "/PXI1Slot15");
+            //Boards.Add("daq", "/PXI1Slot18");
+            Boards.Add("pg", "/PXI1Slot10");   // need it
+            //Boards.Add("doBoard", "/PXI1Slot11");
+            //Boards.Add("analogIn2", "/PXI1Slot17");
+            //Boards.Add("counter", "/PXI1Slot16");
+            Boards.Add("aoBoard", "/PXI1Slot2"); //PXI6723
+            //Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
+            //Boards.Add("analogIn", "/PXI1Slot15");
             //Boards.Add("usbDAQ2", "/Dev4");
-            Boards.Add("usbDAQ3", "/Dev1");
-            Boards.Add("usbDAQ4", "/Dev3");
+            //Boards.Add("usbDAQ3", "/Dev1");
+            //Boards.Add("usbDAQ4", "/Dev3");
 
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
-            string rfAWG = (string)Boards["rfAWG"];
+            //string rfAWG = (string)Boards["rfAWG"];
             string pgBoard = (string)Boards["pg"];
-            string daqBoard = (string)Boards["daq"];
-            string analogIn2 = (string)Boards["analogIn2"];
-            string counterBoard = (string)Boards["counter"];
+            //string daqBoard = (string)Boards["daq"];
+            //string analogIn2 = (string)Boards["analogIn2"];
+            //string counterBoard = (string)Boards["counter"];
             string aoBoard = (string)Boards["aoBoard"];
-            string usbDAQ1 = (string)Boards["usbDAQ1"];
-            string analogIn = (string)Boards["analogIn"];
+            //string usbDAQ1 = (string)Boards["usbDAQ1"];
+            //string analogIn = (string)Boards["analogIn"];
             //string usbDAQ2 = (string)Boards["usbDAQ2"];
-            string usbDAQ3 = (string)Boards["usbDAQ3"];
-            string usbDAQ4 = (string)Boards["usbDAQ4"];
-            string doBoard = (string)Boards["doBoard"];
+            //string usbDAQ3 = (string)Boards["usbDAQ3"];
+            //string usbDAQ4 = (string)Boards["usbDAQ4"];
+            //string doBoard = (string)Boards["doBoard"];
             //string tclBoardPump = (string)Boards["tclBoardPump"];
             //string tclBoardProbe = (string)Boards["tclBoardProbe"];
 
             // add things to the info
             // the analog triggers
-            Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
-            Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
+            //Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
+            //Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
 
-            Info.Add("sourceToDetect", 1.3);
-            Info.Add("moleculeMass", 193.0);
-            Info.Add("machineLengthRatio", 3.842);
-            Info.Add("defaultGate",new double[] {2190, 80});
+            //Info.Add("sourceToDetect", 1.3);
+            //Info.Add("moleculeMass", 193.0);
+            //Info.Add("machineLengthRatio", 3.842);
+            //Info.Add("defaultGate",new double[] {2190, 80});
 
 
-            Info.Add("phaseLockControlMethod", "synth");
+            //Info.Add("phaseLockControlMethod", "synth");
             Info.Add("PGClockLine", pgBoard + "/PFI4"); //Mapped to PFI2 on 6533 connector
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
             // rf counter switch control seq``
-            Info.Add("IodineFreqMon", new bool[] { false, false }); // IN 1
-            Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
-            Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
+            //Info.Add("IodineFreqMon", new bool[] { false, false }); // IN 1
+            //Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
+            //Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
-            Info.Add("PGTrigger", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+            Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI6"); 
+            Info.Add("AOClockLine", aoBoard + "/PFI5");
 
             // YAG laser
-            yag = new BrilliantLaser("ASRL13::INSTR");
+            //yag = new BrilliantLaser("ASRL13::INSTR");
 
+            /*
             // add the GPIB/RS232/USB instruments
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             //Instruments.Add("gigatronix", new Gigatronics7100Synth("GPIB0::19::INSTR"));
@@ -102,10 +106,12 @@ namespace DAQ.HAL
             Instruments.Add("anapico", new AnapicoSynth("USB0::1003::45055::321-028100000-0168::0::INSTR"));//old anapico 1 channel
             Instruments.Add("anapicoSYN420", new AnapicoSynth("USB0::0x03EB::0xAFFF::322-03A100005-0539::INSTR"));// new 2 channel anapico
             Instruments.Add("rfAWG", new NIPXI5670("PXI1Slot4"));
-
+            */
             // map the digital channels
             // these channels are generally switched by the pattern generator
             // they're all in the lower half of the pg
+
+            /*
             AddDigitalOutputChannel("valve", pgBoard, 0, 0);
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("q", pgBoard, 0, 2);
@@ -133,13 +139,19 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("mwSelectPumpChannel", pgBoard, 3, 6);
             AddDigitalOutputChannel("mwSelectTopProbeChannel", pgBoard, 3, 2);
             AddDigitalOutputChannel("mwSelectBottomProbeChannel", pgBoard, 2, 4);
-            AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
-            
+            //AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
+
+            */
+            AddDigitalOutputChannel("aoTrigger", pgBoard, 0, 0);
+            AddDigitalOutputChannel("cameraTrigger", pgBoard, 3, 4);
+
             // rf awg test
-            AddDigitalOutputChannel("rfAWGTestTrigger", doBoard, 0, 1);
+            //AddDigitalOutputChannel("rfAWGTestTrigger", doBoard, 0, 1);
 
             // these channel are usually software switched - they are on the AO board
-            AddDigitalOutputChannel("b", aoBoard, 0, 0);
+            AddAnalogOutputChannel("steppingBBias", aoBoard + "/ao8", -10, 10);
+
+            /*
             AddDigitalOutputChannel("notB", aoBoard, 0, 1);
 
             AddDigitalOutputChannel("db", aoBoard, 0, 2);
@@ -147,9 +159,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("piFlipEnable", aoBoard, 0, 4);
             AddDigitalOutputChannel("notPIFlipEnable", aoBoard, 0, 5); //not connected to anything
             AddDigitalOutputChannel("mwSwitching", aoBoard, 0, 6);
-
+            */
             // these digitial outputs are switched slowly during the pattern
-            AddDigitalOutputChannel("ePol", usbDAQ4, 0, 4);
+            /*AddDigitalOutputChannel("ePol", usbDAQ4, 0, 4);
             AddDigitalOutputChannel("notEPol", usbDAQ4, 0, 5);
             AddDigitalOutputChannel("eBleed", usbDAQ4, 0, 6);
             AddDigitalOutputChannel("eSwitching", usbDAQ4, 0, 7);
@@ -165,7 +177,7 @@ namespace DAQ.HAL
             // for test shield measurement July 2021
             AddDigitalOutputChannel("testPlateVoltageGate", doBoard, 0, 1);
             AddDigitalOutputChannel("testPlateVoltageTTL", doBoard, 0, 2);
-
+            
 
             // map the analog channels
             // These channels are on the daq board. Used mainly for diagnostic purposes.
@@ -230,7 +242,10 @@ namespace DAQ.HAL
 
             //This analog input is broken, we assign this as a dummy so we don't break the rest of the code
             AddAnalogInputChannel("laserPowerMeter", analogIn2 + "/ai0", AITerminalConfiguration.Differential);
-            
+            */
+
+
+            /*
             AddAnalogOutputChannel("piFlipVoltage", aoBoard + "/ao20");
             AddAnalogOutputChannel("phaseScramblerVoltage", aoBoard + "/ao10");
             AddAnalogOutputChannel("bScan", aoBoard + "/ao2");
@@ -256,7 +271,12 @@ namespace DAQ.HAL
 
             //ECDL piezo control
             AddAnalogOutputChannel("blueECDLPiezoVoltage", aoBoard + "/ao30", 0, 10);
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("WMLServer");
+            wmlConfig.AddSlaveLaser("BlueECDL", "blueECDLPiezoVoltage", 3);//name, analog, wavemeter channel
 
+            Info.Add("WMLServer", wmlConfig);
+            */
+            /*
             // E field control and monitoring
             AddAnalogInputChannel("cPlusMonitor", usbDAQ3 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("cMinusMonitor", usbDAQ3 + "/ai2", AITerminalConfiguration.Differential);
@@ -286,7 +306,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogOutputChannel("bFieldFeedbackOutput", usbDAQ1 + "/ao1", 0, 5);
             AddCounterChannel("bFieldFeedbackClock", usbDAQ1 + "/pfi0");
-
+            */
 
             // Cavity inputs for the cavity that controls the Pump lasers
             //AddAnalogInputChannel("PumpCavityRampVoltage", tclBoardPump + "/ai8", AITerminalConfiguration.Rse); //tick
@@ -350,10 +370,12 @@ namespace DAQ.HAL
             //tcl2.AddDefaultGain("TopticaSHGPZT", 0.04);
             //Info.Add("ProbeCavity", tcl2);
             //Info.Add("DefaultCavity", tcl2);
-            
+
+            /*
             //probe AOM control
             AddAnalogOutputChannel("probeAOM", aoBoard + "/ao29", -10, 10);
             AddAnalogOutputChannel("probeAOMamp", aoBoard + "/ao28", 0, 10);
+
 
             //Obselete Laser control
             AddAnalogOutputChannel("pumpAOM", aoBoard + "/ao20", 0, 10);
@@ -376,7 +398,33 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("VCO30Freq", aoBoard + "/ao16", 0, 10);
             AddAnalogOutputChannel("VCO155Amp", aoBoard + "/ao17", 0, 10);
             AddAnalogOutputChannel("VCO155Freq", aoBoard + "/ao18", 0, 10);
+            */
 
+
+            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
+            AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
+            AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
+
+            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            mmConfig.ExternalFilePattern = "*.tif";
+            Info.Add("MotMasterConfiguration", mmConfig);
+
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("AO", aoBoard);
+            //Info.Add("StaticAnalogBoards", analogBoards);
+            Info.Add("AnalogBoards", analogBoards);
+
+            Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
+            Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
+
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
+            //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
+            //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
+            //wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
+            Info.Add("Default", wmlConfig);
         }
 
     }

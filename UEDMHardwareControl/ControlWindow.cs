@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using Newport.USBComm;//rhys removed 15/02
+using NewFocus.Picomotor; //rhys removed 15/02
 
 namespace UEDMHardwareControl
 {
@@ -361,6 +363,29 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+        }
+        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
+        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        {
+            led.Value = val;
+        }
+
+        public void AddAlert(string alertText)
+        {
+            Invoke(new AddAlertDelegate(AddAlertHelper), new object[] { alertText });
+        }
+        private delegate void AddAlertDelegate(string alertText);
+        private void AddAlertHelper(string alertText)
+        {
+            BackColor = System.Drawing.Color.Red;
+            WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            tbStatus.AppendText(DateTime.Now.ToString() + " " + alertText + "\n");
+        }
 
         # endregion
 
@@ -408,7 +433,14 @@ namespace UEDMHardwareControl
             controller.SavePlotImage(chart3);
         }
 
-
+        //Step mirrors initial parameters
+        static int initialposition1 = 0;
+        static int initialposition2 = 0;
+        static int initialposition3 = 0;
+        static int initialposition4 = 0;
+        CmdLib8742 cmdLib = new CmdLib8742(); //rhys removed 15/02
+        //End-----------------------------------------------------
+        //--------------------------------------------------------
 
         // Pressure monitoring
         /// <summary>
@@ -685,8 +717,6 @@ namespace UEDMHardwareControl
         {
             controller.UpdatePTMonitorPollPeriodUsingUIValue();
         }
-
-        #endregion
 
         private void checkBoxMonitorPressureWhenHeating_CheckedChanged(object sender, EventArgs e)
         {
@@ -1148,7 +1178,7 @@ namespace UEDMHardwareControl
 
         private void updateFieldButton_Click(object sender, EventArgs e)
         {
-
+            controller.UpdateVoltages();
         }
 
         private void btResetGaugesCorrectionFactors_Click(object sender, EventArgs e)
@@ -1230,5 +1260,329 @@ namespace UEDMHardwareControl
         {
             controller.QueryMWPower(1);
         }
+
+        private void cbCHARFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(0, cbCHARFMuted.Checked);
+        }
+
+        private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMute(1, cbCHBRFMuted.Checked);
+        }
+
+        private void cbCHAPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(0, cbCHAPAPoweredOn.Checked);
+        }
+
+        private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
+        }
+
+        private void cbCHAPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(0, cbCHAPLLPoweredOn.Checked);
+        }
+
+        private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
+        }
+
+        private void btCHAFRMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHBRFMuteInfo_Click(object sender, EventArgs e)
+        {
+            controller.RFMuteInfoMessage();
+        }
+
+        private void btCHAPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHBPAPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PAPowerInfoMessage();
+        }
+
+        private void btCHAPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btCHBPLLPowerOnInfo_Click(object sender, EventArgs e)
+        {
+            controller.PLLPowerInfoMessage();
+        }
+
+        private void btQueryMWSynthTemperature_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperature();
+        }
+
+        private void btQueryRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.QueryRFFrequency();
+        }
+
+        private void btClearCoolDownModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbCoolDownModeStatus, "");
+        }
+
+        private void btClearWarmUpModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbWarmUpModeStatus, "");
+        }
+
+        private void btClearRefreshModeStatus_Click(object sender, EventArgs e)
+        {
+            SetTextBox(tbRefreshModeStatus, "");
+        }
+
+        private void groupBoxWindfreaksynthhd_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxMWCHA_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btUpdateMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btIncrementMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(0);
+        }
+
+        private void btUpdateMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetection(1);
+        }
+
+        private void btUpdateMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btIncrementMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetection(1);
+        }
+
+        private void btQueryMWCHAFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(0);
+        }
+
+        private void btQueryMWCHAPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(0);
+        }
+
+        private void btQueryMWCHBFrequencyDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetection(1);
+        }
+
+        private void btQueryMWCHBPowerDetection_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetection(1);
+        }
+
+        private void cbCHARFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(0, cbCHARFMutedDetection.Checked);
+        }
+
+        private void cbCHBRFMutedDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetection(1, cbCHBRFMutedDetection.Checked);
+        }
+
+        private void cbCHAPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(0, cbCHAPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPAPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetection(1, cbCHBPAPoweredOnDetection.Checked);
+        }
+
+        private void cbCHAPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(0, cbCHAPLLPoweredOnDetection.Checked);
+        }
+
+        private void cbCHBPLLPoweredOnDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetection(1, cbCHBPLLPoweredOnDetection.Checked);
+        }
+
+        private void btQueryMWSynthTemperatureDetection_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperatureDetection();
+        }
+
+        private void eOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateVoltages();
+        }
+
+        private void fieldsOffButton_Click(object sender, EventArgs e)
+        {
+            controller.FieldsOff();
+        }
+
+        private void switchEButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchE();
+        }
+
+        private void changePollPeriodButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateIMonitorPollPeriodUsingUIValue();
+        }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
+        }
+
+        private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
+        {
+            //controller.VoltageSet();
+        }
+
+        private void StartDegauss_Click(object sender, EventArgs e)
+        {
+            controller.StartDegaussPoll();
+            //controller.UpdateDegaussPulse();
+        }
+
+        private void scanningBUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBVoltage();
+        }
+
+        private void scanningBZeroButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBZero();
+        }
+
+        private void scanningBFSButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBFS();
+        }
+
+        private void labelCooldownModeInfoText_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_FindDevice_Click(object sender, EventArgs e)
+        {
+            cmdLib.DiscoverDevices();
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            Show_DeviceKey.Text = DeviceKey;
+        }
+
+        private void btn_Motor1Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            cmdLib.RelativeMove(DeviceKey, 1, Stepsize1);
+            lbl_Motor1location.Text = (initialposition1 += Stepsize1).ToString();
+        }
+
+        private void btn_Motor1Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            cmdLib.RelativeMove(DeviceKey, 1, -Stepsize1);
+            lbl_Motor1location.Text = (initialposition1 -= Stepsize1).ToString();
+        }
+
+        private void btn_Motor2Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            cmdLib.RelativeMove(DeviceKey, 2, Stepsize2);
+            lbl_Motor2location.Text = (initialposition2 += Stepsize2).ToString();
+        }
+
+        private void btn_Motor2Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            cmdLib.RelativeMove(DeviceKey, 2, -Stepsize2);
+            lbl_Motor2location.Text = (initialposition2 -= Stepsize2).ToString();
+        }
+
+        private void btn_Motor3Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            cmdLib.RelativeMove(DeviceKey, 3, Stepsize3);
+            lbl_Motor3location.Text = (initialposition3 += Stepsize3).ToString();
+        }
+
+        private void btn_Motor3Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            cmdLib.RelativeMove(DeviceKey, 3, -Stepsize3);
+            lbl_Motor3location.Text = (initialposition3 -= Stepsize3).ToString();
+        }
+
+        private void btn_Motor4Forward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            cmdLib.RelativeMove(DeviceKey, 4, Stepsize4);
+            lbl_Motor4location.Text = (initialposition4 += Stepsize4).ToString();
+        }
+
+        private void btn_Motor4Backward_Click(object sender, EventArgs e)
+        {
+            string DeviceKey = cmdLib.GetFirstDeviceKey();
+            int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            cmdLib.RelativeMove(DeviceKey, 4, -Stepsize4);
+            lbl_Motor4location.Text = (initialposition4 -= Stepsize4).ToString();
+        }
+
+        #endregion
     }
 }
