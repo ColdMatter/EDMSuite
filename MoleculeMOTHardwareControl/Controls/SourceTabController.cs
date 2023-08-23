@@ -7,6 +7,8 @@ using NationalInstruments.DAQmx;
 using DAQ.HAL;
 using DAQ.Environment;
 using System.Windows.Forms;
+using NewFocus.PicomotorApp;
+using Newport.DeviceIOLib;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -80,6 +82,10 @@ namespace MoleculeMOTHardwareControl.Controls
         private double hardTempLimInC = 27.0;
         private double softTempLimInK = 293.0;
         private double softTempLimInC = 20.0;
+
+        CmdLib8742 cmdLib;
+        DeviceIOLib diolib;
+        string devKey;
 
         protected override GenericView CreateControl()
         {
@@ -784,5 +790,70 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             PlotChannel = channelID;
         }
+
+        #region Yag motorized morror control
+
+        public void connectDevice()
+        {
+            if (devKey != null) return;
+            diolib = new DeviceIOLib();
+            cmdLib = new CmdLib8742(diolib);
+            diolib.DiscoverDevices(1, 5000);
+            devKey = diolib.GetFirstDeviceKey();
+        }
+
+        public void moveYagX1 (int step)
+        {
+            //try
+            //{
+                cmdLib.RelativeMove(devKey, 1, step);
+            //}
+
+            //catch(Exception e)
+            //{
+
+            //} 
+        }
+
+        public void moveYagY1(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 2, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public void moveYagX2(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 3, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public void moveYagY2(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 4, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        #endregion
     }
 }

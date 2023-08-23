@@ -39,9 +39,9 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            computer = "IC-CZC136CFDJ"; //Computer name of the server
+            //computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
-            hostTCPChannel = eHelper.serverTCPChannel;
+            //hostTCPChannel = eHelper.serverTCPChannel;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
@@ -135,6 +135,7 @@ namespace WavemeterLock
         #endregion
 
         public Dictionary<string, Laser> lasers;
+        public Dictionary<string, int> wmChannels;
         public Dictionary<string, bool> lockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
         public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
@@ -212,6 +213,7 @@ namespace WavemeterLock
         {
             lasers = new Dictionary<string, Laser>();
             lockBlocked = new Dictionary<string, bool>();
+            wmChannels = new Dictionary<string, int>();
 
             //Config hardware channel and time stamp
             foreach (string slaveLaser in config.slaveLasers.Keys)
@@ -227,6 +229,7 @@ namespace WavemeterLock
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
                 slave.WLMChannel = config.channelNumbers[laser];
+                wmChannels.Add(laser, slave.WLMChannel);
             }
 
             //Config lock block
@@ -260,6 +263,13 @@ namespace WavemeterLock
             {
                 ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
             }
+
+            //Asign an LED to each laser
+            foreach (int n in wmChannels.Values)
+            {
+                ui.enable_LED(n);
+            }
+            
 
         }
 
@@ -404,7 +414,10 @@ namespace WavemeterLock
             wavemeterContrller.changeConnectionStatus(laser.WLMChannel, false);
         }
 
-
+        public void toggle_led_state(int n, bool val)
+        {
+            ui.toggle_led(n, val);
+        }
 
         #endregion
 
@@ -491,9 +504,9 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {
@@ -519,9 +532,9 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {

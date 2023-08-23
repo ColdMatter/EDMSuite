@@ -376,6 +376,12 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CmdLib8742">
+      <HintPath>..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\CmdLib8742.dll</HintPath>
+    </Reference>
+    <Reference Include="DeviceIOLib">
+      <HintPath>..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\DeviceIOLib.dll</HintPath>
+    </Reference>
     <Reference Include="MOTMaster">
       <HintPath>..\MOTMaster\bin\CaF\MOTMaster.exe</HintPath>
     </Reference>

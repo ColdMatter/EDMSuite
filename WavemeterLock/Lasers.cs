@@ -135,7 +135,7 @@ namespace WavemeterLock
 
         public virtual void ResetOutput() //Clear the I lock output
         {
-            CurrentVoltage = PGain * FrequencyError + offsetVoltage;
+            CurrentVoltage = offsetVoltage;
             CurrentVoltage = currentVoltage;
             summedWavelengthDifference = 0;
         }

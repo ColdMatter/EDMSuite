@@ -32,3 +32,9 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Ivi.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.csproj.CopyComplete
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\bdc-comm-92.exe
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.UI.Styles3D.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\CmdLib8742.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DeviceIOLib.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\UsbDllWrap.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpEthernet.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpSerial.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.pdb

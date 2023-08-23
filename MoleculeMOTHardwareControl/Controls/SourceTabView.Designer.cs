@@ -101,6 +101,23 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.lblsf6flow = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.yag_connect = new System.Windows.Forms.Button();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.jogSteps = new System.Windows.Forms.NumericUpDown();
+            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.yagY2Decrease = new System.Windows.Forms.Button();
+            this.yagX2Decrease = new System.Windows.Forms.Button();
+            this.yagY1Decrease = new System.Windows.Forms.Button();
+            this.yagX1Decrease = new System.Windows.Forms.Button();
+            this.yagY2Increase = new System.Windows.Forms.Button();
+            this.yagX2Increase = new System.Windows.Forms.Button();
+            this.yagY1Increase = new System.Windows.Forms.Button();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.yagX1Increase = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -127,6 +144,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO0)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.jogSteps)).BeginInit();
+            this.tableLayoutPanel8.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -141,7 +162,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 0F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(665, 677);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(665, 652);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -162,7 +183,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 1.412974F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.87877F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 0F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(207, 671);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(207, 646);
             this.tableLayoutPanel2.TabIndex = 1;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
@@ -188,9 +209,9 @@
             this.groupBox2.Controls.Add(this.chkLog);
             this.groupBox2.Controls.Add(this.txtSourceTemp2);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(3, 344);
+            this.groupBox2.Location = new System.Drawing.Point(3, 331);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(201, 321);
+            this.groupBox2.Size = new System.Drawing.Size(201, 309);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Source Parameters";
@@ -288,7 +309,7 @@
             // readButton
             // 
             this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.readButton.Location = new System.Drawing.Point(56, 21);
+            this.readButton.Location = new System.Drawing.Point(56, 15);
             this.readButton.Name = "readButton";
             this.readButton.Size = new System.Drawing.Size(99, 34);
             this.readButton.TabIndex = 3;
@@ -372,9 +393,9 @@
             // 
             this.cryoGroup.Controls.Add(this.tableLayoutPanel4);
             this.cryoGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cryoGroup.Location = new System.Drawing.Point(3, 103);
+            this.cryoGroup.Location = new System.Drawing.Point(3, 99);
             this.cryoGroup.Name = "cryoGroup";
-            this.cryoGroup.Size = new System.Drawing.Size(201, 94);
+            this.cryoGroup.Size = new System.Drawing.Size(201, 90);
             this.cryoGroup.TabIndex = 1;
             this.cryoGroup.TabStop = false;
             this.cryoGroup.Text = "Cryo-cooler";
@@ -391,16 +412,16 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(195, 75);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(195, 71);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
             // cryoSwitch
             // 
             this.cryoSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoSwitch.Enabled = false;
-            this.cryoSwitch.Location = new System.Drawing.Point(68, 40);
+            this.cryoSwitch.Location = new System.Drawing.Point(68, 38);
             this.cryoSwitch.Name = "cryoSwitch";
-            this.cryoSwitch.Size = new System.Drawing.Size(59, 32);
+            this.cryoSwitch.Size = new System.Drawing.Size(59, 30);
             this.cryoSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.cryoSwitch.TabIndex = 0;
             this.cryoSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleCryo);
@@ -411,7 +432,7 @@
             this.cryoLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
             this.cryoLED.Location = new System.Drawing.Point(73, 3);
             this.cryoLED.Name = "cryoLED";
-            this.cryoLED.Size = new System.Drawing.Size(49, 31);
+            this.cryoLED.Size = new System.Drawing.Size(49, 29);
             this.cryoLED.TabIndex = 1;
             // 
             // heaterGroup
@@ -420,7 +441,7 @@
             this.heaterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heaterGroup.Location = new System.Drawing.Point(3, 3);
             this.heaterGroup.Name = "heaterGroup";
-            this.heaterGroup.Size = new System.Drawing.Size(201, 94);
+            this.heaterGroup.Size = new System.Drawing.Size(201, 90);
             this.heaterGroup.TabIndex = 0;
             this.heaterGroup.TabStop = false;
             this.heaterGroup.Text = "4K Heater";
@@ -438,7 +459,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.93877F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.06123F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(195, 75);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(195, 71);
             this.tableLayoutPanel3.TabIndex = 0;
             this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
@@ -446,9 +467,9 @@
             // 
             this.heaterSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterSwitch.Enabled = false;
-            this.heaterSwitch.Location = new System.Drawing.Point(68, 38);
+            this.heaterSwitch.Location = new System.Drawing.Point(68, 36);
             this.heaterSwitch.Name = "heaterSwitch";
-            this.heaterSwitch.Size = new System.Drawing.Size(59, 34);
+            this.heaterSwitch.Size = new System.Drawing.Size(59, 32);
             this.heaterSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.heaterSwitch.TabIndex = 0;
             this.heaterSwitch.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeater);
@@ -459,7 +480,7 @@
             this.heaterLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
             this.heaterLED.Location = new System.Drawing.Point(73, 3);
             this.heaterLED.Name = "heaterLED";
-            this.heaterLED.Size = new System.Drawing.Size(49, 29);
+            this.heaterLED.Size = new System.Drawing.Size(49, 27);
             this.heaterLED.TabIndex = 1;
             // 
             // tableLayoutPanel5
@@ -468,12 +489,12 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 203);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 195);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93.16239F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.837607F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(201, 126);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(201, 121);
             this.tableLayoutPanel5.TabIndex = 2;
             // 
             // groupBox1
@@ -484,7 +505,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(195, 111);
+            this.groupBox1.Size = new System.Drawing.Size(195, 106);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "4K Stage Cycle Max Temp (°C)";
@@ -493,7 +514,7 @@
             // 
             this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cycleButton.Enabled = false;
-            this.cycleButton.Location = new System.Drawing.Point(29, 57);
+            this.cycleButton.Location = new System.Drawing.Point(29, 54);
             this.cycleButton.Name = "cycleButton";
             this.cycleButton.Size = new System.Drawing.Size(61, 40);
             this.cycleButton.TabIndex = 2;
@@ -505,7 +526,7 @@
             // 
             this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.holdButton.Enabled = false;
-            this.holdButton.Location = new System.Drawing.Point(110, 57);
+            this.holdButton.Location = new System.Drawing.Point(110, 54);
             this.holdButton.Name = "holdButton";
             this.holdButton.Size = new System.Drawing.Size(61, 40);
             this.holdButton.TabIndex = 3;
@@ -516,9 +537,9 @@
             // cycleLimit
             // 
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleLimit.Location = new System.Drawing.Point(41, 30);
+            this.cycleLimit.Location = new System.Drawing.Point(41, 27);
             this.cycleLimit.Minimum = new decimal(new int[] {
-            100,
+            270,
             0,
             0,
             -2147483648});
@@ -540,11 +561,12 @@
             this.tableLayoutPanel6.Controls.Add(this.groupBox4, 0, 1);
             this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 3;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 58.89328F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 41.10672F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(446, 604);
+            this.tableLayoutPanel6.RowCount = 4;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 59.63489F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.36511F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 146F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(446, 646);
             this.tableLayoutPanel6.TabIndex = 3;
             // 
             // groupBox5
@@ -552,7 +574,7 @@
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.tableLayoutPanel7);
-            this.groupBox5.Location = new System.Drawing.Point(3, 506);
+            this.groupBox5.Location = new System.Drawing.Point(3, 494);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(440, 91);
             this.groupBox5.TabIndex = 6;
@@ -637,7 +659,7 @@
             this.groupBox3.Controls.Add(this.chkSaveTrace);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(440, 290);
+            this.groupBox3.Size = new System.Drawing.Size(440, 287);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "PMT - Time of flight";
@@ -787,7 +809,7 @@
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.lblsf6flow);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(3, 299);
+            this.groupBox4.Location = new System.Drawing.Point(3, 296);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(440, 191);
             this.groupBox4.TabIndex = 1;
@@ -1000,11 +1022,252 @@
             this.lblsf6flow.TabIndex = 4;
             this.lblsf6flow.Text = "0.000 sccm";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.yag_connect);
+            this.groupBox6.Controls.Add(this.groupBox7);
+            this.groupBox6.Controls.Add(this.tableLayoutPanel8);
+            this.groupBox6.Location = new System.Drawing.Point(0, 658);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(665, 122);
+            this.groupBox6.TabIndex = 4;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "YAG Motorized Mirror Control";
+            // 
+            // yag_connect
+            // 
+            this.yag_connect.Location = new System.Drawing.Point(523, 28);
+            this.yag_connect.Name = "yag_connect";
+            this.yag_connect.Size = new System.Drawing.Size(75, 23);
+            this.yag_connect.TabIndex = 1;
+            this.yag_connect.Text = "Connect";
+            this.yag_connect.UseVisualStyleBackColor = true;
+            this.yag_connect.Click += new System.EventHandler(this.yag_connect_click);
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.jogSteps);
+            this.groupBox7.Location = new System.Drawing.Point(501, 57);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(121, 46);
+            this.groupBox7.TabIndex = 0;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Jog steps";
+            // 
+            // jogSteps
+            // 
+            this.jogSteps.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.jogSteps.Location = new System.Drawing.Point(12, 19);
+            this.jogSteps.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.jogSteps.Name = "jogSteps";
+            this.jogSteps.Size = new System.Drawing.Size(99, 20);
+            this.jogSteps.TabIndex = 0;
+            this.jogSteps.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.jogSteps.ValueChanged += new System.EventHandler(this.jogSteps_ValueChanged);
+            // 
+            // tableLayoutPanel8
+            // 
+            this.tableLayoutPanel8.ColumnCount = 4;
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel8.Controls.Add(this.yagY2Decrease, 3, 2);
+            this.tableLayoutPanel8.Controls.Add(this.yagX2Decrease, 2, 2);
+            this.tableLayoutPanel8.Controls.Add(this.yagY1Decrease, 1, 2);
+            this.tableLayoutPanel8.Controls.Add(this.yagX1Decrease, 0, 2);
+            this.tableLayoutPanel8.Controls.Add(this.yagY2Increase, 3, 1);
+            this.tableLayoutPanel8.Controls.Add(this.yagX2Increase, 2, 1);
+            this.tableLayoutPanel8.Controls.Add(this.yagY1Increase, 1, 1);
+            this.tableLayoutPanel8.Controls.Add(this.label20, 3, 0);
+            this.tableLayoutPanel8.Controls.Add(this.label19, 2, 0);
+            this.tableLayoutPanel8.Controls.Add(this.label18, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.label17, 0, 0);
+            this.tableLayoutPanel8.Controls.Add(this.yagX1Increase, 0, 1);
+            this.tableLayoutPanel8.Location = new System.Drawing.Point(16, 34);
+            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
+            this.tableLayoutPanel8.RowCount = 3;
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(434, 72);
+            this.tableLayoutPanel8.TabIndex = 0;
+            // 
+            // yagY2Decrease
+            // 
+            this.yagY2Decrease.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagY2Decrease.Location = new System.Drawing.Point(327, 49);
+            this.yagY2Decrease.Name = "yagY2Decrease";
+            this.yagY2Decrease.Size = new System.Drawing.Size(104, 20);
+            this.yagY2Decrease.TabIndex = 11;
+            this.yagY2Decrease.Text = "-";
+            this.yagY2Decrease.UseVisualStyleBackColor = true;
+            this.yagY2Decrease.Click += new System.EventHandler(this.yag_Y2_N);
+            // 
+            // yagX2Decrease
+            // 
+            this.yagX2Decrease.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagX2Decrease.Location = new System.Drawing.Point(219, 49);
+            this.yagX2Decrease.Name = "yagX2Decrease";
+            this.yagX2Decrease.Size = new System.Drawing.Size(102, 20);
+            this.yagX2Decrease.TabIndex = 10;
+            this.yagX2Decrease.Text = "-";
+            this.yagX2Decrease.UseVisualStyleBackColor = true;
+            this.yagX2Decrease.Click += new System.EventHandler(this.yag_X2_N);
+            // 
+            // yagY1Decrease
+            // 
+            this.yagY1Decrease.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagY1Decrease.Location = new System.Drawing.Point(111, 49);
+            this.yagY1Decrease.Name = "yagY1Decrease";
+            this.yagY1Decrease.Size = new System.Drawing.Size(102, 20);
+            this.yagY1Decrease.TabIndex = 9;
+            this.yagY1Decrease.Text = "-";
+            this.yagY1Decrease.UseVisualStyleBackColor = true;
+            this.yagY1Decrease.Click += new System.EventHandler(this.yag_Y2_N);
+            // 
+            // yagX1Decrease
+            // 
+            this.yagX1Decrease.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagX1Decrease.Location = new System.Drawing.Point(3, 49);
+            this.yagX1Decrease.Name = "yagX1Decrease";
+            this.yagX1Decrease.Size = new System.Drawing.Size(102, 20);
+            this.yagX1Decrease.TabIndex = 8;
+            this.yagX1Decrease.Text = "-";
+            this.yagX1Decrease.UseVisualStyleBackColor = true;
+            this.yagX1Decrease.Click += new System.EventHandler(this.yag_X1_N);
+            // 
+            // yagY2Increase
+            // 
+            this.yagY2Increase.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagY2Increase.Location = new System.Drawing.Point(327, 24);
+            this.yagY2Increase.Name = "yagY2Increase";
+            this.yagY2Increase.Size = new System.Drawing.Size(104, 19);
+            this.yagY2Increase.TabIndex = 7;
+            this.yagY2Increase.Text = "+";
+            this.yagY2Increase.UseVisualStyleBackColor = true;
+            this.yagY2Increase.Click += new System.EventHandler(this.yag_Y2_P);
+            // 
+            // yagX2Increase
+            // 
+            this.yagX2Increase.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagX2Increase.Location = new System.Drawing.Point(219, 24);
+            this.yagX2Increase.Name = "yagX2Increase";
+            this.yagX2Increase.Size = new System.Drawing.Size(102, 19);
+            this.yagX2Increase.TabIndex = 6;
+            this.yagX2Increase.Text = "+";
+            this.yagX2Increase.UseVisualStyleBackColor = true;
+            this.yagX2Increase.Click += new System.EventHandler(this.yag_X2_P);
+            // 
+            // yagY1Increase
+            // 
+            this.yagY1Increase.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagY1Increase.Location = new System.Drawing.Point(111, 24);
+            this.yagY1Increase.Name = "yagY1Increase";
+            this.yagY1Increase.Size = new System.Drawing.Size(102, 19);
+            this.yagY1Increase.TabIndex = 5;
+            this.yagY1Increase.Text = "+";
+            this.yagY1Increase.UseVisualStyleBackColor = true;
+            this.yagY1Increase.Click += new System.EventHandler(this.yag_Y1_P);
+            // 
+            // label20
+            // 
+            this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(327, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(104, 21);
+            this.label20.TabIndex = 3;
+            this.label20.Text = "Y2";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label19
+            // 
+            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(219, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(102, 21);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "X2";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label18
+            // 
+            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(111, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(102, 21);
+            this.label18.TabIndex = 1;
+            this.label18.Text = "Y1";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label17
+            // 
+            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(3, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(102, 21);
+            this.label17.TabIndex = 0;
+            this.label17.Text = "X1";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // yagX1Increase
+            // 
+            this.yagX1Increase.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.yagX1Increase.Location = new System.Drawing.Point(3, 24);
+            this.yagX1Increase.Name = "yagX1Increase";
+            this.yagX1Increase.Size = new System.Drawing.Size(102, 19);
+            this.yagX1Increase.TabIndex = 4;
+            this.yagX1Increase.Text = "+";
+            this.yagX1Increase.UseVisualStyleBackColor = true;
+            this.yagX1Increase.Click += new System.EventHandler(this.yag_X1_P);
+            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.groupBox6);
             this.Name = "SourceTabView";
             this.Size = new System.Drawing.Size(705, 810);
             this.Load += new System.EventHandler(this.SourceTabView_Load);
@@ -1037,6 +1300,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numFlowTimeout)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAO0)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.jogSteps)).EndInit();
+            this.tableLayoutPanel8.ResumeLayout(false);
+            this.tableLayoutPanel8.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1117,5 +1385,22 @@
         private NationalInstruments.UI.WindowsForms.Switch heaterSwitch40K;
         private NationalInstruments.UI.WindowsForms.Led heaterLED40K;
         private System.Windows.Forms.NumericUpDown cycleLimit40K;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.NumericUpDown jogSteps;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
+        private System.Windows.Forms.Button yagY2Decrease;
+        private System.Windows.Forms.Button yagX2Decrease;
+        private System.Windows.Forms.Button yagY1Decrease;
+        private System.Windows.Forms.Button yagX1Decrease;
+        private System.Windows.Forms.Button yagY2Increase;
+        private System.Windows.Forms.Button yagX2Increase;
+        private System.Windows.Forms.Button yagY1Increase;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button yagX1Increase;
+        private System.Windows.Forms.Button yag_connect;
     }
 }

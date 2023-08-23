@@ -379,6 +379,51 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.FlowTimeOut = (int)numFlowTimeout.Value;
         }
 
+        private void yag_X1_P (object sender, EventArgs e)
+        {
+            castController.moveYagX1((int)jogSteps.Value);
+        }
+
+        private void yag_X1_N(object sender, EventArgs e)
+        {
+            castController.moveYagX1(-(int)jogSteps.Value);
+        }
+
+        private void yag_Y1_P(object sender, EventArgs e)
+        {
+            castController.moveYagY1((int)jogSteps.Value);
+        }
+
+        private void yag_Y1_N(object sender, EventArgs e)
+        {
+            castController.moveYagY1(-(int)jogSteps.Value);
+        }
+
+        private void yag_X2_P(object sender, EventArgs e)
+        {
+            castController.moveYagX2((int)jogSteps.Value);
+        }
+
+        private void yag_X2_N(object sender, EventArgs e)
+        {
+            castController.moveYagX2(-(int)jogSteps.Value);
+        }
+
+        private void yag_Y2_P(object sender, EventArgs e)
+        {
+            castController.moveYagY2((int)jogSteps.Value);
+        }
+
+        private void yag_Y2_N(object sender, EventArgs e)
+        {
+            castController.moveYagY2(-(int)jogSteps.Value);
+        }
+
+        private void yag_connect_click(object sender, EventArgs e)
+        {
+            castController.connectDevice();
+        }
+
         private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
@@ -428,5 +473,11 @@ namespace MoleculeMOTHardwareControl.Controls
         {
 
         }
+
+        private void jogSteps_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

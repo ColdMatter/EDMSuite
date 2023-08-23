@@ -34,19 +34,28 @@ public class Patterns : MOTMasterScript
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 180; //180
+
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1500;//started from 1520
+        
+        Parameters["slowingAOMOffStart"] = 1520;//started from 1520
+
         Parameters["slowingAOMOffDuration"] = 40000;
+
+
+        
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
         Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
+
         // Slowing Chirp
         Parameters["SlowingChirpStartTime"] = 380;// 380;
         Parameters["SlowingChirpDuration"] = 1160;//1160; //1160
+        //Parameters["SlowingChirpStartTime"] = 100;// 380;
+        //Parameters["SlowingChirpDuration"] = 900;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] =-0.9;//-1.25; //-1.25 //260MHz/V
+        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //260MHz/V
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;

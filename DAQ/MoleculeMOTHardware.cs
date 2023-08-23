@@ -102,7 +102,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("bXSlowingAOM", digitalPatternBoardAddress, 0, 2);
             AddDigitalOutputChannel("v00MOTAOM", digitalPatternBoardAddress, 0, 3);
             AddDigitalOutputChannel("v10SlowingAOM", digitalPatternBoardAddress, 0, 4);
-            AddDigitalOutputChannel("microwaveA", digitalPatternBoardAddress, 0, 5);
+            //AddDigitalOutputChannel("microwaveA", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("microwaveB", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("cameraTrigger", digitalPatternBoardAddress, 0, 7);
             AddDigitalOutputChannel("cameraTrigger2", digitalPatternBoardAddress, 1, 7);
@@ -117,6 +117,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v00Sidebands", digitalPatternBoardAddress, 2, 0);
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
             AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
+            AddDigitalOutputChannel("cafPushSwitch", digitalPatternBoardAddress, 0, 5);
 
 
             // Rb Digital Pattern
@@ -235,10 +236,29 @@ namespace DAQ.HAL
 
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
+            //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
+            //wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
             
+            wmlConfig.AddSlaveLaser("v0", "v00Lock", 1);
+            wmlConfig.AddLaserConfiguration("v0", 494.432329, -100, -1000);
+
+            wmlConfig.AddSlaveLaser("v1", "v10Lock", 2);
+            wmlConfig.AddLaserConfiguration("v1", 476.958908, -20, -200);
+
+            wmlConfig.AddSlaveLaser("v2", "v21Lock", 3);
+            wmlConfig.AddLaserConfiguration("v2", 477.299380, 20, 200);
+
+            wmlConfig.AddSlaveLaser("v3", "v32Lock", 4);
+            wmlConfig.AddLaserConfiguration("v3", 477.628176, -50, -500);
+
+            wmlConfig.AddSlaveLaser("B-X", "bXLock", 5);
+            wmlConfig.AddLaserConfiguration("B-X", 564.582313, 50, 500);
+            wmlConfig.AddLockBlock("B-X", "bXLockBlockFlag");
+
+            wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
+            wmlConfig.AddLaserConfiguration("TCool", 564.582462, 50, 500);
+
             Info.Add("Default", wmlConfig);
 
 
@@ -282,6 +302,9 @@ namespace DAQ.HAL
             //tcl2.PointsToConsiderEitherSideOfPeakInFWHMs = 3;
             //Info.Add("Carlos", tcl2);
 
+
+            //Aug 11th 2023
+            /*
             TCLConfig tclConfig = new TCLConfig("Hamish & Carlos");
             tclConfig.Trigger = tclBoard1Address + "/PFI0";
             tclConfig.BaseRamp = "ramp";
@@ -291,6 +314,7 @@ namespace DAQ.HAL
             tclConfig.AnalogSampleRate = 55000;//62000
             string hamish = "Hamish";
             string carlos = "Carlos";
+            
             
             tclConfig.AddCavity(hamish);
             tclConfig.Cavities[hamish].AddSlaveLaser("v00Lock", "v00PD");
@@ -307,6 +331,7 @@ namespace DAQ.HAL
             tclConfig.Cavities[hamish].AddFSRCalibration("v00Lock", 3.95); //This is an approximate guess
             tclConfig.Cavities[hamish].AddFSRCalibration("v10Lock", 4.15);
             tclConfig.Cavities[hamish].AddFSRCalibration("bXLock", 3.9);
+            
 
             tclConfig.AddCavity(carlos);
             tclConfig.Cavities[carlos].AddSlaveLaser("v21Lock", "v21PD");
@@ -324,7 +349,7 @@ namespace DAQ.HAL
 
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
-
+            */
 
             // MOTMaster configuration
             MMConfig mmConfig = new MMConfig(false, false, true, false);
