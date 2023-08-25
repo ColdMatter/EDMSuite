@@ -134,7 +134,6 @@ Currently constructed plugins:
 
 ## Update Roadmap
 The goal for future updates:
-- Add a RMS noise pannel
 - Add log data function
 - Add autocalibration function
 - Add lock update rate on the server pannel
@@ -144,6 +143,7 @@ The goal for future updates:
 
 ## Update Log
 
+* [v 1.1.2] August 25th 2023: Added RMS noise pannel.
 * [v 1.1.1] August 23rd 2023: Added an array of LEDs at front pannel to indicate laser lock status, added lock all button so you can click less. Removed the pop up window saying "you messed up" when the laser unlocks.
 * [v 1.1.0] May 30st 2023: Made compatable with more than one servers running at the same time.
 * [v 1.0.5] May 26th 2023: Added an error message upon initial connection failure.
