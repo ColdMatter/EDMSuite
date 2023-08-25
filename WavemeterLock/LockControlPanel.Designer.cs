@@ -73,6 +73,8 @@ namespace WavemeterLock
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
+            this.label12 = new System.Windows.Forms.Label();
             this.setAsReading = new System.Windows.Forms.Button();
             this.offset = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -81,34 +83,42 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
+            this.label13 = new System.Windows.Forms.Label();
+            this.RMSValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).BeginInit();
             this.groupBoxErrorPlot.SuspendLayout();
             this.groupBoxLaserInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).BeginInit();
             this.SuspendLayout();
             // 
             // stepDown
             // 
+            this.stepDown.BackColor = System.Drawing.Color.Crimson;
+            this.stepDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepDown.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.stepDown.Location = new System.Drawing.Point(457, 68);
             this.stepDown.Name = "stepDown";
             this.stepDown.Size = new System.Drawing.Size(30, 24);
             this.stepDown.TabIndex = 65;
             this.stepDown.Text = "-";
-            this.stepDown.UseVisualStyleBackColor = true;
+            this.stepDown.UseVisualStyleBackColor = false;
             this.stepDown.Click += new System.EventHandler(this.stepDownBtn_Click);
             // 
             // stepUp
             // 
+            this.stepUp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.stepUp.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.stepUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stepUp.Location = new System.Drawing.Point(493, 68);
             this.stepUp.Name = "stepUp";
             this.stepUp.Size = new System.Drawing.Size(30, 24);
             this.stepUp.TabIndex = 64;
             this.stepUp.Text = "+\r\n";
-            this.stepUp.UseVisualStyleBackColor = true;
+            this.stepUp.UseVisualStyleBackColor = false;
             this.stepUp.Click += new System.EventHandler(this.stepUpBtn_Click);
             // 
             // label11
@@ -126,7 +136,7 @@ namespace WavemeterLock
             this.stepSize.Name = "stepSize";
             this.stepSize.Size = new System.Drawing.Size(59, 20);
             this.stepSize.TabIndex = 62;
-            this.stepSize.Text = "10";
+            this.stepSize.Text = "1";
             // 
             // displayFreq
             // 
@@ -148,7 +158,7 @@ namespace WavemeterLock
             // 
             // resetBtn
             // 
-            this.resetBtn.Location = new System.Drawing.Point(254, 156);
+            this.resetBtn.Location = new System.Drawing.Point(169, 142);
             this.resetBtn.Name = "resetBtn";
             this.resetBtn.Size = new System.Drawing.Size(43, 23);
             this.resetBtn.TabIndex = 59;
@@ -158,9 +168,9 @@ namespace WavemeterLock
             // 
             // IGainSet
             // 
-            this.IGainSet.Location = new System.Drawing.Point(412, 136);
+            this.IGainSet.Location = new System.Drawing.Point(141, 127);
             this.IGainSet.Name = "IGainSet";
-            this.IGainSet.Size = new System.Drawing.Size(75, 23);
+            this.IGainSet.Size = new System.Drawing.Size(59, 23);
             this.IGainSet.TabIndex = 58;
             this.IGainSet.Text = "Set";
             this.IGainSet.UseVisualStyleBackColor = true;
@@ -170,7 +180,7 @@ namespace WavemeterLock
             // 
             this.IGain.Location = new System.Drawing.Point(320, 136);
             this.IGain.Name = "IGain";
-            this.IGain.Size = new System.Drawing.Size(59, 20);
+            this.IGain.Size = new System.Drawing.Size(51, 20);
             this.IGain.TabIndex = 57;
             this.IGain.Text = "0";
             // 
@@ -221,9 +231,9 @@ namespace WavemeterLock
             // 
             // PGainSet
             // 
-            this.PGainSet.Location = new System.Drawing.Point(412, 107);
+            this.PGainSet.Location = new System.Drawing.Point(141, 98);
             this.PGainSet.Name = "PGainSet";
-            this.PGainSet.Size = new System.Drawing.Size(75, 23);
+            this.PGainSet.Size = new System.Drawing.Size(59, 23);
             this.PGainSet.TabIndex = 46;
             this.PGainSet.Text = "Set";
             this.PGainSet.UseVisualStyleBackColor = true;
@@ -233,7 +243,7 @@ namespace WavemeterLock
             // 
             this.PGain.Location = new System.Drawing.Point(320, 107);
             this.PGain.Name = "PGain";
-            this.PGain.Size = new System.Drawing.Size(59, 20);
+            this.PGain.Size = new System.Drawing.Size(51, 20);
             this.PGain.TabIndex = 45;
             this.PGain.Text = "0";
             // 
@@ -356,7 +366,7 @@ namespace WavemeterLock
             // 
             // scaleDown
             // 
-            this.scaleDown.Location = new System.Drawing.Point(254, 123);
+            this.scaleDown.Location = new System.Drawing.Point(312, 153);
             this.scaleDown.Name = "scaleDown";
             this.scaleDown.Size = new System.Drawing.Size(30, 24);
             this.scaleDown.TabIndex = 71;
@@ -366,7 +376,7 @@ namespace WavemeterLock
             // 
             // scaleUp
             // 
-            this.scaleUp.Location = new System.Drawing.Point(290, 123);
+            this.scaleUp.Location = new System.Drawing.Point(348, 153);
             this.scaleUp.Name = "scaleUp";
             this.scaleUp.Size = new System.Drawing.Size(30, 24);
             this.scaleUp.TabIndex = 70;
@@ -377,7 +387,7 @@ namespace WavemeterLock
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(254, 101);
+            this.label6.Location = new System.Drawing.Point(312, 131);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(66, 13);
             this.label6.TabIndex = 72;
@@ -385,16 +395,19 @@ namespace WavemeterLock
             // 
             // controlPanel
             // 
+            this.controlPanel.Controls.Add(this.RMSValue);
+            this.controlPanel.Controls.Add(this.label13);
             this.controlPanel.Controls.Add(this.LEDBlockIndicator);
             this.controlPanel.Controls.Add(this.label12);
             this.controlPanel.Controls.Add(this.setAsReading);
             this.controlPanel.Controls.Add(this.offset);
+            this.controlPanel.Controls.Add(this.IGainSet);
             this.controlPanel.Controls.Add(this.label7);
             this.controlPanel.Controls.Add(this.offsetSet);
             this.controlPanel.Controls.Add(this.resetGraph);
+            this.controlPanel.Controls.Add(this.PGainSet);
             this.controlPanel.Controls.Add(this.label6);
             this.controlPanel.Controls.Add(this.scaleDown);
-            this.controlPanel.Controls.Add(this.resetBtn);
             this.controlPanel.Controls.Add(this.lockLED);
             this.controlPanel.Controls.Add(this.scaleUp);
             this.controlPanel.Controls.Add(this.lockMsg);
@@ -405,6 +418,25 @@ namespace WavemeterLock
             this.controlPanel.TabStop = false;
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
+            // 
+            // LEDBlockIndicator
+            // 
+            this.LEDBlockIndicator.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.LEDBlockIndicator.Location = new System.Drawing.Point(257, 156);
+            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
+            this.LEDBlockIndicator.OffColor = System.Drawing.Color.Lime;
+            this.LEDBlockIndicator.OnColor = System.Drawing.Color.Crimson;
+            this.LEDBlockIndicator.Size = new System.Drawing.Size(23, 23);
+            this.LEDBlockIndicator.TabIndex = 79;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(206, 161);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(49, 13);
+            this.label12.TabIndex = 78;
+            this.label12.Text = "Blocked:";
             // 
             // setAsReading
             // 
@@ -420,7 +452,7 @@ namespace WavemeterLock
             // 
             this.offset.Location = new System.Drawing.Point(69, 156);
             this.offset.Name = "offset";
-            this.offset.Size = new System.Drawing.Size(59, 20);
+            this.offset.Size = new System.Drawing.Size(51, 20);
             this.offset.TabIndex = 76;
             this.offset.Text = "0";
             // 
@@ -435,9 +467,9 @@ namespace WavemeterLock
             // 
             // offsetSet
             // 
-            this.offsetSet.Location = new System.Drawing.Point(161, 156);
+            this.offsetSet.Location = new System.Drawing.Point(141, 156);
             this.offsetSet.Name = "offsetSet";
-            this.offsetSet.Size = new System.Drawing.Size(75, 23);
+            this.offsetSet.Size = new System.Drawing.Size(59, 23);
             this.offsetSet.TabIndex = 75;
             this.offsetSet.Text = "Set";
             this.offsetSet.UseVisualStyleBackColor = true;
@@ -445,9 +477,9 @@ namespace WavemeterLock
             // 
             // resetGraph
             // 
-            this.resetGraph.Location = new System.Drawing.Point(339, 98);
+            this.resetGraph.Location = new System.Drawing.Point(304, 98);
             this.resetGraph.Name = "resetGraph";
-            this.resetGraph.Size = new System.Drawing.Size(50, 47);
+            this.resetGraph.Size = new System.Drawing.Size(85, 24);
             this.resetGraph.TabIndex = 75;
             this.resetGraph.Text = "Reset Graph";
             this.resetGraph.UseVisualStyleBackColor = true;
@@ -476,6 +508,7 @@ namespace WavemeterLock
             this.groupBoxLaserInfo.Controls.Add(this.label8);
             this.groupBoxLaserInfo.Controls.Add(this.label5);
             this.groupBoxLaserInfo.Controls.Add(this.label3);
+            this.groupBoxLaserInfo.Controls.Add(this.resetBtn);
             this.groupBoxLaserInfo.Location = new System.Drawing.Point(27, 9);
             this.groupBoxLaserInfo.Name = "groupBoxLaserInfo";
             this.groupBoxLaserInfo.Size = new System.Drawing.Size(218, 193);
@@ -494,24 +527,24 @@ namespace WavemeterLock
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
             // 
-            // label12
+            // label13
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(316, 161);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(49, 13);
-            this.label12.TabIndex = 78;
-            this.label12.Text = "Blocked:";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(203, 103);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(65, 13);
+            this.label13.TabIndex = 80;
+            this.label13.Text = "RMS (MHz):";
+            this.label13.Click += new System.EventHandler(this.label13_Click);
             // 
-            // LEDBlockIndicator
+            // RMSValue
             // 
-            this.LEDBlockIndicator.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.LEDBlockIndicator.Location = new System.Drawing.Point(366, 156);
-            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
-            this.LEDBlockIndicator.OffColor = System.Drawing.Color.Lime;
-            this.LEDBlockIndicator.OnColor = System.Drawing.Color.Crimson;
-            this.LEDBlockIndicator.Size = new System.Drawing.Size(23, 23);
-            this.LEDBlockIndicator.TabIndex = 79;
+            this.RMSValue.AutoSize = true;
+            this.RMSValue.Location = new System.Drawing.Point(223, 131);
+            this.RMSValue.Name = "RMSValue";
+            this.RMSValue.Size = new System.Drawing.Size(28, 13);
+            this.RMSValue.TabIndex = 76;
+            this.RMSValue.Text = "0.00";
             // 
             // LockControlPanel
             // 
@@ -521,10 +554,8 @@ namespace WavemeterLock
             this.Controls.Add(this.stepUp);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.stepSize);
-            this.Controls.Add(this.IGainSet);
             this.Controls.Add(this.IGain);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.PGainSet);
             this.Controls.Add(this.PGain);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lockButton);
@@ -540,10 +571,10 @@ namespace WavemeterLock
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
             this.controlPanel.ResumeLayout(false);
             this.controlPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).EndInit();
             this.groupBoxErrorPlot.ResumeLayout(false);
             this.groupBoxLaserInfo.ResumeLayout(false);
             this.groupBoxLaserInfo.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -594,5 +625,7 @@ namespace WavemeterLock
         private Label labelOutOfRange;
         private Label label12;
         private NationalInstruments.UI.WindowsForms.Led LEDBlockIndicator;
+        private Label label13;
+        private Label RMSValue;
     }
 }

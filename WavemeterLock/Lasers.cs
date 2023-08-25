@@ -24,6 +24,9 @@ namespace WavemeterLock
         public int WLMChannel { get; set; }
         public double summedWavelengthDifference = 0;
         private DAQMxWavemeterLockLaserControlHelper laser;
+        public double sumedNoise = 0.0;
+        public double RMSNoise = 0.0;
+        public int loopCount = 0;
 
         public bool isBlocked = false;
         public enum LaserState
@@ -122,6 +125,9 @@ namespace WavemeterLock
                 FrequencyError = currentFrequency - setFrequency;
                 summedWavelengthDifference += FrequencyError;
                 CurrentVoltage = IGain * summedWavelengthDifference + PGain * FrequencyError + offsetVoltage;
+                sumedNoise += (FrequencyError * 1000000) * (FrequencyError * 1000000);
+                loopCount++;
+                RMSNoise = Math.Sqrt(sumedNoise / (double)loopCount);
             }
             
         }
