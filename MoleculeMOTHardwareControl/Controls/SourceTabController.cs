@@ -6,6 +6,9 @@ using System.Threading;
 using NationalInstruments.DAQmx;
 using DAQ.HAL;
 using DAQ.Environment;
+using System.Windows.Forms;
+using NewFocus.PicomotorApp;
+using Newport.DeviceIOLib;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -18,13 +21,17 @@ namespace MoleculeMOTHardwareControl.Controls
         private AnalogSingleChannelReader sf6TempReader;
         private AnalogSingleChannelReader sourcePressureReader;
         private AnalogSingleChannelReader MOTPressureReader;
-        private AnalogSingleChannelReader sourceTempReader2;
+        private AnalogSingleChannelReader sourceTempReader2; //4K diode
+        private AnalogSingleChannelReader sourceTempReader3; //4K diode new (07/06/2023)
         private AnalogSingleChannelReader sourceTempReader40K;
+        private AnalogSingleChannelReader sourceTempReader40KDiode;//40K diode (07/06/2023)
         private AnalogSingleChannelReader sf6FlowReader;
         private AnalogSingleChannelReader he6FlowReader;
 
         private DigitalSingleChannelWriter cryoWriter;
         private DigitalSingleChannelWriter heaterWriter;
+        private DigitalSingleChannelWriter heaterWriter40K;
+        private DigitalSingleChannelWriter heaterWriterMaster;
         private DigitalSingleChannelWriter sf6ValveWriter;
         private DigitalSingleChannelWriter heValveWriter;
         
@@ -33,10 +40,18 @@ namespace MoleculeMOTHardwareControl.Controls
         private bool finishedHeating = true;
 
         private bool isHolding = false;
+        private bool is40KHolding = false;
         private bool maxTempReached = true;
+        private bool maxTempReached40K = true;
         private bool flowEnableFlag = false;
         private bool valveEnableFlag = false;
         private double[] tofData, tofTime;
+
+        private bool isHeaterOn = false;
+        private bool isHeaterOn40K = false;
+        private bool isCryoOn = false;
+        private bool isHeaterOnMaster = false;
+        private bool isPanic = false;
 
         private System.Windows.Forms.Timer readTimer;
         
@@ -63,6 +78,14 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private int PlotChannel = 0;
         private int flowTimeoutCount = 15;
+        private double hardTempLimInK = 300.0;
+        private double hardTempLimInC = 27.0;
+        private double softTempLimInK = 293.0;
+        private double softTempLimInC = 20.0;
+
+        CmdLib8742 cmdLib;
+        DeviceIOLib diolib;
+        string devKey;
 
         protected override GenericView CreateControl()
         {
@@ -112,6 +135,13 @@ namespace MoleculeMOTHardwareControl.Controls
             { this.isHolding = value; }
         }
 
+        public bool Is40KHolding
+        {
+            get { return is40KHolding; }
+            set
+            { this.is40KHolding = value; }
+        }
+
         public SourceTabController()
         {
             InitReadTimer();
@@ -120,13 +150,17 @@ namespace MoleculeMOTHardwareControl.Controls
             sf6TempReader = CreateAnalogInputReader("sf6Temp");
             cryoWriter = CreateDigitalOutputWriter("cryoCooler");
             heaterWriter = CreateDigitalOutputWriter("sourceHeater");
+            heaterWriter40K = CreateDigitalOutputWriter("sourceHeater40K");
+            heaterWriterMaster = CreateDigitalOutputWriter("sourceHeaterMaster");
             sf6ValveWriter = CreateDigitalOutputWriter("sf6Valve");
             heValveWriter = CreateDigitalOutputWriter("heValve");
 
             sourcePressureReader = CreateAnalogInputReader("sourcePressure");
             MOTPressureReader = CreateAnalogInputReader("MOTPressure");
             sourceTempReader2 = CreateAnalogInputReader("sourceTemp2");
+            sourceTempReader3 = CreateAnalogInputReader("sourceTemp3");
             sourceTempReader40K = CreateAnalogInputReader("sourceTemp40K");
+            sourceTempReader40KDiode = CreateAnalogInputReader("sourceTemp40KDiode");
             sf6FlowReader = CreateAnalogInputReader("sf6FlowMonitor");
             he6FlowReader = CreateAnalogInputReader("he6FlowMonitor");
 
@@ -315,6 +349,21 @@ namespace MoleculeMOTHardwareControl.Controls
 
         }
 
+        protected double GetSourceTemperatureDiode(AnalogSingleChannelReader reader)
+        {
+            double[] ThermocoupleVoltLst = reader.ReadMultiSample(500);
+            double ThermocoupleVolt = ThermocoupleVoltLst.Average();
+            double temperature;
+
+            //Interpolation function (4th order polynomial) to convert voltage to temperature in K
+            if (ThermocoupleVolt > 1.1)
+                temperature = -2015.5 + (6350.82 * ThermocoupleVolt) - (7250.48 * Math.Pow(ThermocoupleVolt, 2)) + (3607.18 * Math.Pow(ThermocoupleVolt, 3)) - (664.69 * Math.Pow(ThermocoupleVolt, 4));
+            else
+                temperature = 535.7 - (396.908 * ThermocoupleVolt) - (107.416 * Math.Pow(ThermocoupleVolt, 2)) + (180.776 * Math.Pow(ThermocoupleVolt, 3)) - (119.994 * Math.Pow(ThermocoupleVolt, 4));
+            return temperature;
+
+        }
+
         protected double GetSourceTemperature()
         {
             double vRef = 5.1; //vRefReader.ReadSingleSample();
@@ -333,10 +382,10 @@ namespace MoleculeMOTHardwareControl.Controls
 
         protected double GetSF6Temperature()
         {
-            // double vRef = 5.1; //vRefReader.ReadSingleSample();
+            double vRef = 5.1; //vRefReader.ReadSingleSample();
             double sf6TempVoltage = sf6TempReader.ReadSingleSample();
-            double sf6TempResistance = sf6TempVoltage * 100000;
-            // ConvertVoltageToResistance(sf6TempVoltage, vRef);
+            //double sf6TempResistance = sf6TempVoltage * 100000;
+            double sf6TempResistance = ConvertVoltageToResistance(sf6TempVoltage, vRef);
             return Convert10kResistanceToCelcius(sf6TempResistance);
         }
 
@@ -345,10 +394,12 @@ namespace MoleculeMOTHardwareControl.Controls
             lock (acquisition_lock)
             {
                 double sourceTemp = GetSourceTemperature();
-                double sourceTemp2 = GetSourceTemperature4K();
+                double sourceTemp2 = GetSourceTemperatureDiode(sourceTempReader2);
+                double sourceTemp3 = GetSourceTemperatureDiode(sourceTempReader3);
                 double sourcePressure = GetSourcePressure();
                 double MOTPressure = GetMOTPressure();
-                double source40kTemp = Get40KTemperature();
+                double source40KTemp = Get40KTemperature();
+                double source40KTemp2 = GetSourceTemperatureDiode(sourceTempReader40KDiode);
                 double sf6Flow = GetSF6Flow();
                 double heFlow = GetHeFlow();
                 double sf6Temp = GetSF6Temperature();
@@ -367,6 +418,8 @@ namespace MoleculeMOTHardwareControl.Controls
                     tof_timeout_count = 0;
                 }
 
+                if (MOTPressure > Math.Pow(10, -3))
+                    SetCryoState(false);
 
                 if (IsCyling)
                 {
@@ -397,10 +450,47 @@ namespace MoleculeMOTHardwareControl.Controls
                         SetHeaterState(true);
                         maxTempReached = false;
                     }
+
+
                 }
-                
+
+                if (Is40KHolding)
+                {
+
+                    //double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
+                    double cycleLimit = castView.GetCycleLimit40K();
+                    if (source40KTemp < cycleLimit && !maxTempReached40K)
+                    {
+                        SetHeaterState40K(true);
+                    }
+                    else if (source40KTemp > cycleLimit && !maxTempReached40K)
+                    {
+                        SetHeaterState40K(false);
+                        maxTempReached40K = true;
+                    }
+                    else if (source40KTemp < cycleLimit - 5 && maxTempReached40K)
+                    {
+                        SetHeaterState40K(true);
+                        maxTempReached40K = false;
+                    }
+
+
+                }
+
+                //Safety check
+                if (!isPanic) { 
+                    limitCheck(sourceTemp, softTempLimInC, hardTempLimInC);
+                    limitCheck(sourceTemp2, softTempLimInK, hardTempLimInK);
+                    limitCheck(sourceTemp3, softTempLimInK, hardTempLimInK);
+                    limitCheck(source40KTemp, softTempLimInC, hardTempLimInC);
+                    limitCheck(source40KTemp2, softTempLimInK, hardTempLimInK);
+                }
+
+                SetHeaterStateMaster(isHeaterOn || isHeaterOn40K);
 
                 castView.UpdateCurrentSourceTemperature2(sourceTemp2.ToString("0.##") + " K");
+                castView.UpdateCurrentSourceTemperature3(sourceTemp3.ToString("0.##") + " K");
+                castView.UpdateCurrentSourceTemperature40K2(source40KTemp2.ToString("0.##") + " K");
                 castView.UpdateCurrentSourcePressure(sourcePressure.ToString("E4"));
                 castView.UpdateCurrentMOTPressure(MOTPressure.ToString("E4"));
                 castView.UpdateFlowRates(sf6Flow, heFlow);
@@ -417,20 +507,20 @@ namespace MoleculeMOTHardwareControl.Controls
                 
                 if (sf6Temp < -34)
                 {
-                    castView.UpdateCurrentSF6Temperature("<-34");
+                    castView.UpdateCurrentSF6Temperature("<-34 C");
                 }
                 else
                 {
-                    castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2"));
+                    castView.UpdateCurrentSF6Temperature(sf6Temp.ToString("F2") + " C");
                 }
 
-                if (source40kTemp < -34)
+                if (source40KTemp < -34)
                 {
-                    castView.UpdateCurrentSourceTemperature40K("<-34");
+                    castView.UpdateCurrentSourceTemperature40K("<-34 C");
                 }
                 else
                 {
-                    castView.UpdateCurrentSourceTemperature40K(source40kTemp.ToString("F2"));
+                    castView.UpdateCurrentSourceTemperature40K(source40KTemp.ToString("F2") + " C");
                 }
 
                 if (castView.LogStatus())
@@ -440,7 +530,11 @@ namespace MoleculeMOTHardwareControl.Controls
                     
                     if (!System.IO.File.Exists(filename))
                     {
-                        string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
+                        //string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
+                        string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t " +
+                            "Source_Temperature(in C) \t Source_Temperature_1(in K) \t Source_Temperature_2(in K) \t " +
+                            "SF6_Temperature(in degree C) \t " +
+                            "40K_Temperature(in degree C) \t 40K_Temperature(in degree K)";
                         using (System.IO.StreamWriter file =
                         new System.IO.StreamWriter(filename, false))
                             file.WriteLine(header);
@@ -449,7 +543,11 @@ namespace MoleculeMOTHardwareControl.Controls
                     using (System.IO.StreamWriter file =
                         new System.IO.StreamWriter(filename, true))
                     {
-                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40kTemp.ToString());
+                        //file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40KTemp.ToString());
+                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString() + "\t" +
+                            sourceTemp.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sourceTemp3.ToString() + "\t" +
+                            sf6Temp.ToString() + "\t" +
+                            source40KTemp.ToString() + "\t" + source40KTemp2.ToString());
                         file.Flush();
                     }
                 }
@@ -470,6 +568,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
         public void SetCryoState(bool state) 
         {
+            isCryoOn = state;
             lock (acquisition_lock)
             {
                 cryoWriter.WriteSingleSampleSingleLine(true, state);
@@ -479,11 +578,86 @@ namespace MoleculeMOTHardwareControl.Controls
 
         public void SetHeaterState(bool state)
         {
+            isHeaterOn = state;
             lock (acquisition_lock)
             {
                 heaterWriter.WriteSingleSampleSingleLine(true, state);
                 castView.SetHeaterState(state);
             }
+        }
+
+        public void SetHeaterState40K(bool state)
+        {
+            isHeaterOn40K = state;
+            lock (acquisition_lock)
+            {
+                heaterWriter40K.WriteSingleSampleSingleLine(true, state);
+                castView.SetHeaterState40K(state);
+            }
+        }
+
+        public void SetHeaterStateMaster(bool state)
+        {
+            isHeaterOnMaster = state;
+            lock (acquisition_lock)
+            {
+                heaterWriterMaster.WriteSingleSampleSingleLine(true, state);
+            }
+        }
+
+        public void limitCheck(double temp, double softLim, double hardLim)
+        {
+            if (temp >= hardLim)
+            {
+                panic();
+            }
+
+            if (temp >= softLim)
+            {
+                stopHeating();
+            }
+        }
+
+        /// <summary>
+        /// Switch off all heaters and cryo
+        /// </summary>
+        public void panic()
+        {
+            SetHeaterState(false);
+            SetHeaterState40K(false);
+            SetCryoState(false);
+            isPanic = true;
+            //DisplayMessageWindow();
+            //Thread messageThread = new Thread(DisplayMessageWindow);
+            //messageThread.Start();
+
+        }
+
+        public void stopPanic()
+        {
+            isPanic = false;
+        }
+
+        void DisplayMessageWindow()
+        {
+
+            DialogResult result = MessageBox.Show("Temperature too high, system panci!", "Panic" , MessageBoxButtons.OK);
+
+            // Check the result when the message box is closed
+            if (result == DialogResult.OK)
+            {
+                this.stopPanic();
+            }
+
+        }
+
+        /// <summary>
+        /// Switch off all heaters
+        /// </summary>
+        public void stopHeating()
+        {
+            SetHeaterState(false);
+            SetHeaterState40K(false);
         }
 
         public void ToggleReading() 
@@ -534,6 +708,34 @@ namespace MoleculeMOTHardwareControl.Controls
                     maxTempReached = true;
                 }
             }
+
+            else
+                SetHeaterState(false);
+        }
+
+        public void ToggleHolding40K()
+        {
+            is40KHolding = !is40KHolding;
+            castView.UpdateHoldButton40K(!is40KHolding);
+            if (is40KHolding)
+            {
+                SetCryoState(false);
+                double temp = Get40KTemperature();
+                double cycleLimit = castView.GetCycleLimit40K();
+                if (temp < cycleLimit)
+                {
+                    SetHeaterState40K(true);
+                    maxTempReached40K = false;
+                }
+                else
+                {
+                    SetHeaterState40K(false);
+                    maxTempReached40K = true;
+                }
+            }
+
+            else
+                SetHeaterState40K(false);
         }
 
         public void SwitchOutputAOVoltage(int channel)
@@ -588,5 +790,70 @@ namespace MoleculeMOTHardwareControl.Controls
         {
             PlotChannel = channelID;
         }
+
+        #region Yag motorized morror control
+
+        public void connectDevice()
+        {
+            if (devKey != null) return;
+            diolib = new DeviceIOLib();
+            cmdLib = new CmdLib8742(diolib);
+            diolib.DiscoverDevices(1, 5000);
+            devKey = diolib.GetFirstDeviceKey();
+        }
+
+        public void moveYagX1 (int step)
+        {
+            //try
+            //{
+                cmdLib.RelativeMove(devKey, 1, step);
+            //}
+
+            //catch(Exception e)
+            //{
+
+            //} 
+        }
+
+        public void moveYagY1(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 2, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public void moveYagX2(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 3, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public void moveYagY2(int step)
+        {
+            try
+            {
+                cmdLib.RelativeMove(devKey, 4, step);
+            }
+
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        #endregion
     }
 }

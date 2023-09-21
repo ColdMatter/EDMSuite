@@ -18,7 +18,7 @@ namespace WavemeterLock
 {
     public class Controller : MarshalByRefObject
     {
-    
+
         private string computer;
         private string name;
         string thisComputerName;
@@ -39,9 +39,9 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            computer = "IC-CZC136CFDJ"; //Computer name of the server
+            //computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
-            hostTCPChannel = eHelper.serverTCPChannel;
+            //hostTCPChannel = eHelper.serverTCPChannel;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
@@ -55,7 +55,7 @@ namespace WavemeterLock
                 wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 connectionError(e);
             }
@@ -66,7 +66,7 @@ namespace WavemeterLock
             {
                 wavemeterContrller.registerWavemeterLock(thisComputerName);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 connectionError(e);
             }
@@ -77,16 +77,16 @@ namespace WavemeterLock
         public string acquireWavelength(int channelNum) //Display wavelength
         {
             string display = null;
-            
+
             display = wavemeterContrller.displayWavelength(channelNum);
-            
+
             return display;
 
         }
 
         public double getWavelength(int channelNum) //Return wavelength in nm
         {
-            
+
 
             return wavemeterContrller.getWavelength(channelNum);
 
@@ -94,14 +94,14 @@ namespace WavemeterLock
 
         public string acquireFrequency(int channelNum) //Display frequency
         {
-            
+
             return wavemeterContrller.displayFrequency(channelNum);
 
         }
 
         public double getFrequency(int channelNum) //Return frequency in THz
         {
-           
+
 
             return wavemeterContrller.getFrequency(channelNum);
 
@@ -135,11 +135,12 @@ namespace WavemeterLock
         #endregion
 
         public Dictionary<string, Laser> lasers;
+        public Dictionary<string, int> wmChannels;
         public Dictionary<string, bool> lockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
         public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
-        public Dictionary<string, double> timeList = new Dictionary<string,double>();
+        public Dictionary<string, double> timeList = new Dictionary<string, double>();
         private LockForm ui;
         public WavemeterLockConfig config;
 
@@ -150,7 +151,7 @@ namespace WavemeterLock
             computer = hostName;
             hostTCPChannel = channelNumber;
         }
-        
+
         public Color selectColor(int par)//Assign a plot line color for each laser
         {
             switch (par)
@@ -162,7 +163,7 @@ namespace WavemeterLock
                     return Color.FromName("Lime");
 
                 case 2:
-                    return Color.FromName("Red"); 
+                    return Color.FromName("Red");
 
                 case 3:
                     return Color.FromName("Blue");
@@ -181,7 +182,7 @@ namespace WavemeterLock
 
 
             }
-                
+
         }
 
 
@@ -205,13 +206,14 @@ namespace WavemeterLock
 
         public void indicateRemoteConnection(int channelNum, bool status)
         {
-            wavemeterContrller.changeConnectionStatus(channelNum,status);
+            wavemeterContrller.changeConnectionStatus(channelNum, status);
         }
 
         public void initializeLasers()
         {
             lasers = new Dictionary<string, Laser>();
             lockBlocked = new Dictionary<string, bool>();
+            wmChannels = new Dictionary<string, int>();
 
             //Config hardware channel and time stamp
             foreach (string slaveLaser in config.slaveLasers.Keys)
@@ -227,6 +229,7 @@ namespace WavemeterLock
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
                 slave.WLMChannel = config.channelNumbers[laser];
+                wmChannels.Add(laser, slave.WLMChannel);
             }
 
             //Config lock block
@@ -260,6 +263,13 @@ namespace WavemeterLock
             {
                 ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
             }
+
+            //Asign an LED to each laser
+            foreach (int n in wmChannels.Values)
+            {
+                ui.enable_LED(n);
+            }
+
 
         }
 
@@ -330,7 +340,7 @@ namespace WavemeterLock
         {
             Laser laser = lasers[slavename];
             laser.PGain = g;
-            
+
         }
 
         internal void setIGain(string slavename, double g)
@@ -365,16 +375,17 @@ namespace WavemeterLock
             else return "Unlocked";
         }
 
-        
 
-        public bool returnLaserState(string slavename){
+
+        public bool returnLaserState(string slavename)
+        {
             Laser laser = lasers[slavename];
             if (laser.lState == Laser.LaserState.LOCKED)
                 return true;
-            else 
+            else
                 return false;
-            
-            }
+
+        }
 
         public string getChannelNum(string slavename)
         {
@@ -404,7 +415,10 @@ namespace WavemeterLock
             wavemeterContrller.changeConnectionStatus(laser.WLMChannel, false);
         }
 
-
+        public void toggle_led_state(int n, bool val)
+        {
+            ui.toggle_led(n, val);
+        }
 
         #endregion
 
@@ -419,7 +433,7 @@ namespace WavemeterLock
                 ui.UpdateLockRate(averageUpdateRate);
                 scanTimes = new List<double>();
             }
-            
+
         }
 
         public void updateFrequency(Laser laser)
@@ -432,8 +446,8 @@ namespace WavemeterLock
             if (WMLState != ControllerState.STOPPED)
             {
                 if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
-                    
-                { 
+
+                {
                     updateLockMaster();
                     wavemeterContrller.resetMeasurementStatus(thisComputerName);
                 }
@@ -466,7 +480,7 @@ namespace WavemeterLock
                     //lasers[laser].DisposeLaserControl();
                 }
             }
-            
+
         }
 
         private void updateLockMaster()
@@ -491,9 +505,9 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {
@@ -519,9 +533,9 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {
@@ -535,28 +549,28 @@ namespace WavemeterLock
                 }
             }
 
-                loopcount++;
+            loopcount++;
 
-                //Calculate the time
-                foreach (string slave in lasers.Keys)
+            //Calculate the time
+            foreach (string slave in lasers.Keys)
+            {
+                if (lasers[slave].lState == Laser.LaserState.LOCKED)
                 {
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
-                    {
-                        timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
-                    }
+                    timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
                 }
+            }
 
-                stopWatchGraph.Restart();
+            stopWatchGraph.Restart();
 
-                foreach (string slave in lasers.Keys)
-                {
-                    panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
-                }
+            foreach (string slave in lasers.Keys)
+            {
+                panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
+            }
 
-                updateLockRate(stopWatch);
-                stopWatch.Restart();
-            
-            
+            updateLockRate(stopWatch);
+            stopWatch.Restart();
+
+
         }
 
         public void removeWavemeterLock()
@@ -590,7 +604,15 @@ namespace WavemeterLock
             }
         }
 
+        public void updateLaserRMSNoise(Laser laser)
+        {
+            if (laser.lState == Laser.LaserState.LOCKED)
+            {
+                laser.sumedNoise += Math.Pow((laser.FrequencyError * Math.Pow(10, 6)), 2);
+                laser.loopCount++;
+                laser.RMSNoise = Math.Sqrt(laser.sumedNoise / laser.loopCount);
+            }
 
-
+        }
     }
 }

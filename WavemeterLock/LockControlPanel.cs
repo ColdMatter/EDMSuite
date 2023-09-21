@@ -55,7 +55,11 @@ namespace WavemeterLock
             if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
             {
                 SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
+                RMSValue.Text = controller.lasers[name].RMSNoise.ToString("#.###");
             }
+
+            else
+                RMSValue.Text = "N/A";
 
             if (controller.lasers[name].isOutOfRange)
             {
@@ -168,6 +172,9 @@ namespace WavemeterLock
         {
             UIHelper.ClearGraph(errorScatterGraph);
             controller.timeList[name] = 0;
+            controller.lasers[name].sumedNoise = 0.0;
+            controller.lasers[name].loopCount = 0;
+            controller.lasers[name].RMSNoise = 0.0;
         }
 
         private void stepUpBtn_Click(object sender, EventArgs e)
@@ -222,6 +229,11 @@ namespace WavemeterLock
         }
 
         private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
         {
 
         }

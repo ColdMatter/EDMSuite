@@ -128,7 +128,8 @@ public class Patterns : MOTMasterScript
 
         Parameters["CoolingAttenuation"] = 0.0;
         Parameters["RepumpAttenuation"] = 0.0;
-        Parameters["RbOffsetLockSetPoint"] = 0.87;
+        Parameters["RbOffsetLockSetPoint"] = 0.88;
+        Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
 
     }
 
@@ -243,10 +244,11 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
-        p.AddAnalogValue("rbRepumpOffsetLock", 0, 0.88);
+        p.AddAnalogValue("rbRepumpOffsetLock", 0, (double)Parameters["RbRepumpOffsetLockSetPoint"]);
 
         p.AddAnalogValue("rbOffsetLock", 0, (double)Parameters["RbOffsetLockSetPoint"]);
         
+
         return p;
     }
 

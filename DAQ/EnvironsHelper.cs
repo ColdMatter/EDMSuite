@@ -161,8 +161,9 @@ namespace DAQ.Environment
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
-                    serverComputerName = "IC-CZC136CFDJ";
-                    serverTCPChannel = 1984;
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 5555;
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;

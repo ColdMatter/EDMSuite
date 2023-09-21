@@ -15,6 +15,7 @@ namespace WavemeterLock
     {
         public Controller controller;
         Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
+        public bool isLockAll = false;
 
         public LockForm()
         {
@@ -40,17 +41,17 @@ namespace WavemeterLock
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
-            foreach(string slavePanel in panelList.Keys)
+
+            foreach (string slavePanel in panelList.Keys)
             {
                 panelList[slavePanel].updatePanel();
             }
 
-            if(controller.WMLState == Controller.ControllerState.RUNNING)
+            if (controller.WMLState == Controller.ControllerState.RUNNING)
             {
                 wmlLED.Value = true;
                 masterBttn.Text = "Stop WML";
-                
+
             }
 
             else
@@ -59,7 +60,30 @@ namespace WavemeterLock
                 masterBttn.Text = "Start WML";
             }
 
-                  
+            if (isLockAll)
+            {
+                button_lock_all.Text = "Unlock All";
+            }
+
+            else
+            {
+                button_lock_all.Text = "Lock All";
+            }
+
+            foreach(Laser laser in controller.lasers.Values)
+            {
+                int n = laser.WLMChannel;
+                if(laser.lState == Laser.LaserState.LOCKED)
+                {
+                    toggle_led(n, true);
+                }
+
+                else
+                {
+                    toggle_led(n, false);
+                }
+            }
+
         }
 
         private void masterBttn_Click(object sender, EventArgs e)
@@ -67,10 +91,11 @@ namespace WavemeterLock
             if (controller.WMLState == Controller.ControllerState.RUNNING)
             {
                 controller.WMLState = Controller.ControllerState.STOPPED;
-                foreach(LockControlPanel panel in panelList.Values)
+                foreach (LockControlPanel panel in panelList.Values)
                 {
                     panel.Enabled = false;
                 }
+                button_lock_all.Enabled = false;
             }
 
             else
@@ -81,12 +106,34 @@ namespace WavemeterLock
                 {
                     panel.Enabled = true;
                 }
+                button_lock_all.Enabled = true;
             }
 
 
         }
 
-       
+        private void lock_all (object sender, EventArgs e)
+        {
+            if (isLockAll)
+            {
+                foreach(Laser laser in controller.lasers.Values)
+                {
+                    laser.DisengageLock();
+                    controller.indicateRemoteConnection(laser.WLMChannel, false);
+                }
+                isLockAll = false;
+            }
+
+            else
+            {
+                foreach (Laser laser in controller.lasers.Values)
+                {
+                    laser.Lock();
+                    controller.indicateRemoteConnection(laser.WLMChannel, true);
+                }
+                isLockAll = true;
+            }
+        }
 
 
 
@@ -152,6 +199,81 @@ namespace WavemeterLock
 
             controller.removeWavemeterLock();
             Application.Exit();
+        }
+
+        //Very professional coding:
+        public void enable_LED(int n)
+        {
+            switch (n)
+            {
+                case 1:
+                    led1.Enabled = true;
+                    led1.Visible = true;
+                    break;
+                case 2:
+                    led2.Enabled = true;
+                    led2.Visible = true;
+                    break;
+                case 3:
+                    led3.Enabled = true;
+                    led3.Visible = true;
+                    break;
+                case 4:
+                    led4.Enabled = true;
+                    led4.Visible = true;
+                    break;
+                case 5:
+                    led5.Enabled = true;
+                    led5.Visible = true;
+                    break;
+                case 6:
+                    led6.Enabled = true;
+                    led6.Visible = true;
+                    break;
+                case 7:
+                    led7.Enabled = true;
+                    led7.Visible = true;
+                    break;
+                case 8:
+                    led8.Enabled = true;
+                    led8.Visible = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void toggle_led(int n, bool val)
+        {
+            switch (n)
+            {
+                case 1:
+                    led1.Value = val;
+                    break;
+                case 2:
+                    led2.Value = val;
+                    break;
+                case 3:
+                    led3.Value = val;
+                    break;
+                case 4:
+                    led4.Value = val;
+                    break;
+                case 5:
+                    led5.Value = val;
+                    break;
+                case 6:
+                    led6.Value = val;
+                    break;
+                case 7:
+                    led7.Value = val;
+                    break;
+                case 8:
+                    led8.Value = val;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

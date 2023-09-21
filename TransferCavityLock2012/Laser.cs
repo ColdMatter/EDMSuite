@@ -110,7 +110,7 @@ namespace TransferCavityLock2012
         {
             LatestScanData = scanData;
             lockBlocked = shouldBlock;
-            System.Console.WriteLine(shouldBlock);
+            //System.Console.WriteLine(shouldBlock);
             if (!lockBlocked)
             {
                 switch (lState)

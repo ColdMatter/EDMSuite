@@ -56,6 +56,8 @@ namespace MoleculeMOTHardwareControl
             }
         }
 
+
+
         public Dictionary<string, object> GetExperimentReport()
         {
             Dictionary<string, object> report = new Dictionary<string,object>();
@@ -76,5 +78,11 @@ namespace MoleculeMOTHardwareControl
             }
             return report;
         }
+
+        public void form_close()
+        {
+        }
+
+
     }
 }

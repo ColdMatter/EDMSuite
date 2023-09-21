@@ -21,8 +21,8 @@ public class Patterns : MOTMasterScript
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
         Parameters["QSwitchPulseDuration"] = 10;
         Parameters["FlashPulseDuration"] = 10;
-        Parameters["HeliumShutterToQ"] = 100;
-        Parameters["HeliumShutterDuration"] = 1550;
+        Parameters["HeliumShutterToQ"] = 300;
+        Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
@@ -33,29 +33,34 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 180; //180
-
+        //Parameters["slowingAOMOnStart"] = 180 + (int)Parameters["SlowingDelayTime"]; //180
+        Parameters["slowingAOMOnStart"] = 200;
+        Parameters["PushStart"] = 200;
+        Parameters["PushEnd"] = 400;
         Parameters["slowingAOMOnDuration"] = 45000;
-        
-        Parameters["slowingAOMOffStart"] = 1520;//started from 1520
 
+        Parameters["slowingAOMOffStart"] = 1800;//started from 1520
+        //Parameters["slowingAOMOffStart"] = 1600;
+        //Parameters["slowingAOMOffStart"] = 1000;
         Parameters["slowingAOMOffDuration"] = 40000;
 
 
         
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1800;//1520
+        //Parameters["slowingRepumpAOMOffStart"] = 1600;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 380;// 380;
-        Parameters["SlowingChirpDuration"] = 1160;//1160; //1160
-        //Parameters["SlowingChirpStartTime"] = 100;// 380;
-        //Parameters["SlowingChirpDuration"] = 900;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;// 380;
+        //Parameters["SlowingChirpStartTime"] = 400;
+        //Parameters["SlowingChirpStartTime"] = 100;
+        Parameters["SlowingChirpDuration"] = 1400;//1160; //1160
+        //Parameters["SlowingChirpDuration"] = 1200;
+        //Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //260MHz/V
+        Parameters["SlowingChirpEndValue"] = -1.3;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -121,6 +126,10 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
+
+        //p.AddEdge("cafPushSwitch", 0, false);
+        p.AddEdge("cafPushSwitch", 200, true);
+        p.AddEdge("cafPushSwitch", 400, false);
 
         return p;
     }
