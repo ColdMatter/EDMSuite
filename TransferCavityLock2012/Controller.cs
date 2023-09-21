@@ -521,7 +521,7 @@ namespace TransferCavityLock2012
         {
             acquiredData = false;
 
-            ThreadSync ts = new ThreadSync();
+            //ThreadSync ts = new ThreadSync();
             ThreadSync laserTS = new ThreadSync();
 
             initialiseAIHardware(scanParameters);
@@ -534,7 +534,7 @@ namespace TransferCavityLock2012
             Boolean initd = false;
             Boolean updateGUI = true;
 
-            ts.CreateDelegateThread(() => acquireData(scanParameters)); // Not currently working. Something going on with the control mutex access
+            //ts.CreateDelegateThread(() => acquireData(scanParameters)); // Not currently working. Something going on with the control mutex access
             foreach (Laser laser in AllLasers)
             {
                 laserTS.CreateDelegateThread(() => {
@@ -557,16 +557,11 @@ namespace TransferCavityLock2012
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
-                ts.SwitchToData();
-                if (!(acquiredData is TCLReadData))
-                {
-                    ts.SwitchToControl();
-                    continue;
-                }
+                acquireData(scanParameters);
                 
                 TCLReadData rawData = (TCLReadData)acquiredData;
                 //TCLReadData rawData = new TCLReadData();
-                ts.SwitchToControl();
+                //ts.SwitchToControl();
 
 
                 updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
@@ -614,7 +609,7 @@ namespace TransferCavityLock2012
                 stopWatch.Start();
                 loopCount++;
             }
-            ts.JoinThreads();
+            //ts.JoinThreads();
             laserTS.JoinThreads();
             endLoop();
         }

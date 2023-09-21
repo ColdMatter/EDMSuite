@@ -35,14 +35,17 @@ namespace DAQ.HAL
             AddAnalogInputChannel("MBRLaser", (string)Boards["daq"] + "/ai7", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("RbReferenceLaser", (string)Boards["daq"] + "/ai4", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("PMT", (string)Boards["pg"] + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
 
             // Output signals
             AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
-            //AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
+            AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("testOut", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("WMLOut", (string)Boards["pg"] + "/ao1", 0, 10);
-            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
             AddAnalogOutputChannel("VECSEL1_PZO", (string)Boards["daq"]+"/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL3_PZO", (string)Boards["pg"]+"/ao0", 0, 10);
             //AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
 
             // map the digital channels of the "pg" card
@@ -93,10 +96,12 @@ namespace DAQ.HAL
 
 
 
-            wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 8);
+            wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 7);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
-            wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 8);
-            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390855,-2000,-1600);
+            wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
+            wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
             wmlConfig.AddLaserConfiguration("MBR", 384.234493, 500, 2000);
             Info.Add("Default", wmlConfig);
@@ -116,6 +121,7 @@ namespace DAQ.HAL
             Info.Add("DTCLConfig", dtclconfig);
 
             Instruments.Add("Lakeshore", new LakeShore336TemperatureController("ASRL8::INSTR"));
+            Instruments.Add("YAG", new BigSkyYAG("ASRL6::INSTR"));
             Instruments.Add("LeyboldGraphix", new LeyboldGraphixController("ASRL11::INSTR"));
             Instruments.Add("Eurotherm", new Eurotherm3504Instrument("ASRL9::INSTR", 0x1));
             ((Eurotherm3504Instrument)Instruments["Eurotherm"]).AddLoop(379,0x2,0x3,273,0x4,4963);

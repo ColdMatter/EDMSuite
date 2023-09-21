@@ -19,6 +19,7 @@ namespace DAQ.HAL
         protected SerialParity ParitySetting = SerialParity.None;
         protected SerialFlowControlModes FlowControl = SerialFlowControlModes.None;
         protected byte TerminationCharacter = 0xa;
+        protected int TimeoutMilliseconds = 1000;
 
         protected SerialSession serial;
         protected string address;
@@ -47,6 +48,7 @@ namespace DAQ.HAL
                     serial.FlowControl = FlowControl;
                     serial.ReadTermination = ReadTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
+                    serial.TimeoutMilliseconds = TimeoutMilliseconds;
                 }
                 connected = true;
             }
@@ -67,6 +69,7 @@ namespace DAQ.HAL
                     serial.ReadTermination = ReadTerminationMethod;
                     serial.WriteTermination = WriteTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
+                    serial.TimeoutMilliseconds = TimeoutMilliseconds;
                 }
                 connected = true;
             }

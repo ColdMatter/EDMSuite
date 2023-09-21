@@ -359,6 +359,7 @@ namespace DAQ.Environment
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
                     serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1984;
                     Debug = false;
                     break;
 

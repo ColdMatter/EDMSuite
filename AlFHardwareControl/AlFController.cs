@@ -6,6 +6,8 @@ using System.Threading;
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using Data;
+using NewFocus.PicomotorApp;
+using Newport.DeviceIOLib;
 
 namespace AlFHardwareControl
 {
@@ -34,6 +36,12 @@ namespace AlFHardwareControl
 
         public void Start()
         {
+
+            //DeviceIOLib deviceIOLib = new DeviceIOLib();
+            //CmdLib8742 cmdlib = new CmdLib8742(deviceIOLib);
+            //deviceIOLib.DiscoverDevices(0b0001, 5000);
+
+
 
             window = new AlFControlWindow(this);
             window.controller = this;
@@ -220,6 +228,8 @@ namespace AlFHardwareControl
 
         }
 
+        public event EventHandler MiscDataUpdate;
+
         public bool exiting = false;
         public ThreadSync DAQ_sync = new ThreadSync();
         private void UpdateData()
@@ -231,8 +241,9 @@ namespace AlFHardwareControl
                     UpdateLakeshoreTemperature();
                     UpdateCryoState();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    lakeshore.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
                 }
             });
@@ -242,8 +253,9 @@ namespace AlFHardwareControl
                 {
                     UpdatePressure();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    leybold.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with Leybold pressure controller:" + e.ToString());
                 }
             });
@@ -253,10 +265,15 @@ namespace AlFHardwareControl
                 {
                     UpdateTypeK();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    eurotherm.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
                 }
+            });
+
+            DAQ_sync.CreateDelegateThread(() => {
+                MiscDataUpdate?.Invoke(this, null);
             });
 
             DAQ_sync.SwitchToData();

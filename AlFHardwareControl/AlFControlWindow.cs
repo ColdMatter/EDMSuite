@@ -66,7 +66,17 @@ namespace AlFHardwareControl
             AddPressure();
             AddTypeK();
             AddTaskScheduler();
+            AddMiscInstruments();
 
+        }
+
+        private void AddMiscInstruments()
+        {
+            TabPage temp = new TabPage("Misc Instruments");
+            MiscInstruments misc = new MiscInstruments();
+            controller.MiscDataUpdate += (object a, EventArgs args) => { misc.YAG_Control.UpdateStatus(); };
+            temp.Controls.Add(misc);
+            MainTabs.TabPages.Add(temp);
         }
 
         private void AddSafetyInterlocks()

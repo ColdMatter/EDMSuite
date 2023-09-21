@@ -76,15 +76,14 @@ namespace TransferCavityLock2012
             System.Diagnostics.Debug.WriteLine("   " + low.ToString() + "   " + high.ToString());
             LorentzianFitter lorentzianFitter = new LorentzianFitter();
 
-            double[][] allxypairs = new double[voltages.Length][];
+            double[,] allxypairs = new double[voltages.Length,2];
 
             int j = 0;
 
             for (int i = 0; i < voltages.Length; i++)
             {
-                allxypairs[i] = new double[2];
-                allxypairs[i][0] = voltages[i];
-                allxypairs[i][1] = signal[i];
+                allxypairs[i,0] = voltages[i];
+                allxypairs[i,1] = signal[i];
             }
 
 
@@ -99,7 +98,7 @@ namespace TransferCavityLock2012
 
             for (int i = 0; i < voltages.Length; i++)
             {
-                if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
+                if ((allxypairs[i,0] > (parameters[1] - pointsToConsider)) && (allxypairs[i,0] < (parameters[1] + pointsToConsider)))
                 {
                     j++;
                 }
@@ -111,10 +110,10 @@ namespace TransferCavityLock2012
 
             for (int i = 0, k = 0; i < voltages.Length; i++)
             {
-                if ((allxypairs[i][0] > (parameters[1] - pointsToConsider)) && (allxypairs[i][0] < (parameters[1] + pointsToConsider)))
+                if ((allxypairs[i,0] > (parameters[1] - pointsToConsider)) && (allxypairs[i,0] < (parameters[1] + pointsToConsider)))
                 {
-                    selectedvoltages[k] = allxypairs[i][0];
-                    selectedsignal[k] = allxypairs[i][1];
+                    selectedvoltages[k] = allxypairs[i,0];
+                    selectedsignal[k] = allxypairs[i,1];
                     k++;
                 }
             }
