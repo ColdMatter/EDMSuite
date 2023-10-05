@@ -39,7 +39,7 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            //computer = "IC-CZC136CFDJ"; //Computer name of the server
+            computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
             //hostTCPChannel = eHelper.serverTCPChannel;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
