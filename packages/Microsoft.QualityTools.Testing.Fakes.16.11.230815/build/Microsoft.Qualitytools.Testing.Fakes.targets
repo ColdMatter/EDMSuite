@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+  <!--Copy Fakes Assemblies to Output Path next to built project.dll for test runs
+      This is necessary since Fakes V2 generation doesn't add an assembly reference to the csproj
+      This target is run after ResolveAssemblyReferences when not run inside VS, and run after GenerateFakes
+      When run inside VS since GenerateFakes is defined in the targets file shipped in VS. -->
+  <Target
+    Name="NugetTarget_CopyFakesAssembliesToOutputDir"
+    AfterTargets="ResolveAssemblyReferences;GenerateFakes">
+
+    <!--These properties are duplicated from the Microsoft.QualityTools.Testing.Fakes.targets that exists within VS, but are necessary when used in the CI and VS is not present.-->
+    <PropertyGroup>
+      <!-- Microsoft.QualityTools.Testing.Fakes.targets file shipped inside VS includes settings
+      for FakesUseV2Generation, FakesRelativeOutputDir, and FakesOutputPath. They cannot be removed for backward compatibility,
+      and so these properties need to coexist with them. -->
+
+      <!-- If a user chooses to route all Fakes generation and runtime execution through Fakes V2 through an environment variable, honor that. 
+    A project's properties would take precedence over a global environment variable though. -->
+      <NugetTarget_FakesUseV2Generation Condition="'$(FakesUseV2Generation)' == '' AND '$(Fakes_Use_V2)' == 'true'">true</NugetTarget_FakesUseV2Generation>
+      <!--The default logic to choose Fakes V2 over V1.-->
+      <NugetTarget_FakesUseV2Generation Condition="'$(FakesUseV2Generation)' == ''">$(UsingMicrosoftNETSdk)</NugetTarget_FakesUseV2Generation>
+
+      <!-- If the targets file from VS is not being used, FakesRelativeOutputDir will need to be 
+      used similar to how it is in the targets file from VS -->
+      <NugetTarget_FakesRelativeOutputDir Condition="$(FakesRelativeOutputDir.EndsWith('FakesAssemblies')) != 'true'">$(FakesRelativeOutputDir)FakesAssemblies</NugetTarget_FakesRelativeOutputDir>
+
+      <!-- If the targets file from VS is being used, FakesRelativeOutputDir may already be set to the required value -->
+      <NugetTarget_FakesRelativeOutputDir Condition="$(FakesRelativeOutputDir.EndsWith('FakesAssemblies')) == 'true'">$(FakesRelativeOutputDir)</NugetTarget_FakesRelativeOutputDir>
+
+      <!-- Path used to find the Fakes Assemblies -->
+      <NugetTarget_FakesOutputPath Condition="$(NugetTarget_FakesUseV2Generation) == 'true'">$(ProjectDir)$(NugetTarget_FakesRelativeOutputDir)</NugetTarget_FakesOutputPath>
+
+  </PropertyGroup>
+
+    <ItemGroup>
+      <!--If this list is created within the Content Include, then link doesn't work as expected
+          which is why the list needs to be created before being creating Content items-->
+      <NugetTarget_FakesAssembliesToCopy Include="$(NugetTarget_FakesOutputPath)\*.dll" />
+      <Content
+        Include="@(NugetTarget_FakesAssembliesToCopy)"
+        Condition="@(NugetTarget_FakesAssembliesToCopy) != ''"
+        Link="%(Filename)%(Extension)"
+        CopyToOutputDirectory="PreserveNewest"
+        IsAssembly="true" />
+    </ItemGroup>
+  </Target>
+</Project>
