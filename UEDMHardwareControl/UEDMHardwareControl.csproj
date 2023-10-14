@@ -55,6 +55,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <WarningLevel>1</WarningLevel>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -299,7 +300,6 @@
     <EmbeddedResource Include="CooldownModeOptionsDialog.resx">
       <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="WarmUpModeOptionsDialog.resx">
       <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>

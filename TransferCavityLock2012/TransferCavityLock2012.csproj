@@ -614,7 +614,6 @@
     <EmbeddedResource Include="CavityControlPanel.resx">
       <DependentUpon>CavityControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="LockControlPanel.resx">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </EmbeddedResource>

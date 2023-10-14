@@ -869,7 +869,6 @@
     <Compile Include="CaFBECPatternPlugin.cs" />
     <Compile Include="ZeemanSisyphusPatternPlugin.cs" />
     <Content Include="App.ico" />
-    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
