@@ -36,7 +36,6 @@ namespace DAQ.WavemeterLock
             ReadDItask.Control(TaskAction.Verify);
             Reader = new DigitalSingleChannelReader(ReadDItask.Stream);
             ReadDItask.Start();
-
         }
 
         private void ReadDiTaskDigitalChangeDetection(object sender, DigitalChangeDetectionEventArgs e)

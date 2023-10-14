@@ -62,7 +62,7 @@ namespace DigitalTransferCavityLock
             box.Text = text;
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void Label1_Click(object sender, EventArgs e)
         {
 
         }
@@ -107,7 +107,6 @@ namespace DigitalTransferCavityLock
         {
             //SetTextField(RampFreq, Convert.ToString((double)500000 / controller.rampGen.GetSamplesPerHalfPeriod(Convert.ToDouble(RampFreq.Text))));
         }
-
 
         public void UpdatePlot()
         {

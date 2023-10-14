@@ -1406,7 +1406,7 @@ namespace UEDMHardwareControl
                                 {
                                     if (SourceTemperatureMax >= WarmUpTemperatureSetpoint)
                                     {
-                                        refreshModeThread = new Thread(new ThreadStart(refreshModeWorker));
+                                        refreshModeThread = new Thread(new ThreadStart(RefreshModeWorker));
                                         SourceMode = "Refresh";
                                         refreshModeLock = new Object();
                                         sourceModeCancelFlag = false;
@@ -1451,7 +1451,7 @@ namespace UEDMHardwareControl
         {
             sourceModeCancelFlag = true;
         }
-        private void refreshModeWorker()
+        private void RefreshModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
             if (!sourceModeCancelFlag) DesorbAndPumpGases(); // Controlled evaporation of gases from cryo pump
@@ -1586,7 +1586,7 @@ namespace UEDMHardwareControl
                     {
                         if (SourceTemperatureMax >= WarmUpTemperatureSetpoint)
                         {
-                            warmupModeThread = new Thread(new ThreadStart(warmupModeWorker));
+                            warmupModeThread = new Thread(new ThreadStart(WarmupModeWorker));
                             SourceMode = "Warmup";
                             warmupModeLock = new Object();
                             sourceModeCancelFlag = false;
@@ -1616,7 +1616,7 @@ namespace UEDMHardwareControl
         {
             sourceModeCancelFlag = true;
         }
-        private void warmupModeWorker()
+        private void WarmupModeWorker()
         {
             if (!sourceModeCancelFlag) InitializeSourceMode();
             if (!sourceModeCancelFlag) DesorbAndPumpGases(); // Controlled evaporation of gases from cryo pump
@@ -1968,7 +1968,7 @@ namespace UEDMHardwareControl
 
         internal void StartTurnHeatersOffWait()
         {
-            turnHeatersOffWaitThread = new Thread(new ThreadStart(turnHeatersOffWaitWorker));
+            turnHeatersOffWaitThread = new Thread(new ThreadStart(TurnHeatersOffWaitWorker));
             window.EnableControl(window.btHeatersTurnOffWaitStart, false);
             window.EnableControl(window.btHeatersTurnOffWaitCancel, true);
             turnHeatersOffWaitLock = new Object();
@@ -1979,7 +1979,7 @@ namespace UEDMHardwareControl
         {
             turnHeatersOffCancelFlag = true;
         }
-        private void turnHeatersOffWaitWorker()
+        private void TurnHeatersOffWaitWorker()
         {
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
@@ -4346,7 +4346,7 @@ namespace UEDMHardwareControl
             ESwitchDone();
         }
 
-        private void activateEAlarm(bool newEPolarity)
+        private void ActivateEAlarm(bool newEPolarity)
         {
             window.AddAlert("E-switch - switching to state: " + newEPolarity + "; manual state: " + EManualState +
                 "; West current: " + lastWestCurrent + "; East current: " + lastEastCurrent + " .");
@@ -4559,8 +4559,8 @@ namespace UEDMHardwareControl
 
 
             //This samples the frequency
-            lastWestFrequency = westLeakageMonitor.getRawCount();
-            lastEastFrequency = eastLeakageMonitor.getRawCount();
+            lastWestFrequency = westLeakageMonitor.GetRawCount();
+            lastEastFrequency = eastLeakageMonitor.GetRawCount();
 
             lastWestCurrent = ((lastWestFrequency - westOffset) / westSlope);
             lastEastCurrent = ((lastEastFrequency - eastOffset) / eastSlope);
@@ -4651,7 +4651,7 @@ namespace UEDMHardwareControl
 
         private Thread iMonitorPollThread;
 
-        public int iMonitorPollPeriod
+        public int IMonitorPollPeriod
         {
             get
             {
@@ -4700,7 +4700,7 @@ namespace UEDMHardwareControl
             window.EnableControl(window.updateIMonitorButton, false);
             window.EnableControl(window.stopIMonitorPollButton, true);
             window.EnableControl(window.logCurrentDataCheckBox, false);
-            iMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriodInput.Text);
+            IMonitorPollPeriod = Int32.Parse(window.iMonitorPollPeriodInput.Text);
             movingAverageSampleLength = Int32.Parse(window.currentMonitorSampleLengthTextBox.Text);
             nCurrentSamples.Clear();
             sCurrentSamples.Clear();
@@ -4716,8 +4716,8 @@ namespace UEDMHardwareControl
             {
                 if (IMonitorPollPeriodParseValue >= iMonitorPollPeriodLowerLimit)
                 {
-                    iMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
-                    window.SetTextBox(window.tbiMonitorPollPeriod, iMonitorPollPeriod.ToString());
+                    IMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    window.SetTextBox(window.tbiMonitorPollPeriod, IMonitorPollPeriod.ToString());
                 }
                 else MessageBox.Show("Poll period value too small. The leakage monitors can only be polled every " + iMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
             }
@@ -4735,7 +4735,7 @@ namespace UEDMHardwareControl
         {
             for (; ;)
             {
-                Thread.Sleep(iMonitorPollPeriod);
+                Thread.Sleep(IMonitorPollPeriod);
                 lock (iMonitorLock)
                 {
                     UpdateIMonitor();

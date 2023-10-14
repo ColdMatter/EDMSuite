@@ -152,8 +152,7 @@ namespace DAQ.HAL
 
         }
 
-
-        public double getRawCount()
+        public double GetRawCount()
         {
             double raw;
             //if (!Environs.Debug)
@@ -188,17 +187,17 @@ namespace DAQ.HAL
         {
             if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
             {
-                return (getRawCount() - offset) / (v2fSlope * f2iSlope);
+                return (GetRawCount() - offset) / (v2fSlope * f2iSlope);
             }
             else
             {
-                return ((getRawCount() - offset) / slope);
+                return ((GetRawCount() - offset) / slope);
             }
         }
 
         public void SetZero()
         {
-            offset = getRawCount();
+            offset = GetRawCount();
             return;
         }
 
@@ -207,6 +206,5 @@ namespace DAQ.HAL
         //    counterTask.Stream.Timeout = (int)(1.1 * 1000 * measurementTime);
         //    counterTask.CIChannels[0].FrequencyMeasurementTime = measurementTime;
         //}
-
     }
 }
