@@ -1,20 +1,20 @@
-using System;
-using System.Threading;
-using NationalInstruments.DAQmx;
 using DAQ.Environment;
-using DAQ.HAL;
+using NationalInstruments.DAQmx;
+using System;
 
 namespace DAQ.HAL
 {
-    /* Measures the value from a HV leakage monitor. The leakage monitor outputs a train of pulses whose
-     * frequency depends on the current flowing through it. This class uses a counter (well, pair of
-     * counters to measure that frequency. The class provides a re-settable zero offset as the 
-     * leakage monitors are prone to drifting.
-     */
+    /// <summary>
+    /// Defines the analog or frequency counter versions of the leakage monitor so both can be used
+    /// </summary>
+    public enum LeakageMonitorType { ANALOG, COUNTER };
 
-    //This enum defines the analog or frequency counter versions of the leakage monitor so both can be used
-    public enum LeakageMonitorType { ANALOG, COUNTER};
-
+    /// <summary>
+    /// Measures the value from a HV leakage monitor. The leakage monitor outputs a train of pulses whose
+    /// frequency depends on the current flowing through it.This class uses a counter(well, pair of
+    /// counters to measure that frequency.The class provides a re-settable zero offset as the
+    /// leakage monitors are prone to drifting.
+    /// </summary>
     public class LeakageMonitor
     {
         private Random rn;
@@ -25,7 +25,6 @@ namespace DAQ.HAL
         private AnalogSingleChannelReader analogLeakageReader;
         private string leakageChannel;
         private LeakageMonitorType leakageMonitorType;
-        
 
         // calibration constants
         public double F2ISlope
@@ -88,7 +87,6 @@ namespace DAQ.HAL
             }
         }
 
-
         private double f2iSlope;
         private double v2fSlope;
         private double offset;
@@ -119,36 +117,36 @@ namespace DAQ.HAL
         {
             //if (!Environs.Debug)
             //{
-                if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
-                {
-                    monitorTask = new Task("EDMHCIn" + leakageChannel);
-                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[leakageChannel]).AddToTask(
-                        monitorTask,
-                        0,
-                        10
+            if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
+            {
+                monitorTask = new Task("EDMHCIn" + leakageChannel);
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[leakageChannel]).AddToTask(
+                    monitorTask,
+                    0,
+                    10
+                );
+                monitorTask.Control(TaskAction.Verify);
+                analogLeakageReader = new AnalogSingleChannelReader(monitorTask.Stream);
+            }
+            else
+            {
+                counterTask = new Task("");
+                this.counterTask.CIChannels.CreateFrequencyChannel(
+                    currentLeakageCounterChannel.PhysicalChannel,
+                    "",
+                    0,
+                    150000,
+                    CIFrequencyStartingEdge.Rising,
+                  CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
+                   // the units of measurement time are not specified anywhere in the docs :-(
+                   measurementTime,
+                    // this has to be more than four to stop NIDAQ crashing, even though it is not used in this mode!
+                    100,
+                    CIFrequencyUnits.Hertz
                     );
-                    monitorTask.Control(TaskAction.Verify);
-                    analogLeakageReader = new AnalogSingleChannelReader(monitorTask.Stream);
-                }
-                else
-                {
-                    counterTask = new Task("");
-                    this.counterTask.CIChannels.CreateFrequencyChannel(
-                        currentLeakageCounterChannel.PhysicalChannel,
-                        "",
-                        0,
-                        150000,
-                        CIFrequencyStartingEdge.Rising,
-                      CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
-                       // the units of measurement time are not specified anywhere in the docs :-(
-                       measurementTime,
-                        // this has to be more than four to stop NIDAQ crashing, even though it is not used in this mode!
-                        100,
-                        CIFrequencyUnits.Hertz
-                        );
-                    counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime);
-                    counterLeakageReader = new CounterReader(counterTask.Stream);
-                }
+                counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime);
+                counterLeakageReader = new CounterReader(counterTask.Stream);
+            }
             //}
 
 
@@ -160,23 +158,24 @@ namespace DAQ.HAL
             double raw;
             //if (!Environs.Debug)
             //{
-                try
+            try
+            {
+                if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
                 {
-                    if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
-                    {
-                        raw = analogLeakageReader.ReadSingleSample();
-                        monitorTask.Control(TaskAction.Unreserve);
-                    } else
-                    {
-                        raw = counterLeakageReader.ReadSingleSampleDouble();
-                        counterTask.Control(TaskAction.Unreserve);
-                    }
+                    raw = analogLeakageReader.ReadSingleSample();
+                    monitorTask.Control(TaskAction.Unreserve);
+                }
+                else
+                {
+                    raw = counterLeakageReader.ReadSingleSampleDouble();
+                    counterTask.Control(TaskAction.Unreserve);
+                }
 
-                }
-                catch (NationalInstruments.DAQmx.DaqException)
-                {
-                    raw = offset;
-                }
+            }
+            catch (NationalInstruments.DAQmx.DaqException)
+            {
+                raw = offset;
+            }
             //}
             //else
             //{
@@ -190,7 +189,8 @@ namespace DAQ.HAL
             if (leakageMonitorType.Equals(LeakageMonitorType.ANALOG))
             {
                 return (getRawCount() - offset) / (v2fSlope * f2iSlope);
-            } else
+            }
+            else
             {
                 return ((getRawCount() - offset) / slope);
             }
