@@ -14,8 +14,8 @@ namespace DAQ.WavemeterLock
         public event blockHandler LaserRelocked;
         public bool IsBlocked = false;
 
-        private string DigitalChannelName;
-        private string Laser;
+        private readonly string DigitalChannelName;
+        private readonly string Laser;
 
         public DAQMxWavemeterLockBlockHelper(string laserName, string channel)
         {

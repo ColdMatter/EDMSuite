@@ -17,14 +17,14 @@ namespace DAQ.HAL
     /// </summary>
     public class LeakageMonitor
     {
-        private Random rn;
-        private CounterChannel currentLeakageCounterChannel;
+        private readonly Random rn;
+        private readonly CounterChannel currentLeakageCounterChannel;
         private Task counterTask;
         private CounterReader counterLeakageReader;
         private Task monitorTask;
         private AnalogSingleChannelReader analogLeakageReader;
-        private string leakageChannel;
-        private LeakageMonitorType leakageMonitorType;
+        private readonly string leakageChannel;
+        private readonly LeakageMonitorType leakageMonitorType;
 
         // calibration constants
         public double F2ISlope

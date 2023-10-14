@@ -28,9 +28,9 @@ namespace UEDMHardwareControl
         #region Constants
 
         // Gauges
-        private double initialSourceGaugeCorrectionFactor = 1;
-        private double initialBeamlineGaugeCorrectionFactor = 1;
-        private double initialDetectionGaugeCorrectionFactor = 1;
+        private readonly double initialSourceGaugeCorrectionFactor = 1;
+        private readonly double initialBeamlineGaugeCorrectionFactor = 1;
+        private readonly double initialDetectionGaugeCorrectionFactor = 1;
 
         //Current Leakage Monitor calibration 
         //Convention for monitor to plate mapping:
@@ -45,53 +45,53 @@ namespace UEDMHardwareControl
         private static double currentMonitorMeasurementTime = 0.01;
 
         //HV plates
-        private static double voltageOutputHigh = 7;
-        private static double voltageOutputLow = 0;
+        private static readonly double voltageOutputHigh = 7;
+        private static readonly double voltageOutputLow = 0;
 
         #endregion
 
         #region Setup
 
         // hardware
-        private static string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
-        private static string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
+        private static readonly string[] Names = { "Cell Temperature Monitor", "S1 Temperature Monitor", "S2 Temperature Monitor", "SF6 Temperature Monitor" };
+        private static readonly string[] ChannelNames = { "cellTemperatureMonitor", "S1TemperatureMonitor", "S2TemperatureMonitor", "SF6TemperatureMonitor" };
 
-        private static string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
-        private static string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
+        private static readonly string[] AINames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
+        private static readonly string[] AIChannelNames = { "AI11", "AI12", "AI13", "AI14", "AI15" };
 
         // Temperature sensors
-        LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
-        SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
+        readonly LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
+        readonly SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
 
         // Microwave Synth for Optical pumping
-        WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakOpticalPumping"];
+        readonly WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakOpticalPumping"];
 
         // Microwave Synth for Detection
-        WindfreakSynthHD microwaveSynthDetection = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakDetection"];
+        readonly WindfreakSynthHD microwaveSynthDetection = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakDetection"];
 
         // RF DDS
-        AD9850DDS RFDDS = (AD9850DDS)Environs.Hardware.Instruments["AD9850DDS"];
+        readonly AD9850DDS RFDDS = (AD9850DDS)Environs.Hardware.Instruments["AD9850DDS"];
 
         // Pressure gauges
         // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
-        AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
-        AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource");
-        AgilentFRG720Gauge detectionPressureMonitor = new AgilentFRG720Gauge("Pressure gauge detection", "pressureGaugeDetection");
+        readonly AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
+        readonly AgilentFRG720Gauge sourcePressureMonitor = new AgilentFRG720Gauge("Pressure gauge source", "pressureGaugeSource");
+        readonly AgilentFRG720Gauge detectionPressureMonitor = new AgilentFRG720Gauge("Pressure gauge detection", "pressureGaugeDetection");
 
         // Misc analogue inputs
-        UEDMHardwareControllerAIs hardwareControllerAIs = new UEDMHardwareControllerAIs(AINames, AIChannelNames);
+        readonly UEDMHardwareControllerAIs hardwareControllerAIs = new UEDMHardwareControllerAIs(AINames, AIChannelNames);
 
         // Flow controllers
-        FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
+        readonly FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
 
-        Hashtable digitalTasks = new Hashtable();
-        Hashtable digitalInputTasks = new Hashtable();
+        readonly Hashtable digitalTasks = new Hashtable();
+        readonly Hashtable digitalInputTasks = new Hashtable();
 
         //Leakage monitors
         //LeakageMonitor westLeakageMonitor = new LeakageMonitor("westLeakage", westVolt2FreqSlope, westFreq2AmpSlope, westOffset);
         //LeakageMonitor eastLeakageMonitor = new LeakageMonitor("eastLeakage", eastVolt2FreqSlope, eastFreq2AmpSlope, eastOffset);
-        LeakageMonitor westLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westSlope, westOffset, currentMonitorMeasurementTime);
-        LeakageMonitor eastLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastSlope, eastOffset, currentMonitorMeasurementTime);
+        readonly LeakageMonitor westLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["westLeakage"], westSlope, westOffset, currentMonitorMeasurementTime);
+        readonly LeakageMonitor eastLeakageMonitor = new LeakageMonitor((CounterChannel)Environs.Hardware.CounterChannels["eastLeakage"], eastSlope, eastOffset, currentMonitorMeasurementTime);
 
         Task cPlusOutputTask;
         Task cMinusOutputTask;
@@ -104,8 +104,8 @@ namespace UEDMHardwareControl
         //Task cryoTriggerDigitalOutputTask;
 
         // Heater digital outputs
-        Task heatersS2TriggerDigitalOutputTask;
-        Task heatersS1TriggerDigitalOutputTask;
+        readonly Task heatersS2TriggerDigitalOutputTask;
+        readonly Task heatersS1TriggerDigitalOutputTask;
 
         private void CreateDigitalTask(String name)
         {
@@ -564,10 +564,10 @@ namespace UEDMHardwareControl
 
         #region Cryo Control
 
-        private int RelayNumber = 1;
+        private readonly int RelayNumber = 1;
         // Currently the LakeShore/cryo relay is set up such that the relay is in the normally open state
-        private string Off = "0"; // I.e. connected in normally open state (NO)
-        private string On = "1"; // Swap these if the wiring is changed to normally closed (NC)
+        private readonly string Off = "0"; // I.e. connected in normally open state (NO)
+        private readonly string On = "1"; // Swap these if the wiring is changed to normally closed (NC)
 
         public void EnableCryoDigitalControl(bool enable) // Temporary function - used to control a digital output which connects to the cryo (true = on, false = off)
         {
@@ -696,7 +696,7 @@ namespace UEDMHardwareControl
 
         #region Status
 
-        private string LastStatusMessage = "";
+        private readonly string LastStatusMessage = "";
         private bool StatusRepeatFlag;
 
         private void UpdateStatus(string str)
@@ -874,7 +874,7 @@ namespace UEDMHardwareControl
         private DateTime HeatersTurnOffDateTime;
         private DateTime CryoTurnOnDateTime;
         private double GasEvaporationCycleTemperatureMax;
-        private double SourceTemperatureMax = 305;
+        private readonly double SourceTemperatureMax = 305;
         private double TurbomolecularPumpUpperPressureLimit;
         private double WarmUpTemperatureSetpoint;
         private double CryoStoppingPressure;
@@ -1256,7 +1256,7 @@ namespace UEDMHardwareControl
         private Object refreshModeLock;
         private bool refreshModeHeaterTurnOffDateTimeFlag = false;
         private bool refreshModeCryoTurnOnDateTimeFlag = false;
-        private static string refreshModeShutdownBlockReason = "Refresh mode enabled!";
+        private static readonly string refreshModeShutdownBlockReason = "Refresh mode enabled!";
         private static IntPtr refreshModeShutdownBlockHandle;
         /// <summary>
         /// When refresh mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with refresh mode. This function can be used to disable or enable the relevant UI components.
@@ -1468,7 +1468,7 @@ namespace UEDMHardwareControl
         private Object warmupModeLock;
         private bool warmupModeHeaterTurnOffDateTimeFlag = false;
         private bool warmupModeTemperatureSetpointUpdated = false;
-        private static string warmupModeShutdownBlockReason = "Warm up mode enabled!";
+        private static readonly string warmupModeShutdownBlockReason = "Warm up mode enabled!";
         private static IntPtr warmupModeShutdownBlockHandle;
         /// <summary>
         /// When warmup mode starts or stops, various controls in the user interface need to be disabled or enabled so that the user doesn't accidently do something that will interfere with warmup mode. This function is used to disable or enable the relevant UI components.
@@ -1633,7 +1633,7 @@ namespace UEDMHardwareControl
         private bool CoolDownModeHeaterTurnOffDateTimeFlag = false;
         private bool CoolDownModeCryoTurnOnDateTimeFlag = false;
         private bool CoolDownModeTemperatureSetpointUpdated = false;
-        private static string cooldownModeShutdownBlockReason = "Cool down mode enabled!";
+        private static readonly string cooldownModeShutdownBlockReason = "Cool down mode enabled!";
         private static IntPtr cooldownModeShutdownBlockHandle;
         internal void CoolDownModeEnableUIElements(bool Enable) // UI elements to enable/disable when starting/finishing cool down mode
         {
@@ -1953,7 +1953,7 @@ namespace UEDMHardwareControl
         // This allows the user to define a time at which the heaters will be turned off. 
         // This can be used to heat the source a little whilst away for lunch - evaporating neon while you eat!
         private Thread turnHeatersOffWaitThread;
-        private int turnHeatersOffWaitPeriod = 1000;
+        private readonly int turnHeatersOffWaitPeriod = 1000;
         private bool turnHeatersOffCancelFlag;
         private Object turnHeatersOffWaitLock;
 
@@ -2009,15 +2009,15 @@ namespace UEDMHardwareControl
         private int PressureChartRollingPeriod;
         private bool PressureChartRollingPeriodSelected = false;
         private bool PressureChartRollingXAxis = false;
-        private Queue<double> pressureSamplesSource = new Queue<double>();
-        private Queue<double> pressureSamplesBeamline = new Queue<double>();
-        private Queue<double> pressureSamplesDetection = new Queue<double>();
-        private string sourceSeries = "Source";
-        private string beamlineSeries = "Beamline";
-        private string detectionSeries = "Detection";
+        private readonly Queue<double> pressureSamplesSource = new Queue<double>();
+        private readonly Queue<double> pressureSamplesBeamline = new Queue<double>();
+        private readonly Queue<double> pressureSamplesDetection = new Queue<double>();
+        private readonly string sourceSeries = "Source";
+        private readonly string beamlineSeries = "Beamline";
+        private readonly string detectionSeries = "Detection";
 
-        private int numberOfPressureDataPoints = 0;
-        private int pressureDataPlotLimit = 10;
+        private readonly int numberOfPressureDataPoints = 0;
+        private readonly int pressureDataPlotLimit = 10;
 
         public void UpdatePressureMonitor()
         {
@@ -2218,7 +2218,7 @@ namespace UEDMHardwareControl
         #region Temperature Monitors
 
         private string receivedData;
-        private int TempMovingAverageSampleLength = 2;
+        private readonly int TempMovingAverageSampleLength = 2;
         private int TemperatureChartRollingPeriod;
         private bool TemperatureChartRollingPeriodSelected = false;
         private bool TemperatureChartRollingXAxis = false;
@@ -2234,11 +2234,11 @@ namespace UEDMHardwareControl
         public double lastS2Temp;
         public double lastNeonTemp;
         public double lastSF6Temp;
-        private string cellTSeries = "Cell";
-        private string S1TSeries = "S1";
-        private string S2TSeries = "S2";
-        private string SF6TSeries = "SF6";
-        private string neonTSeries = "Neon";
+        private readonly string cellTSeries = "Cell";
+        private readonly string S1TSeries = "S1";
+        private readonly string S2TSeries = "S2";
+        private readonly string SF6TSeries = "SF6";
+        private readonly string neonTSeries = "Neon";
 
         public void TryParseTemperatureString(string TemperatureString, string SeriesName)
         {
@@ -2455,7 +2455,7 @@ namespace UEDMHardwareControl
 
         // Arrays for temperature and pressure measurements. These are used for plotting the temperatures and pressures as the plotting can lag the measurement of these quantities.
         private readonly object PTPlottingBufferLock = new object();
-        static int MaxPlottingArrayLength = 10000;
+        static readonly int MaxPlottingArrayLength = 10000;
         public int NumberOfPTMeasurementsInQueue = 0;
         public double[] CellTempPlottingArray = new double[MaxPlottingArrayLength];
         public double[] S1TempPlottingArray = new double[MaxPlottingArrayLength];
@@ -2926,10 +2926,10 @@ namespace UEDMHardwareControl
         private double lastNeonFlowAct;
         private double lastNeonFlowSetpoint;
         private double newNeonFlowSetpoint;
-        private string neonFlowActSeries = "Neon Flow";
-        private string neonFlowChannelNumber = "2"; // Channel number on the MKS PR4000B flow controller
-        private double neonFlowUpperLimit = 100; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
-        private double neonFlowLowerLimit = 0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
+        private readonly string neonFlowActSeries = "Neon Flow";
+        private readonly string neonFlowChannelNumber = "2"; // Channel number on the MKS PR4000B flow controller
+        private readonly double neonFlowUpperLimit = 100; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
+        private readonly double neonFlowLowerLimit = 0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
 
         public void UpdateNeonFlowActMonitor()
         {
@@ -3216,7 +3216,7 @@ namespace UEDMHardwareControl
 
 
         // Heaters
-        private int LakeShoreCellOutput = 1;
+        private readonly int LakeShoreCellOutput = 1;
 
         public void SetHeaterSetpoint(int Output, double Value)
         {
@@ -3708,23 +3708,23 @@ namespace UEDMHardwareControl
         private Thread AnalogueInputsMonitorPollThread;
         private Thread AnalogueInputsPlottingThread;
         private int AnalogueInputsMonitorPollPeriod = 1000;
-        private int AIMonitorPollPeriodLowerLimit = 50;
+        private readonly int AIMonitorPollPeriodLowerLimit = 50;
         private bool AnalogueInputsMonitorFlag;
         private bool AnalogueInputsPlottingFlag;
         private Object AnalogueInputsMonitorLock;
-        private string[] AISeries = { "AI11", "AI12", "AI13", "AI14", "AI15" }; // Names of series used in analogue inputs chart
-        private string[] AIConversionSeries = { "AI11 Converted", "AI12 Converted", "AI13 Converted", "AI14 Converted", "AI15 Converted" }; // Names of converted series used in analogue inputs chart
-        private bool[] AIConversionEnabled = { false, false, false, false, false }; // Flags to indicate whether or not the user has requested that an analogue input be converted using some pre-defined method
-        private string[] CurrentAIConversionMethods = { "None", "None", "None", "None", "None" };
-        private string[] AIConversionMethodsNames = { "None", "Ohm Meter" }; // Names of methods that can be applied to the AI data
-        private string[] AIConversionUnits = { "(V)", "(Ohms)" }; // Units of converted values
+        private readonly string[] AISeries = { "AI11", "AI12", "AI13", "AI14", "AI15" }; // Names of series used in analogue inputs chart
+        private readonly string[] AIConversionSeries = { "AI11 Converted", "AI12 Converted", "AI13 Converted", "AI14 Converted", "AI15 Converted" }; // Names of converted series used in analogue inputs chart
+        private readonly bool[] AIConversionEnabled = { false, false, false, false, false }; // Flags to indicate whether or not the user has requested that an analogue input be converted using some pre-defined method
+        private readonly string[] CurrentAIConversionMethods = { "None", "None", "None", "None", "None" };
+        private readonly string[] AIConversionMethodsNames = { "None", "Ohm Meter" }; // Names of methods that can be applied to the AI data
+        private readonly string[] AIConversionUnits = { "(V)", "(Ohms)" }; // Units of converted values
         public string csvDataAnalogueInputs = "";
 
         // Plotting variables
         private readonly object AIPlottingBufferLock = new object();
         private readonly object AIChartSeriesLock = new object();
         private readonly object AICSVDataLock = new object();
-        static int MaxAIPlottingArrayLength = 10000;
+        static readonly int MaxAIPlottingArrayLength = 10000;
         public int NumberOfAIMeasurementsInQueue = 0;
         private int AIChartRollingPeriod;
         private bool AIChartRollingPeriodSelected = false;
@@ -4223,7 +4223,7 @@ namespace UEDMHardwareControl
 
 
         private bool newEPolarity;
-        private object switchingLock = new object();
+        private readonly object switchingLock = new object();
         private Thread switchThread;
         public void SwitchE(bool state)
         {
@@ -4245,10 +4245,10 @@ namespace UEDMHardwareControl
             }
         }
 
-        double kPositiveChargeMin = 2;
-        double kPositiveChargeMax = 20;
-        double kNegativeChargeMin = -2;
-        double kNegativeChargeMax = -20;
+        readonly double kPositiveChargeMin = 2;
+        readonly double kPositiveChargeMax = 20;
+        readonly double kNegativeChargeMin = -2;
+        readonly double kNegativeChargeMax = -20;
 
         // this function switches the E field polarity with ramped turn on and off. 
         // It also switches off the Synth to prevent rf discharges while the fields are off
@@ -4481,8 +4481,8 @@ namespace UEDMHardwareControl
         private double lastEastCurrent;
         private double lastWestFrequency;
         private double lastEastFrequency;
-        private Queue<double> nCurrentSamples = new Queue<double>();
-        private Queue<double> sCurrentSamples = new Queue<double>();
+        private readonly Queue<double> nCurrentSamples = new Queue<double>();
+        private readonly Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
 
 
@@ -4536,8 +4536,8 @@ namespace UEDMHardwareControl
             lastEastCurrent = eastLeakageMonitor.GetCurrent();
         }
 
-        private string currentSeriesEast = "Leakage Current East";
-        private string currentSeriesWest = "Leakage Current West";
+        private readonly string currentSeriesEast = "Leakage Current East";
+        private readonly string currentSeriesWest = "Leakage Current West";
         private DateTime localDate;
 
         public void UpdateIMonitor()
@@ -4659,7 +4659,7 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.iMonitorPollPeriodInput, time.ToString());
         }
 
-        private static int iMonitorPollPeriodLowerLimit = 100;
+        private static readonly int iMonitorPollPeriodLowerLimit = 100;
         private Object iMonitorLock;
         private bool iMonitorFlag;
         public string leakageFileSave = "";
