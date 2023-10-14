@@ -1,21 +1,4 @@
-﻿using NationalInstruments;
-using NationalInstruments.Controls;
-using NationalInstruments.Controls.Rendering;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.Visa;
-using NationalInstruments.DAQmx;
-using NationalInstruments.ModularInstruments.NIScope;
-using NationalInstruments.ModularInstruments;
-using NationalInstruments.ModularInstruments.SystemServices.DeviceServices;
-using NationalInstruments.ModularInstruments.SystemServices.TimingServices;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Windows.Forms;
 

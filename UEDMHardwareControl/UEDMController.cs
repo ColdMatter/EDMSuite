@@ -3,27 +3,18 @@ using DAQ.HAL;
 using Data;
 using NationalInstruments.DAQmx;
 using System;
-using System.Timers;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Lifetime;
-using System.Threading;
-using System.Windows.Forms;
-using NationalInstruments;
-using NationalInstruments.DAQmx;
-using NationalInstruments.UI.WindowsForms;
 //using NationalInstruments.VisaNS;
 using System.Linq;
-using System.IO.Ports;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Diagnostics;
 
 namespace UEDMHardwareControl
 {
@@ -513,7 +504,7 @@ namespace UEDMHardwareControl
                     }
                 }
             }
-            
+
         }
 
         // Data
@@ -768,7 +759,7 @@ namespace UEDMHardwareControl
                 window.SetTextBox(window.tbCoolDownModeHowLongUntilHeatersTurnOff, ""); // Clear textbox
             }
         }
-        public void UpdateSourceModeStatus(string StatusUpdate,string mode)
+        public void UpdateSourceModeStatus(string StatusUpdate, string mode)
         {
             if (StatusUpdate != LastSourceModeStatusMessage)
             {
@@ -984,15 +975,15 @@ namespace UEDMHardwareControl
                 if (sourceModeCancelFlag) break; // Immediately break this for loop if the user has requested that source mode be cancelled
 
                 UpdateUITimeLeftIndicators();
-                
+
                 //These if statements are to turn on the heaters if the source temperature is below set point temperture and to protect the source from overheating and pressure spike events
                 if (Double.Parse(lastS2TempString) <= 1 || Double.Parse(lastS2TempString) >= SourceTemperatureMax || Double.Parse(lastS1TempString) <= 1 || Double.Parse(lastS1TempString) >= SourceTemperatureMax || Double.Parse(lastCellTempString) <= 1 || Double.Parse(lastCellTempString) >= SourceTemperatureMax)
                 {
                     // If either the cell, S1 or S2 sensor reads above the maximum operating temperature (or if a sensor reads zero) then disable the heaters and cancel the source mode
                     // To avoid cancelling the source mode due to erronous spikes/ drops in the sensor reading, lets count the number of times the sensor reads higher than the max temperature (or zero).
                     //If more than 5 events are counted in a row then we can assume this is a real event and turn off the heaters and cancel the source mode
-                    TempCount = TempCount + 1;      
-                    if (TempCount >= 5) 
+                    TempCount = TempCount + 1;
+                    if (TempCount >= 5)
                     {
                         if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
                         {
@@ -1116,27 +1107,27 @@ namespace UEDMHardwareControl
                         }
                     }
 
-                        //if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
-                        //{
-                        //    if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
-                        //    {
-                        //        EnableSourceModeHeaters(true); // Enable heaters
-                        //    }
-                        //    if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
-                        //    {
-                        //        break;
-                        //    }
-                        //    UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
-                        //}
-                        //else // If the pressure is high, then turn the heaters off
-                        //{
-                        //    UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
-                        //    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
-                        //    {
-                        //        EnableSourceModeHeaters(false); // disable heaters
-                        //    }
-                        //}
-                        //Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
+                    //if (lastSourcePressure < TurbomolecularPumpUpperPressureLimit) // If pressure is low, then turn the heaters on
+                    //{
+                    //    if (!Stage1HeaterControlFlag | !Stage2HeaterControlFlag) // if heaters turned off then turn them on
+                    //    {
+                    //        EnableSourceModeHeaters(true); // Enable heaters
+                    //    }
+                    //    if (Double.Parse(lastS2TempString) >= WarmUpTemperatureSetpoint) // If the source has reached the desired temperature, then break the loop
+                    //    {
+                    //        break;
+                    //    }
+                    //    UpdateSourceModeStatus("Warming source: temperature setpoint " + WarmUpTemperatureSetpoint.ToString() + " Kelvin not yet reached."); // Update source mode status textbox
+                    //}
+                    //else // If the pressure is high, then turn the heaters off
+                    //{
+                    //    UpdateSourceModeStatus("Warming source: heaters disabled because the source chamber pressure is above the safe operating limit for the turbo (" + TurbomolecularPumpUpperPressureLimit.ToString() + " mbar)");
+                    //    if (Stage1HeaterControlFlag | Stage2HeaterControlFlag) // if heaters are on
+                    //    {
+                    //        EnableSourceModeHeaters(false); // disable heaters
+                    //    }
+                    //}
+                    //Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
                     Thread.Sleep(WarmupPTPollPeriod); // Iterate the loop according to this time interval
                 }
             }
@@ -1184,7 +1175,7 @@ namespace UEDMHardwareControl
                             }
 
                         }
-                    
+
                     }
                     else
                     {
@@ -1206,7 +1197,7 @@ namespace UEDMHardwareControl
                             }
                         }
                     }
-                    
+
 
 
                     UpdateUITimeLeftIndicators(); // Update user interface indicators to show how long is left until the heaters turn off and/or the cryo turns on
@@ -1954,7 +1945,7 @@ namespace UEDMHardwareControl
                     else MessageBox.Show("S2 Temperature setpoint (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating temperature (" + SourceTemperatureMax.ToString() + " Kelvin).");
                 }
 
-                
+
             }
         }
 
@@ -4327,7 +4318,7 @@ namespace UEDMHardwareControl
             }
             //GreenSynthEnabled = startingSynthState;
             ESwitchDone();
-            
+
         }
 
         //This function exists to turn off the ability to switch the E field via BlockHead/HC for diagnostic purposes
@@ -4356,7 +4347,7 @@ namespace UEDMHardwareControl
         {
             SwitchingEfields = false;
             window.EnableControl(window.switchEButton, true);
-            
+
         }
 
         // this function is, like many in this class, a little cheezy.
@@ -4733,7 +4724,7 @@ namespace UEDMHardwareControl
         }
         private void IMonitorPollWorker()
         {
-            for (; ;)
+            for (; ; )
             {
                 Thread.Sleep(IMonitorPollPeriod);
                 lock (iMonitorLock)
@@ -5019,8 +5010,8 @@ namespace UEDMHardwareControl
         public void QueryRFFrequency()
         {
             // Query the frequency
-            string frequency = RFDDS.QueryFrequency(); 
-            if (Int32.TryParse(frequency,out RFFrequency))
+            string frequency = RFDDS.QueryFrequency();
+            if (Int32.TryParse(frequency, out RFFrequency))
             {
                 double RFFrequencyMHz = RFFrequency / Math.Pow(10, 6);
                 window.SetTextBox(window.tbRFFrequencyMonitor, RFFrequencyMHz.ToString());
