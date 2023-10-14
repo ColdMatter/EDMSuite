@@ -213,13 +213,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CmdLib">
-      <HintPath>..\..\Desktop\stepmirror\CmdLib.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Samples\CmdLib.dll</HintPath>
     </Reference>
     <Reference Include="CmdLib8742">
-      <HintPath>..\..\Desktop\stepmirror\CmdLib8742.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\CmdLib8742.dll</HintPath>
     </Reference>
     <Reference Include="DeviceIOLib">
-      <HintPath>..\..\Desktop\stepmirror\DeviceIOLib.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\DeviceIOLib.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
@@ -230,10 +230,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="NpEthernet">
-      <HintPath>..\..\Desktop\stepmirror\NpEthernet.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\NpEthernet.dll</HintPath>
     </Reference>
     <Reference Include="NpSerial">
-      <HintPath>..\..\Desktop\stepmirror\NpSerial.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\NpSerial.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4" />
@@ -251,7 +251,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UsbDllWrap">
-      <HintPath>..\..\Desktop\stepmirror\UsbDllWrap.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Samples\UsbDllWrap.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
