@@ -6,7 +6,6 @@ namespace DigitalTransferCavityLock
 {
     public partial class ControlWindow : Form
     {
-
         public Controller controller;
 
         public ControlWindow(Controller _controller)
