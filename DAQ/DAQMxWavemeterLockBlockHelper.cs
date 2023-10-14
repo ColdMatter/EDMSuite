@@ -1,58 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NationalInstruments.DAQmx;
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.WavemeterLock
 {
     public delegate void blockHandler();
     public class DAQMxWavemeterLockBlockHelper
     {
-        public Task readDItask;
-        private DigitalInputChannel diChannel;
-        private DigitalSingleChannelReader reader;
-        public event blockHandler laserBlocked;
-        public event blockHandler laserRelocked;
-        public bool isBlocked = false;
+        public Task ReadDItask;
+        private DigitalInputChannel DiChannel;
+        private DigitalSingleChannelReader Reader;
+        public event blockHandler LaserBlocked;
+        public event blockHandler LaserRelocked;
+        public bool IsBlocked = false;
 
-        private string digitalChannelName;
-        private string laser;
+        private string DigitalChannelName;
+        private string Laser;
 
         public DAQMxWavemeterLockBlockHelper(string laserName, string channel)
         {
-            digitalChannelName = channel;
-            laser = laserName;
+            DigitalChannelName = channel;
+            Laser = laserName;
             ConfigureBlockChannel();
         }
 
         public void ConfigureBlockChannel()
         {
-            readDItask = new Task("BlockLaserReader" + digitalChannelName);
-            diChannel =
-                    (DigitalInputChannel)Environs.Hardware.DigitalInputChannels[digitalChannelName];
-            diChannel.AddToTask(readDItask);
+            ReadDItask = new Task("BlockLaserReader" + DigitalChannelName);
+            DiChannel =
+                    (DigitalInputChannel)Environs.Hardware.DigitalInputChannels[DigitalChannelName];
+            DiChannel.AddToTask(ReadDItask);
             //readDItask.Timing.ConfigureChangeDetection(diChannel.PhysicalChannel, diChannel.PhysicalChannel, SampleQuantityMode.ContinuousSamples);
             //readDItask.SynchronizeCallbacks = true;
             //readDItask.DigitalChangeDetection += readDItask_DigitalChangeDetection;
-            readDItask.Control(TaskAction.Verify);
-            reader = new DigitalSingleChannelReader(readDItask.Stream);
-            readDItask.Start();
+            ReadDItask.Control(TaskAction.Verify);
+            Reader = new DigitalSingleChannelReader(ReadDItask.Stream);
+            ReadDItask.Start();
 
         }
 
-        private void readDItask_DigitalChangeDetection(object sender, DigitalChangeDetectionEventArgs e)
+        private void ReadDiTaskDigitalChangeDetection(object sender, DigitalChangeDetectionEventArgs e)
         {
-            bool data = reader.ReadSingleSampleSingleLine();
-            isBlocked = !data;
+            bool data = Reader.ReadSingleSampleSingleLine();
+            IsBlocked = !data;
         }
 
-        public void checkLockBlockStatus()
+        public void CheckLockBlockStatus()
         {
-            isBlocked = reader.ReadSingleSampleSingleLine();
+            IsBlocked = Reader.ReadSingleSampleSingleLine();
         }
-
     }
 }

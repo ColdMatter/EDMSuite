@@ -15,7 +15,7 @@ namespace DAQ.HAL
 	{
 		private Task pgTask;
         private String pgTaskName;
-		private String device;
+		private readonly String device;
 		private DigitalSingleChannelWriter writer;
 		private double clockFrequency;
 		private int length;
@@ -83,7 +83,7 @@ namespace DAQ.HAL
             pgTask = new Task(taskName);
             pgTaskName = taskName;
             clock_line = pgTaskName + "ClockLine";
-            configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
+            ConfigurePG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
         }
 
         public void Configure(double clockFrequency, bool loop, bool fullWidth,
@@ -94,10 +94,10 @@ namespace DAQ.HAL
             pgTaskName = "PG";
             
             clock_line = pgTaskName + "ClockLine";
-            configure_PG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
+            ConfigurePG(clockFrequency, loop, fullWidth, lowGroup, length, internalClock, triggered);
         }
 
-        private void configure_PG(double clockFrequency, bool loop, bool fullWidth,
+        private void ConfigurePG(double clockFrequency, bool loop, bool fullWidth,
                                     bool lowGroup, int length, bool internalClock, bool triggered)
         {
 
@@ -232,7 +232,7 @@ namespace DAQ.HAL
 
 			pgTask.Control(TaskAction.Commit);
 			writer = new DigitalSingleChannelWriter(pgTask.Stream);
-            pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
+            pgTask.Done += new TaskDoneEventHandler(PgTaskDone);
 		}
 		
 		public void StopPattern()
@@ -242,7 +242,7 @@ namespace DAQ.HAL
             if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
         }
 
-        private void pgTask_Done(object sender, TaskDoneEventArgs e)
+        private void PgTaskDone(object sender, TaskDoneEventArgs e)
         {
             taskRunning = false;
             if (pgTask != null)
