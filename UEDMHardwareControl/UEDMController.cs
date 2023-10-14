@@ -1295,10 +1295,9 @@ namespace UEDMHardwareControl
         public void UpdateRefreshTemperature()
         {
             string RefreshTemperatureInput = window.tbRefreshModeTemperatureSetpoint.Text;
-            double parseddouble;
-            if (Double.TryParse(RefreshTemperatureInput, out parseddouble))
+            if (double.TryParse(RefreshTemperatureInput, out double t))
             {
-                WarmUpTemperatureSetpoint = parseddouble;
+                WarmUpTemperatureSetpoint = t;
                 SourceModeTemperatureSetpointUpdated = true;
             }
             else MessageBox.Show("Unable to parse refresh temperature string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
@@ -1498,10 +1497,9 @@ namespace UEDMHardwareControl
         public void UpdateWarmUpTemperature()
         {
             string WarmUpTemperatureInput = window.tbWarmUpModeTemperatureSetpoint.Text;
-            double parseddouble;
-            if (Double.TryParse(WarmUpTemperatureInput, out parseddouble))
+            if (double.TryParse(WarmUpTemperatureInput, out double t))
             {
-                WarmUpTemperatureSetpoint = parseddouble;
+                WarmUpTemperatureSetpoint = t;
                 SourceModeTemperatureSetpointUpdated = true;
                 warmupModeTemperatureSetpointUpdated = true;
             }
@@ -1668,10 +1666,9 @@ namespace UEDMHardwareControl
         public void UpdateCoolDownTemperature()
         {
             string WarmUpTemperatureInput = window.tbCoolDownModeTemperatureSetpoint.Text;
-            double parseddouble;
-            if (Double.TryParse(WarmUpTemperatureInput, out parseddouble))
+            if (double.TryParse(WarmUpTemperatureInput, out double t))
             {
-                WarmUpTemperatureSetpoint = parseddouble;
+                WarmUpTemperatureSetpoint = t;
                 SourceModeTemperatureSetpointUpdated = true;
                 CoolDownModeTemperatureSetpointUpdated = true;
             }
@@ -2136,14 +2133,13 @@ namespace UEDMHardwareControl
         }
         public void UpdatePressureChartRollingPeriod()
         {
-            int PressureChartRollingPeriodParsedValue;
-            if (Int32.TryParse(window.tbRollingPressureChartTimeAxisPeriod.Text, out PressureChartRollingPeriodParsedValue))
+            if (int.TryParse(window.tbRollingPressureChartTimeAxisPeriod.Text, out int rollingPeriod))
             {
-                if (PTMonitorPollPeriod <= PressureChartRollingPeriodParsedValue * 1000)  //*1000 to convert seconds to ms
+                if (PTMonitorPollPeriod <= rollingPeriod * 1000)  //*1000 to convert seconds to ms
                 {
-                    PressureChartRollingPeriod = PressureChartRollingPeriodParsedValue * 1000; // Update pressure chart rolling period  //*1000 to convert seconds to ms
+                    PressureChartRollingPeriod = rollingPeriod * 1000; // Update pressure chart rolling period  //*1000 to convert seconds to ms
                     PressureChartRollingPeriodSelected = true;
-                    window.SetTextBox(window.tbRollingPressureChartTimeAxisPeriodMonitor, PressureChartRollingPeriodParsedValue.ToString());
+                    window.SetTextBox(window.tbRollingPressureChartTimeAxisPeriodMonitor, rollingPeriod.ToString());
                 }
                 else MessageBox.Show("Rolling period less than the polling period of pressure and temperature.", "User input exception", MessageBoxButtons.OK);
             }
@@ -2152,27 +2148,23 @@ namespace UEDMHardwareControl
 
         public void UpdateGaugesCorrectionFactorsUsingUIInputs()
         {
-            double SourceGaugeCorrectionFactorParsedValue;
-            double BeamlineGaugeCorrectionFactorParsedValue;
-            double DetectionGaugeCorrectionFactorParsedValue;
-
-            if (Double.TryParse(window.tbSourceGaugeCorrectionFactor.Text, out SourceGaugeCorrectionFactorParsedValue))
+            if (double.TryParse(window.tbSourceGaugeCorrectionFactor.Text, out double sourceCorrectionFactor))
             {
-                SourceGaugeCorrectionFactor = SourceGaugeCorrectionFactorParsedValue; // Update source gauge correction factor
+                SourceGaugeCorrectionFactor = sourceCorrectionFactor; // Update source gauge correction factor
                 window.SetTextBox(window.tbSourceGaugeCorrectionFactorMonitor, SourceGaugeCorrectionFactor.ToString());// Update the monitor value
             }
             else MessageBox.Show("Unable to parse source gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
 
-            if (Double.TryParse(window.tbBeamlineGaugeCorrectionFactor.Text, out BeamlineGaugeCorrectionFactorParsedValue))
+            if (double.TryParse(window.tbBeamlineGaugeCorrectionFactor.Text, out double beamlineCorrectionFactor))
             {
-                BeamlineGaugeCorrectionFactor = BeamlineGaugeCorrectionFactorParsedValue; // Update beamline gauge correction factor
+                BeamlineGaugeCorrectionFactor = beamlineCorrectionFactor; // Update beamline gauge correction factor
                 window.SetTextBox(window.tbBeamlineGaugeCorrectionFactorMonitor, BeamlineGaugeCorrectionFactor.ToString());// Update the monitor value
             }
             else MessageBox.Show("Unable to parse beamline gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
 
-            if (Double.TryParse(window.tbDetectionGaugeCorrectionFactor.Text, out DetectionGaugeCorrectionFactorParsedValue))
+            if (double.TryParse(window.tbDetectionGaugeCorrectionFactor.Text, out double detectionCorrectionFactor))
             {
-                DetectionGaugeCorrectionFactor = DetectionGaugeCorrectionFactorParsedValue; // Update Detection gauge correction factor
+                DetectionGaugeCorrectionFactor = detectionCorrectionFactor; // Update Detection gauge correction factor
                 window.SetTextBox(window.tbDetectionGaugeCorrectionFactorMonitor, DetectionGaugeCorrectionFactor.ToString());// Update the monitor value
             }
             else MessageBox.Show("Unable to parse detection gauge correction factor string. Ensure that a double format number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
@@ -2242,36 +2234,35 @@ namespace UEDMHardwareControl
 
         public void TryParseTemperatureString(string TemperatureString, string SeriesName)
         {
-            double temporaryTemperatureVariable;
-            if (Double.TryParse(TemperatureString, out temporaryTemperatureVariable))
+            if (double.TryParse(TemperatureString, out double t))
             {
                 if (SeriesName == S1TSeries)
                 {
-                    lastS1Temp = temporaryTemperatureVariable;
+                    lastS1Temp = t;
                 }
                 else
                 {
                     if (SeriesName == cellTSeries)
                     {
-                        lastCellTemp = temporaryTemperatureVariable;
+                        lastCellTemp = t;
                     }
                     else
                     {
                         if (SeriesName == S2TSeries)
                         {
-                            lastS2Temp = temporaryTemperatureVariable;
+                            lastS2Temp = t;
                         }
                         else
                         {
                             if (SeriesName == SF6TSeries)
                             {
-                                lastSF6Temp = temporaryTemperatureVariable;
+                                lastSF6Temp = t;
                             }
                             else
                             {
                                 if (SeriesName == neonTSeries)
                                 {
-                                    lastNeonTemp = temporaryTemperatureVariable;
+                                    lastNeonTemp = t;
                                 }
                             }
                         }
@@ -2424,8 +2415,7 @@ namespace UEDMHardwareControl
         }
         public void UpdateTemperatureChartRollingPeriodUsingUIInput()
         {
-            int TemperatureChartRollingPeriodParsedValue;
-            if (Int32.TryParse(window.tbRollingTemperatureChartTimeAxisPeriod.Text, out TemperatureChartRollingPeriodParsedValue))
+            if (int.TryParse(window.tbRollingTemperatureChartTimeAxisPeriod.Text, out int TemperatureChartRollingPeriodParsedValue))
             {
                 if (PTMonitorPollPeriod <= TemperatureChartRollingPeriodParsedValue * 1000)  //*1000 to convert seconds to ms
                 {
@@ -2505,12 +2495,11 @@ namespace UEDMHardwareControl
         /// </summary>
         public void UpdatePTMonitorPollPeriodUsingUIValue()
         {
-            int PTMonitorPollPeriodParseValue;
-            if (Int32.TryParse(window.tbTandPPollPeriod.Text, out PTMonitorPollPeriodParseValue))
+            if (int.TryParse(window.tbTandPPollPeriod.Text, out int pollPeriod))
             {
-                if (PTMonitorPollPeriodParseValue >= PTMonitorPollPeriodLowerLimit)
+                if (pollPeriod >= PTMonitorPollPeriodLowerLimit)
                 {
-                    PTMonitorPollPeriod = PTMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    PTMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                     window.SetTextBox(window.tbTandPPollPeriodMonitor, PTMonitorPollPeriod.ToString());
                 }
                 else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
@@ -3012,7 +3001,7 @@ namespace UEDMHardwareControl
 
         public void SetNeonFlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewNeonFlowSetPoint.Text, out newNeonFlowSetpoint))
+            if (double.TryParse(window.tbNewNeonFlowSetPoint.Text, out newNeonFlowSetpoint))
             {
                 if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
                 {
@@ -3085,7 +3074,7 @@ namespace UEDMHardwareControl
 
             for (int i = 0; i < 3; i++)
             {
-                if (Double.TryParse(PIDValueStringArray[i], out PIDValueDoubleArray[i]))
+                if (double.TryParse(PIDValueStringArray[i], out PIDValueDoubleArray[i]))
                 {
                     if (PIDValueDoubleArray[i] < PIDValueLowerLimits[i])
                     {
@@ -3293,12 +3282,11 @@ namespace UEDMHardwareControl
         }
         public void UpdateAIMonitorPollPeriod()
         {
-            int AIMonitorPollPeriodParseValue;
-            if (Int32.TryParse(window.tbAnalogueMonitoringPollPeriod.Text, out AIMonitorPollPeriodParseValue))
+            if (int.TryParse(window.tbAnalogueMonitoringPollPeriod.Text, out int pollPeriod))
             {
-                if (AIMonitorPollPeriodParseValue >= AIMonitorPollPeriodLowerLimit)
+                if (pollPeriod >= AIMonitorPollPeriodLowerLimit)
                 {
-                    AnalogueInputsMonitorPollPeriod = AIMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    AnalogueInputsMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                 }
                 else MessageBox.Show("Poll period value too small. The analogue inputs can only be polled every " + AIMonitorPollPeriodLowerLimit.ToString() + " ms.", "User input exception", MessageBoxButtons.OK);
             }
@@ -3463,12 +3451,11 @@ namespace UEDMHardwareControl
         }
         public void UpdateAIChartRollingPeriod()
         {
-            int AIChartRollingPeriodParsedValue;
-            if (Int32.TryParse(window.tbAnalogueInputsChartRollingAxisPeriod.Text, out AIChartRollingPeriodParsedValue))
+            if (int.TryParse(window.tbAnalogueInputsChartRollingAxisPeriod.Text, out int rollingPeriod))
             {
-                if (AnalogueInputsMonitorPollPeriod <= AIChartRollingPeriodParsedValue)
+                if (AnalogueInputsMonitorPollPeriod <= rollingPeriod)
                 {
-                    AIChartRollingPeriod = AIChartRollingPeriodParsedValue; // Update AI chart rolling period
+                    AIChartRollingPeriod = rollingPeriod; // Update AI chart rolling period
                     AIChartRollingPeriodSelected = true;
                 }
                 else MessageBox.Show("Rolling period less than the polling period of the plot.", "User input exception", MessageBoxButtons.OK);
@@ -4702,12 +4689,11 @@ namespace UEDMHardwareControl
 
         public void UpdateIMonitorPollPeriodUsingUIValue()
         {
-            int IMonitorPollPeriodParseValue;
-            if (Int32.TryParse(window.iMonitorPollPeriodInput.Text, out IMonitorPollPeriodParseValue))
+            if (int.TryParse(window.iMonitorPollPeriodInput.Text, out int pollPeriod))
             {
-                if (IMonitorPollPeriodParseValue >= iMonitorPollPeriodLowerLimit)
+                if (pollPeriod >= iMonitorPollPeriodLowerLimit)
                 {
-                    IMonitorPollPeriod = IMonitorPollPeriodParseValue; // Update PT monitoring poll period
+                    IMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                     window.SetTextBox(window.tbiMonitorPollPeriod, IMonitorPollPeriod.ToString());
                 }
                 else MessageBox.Show("Poll period value too small. The leakage monitors can only be polled every " + iMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
@@ -4722,6 +4708,7 @@ namespace UEDMHardwareControl
             window.EnableControl(window.logCurrentDataCheckBox, true);
             ClearLeakageFileSave();
         }
+
         private void IMonitorPollWorker()
         {
             for (; ; )
@@ -4967,7 +4954,7 @@ namespace UEDMHardwareControl
 
         public void UpdateRFFrequencyUsingUIInput()
         {
-            if (Double.TryParse(window.tbRFFrequency.Text, out double RFFrequencyParseValue))
+            if (double.TryParse(window.tbRFFrequency.Text, out double RFFrequencyParseValue))
             {
                 if (RFFrequencyParseValue * 1000000 >= RFFrequencyMin)
                 {
@@ -4993,7 +4980,7 @@ namespace UEDMHardwareControl
         public void IncrementRFFrequencyUsingUIInput()
         {
             int MetricPrefix = GetMWMetricPrefix(window.comboBoxRFIncrementUnit);
-            if (Double.TryParse(window.tbRFFrequencyIncrement.Text, out double RFFrequencyIncrementParseValue))
+            if (double.TryParse(window.tbRFFrequencyIncrement.Text, out double RFFrequencyIncrementParseValue))
             {
                 if ((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency >= RFFrequencyMin)
                 {
