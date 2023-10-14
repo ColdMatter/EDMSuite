@@ -30,6 +30,8 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -587,7 +589,7 @@
     </Reference>
     <Reference Include="Ivi.Visa, Version=7.2.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.QualityTools.Testing.Fakes.16.11.230815\lib\net35\Microsoft.QualityTools.Testing.Fakes.dll</HintPath>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
@@ -892,6 +894,10 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
@@ -899,4 +905,11 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.QualityTools.Testing.Fakes.16.11.230815\build\Microsoft.Qualitytools.Testing.Fakes.targets" Condition="Exists('..\packages\Microsoft.QualityTools.Testing.Fakes.16.11.230815\build\Microsoft.Qualitytools.Testing.Fakes.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.QualityTools.Testing.Fakes.16.11.230815\build\Microsoft.Qualitytools.Testing.Fakes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.QualityTools.Testing.Fakes.16.11.230815\build\Microsoft.Qualitytools.Testing.Fakes.targets'))" />
+  </Target>
 </Project>
