@@ -10,7 +10,6 @@ namespace DAQ.Analog
         string analogTaskName;
         string clock_line;
         string pattern_trigger;
-        string TestingVariableCanDeleteThis;
 
         public void Configure(AnalogPatternBuilderSingleBoard aPattern, int clockRate)
         {
