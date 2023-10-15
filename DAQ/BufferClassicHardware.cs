@@ -177,17 +177,19 @@ namespace DAQ.HAL
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
             // multiple cavities share a single ramp (BaseRamp analog input) + trigger
             // Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
-            TCLConfig tclConfig = new TCLConfig("TCL");
-            tclConfig.Trigger = TCLBoard + "/PFI0";
-            tclConfig.BaseRamp = "VIScavityRampMonitor";
-            tclConfig.TCPChannel = 1190;
-            tclConfig.DefaultScanPoints = 1000;
-            tclConfig.AnalogSampleRate = 15000;
-            tclConfig.SlaveVoltageLowerLimit = 0.0;
-            tclConfig.SlaveVoltageUpperLimit = 10.0;
-            tclConfig.PointsToConsiderEitherSideOfPeakInFWHMs = 4;
-            tclConfig.MaximumNLMFSteps = 20;
-          
+            TCLConfig tclConfig = new TCLConfig("TCL")
+            {
+                Trigger = TCLBoard + "/PFI0",
+                BaseRamp = "VIScavityRampMonitor",
+                TCPChannel = 1190,
+                DefaultScanPoints = 1000,
+                AnalogSampleRate = 15000,
+                SlaveVoltageLowerLimit = 0.0,
+                SlaveVoltageUpperLimit = 10.0,
+                PointsToConsiderEitherSideOfPeakInFWHMs = 4,
+                MaximumNLMFSteps = 20
+            };
+
             string VISCavity = "VISCavity";
             tclConfig.AddCavity(VISCavity);
             tclConfig.Cavities[VISCavity].RampOffset = "VISrampfb";

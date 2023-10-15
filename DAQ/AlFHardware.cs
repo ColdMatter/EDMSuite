@@ -73,19 +73,20 @@ namespace DAQ.HAL
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            
-            //TCLConfig
-            TCLConfig tclConfigMBR = new TCLConfig("MBR-Ref");
-            tclConfigMBR.Trigger = Boards["daq"] + "/PFI8";
-            tclConfigMBR.BaseRamp = "tclCavityRampVoltage";
-            tclConfigMBR.TCPChannel = 1192;
-            tclConfigMBR.DefaultScanPoints = 500;
-            tclConfigMBR.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
-            tclConfigMBR.AnalogSampleRate = 61250;
-            tclConfigMBR.MaximumNLMFSteps = 20;
-            tclConfigMBR.TriggerOnRisingEdge = false;
-            string tclCavity = "tclCavity";
 
+            //TCLConfig
+            TCLConfig tclConfigMBR = new TCLConfig("MBR-Ref")
+            {
+                Trigger = Boards["daq"] + "/PFI8",
+                BaseRamp = "tclCavityRampVoltage",
+                TCPChannel = 1192,
+                DefaultScanPoints = 500,
+                PointsToConsiderEitherSideOfPeakInFWHMs = 12,
+                AnalogSampleRate = 61250,
+                MaximumNLMFSteps = 20,
+                TriggerOnRisingEdge = false
+            };
+            string tclCavity = "tclCavity";
             tclConfigMBR.AddCavity(tclCavity);
             tclConfigMBR.Cavities[tclCavity].AddSlaveLaser("tclOut", "MBRLaser");
             tclConfigMBR.Cavities[tclCavity].MasterLaser = "RbReferenceLaser";
@@ -108,10 +109,12 @@ namespace DAQ.HAL
             Info.Add("TCLDefault", tclConfigMBR);
             Info.Add("DefaultCavity", tclConfigMBR);
 
-            DTCLConfig dtclconfig = new DTCLConfig("SyncCounter");
-            dtclconfig.rampOut = "DTCLRampOut";
-            dtclconfig.timebaseChannel = "20MHzTimebase";
-            dtclconfig.timebaseFrequency = 20000000;
+            DTCLConfig dtclconfig = new DTCLConfig("SyncCounter")
+            {
+                rampOut = "DTCLRampOut",
+                timebaseChannel = "20MHzTimebase",
+                timebaseFrequency = 20000000
+            };
             //dtclconfig.resetOut = "ResetOut";
 
             dtclconfig.AddCavity("tclCavity");

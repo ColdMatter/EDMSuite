@@ -39,12 +39,14 @@ namespace DAQ.FakeData
 					Math.Exp(-Math.Pow((i - centre),2)/(0.9 * gateLength));
 			}
 
-			TOF tofOn = new TOF();
-			tofOn.Data = detectorOnData;
-			tofOn.GateStartTime = gateStart;
-			tofOn.ClockPeriod = clockPeriod;
-			tofOn.Calibration = 1;
-			Shot sOn = new Shot();
+            TOF tofOn = new TOF
+            {
+                Data = detectorOnData,
+                GateStartTime = gateStart,
+                ClockPeriod = clockPeriod,
+                Calibration = 1
+            };
+            Shot sOn = new Shot();
 			for (int j = 0 ; j < numberOfDetectors ; j++) sOn.TOFs.Add(tofOn);
 			return sOn;
 		}
@@ -64,11 +66,13 @@ namespace DAQ.FakeData
                     Math.Exp(-Math.Pow((i - centre), 2) / (0.9 * gateLength));
             }
 
-            TOF tofOn = new TOF();
-            tofOn.Data = detectorOnData;
-            tofOn.GateStartTime = gateStart;
-            tofOn.ClockPeriod = clockPeriod;
-            tofOn.Calibration = 1;
+            TOF tofOn = new TOF
+            {
+                Data = detectorOnData,
+                GateStartTime = gateStart,
+                ClockPeriod = clockPeriod,
+                Calibration = 1
+            };
             Shot sOn = new Shot();
             for (int j = 0; j < numberOfDetectors; j++) sOn.TOFs.Add(tofOn);
             return sOn;

@@ -68,13 +68,15 @@ namespace DAQ.HAL
             {
                 if (!Environs.Debug)
                 {
-                    serial = new SerialSession(address);
-                    serial.BaudRate = 19200;
-                    serial.DataBits = 8;
-                    serial.StopBits = SerialStopBitsMode.One;
-                    serial.Parity = SerialParity.None;
-                    serial.TerminationCharacter = 0xD;
-                    serial.ReadTermination = SerialTerminationMethod.TerminationCharacter;
+                    serial = new SerialSession(address)
+                    {
+                        BaudRate = 19200,
+                        DataBits = 8,
+                        StopBits = SerialStopBitsMode.One,
+                        Parity = SerialParity.None,
+                        TerminationCharacter = 0xD,
+                        ReadTermination = SerialTerminationMethod.TerminationCharacter
+                    };
                     serial.TerminationCharacter = TerminationCharacter;
                 }
                 connected = true;

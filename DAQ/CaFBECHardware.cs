@@ -187,8 +187,10 @@ namespace DAQ.HAL
 
 
             // MOTMaster configuration
-            MMConfig mmConfig = new MMConfig(false, false, false, false);
-            mmConfig.ExternalFilePattern = "*.tif";
+            MMConfig mmConfig = new MMConfig(false, false, false, false)
+            {
+                ExternalFilePattern = "*.tif"
+            };
             Info.Add("MotMasterConfiguration", mmConfig);
 
             // Info.Add("PGType", "dedicated");
