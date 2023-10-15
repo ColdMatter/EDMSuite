@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Ivi.Visa;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
-using Ivi.Visa;
-using DAQ.Environment;
-using System.Threading;
 
 namespace DAQ.HAL
 {
@@ -14,7 +8,7 @@ namespace DAQ.HAL
     {
         public static class CommandTypes
         {
-            public static String QueryFrequency { get { return "f?"; } } 
+            public static String QueryFrequency { get { return "f?"; } }
             public static String SetFrequency { get { return "f"; } }
             public static String QueryPower { get { return "W?"; } }
             public static String SetPower { get { return "W"; } }
@@ -45,7 +39,7 @@ namespace DAQ.HAL
             base.DataBits = 8;
             base.ParitySetting = SerialParity.None;
         }
-        
+
         // Frequency
         public double QueryFrequency()
         {
@@ -61,6 +55,7 @@ namespace DAQ.HAL
                 return 9999; // error parsing serial response from Windfreak
             }
         }
+
         public void SetFrequency(long frequency) // frequency in Hz
         {
             Connect(SerialTerminationMethod.TerminationCharacter);
@@ -85,6 +80,7 @@ namespace DAQ.HAL
                 return 9999; // error parsing serial response from Windfreak
             }
         }
+
         public void SetPower(double power) // power in dBm
         {
             string powerString = power.ToString();
@@ -118,6 +114,7 @@ namespace DAQ.HAL
                 return 9998; // error parsing serial response from Windfreak
             }
         }
+
         public void SetChannel(int channel)
         {
             Connect(SerialTerminationMethod.TerminationCharacter);
@@ -169,12 +166,13 @@ namespace DAQ.HAL
                 return false; // error parsing serial response from Windfreak
             }
         }
+
         /// <summary>
         /// "The SynthHD output power can be muted without fully powering down the PLL and output amplifier stages.  
         /// The amount of muting depends on frequency. hx sets the muting function where x=1=not muted and x=0=muted"
         /// </summary>
         /// <param name="Flag"></param>
-        public void SetRFMute(bool Flag) 
+        public void SetRFMute(bool Flag)
         {
             string cmdstr;
             if (!Flag)
@@ -183,7 +181,7 @@ namespace DAQ.HAL
             }
             else
             {
-                cmdstr = "0"; 
+                cmdstr = "0";
             }
             Connect(SerialTerminationMethod.TerminationCharacter);
             string cmd = CommandTypes.SetRFMute + cmdstr;
@@ -223,6 +221,7 @@ namespace DAQ.HAL
                 return false; // error parsing serial response from Windfreak
             }
         }
+
         /// <summary>
         /// "The SynthHD output power stage can be powered down without fully powering down the PLL and output amplifier stages.  
         /// This command enables and disables the linear regulator that supplies the VGA output power stage to save energy.  
@@ -280,6 +279,7 @@ namespace DAQ.HAL
             {
                 return false; // error parsing serial response from Windfreak
             }
+
         }
         /// <summary>
         /// "The SynthHD PLL can be powered down for absolute minimum noise on the output connector.  
@@ -306,6 +306,5 @@ namespace DAQ.HAL
             Write(cmd, true);
             Disconnect();
         }
-
     }
 }
