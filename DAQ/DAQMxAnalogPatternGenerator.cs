@@ -111,10 +111,7 @@ namespace DAQ.Analog
 
         private void AnalogOutputTaskDone(object sender, TaskDoneEventArgs e)
         {
-            if (analogOutputTask != null)
-            {
-                analogOutputTask.Dispose();
-            }
+            analogOutputTask?.Dispose();
         }
     }
 }
