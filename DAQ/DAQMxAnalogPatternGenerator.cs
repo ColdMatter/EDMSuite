@@ -27,7 +27,7 @@ namespace DAQ.Analog
             analogTaskName = taskName;
             clock_line = analogTaskName + "ClockLine";
             pattern_trigger = analogTaskName + "PatternTrigger";
-            configure_AO(aPattern, clockRate, loop, internalClk);
+            ConfigureAO(aPattern, clockRate, loop, internalClk);
         }
 
         public void Configure(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
@@ -36,10 +36,10 @@ namespace DAQ.Analog
             analogTaskName = "AO";
             clock_line = analogTaskName + "ClockLine";
             pattern_trigger = analogTaskName + "PatternTrigger";
-            configure_AO(aPattern, clockRate, loop, internalClk);
+            ConfigureAO(aPattern, clockRate, loop, internalClk);
         }
 
-        public void configure_AO(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
+        public void ConfigureAO(AnalogPatternBuilderSingleBoard aPattern, int clockRate, bool loop, bool internalClk)
         {
 
             foreach (string keys in aPattern.AnalogPatterns.Keys)
