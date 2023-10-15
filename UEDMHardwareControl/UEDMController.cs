@@ -591,7 +591,7 @@ namespace UEDMHardwareControl
                 }
                 if (status == On)
                 {
-                    string message = "Cryo control warning: The LakeShore 336 temperature controller Relay-" + RelayNumber + " is set such that the cryo will turn be on. \n\nClick OK to continue opening application.";
+                    string message = $"Cryo control warning: The LakeShore 336 temperature controller Relay-{RelayNumber} is set such that the cryo will turn be on. \n\nClick OK to continue opening application.";
                     string caption = "Cryo Control Warning";
                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                     window.SetTextBox(window.tbCryoState, "ON");
@@ -602,7 +602,7 @@ namespace UEDMHardwareControl
                     else
                     {
                         window.SetTextBox(window.tbCryoState, "UNKNOWN");
-                        string message = "Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-" + RelayNumber + ", an unexpected response was provided. The state of the relay is UNKNOWN. \n\nClick OK to continue.";
+                        string message = $"Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-{RelayNumber}, an unexpected response was provided. The state of the relay is UNKNOWN. \n\nClick OK to continue.";
                         string caption = "Cryo Control Exception";
                         MessageBox.Show(message, caption, MessageBoxButtons.OK);
                     }
@@ -625,7 +625,7 @@ namespace UEDMHardwareControl
             else
             {
                 window.SetTextBox(window.tbCryoState, "UNKNOWN");
-                string message = "Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-" + RelayNumber + ", an unexpected response was provided. It is likely that the cryo has not been turned on. \n\nClick OK to continue.";
+                string message = $"Cryo control exception: When querying the state of LakeShore 336 temperature controller Relay-{RelayNumber}, an unexpected response was provided. It is likely that the cryo has not been turned on. \n\nClick OK to continue.";
                 string caption = "Cryo Control Exception";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK);
             }
@@ -652,7 +652,7 @@ namespace UEDMHardwareControl
                 string newstatus = PollCryoStatus();
                 if (newstatus == Off)// Cryo is still off - throw an exception
                 {
-                    string message = "Cryo control exception: The LakeShore 336 temperature controller Relay-" + RelayNumber + " has not been correctly changed. This means that the cryo cooler has not been turned on.\n\nClick OK to continue.";
+                    string message = $"Cryo control exception: The LakeShore 336 temperature controller Relay-{RelayNumber} has not been correctly changed. This means that the cryo cooler has not been turned on.\n\nClick OK to continue.";
                     string caption = "Cryo Control Exception";
                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                 }
@@ -682,7 +682,7 @@ namespace UEDMHardwareControl
                 string newstatus = PollCryoStatus();
                 if (newstatus == On)// Cryo is still on - throw an exception
                 {
-                    string message = "Cryo control exception: The LakeShore 336 temperature controller Relay-" + RelayNumber + " has not been correctly changed. This means that the cryo cooler has not been turned off.\n\nClick OK to continue.";
+                    string message = $"Cryo control exception: The LakeShore 336 temperature controller Relay-{RelayNumber} has not been correctly changed. This means that the cryo cooler has not been turned off.\n\nClick OK to continue.";
                     string caption = "Cryo Control Exception";
                     MessageBox.Show(message, caption, MessageBoxButtons.OK);
                 }
@@ -1410,7 +1410,7 @@ namespace UEDMHardwareControl
                                     }
                                     else
                                     {
-                                        MessageBox.Show("Refresh temperature (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating Temperature (" + SourceTemperatureMax.ToString() + " Kelvin).\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                                        MessageBox.Show($"Refresh temperature ({WarmUpTemperatureSetpoint} Kelvin) is above the safe operating Temperature ({SourceTemperatureMax} Kelvin).\n\nRefresh mode not started.", "Refresh Mode Exception", MessageBoxButtons.OK);
                                     }
                                 }
                                 else
@@ -1945,7 +1945,7 @@ namespace UEDMHardwareControl
                             else EnableDigitalHeaters(1, false);
                         }
                     }
-                    else MessageBox.Show("S2 Temperature setpoint (" + WarmUpTemperatureSetpoint.ToString() + " Kelvin) is above the safe operating temperature (" + SourceTemperatureMax.ToString() + " Kelvin).");
+                    else MessageBox.Show($"S2 Temperature setpoint ({WarmUpTemperatureSetpoint} Kelvin) is above the safe operating temperature ({SourceTemperatureMax} Kelvin).");
                 }
 
 
@@ -2508,7 +2508,7 @@ namespace UEDMHardwareControl
                     PTMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                     window.SetTextBox(window.tbTandPPollPeriodMonitor, PTMonitorPollPeriod.ToString());
                 }
-                else MessageBox.Show("Poll period value too small. The temperature and pressure can only be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Poll period value too small. The temperature and pressure can only be polled every {PTMonitorPollPeriodLowerLimit} ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -2527,9 +2527,7 @@ namespace UEDMHardwareControl
             {
                 // Present user with error message
                 string Title = "User input exception";
-                string Msg = "Poll period value too small. The temperature and pressure can only " +
-                "be polled every " + PTMonitorPollPeriodLowerLimit.ToString() + " ms. The limitin" +
-                "g factor is communication with the LakeShore temperature controller.";
+                string Msg = $"Poll period value too small. The temperature and pressure can only be polled every {PTMonitorPollPeriodLowerLimit} ms. The limiting factor is communication with the LakeShore temperature controller.";
                 MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
             }
         }
@@ -2609,7 +2607,7 @@ namespace UEDMHardwareControl
         {
             if (SourceModeActive)
             {
-                MessageBox.Show(SourceMode + " mode is currently active. To stop temperature and pressure monitoring, please first cancel refresh mode and ensure that the apparatus is in a safe state to be left unmonitored.", "Refresh Mode Exception", MessageBoxButtons.OK);
+                MessageBox.Show($"{SourceMode} mode is currently active. To stop temperature and pressure monitoring, please first cancel refresh mode and ensure that the apparatus is in a safe state to be left unmonitored.", "Refresh Mode Exception", MessageBoxButtons.OK);
             }
             else
             {
@@ -2629,7 +2627,7 @@ namespace UEDMHardwareControl
 
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure pressure and temperature. This is subtracted from the poll period so that the loop is executed at the proper frequency.
+                Stopwatch watch = Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure pressure and temperature. This is subtracted from the poll period so that the loop is executed at the proper frequency.
                 ++count;
                 // Measure temperatures and pressures
                 // Note that locks are used to prevent threads attempting to access the DAQ card or LakeShore 336 temperature controller simultaneously
@@ -3020,7 +3018,7 @@ namespace UEDMHardwareControl
                 {
                     NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
                 }
-                else MessageBox.Show("Setpoint request is outside of the MKS PR4000B flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Setpoint request is outside of the MKS PR4000B flow range ({neonFlowLowerLimit} - {neonFlowUpperLimit} SCCM)", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -3039,7 +3037,7 @@ namespace UEDMHardwareControl
             {
                 lock (LakeShore336Lock)
                 {
-                    receivedData = tempController.QueryPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
+                    receivedData = tempController.QueryPIDLoopValues(int.Parse(window.comboBoxLakeShore336OutputsQuery.Text));
                 }
                 PIDValueStringArray = receivedData.Split(',');
                 window.SetTextBox(window.tbLakeShore336PIDPValueOutput, PIDValueStringArray[0]);
@@ -3064,7 +3062,7 @@ namespace UEDMHardwareControl
                 {
                     lock (LakeShore336Lock)
                     {
-                        tempController.SetPIDLoopValues(Int32.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
+                        tempController.SetPIDLoopValues(int.Parse(window.comboBoxLakeShore336OutputsSet.Text), PIDValueDoubleArray[0], PIDValueDoubleArray[1], PIDValueDoubleArray[2]);
                     }
                 }
             }
@@ -3092,18 +3090,18 @@ namespace UEDMHardwareControl
                     if (PIDValueDoubleArray[i] < PIDValueLowerLimits[i])
                     {
                         PIDValuesInvalid = true;
-                        MessageBox.Show(PIDValueString[i] + " value less than minimum value.", "", MessageBoxButtons.OK);
+                        MessageBox.Show($"{PIDValueString[i]} value less than minimum value.", "", MessageBoxButtons.OK);
                     }
                     if (PIDValueDoubleArray[i] > PIDValueUpperLimits[i])
                     {
                         PIDValuesInvalid = true;
-                        MessageBox.Show(PIDValueString[i] + " value greater than maximum value.", "", MessageBoxButtons.OK);
+                        MessageBox.Show($"{PIDValueString[i]} value greater than maximum value.", "", MessageBoxButtons.OK);
                     }
                 }
                 else
                 {
                     PIDValuesInvalid = true;
-                    MessageBox.Show("Unable to parse " + PIDValueString[i] + " value string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+                    MessageBox.Show($"Unable to parse {PIDValueString[i]} value string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
                 }
             }
 
@@ -3146,7 +3144,7 @@ namespace UEDMHardwareControl
         public void AutotuneOutputSelectionChanged()
         {
             AutotuneOutputSelected = true;
-            AutotuneOutput = Int32.Parse(window.comboBoxLakeShore336OutputsAutotune.Text);
+            AutotuneOutput = int.Parse(window.comboBoxLakeShore336OutputsAutotune.Text);
         }
 
         public void AutotuneModeSelectionChanged()
@@ -3216,7 +3214,6 @@ namespace UEDMHardwareControl
             window.SetRichTextBox(window.rtbAutotuneStatus, StatusOutput);
         }
 
-
         // Heaters
         private readonly int LakeShoreCellOutput = 1;
 
@@ -3230,6 +3227,7 @@ namespace UEDMHardwareControl
                 }
             }
         }
+
         private void EnableLakeShoreHeaterOutput3or4(int Output, bool OnOff)
         {
             lock (LakeShore336Lock)
@@ -3244,6 +3242,7 @@ namespace UEDMHardwareControl
                 }
             }
         }
+
         /// <summary>
         /// Sets the range parameter for a given output.
         /// LakeShore 336 outputs 1 and 2 are the PID loop controlled heaters (100 Watts and 50 Watts respectively).
@@ -3265,7 +3264,9 @@ namespace UEDMHardwareControl
                 }
             }
         }
+
         private bool HeatersEnabled;
+
         private void IsOutputEnabled(int Output)
         {
             string HeaterOutput;
@@ -3288,11 +3289,13 @@ namespace UEDMHardwareControl
         {
             SetDigitalLine(PortName, Enable);
         }
+
         public void EnableAnalogueInputsMonitoringUIControls(bool Enable)
         {
             window.EnableControl(window.btStartMonitoringAnalogueInputs, !Enable); // Disable start button
             window.EnableControl(window.btStopMonitoringAnalogueInputs, Enable); // Enable stop button
         }
+
         public void UpdateAIMonitorPollPeriod()
         {
             if (int.TryParse(window.tbAnalogueMonitoringPollPeriod.Text, out int pollPeriod))
@@ -3301,10 +3304,11 @@ namespace UEDMHardwareControl
                 {
                     AnalogueInputsMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                 }
-                else MessageBox.Show("Poll period value too small. The analogue inputs can only be polled every " + AIMonitorPollPeriodLowerLimit.ToString() + " ms.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Poll period value too small. The analogue inputs can only be polled every {AIMonitorPollPeriodLowerLimit} ms.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
+
         public void UpdateAIPlottingArrays(DateTime MeasurementDateTimeStamp)
         {
             lock (PTPlottingBufferLock)
@@ -4717,7 +4721,7 @@ namespace UEDMHardwareControl
                     IMonitorPollPeriod = pollPeriod; // Update PT monitoring poll period
                     window.SetTextBox(window.tbiMonitorPollPeriod, IMonitorPollPeriod.ToString());
                 }
-                else MessageBox.Show("Poll period value too small. The leakage monitors can only be polled every " + iMonitorPollPeriodLowerLimit.ToString() + " ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Poll period value too small. The leakage monitors can only be polled every {iMonitorPollPeriodLowerLimit} ms. The limiting factor is communication with the LakeShore temperature controller.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -4983,9 +4987,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateRFFrequency(Convert.ToInt32(RFFrequencyParseValue * 1000000));
                     }
-                    else MessageBox.Show("RF frequency too large. The maximum frequency the DDS can provide is " + RFFrequencyMax + " Hz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"RF frequency too large. The maximum frequency the DDS can provide is {RFFrequencyMax} Hz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is " + RFFrequencyMin + " Hz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"RF frequency too small. The minimum frequency the DDS can provide is {RFFrequencyMin} Hz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a double has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5009,9 +5013,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateRFFrequency(Convert.ToInt32((RFFrequencyIncrementParseValue * MetricPrefix) + RFFrequency));
                     }
-                    else MessageBox.Show("RF frequency too large. The maximum frequency the DDS can provide is " + RFFrequencyMax + " Hz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"RF frequency too large. The maximum frequency the DDS can provide is {RFFrequencyMax} Hz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("RF frequency too small. The minimum frequency the DDS can provide is " + RFFrequencyMin + " Hz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"RF frequency too small. The minimum frequency the DDS can provide is {RFFrequencyMin} Hz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that an integer number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5128,9 +5132,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateMWFrequency(channel, Convert.ToInt64(MWFrequencyParseValue * MetricPrefix));
                     }
-                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Frequency too large. The maximum frequency the Windfreak can provide is {MWFrequencyMax / Math.Pow(1000, 3)} GHz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Frequency too small. The minimum frequency the Windfreak can provide is {MWFrequencyMin / Math.Pow(1000, 2)} MHz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5162,9 +5166,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateMWFrequency(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency));
                     }
-                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Frequency too large. The maximum frequency the Windfreak can provide is {MWFrequencyMax / Math.Pow(1000, 3)} GHz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Frequency too small. The minimum frequency the Windfreak can provide is {MWFrequencyMin / Math.Pow(1000, 2)} MHz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5285,7 +5289,7 @@ namespace UEDMHardwareControl
                             }
                             else
                             {
-                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                                MessageBox.Show($"Power resolution too fine. The minimum power step the Windfreak can provide is {MWPowerResolution} dBm.", "User input exception", MessageBoxButtons.OK);
                             }
                         }
                         else
@@ -5293,9 +5297,9 @@ namespace UEDMHardwareControl
                             SetMWPower(channel, MWPowerParseValue);
                         }
                     }
-                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Power too large. The maximum power the Windfreak can provide is {MWPowerMax} dBm.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Power too small. The minimum frequency the Windfreak can provide is {MWPowerMin} dBm.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5345,8 +5349,7 @@ namespace UEDMHardwareControl
                             else
                             {
                                 string Title = "User input exception";
-                                string Msg = "Power resolution too fine. The minimum power step" +
-                                    " the Windfreak can provide is " + MWPowerResolution + " dBm.";
+                                string Msg = $"Power resolution too fine. The minimum power step the Windfreak can provide is {MWPowerResolution} dBm.";
                                 MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                             }
                         }
@@ -5358,24 +5361,21 @@ namespace UEDMHardwareControl
                     else
                     {
                         string Title = "User input exception";
-                        string Msg = "Power too large. The maximum power the Windfreak can" +
-                            " provide is " + MWPowerMax + " dBm.";
+                        string Msg = $"Power too large. The maximum power the Windfreak can provide is {MWPowerMax} dBm.";
                         MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                     }
                 }
                 else
                 {
                     string Title = "User input exception";
-                    string Msg = "Power too small. The minimum frequency the Windfreak can" +
-                        " provide is " + MWPowerMin + " dBm.";
+                    string Msg = $"Power too small. The minimum frequency the Windfreak can provide is {MWPowerMin} dBm.";
                     MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                 }
             }
             else
             {
                 string Title = "User input exception";
-                string Msg = "Unable to parse string. Ensure that a number has been written" +
-                    ", with no additional non-numeric characters.";
+                string Msg = "Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.";
                 MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
             }
         }
@@ -5450,8 +5450,7 @@ namespace UEDMHardwareControl
         public void RFMuteInfoMessage()
         {
             string Title = "Help";
-            string Msg = "The SynthHD output power can be muted without fully powering down " +
-                "the PLL and output amplifier stages. The amount of muting depends on frequency.";
+            string Msg = "The SynthHD output power can be muted without fully powering down the PLL and output amplifier stages. The amount of muting depends on frequency.";
             MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
         }
 
@@ -5655,9 +5654,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateMWFrequencyDetection(channel, Convert.ToInt64(MWFrequencyParseValue * MetricPrefix));
                     }
-                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Frequency too large. The maximum frequency the Windfreak can provide is {MWFrequencyMax / Math.Pow(1000, 3)} GHz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Frequency too small. The minimum frequency the Windfreak can provide is {MWFrequencyMin / Math.Pow(1000, 2)} MHz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5689,9 +5688,9 @@ namespace UEDMHardwareControl
                     {
                         UpdateMWFrequencyDetection(channel, Convert.ToInt64((MWFrequencyIncrementParseValue * MetricPrefix) + CurrentFrequency));
                     }
-                    else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Frequency too large. The maximum frequency the Windfreak can provide is {MWFrequencyMax / Math.Pow(1000, 3)} GHz.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Frequency too small. The minimum frequency the Windfreak can provide is " + MWFrequencyMin / Math.Pow(1000, 2) + " MHz.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Frequency too small. The minimum frequency the Windfreak can provide is {MWFrequencyMin / Math.Pow(1000, 2)} MHz.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5809,7 +5808,7 @@ namespace UEDMHardwareControl
                             }
                             else
                             {
-                                MessageBox.Show("Power resolution too fine. The minimum power step the Windfreak can provide is " + MWPowerResolution + " dBm.", "User input exception", MessageBoxButtons.OK);
+                                MessageBox.Show($"Power resolution too fine. The minimum power step the Windfreak can provide is {MWPowerResolution} dBm.", "User input exception", MessageBoxButtons.OK);
                             }
                         }
                         else
@@ -5817,9 +5816,9 @@ namespace UEDMHardwareControl
                             SetMWPowerDetection(channel, MWPowerParseValue);
                         }
                     }
-                    else MessageBox.Show("Power too large. The maximum power the Windfreak can provide is " + MWPowerMax + " dBm.", "User input exception", MessageBoxButtons.OK);
+                    else MessageBox.Show($"Power too large. The maximum power the Windfreak can provide is {MWPowerMax} dBm.", "User input exception", MessageBoxButtons.OK);
                 }
-                else MessageBox.Show("Power too small. The minimum frequency the Windfreak can provide is " + MWPowerMin + " dBm.", "User input exception", MessageBoxButtons.OK);
+                else MessageBox.Show($"Power too small. The minimum frequency the Windfreak can provide is {MWPowerMin} dBm.", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         }
@@ -5869,8 +5868,7 @@ namespace UEDMHardwareControl
                             else
                             {
                                 string Title = "User input exception";
-                                string Msg = "Power resolution too fine. The minimum power step" +
-                                    " the Windfreak can provide is " + MWPowerResolution + " dBm.";
+                                string Msg = $"Power resolution too fine. The minimum power step the Windfreak can provide is {MWPowerResolution} dBm.";
                                 MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                             }
                         }
@@ -5882,24 +5880,21 @@ namespace UEDMHardwareControl
                     else
                     {
                         string Title = "User input exception";
-                        string Msg = "Power too large. The maximum power the Windfreak can" +
-                            " provide is " + MWPowerMax + " dBm.";
+                        string Msg = $"Power too large. The maximum power the Windfreak can provide is {MWPowerMax} dBm.";
                         MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                     }
                 }
                 else
                 {
                     string Title = "User input exception";
-                    string Msg = "Power too small. The minimum frequency the Windfreak can" +
-                        " provide is " + MWPowerMin + " dBm.";
+                    string Msg = $"Power too small. The minimum frequency the Windfreak can provide is {MWPowerMin} dBm.";
                     MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
                 }
             }
             else
             {
                 string Title = "User input exception";
-                string Msg = "Unable to parse string. Ensure that a number has been written" +
-                    ", with no additional non-numeric characters.";
+                string Msg = "Unable to parse string. Ensure that a number has been written, with no additional non-numeric characters.";
                 MessageBox.Show(Msg, Title, MessageBoxButtons.OK);
             }
         }
