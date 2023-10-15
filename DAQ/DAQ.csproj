@@ -629,6 +629,7 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="DAQMxMultiCardAnalogPatternGenerator.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
