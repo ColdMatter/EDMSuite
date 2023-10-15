@@ -1,9 +1,7 @@
-using System;
-
 using DAQ.Environment;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading;
 
 namespace DAQ.HAL
@@ -24,13 +22,13 @@ namespace DAQ.HAL
     /// Added 22.07.2013: Write some functions to force the motor to approach all angles by rotating anti-clockwise, to see if this improves the backlashing 
     /// 
     /// </summary>
-   
-	public class SerialMotorControllerBCD : DAQ.HAL.Instrument
-	{
+
+    public class SerialMotorControllerBCD : DAQ.HAL.Instrument
+    {
         protected string address;
         protected bool connected = false;
         private static Process motorControllerSession = new Process();
-        private StreamWriter inputStream; 
+        private StreamWriter inputStream;
         private StreamReader outputStream;
         private double posDiffTwoPi = 327680;
         private double maxVoltSetting = 32767;
@@ -50,11 +48,11 @@ namespace DAQ.HAL
             {
                 if (!Environs.Debug)
                 {
-                    motorControllerSession.StartInfo.FileName="bdc-comm-92.exe";
+                    motorControllerSession.StartInfo.FileName = "bdc-comm-92.exe";
                     motorControllerSession.StartInfo.UseShellExecute = false;
                     motorControllerSession.StartInfo.RedirectStandardInput = true;
                     motorControllerSession.StartInfo.RedirectStandardOutput = true;
-                    motorControllerSession.StartInfo.Arguments = "-c "+ address;
+                    motorControllerSession.StartInfo.Arguments = "-c " + address;
                     motorControllerSession.StartInfo.CreateNoWindow = true;
 
                     motorControllerSession.Start(); //Starts the motor controller application
@@ -94,7 +92,7 @@ namespace DAQ.HAL
         {
             return outputStream.ReadLine();
         }
-        
+
         public string ParsedRead()
         {
             string unParsedOutput = outputStream.ReadLine();
@@ -118,7 +116,7 @@ namespace DAQ.HAL
 
         public double PositionToAngle(string position)
         {
-            return (360 * (double.Parse(position) % posDiffTwoPi))  / posDiffTwoPi;
+            return (360 * (double.Parse(position) % posDiffTwoPi)) / posDiffTwoPi;
         }
 
         //Setting to initialise the controller for our rotation mounts
@@ -140,7 +138,7 @@ namespace DAQ.HAL
         public void PositionModeEnable(double startAngle)
         {
             string startingPos = AngleToPosition(startAngle);
-            Write("pos en "+startingPos);
+            Write("pos en " + startingPos);
         }
 
         public void VoltageModeEnable()
@@ -220,12 +218,12 @@ namespace DAQ.HAL
             {
                 Write("pos set " + position);
             }
-           
+
         }
 
         public double MeasurePosition()
         {
-            
+
             Write("stat pos");
             string position = ParsedRead();
             return PositionToAngle(position);
@@ -289,7 +287,7 @@ namespace DAQ.HAL
         {
             Random random = new Random();
             int randomNumber = random.Next(0, (int)posDiffTwoPi);
-            SetPositionWithBacklash(randomNumber.ToString(),backlash);
+            SetPositionWithBacklash(randomNumber.ToString(), backlash);
         }
 
         public void ReturnToZero()

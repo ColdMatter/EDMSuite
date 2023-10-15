@@ -3,11 +3,11 @@ using System;
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	/// This is is the interface to the serial DAQ board
-	/// </summary>
-	public class SerialDAQ : DAQ.HAL.RS232Instrument
-	{
+    /// <summary>
+    /// This is is the interface to the serial DAQ board
+    /// </summary>
+    public class SerialDAQ : DAQ.HAL.RS232Instrument
+    {
 
         public SerialDAQ(String address) : base(address) { }
 
@@ -34,5 +34,5 @@ namespace DAQ.HAL
         }
 
 
-	}
+    }
 }

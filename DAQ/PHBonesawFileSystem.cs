@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DAQ.Environment
+﻿namespace DAQ.Environment
 {
     public class PHBonesawFileSystem : DAQ.Environment.FileSystem
     {

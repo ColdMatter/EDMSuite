@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-using NationalInstruments;
+﻿using NationalInstruments;
 
 namespace DAQ.TransferCavityLock2012
 {

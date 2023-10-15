@@ -1,10 +1,8 @@
-﻿using System;
+﻿using DAQ.Environment;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Collections;
-using DAQ.HAL;
-using DAQ.Environment;
 
 namespace DAQ.Analog
 {
@@ -44,7 +42,7 @@ namespace DAQ.Analog
         {
             StaticAnalogValues[channel] = value;
         }
-        
+
 
         public double[] BuildPattern()
         {

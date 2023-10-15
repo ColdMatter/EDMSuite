@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DAQ.HAL
 {
@@ -31,7 +29,7 @@ namespace DAQ.HAL
         public override double Convert(double input)
         {
             CheckRange(input);
-            
+
             return a * Math.Pow(bs, m * (input - c)) + b;
         }
     }

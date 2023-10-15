@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Text;
+﻿using DAQ.Environment;
+using DAQ.HAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using DAQ.HAL;
-using DAQ.Environment;
 
 namespace DAQ.Pattern
 {
@@ -21,10 +18,10 @@ namespace DAQ.Pattern
             set { boards = value; }
         }
 
-        public PatternBuilder32() 
-		{
-            
-		}
+        public PatternBuilder32()
+        {
+
+        }
 
         public void AddBoard(string address)
         {
@@ -117,7 +114,7 @@ namespace DAQ.Pattern
             PatternBuilder32SingleBoard board = GetDefaultBoard();
             board.AddEdge(channel, time, sense);
         }
-        
+
         /** Convenience method to add two edges. */
         public int Pulse(int startTime, int delay, int duration, int channel)
         {
@@ -149,9 +146,9 @@ namespace DAQ.Pattern
          */
         public UInt32[] Pattern
         {
-            get 
+            get
             {
-                PatternBuilder32SingleBoard board = GetDefaultBoard(); 
+                PatternBuilder32SingleBoard board = GetDefaultBoard();
                 return board.Pattern;
             }
         }
@@ -214,10 +211,10 @@ namespace DAQ.Pattern
 
         public Layout Layout
         {
-            get 
+            get
             {
                 PatternBuilder32SingleBoard board = GetDefaultBoard();
-                return board.Layout; 
+                return board.Layout;
             }
         }
 

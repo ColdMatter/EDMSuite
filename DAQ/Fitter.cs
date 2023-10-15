@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DAQ.Analyze
 {
@@ -24,10 +21,10 @@ namespace DAQ.Analyze
         {
             try
             {
-                 // massage the x-data into the format alglib likes
+                // massage the x-data into the format alglib likes
                 double[,] xDataAlg = new double[xdata.Length, 1];
 
-                for (int i = 0; i < xdata.Length; i++) xDataAlg[i,0] = xdata[i];
+                for (int i = 0; i < xdata.Length; i++) xDataAlg[i, 0] = xdata[i];
                 int info;
                 alglib.lsfitstate state;
                 alglib.lsfitreport rep;

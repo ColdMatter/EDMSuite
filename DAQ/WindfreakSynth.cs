@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Ivi.Visa;
+using System;
 using System.Linq;
-using Ivi.Visa;
 
 namespace DAQ.HAL
 {
@@ -216,7 +216,7 @@ namespace DAQ.HAL
         public WindfreakChannel ChannelB;
 
         protected new int BaudRate = 115200; // Device can accept higher data transfer rate than default for class of 9600
-        
+
         public WindfreakSynth(string address) : base(address)
         {
             ChannelA = new WindfreakChannel(this, false);
@@ -257,9 +257,9 @@ namespace DAQ.HAL
         {
             string[] deviceCommands = new string[] { CommandTypes.Trigger };
             string deviceQueries = string.Concat(deviceCommands.Select(command => command + "?").ToArray());
-            string[] channelCommands = new string[] { 
-                CommandTypes.Frequency, CommandTypes.Amplitude, CommandTypes.PLL, CommandTypes.SweepLower, 
-                CommandTypes.SweepUpper, CommandTypes.SweepStepSize, CommandTypes.SweepStepTime, CommandTypes.SweepDirection 
+            string[] channelCommands = new string[] {
+                CommandTypes.Frequency, CommandTypes.Amplitude, CommandTypes.PLL, CommandTypes.SweepLower,
+                CommandTypes.SweepUpper, CommandTypes.SweepStepSize, CommandTypes.SweepStepTime, CommandTypes.SweepDirection
             };
             string channelQueries = string.Concat(channelCommands.Select(command => command + "?").ToArray());
 
@@ -275,7 +275,7 @@ namespace DAQ.HAL
             }
             Disconnect();
 
-            bool[] channels = new bool[2] {false, true};
+            bool[] channels = new bool[2] { false, true };
             triggerMode = (TriggerTypes)Convert.ToInt32(responses[0]);
             ChannelA.SyncSettings(responses.Skip(1).Take(channelCommands.Length).ToArray());
             ChannelB.SyncSettings(responses.Skip(channelCommands.Length + 1).Take(channelCommands.Length).ToArray());

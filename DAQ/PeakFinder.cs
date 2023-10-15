@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAQ
 {
     public class PeakFinder
-    {   
+    {
 
         public class PeakFinderStateMachine
         {
@@ -69,9 +67,9 @@ namespace DAQ
         public static double peakLocator(List<DataPoint> data)
         {
             List<DataPoint> processed = new List<DataPoint> { };
-            for (int i = 2; i < data.Count()-2; ++i)
+            for (int i = 2; i < data.Count() - 2; ++i)
             {
-                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y) /10));
+                processed.Add(new DataPoint(data[i].x, (-2 * data[i - 2].y - data[i - 1].y + data[i + 1].y + 2 * data[i + 2].y) / 10));
             }
 
 
@@ -83,7 +81,8 @@ namespace DAQ
                 if (processed[mid].y > 0)
                 {
                     low = mid;
-                } else
+                }
+                else
                 {
                     high = mid;
                 }
@@ -92,7 +91,7 @@ namespace DAQ
             //throw new Exception();
 
             return processed[low].x - processed[low].y * (processed[high].x - processed[low].x) / (processed[high].y - processed[low].y);
-            
+
         }
 
         public static double findPeak(double[] xdata, double[] data)
@@ -106,7 +105,8 @@ namespace DAQ
             for (int i = 0; i < data.GetLength(0); ++i)
             {
                 PeakFinderStateMachine.State state = sm.advanceStateMachine(data[i]);
-                switch (state) {
+                switch (state)
+                {
                     case PeakFinderStateMachine.State.ACQUIRING:
                         cachedData.Add(new DataPoint(xdata[i], data[i]));
                         break;

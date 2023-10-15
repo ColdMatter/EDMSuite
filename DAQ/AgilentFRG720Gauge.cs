@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DAQ.Environment;
-using DAQ.HAL;
+﻿using DAQ.Environment;
 using NationalInstruments.DAQmx;
+using System;
 
 namespace DAQ.HAL
 {

@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
-using Data;
-using Data.Scans;
-using DAQ.Analog;
-
-using NationalInstruments;
 using NationalInstruments.DAQmx;
 
 namespace DAQ.Analog
@@ -82,7 +71,7 @@ namespace DAQ.Analog
                 sqm = SampleQuantityMode.FiniteSamples;
                 analogOutputTask.Stream.WriteRegenerationMode = WriteRegenerationMode.DoNotAllowRegeneration;
             }
-            
+
             analogOutputTask.Timing.ConfigureSampleClock(
                     clockSource,
                     clockRate,

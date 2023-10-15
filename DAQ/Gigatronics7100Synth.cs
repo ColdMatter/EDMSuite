@@ -1,5 +1,5 @@
-﻿using System;
-using DAQ.Environment;
+﻿using DAQ.Environment;
+using System;
 
 
 namespace DAQ.HAL
@@ -24,7 +24,7 @@ namespace DAQ.HAL
 
         public override double Amplitude
         {
-            set 
+            set
             {
                 if (!Environs.Debug) Write("PL" + value + "DM"); // the value is entered in dBm
             } // do nothing

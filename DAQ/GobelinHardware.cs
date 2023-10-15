@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using DAQ.TransferCavityLock2012;
+﻿using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
@@ -43,7 +37,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("cPlusPlate", daqBoard + "/ao0");
             AddAnalogOutputChannel("cMinusPlate", daqBoard + "/ao1"); //there are only two Analogue outputs on the board. Switch one to A02 if not using it.
             AddAnalogOutputChannel("DegaussCoil1", daqBoard + "/ao2");
-            
+
 
 
             //// add the boards
@@ -222,8 +216,8 @@ namespace DAQ.HAL
         public override void ConnectApplications()
         {
             // ask the remoting system for access to TCL2012
-           // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-           // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
     }
 }

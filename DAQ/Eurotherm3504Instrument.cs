@@ -1,8 +1,6 @@
-﻿using System;
+﻿using DAQ.Environment;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using DAQ.Environment;
 
 namespace DAQ.HAL
 {
@@ -209,7 +207,7 @@ namespace DAQ.HAL
         public void SetAMSwitch(int loop, bool Man)
         {
             if (Environs.Debug) return;
-            WriteWord(Loops[loop].AMSwitch, Man ? (ushort) 0x01 : (ushort) 0x00);
+            WriteWord(Loops[loop].AMSwitch, Man ? (ushort)0x01 : (ushort)0x00);
         }
 
         public bool GetAMSwitch(int loop)
@@ -238,7 +236,7 @@ namespace DAQ.HAL
         public void SetSP(int loop, short SPinTenthDegreeC)
         {
             if (Environs.Debug) return;
-            byte b = (byte) (SPinTenthDegreeC & 0xFF);
+            byte b = (byte)(SPinTenthDegreeC & 0xFF);
             ushort param = 0;
             param |= b;
             b = (byte)(SPinTenthDegreeC >> 8);
@@ -252,7 +250,7 @@ namespace DAQ.HAL
             short ret = 0;
             ret |= (short)(data[0] << 8);
             ret |= (short)(data[1] & 0xFF);
-            return (double)ret/10;
+            return (double)ret / 10;
         }
 
         public double GetActiveOut(int loop)

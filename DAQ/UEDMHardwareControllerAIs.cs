@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DAQ.Environment;
-using DAQ.HAL;
+﻿using DAQ.Environment;
 using NationalInstruments.DAQmx;
 
 
@@ -63,7 +59,7 @@ namespace DAQ.HAL
             }
         }
 
-        
+
         public double[] AIVoltages()
         {
             double[,] rawVoltages = new double[NumberOfChannels, NumberOfAverages];

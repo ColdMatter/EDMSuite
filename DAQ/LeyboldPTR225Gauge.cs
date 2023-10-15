@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using DAQ.Environment;
-using DAQ.HAL;
 using NationalInstruments.DAQmx;
+using System;
 
 namespace DAQ.HAL
 {
@@ -24,7 +21,7 @@ namespace DAQ.HAL
         private const double MAX_PRESSURE = 1E-2;
 
         private double highPressureWarningLevel = MAX_PRESSURE;
-        
+
         public LeyboldPTR225Gauge(string name, string channelName)
         {
             readPressureTask = new Task("Read pressure -" + name);
@@ -42,7 +39,7 @@ namespace DAQ.HAL
                 readPressureTask.Stop();
 
                 //convert the read voltage to a pressure
-                lastPressure = Math.Pow(10, (voltage - GAUGE_OFFSET)/GAUGE_FACTOR);
+                lastPressure = Math.Pow(10, (voltage - GAUGE_OFFSET) / GAUGE_FACTOR);
 
                 return lastPressure;
             }

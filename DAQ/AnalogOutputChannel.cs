@@ -1,14 +1,13 @@
-using System;
-
 using NationalInstruments.DAQmx;
+using System;
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class AnalogOutputChannel : DAQMxChannel
-	{
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AnalogOutputChannel : DAQMxChannel
+    {
         private double rangeLow, rangeHigh;
         private string device;
 
@@ -26,10 +25,10 @@ namespace DAQ.HAL
             get { return device; }
         }
 
-		public AnalogOutputChannel(String name, String physicalChannel)
-		{
-			this.name = name;
-			this.physicalChannel = physicalChannel;
+        public AnalogOutputChannel(String name, String physicalChannel)
+        {
+            this.name = name;
+            this.physicalChannel = physicalChannel;
             this.rangeLow = -10;
             this.rangeHigh = 10;
             this.device = "/" + physicalChannel.Split('/')[1];
@@ -44,15 +43,15 @@ namespace DAQ.HAL
             this.device = "/" + physicalChannel.Split('/')[1];
         }
 
-		public void AddToTask(Task task, double outputRangeLow, double outputRangeHigh)
-		{
-			task.AOChannels.CreateVoltageChannel(
-				physicalChannel,
-				name,
-				outputRangeLow,
-				outputRangeHigh,
-				AOVoltageUnits.Volts
-				);
-		}
-	}
+        public void AddToTask(Task task, double outputRangeLow, double outputRangeHigh)
+        {
+            task.AOChannels.CreateVoltageChannel(
+                physicalChannel,
+                name,
+                outputRangeLow,
+                outputRangeHigh,
+                AOVoltageUnits.Volts
+                );
+        }
+    }
 }

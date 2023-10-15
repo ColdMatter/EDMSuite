@@ -1,17 +1,15 @@
-using System;
-
 using DAQ.Environment;
+using System;
 using System.Globalization;
-using System.Threading;
 
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	/// This is is the interface to the serial DAQ board
-	/// </summary>
-	public class SerialAgilent53131A : DAQ.HAL.RS232Instrument
-	{
+    /// <summary>
+    /// This is is the interface to the serial DAQ board
+    /// </summary>
+    public class SerialAgilent53131A : DAQ.HAL.RS232Instrument
+    {
 
         public SerialAgilent53131A(String address) : base(address) { }
 
@@ -43,5 +41,5 @@ namespace DAQ.HAL
                 return 170751000.0 + 2000 * (new Random()).NextDouble();
             }
         }
-	}
+    }
 }

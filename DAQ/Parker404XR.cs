@@ -1,7 +1,5 @@
-﻿using System;
-using NationalInstruments.Visa;
-using DAQ.Environment;
-using Ivi.Visa;
+﻿using Ivi.Visa;
+using System;
 
 namespace DAQ.HAL
 {
@@ -9,19 +7,19 @@ namespace DAQ.HAL
     {
         string initFile;
         bool autoTrigger;
-        public Parker404XR(String visaAddress, String initFile): base(visaAddress)
+        public Parker404XR(String visaAddress, String initFile) : base(visaAddress)
         {
-            this.initFile = initFile; 
+            this.initFile = initFile;
         }
         public void Connect()
         {
             base.Connect(SerialTerminationMethod.TerminationCharacter);
             autoTrigger = true;
-            base.Write("1E0\r\n"); 
+            base.Write("1E0\r\n");
         }
         public void Initialize(double acceleration, double deceleration, double distance, double velocity)
         {
-            
+
             //I just hacked the example program built using EASY-V, and examples . I don't know what most of these do. A command reference can be found in the manual for the VIX500.
             base.Write("1E1\r\n");
             base.Write("1K\r\n");
@@ -161,7 +159,7 @@ namespace DAQ.HAL
         }
         public void AutoTriggerEnable()
         {
-            autoTrigger = true;     
+            autoTrigger = true;
         }
         public void AutoTriggerDisable()
         {

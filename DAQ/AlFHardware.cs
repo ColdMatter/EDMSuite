@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-using DAQ.WavemeterLock;
-using DAQ.Pattern;
+﻿using DAQ.DigitalTransferCavityLock;
 using DAQ.TransferCavityLock2012;
-using DAQ.DigitalTransferCavityLock;
-using DAQ.Remoting;
-using System.Runtime.Remoting;
-using System.Collections.Generic;
+using DAQ.WavemeterLock;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
@@ -43,9 +36,9 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("testOut", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("WMLOut", (string)Boards["pg"] + "/ao1", 0, 10);
-            AddAnalogOutputChannel("VECSEL1_PZO", (string)Boards["daq"]+"/ao1", 0, 10);
-            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
-            AddAnalogOutputChannel("VECSEL3_PZO", (string)Boards["pg"]+"/ao0", 0, 10);
+            AddAnalogOutputChannel("VECSEL1_PZO", (string)Boards["daq"] + "/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"] + "/ao1", 0, 10);
+            AddAnalogOutputChannel("VECSEL3_PZO", (string)Boards["pg"] + "/ao0", 0, 10);
             //AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
 
             // map the digital channels of the "pg" card
@@ -100,7 +93,7 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 7);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
-            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
             wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
@@ -119,7 +112,7 @@ namespace DAQ.HAL
 
             dtclconfig.AddCavity("tclCavity");
             dtclconfig.cavities["tclCavity"].ConfigureMasterLaser("RbReferenceLaser", "tclCavityLengthVoltage", "RbCounter", "10MHzRefClock", 10000000);
-            dtclconfig.cavities["tclCavity"].AddSlaveLaser("MBR","MBRLaser", "tclOut", "MBRCounter", "10MHzRefClock", 10000000);
+            dtclconfig.cavities["tclCavity"].AddSlaveLaser("MBR", "MBRLaser", "tclOut", "MBRCounter", "10MHzRefClock", 10000000);
 
             Info.Add("DTCLConfig", dtclconfig);
 
@@ -127,8 +120,8 @@ namespace DAQ.HAL
             Instruments.Add("YAG", new BigSkyYAG("ASRL6::INSTR"));
             Instruments.Add("LeyboldGraphix", new LeyboldGraphixController("ASRL11::INSTR"));
             Instruments.Add("Eurotherm", new Eurotherm3504Instrument("ASRL9::INSTR", 0x1));
-            ((Eurotherm3504Instrument)Instruments["Eurotherm"]).AddLoop(379,0x2,0x3,273,0x4,4963);
-            ((Eurotherm3504Instrument)Instruments["Eurotherm"]).AddLoop(0x400,4964);
+            ((Eurotherm3504Instrument)Instruments["Eurotherm"]).AddLoop(379, 0x2, 0x3, 273, 0x4, 4963);
+            ((Eurotherm3504Instrument)Instruments["Eurotherm"]).AddLoop(0x400, 4964);
 
 
         }

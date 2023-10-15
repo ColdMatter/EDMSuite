@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NationalInstruments.DAQmx;
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.WavemeterLock
 {
@@ -17,7 +13,7 @@ namespace DAQ.WavemeterLock
 
         private string laserChannelName;
 
-        
+
 
         public DAQMxWavemeterLockLaserControlHelper(string channel)
         {

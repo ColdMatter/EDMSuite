@@ -1,56 +1,54 @@
-using System;
-
-using NationalInstruments.Visa;
-using Ivi.Visa;
-
 using DAQ.Environment;
+using Ivi.Visa;
+using NationalInstruments.Visa;
+using System;
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class USBInstrument : Instrument
-	{
-		UsbSession session;
-		string address;
+    /// <summary>
+    /// 
+    /// </summary>
+    public class USBInstrument : Instrument
+    {
+        UsbSession session;
+        string address;
 
         //MessageBasedSessionReader reader;
 
-		public USBInstrument(String visaAddress)
-		{
-			this.address = visaAddress;
-		}
+        public USBInstrument(String visaAddress)
+        {
+            this.address = visaAddress;
+        }
 
-		public override void Connect()
-		{
-            
-			if (!Environs.Debug) 
-			{
-               session = new UsbSession(address);
+        public override void Connect()
+        {
 
-			}
-		}
+            if (!Environs.Debug)
+            {
+                session = new UsbSession(address);
+
+            }
+        }
 
         public override void Disconnect()
-		{
-			if (!Environs.Debug)
-			{
-				// temporarily disabled for HP34401A compatibility
-				//session.Write("LCL");
-				session.Dispose();
-			}
-		}
+        {
+            if (!Environs.Debug)
+            {
+                // temporarily disabled for HP34401A compatibility
+                //session.Write("LCL");
+                session.Dispose();
+            }
+        }
 
         protected override void Write(String command)
-		{
-			session.RawIO.Write(command);
-		}
+        {
+            session.RawIO.Write(command);
+        }
 
         protected override string Read()
-		{
-			return session.RawIO.ReadString();
-		}
+        {
+            return session.RawIO.ReadString();
+        }
 
         protected string Read(int numChars)
         {
@@ -59,8 +57,8 @@ namespace DAQ.HAL
 
         protected char[] ReadBinaryEncodedData(int numChars)
         {
-			session.FormattedIO.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
-			return session.FormattedIO.ReadString(numChars).ToCharArray();
+            session.FormattedIO.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
+            return session.FormattedIO.ReadString(numChars).ToCharArray();
 
             //reader = new MessageBasedSessionReader(session);
             //reader.BinaryEncoding = BinaryEncoding.DefiniteLengthBlockData;
@@ -69,7 +67,7 @@ namespace DAQ.HAL
 
         protected void Timeout()
         {
-            session.TimeoutMilliseconds =VisaConstants.InfiniteTimeout;
+            session.TimeoutMilliseconds = VisaConstants.InfiniteTimeout;
         }
 
         protected void Timeout(int timeoutValue)
@@ -81,5 +79,5 @@ namespace DAQ.HAL
         {
             session.TerminationCharacterEnabled = enabled;
         }
-	}
+    }
 }

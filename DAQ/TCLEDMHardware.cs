@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using DAQ.TransferCavityLock2012;
 using NationalInstruments.DAQmx;
-using DAQ.Pattern;
-using DAQ.TransferCavityLock2012;
-using DAQ.Remoting;
 
 namespace DAQ.HAL
 {

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
-
-namespace DAQ.RfArbitraryWaveformGenerator
+﻿namespace DAQ.RfArbitraryWaveformGenerator
 {
     public class RfAWGConfig
     {
-          
+
         public RfAWGConfig()
         {
             defaultScanPoints = 1000;
@@ -40,7 +34,7 @@ namespace DAQ.RfArbitraryWaveformGenerator
         {
             get { return pulseLengthInMicroseconds; }
             set { pulseLengthInMicroseconds = value; }
-        }     
+        }
 
     }
 }

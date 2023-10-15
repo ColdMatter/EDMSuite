@@ -1,13 +1,6 @@
-using System;
-using System.Collections;
-using System.Runtime.Remoting;
-using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
-using DAQ.Remoting;
 using DAQ.WavemeterLock;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
@@ -71,8 +64,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("Probep1", digitalPatternBoardAddress + "/ai12", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input
             AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - v3
             AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
-            //AddAnalogInputChannel("Probep4", digitalPatternBoardAddress + "/ai13", AITerminalConfiguration.Rse); //v2 photodiode slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
-           // AddAnalogInputChannel("Probep5", digitalPatternBoardAddress + "/ai19", AITerminalConfiguration.Rse); //used for the attisse
+                                                                                                                 //AddAnalogInputChannel("Probep4", digitalPatternBoardAddress + "/ai13", AITerminalConfiguration.Rse); //v2 photodiode slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
+                                                                                                                 // AddAnalogInputChannel("Probep5", digitalPatternBoardAddress + "/ai19", AITerminalConfiguration.Rse); //used for the attisse
 
             // Lasers locked to Probe cavity
             AddAnalogOutputChannel("slowingLaser", digitalPatternBoardAddress + "/ao2", -4, 4); // connected to slowing v0 now
@@ -107,7 +100,7 @@ namespace DAQ.HAL
             tclConfigProbe.AnalogSampleRate = 245000 * 1 / 8;//reduce number 12/3/21 by factr 10
             tclConfigProbe.MaximumNLMFSteps = 20;
             tclConfigProbe.TriggerOnRisingEdge = true;
-            
+
             string probe = "ProbeCavity";
             tclConfigProbe.AddCavity(probe);
             tclConfigProbe.Cavities[probe].AddSlaveLaser("LatticeProbeLaser", "Probep1");
@@ -128,7 +121,7 @@ namespace DAQ.HAL
             //tclConfigProbe.Cavities[probe].AddDefaultGain("v2laser", 0.1);
             //tclConfigProbe.Cavities[probe].AddFSRCalibration("v2laser", 3.84);
             //tclConfigProbe.Cavities[probe].AddDefaultGain("mattisse", 0.1);
-           // tclConfigProbe.Cavities[probe].AddFSRCalibration("mattisse", 3.84);
+            // tclConfigProbe.Cavities[probe].AddFSRCalibration("mattisse", 3.84);
 
             string v2cavity = "V2Cavity";
             tclConfigProbe.AddCavity(v2cavity);
@@ -219,9 +212,9 @@ namespace DAQ.HAL
             ////lattice scanmaster
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 0, 3);
-            
+
             //AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 0, 8);//connect to daq board PFI 0 - not needed 01/2/22
-            
+
             //AddDigitalOutputChannel("analogtriggertest0", digitalPatternBoardAddress, 0, 4);
             //AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 0, 5);
             //AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 9);
@@ -270,8 +263,8 @@ namespace DAQ.HAL
             AddCounterChannel("sample clock", ExtraBoard + "/ctr1"); // channel used for photon counting PFI13 is output 
 
 
-            AddCounterChannel("westLeakage", digitalPatternBoardAddress+"/ctr0");
-            AddCounterChannel("eastLeakage", digitalPatternBoardAddress+"/ctr1");
+            AddCounterChannel("westLeakage", digitalPatternBoardAddress + "/ctr0");
+            AddCounterChannel("eastLeakage", digitalPatternBoardAddress + "/ctr1");
 
             AddAnalogInputChannel("cPlusMonitor", digitalPatternBoardAddress + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", digitalPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);

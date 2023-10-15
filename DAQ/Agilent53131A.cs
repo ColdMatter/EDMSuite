@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-
 using DAQ.Environment;
+using System;
 
 namespace DAQ.HAL
 {
     public class Agilent53131A : FrequencyCounter
     {
         public Agilent53131A(String visaAddress) : base(visaAddress)
-		{}
+        { }
 
         private int channel = 1;
 
@@ -45,11 +41,11 @@ namespace DAQ.HAL
                 }
                 else
                 {
-                    return 170751000.0 + 2000 *(new Random()).NextDouble();
+                    return 170751000.0 + 2000 * (new Random()).NextDouble();
                 }
             }
         }
-       
+
 
         public override double Amplitude
         {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DAQ.Environment
+﻿namespace DAQ.Environment
 {
     public class SunshineFileSystem : DAQ.Environment.FileSystem
     {
@@ -10,7 +8,7 @@ namespace DAQ.Environment
             Paths.Add("scanMasterDataPath", "c:\\Data\\LCMCaF\\");
             Paths.Add("mathPath", "c:/program files/wolfram research/mathematica/7.0/mathkernel.exe");
             Paths.Add("fakeData", "c:\\Data\\examples\\");
-          //  Paths.Add("decelerationUtilitiesPath", "d:\\Tools\\");
+            //  Paths.Add("decelerationUtilitiesPath", "d:\\Tools\\");
             Paths.Add("vcoLockData", "c:\\Data\\VCO Lock\\");
             Paths.Add("transferCavityData", "c:\\Data\\LCMCaF\\TCL\\");
 

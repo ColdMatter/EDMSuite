@@ -1,19 +1,15 @@
-﻿using System;
-using System.Threading;
-
-using NationalInstruments.DAQmx;
-
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
 
 // this is the DAQMx implementation of TransferCavityLock.
 // Note to self: this is where Tasks are created, where read and write commands are kept.
 
 namespace DAQ.TransferCavityLock
 {
-    
+
     public class DAQMxTransferCavityLockHelper : TransferCavityLockable
-    {        
+    {
 
         private Task outputLaserTask; //Some stuff to let you write to laser
         private AnalogOutputChannel laserChannel;
@@ -49,10 +45,10 @@ namespace DAQ.TransferCavityLock
             cavityTriggerInputName = "analogTrigger3";
             photodiodeTriggerInputName = "analogTrigger2";
             triggerOutput = "cavityTriggerOut";
-            
+
         }
         public DAQMxTransferCavityLockHelper
-            (string cavity, string cavityTriggerInput, string laser, string masterPD, 
+            (string cavity, string cavityTriggerInput, string laser, string masterPD,
             string slavePD, string photodiodeTriggerInput, string triggerOutputName)
         {
             cavityChannelName = cavity;
@@ -68,7 +64,7 @@ namespace DAQ.TransferCavityLock
 
         public void ConfigureCavityScan(int numberOfSteps, bool autostart)
         {
-            
+
             outputCavityTask = new Task("CavityPiezoVoltage");
             cavityChannel =
                         (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[cavityChannelName];
@@ -89,14 +85,14 @@ namespace DAQ.TransferCavityLock
         }
         //The photodiode inputs have been bundled into one task. We never read one photodiode without reading
         //the other.
-        public void ConfigureReadPhotodiodes(int numberOfMeasurements, bool autostart) 
+        public void ConfigureReadPhotodiodes(int numberOfMeasurements, bool autostart)
         {
             readPhotodiodesTask = new Task("ReadPhotodiodes");
             referenceLaserChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[masterPDChannelName];
             lockingLaserChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels[slavePDChannelName];
             referenceLaserChannel.AddToTask(readPhotodiodesTask, 0, 10);
             lockingLaserChannel.AddToTask(readPhotodiodesTask, 0, 10);
-            
+
             if (!autostart)
             {
                 readPhotodiodesTask.Timing.ConfigureSampleClock(
@@ -126,7 +122,7 @@ namespace DAQ.TransferCavityLock
             laserWriter.WriteSingleSample(true, voltage);
             outputLaserTask.Start();
         }
-        public void ConfigureScanTrigger() 
+        public void ConfigureScanTrigger()
         {
             sendScanTriggerTask = new Task("Send Cavity UnlockCavity Trigger");
             sendTriggerChannel = (DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[triggerOutput];
@@ -142,31 +138,31 @@ namespace DAQ.TransferCavityLock
         #region Methods for controlling hardware
 
 
-        public void ScanCavity(double[] rampVoltages, bool autostart) 
+        public void ScanCavity(double[] rampVoltages, bool autostart)
         {
             cavityWriter.WriteMultiSample(autostart, rampVoltages);
 
         }
-        public double[,] ReadPhotodiodes(int numberOfMeasurements) 
+        public double[,] ReadPhotodiodes(int numberOfMeasurements)
         {
             double[,] tempData = new double[2, numberOfMeasurements];
             tempData = photodiodesReader.ReadMultiSample(numberOfMeasurements);
             return tempData;
         }
-        public void SetLaserVoltage(double voltage) 
+        public void SetLaserVoltage(double voltage)
         {
             outputLaserTask.Stop();
             laserWriter.WriteSingleSample(true, voltage);
             outputLaserTask.Start();
         }
 
-        public void SendScanTriggerAndWaitUntilDone() 
-        {            
+        public void SendScanTriggerAndWaitUntilDone()
+        {
             triggerWriter.WriteSingleSampleSingleLine(true, false);
             sendScanTriggerTask.Stop();
             triggerWriter.WriteSingleSampleSingleLine(true, true);
             sendScanTriggerTask.Start();
-            
+
             outputCavityTask.WaitUntilDone();
             readPhotodiodesTask.WaitUntilDone();
         }
@@ -180,7 +176,7 @@ namespace DAQ.TransferCavityLock
             outputCavityTask.Stop();
             readPhotodiodesTask.Stop();
         }
-        
+
         public void ReleaseCavityHardware()
         {
             readPhotodiodesTask.Dispose();

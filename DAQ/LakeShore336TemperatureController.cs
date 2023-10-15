@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
+﻿using DAQ.Environment;
 using Ivi.Visa;
-using DAQ.Environment;
+using System;
 using System.Threading;
 
 
-                               
+
 namespace DAQ.HAL
 {
     public class LakeShore336TemperatureController : RS232Instrument
@@ -90,9 +85,9 @@ namespace DAQ.HAL
             if (!Environs.Debug)
             {
                 serial.RawIO.Write("INNAME? " + channel + "\n");
-                
+
                 resp = System.Text.Encoding.UTF8.GetString(serial.RawIO.Read());
-                
+
             }
             Disconnect();
             return resp.Trim();
@@ -101,7 +96,7 @@ namespace DAQ.HAL
         ///<summary>
         /// Set the channel character in the temperature query command
         ///</summary>
-        private string SetTChannel(int Channel, string TUnitCommand) 
+        private string SetTChannel(int Channel, string TUnitCommand)
         {
             string[] Channels = { "0", "A", "B", "C", "D" }; // 0 = all channels
             return String.Concat(TUnitCommand, Channels[Channel]); // Concatenate the channel and command. The command should already include the temperature unit.
@@ -118,7 +113,7 @@ namespace DAQ.HAL
             {
                 Connect(SerialTerminationMethod.TerminationCharacter);
                 string temperatureRequest = BuildTempQuery(Channel, TUnit); // build the temperature query command: add a character to it to select the desired temperature unit ("K" or "C" prefix) and then add the desired channel to the command ("0", "A", "B", "C" or "D" suffix). Finally, add the carriage return to the command.
-                
+
                 string response = Query(temperatureRequest);
                 Disconnect();
                 return response;
@@ -126,9 +121,9 @@ namespace DAQ.HAL
             else { return "err"; }
         }
 
-        
 
-        
+
+
         #endregion
 
         #region LakeShore 336 Relay Control/Queries
@@ -180,7 +175,7 @@ namespace DAQ.HAL
             }
             else return false; // The input parameters were not valid. 
         }
-        
+
         /// <summary>
         /// Write a command to the LakeShore 336 temperature controller to change the relay parameters. 
         /// This function will return a bool flag to indicate whether or not it has successfully written to the device (true = success). 
@@ -217,7 +212,7 @@ namespace DAQ.HAL
         /// <returns></returns>
         public string QueryRelayControlParameters(int RelayNumber)
         {
-            if(ValidateRelayNumber(RelayNumber))
+            if (ValidateRelayNumber(RelayNumber))
             {
                 string response = "";
                 if (!Environs.Debug)
@@ -247,7 +242,7 @@ namespace DAQ.HAL
                 string query = SetLineFeed(String.Concat(CommandTypes.RelayStatusQuery, RelayNumber));
                 string response = Query(query);
                 Thread.Sleep(500);
-                Disconnect(); 
+                Disconnect();
                 string trimResponse = response.Trim();// Trim in case there are unexpected white spaces.
                 string status = trimResponse.Substring(0, 1); // Take the first character of the string.
                 return status;
@@ -313,7 +308,7 @@ namespace DAQ.HAL
         public void SetWarmupSupplyParameter(int Output, int Control, double Percentage)
         {
             Connect(SerialTerminationMethod.TerminationCharacter);
-            string cmd = SetLineFeed(String.Concat(CommandTypes.WarmupSupplyParameterCommand, Output, ",", Control,",",Percentage));
+            string cmd = SetLineFeed(String.Concat(CommandTypes.WarmupSupplyParameterCommand, Output, ",", Control, ",", Percentage));
             Write(cmd, true);
             Thread.Sleep(1000);
             Disconnect();
@@ -416,7 +411,7 @@ namespace DAQ.HAL
             Disconnect();
             return response;
         }
-        
+
 
         #endregion
     }

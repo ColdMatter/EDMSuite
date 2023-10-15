@@ -1,5 +1,5 @@
-using System;
 using DAQ.Environment;
+using System;
 
 
 namespace DAQ.HAL
@@ -11,15 +11,15 @@ namespace DAQ.HAL
     class EIP578Synth : Synth
     {
         public EIP578Synth(String visaAddress) : base(visaAddress)
-		{}
+        { }
 
-		override public double Frequency
-		{
-			set
-			{
-				if (!Environs.Debug) Write("PF" + value + "K");
-			}
-		}
+        override public double Frequency
+        {
+            set
+            {
+                if (!Environs.Debug) Write("PF" + value + "K");
+            }
+        }
 
         public override double Amplitude
         {

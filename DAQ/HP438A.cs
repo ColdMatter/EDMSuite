@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-
 using DAQ.Environment;
+using System;
 
 namespace DAQ.HAL
 {
@@ -48,7 +44,7 @@ namespace DAQ.HAL
             }
         }
 
-       
+
     }
 }
 

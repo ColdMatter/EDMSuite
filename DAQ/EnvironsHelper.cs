@@ -1,7 +1,6 @@
+using DAQ.HAL;
 using System;
 using System.Collections;
-
-using DAQ.HAL;
 
 namespace DAQ.Environment
 {
@@ -194,7 +193,7 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                #if EDM
+#if EDM
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DAQ.Environment;
-using DAQ.HAL;
+﻿using DAQ.Environment;
 using NationalInstruments.DAQmx;
+using System;
 
 
 namespace DAQ.HAL
@@ -61,7 +58,7 @@ namespace DAQ.HAL
                 readSF6TemperatureTask.Control(TaskAction.Verify);
             }
         }
-        
+
 
         public SiliconDiodeTemperatureMonitors()
         {
@@ -91,8 +88,8 @@ namespace DAQ.HAL
                 readSF6TemperatureTask.Stop();
 
                 double[] Voltages = { voltageCell, voltageS1, voltageS2, voltageSF6 };
-                
-                for(int ii = 0; ii < 3; ii++)
+
+                for (int ii = 0; ii < 3; ii++)
                 {
                     rawVoltages[ii, n] = Voltages[ii];
                 }
@@ -103,12 +100,12 @@ namespace DAQ.HAL
             double s2VoltageSum = 0;
             double sf6VoltageSum = 0;
 
-            for(int n = 0; n < NumberOfAverages; n++)
+            for (int n = 0; n < NumberOfAverages; n++)
             {
                 cellVoltageSum += rawVoltages[0, n];
                 s1VoltageSum += rawVoltages[1, n];
                 s2VoltageSum += rawVoltages[2, n];
-                sf6VoltageSum += rawVoltages[3, n]; 
+                sf6VoltageSum += rawVoltages[3, n];
             }
 
             double averageCellVoltage = cellVoltageSum / NumberOfAverages;
@@ -127,8 +124,8 @@ namespace DAQ.HAL
         private double[] VoltageTemperatureConversion(double[] Voltages)
         {
             double[] Temperatures = new double[4];
-            
-            for (int i = 0; i<4; i++)
+
+            for (int i = 0; i < 4; i++)
             {
                 Temperatures[i] = ChebychevPolynomialsConversion(Voltages[i]);
             }
@@ -158,7 +155,7 @@ namespace DAQ.HAL
                     }
                     else
                     {
-                        if (Voltage > VoltageAt500K & Voltage < VoltageAt100K) 
+                        if (Voltage > VoltageAt500K & Voltage < VoltageAt100K)
                         {
                             Temperature = ChebychevPolynomialsLoop(Voltage, Range100to500K);
                         }
@@ -179,9 +176,9 @@ namespace DAQ.HAL
             double X = ((Voltage - Constants[0]) - (Constants[1] - Voltage)) / (Constants[1] - Constants[0]);
             double T = 0;
 
-            for (int i = 0; i < Constants.Length-2; i++)
+            for (int i = 0; i < Constants.Length - 2; i++)
             {
-                T += (Constants[i+2] * Math.Cos(i * Math.Acos(X)));
+                T += (Constants[i + 2] * Math.Cos(i * Math.Acos(X)));
             }
 
             return T;

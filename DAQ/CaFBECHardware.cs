@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Collections;
-
-using NationalInstruments;
+﻿using DAQ.WavemeterLock;
 using NationalInstruments.DAQmx;
-using DAQ.WavemeterLock;
-using DAQ.Pattern;
-using DAQ.Remoting;
-using DAQ.TransferCavityLock2012;
+using System.Collections.Generic;
 
 namespace DAQ.HAL
 {
@@ -38,7 +27,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("slowingSwitch", pgBoard, 0, 31);
             AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);  // send a TTL during which the chirping function is generated, the TCL feedback is blocked, and the chirping voltage is summed up.
-            
+
             AddDigitalOutputChannel("slowingAOM", pgBoard, 0, 23);
             AddDigitalOutputChannel("slowingRepumpAOM", pgBoard, 0, 24);
             AddDigitalOutputChannel("coolingAOM", pgBoard, 0, 22);
@@ -65,9 +54,9 @@ namespace DAQ.HAL
 
             //TCL Input channels
             AddAnalogInputChannel("sumVolt", TCLInput + "/ai5", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("v00Signal", TCLInput + "/ai3", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("v10Signal", TCLInput + "/ai10", AITerminalConfiguration.Rse);    
+            AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v00Signal", TCLInput + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v10Signal", TCLInput + "/ai10", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("bXSignal", TCLInput + "/ai14", AITerminalConfiguration.Rse);
 
             AddAnalogInputChannel("southSignal", TCLInput + "/ai6", AITerminalConfiguration.Rse);
@@ -83,7 +72,7 @@ namespace DAQ.HAL
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
             AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3", -1, 1);
-            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4", - 1, 1);
+            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4", -1, 1);
             AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7", 0, 10);
             AddAnalogOutputChannel("southOffset", TCLOutput + "/ao1");
             AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5", 0, 10);
@@ -228,5 +217,5 @@ namespace DAQ.HAL
         }
 
     }
- 
+
 }

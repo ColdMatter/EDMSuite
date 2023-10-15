@@ -1,27 +1,19 @@
-using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using DAQ.Remoting;
-using DAQ.TransferCavityLock2012;
-using System.Runtime.Remoting;
-using System.Collections.Generic;
 using DAQ.WavemeterLock;
+using NationalInstruments.DAQmx;
+using System.Collections.Generic;
 
 namespace DAQ.HAL
 {
-	
-	/// <summary>
-	/// This is the specific hardware that the molecule MOT experiment has. This class conforms
-	/// to the Hardware interface.
-	/// </summary>
-	public class MoleculeMOTHardware : DAQ.HAL.Hardware
-	{
 
-		public MoleculeMOTHardware()
-		{
+    /// <summary>
+    /// This is the specific hardware that the molecule MOT experiment has. This class conforms
+    /// to the Hardware interface.
+    /// </summary>
+    public class MoleculeMOTHardware : DAQ.HAL.Hardware
+    {
+
+        public MoleculeMOTHardware()
+        {
 
             //Boards
             string digitalPatternBoardName = "digitalPattern";
@@ -57,11 +49,11 @@ namespace DAQ.HAL
             string digitalPatternBoardAddress2 = "/PXI1Slot4";//PXI-6535
             Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
 
-            
+
             string analogPatternBoardName2 = "analogPattern2";
             string analogPatternBoardAddress2 = "/PXI1Slot7";//PXI-6723
             Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
-            
+
 
             // Channel Declarations
 
@@ -77,7 +69,7 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
             AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2"); 
+            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
             //AddAnalogOutputChannel("rbD1Frequency", tclBoard1Address + "/ao0"); //Reused Channel 14/03/23
 
             AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
@@ -135,7 +127,7 @@ namespace DAQ.HAL
 
             //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
             AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
-            
+
             AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
             AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
             AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress, 3, 4);
@@ -163,7 +155,7 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
-            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21"); 
+            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21");
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
@@ -230,7 +222,7 @@ namespace DAQ.HAL
             Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
             Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
-            Info.Add("flowConversionHe", 0.2); 
+            Info.Add("flowConversionHe", 0.2);
             AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
 
@@ -239,7 +231,7 @@ namespace DAQ.HAL
             //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
             //wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
-            
+
             wmlConfig.AddSlaveLaser("v0", "v00Lock", 1);
             wmlConfig.AddLaserConfiguration("v0", 494.432329, -100, -1000);
 
@@ -355,7 +347,7 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            
+
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
 
@@ -375,12 +367,12 @@ namespace DAQ.HAL
             
             */
 
-            
+
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", analogPatternBoardAddress);
             analogBoards.Add("SecondAO", analogPatternBoardAddress2);
             Info.Add("AnalogBoards", analogBoards);
-            
+
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
@@ -411,13 +403,13 @@ namespace DAQ.HAL
             // Calibrations
             //AddCalibration("freqToVoltage", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
             //AddCalibration("motAOMAmp", new PolynomialCalibration(new double[] {6.2871, -0.5907, -0.0706, -0.0088, -0.0004}, -12, 4)); // this is a polynomial fit (up to quartic) to measured behaviour
-            
-		}
 
-        
-       public override void ConnectApplications()
+        }
+
+
+        public override void ConnectApplications()
         {
 
         }
-	}
+    }
 }

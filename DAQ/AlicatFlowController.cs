@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
+﻿using DAQ.Environment;
 using Ivi.Visa;
-using DAQ.Environment;
-using System.Threading;
+using NationalInstruments.Visa;
+using System;
 
 
 

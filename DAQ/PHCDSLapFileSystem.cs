@@ -1,5 +1,3 @@
-using System;
-
 namespace DAQ.Environment
 {
     /// <summary>

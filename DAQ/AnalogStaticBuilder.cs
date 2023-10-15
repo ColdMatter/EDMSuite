@@ -1,11 +1,8 @@
-﻿using System;
+﻿using DAQ.Environment;
+using DAQ.HAL;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Collections;
-using System.Linq;
-using DAQ.HAL;
-using DAQ.Environment;
 
 namespace DAQ.Analog
 {
@@ -72,6 +69,6 @@ namespace DAQ.Analog
             }
         }
 
-        
+
     }
 }

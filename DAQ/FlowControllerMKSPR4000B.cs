@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
-using Ivi.Visa;
-using DAQ.Environment;
-using System.Globalization;
+﻿using Ivi.Visa;
+using System;
 using System.Threading;
 
 namespace DAQ.HAL
@@ -83,7 +76,7 @@ namespace DAQ.HAL
         private void SetParameter(string cmd, string parameter)
         {
             ConnectToFlowController();
-            string command = SetCarriageReturn(String.Concat(cmd,",", parameter));
+            string command = SetCarriageReturn(String.Concat(cmd, ",", parameter));
             Write(command);
             Thread.Sleep(100);
             Disconnect();
@@ -192,7 +185,7 @@ namespace DAQ.HAL
         /// <returns></returns>
         public string[] QueryChannelSetPointAndOnOffState(string ChannelNumber)
         {
-            string response = QueryParameter(CommandTypes.AccessChannel,ChannelNumber);
+            string response = QueryParameter(CommandTypes.AccessChannel, ChannelNumber);
             string[] SetPointAndOnOffState = response.Split(',');
             return SetPointAndOnOffState;
         }
@@ -229,7 +222,7 @@ namespace DAQ.HAL
         {
             SetChannelParameter(CommandTypes.Setpoint, ChannelNumber, Setpoint);
         }
-        
+
 
         #endregion
 

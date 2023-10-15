@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
-using Data;
-using Data.Scans;
-using DAQ.Analog;
-
-using NationalInstruments;
 using NationalInstruments.DAQmx;
 
 namespace DAQ.Analog
@@ -93,9 +82,9 @@ namespace DAQ.Analog
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo(pattern_trigger),
                 DigitalEdgeStartTriggerEdge.Rising);
-            
 
-            
+
+
             analogOutputTask.Control(TaskAction.Verify);
 
         }
@@ -119,7 +108,7 @@ namespace DAQ.Analog
         private void AddToAnalogOutputTask(Task task, string channel)
         {
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
-            c.AddToTask(task, c.RangeLow, c.RangeHigh); 
+            c.AddToTask(task, c.RangeLow, c.RangeHigh);
         }
 
         private void analogOutputTask_Done(object sender, TaskDoneEventArgs e)

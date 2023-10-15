@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-
-namespace DAQ.TransferCavityLock
+﻿namespace DAQ.TransferCavityLock
 {
     /// <summary>
     /// This is an interface for all the capabilities necessary for a transfer cavity lock.
@@ -19,13 +16,13 @@ namespace DAQ.TransferCavityLock
 
         void StartScan();
         void StopScan();
-        
+
         void SetLaserVoltage(double voltage);
         void ReleaseCavityHardware();
         void ReleaseLaser();
         void SendScanTriggerAndWaitUntilDone();
 
     }
-    
+
 
 }

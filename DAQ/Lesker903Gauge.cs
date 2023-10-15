@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using DAQ.Environment;
-using DAQ.HAL;
 using NationalInstruments.DAQmx;
+using System;
 
 namespace DAQ.HAL
 {
@@ -23,7 +20,7 @@ namespace DAQ.HAL
         private const double MAX_PRESSURE = 1E-1;
 
         private double highPressureWarningLevel = MAX_PRESSURE;
-        
+
         public Lesker903Gauge(string name, string channelName)
         {
             readPressureTask = new Task("Read pressure -" + name);

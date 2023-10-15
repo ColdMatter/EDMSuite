@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
-using Ivi.Visa;
-using DAQ.Environment;
+﻿using Ivi.Visa;
+using System;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,7 +9,7 @@ namespace DAQ.HAL
     {
         public static class CommandTypes
         {
-            public static String QueryFrequency { get { return "frequency query "; } } 
+            public static String QueryFrequency { get { return "frequency query "; } }
             public static String SetFrequency { get { return "frequency set "; } }
         }
 
@@ -55,7 +49,7 @@ namespace DAQ.HAL
             }
             Thread.Sleep(2000);
         }
-        
+
         // Frequency
         public string QueryFrequency()
         {

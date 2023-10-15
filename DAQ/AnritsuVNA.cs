@@ -1,5 +1,5 @@
-﻿using System;
-using DAQ.Environment;
+﻿using DAQ.Environment;
+using System;
 
 namespace DAQ.HAL
 {
@@ -61,7 +61,7 @@ namespace DAQ.HAL
                 Write("MOF;CH1;HLD;SWR;TRS;WFS;ASC;*OPC?"); // Prepare the channel for magnitude data
                 string opcMag = Read(); // Wait for operations complete
                 Write("FDH2;OFV"); // Prepare to read frequency data
-                string freq = Read(numPoints*19); // Read frequency data
+                string freq = Read(numPoints * 19); // Read frequency data
                 DateTime startTime = DateTime.UtcNow; /// Set a start time for read timeout
                 while (true)
                 {
@@ -114,10 +114,10 @@ namespace DAQ.HAL
                 Write("MOF;CH1;HLD;MAG;TRS;WFS;ASC;*OPC?"); // Prepare the channel for magnitude data
                 string opcMag = Read(); // Wait for operations complete
                 Write("FDH2;OFV"); // Prepare to read frequency data
-                string freq = Read(19*numPoints); // Read frequency data
+                string freq = Read(19 * numPoints); // Read frequency data
                 DateTime startTime = DateTime.UtcNow;
                 while (true)
-                {                    
+                {
                     if (freq.Length == numPoints * 19)
                     {
                         break;
@@ -128,7 +128,7 @@ namespace DAQ.HAL
                     }
                 }
                 Write("FDH2;OFD"); // Prepare to read magnitude trace data
-                string data = Read(19*numPoints); // Read magnitude trace data
+                string data = Read(19 * numPoints); // Read magnitude trace data
                 startTime = DateTime.UtcNow;
                 while (true)
                 {
@@ -167,7 +167,7 @@ namespace DAQ.HAL
                 Write("MOF;CH2;HLD;PHA;TRS;WFS;*OPC?"); /// Prepare the channel for phase data
                 string opcPha = Read();
                 Write("FDH2;OFV"); // Prepare to read frequency data
-                string freq = Read(19*numPoints); // Read frequency data
+                string freq = Read(19 * numPoints); // Read frequency data
                 DateTime startTime = DateTime.UtcNow;
                 while (true)
                 {
@@ -182,7 +182,7 @@ namespace DAQ.HAL
 
                 }
                 Write("FDH2;OFD"); // Prepare to read phase data
-                string data = Read(19*numPoints); // Read phase data
+                string data = Read(19 * numPoints); // Read phase data
                 startTime = DateTime.UtcNow;
                 while (true)
                 {

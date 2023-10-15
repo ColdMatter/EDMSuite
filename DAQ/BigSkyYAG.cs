@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.Visa;
-using Ivi.Visa;
-using DAQ.Environment;
-using System.Threading;
+﻿using Ivi.Visa;
+using System;
 
 
 
@@ -43,7 +36,7 @@ namespace DAQ.HAL
             base.ParitySetting = SerialParity.None;
             base.StopBit = SerialStopBitsMode.One;
             base.TimeoutMilliseconds = 100;
-    }
+        }
 
         private string SetLineFeed(string Command)
         {
@@ -59,7 +52,7 @@ namespace DAQ.HAL
                 string response = this.Read(4 + q.Length + 15);
                 return response.Substring(4 + q.Length, 15);
             }
-            catch(Exception e) 
+            catch (Exception e)
             {
                 Disconnect();
                 throw e;

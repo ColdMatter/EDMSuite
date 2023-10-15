@@ -1,47 +1,44 @@
-using System;
-
-using NationalInstruments.DAQmx;
-
 using DAQ.Pattern;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	///
-	/// </summary>
-	public class DigitalOutputChannel : DAQMxChannel
-	{
-		private string device;
-		private int port;
-		private int line;
+    /// <summary>
+    ///
+    /// </summary>
+    public class DigitalOutputChannel : DAQMxChannel
+    {
+        private string device;
+        private int port;
+        private int line;
 
-		public DigitalOutputChannel( string name, string device, int port, int line )
-		{
-			this.name = name;
-			this.device = device;
-			this.port = port;
-			this.line = line;
+        public DigitalOutputChannel(string name, string device, int port, int line)
+        {
+            this.name = name;
+            this.device = device;
+            this.port = port;
+            this.line = line;
 
-			physicalChannel = device + "/port" + port + "/line" + line;
-		}
+            physicalChannel = device + "/port" + port + "/line" + line;
+        }
 
-		public int BitNumber
-		{
-			get { return PatternBuilder32.ChannelFromNIPort(port, line); }
-		}
+        public int BitNumber
+        {
+            get { return PatternBuilder32.ChannelFromNIPort(port, line); }
+        }
 
         public string Device
         {
             get { return device; }
         }
 
-		public void AddToTask(Task task)
-		{
-			task.DOChannels.CreateChannel(
-				PhysicalChannel,
-				name,
-				ChannelLineGrouping.OneChannelForAllLines
-				);
-		}
-	}
+        public void AddToTask(Task task)
+        {
+            task.DOChannels.CreateChannel(
+                PhysicalChannel,
+                name,
+                ChannelLineGrouping.OneChannelForAllLines
+                );
+        }
+    }
 }

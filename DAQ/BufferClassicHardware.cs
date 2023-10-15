@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-
+﻿using DAQ.TransferCavityLock2012;
 using NationalInstruments.DAQmx;
-using NationalInstruments;
-
-using DAQ.Pattern;
-using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
@@ -45,14 +39,14 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttl4", pgBoard, 1, 6);
             AddDigitalOutputChannel("ttl5", pgBoard, 1, 7);
 
-            
+
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
             //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
-           
+
             // add things to the info
             // the analog triggers
             Info.Add("analogTrigger0", daqBoard + "/PFI0");
@@ -77,10 +71,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
             AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
-            //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
+                                                                                                //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
 
             // map the analog output channels for "daq" card
-            
+
 
             // map the analog input channels for the "UEDMHardwareControllerBoard" card
             AddAnalogInputChannel("cellTemperatureMonitor", UEDMHardwareControllerBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -163,7 +157,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("STIRAP", TCLOutBoard + "/ao3", 0, 3);
 
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
-            AddAnalogOutputChannel("v2laser", daqBoard + "/ao1",0,5); //pin 21
+            AddAnalogOutputChannel("v2laser", daqBoard + "/ao1", 0, 5); //pin 21
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
@@ -205,7 +199,7 @@ namespace DAQ.HAL
             tclConfig.Cavities[VISCavity].AddDefaultGain("v0laser", 0.2);
             tclConfig.Cavities[VISCavity].AddFSRCalibration("v0laser", 3.84);
 
-            
+
             string IRCavity = "IRCavity";
             tclConfig.AddCavity(IRCavity);
             tclConfig.Cavities[IRCavity].RampOffset = "IRrampfb";
@@ -245,8 +239,8 @@ namespace DAQ.HAL
         public override void ConnectApplications()
         {
             // ask the remoting system for access to TCL2012
-           // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-           // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
     }
 }

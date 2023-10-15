@@ -1,21 +1,19 @@
-﻿using System;
-
-namespace DAQ.Environment
+﻿namespace DAQ.Environment
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	class WMLServerHuxleyFileSystem : DAQ.Environment.FileSystem
-	{
-		public WMLServerHuxleyFileSystem()
-		{
-			Paths.Add("fakeData", "C:\\examples\\");
-			Paths.Add("scanMasterDataPath", "C:\\Data\\");
+    /// <summary>
+    /// 
+    /// </summary>
+    class WMLServerHuxleyFileSystem : DAQ.Environment.FileSystem
+    {
+        public WMLServerHuxleyFileSystem()
+        {
+            Paths.Add("fakeData", "C:\\examples\\");
+            Paths.Add("scanMasterDataPath", "C:\\Data\\");
 
-			DataSearchPaths.Add(Paths["scanMasterDataPath"]);
-			DataSearchPaths.Add(Paths["fakeData"]);
+            DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+            DataSearchPaths.Add(Paths["fakeData"]);
 
-			SortDataByDate = false;
-		}
-	}
+            SortDataByDate = false;
+        }
+    }
 }

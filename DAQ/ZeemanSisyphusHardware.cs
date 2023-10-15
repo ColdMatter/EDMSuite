@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using DAQ.TransferCavityLock2012;
+﻿using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
@@ -13,7 +7,7 @@ namespace DAQ.HAL
         public ZeemanSisyphusHardware()
         {
             // add the boards
-          
+
 
             string digitalPatternBoardName = "digitalPattern";//NI PXIe-6535
             string digitalPatternBoardAddress = "/PXI1SLOT2";
@@ -22,7 +16,7 @@ namespace DAQ.HAL
             string analogPatternBoardName = "analogPattern";//NI PXIe-6229
             string analogPatternBoardAddress = "/PXI1Slot4";
             Boards.Add(analogPatternBoardName, analogPatternBoardAddress);
-           
+
 
             // map the digital channels
             string pgBoard = (string)Boards["pg"];
@@ -32,8 +26,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 2, 4);//connect to daq board PFI 0
             AddDigitalOutputChannel("sourceHeater", digitalPatternBoardAddress, 2, 5);
             AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 5);
-           // AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 4);
-           // AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 3, 3);
+            // AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 4);
+            // AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 3, 3);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 2);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 1);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 3, 0);
@@ -47,15 +41,15 @@ namespace DAQ.HAL
             //   Info.Add("PGClockLine", digitalPatternBoardAddress + "/PFI2");
             //  Info.Add("PGClockLine", digitalPatternBoardAddress + "/PFI3");
 
-     
 
-      
+
+
 
             // map the analog channels
             AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", analogPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse);
 
-            
+
 
             // ScanMaster configuration
             Info.Add("PGType", "dedicated");
@@ -68,15 +62,15 @@ namespace DAQ.HAL
 
 
             //These need to be activated for the phase lock
-          //  AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
-          //  AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
+            //  AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
+            //  AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
         }
 
         public override void ConnectApplications()
         {
             // ask the remoting system for access to TCL2012
-           // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-           // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
     }
 }

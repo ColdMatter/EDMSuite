@@ -1,6 +1,3 @@
-using System;
-
-
 namespace DAQ.Analyze
 {
     /// <summary>

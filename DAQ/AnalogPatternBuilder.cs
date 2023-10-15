@@ -1,11 +1,8 @@
-﻿using System;
+﻿using DAQ.Environment;
+using DAQ.HAL;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Collections;
-using System.Linq;
-using DAQ.HAL;
-using DAQ.Environment;
 
 namespace DAQ.Analog
 {
@@ -54,7 +51,7 @@ namespace DAQ.Analog
 
         public void AddChannel(string channelName)
         {
-            
+
             AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
             GetBoard(channel).AddChannel(channelName);
         }
@@ -78,7 +75,7 @@ namespace DAQ.Analog
             AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
             return GetBoard(channel).GetValue(channelName, time);
         }
-        
+
         public void AddLinearRamp(string channelName, int startTime, int steps, double finalValue)
         {
             AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];

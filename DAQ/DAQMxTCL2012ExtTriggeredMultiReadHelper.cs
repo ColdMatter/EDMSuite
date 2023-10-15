@@ -1,10 +1,6 @@
-﻿using System;
-using System.Threading;
-
-using NationalInstruments;
-using NationalInstruments.DAQmx;
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
 using System.Collections.Generic;
 
 namespace DAQ.TransferCavityLock2012
@@ -47,7 +43,7 @@ namespace DAQ.TransferCavityLock2012
 
         #region Methods for configuring the hardware
 
- 
+
         public void ConfigureHardware(int numberOfMeasurements, double sampleRate, bool triggerSense, bool autostart)
         {
             if (digitalInputs.Length > 0)
@@ -99,7 +95,7 @@ namespace DAQ.TransferCavityLock2012
 
             SampleClockActiveEdge clockEdge = SampleClockActiveEdge.Rising;
             DigitalEdgeStartTriggerEdge triggerEdge = triggerSense ? DigitalEdgeStartTriggerEdge.Rising : DigitalEdgeStartTriggerEdge.Falling;
-            
+
             // Get the device that the analog inputs are on so we can use sample clock as well to sync timing
             string device = ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[analogInputs[0]]).Device;
 
@@ -143,7 +139,7 @@ namespace DAQ.TransferCavityLock2012
                     data.AnalogData[i, j] *= -1;
                 }
             }
-            
+
             if (digitalInputs.Length > 0)
             {
                 readDIsTask.Stop();

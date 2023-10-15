@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DAQ.Environment;
 using Ivi.Visa;
-using DAQ.Environment;
+using System;
+using System.Collections.Generic;
 
 namespace DAQ.HAL
 {
@@ -21,7 +21,7 @@ namespace DAQ.HAL
         {
             public bool ack;
             public string resp;
-        
+
             public Response(bool _ack, string _resp)
             {
                 ack = _ack;
@@ -47,7 +47,7 @@ namespace DAQ.HAL
                 sum += (byte)b;
             }
             byte crc = (byte)(0xFF - sum);
-            if (crc < 0x20) return (byte) (crc + 0x20);
+            if (crc < 0x20) return (byte)(crc + 0x20);
             return crc;
         }
 
@@ -71,7 +71,7 @@ namespace DAQ.HAL
         func_start:
             attempt++;
             if (attempt % 2 == 0) AttemptReset();
-            if (attempt > 5) throw new Ivi.Visa.NativeVisaException(0,"More than 5 failed CRCs. Try restarting the controller.");
+            if (attempt > 5) throw new Ivi.Visa.NativeVisaException(0, "More than 5 failed CRCs. Try restarting the controller.");
             List<byte> resp = new List<byte> { };
             if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
             if (!Environs.Debug)
@@ -81,7 +81,7 @@ namespace DAQ.HAL
                 serial.RawIO.Write(s.ToArray());
                 resp = new List<byte>(serial.RawIO.Read());
             }
-                
+
             Disconnect();
 
             string value = System.Text.Encoding.ASCII.GetString(resp.ToArray()).Substring(1, resp.Count - 3);
@@ -93,7 +93,7 @@ namespace DAQ.HAL
             byte trueCRC = CalculateCRC(messageBody);
 
             if (crc != trueCRC) goto func_start;
-            if (ack == SpecialCharacters["ACK"])  return new Response(true,  value);
+            if (ack == SpecialCharacters["ACK"]) return new Response(true, value);
             if (ack == SpecialCharacters["NACK"]) return new Response(false, value);
             throw new Exception("Malformed response from device.");
         }
@@ -105,7 +105,7 @@ namespace DAQ.HAL
                 Response resp = Send(s);
                 if (resp.ack) return resp.resp;
             }
-            throw new Ivi.Visa.NativeVisaException(0,"No valid response after 5 tries");
+            throw new Ivi.Visa.NativeVisaException(0, "No valid response after 5 tries");
         }
 
         public string ReadValue(string s)

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-
+﻿using DAQ.TransferCavityLock2012;
 using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using System.Runtime.Remoting;
-using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
@@ -70,7 +64,7 @@ namespace DAQ.HAL
             yag = new BrilliantLaser("ASRL3::INSTR");
 
             // add the GPIB instruments
- 
+
             // map the digital channels
             AddDigitalOutputChannel("valve", daqBoard, 0, 0);
             AddDigitalOutputChannel("flash", daqBoard, 0, 1);
@@ -91,14 +85,14 @@ namespace DAQ.HAL
             AddAnalogInputChannel("p4", TCLBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("p2", TCLBoard + "/ai5", AITerminalConfiguration.Rse);
 
-   
+
             // map the analog output channels
             AddAnalogOutputChannel("laser", TCLBoard + "/ao0");
             AddAnalogOutputChannel("laser4", TCLBoard + "/ao1");
             AddAnalogOutputChannel("laser2", daqBoard + "/ao1");
             AddAnalogOutputChannel("laser3", daqBoard + "/ao2");
             AddAnalogOutputChannel("rampfb", daqBoard + "/ao0");
-         
+
             //Transfer Cavity Lock
             //AddAnalogOutputChannel("cavity", daqBoard + "/ao1");
             //Info.Add("analogTrigger2", (string)Boards["daq"] + "/PFI0");
@@ -108,7 +102,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("masterpd", daqBoard + "/ai5", AITerminalConfiguration.Nrse);
 
 
-             // map the counter channels
+            // map the counter channels
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr7");
             //AddCounterChannel("phaseLockReference", daqBoard + "/pfi10");
             //AddCounterChannel("northLeakage", counterBoard + "/ctr0");
@@ -119,8 +113,8 @@ namespace DAQ.HAL
         public override void ConnectApplications()
         {
             // ask the remoting system for access to TCL2012
-          //  Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-          //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
+            //  Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            //  RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
 
     }

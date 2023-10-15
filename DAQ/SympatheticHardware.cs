@@ -1,32 +1,25 @@
-using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-using NationalInstruments;
-
-using DAQ.Pattern;
-using DAQ.Remoting;
 using DAQ.TransferCavityLock2012;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.HAL
 {
-	
-	/// <summary>
-	/// This is the specific hardware that the sympathetic cooling experiment has. This class conforms
-	/// to the Hardware interface.
-	/// </summary>
-	public class SympatheticHardware : DAQ.HAL.Hardware
-	{
 
-		public SympatheticHardware()
-		{
+    /// <summary>
+    /// This is the specific hardware that the sympathetic cooling experiment has. This class conforms
+    /// to the Hardware interface.
+    /// </summary>
+    public class SympatheticHardware : DAQ.HAL.Hardware
+    {
 
-			// YAG laser
-			yag = new QuantaRayLaser();
+        public SympatheticHardware()
+        {
 
-			// add the boards
-			Boards.Add("daq", "/dev2");
-			Boards.Add("pg", "/dev1");
+            // YAG laser
+            yag = new QuantaRayLaser();
+
+            // add the boards
+            Boards.Add("daq", "/dev2");
+            Boards.Add("pg", "/dev1");
             Boards.Add("usbDAQ2", "/dev3");
             Boards.Add("TCLAIBoard", "/dev4");
             //Boards.Add("usbDAQ1", "/dev4");
@@ -46,7 +39,7 @@ namespace DAQ.HAL
             Info.Add("analogTrigger1", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
             //Info.Add("analogTrigger2", (string)Boards["daq"] + "/PFI5"); //DAQ Pin 6
             //Info.Add("analogTrigger2", (string)Boards["usbDAQ2"] + "/PFI0");
-            Info.Add("analogTrigger2", TCLBoard + "/PFI0"); 
+            Info.Add("analogTrigger2", TCLBoard + "/PFI0");
             //Info.Add("analogTrigger2", (string)Boards["daq"] + "/PFI1"); //DAQ Pin 10
             //distance information
             Info.Add("sourceToDetect", 0.787);
@@ -90,23 +83,23 @@ namespace DAQ.HAL
 
             // map the digital channels
             // these channels are to be part of the "PatternList" and shoud all be on the low half of the board
-			AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
-			AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
+            AddDigitalOutputChannel("valve", pgBoard, 0, 0); //Pin 10
+            AddDigitalOutputChannel("flash", pgBoard, 0, 1); //Pin 44
             AddDigitalOutputChannel("valve2", pgBoard, 0, 1);
             AddDigitalOutputChannel("discharge", pgBoard, 0, 3);
-			AddDigitalOutputChannel("q", pgBoard, 0,2 ); //Pin 45
-			AddDigitalOutputChannel("detector", pgBoard, 0,7); //Pin 15
+            AddDigitalOutputChannel("q", pgBoard, 0, 2); //Pin 45
+            AddDigitalOutputChannel("detector", pgBoard, 0, 7); //Pin 15
             AddDigitalOutputChannel("detectorprime", pgBoard, 1, 7); //Pin 22
-		//	AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
-			AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
+                                                                     //	AddDigitalOutputChannel("fig", pgBoard, 3, 1); //Pin 63
+            AddDigitalOutputChannel("aom", pgBoard, 0, 4); //Pin 13
             AddDigitalOutputChannel("flash2", pgBoard, 0, 5); //Pin 47
             AddDigitalOutputChannel("q2", pgBoard, 0, 6); //Pin 48
             AddDigitalOutputChannel("cavityTriggerOut", usbDAQ2, 0, 1); //Pin 17
-            // the following are the decelerator channels for the burst
-			AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
-	        AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
-			AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
-			AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
+                                                                        // the following are the decelerator channels for the burst
+            AddDigitalOutputChannel("decelhplus", pgBoard, 1, 0); //Pin 16
+            AddDigitalOutputChannel("decelhminus", pgBoard, 1, 1); //Pin 17
+            AddDigitalOutputChannel("decelvplus", pgBoard, 1, 2); //Pin 51
+            AddDigitalOutputChannel("decelvminus", pgBoard, 1, 3); //Pin 52
             AddDigitalOutputChannel("SynthTrigger", pgBoard, 0, 3); //Pin 48
 
             // these channels are to be switched "manually" and should all be on the high half of the board
@@ -122,8 +115,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("vminusdc", pgBoard, 3, 3);
 
 
-			// map the analog input channels
-			AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
+            // map the analog input channels
+            AddAnalogInputChannel("pmt", daqBoard + "/ai0", AITerminalConfiguration.Rse); //Pin 68
             //AddAnalogInputChannel("p1", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 57
             //AddAnalogInputChannel("p2", daqBoard + "/ai14", AITerminalConfiguration.Rse);//Pin 58
             //AddAnalogInputChannel("cavityVoltageRead", daqBoard + "/ai12", AITerminalConfiguration.Rse); //Pin 61
@@ -142,10 +135,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("fig", daqBoard + "/ai5", AITerminalConfiguration.Rse); //Pin 60
             AddAnalogInputChannel("atomSourcePressure1", usbDAQ1 + "/ai0", AITerminalConfiguration.Differential); //ai0+ is pin 2, ai0- is pin 3
             AddAnalogInputChannel("atomSourcePressure2", usbDAQ1 + "/ai1", AITerminalConfiguration.Differential); //ai1+ is pin 5, ai1- is pin 6
-            
+
             //map the analog output channels
-			AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
-           // AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1",-5,5); // Pin 21
+            AddAnalogOutputChannel("laser", daqBoard + "/ao0"); // Pin 22
+                                                                // AddAnalogOutputChannel("dyelaser", daqBoard + "/ao1",-5,5); // Pin 21
             AddAnalogOutputChannel("highvoltage", daqBoard + "/ao1"); // Note - this is just here because a channel called "highvoltage" has been hard-wired into DecelerationHardwareControl - this needs to be rectified
             AddAnalogOutputChannel("cavity", daqBoard + "/ao1"); // Pin 21
             //AddAnalogOutputChannel("cavity", usbDAQ2 + "/ao0"); // Pin 14
@@ -154,13 +147,13 @@ namespace DAQ.HAL
             AddCounterChannel("pmt", daqBoard + "/ctr0"); //Source is pin 37, gate is pin 3, out is pin 2
             AddCounterChannel("sample clock", daqBoard + "/ctr1"); //Source is pin 42, gate is pin 41, out is pin 40
 
-		}
+        }
 
         public override void ConnectApplications()
         {
-           // RemotingHelper.ConnectDecelerationHardwareControl();
+            // RemotingHelper.ConnectDecelerationHardwareControl();
         }
 
 
-	}
+    }
 }

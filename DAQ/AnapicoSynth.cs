@@ -1,21 +1,17 @@
-using System;
-using System.Linq;
-
-
 using DAQ.Environment;
-using System.Threading;
+using System;
 
 namespace DAQ.HAL
 {
-	/// <summary>
-	/// This class represents a GPIB controlled HP8673B synth. It conforms to the Synth
-	/// interface.
-	/// </summary>
-	public class AnapicoSynth : USBInstrument
-	{
+    /// <summary>
+    /// This class represents a GPIB controlled HP8673B synth. It conforms to the Synth
+    /// interface.
+    /// </summary>
+    public class AnapicoSynth : USBInstrument
+    {
 
-		public AnapicoSynth(String visaAddress) : base(visaAddress)
-        {}
+        public AnapicoSynth(String visaAddress) : base(visaAddress)
+        { }
 
         // 0 for disable, 1 for enable
         public bool Enabled
@@ -35,8 +31,8 @@ namespace DAQ.HAL
             }
         }
 
-		public double CWFrequencyCH1
-		{
+        public double CWFrequencyCH1
+        {
             get
             {
                 double freq = 0.0;
@@ -53,15 +49,15 @@ namespace DAQ.HAL
                 return freq;
             }
 
-			set
-			{
+            set
+            {
                 if (!Environs.Debug)
                 {
                     Write(":SOUR:SEL 1\n");
                     Write(":SOUR:FREQ:CW " + value + "\n");
                 }
-			}
-		}
+            }
+        }
 
         public double CWFrequencyCH2
         {
@@ -130,21 +126,21 @@ namespace DAQ.HAL
             return Read();
         }
 
-		//override public double Amplitude
-		//{
-		//	set
-		//	{
-		//		String s = "AP" + value + "DM";
-		//		if (!Environs.Debug) Write(s);
-		//	}
-		//}
+        //override public double Amplitude
+        //{
+        //	set
+        //	{
+        //		String s = "AP" + value + "DM";
+        //		if (!Environs.Debug) Write(s);
+        //	}
+        //}
 
 
         //public override double DCFM
         //{
         //    set
         //    {
-                //TODO
+        //TODO
         //    }
         //}
 
@@ -152,10 +148,10 @@ namespace DAQ.HAL
         //{
         //    set
         //    {
-                // TODO
+        // TODO
         //    }
         //}
 
 
-	}
+    }
 }

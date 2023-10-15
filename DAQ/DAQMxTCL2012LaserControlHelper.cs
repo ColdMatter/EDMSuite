@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading;
-
-using NationalInstruments.DAQmx;
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using NationalInstruments.DAQmx;
 
 namespace DAQ.TransferCavityLock2012
 {
@@ -15,7 +12,7 @@ namespace DAQ.TransferCavityLock2012
         private AnalogSingleChannelWriter laserWriter;
 
         private string laserChannelName;
-        
+
         public DAQMxTCL2012LaserControlHelper()
         {
             laserChannelName = "laser";
@@ -28,7 +25,7 @@ namespace DAQ.TransferCavityLock2012
 
 
         #region Methods for configuring the hardware
-        
+
         //This takes in a voltage. A bit cheezy, but I needed the laser
         // voltage to be set as soon value as soon as it gets configured.
         public void ConfigureSetLaserVoltage(double voltage)
@@ -42,7 +39,7 @@ namespace DAQ.TransferCavityLock2012
             laserWriter.WriteSingleSample(true, voltage);
 
             //outputLaserTask.Start();
-        
+
         }
 
         #endregion

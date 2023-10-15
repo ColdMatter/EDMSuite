@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DAQ.HAL
+﻿namespace DAQ.HAL
 {
     public class LinearInterpolationCalibration : Calibration
     {
@@ -12,7 +8,7 @@ namespace DAQ.HAL
         {
             this.interpolationData = interpolationData;
             rangeLow = interpolationData[0, 0];
-            rangeHigh = interpolationData[interpolationData.GetLength(0)-1, 0];
+            rangeHigh = interpolationData[interpolationData.GetLength(0) - 1, 0];
         }
 
         public override double Convert(double input)
@@ -22,21 +18,21 @@ namespace DAQ.HAL
             int n = 0;
             for (int i = 0; i < idLength; i++)
             {
-                if (interpolationData[i , 0 ] == input)
+                if (interpolationData[i, 0] == input)
                 {
-                    return interpolationData[i,0];
+                    return interpolationData[i, 0];
                 }
                 else
                 {
-                    if (interpolationData[i,0] < input)
+                    if (interpolationData[i, 0] < input)
                     {
                         n = i;
                     }
                 }
             }
-            double m = (interpolationData[n + 1, 1] - interpolationData[ n,1])
-                / (interpolationData[ n + 1,0] - interpolationData[ n,0]);
-            return interpolationData[ n,1] + (m * (input - interpolationData[n,0]));
+            double m = (interpolationData[n + 1, 1] - interpolationData[n, 1])
+                / (interpolationData[n + 1, 0] - interpolationData[n, 0]);
+            return interpolationData[n, 1] + (m * (input - interpolationData[n, 0]));
         }
 
     }

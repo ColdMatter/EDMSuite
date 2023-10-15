@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections;
 
 namespace DAQ.TransferCavityLock2012
 {
     public class TCLConfig
     {
-          
+
         public TCLConfig(string name)
         {
             configurationName = name;
@@ -50,7 +47,7 @@ namespace DAQ.TransferCavityLock2012
             get { return slaveVoltageUpperLimit; }
             set { slaveVoltageUpperLimit = value; }
         }
-    
+
         private double slaveVoltageLowerLimit;
         public double SlaveVoltageLowerLimit
         {
@@ -86,7 +83,7 @@ namespace DAQ.TransferCavityLock2012
             set { analogSampleRate = value; }
         }
 
-        private int maximumNLMFSteps; 
+        private int maximumNLMFSteps;
         public int MaximumNLMFSteps
         {
             get { return maximumNLMFSteps; }
@@ -188,9 +185,9 @@ namespace DAQ.TransferCavityLock2012
         public void AddDefaultGain(string name, double gain)
         {
             GetDefaultCavity().AddDefaultGain(name, gain);
-        }       
+        }
 
-        
-        #endregion 
+
+        #endregion
     }
 }

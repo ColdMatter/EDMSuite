@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Ivi.Visa;
 using NationalInstruments.Visa;
-using Ivi.Visa;
+using System;
 
 namespace DAQ.HAL
 {

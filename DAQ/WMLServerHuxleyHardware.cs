@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections;
-
-using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using DAQ.TransferCavityLock2012;
-using DAQ.Remoting;
-using System.Runtime.Remoting;
-using System.Collections.Generic;
-using DAQ.WavemeterLock;
-
-namespace DAQ.HAL
+﻿namespace DAQ.HAL
 {
     public class WMLServerHuxleyHardware : DAQ.HAL.Hardware
     {
-       
+
         public WMLServerHuxleyHardware()
         {
             //Boards.Add("WMLBoard", "/Dev1");

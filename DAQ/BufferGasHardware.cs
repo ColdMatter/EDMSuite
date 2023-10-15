@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-
 using NationalInstruments.DAQmx;
-
-using DAQ.Pattern;
-using DAQ.Remoting;
 
 namespace DAQ.HAL
 
@@ -68,6 +62,6 @@ namespace DAQ.HAL
             AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter
             AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
         }
-        
+
     }
 }

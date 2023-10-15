@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using DAQ.Environment;
+﻿using DAQ.Environment;
 using DAQ.HAL;
+using System.Collections.Generic;
 
 namespace DAQ.DigitalTransferCavityLock
 {
