@@ -9,7 +9,7 @@ namespace DAQ.Analog
     /// <summary>
     /// thin wrapper around AnalogPatternBuilderSingleBoard
     /// </summary>
-
+    
     [Serializable, DataContract]
     public class AnalogPatternBuilder
     {
@@ -105,6 +105,7 @@ namespace DAQ.Analog
             AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
             GetBoard(channel).SwitchOffAtEndOfPattern(channelName);
         }
+
         public void SwitchAllOffAtEndOfPattern()
         {
             foreach (AnalogPatternBuilderSingleBoard board in Boards.Values)
