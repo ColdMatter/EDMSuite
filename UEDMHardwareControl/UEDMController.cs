@@ -277,8 +277,10 @@ namespace UEDMHardwareControl
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
             // make the control window
-            window = new ControlWindow();
-            window.controller = this;
+            window = new ControlWindow
+            {
+                controller = this
+            };
 
             Application.Run(window);
         }
@@ -425,11 +427,12 @@ namespace UEDMHardwareControl
         public void SavePlotImage(Chart mychart)
         {
             Stream myStream;
-            SaveFileDialog ff = new SaveFileDialog();
-
-            ff.Filter = "jpg files (*.jpg)|*.jpg|All files (*.*)|*.*";
-            ff.FilterIndex = 1;
-            ff.RestoreDirectory = true;
+            SaveFileDialog ff = new SaveFileDialog
+            {
+                Filter = "jpg files (*.jpg)|*.jpg|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
 
             if (ff.ShowDialog() == DialogResult.OK)
             {
@@ -488,11 +491,12 @@ namespace UEDMHardwareControl
             var finalImage = MergeImages(imageList);
 
             Stream myStream;
-            SaveFileDialog ff = new SaveFileDialog();
-
-            ff.Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
-            ff.FilterIndex = 1;
-            ff.RestoreDirectory = true;
+            SaveFileDialog ff = new SaveFileDialog
+            {
+                Filter = "png files (*.png)|*.png|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
 
             if (ff.ShowDialog() == DialogResult.OK)
             {
@@ -512,9 +516,11 @@ namespace UEDMHardwareControl
         public void SavePlotDataToCSV(string csvContent)
         {
             // Displays a SaveFileDialog so the user can save the data
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "CSV|*.csv";
-            saveFileDialog1.Title = "Save a CSV File";
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = "CSV|*.csv",
+                Title = "Save a CSV File"
+            };
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 // If the file name is not an empty string open it for saving.
@@ -2569,15 +2575,20 @@ namespace UEDMHardwareControl
             PTMonitorPollThread = new Thread(() =>
             {
                 PTMonitorPollWorker();
-            });
-            PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            })
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            };
+
             //PTMonitorPollThread.Priority = ThreadPriority.AboveNormal;
             // Setup pressure and temperature plotting thread
             PTPlottingThread = new Thread(() =>
             {
                 PTPlottingWorker();
-            });
-            PTPlottingThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. 
+            })
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. 
+            };
 
             pressureMovingAverageSampleLength = 10;
             Stage2HeaterControlFlag = false;
@@ -2955,9 +2966,11 @@ namespace UEDMHardwareControl
 
         internal void StartNeonFlowMonitorPoll()
         {
-            NeonFlowMonitorPollThread = new Thread(new ThreadStart(NeonFlowActMonitorPollWorker));
-            NeonFlowMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            NeonFlowMonitorPollPeriod = Int32.Parse(window.tbNeonFlowActPollPeriod.Text);
+            NeonFlowMonitorPollThread = new Thread(new ThreadStart(NeonFlowActMonitorPollWorker))
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            };
+            NeonFlowMonitorPollPeriod = int.Parse(window.tbNeonFlowActPollPeriod.Text);
             window.EnableControl(window.btStartNeonFlowActMonitor, false);
             window.EnableControl(window.btStopNeonFlowActMonitor, true);
             window.EnableControl(window.tbNewNeonFlowSetPoint, true);
@@ -3532,8 +3545,10 @@ namespace UEDMHardwareControl
         {
             // Setup thread for conversion to be run on.
             // This prevents the UI from locking up if the AIChartSeriesLock is already taken by the AI plotting thread.
-            Thread ConvertAnalogueInput = new Thread(() => EnableConvertedAISeriesWorker(AnalogueInputName, AIConversionMethodName));
-            ConvertAnalogueInput.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            Thread ConvertAnalogueInput = new Thread(() => EnableConvertedAISeriesWorker(AnalogueInputName, AIConversionMethodName))
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            };
             ConvertAnalogueInput.Start();
         }
         public void EnableConvertedAISeriesWorker(string AnalogueInputName, string AIConversionMethodName)
@@ -3734,12 +3749,16 @@ namespace UEDMHardwareControl
         internal void StartAnalogueInputsMonitorPoll()
         {
             // Setup monitoring and plotting threads
-            AnalogueInputsMonitorPollThread = new Thread(new ThreadStart(AnalogueInputsMonitorPollWorker));
-            AnalogueInputsMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            AnalogueInputsPlottingThread = new Thread(new ThreadStart(AnalogueInputsPlottingWorker));
-            AnalogueInputsPlottingThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            AnalogueInputsMonitorPollThread = new Thread(new ThreadStart(AnalogueInputsMonitorPollWorker))
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            };
+            AnalogueInputsPlottingThread = new Thread(new ThreadStart(AnalogueInputsPlottingWorker))
+            {
+                IsBackground = true // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+            };
 
-            AnalogueInputsMonitorPollPeriod = Int32.Parse(window.tbAnalogueMonitoringPollPeriod.Text);
+            AnalogueInputsMonitorPollPeriod = int.Parse(window.tbAnalogueMonitoringPollPeriod.Text);
             EnableAnalogueInputsMonitoringUIControls(true); // Enable/disable UI elements that the user should/shouldn't interact with whilst this process in running
             AnalogueInputsMonitorLock = new Object();
             AnalogueInputsMonitorFlag = false;
@@ -4654,9 +4673,11 @@ namespace UEDMHardwareControl
         {
             if (window.logCurrentDataCheckBox.Checked)
             {
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "CSV|*.csv";
-                saveFileDialog1.Title = "Save a CSV File";
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog
+                {
+                    Filter = "CSV|*.csv",
+                    Title = "Save a CSV File"
+                };
                 saveFileDialog1.ShowDialog();
                 leakageFileSave += saveFileDialog1.FileName;
                 if (leakageFileSave != "")
