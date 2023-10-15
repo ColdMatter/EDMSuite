@@ -1,16 +1,8 @@
-﻿using System;
+﻿using NewFocus.Picomotor; //rhys removed 15/02
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
-using Newport.USBComm;//rhys removed 15/02
-using NewFocus.Picomotor; //rhys removed 15/02
 
 namespace UEDMHardwareControl
 {
@@ -116,7 +108,7 @@ namespace UEDMHardwareControl
         {
             box.AppendText(text);
         }
-        
+
         /// <summary>
         /// Adds point to chart (graph) in control window. This function is called from UEDMController on each poll of a pressure gauge.
         /// </summary>
@@ -146,7 +138,7 @@ namespace UEDMHardwareControl
         private delegate void AddPointToIChartDelegate(Chart chart, string series, DateTime xpoint, double ypoint);
         private void AddPointToIChartHelper(Chart chart, string series, DateTime xpoint, double ypoint)
         {
-                chart.Series[series].Points.AddXY(xpoint, ypoint);
+            chart.Series[series].Points.AddXY(xpoint, ypoint);
         }
 
         public void ClearChartSeriesData(Chart chart, string series)
@@ -176,7 +168,7 @@ namespace UEDMHardwareControl
         private delegate bool IsChartSeriesEnabledDelegate(Chart chart);
         private bool IsChartSeriesEnabledHelper(Chart chart)
         {
-            bool enabled = false; 
+            bool enabled = false;
             foreach (Series ser in chart.Series)
             {
                 if (ser.Enabled)
@@ -208,7 +200,7 @@ namespace UEDMHardwareControl
                     chart.ChartAreas[0].AxisY.IsLogarithmic = false;
                     SetAxisYIsStartedFromZero(chart, false);
                     chart.ChartAreas[0].AxisY.MajorTickMark.Interval = 0; // A value of zero represents an "Auto" value
-                    chart.ChartAreas[0].AxisY.MinorTickMark.Interval = chart.ChartAreas[0].AxisY.MajorTickMark.Interval/10;
+                    chart.ChartAreas[0].AxisY.MinorTickMark.Interval = chart.ChartAreas[0].AxisY.MajorTickMark.Interval / 10;
                 }
             }
         }
@@ -253,7 +245,7 @@ namespace UEDMHardwareControl
             }
 
             Axis ay = chart.ChartAreas[0].AxisY;
-            
+
             ay.Maximum = max;
             ay.Minimum = min;
             if (chart.Name == "chart1")
@@ -288,7 +280,7 @@ namespace UEDMHardwareControl
         private void SetChartXAxisMinAutoHelper(Chart chart)
         {
             Axis xaxis = chart.ChartAreas[0].AxisX;
-            xaxis.Minimum = Double.NaN; 
+            xaxis.Minimum = Double.NaN;
             chart.ChartAreas[0].RecalculateAxesScale();
         }
 
@@ -301,7 +293,7 @@ namespace UEDMHardwareControl
         {
             Axis yaxis = chart.ChartAreas[0].AxisY;
             yaxis.Minimum = Double.NaN;
-            yaxis.Maximum = Double.NaN; 
+            yaxis.Maximum = Double.NaN;
             chart.ChartAreas[0].RecalculateAxesScale();
         }
 

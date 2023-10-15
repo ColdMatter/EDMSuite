@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UEDMHardwareControl
@@ -17,7 +10,7 @@ namespace UEDMHardwareControl
             InitializeComponent();
 
             InitializeOptionsValues();
-            
+
             btCancel.DialogResult = DialogResult.Cancel;
         }
 
@@ -147,7 +140,7 @@ namespace UEDMHardwareControl
             {
                 if (DesorbingPTPollPeriodIntValue < PTPollPeriodMinimum)
                 {
-                    var res = MessageBox.Show("DesorbingPTPollPeriod (" + DesorbingPTPollPeriodTextValue + " ms) is less than minimum poll period ("+ PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
+                    var res = MessageBox.Show("DesorbingPTPollPeriod (" + DesorbingPTPollPeriodTextValue + " ms) is less than minimum poll period (" + PTPollPeriodMinimum + " ms).\n\nPlease change the poll period to a greater value.", "", MessageBoxButtons.OK);
                     if (res == DialogResult.OK)
                     {
                         CancelOptionsChangeFlag = true;
@@ -225,9 +218,9 @@ namespace UEDMHardwareControl
             }
             else
             {
-                if ( CryoMaxTemperatureWhenTurnedOff < CryoStartingTemperatureMaxDoubleValue)
+                if (CryoMaxTemperatureWhenTurnedOff < CryoStartingTemperatureMaxDoubleValue)
                 {
-                    var res = MessageBox.Show("Cryo starting temperature ("+ CryoStartingTemperatureMaxTextValue+" K) is higher than storage temperature limit.\n\n Are you sure that you want to continue? Press OK to continue. \nPress cancel to continue editting options.", "", MessageBoxButtons.OKCancel);
+                    var res = MessageBox.Show("Cryo starting temperature (" + CryoStartingTemperatureMaxTextValue + " K) is higher than storage temperature limit.\n\n Are you sure that you want to continue? Press OK to continue. \nPress cancel to continue editting options.", "", MessageBoxButtons.OKCancel);
                     if (res == DialogResult.Cancel)
                     {
                         CancelOptionsChangeFlag = true;
@@ -257,7 +250,7 @@ namespace UEDMHardwareControl
         {
             ProcessOptions();
         }
-        
+
 
         private void textBoxTurbomolecularPumpUpperPressureLimit_TextChanged(object sender, EventArgs e)
         {
