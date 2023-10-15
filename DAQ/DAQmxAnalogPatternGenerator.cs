@@ -103,22 +103,18 @@ namespace DAQ.Analog
             analogOutputTask.Dispose();
         }
 
-        #region private methods for creating timed Tasks/channels
-
         private void AddToAnalogOutputTask(Task task, string channel)
         {
             AnalogOutputChannel c = ((AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channel]);
             c.AddToTask(task, c.RangeLow, c.RangeHigh);
         }
 
-        private void analogOutputTask_Done(object sender, TaskDoneEventArgs e)
+        private void AnalogOutputTaskDone(object sender, TaskDoneEventArgs e)
         {
             if (analogOutputTask != null)
             {
                 analogOutputTask.Dispose();
             }
         }
-        #endregion
-
     }
 }
