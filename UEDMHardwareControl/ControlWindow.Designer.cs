@@ -64,6 +64,9 @@
             System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series22 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -85,6 +88,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.plotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pressureAndTemperaturePlotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +103,7 @@
             this.ToolStripMenuItemSaveNeonFlowDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pressureAndTemperatureDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parametersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,10 +159,23 @@
             this.Show_DeviceKey = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.labelStirapRFAmp = new System.Windows.Forms.Label();
+            this.labelStirapRFFreq = new System.Windows.Forms.Label();
+            this.cbStirapRFOn = new System.Windows.Forms.CheckBox();
+            this.btQueryStirapRFFrequency = new System.Windows.Forms.Button();
+            this.comboBoxStirapRFIncrementUnit = new System.Windows.Forms.ComboBox();
+            this.comboBoxStirapRFSetpointUnit = new System.Windows.Forms.ComboBox();
+            this.tbStirapRFAmplitude = new System.Windows.Forms.TextBox();
+            this.btUpdateStirapRFFrequency = new System.Windows.Forms.Button();
+            this.tbStirapRFFrequency = new System.Windows.Forms.TextBox();
+            this.labelStirapRF = new System.Windows.Forms.Label();
+            this.tbStirapRFFreqMon = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
             this.btQueryMWSynthTemperatureDetection = new System.Windows.Forms.Button();
             this.labelDetectSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHATrigger = new System.Windows.Forms.CheckBox();
             this.cbCHAPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHAPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHARFMutedDetection = new System.Windows.Forms.CheckBox();
@@ -179,6 +197,7 @@
             this.tbMWCHAFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
             this.tbMWSynthTemperatureMonitorDetection = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHBdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHBTrigger = new System.Windows.Forms.CheckBox();
             this.cbCHBPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHBPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHBRFMutedDetection = new System.Windows.Forms.CheckBox();
@@ -225,6 +244,7 @@
             this.tbMWCHAFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHB = new System.Windows.Forms.GroupBox();
+            this.cbCHBRFTrigger = new System.Windows.Forms.CheckBox();
             this.btCHBPLLPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHBPAPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHBRFMuteInfo = new System.Windows.Forms.Button();
@@ -332,6 +352,8 @@
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.eDisableSwitching = new System.Windows.Forms.CheckBox();
             this.label78 = new System.Windows.Forms.Label();
             this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
@@ -652,6 +674,23 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label28 = new System.Windows.Forms.Label();
+            this.FreqMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorPollPeriodInput = new System.Windows.Forms.TextBox();
+            this.stopFreqMonitorPollButton = new System.Windows.Forms.Button();
+            this.startFreqMonitorPollButton = new System.Windows.Forms.Button();
+            this.LogFreqDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
+            this.UpdateBeatFreq = new System.Windows.Forms.Button();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -660,6 +699,7 @@
             this.groupBoxStatus.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
+            this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
             this.groupBoxMWCHBdetection.SuspendLayout();
@@ -679,6 +719,8 @@
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
@@ -717,6 +759,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.tabControl.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -930,17 +974,27 @@
             // 
             // openToolStripMenuItem
             // 
+            this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.parametersToolStripMenuItem});
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openToolStripMenuItem.Text = "Load";
+            // 
+            // parametersToolStripMenuItem
+            // 
+            this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.parametersToolStripMenuItem.Text = "Parameters";
+            this.parametersToolStripMenuItem.Click += new System.EventHandler(this.parametersToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.plotsToolStripMenuItem,
-            this.dataToolStripMenuItem});
+            this.dataToolStripMenuItem,
+            this.parametersToolStripMenuItem1});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
@@ -949,7 +1003,7 @@
             this.pressureAndTemperaturePlotsToolStripMenuItem,
             this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -1035,7 +1089,7 @@
             this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pressureAndTemperatureDataToolStripMenuItem});
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.dataToolStripMenuItem.Text = "Data";
             // 
             // pressureAndTemperatureDataToolStripMenuItem
@@ -1045,10 +1099,17 @@
             this.pressureAndTemperatureDataToolStripMenuItem.Text = "Pressure and temperature data";
             this.pressureAndTemperatureDataToolStripMenuItem.Click += new System.EventHandler(this.pressureAndTemperatureDataToolStripMenuItem_Click);
             // 
+            // parametersToolStripMenuItem1
+            // 
+            this.parametersToolStripMenuItem1.Name = "parametersToolStripMenuItem1";
+            this.parametersToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
+            this.parametersToolStripMenuItem1.Text = "Parameters";
+            this.parametersToolStripMenuItem1.Click += new System.EventHandler(this.parametersToolStripMenuItem1_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1600,6 +1661,7 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
@@ -1609,6 +1671,141 @@
             this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
+            // 
+            // groupBoxStirapRF
+            // 
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmp);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFFreq);
+            this.groupBoxStirapRF.Controls.Add(this.cbStirapRFOn);
+            this.groupBoxStirapRF.Controls.Add(this.btQueryStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.comboBoxStirapRFIncrementUnit);
+            this.groupBoxStirapRF.Controls.Add(this.comboBoxStirapRFSetpointUnit);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFAmplitude);
+            this.groupBoxStirapRF.Controls.Add(this.btUpdateStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRF);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFreqMon);
+            this.groupBoxStirapRF.Location = new System.Drawing.Point(2, 190);
+            this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxStirapRF.Name = "groupBoxStirapRF";
+            this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxStirapRF.Size = new System.Drawing.Size(254, 188);
+            this.groupBoxStirapRF.TabIndex = 50;
+            this.groupBoxStirapRF.TabStop = false;
+            this.groupBoxStirapRF.Text = "Stirap RF";
+            // 
+            // labelStirapRFAmp
+            // 
+            this.labelStirapRFAmp.AutoSize = true;
+            this.labelStirapRFAmp.Location = new System.Drawing.Point(17, 105);
+            this.labelStirapRFAmp.Name = "labelStirapRFAmp";
+            this.labelStirapRFAmp.Size = new System.Drawing.Size(77, 13);
+            this.labelStirapRFAmp.TabIndex = 60;
+            this.labelStirapRFAmp.Text = "RF amp (dBm):";
+            // 
+            // labelStirapRFFreq
+            // 
+            this.labelStirapRFFreq.AutoSize = true;
+            this.labelStirapRFFreq.Location = new System.Drawing.Point(17, 79);
+            this.labelStirapRFFreq.Name = "labelStirapRFFreq";
+            this.labelStirapRFFreq.Size = new System.Drawing.Size(76, 13);
+            this.labelStirapRFFreq.TabIndex = 59;
+            this.labelStirapRFFreq.Text = "RF freq (MHz):";
+            // 
+            // cbStirapRFOn
+            // 
+            this.cbStirapRFOn.AutoSize = true;
+            this.cbStirapRFOn.Location = new System.Drawing.Point(117, 146);
+            this.cbStirapRFOn.Name = "cbStirapRFOn";
+            this.cbStirapRFOn.Size = new System.Drawing.Size(87, 17);
+            this.cbStirapRFOn.TabIndex = 58;
+            this.cbStirapRFOn.Text = "Stirap RF On";
+            this.cbStirapRFOn.UseVisualStyleBackColor = true;
+            this.cbStirapRFOn.CheckedChanged += new System.EventHandler(this.cbStirapRFOn_CheckedChanged);
+            // 
+            // btQueryStirapRFFrequency
+            // 
+            this.btQueryStirapRFFrequency.Location = new System.Drawing.Point(18, 51);
+            this.btQueryStirapRFFrequency.Name = "btQueryStirapRFFrequency";
+            this.btQueryStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
+            this.btQueryStirapRFFrequency.TabIndex = 55;
+            this.btQueryStirapRFFrequency.Text = "Query";
+            this.btQueryStirapRFFrequency.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxStirapRFIncrementUnit
+            // 
+            this.comboBoxStirapRFIncrementUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxStirapRFIncrementUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxStirapRFIncrementUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStirapRFIncrementUnit.FormattingEnabled = true;
+            this.comboBoxStirapRFIncrementUnit.Items.AddRange(new object[] {
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxStirapRFIncrementUnit.Location = new System.Drawing.Point(178, 102);
+            this.comboBoxStirapRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxStirapRFIncrementUnit.Name = "comboBoxStirapRFIncrementUnit";
+            this.comboBoxStirapRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxStirapRFIncrementUnit.TabIndex = 42;
+            // 
+            // comboBoxStirapRFSetpointUnit
+            // 
+            this.comboBoxStirapRFSetpointUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxStirapRFSetpointUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxStirapRFSetpointUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStirapRFSetpointUnit.FormattingEnabled = true;
+            this.comboBoxStirapRFSetpointUnit.Items.AddRange(new object[] {
+            "MHz"});
+            this.comboBoxStirapRFSetpointUnit.Location = new System.Drawing.Point(178, 76);
+            this.comboBoxStirapRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxStirapRFSetpointUnit.Name = "comboBoxStirapRFSetpointUnit";
+            this.comboBoxStirapRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxStirapRFSetpointUnit.TabIndex = 41;
+            // 
+            // tbStirapRFAmplitude
+            // 
+            this.tbStirapRFAmplitude.Location = new System.Drawing.Point(98, 102);
+            this.tbStirapRFAmplitude.Name = "tbStirapRFAmplitude";
+            this.tbStirapRFAmplitude.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFAmplitude.TabIndex = 38;
+            // 
+            // btUpdateStirapRFFrequency
+            // 
+            this.btUpdateStirapRFFrequency.Location = new System.Drawing.Point(17, 140);
+            this.btUpdateStirapRFFrequency.Name = "btUpdateStirapRFFrequency";
+            this.btUpdateStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateStirapRFFrequency.TabIndex = 36;
+            this.btUpdateStirapRFFrequency.Text = "Update";
+            this.btUpdateStirapRFFrequency.UseVisualStyleBackColor = true;
+            this.btUpdateStirapRFFrequency.Click += new System.EventHandler(this.btUpdateStirapRFFrequency_Click);
+            // 
+            // tbStirapRFFrequency
+            // 
+            this.tbStirapRFFrequency.Location = new System.Drawing.Point(98, 76);
+            this.tbStirapRFFrequency.Name = "tbStirapRFFrequency";
+            this.tbStirapRFFrequency.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFFrequency.TabIndex = 36;
+            this.tbStirapRFFrequency.Text = "32";
+            // 
+            // labelStirapRF
+            // 
+            this.labelStirapRF.AutoSize = true;
+            this.labelStirapRF.Location = new System.Drawing.Point(16, 34);
+            this.labelStirapRF.Name = "labelStirapRF";
+            this.labelStirapRF.Size = new System.Drawing.Size(105, 13);
+            this.labelStirapRF.TabIndex = 36;
+            this.labelStirapRF.Text = "RF frequency (MHz):";
+            // 
+            // tbStirapRFFreqMon
+            // 
+            this.tbStirapRFFreqMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbStirapRFFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbStirapRFFreqMon.Location = new System.Drawing.Point(98, 54);
+            this.tbStirapRFFreqMon.Margin = new System.Windows.Forms.Padding(2);
+            this.tbStirapRFFreqMon.Name = "tbStirapRFFreqMon";
+            this.tbStirapRFFreqMon.ReadOnly = true;
+            this.tbStirapRFFreqMon.Size = new System.Drawing.Size(75, 20);
+            this.tbStirapRFFreqMon.TabIndex = 36;
             // 
             // groupBoxWindfreakDetection
             // 
@@ -1649,6 +1846,7 @@
             // groupBoxMWCHAdetection
             // 
             this.groupBoxMWCHAdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHAdetection.Controls.Add(this.cbCHATrigger);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPAPoweredOnDetection);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPLLPoweredOnDetection);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHARFMutedDetection);
@@ -1676,6 +1874,17 @@
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
             this.groupBoxMWCHAdetection.Text = "Channel A";
+            // 
+            // cbCHATrigger
+            // 
+            this.cbCHATrigger.AutoSize = true;
+            this.cbCHATrigger.Location = new System.Drawing.Point(462, 19);
+            this.cbCHATrigger.Name = "cbCHATrigger";
+            this.cbCHATrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHATrigger.TabIndex = 52;
+            this.cbCHATrigger.Text = "Trigger Armed";
+            this.cbCHATrigger.UseVisualStyleBackColor = true;
+            this.cbCHATrigger.CheckedChanged += new System.EventHandler(this.cbCHATrigger_CheckedChanged);
             // 
             // cbCHAPAPoweredOnDetection
             // 
@@ -1852,7 +2061,7 @@
             this.tbMWCHAFrequencySetpointDetection.Name = "tbMWCHAFrequencySetpointDetection";
             this.tbMWCHAFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpointDetection.TabIndex = 36;
-            this.tbMWCHAFrequencySetpointDetection.Text = "14.467242";
+            this.tbMWCHAFrequencySetpointDetection.Text = "14.458087";
             // 
             // labelDetectMicrowavesChAFreq
             // 
@@ -1888,6 +2097,7 @@
             // groupBoxMWCHBdetection
             // 
             this.groupBoxMWCHBdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBTrigger);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPLLPoweredOnDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPAPoweredOnDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBRFMutedDetection);
@@ -1914,6 +2124,17 @@
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
             this.groupBoxMWCHBdetection.Text = "Channel B";
+            // 
+            // cbCHBTrigger
+            // 
+            this.cbCHBTrigger.AutoSize = true;
+            this.cbCHBTrigger.Location = new System.Drawing.Point(463, 18);
+            this.cbCHBTrigger.Name = "cbCHBTrigger";
+            this.cbCHBTrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHBTrigger.TabIndex = 53;
+            this.cbCHBTrigger.Text = "Trigger Armed";
+            this.cbCHBTrigger.UseVisualStyleBackColor = true;
+            this.cbCHBTrigger.CheckedChanged += new System.EventHandler(this.cbCHBTrigger_CheckedChanged);
             // 
             // cbCHBPLLPoweredOnDetection
             // 
@@ -2090,7 +2311,7 @@
             this.tbMWCHBFrequencySetpointDetection.Name = "tbMWCHBFrequencySetpointDetection";
             this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpointDetection.TabIndex = 36;
-            this.tbMWCHBFrequencySetpointDetection.Text = "14.5";
+            this.tbMWCHBFrequencySetpointDetection.Text = "14.467242";
             // 
             // tbMWCHBFrequencyMonitorDetection
             // 
@@ -2417,6 +2638,7 @@
             // groupBoxMWCHB
             // 
             this.groupBoxMWCHB.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHB.Controls.Add(this.cbCHBRFTrigger);
             this.groupBoxMWCHB.Controls.Add(this.btCHBPLLPowerOnInfo);
             this.groupBoxMWCHB.Controls.Add(this.btCHBPAPowerOnInfo);
             this.groupBoxMWCHB.Controls.Add(this.btCHBRFMuteInfo);
@@ -2447,6 +2669,17 @@
             this.groupBoxMWCHB.TabIndex = 47;
             this.groupBoxMWCHB.TabStop = false;
             this.groupBoxMWCHB.Text = "Channel B";
+            // 
+            // cbCHBRFTrigger
+            // 
+            this.cbCHBRFTrigger.AutoSize = true;
+            this.cbCHBRFTrigger.Location = new System.Drawing.Point(463, 17);
+            this.cbCHBRFTrigger.Name = "cbCHBRFTrigger";
+            this.cbCHBRFTrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHBRFTrigger.TabIndex = 57;
+            this.cbCHBRFTrigger.Text = "Trigger Armed";
+            this.cbCHBRFTrigger.UseVisualStyleBackColor = true;
+            this.cbCHBRFTrigger.CheckedChanged += new System.EventHandler(this.cbCHBRFTrigger_CheckedChanged);
             // 
             // btCHBPLLPowerOnInfo
             // 
@@ -2653,7 +2886,7 @@
             this.tbMWCHBFrequencySetpoint.Name = "tbMWCHBFrequencySetpoint";
             this.tbMWCHBFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpoint.TabIndex = 36;
-            this.tbMWCHBFrequencySetpoint.Text = "14.5";
+            this.tbMWCHBFrequencySetpoint.Text = "14.4754";
             // 
             // labelMicrowavesChannelBFrequency
             // 
@@ -3004,6 +3237,7 @@
             this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updateBCurrentMonitorButton.TabIndex = 40;
             this.updateBCurrentMonitorButton.Text = "Update";
+            this.updateBCurrentMonitorButton.Click += new System.EventHandler(this.updateBCurrentMonitorButton_Click);
             // 
             // labelbCurrentMon4
             // 
@@ -3083,6 +3317,7 @@
             this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.SteppingBBoxBiasUpdateButton.TabIndex = 40;
             this.SteppingBBoxBiasUpdateButton.Text = "Update";
+            this.SteppingBBoxBiasUpdateButton.Click += new System.EventHandler(this.SteppingBBoxBiasUpdateButton_Click);
             // 
             // labelbStep1
             // 
@@ -3343,7 +3578,7 @@
             // labelSwitchingLED
             // 
             this.labelSwitchingLED.AutoSize = true;
-            this.labelSwitchingLED.Location = new System.Drawing.Point(519, 37);
+            this.labelSwitchingLED.Location = new System.Drawing.Point(502, 24);
             this.labelSwitchingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelSwitchingLED.Name = "labelSwitchingLED";
             this.labelSwitchingLED.Size = new System.Drawing.Size(96, 13);
@@ -3366,7 +3601,7 @@
             this.eManualStateCheckBox.Name = "eManualStateCheckBox";
             this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
             this.eManualStateCheckBox.TabIndex = 53;
-            this.eManualStateCheckBox.Text = "State (Checked is 0=>N+)";
+            this.eManualStateCheckBox.Text = "State (Checked is 0=>W+)";
             // 
             // groupBox13
             // 
@@ -3528,6 +3763,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.switchingLED);
+            this.groupBox4.Controls.Add(this.rampLED);
             this.groupBox4.Controls.Add(this.eDisableSwitching);
             this.groupBox4.Controls.Add(this.label78);
             this.groupBox4.Controls.Add(this.eOvershootHoldTextBox);
@@ -3557,9 +3794,27 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Switch";
             // 
+            // switchingLED
+            // 
+            this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.switchingLED.Location = new System.Drawing.Point(238, 51);
+            this.switchingLED.Name = "switchingLED";
+            this.switchingLED.OffColor = System.Drawing.Color.Maroon;
+            this.switchingLED.OnColor = System.Drawing.Color.Red;
+            this.switchingLED.Size = new System.Drawing.Size(21, 22);
+            this.switchingLED.TabIndex = 54;
+            // 
+            // rampLED
+            // 
+            this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.rampLED.Location = new System.Drawing.Point(238, 79);
+            this.rampLED.Name = "rampLED";
+            this.rampLED.Size = new System.Drawing.Size(21, 22);
+            this.rampLED.TabIndex = 55;
+            // 
             // eDisableSwitching
             // 
-            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
+            this.eDisableSwitching.Location = new System.Drawing.Point(166, 8);
             this.eDisableSwitching.Name = "eDisableSwitching";
             this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
             this.eDisableSwitching.TabIndex = 53;
@@ -3579,7 +3834,7 @@
             this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
             this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootHoldTextBox.TabIndex = 50;
-            this.eOvershootHoldTextBox.Text = "1";
+            this.eOvershootHoldTextBox.Text = "10";
             // 
             // label79
             // 
@@ -3595,7 +3850,7 @@
             this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
             this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootFactorTextBox.TabIndex = 49;
-            this.eOvershootFactorTextBox.Text = "2";
+            this.eOvershootFactorTextBox.Text = "1.1";
             // 
             // label62
             // 
@@ -3611,7 +3866,7 @@
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
             this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eSwitchTimeTextBox.TabIndex = 3;
-            this.eSwitchTimeTextBox.Text = "1";
+            this.eSwitchTimeTextBox.Text = "5";
             // 
             // label61
             // 
@@ -3627,7 +3882,7 @@
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
             this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eBleedTimeTextBox.TabIndex = 2;
-            this.eBleedTimeTextBox.Text = "0.01";
+            this.eBleedTimeTextBox.Text = "1";
             // 
             // label60
             // 
@@ -3651,7 +3906,7 @@
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
             this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpDelayTextBox.TabIndex = 5;
-            this.eRampUpDelayTextBox.Text = "1";
+            this.eRampUpDelayTextBox.Text = "10";
             // 
             // label58
             // 
@@ -3667,7 +3922,7 @@
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
             this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownDelayTextBox.TabIndex = 1;
-            this.eRampDownDelayTextBox.Text = "3";
+            this.eRampDownDelayTextBox.Text = "10";
             // 
             // label59
             // 
@@ -3683,7 +3938,7 @@
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
             this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownTimeTextBox.TabIndex = 0;
-            this.eRampDownTimeTextBox.Text = "2";
+            this.eRampDownTimeTextBox.Text = "30";
             // 
             // eRampUpTimeTextBox
             // 
@@ -3691,7 +3946,7 @@
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
             this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpTimeTextBox.TabIndex = 4;
-            this.eRampUpTimeTextBox.Text = "2";
+            this.eRampUpTimeTextBox.Text = "30";
             // 
             // fieldsOffButton
             // 
@@ -7236,11 +7491,230 @@
             this.tabControl.Controls.Add(this.tabPageBfield);
             this.tabControl.Controls.Add(this.tabPagePumping);
             this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1041, 741);
             this.tabControl.TabIndex = 23;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPage2.Controls.Add(this.label32);
+            this.tabPage2.Controls.Add(this.label31);
+            this.tabPage2.Controls.Add(this.label30);
+            this.tabPage2.Controls.Add(this.label29);
+            this.tabPage2.Controls.Add(this.button1);
+            this.tabPage2.Controls.Add(this.label28);
+            this.tabPage2.Controls.Add(this.FreqMonitorErrorTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorSampleLengthTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorPollPeriodInput);
+            this.tabPage2.Controls.Add(this.stopFreqMonitorPollButton);
+            this.tabPage2.Controls.Add(this.startFreqMonitorPollButton);
+            this.tabPage2.Controls.Add(this.LogFreqDataCheckBox);
+            this.tabPage2.Controls.Add(this.chart6);
+            this.tabPage2.Controls.Add(this.BeatFreqMonitor);
+            this.tabPage2.Controls.Add(this.UpdateBeatFreq);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1033, 715);
+            this.tabPage2.TabIndex = 10;
+            this.tabPage2.Text = "Frequency Counter";
+            // 
+            // label32
+            // 
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.Location = new System.Drawing.Point(22, 14);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(205, 23);
+            this.label32.TabIndex = 90;
+            this.label32.Text = "GPIB COUNTER CHANNEL";
+            // 
+            // label31
+            // 
+            this.label31.Location = new System.Drawing.Point(38, 158);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(149, 23);
+            this.label31.TabIndex = 89;
+            this.label31.Text = "Rolling Average + RMS";
+            // 
+            // label30
+            // 
+            this.label30.Location = new System.Drawing.Point(156, 129);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(85, 23);
+            this.label30.TabIndex = 88;
+            this.label30.Text = "Poll Period (ms)";
+            // 
+            // label29
+            // 
+            this.label29.Location = new System.Drawing.Point(133, 103);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(108, 23);
+            this.label29.TabIndex = 87;
+            this.label29.Text = "Samples to Average";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(214, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(80, 23);
+            this.button1.TabIndex = 86;
+            this.button1.Text = "Clear";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label28
+            // 
+            this.label28.Location = new System.Drawing.Point(262, 158);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(12, 23);
+            this.label28.TabIndex = 85;
+            this.label28.Text = "±";
+            // 
+            // FreqMonitorErrorTextBox
+            // 
+            this.FreqMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.FreqMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.FreqMonitorErrorTextBox.Location = new System.Drawing.Point(277, 155);
+            this.FreqMonitorErrorTextBox.Name = "FreqMonitorErrorTextBox";
+            this.FreqMonitorErrorTextBox.ReadOnly = true;
+            this.FreqMonitorErrorTextBox.Size = new System.Drawing.Size(79, 20);
+            this.FreqMonitorErrorTextBox.TabIndex = 84;
+            this.FreqMonitorErrorTextBox.Text = "0";
+            // 
+            // FreqMonitorTextBox
+            // 
+            this.FreqMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.FreqMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.FreqMonitorTextBox.Location = new System.Drawing.Point(187, 155);
+            this.FreqMonitorTextBox.Name = "FreqMonitorTextBox";
+            this.FreqMonitorTextBox.ReadOnly = true;
+            this.FreqMonitorTextBox.Size = new System.Drawing.Size(73, 20);
+            this.FreqMonitorTextBox.TabIndex = 83;
+            this.FreqMonitorTextBox.Text = "0";
+            // 
+            // FreqMonitorSampleLengthTextBox
+            // 
+            this.FreqMonitorSampleLengthTextBox.Location = new System.Drawing.Point(248, 100);
+            this.FreqMonitorSampleLengthTextBox.Name = "FreqMonitorSampleLengthTextBox";
+            this.FreqMonitorSampleLengthTextBox.Size = new System.Drawing.Size(46, 20);
+            this.FreqMonitorSampleLengthTextBox.TabIndex = 82;
+            this.FreqMonitorSampleLengthTextBox.Text = "50";
+            // 
+            // FreqMonitorPollPeriodInput
+            // 
+            this.FreqMonitorPollPeriodInput.Location = new System.Drawing.Point(248, 125);
+            this.FreqMonitorPollPeriodInput.Name = "FreqMonitorPollPeriodInput";
+            this.FreqMonitorPollPeriodInput.Size = new System.Drawing.Size(46, 20);
+            this.FreqMonitorPollPeriodInput.TabIndex = 81;
+            this.FreqMonitorPollPeriodInput.Text = "1000";
+            // 
+            // stopFreqMonitorPollButton
+            // 
+            this.stopFreqMonitorPollButton.Enabled = false;
+            this.stopFreqMonitorPollButton.Location = new System.Drawing.Point(122, 204);
+            this.stopFreqMonitorPollButton.Name = "stopFreqMonitorPollButton";
+            this.stopFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopFreqMonitorPollButton.TabIndex = 80;
+            this.stopFreqMonitorPollButton.Text = "Stop poll";
+            this.stopFreqMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopFreqMonitorPollButton.Click += new System.EventHandler(this.stopFreqMonitorPollButton_Click);
+            // 
+            // startFreqMonitorPollButton
+            // 
+            this.startFreqMonitorPollButton.Location = new System.Drawing.Point(25, 204);
+            this.startFreqMonitorPollButton.Name = "startFreqMonitorPollButton";
+            this.startFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startFreqMonitorPollButton.TabIndex = 79;
+            this.startFreqMonitorPollButton.Text = "Start poll";
+            this.startFreqMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startFreqMonitorPollButton.Click += new System.EventHandler(this.startFreqMonitorPollButton_Click);
+            // 
+            // LogFreqDataCheckBox
+            // 
+            this.LogFreqDataCheckBox.AutoSize = true;
+            this.LogFreqDataCheckBox.Location = new System.Drawing.Point(316, 208);
+            this.LogFreqDataCheckBox.Name = "LogFreqDataCheckBox";
+            this.LogFreqDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.LogFreqDataCheckBox.TabIndex = 78;
+            this.LogFreqDataCheckBox.Text = "Log data";
+            this.LogFreqDataCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // chart6
+            // 
+            this.chart6.BackColor = System.Drawing.Color.Black;
+            chartArea6.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea6.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.Title = "Time";
+            chartArea6.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.Title = "Frequency";
+            chartArea6.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.BackColor = System.Drawing.Color.Black;
+            chartArea6.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea6.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea6.BorderColor = System.Drawing.Color.White;
+            chartArea6.Name = "ChartArea1";
+            this.chart6.ChartAreas.Add(chartArea6);
+            legend6.Alignment = System.Drawing.StringAlignment.Center;
+            legend6.BackColor = System.Drawing.Color.Black;
+            legend6.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend6.ForeColor = System.Drawing.Color.White;
+            legend6.IsEquallySpacedItems = true;
+            legend6.Name = "Legend1";
+            legend6.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart6.Legends.Add(legend6);
+            this.chart6.Location = new System.Drawing.Point(25, 230);
+            this.chart6.Name = "chart6";
+            series22.ChartArea = "ChartArea1";
+            series22.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series22.Legend = "Legend1";
+            series22.Name = "Beat Frequency";
+            series22.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart6.Series.Add(series22);
+            this.chart6.Size = new System.Drawing.Size(973, 261);
+            this.chart6.TabIndex = 77;
+            this.chart6.Text = "chart6";
+            // 
+            // BeatFreqMonitor
+            // 
+            this.BeatFreqMonitor.BackColor = System.Drawing.Color.Black;
+            this.BeatFreqMonitor.ForeColor = System.Drawing.Color.Chartreuse;
+            this.BeatFreqMonitor.Location = new System.Drawing.Point(197, 58);
+            this.BeatFreqMonitor.Name = "BeatFreqMonitor";
+            this.BeatFreqMonitor.ReadOnly = true;
+            this.BeatFreqMonitor.Size = new System.Drawing.Size(97, 20);
+            this.BeatFreqMonitor.TabIndex = 43;
+            this.BeatFreqMonitor.Text = "0";
+            // 
+            // UpdateBeatFreq
+            // 
+            this.UpdateBeatFreq.Location = new System.Drawing.Point(25, 55);
+            this.UpdateBeatFreq.Name = "UpdateBeatFreq";
+            this.UpdateBeatFreq.Size = new System.Drawing.Size(155, 23);
+            this.UpdateBeatFreq.TabIndex = 41;
+            this.UpdateBeatFreq.Text = "Update Beat Frequency";
+            this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
             // ControlWindow
             // 
@@ -7276,6 +7750,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPagePumping.ResumeLayout(false);
+            this.groupBoxStirapRF.ResumeLayout(false);
+            this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
             this.groupBoxWindfreakDetection.PerformLayout();
             this.groupBoxMWCHAdetection.ResumeLayout(false);
@@ -7311,6 +7787,8 @@
             this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -7373,6 +7851,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             this.tabControl.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7969,5 +8450,41 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TabPage tabPage2;
+        public System.Windows.Forms.TextBox BeatFreqMonitor;
+        public System.Windows.Forms.DataVisualization.Charting.Chart chart6;
+        public System.Windows.Forms.CheckBox LogFreqDataCheckBox;
+        public System.Windows.Forms.Button stopFreqMonitorPollButton;
+        public System.Windows.Forms.Button startFreqMonitorPollButton;
+        public System.Windows.Forms.TextBox FreqMonitorPollPeriodInput;
+        public System.Windows.Forms.TextBox FreqMonitorSampleLengthTextBox;
+        private System.Windows.Forms.Label label28;
+        public System.Windows.Forms.TextBox FreqMonitorErrorTextBox;
+        public System.Windows.Forms.TextBox FreqMonitorTextBox;
+        public System.Windows.Forms.Button UpdateBeatFreq;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label32;
+        public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        public NationalInstruments.UI.WindowsForms.Led rampLED;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem1;
+        private System.Windows.Forms.GroupBox groupBoxStirapRF;
+        private System.Windows.Forms.Button btQueryStirapRFFrequency;
+        public System.Windows.Forms.ComboBox comboBoxStirapRFIncrementUnit;
+        public System.Windows.Forms.ComboBox comboBoxStirapRFSetpointUnit;
+        public System.Windows.Forms.TextBox tbStirapRFAmplitude;
+        private System.Windows.Forms.Button btUpdateStirapRFFrequency;
+        public System.Windows.Forms.TextBox tbStirapRFFrequency;
+        private System.Windows.Forms.Label labelStirapRF;
+        public System.Windows.Forms.TextBox tbStirapRFFreqMon;
+        public System.Windows.Forms.CheckBox cbCHATrigger;
+        public System.Windows.Forms.CheckBox cbCHBRFTrigger;
+        public System.Windows.Forms.CheckBox cbStirapRFOn;
+        private System.Windows.Forms.Label labelStirapRFAmp;
+        private System.Windows.Forms.Label labelStirapRFFreq;
+        public System.Windows.Forms.CheckBox cbCHBTrigger;
     }
 }

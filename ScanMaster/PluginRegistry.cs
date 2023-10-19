@@ -30,11 +30,14 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("No scan", typeof(NullOutputPlugin));
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
-			scanOutputPlugins.Add("Windfriek synth frequency output", typeof(WindfriekSynthFrequencyOutputPlugin));
+			scanOutputPlugins.Add("Windfrieksynth frequency output", typeof(WindfriekSynthFrequencyOutputPlugin));
+			scanOutputPlugins.Add("Windfrieksynth F0 Amplitude output", typeof(WindfriekSynthF0AmplitudeOutputPlugin));
+			scanOutputPlugins.Add("Windfrieksynth F1 Amplitude output", typeof(WindfriekSynthF1AmplitudeOutputPlugin));
+			scanOutputPlugins.Add("Windfrieksynth OP Amplitude output", typeof(WindfriekOPAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
-			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
+			//scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
@@ -81,6 +84,8 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Velocity Measurement (Slowed)", typeof(VelocityMeasSlowedPatternPlugin));
 			patternPlugins.Add("10Hz-2Hz", typeof(TenHzTwoHzPatternPlugin));
 			patternPlugins.Add("FindV1", typeof(FourShutterPatternPluginFindV1));
+			patternPlugins.Add("Ultra STIRAP", typeof(STIRAPpatternPlugin));
+
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -95,7 +100,7 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
-			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
+			//analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
             //GPIB Input plugins
             gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
             gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
@@ -186,10 +191,10 @@ namespace ScanMaster.Acquire.Plugin
             return GetPluginNameList(gpibInputPlugins);
         }
 
-		public WMLOutputPlugin GetWMLPlugins(string type)
-        {
-			return (WMLOutputPlugin)InstantiatePlugin(wmlOutputPlugins, type);
-        }
+		//public WMLOutputPlugin GetWMLPlugins(string type)
+        //{
+		//	return (WMLOutputPlugin)InstantiatePlugin(wmlOutputPlugins, type);
+        //}
 
 		private object InstantiatePlugin(Hashtable plugins, String type)
 		{

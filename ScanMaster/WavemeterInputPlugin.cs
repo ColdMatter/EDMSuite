@@ -3,7 +3,7 @@ using System.Collections;
 using System.Xml.Serialization;
 using System.Net;
 using System.Net.Sockets;
-
+using WavemeterLock;
 using NationalInstruments.DAQmx;
 
 using DAQ.Environment;

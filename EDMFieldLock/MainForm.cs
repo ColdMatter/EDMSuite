@@ -444,28 +444,31 @@ namespace EDMFieldLock
 		private int sampleCounter = 0;
 
 		// constants
-		const double FIELD_PER_VOLT_INPUT = 1/8.1;		// in units of nT/V
-		const int SAMPLE_CLOCK_RATE = 50;
-		const int SAMPLE_MULTI_READ = 25;				// this is how many samples to read at a time, sets a limit on bandwidth - lower for more bandwidth but higher computer load
-		const int GUI_UPDATE_EVERY = 1;					// if you multiply this by SAMPLE_MULTI_READ and divide by SAMPLE_CLOCK_RATE you get the GUI update interval in seconds
+		const double FIELD_PER_VOLT_INPUT = 10000;        // in units of nT/V
+		const int SAMPLE_CLOCK_RATE = 200;
+		const int SAMPLE_MULTI_READ = 25;               // this is how many samples to read at a time, sets a limit on bandwidth - lower for more bandwidth but higher computer load
+		const int GUI_UPDATE_EVERY = 1;                 // if you multiply this by SAMPLE_MULTI_READ and divide by SAMPLE_CLOCK_RATE you get the GUI update interval in seconds
 		const int LOCK_UPDATE_EVERY = 1;                // this is how often the lock is updated in terms of SAMPLE_MULTI_READs (same idea as GUI update interval above)
 		const double OUTPUT_LIMIT_LO = 0;               // (V). this sets the output limit.
 		const double OUTPUT_LIMIT_HI = 5;               // (V). this sets the output limit.
-		const double OUTPUT_ZERO = 2.5;					// (V). this sets the zero output level.
-		const double INPUT_LOW = -10;					// lower limit to Bartington input
-		const double INPUT_HIGH = 10;					// upper limit to Bartington input
-		const int OUTPUT_RAMP_STEPS = 50;			
+		const double OUTPUT_ZERO = 2.5;                 // (V). this sets the zero output level.
+		const double INPUT_LOW = -10;                   // lower limit to Bartington input
+		const double INPUT_HIGH = 10;                   // upper limit to Bartington input
+		const int OUTPUT_RAMP_STEPS = 50;
 		const int OUTPUT_RAMP_DELAY = 100;
 		const int CURRENT_SETTLE_TIME = 1000;
 
-		double setPoint = 0.0;							// in volts
-		double lockOutput = OUTPUT_ZERO;				// in volts
+		double setPoint = 0.0;                          // in volts
+		double lockOutput = OUTPUT_ZERO;                // in volts
 		double proportionalGain = 1.0;
 		double integralGain = 0.0;
 		double derivativeGain = 0.0;
 		double lastDeviation = 0.0;
 		double lastIntegral = 0.0;
 		double lastOutput = 0.0;
+		double M = 3500; // calibration from field reading to required current nT/A (1Y with coil Z- used here)
+						 //will later replace with matrix of all M_jk
+		double currentVoltage = 1.095; // calibration from current coil to DAQ Output voltage
 
 		private void StartAcquisition()
 		{
@@ -657,14 +660,21 @@ namespace EDMFieldLock
 			lock(lockParameterLockObject)
 			{
 				double meanDeviation = 0.0;
-				foreach (double j in lockFieldData) meanDeviation += j / lockFieldData.Count;
-				
+				foreach (double j in lockFieldData) meanDeviation += 1000 / (M * currentVoltage) * j / lockFieldData.Count;
+				//we don't need meanDeviation ->> we do!! need it, but still need our Matrix calibration
+				//currentVoltage term needed to convert needed current to output voltage
+
+				//double deltaCurrent = 0.0;
+				//foreach (double j in lockFieldData) deltaCurrent += 1/M * j;
+				// 1/M for the inverse transformation 
+
 				double p, i, d, dt;
 				dt = (double)LOCK_UPDATE_EVERY * (double)SAMPLE_MULTI_READ / (double)SAMPLE_CLOCK_RATE; // Time between this lock update and the last
 				p = - proportionalGain * meanDeviation;
 				i = - integralGain * meanDeviation * dt + lastIntegral;
 				d = - derivativeGain * (meanDeviation - lastDeviation) / dt;
 				lockOutput = p + i + d + OUTPUT_ZERO;
+
 
 				// if reached voltage limit, reset lock point, otherwise update lock
 				if (lockOutput >= OUTPUT_LIMIT_HI || lockOutput <= OUTPUT_LIMIT_LO)

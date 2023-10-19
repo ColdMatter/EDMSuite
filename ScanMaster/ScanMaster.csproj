@@ -29,7 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>C:\Users\UEDM\EDMSuitePrograms\</PublishUrl>
     <Install>true</Install>
@@ -228,9 +228,6 @@
     <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
@@ -291,6 +288,8 @@
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
+    <Compile Include="STIRAPpatternBuilder.cs" />
+    <Compile Include="STIRAPpatternPlugin.cs" />
     <Compile Include="PumpProbeDualCCDPatternBuilder.cs" />
     <Compile Include="PumpProbeDualCCDPatternPlugin.cs" />
     <Compile Include="TenHzTwoHzPatternBuilder2.cs" />
@@ -299,8 +298,10 @@
     <Compile Include="TwoShutterPatternPlugin.cs" />
     <Compile Include="VelocityMeasSlowedPatternBuilder3.cs" />
     <Compile Include="VelocityMeasSlowedPatternPlugin.cs" />
-    <Compile Include="WMLOutputPlugin.cs" />
-    <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="WindfriekOPAmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF1AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF0AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />
@@ -326,7 +327,6 @@
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
-    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

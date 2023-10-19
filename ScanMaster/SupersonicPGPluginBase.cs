@@ -150,9 +150,10 @@ namespace ScanMaster.Acquire.Plugins
             get
             {
                 long gateStartShotUnits = (int)config.shotGathererPlugin.Settings["gateStartTime"];
-                long clockFreq = (int)Settings["clockFrequency"];
+				long shotGathererSampleRate = (int)config.shotGathererPlugin.Settings["sampleRate"]; //We should use the sample rate to determine the gate start time, not a fixed 1MHz
+				long clockFreq = (int)Settings["clockFrequency"];
                 return (int)(
-                    (double)(gateStartShotUnits * clockFreq) / 1000000.0
+                    (double)(gateStartShotUnits * clockFreq) / shotGathererSampleRate //This used to be divided by 1000000.0
                     );
             }
         }

@@ -17,7 +17,8 @@ namespace EDMBlockHead.Acquire.Channels
 		public bool Invert;
 
 		private bool currentState = false;
-		static private EDMHardwareControl.Controller hardwareController;
+		//static private EDMHardwareControl.Controller hardwareController; //new hardware controller
+		static private UEDMHardwareControl.UEDMController hardwareController;
         public string Channel;
 
 		public override bool State
@@ -45,7 +46,10 @@ namespace EDMBlockHead.Acquire.Channels
 		{
 			try
 			{
-				if (hardwareController == null)	hardwareController = new EDMHardwareControl.Controller();
+				if (hardwareController == null) {
+						//hardwareController = new EDMHardwareControl.Controller();		//new hardware controller
+						hardwareController = new UEDMHardwareControl.UEDMController();
+				}
 			}
 			catch (Exception e)
 			{

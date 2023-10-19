@@ -41,6 +41,7 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(Find4fNewPatternPlugin)),
 	 XmlInclude(typeof(TenHzTwoHzPatternPlugin)),
 	 XmlInclude(typeof(VelocityMeasSlowedPatternPlugin)),
+	 XmlInclude(typeof(STIRAPpatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),]
      //XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
