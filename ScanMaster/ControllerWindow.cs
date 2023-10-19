@@ -298,9 +298,9 @@ namespace ScanMaster.GUI
             // 
             // statusBar1
             // 
-            this.statusBar1.Location = new System.Drawing.Point(0, 405);
+            this.statusBar1.Location = new System.Drawing.Point(0, 406);
             this.statusBar1.Name = "statusBar1";
-            this.statusBar1.Size = new System.Drawing.Size(774, 22);
+            this.statusBar1.Size = new System.Drawing.Size(778, 22);
             this.statusBar1.SizingGrip = false;
             this.statusBar1.TabIndex = 13;
             this.statusBar1.Text = "Ready";
@@ -403,7 +403,7 @@ namespace ScanMaster.GUI
             // ControllerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(774, 427);
+            this.ClientSize = new System.Drawing.Size(778, 428);
             this.Controls.Add(this.renameButton);
             this.Controls.Add(this.currentProfileLabel);
             this.Controls.Add(this.commandTextBox);
@@ -578,7 +578,7 @@ namespace ScanMaster.GUI
 		{
 			manager.AddNewProfile();
 			UpdateUI();
-		}
+		}		
 
 		private void CloneHandler(object sender, System.EventArgs e)
 		{

@@ -34,23 +34,32 @@ public class Patterns : MOTMasterScript
 
         // Slowing
         Parameters["slowingAOMOnStart"] = 180; //180
+
         Parameters["slowingAOMOnDuration"] = 45000;
+        
         Parameters["slowingAOMOffStart"] = 1520;//started from 1520
+
         Parameters["slowingAOMOffDuration"] = 40000;
+
+
+        
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
         Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
+
         // Slowing Chirp
         Parameters["SlowingChirpStartTime"] = 380;// 380;
-        Parameters["SlowingChirpDuration"] = 1160; //1160
+        Parameters["SlowingChirpDuration"] = 1160;//1160; //1160
+        //Parameters["SlowingChirpStartTime"] = 100;// 380;
+        //Parameters["SlowingChirpDuration"] = 900;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25; //-1.25
+        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //260MHz/V
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 0.42; //1.05;
-        Parameters["slowingCoilsOffTime"] = 1500;
+        Parameters["slowingCoilsValue"] = 0.4; //1.05;
+        Parameters["slowingCoilsOffTime"] = 1500; // 1500;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
@@ -93,7 +102,7 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.          
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
@@ -110,8 +119,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
-        //p.AddEdge("motLightSwitch", 0, true);
-        
+        p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
+        p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
+
         return p;
     }
 
@@ -139,8 +149,6 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
 
-
-
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
@@ -155,7 +163,8 @@ public class Patterns : MOTMasterScript
         // p.AddAnalogValue("triggerDelay", 0, (double)Parameters["triggerDelay"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.4); // 4.4
+        //p.AddAnalogValue("v00EOMAmp", 0, 4.4); // 4.4
+        p.AddAnalogValue("v00EOMAmp", 0, 4.9); //24/03/2023
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

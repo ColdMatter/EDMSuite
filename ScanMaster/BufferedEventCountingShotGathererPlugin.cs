@@ -51,6 +51,7 @@ namespace ScanMaster.Acquire.Plugins
 		protected override void InitialiseSettings()
 		{
 			settings["triggerActive"] = true;
+			settings["CounterSourceChannel"] = (string)Environs.Hardware.Boards["daq"] + "/PFI9";
 		}
 
 		public override void AcquisitionStarting()
@@ -70,7 +71,7 @@ namespace ScanMaster.Acquire.Plugins
 			// The number of samples to collect is determined by the "gateLength" setting. We add 1 to this,
 			// since the first count is not synchronized to anything and will be discarded
 			countingTask.Timing.ConfigureSampleClock(
-				(string)Environs.Hardware.Boards["daq"] + "/PFI9", 
+				(string)settings["CounterSourceChannel"],//(string)Environs.Hardware.Boards["daq"] + "/PFI9", 
 				(int)settings["sampleRate"], 
 				SampleClockActiveEdge.Rising, 
 				SampleQuantityMode.FiniteSamples, 
@@ -107,7 +108,7 @@ namespace ScanMaster.Acquire.Plugins
 			
 			// if we're using a hardware trigger to synchronize data acquisition, we need to set up the 
 			// trigger parameters on the sample clock.
-            // The first output task is triggered on PFI0 and the second is triggered on PFI1
+            //// The first output task is triggered on PFI0 and the second is triggered on PFI1
 			if((bool)settings["triggerActive"])
 			{
 				freqOutTask1.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;

@@ -19,7 +19,8 @@ namespace DAQ.HAL
         protected SerialParity ParitySetting = SerialParity.None;
         protected SerialFlowControlModes FlowControl = SerialFlowControlModes.None;
         protected byte TerminationCharacter = 0xa;
-        
+        protected int TimeoutMilliseconds = 1000;
+
         protected SerialSession serial;
         protected string address;
         protected bool connected = false;
@@ -44,9 +45,10 @@ namespace DAQ.HAL
                     serial.DataBits = DataBits;
                     serial.StopBits = StopBit;
                     serial.Parity = ParitySetting;
-                    serial.FlowControl = FlowControl; 
+                    serial.FlowControl = FlowControl;
                     serial.ReadTermination = ReadTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
+                    serial.TimeoutMilliseconds = TimeoutMilliseconds;
                 }
                 connected = true;
             }
@@ -67,6 +69,7 @@ namespace DAQ.HAL
                     serial.ReadTermination = ReadTerminationMethod;
                     serial.WriteTermination = WriteTerminationMethod;
                     serial.TerminationCharacter = TerminationCharacter;
+                    serial.TimeoutMilliseconds = TimeoutMilliseconds;
                 }
                 connected = true;
             }
@@ -121,7 +124,7 @@ namespace DAQ.HAL
             serial.Clear();
         }
 
-        protected double QueryDouble(string q)
+        public double QueryDouble(string q)
         {
             double d = 0.0;
             if (!connected) Connect();
@@ -129,5 +132,22 @@ namespace DAQ.HAL
             Disconnect();
             return d;
         }
+
+        public void rawWrite(string Command)
+        {
+            if (!connected) Connect();
+            Write(Command);
+            Disconnect();
+        }
+
+        public string rawQuery(string Command)
+        {
+            string resp = "";
+            if (!connected) Connect();
+            if (!Environs.Debug) resp = Query(Command + "");
+            Disconnect();
+            return resp;
+        }
+
     }
 }

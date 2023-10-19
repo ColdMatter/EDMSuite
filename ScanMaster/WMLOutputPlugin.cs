@@ -82,7 +82,8 @@ namespace ScanMaster.Acquire.Plugins
 
             EnvironsHelper eHelper = new EnvironsHelper(computer);
 
-            string tcpChannel = "6666";
+            string tcpChannel = eHelper.wavemeterLockTCPChannel.ToString();
+                //"6666";
 
             wmlController = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + name + ":" + tcpChannel + "/controller.rem"));
 

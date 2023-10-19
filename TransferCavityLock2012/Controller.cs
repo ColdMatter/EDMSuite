@@ -42,7 +42,6 @@ namespace TransferCavityLock2012
         }
 
         public TCLConfig config;
-        private object acquiredData;
 
         public Dictionary<string, Cavity> Cavities; // Stores all the laser classes.
         private Dictionary<string, int> aiChannelsLookup; // All ai channels, including the cavity and the master.
@@ -383,13 +382,13 @@ namespace TransferCavityLock2012
             tcl.ConfigureHardware(sp.Steps, sp.AnalogSampleRate, sp.TriggerOnRisingEdge, false);
         }
 
-        private void acquireData(ScanParameters sp)
+        private TCLReadData acquireData(ScanParameters sp)
         {
-            acquiredData = tcl.Read(sp.Steps);
+            return tcl.Read(sp.Steps);
         }
 
         private List<Laser> AllLasers
-        { 
+        {
             // List all lasers controlled by this instance
             get
             {
@@ -491,7 +490,7 @@ namespace TransferCavityLock2012
             }
         }
 
-        private double updateLockRate(Stopwatch stopWatch)
+        private void updateLockRate(Stopwatch stopWatch)
         {
             double elapsedTime = stopWatch.Elapsed.TotalSeconds;
             scanTimes.Add(elapsedTime);
@@ -501,7 +500,7 @@ namespace TransferCavityLock2012
             }
             double averageScanTime = scanTimes.Sum() / scanTimes.Count;
             double averageUpdateRate = 1 / averageScanTime;
-            return averageUpdateRate;
+            ui.UpdateLockRate(averageUpdateRate);
         }
 
         private void endLoop()
@@ -519,11 +518,6 @@ namespace TransferCavityLock2012
 
         private void mainLoop()
         {
-            acquiredData = false;
-
-            ThreadSync ts = new ThreadSync();
-            ThreadSync laserTS = new ThreadSync();
-
             initialiseAIHardware(scanParameters);
             ScanData scanData = new ScanData(aiChannelsLookup, diChannelsLookup);
 
@@ -531,52 +525,16 @@ namespace TransferCavityLock2012
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             int loopCount = 0;
-            Boolean initd = false;
-            Boolean updateGUI = true;
 
-            ts.CreateDelegateThread(() => acquireData(scanParameters)); // Not currently working. Something going on with the control mutex access
-            foreach (Laser laser in AllLasers)
-            {
-                laserTS.CreateDelegateThread(() => {
-                    if (!initd) return;
-                    double[] rampData = scanData.GetRampData();
-                    double[] laserScanData = scanData.GetLaserData(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
-                    bool lockBlocked = scanData.LaserLockBlocked(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
-                    laser.UpdateScan(rampData, laserScanData, lockBlocked);
-                    laser.UpdateLock();
-                    if (updateGUI)
-                    {
-                        updateGUIForLaser(laser, rampData);
-                    }
-                    if (updateGUI)
-                    {
-                        logLaserParams(laser);
-                    }
-                });
-            }
             while (TCLState != ControllerState.STOPPED)
             {
                 // Read data
-                ts.SwitchToData();
-                if (!(acquiredData is TCLReadData))
-                {
-                    ts.SwitchToControl();
-                    continue;
-                }
-                
-                TCLReadData rawData = (TCLReadData)acquiredData;
-                //TCLReadData rawData = new TCLReadData();
-                ts.SwitchToControl();
-
-
-                updateGUI = !ui.dissableGUIupdateCheckBox.Checked;
+                TCLReadData rawData = acquireData(scanParameters);
                 scanData.AddNewScan(rawData, ui.scanAvCheckBox.Checked, numScanAverages);
-                laserTS.SwitchToData();
-                laserTS.SwitchToControl();
-                initd = true;
+
                 // Fitting
                 double[] rampData = scanData.GetRampData();
-                /*foreach (Laser laser in AllLasers)
+                foreach (Laser laser in AllLasers)
                 {
                     double[] laserScanData = scanData.GetLaserData(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
                     bool lockBlocked = scanData.LaserLockBlocked(getUniqueKey(laser.ParentCavity.Name, laser.FeedbackChannel));
@@ -587,35 +545,30 @@ namespace TransferCavityLock2012
                 foreach (Laser laser in AllLasers)
                 {
                     laser.UpdateLock();
-                }*/
+                }
 
                 // GUI updates and logging
-                if (updateGUI)
+                if (!ui.dissableGUIupdateCheckBox.Checked)
                 {
                     updateRampPlot(rampData);
                 }
-                /*foreach (Laser laser in AllLasers)
+                foreach (Laser laser in AllLasers)
                 {
-                    if (updateGUI)
+                    if (!ui.dissableGUIupdateCheckBox.Checked)
                     {
                         updateGUIForLaser(laser, rampData);
                     }
-                    if (updateGUI)
+                    if (ui.logCheckBox.Checked && laser.IsLocked)
                     {
                         logLaserParams(laser);
                     }
-                }*/
-                double averageUpdateRate = updateLockRate(stopWatch);
-                if (updateGUI || loopCount % 100 == 0)
-                {
-                    ui.UpdateLockRate(averageUpdateRate);
                 }
+                updateLockRate(stopWatch);
+
                 stopWatch.Reset();
                 stopWatch.Start();
                 loopCount++;
             }
-            ts.JoinThreads();
-            laserTS.JoinThreads();
             endLoop();
         }
         #endregion

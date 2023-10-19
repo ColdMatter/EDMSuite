@@ -13,7 +13,6 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MoleculeMOTHardwa
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MoleculeMOTHardwareControl.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DAQ.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Newport.XPS.CommandInterface.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\ICSharpCode.SharpZipLib.dll
@@ -21,7 +20,6 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\alglibnet2.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Wolfram.NETLink.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DAQ.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.pdb
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.exe
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.csproj.AssemblyReference.cache
@@ -32,3 +30,11 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe.con
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Ivi.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.csproj.CopyComplete
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\bdc-comm-92.exe
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.UI.Styles3D.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\CmdLib8742.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DeviceIOLib.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\UsbDllWrap.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpEthernet.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpSerial.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.pdb

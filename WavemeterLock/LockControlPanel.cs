@@ -18,7 +18,7 @@ namespace WavemeterLock
         private int channelNumber = 0;
         public Controller controller;
         public double scale = 10;
-        
+        public bool lockBlocked = false;
 
         public LockControlPanel(string name, string AnalogChannel, int wavemeterChannel, Controller controller)
         {
@@ -29,6 +29,8 @@ namespace WavemeterLock
             InitializeComponent();
             controller.panelList.Add(name, this);
             lockChannelNum.Text = Convert.ToString(channelNumber);
+            PGain.Text = controller.lasers[name].PGain.ToString();
+            IGain.Text = controller.lasers[name].IGain.ToString();
 
         }
 
@@ -38,7 +40,7 @@ namespace WavemeterLock
             errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             errorPlot.LineColor = controller.selectColor(controller.colorParameter);
             controller.colorParameter++;
-            controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
+            //controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
             SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
             labelOutOfRange.Visible = false;
         }
@@ -53,7 +55,11 @@ namespace WavemeterLock
             if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
             {
                 SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
+                RMSValue.Text = controller.lasers[name].RMSNoise.ToString("#.###");
             }
+
+            else
+                RMSValue.Text = "N/A";
 
             if (controller.lasers[name].isOutOfRange)
             {
@@ -81,6 +87,23 @@ namespace WavemeterLock
 
         }
 
+        public void updateLockBlockStatus(bool status)
+        {
+            lockBlocked = status;
+            LEDBlockIndicator.Value = status;
+        }
+
+        public void SetTextField(Control box, string text)
+        {
+            box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
+        }
+
+        private delegate void SetTextDelegate(Control box, string text);
+
+        private void SetTextHelper(Control box, string text)
+        {
+            box.Text = text;
+        }
         #region Events
 
         private void lockButton_Click(object sender, EventArgs e)
@@ -149,6 +172,9 @@ namespace WavemeterLock
         {
             UIHelper.ClearGraph(errorScatterGraph);
             controller.timeList[name] = 0;
+            controller.lasers[name].sumedNoise = 0.0;
+            controller.lasers[name].loopCount = 0;
+            controller.lasers[name].RMSNoise = 0.0;
         }
 
         private void stepUpBtn_Click(object sender, EventArgs e)
@@ -198,6 +224,16 @@ namespace WavemeterLock
         }
 
         private void groupBoxLaserInfo_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
         {
 
         }
