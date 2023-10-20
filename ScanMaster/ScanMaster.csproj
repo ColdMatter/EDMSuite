@@ -538,6 +538,10 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DigitalTransferCavityLock\DigitalTransferCavityLock.csproj">
+      <Project>{5e693c98-6205-4be6-a9d2-3ca4484c41a6}</Project>
+      <Name>DigitalTransferCavityLock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
@@ -608,6 +612,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="DTCLOutputPlugin.cs" />
     <Compile Include="DualAomPatternBuilder.cs" />
     <Compile Include="DualAomPatternPlugin.cs" />
     <Compile Include="Find4fNewPatternBuilder.cs" />
@@ -624,6 +629,7 @@
     <Compile Include="FourShutterPatternPlugin.cs" />
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
+    <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
     <Compile Include="CaFBECPatternBuilder.cs" />
