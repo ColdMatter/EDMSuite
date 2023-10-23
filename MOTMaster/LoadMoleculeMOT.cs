@@ -29,7 +29,7 @@ namespace MOTMaster.SnippetLibrary
 
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
             //p.AddTrigger("digitalPattern2", patternStartBeforeQ, -patternStartBeforeQ, 10, "patternBoard2Trigger");
-            p.Pulse(patternStartBeforeQ, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 500, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
+            p.Pulse(0, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 12500, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
             p.Pulse(patternStartBeforeQ, -(int)parameters["FlashToQ"], (int)parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
             p.Pulse(patternStartBeforeQ, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.//trigger the Q switch !!!
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch"); 
@@ -64,7 +64,7 @@ namespace MOTMaster.SnippetLibrary
             -1.0 / 24.0);           // (double)parameters["weight4"]
             //p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
 
-            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 200, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
+            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 2500, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
             
             
             /*

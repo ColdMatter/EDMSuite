@@ -92,7 +92,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("cavityLockCarlos", tclBoard1Address + "/ao1"); //Reused for Rb Repump Wavemeter Lock 20/03/23
+            AddAnalogOutputChannel("TCoolSidebandVCO", tclBoard1Address + "/ao1"); //Reused for Rb Repump Wavemeter Lock 20/03/23
             //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
 
 
@@ -118,6 +118,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
             AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
             AddDigitalOutputChannel("cafPushSwitch", digitalPatternBoardAddress, 0, 5);
+            AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
 
 
             // Rb Digital Pattern
@@ -214,6 +215,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("heValve", tclBoard2Address, 0, 3);
             AddDigitalOutputChannel("sourceHeater40K", tclBoard2Address, 0, 4);
             AddDigitalOutputChannel("sourceHeaterMaster", tclBoard2Address, 0, 5);
+            AddDigitalOutputChannel("sourceHeaterSF6", tclBoard2Address, 0, 6);
 
             AddAnalogInputChannel("sourceTemp", tclBoard2Address + "/ai4", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sf6Temp", tclBoard2Address + "/ai0", AITerminalConfiguration.Rse);
@@ -229,8 +231,8 @@ namespace DAQ.HAL
             Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
             Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
-            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
-            Info.Add("flowConversionHe", 0.2); 
+            Info.Add("flowConversionSF6", 0.1); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionHe", 1.0); 
             AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
 
@@ -244,7 +246,7 @@ namespace DAQ.HAL
             wmlConfig.AddLaserConfiguration("v0", 494.432329, -100, -1000);
 
             wmlConfig.AddSlaveLaser("v1", "v10Lock", 2);
-            wmlConfig.AddLaserConfiguration("v1", 476.958908, -20, -200);
+            wmlConfig.AddLaserConfiguration("v1", 476.958908, -200, -1000);
 
             wmlConfig.AddSlaveLaser("v2", "v21Lock", 3);
             wmlConfig.AddLaserConfiguration("v2", 477.299380, 20, 200);
@@ -252,9 +254,9 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("v3", "v32Lock", 4);
             wmlConfig.AddLaserConfiguration("v3", 477.628176, -50, -500);
 
-            wmlConfig.AddSlaveLaser("B-X", "bXLock", 5);
-            wmlConfig.AddLaserConfiguration("B-X", 564.582313, 50, 500);
-            wmlConfig.AddLockBlock("B-X", "bXLockBlockFlag");
+            wmlConfig.AddSlaveLaser("BX", "bXLock", 5);
+            wmlConfig.AddLaserConfiguration("BX", 564.582306, 500, 500);
+            wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
 
             wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
             wmlConfig.AddLaserConfiguration("TCool", 564.582462, 50, 500);

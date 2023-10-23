@@ -107,6 +107,11 @@ namespace WavemeterLock
 
         }
 
+        public double getSetFrequency(string laser)
+        {
+            return lasers[laser].setFrequency;
+        }
+
         //Remote Methods
         public void setSlaveFrequency(string name, double freq)
         {
@@ -493,12 +498,12 @@ namespace WavemeterLock
                     if (lockBlocked.ContainsKey(slave))
                     {
                         checkBlockStatus(slave);
-                        updateFrequency(lasers[slave]);
                         panelList[slave].updateLockBlockStatus(lockBlocked[slave]);
 
                         if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
                         {
 
+                            updateFrequency(lasers[slave]);
 
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
@@ -515,8 +520,8 @@ namespace WavemeterLock
                             }
                         }
 
-                        else
-                            lasers[slave].UpdateBlockedLock();
+                        //else
+                            //lasers[slave].UpdateBlockedLock();
                     }
 
                     else

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Ports;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -15,6 +16,8 @@ namespace MoleculeMOTHardwareControl.Controls
         protected SourceTabController castController;
         double sf6flowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionSF6");
         double heflowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionHe");
+        public SerialPort serialPort;
+        string serialPortCOMName = "COM12";
 
         public SourceTabView(SourceTabController controllerInstance) : base(controllerInstance)
         {
@@ -183,6 +186,11 @@ namespace MoleculeMOTHardwareControl.Controls
             holdButton40K.Text = state ? "Heat and Hold" : "Stop Holding";
         }
 
+        public void UpdateHoldButtonSF6(bool state)
+        {
+            holdButtonSF6.Text = state ? "Heat and Hold" : "Stop Holding";
+        }
+
         public void EnableControls(bool state)
         {
             heaterSwitch.Enabled = state;
@@ -209,6 +217,12 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterLED40K.Value = state;
         }
 
+        public void SetHeaterStateSF6(bool state)
+        {
+            heaterSwitchSF6.Value = state;
+            heaterLEDSF6.Value = state;
+        }
+
         #endregion
 
         #region UI Query Handlers
@@ -218,9 +232,19 @@ namespace MoleculeMOTHardwareControl.Controls
             return (double)cycleLimit.Value;
         }
 
+        public double getCycleHoldTime()
+        {
+            return (double)cycleHoldTime.Value;
+        }
+
         public double GetCycleLimit40K()
         {
             return (double)cycleLimit40K.Value;
+        }
+
+        public double GetCycleLimitSF6()
+        {
+            return (double)cycleLimitSF6.Value;
         }
 
         #endregion
@@ -265,6 +289,11 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.ToggleHolding40K();
         }
 
+        private void toggleHoldingSF6(object sender, EventArgs e)
+        {
+            castController.ToggleHoldingSF6();
+        }
+
         private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
             bool state = heaterSwitch.Value;
@@ -278,6 +307,14 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterLED40K.Value = state;
             castController.SetHeaterState40K(state);
         }
+
+        private void toggleHeaterSF6(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+            bool state = heaterSwitchSF6.Value;
+            heaterLEDSF6.Value = state;
+            castController.SetHeaterStateSF6(state);
+        }
+
         private void toggleCryo(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
             bool state = cryoSwitch.Value;
@@ -379,6 +416,7 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.FlowTimeOut = (int)numFlowTimeout.Value;
         }
 
+        #region YAG control
         private void yag_X1_P (object sender, EventArgs e)
         {
             castController.moveYagX1((int)jogSteps.Value);
@@ -424,6 +462,49 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.connectDevice();
         }
 
+        #endregion
+
+        #region Target turner
+
+        private void connect_target_turner(object sender, EventArgs e)
+        {
+            if(serialPort != null)
+            {
+                serialPort.Close();
+            }
+            
+            serialPort = new SerialPort(serialPortCOMName, 4800, Parity.None, 8, StopBits.One);
+
+            // Attach a method to be called when there
+            // is data waiting in the port's buffer 
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
+
+            serialPort.Open();
+            serialPort.WriteLine("?feedback 0\n");
+            serialPort.WriteLine("?mode 0\n");
+            serialPort.WriteLine("?mode 2\n");
+            serialPort.WriteLine("?feedback 0\n");
+        }
+
+        private void turn_target_CW(object sender, EventArgs e)
+        {
+            serialPort.WriteLine("?home\n");
+            serialPort.WriteLine("?move 20\n");
+        }
+
+        private void turn_target_CCW(object sender, EventArgs e)
+        {
+            serialPort.WriteLine("?home\n");
+            serialPort.WriteLine("?move -20\n");
+        }
+
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            // Show all the incoming data in the port's buffer
+            targetTurnerReport.Text = serialPort.ReadExisting();
+        }
+
+        #endregion
         private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 

@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 200000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -40,14 +40,15 @@ public class Patterns : MOTMasterScript
         Parameters["PushStart"] = 200;
         Parameters["PushEnd"] = 400;
         Parameters["slowingAOMOnDuration"] = 45000;
-        
-        Parameters["slowingAOMOffStart"] = 1760;//1760;//started from 1520
+
+        Parameters["slowingAOMOffStart"] = 1760;//started from 1520
         //Parameters["slowingAOMOffStart"] = 1600;
         //Parameters["slowingAOMOffStart"] = 1000;
-        Parameters["slowingAOMOffDuration"] = 40000;//40000;
+        Parameters["slowingAOMOffDuration"] = 2240;
+        //Parameters["SlowingChirpHoldDuration"] = 2000;
 
 
-        
+
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOffStart"] = 1760;// 1760;//1520
         //Parameters["slowingRepumpAOMOffStart"] = 1600;//1520
@@ -106,6 +107,12 @@ public class Patterns : MOTMasterScript
         Parameters["dummy"] = 0.0;
 
 
+
+        Parameters["PokeStartTime"] = 8001;
+        Parameters["PokeDuration"] = 50;
+        Parameters["Oscillationtime"] = 50;
+
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -114,9 +121,13 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // THIS SCRIPT ONLY WORKS IF THE BX LASER IS HELD ON RESONANCE FOR 25ms AFTER THE CHIRP. CHANGE THIS IN THE LOADMOLECULEMOT SCRIPT, ITS NORMALLY 2ms
+        //MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.  
         
-
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"], (int)Parameters["PokeDuration"], "bXSlowingAOM"); //poke pulse to MOT - note b-x held on resonance until 80ms
+        //p.AddEdge("bXSlowingAOM", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"], 30, "motAOM"); //mot light off during poke
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["PokeStartTime"] + (int)Parameters["PokeDuration"] + (int)Parameters["OscillationTime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for f
         /*
         for (int i = 0; i < 12; i++)
         {
@@ -124,7 +135,9 @@ public class Patterns : MOTMasterScript
         }
         */
         // p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"] +50 +(int)Parameters["Oscillationtime"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
         //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"] + (int)Parameters["Frame0Trigger"], (int)Parameters["FrameTriggerInterval"], "cameraTrigger"); //camera trigger for first frame
@@ -149,7 +162,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafPushSwitch", 200, true);
         p.AddEdge("cafPushSwitch", 400, false);
 
-
+   
+        p.AddEdge("bXSlowingAOM", (int)Parameters["PokeStartTime"] + (int)Parameters["PokeDuration"], false);
+        p.AddEdge("bXSlowingAOM", 20000, true);
 
 
 
