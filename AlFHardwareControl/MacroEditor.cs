@@ -159,7 +159,7 @@ namespace AlFHardwareControl
             TaskNumber.Text = macroCollection.macros[selectedMacro].tasks[index].id.ToString();
             ResourceSchedTask.Text = macroCollection.macros[selectedMacro].tasks[index].TaskName;
             DelayHH.Text = macroCollection.macros[selectedMacro].tasks[index].delayHH.ToString();
-            DelayMM.Text = macroCollection.macros[selectedMacro].tasks[index].delayMM.ToString();
+            DelayMM.Text = macroCollection.macros[selectedMacro].tasks[index].delayMM.ToString();   
             DelaySS.Text = macroCollection.macros[selectedMacro].tasks[index].delaySS.ToString();
             Prerequisites.Items.Clear();
             foreach (int i in macroCollection.macros[selectedMacro].tasks[index].prerequisites)

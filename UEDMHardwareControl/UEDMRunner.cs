@@ -20,7 +20,7 @@ namespace UEDMHardwareControl
 			// publish the controller to the remoting system
 			TcpChannel channel = new TcpChannel(1172);
 			ChannelServices.RegisterChannel(channel, false);
-			RemotingServices.Marshal(controller, "controller.rem");
+			RemotingServices.Marshal(controller, "UEDMController.rem");
 
 			// hand over to the controller
             Application.EnableVisualStyles();

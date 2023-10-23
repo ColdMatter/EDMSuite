@@ -25,7 +25,8 @@ namespace EDMBlockHead.Acquire.Channels
         //private double initialCentre2;
 
 		private bool currentState = false;
-		static private EDMHardwareControl.Controller hardwareController;
+		//static private EDMHardwareControl.Controller hardwareController;		//new hardware controller
+		static private UEDMHardwareControl.UEDMController hardwareController;
 
 		public override bool State
 		{
@@ -69,8 +70,9 @@ namespace EDMBlockHead.Acquire.Channels
 		{
 			try
 			{
-				if (hardwareController == null)	hardwareController = new EDMHardwareControl.Controller();
-                if (rfToModify == RFSwitchToModify.rf1)
+				if (hardwareController == null) hardwareController = new UEDMHardwareControl.UEDMController();     //new hardware controller EDMHardwareControl.Controller();
+
+				if (rfToModify == RFSwitchToModify.rf1)
                 {
                     initialCentre1 = ((AnalogModulation)Controller.GetController().Config.GetModulationByName("RF1F")).Centre;
                 }

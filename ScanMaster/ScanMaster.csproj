@@ -612,6 +612,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="DTCLOutputPlugin.cs" />
     <Compile Include="DualAomPatternBuilder.cs" />
     <Compile Include="DualAomPatternPlugin.cs" />
     <Compile Include="Find4fNewPatternBuilder.cs" />
@@ -628,11 +629,13 @@
     <Compile Include="FourShutterPatternPlugin.cs" />
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
-    <Compile Include="DTCLOutputPlugin.cs" />
+    <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
     <Compile Include="CaFBECPatternBuilder.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
+    <Compile Include="STIRAPpatternBuilder.cs" />
+    <Compile Include="STIRAPpatternPlugin.cs" />
     <Compile Include="PumpProbeDualCCDPatternBuilder.cs" />
     <Compile Include="PumpProbeDualCCDPatternPlugin.cs" />
     <Compile Include="TenHzTwoHzPatternBuilder2.cs" />
@@ -641,8 +644,10 @@
     <Compile Include="TwoShutterPatternPlugin.cs" />
     <Compile Include="VelocityMeasSlowedPatternBuilder3.cs" />
     <Compile Include="VelocityMeasSlowedPatternPlugin.cs" />
-    <Compile Include="WMLOutputPlugin.cs" />
-    <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="WindfriekOPAmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF1AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF0AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />
@@ -668,7 +673,6 @@
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
-    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

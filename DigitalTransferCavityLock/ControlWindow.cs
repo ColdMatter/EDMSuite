@@ -5,7 +5,7 @@ using NationalInstruments.UI;
 using NationalInstruments.UI.WindowsForms;
 using NationalInstruments.Visa;
 using NationalInstruments.DAQmx;
-using NationalInstruments.ModularInstruments.NIScope;
+//using NationalInstruments.ModularInstruments.NIScope;
 using NationalInstruments.ModularInstruments;
 using NationalInstruments.ModularInstruments.SystemServices.DeviceServices;
 using NationalInstruments.ModularInstruments.SystemServices.TimingServices;

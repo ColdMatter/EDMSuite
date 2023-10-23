@@ -69,9 +69,6 @@
     <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.NIScope.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=3.2.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>

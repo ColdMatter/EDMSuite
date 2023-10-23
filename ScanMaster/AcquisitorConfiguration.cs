@@ -20,7 +20,7 @@ namespace ScanMaster.Acquire
 		public YAGPlugin yagPlugin;
 		public AnalogInputPlugin analogPlugin;
         public GPIBInputPlugin gpibPlugin;
-		public WMLOutputPlugin wmlPlugin;
+		//public WMLOutputPlugin wmlPlugin;
 
 		public AcquisitorConfiguration()
 		{
@@ -76,11 +76,11 @@ namespace ScanMaster.Acquire
             gpibPlugin.Config = this;
         }
 
-		public void SetWMLPlughin(string type)
-        {
-			wmlPlugin = PluginRegistry.GetRegistry().GetWMLPlugins(type);
-			wmlPlugin.Config = this;
-        }
+		//public void SetWMLPlughin(string type)
+        //{
+		//	wmlPlugin = PluginRegistry.GetRegistry().GetWMLPlugins(type);
+		//	wmlPlugin.Config = this;
+        //}
 
 		public override string ToString()
 		{

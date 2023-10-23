@@ -29,9 +29,9 @@ namespace AlFHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.DataGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.SaveTempData = new System.Windows.Forms.Button();
             this.TempDataSaveLoc = new System.Windows.Forms.TextBox();
@@ -50,58 +50,58 @@ namespace AlFHardwareControl
             // 
             this.DataGraph.BackColor = System.Drawing.Color.Black;
             this.DataGraph.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea2.AxisX.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.True;
-            chartArea2.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea2.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea2.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.MinorTickMark.Enabled = true;
-            chartArea2.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisX.Title = "Time";
-            chartArea2.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea2.AxisY.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.True;
-            chartArea2.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea2.AxisY.IsStartedFromZero = false;
-            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea2.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea2.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.MinorTickMark.Enabled = true;
-            chartArea2.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea2.AxisY.Title = "Temperature (K)";
-            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea2.BackColor = System.Drawing.Color.Black;
-            chartArea2.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea2.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea2.BorderColor = System.Drawing.Color.White;
-            chartArea2.CursorX.Interval = 100D;
-            chartArea2.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea2.CursorX.IsUserEnabled = true;
-            chartArea2.CursorX.IsUserSelectionEnabled = true;
-            chartArea2.CursorY.Interval = 0.01D;
-            chartArea2.CursorY.IsUserEnabled = true;
-            chartArea2.CursorY.IsUserSelectionEnabled = true;
-            chartArea2.Name = "ChartArea2";
-            this.DataGraph.ChartAreas.Add(chartArea2);
-            legend2.BackColor = System.Drawing.Color.Black;
-            legend2.ForeColor = System.Drawing.Color.White;
-            legend2.Name = "LegendChart2";
-            this.DataGraph.Legends.Add(legend2);
+            chartArea1.AxisX.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.True;
+            chartArea1.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisX.IsStartedFromZero = false;
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea1.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MinorTickMark.Enabled = true;
+            chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.True;
+            chartArea1.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisY.IsStartedFromZero = false;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MinorTickMark.Enabled = true;
+            chartArea1.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.Title = "Temperature (K)";
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea1.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.CursorX.Interval = 100D;
+            chartArea1.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea1.CursorX.IsUserEnabled = true;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.CursorY.Interval = 0.01D;
+            chartArea1.CursorY.IsUserEnabled = true;
+            chartArea1.CursorY.IsUserSelectionEnabled = true;
+            chartArea1.Name = "ChartArea2";
+            this.DataGraph.ChartAreas.Add(chartArea1);
+            legend1.BackColor = System.Drawing.Color.Black;
+            legend1.ForeColor = System.Drawing.Color.White;
+            legend1.Name = "LegendChart2";
+            this.DataGraph.Legends.Add(legend1);
             this.DataGraph.Location = new System.Drawing.Point(3, 3);
             this.DataGraph.Name = "DataGraph";
             this.DataGraph.Size = new System.Drawing.Size(836, 372);
             this.DataGraph.TabIndex = 26;
             this.DataGraph.Text = "chart2";
-            title2.BackColor = System.Drawing.Color.Black;
-            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title2.ForeColor = System.Drawing.Color.White;
-            title2.Name = "chartTitle2";
-            title2.Text = "Temperature";
-            this.DataGraph.Titles.Add(title2);
+            title1.BackColor = System.Drawing.Color.Black;
+            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title1.ForeColor = System.Drawing.Color.White;
+            title1.Name = "chartTitle2";
+            title1.Text = "Temperature";
+            this.DataGraph.Titles.Add(title1);
             // 
             // SaveTempData
             // 
@@ -167,15 +167,18 @@ namespace AlFHardwareControl
             // 
             // MaximumDatapointNumber
             // 
+            this.MaximumDatapointNumber.Enabled = false;
             this.MaximumDatapointNumber.Location = new System.Drawing.Point(7, 20);
             this.MaximumDatapointNumber.Name = "MaximumDatapointNumber";
             this.MaximumDatapointNumber.Size = new System.Drawing.Size(100, 20);
             this.MaximumDatapointNumber.TabIndex = 1;
-            this.MaximumDatapointNumber.Text = "10000";
+            this.MaximumDatapointNumber.Text = "50000";
             // 
             // MaximumDataEnable
             // 
             this.MaximumDataEnable.AutoSize = true;
+            this.MaximumDataEnable.Checked = true;
+            this.MaximumDataEnable.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MaximumDataEnable.Location = new System.Drawing.Point(113, 22);
             this.MaximumDataEnable.Name = "MaximumDataEnable";
             this.MaximumDataEnable.Size = new System.Drawing.Size(132, 17);

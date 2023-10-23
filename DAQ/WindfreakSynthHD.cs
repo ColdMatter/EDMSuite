@@ -27,6 +27,8 @@ namespace DAQ.HAL
             public static String SetPAPowerOn { get { return "r"; } } //  1=powered on or 0=powered off
             public static String QueryPLLPowerOn { get { return "E?"; } } //  returns: 1=powered on or 0=powered off
             public static String SetPLLPowerOn { get { return "E"; } } //  1=powered on or 0=powered off
+            public static String SetTriggerOn { get { return "w"; } } // 4 = SMA trigger armed or 0= SMA trigger off
+            public static String QueryTriggerOn { get { return "w?"; } } //  returns: 4 = SMA trigger armed or 0= SMA trigger off
         }
 
         // Serial connection parameters for the Windfreak SynthHD:
@@ -63,6 +65,7 @@ namespace DAQ.HAL
         }
         public void SetFrequency(long frequency) // frequency in Hz
         {
+
             Connect(SerialTerminationMethod.TerminationCharacter);
             double MHzFrequency = frequency / Math.Pow(10, 6);
             string cmd = CommandTypes.SetFrequency + MHzFrequency.ToString();
@@ -109,6 +112,7 @@ namespace DAQ.HAL
             Connect(SerialTerminationMethod.TerminationCharacter);
             string response = Query(CommandTypes.QueryChannel);
             Disconnect();
+            //Console.Out.WriteLine(response);
             if (Int32.TryParse(response, out int parsedResponse))
             {
                 return parsedResponse;
@@ -306,6 +310,44 @@ namespace DAQ.HAL
             Write(cmd, true);
             Disconnect();
         }
-
+        public void SetTriggerOn(bool Flag)
+        {
+            string cmdstr;
+            if (Flag)
+            {
+                cmdstr = "4";
+            }
+            else
+            {
+                cmdstr = "0";
+            }
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string cmd = CommandTypes.SetTriggerOn + cmdstr;
+            Write(cmd, true);
+            Disconnect();
+        }
+        public bool QueryTriggerOn()
+        {
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string response = Query(CommandTypes.QueryTriggerOn);
+            Disconnect();
+            Console.Out.WriteLine(response);
+            //System.Diagnostics.Debug.WriteLine(response);
+            if (Int32.TryParse(response, out int parsedResponse))
+            {
+                if (parsedResponse == 4)
+                {
+                    return true; // powered on
+                }
+                else
+                {
+                    return false; // powered off
+                }
+            }
+            else
+            {
+                return false; // error parsing serial response from Windfreak
+            }
+        }
     }
 }

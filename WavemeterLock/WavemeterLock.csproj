@@ -138,7 +138,9 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=19.6.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NationalInstruments.DAQmx.Fakes">
       <HintPath>FakesAssemblies\NationalInstruments.DAQmx.Fakes.dll</HintPath>
     </Reference>
@@ -181,6 +183,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LockForm.resx">
       <DependentUpon>LockForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">

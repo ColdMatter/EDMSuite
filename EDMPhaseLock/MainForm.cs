@@ -339,12 +339,13 @@ namespace EDMPhaseLock
 
 		#region DAQ
 
-        enum ControlMethod { synth, analog };
+        enum ControlMethod { synth, analog, usb };
 
         ControlMethod cm;
 		
         Task counterTask;
 		HP3325BSynth redSynth;
+		RigolDG822 wavGen;
         Task analogOutputTask;
         AnalogSingleChannelWriter analogWriter;
 		CounterSingleChannelReader counterReader;
@@ -362,13 +363,13 @@ namespace EDMPhaseLock
 		const int GUI_UPDATE_EVERY = 1;			// if you multiply this by SAMPLE_MULTI_READ and divide by
 												// SAMPLE_CLOCK_RATE you get the GUI update interval in seconds
 		const double GUI_RATE_CENTRE = 0;
-		const double GUI_RATE_RANGE = 1500;
+		const double GUI_RATE_RANGE = 7500;
 		const int LOCK_UPDATE_EVERY = 5;		// this is how often the lock is updated in terms
 												// of SAMPLE_MULTI_READs (same idea as GUI update interval above)
 		// lock parameters
 		const double PROPORTIONAL_GAIN = 1;		// the units are Hz per count
-		const double DERIVATIVE_GAIN = 50;		// the units are difficult to work out
-		const double OSCILLATOR_DEVIATION_LIMIT = 75000;		// this is the furthest the output frequency
+		const double DERIVATIVE_GAIN = 25;		// the units are difficult to work out
+		const double OSCILLATOR_DEVIATION_LIMIT = 50000;		// this is the furthest the output frequency
 															// can deviate from the target frequency
 		const double DIFFERENCE_LIMIT = 5000;	// in counts. This times by the sample clock rate
 												// is the maximum frequency deviation that will be passed through
@@ -377,25 +378,39 @@ namespace EDMPhaseLock
                                                 // array exceeds the difference limit; it keeps the useful behaviour 
                                                 // of the difference limit while at the same preventing the lock from
                                                 // unlocking permanently if the frequency genuinely exceeds the difference limt. 
-        const double VCO_CENTRAL = 1;           // when using a VCO to generate the clock signal, this is the
+        const double VCO_CENTRAL = 2.15;           // when using a VCO to generate the clock signal, this is the
                                                 // input voltage to the VCO that generates the target frequency 
 
-        const double VCO_CAL = 100000;          // The calibration of the VCO, in Hz per V, around the central value
-        const double VCO_HIGH = 10;             // upper input range of the VCO
+        const double VCO_CAL = 150000;          // The calibration of the VCO, in Hz per V, around the central value
+        const double VCO_HIGH = 5;             // upper input range of the VCO
         const double VCO_LOW = 0;               // lower input range of the VCO
 
 		private void StartAcquisition()
 		{
-            if (((string)Environs.Hardware.GetInfo("phaseLockControlMethod")) == "analog") 
-                cm = ControlMethod.analog;
-            else cm = ControlMethod.synth; //synth is default
+			if (((string)Environs.Hardware.GetInfo("phaseLockControlMethod")) == "analog")
+				cm = ControlMethod.analog;
+			else
+			{
+				if (((string)Environs.Hardware.GetInfo("phaseLockControlMethod")) == "synth")
+                {
+					cm = ControlMethod.synth; //synth is default
+				}
+				else cm = ControlMethod.usb;
+			}
 
-            if (cm == ControlMethod.synth)
+            if (cm == ControlMethod.synth && !Environs.Debug)
             {
                 redSynth = (HP3325BSynth)Environs.Hardware.Instruments["red"];
                 redSynth.Connect();
             }
             else redSynth = null;
+
+			if (cm == ControlMethod.usb && !Environs.Debug)
+            {
+				wavGen = (RigolDG822)Environs.Hardware.Instruments["rigolWavGen"];
+				wavGen.Connect();
+				wavGen.Enabled = true;
+            }
 
             if (cm == ControlMethod.analog && !Environs.Debug) configureAnalogOutput();
 
@@ -501,12 +516,13 @@ namespace EDMPhaseLock
 				lock(this) if (debugAbortFlag) return;
 			}
 		}
+
+		#endregion
+
 		private double FAKE_DATA_SPREAD = 0.001;
 		private double FAKE_DATA_MOD = 0.002;
 		private double FAKE_DATA_PERIOD = 1000;
 		private Int32 fakeCounterValue = 0;
-
-		#endregion
 
 		private void CounterCallBack(IAsyncResult result)
 		{
@@ -552,6 +568,7 @@ namespace EDMPhaseLock
 			}
 			sampleCounter++;
 		}
+
 
 		Int32 lastElementOfOldData = 0;
 		int accumulatedPhaseDifference = 0;
@@ -631,7 +648,9 @@ namespace EDMPhaseLock
 				// write to the synth or VCO
 				if (cm == ControlMethod.synth) redSynth.Frequency = oscillatorFrequency / 1000000;
 
-                if (cm == ControlMethod.analog && !Environs.Debug)
+				if (cm == ControlMethod.usb) wavGen.Frequency = oscillatorFrequency / 1000000;
+
+				if (cm == ControlMethod.analog && !Environs.Debug)
                     analogWriter.WriteSingleSample(true, 
                         VCO_CENTRAL + (oscillatorFrequency - OSCILLATOR_TARGET_RATE) / VCO_CAL);
                 
@@ -651,7 +670,8 @@ namespace EDMPhaseLock
 			}
 			else lock(this) debugAbortFlag = true;
 			if (cm == ControlMethod.synth) redSynth.Disconnect();
-           
+			if (cm == ControlMethod.usb) wavGen.Disconnect();
+
 		}
 
 		#endregion
