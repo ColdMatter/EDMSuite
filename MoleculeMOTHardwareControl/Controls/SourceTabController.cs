@@ -697,6 +697,7 @@ namespace MoleculeMOTHardwareControl.Controls
                 SetCryoState(true);
                 cycleHoldTimer.Stop();
                 isCycleTempReached = false;
+                castView.UpdateCycleButton(!isCycling);
             }
         }
 

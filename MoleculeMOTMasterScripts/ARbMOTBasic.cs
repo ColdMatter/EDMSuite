@@ -43,7 +43,7 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 2.7; //2.91 resonance
+        Parameters["ImagingFrequency"] = 1.50; //2.91 resonance
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
         //Parameters["MOTCoolingLoadingFrequency"] = 3.4; //  13/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 4.1;

@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 5000;
         Parameters["Frame0TriggerDuration"] = 10;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -91,7 +91,7 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityMolassesValue"] = 5.6;
         Parameters["v0IntensityRampBackTime"] = 20000;
 
-        Parameters["V00EOMsidebandRatio"] = 6.0;
+        Parameters["V00EOMsidebandRatio"] = 5.0;
 
 
         // v0 Light Frequency

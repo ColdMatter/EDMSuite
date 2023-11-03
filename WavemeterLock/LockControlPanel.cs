@@ -200,6 +200,11 @@ namespace WavemeterLock
             
         }
 
+        private void logData_check(object sender, EventArgs e)
+        {
+            controller.lasers[name].logData = checkBoxLogData.Checked;
+        }
+
         #endregion
 
 

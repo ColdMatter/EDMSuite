@@ -18,6 +18,7 @@ namespace DAQ.Environment
             Paths.Add("SourceLogPath", "E:\\Source_Log\\");
             Paths.Add("ToFFilesPath", "E:\\Source_Log\\ToF_Data\\");
             Paths.Add("transferCavityData", "E:\\TCL_DataLog\\");
+            Paths.Add("wavemeterLockData", "E:\\WML_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
             SortDataByDate = false;

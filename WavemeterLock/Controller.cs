@@ -142,12 +142,15 @@ namespace WavemeterLock
         public Dictionary<string, Laser> lasers;
         public Dictionary<string, int> wmChannels;
         public Dictionary<string, bool> lockBlocked;
+        public Dictionary<string, bool> lastMeasurementLockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
         public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
         public Dictionary<string, double> timeList = new Dictionary<string, double>();
         private LockForm ui;
         public WavemeterLockConfig config;
+
+        private static string logfilePath = (string)Environs.FileSystem.Paths["wavemeterLockData"];
 
         //Constructor
         public Controller(string configName, string hostName, int channelNumber)
@@ -218,6 +221,7 @@ namespace WavemeterLock
         {
             lasers = new Dictionary<string, Laser>();
             lockBlocked = new Dictionary<string, bool>();
+            lastMeasurementLockBlocked = new Dictionary<string, bool>();
             wmChannels = new Dictionary<string, int>();
 
             //Config hardware channel and time stamp
@@ -243,6 +247,7 @@ namespace WavemeterLock
                 string laser = entry.Key;
                 blockHelper.Add(laser, new DAQMxWavemeterLockBlockHelper(laser, config.lockBlockFlag[laser]));
                 lockBlocked.Add(laser, false);
+                lastMeasurementLockBlocked.Add(laser, false);
             }
 
             //Config initial set points and gains
@@ -500,7 +505,7 @@ namespace WavemeterLock
                         checkBlockStatus(slave);
                         panelList[slave].updateLockBlockStatus(lockBlocked[slave]);
 
-                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lasers[slave].isBlocked )
                         {
 
                             updateFrequency(lasers[slave]);
@@ -520,8 +525,11 @@ namespace WavemeterLock
                             }
                         }
 
-                        //else
-                            //lasers[slave].UpdateBlockedLock();
+                        
+
+                        else
+                        lasers[slave].UpdateBlockedLock();
+
                     }
 
                     else
@@ -551,7 +559,32 @@ namespace WavemeterLock
                         else
                             lasers[slave].UpdateBlockedLock();
                     }
+
+                    if (lasers[slave].logData)
+                    {
+                        DateTime dt = DateTime.Now;
+                        String filename = logfilePath + slave + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+
+                        if (!System.IO.File.Exists(filename))
+                        {
+                            string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
+                               "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
+                            using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, false))
+                                file.WriteLine(header);
+                        }
+
+                        using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, true))
+                        {
+                            file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
+                                lasers[slave].FrequencyError*1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
+                            file.Flush();
+                        }
+                    }
                 }
+
+                
             }
 
             loopcount++;
@@ -587,6 +620,7 @@ namespace WavemeterLock
         {
             blockHelper[laser].checkLockBlockStatus();
             lockBlocked[laser] = blockHelper[laser].isBlocked;
+            lasers[laser].isBlocked = blockHelper[laser].isBlocked;
         }
 
         public void errorMsg()

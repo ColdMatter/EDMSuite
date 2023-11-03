@@ -79,7 +79,7 @@ namespace WavemeterLock
             this.lockTab.Location = new System.Drawing.Point(-3, 70);
             this.lockTab.Name = "lockTab";
             this.lockTab.SelectedIndex = 0;
-            this.lockTab.Size = new System.Drawing.Size(683, 497);
+            this.lockTab.Size = new System.Drawing.Size(723, 497);
             this.lockTab.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.lockTab.TabIndex = 2;
             this.lockTab.SelectedIndexChanged += new System.EventHandler(this.lockTab_SelectedIndexChanged);
@@ -106,7 +106,7 @@ namespace WavemeterLock
             // groupBoxLockRate
             // 
             this.groupBoxLockRate.Controls.Add(this.updateRateTextBox);
-            this.groupBoxLockRate.Location = new System.Drawing.Point(517, 12);
+            this.groupBoxLockRate.Location = new System.Drawing.Point(582, 12);
             this.groupBoxLockRate.Name = "groupBoxLockRate";
             this.groupBoxLockRate.Size = new System.Drawing.Size(138, 42);
             this.groupBoxLockRate.TabIndex = 6;
@@ -219,7 +219,7 @@ namespace WavemeterLock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(680, 568);
+            this.ClientSize = new System.Drawing.Size(732, 568);
             this.Controls.Add(this.button_lock_all);
             this.Controls.Add(this.led8);
             this.Controls.Add(this.led7);
