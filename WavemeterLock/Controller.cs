@@ -525,11 +525,16 @@ namespace WavemeterLock
                             }
                         }
 
+<<<<<<< Updated upstream
                         
 
                         else
                         lasers[slave].UpdateBlockedLock();
 
+=======
+                        //else
+                        //    lasers[slave].UpdateBlockedLock();
+>>>>>>> Stashed changes
                     }
 
                     else
