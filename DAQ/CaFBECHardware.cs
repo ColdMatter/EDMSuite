@@ -62,7 +62,7 @@ namespace DAQ.HAL
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
-            Info.Add("analogTrigger0", pgBoard + "/PFI0");
+            // Info.Add("analogTrigger0", pgBoard + "/PFI0");
             Info.Add("PGClockLine", pgBoard + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
 
@@ -89,7 +89,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("heValve", TCLInput, 0, 3);
 
             AddAnalogInputChannel("sourceTemp", TCLInput + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sf6Temp", TCLInput + "/ai0", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("sf6Temp", TCLInput + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourcePressure", TCLInput + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("MOTPressure", TCLInput + "/ai8", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourceTemp2", TCLInput + "/ai11", AITerminalConfiguration.Rse);
@@ -127,7 +127,7 @@ namespace DAQ.HAL
           
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
-            tclConfig.Trigger = "analogTrigger0";
+            // tclConfig.Trigger = "analogTrigger0";
             tclConfig.BaseRamp = "sumVolt";
             tclConfig.TCPChannel = 1190;
             tclConfig.DefaultScanPoints =  1000;
