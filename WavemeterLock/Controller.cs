@@ -562,25 +562,7 @@ namespace WavemeterLock
 
                     if (lasers[slave].logData)
                     {
-                        DateTime dt = DateTime.Now;
-                        String filename = logfilePath + slave + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-
-                        if (!System.IO.File.Exists(filename))
-                        {
-                            string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
-                               "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
-                            using (System.IO.StreamWriter file =
-                            new System.IO.StreamWriter(filename, false))
-                                file.WriteLine(header);
-                        }
-
-                        using (System.IO.StreamWriter file =
-                            new System.IO.StreamWriter(filename, true))
-                        {
-                            file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
-                                lasers[slave].FrequencyError*1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
-                            file.Flush();
-                        }
+                        logSlaveDate(slave);
                     }
                 }
 
@@ -653,5 +635,90 @@ namespace WavemeterLock
             }
 
         }
+
+        public void logSlaveDate(string slave)
+        {
+            DateTime dt = DateTime.Now;
+            String filename = logfilePath + slave + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+
+            if (!System.IO.File.Exists(filename))
+            {
+                string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
+                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
+                using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(filename, false))
+                    file.WriteLine(header);
+            }
+
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(filename, true))
+            {
+                file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
+                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
+                file.Flush();
+            }
+        }
+
+        public void logSetPoints(bool isManual)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+            string dt = DateTime.Now.TimeOfDay.ToString();
+            string note;
+
+            if (isManual)
+                note = "Manual log";
+            else
+                note = "Auto log";
+
+            foreach(string slave in lasers.Keys)
+            {
+                String filename = logfilePath + "LaserSetPoints\\" +  slave + "_LaserSetpoints" + ".txt";
+
+                if (!System.IO.File.Exists(filename))
+                {
+                    string header = "Time \t" + "Set Frequency (THz) \t" + "PGain \t"  + "IGain (THz) \t" + "Offset(V) \t" + "Note";
+                    using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, false))
+                        file.WriteLine(header);
+                }
+
+                string content = date + " " + dt + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].PGain + "\t" + lasers[slave].IGain 
+                    + "\t" + lasers[slave].offsetVoltage + "\t" + note + "\t";
+                
+
+                using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, true))
+                {
+                    file.WriteLine(content);
+                    file.Flush();
+                }
+            }
+
+        }
+
+        public void loadSetPoints()
+        {
+            foreach (string slave in lasers.Keys)
+            {
+                String filename = logfilePath + "LaserSetPoints\\" + slave + "_LaserSetpoints" + ".txt";
+                if (System.IO.File.Exists(filename))
+                {
+                    string log = System.IO.File.ReadLines(filename).Last();
+                    Console.WriteLine(log);
+
+                    List<string> resultList = log.Split('\t').ToList();
+                    lasers[slave].setFrequency = Convert.ToDouble(resultList[1]);
+                    lasers[slave].PGain = Convert.ToDouble(resultList[2]);
+                    setIGain(slave, Convert.ToDouble(resultList[3]));
+                    lasers[slave].offsetVoltage = Convert.ToDouble(resultList[4]);
+                }
+            }
+
+            foreach (LockControlPanel panel in panelList.Values)
+            {
+                panel.updateParameters();
+            }
+        }
+        
     }
 }
