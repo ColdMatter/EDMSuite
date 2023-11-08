@@ -208,7 +208,9 @@ namespace WavemeterLock
         public void startWML()
         {
             Thread mainThread = new Thread(new ThreadStart(mainLoop));
-            mainThread.Start();
+            mainThread.Start(); 
+            Thread blockThread = new Thread(new ThreadStart(checkBlockLoop));
+            blockThread.Start();
         }
 
 
@@ -493,6 +495,22 @@ namespace WavemeterLock
 
         }
 
+        private void checkBlockLoop()
+        {
+            while (true)
+            {
+                if (WMLState != ControllerState.STOPPED) { 
+                    foreach (string slave in lasers.Keys){
+                    
+                        if (lockBlocked.ContainsKey(slave)){
+                        
+                            checkBlockStatus(slave);
+                        }
+                    }
+                }
+            }
+        }
+
         private void updateLockMaster()
         {
             if (WMLState != ControllerState.STOPPED)
@@ -502,7 +520,7 @@ namespace WavemeterLock
                 {
                     if (lockBlocked.ContainsKey(slave))
                     {
-                        checkBlockStatus(slave);
+                        //checkBlockStatus(slave);
                         panelList[slave].updateLockBlockStatus(lockBlocked[slave]);
 
                         if (lasers[slave].lState == Laser.LaserState.LOCKED && !lasers[slave].isBlocked )
