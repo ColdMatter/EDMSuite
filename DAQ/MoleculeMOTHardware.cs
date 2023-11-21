@@ -231,7 +231,7 @@ namespace DAQ.HAL
             Info.Add("ToFPMTSignal", tclBoard2Address + "/ai3");
             Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
-            Info.Add("flowConversionSF6", 0.1); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
+            Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
             Info.Add("flowConversionHe", 1.0); 
             AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");

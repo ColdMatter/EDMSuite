@@ -474,18 +474,18 @@ namespace MoleculeMOTHardwareControl.Controls
                 if (Is40KHolding)
                 {
 
-                    //double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
-                    double cycleLimit = castView.GetCycleLimit40K();
-                    if (source40KTemp < cycleLimit && !maxTempReached40K)
+                    double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
+                    //double cycleLimit = castView.GetCycleLimit40K();
+                    if (source40KTemp2 < cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                     }
-                    else if (source40KTemp > cycleLimit && !maxTempReached40K)
+                    else if (source40KTemp2 > cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(false);
                         maxTempReached40K = true;
                     }
-                    else if (source40KTemp < cycleLimit - 5 && maxTempReached40K)
+                    else if (source40KTemp2 < cycleLimit - 5 && maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                         maxTempReached40K = false;

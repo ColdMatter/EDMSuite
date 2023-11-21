@@ -58,6 +58,8 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.heaterSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.heaterLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.cycleHoldTime = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cycleButton = new System.Windows.Forms.Button();
@@ -130,8 +132,6 @@
             this.heaterLEDSF6 = new NationalInstruments.UI.WindowsForms.Led();
             this.cycleLimitSF6 = new System.Windows.Forms.NumericUpDown();
             this.holdButtonSF6 = new System.Windows.Forms.Button();
-            this.cycleHoldTime = new System.Windows.Forms.NumericUpDown();
-            this.label21 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -143,6 +143,7 @@
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
@@ -169,7 +170,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitchSF6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLEDSF6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimitSF6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -508,6 +508,43 @@
             this.heaterLED.Name = "heaterLED";
             this.heaterLED.Size = new System.Drawing.Size(49, 27);
             this.heaterLED.TabIndex = 1;
+            // 
+            // cycleHoldTime
+            // 
+            this.cycleHoldTime.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleHoldTime.Increment = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.cycleHoldTime.Location = new System.Drawing.Point(100, 42);
+            this.cycleHoldTime.Maximum = new decimal(new int[] {
+            6000,
+            0,
+            0,
+            0});
+            this.cycleHoldTime.Name = "cycleHoldTime";
+            this.cycleHoldTime.Size = new System.Drawing.Size(92, 20);
+            this.cycleHoldTime.TabIndex = 4;
+            this.cycleHoldTime.Value = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            // 
+            // label21
+            // 
+            this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(100, 3);
+            this.label21.Margin = new System.Windows.Forms.Padding(3);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(92, 27);
+            this.label21.TabIndex = 5;
+            this.label21.Text = "Hold Time (min)";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel5
             // 
@@ -1452,43 +1489,6 @@
             this.holdButtonSF6.UseVisualStyleBackColor = true;
             this.holdButtonSF6.Click += new System.EventHandler(this.toggleHoldingSF6);
             // 
-            // cycleHoldTime
-            // 
-            this.cycleHoldTime.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleHoldTime.Increment = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.cycleHoldTime.Location = new System.Drawing.Point(100, 42);
-            this.cycleHoldTime.Maximum = new decimal(new int[] {
-            600,
-            0,
-            0,
-            0});
-            this.cycleHoldTime.Name = "cycleHoldTime";
-            this.cycleHoldTime.Size = new System.Drawing.Size(92, 20);
-            this.cycleHoldTime.TabIndex = 4;
-            this.cycleHoldTime.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
-            // 
-            // label21
-            // 
-            this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(100, 3);
-            this.label21.Margin = new System.Windows.Forms.Padding(3);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(92, 27);
-            this.label21.TabIndex = 5;
-            this.label21.Text = "Hold Time (min)";
-            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1512,6 +1512,7 @@
             this.tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).EndInit();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).EndInit();
@@ -1542,7 +1543,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitchSF6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLEDSF6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimitSF6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).EndInit();
             this.ResumeLayout(false);
 
         }

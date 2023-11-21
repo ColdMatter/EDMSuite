@@ -40,21 +40,21 @@ public class Patterns : MOTMasterScript
         Parameters["PushEnd"] = 400;
         Parameters["slowingAOMOnDuration"] = 45000;
         
-        Parameters["slowingAOMOffStart"] = 1760;//1760;//started from 1520
+        Parameters["slowingAOMOffStart"] = 1750;//1760;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
 
 
         
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = 1760;// 1760;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1750;// 1760;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 360;
-        Parameters["SlowingChirpDuration"] = 1400;
+        Parameters["SlowingChirpStartTime"] = 400;
+        Parameters["SlowingChirpDuration"] = 1350;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.3;
+        Parameters["SlowingChirpEndValue"] = -1.2;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -79,21 +79,22 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 500;
         Parameters["v0IntensityRampStartValue"] = 7.2; //5.6
-        Parameters["v0IntensityEndValue"] = 7.8;//7.8
+        Parameters["v0IntensityEndValue"] = 8.2;//7.8
         Parameters["v0IntensityMolassesValue"] = 7.2;
+        Parameters["v0IntensityMolassesEndValue"] = 8.0;
         Parameters["v0IntensityRampBackTime"] = 20000;
         Parameters["V00EOMsidebandRatio"] = 5.0;
 
         //Timeing
         Parameters["MOTHoldTime"] = 100;
         Parameters["FrequencySettleTime"] = 100;
-        Parameters["MolassesDuration"] = 300;
-        Parameters["FreeExpTime"] = 1;
+        Parameters["MolassesDuration"] = 500;
+        Parameters["FreeExpTime"] = 800;
 
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0; //9.0
-        Parameters["v0FrequencyMolassesJumpValue"] = 2.3;
+        Parameters["v0FrequencyMolassesJumpValue"] = 1.9;
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
@@ -115,7 +116,7 @@ public class Patterns : MOTMasterScript
         int motEndTime = motRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motEndTime + (int)Parameters["FrequencySettleTime"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
-        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"] + 500;
+        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"];
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
@@ -153,7 +154,7 @@ public class Patterns : MOTMasterScript
         int motEndTime = motRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motEndTime + (int)Parameters["FrequencySettleTime"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
-        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"] + 500;
+        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
@@ -181,7 +182,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", motEndTime, 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
+        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1100, 0.0);
 
 
@@ -202,6 +203,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
         p.AddLinearRamp("v00Intensity", motLoadTime, (int)Parameters["v0IntensityRampDuration"], (double)Parameters["v0IntensityEndValue"]);
         p.AddAnalogValue("v00Intensity", motEndTime, (double)Parameters["v0IntensityMolassesValue"]);
+        p.AddLinearRamp("v00Intensity", molassesStartTime, (int)Parameters["MolassesDuration"], (double)Parameters["v0IntensityMolassesEndValue"]);
         p.AddAnalogValue("v00Intensity", imageTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // v0 Frequency Ramp

@@ -74,9 +74,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;//3.6
-        Parameters["yShimLoadCurrent"] = 0.0;//-0.12
-        Parameters["zShimLoadCurrent"] = 0.0;//-5.35
+        Parameters["xShimLoadCurrent"] = -1.35;
+        Parameters["yShimLoadCurrent"] = -1.92;
+        Parameters["zShimLoadCurrent"] = -0.22;
 
 
         // v0 Light Switch
