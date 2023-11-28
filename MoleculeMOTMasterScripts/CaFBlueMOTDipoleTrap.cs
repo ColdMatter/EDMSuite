@@ -94,6 +94,7 @@ public class Patterns : MOTMasterScript
         Parameters["MolassesDuration"] = 300;
         Parameters["BlueMOTRampDuration"] = 2000;
         Parameters["BlueMOTHoldDuration"] = 2000;
+        Parameters["DipoleTrapHoldTime"] = 10000;
         Parameters["FreeExpTime"] = 10;
 
 
@@ -124,7 +125,8 @@ public class Patterns : MOTMasterScript
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
         int blueMOTRampEndTime = molassesEndTime + (int)Parameters["BlueMOTRampDuration"];
         int blueMOTHoldEndTime = blueMOTRampEndTime + (int)Parameters["BlueMOTHoldDuration"];
-        int imageTime = blueMOTHoldEndTime + (int)Parameters["FreeExpTime"];
+        int dipoleTrapEndTime = blueMOTHoldEndTime + (int)Parameters["DipoleTrapHoldTime"];
+        int imageTime = dipoleTrapEndTime + (int)Parameters["FreeExpTime"];
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
@@ -139,13 +141,16 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("v00Sidebands", 0, false);
         p.AddEdge("v00Sidebands", motEndTime, true);
-
         p.AddEdge("v00Sidebands", blueMOTHoldEndTime, false);
+
+        p.AddEdge("dipoleTrapAOM", 0, false);
+        p.AddEdge("dipoleTrapAOM", molassesStartTime, true);
+        p.AddEdge("dipoleTrapAOM", dipoleTrapEndTime, false);
 
         //p.Pulse(0, motLoadTime - 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(0, molassesStartTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, blueMOTHoldEndTime - 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        // p.Pulse(0, blueMOTHoldEndTime - 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(0, 12000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
@@ -170,7 +175,8 @@ public class Patterns : MOTMasterScript
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
         int blueMOTRampEndTime = molassesEndTime + (int)Parameters["BlueMOTRampDuration"];
         int blueMOTHoldEndTime = blueMOTRampEndTime + (int)Parameters["BlueMOTHoldDuration"];
-        int imageTime = blueMOTHoldEndTime + (int)Parameters["FreeExpTime"];
+        int dipoleTrapEndTime = blueMOTHoldEndTime + (int)Parameters["DipoleTrapHoldTime"];
+        int imageTime = dipoleTrapEndTime + (int)Parameters["FreeExpTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
@@ -184,7 +190,8 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
-        p.AddChannel("TCoolSidebandVCO");
+        p.AddChannel("TCoolSidebandVCO"); 
+        p.AddChannel("DipoleTrapLaserControl");
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -201,7 +208,8 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", molassesEndTime, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", blueMOTHoldEndTime, 0.0);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime + 2000, 0.0);
+
 
 
         // Shim Fields
@@ -235,9 +243,8 @@ public class Patterns : MOTMasterScript
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
 
-        //p.AddAnalogValue("transferCoils", 0, 1.0);
 
-        //p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["Dummy"]);
+        p.AddAnalogValue("DipoleTrapLaserControl", 0, 10.0);
 
         return p;
     }
