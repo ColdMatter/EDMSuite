@@ -39,11 +39,15 @@ namespace AlFHardwareControl
             this.logYAxis = new System.Windows.Forms.CheckBox();
             this.DataClear = new System.Windows.Forms.Button();
             this.DataControl = new System.Windows.Forms.GroupBox();
+            this.takeData = new System.Windows.Forms.CheckBox();
             this.MaximumDatapointNumber = new System.Windows.Forms.TextBox();
             this.MaximumDataEnable = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.DataTable = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.DataGraph)).BeginInit();
             this.Settings.SuspendLayout();
             this.DataControl.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // DataGraph
@@ -155,6 +159,7 @@ namespace AlFHardwareControl
             // 
             // DataControl
             // 
+            this.DataControl.Controls.Add(this.takeData);
             this.DataControl.Controls.Add(this.MaximumDatapointNumber);
             this.DataControl.Controls.Add(this.DataClear);
             this.DataControl.Controls.Add(this.MaximumDataEnable);
@@ -164,6 +169,18 @@ namespace AlFHardwareControl
             this.DataControl.TabIndex = 28;
             this.DataControl.TabStop = false;
             this.DataControl.Text = "Data Control";
+            // 
+            // takeData
+            // 
+            this.takeData.AutoSize = true;
+            this.takeData.Checked = true;
+            this.takeData.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.takeData.Location = new System.Drawing.Point(7, 76);
+            this.takeData.Name = "takeData";
+            this.takeData.Size = new System.Drawing.Size(88, 17);
+            this.takeData.TabIndex = 2;
+            this.takeData.Text = "Acquire Data";
+            this.takeData.UseVisualStyleBackColor = true;
             // 
             // MaximumDatapointNumber
             // 
@@ -187,10 +204,37 @@ namespace AlFHardwareControl
             this.MaximumDataEnable.UseVisualStyleBackColor = true;
             this.MaximumDataEnable.CheckedChanged += new System.EventHandler(this.MaximumDataEnable_CheckedChanged);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.DataTable);
+            this.groupBox1.Location = new System.Drawing.Point(846, 290);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(331, 111);
+            this.groupBox1.TabIndex = 29;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Current Reading";
+            // 
+            // DataTable
+            // 
+            this.DataTable.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.DataTable.AutoScroll = true;
+            this.DataTable.AutoScrollMargin = new System.Drawing.Size(20, 0);
+            this.DataTable.ColumnCount = 2;
+            this.DataTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36.36364F));
+            this.DataTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 63.63636F));
+            this.DataTable.Location = new System.Drawing.Point(6, 19);
+            this.DataTable.Name = "DataTable";
+            this.DataTable.RowCount = 2;
+            this.DataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.DataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.DataTable.Size = new System.Drawing.Size(319, 86);
+            this.DataTable.TabIndex = 0;
+            // 
             // DataGrapher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.DataControl);
             this.Controls.Add(this.Settings);
             this.Controls.Add(this.DataGraph);
@@ -203,6 +247,7 @@ namespace AlFHardwareControl
             this.Settings.PerformLayout();
             this.DataControl.ResumeLayout(false);
             this.DataControl.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,5 +264,8 @@ namespace AlFHardwareControl
         private System.Windows.Forms.GroupBox DataControl;
         private System.Windows.Forms.TextBox MaximumDatapointNumber;
         private System.Windows.Forms.CheckBox MaximumDataEnable;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TableLayoutPanel DataTable;
+        public System.Windows.Forms.CheckBox takeData;
     }
 }

@@ -150,6 +150,18 @@
     <Compile Include="DataGrapher.Designer.cs">
       <DependentUpon>DataGrapher.cs</DependentUpon>
     </Compile>
+    <Compile Include="MOTMasterData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterData.Designer.cs">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MOTMasterStuff.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterStuff.Designer.cs">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </Compile>
     <Compile Include="MiscInstruments.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -218,6 +230,12 @@
     <EmbeddedResource Include="MacroEditor.resx">
       <DependentUpon>MacroEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterData.resx">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterStuff.resx">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MiscInstruments.resx">
       <DependentUpon>MiscInstruments.cs</DependentUpon>
     </EmbeddedResource>
@@ -270,6 +288,14 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
+      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
+      <Name>MOTMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
+      <Name>ScanMaster</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>

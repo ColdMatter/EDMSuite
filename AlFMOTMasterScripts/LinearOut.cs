@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 100;
+        Parameters["PatternLength"] = 2000;
 
 
         // Linear Out
@@ -39,6 +39,7 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
         p.AddEdge("q",0,true);
         p.AddEdge("q",10,false);
+
         return p;
     }
 
