@@ -516,6 +516,7 @@ namespace MOTMaster
         {
             initializeHardware(sequence);
             run(sequence);
+            while (pgMaster.TaskRunning && status == RunningState.running) ;
             releaseHardware();
         }
 
