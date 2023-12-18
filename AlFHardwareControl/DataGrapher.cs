@@ -19,8 +19,46 @@ namespace AlFHardwareControl
             this.DataGraph.ChartAreas.First().AxisY.Title = yaxisTitle;
         }
 
+        public string unit = "";
+
+        public Label[] dataLabels;
+        public Label[] dataLabelsValue;
+
+        public void SetupDataDisplay()
+        {
+
+            dataLabels = new Label[DataGraph.Series.Count];
+            dataLabelsValue = new Label[DataGraph.Series.Count];
+
+            DataTable.RowCount = DataGraph.Series.Count;
+
+            for (int i = 0; i < DataGraph.Series.Count; ++i)
+            {
+                dataLabels[i] = new Label();
+                dataLabelsValue[i] = new Label();
+                dataLabels[i].Text = DataGraph.Series[i].Name;
+                dataLabelsValue[i].Text = "No Data";
+                dataLabels[i].Anchor = AnchorStyles.Left | AnchorStyles.Top;
+                dataLabelsValue[i].Anchor = AnchorStyles.Left | AnchorStyles.Top;
+
+                DataTable.Controls.Add(dataLabels[i], 0, i);
+                DataTable.Controls.Add(dataLabelsValue[i], 1, i);
+            }
+
+        }
+
         public void UpdatePlot()
         {
+            if (!this.takeData.Checked)
+            {
+                this.Invoke((Action)(()=>{
+                    for (int i = 0; i < DataGraph.Series.Count; ++i)
+                    {
+                        dataLabelsValue[i].Text = "No Data";
+                    }
+                }));
+                return;
+            }
             updateData(this);
             if (this.MaximumDataEnable.Checked)
             {
@@ -34,6 +72,14 @@ namespace AlFHardwareControl
                     }
                 });
             }
+
+            this.Invoke((Action)(() => {
+                for (int i = 0; i < DataGraph.Series.Count; ++i)
+                {
+                    dataLabelsValue[i].Text = DataGraph.Series[i].Points.Last().YValues[0].ToString("g6") + " " + unit;
+                }
+            }));
+
         }
 
         public void SetTextField(Control box, string text)

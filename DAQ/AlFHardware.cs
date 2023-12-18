@@ -85,6 +85,13 @@ namespace DAQ.HAL
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
 
+            List<string> MMAI = new List<string>();
+            MMAI.Add("PMT");
+            MMAI.Add("PD");
+            Info.Add("MMAnalogInputs", MMAI);
+            Info.Add("MMAITrigger", (string)Boards["pg"] + "/do/StartTrigger");
+            Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
+
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             
