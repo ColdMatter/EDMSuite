@@ -29,7 +29,7 @@ namespace MOTMaster.SnippetLibrary
 
             int patternStartBeforeQ = (int)parameters["TCLBlockStart"];
             //p.AddTrigger("digitalPattern2", patternStartBeforeQ, -patternStartBeforeQ, 10, "patternBoard2Trigger");
-            p.Pulse(0, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 15000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
+            p.Pulse(0, (int)parameters["SlowingChirpStartTime"], (2 * (int)parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
             p.Pulse(patternStartBeforeQ, -(int)parameters["FlashToQ"], (int)parameters["QSwitchPulseDuration"], "flashLamp"); //trigger the flashlamp
             p.Pulse(patternStartBeforeQ, 0, 10, "aoPatternTrigger");  //THIS TRIGGERS THE ANALOG PATTERN. The analog pattern will start at the same time as the Q-switch is fired.//trigger the Q switch !!!
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch"); 
