@@ -56,6 +56,6 @@ def mapAOMLoop(start, end, step, numScans, savingfolder = "C:\\Users\\UEDM\\OneD
 
 	
 def run_script():
-	print "Use mapAOMLoop(start, end, step, numScans, saavingfolder)"
+	print "Use mapAOMLoop(start, end, step, numScans, savingfolder)"
 	print "Make sure we are in a'STIRAP MWF1F0 Plus Switch' profile"
 

@@ -629,6 +629,7 @@
     <Compile Include="FourShutterPatternPlugin.cs" />
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
+    <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
