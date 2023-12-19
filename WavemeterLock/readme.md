@@ -77,6 +77,12 @@ Here are the things you need to have before installing Wavemeter Lock.
    Info.Add("Default", wmlConfig);
    ```
 
+8. In the file system class of client computer DAQ/ClientFileSystem.cs, add directory for logging the data.
+   ```sh
+   Paths.Add("wavemeterLockData", "YourDirectory\\");
+   ```
+   The laser data and setpoints will be saved here. Click Save SetPoints to save current setpoints and gains, click Load SetPoints to load the most recent settings.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Frequently occured issues
@@ -92,7 +98,7 @@ Here are the things you need to have before installing Wavemeter Lock.
 
 ## Operation
 
-1. Run the Highfinesse wavemter programme on the server computer.
+1. Run the Highfinesse wavemter programme on the server computer, turn on switch mode.
 2. Run the Wavemeter Lock Server on the server computer, make sure channel 1 is operating normally.
 3. Run the Wavemeter Lock on the client computer.
 4. Go crazy.
@@ -105,7 +111,7 @@ As part of the EDMSuite, Wavemeter Lock should communicate with other projects s
 
 Currently constructed plugins:
 * ScanMaster, read frequency and scan setpoint
-* MOTMaster via python, scan setpoint (via a wrapper, to be improved)
+* MOTMaster via python, scan setpoint
 
 
 ## Current issues
@@ -134,7 +140,6 @@ Currently constructed plugins:
 
 ## Update Roadmap
 The goal for future updates:
-- Add log data function
 - Add autocalibration function
 - Add lock update rate on the server pannel
 
@@ -143,6 +148,7 @@ The goal for future updates:
 
 ## Update Log
 
+* [v 1.2.0] November 11th 2023: Fixed the lock block issue by putting read block flag channel on another thread. Added log data function for individual lasers. Added save and load setpoints function.
 * [v 1.1.2] August 25th 2023: Added RMS noise pannel.
 * [v 1.1.1] August 23rd 2023: Added an array of LEDs at front pannel to indicate laser lock status, added lock all button so you can click less. Removed the pop up window saying "you messed up" when the laser unlocks.
 * [v 1.1.0] May 30st 2023: Made compatable with more than one servers running at the same time.
@@ -170,6 +176,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 Please contact Qinshu Lyu Github/lyuqinshu if you find any issues or have any suggestions.
+
+<!-- ACKNOWLEDGMENT -->
+## Acknowledgment
+I thank Arijit Chakraborty and Lali Palanki for their contributions to WavemeterLock. 
+
+Ain't nothing's gonna work without 'em.
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

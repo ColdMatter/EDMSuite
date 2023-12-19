@@ -43,7 +43,7 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 2.7; //2.91 resonance
+        Parameters["ImagingFrequency"] = 1.50; //2.91 resonance
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
         //Parameters["MOTCoolingLoadingFrequency"] = 3.4; //  13/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 4.1;
@@ -128,8 +128,8 @@ public class Patterns : MOTMasterScript
         Parameters["CoolingAttenuation"] = 0.0;
         Parameters["RepumpAttenuation"] = 0.0;
         //Parameters["RbOffsetLockSetPoint"] = 0.925;//1.23;// 0.87;
-        Parameters["RbOffsetLockSetPoint"] = 0.88;
-        Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
+        Parameters["RbOffsetLockSetPoint"] = 3.20;
+        Parameters["RbRepumpOffsetLockSetPoint"] = 1.80;
 
     }
 

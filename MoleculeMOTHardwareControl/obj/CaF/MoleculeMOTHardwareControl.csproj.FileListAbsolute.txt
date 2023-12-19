@@ -38,3 +38,5 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\UsbDllWrap.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpEthernet.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpSerial.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.pdb
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.xml

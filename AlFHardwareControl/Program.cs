@@ -24,7 +24,7 @@ namespace AlFHardwareControl
             AlFController controller = new AlFController();
 
 
-            TcpChannel tcpChannel = new TcpChannel(2725);
+            TcpChannel tcpChannel = new TcpChannel(1172);
             ChannelServices.RegisterChannel(tcpChannel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 

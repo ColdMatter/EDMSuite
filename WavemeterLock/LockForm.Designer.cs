@@ -56,6 +56,8 @@ namespace WavemeterLock
             this.led7 = new NationalInstruments.UI.WindowsForms.Led();
             this.led8 = new NationalInstruments.UI.WindowsForms.Led();
             this.button_lock_all = new System.Windows.Forms.Button();
+            this.saveSetPointsButton = new System.Windows.Forms.Button();
+            this.loadSetPointsButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.wmlLED)).BeginInit();
             this.groupBoxLockRate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.led1)).BeginInit();
@@ -79,7 +81,7 @@ namespace WavemeterLock
             this.lockTab.Location = new System.Drawing.Point(-3, 70);
             this.lockTab.Name = "lockTab";
             this.lockTab.SelectedIndex = 0;
-            this.lockTab.Size = new System.Drawing.Size(683, 497);
+            this.lockTab.Size = new System.Drawing.Size(723, 497);
             this.lockTab.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.lockTab.TabIndex = 2;
             this.lockTab.SelectedIndexChanged += new System.EventHandler(this.lockTab_SelectedIndexChanged);
@@ -106,7 +108,7 @@ namespace WavemeterLock
             // groupBoxLockRate
             // 
             this.groupBoxLockRate.Controls.Add(this.updateRateTextBox);
-            this.groupBoxLockRate.Location = new System.Drawing.Point(517, 12);
+            this.groupBoxLockRate.Location = new System.Drawing.Point(582, 12);
             this.groupBoxLockRate.Name = "groupBoxLockRate";
             this.groupBoxLockRate.Size = new System.Drawing.Size(138, 42);
             this.groupBoxLockRate.TabIndex = 6;
@@ -215,11 +217,33 @@ namespace WavemeterLock
             this.button_lock_all.UseVisualStyleBackColor = true;
             this.button_lock_all.Click += new System.EventHandler(this.lock_all);
             // 
+            // saveSetPointsButton
+            // 
+            this.saveSetPointsButton.Location = new System.Drawing.Point(469, 8);
+            this.saveSetPointsButton.Name = "saveSetPointsButton";
+            this.saveSetPointsButton.Size = new System.Drawing.Size(95, 25);
+            this.saveSetPointsButton.TabIndex = 16;
+            this.saveSetPointsButton.Text = "Save SetPoints";
+            this.saveSetPointsButton.UseVisualStyleBackColor = true;
+            this.saveSetPointsButton.Click += new System.EventHandler(this.saveSetPointsButton_Click);
+            // 
+            // loadSetPointsButton
+            // 
+            this.loadSetPointsButton.Location = new System.Drawing.Point(469, 39);
+            this.loadSetPointsButton.Name = "loadSetPointsButton";
+            this.loadSetPointsButton.Size = new System.Drawing.Size(95, 25);
+            this.loadSetPointsButton.TabIndex = 17;
+            this.loadSetPointsButton.Text = "Load SetPoints";
+            this.loadSetPointsButton.UseVisualStyleBackColor = true;
+            this.loadSetPointsButton.Click += new System.EventHandler(this.loadSetPointsButton_Click);
+            // 
             // LockForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(680, 568);
+            this.ClientSize = new System.Drawing.Size(732, 568);
+            this.Controls.Add(this.loadSetPointsButton);
+            this.Controls.Add(this.saveSetPointsButton);
             this.Controls.Add(this.button_lock_all);
             this.Controls.Add(this.led8);
             this.Controls.Add(this.led7);
@@ -270,6 +294,8 @@ namespace WavemeterLock
         private NationalInstruments.UI.WindowsForms.Led led7;
         private NationalInstruments.UI.WindowsForms.Led led8;
         private Button button_lock_all;
+        private Button saveSetPointsButton;
+        private Button loadSetPointsButton;
     }
 }
 

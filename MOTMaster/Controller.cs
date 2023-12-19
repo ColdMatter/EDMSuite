@@ -325,6 +325,7 @@ namespace MOTMaster
             saveEnable = value;
             controllerWindow.SetSaveCheckBox(value);
         }
+
         private int batchNumber = 0;
         public void SetBatchNumber(Int32 number)
         {
@@ -516,6 +517,7 @@ namespace MOTMaster
         {
             initializeHardware(sequence);
             run(sequence);
+            while (pgMaster.TaskRunning && status == RunningState.running) ;
             releaseHardware();
         }
 

@@ -25,9 +25,17 @@ namespace DAQ.HAL
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI15");
+            Info.Add("PGTriggerLine", Boards["pg"] + "/PFI0");
+            //Info.Add("AOPatternTrigger", Boards["pg"] + "/PFI15");
+            Info.Add("AOPatternTrigger", Boards["pg"] + "/do/StartTrigger");
             Info.Add("analogTrigger0", (string)Boards["pg"] + "/PFI0");
             Info.Add("ScanMasterConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\ScanProfils.xml");
             Info.Add("MacroConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\Macros.xml");
+
+
+            Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("AO", (string)Boards["pg"]);
+            Info.Add("AnalogBoards", analogBoards);
 
 
             // Input signals
@@ -70,6 +78,19 @@ namespace DAQ.HAL
             AddCounterChannel("ResetOut", "/PXI1Slot5/PFI2");
             AddCounterChannel("PMT_Edges", "/PXI1Slot5/ctr3");
             AddCounterChannel("sample clock", "/PXI1Slot5/ctr2");
+
+            // MOT Master config
+
+            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            mmConfig.ExternalFilePattern = "*.tif";
+            Info.Add("MotMasterConfiguration", mmConfig);
+
+            List<string> MMAI = new List<string>();
+            MMAI.Add("PMT");
+            MMAI.Add("PD");
+            Info.Add("MMAnalogInputs", MMAI);
+            Info.Add("MMAITrigger", (string)Boards["pg"] + "/do/StartTrigger");
+            Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");

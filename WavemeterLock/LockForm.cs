@@ -275,6 +275,16 @@ namespace WavemeterLock
                     break;
             }
         }
+
+        private void saveSetPointsButton_Click(object sender, EventArgs e)
+        {
+            controller.logSetPoints(true);
+        }
+
+        private void loadSetPointsButton_Click(object sender, EventArgs e)
+        {
+            controller.loadSetPoints();
+        }
     }
 }
 

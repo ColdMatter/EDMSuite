@@ -22,18 +22,17 @@ public class Patterns : MOTMasterScript
         Parameters["QSwitchPulseDuration"] = 10;
 
         Parameters["SlowingAOMONStartTime"] = 10;
-        Parameters["SlowingAOMONDuration"] = 900;
+        Parameters["SlowingAOMONDuration"] = 1100;
         Parameters["SlowingAOMBackDelay"] = 3000;
-
-        Parameters["SlowingChirpStartTime"] = 100;
-        Parameters["SlowingChirpDuration"] = 800;
+        Parameters["SlowingChirpStartTime"] = 150;
+        Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -0.15;
+        Parameters["SlowingChirpEndValue"] = -0.25; // 0.1 V -> 100 MHz
         Parameters["SlowingChirpRepumpStartValue"] = 0.0;
-        Parameters["SlowingChirpRepumpEndValue"] = 0.30;
+        Parameters["SlowingChirpRepumpEndValue"] = 0.40; // 0.1V -> 50 MHz
 
         // Switching control for iterative operations. Higher voltage leads to active state.
-        Parameters["slowingONorOFF"] = 10.0;
+        Parameters["slowingONorOFF"] = 1.0;
         Parameters["slowingRepumpONorOFF"] = 10.0;
 
     }
@@ -55,11 +54,6 @@ public class Patterns : MOTMasterScript
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
             p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingAOMONStartTime"], (int)Parameters["SlowingAOMONDuration"], "slowingAOM");
-            p.AddEdge("slowingAOM", slowingAOMBack, true);
-        }
-        else
-        {
-            p.AddEdge("slowingAOM", slowingAOMBack, true);
         }
         
         if ((double)Parameters["slowingRepumpONorOFF"] > 5.0)
@@ -71,7 +65,6 @@ public class Patterns : MOTMasterScript
         else {
             p.AddEdge("slowingRepumpAOM", patternStartBeforeQ, true);
         }
-        //p.AddEdge("slowingAOM", allOFF, false);
         return p;
     }
 
@@ -118,7 +111,6 @@ public class Patterns : MOTMasterScript
             100,
             (double)Parameters["SlowingChirpRepumpStartValue"]
         );
-
         return p;
     }
 

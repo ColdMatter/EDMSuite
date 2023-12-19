@@ -29,6 +29,7 @@ namespace WavemeterLock
         public int loopCount = 0;
 
         public bool isBlocked = false;
+        public bool logData = false;
         public enum LaserState
         {
             FREE, LOCKED, OUTOFRANGE

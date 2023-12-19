@@ -44,6 +44,7 @@ namespace AlFHardwareControl
         public AlFController controller;
         public Dictionary<string, DataGrapher> graphers = new Dictionary<string, DataGrapher> { };
         public TaskScheduler tSched;
+        public MOTMasterStuff mmStuff;
 
         public AlFControlWindow(AlFController _controller)
         {
@@ -65,8 +66,10 @@ namespace AlFHardwareControl
             AddTemperature();
             AddPressure();
             AddTypeK();
+            AddBake();
             AddTaskScheduler();
             AddMiscInstruments();
+            AddMMStuff();
 
         }
 
@@ -358,6 +361,9 @@ namespace AlFHardwareControl
             graphers.Add("Temperature", tempGrapher);
             temp.Controls.Add(tempGrapher);
             MainTabs.TabPages.Add(temp);
+
+            tempGrapher.SetupDataDisplay();
+            tempGrapher.unit = "K";
         }
 
         private void AddTypeK()
@@ -385,6 +391,9 @@ namespace AlFHardwareControl
             typeKGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Tyoe-K_logs\\Default.csv";
             typeK.Controls.Add(typeKGrapher);
             MainTabs.TabPages.Add(typeK);
+
+            typeKGrapher.SetupDataDisplay();
+            typeKGrapher.unit = "C";
         }
 
         private void AddPressure()
@@ -414,6 +423,73 @@ namespace AlFHardwareControl
             pressureGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Pressure_logs\\Default.csv";
             pressure.Controls.Add(pressureGrapher);
             MainTabs.TabPages.Add(pressure);
+
+            pressureGrapher.SetupDataDisplay();
+            pressureGrapher.unit = "mbar";
+        }
+
+        private Task bakeTask;
+        private AnalogMultiChannelReader bakeReader;
+
+        private void AddBake()
+        {
+            bakeTask = new Task("bakeTask");
+            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+
+            bakeTask.Timing.ConfigureSampleClock("",2,SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples);
+            bakeTask.Timing.SamplesPerChannel = 2;
+
+            bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
+
+            TabPage pressure = new TabPage("Baking temperature");
+            DataGrapher pressureGrapher = new DataGrapher("Temperature", "Temperature [C]", (DataGrapher grapher) =>
+            {
+
+                DateTime localDate = DateTime.Now;
+                try
+                {
+                    double[] res = bakeReader.ReadSingleSample();
+
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Dispenser"].Points.AddXY(localDate, res[0]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Top"].Points.AddXY(localDate, res[1]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Bottom"].Points.AddXY(localDate, res[2]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Window"].Points.AddXY(localDate, res[3]); });
+                }
+                catch (NationalInstruments.DAQmx.DaqException)
+                {
+                    grapher.takeData.Checked = false;
+                }
+
+            });
+            pressureGrapher.DataGraph.Series.Add("Dispenser").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Top").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Bottom").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Window").ChartType = SeriesChartType.Line;
+
+            foreach (Series series in pressureGrapher.DataGraph.Series)
+            {
+                series.XValueType = ChartValueType.DateTime;
+            }
+
+            graphers.Add("Bake Temp", pressureGrapher);
+            pressureGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Bake_logs\\Default.csv";
+            pressure.Controls.Add(pressureGrapher);
+            MainTabs.TabPages.Add(pressure);
+
+            pressureGrapher.SetupDataDisplay();
+            //pressureGrapher.takeData.Checked = false;
+            pressureGrapher.unit = "C";
+        }
+
+        private void AddMMStuff()
+        {
+            TabPage tp = new TabPage("MOTMaster");
+            this.mmStuff = new MOTMasterStuff();
+            tp.Controls.Add(mmStuff);
+            MainTabs.Controls.Add(tp);
         }
 
         public void SetTextField(Control box, string text)

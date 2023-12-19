@@ -42,7 +42,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("slowingAOM", pgBoard, 0, 23);
             AddDigitalOutputChannel("slowingRepumpAOM", pgBoard, 0, 24);
             AddDigitalOutputChannel("coolingAOM", pgBoard, 0, 22);
-            AddDigitalOutputChannel("shutterV2", pgBoard, 0, 12);
+            AddDigitalOutputChannel("shutterV1", pgBoard, 0, 12);
 
             //Info.Add("ToFTrigger", pgBoard + "/PFI1");
             //Info.Add("ToFPMTSignal", pgBoard + "/ai0");
@@ -56,56 +56,47 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("slowingChirp", pgBoard + "/ao0", -10, 10);
             AddAnalogOutputChannel("slowingRepumpChirp", pgBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("motCoils", pgBoard + "/ao2", -10, 10);
+            AddAnalogOutputChannel("RbCooling", pgBoard + "/ao3", -10, 10);//Borrow for a week, bay3 10/07/2023
+
+            //AddAnalogOutputChannel("motCoilsAlt", TCLInput + "/ao0", -10, 10);
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
-            Info.Add("analogTrigger0", pgBoard + "/PFI0");
+            // Info.Add("analogTrigger0", pgBoard + "/PFI0");
             Info.Add("PGClockLine", pgBoard + "/PFI2");
             Info.Add("PatternGeneratorBoard", pgBoard);
 
             //TCL Input channels
-            AddAnalogInputChannel("sumVolt", TCLInput + "/ai5", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("v00Signal", TCLInput + "/ai3", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("v10Signal", TCLInput + "/ai10", AITerminalConfiguration.Rse);    
-            AddAnalogInputChannel("bXSignal", TCLInput + "/ai14", AITerminalConfiguration.Rse);
-
-            AddAnalogInputChannel("southSignal", TCLInput + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("v21Signal", TCLInput + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sumVolt", TCLInput + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("northSignal", TCLInput + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("v32Signal", TCLInput + "/ai7", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("v11Signal", TCLInput + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("v32SignalV2", TCLInput + "/ai0", AITerminalConfiguration.Rse);
 
-            AddDigitalInputChannel("blockBXflag", TCLInput, 1, 1);  //PFI 1, receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
-            AddDigitalInputChannel("blockV10flag", TCLInput, 2, 6);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
+            AddDigitalInputChannel("blockBXflag", TCLInput, 0, 3);  //receive a TTL from 'blockTCL' channel, during this period the BX TCL stops locking
+            AddDigitalInputChannel("blockv10flag", TCLInput, 0, 4);  //receive a TTL from 'blockTCL' channel, during this period the V1 TCL stops locking
 
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 14);
 
             //TCL Output Channels
             AddAnalogOutputChannel("northOffset", TCLOutput + "/ao2");
-            AddAnalogOutputChannel("v00Lock", TCLOutput + "/ao3", -1, 1);
-            AddAnalogOutputChannel("v10Lock", TCLOutput + "/ao4", - 1, 1);
-            AddAnalogOutputChannel("bXLock", TCLOutput + "/ao7", 0, 10);
-            AddAnalogOutputChannel("southOffset", TCLOutput + "/ao1");
-            AddAnalogOutputChannel("v21Lock", TCLOutput + "/ao5", 0, 10);
-            AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao6", -1, 1);
-            AddAnalogOutputChannel("v11Lock", TCLOutput + "/ao0", -1, 1);
-
+            AddAnalogOutputChannel("v32Lock", TCLOutput + "/ao5", 0, 5);
+            AddAnalogOutputChannel("v32LockV2", TCLOutput + "/ao6", 0, 5);
 
             // Remove when hardware controller starts working
-
             AddDigitalOutputChannel("cryoCooler", TCLInput, 0, 0);
             AddDigitalOutputChannel("sourceHeater", TCLInput, 0, 1);
             AddDigitalOutputChannel("sf6Valve", TCLInput, 0, 2);
             AddDigitalOutputChannel("heValve", TCLInput, 0, 3);
 
             AddAnalogInputChannel("sourceTemp", TCLInput + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sf6Temp", TCLInput + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourcePressure", TCLInput + "/ai1", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("sf6Temp", TCLInput + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sourcePressure", TCLInput + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("MOTPressure", TCLInput + "/ai8", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sourceTemp2", TCLInput + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("sourceTemp2", TCLInput + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("sourceTemp40K", TCLInput + "/ai5", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("sf6FlowMonitor", TCLInput + "/ai7", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("sf6FlowMonitor", TCLInput + "/ai9", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("he6FlowMonitor", TCLInput + "/ai6", AITerminalConfiguration.Rse);
+            
 
             Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
             Info.Add("flowConversionHe", 0.2);
@@ -119,19 +110,21 @@ namespace DAQ.HAL
             //Wavemeter Lock config
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("v00", "v00Lock", 4);
-            wmlConfig.AddSlaveLaser("BXSlowing", "bXLock", 2);
-            wmlConfig.AddSlaveLaser("v10", "v10Lock", 3);
-            wmlConfig.AddSlaveLaser("v21", "v21Lock", 8);
-            wmlConfig.AddLockBlock("BXSlowing", "blockBXflag");
-            wmlConfig.AddLockBlock("V10", "blockV10flag");
+            wmlConfig.AddSlaveLaser("BX", "bXLock", 1);
+            wmlConfig.AddSlaveLaser("v10", "v10Lock", 2);
+            wmlConfig.AddSlaveLaser("v00", "v00Lock", 3);
+            wmlConfig.AddSlaveLaser("v21", "v21Lock", 4);
+            // wmlConfig.AddSlaveLaser("v32", "v32Lock", 5);
+            wmlConfig.AddLockBlock("BX", "blockBXflag"); 
+            wmlConfig.AddLockBlock("v10", "blockv10flag");
             wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
-            wmlConfig.AddLaserConfiguration("BXSlowing", 564.582313, 10, 300);
-            wmlConfig.AddLaserConfiguration("v10", 476.958908, -10, -500);
-            wmlConfig.AddLaserConfiguration("v21", 477.299380, -10, -500);
+            wmlConfig.AddLaserConfiguration("BX", 564.582313, 10, 300);
+            wmlConfig.AddLaserConfiguration("v10", 476.959012, -10, -500);
+            wmlConfig.AddLaserConfiguration("v21", 477.299380, -0.5, -500);
+            // wmlConfig.AddLaserConfiguration("v32", 477.628175, -10, -1000);
             Info.Add("Default", wmlConfig);
 
-            /*
+          
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
             // tclConfig.Trigger = "analogTrigger0";
@@ -145,46 +138,22 @@ namespace DAQ.HAL
             tclConfig.MaximumNLMFSteps = 20;
             tclConfig.TriggerOnRisingEdge = true;
 
+            
             string northCavity = "NorthCavity";
             tclConfig.AddCavity(northCavity);
             tclConfig.Cavities[northCavity].RampOffset = "northOffset";
             tclConfig.Cavities[northCavity].MasterLaser = "northSignal";
             //Use format: AddSlaveLaser(analog output channel name, analog input channel name)
-            tclConfig.Cavities[northCavity].AddSlaveLaser("v00Lock", "v00Signal");
-            tclConfig.Cavities[northCavity].AddDefaultGain("v00Lock", 0.2);
-            tclConfig.Cavities[northCavity].AddFSRCalibration("v00Lock", 3.84);
-            tclConfig.Cavities[northCavity].AddSlaveLaser("v10Lock", "v10Signal");
-            tclConfig.Cavities[northCavity].AddDefaultGain("v10Lock", 0.2);
-            tclConfig.Cavities[northCavity].AddFSRCalibration("v10Lock", 3.84);
-            tclConfig.Cavities[northCavity].AddLockBlocker("v10Lock", "blockV10flag");
-            tclConfig.Cavities[northCavity].AddSlaveLaser("bXLock", "bXSignal");
-            tclConfig.Cavities[northCavity].AddDefaultGain("bXLock", 0.2);
-            tclConfig.Cavities[northCavity].AddFSRCalibration("bXLock", 3.84);
-            tclConfig.Cavities[northCavity].AddLockBlocker("bXLock", "blockBXflag");
-            // tclConfig.Cavities[northCavity].AddLockBlocker(TCLOutput + "/ao3", "blockBXflag");    // for test
-
-            string southCavity = "SouthCavity";
-            tclConfig.AddCavity(southCavity);
-            tclConfig.Cavities[southCavity].RampOffset = "southOffset";
-            tclConfig.Cavities[southCavity].MasterLaser = "southSignal";
-            tclConfig.Cavities[southCavity].AddSlaveLaser("v21Lock", "v21Signal"); //analog output channel name, analog input channel name
-            tclConfig.Cavities[southCavity].AddDefaultGain("v21Lock", 0.2);
-            tclConfig.Cavities[southCavity].AddFSRCalibration("v21Lock", 3.84);
-            tclConfig.Cavities[southCavity].AddSlaveLaser("v32Lock", "v32Signal");
-            tclConfig.Cavities[southCavity].AddDefaultGain("v32Lock", 0.2);
-            tclConfig.Cavities[southCavity].AddFSRCalibration("v32Lock", 3.84);
-            tclConfig.Cavities[southCavity].AddSlaveLaser("v11Lock", "v11Signal");
-            tclConfig.Cavities[southCavity].AddDefaultGain("v11Lock", 0.2);
-            tclConfig.Cavities[southCavity].AddFSRCalibration("v11Lock", 3.84);
-
+            tclConfig.Cavities[northCavity].AddSlaveLaser("v32Lock", "v32Signal");
+            tclConfig.Cavities[northCavity].AddDefaultGain("v32Lock", 0.2);
+            tclConfig.Cavities[northCavity].AddFSRCalibration("v32Lock", 3.84);
+            tclConfig.Cavities[northCavity].AddSlaveLaser("v32LockV2", "v32SignalV2");
+            tclConfig.Cavities[northCavity].AddDefaultGain("v32LockV2", 0.2);
+            tclConfig.Cavities[northCavity].AddFSRCalibration("v32LockV2", 3.84);
 
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
-            // Info.Add("analogTrigger0", TCLInput + "/PFI0");
-
-            */
-
-
+            Info.Add("analogTrigger0", TCLInput + "/PFI0");
 
             // MOTMaster configuration
             MMConfig mmConfig = new MMConfig(false, false, false, false);

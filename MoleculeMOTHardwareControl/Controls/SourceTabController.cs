@@ -9,6 +9,7 @@ using DAQ.Environment;
 using System.Windows.Forms;
 using NewFocus.PicomotorApp;
 using Newport.DeviceIOLib;
+using System.Diagnostics;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -32,15 +33,18 @@ namespace MoleculeMOTHardwareControl.Controls
         private DigitalSingleChannelWriter heaterWriter;
         private DigitalSingleChannelWriter heaterWriter40K;
         private DigitalSingleChannelWriter heaterWriterMaster;
+        private DigitalSingleChannelWriter heaterWriterSF6;
         private DigitalSingleChannelWriter sf6ValveWriter;
         private DigitalSingleChannelWriter heValveWriter;
         
 
         private bool isCycling = false;
+        private bool isCycleTempReached = false;
         private bool finishedHeating = true;
 
         private bool isHolding = false;
         private bool is40KHolding = false;
+        private bool isSF6Holding = false;
         private bool maxTempReached = true;
         private bool maxTempReached40K = true;
         private bool flowEnableFlag = false;
@@ -49,6 +53,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private bool isHeaterOn = false;
         private bool isHeaterOn40K = false;
+        private bool isHeaterOnSF6 = false;
         private bool isCryoOn = false;
         private bool isHeaterOnMaster = false;
         private bool isPanic = false;
@@ -82,6 +87,8 @@ namespace MoleculeMOTHardwareControl.Controls
         private double hardTempLimInC = 27.0;
         private double softTempLimInK = 293.0;
         private double softTempLimInC = 20.0;
+
+        Stopwatch cycleHoldTimer = new Stopwatch();
 
         CmdLib8742 cmdLib;
         DeviceIOLib diolib;
@@ -142,6 +149,13 @@ namespace MoleculeMOTHardwareControl.Controls
             { this.is40KHolding = value; }
         }
 
+        public bool IsSF6Holding
+        {
+            get { return isSF6Holding; }
+            set
+            { this.isSF6Holding = value; }
+        }
+
         public SourceTabController()
         {
             InitReadTimer();
@@ -154,6 +168,7 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterWriterMaster = CreateDigitalOutputWriter("sourceHeaterMaster");
             sf6ValveWriter = CreateDigitalOutputWriter("sf6Valve");
             heValveWriter = CreateDigitalOutputWriter("heValve");
+            heaterWriterSF6 = CreateDigitalOutputWriter("sourceHeaterSF6");
 
             sourcePressureReader = CreateAnalogInputReader("sourcePressure");
             MOTPressureReader = CreateAnalogInputReader("MOTPressure");
@@ -423,13 +438,15 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (IsCyling)
                 {
-                    double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
+                    checkCycleStatus(sourceTemp2);
+                    /*double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
                     if (!finishedHeating && sourceTemp2 > cycleLimit)
                     {
                         finishedHeating = true;
                         SetHeaterState(false);
                         SetCryoState(true);
                     }
+                    */
                 }
 
                 if (IsHolding)
@@ -457,18 +474,18 @@ namespace MoleculeMOTHardwareControl.Controls
                 if (Is40KHolding)
                 {
 
-                    //double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
-                    double cycleLimit = castView.GetCycleLimit40K();
-                    if (source40KTemp < cycleLimit && !maxTempReached40K)
+                    double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
+                    //double cycleLimit = castView.GetCycleLimit40K();
+                    if (source40KTemp2 < cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                     }
-                    else if (source40KTemp > cycleLimit && !maxTempReached40K)
+                    else if (source40KTemp2 > cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(false);
                         maxTempReached40K = true;
                     }
-                    else if (source40KTemp < cycleLimit - 5 && maxTempReached40K)
+                    else if (source40KTemp2 < cycleLimit - 5 && maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                         maxTempReached40K = false;
@@ -477,12 +494,29 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 }
 
+                if (IsSF6Holding)
+                {
+
+                    //double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
+                    double cycleLimit = castView.GetCycleLimitSF6();
+                    if (sf6Temp < cycleLimit - 1.0)
+                    {
+                        SetHeaterStateSF6(true);
+                    }
+                    else if (sf6Temp > cycleLimit )
+                    {
+                        SetHeaterStateSF6(false);
+                    }
+
+
+                }
+
                 //Safety check
                 if (!isPanic) { 
-                    limitCheck(sourceTemp, softTempLimInC, hardTempLimInC);
+                    //limitCheck(sourceTemp, softTempLimInC, hardTempLimInC);
                     limitCheck(sourceTemp2, softTempLimInK, hardTempLimInK);
                     limitCheck(sourceTemp3, softTempLimInK, hardTempLimInK);
-                    limitCheck(source40KTemp, softTempLimInC, hardTempLimInC);
+                    //limitCheck(source40KTemp, softTempLimInC, hardTempLimInC);
                     limitCheck(source40KTemp2, softTempLimInK, hardTempLimInK);
                 }
 
@@ -596,6 +630,16 @@ namespace MoleculeMOTHardwareControl.Controls
             }
         }
 
+        public void SetHeaterStateSF6(bool state)
+        {
+            isHeaterOnSF6 = state;
+            lock (acquisition_lock)
+            {
+                heaterWriterSF6.WriteSingleSampleSingleLine(true, state);
+                castView.SetHeaterStateSF6(state);
+            }
+        }
+
         public void SetHeaterStateMaster(bool state)
         {
             isHeaterOnMaster = state;
@@ -615,6 +659,45 @@ namespace MoleculeMOTHardwareControl.Controls
             if (temp >= softLim)
             {
                 stopHeating();
+            }
+        }
+
+        /// <summary>
+        /// Check the status of the cycle, stops cycle if hold time exceed cycleHoldTime
+        /// </summary>
+        private void checkCycleStatus(double temp)
+        {
+            double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
+            
+            //First time temperature reaches limit
+            if (temp > cycleLimit && !isCycleTempReached)
+            {
+                isCycleTempReached = true;
+                cycleHoldTimer.Restart();
+                SetHeaterState(false);
+            }
+
+            //Anytime temperature reaches limit
+            if (temp > cycleLimit && isCycleTempReached)
+            {
+                SetHeaterState(false);
+            }
+
+            //If temperature drops during holding
+            if (temp < cycleLimit - 1.0 && isCycleTempReached)
+            {
+                SetHeaterState(true);
+            }
+
+            //If hold time reaches set value
+            if (isCycleTempReached && cycleHoldTimer.Elapsed.TotalMinutes > castView.getCycleHoldTime())
+            {
+                SetHeaterState(false);
+                isCycling = false;
+                SetCryoState(true);
+                cycleHoldTimer.Stop();
+                isCycleTempReached = false;
+                castView.UpdateCycleButton(!isCycling);
             }
         }
 
@@ -679,12 +762,12 @@ namespace MoleculeMOTHardwareControl.Controls
         public void ToggleCycling()
         {
             isCycling = !isCycling;
+            isCycleTempReached = false;
             castView.UpdateCycleButton(!isCycling);
             if (IsCyling)
             {
                 SetHeaterState(true);
                 SetCryoState(false);
-                finishedHeating = false;
             }
         }
 
@@ -736,6 +819,28 @@ namespace MoleculeMOTHardwareControl.Controls
 
             else
                 SetHeaterState40K(false);
+        }
+
+        public void ToggleHoldingSF6()
+        {
+            isSF6Holding = !isSF6Holding;
+            castView.UpdateHoldButtonSF6(!isSF6Holding);
+            if (is40KHolding)
+            {
+                double temp = GetSF6Temperature();
+                double cycleLimit = castView.GetCycleLimitSF6();
+                if (temp < cycleLimit)
+                {
+                    SetHeaterStateSF6(true);
+                }
+                else
+                {
+                    SetHeaterStateSF6(false);
+                }
+            }
+
+            else
+                SetHeaterStateSF6(false);
         }
 
         public void SwitchOutputAOVoltage(int channel)

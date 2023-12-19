@@ -17,6 +17,8 @@ namespace ScanMaster.Acquire.Plugin
 	[Serializable]
 	public class PluginSettings : IXmlSerializable
 	{
+		public static bool ignoreParameterHelper = false;
+
 		private Hashtable settings = new Hashtable();
 
 		public PluginSettings()
@@ -32,6 +34,7 @@ namespace ScanMaster.Acquire.Plugin
 		{
 			get
 			{
+				if (ignoreParameterHelper) return settings[key];
 				ParameterHelper ph = Controller.GetController().ParameterHelper;
 				if (ph.HasParameter(key))
 				{

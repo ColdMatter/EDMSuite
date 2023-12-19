@@ -8,10 +8,11 @@ using System.Windows.Forms.DataVisualization.Charting;
 using Data;
 using NewFocus.PicomotorApp;
 using Newport.DeviceIOLib;
+using System.Collections.Generic;
 
 namespace AlFHardwareControl
 {
-    public class AlFController : MarshalByRefObject
+    public class AlFController : MarshalByRefObject, ExperimentReportable
     {
 
         private AlFControlWindow window;
@@ -32,6 +33,22 @@ namespace AlFHardwareControl
         public AlFController()
         {
             Application.SetCompatibleTextRenderingDefault(false);
+        }
+
+        public Dictionary<string, object> GetExperimentReport()
+        {
+            Dictionary<string,object> dict = new Dictionary<string, object>();
+            dict["scanActive"] = window.mmStuff.ScanRunning;
+            if (window.mmStuff.ScanRunning)
+            {
+                dict["scanParam"] = window.mmStuff.ScanRunning;
+                dict["scanName"] = window.mmStuff.ScanPlugin;
+                dict["scanSettings"] = window.mmStuff.ScanSettings;
+            }
+
+            while (!window.mmStuff.isDataSaved && window.mmStuff.ToFArmed) ;
+            window.mmStuff.resetDataSaveStatus();
+            return dict;
         }
 
         public void Start()

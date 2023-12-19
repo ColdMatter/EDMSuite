@@ -595,11 +595,6 @@
     <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.ModularInstrumentsSystem, Version=1.4.45.27, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.NIFgen.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.NIRfsg.Fx45, Version=18.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=3.2.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -636,17 +631,15 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
     <Compile Include="RigolDG822.cs" />
-    <Compile Include="DAQMxPatternGenerator - Copy.cs" />
     <Compile Include="GobelinHardware.cs" />
     <Compile Include="LeyboldGraphixController.cs" />
-    <Compile Include="NIPXI5670.cs" />
-    <Compile Include="NIRfsgInstrument.cs" />
     <Compile Include="RhysFileSystem.cs" />
     <Compile Include="PeakFinder.cs" />
     <Compile Include="AlicatFlowController.cs" />

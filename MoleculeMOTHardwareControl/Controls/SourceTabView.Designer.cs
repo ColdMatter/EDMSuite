@@ -58,12 +58,20 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.heaterSwitch = new NationalInstruments.UI.WindowsForms.Switch();
             this.heaterLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.cycleHoldTime = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cycleButton = new System.Windows.Forms.Button();
             this.holdButton = new System.Windows.Forms.Button();
             this.cycleLimit = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.targetRotateCCW = new System.Windows.Forms.Button();
+            this.targetRotateCW = new System.Windows.Forms.Button();
+            this.targetConnectButt = new System.Windows.Forms.Button();
+            this.targetTurnerReport = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.holdButton40K = new System.Windows.Forms.Button();
@@ -118,6 +126,12 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.yagX1Increase = new System.Windows.Forms.Button();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
+            this.heaterSwitchSF6 = new NationalInstruments.UI.WindowsForms.Switch();
+            this.heaterLEDSF6 = new NationalInstruments.UI.WindowsForms.Led();
+            this.cycleLimitSF6 = new System.Windows.Forms.NumericUpDown();
+            this.holdButtonSF6 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -129,10 +143,13 @@
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).BeginInit();
             this.tableLayoutPanel5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.tableLayoutPanel9.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch40K)).BeginInit();
@@ -148,6 +165,11 @@
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.jogSteps)).BeginInit();
             this.tableLayoutPanel8.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            this.tableLayoutPanel10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.heaterSwitchSF6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heaterLEDSF6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleLimitSF6)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -449,16 +471,20 @@
             // 
             // tableLayoutPanel3
             // 
-            this.tableLayoutPanel3.ColumnCount = 1;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.heaterSwitch, 0, 1);
             this.tableLayoutPanel3.Controls.Add(this.heaterLED, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cycleHoldTime, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label21, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.93877F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.06123F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(195, 71);
             this.tableLayoutPanel3.TabIndex = 0;
             this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
@@ -467,7 +493,7 @@
             // 
             this.heaterSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterSwitch.Enabled = false;
-            this.heaterSwitch.Location = new System.Drawing.Point(68, 36);
+            this.heaterSwitch.Location = new System.Drawing.Point(19, 36);
             this.heaterSwitch.Name = "heaterSwitch";
             this.heaterSwitch.Size = new System.Drawing.Size(59, 32);
             this.heaterSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
@@ -478,10 +504,47 @@
             // 
             this.heaterLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.heaterLED.Location = new System.Drawing.Point(73, 3);
+            this.heaterLED.Location = new System.Drawing.Point(24, 3);
             this.heaterLED.Name = "heaterLED";
             this.heaterLED.Size = new System.Drawing.Size(49, 27);
             this.heaterLED.TabIndex = 1;
+            // 
+            // cycleHoldTime
+            // 
+            this.cycleHoldTime.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleHoldTime.Increment = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.cycleHoldTime.Location = new System.Drawing.Point(100, 42);
+            this.cycleHoldTime.Maximum = new decimal(new int[] {
+            6000,
+            0,
+            0,
+            0});
+            this.cycleHoldTime.Name = "cycleHoldTime";
+            this.cycleHoldTime.Size = new System.Drawing.Size(92, 20);
+            this.cycleHoldTime.TabIndex = 4;
+            this.cycleHoldTime.Value = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            // 
+            // label21
+            // 
+            this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(100, 3);
+            this.label21.Margin = new System.Windows.Forms.Padding(3);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(92, 27);
+            this.label21.TabIndex = 5;
+            this.label21.Text = "Hold Time (min)";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel5
             // 
@@ -539,7 +602,7 @@
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cycleLimit.Location = new System.Drawing.Point(41, 27);
             this.cycleLimit.Minimum = new decimal(new int[] {
-            270,
+            273,
             0,
             0,
             -2147483648});
@@ -556,6 +619,7 @@
             // 
             this.tableLayoutPanel6.ColumnCount = 1;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.Controls.Add(this.groupBox8, 0, 3);
             this.tableLayoutPanel6.Controls.Add(this.groupBox5, 0, 2);
             this.tableLayoutPanel6.Controls.Add(this.groupBox3, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.groupBox4, 0, 1);
@@ -564,10 +628,93 @@
             this.tableLayoutPanel6.RowCount = 4;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 59.63489F));
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.36511F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 146F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
             this.tableLayoutPanel6.Size = new System.Drawing.Size(446, 646);
             this.tableLayoutPanel6.TabIndex = 3;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox8.Controls.Add(this.tableLayoutPanel9);
+            this.groupBox8.Location = new System.Drawing.Point(3, 594);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(440, 49);
+            this.groupBox8.TabIndex = 7;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Target turner";
+            // 
+            // tableLayoutPanel9
+            // 
+            this.tableLayoutPanel9.ColumnCount = 4;
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel9.Controls.Add(this.targetRotateCCW, 2, 0);
+            this.tableLayoutPanel9.Controls.Add(this.targetRotateCW, 1, 0);
+            this.tableLayoutPanel9.Controls.Add(this.targetConnectButt, 0, 0);
+            this.tableLayoutPanel9.Controls.Add(this.targetTurnerReport, 3, 0);
+            this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel9.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel9.Name = "tableLayoutPanel9";
+            this.tableLayoutPanel9.RowCount = 1;
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(434, 30);
+            this.tableLayoutPanel9.TabIndex = 0;
+            // 
+            // targetRotateCCW
+            // 
+            this.targetRotateCCW.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetRotateCCW.Location = new System.Drawing.Point(219, 3);
+            this.targetRotateCCW.Name = "targetRotateCCW";
+            this.targetRotateCCW.Size = new System.Drawing.Size(102, 24);
+            this.targetRotateCCW.TabIndex = 2;
+            this.targetRotateCCW.Text = "CCW";
+            this.targetRotateCCW.UseVisualStyleBackColor = true;
+            this.targetRotateCCW.Click += new System.EventHandler(this.turn_target_CCW);
+            // 
+            // targetRotateCW
+            // 
+            this.targetRotateCW.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetRotateCW.Location = new System.Drawing.Point(111, 3);
+            this.targetRotateCW.Name = "targetRotateCW";
+            this.targetRotateCW.Size = new System.Drawing.Size(102, 24);
+            this.targetRotateCW.TabIndex = 1;
+            this.targetRotateCW.Text = "CW";
+            this.targetRotateCW.UseVisualStyleBackColor = true;
+            this.targetRotateCW.Click += new System.EventHandler(this.turn_target_CW);
+            // 
+            // targetConnectButt
+            // 
+            this.targetConnectButt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetConnectButt.Location = new System.Drawing.Point(3, 3);
+            this.targetConnectButt.Name = "targetConnectButt";
+            this.targetConnectButt.Size = new System.Drawing.Size(102, 24);
+            this.targetConnectButt.TabIndex = 0;
+            this.targetConnectButt.Text = "Connect";
+            this.targetConnectButt.UseVisualStyleBackColor = true;
+            this.targetConnectButt.Click += new System.EventHandler(this.connect_target_turner);
+            // 
+            // targetTurnerReport
+            // 
+            this.targetTurnerReport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetTurnerReport.AutoSize = true;
+            this.targetTurnerReport.Location = new System.Drawing.Point(327, 0);
+            this.targetTurnerReport.Name = "targetTurnerReport";
+            this.targetTurnerReport.Size = new System.Drawing.Size(104, 30);
+            this.targetTurnerReport.TabIndex = 3;
+            this.targetTurnerReport.Text = "Not connected";
+            this.targetTurnerReport.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupBox5
             // 
@@ -951,7 +1098,7 @@
             // 
             // numAO0
             // 
-            this.numAO0.DecimalPlaces = 2;
+            this.numAO0.DecimalPlaces = 3;
             this.numAO0.Increment = new decimal(new int[] {
             1,
             0,
@@ -1027,9 +1174,9 @@
             this.groupBox6.Controls.Add(this.yag_connect);
             this.groupBox6.Controls.Add(this.groupBox7);
             this.groupBox6.Controls.Add(this.tableLayoutPanel8);
-            this.groupBox6.Location = new System.Drawing.Point(0, 658);
+            this.groupBox6.Location = new System.Drawing.Point(3, 710);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(665, 122);
+            this.groupBox6.Size = new System.Drawing.Size(665, 110);
             this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "YAG Motorized Mirror Control";
@@ -1262,14 +1409,95 @@
             this.yagX1Increase.UseVisualStyleBackColor = true;
             this.yagX1Increase.Click += new System.EventHandler(this.yag_X1_P);
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox9.Controls.Add(this.tableLayoutPanel10);
+            this.groupBox9.Location = new System.Drawing.Point(9, 658);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(656, 49);
+            this.groupBox9.TabIndex = 7;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "SF6 Heater                                                                       " +
+    "                  SF6 Set Temp (°C)";
+            // 
+            // tableLayoutPanel10
+            // 
+            this.tableLayoutPanel10.ColumnCount = 4;
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel10.Controls.Add(this.heaterSwitchSF6, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.heaterLEDSF6, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.cycleLimitSF6, 2, 0);
+            this.tableLayoutPanel10.Controls.Add(this.holdButtonSF6, 3, 0);
+            this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel10.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel10.Name = "tableLayoutPanel10";
+            this.tableLayoutPanel10.RowCount = 1;
+            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(650, 30);
+            this.tableLayoutPanel10.TabIndex = 0;
+            // 
+            // heaterSwitchSF6
+            // 
+            this.heaterSwitchSF6.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.heaterSwitchSF6.Location = new System.Drawing.Point(213, 3);
+            this.heaterSwitchSF6.Name = "heaterSwitchSF6";
+            this.heaterSwitchSF6.Size = new System.Drawing.Size(59, 24);
+            this.heaterSwitchSF6.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
+            this.heaterSwitchSF6.TabIndex = 6;
+            this.heaterSwitchSF6.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeaterSF6);
+            // 
+            // heaterLEDSF6
+            // 
+            this.heaterLEDSF6.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.heaterLEDSF6.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.heaterLEDSF6.Location = new System.Drawing.Point(56, 3);
+            this.heaterLEDSF6.Name = "heaterLEDSF6";
+            this.heaterLEDSF6.Size = new System.Drawing.Size(49, 24);
+            this.heaterLEDSF6.TabIndex = 1;
+            // 
+            // cycleLimitSF6
+            // 
+            this.cycleLimitSF6.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cycleLimitSF6.Location = new System.Drawing.Point(345, 5);
+            this.cycleLimitSF6.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.cycleLimitSF6.Name = "cycleLimitSF6";
+            this.cycleLimitSF6.Size = new System.Drawing.Size(120, 20);
+            this.cycleLimitSF6.TabIndex = 5;
+            this.cycleLimitSF6.Value = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            // 
+            // holdButtonSF6
+            // 
+            this.holdButtonSF6.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.holdButtonSF6.Location = new System.Drawing.Point(508, 3);
+            this.holdButtonSF6.Name = "holdButtonSF6";
+            this.holdButtonSF6.Size = new System.Drawing.Size(120, 24);
+            this.holdButtonSF6.TabIndex = 7;
+            this.holdButtonSF6.Text = "Heat and Hold";
+            this.holdButtonSF6.UseVisualStyleBackColor = true;
+            this.holdButtonSF6.Click += new System.EventHandler(this.toggleHoldingSF6);
+            // 
             // SourceTabView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.groupBox6);
             this.Name = "SourceTabView";
-            this.Size = new System.Drawing.Size(705, 810);
+            this.Size = new System.Drawing.Size(705, 827);
             this.Load += new System.EventHandler(this.SourceTabView_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -1281,12 +1509,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.cryoLED)).EndInit();
             this.heaterGroup.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.heaterLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleHoldTime)).EndInit();
             this.tableLayoutPanel5.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).EndInit();
             this.tableLayoutPanel6.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.tableLayoutPanel9.ResumeLayout(false);
+            this.tableLayoutPanel9.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.tableLayoutPanel7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.heaterSwitch40K)).EndInit();
@@ -1305,6 +1538,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.jogSteps)).EndInit();
             this.tableLayoutPanel8.ResumeLayout(false);
             this.tableLayoutPanel8.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.tableLayoutPanel10.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.heaterSwitchSF6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.heaterLEDSF6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cycleLimitSF6)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1402,5 +1640,19 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button yagX1Increase;
         private System.Windows.Forms.Button yag_connect;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
+        private System.Windows.Forms.Button targetRotateCCW;
+        private System.Windows.Forms.Button targetRotateCW;
+        private System.Windows.Forms.Button targetConnectButt;
+        private System.Windows.Forms.Label targetTurnerReport;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
+        private NationalInstruments.UI.WindowsForms.Switch heaterSwitchSF6;
+        private NationalInstruments.UI.WindowsForms.Led heaterLEDSF6;
+        private System.Windows.Forms.NumericUpDown cycleLimitSF6;
+        private System.Windows.Forms.Button holdButtonSF6;
+        private System.Windows.Forms.NumericUpDown cycleHoldTime;
+        private System.Windows.Forms.Label label21;
     }
 }

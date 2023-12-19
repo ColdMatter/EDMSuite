@@ -40,9 +40,16 @@ namespace WavemeterLock
             errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             errorPlot.LineColor = controller.selectColor(controller.colorParameter);
             controller.colorParameter++;
-            //controller.lasers[name].setFrequency = Math.Round(controller.getFrequency(channelNumber),6);
             SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
             labelOutOfRange.Visible = false;
+        }
+
+        public void updateParameters()
+        {
+            SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
+            IGain.Text = Convert.ToString(controller.lasers[name].IGain);
+            PGain.Text = Convert.ToString(controller.lasers[name].PGain);
+            offset.Text = Convert.ToString(controller.lasers[name].offsetVoltage);
         }
 
         public void updatePanel()
@@ -198,6 +205,11 @@ namespace WavemeterLock
             scale *= 4;
             errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             
+        }
+
+        private void logData_check(object sender, EventArgs e)
+        {
+            controller.lasers[name].logData = checkBoxLogData.Checked;
         }
 
         #endregion

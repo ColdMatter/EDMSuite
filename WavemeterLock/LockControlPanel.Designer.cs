@@ -73,6 +73,8 @@ namespace WavemeterLock
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.RMSValue = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
             this.label12 = new System.Windows.Forms.Label();
             this.setAsReading = new System.Windows.Forms.Button();
@@ -83,8 +85,7 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.RMSValue = new System.Windows.Forms.Label();
+            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
@@ -115,7 +116,7 @@ namespace WavemeterLock
             this.stepUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stepUp.Location = new System.Drawing.Point(493, 68);
             this.stepUp.Name = "stepUp";
-            this.stepUp.Size = new System.Drawing.Size(30, 24);
+            this.stepUp.Size = new System.Drawing.Size(26, 24);
             this.stepUp.TabIndex = 64;
             this.stepUp.Text = "+\r\n";
             this.stepUp.UseVisualStyleBackColor = false;
@@ -343,7 +344,7 @@ namespace WavemeterLock
             this.errorScatterGraph.Name = "errorScatterGraph";
             this.errorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.errorPlot});
-            this.errorScatterGraph.Size = new System.Drawing.Size(613, 249);
+            this.errorScatterGraph.Size = new System.Drawing.Size(659, 249);
             this.errorScatterGraph.TabIndex = 69;
             this.errorScatterGraph.UseColorGenerator = true;
             this.errorScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
@@ -366,7 +367,7 @@ namespace WavemeterLock
             // 
             // scaleDown
             // 
-            this.scaleDown.Location = new System.Drawing.Point(312, 153);
+            this.scaleDown.Location = new System.Drawing.Point(286, 153);
             this.scaleDown.Name = "scaleDown";
             this.scaleDown.Size = new System.Drawing.Size(30, 24);
             this.scaleDown.TabIndex = 71;
@@ -376,7 +377,7 @@ namespace WavemeterLock
             // 
             // scaleUp
             // 
-            this.scaleUp.Location = new System.Drawing.Point(348, 153);
+            this.scaleUp.Location = new System.Drawing.Point(322, 153);
             this.scaleUp.Name = "scaleUp";
             this.scaleUp.Size = new System.Drawing.Size(30, 24);
             this.scaleUp.TabIndex = 70;
@@ -387,7 +388,7 @@ namespace WavemeterLock
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(312, 131);
+            this.label6.Location = new System.Drawing.Point(286, 131);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(66, 13);
             this.label6.TabIndex = 72;
@@ -395,6 +396,7 @@ namespace WavemeterLock
             // 
             // controlPanel
             // 
+            this.controlPanel.Controls.Add(this.checkBoxLogData);
             this.controlPanel.Controls.Add(this.RMSValue);
             this.controlPanel.Controls.Add(this.label13);
             this.controlPanel.Controls.Add(this.LEDBlockIndicator);
@@ -413,11 +415,30 @@ namespace WavemeterLock
             this.controlPanel.Controls.Add(this.lockMsg);
             this.controlPanel.Location = new System.Drawing.Point(251, 9);
             this.controlPanel.Name = "controlPanel";
-            this.controlPanel.Size = new System.Drawing.Size(407, 193);
+            this.controlPanel.Size = new System.Drawing.Size(447, 193);
             this.controlPanel.TabIndex = 73;
             this.controlPanel.TabStop = false;
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
+            // 
+            // RMSValue
+            // 
+            this.RMSValue.AutoSize = true;
+            this.RMSValue.Location = new System.Drawing.Point(223, 131);
+            this.RMSValue.Name = "RMSValue";
+            this.RMSValue.Size = new System.Drawing.Size(28, 13);
+            this.RMSValue.TabIndex = 76;
+            this.RMSValue.Text = "0.00";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(203, 103);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(65, 13);
+            this.label13.TabIndex = 80;
+            this.label13.Text = "RMS (MHz):";
+            this.label13.Click += new System.EventHandler(this.label13_Click);
             // 
             // LEDBlockIndicator
             // 
@@ -440,7 +461,7 @@ namespace WavemeterLock
             // 
             // setAsReading
             // 
-            this.setAsReading.Location = new System.Drawing.Point(304, 60);
+            this.setAsReading.Location = new System.Drawing.Point(284, 59);
             this.setAsReading.Name = "setAsReading";
             this.setAsReading.Size = new System.Drawing.Size(85, 23);
             this.setAsReading.TabIndex = 75;
@@ -477,9 +498,9 @@ namespace WavemeterLock
             // 
             // resetGraph
             // 
-            this.resetGraph.Location = new System.Drawing.Point(304, 98);
+            this.resetGraph.Location = new System.Drawing.Point(358, 153);
             this.resetGraph.Name = "resetGraph";
-            this.resetGraph.Size = new System.Drawing.Size(85, 24);
+            this.resetGraph.Size = new System.Drawing.Size(83, 24);
             this.resetGraph.TabIndex = 75;
             this.resetGraph.Text = "Reset Graph";
             this.resetGraph.UseVisualStyleBackColor = true;
@@ -490,7 +511,7 @@ namespace WavemeterLock
             this.groupBoxErrorPlot.Controls.Add(this.errorScatterGraph);
             this.groupBoxErrorPlot.Location = new System.Drawing.Point(27, 208);
             this.groupBoxErrorPlot.Name = "groupBoxErrorPlot";
-            this.groupBoxErrorPlot.Size = new System.Drawing.Size(631, 279);
+            this.groupBoxErrorPlot.Size = new System.Drawing.Size(671, 279);
             this.groupBoxErrorPlot.TabIndex = 74;
             this.groupBoxErrorPlot.TabStop = false;
             this.groupBoxErrorPlot.Text = "Frequency Error (MHz)";
@@ -527,24 +548,16 @@ namespace WavemeterLock
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
             // 
-            // label13
+            // checkBoxLogData
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(203, 103);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(65, 13);
-            this.label13.TabIndex = 80;
-            this.label13.Text = "RMS (MHz):";
-            this.label13.Click += new System.EventHandler(this.label13_Click);
-            // 
-            // RMSValue
-            // 
-            this.RMSValue.AutoSize = true;
-            this.RMSValue.Location = new System.Drawing.Point(223, 131);
-            this.RMSValue.Name = "RMSValue";
-            this.RMSValue.Size = new System.Drawing.Size(28, 13);
-            this.RMSValue.TabIndex = 76;
-            this.RMSValue.Text = "0.00";
+            this.checkBoxLogData.AutoSize = true;
+            this.checkBoxLogData.Location = new System.Drawing.Point(284, 103);
+            this.checkBoxLogData.Name = "checkBoxLogData";
+            this.checkBoxLogData.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxLogData.TabIndex = 75;
+            this.checkBoxLogData.Text = "Log Data";
+            this.checkBoxLogData.UseVisualStyleBackColor = true;
+            this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
             // 
             // LockControlPanel
             // 
@@ -565,7 +578,7 @@ namespace WavemeterLock
             this.Controls.Add(this.groupBoxErrorPlot);
             this.Controls.Add(this.groupBoxLaserInfo);
             this.Name = "LockControlPanel";
-            this.Size = new System.Drawing.Size(679, 522);
+            this.Size = new System.Drawing.Size(723, 522);
             this.Load += new System.EventHandler(this.LockControlPanel_Load);
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
@@ -627,5 +640,6 @@ namespace WavemeterLock
         private NationalInstruments.UI.WindowsForms.Led LEDBlockIndicator;
         private Label label13;
         private Label RMSValue;
+        private CheckBox checkBoxLogData;
     }
 }
