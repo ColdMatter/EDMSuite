@@ -22,6 +22,12 @@ namespace AlFHardwareControl
     public partial class MOTMasterStuff : UserControl
     {
 
+        //private XYCursor cursor1 = new XYCursor();
+        //private XYCursor cursor2 = new XYCursor();
+
+        //private bool scanCursor1Reset = true;
+        //private bool scanCursor2Reset = true;
+
         private Task DAQTask;
         private AnalogMultiChannelReader dataReader;
         private List<string> AIchannels = (List<string>)Environs.Hardware.GetInfo("MMAnalogInputs");
@@ -49,7 +55,7 @@ namespace AlFHardwareControl
             InitializeComponent();
 
             initPanels();
-            WMLServer.Text = (new EnvironsHelper()).serverComputerName;
+            WMLServer.Text = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
 
             selectedScan = ParamScan;
         }
@@ -60,6 +66,8 @@ namespace AlFHardwareControl
             {
                 TabPage dataGraph = new TabPage(aichannel);
                 mmdata.Add(new MOTMasterData());
+                mmdata.Last().mmstuff = this;
+                mmdata.Last().initNormalisation(AIchannels);
                 dataGraph.Controls.Add(mmdata.Last());
                 DataTabs.Controls.Add(dataGraph);
 
@@ -68,15 +76,18 @@ namespace AlFHardwareControl
 
         private bool dataAcquired = false;
 
+        public Dictionary<string, double[]> AIData = new Dictionary<string, double[]>();
+
         private void UpdateReadings(object sender, TaskDoneEventArgs args)
         {
             double[,] data = dataReader.ReadMultiSample(Convert.ToInt32(this.sampNum.Text));
 
             for (int i = 0; i < mmdata.Count; ++i)
             {
-                mmdata[i].UpdateData(xdata, Enumerable.Range(0, data.GetLength(1))
+                AIData[AIchannels[i]] = Enumerable.Range(0, data.GetLength(1))
                 .Select(x => data[i, x])
-                .ToArray());
+                .ToArray();
+                mmdata[i].UpdateData(xdata, AIData[AIchannels[i]]);
 
                 using (System.IO.StreamWriter file =
                             new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + AIchannels[i] + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
@@ -91,13 +102,16 @@ namespace AlFHardwareControl
             dataSaved = true;
 
             DAQTask.Stop();
-            DAQTask.Start();
 
             if (scanRunning)
             {
-                scanResults.Last().Item2.Add(data);
-                dataAcquired = true;
+                lock (scanResults)
+                {
+                    scanResults.Last().Item2.Add(data);
+                }   
             }
+            dataAcquired = true;
+            DAQTask.Start();
         }
 
         private void setUpTasks()
@@ -248,6 +262,8 @@ namespace AlFHardwareControl
         {
             ++scanNumber;
             scanGraph.Plots[0].ClearData();
+            scanGraph.Plots[0].LineStyle = NationalInstruments.UI.LineStyle.None;
+            scanGraph.Plots[0].PointStyle = NationalInstruments.UI.PointStyle.Cross;
             PluginSettings.ignoreParameterHelper = true;
 
             MOTMaster.Controller mmaster = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1187/controller.rem"));
@@ -267,13 +283,13 @@ namespace AlFHardwareControl
                 scanPlugin.Settings["end"] = Convert.ToDouble(this.pEnd.Text);
                 scanPlugin.Settings["pointsPerScan"] = Convert.ToInt32(this.pSteps.Text);
                 scanPlugin.Settings["shotsPerPoint"] = Convert.ToInt32(this.pShots.Text);
-
+                this.Invoke((Action)(()=>{ scanPlugin.Settings["scanMode"] = this.pScanDir.Text; }));
             }
             if (selectedScan == WMLScan)
             {
                 scanPlugin = new WMLOutputPlugin();
                 scanPlugin.Settings["laser"] = this.WMLLaser.Text;
-                scanPlugin.Settings["computer"] = this.WMLServer;
+                scanPlugin.Settings["computer"] = this.WMLServer.Text;
                 scanPlugin.Settings["WMLConfig"] = "WMLConfig";
                 scanPlugin.Settings["scannedParameter"] = "setpoint";
                 scanPlugin.Settings["setVoltageWaitTime"] = 50;
@@ -283,6 +299,7 @@ namespace AlFHardwareControl
                 scanPlugin.Settings["end"] = Convert.ToDouble(this.WMLEnd.Text);
                 scanPlugin.Settings["pointsPerScan"] = Convert.ToInt32(this.WMLSteps.Text);
                 scanPlugin.Settings["shotsPerPoint"] = Convert.ToInt32(this.WMLShots.Text);
+                this.Invoke((Action)(() => { scanPlugin.Settings["scanMode"] = this.WMLScanDir.Text; }));
             }
 
             if (scanPlugin == null)
@@ -309,29 +326,40 @@ namespace AlFHardwareControl
                     while (!dataAcquired) ;
 
                     if (!scanRunning) break;
-                
+
                 }
 
                 scanPlugin.ScanFinished();
+                if (!scanRunning)
+                {
+                    scanResults.RemoveAt(scanResults.Count - 1);
+                    break;
+                }
 
                 Tuple<double, List<double[,]>> dp = scanResults.Last();
-
                 double intavg = Enumerable.Range(0, dp.Item2.Count).Select(ind => Enumerable.Range(0, dp.Item2[ind].GetLength(1)).Select(x => dp.Item2[ind][dataTabsSelectedIndex, x]).ToArray().Sum()).ToArray().Average();
-                scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg);
+                this.Invoke((Action)(() => { scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg); }));
 
-                if (!scanRunning) break;
 
             }
 
             scanPlugin.AcquisitionFinished();
 
-/*            using (System.IO.StreamWriter file =
+            /* using (System.IO.StreamWriter file =
             new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + "Scan" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
             {
 
                 (new System.Xml.Serialization.XmlSerializer(typeof(List<Tuple<double, List<double[,]>>>))).Serialize(file, scanResults);
                 file.Flush();
             }*/
+
+
+            scanResults.Sort((Tuple<double, List<double[,]>> a, Tuple<double, List<double[,]>> b) => { return Comparer<double>.Default.Compare(a.Item1, b.Item1); });
+
+            this.Invoke((Action)(()=> { DataTabs_SelectedIndexChanged(null, new EventArgs()); }));
+
+            scanGraph.Plots[0].LineStyle = NationalInstruments.UI.LineStyle.Solid;
+            scanGraph.Plots[0].PointStyle = NationalInstruments.UI.PointStyle.None;
 
             this.Invoke((Action)(() =>
             {
@@ -355,6 +383,7 @@ namespace AlFHardwareControl
 
         private void armToF_CheckedChanged(object sender, EventArgs e)
         {
+            scanNumber = 0;
             tofArmed = armToF.Checked;
             if (armToF.Checked)
             {
@@ -402,10 +431,14 @@ namespace AlFHardwareControl
         {
             scanGraph.Plots[0].ClearData();
             dataTabsSelectedIndex = DataTabs.SelectedIndex;
-            foreach (Tuple<double,List<double[,]>> dp in scanResults)
+            lock (scanResults)
             {
-                double intavg = Enumerable.Range(0, dp.Item2.Count).Select(i => Enumerable.Range(0, dp.Item2[i].GetLength(1)).Select(x => dp.Item2[i][dataTabsSelectedIndex, x]).ToArray().Sum()).ToArray().Average();
-                scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg);
+                foreach (Tuple<double, List<double[,]>> dp in scanResults)
+                {
+                    if (dp.Item2.Count == 0) continue;
+                    double intavg = Enumerable.Range(0, dp.Item2.Count).Select(i => Enumerable.Range(0, dp.Item2[i].GetLength(1)).Select(x => dp.Item2[i][dataTabsSelectedIndex, x]).ToArray().Sum()).ToArray().Average();
+                    scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg);
+                }
             }
             this.Invoke((Action)(()=>{ scanGraph.Update(); }));
         }

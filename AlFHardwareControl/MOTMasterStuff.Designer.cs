@@ -37,8 +37,14 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
             this.scanCtrl = new System.Windows.Forms.GroupBox();
+            this.stopScan = new System.Windows.Forms.Button();
+            this.startScan = new System.Windows.Forms.Button();
             this.scanTabs = new System.Windows.Forms.TabControl();
             this.ParamScan = new System.Windows.Forms.TabPage();
+            this.pScanDir = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.pShots = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -48,6 +54,12 @@ namespace AlFHardwareControl
             this.pStart = new System.Windows.Forms.TextBox();
             this.pParam = new System.Windows.Forms.TextBox();
             this.WMLScan = new System.Windows.Forms.TabPage();
+            this.WMLScanDir = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.WMLShots = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.WMLSteps = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.WMLEnd = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -62,18 +74,6 @@ namespace AlFHardwareControl
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.startScan = new System.Windows.Forms.Button();
-            this.stopScan = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.WMLSteps = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.pShots = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.pScanDir = new System.Windows.Forms.ComboBox();
-            this.WMLScanDir = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.WMLShots = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             this.scanTabs.SuspendLayout();
@@ -178,6 +178,27 @@ namespace AlFHardwareControl
             this.scanCtrl.TabStop = false;
             this.scanCtrl.Text = "Scan Control";
             // 
+            // stopScan
+            // 
+            this.stopScan.Enabled = false;
+            this.stopScan.Location = new System.Drawing.Point(280, 87);
+            this.stopScan.Name = "stopScan";
+            this.stopScan.Size = new System.Drawing.Size(23, 39);
+            this.stopScan.TabIndex = 7;
+            this.stopScan.Text = "-";
+            this.stopScan.UseVisualStyleBackColor = true;
+            this.stopScan.Click += new System.EventHandler(this.stopScan_Click);
+            // 
+            // startScan
+            // 
+            this.startScan.Location = new System.Drawing.Point(280, 39);
+            this.startScan.Name = "startScan";
+            this.startScan.Size = new System.Drawing.Size(23, 39);
+            this.startScan.TabIndex = 6;
+            this.startScan.Text = "+";
+            this.startScan.UseVisualStyleBackColor = true;
+            this.startScan.Click += new System.EventHandler(this.startScan_Click);
+            // 
             // scanTabs
             // 
             this.scanTabs.Controls.Add(this.ParamScan);
@@ -211,6 +232,47 @@ namespace AlFHardwareControl
             this.ParamScan.Size = new System.Drawing.Size(263, 80);
             this.ParamScan.TabIndex = 0;
             this.ParamScan.Text = "Parameter";
+            // 
+            // pScanDir
+            // 
+            this.pScanDir.FormattingEnabled = true;
+            this.pScanDir.Items.AddRange(new object[] {
+            "up",
+            "down",
+            "updown",
+            "downup",
+            "random"});
+            this.pScanDir.Location = new System.Drawing.Point(106, 126);
+            this.pScanDir.Name = "pScanDir";
+            this.pScanDir.Size = new System.Drawing.Size(127, 21);
+            this.pScanDir.TabIndex = 16;
+            this.pScanDir.Text = "up";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 130);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(80, 13);
+            this.label14.TabIndex = 15;
+            this.label14.Text = "Scan Direction:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 105);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(43, 13);
+            this.label13.TabIndex = 13;
+            this.label13.Text = "nShots:";
+            // 
+            // pShots
+            // 
+            this.pShots.Location = new System.Drawing.Point(106, 102);
+            this.pShots.Name = "pShots";
+            this.pShots.Size = new System.Drawing.Size(127, 20);
+            this.pShots.TabIndex = 12;
+            this.pShots.Text = "1";
             // 
             // label6
             // 
@@ -303,6 +365,64 @@ namespace AlFHardwareControl
             this.WMLScan.Size = new System.Drawing.Size(263, 80);
             this.WMLScan.TabIndex = 1;
             this.WMLScan.Text = "WML";
+            // 
+            // WMLScanDir
+            // 
+            this.WMLScanDir.FormattingEnabled = true;
+            this.WMLScanDir.Items.AddRange(new object[] {
+            "up",
+            "down",
+            "updown",
+            "downup",
+            "random"});
+            this.WMLScanDir.Location = new System.Drawing.Point(108, 171);
+            this.WMLScanDir.Name = "WMLScanDir";
+            this.WMLScanDir.Size = new System.Drawing.Size(127, 21);
+            this.WMLScanDir.TabIndex = 27;
+            this.WMLScanDir.Text = "up";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 175);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(80, 13);
+            this.label15.TabIndex = 26;
+            this.label15.Text = "Scan Direction:";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(8, 150);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(43, 13);
+            this.label16.TabIndex = 25;
+            this.label16.Text = "nShots:";
+            // 
+            // WMLShots
+            // 
+            this.WMLShots.Location = new System.Drawing.Point(108, 147);
+            this.WMLShots.Name = "WMLShots";
+            this.WMLShots.Size = new System.Drawing.Size(127, 20);
+            this.WMLShots.TabIndex = 24;
+            this.WMLShots.Text = "1";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(8, 127);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(43, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "nSteps:";
+            // 
+            // WMLSteps
+            // 
+            this.WMLSteps.Location = new System.Drawing.Point(108, 124);
+            this.WMLSteps.Name = "WMLSteps";
+            this.WMLSteps.Size = new System.Drawing.Size(127, 20);
+            this.WMLSteps.TabIndex = 22;
+            this.WMLSteps.Text = "100";
             // 
             // label11
             // 
@@ -409,128 +529,9 @@ namespace AlFHardwareControl
             // 
             this.scatterPlot1.LineColor = System.Drawing.Color.DarkOrange;
             this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.scatterPlot1.PointColor = System.Drawing.Color.DarkOrange;
             this.scatterPlot1.XAxis = this.xAxis1;
             this.scatterPlot1.YAxis = this.yAxis1;
-            // 
-            // startScan
-            // 
-            this.startScan.Location = new System.Drawing.Point(280, 39);
-            this.startScan.Name = "startScan";
-            this.startScan.Size = new System.Drawing.Size(23, 39);
-            this.startScan.TabIndex = 6;
-            this.startScan.Text = "+";
-            this.startScan.UseVisualStyleBackColor = true;
-            this.startScan.Click += new System.EventHandler(this.startScan_Click);
-            // 
-            // stopScan
-            // 
-            this.stopScan.Enabled = false;
-            this.stopScan.Location = new System.Drawing.Point(280, 87);
-            this.stopScan.Name = "stopScan";
-            this.stopScan.Size = new System.Drawing.Size(23, 39);
-            this.stopScan.TabIndex = 7;
-            this.stopScan.Text = "-";
-            this.stopScan.UseVisualStyleBackColor = true;
-            this.stopScan.Click += new System.EventHandler(this.stopScan_Click);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(8, 127);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(43, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "nSteps:";
-            // 
-            // WMLSteps
-            // 
-            this.WMLSteps.Location = new System.Drawing.Point(108, 124);
-            this.WMLSteps.Name = "WMLSteps";
-            this.WMLSteps.Size = new System.Drawing.Size(127, 20);
-            this.WMLSteps.TabIndex = 22;
-            this.WMLSteps.Text = "100";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 105);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(43, 13);
-            this.label13.TabIndex = 13;
-            this.label13.Text = "nShots:";
-            // 
-            // pShots
-            // 
-            this.pShots.Location = new System.Drawing.Point(106, 102);
-            this.pShots.Name = "pShots";
-            this.pShots.Size = new System.Drawing.Size(127, 20);
-            this.pShots.TabIndex = 12;
-            this.pShots.Text = "1";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 130);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(80, 13);
-            this.label14.TabIndex = 15;
-            this.label14.Text = "Scan Direction:";
-            // 
-            // pScanDir
-            // 
-            this.pScanDir.FormattingEnabled = true;
-            this.pScanDir.Items.AddRange(new object[] {
-            "up",
-            "down",
-            "updown",
-            "downup",
-            "random"});
-            this.pScanDir.Location = new System.Drawing.Point(106, 126);
-            this.pScanDir.Name = "pScanDir";
-            this.pScanDir.Size = new System.Drawing.Size(127, 21);
-            this.pScanDir.TabIndex = 16;
-            this.pScanDir.Text = "up";
-            // 
-            // WMLScanDir
-            // 
-            this.WMLScanDir.FormattingEnabled = true;
-            this.WMLScanDir.Items.AddRange(new object[] {
-            "up",
-            "down",
-            "updown",
-            "downup",
-            "random"});
-            this.WMLScanDir.Location = new System.Drawing.Point(108, 171);
-            this.WMLScanDir.Name = "WMLScanDir";
-            this.WMLScanDir.Size = new System.Drawing.Size(127, 21);
-            this.WMLScanDir.TabIndex = 27;
-            this.WMLScanDir.Text = "up";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(8, 175);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(80, 13);
-            this.label15.TabIndex = 26;
-            this.label15.Text = "Scan Direction:";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(8, 150);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(43, 13);
-            this.label16.TabIndex = 25;
-            this.label16.Text = "nShots:";
-            // 
-            // WMLShots
-            // 
-            this.WMLShots.Location = new System.Drawing.Point(108, 147);
-            this.WMLShots.Name = "WMLShots";
-            this.WMLShots.Size = new System.Drawing.Size(127, 20);
-            this.WMLShots.TabIndex = 24;
-            this.WMLShots.Text = "1";
             // 
             // MOTMasterStuff
             // 

@@ -17,11 +17,25 @@ namespace AlFHardwareControl
             InitializeComponent();
         }
 
+        public void initNormalisation(List<string> options)
+        {
+            foreach (string norm in options)
+            {
+                NormSource.Items.Add(norm);
+            }
+            NormSource.SelectedIndex = 0;
+        }
+
+        public MOTMasterStuff mmstuff;
+
         public void UpdateData(double[] xdata, double[] newData)
         {
-            dataGraph.Plots[0].ClearData();
-            dataGraph.Plots[0].PlotXY(xdata, newData);
-            this.Invoke((Action)(() => { dataGraph.Update(); }));
+            this.Invoke((Action)(() =>
+            {
+                dataGraph.Plots[0].ClearData();
+                dataGraph.Plots[0].PlotXY(xdata, newData);
+                dataGraph.Update();
+            }));
         }
 
         private void fixX_CheckedChanged(object sender, EventArgs e)
@@ -32,6 +46,11 @@ namespace AlFHardwareControl
         private void fixY_CheckedChanged(object sender, EventArgs e)
         {
             dataGraph.YAxes[0].Mode = fixY.Checked ? NationalInstruments.UI.AxisMode.Fixed : NationalInstruments.UI.AxisMode.AutoScaleLoose;
+        }
+
+        private void Normalise_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

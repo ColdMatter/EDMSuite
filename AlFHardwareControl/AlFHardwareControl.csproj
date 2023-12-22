@@ -142,6 +142,12 @@
       <DependentUpon>AlFControlWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="AlFController.cs" />
+    <Compile Include="DictionaryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DictionaryView.Designer.cs">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MacroConfiguration.cs" />
     <Compile Include="MacroConfigurationCollection.cs" />
     <Compile Include="DataGrapher.cs">
@@ -226,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataGrapher.resx">
       <DependentUpon>DataGrapher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DictionaryView.resx">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MacroEditor.resx">
       <DependentUpon>MacroEditor.cs</DependentUpon>

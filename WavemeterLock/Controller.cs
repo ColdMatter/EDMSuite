@@ -458,7 +458,6 @@ namespace WavemeterLock
             if (WMLState != ControllerState.STOPPED)
             {
                 if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
-
                 {
                     updateLockMaster();
                     wavemeterContrller.resetMeasurementStatus(thisComputerName);
