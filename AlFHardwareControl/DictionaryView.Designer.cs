@@ -29,44 +29,47 @@ namespace AlFHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.yAGControlBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.yAGControlBindingSource)).BeginInit();
+            this.DictionaryData = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.DictionaryData)).BeginInit();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // DictionaryData
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(337, 277);
-            this.dataGridView1.TabIndex = 0;
+            this.DictionaryData.AllowUserToAddRows = false;
+            this.DictionaryData.AllowUserToDeleteRows = false;
+            this.DictionaryData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DictionaryData.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.DictionaryData.Location = new System.Drawing.Point(12, 12);
+            this.DictionaryData.Name = "DictionaryData";
+            this.DictionaryData.Size = new System.Drawing.Size(337, 277);
+            this.DictionaryData.TabIndex = 0;
             // 
-            // yAGControlBindingSource
+            // dataGridViewTextBoxColumn1
             // 
-            this.yAGControlBindingSource.DataSource = typeof(AlFHardwareControl.YAG_Control);
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Value";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Value";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
             // DictionaryView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(361, 301);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.DictionaryData);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "DictionaryView";
             this.Text = "DictionaryView";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.yAGControlBindingSource)).EndInit();
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DictionaryView_FormClosing);
+            ((System.ComponentModel.ISupportInitialize)(this.DictionaryData)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.BindingSource yAGControlBindingSource;
+        public System.Windows.Forms.DataGridView DictionaryData;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
     }
 }

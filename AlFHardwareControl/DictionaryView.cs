@@ -16,5 +16,18 @@ namespace AlFHardwareControl
         {
             InitializeComponent();
         }
+
+        private MOTMasterStuff mmStuff;
+
+        public DictionaryView(MOTMasterStuff _mmstuff)
+        {
+            InitializeComponent();
+            mmStuff = _mmstuff;
+        }
+
+        private void DictionaryView_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mmStuff.DictionaryViewClosing();
+        }
     }
 }

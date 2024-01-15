@@ -29,8 +29,8 @@ namespace ScanMaster.Acquire.Plugins
 
         protected override void InitialiseSettings()
         {
-            Settings["scanOut"] = null;
-            Settings["scanKey"] = null;
+            Settings["scanOut"] = (string)"Do not edit";
+            Settings["scanKey"] = (string)"Void";
         }
 
 

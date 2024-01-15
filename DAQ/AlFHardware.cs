@@ -87,7 +87,7 @@ namespace DAQ.HAL
 
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
-            MMAI.Add("PD");
+            MMAI.Add("UV_I");
             Info.Add("MMAnalogInputs", MMAI);
             Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
