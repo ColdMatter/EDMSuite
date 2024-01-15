@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 60000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -64,6 +64,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsSwitchOn"] = 0;
         Parameters["MOTCoilsSwitchOff"] = 20000;
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
+        Parameters["BlueMOTCoilsCurrentValue"] = 0.3;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = -1.35;
@@ -73,7 +74,7 @@ public class Patterns : MOTMasterScript
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
-        Parameters["MOTAOMDuration"] = 500;
+        Parameters["MOTAOMDuration"] = 300;
 
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 5000;
@@ -81,21 +82,27 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityRampStartValue"] = 7.2; //5.6
         Parameters["v0IntensityEndValue"] = 8.2;//7.8
         Parameters["v0IntensityMolassesValue"] = 7.2;
-        Parameters["v0IntensityMolassesEndValue"] = 8.0;
+        Parameters["v0IntensityMolassesEndValue"] = 7.2;
         Parameters["v0IntensityRampBackTime"] = 20000;
         Parameters["V00EOMsidebandRatio"] = 5.5;
-        Parameters["v00EOMAmpBlueMOT"] = 4.8;
+        Parameters["v00EOMAmpMolasses"] = 5.0;
+        Parameters["v00EOMAmpBlueMOT"] = 5.0;
 
         //Timeing
         Parameters["MOTHoldTime"] = 100;
         Parameters["FrequencySettleTime"] = 100;
-        Parameters["MolassesDuration"] = 500;
-        Parameters["FreeExpTime"] = 100;
+        Parameters["MolassesDuration"] = 300;
+        Parameters["BlueMOTRampDuration"] = 500;
+        Parameters["BlueMOTHoldDuration"] = 2000;
+        Parameters["FreeExpTime"] = 10;
 
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 7.0; //9.0
         Parameters["v0FrequencyMolassesJumpValue"] = 2.6;
+        Parameters["v0FrequencyBlueMOTJumpValue"] = -1.0;
+        Parameters["V00AOMSidebandAmplitude"] = 1.0;
+        Parameters["V00AOMSidebandBlueMOTAmplitude"] = 1.0;
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
@@ -117,7 +124,9 @@ public class Patterns : MOTMasterScript
         int motEndTime = motRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motEndTime + (int)Parameters["FrequencySettleTime"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
-        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"];
+        int blueMOTRampEndTime = molassesEndTime + (int)Parameters["BlueMOTRampDuration"];
+        int blueMOTHoldEndTime = blueMOTRampEndTime + (int)Parameters["BlueMOTHoldDuration"];
+        int imageTime = blueMOTHoldEndTime + (int)Parameters["FreeExpTime"];
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
@@ -126,7 +135,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v00MOTAOM", motEndTime, true);
 
         p.AddEdge("v00MOTAOM", molassesStartTime, false);
-        p.AddEdge("v00MOTAOM", molassesEndTime, true);
+        p.AddEdge("v00MOTAOM", blueMOTHoldEndTime, true);
 
         p.AddEdge("v00MOTAOM", imageTime, false);
 
@@ -134,10 +143,12 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v00Sidebands", motEndTime, true);
 
         p.AddEdge("v00Sidebands", molassesEndTime, false);
+        //p.AddEdge("v00Sidebands", imageTime, false);
 
         //p.Pulse(0, motLoadTime - 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(0, molassesStartTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, blueMOTHoldEndTime - 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(0, 12000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
@@ -160,7 +171,9 @@ public class Patterns : MOTMasterScript
         int motEndTime = motRampEndTime + (int)Parameters["MOTHoldTime"];
         int molassesStartTime = motEndTime + (int)Parameters["FrequencySettleTime"];
         int molassesEndTime = molassesStartTime + (int)Parameters["MolassesDuration"];
-        int imageTime = molassesEndTime + (int)Parameters["FreeExpTime"];
+        int blueMOTRampEndTime = molassesEndTime + (int)Parameters["BlueMOTRampDuration"];
+        int blueMOTHoldEndTime = blueMOTRampEndTime + (int)Parameters["BlueMOTHoldDuration"];
+        int imageTime = blueMOTHoldEndTime + (int)Parameters["FreeExpTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
@@ -175,12 +188,18 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
         p.AddChannel("TCoolSidebandVCO");
+        p.AddChannel("v0AOMSidebandAmp");
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
         p.AddAnalogValue("TCoolSidebandVCO", 0, 5.1); //5.1V, 63.9MHz
-        //p.AddAnalogValue("TCoolSidebandVCO", 0, 4.5); //63.9MHz
+
+        p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
+        p.AddAnalogValue("v0AOMSidebandAmp", motEndTime, 10.0);
+        p.AddLinearRamp("v0AOMSidebandAmp", molassesEndTime, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["V00AOMSidebandBlueMOTAmplitude"]);
+        p.AddAnalogValue("v0AOMSidebandAmp", blueMOTHoldEndTime, (double)Parameters["V00AOMSidebandAmplitude"]);
+
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
@@ -188,9 +207,10 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", motEndTime, 0.0);
-        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1100, 0.0);
-
+        p.AddLinearRamp("MOTCoilsCurrent", molassesEndTime, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTCoilsCurrentValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", blueMOTHoldEndTime, 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 
 
         // Shim Fields
@@ -204,7 +224,8 @@ public class Patterns : MOTMasterScript
         // F=0
         //p.AddAnalogValue("v00EOMAmp", 0, 4.4); // 4.4
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["V00EOMsidebandRatio"]); //24/03/2023
-        p.AddAnalogValue("v00EOMAmp", motEndTime, (double)Parameters["v00EOMAmpBlueMOT"]); 
+        p.AddAnalogValue("v00EOMAmp", motEndTime, (double)Parameters["v00EOMAmpMolasses"]); 
+        p.AddLinearRamp("v00EOMAmp", molassesEndTime, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["v00EOMAmpBlueMOT"]);
         p.AddAnalogValue("v00EOMAmp", imageTime, (double)Parameters["V00EOMsidebandRatio"]);
 
         // v0 Intensity Ramp
@@ -217,6 +238,7 @@ public class Patterns : MOTMasterScript
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
         p.AddAnalogValue("v00Frequency", motEndTime, (double)Parameters["v0FrequencyStartValue"] - (double)Parameters["v0FrequencyMolassesJumpValue"]);
+        p.AddLinearRamp("v00Frequency", molassesEndTime, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["v0FrequencyStartValue"] - (double)Parameters["v0FrequencyBlueMOTJumpValue"]);
         p.AddAnalogValue("v00Frequency", imageTime, (double)Parameters["v0FrequencyStartValue"]);
 
         //v0 chirp

@@ -59,7 +59,7 @@ namespace DAQ.HAL
 
             
             string analogPatternBoardName2 = "analogPattern2";
-            string analogPatternBoardAddress2 = "/PXI1Slot7";//PXI-6723
+            string analogPatternBoardAddress2 = "/PXI1Slot7";//PXI-6738
             Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
             
 
@@ -182,6 +182,7 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
             AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
             AddAnalogOutputChannel("rb3DCoolingAttenuation", analogPatternBoardAddress + "/ao0");
+            AddAnalogOutputChannel("v0AOMSidebandAmp", analogPatternBoardAddress + "/ao2");
 
             //AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5"); //Highjacked for D1 attenuation 21/03/2023
             AddAnalogOutputChannel("rbD1CoolingAttenuation", analogPatternBoardAddress + "/ao5");
@@ -235,6 +236,19 @@ namespace DAQ.HAL
             Info.Add("flowConversionHe", 1.0); 
             AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
+
+            //Cavity combiner
+            AddAnalogOutputChannel("Rf1Freq", analogPatternBoardAddress2 + "/ao0");
+            AddAnalogOutputChannel("Rf2Freq", analogPatternBoardAddress2 + "/ao2");
+            AddAnalogOutputChannel("Rf3Freq", analogPatternBoardAddress2 + "/ao4");
+            AddAnalogOutputChannel("Rf4Freq", analogPatternBoardAddress2 + "/ao6");
+            AddAnalogOutputChannel("FeedforwardS", analogPatternBoardAddress2 + "/ao8");
+            AddAnalogOutputChannel("FeedforwardF", analogPatternBoardAddress2 + "/ao10");
+
+            AddAnalogOutputChannel("Rf1Amp", analogPatternBoardAddress2 + "/ao17");
+            AddAnalogOutputChannel("Rf2Amp", analogPatternBoardAddress2 + "/ao19");
+            AddAnalogOutputChannel("Rf3Amp", analogPatternBoardAddress2 + "/ao21");
+            AddAnalogOutputChannel("Rf4Amp", analogPatternBoardAddress2 + "/ao23");
 
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
@@ -363,7 +377,7 @@ namespace DAQ.HAL
 
             Info.Add("AOPatternTrigger", analogPatternBoardAddress + "/PFI4"); //PFI6
             Info.Add("AOClockLine", analogPatternBoardAddress + "/PFI6"); //PFI6
-            Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI6");
+            Info.Add("SecondAOPatternTrigger", analogPatternBoardAddress2 + "/PFI4");
             Info.Add("SecondAOClockLine", analogPatternBoardAddress2 + "/PFI3");
 
             /*

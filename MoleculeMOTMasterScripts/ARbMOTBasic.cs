@@ -128,8 +128,8 @@ public class Patterns : MOTMasterScript
         Parameters["CoolingAttenuation"] = 0.0;
         Parameters["RepumpAttenuation"] = 0.0;
         //Parameters["RbOffsetLockSetPoint"] = 0.925;//1.23;// 0.87;
-        Parameters["RbOffsetLockSetPoint"] = 0.88;
-        Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
+        Parameters["RbOffsetLockSetPoint"] = 3.20;
+        Parameters["RbRepumpOffsetLockSetPoint"] = 1.80;
 
     }
 

@@ -41,7 +41,7 @@ public class Patterns : MOTMasterScript
         Parameters["PushEnd"] = 400;
         Parameters["slowingAOMOnDuration"] = 45000;
 
-        Parameters["slowingAOMOffStart"] = 1750;//started from 1520
+        Parameters["slowingAOMOffStart"] = 1800;//started from 1520
         //Parameters["slowingAOMOffStart"] = 1600;
         //Parameters["slowingAOMOffStart"] = 1000;
         Parameters["slowingAOMOffDuration"] = 60000;
@@ -49,7 +49,7 @@ public class Patterns : MOTMasterScript
 
         
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = 1750;// 1760;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1800;// 1760;//1520
         //Parameters["slowingRepumpAOMOffStart"] = 1600;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 60000;
 
@@ -58,11 +58,11 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
         //Parameters["SlowingChirpStartTime"] = 400;
         //Parameters["SlowingChirpStartTime"] = 100;
-        Parameters["SlowingChirpDuration"] = 1350;////1400;//1160; //1160
+        Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
         //Parameters["SlowingChirpDuration"] = 1200;
         //Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.2;//-1.25; //-1.25 //225MHz/V 120m/s/V
+        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -91,11 +91,11 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityMolassesValue"] = 5.6;
         Parameters["v0IntensityRampBackTime"] = 20000;
 
-        Parameters["V00EOMsidebandRatio"] = 5.0;
+        Parameters["V00EOMsidebandRatio"] = 5.5;
 
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 10.0; //9.0
+        Parameters["v0FrequencyStartValue"] = 7.0; //9.0
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;

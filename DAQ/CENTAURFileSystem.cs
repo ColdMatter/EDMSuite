@@ -10,7 +10,7 @@ namespace DAQ.Environment
         public CENTAURFileSystem()
         {
             Paths.Add("settingsPath", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\");
-            Paths.Add("scanMasterDataPath", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Data\\");
+            Paths.Add("scanMasterDataPath", "C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\");
             Paths.Add("fakeData", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Examples\\");
             Paths.Add("UntriggeredCameraAttributesPath", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\CameraAttributes\\SHCCameraAttributes.txt");
             Paths.Add("CameraAttributesPath", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\CameraAttributes\\MOTMasterCameraAttributes.txt");
@@ -21,7 +21,7 @@ namespace DAQ.Environment
             DataSearchPaths.Add(Paths["edmDataPath"]);
 
 
-            SortDataByDate = false;
+            SortDataByDate = true;
         }
     }
 }

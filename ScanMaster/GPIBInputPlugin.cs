@@ -12,6 +12,7 @@ namespace ScanMaster.Acquire.Plugin
 	/// </summary>
 	[Serializable]
 	[
+	XmlInclude(typeof(DMMInputPlugin)),
     XmlInclude(typeof(SingleCounterInputPlugin)),
     XmlInclude(typeof(NullGPIBInputPlugin)),
 #if DECELERATOR

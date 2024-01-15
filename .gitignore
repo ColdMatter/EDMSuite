@@ -11,4 +11,3 @@ iamjoe.sh
 *.pyc
 *.pdb
 */.vscode
-*.csproj
