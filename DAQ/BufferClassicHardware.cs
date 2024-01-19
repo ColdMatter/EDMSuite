@@ -30,7 +30,7 @@ namespace DAQ.HAL
             string usbDAQ1 = (string)Boards["usbDAQ1"];
 
             //machine information
-            Info.Add("sourceToDetect", 1.3);
+            Info.Add("sourceToDetect", 3.5);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
             Info.Add("defaultGate", new double[] { 2190, 80 });

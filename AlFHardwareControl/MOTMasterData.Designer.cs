@@ -30,18 +30,23 @@ namespace AlFHardwareControl
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NormSource = new System.Windows.Forms.ComboBox();
+            this.Normalise = new System.Windows.Forms.CheckBox();
+            this.fixY = new System.Windows.Forms.CheckBox();
             this.fixX = new System.Windows.Forms.CheckBox();
             this.dataGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.fixY = new System.Windows.Forms.CheckBox();
+            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.NormSource);
+            this.groupBox1.Controls.Add(this.Normalise);
             this.groupBox1.Controls.Add(this.fixY);
             this.groupBox1.Controls.Add(this.fixX);
             this.groupBox1.Location = new System.Drawing.Point(4, 270);
@@ -49,7 +54,38 @@ namespace AlFHardwareControl
             this.groupBox1.Size = new System.Drawing.Size(589, 105);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Plot Settings";
+            this.groupBox1.Text = "Settings";
+            // 
+            // NormSource
+            // 
+            this.NormSource.FormattingEnabled = true;
+            this.NormSource.Location = new System.Drawing.Point(99, 63);
+            this.NormSource.Name = "NormSource";
+            this.NormSource.Size = new System.Drawing.Size(121, 21);
+            this.NormSource.TabIndex = 3;
+            this.NormSource.SelectedIndexChanged += new System.EventHandler(this.NormSource_SelectedIndexChanged);
+            // 
+            // Normalise
+            // 
+            this.Normalise.AutoSize = true;
+            this.Normalise.Location = new System.Drawing.Point(7, 67);
+            this.Normalise.Name = "Normalise";
+            this.Normalise.Size = new System.Drawing.Size(72, 17);
+            this.Normalise.TabIndex = 2;
+            this.Normalise.Text = "Normalise";
+            this.Normalise.UseVisualStyleBackColor = true;
+            this.Normalise.CheckedChanged += new System.EventHandler(this.Normalise_CheckedChanged);
+            // 
+            // fixY
+            // 
+            this.fixY.AutoSize = true;
+            this.fixY.Location = new System.Drawing.Point(7, 43);
+            this.fixY.Name = "fixY";
+            this.fixY.Size = new System.Drawing.Size(79, 17);
+            this.fixY.TabIndex = 1;
+            this.fixY.Text = "Fix Y range";
+            this.fixY.UseVisualStyleBackColor = true;
+            this.fixY.CheckedChanged += new System.EventHandler(this.fixY_CheckedChanged);
             // 
             // fixX
             // 
@@ -74,7 +110,8 @@ namespace AlFHardwareControl
             this.dataGraph.Location = new System.Drawing.Point(4, 4);
             this.dataGraph.Name = "dataGraph";
             this.dataGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1});
+            this.scatterPlot1,
+            this.scatterPlot2});
             this.dataGraph.Size = new System.Drawing.Size(589, 260);
             this.dataGraph.TabIndex = 2;
             this.dataGraph.UseColorGenerator = true;
@@ -94,16 +131,10 @@ namespace AlFHardwareControl
             // 
             this.xAxis1.Caption = "Time [ms]";
             // 
-            // fixY
+            // scatterPlot2
             // 
-            this.fixY.AutoSize = true;
-            this.fixY.Location = new System.Drawing.Point(7, 43);
-            this.fixY.Name = "fixY";
-            this.fixY.Size = new System.Drawing.Size(79, 17);
-            this.fixY.TabIndex = 1;
-            this.fixY.Text = "Fix Y range";
-            this.fixY.UseVisualStyleBackColor = true;
-            this.fixY.CheckedChanged += new System.EventHandler(this.fixY_CheckedChanged);
+            this.scatterPlot2.XAxis = this.xAxis1;
+            this.scatterPlot2.YAxis = this.yAxis1;
             // 
             // MOTMasterData
             // 
@@ -128,5 +159,8 @@ namespace AlFHardwareControl
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
         private System.Windows.Forms.CheckBox fixY;
+        private System.Windows.Forms.ComboBox NormSource;
+        private System.Windows.Forms.CheckBox Normalise;
+        private NationalInstruments.UI.ScatterPlot scatterPlot2;
     }
 }

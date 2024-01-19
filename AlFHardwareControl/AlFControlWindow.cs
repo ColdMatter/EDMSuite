@@ -433,17 +433,22 @@ namespace AlFHardwareControl
 
         private void AddBake()
         {
-            bakeTask = new Task("bakeTask");
-            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
-            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
-            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
-            bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+            try
+            {
+                bakeTask = new Task("bakeTask");
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
 
-            bakeTask.Timing.ConfigureSampleClock("",2,SampleClockActiveEdge.Rising,SampleQuantityMode.FiniteSamples);
-            bakeTask.Timing.SamplesPerChannel = 2;
+                bakeTask.Timing.ConfigureSampleClock("", 2, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples);
+                bakeTask.Timing.SamplesPerChannel = 2;
 
-            bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
-
+                bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
+            } catch (NationalInstruments.DAQmx.DaqException)
+            {
+                
+            }
             TabPage pressure = new TabPage("Baking temperature");
             DataGrapher pressureGrapher = new DataGrapher("Temperature", "Temperature [C]", (DataGrapher grapher) =>
             {
@@ -451,6 +456,19 @@ namespace AlFHardwareControl
                 DateTime localDate = DateTime.Now;
                 try
                 {
+                    if (bakeReader == null)
+                    {
+                        bakeTask = new Task("bakeTask");
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+
+                        bakeTask.Timing.ConfigureSampleClock("", 2, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples);
+                        bakeTask.Timing.SamplesPerChannel = 2;
+
+                        bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
+                    }
                     double[] res = bakeReader.ReadSingleSample();
 
                     grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Dispenser"].Points.AddXY(localDate, res[0]); });
@@ -460,7 +478,7 @@ namespace AlFHardwareControl
                 }
                 catch (NationalInstruments.DAQmx.DaqException)
                 {
-                    grapher.takeData.Checked = false;
+                    grapher.Invoke((System.Action)(()=> { grapher.takeData.Checked = false; }));
                 }
 
             });

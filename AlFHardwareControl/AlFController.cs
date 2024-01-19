@@ -65,6 +65,7 @@ namespace AlFHardwareControl
             Application.Run(window);
         }
 
+
         #region Resource related functions
         public string nameA;
         public string nameB;

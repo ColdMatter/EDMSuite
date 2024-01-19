@@ -321,7 +321,7 @@ namespace AlFHardwareControl
         {
             UpdateRenderedObject(macroGroupBox, (Control c) => { c.Enabled = false; });
             MacroEditor mEditor = new MacroEditor(macroCollection,this);
-            (new Thread(new ThreadStart(() => { Application.Run(mEditor); }))).Start();
+            mEditor.ShowDialog();
         }
 
         private void runMacro_Click(object sender, EventArgs e)

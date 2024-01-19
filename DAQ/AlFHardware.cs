@@ -34,7 +34,7 @@ namespace DAQ.HAL
 
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
-            analogBoards.Add("AO", (string)Boards["pg"]);
+            //analogBoards.Add("AO", (string)Boards["pg"]);
             Info.Add("AnalogBoards", analogBoards);
 
 
@@ -87,9 +87,9 @@ namespace DAQ.HAL
 
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
-            MMAI.Add("PD");
+            MMAI.Add("UV_I");
             Info.Add("MMAnalogInputs", MMAI);
-            Info.Add("MMAITrigger", (string)Boards["pg"] + "/do/StartTrigger");
+            Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
 
             //WavemeterLockConfig
@@ -120,7 +120,8 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 7);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
-            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
             wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
