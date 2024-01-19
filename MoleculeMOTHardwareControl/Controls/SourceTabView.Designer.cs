@@ -66,6 +66,13 @@
             this.holdButton = new System.Windows.Forms.Button();
             this.cycleLimit = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.checkAbsAutoScale = new System.Windows.Forms.CheckBox();
+            this.checkNormScale = new System.Windows.Forms.CheckBox();
+            this.absGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.xAxis2 = new NationalInstruments.UI.XAxis();
+            this.yAxis2 = new NationalInstruments.UI.YAxis();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.targetRotateCCW = new System.Windows.Forms.Button();
@@ -148,6 +155,8 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).BeginInit();
             this.tableLayoutPanel6.SuspendLayout();
+            this.groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.absGraph)).BeginInit();
             this.groupBox8.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -184,7 +193,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 0F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(665, 652);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(665, 783);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -205,7 +214,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 1.412974F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.87877F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 0F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(207, 646);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(207, 777);
             this.tableLayoutPanel2.TabIndex = 1;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
@@ -231,9 +240,9 @@
             this.groupBox2.Controls.Add(this.chkLog);
             this.groupBox2.Controls.Add(this.txtSourceTemp2);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(3, 331);
+            this.groupBox2.Location = new System.Drawing.Point(3, 398);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(201, 309);
+            this.groupBox2.Size = new System.Drawing.Size(201, 373);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Source Parameters";
@@ -331,7 +340,7 @@
             // readButton
             // 
             this.readButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.readButton.Location = new System.Drawing.Point(56, 15);
+            this.readButton.Location = new System.Drawing.Point(56, 12);
             this.readButton.Name = "readButton";
             this.readButton.Size = new System.Drawing.Size(99, 34);
             this.readButton.TabIndex = 3;
@@ -415,9 +424,9 @@
             // 
             this.cryoGroup.Controls.Add(this.tableLayoutPanel4);
             this.cryoGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cryoGroup.Location = new System.Drawing.Point(3, 99);
+            this.cryoGroup.Location = new System.Drawing.Point(3, 119);
             this.cryoGroup.Name = "cryoGroup";
-            this.cryoGroup.Size = new System.Drawing.Size(201, 90);
+            this.cryoGroup.Size = new System.Drawing.Size(201, 110);
             this.cryoGroup.TabIndex = 1;
             this.cryoGroup.TabStop = false;
             this.cryoGroup.Text = "Cryo-cooler";
@@ -434,14 +443,14 @@
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(195, 71);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(195, 91);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
             // cryoSwitch
             // 
             this.cryoSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoSwitch.Enabled = false;
-            this.cryoSwitch.Location = new System.Drawing.Point(68, 38);
+            this.cryoSwitch.Location = new System.Drawing.Point(68, 53);
             this.cryoSwitch.Name = "cryoSwitch";
             this.cryoSwitch.Size = new System.Drawing.Size(59, 30);
             this.cryoSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
@@ -452,7 +461,7 @@
             // 
             this.cryoLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cryoLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.cryoLED.Location = new System.Drawing.Point(73, 3);
+            this.cryoLED.Location = new System.Drawing.Point(73, 8);
             this.cryoLED.Name = "cryoLED";
             this.cryoLED.Size = new System.Drawing.Size(49, 29);
             this.cryoLED.TabIndex = 1;
@@ -463,7 +472,7 @@
             this.heaterGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heaterGroup.Location = new System.Drawing.Point(3, 3);
             this.heaterGroup.Name = "heaterGroup";
-            this.heaterGroup.Size = new System.Drawing.Size(201, 90);
+            this.heaterGroup.Size = new System.Drawing.Size(201, 110);
             this.heaterGroup.TabIndex = 0;
             this.heaterGroup.TabStop = false;
             this.heaterGroup.Text = "4K Heater";
@@ -485,7 +494,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.93877F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.06123F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(195, 71);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(195, 91);
             this.tableLayoutPanel3.TabIndex = 0;
             this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
@@ -493,7 +502,7 @@
             // 
             this.heaterSwitch.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterSwitch.Enabled = false;
-            this.heaterSwitch.Location = new System.Drawing.Point(19, 36);
+            this.heaterSwitch.Location = new System.Drawing.Point(19, 50);
             this.heaterSwitch.Name = "heaterSwitch";
             this.heaterSwitch.Size = new System.Drawing.Size(59, 32);
             this.heaterSwitch.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
@@ -504,7 +513,7 @@
             // 
             this.heaterLED.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.heaterLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.heaterLED.Location = new System.Drawing.Point(24, 3);
+            this.heaterLED.Location = new System.Drawing.Point(24, 7);
             this.heaterLED.Name = "heaterLED";
             this.heaterLED.Size = new System.Drawing.Size(49, 27);
             this.heaterLED.TabIndex = 1;
@@ -517,7 +526,7 @@
             0,
             0,
             0});
-            this.cycleHoldTime.Location = new System.Drawing.Point(100, 42);
+            this.cycleHoldTime.Location = new System.Drawing.Point(100, 56);
             this.cycleHoldTime.Maximum = new decimal(new int[] {
             6000,
             0,
@@ -541,7 +550,7 @@
             this.label21.Location = new System.Drawing.Point(100, 3);
             this.label21.Margin = new System.Windows.Forms.Padding(3);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(92, 27);
+            this.label21.Size = new System.Drawing.Size(92, 36);
             this.label21.TabIndex = 5;
             this.label21.Text = "Hold Time (min)";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -552,12 +561,12 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 195);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 235);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93.16239F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.837607F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(201, 121);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(201, 147);
             this.tableLayoutPanel5.TabIndex = 2;
             // 
             // groupBox1
@@ -568,7 +577,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(195, 106);
+            this.groupBox1.Size = new System.Drawing.Size(195, 130);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "4K Stage Cycle Max Temp (°C)";
@@ -577,7 +586,7 @@
             // 
             this.cycleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cycleButton.Enabled = false;
-            this.cycleButton.Location = new System.Drawing.Point(29, 54);
+            this.cycleButton.Location = new System.Drawing.Point(29, 66);
             this.cycleButton.Name = "cycleButton";
             this.cycleButton.Size = new System.Drawing.Size(61, 40);
             this.cycleButton.TabIndex = 2;
@@ -589,7 +598,7 @@
             // 
             this.holdButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.holdButton.Enabled = false;
-            this.holdButton.Location = new System.Drawing.Point(110, 54);
+            this.holdButton.Location = new System.Drawing.Point(110, 66);
             this.holdButton.Name = "holdButton";
             this.holdButton.Size = new System.Drawing.Size(61, 40);
             this.holdButton.TabIndex = 3;
@@ -600,7 +609,7 @@
             // cycleLimit
             // 
             this.cycleLimit.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleLimit.Location = new System.Drawing.Point(41, 27);
+            this.cycleLimit.Location = new System.Drawing.Point(41, 39);
             this.cycleLimit.Minimum = new decimal(new int[] {
             273,
             0,
@@ -618,27 +627,100 @@
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.Controls.Add(this.groupBox8, 0, 3);
-            this.tableLayoutPanel6.Controls.Add(this.groupBox5, 0, 2);
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.Controls.Add(this.groupBox10, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.groupBox8, 0, 4);
+            this.tableLayoutPanel6.Controls.Add(this.groupBox5, 0, 3);
             this.tableLayoutPanel6.Controls.Add(this.groupBox3, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.groupBox4, 0, 1);
+            this.tableLayoutPanel6.Controls.Add(this.groupBox4, 0, 2);
             this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 4;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 59.63489F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.36511F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(446, 646);
+            this.tableLayoutPanel6.RowCount = 5;
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 37.41935F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.67742F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.48387F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.806452F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.483871F));
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(446, 775);
             this.tableLayoutPanel6.TabIndex = 3;
+            this.tableLayoutPanel6.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel6_Paint);
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.checkAbsAutoScale);
+            this.groupBox10.Controls.Add(this.checkNormScale);
+            this.groupBox10.Controls.Add(this.absGraph);
+            this.groupBox10.Location = new System.Drawing.Point(3, 293);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(440, 186);
+            this.groupBox10.TabIndex = 9;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Source absorption";
+            // 
+            // checkAbsAutoScale
+            // 
+            this.checkAbsAutoScale.AutoSize = true;
+            this.checkAbsAutoScale.Location = new System.Drawing.Point(362, 58);
+            this.checkAbsAutoScale.Name = "checkAbsAutoScale";
+            this.checkAbsAutoScale.Size = new System.Drawing.Size(78, 17);
+            this.checkAbsAutoScale.TabIndex = 9;
+            this.checkAbsAutoScale.Text = "Auto Scale";
+            this.checkAbsAutoScale.UseVisualStyleBackColor = true;
+            this.checkAbsAutoScale.CheckedChanged += new System.EventHandler(this.checkAbsAutoScale_CheckedChanged);
+            // 
+            // checkNormScale
+            // 
+            this.checkNormScale.AutoSize = true;
+            this.checkNormScale.Location = new System.Drawing.Point(362, 34);
+            this.checkNormScale.Name = "checkNormScale";
+            this.checkNormScale.Size = new System.Drawing.Size(72, 17);
+            this.checkNormScale.TabIndex = 7;
+            this.checkNormScale.Text = "Normalize";
+            this.checkNormScale.UseVisualStyleBackColor = true;
+            this.checkNormScale.CheckedChanged += new System.EventHandler(this.checkNormScale_CheckedChanged);
+            // 
+            // absGraph
+            // 
+            this.absGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.absGraph.Location = new System.Drawing.Point(6, 19);
+            this.absGraph.Name = "absGraph";
+            this.absGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.scatterPlot2});
+            this.absGraph.Size = new System.Drawing.Size(347, 161);
+            this.absGraph.TabIndex = 0;
+            this.absGraph.UseColorGenerator = true;
+            this.absGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis2});
+            this.absGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.yAxis2});
+            // 
+            // scatterPlot2
+            // 
+            this.scatterPlot2.XAxis = this.xAxis2;
+            this.scatterPlot2.YAxis = this.yAxis2;
+            // 
+            // xAxis2
+            // 
+            this.xAxis2.Caption = "Time (ms)";
+            // 
+            // yAxis2
+            // 
+            this.yAxis2.Caption = "Voltage (V)";
+            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 1D);
             // 
             // groupBox8
             // 
             this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox8.Controls.Add(this.tableLayoutPanel9);
-            this.groupBox8.Location = new System.Drawing.Point(3, 594);
+            this.groupBox8.Location = new System.Drawing.Point(3, 719);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(440, 49);
             this.groupBox8.TabIndex = 7;
@@ -721,9 +803,9 @@
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.tableLayoutPanel7);
-            this.groupBox5.Location = new System.Drawing.Point(3, 494);
+            this.groupBox5.Location = new System.Drawing.Point(3, 643);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(440, 91);
+            this.groupBox5.Size = new System.Drawing.Size(440, 70);
             this.groupBox5.TabIndex = 6;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "40K Heater                               40K Stage Cycle Max Temp (°C)";
@@ -743,15 +825,15 @@
             this.tableLayoutPanel7.RowCount = 2;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.93877F));
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.06123F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(434, 72);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(434, 51);
             this.tableLayoutPanel7.TabIndex = 0;
             // 
             // holdButton40K
             // 
             this.holdButton40K.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.holdButton40K.Location = new System.Drawing.Point(245, 39);
+            this.holdButton40K.Location = new System.Drawing.Point(245, 26);
             this.holdButton40K.Name = "holdButton40K";
-            this.holdButton40K.Size = new System.Drawing.Size(120, 27);
+            this.holdButton40K.Size = new System.Drawing.Size(120, 22);
             this.holdButton40K.TabIndex = 4;
             this.holdButton40K.Text = "Heat and Hold";
             this.holdButton40K.UseVisualStyleBackColor = true;
@@ -760,9 +842,9 @@
             // heaterSwitch40K
             // 
             this.heaterSwitch40K.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.heaterSwitch40K.Location = new System.Drawing.Point(59, 36);
+            this.heaterSwitch40K.Location = new System.Drawing.Point(59, 26);
             this.heaterSwitch40K.Name = "heaterSwitch40K";
-            this.heaterSwitch40K.Size = new System.Drawing.Size(59, 33);
+            this.heaterSwitch40K.Size = new System.Drawing.Size(59, 22);
             this.heaterSwitch40K.SwitchStyle = NationalInstruments.UI.SwitchStyle.VerticalToggle3D;
             this.heaterSwitch40K.TabIndex = 0;
             this.heaterSwitch40K.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.toggleHeater40K);
@@ -773,13 +855,13 @@
             this.heaterLED40K.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
             this.heaterLED40K.Location = new System.Drawing.Point(64, 3);
             this.heaterLED40K.Name = "heaterLED40K";
-            this.heaterLED40K.Size = new System.Drawing.Size(49, 27);
+            this.heaterLED40K.Size = new System.Drawing.Size(49, 17);
             this.heaterLED40K.TabIndex = 1;
             // 
             // cycleLimit40K
             // 
             this.cycleLimit40K.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cycleLimit40K.Location = new System.Drawing.Point(245, 6);
+            this.cycleLimit40K.Location = new System.Drawing.Point(245, 3);
             this.cycleLimit40K.Minimum = new decimal(new int[] {
             100,
             0,
@@ -806,7 +888,7 @@
             this.groupBox3.Controls.Add(this.chkSaveTrace);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(440, 287);
+            this.groupBox3.Size = new System.Drawing.Size(440, 284);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "PMT - Time of flight";
@@ -867,10 +949,7 @@
             "40000",
             "60000",
             "80000",
-            "100000",
-            "150000",
-            "200000",
-            "250000"});
+            "100000"});
             this.cmbSamplingRate.Location = new System.Drawing.Point(292, 259);
             this.cmbSamplingRate.Name = "cmbSamplingRate";
             this.cmbSamplingRate.Size = new System.Drawing.Size(72, 21);
@@ -956,9 +1035,9 @@
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.lblsf6flow);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(3, 296);
+            this.groupBox4.Location = new System.Drawing.Point(3, 492);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(440, 191);
+            this.groupBox4.Size = new System.Drawing.Size(440, 141);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Flow Controllers";
@@ -966,7 +1045,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 171);
+            this.label14.Location = new System.Drawing.Point(280, 123);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(73, 13);
             this.label14.TabIndex = 19;
@@ -974,7 +1053,7 @@
             // 
             // numFlowTimeout
             // 
-            this.numFlowTimeout.Location = new System.Drawing.Point(89, 169);
+            this.numFlowTimeout.Location = new System.Drawing.Point(359, 121);
             this.numFlowTimeout.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -998,7 +1077,7 @@
             // chkAutoValveControl
             // 
             this.chkAutoValveControl.AutoSize = true;
-            this.chkAutoValveControl.Location = new System.Drawing.Point(160, 148);
+            this.chkAutoValveControl.Location = new System.Drawing.Point(135, 122);
             this.chkAutoValveControl.Name = "chkAutoValveControl";
             this.chkAutoValveControl.Size = new System.Drawing.Size(139, 17);
             this.chkAutoValveControl.TabIndex = 17;
@@ -1008,7 +1087,7 @@
             // chkHeValve
             // 
             this.chkHeValve.AutoSize = true;
-            this.chkHeValve.Location = new System.Drawing.Point(321, 112);
+            this.chkHeValve.Location = new System.Drawing.Point(321, 96);
             this.chkHeValve.Name = "chkHeValve";
             this.chkHeValve.Size = new System.Drawing.Size(82, 17);
             this.chkHeValve.TabIndex = 16;
@@ -1019,7 +1098,7 @@
             // chkSF6Valve
             // 
             this.chkSF6Valve.AutoSize = true;
-            this.chkSF6Valve.Location = new System.Drawing.Point(83, 111);
+            this.chkSF6Valve.Location = new System.Drawing.Point(83, 95);
             this.chkSF6Valve.Name = "chkSF6Valve";
             this.chkSF6Valve.Size = new System.Drawing.Size(82, 17);
             this.chkSF6Valve.TabIndex = 15;
@@ -1030,7 +1109,7 @@
             // chkAutoFlowControl
             // 
             this.chkAutoFlowControl.AutoSize = true;
-            this.chkAutoFlowControl.Location = new System.Drawing.Point(10, 148);
+            this.chkAutoFlowControl.Location = new System.Drawing.Point(6, 122);
             this.chkAutoFlowControl.Name = "chkAutoFlowControl";
             this.chkAutoFlowControl.Size = new System.Drawing.Size(134, 17);
             this.chkAutoFlowControl.TabIndex = 14;
@@ -1040,7 +1119,7 @@
             // chkAO1Enable
             // 
             this.chkAO1Enable.AutoSize = true;
-            this.chkAO1Enable.Location = new System.Drawing.Point(248, 112);
+            this.chkAO1Enable.Location = new System.Drawing.Point(248, 96);
             this.chkAO1Enable.Name = "chkAO1Enable";
             this.chkAO1Enable.Size = new System.Drawing.Size(67, 17);
             this.chkAO1Enable.TabIndex = 13;
@@ -1051,7 +1130,7 @@
             // chkAO0Enable
             // 
             this.chkAO0Enable.AutoSize = true;
-            this.chkAO0Enable.Location = new System.Drawing.Point(10, 111);
+            this.chkAO0Enable.Location = new System.Drawing.Point(10, 95);
             this.chkAO0Enable.Name = "chkAO0Enable";
             this.chkAO0Enable.Size = new System.Drawing.Size(67, 17);
             this.chkAO0Enable.TabIndex = 12;
@@ -1062,7 +1141,7 @@
             // lblAO1
             // 
             this.lblAO1.AutoSize = true;
-            this.lblAO1.Location = new System.Drawing.Point(335, 87);
+            this.lblAO1.Location = new System.Drawing.Point(335, 71);
             this.lblAO1.Name = "lblAO1";
             this.lblAO1.Size = new System.Drawing.Size(50, 13);
             this.lblAO1.TabIndex = 11;
@@ -1071,7 +1150,7 @@
             // lblAO0
             // 
             this.lblAO0.AutoSize = true;
-            this.lblAO0.Location = new System.Drawing.Point(94, 88);
+            this.lblAO0.Location = new System.Drawing.Point(94, 72);
             this.lblAO0.Name = "lblAO0";
             this.lblAO0.Size = new System.Drawing.Size(53, 13);
             this.lblAO0.TabIndex = 10;
@@ -1085,7 +1164,7 @@
             0,
             0,
             131072});
-            this.numAO1.Location = new System.Drawing.Point(248, 84);
+            this.numAO1.Location = new System.Drawing.Point(248, 68);
             this.numAO1.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1104,7 +1183,7 @@
             0,
             0,
             131072});
-            this.numAO0.Location = new System.Drawing.Point(10, 84);
+            this.numAO0.Location = new System.Drawing.Point(10, 68);
             this.numAO0.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1118,7 +1197,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(245, 67);
+            this.label10.Location = new System.Drawing.Point(245, 51);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(128, 13);
             this.label10.TabIndex = 7;
@@ -1127,7 +1206,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(7, 67);
+            this.label9.Location = new System.Drawing.Point(7, 51);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(133, 13);
             this.label9.TabIndex = 6;
@@ -1174,9 +1253,9 @@
             this.groupBox6.Controls.Add(this.yag_connect);
             this.groupBox6.Controls.Add(this.groupBox7);
             this.groupBox6.Controls.Add(this.tableLayoutPanel8);
-            this.groupBox6.Location = new System.Drawing.Point(3, 710);
+            this.groupBox6.Location = new System.Drawing.Point(13, 881);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(665, 110);
+            this.groupBox6.Size = new System.Drawing.Size(665, 107);
             this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "YAG Motorized Mirror Control";
@@ -1414,7 +1493,7 @@
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox9.Controls.Add(this.tableLayoutPanel10);
-            this.groupBox9.Location = new System.Drawing.Point(9, 658);
+            this.groupBox9.Location = new System.Drawing.Point(16, 826);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(656, 49);
             this.groupBox9.TabIndex = 7;
@@ -1497,7 +1576,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.groupBox6);
             this.Name = "SourceTabView";
-            this.Size = new System.Drawing.Size(705, 827);
+            this.Size = new System.Drawing.Size(705, 1000);
             this.Load += new System.EventHandler(this.SourceTabView_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -1517,6 +1596,9 @@
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.cycleLimit)).EndInit();
             this.tableLayoutPanel6.ResumeLayout(false);
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.absGraph)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.tableLayoutPanel9.ResumeLayout(false);
             this.tableLayoutPanel9.PerformLayout();
@@ -1654,5 +1736,12 @@
         private System.Windows.Forms.Button holdButtonSF6;
         private System.Windows.Forms.NumericUpDown cycleHoldTime;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.CheckBox checkNormScale;
+        private NationalInstruments.UI.WindowsForms.ScatterGraph absGraph;
+        private NationalInstruments.UI.ScatterPlot scatterPlot2;
+        private NationalInstruments.UI.XAxis xAxis2;
+        private NationalInstruments.UI.YAxis yAxis2;
+        private System.Windows.Forms.CheckBox checkAbsAutoScale;
     }
 }
