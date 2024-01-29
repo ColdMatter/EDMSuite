@@ -29,8 +29,16 @@ namespace AlFHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
+            this.ShutterControl = new AlFHardwareControl.Shutter_Control();
             this.YAG_Control = new AlFHardwareControl.YAG_Control();
             this.SuspendLayout();
+            // 
+            // ShutterControl
+            // 
+            this.ShutterControl.Location = new System.Drawing.Point(228, 0);
+            this.ShutterControl.Name = "ShutterControl";
+            this.ShutterControl.Size = new System.Drawing.Size(222, 411);
+            this.ShutterControl.TabIndex = 1;
             // 
             // YAG_Control
             // 
@@ -43,6 +51,7 @@ namespace AlFHardwareControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ShutterControl);
             this.Controls.Add(this.YAG_Control);
             this.Name = "MiscInstruments";
             this.Size = new System.Drawing.Size(1180, 411);
@@ -53,5 +62,6 @@ namespace AlFHardwareControl
         #endregion
 
         public YAG_Control YAG_Control;
+        public Shutter_Control ShutterControl;
     }
 }

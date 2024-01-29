@@ -58,9 +58,10 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("flash", (string)Boards["pg"], 0, 0);
-            AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);//Pin 
+            AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);// Loop back to PFI0
             AddDigitalOutputChannel("valve", (string)Boards["pg"], 0, 2);
             AddDigitalOutputChannel("detector", (string)Boards["pg"], 0, 3);
+            AddDigitalOutputChannel("VECSEL2_Shutter", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("discharge", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("valve2", (string)Boards["pg"], 0, 5);
             //AddDigitalOutputChannel("ttlSwitch", (string)Boards["pg"], 0, 4);
@@ -88,9 +89,16 @@ namespace DAQ.HAL
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
             MMAI.Add("UV_I");
+            MMAI.Add("PD");
             Info.Add("MMAnalogInputs", MMAI);
             Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
+
+            // Shutters
+            // Name of shutter, Name of shutter channel, invert
+            List<Tuple<string, string, bool>> shutters = new List<Tuple<string, string, bool>>();
+            shutters.Add(new Tuple<string, string, bool>("VECSEL2", "VECSEL2_Shutter", true ));
+            Info.Add("Shutters", shutters);
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");

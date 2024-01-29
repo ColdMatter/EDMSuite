@@ -576,7 +576,7 @@ namespace AlFHardwareControl
                 {
                     currentPluginSettings[kv.Key] = Convert.ChangeType(kv.Value, currentPluginSettings[kv.Key].GetType());
                 }
-                catch(InvalidCastException e)
+                catch(Exception e) when (e is System.FormatException || e is InvalidCastException)
                 {
 
                 }

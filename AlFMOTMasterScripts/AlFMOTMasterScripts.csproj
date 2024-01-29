@@ -36,6 +36,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DispenserLoading_Delayed.cs" />
+    <Compile Include="OpenVECSEL2Shutter.cs" />
+    <Compile Include="DispenserLoading.cs" />
     <Compile Include="EmptyPattern.cs" />
     <Compile Include="BasicYAGFire.cs" />
   </ItemGroup>
