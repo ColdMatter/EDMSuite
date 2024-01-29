@@ -581,6 +581,15 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|AnyCPU'">
+    <OutputPath>bin\CaFBEC\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|x86'">
+    <OutputPath>bin\x86\CaFBEC\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CaFBEC|x64'">
+    <OutputPath>bin\x64\CaFBEC\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
@@ -592,8 +601,22 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
     <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+=======
+<<<<<<< Updated upstream
+    <Reference Include="NationalInstruments.DAQmx, Version=19.6.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.Visa, Version=19.0.0.49152, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL" />
+=======
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+>>>>>>> Stashed changes
+>>>>>>> 58fba5d0c5d0a1fd8d5e4c34f1212096e266b511
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
