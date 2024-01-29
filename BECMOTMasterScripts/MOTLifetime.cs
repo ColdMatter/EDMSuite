@@ -29,7 +29,7 @@ public class Patterns : MOTMasterScript
         double slowingMHzPerVolt = -1350.0;             // Azurlight BX laser 1V --> -1350 MHz
 
         // Requires modifications
-        Parameters["SlowingChirpMHzSpan"] =  220.0;     // 300.0 MHz is standard
+        Parameters["SlowingChirpMHzSpan"] = 220.0;     // 300.0 MHz is standard
         Parameters["SlowingDuration"] = 1000;
         Parameters["SlowingHoldTime"] = 250;
 
@@ -53,11 +53,6 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsOnValue"] = -0.4;   //0.4 for 1A
         Parameters["MOTCoilsOffValue"] = 0.0;
 
-
-        // VCO Parameters
-        Parameters["VCOFreqOutputValue"] = 4.0;
-        Parameters["VCOAmplitudeOutputValue"] = 0.3;
-
         // Switching control for iterative operations.
         // values higher than 5.0 leads to active state.
         Parameters["yagONorOFF"] = 10.0;
@@ -76,7 +71,7 @@ public class Patterns : MOTMasterScript
             (int)Parameters["BXChirpDuration"] + (int)Parameters["BXChirpStartTime"] + 20000,
             "blockTCL"
         );
-        
+
         p.Pulse(
             patternStartBeforeQ,
             -(int)Parameters["FlashToQ"],
@@ -88,7 +83,7 @@ public class Patterns : MOTMasterScript
         {
             p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "q");
         }
-        
+
         p.Pulse(
             patternStartBeforeQ,
             (int)Parameters["V00AOMONStartTime"],
@@ -111,13 +106,17 @@ public class Patterns : MOTMasterScript
             );
         }
 
-        p.Pulse(
-            patternStartBeforeQ,
-            (int)Parameters["CameraTriggerStart"],
-            (int)Parameters["CameraTriggerDuration"],
-            "cameraTrigger"
-        );
+        for(int i=0; i<(int)Parameters["NumberOfTriggers"]; i++)
+        {
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["CameraTriggerStart"],
+                (int)Parameters["CameraTriggerDuration"],
+                "cameraTrigger"
+            );
+        }
         
+
         return p;
     }
 
@@ -125,8 +124,7 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
         p.AddChannel("slowingChirp");
-        p.AddChannel("VCOFreqOutput");
-        p.AddChannel("VCOAmplitudeOutput");
+        p.AddChannel("slowingRepumpChirp");
         p.AddChannel("motCoils");
 
         p.AddLinearRamp(
@@ -150,17 +148,6 @@ public class Patterns : MOTMasterScript
             "motCoils",
             (int)Parameters["MOTCoilsStopTime"],
             (double)Parameters["MOTCoilsOffValue"]
-        );
-
-        p.AddAnalogValue(
-            "VCOFreqOutput",
-            0,
-            (double)Parameters["VCOFreqOutputValue"]
-        );
-        p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            0,
-            (double)Parameters["VCOAmplitudeOutputValue"]
         );
 
         return p;

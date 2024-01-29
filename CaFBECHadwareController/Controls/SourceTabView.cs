@@ -54,36 +54,6 @@ namespace CaFBECHadwareController.Controls
             return status;
         }
 
-        public void UpdateCurrentSourcePressure(string pressure)
-        {
-            
-        }
-
-        public void UpdateCurrentMOTPressure(string pressure)
-        {
-            
-        }
-
-        public void UpdateCurrentSourceTemperature(string temp)
-        {
-            
-        }
-
-        public void UpdateCurrentSourceTemperature40K(string temp)
-        {
-           
-        }
-
-        public void UpdateCurrentSourceTemperature2(string temp)
-        {
-            
-        }
-
-        public void UpdateCurrentSF6Temperature(string temp)
-        {
-            
-        }
-
         public void UpdateGraph(double time, double temp)
         {
             tempGraph.PlotXYAppend(time, temp);
@@ -156,40 +126,6 @@ namespace CaFBECHadwareController.Controls
             readButton.Text = state ? "Start Reading" : "Stop Reading";
         }
 
-        public void UpdateCycleButton(bool state)
-        {
-            
-        }
-
-        public void UpdateHoldButton(bool state)
-        {
-            
-        }
-
-        public void EnableControls(bool state)
-        {
-           
-        }
-
-        public void SetCryoState(bool state)
-        {
-           
-        }
-
-        public void SetHeaterState(bool state)
-        {
-            
-        }
-
-        #endregion
-
-        #region UI Query Handlers
-
-        public double GetCycleLimit()
-        {
-            return 0.0;
-        }
-
         #endregion
 
         #region UI Event Handlers
@@ -203,63 +139,11 @@ namespace CaFBECHadwareController.Controls
         {
             castController.ToggleReading();
         }
-
-        private void toggleCycling(object sender, EventArgs e)
-        {
-            chkToF.Checked = false;
-            chkAutoFlowControl.Checked = false;
-            chkAO0Enable.Checked = false;
-            chkAO1Enable.Checked = false;
-            castController.ToggleCycling();
-        }
-
-        private void toggleHolding(object sender, EventArgs e)
-        {
-            chkToF.Checked = false;
-            chkAutoFlowControl.Checked = false;
-            chkAO0Enable.Checked = false;
-            chkAO1Enable.Checked = false;
-            castController.ToggleHolding();
-        }
-
-        private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)
-        {
-            
-        }
-
-        private void toggleCryo(object sender, NationalInstruments.UI.ActionEventArgs e)
-        {
-            
-        }
-
         #endregion
 
         private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
         {
 
-        }
-
-        private void numAO0_ValueChanged(object sender, EventArgs e)
-        {
-
-            double Vset = (double)numAO0.Value / sf6flowconversion;
-            castController.SetAnalogOutput(0, Vset);
-        }
-
-        private void numAO1_ValueChanged(object sender, EventArgs e)
-        {
-            double Vset = (double)numAO1.Value / heflowconversion;
-            castController.SetAnalogOutput(1, Vset);
-        }
-
-        private void chkAO0Enable_CheckedChanged(object sender, EventArgs e)
-        {
-            castController.SwitchOutputAOVoltage(0);
-        }
-
-        private void chkAO1Enable_CheckedChanged(object sender, EventArgs e)
-        {
-            castController.SwitchOutputAOVoltage(1);
         }
 
         private void chkToF_CheckedChanged(object sender, EventArgs e)
