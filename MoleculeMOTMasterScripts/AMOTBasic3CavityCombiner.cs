@@ -114,19 +114,29 @@ public class Patterns : MOTMasterScript
         */
 
         //- AOM order
-        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1-
+        
+        Parameters["SidebandFreq1"] = 252.00 / 2.0; //+ F = 1-
         Parameters["SidebandFreq2"] = 393.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq3"] = 318.50 / 2.0; //+ F = 0
-        Parameters["SidebandFreq4"] = 370.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq3"] = 322.50 / 2.0; //+ F = 0
+        Parameters["SidebandFreq4"] = 346.00 / 2.0; //+ F = 1+
+        
 
 
-
+        //Hannover scheme #11
         /*
-        Parameters["SidebandFreq1"] = 260.00 / 2.0;.
+        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1-
+        Parameters["SidebandFreq2"] = 382.00 / 2.0; //- F = 2
+        Parameters["SidebandFreq3"] = 321.00 / 2.0; //+ F = 0
+        Parameters["SidebandFreq4"] = 405.00 / 2.0; //+ F = 1+
+        */
+        /*
+        
+        Parameters["SidebandFreq1"] = 260.00 / 2.0;
         Parameters["SidebandFreq2"] = 292.00 / 2.0;
         Parameters["SidebandFreq3"] = 335.50 / 2.0;
         Parameters["SidebandFreq4"] = 401.90 / 2.0;
         */
+        
         //Sideband Amplitudes
 
         Parameters["SidebandAmp1"] = 6.0;

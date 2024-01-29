@@ -107,6 +107,11 @@ namespace MoleculeMOTHardwareControl.Controls
             tempGraph.PlotXY(x, y);
         }
 
+        public void UpdateAbsGraph(double[] x, double[] y)
+        {
+            absGraph.PlotXY(x, y);
+        }
+
         public bool ToFEnabled()
         {
             return chkToF.Checked;
@@ -400,6 +405,14 @@ namespace MoleculeMOTHardwareControl.Controls
                 tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
         }
 
+        private void checkAbsAutoScale_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkAbsAutoScale.Checked)
+                absGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.AutoScaleLoose;
+            else
+                absGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
+        }
+
         private void chkSF6Valve_CheckedChanged(object sender, EventArgs e)
         {
             castController.ToggleDigitalOutput(2, chkSF6Valve.Checked);
@@ -560,5 +573,14 @@ namespace MoleculeMOTHardwareControl.Controls
 
         }
 
+        private void tableLayoutPanel6_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void checkNormScale_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.toggleAbsNormalization(checkNormScale.Checked);
+        }
     }
 }
