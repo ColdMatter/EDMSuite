@@ -103,6 +103,8 @@ namespace DAQ.Environment
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();
                     Debug = false;
+                    wavemeterLockTCPChannel = 6666;
+                    serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
 
@@ -343,6 +345,8 @@ namespace DAQ.Environment
                     Hardware = new WMLServerHuxleyHardware();
                     FileSystem = new WMLServerHuxleyFileSystem();
                     Debug = false;
+                    serverTCPChannel = 1995;
+                    wavemeterLockTCPChannel = 6666;
                     break;
 
                 default:

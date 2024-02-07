@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
+using System.IO.Ports;
+
+
+
 namespace LatticeHardwareControl
 {
     public partial class Form1 : Form
@@ -65,17 +69,100 @@ namespace LatticeHardwareControl
 
         private void btSetNewHeliumFlowSetpoint_Click(object sender, EventArgs e)
         {
-            controller.SetHeliumFlowSetpoint();
+        
         }
 
         private void btStartFlowActMonitor_Click_1(object sender, EventArgs e)
         {
-            controller.StartFlowMonitorPoll();
+        
         }
 
         private void btStopFlowActMonitor_Click_1(object sender, EventArgs e)
         {
-            controller.StopFlowMonitorPoll();
+      
         }
+
+        private void buttonStartPMonitor_Click(object sender, EventArgs e)
+        {
+            controller.StartPTMonitorPoll();
+        }
+
+        private void buttonStopPMonitor_Click(object sender, EventArgs e)
+        {
+            controller.StopPTMonitorPoll();
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox10_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxSourcePressure_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_Flow_controller_connect_Click(object sender, EventArgs e)
+        {
+            controller.ConnectFlowControl();
+        }
+
+        private void button_Get_Serial_Ports_click(object sender, EventArgs e)
+        {
+            string[] ArrayComPortsNames = null;
+            int index = -1;
+            string ComPortName = null;
+
+            ArrayComPortsNames = SerialPort.GetPortNames();
+            do
+            {
+                index += 1;
+                richTextBox_output.Text += ArrayComPortsNames[index] + "\n";
+            }
+            while (!((ArrayComPortsNames[index] == ComPortName) ||
+                                (index == ArrayComPortsNames.GetUpperBound(0))));
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Flow_Controllers_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textbox_P_source_scroll_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_set_flow_He_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //private void button_Flow_controller_connect_Click_1(object sender, EventArgs e){}
     }
 }
