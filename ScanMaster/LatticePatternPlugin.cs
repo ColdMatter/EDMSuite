@@ -24,7 +24,7 @@ namespace ScanMaster.Acquire.Plugins
 	public class LatticePatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private BasicBeamPatternBuilder scanPatternBuilder;
+		private LatticePatternBuilder scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
@@ -36,7 +36,7 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void DoAcquisitionStarting()
 		{
-            scanPatternBuilder = new BasicBeamPatternBuilder();
+            scanPatternBuilder = new LatticePatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
