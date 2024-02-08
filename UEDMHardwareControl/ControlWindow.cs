@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+//using Newport.USBComm;//rhys removed 15/02
+//using NewFocus.Picomotor; //rhys removed 15/02
 
 namespace UEDMHardwareControl
 {
@@ -431,7 +433,14 @@ namespace UEDMHardwareControl
             controller.SavePlotImage(chart3);
         }
 
-
+        //Step mirrors initial parameters
+        static int initialposition1 = 0;
+        static int initialposition2 = 0;
+        static int initialposition3 = 0;
+        static int initialposition4 = 0;
+        //CmdLib8742 cmdLib = new CmdLib8742(); //rhys removed 15/02
+        //End-----------------------------------------------------
+        //--------------------------------------------------------
 
         // Pressure monitoring
         /// <summary>
@@ -1481,6 +1490,165 @@ namespace UEDMHardwareControl
         {
             controller.StartDegaussPoll();
             //controller.UpdateDegaussPulse();
+        }
+
+        private void scanningBUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBVoltage();
+        }
+
+        private void scanningBZeroButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBZero();
+        }
+
+        private void scanningBFSButton_Click(object sender, EventArgs e)
+        {
+            controller.SetScanningBFS();
+        }
+
+        private void labelCooldownModeInfoText_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_FindDevice_Click(object sender, EventArgs e)
+        {
+            //cmdLib.DiscoverDevices();
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //Show_DeviceKey.Text = DeviceKey;
+        }
+
+        private void btn_Motor1Forward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            //cmdLib.RelativeMove(DeviceKey, 1, Stepsize1);
+            //lbl_Motor1location.Text = (initialposition1 += Stepsize1).ToString();
+        }
+
+        private void btn_Motor1Backward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize1 = Convert.ToInt32(input_Stepsize1.Text);
+            //cmdLib.RelativeMove(DeviceKey, 1, -Stepsize1);
+            //lbl_Motor1location.Text = (initialposition1 -= Stepsize1).ToString();
+        }
+
+        private void btn_Motor2Forward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            //cmdLib.RelativeMove(DeviceKey, 2, Stepsize2);
+            //lbl_Motor2location.Text = (initialposition2 += Stepsize2).ToString();
+        }
+
+        private void btn_Motor2Backward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize2 = Convert.ToInt32(input_Stepsize2.Text);
+            //cmdLib.RelativeMove(DeviceKey, 2, -Stepsize2);
+            //lbl_Motor2location.Text = (initialposition2 -= Stepsize2).ToString();
+        }
+
+        private void btn_Motor3Forward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            //cmdLib.RelativeMove(DeviceKey, 3, Stepsize3);
+            //lbl_Motor3location.Text = (initialposition3 += Stepsize3).ToString();
+        }
+
+        private void btn_Motor3Backward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize3 = Convert.ToInt32(input_Stepsize3.Text);
+            //cmdLib.RelativeMove(DeviceKey, 3, -Stepsize3);
+            //lbl_Motor3location.Text = (initialposition3 -= Stepsize3).ToString();
+        }
+
+        private void btn_Motor4Forward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            //cmdLib.RelativeMove(DeviceKey, 4, Stepsize4);
+            //lbl_Motor4location.Text = (initialposition4 += Stepsize4).ToString();
+        }
+
+        private void btn_Motor4Backward_Click(object sender, EventArgs e)
+        {
+            //string DeviceKey = cmdLib.GetFirstDeviceKey();
+            //int Stepsize4 = Convert.ToInt32(input_Stepsize4.Text);
+            //cmdLib.RelativeMove(DeviceKey, 4, -Stepsize4);
+            //lbl_Motor4location.Text = (initialposition4 -= Stepsize4).ToString();
+        }
+
+        #endregion
+
+        private void UpdateBeatFreq_Click(object sender, EventArgs e)
+        {
+            controller.UpdateBeatFrequencyMonitor();
+        }
+
+        private void startFreqMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StartFreqMonitorPoll();
+        }
+
+        private void stopFreqMonitorPollButton_Click(object sender, EventArgs e)
+        {
+            controller.StopFreqMonitorPoll();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            controller.ClearFreqMonitorAv();
+            controller.ClearFreqMonitorChart();
+        }
+
+        private void updateBCurrentMonitorButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateBCurrentMonitor();
+        }
+
+        private void SteppingBBoxBiasUpdateButton_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void parametersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controller.LoadParametersWithDialog();
+        }
+
+        private void parametersToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            controller.SaveParametersWithDialog();
+        }
+
+        private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
+        {
+            //
+        }
+
+        private void cbCHATrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDetectionMWTrigger(0, cbCHATrigger.Checked);
+        }
+
+        private void cbCHBRFTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
+        }
+
+        private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableGreenSynth(cbStirapRFOn.Checked);
+        }
+
+        private void cbCHBTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetDetectionMWTrigger(1, cbCHBTrigger.Checked);
         }
     }
 }

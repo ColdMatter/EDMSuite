@@ -1,7 +1,7 @@
 ﻿using System;
-//using System.Runtime.Remoting;
-//using System.Runtime.Remoting.Channels;
-//using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
 
 namespace UEDMHardwareControl
@@ -18,17 +18,17 @@ namespace UEDMHardwareControl
 			UEDMController controller = new UEDMController();
 
 			// publish the controller to the remoting system
-			//TcpChannel channel = new TcpChannel(1172);
-			//ChannelServices.RegisterChannel(channel, false);
-			//RemotingServices.Marshal(controller, "controller.rem");
+			TcpChannel channel = new TcpChannel(1172);
+			ChannelServices.RegisterChannel(channel, false);
+			RemotingServices.Marshal(controller, "UEDMController.rem");
 
 			// hand over to the controller
             Application.EnableVisualStyles();
 			controller.Start();
 
 			// the application is finishing - close down the remoting channel
-			//RemotingServices.Disconnect(controller);
-			//ChannelServices.UnregisterChannel(channel);
+			RemotingServices.Disconnect(controller);
+			ChannelServices.UnregisterChannel(channel);
 		}
 	}
 }

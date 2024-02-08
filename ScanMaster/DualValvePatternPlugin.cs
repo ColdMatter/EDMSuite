@@ -41,7 +41,7 @@ namespace ScanMaster.Acquire.Plugins
             settings["fullWidth"] = true;
             settings["lowGroup"] = true;
         }
-
+        private bool firstScan;
         public override void AcquisitionStarting()
         {
             scanPatternBuilder = new DualValvePatternBuilder();
@@ -62,6 +62,7 @@ namespace ScanMaster.Acquire.Plugins
                 (bool)settings["internalClock"],
                 false
                 );
+            firstScan = true;
         }
 
         protected IPatternSource GetScanPattern()
@@ -87,12 +88,14 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ScanStarting()
         {
-            OutputPattern(GetScanPattern());
+            if(firstScan)
+                OutputPattern(GetScanPattern());
+            firstScan = false;
         }
 
         public override void ScanFinished()
         {
-           
+
         }
 
         public override void AcquisitionFinished()
@@ -102,6 +105,16 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ReloadPattern()
         {
+            pg.StopPattern();
+            pg.Configure(
+                (int)settings["clockFrequency"],
+                true,
+                (bool)settings["fullWidth"],
+                (bool)settings["lowGroup"],
+                patternLength,
+                (bool)settings["internalClock"],
+                false
+                );
             OutputPattern(GetScanPattern());
             System.GC.Collect();
         }

@@ -77,6 +77,7 @@ namespace MoleculeMOTHardwareControl
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(689, 836);
             this.tabControl.TabIndex = 0;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // splitPanel
             // 
@@ -118,7 +119,7 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel9.ColumnCount = 3;
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.848485F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.15151F));
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tableLayoutPanel9.Controls.Add(this.messageBoxCollapseExpandButton, 2, 0);
             this.tableLayoutPanel9.Controls.Add(this.label8, 1, 0);
             this.tableLayoutPanel9.Controls.Add(this.messageNumberPanel, 0, 0);
@@ -134,7 +135,7 @@ namespace MoleculeMOTHardwareControl
             // 
             this.messageBoxCollapseExpandButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.messageBoxCollapseExpandButton.BackColor = System.Drawing.Color.Transparent;
-            this.messageBoxCollapseExpandButton.Location = new System.Drawing.Point(656, 5);
+            this.messageBoxCollapseExpandButton.Location = new System.Drawing.Point(655, 5);
             this.messageBoxCollapseExpandButton.Name = "messageBoxCollapseExpandButton";
             this.messageBoxCollapseExpandButton.Size = new System.Drawing.Size(23, 23);
             this.messageBoxCollapseExpandButton.TabIndex = 0;
@@ -194,6 +195,7 @@ namespace MoleculeMOTHardwareControl
             this.MaximizeBox = false;
             this.Name = "ControlWindow";
             this.Text = "Molecule MOT Hardware Controller";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlWindow_FormClosing);
             this.splitPanel.Panel1.ResumeLayout(false);
             this.splitPanel.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel)).EndInit();

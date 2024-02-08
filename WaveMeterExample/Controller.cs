@@ -11,13 +11,32 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace WavemeterLockServer
 {
     
+    public delegate void measurementHandler();
+
     public class Controller : MarshalByRefObject
     {
         public Boolean bAvail;
         public Boolean bMeas;
-
+        public int mode;
+        public int timeVal;
+        public int val;
+        public int switchTime;
         private ServerForm ui;
-        public bool[] remoteConnection = new bool [7];//an array of boolean to show if the channel is being used by wavemeterLock remotely
+        public bool[] remoteConnection = new bool[8];//an array of boolean to show if the channel is being used by wavemeterLock remotely
+        
+        public event measurementHandler measurementAcquired;
+        public Dictionary<string, bool> measurementStatus = new Dictionary<string, bool>();
+        public List<string> viewerList = new List<string>();
+        public int test = 0;
+
+        public Controller()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            ui = new ServerForm(this);
+            
+
+        }
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -27,23 +46,101 @@ namespace WavemeterLockServer
             return null;
         }
 
+        private WLM.CallbackProcEx callbackObj;
         public void start()
         {
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            ui = new ServerForm();
-            ui.controller = this;
+            
+            callbackObj = new WLM.CallbackProcEx(callback);
+            WLM.Instantiate(WLM.cInstNotification, WLM.cNotifyInstallCallback, callbackObj, 0);
+            measurementAcquired += () => { indicateNewMeasurement(); };
             Application.Run(ui);
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 8; i++)
                 remoteConnection[i] = false;
-
+            
         }
 
 
+        private void callback(int Ver, int Mode, int IntVal, double DblVal, int Res1)
+        {
+
+            switch (Mode)
+            {
+                case WLM.cmiResultMode:
+                    //measurementAcquired.Invoke(Ver, Mode, IntVal, DblVal, Res1);
+                    measurementAcquired?.Invoke();
+                    break;
+
+            }
+
+        }
+
+        #region Remote Methods
         public void changeConnectionStatus(int channelNum, bool status)
         {
-            remoteConnection[channelNum-1] = status;
+            remoteConnection[channelNum - 1] = status;
+        }
+
+        public void registerWavemeterLock(string computerName)
+        {
+            try
+            {
+                measurementStatus.Add(computerName, false);
+            }
+
+            catch (ArgumentException)
+            {
+                measurementStatus.Remove(computerName);
+                measurementStatus.Add(computerName, false);
+            }
+
+            ui.addStringToListBox(computerName);
+        }
+
+        public void registerWavemeterViewer(string computerName)
+        {
+            if (viewerList.Exists(x => x == computerName)) {
+            }
+
+            else {
+                viewerList.Add(computerName);
+                ui.addStringToListBox(computerName + "Viewer"); }
+        }
+
+        public void removeWavemeterViewer(string computerName)
+        {
+            if (viewerList.Exists(x => x == computerName))
+            {
+                viewerList.Remove(computerName);
+                ui.deleteStringToListBox(computerName + "Viewer");
+            }
+
+        }
+
+        public void removeWavemeterLock(string computerName)
+        {
+            measurementStatus.Remove(computerName);
+            ui.deleteStringToListBox(computerName);
+        }
+
+        public void indicateNewMeasurement()
+        {
+            
+            for (int index = 0; index < measurementStatus.Count(); index++)
+            {
+                string dummy;
+                dummy = measurementStatus.ElementAt(index).Key;
+                measurementStatus[dummy] = true;
+            }
+        }
+
+        public bool getMeasurementStatus(string computerName)
+        {
+            return measurementStatus[computerName];
+        }
+
+        public void resetMeasurementStatus(string computerName)
+        {
+            measurementStatus[computerName] = false;
         }
 
         public double getWavelength(int channelNum)//Returns wavelength (nm)
@@ -66,29 +163,29 @@ namespace WavemeterLockServer
             {
                 case WLM.ErrNoValue:
                     return "No value measured";
-                    
+
                 case WLM.ErrNoSignal:
                     return "No signal";
-                    
+
                 case WLM.ErrBadSignal:
                     return "Bad signal";
-                    
+
                 case WLM.ErrLowSignal:
                     return "Underexposed";
-                    
+
                 case WLM.ErrBigSignal:
                     return "Overexposed";
-                    
+
                 case WLM.ErrWlmMissing:
                     bAvail = false;
                     return "WLM Server not available";
-                                     
+
                 case WLM.ErrOutOfRange:
                     return "Out of range";
-                  
+
                 case WLM.ErrUnitNotAvailable:
                     return "Requested unit not available";
-                    
+
                 default: // no error
                     w = Math.Round(w, (int)WLM.GetWLMVersion(0) - 2);
                     return Convert.ToString(Math.Round(WLM.GetWavelengthNum(n, 0), (int)WLM.GetWLMVersion(0) - 2)) + "  nm";
@@ -133,6 +230,10 @@ namespace WavemeterLockServer
             }
 
         }
+
+        #endregion
+
+
 
         public void startServer()
         {

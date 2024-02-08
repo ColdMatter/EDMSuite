@@ -6,7 +6,7 @@ namespace DAQ.Environment
     {
         public PHBonesawFileSystem()
         {
-            Paths.Add("MOTMasterDataPath", "E:\\mot_master_data\\");
+            Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\OneDrive - Imperial College London\\datasync\\mot_master_data\\");
             Paths.Add("scriptListPath", "C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts");
             Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
             Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\");
@@ -18,6 +18,7 @@ namespace DAQ.Environment
             Paths.Add("SourceLogPath", "E:\\Source_Log\\");
             Paths.Add("ToFFilesPath", "E:\\Source_Log\\ToF_Data\\");
             Paths.Add("transferCavityData", "E:\\TCL_DataLog\\");
+            Paths.Add("wavemeterLockData", "E:\\WML_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
             SortDataByDate = false;

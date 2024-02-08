@@ -33,5 +33,14 @@ namespace MoleculeMOTHardwareControl
             
         }
 
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ControlWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
     }
 }

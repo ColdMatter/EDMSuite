@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
      XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
 	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(YAGFirePatternPlugin)),
 	 XmlInclude(typeof(TwoShutterPatternPlugin)),
 	 XmlInclude(typeof(TwoShutterSlowingPatternPlugin)),
 	 XmlInclude(typeof(TwoShutterTwoYAGPatternPlugin)),
@@ -44,7 +45,9 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(Find4fNewPatternPlugin)),
 	 XmlInclude(typeof(TenHzTwoHzPatternPlugin)),
 	 XmlInclude(typeof(VelocityMeasSlowedPatternPlugin)),
-     XmlInclude(typeof(FourShutterPatternPluginFindV1)),
+     XmlInclude(typeof(CaFBECPatternPlugin)),
+	 XmlInclude(typeof(STIRAPpatternPlugin)),
+	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),
      XmlInclude(typeof(LatticePatternPlugin))]
      //XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin

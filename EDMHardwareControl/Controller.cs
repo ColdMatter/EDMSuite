@@ -1907,6 +1907,7 @@ namespace EDMHardwareControl
                 return Double.Parse(window.steppingBBoxBiasTextBox.Text);
             }
         }
+
         private double miniFlux1Voltage;
 
         public double MiniFlux1Voltage
@@ -1997,7 +1998,6 @@ namespace EDMHardwareControl
              return hpVoltage;
          }
         }
-
 
         public double CPlusMonitorVoltage
         {

@@ -56,7 +56,7 @@
             this.PatternPathTextBox.Name = "PatternPathTextBox";
             this.PatternPathTextBox.ReadOnly = true;
             this.PatternPathTextBox.Size = new System.Drawing.Size(454, 20);
-            this.PatternPathTextBox.TabIndex = 4;
+            this.PatternPathTextBox.TabIndex = 2;
             // 
             // scriptListComboBox
             // 
@@ -66,14 +66,14 @@
             this.scriptListComboBox.Name = "scriptListComboBox";
             this.scriptListComboBox.Size = new System.Drawing.Size(566, 21);
             this.scriptListComboBox.Sorted = true;
-            this.scriptListComboBox.TabIndex = 6;
+            this.scriptListComboBox.TabIndex = 1;
             // 
             // lookupScriptsButton
             // 
             this.lookupScriptsButton.Location = new System.Drawing.Point(589, 24);
             this.lookupScriptsButton.Name = "lookupScriptsButton";
             this.lookupScriptsButton.Size = new System.Drawing.Size(137, 23);
-            this.lookupScriptsButton.TabIndex = 7;
+            this.lookupScriptsButton.TabIndex = 8;
             this.lookupScriptsButton.Text = "Refresh Script List";
             this.lookupScriptsButton.UseVisualStyleBackColor = true;
             this.lookupScriptsButton.Click += new System.EventHandler(this.lookupScriptsButton_Click);
@@ -83,7 +83,7 @@
             this.runButton.Location = new System.Drawing.Point(589, 83);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(137, 23);
-            this.runButton.TabIndex = 8;
+            this.runButton.TabIndex = 10;
             this.runButton.Text = "Run";
             this.runButton.UseVisualStyleBackColor = true;
             this.runButton.Click += new System.EventHandler(this.runButton_Click);
@@ -96,7 +96,7 @@
             this.saveExperimentCheckBox.Location = new System.Drawing.Point(12, 109);
             this.saveExperimentCheckBox.Name = "saveExperimentCheckBox";
             this.saveExperimentCheckBox.Size = new System.Drawing.Size(148, 17);
-            this.saveExperimentCheckBox.TabIndex = 9;
+            this.saveExperimentCheckBox.TabIndex = 5;
             this.saveExperimentCheckBox.Text = "Save Experiment to batch";
             this.saveExperimentCheckBox.UseVisualStyleBackColor = true;
             this.saveExperimentCheckBox.CheckedChanged += new System.EventHandler(this.saveExperimentCheckBox_CheckedChanged);
@@ -107,7 +107,7 @@
             this.saveBatchTextBox.Location = new System.Drawing.Point(166, 107);
             this.saveBatchTextBox.Name = "saveBatchTextBox";
             this.saveBatchTextBox.Size = new System.Drawing.Size(49, 20);
-            this.saveBatchTextBox.TabIndex = 10;
+            this.saveBatchTextBox.TabIndex = 6;
             this.saveBatchTextBox.Text = "0";
             // 
             // selectScriptButton
@@ -115,7 +115,7 @@
             this.selectScriptButton.Location = new System.Drawing.Point(589, 55);
             this.selectScriptButton.Name = "selectScriptButton";
             this.selectScriptButton.Size = new System.Drawing.Size(137, 23);
-            this.selectScriptButton.TabIndex = 12;
+            this.selectScriptButton.TabIndex = 9;
             this.selectScriptButton.Text = "Select Script";
             this.selectScriptButton.UseVisualStyleBackColor = true;
             this.selectScriptButton.Click += new System.EventHandler(this.selectScriptButton_Click);
@@ -128,7 +128,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(736, 24);
-            this.menuStrip1.TabIndex = 13;
+            this.menuStrip1.TabIndex = 0;
             // 
             // fileToolStripMenuItem
             // 
@@ -141,7 +141,7 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -157,7 +157,7 @@
             // newPatternToolStripMenuItem
             // 
             this.newPatternToolStripMenuItem.Name = "newPatternToolStripMenuItem";
-            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newPatternToolStripMenuItem.Text = "Select script";
             this.newPatternToolStripMenuItem.Click += new System.EventHandler(this.newPatternToolStripMenuItem_Click);
             // 
@@ -165,7 +165,7 @@
             // 
             this.ReplicateScriptToolStripMenuItem.Name = "ReplicateScriptToolStripMenuItem";
             this.ReplicateScriptToolStripMenuItem.ShowShortcutKeys = false;
-            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ReplicateScriptToolStripMenuItem.Text = "Replicate saved run";
             this.ReplicateScriptToolStripMenuItem.Click += new System.EventHandler(this.ReplicateScriptToolStripMenuItem_Click);
             // 
@@ -183,7 +183,7 @@
             this.stopButton.Location = new System.Drawing.Point(588, 112);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(136, 25);
-            this.stopButton.TabIndex = 15;
+            this.stopButton.TabIndex = 11;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
             this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
@@ -193,7 +193,7 @@
             this.iterationsBox.Location = new System.Drawing.Point(186, 81);
             this.iterationsBox.Name = "iterationsBox";
             this.iterationsBox.Size = new System.Drawing.Size(46, 20);
-            this.iterationsBox.TabIndex = 16;
+            this.iterationsBox.TabIndex = 4;
             this.iterationsBox.Text = "1";
             // 
             // label2
@@ -211,7 +211,7 @@
             this.runUntilStopCheckBox.Location = new System.Drawing.Point(12, 83);
             this.runUntilStopCheckBox.Name = "runUntilStopCheckBox";
             this.runUntilStopCheckBox.Size = new System.Drawing.Size(109, 17);
-            this.runUntilStopCheckBox.TabIndex = 18;
+            this.runUntilStopCheckBox.TabIndex = 3;
             this.runUntilStopCheckBox.Text = "Run until stopped";
             this.runUntilStopCheckBox.UseVisualStyleBackColor = true;
             this.runUntilStopCheckBox.CheckedChanged += new System.EventHandler(this.runUntilStopCheckBox_CheckedChanged);
@@ -222,7 +222,7 @@
             this.triggeredCheckBox.Location = new System.Drawing.Point(12, 132);
             this.triggeredCheckBox.Name = "triggeredCheckBox";
             this.triggeredCheckBox.Size = new System.Drawing.Size(67, 17);
-            this.triggeredCheckBox.TabIndex = 19;
+            this.triggeredCheckBox.TabIndex = 7;
             this.triggeredCheckBox.Text = "triggered";
             this.triggeredCheckBox.UseVisualStyleBackColor = true;
             this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);

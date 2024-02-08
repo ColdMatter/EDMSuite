@@ -86,15 +86,22 @@ namespace EDMBlockHead
             MakeDefaultBlockConfig();
 
             // ask the remoting system for access to the EDMHardwareController
+            //RemotingConfiguration.RegisterWellKnownClientType(
+            //    Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
+            //    "tcp://localhost:1172/controller.rem"
+            //    );
+            Console.WriteLine(Type.GetType("ScanMaster.Controller, ScanMaster").ToString());
+            Console.WriteLine(Type.GetType("EDMPhaseLock.MainForm, EDMPhaseLock").ToString());
+            Console.WriteLine(Type.GetType("UEDMHardwareControl.UEDMController, UEDMHardwareControl").ToString());
             RemotingConfiguration.RegisterWellKnownClientType(
-                Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
-                "tcp://localhost:1172/controller.rem"
+                Type.GetType("UEDMHardwareControl.UEDMController, UEDMHardwareControl"),
+                "tcp://localhost:1172/UEDMController.rem"
                 );
 
             // ask the remoting system for access to ScanMaster 
             RemotingConfiguration.RegisterWellKnownClientType(
                 Type.GetType("ScanMaster.Controller, ScanMaster"),
-                "tcp://localhost:1170/controller.rem"
+                "tcp://localhost:1191/controller.rem"
                 );
 
             // ask the remoting system for access to PhaseLock
@@ -255,9 +262,9 @@ namespace EDMBlockHead
             if (appState == AppState.running) StopAcquisition();
         }
 
-        #endregion
+#endregion
 
-        #region Remote methods
+#region Remote methods
 
         public void CaptureRemote()
         {
@@ -402,9 +409,9 @@ namespace EDMBlockHead
             }
         }
 
-        #endregion
+#endregion
 
-        #region Local methods
+#region Local methods
 
         public void AcquisitionFinished(Block b)
         {
@@ -454,14 +461,14 @@ namespace EDMBlockHead
         }
 
         private bool targetHealthy; 
-        double[] northLeakages = new double[UPDATE_EVERY];
-        double[] southLeakages = new double[UPDATE_EVERY];
+        double[] westLeakages = new double[UPDATE_EVERY];
+        double[] eastLeakages = new double[UPDATE_EVERY];
         int leakageIndex = 0;
         public void GotPoint(int point, EDMPoint p)
         {
             // store the leakage measurements ready for the graph update
-            northLeakages[leakageIndex] = (double)p.SinglePointData["NorthCurrent"];
-            southLeakages[leakageIndex] = (double)p.SinglePointData["SouthCurrent"];
+            westLeakages[leakageIndex] = (double)p.SinglePointData["WestCurrent"];
+            eastLeakages[leakageIndex] = (double)p.SinglePointData["EastCurrent"];
             leakageIndex++;
 
             if ((point % UPDATE_EVERY) == 0)
@@ -480,7 +487,7 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs
-                mainWindow.AppendLeakageMeasurement(new double[]{northLeakages[0]}, new double[]{southLeakages[0]});
+                mainWindow.AppendLeakageMeasurement(new double[]{westLeakages[0]}, new double[]{eastLeakages[0]});
                 leakageIndex = 0;
             }
         }
@@ -575,7 +582,7 @@ namespace EDMBlockHead
             liveViewer.Show();
         }
 
-        #endregion
+#endregion
 
 
         internal void TestLiveAnalysis()

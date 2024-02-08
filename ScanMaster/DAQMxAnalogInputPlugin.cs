@@ -24,12 +24,14 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private double[] latestData;
 
+		
 		protected override void InitialiseSettings()
 		{
-			settings["channelList"] =  "iodine,cavity";
-			settings["inputRangeLow"] = -5.0;
-			settings["inputRangeHigh"] = 5.0;
+			// settings["channelList"] =  "iodine,cavity";
+		    // settings["inputRangeLow"] = -5.0;
+			// settings["inputRangeHigh"] = 5.0;
 		}
+		
 
 		public override void AcquisitionStarting()
 		{

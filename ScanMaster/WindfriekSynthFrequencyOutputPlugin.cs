@@ -25,10 +25,10 @@ namespace ScanMaster.Acquire.Plugins
 		protected override void InitialiseSettings()
 		{
 			settings["synth"] = "WindfreakDetection";
-			settings["channel"] = 0;				// 0 is channel A and 1 is channel B
+			settings["channel"] = 0;			// 0 is channel A and 1 is channel B
 			settings["scanOnAmplitude"] = 7.0;		//dBm
 			settings["offAmplitude"] = -30.0;		// dBm
-			settings["offFrequency"] = 14467242000;	// Hz
+			settings["offFrequency"] = 14467242000; // Hz
 		}
 
 		public override void AcquisitionStarting()
@@ -72,6 +72,5 @@ namespace ScanMaster.Acquire.Plugins
 			get { return scanParameter; }
 		}
 
-		
 	}
 }

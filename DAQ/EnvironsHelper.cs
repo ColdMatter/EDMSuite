@@ -42,6 +42,13 @@ namespace DAQ.Environment
         private string computer;
 
         /// <summary>
+        /// Computer name for wavemeter lock server.
+        /// This is the name of the computer on which your wavemeter server is running.
+        /// Add this to the computer config on which you run the wavemeter server and wavemeter lock.
+        /// </summary>
+        public string serverComputerName;
+
+        /// <summary>
         /// TCP channel for wavemeter lock server.
         /// This is the channel that the wavemeter server brodcast the measured frequency.
         /// Add this to the computer config on which you run the wavemeter server and wavemeter lock.
@@ -49,9 +56,23 @@ namespace DAQ.Environment
         public int serverTCPChannel;
 
         /// <summary>
+        /// Computer name for wavemeter lock server.
+        /// This is the name of the computer on which your wavemeter server is running.
+        /// Add this to the computer config on which you run the wavemeter server and wavemeter viewer.
+        /// </summary>
+        public string viewerServerComputerName;
+
+        /// <summary>
+        /// TCP channel for wavemeter lock server.
+        /// This is the channel that the wavemeter server brodcast the measured frequency.
+        /// Add this to the computer config on which you run the wavemeter server and wavemeter viewer.
+        /// </summary>
+        public int viewerServerTCPChannel;
+
+        /// <summary>
         /// TCP channel for wavemeter lock.
-        /// This is the channel shared between wavemeter lock and scan master.
-        /// Add this to the computer config on which you run the wavemeter lock and scan master.
+        /// This is the channel shared between wavemeter lock and other programmes.
+        /// Add this to the computer config on which you run the wavemeter lock.
         /// </summary>
         public int wavemeterLockTCPChannel;
 
@@ -156,6 +177,9 @@ namespace DAQ.Environment
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 5555;
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
@@ -176,11 +200,24 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-#if EDM
+                case "IC-CZC202DMH1":
+                    Hardware = new CaFBECHardware();
+                    FileSystem = new CaFBECFileSystem();
+                    Debug = false;
+                    serverComputerName = "IC-CZC136CFDJ";
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1234;
+                    //ExperimentType = "edm";
+                    break;
+
+                #if EDM
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
+                    serverComputerName = "IC-CZC136CFDJ";
+                    wavemeterLockTCPChannel = 1012;
+                    serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
 #endif
@@ -333,11 +370,16 @@ namespace DAQ.Environment
                     Debug = false;
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 6666;
+                    viewerServerComputerName = "IC-CZC136CFDJ";
+                    viewerServerTCPChannel = 1984;
                     break;
 
                 case "IC-CZC225B85M":
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
+                    serverComputerName = "IC-CZC136CFDJ";
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1984;
                     Debug = false;
                     break;
 
