@@ -43,8 +43,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("MBRLaser", (string)Boards["daq"] + "/ai7", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("RbReferenceLaser", (string)Boards["daq"] + "/ai4", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("PMT", (string)Boards["pg"] + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("UV_Circ_Pow", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
 
             // Output signals
             AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
@@ -88,8 +88,8 @@ namespace DAQ.HAL
 
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
+            MMAI.Add("UV_Circ_Pow");
             MMAI.Add("UV_I");
-            MMAI.Add("PD");
             Info.Add("MMAnalogInputs", MMAI);
             Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());

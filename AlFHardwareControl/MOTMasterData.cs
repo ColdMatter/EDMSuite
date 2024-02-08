@@ -12,9 +12,26 @@ namespace AlFHardwareControl
 {
     public partial class MOTMasterData : UserControl
     {
+
+        private delegate bool Comparison<T>(T a);
+        private delegate Comparison<T> ComparisonGenerator<T>(string comparisonValue);
+
+        private static Dictionary<string, ComparisonGenerator<double>> comparisons = new Dictionary<string, ComparisonGenerator<double>>{
+            { "Minimum <", (string comp) => {
+                double compVal = Convert.ToDouble(comp);
+                return (double a)=> { return a < compVal; };
+            }},
+            { "Maximum >", (string comp) => {
+                double compVal = Convert.ToDouble(comp);
+                return (double a)=> { return a > compVal; };
+            }},
+        };
+
         public MOTMasterData()
         {
             InitializeComponent();
+            RejectCondPicker.Items.AddRange(comparisons.Keys.ToArray<string>());
+            RejectCondPicker.SelectedIndex = 0;
         }
 
         private string normSourceName;
@@ -129,8 +146,17 @@ namespace AlFHardwareControl
 
         }
 
+        private Comparison<double> comparer = null;
+
         public bool reject_shot()
         {
+            if (comparer != null)
+            {
+                foreach (double y in rawYData)
+                    if (comparer(y)) return true;
+            }
+
+
             return false;
         }
 
@@ -159,5 +185,39 @@ namespace AlFHardwareControl
             UpdateScan();
             mmstuff.ReDrawScanResults();
         }
+
+        private void RejectEnable_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!RejectEnable.Checked)
+            {
+                comparer = null;
+                this.RejectVal.Enabled = true;
+                this.RejectCondPicker.Enabled = true;
+                return;
+            }
+
+            try
+            {
+                comparer = comparisons[RejectCondPicker.Text](RejectVal.Text);
+            }
+            catch (Exception exc) when (exc is System.FormatException || exc is InvalidCastException)
+            {
+                comparer = null;
+                RejectEnable.Checked = false;
+                return;
+            }
+
+            this.RejectVal.Enabled = false;
+            this.RejectCondPicker.Enabled = false;
+
+        }
+
+        public void UpdateScanStatus(bool status)
+        {
+            this.Invoke((Action) (()=>{
+                this.RejectEnable.Enabled = !status;
+            }));
+        }
+
     }
 }
