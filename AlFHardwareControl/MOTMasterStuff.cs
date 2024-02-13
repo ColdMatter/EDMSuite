@@ -136,7 +136,7 @@ namespace AlFHardwareControl
                 .Select(x => data[i, x])
                 .ToArray();
                 mmdata[i].UpdateData(xdata, AIData[AIchannels[i]]);
-
+                if (!saveEnable.Checked) continue;
                 using (System.IO.StreamWriter file =
                             new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + AIchannels[i] + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
                 {
@@ -364,6 +364,11 @@ namespace AlFHardwareControl
                     scanPlugin.Settings["scanOut"] = dict;
             }));
 
+            foreach (MOTMasterData data in mmdata)
+            {
+                data.UpdateScanStatus(true);
+            }
+
 
             scanResults.Clear();
 
@@ -386,6 +391,15 @@ namespace AlFHardwareControl
                     mmaster.Go(dict);
 
                     while (!dataAcquired) ;
+
+                    foreach (MOTMasterData data in mmdata)
+                    {
+                        if (data.reject_shot())
+                        {
+                            --j;
+                            break;
+                        }
+                    }
 
                     if (!scanRunning) break;
 
@@ -456,6 +470,10 @@ namespace AlFHardwareControl
                 save_data.Enabled = true;
                 clear_data.Enabled = true;
             }));
+            foreach (MOTMasterData data in mmdata)
+            {
+                data.UpdateScanStatus(false);
+            }
 
         }
 
@@ -495,10 +513,8 @@ namespace AlFHardwareControl
 
         private void armToF_CheckedChanged(object sender, EventArgs e)
         {
-            scanNumber = 0;
             tofArmed = armToF.Checked;
-            ScanData.Clear();
-            scanNumber = 0;
+            clear_data.PerformClick();
             if (armToF.Checked)
             {
                 setUpTasks();
@@ -610,8 +626,7 @@ namespace AlFHardwareControl
 
             if (!scanRunning)
             {
-                ScanData.Clear();
-                scanNumber = 0;
+                clear_data.PerformClick();
             }
 
             dw.ShowDialog();
@@ -619,14 +634,14 @@ namespace AlFHardwareControl
 
         private void PluginSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ScanData.Clear();
-            scanNumber = 0;
+            clear_data.PerformClick();
             scanPlugin = scanPlugins[PluginSelector.Text];
         }
 
         private void clear_data_Click(object sender, EventArgs e)
         {
             ScanData.Clear();
+            scanResults.Clear();
             scanNumber = 0;
 
         }

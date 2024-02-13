@@ -39,12 +39,18 @@ namespace AlFHardwareControl
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.RejectCondPicker = new System.Windows.Forms.ComboBox();
+            this.RejectEnable = new System.Windows.Forms.CheckBox();
+            this.RejectVal = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.RejectVal);
+            this.groupBox1.Controls.Add(this.RejectCondPicker);
+            this.groupBox1.Controls.Add(this.RejectEnable);
             this.groupBox1.Controls.Add(this.NormSource);
             this.groupBox1.Controls.Add(this.Normalise);
             this.groupBox1.Controls.Add(this.fixY);
@@ -136,6 +142,32 @@ namespace AlFHardwareControl
             this.scatterPlot2.XAxis = this.xAxis1;
             this.scatterPlot2.YAxis = this.yAxis1;
             // 
+            // RejectCondPicker
+            // 
+            this.RejectCondPicker.FormattingEnabled = true;
+            this.RejectCondPicker.Location = new System.Drawing.Point(381, 16);
+            this.RejectCondPicker.Name = "RejectCondPicker";
+            this.RejectCondPicker.Size = new System.Drawing.Size(121, 21);
+            this.RejectCondPicker.TabIndex = 5;
+            // 
+            // RejectEnable
+            // 
+            this.RejectEnable.AutoSize = true;
+            this.RejectEnable.Location = new System.Drawing.Point(273, 20);
+            this.RejectEnable.Name = "RejectEnable";
+            this.RejectEnable.Size = new System.Drawing.Size(102, 17);
+            this.RejectEnable.TabIndex = 4;
+            this.RejectEnable.Text = "Enable rejection";
+            this.RejectEnable.UseVisualStyleBackColor = true;
+            this.RejectEnable.CheckedChanged += new System.EventHandler(this.RejectEnable_CheckedChanged);
+            // 
+            // RejectVal
+            // 
+            this.RejectVal.Location = new System.Drawing.Point(509, 16);
+            this.RejectVal.Name = "RejectVal";
+            this.RejectVal.Size = new System.Drawing.Size(74, 20);
+            this.RejectVal.TabIndex = 6;
+            // 
             // MOTMasterData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -162,5 +194,8 @@ namespace AlFHardwareControl
         private System.Windows.Forms.ComboBox NormSource;
         private System.Windows.Forms.CheckBox Normalise;
         private NationalInstruments.UI.ScatterPlot scatterPlot2;
+        private System.Windows.Forms.TextBox RejectVal;
+        private System.Windows.Forms.ComboBox RejectCondPicker;
+        private System.Windows.Forms.CheckBox RejectEnable;
     }
 }
