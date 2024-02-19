@@ -16,6 +16,7 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting;
 using System.Collections;
 using System.Runtime.Serialization.Formatters;
+using System.Drawing;
 
 namespace AlFHardwareControl
 {
@@ -392,16 +393,30 @@ namespace AlFHardwareControl
 
                     while (!dataAcquired) ;
 
+                    string text = "ACCEPTED";
+                    Color color = Color.PaleGreen;
+
+                    if (!scanRunning) break;
+
                     foreach (MOTMasterData data in mmdata)
                     {
                         if (data.reject_shot())
                         {
+                            text = "REJECTED";
+                            color = Color.Salmon;
                             --j;
+                            lock (scanResults)
+                            {
+                                scanResults.Last().Item2.RemoveAt(scanResults.Last().Item2.Count - 1);
+                            }
                             break;
                         }
                     }
 
-                    if (!scanRunning) break;
+                    this.Invoke((Action)(() => {
+                        this.RejectionStatus.BackColor = color;
+                        this.RejectionStatus.Text = text;
+                    }));
 
                 }
 

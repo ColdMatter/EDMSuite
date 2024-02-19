@@ -129,7 +129,7 @@ namespace DAQ.HAL
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
             //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
-            wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -2000, -1600);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -1000, -800);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
             wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
