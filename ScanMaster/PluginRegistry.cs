@@ -39,6 +39,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
             scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));
 			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
+			scanOutputPlugins.Add("Manual scan", typeof(ManualOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));

@@ -642,6 +642,7 @@
     <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />
     <Compile Include="TwoShutterTwoYAGPatternPlugin.cs" />
     <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="ManualOutputPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />

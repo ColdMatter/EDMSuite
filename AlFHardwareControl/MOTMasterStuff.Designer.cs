@@ -31,6 +31,7 @@ namespace AlFHardwareControl
         {
             this.DataTabs = new System.Windows.Forms.TabControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.saveEnable = new System.Windows.Forms.CheckBox();
             this.fixY = new System.Windows.Forms.CheckBox();
             this.fixX = new System.Windows.Forms.CheckBox();
             this.armToF = new System.Windows.Forms.CheckBox();
@@ -39,6 +40,7 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
             this.scanCtrl = new System.Windows.Forms.GroupBox();
+            this.RejectionStatus = new System.Windows.Forms.TextBox();
             this.save_data = new System.Windows.Forms.Button();
             this.clear_data = new System.Windows.Forms.Button();
             this.ScanParameterButton = new System.Windows.Forms.Button();
@@ -51,7 +53,6 @@ namespace AlFHardwareControl
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
-            this.saveEnable = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
@@ -82,6 +83,16 @@ namespace AlFHardwareControl
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
+            // 
+            // saveEnable
+            // 
+            this.saveEnable.AutoSize = true;
+            this.saveEnable.Location = new System.Drawing.Point(138, 65);
+            this.saveEnable.Name = "saveEnable";
+            this.saveEnable.Size = new System.Drawing.Size(87, 17);
+            this.saveEnable.TabIndex = 5;
+            this.saveEnable.Text = "Enable Save";
+            this.saveEnable.UseVisualStyleBackColor = true;
             // 
             // fixY
             // 
@@ -122,7 +133,7 @@ namespace AlFHardwareControl
             this.sampNum.Name = "sampNum";
             this.sampNum.Size = new System.Drawing.Size(103, 20);
             this.sampNum.TabIndex = 1;
-            this.sampNum.Text = "10000";
+            this.sampNum.Text = "1000";
             // 
             // label1
             // 
@@ -163,10 +174,11 @@ namespace AlFHardwareControl
             this.cmbSamplingRate.Name = "cmbSamplingRate";
             this.cmbSamplingRate.Size = new System.Drawing.Size(103, 21);
             this.cmbSamplingRate.TabIndex = 0;
-            this.cmbSamplingRate.Text = "1000000";
+            this.cmbSamplingRate.Text = "100000";
             // 
             // scanCtrl
             // 
+            this.scanCtrl.Controls.Add(this.RejectionStatus);
             this.scanCtrl.Controls.Add(this.save_data);
             this.scanCtrl.Controls.Add(this.clear_data);
             this.scanCtrl.Controls.Add(this.ScanParameterButton);
@@ -181,6 +193,14 @@ namespace AlFHardwareControl
             this.scanCtrl.TabIndex = 3;
             this.scanCtrl.TabStop = false;
             this.scanCtrl.Text = "Scan Control";
+            // 
+            // RejectionStatus
+            // 
+            this.RejectionStatus.Enabled = false;
+            this.RejectionStatus.Location = new System.Drawing.Point(7, 106);
+            this.RejectionStatus.Name = "RejectionStatus";
+            this.RejectionStatus.Size = new System.Drawing.Size(67, 20);
+            this.RejectionStatus.TabIndex = 12;
             // 
             // save_data
             // 
@@ -290,16 +310,6 @@ namespace AlFHardwareControl
             this.scatterPlot2.XAxis = this.xAxis1;
             this.scatterPlot2.YAxis = this.yAxis1;
             // 
-            // saveEnable
-            // 
-            this.saveEnable.AutoSize = true;
-            this.saveEnable.Location = new System.Drawing.Point(138, 65);
-            this.saveEnable.Name = "saveEnable";
-            this.saveEnable.Size = new System.Drawing.Size(87, 17);
-            this.saveEnable.TabIndex = 5;
-            this.saveEnable.Text = "Enable Save";
-            this.saveEnable.UseVisualStyleBackColor = true;
-            // 
             // MOTMasterStuff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -344,5 +354,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.CheckBox fixY;
         private System.Windows.Forms.CheckBox fixX;
         private System.Windows.Forms.CheckBox saveEnable;
+        private System.Windows.Forms.TextBox RejectionStatus;
     }
 }
