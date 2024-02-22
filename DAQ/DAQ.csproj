@@ -637,6 +637,7 @@
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
+    <Compile Include="RigolDG811.cs" />
     <Compile Include="RigolDG822.cs" />
     <Compile Include="GobelinHardware.cs" />
     <Compile Include="LeyboldGraphixController.cs" />

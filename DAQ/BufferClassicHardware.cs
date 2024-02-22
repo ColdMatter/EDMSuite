@@ -21,6 +21,7 @@ namespace DAQ.HAL
             Boards.Add("UEDMHardwareController", "/UEDM_Hardware_Controller_PXI_6229");
             Boards.Add("counter", "/COUNTER_PXI_6602");
             Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
+            Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -28,6 +29,7 @@ namespace DAQ.HAL
             string UEDMHardwareControllerBoard = (string)Boards["UEDMHardwareController"];
             string counterBoard = (string)Boards["counter"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
+            string usbDAQ2 = (string)Boards["usbDAQ2"];
 
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -70,6 +72,9 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
 
+            // Scanmaster config
+            Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_Feb.xml");
+
             // external triggering control
             Info.Add("PGTrigger", pgBoard + "/PFI1"); //Mapped to PFI7 on 6533 connector
 
@@ -79,11 +84,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"   unused at the moment, should be renamed
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
             //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
-            AddAnalogInputChannel("detector1", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68
+            AddAnalogInputChannel("upstreamPMT", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68   Used to be detector1
             //AddAnalogInputChannel("detector1", TCLBoard + "/ai6", AITerminalConfiguration.Rse); //trying another card because of cross talks
             //AddAnalogInputChannel("detector1", UEDMHardwareControllerBoard + "/ai10", AITerminalConfiguration.Rse); //trying another card because of cross talks
-            AddAnalogInputChannel("detector2", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin 
-            AddAnalogInputChannel("detector3", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34
+            AddAnalogInputChannel("detectorA", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34 Used to be detector3
+            AddAnalogInputChannel("detectorB", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin    Used to be detector2
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
 
@@ -108,7 +113,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("coilCurrent_before", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
 
             // map the analog output channels for "daq" card
-
+            AddAnalogOutputChannel("steppingBBias", daqBoard + "/ao2");
 
             // map the analog input channels for the "UEDMHardwareControllerBoard" card
             AddAnalogInputChannel("cellTemperatureMonitor", UEDMHardwareControllerBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -131,7 +136,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("cMinusPlate", UEDMHardwareControllerBoard + "/ao1");
             AddAnalogOutputChannel("DegaussCoil1", UEDMHardwareControllerBoard + "/ao2");
             AddAnalogOutputChannel("BScan", UEDMHardwareControllerBoard + "/ao3");
-
+            
             // map the digital channels of the "UEDMHardwareControllerBoard" card
             AddDigitalOutputChannel("Port00", UEDMHardwareControllerBoard, 0, 0);
             AddDigitalOutputChannel("Port01", UEDMHardwareControllerBoard, 0, 1);
@@ -142,6 +147,12 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ePol", UEDMHardwareControllerBoard, 0, 1);
             AddDigitalOutputChannel("notEPol", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("eBleed", UEDMHardwareControllerBoard, 0, 2);
+            AddDigitalOutputChannel("eConnect", usbDAQ2, 0, 5);
+            AddDigitalOutputChannel("bSwitch", usbDAQ2, 0, 0);
+            AddDigitalOutputChannel("notB", usbDAQ2, 0, 1);
+            AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
+            AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
+            AddDigitalOutputChannel("targetStepper", usbDAQ2, 0, 4);
 
             //Magnetic feedback channels
             //AddAnalogInputChannel("bFieldFeedbackInput", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
@@ -154,8 +165,8 @@ namespace DAQ.HAL
             AddCounterChannel("eastLeakage", UEDMHardwareControllerBoard + "/ctr1");
 
             //Phase Lock
-            AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr7");
-            AddCounterChannel("phaseLockReference", counterBoard + "/pfi10");
+            AddCounterChannel("phaseLockOscillator", counterBoard + "/ctr1");
+            AddCounterChannel("phaseLockReference", counterBoard + "/pfi11");
             AddAnalogOutputChannel("phaseLockAnalogOutput", TCLOutBoard + "/ao5", 0, 5);
 
             // map the analog output channels for the "UEDMHardwareControllerBoard" card
@@ -203,18 +214,19 @@ namespace DAQ.HAL
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
             Instruments.Add("WindfreakOpticalPumping", new WindfreakSynthHD("ASRL6::INSTR"));
             Instruments.Add("WindfreakDetection", new WindfreakSynthHD("ASRL9::INSTR"));
-            Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL4::INSTR"));
+            Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL24::INSTR"));
+            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL11::INSTR"));
             Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::12::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
-            Instruments.Add("rigolWavGen", new RigolDG822("USB0::0x1AB1::0x0643::DG8A250800632::INSTR"));
+            Instruments.Add("rigolWavGen", new RigolDG811("USB0::0x1AB1::0x0643::DG8A250800641::INSTR"));
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
 
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
             // multiple cavities share a single ramp (BaseRamp analog input) + trigger
             // Hardware limitation that all read photodiode/ramp signals must share the same hardware card (hardware configured triggered read)
-            TCLConfig tclConfig = new TCLConfig("TCL");
+            TCLConfig tclConfig = new TCLConfig("UEDM TCL");
             tclConfig.Trigger = TCLBoard + "/PFI0";
             tclConfig.BaseRamp = "VIScavityRampMonitor";
             tclConfig.TCPChannel = 1190;
