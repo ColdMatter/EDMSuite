@@ -15,13 +15,8 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 2000;
-
-
-        // Linear Out
-
-        Parameters["Start"] = 0.0;//0.0
-        Parameters["End"] = 10.0;
+        Parameters["PatternLength"] = 1000;
+        Parameters["Void"] = 0;
       
     }
 
@@ -39,6 +34,7 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
         p.AddEdge("q",0,true);
         p.AddEdge("q",10,false);
+        
 
         return p;
     }
@@ -47,14 +43,6 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
-        // Add Analog Channels
-        
-        p.AddChannel("VECSEL2_PZO");
-
-        //p.AddAnalogPulse("VECSEL2_PZO", 0, 500, 5, 0);
-        //p.AddAnalogValue("VECSEL2_PZO", 0, 0);
-        p.AddAnalogValue("VECSEL2_PZO", 0, (double)Parameters["Start"]);
-        p.AddLinearRamp("VECSEL2_PZO", 1, (int)Parameters["PatternLength"]-2 , (double)Parameters["End"]);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

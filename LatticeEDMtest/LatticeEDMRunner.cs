@@ -16,20 +16,19 @@ namespace LatticeHardwareControl
 		{
 
 			Program controller = new Program();
-			controller = new Program();
 
 			// publish the controller to the remoting system
-			TcpChannel channel = new TcpChannel(1197);
-			ChannelServices.RegisterChannel(channel, false);
-			RemotingServices.Marshal(controller, "controller.rem");
+			//TcpChannel channel = new TcpChannel(1197);
+			//ChannelServices.RegisterChannel(channel, false);
+			//RemotingServices.Marshal(controller, "controller.rem");
 
 			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+			//Application.SetCompatibleTextRenderingDefault(false);
 			controller.Start();
 
 			// the application is finishing - close down the remoting channel
-			RemotingServices.Disconnect(controller);
-			ChannelServices.UnregisterChannel(channel);
+			//RemotingServices.Disconnect(controller);
+			//ChannelServices.UnregisterChannel(channel);
 		}
 
 	}

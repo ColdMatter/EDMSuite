@@ -34,7 +34,7 @@ namespace DAQ.HAL
 
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
-            analogBoards.Add("AO", (string)Boards["pg"]);
+            //analogBoards.Add("AO", (string)Boards["pg"]);
             Info.Add("AnalogBoards", analogBoards);
 
 
@@ -43,8 +43,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("MBRLaser", (string)Boards["daq"] + "/ai7", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("RbReferenceLaser", (string)Boards["daq"] + "/ai4", AITerminalConfiguration.Rse, true);
             AddAnalogInputChannel("PMT", (string)Boards["pg"] + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("UV_Circ_Pow", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
 
             // Output signals
             AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
@@ -58,9 +58,10 @@ namespace DAQ.HAL
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("flash", (string)Boards["pg"], 0, 0);
-            AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);//Pin 
+            AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);// Loop back to PFI0
             AddDigitalOutputChannel("valve", (string)Boards["pg"], 0, 2);
             AddDigitalOutputChannel("detector", (string)Boards["pg"], 0, 3);
+            AddDigitalOutputChannel("VECSEL2_Shutter", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("discharge", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("valve2", (string)Boards["pg"], 0, 5);
             //AddDigitalOutputChannel("ttlSwitch", (string)Boards["pg"], 0, 4);
@@ -87,10 +88,17 @@ namespace DAQ.HAL
 
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
-            MMAI.Add("PD");
+            MMAI.Add("UV_Circ_Pow");
+            MMAI.Add("UV_I");
             Info.Add("MMAnalogInputs", MMAI);
-            Info.Add("MMAITrigger", (string)Boards["pg"] + "/do/StartTrigger");
+            Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
+
+            // Shutters
+            // Name of shutter, Name of shutter channel, invert
+            List<Tuple<string, string, bool>> shutters = new List<Tuple<string, string, bool>>();
+            shutters.Add(new Tuple<string, string, bool>("VECSEL2", "VECSEL2_Shutter", true ));
+            Info.Add("Shutters", shutters);
 
             //WavemeterLockConfig
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
@@ -120,7 +128,8 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 7);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
-            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -1000, -800);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
             wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);

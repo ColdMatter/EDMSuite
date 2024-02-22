@@ -34,12 +34,11 @@ namespace AlFHardwareControl
             this.DeleteMacro = new System.Windows.Forms.Button();
             this.macroSettings = new System.Windows.Forms.GroupBox();
             this.TaskGroupBox = new System.Windows.Forms.GroupBox();
+            this.Start = new System.Windows.Forms.CheckBox();
             this.ResourcePicker = new System.Windows.Forms.ComboBox();
             this.ConditionTypePicker = new System.Windows.Forms.ComboBox();
             this.Value = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.RemoveTask = new System.Windows.Forms.Button();
-            this.AddTask = new System.Windows.Forms.Button();
             this.RemovePrereq = new System.Windows.Forms.Button();
             this.AddPrereq = new System.Windows.Forms.Button();
             this.TaskNumber = new System.Windows.Forms.Label();
@@ -57,7 +56,8 @@ namespace AlFHardwareControl
             this.MacroName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TaskList = new System.Windows.Forms.ListBox();
-            this.Start = new System.Windows.Forms.CheckBox();
+            this.AddTask = new System.Windows.Forms.Button();
+            this.RemoveTask = new System.Windows.Forms.Button();
             this.macroSettings.SuspendLayout();
             this.TaskGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -134,6 +134,17 @@ namespace AlFHardwareControl
             this.TaskGroupBox.TabStop = false;
             this.TaskGroupBox.Text = "Task";
             // 
+            // Start
+            // 
+            this.Start.AutoSize = true;
+            this.Start.Enabled = false;
+            this.Start.Location = new System.Drawing.Point(6, 265);
+            this.Start.Name = "Start";
+            this.Start.Size = new System.Drawing.Size(48, 17);
+            this.Start.TabIndex = 20;
+            this.Start.Text = "Start";
+            this.Start.UseVisualStyleBackColor = true;
+            // 
             // ResourcePicker
             // 
             this.ResourcePicker.FormattingEnabled = true;
@@ -168,26 +179,6 @@ namespace AlFHardwareControl
             this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 16;
             this.label6.Text = "Condition";
-            // 
-            // RemoveTask
-            // 
-            this.RemoveTask.Location = new System.Drawing.Point(119, 364);
-            this.RemoveTask.Name = "RemoveTask";
-            this.RemoveTask.Size = new System.Drawing.Size(90, 23);
-            this.RemoveTask.TabIndex = 15;
-            this.RemoveTask.Text = "Remove";
-            this.RemoveTask.UseVisualStyleBackColor = true;
-            this.RemoveTask.Click += new System.EventHandler(this.RemoveTask_Click);
-            // 
-            // AddTask
-            // 
-            this.AddTask.Location = new System.Drawing.Point(6, 364);
-            this.AddTask.Name = "AddTask";
-            this.AddTask.Size = new System.Drawing.Size(90, 23);
-            this.AddTask.TabIndex = 14;
-            this.AddTask.Text = "Add Task";
-            this.AddTask.UseVisualStyleBackColor = true;
-            this.AddTask.Click += new System.EventHandler(this.AddTask_Click);
             // 
             // RemovePrereq
             // 
@@ -350,16 +341,25 @@ namespace AlFHardwareControl
             this.TaskList.TabIndex = 4;
             this.TaskList.DoubleClick += new System.EventHandler(this.TaskList_DoubleClick);
             // 
-            // Start
+            // AddTask
             // 
-            this.Start.AutoSize = true;
-            this.Start.Enabled = false;
-            this.Start.Location = new System.Drawing.Point(6, 265);
-            this.Start.Name = "Start";
-            this.Start.Size = new System.Drawing.Size(48, 17);
-            this.Start.TabIndex = 20;
-            this.Start.Text = "Start";
-            this.Start.UseVisualStyleBackColor = true;
+            this.AddTask.Location = new System.Drawing.Point(6, 364);
+            this.AddTask.Name = "AddTask";
+            this.AddTask.Size = new System.Drawing.Size(90, 23);
+            this.AddTask.TabIndex = 14;
+            this.AddTask.Text = "Add Task";
+            this.AddTask.UseVisualStyleBackColor = true;
+            this.AddTask.Click += new System.EventHandler(this.AddTask_Click);
+            // 
+            // RemoveTask
+            // 
+            this.RemoveTask.Location = new System.Drawing.Point(119, 364);
+            this.RemoveTask.Name = "RemoveTask";
+            this.RemoveTask.Size = new System.Drawing.Size(90, 23);
+            this.RemoveTask.TabIndex = 15;
+            this.RemoveTask.Text = "Remove";
+            this.RemoveTask.UseVisualStyleBackColor = true;
+            this.RemoveTask.Click += new System.EventHandler(this.RemoveTask_Click);
             // 
             // MacroEditor
             // 

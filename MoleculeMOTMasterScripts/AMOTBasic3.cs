@@ -89,12 +89,12 @@ public class Patterns : MOTMasterScript
         Parameters["v0IntensityMolassesValue"] = 5.6;
         Parameters["v0IntensityRampBackTime"] = 20000;
 
-        Parameters["V00EOMsidebandRatio"] = 5.5;
+        Parameters["V00EOMsidebandRatio"] = 4.0;
         Parameters["V00AOMSidebandAmplitude"] = 1.0;
 
 
         // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 7.0; //9.0
+        Parameters["v0FrequencyStartValue"] = 10.0; //9.0
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;

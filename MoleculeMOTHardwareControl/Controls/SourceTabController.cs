@@ -57,6 +57,7 @@ namespace MoleculeMOTHardwareControl.Controls
         private bool isCryoOn = false;
         private bool isHeaterOnMaster = false;
         private bool isPanic = false;
+        private bool isAbsNormalized = false;
 
         private System.Windows.Forms.Timer readTimer;
         
@@ -229,6 +230,7 @@ namespace MoleculeMOTHardwareControl.Controls
                 NationalInstruments.DAQmx.Task myTask = new NationalInstruments.DAQmx.Task();
                 AIChannel aiChannel;
 
+                /*
                 switch(PlotChannel)
                 {
                     case 0:
@@ -241,7 +243,11 @@ namespace MoleculeMOTHardwareControl.Controls
                         myTask.AIChannels.CreateVoltageChannel(tof_signal_address, "", AITerminalConfiguration.Rse, 0.0, 10.0, AIVoltageUnits.Volts);
                         break;
                 }
-                
+                */
+
+                myTask.AIChannels.CreateVoltageChannel(tof_signal_address, "tofSignal", AITerminalConfiguration.Rse, 0.0, 10.0, AIVoltageUnits.Volts);
+                myTask.AIChannels.CreateVoltageChannel(power_mon_address, "absSignal", AITerminalConfiguration.Rse, 0.0, 10.0, AIVoltageUnits.Volts);
+
                 // Configure timing specs and increase buffer size
                 myTask.Timing.ConfigureSampleClock("", tof_samplerate, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, tof_num_of_samples);
                 DigitalEdgeStartTriggerEdge triggerEdge = DigitalEdgeStartTriggerEdge.Rising;
@@ -254,11 +260,27 @@ namespace MoleculeMOTHardwareControl.Controls
                 myTask.Stream.Timeout = 2000;
                 try
                 {
-                    AnalogSingleChannelReader reader = new AnalogSingleChannelReader(myTask.Stream);
-                    tofData = reader.ReadMultiSample(1000);
+                    AnalogMultiChannelReader reader = new AnalogMultiChannelReader(myTask.Stream);
+                    //AnalogSingleChannelReader reader = new AnalogSingleChannelReader(myTask.Stream);
+                    //tofData = reader.ReadMultiSample(1000);
+                    double[,] data = new double[2, 1000];
+                    data = reader.ReadMultiSample(1000);
+                    double[] tofData = Enumerable.Range(0, data.GetLength(1)).Select(x => data[0, x]).ToArray();
+                    double[] absData = Enumerable.Range(0, data.GetLength(1)).Select(x => data[1, x]).ToArray();
                     if (castView.ToFEnabled())
+                    {
                         castView.UpdateGraph(tofTime, tofData);
-                    
+                        if (isAbsNormalized)
+                        {
+                            double absBackground = Enumerable.Range(900, absData.GetLength(0) - 900).Select(x => absData[x]).ToArray().Average();
+                            if (absBackground <= 0.0)
+                                absBackground = 1.0;
+                            double[] absDataNorm = Enumerable.Range(0, absData.GetLength(0)).Select(x => absData[x] / absBackground).ToArray();
+                            castView.UpdateAbsGraph(tofTime, absDataNorm);
+                        }
+                        else
+                            castView.UpdateAbsGraph(tofTime, absData);
+                    }
                     if (castView.AutomaticFlowControlEnabled())
                     {
                         flowEnableFlag = true;
@@ -280,6 +302,15 @@ namespace MoleculeMOTHardwareControl.Controls
                                 file.WriteLine(line);
                             file.Flush();
                         }
+
+                        using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(toffilePath + "Abs_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
+                        {
+                            file.WriteLine("Sampling Rate: " + tof_samplerate.ToString() + ", Number of points :" + tof_num_of_samples.ToString());
+                            foreach (double line in absData)
+                                file.WriteLine(line);
+                            file.Flush();
+                        }
                     }
                 }
                 catch (NationalInstruments.DAQmx.DaqException ex)
@@ -297,6 +328,8 @@ namespace MoleculeMOTHardwareControl.Controls
             }
 
         }
+
+        
 
         private void InitReadTimer()
         {
@@ -438,7 +471,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (IsCyling)
                 {
-                    checkCycleStatus(sourceTemp2);
+                    checkCycleStatus(sourceTemp3);
                     /*double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
                     if (!finishedHeating && sourceTemp2 > cycleLimit)
                     {
@@ -453,16 +486,16 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
 
                     double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
-                    if (sourceTemp2 < cycleLimit && !maxTempReached)
+                    if (sourceTemp3 < cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(true);
                     }
-                    else if (sourceTemp2 > cycleLimit && !maxTempReached)
+                    else if (sourceTemp3 > cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(false);
                         maxTempReached = true;
                     }
-                    else if (sourceTemp2 < cycleLimit - 5 && maxTempReached)
+                    else if (sourceTemp3 < cycleLimit - 5 && maxTempReached)
                     {
                         SetHeaterState(true);
                         maxTempReached = false;
@@ -476,11 +509,11 @@ namespace MoleculeMOTHardwareControl.Controls
 
                     double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
                     //double cycleLimit = castView.GetCycleLimit40K();
-                    if (source40KTemp2 < cycleLimit && !maxTempReached40K)
+                    if (sourceTemp3 < cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                     }
-                    else if (source40KTemp2 > cycleLimit && !maxTempReached40K)
+                    else if (sourceTemp3 > cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(false);
                         maxTempReached40K = true;
@@ -894,6 +927,11 @@ namespace MoleculeMOTHardwareControl.Controls
         public void SetPlotChannel(int channelID)
         {
             PlotChannel = channelID;
+        }
+
+        public void toggleAbsNormalization(bool b)
+        {
+            isAbsNormalized = b;
         }
 
         #region Yag motorized morror control

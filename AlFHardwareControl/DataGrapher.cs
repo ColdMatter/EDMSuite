@@ -60,6 +60,7 @@ namespace AlFHardwareControl
                 return;
             }
             updateData(this);
+            if (!this.takeData.Checked) return;
             if (this.MaximumDataEnable.Checked)
             {
                 this.UpdateRenderedObject<Chart>(DataGraph, (Chart c) => {

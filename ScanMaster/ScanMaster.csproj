@@ -565,7 +565,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -614,6 +614,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
+    <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
     <Compile Include="DTCLOutputPlugin.cs" />
     <Compile Include="DualAomPatternBuilder.cs" />
     <Compile Include="DualAomPatternPlugin.cs" />
@@ -632,7 +634,15 @@
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="DMMInputPlugin.cs" />
+    <Compile Include="LatticePatternBuilder.cs" />
+    <Compile Include="LatticePatternPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
+    <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
+    <Compile Include="TwoShutterSlowingPatternPlugin.cs" />
+    <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />
+    <Compile Include="TwoShutterTwoYAGPatternPlugin.cs" />
+    <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="ManualOutputPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />

@@ -86,7 +86,7 @@
     <Reference Include="NationalInstruments.Controls.Numerics, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -142,6 +142,12 @@
       <DependentUpon>AlFControlWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="AlFController.cs" />
+    <Compile Include="DictionaryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DictionaryView.Designer.cs">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="MacroConfiguration.cs" />
     <Compile Include="MacroConfigurationCollection.cs" />
     <Compile Include="DataGrapher.cs">
@@ -200,6 +206,12 @@
       <DependentUpon>MacroEvent.cs</DependentUpon>
     </Compile>
     <Compile Include="ITaskSchedulerEvent.cs" />
+    <Compile Include="ShutterSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShutterSet.Designer.cs">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="SimpleControlDesigner.cs" />
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
@@ -215,6 +227,12 @@
     <Compile Include="TaskScheduler.Designer.cs">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shutter_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shutter_Control.Designer.cs">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </Compile>
     <Compile Include="YAG_Control.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -226,6 +244,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataGrapher.resx">
       <DependentUpon>DataGrapher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DictionaryView.resx">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MacroEditor.resx">
       <DependentUpon>MacroEditor.cs</DependentUpon>
@@ -251,6 +272,9 @@
     <EmbeddedResource Include="SafetyInterlock.resx">
       <DependentUpon>SafetyInterlock.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShutterSet.resx">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimedEvent.resx">
       <DependentUpon>TimedEvent.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,9 +292,13 @@
     <EmbeddedResource Include="TaskScheduler.resx">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shutter_Control.resx">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="YAG_Control.resx">
       <DependentUpon>YAG_Control.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\MOTMasterStuff.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
