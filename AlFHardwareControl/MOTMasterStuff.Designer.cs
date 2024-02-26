@@ -31,12 +31,16 @@ namespace AlFHardwareControl
         {
             this.DataTabs = new System.Windows.Forms.TabControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.saveEnable = new System.Windows.Forms.CheckBox();
+            this.fixY = new System.Windows.Forms.CheckBox();
+            this.fixX = new System.Windows.Forms.CheckBox();
             this.armToF = new System.Windows.Forms.CheckBox();
             this.sampNum = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
             this.scanCtrl = new System.Windows.Forms.GroupBox();
+            this.RejectionStatus = new System.Windows.Forms.TextBox();
             this.save_data = new System.Windows.Forms.Button();
             this.clear_data = new System.Windows.Forms.Button();
             this.ScanParameterButton = new System.Windows.Forms.Button();
@@ -49,8 +53,6 @@ namespace AlFHardwareControl
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
-            this.fixY = new System.Windows.Forms.CheckBox();
-            this.fixX = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
@@ -67,6 +69,7 @@ namespace AlFHardwareControl
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.saveEnable);
             this.groupBox1.Controls.Add(this.fixY);
             this.groupBox1.Controls.Add(this.fixX);
             this.groupBox1.Controls.Add(this.armToF);
@@ -80,6 +83,38 @@ namespace AlFHardwareControl
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
+            // 
+            // saveEnable
+            // 
+            this.saveEnable.AutoSize = true;
+            this.saveEnable.Location = new System.Drawing.Point(138, 65);
+            this.saveEnable.Name = "saveEnable";
+            this.saveEnable.Size = new System.Drawing.Size(87, 17);
+            this.saveEnable.TabIndex = 5;
+            this.saveEnable.Text = "Enable Save";
+            this.saveEnable.UseVisualStyleBackColor = true;
+            // 
+            // fixY
+            // 
+            this.fixY.AutoSize = true;
+            this.fixY.Location = new System.Drawing.Point(9, 88);
+            this.fixY.Name = "fixY";
+            this.fixY.Size = new System.Drawing.Size(79, 17);
+            this.fixY.TabIndex = 3;
+            this.fixY.Text = "Fix Y range";
+            this.fixY.UseVisualStyleBackColor = true;
+            this.fixY.CheckedChanged += new System.EventHandler(this.fixY_CheckedChanged);
+            // 
+            // fixX
+            // 
+            this.fixX.AutoSize = true;
+            this.fixX.Location = new System.Drawing.Point(9, 65);
+            this.fixX.Name = "fixX";
+            this.fixX.Size = new System.Drawing.Size(79, 17);
+            this.fixX.TabIndex = 2;
+            this.fixX.Text = "Fix X range";
+            this.fixX.UseVisualStyleBackColor = true;
+            this.fixX.CheckedChanged += new System.EventHandler(this.fixX_CheckedChanged);
             // 
             // armToF
             // 
@@ -97,8 +132,8 @@ namespace AlFHardwareControl
             this.sampNum.Location = new System.Drawing.Point(138, 41);
             this.sampNum.Name = "sampNum";
             this.sampNum.Size = new System.Drawing.Size(103, 20);
-            this.sampNum.TabIndex = 3;
-            this.sampNum.Text = "10000";
+            this.sampNum.TabIndex = 1;
+            this.sampNum.Text = "1000";
             // 
             // label1
             // 
@@ -138,11 +173,12 @@ namespace AlFHardwareControl
             this.cmbSamplingRate.Location = new System.Drawing.Point(138, 13);
             this.cmbSamplingRate.Name = "cmbSamplingRate";
             this.cmbSamplingRate.Size = new System.Drawing.Size(103, 21);
-            this.cmbSamplingRate.TabIndex = 2;
-            this.cmbSamplingRate.Text = "1000000";
+            this.cmbSamplingRate.TabIndex = 0;
+            this.cmbSamplingRate.Text = "100000";
             // 
             // scanCtrl
             // 
+            this.scanCtrl.Controls.Add(this.RejectionStatus);
             this.scanCtrl.Controls.Add(this.save_data);
             this.scanCtrl.Controls.Add(this.clear_data);
             this.scanCtrl.Controls.Add(this.ScanParameterButton);
@@ -158,12 +194,20 @@ namespace AlFHardwareControl
             this.scanCtrl.TabStop = false;
             this.scanCtrl.Text = "Scan Control";
             // 
+            // RejectionStatus
+            // 
+            this.RejectionStatus.Enabled = false;
+            this.RejectionStatus.Location = new System.Drawing.Point(7, 106);
+            this.RejectionStatus.Name = "RejectionStatus";
+            this.RejectionStatus.Size = new System.Drawing.Size(67, 20);
+            this.RejectionStatus.TabIndex = 12;
+            // 
             // save_data
             // 
             this.save_data.Location = new System.Drawing.Point(188, 44);
             this.save_data.Name = "save_data";
             this.save_data.Size = new System.Drawing.Size(83, 23);
-            this.save_data.TabIndex = 12;
+            this.save_data.TabIndex = 9;
             this.save_data.Text = "Save Data";
             this.save_data.UseVisualStyleBackColor = true;
             this.save_data.Click += new System.EventHandler(this.save_data_Click);
@@ -173,7 +217,7 @@ namespace AlFHardwareControl
             this.clear_data.Location = new System.Drawing.Point(99, 44);
             this.clear_data.Name = "clear_data";
             this.clear_data.Size = new System.Drawing.Size(83, 23);
-            this.clear_data.TabIndex = 11;
+            this.clear_data.TabIndex = 8;
             this.clear_data.Text = "Clear Data";
             this.clear_data.UseVisualStyleBackColor = true;
             this.clear_data.Click += new System.EventHandler(this.clear_data_Click);
@@ -183,7 +227,7 @@ namespace AlFHardwareControl
             this.ScanParameterButton.Location = new System.Drawing.Point(10, 44);
             this.ScanParameterButton.Name = "ScanParameterButton";
             this.ScanParameterButton.Size = new System.Drawing.Size(83, 23);
-            this.ScanParameterButton.TabIndex = 10;
+            this.ScanParameterButton.TabIndex = 7;
             this.ScanParameterButton.Text = "Parameters";
             this.ScanParameterButton.UseVisualStyleBackColor = true;
             this.ScanParameterButton.Click += new System.EventHandler(this.ScanParameterButton_Click);
@@ -194,7 +238,7 @@ namespace AlFHardwareControl
             this.PluginSelector.Location = new System.Drawing.Point(80, 17);
             this.PluginSelector.Name = "PluginSelector";
             this.PluginSelector.Size = new System.Drawing.Size(191, 21);
-            this.PluginSelector.TabIndex = 9;
+            this.PluginSelector.TabIndex = 6;
             this.PluginSelector.SelectedIndexChanged += new System.EventHandler(this.PluginSelector_SelectedIndexChanged);
             // 
             // label2
@@ -212,7 +256,7 @@ namespace AlFHardwareControl
             this.stopScan.Location = new System.Drawing.Point(280, 75);
             this.stopScan.Name = "stopScan";
             this.stopScan.Size = new System.Drawing.Size(23, 51);
-            this.stopScan.TabIndex = 7;
+            this.stopScan.TabIndex = 11;
             this.stopScan.Text = "-";
             this.stopScan.UseVisualStyleBackColor = true;
             this.stopScan.Click += new System.EventHandler(this.stopScan_Click);
@@ -222,7 +266,7 @@ namespace AlFHardwareControl
             this.startScan.Location = new System.Drawing.Point(280, 14);
             this.startScan.Name = "startScan";
             this.startScan.Size = new System.Drawing.Size(23, 55);
-            this.startScan.TabIndex = 6;
+            this.startScan.TabIndex = 10;
             this.startScan.Text = "+";
             this.startScan.UseVisualStyleBackColor = true;
             this.startScan.Click += new System.EventHandler(this.startScan_Click);
@@ -265,28 +309,6 @@ namespace AlFHardwareControl
             this.scatterPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.scatterPlot2.XAxis = this.xAxis1;
             this.scatterPlot2.YAxis = this.yAxis1;
-            // 
-            // fixY
-            // 
-            this.fixY.AutoSize = true;
-            this.fixY.Location = new System.Drawing.Point(9, 88);
-            this.fixY.Name = "fixY";
-            this.fixY.Size = new System.Drawing.Size(79, 17);
-            this.fixY.TabIndex = 10;
-            this.fixY.Text = "Fix Y range";
-            this.fixY.UseVisualStyleBackColor = true;
-            this.fixY.CheckedChanged += new System.EventHandler(this.fixY_CheckedChanged);
-            // 
-            // fixX
-            // 
-            this.fixX.AutoSize = true;
-            this.fixX.Location = new System.Drawing.Point(9, 65);
-            this.fixX.Name = "fixX";
-            this.fixX.Size = new System.Drawing.Size(79, 17);
-            this.fixX.TabIndex = 9;
-            this.fixX.Text = "Fix X range";
-            this.fixX.UseVisualStyleBackColor = true;
-            this.fixX.CheckedChanged += new System.EventHandler(this.fixX_CheckedChanged);
             // 
             // MOTMasterStuff
             // 
@@ -331,5 +353,7 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Button clear_data;
         private System.Windows.Forms.CheckBox fixY;
         private System.Windows.Forms.CheckBox fixX;
+        private System.Windows.Forms.CheckBox saveEnable;
+        private System.Windows.Forms.TextBox RejectionStatus;
     }
 }

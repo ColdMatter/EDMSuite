@@ -39,6 +39,7 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
             scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));
 			scanOutputPlugins.Add("WML scan", typeof(WMLOutputPlugin));
+			scanOutputPlugins.Add("Manual scan", typeof(ManualOutputPlugin));
 #if DECELERATOR
             scanOutputPlugins.Add("Deceleration hardware analog output", typeof(DecelerationHardwareAnalogOutputPlugin));
             patternPlugins.Add("MOTMaster", typeof(MMPatternPlugin));
@@ -68,7 +69,8 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Dual ablation", typeof(DualAblationPatternPlugin));
             patternPlugins.Add("Dual valve", typeof(DualValvePatternPlugin));
             patternPlugins.Add("Basic beam", typeof(BasicBeamPatternPlugin));
-            patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
+			patternPlugins.Add("Basic beam two YAG", typeof(BasicBeamTwoYAGPatternPlugin));
+			patternPlugins.Add("Modulated aom", typeof(AomModulatedPatternPlugin));
             patternPlugins.Add("Level-controlled aom", typeof(AomLevelControlPatternPlugin));
             patternPlugins.Add("Imaging", typeof(ImagingPatternPlugin));
             patternPlugins.Add("MOT", typeof(MOTPatternPlugin));
@@ -76,6 +78,8 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
 			patternPlugins.Add("Two Shutter", typeof(TwoShutterPatternPlugin));
+			patternPlugins.Add("Two Shutter Slowing", typeof(TwoShutterSlowingPatternPlugin));
+			patternPlugins.Add("Two Shutter Two YAG", typeof(TwoShutterTwoYAGPatternPlugin));
 			patternPlugins.Add("Four Shutter", typeof(FourShutterPatternPlugin));
 			patternPlugins.Add("Four Shutter Edit", typeof(FourShutterPatternPluginEdit));
 			patternPlugins.Add("Find V2", typeof(FindV2PatternPlugin));
@@ -88,6 +92,7 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Ultra STIRAP", typeof(STIRAPpatternPlugin));
 			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
 			patternPlugins.Add("CaFBEC", typeof(CaFBECPatternPlugin));
+			patternPlugins.Add("Lattice pattern", typeof(LatticePatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));

@@ -26,6 +26,7 @@ namespace WavemeterLockServer
         
         public event measurementHandler measurementAcquired;
         public Dictionary<string, bool> measurementStatus = new Dictionary<string, bool>();
+        public List<string> viewerList = new List<string>();
         public int test = 0;
 
         public Controller()
@@ -93,6 +94,26 @@ namespace WavemeterLockServer
             }
 
             ui.addStringToListBox(computerName);
+        }
+
+        public void registerWavemeterViewer(string computerName)
+        {
+            if (viewerList.Exists(x => x == computerName)) {
+            }
+
+            else {
+                viewerList.Add(computerName);
+                ui.addStringToListBox(computerName + "Viewer"); }
+        }
+
+        public void removeWavemeterViewer(string computerName)
+        {
+            if (viewerList.Exists(x => x == computerName))
+            {
+                viewerList.Remove(computerName);
+                ui.deleteStringToListBox(computerName + "Viewer");
+            }
+
         }
 
         public void removeWavemeterLock(string computerName)

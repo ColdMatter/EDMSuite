@@ -100,8 +100,12 @@ namespace AlFHardwareControl
                     this.Enabled = true;
                 }));
             }
+            string IFState = AttemptComm(() => { return YAG.SendCommand("IF1"); }) + " " + AttemptComm(() => { return YAG.SendCommand("IF2"); });
+            bool IFSuccess = (IFState == "IF1 00 00 00 00 IF2 00 00 00 00");
+
             this.SetTextField(this.Temp, temp + " C");
-            this.SetTextField(this.IF, AttemptComm(() => { return YAG.SendCommand("IF1"); }) + " " + AttemptComm(() => { return YAG.SendCommand("IF2"); }));
+            this.SetTextField(this.IF, IFState);
+            this.Invoke((Action)(() => { this.IF.BackColor = IFSuccess ? Color.PaleGreen : Color.Salmon; }));
             this.SetTextField(this.Status, AttemptComm(() => { return YAG.SendCommand(""); }));
             this.VMO.CurrentValue = AttemptComm(() => { return YAG.SendCommand("VMO").Substring(9, 6); });
             this.VIS.CurrentValue = AttemptComm(() => { return YAG.SendCommand("VIS").Substring(11, 4); });

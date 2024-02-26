@@ -117,21 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="btStopFlowActMonitor.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="btSetNewHeliumFlowSetpoint.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="tbNewHeliumFlowSetPoint.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="btSetNewSF6FlowSetpoint.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="tbNewSF6FlowSetPoint.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
+  <data name="textBox13.Text" xml:space="preserve">
+    <value>Turn-on sequence: 
+*All valves must be closed before carrying out the following steps!
+
+1. Shut connection to chamber at the scroll pump.
+2. Open valve to gas lines at the scroll pump.
+3. Open valve labelled "VACUUM" at the gas lines.
+4. Open valve "1" to pump out the He from the line.
+5. Close valve "1".
+6. Open valve "2" to pump out the SF6 from the line.
+7. Close valve "2".
+8. Close "VACUUM" valve.
+9. Close valve to gas lines at the scroll pump.
+10. Open connection to chamber at the scroll pump.
+11. Open the He gas bottle and valves. Regulator should read ~10psi.
+12. Open gas line valves to chamber.</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

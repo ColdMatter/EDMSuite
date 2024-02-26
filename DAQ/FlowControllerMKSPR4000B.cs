@@ -20,6 +20,7 @@ namespace DAQ.HAL
             public static String AccessChannel { get { return "AC"; } }
             public static String ActualValue { get { return "AV"; } }
             public static String Setpoint { get { return "SP"; } }
+            public static String Valve {  get { return "VL"; } }
         }
 
         #region Serial Communication Parameters
@@ -159,7 +160,7 @@ namespace DAQ.HAL
         /// <summary>
         /// Switch the PR4000 device remote mode on/off.
         /// </summary>
-        /// <param name="OnOfState"></param>
+        /// <param name="OnOffState"></param>
         public void SetRemoteMode(bool OnOffState)
         {
             if (OnOffState)
@@ -228,6 +229,27 @@ namespace DAQ.HAL
         public void SetSetpoint(string ChannelNumber, string Setpoint)
         {
             SetChannelParameter(CommandTypes.Setpoint, ChannelNumber, Setpoint);
+        }
+
+        public double QueryValve(string ChannelNumber)
+        {
+            string response = QueryParameter(CommandTypes.Valve, ChannelNumber);
+            response = response.Trim();
+            response = response.Replace("\\r", "");
+            double output = Double.Parse(response);
+            return output;
+        }
+
+        public void SetValve(string ChannelNumber, bool OnOffState)
+        {
+            if (OnOffState)
+            {
+                SetChannelParameter(CommandTypes.Valve, ChannelNumber, "ON");
+            }
+            else
+            {
+                SetChannelParameter(CommandTypes.Valve, ChannelNumber, "OFF");
+            }
         }
         
 

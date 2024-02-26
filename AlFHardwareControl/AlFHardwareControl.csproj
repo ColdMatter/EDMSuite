@@ -206,6 +206,12 @@
       <DependentUpon>MacroEvent.cs</DependentUpon>
     </Compile>
     <Compile Include="ITaskSchedulerEvent.cs" />
+    <Compile Include="ShutterSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShutterSet.Designer.cs">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="SimpleControlDesigner.cs" />
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
@@ -220,6 +226,12 @@
     </Compile>
     <Compile Include="TaskScheduler.Designer.cs">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shutter_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shutter_Control.Designer.cs">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
     </Compile>
     <Compile Include="YAG_Control.cs">
       <SubType>UserControl</SubType>
@@ -260,6 +272,9 @@
     <EmbeddedResource Include="SafetyInterlock.resx">
       <DependentUpon>SafetyInterlock.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShutterSet.resx">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimedEvent.resx">
       <DependentUpon>TimedEvent.cs</DependentUpon>
     </EmbeddedResource>
@@ -276,6 +291,9 @@
     </Compile>
     <EmbeddedResource Include="TaskScheduler.resx">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shutter_Control.resx">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="YAG_Control.resx">
       <DependentUpon>YAG_Control.cs</DependentUpon>

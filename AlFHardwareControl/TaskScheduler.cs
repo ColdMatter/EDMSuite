@@ -24,8 +24,12 @@ namespace AlFHardwareControl
         public MacroConfigurationCollection macroCollection;
 
         public Thread UpdateThread;
+
+        public static TaskScheduler tSched;
+
         public TaskScheduler()
         {
+            TaskScheduler.tSched = this;
             InitializeComponent();
             this.TimeSchedDate.Value = DateTime.Now;
 
