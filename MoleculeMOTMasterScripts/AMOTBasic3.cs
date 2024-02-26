@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 5000;
+        Parameters["Frame0Trigger"] = 100;
         Parameters["Frame0TriggerDuration"] = 10;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -53,14 +53,14 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 470;//360; //400;// 380;
         //Parameters["SlowingChirpStartTime"] = 400;
         //Parameters["SlowingChirpStartTime"] = 100;
-        Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
+        Parameters["SlowingChirpDuration"] = 1470;////1400;//1160; //1160
         //Parameters["SlowingChirpDuration"] = 1200;
         //Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //225MHz/V 120m/s/V
+        Parameters["SlowingChirpEndValue"] = -1.285;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -72,9 +72,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -1.35;
-        Parameters["yShimLoadCurrent"] = -1.92;
-        Parameters["zShimLoadCurrent"] = -0.22;
+        Parameters["xShimLoadCurrent"] =  -1.35;
+        Parameters["yShimLoadCurrent"] =  -1.92;
+        Parameters["zShimLoadCurrent"] = - 0.22;
 
 
         // v0 Light Switch
@@ -138,6 +138,11 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rb2DMOTShutter", 0, true);
         p.AddEdge("rb2DMOTShutter", 5000, false);
 
+        p.AddEdge("bXSlowingShutter", 0, false);
+        p.AddEdge("bXSlowingShutter", 20000, true);
+
+
+
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
@@ -148,6 +153,9 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafPushSwitch", 200, true);
         p.AddEdge("cafPushSwitch", 400, false);
 
+        p.AddEdge("v00MOTAOM", 0, false);
+        //p.AddEdge("v00MOTAOM", patternStartBeforeQ+1000, true);
+        //p.AddEdge("v00MOTAOM", 48000, false);
 
 
 
