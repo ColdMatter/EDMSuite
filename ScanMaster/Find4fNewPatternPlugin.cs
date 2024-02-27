@@ -95,7 +95,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["v3delaytime"]
 				);
 
-			scanPatternBuilder.BuildPattern(((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
+			scanPatternBuilder.BuildPattern(2*((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);
 
 			return scanPatternBuilder;
