@@ -573,6 +573,48 @@ namespace TransferCavityLock2012
         }
         #endregion
 
+        #region Saving and Loading Parameters
+
+        public void SaveParametersWithDialog()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "tcl parameters|*.bin";
+            saveFileDialog1.Title = "Save parameters";
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreDir = settingsPath + "TransferCavityLock\\" + config.Name;
+            saveFileDialog1.InitialDirectory = dataStoreDir;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                if (saveFileDialog1.FileName != "")
+                {
+                    StoreParameters(saveFileDialog1.FileName);
+                }
+            }
+        }
+
+        public void StoreParameters()
+        {
+            String settingsPath = (string)Environs.FileSystem.Paths["settingsPath"];
+            String dataStoreFilePath = settingsPath + "TransferCavityLock\\parameters.bin";
+            StoreParameters(dataStoreFilePath);
+        }
+
+        public void StoreParameters(String dataStoreFilePath)
+        {
+            DataStore dataStore = new DataStore();
+            // fill the struct
+            //dataStore.cPlus = CPlusVoltage;
+            
+            // serialize it
+            BinaryFormatter s = new BinaryFormatter();
+            try
+            {
+                s.Serialize(new FileStream(dataStoreFilePath, FileMode.Create), dataStore);
+            }
+            catch (Exception)
+            { Console.Out.WriteLine("Unable to store settings"); }
+        }
+
         public void LoadParametersWithDialog()
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -608,6 +650,8 @@ namespace TransferCavityLock2012
                 Console.Out.WriteLine("Unable to load settings"); 
             }
         }
+
+        #endregion
     }
 
 }

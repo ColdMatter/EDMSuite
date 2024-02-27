@@ -1471,16 +1471,6 @@ namespace UEDMHardwareControl
             controller.UpdateIMonitorPollPeriodUsingUIValue();
         }
 
-        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetEPolarity(ePolarityCheck.Checked);
-        }
-
-        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetBleed(eBleedCheck.Checked);
-        }
-
         private void cPlusOffTextBox_TextChanged(object sender, EventArgs e)
         {
             //controller.VoltageSet();
@@ -1613,7 +1603,7 @@ namespace UEDMHardwareControl
 
         private void SteppingBBoxBiasUpdateButton_Click(object sender, EventArgs e)
         {
-            
+            controller.SetSteppingBBiasVoltage();
         }
 
         private void parametersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1649,6 +1639,56 @@ namespace UEDMHardwareControl
         private void cbCHBTrigger_CheckedChanged(object sender, EventArgs e)
         {
             controller.SetDetectionMWTrigger(1, cbCHBTrigger.Checked);
+        }
+
+        private void cBRemoteMode_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetFlowControllerRemoteMode(cbHeliumFlowRemoteMode.Checked);
+        }
+
+        private void cbFlowValveOnOff_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetFlowControllerValve(cbHeFlowValveOnOff.Checked);
+        }
+
+        private void btSetNewSF6FlowSetpoint_Click(object sender, EventArgs e)
+        {
+            controller.SetSF6FlowSetpoint();
+        }
+
+        private void cbSF6Valve_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bFlipCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetBFlip(bFlipCheck.Checked);
+        }
+
+        private void calFlipCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetCalFlip(calFlipCheck.Checked);
+        }
+
+        private void TargetStepButton_Click(object sender, EventArgs e)
+        {
+            controller.StepTarget();
+        }
+
+        private void eConnectCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetEConnect(eConnectCheck.Checked);
+        }
+
+        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetEPolarity(ePolarityCheck.Checked);
+        }
+
+        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
+        {
+            controller.SetBleed(eBleedCheck.Checked);
         }
     }
 }

@@ -105,6 +105,7 @@ namespace UEDMHardwareControl
 
         // Flow controllers
         FlowControllerMKSPR4000B neonFlowController = (FlowControllerMKSPR4000B)Environs.Hardware.Instruments["neonFlowController"];
+        AlicatFlowController sf6FlowController = (AlicatFlowController)Environs.Hardware.Instruments["sf6FlowController"];
 
         Hashtable digitalTasks = new Hashtable();
         Hashtable digitalInputTasks = new Hashtable();
@@ -121,6 +122,7 @@ namespace UEDMHardwareControl
         Task cMinusMonitorInputTask;
         Task DegaussCoil1OutputTask;
         Task bBoxAnalogOutputTask;
+        Task steppingBBiasAnalogOutputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -270,9 +272,15 @@ namespace UEDMHardwareControl
             //CreateDigitalTask("cryoTriggerDigitalOutputTask");
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
+            CreateDigitalTask("targetStepper");
 
             CreateDigitalTask("ePol");
             CreateDigitalTask("eBleed");
+            CreateDigitalTask("eConnect");
+            CreateDigitalTask("bSwitch");
+            CreateDigitalTask("notB");
+            CreateDigitalTask("dB");
+            CreateDigitalTask("notDB");
             CreateDigitalTask("Port00");
             CreateDigitalTask("Port01");
             CreateDigitalTask("Port02");
@@ -289,6 +297,7 @@ namespace UEDMHardwareControl
             cMinusOutputTask = CreateAnalogOutputTask("cMinusPlate", voltageOutputLow, voltageOutputHigh);
             DegaussCoil1OutputTask = CreateAnalogOutputTask("DegaussCoil1", -10, 10);
             bBoxAnalogOutputTask = CreateAnalogOutputTask("BScan");
+            steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
 
             // analog inputs
             //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
@@ -620,6 +629,7 @@ namespace UEDMHardwareControl
             public double overshootHold;
             public double frequency;
             public double amplitude;
+            public double steppingBias;
             //public double dcfm;
             //public double rf1AttC;
             //public double rf1AttS;
@@ -629,7 +639,6 @@ namespace UEDMHardwareControl
             //public double rf1FMS;
             //public double rf2FMC;
             //public double rf2FMS;
-            //public double steppingBias;
             //public double flPZT;
             //public double flPZTStep;            
             //public double pumpAOM;
@@ -699,7 +708,7 @@ namespace UEDMHardwareControl
             dataStore.switchTime = ESwitchTime;
             dataStore.rampUpTime = ERampUpTime;
             dataStore.rampUpDelay = ERampUpDelay;
-            //dataStore.steppingBias = SteppingBiasVoltage;
+            dataStore.steppingBias = SteppingBiasVoltage;
             dataStore.overshootFactor = EOvershootFactor;
             dataStore.overshootHold = EOvershootHold;
             dataStore.frequency = GreenSynthOnFrequency;
@@ -3202,15 +3211,67 @@ namespace UEDMHardwareControl
 
         #endregion
 
-        #region Neon Flow Controller
+        #region Flow Controller
 
         private double lastNeonFlowAct;
         private double lastNeonFlowSetpoint;
         private double newNeonFlowSetpoint;
         private string neonFlowActSeries = "Neon Flow";
-        private string neonFlowChannelNumber = "2"; // Channel number on the MKS PR4000B flow controller
+        private string neonFlowChannelNumber = "1"; // Channel number on the MKS PR4000B flow controller
         private double neonFlowUpperLimit = 100; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
         private double neonFlowLowerLimit = 0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
+
+        private double lastHeliumFlowAct;
+        private double lastHeliumFlowSetpoint;
+        private double newHeliumFlowSetpoint;
+        private string heliumFlowActSeries = "Helium Flow";
+        private string heliumFlowChannelNumber = "1"; // Channel number on the MKS PR4000B flow controller
+        private double heliumFlowUpperLimit = 5.0; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
+        private double heliumFlowLowerLimit = 0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
+
+        private string lastSF6FlowAct;
+        private string lastSF6FlowSetpoint;
+        private double newSF6FlowSetpoint;
+        private string sF6FlowActSeries = "SF6 Flow";
+        private string sF6FlowChannelNumber = "a"; // Channel number on the Alicat flow controller
+        private double sF6FlowUpperLimit = 0.1; // Maximum SF6 flow that the Alicat flow controller should output.
+        private double sF6FlowLowerLimit = 0; // Minimum SF6 flow that the MKS PR4000B flow controller is capable of.
+
+        public bool remoteModeEnabled
+        {
+            get
+            {
+                return window.cbHeliumFlowRemoteMode.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.cbHeliumFlowRemoteMode, value);
+            }
+        }
+
+        public void SetFlowControllerRemoteMode(bool newMode)
+        {
+            //update remote mode
+            //GetFlowControllerRemoteMode();
+            neonFlowController.SetRemoteMode(newMode);
+        }
+        public void SetFlowControllerValve(bool newMode)
+        {
+            //update remote mode
+            //GetFlowControllerRemoteMode();
+            neonFlowController.SetValve(neonFlowChannelNumber, newMode);
+        }
+
+        public void GetFlowControllerRemoteMode()
+        {
+            if (neonFlowController.QueryRemoteMode() == "ON"){
+                remoteModeEnabled = true;
+            }
+            else
+            {
+                remoteModeEnabled = false;
+            }
+        }
 
         public void UpdateNeonFlowActMonitor()
         {
@@ -3218,7 +3279,16 @@ namespace UEDMHardwareControl
             lastNeonFlowAct = neonFlowController.QueryActualValue(neonFlowChannelNumber);
 
             //update text boxes
-            window.SetTextBox(window.tbNeonFlowActual, lastNeonFlowAct.ToString("N3"));
+            window.SetTextBox(window.tbHeliumFlowActual, lastNeonFlowAct.ToString("N3"));
+        }
+
+        public void UpdateSF6FlowActMonitor()
+        {
+            //sample the neon flow (actual)
+            lastSF6FlowAct = sf6FlowController.QueryFlow(sF6FlowChannelNumber);
+
+            //update text boxes
+            window.SetTextBox(window.tbSF6FlowActual, String.Format("{0:N3}", lastSF6FlowAct));
         }
 
         public void UpdateNeonFlowSetpointMonitor()
@@ -3227,7 +3297,15 @@ namespace UEDMHardwareControl
             lastNeonFlowSetpoint = neonFlowController.QuerySetpoint(neonFlowChannelNumber);
 
             //update text boxes
-            window.SetTextBox(window.tbNeonFlowSetpoint, lastNeonFlowSetpoint.ToString("N3"));
+            window.SetTextBox(window.tbHeliumFlowSetpoint, lastNeonFlowSetpoint.ToString("N3"));
+        }
+        public void UpdateSF6FlowSetpointMonitor()
+        {
+            //sample the neon flow (actual)
+            lastSF6FlowSetpoint = sf6FlowController.QuerySetpoint(sF6FlowChannelNumber);
+
+            //update text boxes
+            window.SetTextBox(window.tbSF6FlowSetpoint, String.Format("{0:N3}", lastSF6FlowSetpoint));
         }
 
         public void PlotLastNeonFlowAct()
@@ -3250,10 +3328,12 @@ namespace UEDMHardwareControl
             NeonFlowMonitorPollThread = new Thread(new ThreadStart(NeonFlowActMonitorPollWorker));
             NeonFlowMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
             NeonFlowMonitorPollPeriod = Int32.Parse(window.tbNeonFlowActPollPeriod.Text);
-            window.EnableControl(window.btStartNeonFlowActMonitor, false);
-            window.EnableControl(window.btStopNeonFlowActMonitor, true);
-            window.EnableControl(window.tbNewNeonFlowSetPoint, true);
-            window.EnableControl(window.btSetNewNeonFlowSetpoint, true);
+            window.EnableControl(window.btStartHeliumFlowActMonitor, false);
+            window.EnableControl(window.btStopHeliumFlowActMonitor, true);
+            window.EnableControl(window.tbNewHeliumFlowSetPoint, true);
+            window.EnableControl(window.btSetNewHeliumFlowSetpoint, true);
+            window.EnableControl(window.tbNewSF6FlowSetpoint, true);
+            window.EnableControl(window.btSetNewSF6FlowSetpoint, true);
             NeonFlowMonitorLock = new Object();
             NeonFlowMonitorFlag = false;
             NeonFlowSetPointFlag = false;
@@ -3273,9 +3353,15 @@ namespace UEDMHardwareControl
                     UpdateNeonFlowActMonitor();
                     PlotLastNeonFlowAct();
                     UpdateNeonFlowSetpointMonitor();
+                    if (window.cbSF6Valve.Checked)
+                    {
+                        UpdateSF6FlowActMonitor();
+                        UpdateSF6FlowSetpointMonitor();
+                    }
                     if (NeonFlowSetPointFlag)
                     {
                         neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
+                        sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
                         NeonFlowSetPointFlag = false;
                     }
                     if (NeonFlowMonitorFlag)
@@ -3285,15 +3371,17 @@ namespace UEDMHardwareControl
                     }
                 }
             }
-            window.EnableControl(window.btStartNeonFlowActMonitor, true);
-            window.EnableControl(window.btStopNeonFlowActMonitor, false);
-            window.EnableControl(window.tbNewNeonFlowSetPoint, false);
-            window.EnableControl(window.btSetNewNeonFlowSetpoint, false);
+            window.EnableControl(window.btStartHeliumFlowActMonitor, true);
+            window.EnableControl(window.btStopHeliumFlowActMonitor, false);
+            window.EnableControl(window.tbNewHeliumFlowSetPoint, false);
+            window.EnableControl(window.btSetNewHeliumFlowSetpoint, false);
+            window.EnableControl(window.tbNewSF6FlowSetpoint, false);
+            window.EnableControl(window.btSetNewSF6FlowSetpoint, false);
         }
 
         public void SetNeonFlowSetpoint()
         {
-            if (Double.TryParse(window.tbNewNeonFlowSetPoint.Text, out newNeonFlowSetpoint))
+            if (Double.TryParse(window.tbNewHeliumFlowSetPoint.Text, out newNeonFlowSetpoint))
             {
                 if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
                 {
@@ -3302,6 +3390,36 @@ namespace UEDMHardwareControl
                 else MessageBox.Show("Setpoint request is outside of the MKS PR4000B flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
             }
             else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void SetSF6FlowSetpoint()
+        {
+            if (Double.TryParse(window.tbNewSF6FlowSetpoint.Text, out newSF6FlowSetpoint))
+            {
+                if (newNeonFlowSetpoint <= neonFlowUpperLimit & neonFlowLowerLimit <= newNeonFlowSetpoint)
+                {
+                    NeonFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
+                }
+                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + neonFlowLowerLimit.ToString() + " - " + neonFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
+            }
+            else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+        }
+
+        public void StepTarget()
+        {
+            int numSteps = (int)Double.Parse(window.TargetNumStepsTextBox.Text);
+            StepTarget(numSteps);
+        }
+
+        public void StepTarget(int numSteps)
+        {
+            for (int i = 0; i < numSteps; i++)
+            {
+                SetDigitalLine("targetStepper", true);
+                Thread.Sleep(5);
+                SetDigitalLine("targetStepper", false);
+                Thread.Sleep(5);
+            }
         }
 
         #endregion
@@ -4274,6 +4392,18 @@ namespace UEDMHardwareControl
             }
         }
 
+        public bool ESuppliesConnected
+        {
+            get
+            {
+                return !window.eConnectCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.eConnectCheck, !value);
+            }
+        }
+
         public double E0PlusBoost
         {
             get
@@ -4504,15 +4634,15 @@ namespace UEDMHardwareControl
                 CPlusOffVoltage = 0;
                 CMinusOffVoltage = 0;
                 RampVoltages(CPlusVoltage, CPlusOffVoltage, CMinusVoltage, CMinusOffVoltage, 5, 1);
-                CPlusVoltage = 0;
-                CMinusVoltage = 0;
+                //CPlusVoltage = 0;
+                //CMinusVoltage = 0;
                 //UpdateVoltages();
             } else
             {
                 CPlusOffVoltage = 0;
                 CMinusOffVoltage = 0;
-                CPlusVoltage = 0;
-                CMinusVoltage = 0;
+                //CPlusVoltage = 0;
+                //CMinusVoltage = 0;
             }
             EFieldEnabled = false;
         }
@@ -4559,7 +4689,7 @@ namespace UEDMHardwareControl
                 newEPolarity = state;
                 if (ESwitchingEnabled)
                 {
-                    switchThread = new Thread(new ThreadStart(SwitchEWorker));
+                    switchThread = new Thread(new ThreadStart(SwitchEFastWorker));
                 }
                 else
                 {
@@ -4577,18 +4707,68 @@ namespace UEDMHardwareControl
         double kNegativeChargeMin = -2;
         double kNegativeChargeMax = -20;
 
-        // this function switches the E field polarity with ramped turn on and off. 
-        // It also switches off the Synth to prevent rf discharges while the fields are off
-        public void SwitchEWorker()
+        // This function switches the E field polarity by disconnecting the supplies without a ramp
+        public void SwitchEFastWorker()
         {
-
-            //bool startingSynthState = GreenSynthEnabled;
+            //Test: Fast E-field switch
             lock (switchingLock)
             {
                 // raise flag for switching E-fields
                 SwitchingEfields = true;
-                //switch off the synth
-                //GreenSynthEnabled = false;
+                // we always switch, even if it's into the same state.
+                window.SetLED(window.switchingLED, true);
+
+
+                // disconnect supplies from plates - impose 100ms wait time
+                ESuppliesConnected = false;
+                Thread.Sleep(100);
+
+                if (!EFieldEnabled)
+                {
+                    EFieldEnabled = true;
+                    Thread.Sleep((int)(1000 * ERampUpDelay));
+                }
+                
+                CalculateVoltages();
+                // set supplies to overshoot voltage
+                SetAnalogOutput(cPlusOutputTask, cPlusToWrite * EOvershootFactor);
+                SetAnalogOutput(cMinusOutputTask, cMinusToWrite * EOvershootFactor);
+
+                // bleed charges on plates
+                EBleedEnabled = true;
+                Thread.Sleep((int)(1000 * EBleedTime));
+                EBleedEnabled = false;
+                // switch E polarity
+                EFieldPolarity = newEPolarity;
+                Thread.Sleep((int)(1000 * ESwitchTime));
+
+                // connect supplies to plates
+                ESuppliesConnected = true;
+                Thread.Sleep(100);
+
+                // overshoot delay
+                Thread.Sleep((int)(1000 * EOvershootHold));
+
+                // set voltage back to control point
+                SetAnalogOutput(cPlusOutputTask, cPlusToWrite);
+                SetAnalogOutput(cMinusOutputTask, cMinusToWrite);
+
+                Thread.Sleep((int)(1000 * ERampUpDelay));
+
+                window.SetLED(window.switchingLED, false);
+            }
+
+            ESwitchDone();
+        }
+
+        // this function switches the E field polarity with ramped turn on and off. 
+        // It also switches off the Synth to prevent rf discharges while the fields are off
+        public void SwitchEWorker()
+        {
+            lock (switchingLock)
+            {
+                // raise flag for switching E-fields
+                SwitchingEfields = true;
                 // we always switch, even if it's into the same state.
                 window.SetLED(window.switchingLED, true);
                 // Add any asymmetry
@@ -4676,13 +4856,12 @@ namespace UEDMHardwareControl
             SwitchingEfields = false;
             window.EnableControl(window.switchEButton, true);
             UpdateStatus("E-switch - switching to state: " + EFieldPolarity + "; manual state: " + EManualState +
-                "; West current: " + lastWestCurrent + "; East current: " + lastEastCurrent + " .");            
+                "; West current: " + lastWestCurrent.ToString("F3") + "; East current: " + lastEastCurrent.ToString("F3") + " .");            
         }
 
         // this function is, like many in this class, a little cheezy.
         // it doesn't use update voltages, but rather writes direct to the analog outputs.
-        private void RampVoltages(double startPlus, double targetPlus, double startMinus,
-                                        double targetMinus, int numSteps, double rampTime)
+        private void RampVoltages(double startPlus, double targetPlus, double startMinus, double targetMinus, int numSteps, double rampTime)
         {
             double rampDelay = ((1000 * rampTime) / (double)numSteps);
             double diffPlus = targetPlus - startPlus;
@@ -4803,8 +4982,14 @@ namespace UEDMHardwareControl
 
         public void SetBleed(bool enable)
         {
-            SetDigitalLine("eBleed", enable);
+            SetDigitalLine("eBleed", !enable);
         }
+
+        public void SetEConnect(bool connected)
+        {
+            SetDigitalLine("eConnect", !connected);
+        }
+
         private double cPlusMonitorVoltage;
         private double cMinusMonitorVoltage;
         private double lastWestCurrent;
@@ -5319,6 +5504,43 @@ namespace UEDMHardwareControl
             }
         }
 
+        public void SetBFlip(bool enable)
+        {
+            SetDigitalLine("bSwitch", enable);
+            SetDigitalLine("notB", !enable);
+        }
+
+        public void SetCalFlip(bool enable)
+        {
+            SetDigitalLine("dB", enable);
+            SetDigitalLine("notDB", !enable);
+        }
+
+        public bool CalFlipEnabled
+        {
+            get
+            {
+                return window.calFlipCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.calFlipCheck, value);
+                //window.SetCheckBox(window.calFlipCheck, value);
+            }
+        }
+
+        public bool BFlipEnabled
+        {
+            get
+            {
+                return window.bFlipCheck.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.bFlipCheck, value);
+            }
+        }
+
         public double SteppingBiasVoltage
         {
             set
@@ -5339,6 +5561,18 @@ namespace UEDMHardwareControl
             {
                 return hpVoltage;
             }
+        }
+
+        public void SetSteppingBBiasVoltage()
+        {
+            double bBoxVoltage = Double.Parse(window.steppingBBoxBiasTextBox.Text);
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, bBoxVoltage);
+        }
+
+        public void SetSteppingBBiasVoltage(double v)
+        {
+            window.SetTextBox(window.steppingBBoxBiasTextBox, v.ToString());
+            SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
         public void SetScanningBVoltage()
@@ -5373,29 +5607,29 @@ namespace UEDMHardwareControl
         public void UpdateBCurrentMonitor()
         {
             // DB0 dB0
-            //BFlipEnabled = false;
-            //CalFlipEnabled = false;
+            BFlipEnabled = false;
+            CalFlipEnabled = false;
             double i00 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent00TextBox, i00.ToString());
             Thread.Sleep(50);
 
             // DB0 dB1
-            //BFlipEnabled = false;
-            //CalFlipEnabled = true;
+            BFlipEnabled = false;
+            CalFlipEnabled = true;
             double i01 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent01TextBox, i01.ToString());
             Thread.Sleep(50);
 
             // DB1 dB0
-            //BFlipEnabled = true;
-            //CalFlipEnabled = false;
+            BFlipEnabled = true;
+            CalFlipEnabled = false;
             double i10 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent10TextBox, i10.ToString());
             Thread.Sleep(50);
 
             // DB1 dB1
-            //BFlipEnabled = true;
-            //CalFlipEnabled = true;
+            BFlipEnabled = true;
+            CalFlipEnabled = true;
             double i11 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent11TextBox, i11.ToString());
             Thread.Sleep(50);
@@ -6230,7 +6464,6 @@ namespace UEDMHardwareControl
         }
 
         #endregion
-
 
         #region Microwave for detection
         /// This could be rewritten to use more common functions for both windfrieks (see region optical pumping), but quicker way for now

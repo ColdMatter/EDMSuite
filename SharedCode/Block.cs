@@ -17,7 +17,8 @@ namespace Data.EDM
 		private BlockConfig config = new BlockConfig();
 
         // ratio of distance from source for the two detectors
-        private static double kDetectorDistanceRatio = 1715.0 / 1500.0;
+        private static double kDetectorDistanceRatio = 1715.0 / 1500.0; // For ClassicEDM
+        //private static double kDetectorDistanceRatio = 3903.0 / 3513.0; // For UEDM
 
         public List<string> detectors = new List<string>();
 
@@ -95,7 +96,7 @@ namespace Data.EDM
         // Also has the option of converting single point data to TOFs
         public void AddDetectorsToBlock()
         {
-            SubtractBackgroundFromProbeDetectorTOFs();
+            SubtractBackgroundFromProbeDetectorTOFs(50000, 114590, 50000, 114590);    //Jan 2024 temporarily changed this for UEDM
 
             CreateScaledBottomProbe();
 
@@ -226,6 +227,51 @@ namespace Data.EDM
             detectors.Add("topProbeNoBackground");
         }
 
+        public void SubtractBackgroundFromProbeDetectorTOFs(double gateAst, double gateAend, double gateBst, double gateBend)
+
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[0];
+                double bg = t.GatedMeanAndUncertainty(gateAst, gateAend)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("BottomDetectorBackground", bg);
+            }
+            // give these data a name
+            detectors.Add("bottomProbeNoBackground");
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[1];
+                double bg = t.GatedMeanAndUncertainty(gateBst, gateBend)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                point.SinglePointData.Add("TopDetectorBackground", bg);
+            }
+            // give these data a name
+            detectors.Add("topProbeNoBackground");
+        }
         // this function takes some of the single point data and adds it to the block shots as TOFs
         // with one data point in them. This allows us to use the same code to break all of the data
         // into channels.

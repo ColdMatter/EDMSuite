@@ -209,7 +209,7 @@ namespace EDMBlockHead.Acquire
                     }
                     //p.SinglePointData.Add("topPD", spd[0]);
                     //p.SinglePointData.Add("bottomPD", spd[1]);
-                    //p.SinglePointData.Add("MiniFlux1", spd[0]);//on HV rack
+                    p.SinglePointData.Add("MiniFlux1", spd[0]);//near HV supplies
                     //p.SinglePointData.Add("MiniFlux2", spd[1]);
                     //p.SinglePointData.Add("MiniFlux3", spd[2]);
                     //p.SinglePointData.Add("CplusV", spd[5]);
@@ -332,7 +332,7 @@ namespace EDMBlockHead.Acquire
                     {
                         // just stuff a made up shot in
                         //Thread.Sleep(10);
-                        s = DataFaker.GetFakeShot(1900, 50, 10, 3, 3);
+                        s = DataFaker.GetFakeShot(1900, 200, 10, 3, 3);
                         ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
                         p = new EDMPoint();
                         p.Shot = s;
@@ -652,29 +652,29 @@ namespace EDMBlockHead.Acquire
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            //bChan.Channel = "b";
-            //bChan.Invert = false;
-            //bChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(bChan);
+            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
 
-            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            //notBChan.Channel = "notB";
-            //notBChan.Invert = true;
-            //notBChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(notBChan);
+            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            notBChan.Channel = "notB";
+            notBChan.Invert = true;
+            notBChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(notBChan);
 
-            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            //dbChan.Channel = "db";
-            //dbChan.Invert = false;
-            //dbChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(dbChan);
+            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
 
-            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            //notDBChan.Channel = "notDB";
-            //notDBChan.Invert = true;
-            //notDBChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(notDBChan);
+            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            notDBChan.Channel = "notDB";
+            notDBChan.Invert = true;
+            notDBChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -776,48 +776,75 @@ namespace EDMBlockHead.Acquire
         {
             inputs = new ScannedAnalogInputCollection();
             inputs.RawSampleRate = 100000; 
-            inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            inputs.GateLength = 280;
+            inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime"); // Classic used ~700
+            inputs.GateLength = 12000; //Classic used 280
 
-            ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
-            bottomProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bottomProbe"];
-            bottomProbe.ReductionMode = DataReductionMode.Chop;
-            bottomProbe.ChopStart = 140;
-            bottomProbe.ChopLength = 80;
-            bottomProbe.LowLimit = 0;
-            bottomProbe.HighLimit = 10;
-            bottomProbe.Calibration = 510; 
-            inputs.Channels.Add(bottomProbe);
+            ScannedAnalogInput detectorA = new ScannedAnalogInput();
+            detectorA.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorA"];
+            detectorA.ReductionMode = DataReductionMode.Chop;
+            detectorA.ChopStart = 600; //Classic had 140
+            detectorA.ChopLength = 10800; //Classic had 80
+            detectorA.LowLimit = 0;
+            detectorA.HighLimit = 10;
+            detectorA.Calibration = 7.5;
+            inputs.Channels.Add(detectorA);
 
-            ScannedAnalogInput topProbe = new ScannedAnalogInput();
-            topProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["topProbe"];
-            topProbe.ReductionMode = DataReductionMode.Chop;
-            topProbe.ChopStart = 180;
-            topProbe.ChopLength = 80;
-            topProbe.LowLimit = 0;
-            topProbe.HighLimit = 10;
-            topProbe.Calibration = 510;
-            inputs.Channels.Add(topProbe);
-            
+            ScannedAnalogInput detectorB = new ScannedAnalogInput();
+            detectorB.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorB"];
+            detectorB.ReductionMode = DataReductionMode.Chop;
+            detectorB.ChopStart = 600; //Classic had 180
+            detectorB.ChopLength = 10800; //Classic had 80
+            detectorB.LowLimit = 0;
+            detectorB.HighLimit = 10;
+            detectorB.Calibration = 7.5;
+            inputs.Channels.Add(detectorB);
+
+            //ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
+            //bottomProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bottomProbe"];
+            //bottomProbe.ReductionMode = DataReductionMode.Chop;
+            //bottomProbe.ChopStart = 140;
+            //bottomProbe.ChopLength = 80;
+            //bottomProbe.LowLimit = 0;
+            //bottomProbe.HighLimit = 10;
+            //bottomProbe.Calibration = 510; 
+            //inputs.Channels.Add(bottomProbe);
+
+            //ScannedAnalogInput topProbe = new ScannedAnalogInput();
+            //topProbe.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["topProbe"];
+            //topProbe.ReductionMode = DataReductionMode.Chop;
+            //topProbe.ChopStart = 180;
+            //topProbe.ChopLength = 80;
+            //topProbe.LowLimit = 0;
+            //topProbe.HighLimit = 10;
+            //topProbe.Calibration = 510;
+            //inputs.Channels.Add(topProbe);
+
+            //ScannedAnalogInput mag = new ScannedAnalogInput();
+            //mag.ReductionMode = DataReductionMode.Average;
+            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
+            //mag.AverageEvery = 20;
+            //mag.LowLimit = -10;
+            //mag.HighLimit = 10;
+            //mag.Calibration = 0.00001;
+            //inputs.Channels.Add(mag);
+
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;
-            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["magnetometer"];
-            mag.AverageEvery = 20;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            mag.AverageEvery = 800;
             mag.LowLimit = -10;
             mag.HighLimit = 10;
-            mag.Calibration = 0.00001;
+            mag.Calibration = 1e-5; //Bartington calibration is 1V = 10uT
             inputs.Channels.Add(mag);
 
-
-            ScannedAnalogInput gnd = new ScannedAnalogInput();
-            gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
-            gnd.ReductionMode = DataReductionMode.Average;
-            gnd.AverageEvery = 20;
-            gnd.LowLimit = -1;
-            gnd.HighLimit = 1;
-            gnd.Calibration = 1;
-            inputs.Channels.Add(gnd);
-
+            //ScannedAnalogInput gnd = new ScannedAnalogInput();
+            //gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
+            //gnd.ReductionMode = DataReductionMode.Average;
+            //gnd.AverageEvery = 20;
+            //gnd.LowLimit = -1;
+            //gnd.HighLimit = 1;
+            //gnd.Calibration = 1;
+            //inputs.Channels.Add(gnd);
 
             ScannedAnalogInput battery = new ScannedAnalogInput();
             battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
@@ -838,31 +865,31 @@ namespace EDMBlockHead.Acquire
             battery2.Calibration = 1.0e-9 / 0.9; // analog output calibration is 0.9 V/nT
             inputs.Channels.Add(battery2);*/
 
-            ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
-            rfCurrent.ReductionMode = DataReductionMode.Average;
-            rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
-            rfCurrent.AverageEvery = 10; //Bandwidth of the ammeter is aprox 12kHz
-            rfCurrent.LowLimit = -10;
-            rfCurrent.HighLimit = 10;
-            inputs.Channels.Add(rfCurrent);
+            //ScannedAnalogInput rfCurrent = new ScannedAnalogInput();
+            //rfCurrent.ReductionMode = DataReductionMode.Average;
+            //rfCurrent.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["rfCurrent"];
+            //rfCurrent.AverageEvery = 10; //Bandwidth of the ammeter is aprox 12kHz
+            //rfCurrent.LowLimit = -10;
+            //rfCurrent.HighLimit = 10;
+            //inputs.Channels.Add(rfCurrent);
 
-            ScannedAnalogInput reflectedrfAmplitude = new ScannedAnalogInput();
-            reflectedrfAmplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrfAmplitude"];
-            reflectedrfAmplitude.ReductionMode = DataReductionMode.Chop;
-            reflectedrfAmplitude.ChopStart = 0;
-            reflectedrfAmplitude.ChopLength = 150;
-            reflectedrfAmplitude.LowLimit = -10;
-            reflectedrfAmplitude.HighLimit = 10;
-            inputs.Channels.Add(reflectedrfAmplitude);
+            //ScannedAnalogInput reflectedrfAmplitude = new ScannedAnalogInput();
+            //reflectedrfAmplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["reflectedrfAmplitude"];
+            //reflectedrfAmplitude.ReductionMode = DataReductionMode.Chop;
+            //reflectedrfAmplitude.ChopStart = 0;
+            //reflectedrfAmplitude.ChopLength = 150;
+            //reflectedrfAmplitude.LowLimit = -10;
+            //reflectedrfAmplitude.HighLimit = 10;
+            //inputs.Channels.Add(reflectedrfAmplitude);
 
-            ScannedAnalogInput incidentrfAmplitude = new ScannedAnalogInput();
-            incidentrfAmplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["incidentrfAmplitude"];
-            incidentrfAmplitude.ReductionMode = DataReductionMode.Chop;
-            incidentrfAmplitude.ChopStart = 0;
-            incidentrfAmplitude.ChopLength = 150;
-            incidentrfAmplitude.LowLimit = -10;
-            incidentrfAmplitude.HighLimit = 10;
-            inputs.Channels.Add(incidentrfAmplitude);
+            //ScannedAnalogInput incidentrfAmplitude = new ScannedAnalogInput();
+            //incidentrfAmplitude.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["incidentrfAmplitude"];
+            //incidentrfAmplitude.ReductionMode = DataReductionMode.Chop;
+            //incidentrfAmplitude.ChopStart = 0;
+            //incidentrfAmplitude.ChopLength = 150;
+            //incidentrfAmplitude.LowLimit = -10;
+            //incidentrfAmplitude.HighLimit = 10;
+            //inputs.Channels.Add(incidentrfAmplitude);
 
             /*ScannedAnalogInput quSPinFSY = new ScannedAnalogInput();
             quSPinFSY.ReductionMode = DataReductionMode.Average;
@@ -1051,15 +1078,15 @@ namespace EDMBlockHead.Acquire
         {
             // here we configure the scan of analog inputs that happens after each shot.
             singlePointInputTask = new Task("Blockhead single point inputs");
-            AddChannelToSinglePointTask("topPD");
+            //AddChannelToSinglePointTask("topPD");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("bottomPD");
+            //AddChannelToSinglePointTask("bottomPD");
             //AddChannelToSinglePointTask("ground");
             AddChannelToSinglePointTask("miniFlux1");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("miniFlux2");
+            //AddChannelToSinglePointTask("miniFlux2");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("miniFlux3");
+            //AddChannelToSinglePointTask("miniFlux3");
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("cPlusMonitor");
             //AddChannelToSinglePointTask("ground");
@@ -1068,7 +1095,7 @@ namespace EDMBlockHead.Acquire
            //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");
             //AddChannelToSinglePointTask("ground");
-            AddChannelToSinglePointTask("valveMonVoltage");
+            //AddChannelToSinglePointTask("valveMonVoltage");
 
             //singlePointInputTask.Timing.ConfigureSampleClock(
             //        "",
@@ -1144,7 +1171,7 @@ namespace EDMBlockHead.Acquire
             // set the leakage monitor measurement time to 5ms.
             // With this setting it actually takes 26ms total to acquire two channels.
             //hardwareController.LeakageMonitorMeasurementTime = 0.005;
-            hardwareController.ReconfigureIMonitors();
+            //hardwareController.ReconfigureIMonitors();
             // Start the first asynchronous acquisition
             //hardwareController.UpdateIMonitorAsync();
 		}
@@ -1206,9 +1233,9 @@ namespace EDMBlockHead.Acquire
 			// rf parameters
 			//EDMHardwareControl.Controller hwController = new EDMHardwareControl.Controller();     //new hardware controller
             UEDMHardwareControl.UEDMController hwController = new UEDMHardwareControl.UEDMController();
-            //config.Settings["greenSynthFrequency"] = hwController.GreenSynthOnFrequency;
+            config.Settings["greenSynthFrequency"] = hwController.GreenSynthOnFrequency;
 			//config.Settings["greenSynthDCFM"] = hwController.GreenSynthDCFM;
-			//config.Settings["greenSynthAmplitude"] = hwController.GreenSynthOnAmplitude;               //new hardware controller
+			config.Settings["greenSynthAmplitude"] = hwController.GreenSynthOnAmplitude;               //new hardware controller
 		}
 
 		private void ThrowSwitches(int point)

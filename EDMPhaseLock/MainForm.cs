@@ -345,7 +345,7 @@ namespace EDMPhaseLock
 		
         Task counterTask;
 		HP3325BSynth redSynth;
-		RigolDG822 wavGen;
+		RigolDG811 wavGen;
         Task analogOutputTask;
         AnalogSingleChannelWriter analogWriter;
 		CounterSingleChannelReader counterReader;
@@ -367,7 +367,7 @@ namespace EDMPhaseLock
 		const int LOCK_UPDATE_EVERY = 5;		// this is how often the lock is updated in terms
 												// of SAMPLE_MULTI_READs (same idea as GUI update interval above)
 		// lock parameters
-		const double PROPORTIONAL_GAIN = 1;		// the units are Hz per count
+		const double PROPORTIONAL_GAIN = 1.0;		// the units are Hz per count
 		const double DERIVATIVE_GAIN = 25;		// the units are difficult to work out
 		const double OSCILLATOR_DEVIATION_LIMIT = 50000;		// this is the furthest the output frequency
 															// can deviate from the target frequency
@@ -384,6 +384,9 @@ namespace EDMPhaseLock
         const double VCO_CAL = 150000;          // The calibration of the VCO, in Hz per V, around the central value
         const double VCO_HIGH = 5;             // upper input range of the VCO
         const double VCO_LOW = 0;               // lower input range of the VCO
+
+		const double USB_AMP = 5;               // The output Vpp for the usb synth
+		const double USB_OFFS = 2.5;			// The output voltage should be offset to be between 0 and 5
 
 		private void StartAcquisition()
 		{
@@ -407,8 +410,10 @@ namespace EDMPhaseLock
 
 			if (cm == ControlMethod.usb && !Environs.Debug)
             {
-				wavGen = (RigolDG822)Environs.Hardware.Instruments["rigolWavGen"];
+				wavGen = (RigolDG811)Environs.Hardware.Instruments["rigolWavGen"];
 				wavGen.Connect();
+				wavGen.Amplitude = USB_AMP;
+				wavGen.Offset = USB_OFFS;
 				wavGen.Enabled = true;
             }
 
@@ -663,6 +668,7 @@ namespace EDMPhaseLock
 
 		private void StopAcquisition()
 		{
+			lockOscillator = false;
 			if (!Environs.Debug) 
 			{
 				if (counterTask != null) counterTask.Dispose();
@@ -670,8 +676,11 @@ namespace EDMPhaseLock
 			}
 			else lock(this) debugAbortFlag = true;
 			if (cm == ControlMethod.synth) redSynth.Disconnect();
-			if (cm == ControlMethod.usb) wavGen.Disconnect();
-
+			if (cm == ControlMethod.usb)
+			{
+				wavGen.Enabled = false;
+				wavGen.Disconnect();
+			}
 		}
 
 		#endregion
