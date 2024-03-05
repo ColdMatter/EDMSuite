@@ -32,7 +32,7 @@ namespace DAQ.HAL
             string Analogboard = "/PXI1Slot4";
             string usbbreakout = "/Dev5";
 
-            //Info.Add("ScanMasterConfig", "D:\\EDM Suite Files\\Settings\\ScanMaster\\2024Feb13.xml");
+            Info.Add("ScanMasterConfig", "D:\\EDM Suite Files\\Settings\\ScanMaster\\2024Mar0.xml");
 
             Boards.Add("daq", "/PXI1Slot5");
             Boards.Add("tclBoardProbe", "/PXI1Slot5");
@@ -50,6 +50,7 @@ namespace DAQ.HAL
 
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL4::INSTR"));
 
+            #region Depreciated Code
             // AddAnalogInputChannel("pressure", usbbreakout + "/ai3", AITerminalConfiguration.Rse);
             // AddAnalogInputChannel("S1TemperatureMonitor", usbbreakout + "/ai4", AITerminalConfiguration.Rse);
             // AddAnalogInputChannel("S2TemperatureMonitor", usbbreakout + "/ai5", AITerminalConfiguration.Rse);
@@ -68,6 +69,7 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("Port03", usbbreakout, 0, 3);
             //AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", usbbreakout, 0, 4);
             //AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", usbbreakout, 0, 5);
+            #endregion
 
             // Probe cavity inputs
             AddAnalogInputChannel("ProbeCavityRampVoltage", digitalPatternBoardAddress + "/ai8", AITerminalConfiguration.Rse); //tick this is the ramp impute
@@ -160,7 +162,7 @@ namespace DAQ.HAL
             Info.Add("TCLConfig", tclConfigProbe);
             Info.Add("tclConfigPump", tclConfigProbe);
 
-
+            #region Depreciated Code
             //TCL configuration for pump cavity: 13/01/2021 (Chris)
             //TCLConfig tclConfigPump = new TCLConfig("Pump");
             //tclConfigPump.Trigger = digitalPatternBoardAddress + "/PFI0";
@@ -225,11 +227,11 @@ namespace DAQ.HAL
 
 
             ////string pgBoard = (string)Boards["pg"];
+            #endregion
 
 
-
-
-            ////lattice scanmaster
+            #region Lattice scanmaster
+            ////
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 0, 3);
             AddDigitalOutputChannel("q2", digitalPatternBoardAddress, 0, 14);
@@ -246,18 +248,18 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 0, 11);//it seeems to like having this here
             AddDigitalOutputChannel("detector", digitalPatternBoardAddress, 0, 2);
             AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1);
-            AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4);
-            AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);
-            AddDigitalOutputChannel("shutter1off", digitalPatternBoardAddress, 0, 7);//new 24/09/21 
+            AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4); //NOT A SHUTTER, V0 Slowing AOM Near
+            AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);//Unused it seems
+            AddDigitalOutputChannel("shutterSTEVEoff", digitalPatternBoardAddress, 0, 7);//STEVE newport Shutter A Signal (closure TTL)
             // shutter 1 on is done in the switch line of the pattern (port 0 0)
-            AddDigitalOutputChannel("shutterslow", digitalPatternBoardAddress, 0, 8);
-            AddDigitalOutputChannel("shutterv1", digitalPatternBoardAddress, 0, 9);
-            AddDigitalOutputChannel("shutterv2", digitalPatternBoardAddress, 0, 10);
+            AddDigitalOutputChannel("shutterslow", digitalPatternBoardAddress, 0, 8); //UNKNOWN
+            AddDigitalOutputChannel("shutterv1/v2", digitalPatternBoardAddress, 0, 9); //Thorlabs Shutter for V1 and V2 slowing beams
+            AddDigitalOutputChannel("shutterv2", digitalPatternBoardAddress, 0, 10); //NOT A SHUTTER ITS THE V2 AOM
             ////AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", ExtraBoard + "/ai0", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt2", ExtraBoard + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("photodiode", ExtraBoard + "/ai6", AITerminalConfiguration.Differential);
-            AddDigitalOutputChannel("shutterslow2", digitalPatternBoardAddress, 0, 12);
+            AddDigitalOutputChannel("shutterslow2", digitalPatternBoardAddress, 0, 12); //V0 Uniblitz Shutter
             ////AddAnalogInputChannel("VISp2_probelaser", tclBoardProbe + "/ai3", AITerminalConfiguration.Rse);
             ////AddAnalogOutputChannel("probelaser", tclBoardProbe + "/ao2", 0, 10);
 
@@ -302,7 +304,7 @@ namespace DAQ.HAL
             //USB Instruments
             Instruments.Add("FlowControllers", new AlicatFlowController("ASRL12::INSTR"));
             Instruments.Add("LatticeYAG", new BigSkyYAG("ASRL9::INSTR"));
-
+            #region Depreciated Code
             // Analog inputs
             //AddAnalogInputChannel("CavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick
             //AddAnalogInputChannel("Pumpmaster", tclBoardProbe + "/ai3", AITerminalConfiguration.Rse);
@@ -348,8 +350,8 @@ namespace DAQ.HAL
             //tclConfigProbe.Cavities[probe].AddFSRCalibration("probelaser", 3.84);
 
             //Info.Add("DefaultCavity", tclConfigProbe);
-
-
+            #endregion
+            #endregion
 
         }
 
