@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,19 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Alf.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlFHardwareControl|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AlFHardwareControl\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AlFHardwareControl.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CmdLib8742">
@@ -212,7 +226,6 @@
     <Compile Include="ShutterSet.Designer.cs">
       <DependentUpon>ShutterSet.cs</DependentUpon>
     </Compile>
-    <Compile Include="SimpleControlDesigner.cs" />
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
     </Compile>

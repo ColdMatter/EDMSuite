@@ -40,6 +40,11 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
             this.scanCtrl = new System.Windows.Forms.GroupBox();
+            this.startPattern = new System.Windows.Forms.Button();
+            this.reloadPatterns = new System.Windows.Forms.Button();
+            this.PatternPicker = new System.Windows.Forms.ComboBox();
+            this.scanPointProgress = new System.Windows.Forms.Label();
+            this.repeatScan = new System.Windows.Forms.CheckBox();
             this.RejectionStatus = new System.Windows.Forms.TextBox();
             this.save_data = new System.Windows.Forms.Button();
             this.clear_data = new System.Windows.Forms.Button();
@@ -178,6 +183,11 @@ namespace AlFHardwareControl
             // 
             // scanCtrl
             // 
+            this.scanCtrl.Controls.Add(this.startPattern);
+            this.scanCtrl.Controls.Add(this.reloadPatterns);
+            this.scanCtrl.Controls.Add(this.PatternPicker);
+            this.scanCtrl.Controls.Add(this.scanPointProgress);
+            this.scanCtrl.Controls.Add(this.repeatScan);
             this.scanCtrl.Controls.Add(this.RejectionStatus);
             this.scanCtrl.Controls.Add(this.save_data);
             this.scanCtrl.Controls.Add(this.clear_data);
@@ -193,6 +203,55 @@ namespace AlFHardwareControl
             this.scanCtrl.TabIndex = 3;
             this.scanCtrl.TabStop = false;
             this.scanCtrl.Text = "Scan Control";
+            // 
+            // startPattern
+            // 
+            this.startPattern.Location = new System.Drawing.Point(248, 74);
+            this.startPattern.Name = "startPattern";
+            this.startPattern.Size = new System.Drawing.Size(23, 23);
+            this.startPattern.TabIndex = 17;
+            this.startPattern.Text = "+";
+            this.startPattern.UseVisualStyleBackColor = true;
+            this.startPattern.Click += new System.EventHandler(this.startPattern_Click);
+            // 
+            // reloadPatterns
+            // 
+            this.reloadPatterns.Location = new System.Drawing.Point(219, 74);
+            this.reloadPatterns.Name = "reloadPatterns";
+            this.reloadPatterns.Size = new System.Drawing.Size(23, 23);
+            this.reloadPatterns.TabIndex = 16;
+            this.reloadPatterns.Text = "R";
+            this.reloadPatterns.UseVisualStyleBackColor = true;
+            this.reloadPatterns.Click += new System.EventHandler(this.reloadPatterns_Click);
+            // 
+            // PatternPicker
+            // 
+            this.PatternPicker.FormattingEnabled = true;
+            this.PatternPicker.Location = new System.Drawing.Point(10, 74);
+            this.PatternPicker.Name = "PatternPicker";
+            this.PatternPicker.Size = new System.Drawing.Size(203, 21);
+            this.PatternPicker.TabIndex = 15;
+            this.PatternPicker.SelectedIndexChanged += new System.EventHandler(this.PatternPicker_SelectedIndexChanged);
+            // 
+            // scanPointProgress
+            // 
+            this.scanPointProgress.AutoSize = true;
+            this.scanPointProgress.Location = new System.Drawing.Point(81, 109);
+            this.scanPointProgress.Name = "scanPointProgress";
+            this.scanPointProgress.Size = new System.Drawing.Size(24, 13);
+            this.scanPointProgress.TabIndex = 14;
+            this.scanPointProgress.Text = "0/0";
+            // 
+            // repeatScan
+            // 
+            this.repeatScan.AutoSize = true;
+            this.repeatScan.Location = new System.Drawing.Point(210, 109);
+            this.repeatScan.Name = "repeatScan";
+            this.repeatScan.Size = new System.Drawing.Size(61, 17);
+            this.repeatScan.TabIndex = 13;
+            this.repeatScan.Text = "Repeat";
+            this.repeatScan.UseVisualStyleBackColor = true;
+            this.repeatScan.CheckedChanged += new System.EventHandler(this.repeatScan_CheckedChanged);
             // 
             // RejectionStatus
             // 
@@ -355,5 +414,10 @@ namespace AlFHardwareControl
         private System.Windows.Forms.CheckBox fixX;
         private System.Windows.Forms.CheckBox saveEnable;
         private System.Windows.Forms.TextBox RejectionStatus;
+        private System.Windows.Forms.CheckBox repeatScan;
+        private System.Windows.Forms.Label scanPointProgress;
+        private System.Windows.Forms.Button startPattern;
+        private System.Windows.Forms.Button reloadPatterns;
+        private System.Windows.Forms.ComboBox PatternPicker;
     }
 }

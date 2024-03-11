@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace AlFHardwareControl
 {
-    [DesignerAttribute(typeof(SimpleControlDesigner))]
     public partial class ParamSet : UserControl
     {
         public event EventHandler OnSetClick;
