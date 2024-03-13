@@ -22,7 +22,8 @@ namespace DAQ.HAL
         public static class CommandTypes
         {
             public static String ChangeFlowSetpoint { get { return "s"; } } // Changes the flow rate going through the flow controller. Really this command is asXXXX where XXXX is a number but we will compose the full command later
-            public static String CollectFlowData { get { return "a"; } } // Command needed to return large string of all the data 
+            public static String CollectFlowData { get { return "a"; } } // Command needed to return large string of all the data
+            public static String StopStreaming {  get { return "@@=a"; } } // Command to stop streaming data
         }
 
         // Serial connection parameters for the Alicat Flow Controller:
@@ -119,6 +120,14 @@ namespace DAQ.HAL
             string response = Query(FlowQuery);
             Disconnect();
             return response;
+        }
+
+        public void StopStreaming()
+        {
+            Connect();
+            string StopCommand = String.Concat(CommandTypes.StopStreaming, "\r");
+            string response = Query(StopCommand);
+            Disconnect();
         }
 
         #endregion

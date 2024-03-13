@@ -32,6 +32,8 @@ namespace DAQ.HAL
             string Analogboard = "/PXI1Slot4";
             string usbbreakout = "/Dev5";
 
+            //Info.Add("ScanMasterConfig", "D:\\EDM Suite Files\\Settings\\ScanMaster\\2024Feb13.xml");
+
             Boards.Add("daq", "/PXI1Slot5");
             Boards.Add("tclBoardProbe", "/PXI1Slot5");
             Boards.Add("pg", "/PXI1Slot6");

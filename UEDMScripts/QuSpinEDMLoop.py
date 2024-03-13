@@ -422,7 +422,7 @@ def QuSpinGo():
 		bh.SaveBlock(blockPath)
 		print("Saved block "+ str(blockIndex) + ".")
 		# give mma a chance to analyse the block
-		print("Notifying Mathematica and waiting ...")
+		# print("Notifying Mathematica and waiting ...")
 		writeLatestBlockNotificationFile(cluster, blockIndex)
 		System.Threading.Thread.CurrentThread.Join(5000)
 		print("Done.")

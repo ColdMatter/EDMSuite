@@ -58,29 +58,8 @@ namespace LatticeHardwareControl
             // This also has the benefit of allowing logarithmic Y scales to be used on plots, without an exception being thrown.
             chart.Series[series].Points.AddXY(xpoint, ypoint);
         }
-
         #endregion
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void btSetNewHeliumFlowSetpoint_Click(object sender, EventArgs e)
-        {
-        
-        }
-
-        private void btStartFlowActMonitor_Click_1(object sender, EventArgs e)
-        {
-        
-        }
-
-        private void btStopFlowActMonitor_Click_1(object sender, EventArgs e)
-        {
-      
-        }
 
         private void buttonStartPMonitor_Click(object sender, EventArgs e)
         {
@@ -160,7 +139,73 @@ namespace LatticeHardwareControl
 
         private void button_set_flow_He_Click(object sender, EventArgs e)
         {
+            controller.AlicatFlowSet("a","2");
+            SetTextBox(textBox6, "2.0");
+        }
 
+        private void textBoxDownstreamPressure_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_stop_flow_He_Click(object sender, EventArgs e)
+        {
+            controller.AlicatFlowSet("a", "0");
+            SetTextBox(textBox6, "0.0");
+        }
+
+        private void button_set_flow_SF6_Click(object sender, EventArgs e)
+        {
+            controller.AlicatFlowSet("b", "0.01");
+            SetTextBox(textBox5, "0.01");
+        }
+
+        private void textBoxHeFlow_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_stop_flow_SF6_Click(object sender, EventArgs e)
+        {
+            controller.AlicatFlowSet("b", "0");
+            SetTextBox(textBox5, "0.0");
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_Set_All_Click(object sender, EventArgs e)
+        {
+            button_set_flow_SF6.PerformClick();
+            button_set_flow_He.PerformClick();
+        }
+
+        private void button_Clear_All_Click(object sender, EventArgs e)
+        {
+            button_stop_flow_SF6.PerformClick();
+            button_stop_flow_He.PerformClick();
         }
 
         //private void button_Flow_controller_connect_Click_1(object sender, EventArgs e){}

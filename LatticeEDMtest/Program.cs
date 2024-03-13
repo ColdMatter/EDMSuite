@@ -35,7 +35,7 @@ namespace LatticeHardwareControl
         //private static double pressure = 0;
 
         //public Task pressuretask;
-
+        
         private double initialSourceGaugeCorrectionFactor = 4.1;
 
 
@@ -54,10 +54,22 @@ namespace LatticeHardwareControl
 
         Form1 form;
 
+        //Alicat Flow Control
+        AlicatFlowController Alicat = new AlicatFlowController("ASRL15::INSTR");
+        public void AlicatFlowSet(string ControllerAddress, string flowrate)
+        {
+            lock (Alicat)
+            { 
+                query = Alicat.SetSetpoint(ControllerAddress, flowrate);
+               // 
+
+            }
+        }
 
         #region Pressure Monitors
 
         //// Create variable names for storing data////
+        ///Right we create new pressure gauges and relock and connect eveyr update, innecesary and hsoul dbe changed///
         // For pressure monitors:
         private double lastSourcePressure;
         private double P_Down_last;
@@ -109,14 +121,14 @@ namespace LatticeHardwareControl
             {
                 string avgPressureSourceExpForm = avgPressureSource.ToString("E");
                 form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
-                sourcePressureMonitor.DisposePressureTask();
+                //sourcePressureMonitor.DisposePressureTask();
             }
             else
             {
                 //Display error message
                 string avgPressureSourceExpForm = "Error Low";
                 form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
-                sourcePressureMonitor.DisposePressureTask();
+                //sourcePressureMonitor.DisposePressureTask();
             }
             //SL end
 
@@ -127,12 +139,14 @@ namespace LatticeHardwareControl
             //form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
             //sourcePressureMonitor.DisposePressureTask();
             form.SetTextBox(form.textBoxDownstreamPressure, P_avg_Down_ExpForm.ToString());
-            downstreamPressureMonitor.DisposePressureTask();
+            //downstreamPressureMonitor.DisposePressureTask();
+
         }
 
         private Thread PTMonitorPollThread;
         private int PTMonitorPollPeriod = 1000;
         private bool PTMonitorFlag;
+        private string query;
         private readonly object LatticeHardwareControllerDAQCardLock = new object(); // Object for locking access to the DAQ card used for this hardware controller
 
         private void PTMonitorPollWorker()
@@ -166,6 +180,7 @@ namespace LatticeHardwareControl
                     ThreadWaitPeriod = 0;
                 }
 
+                System.GC.Collect();
                 Thread.Sleep(ThreadWaitPeriod);
             }
         }
@@ -204,13 +219,13 @@ namespace LatticeHardwareControl
             // Setup gas flow controller
             // all of the options for a serial device
             // ---- can be sent through the constructor of the SerialPort class
-            // ---- PortName = "COM9", Baud Rate = 19200, Parity = None,
+            // ---- PortName = "COM14", Baud Rate = 19200, Parity = None,
             // ---- Data Bits = 8, Stop Bits = One, Handshake = None
-            SerialPort _serialPort = new SerialPort("COM9", 19200, Parity.None, 8, StopBits.One);
+            SerialPort _serialPort = new SerialPort("COM14", 19200, Parity.None, 8, StopBits.One);
             _serialPort.Handshake = Handshake.None;
 
             // "sp_DataReceived" is a custom method that I have created
-            _serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
+            //_serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
 
             // milliseconds _serialPort.ReadTimeout = 500;
             _serialPort.WriteTimeout = 500;
@@ -237,7 +252,5 @@ namespace LatticeHardwareControl
         }
         */
     }
-}
-
         #endregion
 }

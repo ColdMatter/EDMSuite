@@ -31,6 +31,8 @@ namespace LatticeHardwareControl
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.richTextBox_output = new System.Windows.Forms.RichTextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.textbox_Temp_SF6 = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -62,21 +64,24 @@ namespace LatticeHardwareControl
             this.textBox14 = new System.Windows.Forms.TextBox();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_Get_Serial_Ports = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox_COM_flow_control = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.button_Flow_controller_disconnect = new System.Windows.Forms.Button();
             this.button_Flow_controller_connect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
-            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_Clear_All = new System.Windows.Forms.Button();
+            this.button_Set_All = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
             this.button_stop_flow_He = new System.Windows.Forms.Button();
             this.button_set_flow_He = new System.Windows.Forms.Button();
             this.YAG_Control = new System.Windows.Forms.TabPage();
@@ -84,22 +89,23 @@ namespace LatticeHardwareControl
             this.ScanMaster = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.V0_freq_set = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.YbF_velocity = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.Dop_calc_button = new System.Windows.Forms.Button();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.V1_freq_calc = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.Dop_calc_button = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.YbF_velocity = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.V0_freq_set = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.textBox_freq_4f = new System.Windows.Forms.TextBox();
             this.textBox_freq_V3 = new System.Windows.Forms.TextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
@@ -112,11 +118,8 @@ namespace LatticeHardwareControl
             this.button_Freq_stop = new System.Windows.Forms.Button();
             this.button_Freq_start = new System.Windows.Forms.Button();
             this.textBox_freq_V1 = new System.Windows.Forms.TextBox();
-            this.label32 = new System.Windows.Forms.Label();
-            this.textBox_freq_4f = new System.Windows.Forms.TextBox();
-            this.richTextBox_output = new System.Windows.Forms.RichTextBox();
-            this.button_Get_Serial_Ports = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -126,7 +129,6 @@ namespace LatticeHardwareControl
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -140,6 +142,25 @@ namespace LatticeHardwareControl
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(271, 597);
             this.panel1.TabIndex = 0;
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.richTextBox_output);
+            this.groupBox7.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.groupBox7.Location = new System.Drawing.Point(12, 484);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(256, 100);
+            this.groupBox7.TabIndex = 14;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Output Dialog";
+            // 
+            // richTextBox_output
+            // 
+            this.richTextBox_output.Location = new System.Drawing.Point(9, 19);
+            this.richTextBox_output.Name = "richTextBox_output";
+            this.richTextBox_output.Size = new System.Drawing.Size(241, 75);
+            this.richTextBox_output.TabIndex = 0;
+            this.richTextBox_output.Text = "";
             // 
             // groupBox5
             // 
@@ -334,6 +355,7 @@ namespace LatticeHardwareControl
             this.textBoxDownstreamPressure.ReadOnly = true;
             this.textBoxDownstreamPressure.Size = new System.Drawing.Size(127, 20);
             this.textBoxDownstreamPressure.TabIndex = 8;
+            this.textBoxDownstreamPressure.TextChanged += new System.EventHandler(this.textBoxDownstreamPressure_TextChanged);
             // 
             // label2
             // 
@@ -468,6 +490,15 @@ namespace LatticeHardwareControl
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Device communication";
             // 
+            // button_Get_Serial_Ports
+            // 
+            this.button_Get_Serial_Ports.Location = new System.Drawing.Point(195, 55);
+            this.button_Get_Serial_Ports.Name = "button_Get_Serial_Ports";
+            this.button_Get_Serial_Ports.Size = new System.Drawing.Size(87, 23);
+            this.button_Get_Serial_Ports.TabIndex = 11;
+            this.button_Get_Serial_Ports.Text = "Show ports";
+            this.button_Get_Serial_Ports.UseVisualStyleBackColor = true;
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -518,11 +549,7 @@ namespace LatticeHardwareControl
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.textBox5);
             this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.button_stop_flow_SF6);
-            this.groupBox2.Controls.Add(this.button_set_flow_SF6);
             this.groupBox2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox2.Location = new System.Drawing.Point(21, 146);
             this.groupBox2.Name = "groupBox2";
@@ -531,23 +558,6 @@ namespace LatticeHardwareControl
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "SF6 Flow Control";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 34);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(119, 12);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Set flow rate (sccm):";
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(155, 28);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(127, 20);
-            this.textBox5.TabIndex = 9;
             // 
             // label7
             // 
@@ -558,81 +568,135 @@ namespace LatticeHardwareControl
             this.label7.TabIndex = 4;
             this.label7.Text = "(Default: 0.0100)";
             // 
-            // button_stop_flow_SF6
-            // 
-            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_SF6.Location = new System.Drawing.Point(207, 80);
-            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
-            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_SF6.TabIndex = 3;
-            this.button_stop_flow_SF6.Text = "Clear";
-            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
-            // 
-            // button_set_flow_SF6
-            // 
-            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_SF6.Location = new System.Drawing.Point(8, 80);
-            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
-            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_SF6.TabIndex = 2;
-            this.button_set_flow_SF6.Text = "Set";
-            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_Clear_All);
+            this.groupBox1.Controls.Add(this.button_Set_All);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textBox6);
+            this.groupBox1.Controls.Add(this.textBox5);
+            this.groupBox1.Controls.Add(this.button_stop_flow_SF6);
             this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.textBox6);
+            this.groupBox1.Controls.Add(this.button_set_flow_SF6);
             this.groupBox1.Controls.Add(this.button_stop_flow_He);
             this.groupBox1.Controls.Add(this.button_set_flow_He);
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox1.Location = new System.Drawing.Point(21, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(288, 108);
+            this.groupBox1.Size = new System.Drawing.Size(288, 127);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "He Flow Control";
+            this.groupBox1.Text = "Flow Control";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // button_Clear_All
+            // 
+            this.button_Clear_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Clear_All.Location = new System.Drawing.Point(160, 87);
+            this.button_Clear_All.Name = "button_Clear_All";
+            this.button_Clear_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Clear_All.TabIndex = 12;
+            this.button_Clear_All.Text = "Clear All";
+            this.button_Clear_All.UseVisualStyleBackColor = true;
+            this.button_Clear_All.Click += new System.EventHandler(this.button_Clear_All_Click);
+            // 
+            // button_Set_All
+            // 
+            this.button_Set_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Set_All.Location = new System.Drawing.Point(79, 87);
+            this.button_Set_All.Name = "button_Set_All";
+            this.button_Set_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Set_All.TabIndex = 11;
+            this.button_Set_All.Text = "Set All";
+            this.button_Set_All.UseVisualStyleBackColor = true;
+            this.button_Set_All.Click += new System.EventHandler(this.button_Set_All_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(181, 13);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(101, 12);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Flow rate (sccm):";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 34);
+            this.label6.Location = new System.Drawing.Point(9, 36);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(119, 12);
+            this.label6.Size = new System.Drawing.Size(20, 12);
             this.label6.TabIndex = 10;
-            this.label6.Text = "Set flow rate (sccm):";
+            this.label6.Text = "He";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
-            // textBox6
+            // textBox5
             // 
-            this.textBox6.Location = new System.Drawing.Point(155, 28);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(127, 20);
-            this.textBox6.TabIndex = 9;
+            this.textBox5.Location = new System.Drawing.Point(200, 57);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(59, 20);
+            this.textBox5.TabIndex = 9;
+            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
+            // button_stop_flow_SF6
+            // 
+            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_stop_flow_SF6.Location = new System.Drawing.Point(119, 55);
+            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
+            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
+            this.button_stop_flow_SF6.TabIndex = 3;
+            this.button_stop_flow_SF6.Text = "Clear";
+            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_stop_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 56);
+            this.label10.Location = new System.Drawing.Point(6, 62);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(90, 12);
+            this.label10.Size = new System.Drawing.Size(26, 12);
             this.label10.TabIndex = 4;
-            this.label10.Text = "(Default: 2.000)";
+            this.label10.Text = "SF6";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(200, 31);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(59, 20);
+            this.textBox6.TabIndex = 9;
+            this.textBox6.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
+            // 
+            // button_set_flow_SF6
+            // 
+            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_set_flow_SF6.Location = new System.Drawing.Point(38, 56);
+            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
+            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
+            this.button_set_flow_SF6.TabIndex = 2;
+            this.button_set_flow_SF6.Text = "Set";
+            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_set_flow_SF6.Click += new System.EventHandler(this.button_set_flow_SF6_Click);
             // 
             // button_stop_flow_He
             // 
             this.button_stop_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_He.Location = new System.Drawing.Point(207, 80);
+            this.button_stop_flow_He.Location = new System.Drawing.Point(119, 29);
             this.button_stop_flow_He.Name = "button_stop_flow_He";
             this.button_stop_flow_He.Size = new System.Drawing.Size(75, 23);
             this.button_stop_flow_He.TabIndex = 3;
             this.button_stop_flow_He.Text = "Clear";
             this.button_stop_flow_He.UseVisualStyleBackColor = true;
+            this.button_stop_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
             // 
             // button_set_flow_He
             // 
             this.button_set_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_He.Location = new System.Drawing.Point(8, 80);
+            this.button_set_flow_He.Location = new System.Drawing.Point(38, 29);
             this.button_set_flow_He.Name = "button_set_flow_He";
             this.button_set_flow_He.Size = new System.Drawing.Size(75, 23);
             this.button_set_flow_He.TabIndex = 2;
@@ -705,101 +769,6 @@ namespace LatticeHardwareControl
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Doppler shift calculator";
             // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(26, 20);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(276, 12);
-            this.label17.TabIndex = 0;
-            this.label17.Text = "V0 v-insensitive: 542.8089676 THz (Dec 11 2023)\r\n";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(26, 42);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(242, 12);
-            this.label18.TabIndex = 1;
-            this.label18.Text = "V0 v-sensitive: 542.8088265 (Dec 11 2023)";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(26, 65);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(61, 12);
-            this.label19.TabIndex = 2;
-            this.label19.Text = "V0 actual:";
-            // 
-            // V0_freq_set
-            // 
-            this.V0_freq_set.Location = new System.Drawing.Point(93, 62);
-            this.V0_freq_set.Name = "V0_freq_set";
-            this.V0_freq_set.Size = new System.Drawing.Size(157, 20);
-            this.V0_freq_set.TabIndex = 3;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(256, 65);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(26, 12);
-            this.label20.TabIndex = 4;
-            this.label20.Text = "THz";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(353, 117);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(136, 12);
-            this.label21.TabIndex = 5;
-            this.label21.Text = "Molecule velocity class:";
-            // 
-            // YbF_velocity
-            // 
-            this.YbF_velocity.Location = new System.Drawing.Point(495, 112);
-            this.YbF_velocity.Name = "YbF_velocity";
-            this.YbF_velocity.Size = new System.Drawing.Size(100, 20);
-            this.YbF_velocity.TabIndex = 6;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(601, 117);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(24, 12);
-            this.label22.TabIndex = 7;
-            this.label22.Text = "m/s";
-            // 
-            // Dop_calc_button
-            // 
-            this.Dop_calc_button.Location = new System.Drawing.Point(11, 112);
-            this.Dop_calc_button.Name = "Dop_calc_button";
-            this.Dop_calc_button.Size = new System.Drawing.Size(75, 23);
-            this.Dop_calc_button.TabIndex = 8;
-            this.Dop_calc_button.Text = "Calculate";
-            this.Dop_calc_button.UseVisualStyleBackColor = true;
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(353, 20);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(269, 12);
-            this.label23.TabIndex = 9;
-            this.label23.Text = "V1 v-insensitive: 527.754963 THz (Dec 11 2023)\r\n";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(353, 42);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(235, 12);
-            this.label24.TabIndex = 10;
-            this.label24.Text = "V1 v-sensitive: 527.754810 (Dec 11 2023)";
-            // 
             // label25
             // 
             this.label25.AutoSize = true;
@@ -825,16 +794,100 @@ namespace LatticeHardwareControl
             this.label26.TabIndex = 11;
             this.label26.Text = "V1 predicted:";
             // 
-            // groupBox7
+            // label24
             // 
-            this.groupBox7.Controls.Add(this.richTextBox_output);
-            this.groupBox7.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox7.Location = new System.Drawing.Point(12, 484);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(256, 100);
-            this.groupBox7.TabIndex = 14;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Output Dialog";
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(353, 42);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(235, 12);
+            this.label24.TabIndex = 10;
+            this.label24.Text = "V1 v-sensitive: 527.754810 (Dec 11 2023)";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(353, 20);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(269, 12);
+            this.label23.TabIndex = 9;
+            this.label23.Text = "V1 v-insensitive: 527.754963 THz (Dec 11 2023)\r\n";
+            // 
+            // Dop_calc_button
+            // 
+            this.Dop_calc_button.Location = new System.Drawing.Point(11, 112);
+            this.Dop_calc_button.Name = "Dop_calc_button";
+            this.Dop_calc_button.Size = new System.Drawing.Size(75, 23);
+            this.Dop_calc_button.TabIndex = 8;
+            this.Dop_calc_button.Text = "Calculate";
+            this.Dop_calc_button.UseVisualStyleBackColor = true;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(601, 117);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(24, 12);
+            this.label22.TabIndex = 7;
+            this.label22.Text = "m/s";
+            // 
+            // YbF_velocity
+            // 
+            this.YbF_velocity.Location = new System.Drawing.Point(495, 112);
+            this.YbF_velocity.Name = "YbF_velocity";
+            this.YbF_velocity.Size = new System.Drawing.Size(100, 20);
+            this.YbF_velocity.TabIndex = 6;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(353, 117);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(136, 12);
+            this.label21.TabIndex = 5;
+            this.label21.Text = "Molecule velocity class:";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(256, 65);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(26, 12);
+            this.label20.TabIndex = 4;
+            this.label20.Text = "THz";
+            // 
+            // V0_freq_set
+            // 
+            this.V0_freq_set.Location = new System.Drawing.Point(93, 62);
+            this.V0_freq_set.Name = "V0_freq_set";
+            this.V0_freq_set.Size = new System.Drawing.Size(157, 20);
+            this.V0_freq_set.TabIndex = 3;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(26, 65);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(61, 12);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "V0 actual:";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(26, 42);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(242, 12);
+            this.label18.TabIndex = 1;
+            this.label18.Text = "V0 v-sensitive: 542.8088265 (Dec 11 2023)";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(26, 20);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(276, 12);
+            this.label17.TabIndex = 0;
+            this.label17.Text = "V0 v-insensitive: 542.8089676 THz (Dec 11 2023)\r\n";
             // 
             // groupBox8
             // 
@@ -859,6 +912,23 @@ namespace LatticeHardwareControl
             this.groupBox8.TabIndex = 13;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Frequency Monitor";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(6, 227);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(51, 14);
+            this.label32.TabIndex = 14;
+            this.label32.Text = "4f (THz):";
+            // 
+            // textBox_freq_4f
+            // 
+            this.textBox_freq_4f.Location = new System.Drawing.Point(123, 227);
+            this.textBox_freq_4f.Name = "textBox_freq_4f";
+            this.textBox_freq_4f.ReadOnly = true;
+            this.textBox_freq_4f.Size = new System.Drawing.Size(127, 20);
+            this.textBox_freq_4f.TabIndex = 13;
             // 
             // textBox_freq_V3
             // 
@@ -965,40 +1035,6 @@ namespace LatticeHardwareControl
             this.textBox_freq_V1.Size = new System.Drawing.Size(127, 20);
             this.textBox_freq_V1.TabIndex = 1;
             // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(6, 227);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(51, 14);
-            this.label32.TabIndex = 14;
-            this.label32.Text = "4f (THz):";
-            // 
-            // textBox_freq_4f
-            // 
-            this.textBox_freq_4f.Location = new System.Drawing.Point(123, 227);
-            this.textBox_freq_4f.Name = "textBox_freq_4f";
-            this.textBox_freq_4f.ReadOnly = true;
-            this.textBox_freq_4f.Size = new System.Drawing.Size(127, 20);
-            this.textBox_freq_4f.TabIndex = 13;
-            // 
-            // richTextBox_output
-            // 
-            this.richTextBox_output.Location = new System.Drawing.Point(9, 19);
-            this.richTextBox_output.Name = "richTextBox_output";
-            this.richTextBox_output.Size = new System.Drawing.Size(241, 75);
-            this.richTextBox_output.TabIndex = 0;
-            this.richTextBox_output.Text = "";
-            // 
-            // button_Get_Serial_Ports
-            // 
-            this.button_Get_Serial_Ports.Location = new System.Drawing.Point(195, 55);
-            this.button_Get_Serial_Ports.Name = "button_Get_Serial_Ports";
-            this.button_Get_Serial_Ports.Size = new System.Drawing.Size(87, 23);
-            this.button_Get_Serial_Ports.TabIndex = 11;
-            this.button_Get_Serial_Ports.Text = "Show ports";
-            this.button_Get_Serial_Ports.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1012,6 +1048,7 @@ namespace LatticeHardwareControl
             this.Name = "Form1";
             this.Text = "Lattice EDM Controller";
             this.panel1.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -1028,7 +1065,6 @@ namespace LatticeHardwareControl
             this.tabPage1.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
@@ -1123,6 +1159,8 @@ namespace LatticeHardwareControl
         public System.Windows.Forms.TextBox textBox_freq_V1;
         private System.Windows.Forms.RichTextBox richTextBox_output;
         private System.Windows.Forms.Button button_Get_Serial_Ports;
+        private System.Windows.Forms.Button button_Clear_All;
+        private System.Windows.Forms.Button button_Set_All;
     }
 }
 

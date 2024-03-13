@@ -156,6 +156,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LatticeEDM|AnyCPU'">
     <OutputPath>bin\LatticeEDM\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Stefan|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -637,6 +639,7 @@
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
+    <Compile Include="RigolDG811.cs" />
     <Compile Include="RigolDG822.cs" />
     <Compile Include="GobelinHardware.cs" />
     <Compile Include="LeyboldGraphixController.cs" />
