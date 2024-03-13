@@ -39,6 +39,7 @@
     <Compile Include="BasicBeamOnOff.cs" />
     <Compile Include="DispenserLoading_Expansion.cs" />
     <Compile Include="DispenserLoading_Delayed.cs" />
+    <Compile Include="EmptyPatternOnOff.cs" />
     <Compile Include="OpenVECSEL2Shutter.cs" />
     <Compile Include="DispenserLoading.cs" />
     <Compile Include="EmptyPattern.cs" />

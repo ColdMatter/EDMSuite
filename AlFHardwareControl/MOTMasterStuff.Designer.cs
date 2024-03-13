@@ -54,10 +54,10 @@ namespace AlFHardwareControl
             this.stopScan = new System.Windows.Forms.Button();
             this.startScan = new System.Windows.Forms.Button();
             this.scanGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
+            this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
@@ -342,8 +342,8 @@ namespace AlFHardwareControl
             this.scanGraph.Location = new System.Drawing.Point(614, 144);
             this.scanGraph.Name = "scanGraph";
             this.scanGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1,
-            this.scatterPlot2});
+            this.scatterPlot3,
+            this.scatterPlot4});
             this.scanGraph.Size = new System.Drawing.Size(563, 264);
             this.scanGraph.TabIndex = 15;
             this.scanGraph.UseColorGenerator = true;
@@ -352,22 +352,20 @@ namespace AlFHardwareControl
             this.scanGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
             // 
-            // scatterPlot1
+            // scatterPlot3
             // 
-            this.scatterPlot1.LineColor = System.Drawing.Color.DarkOrange;
-            this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot1.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.scatterPlot1.PointColor = System.Drawing.Color.DarkOrange;
-            this.scatterPlot1.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.scatterPlot1.XAxis = this.xAxis1;
-            this.scatterPlot1.YAxis = this.yAxis1;
+            this.scatterPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.scatterPlot3.PointColor = System.Drawing.Color.Lime;
+            this.scatterPlot3.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.scatterPlot3.XAxis = this.xAxis1;
+            this.scatterPlot3.YAxis = this.yAxis1;
             // 
-            // scatterPlot2
+            // scatterPlot4
             // 
-            this.scatterPlot2.LineColor = System.Drawing.Color.OrangeRed;
-            this.scatterPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot2.XAxis = this.xAxis1;
-            this.scatterPlot2.YAxis = this.yAxis1;
+            this.scatterPlot4.LineColor = System.Drawing.Color.Lime;
+            this.scatterPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.scatterPlot4.XAxis = this.xAxis1;
+            this.scatterPlot4.YAxis = this.yAxis1;
             // 
             // MOTMasterStuff
             // 
@@ -399,7 +397,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.CheckBox armToF;
         private System.Windows.Forms.GroupBox scanCtrl;
         private NationalInstruments.UI.WindowsForms.ScatterGraph scanGraph;
-        private NationalInstruments.UI.ScatterPlot scatterPlot1;
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
         private System.Windows.Forms.Button stopScan;
@@ -407,7 +404,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox PluginSelector;
         private System.Windows.Forms.Button ScanParameterButton;
-        private NationalInstruments.UI.ScatterPlot scatterPlot2;
         private System.Windows.Forms.Button save_data;
         private System.Windows.Forms.Button clear_data;
         private System.Windows.Forms.CheckBox fixY;
@@ -419,5 +415,7 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Button startPattern;
         private System.Windows.Forms.Button reloadPatterns;
         private System.Windows.Forms.ComboBox PatternPicker;
+        private NationalInstruments.UI.ScatterPlot scatterPlot3;
+        private NationalInstruments.UI.ScatterPlot scatterPlot4;
     }
 }
