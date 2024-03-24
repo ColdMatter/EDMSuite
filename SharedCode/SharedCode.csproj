@@ -604,6 +604,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="ThreadSync.cs" />
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="GateManager.cs" />

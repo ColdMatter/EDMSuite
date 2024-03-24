@@ -71,15 +71,17 @@ namespace LatticeHardwareControl
             this.button_Flow_controller_disconnect = new System.Windows.Forms.Button();
             this.button_Flow_controller_connect = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
-            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_Clear_All = new System.Windows.Forms.Button();
+            this.button_Set_All = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
             this.button_stop_flow_He = new System.Windows.Forms.Button();
             this.button_set_flow_He = new System.Windows.Forms.Button();
             this.YAG_Control = new System.Windows.Forms.TabPage();
@@ -547,11 +549,7 @@ namespace LatticeHardwareControl
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.textBox5);
             this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.button_stop_flow_SF6);
-            this.groupBox2.Controls.Add(this.button_set_flow_SF6);
             this.groupBox2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox2.Location = new System.Drawing.Point(21, 146);
             this.groupBox2.Name = "groupBox2";
@@ -560,23 +558,6 @@ namespace LatticeHardwareControl
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "SF6 Flow Control";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 34);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(119, 12);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Set flow rate (sccm):";
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(155, 28);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(127, 20);
-            this.textBox5.TabIndex = 9;
             // 
             // label7
             // 
@@ -587,81 +568,135 @@ namespace LatticeHardwareControl
             this.label7.TabIndex = 4;
             this.label7.Text = "(Default: 0.0100)";
             // 
-            // button_stop_flow_SF6
-            // 
-            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_SF6.Location = new System.Drawing.Point(207, 80);
-            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
-            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_SF6.TabIndex = 3;
-            this.button_stop_flow_SF6.Text = "Clear";
-            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
-            // 
-            // button_set_flow_SF6
-            // 
-            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_SF6.Location = new System.Drawing.Point(8, 80);
-            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
-            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_SF6.TabIndex = 2;
-            this.button_set_flow_SF6.Text = "Set";
-            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_Clear_All);
+            this.groupBox1.Controls.Add(this.button_Set_All);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textBox6);
+            this.groupBox1.Controls.Add(this.textBox5);
+            this.groupBox1.Controls.Add(this.button_stop_flow_SF6);
             this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.textBox6);
+            this.groupBox1.Controls.Add(this.button_set_flow_SF6);
             this.groupBox1.Controls.Add(this.button_stop_flow_He);
             this.groupBox1.Controls.Add(this.button_set_flow_He);
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox1.Location = new System.Drawing.Point(21, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(288, 108);
+            this.groupBox1.Size = new System.Drawing.Size(288, 127);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "He Flow Control";
+            this.groupBox1.Text = "Flow Control";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // button_Clear_All
+            // 
+            this.button_Clear_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Clear_All.Location = new System.Drawing.Point(160, 87);
+            this.button_Clear_All.Name = "button_Clear_All";
+            this.button_Clear_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Clear_All.TabIndex = 12;
+            this.button_Clear_All.Text = "Clear All";
+            this.button_Clear_All.UseVisualStyleBackColor = true;
+            this.button_Clear_All.Click += new System.EventHandler(this.button_Clear_All_Click);
+            // 
+            // button_Set_All
+            // 
+            this.button_Set_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Set_All.Location = new System.Drawing.Point(79, 87);
+            this.button_Set_All.Name = "button_Set_All";
+            this.button_Set_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Set_All.TabIndex = 11;
+            this.button_Set_All.Text = "Set All";
+            this.button_Set_All.UseVisualStyleBackColor = true;
+            this.button_Set_All.Click += new System.EventHandler(this.button_Set_All_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(181, 13);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(101, 12);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Flow rate (sccm):";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 34);
+            this.label6.Location = new System.Drawing.Point(9, 36);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(119, 12);
+            this.label6.Size = new System.Drawing.Size(20, 12);
             this.label6.TabIndex = 10;
-            this.label6.Text = "Set flow rate (sccm):";
+            this.label6.Text = "He";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
-            // textBox6
+            // textBox5
             // 
-            this.textBox6.Location = new System.Drawing.Point(155, 28);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(127, 20);
-            this.textBox6.TabIndex = 9;
+            this.textBox5.Location = new System.Drawing.Point(200, 57);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(59, 20);
+            this.textBox5.TabIndex = 9;
+            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
+            // button_stop_flow_SF6
+            // 
+            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_stop_flow_SF6.Location = new System.Drawing.Point(119, 55);
+            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
+            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
+            this.button_stop_flow_SF6.TabIndex = 3;
+            this.button_stop_flow_SF6.Text = "Clear";
+            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_stop_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 56);
+            this.label10.Location = new System.Drawing.Point(6, 62);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(90, 12);
+            this.label10.Size = new System.Drawing.Size(26, 12);
             this.label10.TabIndex = 4;
-            this.label10.Text = "(Default: 2.000)";
+            this.label10.Text = "SF6";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(200, 31);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(59, 20);
+            this.textBox6.TabIndex = 9;
+            this.textBox6.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
+            // 
+            // button_set_flow_SF6
+            // 
+            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_set_flow_SF6.Location = new System.Drawing.Point(38, 56);
+            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
+            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
+            this.button_set_flow_SF6.TabIndex = 2;
+            this.button_set_flow_SF6.Text = "Set";
+            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_set_flow_SF6.Click += new System.EventHandler(this.button_set_flow_SF6_Click);
             // 
             // button_stop_flow_He
             // 
             this.button_stop_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_He.Location = new System.Drawing.Point(207, 80);
+            this.button_stop_flow_He.Location = new System.Drawing.Point(119, 29);
             this.button_stop_flow_He.Name = "button_stop_flow_He";
             this.button_stop_flow_He.Size = new System.Drawing.Size(75, 23);
             this.button_stop_flow_He.TabIndex = 3;
             this.button_stop_flow_He.Text = "Clear";
             this.button_stop_flow_He.UseVisualStyleBackColor = true;
+            this.button_stop_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
             // 
             // button_set_flow_He
             // 
             this.button_set_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_He.Location = new System.Drawing.Point(8, 80);
+            this.button_set_flow_He.Location = new System.Drawing.Point(38, 29);
             this.button_set_flow_He.Name = "button_set_flow_He";
             this.button_set_flow_He.Size = new System.Drawing.Size(75, 23);
             this.button_set_flow_He.TabIndex = 2;
@@ -1124,6 +1159,8 @@ namespace LatticeHardwareControl
         public System.Windows.Forms.TextBox textBox_freq_V1;
         private System.Windows.Forms.RichTextBox richTextBox_output;
         private System.Windows.Forms.Button button_Get_Serial_Ports;
+        private System.Windows.Forms.Button button_Clear_All;
+        private System.Windows.Forms.Button button_Set_All;
     }
 }
 
