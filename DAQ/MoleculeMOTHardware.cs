@@ -170,6 +170,8 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
             AddAnalogOutputChannel("lightSwitch", analogPatternBoardAddress + "/ao19");
 
+            AddAnalogOutputChannel("BXAttenuation", analogPatternBoardAddress2 + "/ao1");
+
 
             // Old Rb Analog Pattern
             AddAnalogOutputChannel("rbCoolingIntensity", analogPatternBoardAddress + "/ao23"); // from old setup
@@ -270,7 +272,9 @@ namespace DAQ.HAL
 
             wmlConfig.AddSlaveLaser("BX", "bXLock", 5);
             wmlConfig.AddLaserConfiguration("BX", 564.582306, 500, 500);
-            wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
+            //Use TC for sowing Mar 5th 2024
+            //wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
+            wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
 
             wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
             wmlConfig.AddLaserConfiguration("TCool", 564.582462, 50, 500);

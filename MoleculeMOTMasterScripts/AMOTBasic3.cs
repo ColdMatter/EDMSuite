@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 100;
+        Parameters["Frame0Trigger"] = 200;
         Parameters["Frame0TriggerDuration"] = 10;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -47,7 +47,7 @@ public class Patterns : MOTMasterScript
 
         
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = 1800;// 1760;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1940;// 1760;//1520
         //Parameters["slowingRepumpAOMOffStart"] = 1600;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
@@ -60,7 +60,12 @@ public class Patterns : MOTMasterScript
         //Parameters["SlowingChirpDuration"] = 1200;
         //Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.285;//-1.25; //-1.25 //225MHz/V 120m/s/V
+
+        //NKT + Quantel slowing
+        //Parameters["SlowingChirpEndValue"] = -1.285;//-1.25; //-1.25 //225MHz/V 120m/s/V
+
+        //Azulignt
+        Parameters["SlowingChirpEndValue"] = -0.25; //-1150MHz/V chirp for 288MHz
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -95,6 +100,8 @@ public class Patterns : MOTMasterScript
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0; //9.0
+
+        Parameters["BXAOMAttenuation"] = 4.0;
 
         // triggering delay (10V = 1 second)
         // Parameters["triggerDelay"] = 5.0;
@@ -181,7 +188,14 @@ public class Patterns : MOTMasterScript
         p.AddChannel("lightSwitch");
         p.AddChannel("TCoolSidebandVCO");
         p.AddChannel("v0AOMSidebandAmp");
-        
+        p.AddChannel("BXAttenuation");
+
+        //Switch BX AOM via analog output Mar 05 2024
+        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
+
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
