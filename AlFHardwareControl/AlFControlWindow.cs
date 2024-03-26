@@ -1,24 +1,4 @@
-﻿using NationalInstruments;
-using NationalInstruments.Analysis;
-using NationalInstruments.Analysis.Conversion;
-using NationalInstruments.Analysis.Dsp;
-using NationalInstruments.Analysis.Dsp.Filters;
-using NationalInstruments.Analysis.Math;
-using NationalInstruments.Analysis.Monitoring;
-using NationalInstruments.Analysis.SignalGeneration;
-using NationalInstruments.Analysis.SpectralMeasurements;
-using NationalInstruments.Controls;
-using NationalInstruments.Controls.Rendering;
-using NationalInstruments.NetworkVariable;
-using NationalInstruments.NetworkVariable.WindowsForms;
-using NationalInstruments.Tdms;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.Visa;
-using NationalInstruments.DAQmx;
-using NationalInstruments.ModularInstruments.NIScope;
-using NationalInstruments.ModularInstruments;
-using NationalInstruments.ModularInstruments.SystemServices.TimingServices;
+﻿using NationalInstruments.DAQmx;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -78,7 +58,8 @@ namespace AlFHardwareControl
             TabPage temp = new TabPage("Misc Instruments");
             MiscInstruments misc = new MiscInstruments();
             controller.MiscDataUpdate += (object a, EventArgs args) => { misc.YAG_Control.UpdateStatus(); };
-            temp.Controls.Add(misc);
+            controller.MiscDataUpdate += (object a, EventArgs args) => { misc.mSquaredLaserView1.UpdateStatus(); };
+                temp.Controls.Add(misc);
             MainTabs.TabPages.Add(temp);
         }
 

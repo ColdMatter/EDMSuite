@@ -188,6 +188,12 @@
     <Compile Include="MiscInstruments.Designer.cs">
       <DependentUpon>MiscInstruments.cs</DependentUpon>
     </Compile>
+    <Compile Include="MSquaredLaserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MSquaredLaserView.Designer.cs">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParamSet.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -272,6 +278,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MiscInstruments.resx">
       <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MSquaredLaserView.resx">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParamSet.resx">
       <DependentUpon>ParamSet.cs</DependentUpon>
