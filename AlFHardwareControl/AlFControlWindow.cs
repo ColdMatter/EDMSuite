@@ -57,6 +57,7 @@ namespace AlFHardwareControl
         {
             TabPage temp = new TabPage("Misc Instruments");
             MiscInstruments misc = new MiscInstruments();
+            misc.mSquaredLaserView1.FallbackActive = true;
             controller.MiscDataUpdate += (object a, EventArgs args) => { misc.YAG_Control.UpdateStatus(); };
             controller.MiscDataUpdate += (object a, EventArgs args) => { misc.mSquaredLaserView1.UpdateStatus(); };
                 temp.Controls.Add(misc);
@@ -726,6 +727,7 @@ namespace AlFHardwareControl
         private void AlFControlWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.exiting = true;
+            MSquaredLaserView.saveLineData();
             controller.UpdateThread.Abort();
             controller.DAQ_sync.AbortThreads();
             tSched.Exit();

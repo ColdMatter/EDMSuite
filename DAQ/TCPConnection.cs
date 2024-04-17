@@ -14,11 +14,12 @@ namespace DAQ
         private TcpClient client;
         private NetworkStream stream;
         private IPEndPoint remote_ip;
+        private IPEndPoint local_ip;
 
-        public TCPConnection(IPEndPoint local_ip, IPEndPoint _remote_ip, TCPDataCallback callback)
+        public TCPConnection(IPEndPoint _local_ip, IPEndPoint _remote_ip, TCPDataCallback callback)
         {
             remote_ip = _remote_ip;
-            client = new TcpClient(local_ip);
+            local_ip = _local_ip;
             dataReceived += callback;
             Reconnect();
         }
@@ -27,6 +28,7 @@ namespace DAQ
         {
             try
             {
+                client = new TcpClient(local_ip);
                 client.Connect(remote_ip);
                 stream = client.GetStream();
                 stream.BeginRead(fake_buffer, 0, 1, readData, null);
@@ -34,10 +36,14 @@ namespace DAQ
             catch (SocketException e)
             {
                 ConnectionInterrupted?.Invoke();
+                client.Close();
             }
-            lock (this)
+            finally
             {
-                reconnecting = false;
+                lock (this)
+                {
+                    reconnecting = false;
+                }
             }
         }
 
@@ -100,6 +106,8 @@ namespace DAQ
             }
             catch (System.IO.IOException)
             {
+                stream = null;
+                client.Close();
                 ConnectionInterrupted?.Invoke();
             }
         }
@@ -111,7 +119,7 @@ namespace DAQ
         public void subscribeToInterrupt(Action callback)
         {
             ConnectionInterrupted += callback;
-            if (!client.Connected) callback();
+            if (client != null && !client.Connected) callback();
         }
 
     }
