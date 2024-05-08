@@ -40,6 +40,11 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.cmbSamplingRate = new System.Windows.Forms.ComboBox();
             this.scanCtrl = new System.Windows.Forms.GroupBox();
+            this.startPattern = new System.Windows.Forms.Button();
+            this.reloadPatterns = new System.Windows.Forms.Button();
+            this.PatternPicker = new System.Windows.Forms.ComboBox();
+            this.scanPointProgress = new System.Windows.Forms.Label();
+            this.repeatScan = new System.Windows.Forms.CheckBox();
             this.RejectionStatus = new System.Windows.Forms.TextBox();
             this.save_data = new System.Windows.Forms.Button();
             this.clear_data = new System.Windows.Forms.Button();
@@ -49,10 +54,10 @@ namespace AlFHardwareControl
             this.stopScan = new System.Windows.Forms.Button();
             this.startScan = new System.Windows.Forms.Button();
             this.scanGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
+            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
+            this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
@@ -178,6 +183,11 @@ namespace AlFHardwareControl
             // 
             // scanCtrl
             // 
+            this.scanCtrl.Controls.Add(this.startPattern);
+            this.scanCtrl.Controls.Add(this.reloadPatterns);
+            this.scanCtrl.Controls.Add(this.PatternPicker);
+            this.scanCtrl.Controls.Add(this.scanPointProgress);
+            this.scanCtrl.Controls.Add(this.repeatScan);
             this.scanCtrl.Controls.Add(this.RejectionStatus);
             this.scanCtrl.Controls.Add(this.save_data);
             this.scanCtrl.Controls.Add(this.clear_data);
@@ -193,6 +203,55 @@ namespace AlFHardwareControl
             this.scanCtrl.TabIndex = 3;
             this.scanCtrl.TabStop = false;
             this.scanCtrl.Text = "Scan Control";
+            // 
+            // startPattern
+            // 
+            this.startPattern.Location = new System.Drawing.Point(248, 74);
+            this.startPattern.Name = "startPattern";
+            this.startPattern.Size = new System.Drawing.Size(23, 23);
+            this.startPattern.TabIndex = 17;
+            this.startPattern.Text = "+";
+            this.startPattern.UseVisualStyleBackColor = true;
+            this.startPattern.Click += new System.EventHandler(this.startPattern_Click);
+            // 
+            // reloadPatterns
+            // 
+            this.reloadPatterns.Location = new System.Drawing.Point(219, 74);
+            this.reloadPatterns.Name = "reloadPatterns";
+            this.reloadPatterns.Size = new System.Drawing.Size(23, 23);
+            this.reloadPatterns.TabIndex = 16;
+            this.reloadPatterns.Text = "R";
+            this.reloadPatterns.UseVisualStyleBackColor = true;
+            this.reloadPatterns.Click += new System.EventHandler(this.reloadPatterns_Click);
+            // 
+            // PatternPicker
+            // 
+            this.PatternPicker.FormattingEnabled = true;
+            this.PatternPicker.Location = new System.Drawing.Point(10, 74);
+            this.PatternPicker.Name = "PatternPicker";
+            this.PatternPicker.Size = new System.Drawing.Size(203, 21);
+            this.PatternPicker.TabIndex = 15;
+            this.PatternPicker.SelectedIndexChanged += new System.EventHandler(this.PatternPicker_SelectedIndexChanged);
+            // 
+            // scanPointProgress
+            // 
+            this.scanPointProgress.AutoSize = true;
+            this.scanPointProgress.Location = new System.Drawing.Point(81, 109);
+            this.scanPointProgress.Name = "scanPointProgress";
+            this.scanPointProgress.Size = new System.Drawing.Size(24, 13);
+            this.scanPointProgress.TabIndex = 14;
+            this.scanPointProgress.Text = "0/0";
+            // 
+            // repeatScan
+            // 
+            this.repeatScan.AutoSize = true;
+            this.repeatScan.Location = new System.Drawing.Point(210, 109);
+            this.repeatScan.Name = "repeatScan";
+            this.repeatScan.Size = new System.Drawing.Size(61, 17);
+            this.repeatScan.TabIndex = 13;
+            this.repeatScan.Text = "Repeat";
+            this.repeatScan.UseVisualStyleBackColor = true;
+            this.repeatScan.CheckedChanged += new System.EventHandler(this.repeatScan_CheckedChanged);
             // 
             // RejectionStatus
             // 
@@ -283,8 +342,8 @@ namespace AlFHardwareControl
             this.scanGraph.Location = new System.Drawing.Point(614, 144);
             this.scanGraph.Name = "scanGraph";
             this.scanGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1,
-            this.scatterPlot2});
+            this.scatterPlot3,
+            this.scatterPlot4});
             this.scanGraph.Size = new System.Drawing.Size(563, 264);
             this.scanGraph.TabIndex = 15;
             this.scanGraph.UseColorGenerator = true;
@@ -293,22 +352,20 @@ namespace AlFHardwareControl
             this.scanGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
             // 
-            // scatterPlot1
+            // scatterPlot3
             // 
-            this.scatterPlot1.LineColor = System.Drawing.Color.DarkOrange;
-            this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot1.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.scatterPlot1.PointColor = System.Drawing.Color.DarkOrange;
-            this.scatterPlot1.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.scatterPlot1.XAxis = this.xAxis1;
-            this.scatterPlot1.YAxis = this.yAxis1;
+            this.scatterPlot3.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.scatterPlot3.PointColor = System.Drawing.Color.Lime;
+            this.scatterPlot3.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.scatterPlot3.XAxis = this.xAxis1;
+            this.scatterPlot3.YAxis = this.yAxis1;
             // 
-            // scatterPlot2
+            // scatterPlot4
             // 
-            this.scatterPlot2.LineColor = System.Drawing.Color.OrangeRed;
-            this.scatterPlot2.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot2.XAxis = this.xAxis1;
-            this.scatterPlot2.YAxis = this.yAxis1;
+            this.scatterPlot4.LineColor = System.Drawing.Color.Lime;
+            this.scatterPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.scatterPlot4.XAxis = this.xAxis1;
+            this.scatterPlot4.YAxis = this.yAxis1;
             // 
             // MOTMasterStuff
             // 
@@ -340,7 +397,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.CheckBox armToF;
         private System.Windows.Forms.GroupBox scanCtrl;
         private NationalInstruments.UI.WindowsForms.ScatterGraph scanGraph;
-        private NationalInstruments.UI.ScatterPlot scatterPlot1;
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
         private System.Windows.Forms.Button stopScan;
@@ -348,12 +404,18 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox PluginSelector;
         private System.Windows.Forms.Button ScanParameterButton;
-        private NationalInstruments.UI.ScatterPlot scatterPlot2;
         private System.Windows.Forms.Button save_data;
         private System.Windows.Forms.Button clear_data;
         private System.Windows.Forms.CheckBox fixY;
         private System.Windows.Forms.CheckBox fixX;
         private System.Windows.Forms.CheckBox saveEnable;
         private System.Windows.Forms.TextBox RejectionStatus;
+        private System.Windows.Forms.CheckBox repeatScan;
+        private System.Windows.Forms.Label scanPointProgress;
+        private System.Windows.Forms.Button startPattern;
+        private System.Windows.Forms.Button reloadPatterns;
+        private System.Windows.Forms.ComboBox PatternPicker;
+        private NationalInstruments.UI.ScatterPlot scatterPlot3;
+        private NationalInstruments.UI.ScatterPlot scatterPlot4;
     }
 }

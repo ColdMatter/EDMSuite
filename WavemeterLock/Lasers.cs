@@ -72,11 +72,13 @@ namespace WavemeterLock
                 {
                     currentVoltage = LowerVoltageLimit;
                     isOutOfRange = true;
+                    DisengageLock();
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
                     isOutOfRange = true;
+                    DisengageLock();
                 }
                 else
                 {

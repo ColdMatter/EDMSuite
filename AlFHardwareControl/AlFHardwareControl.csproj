@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,19 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Alf.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlFHardwareControl|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AlFHardwareControl\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AlFHardwareControl.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CmdLib8742">
@@ -86,7 +100,7 @@
     <Reference Include="NationalInstruments.Controls.Numerics, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=24.0.45.49417, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -113,7 +127,7 @@
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Visa, Version=24.0.0.49398, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -174,6 +188,12 @@
     <Compile Include="MiscInstruments.Designer.cs">
       <DependentUpon>MiscInstruments.cs</DependentUpon>
     </Compile>
+    <Compile Include="MSquaredLaserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MSquaredLaserView.Designer.cs">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParamSet.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -212,7 +232,6 @@
     <Compile Include="ShutterSet.Designer.cs">
       <DependentUpon>ShutterSet.cs</DependentUpon>
     </Compile>
-    <Compile Include="SimpleControlDesigner.cs" />
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -259,6 +278,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MiscInstruments.resx">
       <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MSquaredLaserView.resx">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParamSet.resx">
       <DependentUpon>ParamSet.cs</DependentUpon>

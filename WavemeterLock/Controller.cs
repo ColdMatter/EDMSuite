@@ -736,6 +736,33 @@ namespace WavemeterLock
                 panel.updateParameters();
             }
         }
+
+        /// <summary>
+        /// Log laser setpoint and frequency for each iteration of experiment
+        /// </summary>
+        public void logCurrentSetpoints()
+        {
+            string filePath = (string)DAQ.Environment.Environs.FileSystem.Paths["ToFFilesPath"];
+            string filename = filePath + "LaserSetPoints\\" + "WavemeterLockLog" + ".txt";
+
+            foreach (string slave in lasers.Keys)
+            {
+                string header = "Laser:" + "\t" + slave + "\t" + "Lock Status" + "\t" + lasers[slave].lState.ToString();
+
+                string content = "Set frequency (THz):" + "\t" + lasers[slave].setFrequency + "\t" + 
+                    "Current frequency (THz):" + "\t" + lasers[slave].currentFrequency + "\t" +
+                    "Frequency error (MHz):" + "\t" + (1e6 * lasers[slave].currentFrequency - lasers[slave].setFrequency).ToString() + "\t";
+
+
+                using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, true))
+                {
+                    file.WriteLine(header);
+                    file.WriteLine(content);
+                    file.Flush();
+                }
+            }
+        }
         
     }
 }

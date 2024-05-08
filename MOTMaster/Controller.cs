@@ -357,6 +357,11 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
+        public Dictionary<string,List<bool>> GetSwitchConfiguration()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
+        }
+
         public void Run()
         {
             runThread = new Thread(new ThreadStart(this.Go));

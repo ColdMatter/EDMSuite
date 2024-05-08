@@ -31,6 +31,7 @@ namespace AlFHardwareControl
         {
             this.ShutterControl = new AlFHardwareControl.Shutter_Control();
             this.YAG_Control = new AlFHardwareControl.YAG_Control();
+            this.mSquaredLaserView1 = new AlFHardwareControl.MSquaredLaserView();
             this.SuspendLayout();
             // 
             // ShutterControl
@@ -47,10 +48,18 @@ namespace AlFHardwareControl
             this.YAG_Control.Size = new System.Drawing.Size(222, 411);
             this.YAG_Control.TabIndex = 0;
             // 
+            // mSquaredLaserView1
+            // 
+            this.mSquaredLaserView1.Location = new System.Drawing.Point(456, 0);
+            this.mSquaredLaserView1.Name = "mSquaredLaserView1";
+            this.mSquaredLaserView1.Size = new System.Drawing.Size(222, 411);
+            this.mSquaredLaserView1.TabIndex = 2;
+            // 
             // MiscInstruments
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.mSquaredLaserView1);
             this.Controls.Add(this.ShutterControl);
             this.Controls.Add(this.YAG_Control);
             this.Name = "MiscInstruments";
@@ -63,5 +72,6 @@ namespace AlFHardwareControl
 
         public YAG_Control YAG_Control;
         public Shutter_Control ShutterControl;
+        public MSquaredLaserView mSquaredLaserView1;
     }
 }

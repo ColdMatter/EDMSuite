@@ -26,7 +26,7 @@ namespace AlFHardwareControl
         }
 
         private Dictionary<string, int> nameToID = new Dictionary<string, int> { };
-        TaskScheduler ts;
+        private TaskScheduler ts;
 
 
         public MacroEditor(MacroConfigurationCollection _mc, TaskScheduler taskScheduler)
