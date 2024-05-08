@@ -59,15 +59,17 @@ namespace EDMBlockHead
                 (analysis.Contrast).ToString("N3")
                 + "\t" + (analysis.ShotNoise).ToString("N4")
                 + "\t" + (analysis.RawEDMValAndErr[1]*Math.Pow(10, 26) ).ToString("N4")
-                + "\t" + (analysis.SIGValAndErrbp[0]).ToString("N1")
-                + "\t" + (analysis.SIGValAndErrtp[0]).ToString("N1")
+                //+ "\t" + (analysis.SIGValAndErrbp[0]).ToString("N1")
+                //+ "\t" + (analysis.SIGValAndErrtp[0]).ToString("N1")
+                + "\t" + (analysis.SIGValAndErrdA[0]).ToString("N1")
+                + "\t" + (analysis.SIGValAndErrdB[0]).ToString("N1")
                 + "\t" + (analysis.BValAndErr[0]).ToString("N4")
-                + "\t" + (analysis.rf1AmpAndErr[0]).ToString("N4")
-                + "\t" + (analysis.rf2AmpAndErr[0]).ToString("N4")
-                + "\t" + (analysis.rf1FreqAndErr[0]).ToString("N4")
-                + "\t" + (analysis.rf2FreqAndErr[0]).ToString("N4")
-                + "\t" + (analysis.LF1DBDB[0]).ToString("N4")
-                + "\t" + (analysis.LF1DBDB[1]).ToString("N4")
+                //+ "\t" + (analysis.rf1AmpAndErr[0]).ToString("N4")
+                //+ "\t" + (analysis.rf2AmpAndErr[0]).ToString("N4")
+                //+ "\t" + (analysis.rf1FreqAndErr[0]).ToString("N4")
+                //+ "\t" + (analysis.rf2FreqAndErr[0]).ToString("N4")
+                //+ "\t" + (analysis.LF1DBDB[0]).ToString("N4")
+                //+ "\t" + (analysis.LF1DBDB[1]).ToString("N4")
                 + Environment.NewLine);
 
             // edm error
@@ -93,30 +95,42 @@ namespace EDMBlockHead
             AppendSigmaToDBScatter(new double[] { blockCount },
                 new double[] { analysis.DBValAndErr[0] + analysis.DBValAndErr[1] },
                 new double[] { analysis.DBValAndErr[0] - analysis.DBValAndErr[1] });
+            //AppendToNorthLeakageScatter(new double[] { blockCount },
+            //    new double[] { analysis.NorthCurrentValAndError[0] });
+            //AppendToSouthLeakageScatter(new double[] { blockCount },
+            //    new double[] { analysis.SouthCurrentValAndError[0] });
+            //AppendToNorthLeakageErrorScatter(new double[] { blockCount },
+            //    new double[] { analysis.NorthCurrentValAndError[1] });
+            //AppendToSouthLeakageErrorScatter(new double[] { blockCount },
+            //    new double[] { analysis.SouthCurrentValAndError[1] });
+            //AppendToNorthECorrLeakageScatter(new double[] { blockCount },
+            //    new double[] { analysis.NorthECorrCurrentValAndError[0] });
+            //AppendToSouthECorrLeakageScatter(new double[] { blockCount },
+            //    new double[] { analysis.SouthECorrCurrentValAndError[0] });
             AppendToNorthLeakageScatter(new double[] { blockCount },
-                new double[] { analysis.NorthCurrentValAndError[0] });
+                new double[] { analysis.WestCurrentValAndError[0] });
             AppendToSouthLeakageScatter(new double[] { blockCount },
-                new double[] { analysis.SouthCurrentValAndError[0] });
+                new double[] { analysis.EastCurrentValAndError[0] });
             AppendToNorthLeakageErrorScatter(new double[] { blockCount },
-                new double[] { analysis.NorthCurrentValAndError[1] });
+                new double[] { analysis.WestCurrentValAndError[1] });
             AppendToSouthLeakageErrorScatter(new double[] { blockCount },
-                new double[] { analysis.SouthCurrentValAndError[1] });
+                new double[] { analysis.EastCurrentValAndError[1] });
             AppendToNorthECorrLeakageScatter(new double[] { blockCount },
-                new double[] { analysis.NorthECorrCurrentValAndError[0] });
+                new double[] { analysis.WestECorrCurrentValAndError[0] });
             AppendToSouthECorrLeakageScatter(new double[] { blockCount },
-                new double[] { analysis.SouthECorrCurrentValAndError[0] });
+                new double[] { analysis.EastECorrCurrentValAndError[0] });
             AppendToMagNoiseScatter(new double[] { blockCount },
                 new double[] { analysis.MagValandErr[1] });
-            AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
-            AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
-            AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
-            AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
-            AppendToRF1ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1ADBDB[0] });
-            AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
-            AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
-            AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
-            AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
-            AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
+            //AppendToRF1AScatter(new double[] { blockCount }, new double[] { analysis.rf1AmpAndErr[0] });
+            //AppendToRF2AScatter(new double[] { blockCount }, new double[] { analysis.rf2AmpAndErr[0] });
+            //AppendToRF1FScatter(new double[] { blockCount }, new double[] { analysis.rf1FreqAndErr[0] });
+            //AppendToRF2FScatter(new double[] { blockCount }, new double[] { analysis.rf2FreqAndErr[0] });
+            //AppendToRF1ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1ADBDB[0] });
+            //AppendToRF2ADBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2ADBDB[0] });
+            //AppendToRF1FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF1FDBDB[0] });
+            //AppendToRF2FDBDBScatter(new double[] { blockCount }, new double[] { analysis.RF2FDBDB[0] });
+            //AppendToLF1Scatter(new double[] { blockCount }, new double[] { analysis.LF1ValAndErr[0] });
+            //AppendToLF1DBDBScatter(new double[] { blockCount }, new double[] { analysis.LF1DBDB[0] });
             //AppendToTopPDScatter(new double[] { blockCount }, new double[] { analysis.TopPDSIG[0]});
             //AppendToBottomPDScatter(new double[] { blockCount }, new double[] { analysis.BottomPDSIG[0]});
 

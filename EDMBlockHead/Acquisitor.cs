@@ -786,7 +786,7 @@ namespace EDMBlockHead.Acquire
             detectorA.ChopLength = 10800; //Classic had 80
             detectorA.LowLimit = 0;
             detectorA.HighLimit = 10;
-            detectorA.Calibration = 7.5;
+            detectorA.Calibration = 22.5;
             inputs.Channels.Add(detectorA);
 
             ScannedAnalogInput detectorB = new ScannedAnalogInput();
@@ -796,7 +796,7 @@ namespace EDMBlockHead.Acquire
             detectorB.ChopLength = 10800; //Classic had 80
             detectorB.LowLimit = 0;
             detectorB.HighLimit = 10;
-            detectorB.Calibration = 7.5;
+            detectorB.Calibration = 22.5;
             inputs.Channels.Add(detectorB);
 
             //ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
