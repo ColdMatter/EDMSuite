@@ -1690,5 +1690,20 @@ namespace UEDMHardwareControl
         {
             controller.SetBleed(eBleedCheck.Checked);
         }
+
+        private void TargetManualbutton_Click(object sender, EventArgs e)
+        {
+            controller.SetTargetStepperManual();
+        }
+
+        private void TargetExtButton_Click(object sender, EventArgs e)
+        {
+            controller.SetTargetStepperExt();
+        }
+
+        private void TargetTriggerButton_Click(object sender, EventArgs e)
+        {
+            controller.SetTargetStepperTriggeredMove();
+        }
     }
 }

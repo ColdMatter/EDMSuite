@@ -27,5 +27,10 @@ namespace Analysis.EDM
         {
             return new Gate(0, 10000, true);
         }
+
+        public static Gate UEDMWideGate()
+        {
+            return new Gate(6000, 114590, true);
+        }
     }
 }

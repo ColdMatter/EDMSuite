@@ -1,32 +1,25 @@
-﻿# uedm_init.py - sets up the IronPython environment ready for scripting
+# uedm_init.py - sets up the IronPython environment ready for scripting
 # the edm control software.
 
+import pythonnet
 import clr
 import sys
 from System.IO import Path
-
-# Import the edm control software assemblies into IronPython
-sys.path.append(Path.GetFullPath("..\\DAQ\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("DAQ.dll")
-sys.path.append(Path.GetFullPath("..\\SharedCode\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("SharedCode.dll")
-sys.path.append(Path.GetFullPath("..\\ScanMaster\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("ScanMaster.exe")
-sys.path.append(Path.GetFullPath("..\\EDMBlockHead\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("EDMBlockHead.exe")
-sys.path.append(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("UEDMHardwareControl.exe")
-sys.path.append(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("TransferCavityLock.exe")
-sys.path.append(Path.GetFullPath("..\\EDMPhaseLock\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("EDMPhaseLock.exe")
-sys.path.append(Path.GetFullPath("..\\EDMFieldLock\\bin\\ultracoldEDM\\"))
-clr.AddReferenceToFile("EDMFieldLock.exe")
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
+
+# Import the edm control software assemblies into IronPython
+clr.AddReference(Path.GetFullPath("..\\DAQ\\bin\\ultracoldEDM\\DAQ"))
+clr.AddReference(Path.GetFullPath("..\\SharedCode\\bin\\ultracoldEDM\\SharedCode"))
+clr.AddReference(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\ultracoldEDM\\UEDMHardwareControl"))
+clr.AddReference(Path.GetFullPath("..\\EDMBlockHead\\bin\\ultracoldEDM\\EDMBlockHead.exe"))
+clr.AddReference(Path.GetFullPath("..\\EDMPhaseLock\\bin\\ultracoldEDM\\EDMPhaseLock.exe"))
+clr.AddReference(Path.GetFullPath("..\\EDMFieldLock\\bin\\ultracoldEDM\\EDMFieldLock.exe"))
+clr.AddReference(Path.GetFullPath("..\\ScanMaster\\bin\\ultracoldEDM\\ScanMaster"))
+clr.AddReference(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\ultracoldEDM\\TransferCavityLock.exe"))
 
 # code for IronPython remoting problem workaround
 class typedproxy(object):
@@ -79,7 +72,7 @@ Available scripts:''')
 import nt
 pp = Path.GetFullPath("..\\UEDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "uedm_init_pythonnet.py"]
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py"]
 for i in range(len(scriptsToLoad)):
             print(str(i) + ": " + scriptsToLoad[i])
 print("")

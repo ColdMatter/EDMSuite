@@ -11,7 +11,7 @@ namespace Analysis.EDM
 {
     public class BlockDemodulator
     {
-        private string[] MOLECULE_DETECTORS = new string[3] { "asymmetry", "bottomProbeScaled", "topProbeNoBackground" };
+        private string[] MOLECULE_DETECTORS = new string[3] { "asymmetry", "detAScaled", "detBNoBackground" };//"bottomProbeScaled", "topProbeNoBackground" };
 
         public DemodulatedBlock DemodulateBlock(Block b, DemodulationConfig demodulationConfig, int[] tofChannelsToAnalyse)
         {
@@ -140,6 +140,7 @@ namespace Analysis.EDM
                     for (int i = 0; i < modulations.Count; i++)
                         if ((channel & (1 << i)) != 0) usedSwitches.Add(modulations[i].Name);
                     string[] channelName = usedSwitches.ToArray();
+                    Console.WriteLine(string.Join(",", channelName));
                     // the SIG channel has a special name
                     if (channel == 0) channelName = new string[] { "SIG" };
                     channelSet.AddChannel(channelName, tofAccumulator.GetResult());
@@ -174,11 +175,11 @@ namespace Analysis.EDM
             int bIndex = modNames.IndexOf("B");
             int dbIndex = modNames.IndexOf("DB");
             int eIndex = modNames.IndexOf("E");
-            int rf1fIndex = modNames.IndexOf("RF1F");
-            int rf2fIndex = modNames.IndexOf("RF2F");
-            int rf1aIndex = modNames.IndexOf("RF1A");
-            int rf2aIndex = modNames.IndexOf("RF2A");
-            int lf1Index = modNames.IndexOf("LF1");
+            //int rf1fIndex = modNames.IndexOf("RF1F");
+            //int rf2fIndex = modNames.IndexOf("RF2F");
+            //int rf1aIndex = modNames.IndexOf("RF1A");
+            //int rf2aIndex = modNames.IndexOf("RF2A");
+            //int lf1Index = modNames.IndexOf("LF1");
 
             int sigChannel = 0;
             int eChannel = (1 << eIndex);
@@ -187,39 +188,39 @@ namespace Analysis.EDM
             int ebChannel = (1 << eIndex) + (1 << bIndex);
             int edbChannel = (1 << eIndex) + (1 << dbIndex);
             int bdbChannel = (1 << bIndex) + (1 << dbIndex);
-            int dbrf1fChannel = (1 << dbIndex) + (1 << rf1fIndex);
-            int dbrf2fChannel = (1 << dbIndex) + (1 << rf2fIndex);
-            int brf1fChannel = (1 << bIndex) + (1 << rf1fIndex);
-            int brf2fChannel = (1 << bIndex) + (1 << rf2fIndex);
-            int edbrf1fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf1fIndex);
-            int edbrf2fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf2fIndex);
-            int bdbrf1fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
-            int bdbrf2fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
+            //int dbrf1fChannel = (1 << dbIndex) + (1 << rf1fIndex);
+            //int dbrf2fChannel = (1 << dbIndex) + (1 << rf2fIndex);
+            //int brf1fChannel = (1 << bIndex) + (1 << rf1fIndex);
+            //int brf2fChannel = (1 << bIndex) + (1 << rf2fIndex);
+            //int edbrf1fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+            //int edbrf2fChannel = (1 << eIndex) + (1 << dbIndex) + (1 << rf2fIndex);
+            //int bdbrf1fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+            //int bdbrf2fChannel = (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
             int ebdbChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex);
-            int ebdbrf1fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
-            int ebdbrf2fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
-            int rf1fChannel = (1 << rf1fIndex);
-            int rf2fChannel = (1 << rf2fIndex);
-            int erf1fChannel = (1 << eIndex) + (1 << rf1fIndex);
-            int erf2fChannel = (1 << eIndex) + (1 << rf2fIndex);
-            int rf1aChannel = (1 << rf1aIndex);
-            int rf2aChannel = (1 << rf2aIndex);
-            int dbrf1aChannel = (1 << dbIndex) + (1 << rf1aIndex);
-            int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
+            //int ebdbrf1fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf1fIndex);
+            //int ebdbrf2fChannel = (1 << eIndex) + (1 << bIndex) + (1 << dbIndex) + (1 << rf2fIndex);
+            //int rf1fChannel = (1 << rf1fIndex);
+            //int rf2fChannel = (1 << rf2fIndex);
+            //int erf1fChannel = (1 << eIndex) + (1 << rf1fIndex);
+            //int erf2fChannel = (1 << eIndex) + (1 << rf2fIndex);
+            //int rf1aChannel = (1 << rf1aIndex);
+            //int rf2aChannel = (1 << rf2aIndex);
+            //int dbrf1aChannel = (1 << dbIndex) + (1 << rf1aIndex);
+            //int dbrf2aChannel = (1 << dbIndex) + (1 << rf2aIndex);
 
-            List<int> channelsToAnalyse = new List<int> { sigChannel, eChannel, bChannel, dbChannel, ebChannel, edbChannel, bdbChannel, dbrf1fChannel,
-                            dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, bdbrf1fChannel, bdbrf2fChannel, ebdbChannel, ebdbrf1fChannel, ebdbrf2fChannel,
-                            rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
-                            dbrf2aChannel
-                        };
+            List<int> channelsToAnalyse = new List<int> { sigChannel, eChannel, bChannel, dbChannel, ebChannel, edbChannel, bdbChannel, ebdbChannel};//, dbrf1fChannel,
+                        //    dbrf2fChannel, brf1fChannel, brf2fChannel, edbrf1fChannel, edbrf2fChannel, bdbrf1fChannel, bdbrf2fChannel,  ebdbrf1fChannel, ebdbrf2fChannel,
+                        //    rf1fChannel, rf2fChannel, erf1fChannel, erf2fChannel, rf1aChannel, rf2aChannel, dbrf1aChannel,
+                        //    dbrf2aChannel
+                        //};
 
-            if (lf1Index != -1) // Index = -1 if "LF1" not found
-            {
-                int lf1Channel = (1 << lf1Index);
-                channelsToAnalyse.Add(lf1Channel);
-                int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
-                channelsToAnalyse.Add(dblf1Channel);
-            }
+            //if (lf1Index != -1) // Index = -1 if "LF1" not found
+            //{
+            //    int lf1Channel = (1 << lf1Index);
+            //    channelsToAnalyse.Add(lf1Channel);
+            //    int dblf1Channel = (1 << dbIndex) + (1 << lf1Index);
+            //    channelsToAnalyse.Add(dblf1Channel);
+            //}
 
             return DemodulateBlock(b, DemodulationConfig.MakeLiveAnalysisConfig(), channelsToAnalyse.ToArray());
         }
@@ -229,67 +230,76 @@ namespace Analysis.EDM
             ChannelSet<TOFWithError> tcsWithSpecialValues = tcs;
 
             // Extract the TOFChannels that we need.
-            TOFWithError c_eb = (TOFWithError)tcs.GetChannel(new string[] { "E", "B" });
-            TOFWithError c_edb = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB" });
-            TOFWithError c_bdb = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB" });
-            TOFWithError c_dbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF1F" });
-            TOFWithError c_dbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF2F" });
+            Console.WriteLine("Before first special channel");
             TOFWithError c_e = (TOFWithError)tcs.GetChannel(new string[] { "E" });
+            Console.WriteLine("After first, before first double");
+            TOFWithError c_eb = (TOFWithError)tcs.GetChannel(new string[] { "B", "E" });
+            TOFWithError c_edb = (TOFWithError)tcs.GetChannel(new string[] { "DB", "E" });
+            TOFWithError c_bdb = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB" });
+            Console.WriteLine("After doubles");
+            //TOFWithError c_eb = (TOFWithError)tcs.GetChannel(new string[] { "E", "B" });
+            //TOFWithError c_edb = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB" });
+            //TOFWithError c_bdb = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB" });
+            //TOFWithError c_dbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF1F" });
+            //TOFWithError c_dbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF2F" });
+            //TOFWithError c_e = (TOFWithError)tcs.GetChannel(new string[] { "E" });
             TOFWithError c_b = (TOFWithError)tcs.GetChannel(new string[] { "B" });
             TOFWithError c_db = (TOFWithError)tcs.GetChannel(new string[] { "DB" });
             TOFWithError c_sig = (TOFWithError)tcs.GetChannel(new string[] { "SIG" });
 
-            TOFWithError c_brf1f = (TOFWithError)tcs.GetChannel(new string[] { "B", "RF1F" });
-            TOFWithError c_brf2f = (TOFWithError)tcs.GetChannel(new string[] { "B", "RF2F" });
-            TOFWithError c_edbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
-            TOFWithError c_edbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB", "RF2F" });
-            TOFWithError c_bdbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB", "RF1F" });
-            TOFWithError c_bdbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB", "RF2F" });
-            TOFWithError c_ebdb = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB" });
+            //TOFWithError c_brf1f = (TOFWithError)tcs.GetChannel(new string[] { "B", "RF1F" });
+            //TOFWithError c_brf2f = (TOFWithError)tcs.GetChannel(new string[] { "B", "RF2F" });
+            //TOFWithError c_edbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB", "RF1F" });
+            //TOFWithError c_edbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "DB", "RF2F" });
+            //TOFWithError c_bdbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB", "RF1F" });
+            //TOFWithError c_bdbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB", "RF2F" });
+            //TOFWithError c_ebdb = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB" });  //Classic ordering of the channels...
+            TOFWithError c_ebdb = (TOFWithError)tcs.GetChannel(new string[] { "B", "DB", "E" });
+            Console.WriteLine("After triples");
 
-            TOFWithError c_ebdbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB", "RF1F" });
-            TOFWithError c_ebdbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB", "RF2F" });
+            //TOFWithError c_ebdbrf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB", "RF1F" });
+            //TOFWithError c_ebdbrf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "B", "DB", "RF2F" });
 
-            TOFWithError c_rf1f = (TOFWithError)tcs.GetChannel(new string[] { "RF1F" });
-            TOFWithError c_rf2f = (TOFWithError)tcs.GetChannel(new string[] { "RF2F" });
+            //TOFWithError c_rf1f = (TOFWithError)tcs.GetChannel(new string[] { "RF1F" });
+            //TOFWithError c_rf2f = (TOFWithError)tcs.GetChannel(new string[] { "RF2F" });
 
-            TOFWithError c_erf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "RF1F" });
-            TOFWithError c_erf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "RF2F" });
+            //TOFWithError c_erf1f = (TOFWithError)tcs.GetChannel(new string[] { "E", "RF1F" });
+            //TOFWithError c_erf2f = (TOFWithError)tcs.GetChannel(new string[] { "E", "RF2F" });
 
-            TOFWithError c_rf1a = (TOFWithError)tcs.GetChannel(new string[] { "RF1A" });
-            TOFWithError c_rf2a = (TOFWithError)tcs.GetChannel(new string[] { "RF2A" });
-            TOFWithError c_dbrf1a = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF1A" });
-            TOFWithError c_dbrf2a = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF2A" });
+            //TOFWithError c_rf1a = (TOFWithError)tcs.GetChannel(new string[] { "RF1A" });
+            //TOFWithError c_rf2a = (TOFWithError)tcs.GetChannel(new string[] { "RF2A" });
+            //TOFWithError c_dbrf1a = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF1A" });
+            //TOFWithError c_dbrf2a = (TOFWithError)tcs.GetChannel(new string[] { "DB", "RF2A" });
 
             // For SOME blocks there is no LF1 channel (and hence switch states).
             // To get around this problem I will populate the TOFChannel with "SIG"
             // It will then be obvious in the analysis when LF1 takes on real values.
-            TOFWithError c_lf1;
-            TOFWithError c_dblf1;
-            if (!tcs.Channels.Contains("LF1"))
-            {
-                c_lf1 = c_sig;
-                c_dblf1 = c_sig;
-            }
-            else
-            {
-                c_lf1 = (TOFWithError)tcs.GetChannel(new string[] { "LF1" });
-                c_dblf1 = (TOFWithError)tcs.GetChannel(new string[] { "DB", "LF1" });
-            }
+            //TOFWithError c_lf1;
+            //TOFWithError c_dblf1;
+            //if (!tcs.Channels.Contains("LF1"))
+            //{
+            //    c_lf1 = c_sig;
+            //    c_dblf1 = c_sig;
+            //}
+            //else
+            //{
+            //    c_lf1 = (TOFWithError)tcs.GetChannel(new string[] { "LF1" });
+            //    c_dblf1 = (TOFWithError)tcs.GetChannel(new string[] { "DB", "LF1" });
+            //}
 
             // Work out the terms for the full, corrected edm. 
             TOFWithError terms = c_eb * c_db
                 - c_edb * c_b + c_bdb * c_e - c_ebdb * c_sig
-                + c_erf1f * c_bdbrf1f + c_erf2f * c_bdbrf2f
-                - c_brf1f * c_edbrf1f - c_brf2f * c_edbrf2f
-                - c_ebdbrf1f * c_rf1f - c_ebdbrf2f * c_rf2f
+                //+ c_erf1f * c_bdbrf1f + c_erf2f * c_bdbrf2f
+                //- c_brf1f * c_edbrf1f - c_brf2f * c_edbrf2f
+                //- c_ebdbrf1f * c_rf1f - c_ebdbrf2f * c_rf2f
                 ;
 
             TOFWithError preDenominator = c_db * c_db
                 - c_edb * c_edb + c_bdb * c_bdb - c_ebdb * c_ebdb
-                + c_bdbrf1f * c_bdbrf1f + c_bdbrf2f * c_bdbrf2f
-                - c_edbrf1f * c_edbrf1f - c_edbrf2f * c_edbrf2f
-                + c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
+                //+ c_bdbrf1f * c_bdbrf1f + c_bdbrf2f * c_bdbrf2f
+                //- c_edbrf1f * c_edbrf1f - c_edbrf2f * c_edbrf2f
+                //+ c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
                 ;
 
             // Work out terms for corrected edm (no rf channels)
@@ -330,55 +340,55 @@ namespace Analysis.EDM
             tcs.AddChannel(new string[] { "CORRDB_NORF" }, correctionDB_norf);
 
             // Normalised RFxF channels.
-            TOFWithError rf1fDB = c_rf1f / c_db;
-            tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
+            //TOFWithError rf1fDB = c_rf1f / c_db;
+            //tcs.AddChannel(new string[] { "RF1FDB" }, rf1fDB);
 
-            TOFWithError rf2fDB = c_rf2f / c_db;
-            tcs.AddChannel(new string[] { "RF2FDB" }, rf2fDB);
+            //TOFWithError rf2fDB = c_rf2f / c_db;
+            //tcs.AddChannel(new string[] { "RF2FDB" }, rf2fDB);
 
-            // And RFxF.DB channels, again normalised to DB. The naming of these channels is quite
-            // unfortunate, but it's just tough.
-            TOFWithError rf1fDBDB = c_dbrf1f / c_db;
-            tcs.AddChannel(new string[] { "RF1FDBDB" }, rf1fDBDB);
+            //// And RFxF.DB channels, again normalised to DB. The naming of these channels is quite
+            //// unfortunate, but it's just tough.
+            //TOFWithError rf1fDBDB = c_dbrf1f / c_db;
+            //tcs.AddChannel(new string[] { "RF1FDBDB" }, rf1fDBDB);
 
-            TOFWithError rf2fDBDB = c_dbrf2f / c_db;
-            tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
+            //TOFWithError rf2fDBDB = c_dbrf2f / c_db;
+            //tcs.AddChannel(new string[] { "RF2FDBDB" }, rf2fDBDB);
 
-            // Normalised RFxAchannels.
-            TOFWithError rf1aDB = c_rf1a / c_db;
-            tcs.AddChannel(new string[] { "RF1ADB" }, rf1aDB);
+            //// Normalised RFxAchannels.
+            //TOFWithError rf1aDB = c_rf1a / c_db;
+            //tcs.AddChannel(new string[] { "RF1ADB" }, rf1aDB);
 
-            TOFWithError rf2aDB = c_rf2a / c_db;
-            tcs.AddChannel(new string[] { "RF2ADB" }, rf2aDB);
+            //TOFWithError rf2aDB = c_rf2a / c_db;
+            //tcs.AddChannel(new string[] { "RF2ADB" }, rf2aDB);
 
-            // And RFxA.DB channels, again normalised to DB. The naming of these channels is quite
-            // unfortunate, but it's just tough.
-            TOFWithError rf1aDBDB = c_dbrf1a / c_db;
-            tcs.AddChannel(new string[] { "RF1ADBDB" }, rf1aDBDB);
+            //// And RFxA.DB channels, again normalised to DB. The naming of these channels is quite
+            //// unfortunate, but it's just tough.
+            //TOFWithError rf1aDBDB = c_dbrf1a / c_db;
+            //tcs.AddChannel(new string[] { "RF1ADBDB" }, rf1aDBDB);
 
-            TOFWithError rf2aDBDB = c_dbrf2a / c_db;
-            tcs.AddChannel(new string[] { "RF2ADBDB" }, rf2aDBDB);
+            //TOFWithError rf2aDBDB = c_dbrf2a / c_db;
+            //tcs.AddChannel(new string[] { "RF2ADBDB" }, rf2aDBDB);
 
-            // the E.RFxF channels, normalized to DB
-            TOFWithError erf1fDB = c_erf1f / c_db;
-            tcs.AddChannel(new string[] { "ERF1FDB" }, erf1fDB);
+            //// the E.RFxF channels, normalized to DB
+            //TOFWithError erf1fDB = c_erf1f / c_db;
+            //tcs.AddChannel(new string[] { "ERF1FDB" }, erf1fDB);
 
-            TOFWithError erf2fDB = c_erf2f / c_db;
-            tcs.AddChannel(new string[] { "ERF2FDB" }, erf2fDB);
+            //TOFWithError erf2fDB = c_erf2f / c_db;
+            //tcs.AddChannel(new string[] { "ERF2FDB" }, erf2fDB);
 
-            // the E.RFxF.DB channels, normalized to DB, again dodgy naming convention.
-            TOFWithError erf1fDBDB = c_edbrf1f / c_db;
-            tcs.AddChannel(new string[] { "ERF1FDBDB" }, erf1fDBDB);
+            //// the E.RFxF.DB channels, normalized to DB, again dodgy naming convention.
+            //TOFWithError erf1fDBDB = c_edbrf1f / c_db;
+            //tcs.AddChannel(new string[] { "ERF1FDBDB" }, erf1fDBDB);
 
-            TOFWithError erf2fDBDB = c_edbrf2f / c_db;
-            tcs.AddChannel(new string[] { "ERF2FDBDB" }, erf2fDBDB);
+            //TOFWithError erf2fDBDB = c_edbrf2f / c_db;
+            //tcs.AddChannel(new string[] { "ERF2FDBDB" }, erf2fDBDB);
 
             // the LF1 channel, normalized to DB
-            TOFWithError lf1DB = c_lf1 / c_db;
-            tcs.AddChannel(new string[] { "LF1DB" }, lf1DB);
+            //TOFWithError lf1DB = c_lf1 / c_db;
+            //tcs.AddChannel(new string[] { "LF1DB" }, lf1DB);
 
-            TOFWithError lf1DBDB = c_dblf1 / c_db;
-            tcs.AddChannel(new string[] { "LF1DBDB" }, lf1DBDB);
+            //TOFWithError lf1DBDB = c_dblf1 / c_db;
+            //tcs.AddChannel(new string[] { "LF1DBDB" }, lf1DBDB);
 
             TOFWithError bDB = c_b / c_db;
             tcs.AddChannel(new string[] { "BDB" }, bDB);
@@ -401,11 +411,11 @@ namespace Analysis.EDM
             //    + c_ebdbrf1f * c_ebdbrf1f + c_ebdbrf2f * c_ebdbrf2f
             //    ;
 
-            TOFWithError brf1fCorrDB = (c_brf1f / c_db) - ((c_b * c_dbrf1f) / (c_db * c_db));
-            tcs.AddChannel(new string[] { "BRF1FCORRDB" }, brf1fCorrDB);
+            //TOFWithError brf1fCorrDB = (c_brf1f / c_db) - ((c_b * c_dbrf1f) / (c_db * c_db));
+            //tcs.AddChannel(new string[] { "BRF1FCORRDB" }, brf1fCorrDB);
 
-            TOFWithError brf2fCorrDB = (c_brf2f / c_db) - ((c_b * c_dbrf2f) / (c_db * c_db));
-            tcs.AddChannel(new string[] { "BRF2FCORRDB" }, brf2fCorrDB);
+            //TOFWithError brf2fCorrDB = (c_brf2f / c_db) - ((c_b * c_dbrf2f) / (c_db * c_db));
+            //tcs.AddChannel(new string[] { "BRF2FCORRDB" }, brf2fCorrDB);
 
             //Some extra channels for various shot noise calculations, these are a bit weird
             tcs.AddChannel(new string[] { "SIGNL" }, c_sig);
