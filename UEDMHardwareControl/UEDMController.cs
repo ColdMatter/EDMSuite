@@ -91,6 +91,9 @@ namespace UEDMHardwareControl
         // RF DDS
         AD9850DDS RFDDS = (AD9850DDS)Environs.Hardware.Instruments["AD9850DDS"];
 
+        //TargetStepperController
+        StepperMotorController targetStepperControl = (StepperMotorController)Environs.Hardware.Instruments["targetStepperControl"];
+
         // Stirap Synth
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
 
@@ -3361,7 +3364,10 @@ namespace UEDMHardwareControl
                     if (NeonFlowSetPointFlag)
                     {
                         neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
-                        sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                        if (window.cbSF6Valve.Checked)
+                        {
+                            sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                        }
                         NeonFlowSetPointFlag = false;
                     }
                     if (NeonFlowMonitorFlag)
@@ -3416,9 +3422,46 @@ namespace UEDMHardwareControl
             for (int i = 0; i < numSteps; i++)
             {
                 SetDigitalLine("targetStepper", true);
-                Thread.Sleep(5);
+                Thread.Sleep(20);
                 SetDigitalLine("targetStepper", false);
-                Thread.Sleep(5);
+                Thread.Sleep(20);
+            }
+        }
+
+        public void SetTargetStepperManual()
+        {
+            try
+            {
+                targetStepperControl.ManualMode();
+            }
+            catch (Exception e)
+            {
+                string errorMsg = e.ToString();
+                Console.WriteLine(String.Concat("Could not connect with exception ",errorMsg));
+            }
+        }
+        public void SetTargetStepperExt()
+        {
+            try
+            {
+                targetStepperControl.ExternalMode();
+            }
+            catch (Exception e)
+            {
+                string errorMsg = e.ToString();
+                Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
+            }
+        }
+        public void SetTargetStepperTriggeredMove()
+        {
+            try
+            {
+                targetStepperControl.TriggerMoveMode("20","2","5");
+            }
+            catch (Exception e)
+            {
+                string errorMsg = e.ToString();
+                Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
             }
         }
 
@@ -4390,6 +4433,11 @@ namespace UEDMHardwareControl
             {
                 window.SetCheckBoxCheckedStatus(window.ePolarityCheck, value);
             }
+        }
+
+        public void ConnectEField(bool enabled)
+        {
+            window.SetCheckBoxCheckedStatus(window.eConnectCheck, !enabled);
         }
 
         public bool ESuppliesConnected

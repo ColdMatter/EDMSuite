@@ -97,12 +97,12 @@ public class Patterns : MOTMasterScript
         //Sideband frequencies, double pass so divede by 2.0
         //Sideband 2 has opposite polarization
 
-        
+
         //- AOM order
-        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1-
-        Parameters["SidebandFreq2"] = 393.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq3"] = 318.50 / 2.0; //+ F = 0
-        Parameters["SidebandFreq4"] = 370.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 318.50 / 2.0; //- F = 0
+        Parameters["SidebandFreq3"] = 395.00 / 2.0; //- F = 2
+        Parameters["SidebandFreq4"] = 374.00 / 2.0; //+ F = 1+
 
         // Frequency jump in molasses, plus is blue
         Parameters["SidebandFreqJump1"] = 20.0 / 2.0; //+ F = 1-
