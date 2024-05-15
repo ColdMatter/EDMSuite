@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 using DAQ.Pattern;
 using DAQ.Analog;
+using System.Threading;
+using DAQ.Environment;
 
 // This script is supposed to be the basic script for loading a molecule MOT.
 // Note that times are all in units of the clock periods of the two pattern generator boards (at present, both are 10us).
@@ -15,20 +17,33 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 1000;
+        Parameters["PatternLength"] = 500000; // 5s
         Parameters["Void"] = 0;
+        Parameters["Delay"] = 0;
+        Parameters["OnFrequency"] = 327.466161;
+        Parameters["OffFrequency"] = 327.466111;
+        Parameters["Laser"] = "VECSEL2";
+        Parameters["WaitTime"] = 5000;
         Parameters["Switch"] = true;
-        Parameters["Switch2"] = true;
 
         switchConfiguration = new Dictionary<string, List<bool>>
             {
-                {"Switch", new List<bool>{true, false, false, true}},
-                {"Switch2", new List<bool>{false, false, true, true } }
+                {"Switch", new List<bool>{true, false}}
             };
+    }
+
+    private void prePatternSetup()
+    {
+        EnvironsHelper eHelper = new EnvironsHelper((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]);
+        WavemeterLock.Controller wmlController = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"] + ":" + eHelper.wavemeterLockTCPChannel.ToString() + "/controller.rem"));
+        wmlController.setSlaveFrequency((string)Parameters["Laser"], (bool)Parameters["Switch"] ? (double)Parameters["OnFrequency"] : (double)Parameters["OffFrequency"]);
+        Thread.Sleep((int)Parameters["WaitTime"]);
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
+        prePatternSetup();
+
         PatternBuilder32 p = new PatternBuilder32();
 
         //MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters); // This is how you load "preset" patterns.          
@@ -39,9 +54,19 @@ public class Patterns : MOTMasterScript
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
-        p.AddEdge("q",0,true);
-        p.AddEdge("q",10,false);
-        
+        p.AddEdge("q", Convert.ToInt32(Parameters["Delay"]), true);
+        p.AddEdge("q", 99999, false);
+
+        if ((bool)Parameters["Switch"])
+        {
+            p.AddEdge("VECSEL2_Shutter", 0, true);
+            p.AddEdge("VECSEL2_Shutter", 1, false);
+        }
+        else
+        {
+            p.AddEdge("VECSEL2_Shutter", Convert.ToInt32(Parameters["PatternLength"])-1, true);
+        }
+
 
         return p;
     }

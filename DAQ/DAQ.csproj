@@ -642,6 +642,7 @@
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
+    <Compile Include="InfluxDBDataLogger.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="M2LaserInterface.cs" />
     <Compile Include="RigolDG811.cs" />

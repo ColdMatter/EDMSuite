@@ -6,18 +6,12 @@ using System.Threading;
 
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
-using DAQ;
 using DAQ.HAL;
 using ScanMaster.Acquire.Plugin;
 using ScanMaster.Acquire.Plugins;
 using Data;
 
-using System.Xml.Serialization;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
-using System.Runtime.Remoting;
 using System.Collections;
-using System.Runtime.Serialization.Formatters;
 using System.Drawing;
 
 namespace AlFHardwareControl
@@ -36,8 +30,11 @@ namespace AlFHardwareControl
 
 
         private Task DAQTask;
+        private Task CtrTask;
         private AnalogMultiChannelReader dataReader;
+        private CounterMultiChannelReader counterReader;
         private List<string> AIchannels = (List<string>)Environs.Hardware.GetInfo("MMAnalogInputs");
+        private List<string> Ctrchannels = (List<string>)Environs.Hardware.GetInfo("MMCtrInputs");
         public List<MOTMasterData> mmdata = new List<MOTMasterData>();
         private bool dataSaved = false;
         public bool isDataSaved
@@ -123,19 +120,63 @@ namespace AlFHardwareControl
                 DataTabs.Controls.Add(dataGraph);
 
             }
+
+            foreach (string ctrchannel in Ctrchannels)
+            {
+                TabPage dataGraph = new TabPage(ctrchannel);
+                mmdata.Add(new MOTMasterData(ctrchannel, "Count rate [kHz]"));
+                mmdata.Last().mmstuff = this;
+                mmdata.Last().initNormalisation(AIchannels);
+                dataGraph.Controls.Add(mmdata.Last());
+                DataTabs.Controls.Add(dataGraph);
+
+            }
+
         }
 
-        private bool dataAcquired = false;
+
+        AutoResetEvent dataAcquired = new AutoResetEvent(false);
+        private bool AIReady = false;
+        private bool CtrReady = false;
 
         public SerializableDictionary<string, List<double[]>> AIData = new SerializableDictionary<string, List<double[]>>();
         private int patternProgress = 0;
         private void UpdateReadings(object sender, TaskDoneEventArgs args)
         {
-            double[,] data = dataReader.ReadMultiSample(Convert.ToInt32(this.sampNum.Text));
+            if ((!AIReady && AI) || (!CtrReady && Ctr)) return;
+            int samples = Convert.ToInt32(this.sampNum.Text);
+            int frequency = Convert.ToInt32(this.cmbSamplingRate.Text);
+            double[,] data = new double[1,1];
+            if (AI)
+                data = dataReader.ReadMultiSample(samples);
+            int[,] ctrData = new int[1, 1];
+            double[,] ctrFreq = new double[1, 1];
+            if (Ctr)
+            {
+                ctrData = counterReader.ReadMultiSampleInt32(samples);
+                ctrFreq = new double[Ctrchannels.Count, samples];
+            }
+
             int offset = 0;
+            for (int i = 0; i < Ctrchannels.Count; ++i)
+            {
+                int count = 0;
+                if (!mmdata[i + AIchannels.Count].SourceEnabled)
+                {
+                    ++offset;
+                    continue;
+                }
+                for (int j = 0; j < samples; ++j)
+                {
+                    ctrFreq[i - offset, j] = (ctrData[i - offset, j] - count) * frequency / 1000;
+                    count += ctrData[i - offset, j];
+                }
+            }
+
+            offset = 0;
             if (patternProgress == 0)
                 AIData = new SerializableDictionary<string, List<double[]>>();
-            for (int i = 0; i < mmdata.Count; ++i)
+            for (int i = 0; i < AIchannels.Count; ++i)
             {
                 if (!mmdata[i].SourceEnabled)
                 {
@@ -159,9 +200,40 @@ namespace AlFHardwareControl
                 }
             }
 
+            offset = 0;
+            for (int i = 0; i < Ctrchannels.Count; ++i)
+            {
+                if (!mmdata[AIchannels.Count + i].SourceEnabled)
+                {
+                    ++offset;
+                    continue;
+                }
+                if (!AIData.ContainsKey(Ctrchannels[i]))
+                    AIData.Add(Ctrchannels[i], new List<double[]> { });
+                AIData[Ctrchannels[i]].Add(Enumerable.Range(0, ctrFreq.GetLength(1))
+                .Select(x => ctrFreq[i - offset, x])
+                .ToArray());
+                mmdata[i + AIchannels.Count].ReDraw();
+                if (!saveEnable.Checked) continue;
+                using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + Ctrchannels[i] + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
+                {
+                    file.WriteLine("Sampling Rate: " + this.cmbSamplingRate.Text + ", Number of points :" + this.sampNum.Text);
+                    for (int j = 0; j < Convert.ToInt32(this.sampNum.Text); ++j)
+                        file.WriteLine(xdata[i].ToString() + "," + ctrFreq[i, j].ToString());
+                    file.Flush();
+                }
+            }
+
             dataSaved = true;
 
-            DAQTask.Stop();
+            CtrReady = false;
+            AIReady = false;
+
+            if (AI)
+                DAQTask.Stop();
+            if (Ctr)
+                CtrTask.Stop();
 
             if (scanRunning)
             {
@@ -171,10 +243,16 @@ namespace AlFHardwareControl
                         scanResults.Last().Item2.Add(AIData);
                 }   
             }
-            DAQTask.Start();
-            dataAcquired = true;
+            if (Ctr)
+                CtrTask.Start();
+            if (AI)
+                DAQTask.Start();
+            dataAcquired.Set();
         }
 
+
+        private bool AI = false;
+        private bool Ctr = false;
         private void setUpTasks()
         {
             AIData = new SerializableDictionary<string, List<double[]>> { };
@@ -200,7 +278,9 @@ namespace AlFHardwareControl
             }
 
             DAQTask = new Task("DAQTask");
+            CtrTask = new Task("CtrTask");
 
+            AI = false;
             for (int c = 0; c < AIchannels.Count; ++c)
             {
                 mmdata[c].Invoke((Action)(()=>
@@ -209,20 +289,59 @@ namespace AlFHardwareControl
                 }));
                 if (!mmdata[c].SourceEnabled) continue;
                 ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[AIchannels[c]]).AddToTask(DAQTask, 0, 10);
+                AI = true;
             }
 
-            DAQTask.Timing.ConfigureSampleClock("", Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
-            DAQTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMAITrigger"), DigitalEdgeStartTriggerEdge.Rising);
+            Ctr = false;
+            for (int c = 0; c < Ctrchannels.Count; ++c)
+            {
+                mmdata[c + AIchannels.Count].Invoke((Action)(() =>
+                {
+                    mmdata[c + AIchannels.Count].sourceEnable.Enabled = false;
+                }));
+                if (!mmdata[c + AIchannels.Count].SourceEnabled) continue;
+                CtrTask.CIChannels.CreateCountEdgesChannel(((CounterChannel)Environs.Hardware.CounterChannels[Ctrchannels[c]]).PhysicalChannel, Ctrchannels[c], CICountEdgesActiveEdge.Rising, 0,CICountEdgesCountDirection.Up);
+                Ctr = true;
+            }
 
-            DAQTask.Done += UpdateReadings;
+            if (AI)
+            {
+                DAQTask.Timing.ConfigureSampleClock("", Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
+                DAQTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMAITrigger"), DigitalEdgeStartTriggerEdge.Rising);
+                DAQTask.Done += (object ob, TaskDoneEventArgs args) => { AIReady = true; UpdateReadings(ob, args); }; ;
+                dataReader = new AnalogMultiChannelReader(DAQTask.Stream);
+            }
+            
+            if (Ctr)
+            {
+                CtrTask.Timing.ConfigureSampleClock((string)Environs.Hardware.GetInfo("MMCtrSampleClock"), Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
+                CtrTask.Triggers.ArmStartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMCtrTrigger"), DigitalEdgeArmStartTriggerEdge.Rising);
+                CtrTask.Done += (object ob, TaskDoneEventArgs args) => { CtrReady = true; UpdateReadings(ob, args); };
+                counterReader = new CounterMultiChannelReader(CtrTask.Stream);
+            }
+            //CtrTask.Triggers.Type = StartTriggerType.DigitalEdge;
+            //CtrTask.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
+            //CtrTask.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.GetInfo("MMCtrTrigger");
 
-            dataReader = new AnalogMultiChannelReader(DAQTask.Stream);
+            if (AI)
+            {
+                DAQTask.Control(TaskAction.Verify);
+                DAQTask.Control(TaskAction.Commit);
+            }
 
-            DAQTask.Control(TaskAction.Verify);
-            DAQTask.Control(TaskAction.Commit);
+            if (Ctr)
+            {
+                CtrTask.Control(TaskAction.Verify);
+                CtrTask.Control(TaskAction.Commit);
+            }
 
-            DAQTask.Start();
+            CtrReady = false;
+            AIReady = false;
 
+            if (AI)
+                DAQTask.Start();
+            if (Ctr)
+                CtrTask.Start();
         }
 
         private System.Collections.ArrayList scanValues;
@@ -359,14 +478,17 @@ namespace AlFHardwareControl
                 runSinglePattern(mmaster, dict, () => { return !patternRunning; });
             } while (repeatScanChecked && patternRunning);
             patternRunning = false;
+            foreach (MOTMasterData data in mmdata)
+            {
+                data.UpdateScanStatus(false);
+            }
             EnableScanControls();
+
         }
 
         private void runSinglePattern(MOTMaster.Controller mmaster, Dictionary<string, Object> dict, Func<bool> breakCondition)
         {
             string text = "ACCEPTED";
-            Color color = Color.PaleGreen;
-
             do
             {
                 for (int  i = 0; i < switchStates; ++i)
@@ -378,15 +500,17 @@ namespace AlFHardwareControl
                         dict[Switch.Key] = Switch.Value[i];
                     }
 
-                    dataAcquired = false;
+                    dataAcquired.Reset();
                     mmaster.Go(dict);
 
-                    while (!dataAcquired) ;
+                    dataAcquired.WaitOne();
                     ++patternProgress;
                 }
 
                 if (breakCondition()) break;
 
+                text = "ACCEPTED";
+                Color color = Color.PaleGreen;
                 foreach (MOTMasterData data in mmdata)
                 {
                     if (data.SourceEnabled && data.reject_shot())
@@ -409,9 +533,10 @@ namespace AlFHardwareControl
                 }));
 
 
+                patternProgress = 0;
             } while (text != "ACCEPTED");
-
             patternProgress = 0;
+
         }
 
         private void UpdateScanViewSize()
@@ -674,9 +799,14 @@ namespace AlFHardwareControl
             }
             else
             {
+
                 DAQTask.Stop();
                 DAQTask.Dispose();
-                for (int c = 0; c < AIchannels.Count; ++c)
+
+                CtrTask.Stop();
+                CtrTask.Dispose();
+
+                for (int c = 0; c < mmdata.Count; ++c)
                 {
                     mmdata[c].Invoke((Action)(() =>
                     {
@@ -723,7 +853,7 @@ namespace AlFHardwareControl
             {
                 foreach (Tuple<double, List<SerializableDictionary<string, List<double[]>>>> dp in scanResults)
                 {
-                    if (dp.Item2.Count == 0) continue;
+                    if (dp.Item2.Count < switchStates) continue;
                     List<double> intavg = Enumerable.Range(0, switchStates).Select(
                                     j => Enumerable.Range(0, dp.Item2.Count).Select(
                                     i => mmdata[dataTabsSelectedIndex].NormaliseData(dp.Item2[i])[j].Sum()).Average()).ToList();

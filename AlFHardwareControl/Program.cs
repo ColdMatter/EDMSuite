@@ -24,7 +24,7 @@ namespace AlFHardwareControl
             AlFController controller = new AlFController();
 
             //Application.ThreadException +=;
-            //AppDomain.CurrentDomain.UnhandledException += controller.ExceptionHandler;
+            AppDomain.CurrentDomain.UnhandledException += controller.ExceptionHandler;
 
             TcpChannel tcpChannel = new TcpChannel(1172);
             ChannelServices.RegisterChannel(tcpChannel, false);
