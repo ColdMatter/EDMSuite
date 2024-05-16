@@ -10,8 +10,9 @@ using System.Threading;
 using System.Windows.Forms;
 using DAQ.Environment;
 using DAQ.HAL;
+using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using System.Net.Mail;
 
 namespace AlFHardwareControl
 {
@@ -57,6 +58,7 @@ namespace AlFHardwareControl
         {
             TabPage temp = new TabPage("Misc Instruments");
             MiscInstruments misc = new MiscInstruments();
+            misc.mSquaredLaserView1.EnableFallback(File.ReadAllText(@"C:\Users\alfultra\M2Auth.txt"), @"C:\Users\alfultra\M2WlChange.json");
             controller.MiscDataUpdate += (object a, EventArgs args) => { misc.YAG_Control.UpdateStatus(); };
             controller.MiscDataUpdate += (object a, EventArgs args) => { misc.mSquaredLaserView1.UpdateStatus(); };
                 temp.Controls.Add(misc);
@@ -70,6 +72,20 @@ namespace AlFHardwareControl
             Func<bool> Loop2On = () => { return Loop2Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> heaterOn = () => { return Loop1On() || Loop2On(); };
 
+            bool MOT_pressure_email_sent = false;
+            Func<bool> MOT_pressure_failCond = () => {
+                if (MOT_pressure_email_sent && tSched.Comparisons["<"](tSched.Resources["MOT Pressure"](), "5e-4"))
+                {
+                    MOT_pressure_email_sent = false;
+                    return true;
+                }
+                if (MOT_pressure_email_sent)
+                {
+                    return false;
+                }
+                MOT_pressure_email_sent = tSched.Comparisons[">"](tSched.Resources["MOT Pressure"](), "1e-3");
+                return true;
+            };
 
 
             tSched.AddEvent(new SafetyInterlock(tSched, LabelA.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
@@ -80,6 +96,8 @@ namespace AlFHardwareControl
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 1", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 1", Loop1On));
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 2", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 2", Loop2On));
             tSched.AddEvent(new SafetyInterlock(tSched, "Cryo state", "is", "ON", "Turn off heaters", heaterOn));
+
+            tSched.AddEvent(new SafetyInterlock(tSched, "MOT Pressure", ">", "1e-3", "Send e-mail warning", MOT_pressure_failCond));
 
         }
 
@@ -304,6 +322,52 @@ namespace AlFHardwareControl
                 this.Loop2Disengage_Click(null, new EventArgs());
                 return null;
             });
+
+            tScheduler.AddTask("Send e-mail warning", (bool discard) =>
+            {
+                try
+                {
+
+                    SmtpClient mySmtpClient = new SmtpClient("automail.cc.ic.ac.uk");
+
+                    // set smtp-client with basicAuthentication
+                    mySmtpClient.UseDefaultCredentials = false;
+                    System.Net.NetworkCredential basicAuthenticationInfo = new
+                       System.Net.NetworkCredential();
+                    mySmtpClient.Credentials = basicAuthenticationInfo;
+
+                    // add from,to mailaddresses
+                    MailAddress from = new MailAddress("alfultra@ic.ac.uk", "AlF Ultracold");
+                    MailAddress to = new MailAddress("LP618@ic.ac.uk", "Lajos Palanki");
+                    MailMessage myMail = new System.Net.Mail.MailMessage(from, to);
+
+                    // add ReplyTo
+                    MailAddress replyTo = new MailAddress("alfultra@ic.ac.uk");
+                    myMail.ReplyToList.Add(replyTo);
+
+                    // set subject and encoding
+                    myMail.Subject = "!!SYSTEM WARNING!!";
+                    myMail.SubjectEncoding = System.Text.Encoding.UTF8;
+
+                    // set body-message and encoding
+                    myMail.Body = "The experiment control detected something unusual, which it cannot handle itself. Please verify the error and if needed fix.";
+                    myMail.BodyEncoding = System.Text.Encoding.UTF8;
+                    // text or html
+                    myMail.IsBodyHtml = false;
+
+                    mySmtpClient.Send(myMail);
+                }
+
+                catch (SmtpException ex)
+                {
+                    tScheduler.UpdateEventLog("SmtpException has occured: " + ex.Message);
+                    if (!discard)
+                    {
+                        tScheduler.AddEvent(new TimedEvent(tSched, DateTime.Now, "Send e-mail warning", false));
+                    }
+                }
+                return null;
+            });
             #endregion
 
             taskScheduler.Controls.Add(tScheduler);
@@ -430,8 +494,8 @@ namespace AlFHardwareControl
             {
                 
             }
-            TabPage pressure = new TabPage("Baking temperature");
-            DataGrapher pressureGrapher = new DataGrapher("Temperature", "Temperature [C]", (DataGrapher grapher) =>
+            TabPage pressure = new TabPage("Baking Temperature");
+            DataGrapher pressureGrapher = new DataGrapher("Type-K Temperature", "Temperature [C]", (DataGrapher grapher) =>
             {
 
                 DateTime localDate = DateTime.Now;
@@ -726,6 +790,7 @@ namespace AlFHardwareControl
         private void AlFControlWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.exiting = true;
+            MSquaredLaserView.saveLineData();
             controller.UpdateThread.Abort();
             controller.DAQ_sync.AbortThreads();
             tSched.Exit();

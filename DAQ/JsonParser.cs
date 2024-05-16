@@ -9,7 +9,7 @@ namespace DAQ
     public static class JsonParser
     {
 
-        private static readonly List<char> WHITESPACE = new List<char> { ' ', '\n', '\r', '\t' };
+        private static readonly List<char> WHITESPACE = new List<char> { ' ', '\n', '\r', '\t', '\0' };
         private static readonly List<char> SYNTAX = new List<char> { ',', '[', ']', '{', '}', ':' };
         private static readonly List<string> KEYWORDS = new List<string> { "false", "true", "null" };
 

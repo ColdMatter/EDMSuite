@@ -40,16 +40,16 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.error = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.offset = new AlFHardwareControl.ParamSet();
             this.setpoint = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.RemoveLine = new System.Windows.Forms.Button();
             this.AddLine = new System.Windows.Forms.Button();
             this.LinesSelector = new System.Windows.Forms.ComboBox();
-            this.lockPrecision = new AlFHardwareControl.ParamSet();
-            this.lockTolerance = new AlFHardwareControl.ParamSet();
             this.lockCheckBox = new System.Windows.Forms.CheckBox();
+            this.CurrFreq = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.offset = new AlFHardwareControl.ParamSet();
             this.VelSet = new AlFHardwareControl.ParamSet();
             this.M2_Control_Group.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -76,6 +76,8 @@ namespace AlFHardwareControl
             // 
             // M2_Control_Group
             // 
+            this.M2_Control_Group.Controls.Add(this.CurrFreq);
+            this.M2_Control_Group.Controls.Add(this.label7);
             this.M2_Control_Group.Controls.Add(this.groupBox1);
             this.M2_Control_Group.Controls.Add(this.error);
             this.M2_Control_Group.Controls.Add(this.label4);
@@ -86,8 +88,6 @@ namespace AlFHardwareControl
             this.M2_Control_Group.Controls.Add(this.RemoveLine);
             this.M2_Control_Group.Controls.Add(this.AddLine);
             this.M2_Control_Group.Controls.Add(this.LinesSelector);
-            this.M2_Control_Group.Controls.Add(this.lockPrecision);
-            this.M2_Control_Group.Controls.Add(this.lockTolerance);
             this.M2_Control_Group.Controls.Add(this.lockCheckBox);
             this.M2_Control_Group.Controls.Add(this.VelSet);
             this.M2_Control_Group.Controls.Add(this.label1);
@@ -106,7 +106,7 @@ namespace AlFHardwareControl
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.lineFrequency);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Location = new System.Drawing.Point(5, 261);
+            this.groupBox1.Location = new System.Drawing.Point(5, 219);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(203, 101);
             this.groupBox1.TabIndex = 18;
@@ -160,7 +160,7 @@ namespace AlFHardwareControl
             // error
             // 
             this.error.Enabled = false;
-            this.error.Location = new System.Drawing.Point(72, 72);
+            this.error.Location = new System.Drawing.Point(72, 98);
             this.error.Name = "error";
             this.error.Size = new System.Drawing.Size(133, 20);
             this.error.TabIndex = 17;
@@ -168,20 +168,11 @@ namespace AlFHardwareControl
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 75);
+            this.label4.Location = new System.Drawing.Point(6, 101);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 16;
             this.label4.Text = "Error [MHz]";
-            // 
-            // offset
-            // 
-            this.offset.Label = "Offset";
-            this.offset.Location = new System.Drawing.Point(5, 100);
-            this.offset.Name = "offset";
-            this.offset.Size = new System.Drawing.Size(203, 27);
-            this.offset.TabIndex = 15;
-            this.offset.OnSetClick += new System.EventHandler(this.offset_OnSetClick);
             // 
             // setpoint
             // 
@@ -203,7 +194,7 @@ namespace AlFHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 237);
+            this.label2.Location = new System.Drawing.Point(11, 195);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(27, 13);
             this.label2.TabIndex = 12;
@@ -211,7 +202,7 @@ namespace AlFHardwareControl
             // 
             // RemoveLine
             // 
-            this.RemoveLine.Location = new System.Drawing.Point(188, 232);
+            this.RemoveLine.Location = new System.Drawing.Point(188, 190);
             this.RemoveLine.Name = "RemoveLine";
             this.RemoveLine.Size = new System.Drawing.Size(17, 23);
             this.RemoveLine.TabIndex = 11;
@@ -221,7 +212,7 @@ namespace AlFHardwareControl
             // 
             // AddLine
             // 
-            this.AddLine.Location = new System.Drawing.Point(167, 232);
+            this.AddLine.Location = new System.Drawing.Point(167, 190);
             this.AddLine.Name = "AddLine";
             this.AddLine.Size = new System.Drawing.Size(17, 23);
             this.AddLine.TabIndex = 10;
@@ -232,29 +223,11 @@ namespace AlFHardwareControl
             // LinesSelector
             // 
             this.LinesSelector.FormattingEnabled = true;
-            this.LinesSelector.Location = new System.Drawing.Point(44, 234);
+            this.LinesSelector.Location = new System.Drawing.Point(44, 192);
             this.LinesSelector.Name = "LinesSelector";
             this.LinesSelector.Size = new System.Drawing.Size(117, 21);
             this.LinesSelector.TabIndex = 9;
             this.LinesSelector.SelectedIndexChanged += new System.EventHandler(this.LinesSelector_SelectedIndexChanged);
-            // 
-            // lockPrecision
-            // 
-            this.lockPrecision.Label = "P [nm]";
-            this.lockPrecision.Location = new System.Drawing.Point(5, 199);
-            this.lockPrecision.Name = "lockPrecision";
-            this.lockPrecision.Size = new System.Drawing.Size(203, 27);
-            this.lockPrecision.TabIndex = 8;
-            this.lockPrecision.OnSetClick += new System.EventHandler(this.lockPrecision_OnSetClick);
-            // 
-            // lockTolerance
-            // 
-            this.lockTolerance.Label = "Tol. [nm]";
-            this.lockTolerance.Location = new System.Drawing.Point(5, 166);
-            this.lockTolerance.Name = "lockTolerance";
-            this.lockTolerance.Size = new System.Drawing.Size(203, 27);
-            this.lockTolerance.TabIndex = 7;
-            this.lockTolerance.OnSetClick += new System.EventHandler(this.lockTolerance_OnSetClick);
             // 
             // lockCheckBox
             // 
@@ -267,10 +240,36 @@ namespace AlFHardwareControl
             this.lockCheckBox.UseVisualStyleBackColor = true;
             this.lockCheckBox.CheckedChanged += new System.EventHandler(this.lockCheckBox_CheckedChanged);
             // 
+            // CurrFreq
+            // 
+            this.CurrFreq.Enabled = false;
+            this.CurrFreq.Location = new System.Drawing.Point(72, 72);
+            this.CurrFreq.Name = "CurrFreq";
+            this.CurrFreq.Size = new System.Drawing.Size(133, 20);
+            this.CurrFreq.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 75);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "PV [THz]";
+            // 
+            // offset
+            // 
+            this.offset.Label = "Offset";
+            this.offset.Location = new System.Drawing.Point(6, 124);
+            this.offset.Name = "offset";
+            this.offset.Size = new System.Drawing.Size(203, 27);
+            this.offset.TabIndex = 15;
+            this.offset.OnSetClick += new System.EventHandler(this.offset_OnSetClick);
+            // 
             // VelSet
             // 
             this.VelSet.Label = "Velocity";
-            this.VelSet.Location = new System.Drawing.Point(5, 133);
+            this.VelSet.Location = new System.Drawing.Point(6, 157);
             this.VelSet.Name = "VelSet";
             this.VelSet.Size = new System.Drawing.Size(203, 27);
             this.VelSet.TabIndex = 5;
@@ -296,8 +295,6 @@ namespace AlFHardwareControl
 
         private System.Windows.Forms.TextBox Conn_status;
         private System.Windows.Forms.Label label1;
-        private ParamSet lockPrecision;
-        private ParamSet lockTolerance;
         private System.Windows.Forms.CheckBox lockCheckBox;
         private ParamSet VelSet;
         private System.Windows.Forms.TextBox setpoint;
@@ -316,5 +313,7 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox lineFrequency;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox CurrFreq;
+        private System.Windows.Forms.Label label7;
     }
 }

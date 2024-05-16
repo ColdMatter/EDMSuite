@@ -76,7 +76,7 @@ namespace DAQ.HAL
             Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_Feb.xml");
 
             // external triggering control
-            Info.Add("PGTrigger", pgBoard + "/PFI1"); //Mapped to PFI7 on 6533 connector
+            Info.Add("PGTriggerLine", pgBoard + "/PFI1"); //Mapped to no where in particular
 
 
             // map the analog input channels for "daq" card
@@ -221,6 +221,7 @@ namespace DAQ.HAL
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::3::INSTR"));
             Instruments.Add("rigolWavGen", new RigolDG811("USB0::0x1AB1::0x0643::DG8A250800641::INSTR"));
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
+            Instruments.Add("targetStepperControl", new StepperMotorController("ASRL4::INSTR"));
 
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)

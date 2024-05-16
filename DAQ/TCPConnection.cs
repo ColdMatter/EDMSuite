@@ -14,11 +14,12 @@ namespace DAQ
         private TcpClient client;
         private NetworkStream stream;
         private IPEndPoint remote_ip;
+        private IPEndPoint local_ip;
 
-        public TCPConnection(IPEndPoint local_ip, IPEndPoint _remote_ip, TCPDataCallback callback)
+        public TCPConnection(IPEndPoint _local_ip, IPEndPoint _remote_ip, TCPDataCallback callback)
         {
             remote_ip = _remote_ip;
-            client = new TcpClient(local_ip);
+            local_ip = _local_ip;
             dataReceived += callback;
             Reconnect();
         }
@@ -27,17 +28,22 @@ namespace DAQ
         {
             try
             {
+                client = new TcpClient(local_ip);
                 client.Connect(remote_ip);
                 stream = client.GetStream();
-                stream.BeginRead(fake_buffer, 0, 1, readData, null);
+                stream.BeginRead(fake_buffer, 0, 1024, readData, null);
             }
             catch (SocketException e)
             {
                 ConnectionInterrupted?.Invoke();
+                client.Close();
             }
-            lock (this)
+            finally
             {
-                reconnecting = false;
+                lock (this)
+                {
+                    reconnecting = false;
+                }
             }
         }
 
@@ -51,7 +57,7 @@ namespace DAQ
             }
         }
 
-        private byte[] fake_buffer = new byte[1];
+        private byte[] fake_buffer = new byte[1024];
         private List<byte> input_buffer = new List<byte> { };
 
         private void readData(IAsyncResult res)
@@ -59,7 +65,7 @@ namespace DAQ
             try
             {
                 stream.EndRead(res);
-                input_buffer.Add(fake_buffer[0]);
+                input_buffer.AddRange(fake_buffer);
                 if (stream.DataAvailable)
                 {
                     return;
@@ -76,13 +82,13 @@ namespace DAQ
                 if (client.Connected)
                     try
                     {
-                        stream.BeginRead(fake_buffer, 0, 1, readData, null);
+                        stream.BeginRead(fake_buffer, 0, 1024, readData, null);
                     }
                     catch (System.IO.IOException)
                     {
 
                     }
-        }
+            }
         }
 
         private bool reconnecting = false;
@@ -98,8 +104,10 @@ namespace DAQ
             {
                 stream.Write(data, offset, size);
             }
-            catch (System.IO.IOException)
+            catch (System.IO.IOException e)
             {
+                stream = null;
+                client.Close();
                 ConnectionInterrupted?.Invoke();
             }
         }
@@ -111,7 +119,7 @@ namespace DAQ
         public void subscribeToInterrupt(Action callback)
         {
             ConnectionInterrupted += callback;
-            if (!client.Connected) callback();
+            if (client != null && !client.Connected) callback();
         }
 
     }

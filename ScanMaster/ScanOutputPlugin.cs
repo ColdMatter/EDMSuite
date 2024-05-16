@@ -23,7 +23,8 @@ namespace ScanMaster.Acquire.Plugin
 	XmlInclude(typeof(WMLOutputPlugin)),
 	XmlInclude(typeof(DTCLOutputPlugin)),
 	XmlInclude(typeof(MOTMasterScan)),
-	XmlInclude(typeof(ManualOutputPlugin))
+	XmlInclude(typeof(ManualOutputPlugin)),
+	XmlInclude(typeof(MSquaredOutputPlugin))
 #if DECELERATOR
     ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif

@@ -36,10 +36,10 @@ public class Patterns : MOTMasterScript
 
         // Slowing
         //Parameters["slowingAOMOnStart"] = 180 + (int)Parameters["SlowingDelayTime"]; //180
-        Parameters["slowingAOMOnStart"] = 200;//160
+        Parameters["slowingAOMOnStart"] = 300;//160
         Parameters["slowingAOMOnDuration"] = 45000;
         
-        Parameters["slowingAOMOffStart"] = 1800;//1760;//started from 1520
+        Parameters["slowingAOMOffStart"] = 1600;//1760;//started from 1520
         //Parameters["slowingAOMOffStart"] = 1600;
         //Parameters["slowingAOMOffStart"] = 1000;
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
@@ -47,16 +47,16 @@ public class Patterns : MOTMasterScript
 
         
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = 1940;// 1760;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1600;// 1760;//1520
         //Parameters["slowingRepumpAOMOffStart"] = 1600;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 470;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 500;//360; //400;// 380;
         //Parameters["SlowingChirpStartTime"] = 400;
         //Parameters["SlowingChirpStartTime"] = 100;
-        Parameters["SlowingChirpDuration"] = 1470;////1400;//1160; //1160
+        Parameters["SlowingChirpDuration"] = 1100;////1400;//1160; //1160
         //Parameters["SlowingChirpDuration"] = 1200;
         //Parameters["SlowingChirpDuration"] = 1000;
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
@@ -65,7 +65,8 @@ public class Patterns : MOTMasterScript
         //Parameters["SlowingChirpEndValue"] = -1.285;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
         //Azulignt
-        Parameters["SlowingChirpEndValue"] = -0.25; //-1150MHz/V chirp for 288MHz
+        Parameters["SlowingChirpEndValue"] = -345.0 / 1150; //-1150MHz/V chirp for 345MHz
+        //Parameters["SlowingChirpEndValue"] = -310.0 / 1150;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
