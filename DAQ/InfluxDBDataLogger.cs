@@ -12,7 +12,8 @@ namespace DAQ
         private string measurement = "";
         private Dictionary<string, string> tags = new Dictionary<string, string> { };
         private Dictionary<string, object> fields = new Dictionary<string, object> { };
-        private uint timestamp = (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        private UInt64 timestamp = (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        private string prec = "s";
 
         private InfluxDBDataLogger(string _meas)
         {
@@ -38,7 +39,15 @@ namespace DAQ
 
         public InfluxDBDataLogger Timestamp(DateTime date)
         {
-            timestamp = (uint)date.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            timestamp = (UInt64)date.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            prec = "s";
+            return this;
+        }
+
+        public InfluxDBDataLogger TimestampNS(DateTime date)
+        {
+            timestamp = (UInt64)date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds*1000000;
+            prec = "ns";
             return this;
         }
 
@@ -84,7 +93,7 @@ namespace DAQ
             StringContent content = new StringContent(sb.ToString());
             try
             {
-                client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=s", content);
+                client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
             }
             catch (Exception e) when (e is ArgumentNullException || e is HttpRequestException)
             {

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
+using DAQ;
 
 namespace WavemeterLockServer
 {
@@ -53,6 +54,7 @@ namespace WavemeterLockServer
             callbackObj = new WLM.CallbackProcEx(callback);
             WLM.Instantiate(WLM.cInstNotification, WLM.cNotifyInstallCallback, callbackObj, 0);
             measurementAcquired += () => { indicateNewMeasurement(); };
+            measurementAcquired += () => { logToInfluxDB(); };
             Application.Run(ui);
             for (int i = 0; i < 8; i++)
                 remoteConnection[i] = false;
@@ -263,6 +265,20 @@ namespace WavemeterLockServer
                 WLM.Operation(2);
                 bMeas = true;
             }
+        }
+
+        private void logToInfluxDB()
+        {
+            if (System.Environment.GetEnvironmentVariable("INFLUX_TOKEN") == null) return;
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Wavemeter").Tag("computer", ((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]));
+
+            for (int i = 1; i <=8; ++i)
+            {
+                data = data.Field("Channel" + i.ToString(), getFrequency(i));
+            }
+            data = data.TimestampNS(DateTime.UtcNow);
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "CCM Wavemeters", "CentreForColdMatter");
         }
 
     }
