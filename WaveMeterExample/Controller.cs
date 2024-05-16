@@ -24,7 +24,7 @@ namespace WavemeterLockServer
         public int switchTime;
         private ServerForm ui;
         public bool[] remoteConnection = new bool[8];//an array of boolean to show if the channel is being used by wavemeterLock remotely
-        
+
         public event measurementHandler measurementAcquired;
         public Dictionary<string, bool> measurementStatus = new Dictionary<string, bool>();
         public List<string> viewerList = new List<string>();
@@ -35,7 +35,7 @@ namespace WavemeterLockServer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ui = new ServerForm(this);
-            
+
 
         }
 
@@ -50,7 +50,7 @@ namespace WavemeterLockServer
         private WLM.CallbackProcEx callbackObj;
         public void start()
         {
-            
+
             callbackObj = new WLM.CallbackProcEx(callback);
             WLM.Instantiate(WLM.cInstNotification, WLM.cNotifyInstallCallback, callbackObj, 0);
             measurementAcquired += () => { indicateNewMeasurement(); };
@@ -58,7 +58,7 @@ namespace WavemeterLockServer
             Application.Run(ui);
             for (int i = 0; i < 8; i++)
                 remoteConnection[i] = false;
-            
+
         }
 
 
@@ -126,7 +126,7 @@ namespace WavemeterLockServer
 
         public void indicateNewMeasurement()
         {
-            
+
             for (int index = 0; index < measurementStatus.Count(); index++)
             {
                 string dummy;
@@ -276,7 +276,7 @@ namespace WavemeterLockServer
             {
                 data = data.Field("Channel" + i.ToString(), getFrequency(i));
             }
-            data = data.TimestampNS(DateTime.UtcNow);
+            data = data.TimestampMS(DateTime.UtcNow);
 
             data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "CCM Wavemeters", "CentreForColdMatter");
         }
