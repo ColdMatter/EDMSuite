@@ -13,6 +13,14 @@ namespace DAQ
         private Dictionary<string, string> tags = new Dictionary<string, string> { };
         private Dictionary<string, object> fields = new Dictionary<string, object> { };
         private uint timestamp = (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        private string API_TOKEN = System.Environment.GetEnvironmentVariable("INFLUX_TOKEN");
+        private string prec = "s";
+
+        public InfluxDBDataLogger APIToken(string token)
+        {
+            API_TOKEN = token;
+            return this;
+        }
 
         private InfluxDBDataLogger(string _meas)
         {
@@ -39,6 +47,14 @@ namespace DAQ
         public InfluxDBDataLogger Timestamp(DateTime date)
         {
             timestamp = (uint)date.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            prec = "s";
+            return this;
+        }
+
+        public InfluxDBDataLogger TimestampMS(DateTime date)
+        {
+            timestamp = (uint)date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            prec = "ms";
             return this;
         }
 
@@ -79,12 +95,12 @@ namespace DAQ
             sb.Append(timestamp.ToString());
 
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", System.Environment.GetEnvironmentVariable("INFLUX_TOKEN"));
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", API_TOKEN);
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             StringContent content = new StringContent(sb.ToString());
             try
             {
-                client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=s", content);
+                client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
             }
             catch (Exception e) when (e is ArgumentNullException || e is HttpRequestException)
             {

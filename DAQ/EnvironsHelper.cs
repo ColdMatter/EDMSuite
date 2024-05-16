@@ -377,7 +377,9 @@ namespace DAQ.Environment
                 case "IC-CZC225B85M":
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
+                    viewerServerComputerName = "IC-CZC136CFDJ";
                     serverComputerName = "IC-CZC136CFDJ";
+                    viewerServerTCPChannel = 1984;
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1984;
                     Debug = false;
