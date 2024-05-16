@@ -35,18 +35,22 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("q", pgBoard, 0, 3);
             AddDigitalOutputChannel("analogPatternTrigger", pgBoard, 0, 0); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
-            AddDigitalOutputChannel("blockTCL", pgBoard, 0, 26);
+            AddDigitalOutputChannel("blockTCL", pgBoard, 0, 12);
 
             AddDigitalOutputChannel("coolingAOM", pgBoard, 0, 27);
             AddDigitalOutputChannel("slowingAOM", pgBoard, 0, 28);
             AddDigitalOutputChannel("slowingRepumpAOM", pgBoard, 0, 29);
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 14);
+            AddDigitalOutputChannel("BXShutterBay3", pgBoard, 0, 25);
+            AddDigitalOutputChannel("BXSidebandBay3", pgBoard, 0, 26);
+            AddDigitalOutputChannel("BXFiberEOM", pgBoard, 0, 24);
 
             // map the analog output channels for "daq" card
-            AddAnalogOutputChannel("slowingChirp", pgBoard + "/ao0", -10, 10);
+            AddAnalogOutputChannel("slowingChirp", pgBoard + "/ao0", -5, 5);
             AddAnalogOutputChannel("VCOFreqOutput", pgBoard + "/ao1", 0, 10);
-            AddAnalogOutputChannel("VCOAmplitudeOutput", pgBoard + "/ao3", 0, 10);
             AddAnalogOutputChannel("motCoils", pgBoard + "/ao2", -10, 10);
+            AddAnalogOutputChannel("VCOAmplitudeOutput", pgBoard + "/ao3", 0, 10);
+
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
@@ -98,13 +102,13 @@ namespace DAQ.HAL
             wmlConfig.AddLockBlock("BX", "blockBXflag"); 
             wmlConfig.AddLockBlock("v10", "blockv10flag");
             wmlConfig.AddLaserConfiguration("v00", 494.431874, -10, -800);
-            wmlConfig.AddLaserConfiguration("BX", 564.582313, 10, 300);
-            wmlConfig.AddLaserConfiguration("v10", 476.959012, -10, -500);
+            wmlConfig.AddLaserConfiguration("BX", 564.582285, 10, 300);
+            wmlConfig.AddLaserConfiguration("v10", 476.958910, -10, -500);
             wmlConfig.AddLaserConfiguration("v21", 477.299380, -0.5, -500);
             wmlConfig.AddLaserConfiguration("v32", 477.628175, -0.5, -500);
             Info.Add("Default", wmlConfig);
 
-          
+            /*
             TCLConfig tclConfig = new TCLConfig("TCL");
             tclConfig.Trigger = TCLInput + "/PFI0";
             tclConfig.BaseRamp = "sumVolt";
@@ -133,6 +137,7 @@ namespace DAQ.HAL
             Info.Add("TCLConfig", tclConfig);
             Info.Add("DefaultCavity", tclConfig);
             Info.Add("analogTrigger0", TCLInput + "/PFI0");
+            */
 
             // MOTMaster configuration
             MMConfig mmConfig = new MMConfig(false, false, false, false);
@@ -151,7 +156,10 @@ namespace DAQ.HAL
             analogBoards.Add("AO", pgBoard);
             Info.Add("AOPatternTrigger", pgBoard + "/PFI0"); //PFI6
             Info.Add("AOClockLine", pgBoard + "/PFI5"); //PFI6
-            // analogBoards.Add("SecondAO", aoBoard2);
+            //analogBoards.Add("SecondAO", TCLInput);
+            //Info.Add("SecondAOPatternTrigger", TCLInput + "/PFI0"); //PFI6
+            //Info.Add("SecondAOClockLine", TCLInput + "/PFI5"); //PFI6
+
             Info.Add("AnalogBoards", analogBoards);
 
             // Info.Add("PGClockLine", pgBoard + "/PFI4");

@@ -37,28 +37,31 @@ public class Patterns : MOTMasterScript
         Parameters["BXShutterONDuration"] = 2000;
 
         // cooling and trapping parameters
-        Parameters["V00AOMONStartTime"] = 0;
-        Parameters["V00AOMONDuration"] = 17000;
-        Parameters["V00MOTLoadingTime"] = 2000;
-        Parameters["VCOFreqOutputValue"] = 4.0;
-        Parameters["VCOAmplitudeOutputValue"] = 0.315;
-        Parameters["V00MOTRetainingAmplitude"] = 0.315;
+        Parameters["MOTLoadingDuration"] = 2000;
+        Parameters["MOTRetainingDuration"] = 2000;
+        Parameters["MolassesDuration"] = 100;
+        Parameters["V00MOTLoadingFreq"] = 4.0;
+        Parameters["V00MOTRetainingFreq"] = 4.0;
+        Parameters["V00MolassesFreq"] = 4.0;
+        Parameters["V00MOTLoadingAmplitude"] = 0.31;
+        Parameters["V00MOTRetainingAmplitude"] = 0.31;
+        Parameters["V00MolassesAmplitude"] = 0.31;
+        Parameters["V00AOMFinalDelay"] = 1000;
 
         // B Field
         Parameters["MOTCoilsStartTime"] = 0;
-        Parameters["MOTCoilsStopTime"] = 17000;
-        Parameters["MOTCoilsOnValue"] = 6.5;            // 6.5 V should be 1 A
+        Parameters["MOTLoadingMagFieldValue"] = 6.5;            // 6.5 V should be 1 A
+        Parameters["MOTRetainingMagFieldValue"] = 6.5;
         Parameters["MOTCoilsOffValue"] = 0.0;
 
         // Camera trigger properties
-        Parameters["CameraTriggerStart"] = 3000;
-        Parameters["CameraTriggerDuration"] = 1000;
+        Parameters["CameraTriggerDelay"] = 10;
+        Parameters["CameraTriggerDuration"] = 100;
 
         // Switching control for iterative operations.
         // values higher than 5.0 leads to active state.
         Parameters["yagONorOFF"] = 10.0;
         Parameters["slowingONorOFF"] = 10.0;
-        Parameters["TransCoolONorOFF"] = 1.0;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -68,7 +71,13 @@ public class Patterns : MOTMasterScript
         int slowingAOMStart = (int)Parameters["BXAOMPreBunchingStartTime"] + (int)Parameters["BXAOMPreBunchingDuration"] + (int)Parameters["BXAOMFreeFlightDuration"];
         int slowingChirpStart = slowingAOMStart + (int)Parameters["BXAOMPostBunchingDuration"];
         int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
-        
+
+        int motRetaingStart = (int)Parameters["MOTLoadingDuration"];
+        int molassesStart = motRetaingStart + (int)Parameters["MOTRetainingDuration"];
+        int molassesEnd = molassesStart + (int)Parameters["MolassesDuration"];
+        int cameraTrigger = molassesEnd + (int)Parameters["CameraTriggerDelay"];
+        int coolingAOMoff = cameraTrigger + (int)Parameters["CameraTriggerDuration"] + (int)Parameters["V00AOMFinalDelay"];
+
         p.Pulse(patternStartBeforeQ, 0, 10, "analogPatternTrigger");
         p.Pulse(
             patternStartBeforeQ,
@@ -91,22 +100,29 @@ public class Patterns : MOTMasterScript
 
         p.Pulse(
             patternStartBeforeQ,
-            (int)Parameters["V00AOMONStartTime"],
-            (int)Parameters["V00AOMONDuration"],
+            0,
+            molassesEnd,
+            "coolingAOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            cameraTrigger,
+            coolingAOMoff,
             "coolingAOM"
         );
 
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
             if ((int)Parameters["BXAOMPreBunchingDuration"] > 0)
-                {
-                    p.Pulse(
-                        patternStartBeforeQ,
-                        (int)Parameters["BXAOMPreBunchingStartTime"],
-                        (int)Parameters["BXAOMPreBunchingDuration"],
-                        "slowingAOM"
-                    );
-                }
+            {
+                p.Pulse(
+                    patternStartBeforeQ,
+                    (int)Parameters["BXAOMPreBunchingStartTime"],
+                    (int)Parameters["BXAOMPreBunchingDuration"],
+                    "slowingAOM"
+                );
+            }
 
             p.Pulse(
                 patternStartBeforeQ,
@@ -114,46 +130,30 @@ public class Patterns : MOTMasterScript
                 slowingChirpStop - slowingAOMStart,
                 "slowingAOM"
             );
-            
+
             p.Pulse(
                 patternStartBeforeQ,
                 (int)Parameters["BXAOMPreBunchingStartTime"],
                 slowingChirpStop - (int)Parameters["BXAOMPreBunchingStartTime"],
                 "BXFiberEOM"
             );
-            
+
             p.Pulse(
                 patternStartBeforeQ,
                 0,
                 slowingChirpStop,
                 "slowingRepumpAOM"
             );
-            
+
         }
 
         p.Pulse(
             patternStartBeforeQ,
-            (int)Parameters["CameraTriggerStart"],
+            cameraTrigger,
             (int)Parameters["CameraTriggerDuration"],
             "cameraTrigger"
         );
 
-        /*if ((double)Parameters["TransCoolONorOFF"] > 5.0)
-        {
-            p.Pulse(
-                patternStartBeforeQ,
-                -2000,
-                30000,
-                "BXSidebandBay3"
-            );
-            p.Pulse(
-                patternStartBeforeQ,
-                -2000,
-                30000,
-                "BXShutterBay3"
-            );
-        }
-        */
         return p;
     }
 
@@ -168,9 +168,16 @@ public class Patterns : MOTMasterScript
         int slowingChirpStart = (int)Parameters["BXAOMPreBunchingStartTime"] + (int)Parameters["BXAOMPreBunchingDuration"] + (int)Parameters["BXAOMFreeFlightDuration"] + (int)Parameters["BXAOMPostBunchingDuration"];
         int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
 
+        int motRetaingStart = (int)Parameters["MOTLoadingDuration"];
+        int molassesStart = motRetaingStart + (int)Parameters["MOTRetainingDuration"];
+        int molassesEnd = molassesStart + (int)Parameters["MolassesDuration"];
+        int cameraTrigger = molassesEnd + (int)Parameters["CameraTriggerDelay"];
+        int coolingAOMoff = cameraTrigger + (int)Parameters["CameraTriggerDuration"] + (int)Parameters["V00AOMFinalDelay"];
+
+
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
-            
+
             p.AddLinearRamp(
                 "slowingChirp",
                 slowingChirpStart,
@@ -188,31 +195,60 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue(
             "motCoils",
             (int)Parameters["MOTCoilsStartTime"],
-            (double)Parameters["MOTCoilsOnValue"]
+            (double)Parameters["MOTLoadingMagFieldValue"]
         );
         p.AddAnalogValue(
             "motCoils",
-            (int)Parameters["MOTCoilsStopTime"],
+            motRetaingStart,
+            (double)Parameters["MOTRetainingMagFieldValue"]
+        );
+        p.AddAnalogValue(
+            "motCoils",
+            molassesStart,
             (double)Parameters["MOTCoilsOffValue"]
         );
-        
-        
+
+        p.AddAnalogValue(
+            "VCOAmplitudeOutput",
+            0,
+            (double)Parameters["V00MOTLoadingAmplitude"]
+        );
+        p.AddAnalogValue(
+            "VCOAmplitudeOutput",
+            motRetaingStart,
+            (double)Parameters["V00MOTRetainingAmplitude"]
+        );
+        p.AddAnalogValue(
+            "VCOAmplitudeOutput",
+            molassesStart,
+            (double)Parameters["V00MolassesAmplitude"]
+        );
+        p.AddAnalogValue(
+            "VCOAmplitudeOutput",
+            cameraTrigger,
+            (double)Parameters["V00MOTLoadingAmplitude"]
+        );
+
         p.AddAnalogValue(
             "VCOFreqOutput",
             0,
-            (double)Parameters["VCOFreqOutputValue"]
+            (double)Parameters["V00MOTLoadingFreq"]
         );
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            0,
-            (double)Parameters["VCOAmplitudeOutputValue"]
+            "VCOFreqOutput",
+            motRetaingStart,
+            (double)Parameters["V00MOTRetainingFreq"]
         );
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            (int)Parameters["V00MOTLoadingTime"],
-            (double)Parameters["V00MOTRetainingAmplitude"]
+            "VCOFreqOutput",
+            molassesStart,
+            (double)Parameters["V00MolassesFreq"]
         );
-
+        p.AddAnalogValue(
+            "VCOFreqOutput",
+            cameraTrigger,
+            (double)Parameters["V00MOTLoadingFreq"]
+        );
 
         return p;
     }

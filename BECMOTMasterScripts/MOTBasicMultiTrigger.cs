@@ -50,7 +50,7 @@ public class Patterns : MOTMasterScript
         // B Field
         Parameters["MOTCoilsStartTime"] = 0;
         Parameters["MOTCoilsStopTime"] = 17000;
-        Parameters["MOTCoilsOnValue"] = -0.4;   //0.4 for 1A
+        Parameters["MOTCoilsOnValue"] = 1.05;   //1.05 for 1A
         Parameters["MOTCoilsOffValue"] = 0.0;
 
 
@@ -151,7 +151,7 @@ public class Patterns : MOTMasterScript
             (int)Parameters["MOTCoilsStopTime"],
             (double)Parameters["MOTCoilsOffValue"]
         );
-
+        
         p.AddAnalogValue(
             "VCOFreqOutput",
             0,
@@ -162,7 +162,7 @@ public class Patterns : MOTMasterScript
             0,
             (double)Parameters["VCOAmplitudeOutputValue"]
         );
-
+        
         return p;
     }
 
