@@ -12,7 +12,7 @@ namespace DAQ
         private string measurement = "";
         private Dictionary<string, string> tags = new Dictionary<string, string> { };
         private Dictionary<string, object> fields = new Dictionary<string, object> { };
-        private uint timestamp = (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        private UInt64 timestamp = (UInt64)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         private string API_TOKEN = System.Environment.GetEnvironmentVariable("INFLUX_TOKEN");
         private string prec = "s";
 
@@ -46,14 +46,14 @@ namespace DAQ
 
         public InfluxDBDataLogger Timestamp(DateTime date)
         {
-            timestamp = (uint)date.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            timestamp = (UInt64)date.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             prec = "s";
             return this;
         }
 
         public InfluxDBDataLogger TimestampMS(DateTime date)
         {
-            timestamp = (uint)date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            timestamp = (UInt64)date.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             prec = "ms";
             return this;
         }
@@ -98,9 +98,13 @@ namespace DAQ
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", API_TOKEN);
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             StringContent content = new StringContent(sb.ToString());
+            System.Net.ServicePointManager.Expect100Continue = true;
+            System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
+
             try
             {
-                client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
+                Task<HttpResponseMessage> t = client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
+                t.Wait();
             }
             catch (Exception e) when (e is ArgumentNullException || e is HttpRequestException)
             {
