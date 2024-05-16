@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using DAQ;
+using DAQ.Environment;
 
 namespace AlFHardwareControl
 {
+
     public partial class MSquaredLaserView : UserControl
     {
 
@@ -34,7 +36,12 @@ namespace AlFHardwareControl
         private static List<Line> lineData;
         private M2LaserInterface laser;
 
-        public bool FallbackActive = false;
+        private bool FallbackActive = false;
+        public void EnableFallback(string AUTH, string fname)
+        {
+            laser.specifyHTTPCreds(AUTH, JsonParser.parseJSON(File.ReadAllText(fname)));
+            FallbackActive = true;
+        }
 
         private delegate void LineDataUpdateDelegate();
         private static event LineDataUpdateDelegate lineDataChanged;
@@ -44,12 +51,12 @@ namespace AlFHardwareControl
             InitializeComponent();
             if (lineData == null)
             {
-                if (File.Exists("C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\LineData.xml"))
+                if (File.Exists((string)Environs.FileSystem.Paths["LineData"]))
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(List<Line>));
-                    using (FileStream fs = System.IO.File.Open("C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\LineData.xml", FileMode.Open))
+                    using (FileStream fs = System.IO.File.Open((string)Environs.FileSystem.Paths["LineData"], FileMode.Open))
                     {
-                        lineData = (List<Line>) ser.Deserialize(fs);
+                        lineData = (List<Line>)ser.Deserialize(fs);
                     }
                 }
                 else
@@ -62,6 +69,33 @@ namespace AlFHardwareControl
 
         }
 
+        public MSquaredLaserView(string local, string remote)
+        {
+            InitializeComponent();
+            if (lineData == null)
+            {
+                if (File.Exists((string)Environs.FileSystem.Paths["LineData"]))
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(List<Line>));
+                    using (FileStream fs = System.IO.File.Open((string)Environs.FileSystem.Paths["LineData"], FileMode.Open))
+                    {
+                        lineData = (List<Line>)ser.Deserialize(fs);
+                    }
+                }
+                else
+                    lineData = new List<Line> { };
+            }
+
+            laser = M2LaserInterface.getInterface(local, remote);
+            lineDataChanged += updateLineSelector;
+
+        }
+
+        public void setName(string name)
+        {
+            this.M2_Control_Group.Text = name;
+        }
+
         ~MSquaredLaserView()
         {
             lineDataChanged -= updateLineSelector;
@@ -72,7 +106,7 @@ namespace AlFHardwareControl
             lock (lineData)
             {
                 XmlSerializer ser = new XmlSerializer(typeof(List<Line>));
-                using (FileStream fs = System.IO.File.Open("C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\LineData.xml", FileMode.Create, FileAccess.Write))
+                using (FileStream fs = System.IO.File.Open((string)Environs.FileSystem.Paths["LineData"], FileMode.Create, FileAccess.Write))
                 {
                     ser.Serialize(fs, lineData);
                 }
@@ -110,7 +144,7 @@ namespace AlFHardwareControl
         };
 
         private Tuple<Color, string> remote_lock_state;
-        private void poll_wave_reply(Dictionary<string,object> data)
+        private void poll_wave_reply(Dictionary<string, object> data)
         {
 
             Dictionary<string, object> parameters = (Dictionary<string, object>)((Dictionary<string, object>)data["message"])["parameters"];
@@ -131,7 +165,7 @@ namespace AlFHardwareControl
             remote_lock_state = wavemeter_states[(int)((List<object>)parameters["status"])[0]];
             bool lock_status = (int)((List<object>)parameters["status"])[0] > 2;
 
-            this.Invoke((Action)(()=>
+            this.Invoke((Action)(() =>
             {
                 Conn_status.Text = remote_lock_state.Item2;
                 Conn_status.BackColor = remote_lock_state.Item1;
@@ -150,7 +184,7 @@ namespace AlFHardwareControl
         private void UpdateError()
         {
             MHzerror = (current_reading - SP) * 1e6;
-            this.Invoke((Action)(()=>
+            this.Invoke((Action)(() =>
             {
                 error.Text = MHzerror.ToString();
             }));
@@ -158,7 +192,7 @@ namespace AlFHardwareControl
 
         private void connectionChange(bool status)
         {
-            this.Invoke((Action)(()=>
+            this.Invoke((Action)(() =>
             {
                 Conn_status.Text = status ? "LINK UP" : "DISCONNECTED";
                 Conn_status.BackColor = status ? Color.NavajoWhite : Color.Salmon;
@@ -170,7 +204,7 @@ namespace AlFHardwareControl
         private void lockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (locked != lockCheckBox.Checked)
-                laser.IssueCommand("lock_wave_m", new Dictionary<string, object> 
+                laser.IssueCommand("lock_wave_m", new Dictionary<string, object>
                 {
                     { "operation", lockCheckBox.Checked ? "on" : "off" }
                 });
@@ -266,7 +300,7 @@ namespace AlFHardwareControl
                 selectedLine.frequency = Convert.ToDouble(lineFrequency.Text);
                 RecalculateSP();
             }
-            catch(FormatException)
+            catch (FormatException)
             {
                 lineFrequency.Text = selectedLine.frequency.ToString();
             }
@@ -279,6 +313,15 @@ namespace AlFHardwareControl
         {
             LinesSelector.Items.Clear();
             LinesSelector.Items.AddRange(lineData.AsEnumerable().Select(i => i.name).ToArray());
+            if (lineData.Contains(selectedLine))
+            {
+                this.Invoke((Action)delegate
+                {
+                    lineName.Text = selectedLine.name;
+                    lineFrequency.Text = selectedLine.frequency.ToString();
+                    LinesSelector.Text = selectedLine.name;
+                });
+            }
         }
 
         private double vel = 0;
@@ -291,9 +334,9 @@ namespace AlFHardwareControl
             VelSet.CurrentValue = vel.ToString();
             offset.CurrentValue = off.ToString();
             updateLineSelector();
-            if (lineData.Count != 0)
-                LinesSelector.SelectedIndex = 0;
-            RecalculateSP();
+            //            if (lineData.Count != 0)
+            //                LinesSelector.SelectedIndex = 0;
+            //            RecalculateSP();
         }
     }
 }

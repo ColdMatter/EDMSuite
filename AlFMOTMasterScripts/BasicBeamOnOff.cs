@@ -37,14 +37,16 @@ public class Patterns : MOTMasterScript
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
+
+
         if ((bool)Parameters["YAGSwitch"])
         {
-            p.AddEdge("q",14,true);
-            p.AddEdge("q",100,false);
+            p.AddEdge("flash", 0, true);
+            p.AddEdge("flash", 100, false);
         }
 
-        p.AddEdge("flash", 0, true);
-        p.AddEdge("flash", 100, false);
+        p.AddEdge("q", 14, true);
+        p.AddEdge("q", 100, false);
         
 
         return p;

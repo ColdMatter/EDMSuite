@@ -17,7 +17,7 @@ using System.IO;
 
 namespace DAQ
 {
-    
+
     public class M2LaserInterface : MarshalByRefObject
     {
 
@@ -30,7 +30,7 @@ namespace DAQ
         {
             public M2LaserInterfaceServer()
             {
-            
+
             }
 
             public override Object InitializeLifetimeService()
@@ -65,11 +65,11 @@ namespace DAQ
             local_ip = _local_ip;
             remote_ip = _remote_ip;
             conn = new TCPConnection(local_ip, remote_ip, readData);
-            conn.subscribeToInterrupt(()=> { signalConnectionChange(false); });
-            if (AUTH == null && File.Exists("C:\\Users\\alfultra\\M2Auth.txt"))
+            conn.subscribeToInterrupt(() => { signalConnectionChange(false); });
+            if (AUTH == null && File.Exists(".\\M2Auth.txt"))
             {
-                AUTH = File.ReadAllText("C:\\Users\\alfultra\\M2Auth.txt");
-                wlchange_format = JsonParser.parseJSON(File.ReadAllText(@"C:\Users\alfultra\M2WlChange.json"));
+                AUTH = File.ReadAllText(".\\M2Auth.txt");
+                wlchange_format = JsonParser.parseJSON(File.ReadAllText(@".\M2WlChange.json"));
             }
 
             http_address = String.Format("http://{0}/", remote_ip.Address.ToString());
@@ -102,10 +102,10 @@ namespace DAQ
             };
             if (singleResponse)
                 response_handlers.Add(t_id, (Dictionary<string, object> d) =>
-                    {
-                        callback(d);
-                        response_handlers.Remove(t_id);
-                    });
+                {
+                    callback(d);
+                    response_handlers.Remove(t_id);
+                });
             else
                 response_handlers.Add(t_id, callback);
             string message = JsonParser.encodeJSON(data);
@@ -149,7 +149,7 @@ namespace DAQ
 
             registerForConnectionChange(cancel_token_callback);
 
-            cancel_token.Register(()=>
+            cancel_token.Register(() =>
             {
                 deregisterForConnectionChange(cancel_token_callback);
             });
@@ -169,7 +169,7 @@ namespace DAQ
 
             return new Task<Dictionary<string, object>>(() =>
             {
-                IssueCommand(op, parameters,(Dictionary<string, object> data) =>
+                IssueCommand(op, parameters, (Dictionary<string, object> data) =>
                 {
                     ret = data;
                     callbackEvent.Set();
@@ -226,7 +226,7 @@ namespace DAQ
             Dictionary<string, object> data;
             try
             {
-                 data = JsonParser.parseJSON(result);
+                data = JsonParser.parseJSON(result);
             }
             catch (ArgumentException)
             {
@@ -292,7 +292,7 @@ namespace DAQ
             conn.Write(Encoding.ASCII.GetBytes(startLink), 0, startLink.Length);
         }
 
-        private void defaultResponseHandler(Dictionary<string,object> data)
+        private void defaultResponseHandler(Dictionary<string, object> data)
         {
 
         }
@@ -355,6 +355,23 @@ namespace DAQ
             return server.getLaserInterface(local_ip, remote_ip);
         }
 
+        public static M2LaserInterface getRemoteInterface(string server, IPEndPoint local_ip, IPEndPoint remote_ip)
+        {
+            return ((M2LaserInterfaceServer)Activator.GetObject(typeof(M2LaserInterfaceServer), "tcp://" + server + ":1275/server.rem")).getLaserInterface(local_ip, remote_ip);
+        }
+
+        public static M2LaserInterface getRemoteInterface(string server, string local_ip, string remote_ip)
+        {
+            byte[] local_addr = local_ip.Split(':')[0].Split('.').AsEnumerable().Select(i => Convert.ToByte(i)).ToArray();
+            int local_port = Convert.ToInt32(local_ip.Split(':')[1]);
+
+            byte[] remote_addr = remote_ip.Split(':')[0].Split('.').AsEnumerable().Select(i => Convert.ToByte(i)).ToArray();
+            int remote_port = Convert.ToInt32(remote_ip.Split(':')[1]);
+
+            return getRemoteInterface(server, new IPEndPoint(new IPAddress(local_addr), local_port), new IPEndPoint(new IPAddress(remote_addr), remote_port));
+
+        }
+
         private static M2LaserInterface getInterfaceInternal(IPEndPoint local_ip, IPEndPoint remote_ip)
         {
 
@@ -379,35 +396,63 @@ namespace DAQ
 
         #region Auxiliary_HTTP_commands
 
-        private static string AUTH; // B64 encoded user:pass string. For security this is from a local file
+        private string AUTH; // B64 encoded user:pass string. For security this is from a local file
         private HttpClient httpclient;
         private string http_address;
-        private static Dictionary<string, object> wlchange_format;
+        private Dictionary<string, object> wlchange_format;
 
-/*        public Dictionary<string, object> IssuePostRequest(string subdirectory, Dictionary<string, object> postData)
+        public void specifyHTTPCreds(string _AUTH, Dictionary<string, object> _wlchange_format)
         {
+            AUTH = _AUTH;
+            wlchange_format = _wlchange_format;
+        }
 
-            StringContent content = new StringContent(JsonParser.encodeJSON(postData),Encoding.ASCII);
-            content.Headers.Add("Authorization", AUTH);
-            Task<HttpResponseMessage> response = httpclient.PostAsync(http_address + subdirectory, content);
+        /*        public Dictionary<string, object> IssuePostRequest(string subdirectory, Dictionary<string, object> postData)
+                {
 
-            return (new Task<Dictionary<string, object>>(() => { return JsonParser.parseJSON((await response).Content.ToString())});
+                    StringContent content = new StringContent(JsonParser.encodeJSON(postData),Encoding.ASCII);
+                    content.Headers.Add("Authorization", AUTH);
+                    Task<HttpResponseMessage> response = httpclient.PostAsync(http_address + subdirectory, content);
 
-        }*/
+                    return (new Task<Dictionary<string, object>>(() => { return JsonParser.parseJSON((await response).Content.ToString())});
+
+                }*/
 
         public double get_wavelength()
         {
             StringContent content = new StringContent("{'}", Encoding.ASCII);
             Task<HttpResponseMessage> response = httpclient.PostAsync(http_address + "UE/control_page_update.txt", content);
-            response.Wait();
+            try
+            {
+                response.Wait();
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
             if (response.Status == TaskStatus.Faulted)
                 return 0;
             Task<string> result = response.Result.Content.ReadAsStringAsync();
-            result.Wait();
+            try
+            {
+                result.Wait();
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
             if (response.Status == TaskStatus.Faulted)
                 return 0;
             string res = result.Result.Split('\0')[0];
-            return Convert.ToDouble(((Dictionary<string, object>) JsonParser.parseJSON(result.Result)["left_panel"])["wlm_wavelength"]);
+            try
+            {
+                return Convert.ToDouble(((Dictionary<string, object>)JsonParser.parseJSON(result.Result)["left_panel"])["wlm_wavelength"]);
+            }
+            catch (ArgumentException)
+            {
+                return 0;
+            }
         }
 
         public void set_wavelength(double wl)
