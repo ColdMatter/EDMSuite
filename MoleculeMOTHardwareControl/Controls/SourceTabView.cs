@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Ports;
 
 namespace MoleculeMOTHardwareControl.Controls
 {
@@ -15,6 +16,8 @@ namespace MoleculeMOTHardwareControl.Controls
         protected SourceTabController castController;
         double sf6flowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionSF6");
         double heflowconversion = (double)DAQ.Environment.Environs.Hardware.GetInfo("flowConversionHe");
+        public SerialPort serialPort;
+        string serialPortCOMName = "COM12";
 
         public SourceTabView(SourceTabController controllerInstance) : base(controllerInstance)
         {
@@ -74,9 +77,19 @@ namespace MoleculeMOTHardwareControl.Controls
             txt40Ktemp.Text = temp;
         }
 
+        public void UpdateCurrentSourceTemperature40K2(string temp)
+        {
+            txt40Ktemp2.Text = temp;
+        }
+
         public void UpdateCurrentSourceTemperature2(string temp)
         {
             txtSourceTemp2.Text = temp;
+        }
+
+        public void UpdateCurrentSourceTemperature3(string temp)
+        {
+            txtSourceTemp3.Text = temp;
         }
 
         public void UpdateCurrentSF6Temperature(string temp)
@@ -92,6 +105,11 @@ namespace MoleculeMOTHardwareControl.Controls
         public void UpdateGraph(double[] x, double[] y)
         {
             tempGraph.PlotXY(x, y);
+        }
+
+        public void UpdateAbsGraph(double[] x, double[] y)
+        {
+            absGraph.PlotXY(x, y);
         }
 
         public bool ToFEnabled()
@@ -168,6 +186,16 @@ namespace MoleculeMOTHardwareControl.Controls
             cycleButton.Enabled = state;
         }
 
+        public void UpdateHoldButton40K(bool state)
+        {
+            holdButton40K.Text = state ? "Heat and Hold" : "Stop Holding";
+        }
+
+        public void UpdateHoldButtonSF6(bool state)
+        {
+            holdButtonSF6.Text = state ? "Heat and Hold" : "Stop Holding";
+        }
+
         public void EnableControls(bool state)
         {
             heaterSwitch.Enabled = state;
@@ -188,6 +216,18 @@ namespace MoleculeMOTHardwareControl.Controls
             heaterLED.Value = state;
         }
 
+        public void SetHeaterState40K(bool state)
+        {
+            heaterSwitch40K.Value = state;
+            heaterLED40K.Value = state;
+        }
+
+        public void SetHeaterStateSF6(bool state)
+        {
+            heaterSwitchSF6.Value = state;
+            heaterLEDSF6.Value = state;
+        }
+
         #endregion
 
         #region UI Query Handlers
@@ -195,6 +235,21 @@ namespace MoleculeMOTHardwareControl.Controls
         public double GetCycleLimit()
         {
             return (double)cycleLimit.Value;
+        }
+
+        public double getCycleHoldTime()
+        {
+            return (double)cycleHoldTime.Value;
+        }
+
+        public double GetCycleLimit40K()
+        {
+            return (double)cycleLimit40K.Value;
+        }
+
+        public double GetCycleLimitSF6()
+        {
+            return (double)cycleLimitSF6.Value;
         }
 
         #endregion
@@ -229,11 +284,40 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.ToggleHolding();
         }
 
+        private void toggleHolding40K(object sender, EventArgs e)
+        {
+            /*
+            chkToF.Checked = false;
+            chkAutoFlowControl.Checked = false;
+            chkAO0Enable.Checked = false;
+            chkAO1Enable.Checked = false;*/
+            castController.ToggleHolding40K();
+        }
+
+        private void toggleHoldingSF6(object sender, EventArgs e)
+        {
+            castController.ToggleHoldingSF6();
+        }
+
         private void toggleHeater(object sender, NationalInstruments.UI.ActionEventArgs e)
         {
             bool state = heaterSwitch.Value;
             heaterLED.Value = state;
             castController.SetHeaterState(state);
+        }
+
+        private void toggleHeater40K(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+            bool state = heaterSwitch40K.Value;
+            heaterLED40K.Value = state;
+            castController.SetHeaterState40K(state);
+        }
+
+        private void toggleHeaterSF6(object sender, NationalInstruments.UI.ActionEventArgs e)
+        {
+            bool state = heaterSwitchSF6.Value;
+            heaterLEDSF6.Value = state;
+            castController.SetHeaterStateSF6(state);
         }
 
         private void toggleCryo(object sender, NationalInstruments.UI.ActionEventArgs e)
@@ -321,6 +405,14 @@ namespace MoleculeMOTHardwareControl.Controls
                 tempGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
         }
 
+        private void checkAbsAutoScale_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkAbsAutoScale.Checked)
+                absGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.AutoScaleLoose;
+            else
+                absGraph.YAxes[0].Mode = NationalInstruments.UI.AxisMode.Fixed;
+        }
+
         private void chkSF6Valve_CheckedChanged(object sender, EventArgs e)
         {
             castController.ToggleDigitalOutput(2, chkSF6Valve.Checked);
@@ -337,10 +429,158 @@ namespace MoleculeMOTHardwareControl.Controls
             castController.FlowTimeOut = (int)numFlowTimeout.Value;
         }
 
+        #region YAG control
+        private void yag_X1_P (object sender, EventArgs e)
+        {
+            castController.moveYagX1((int)jogSteps.Value);
+        }
+
+        private void yag_X1_N(object sender, EventArgs e)
+        {
+            castController.moveYagX1(-(int)jogSteps.Value);
+        }
+
+        private void yag_Y1_P(object sender, EventArgs e)
+        {
+            castController.moveYagY1((int)jogSteps.Value);
+        }
+
+        private void yag_Y1_N(object sender, EventArgs e)
+        {
+            castController.moveYagY1(-(int)jogSteps.Value);
+        }
+
+        private void yag_X2_P(object sender, EventArgs e)
+        {
+            castController.moveYagX2((int)jogSteps.Value);
+        }
+
+        private void yag_X2_N(object sender, EventArgs e)
+        {
+            castController.moveYagX2(-(int)jogSteps.Value);
+        }
+
+        private void yag_Y2_P(object sender, EventArgs e)
+        {
+            castController.moveYagY2((int)jogSteps.Value);
+        }
+
+        private void yag_Y2_N(object sender, EventArgs e)
+        {
+            castController.moveYagY2(-(int)jogSteps.Value);
+        }
+
+        private void yag_connect_click(object sender, EventArgs e)
+        {
+            castController.connectDevice();
+        }
+
+        #endregion
+
+        #region Target turner
+
+        private void connect_target_turner(object sender, EventArgs e)
+        {
+            if(serialPort != null)
+            {
+                serialPort.Close();
+            }
+            
+            serialPort = new SerialPort(serialPortCOMName, 4800, Parity.None, 8, StopBits.One);
+
+            // Attach a method to be called when there
+            // is data waiting in the port's buffer 
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
+
+            serialPort.Open();
+            serialPort.WriteLine("?feedback 0\n");
+            serialPort.WriteLine("?mode 0\n");
+            serialPort.WriteLine("?mode 2\n");
+            serialPort.WriteLine("?feedback 0\n");
+        }
+
+        private void turn_target_CW(object sender, EventArgs e)
+        {
+            serialPort.WriteLine("?home\n");
+            serialPort.WriteLine("?move 20\n");
+        }
+
+        private void turn_target_CCW(object sender, EventArgs e)
+        {
+            serialPort.WriteLine("?home\n");
+            serialPort.WriteLine("?move -20\n");
+        }
+
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            // Show all the incoming data in the port's buffer
+            targetTurnerReport.Text = serialPort.ReadExisting();
+        }
+
+        #endregion
         private void tempGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
 
         }
- 
+
+        private void heaterGroup_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void sf6Temperature_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void currentTemperature_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSourceTemp2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSourceTemp3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt40Ktemp_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt40Ktemp2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SourceTabView_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void jogSteps_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel6_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void checkNormScale_CheckedChanged(object sender, EventArgs e)
+        {
+            castController.toggleAbsNormalization(checkNormScale.Checked);
+        }
     }
 }

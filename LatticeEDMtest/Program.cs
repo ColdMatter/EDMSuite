@@ -1,13 +1,28 @@
-﻿using System;
+﻿using NationalInstruments.DAQmx;
+using System;
+using System.Timers;
 using System.Collections;
-using System.Threading;
 using System.Collections.Generic;
-using System.Linq;
-//using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Lifetime;
+using System.Threading;
 using System.Windows.Forms;
+using NationalInstruments;
 using NationalInstruments.DAQmx;
+//using NationalInstruments.VisaNS;
+using System.Linq;
+using System.IO.Ports;
+using System.Windows.Forms.DataVisualization.Charting;
 using DAQ.HAL;
 using DAQ.Environment;
+using System.Diagnostics;
+using Data;
 
 namespace LatticeHardwareControl
 {
@@ -17,299 +32,225 @@ namespace LatticeHardwareControl
         /// The main entry point for the application.
         /// </summary>
         //Task cryoCoolertask;
-        private static double pressure = 0;
+        //private static double pressure = 0;
 
-        public Task pressuretask;
+        //public Task pressuretask;
+        
+        private double initialSourceGaugeCorrectionFactor = 4.1;
 
-        AlicatFlowController FlowControllers = (AlicatFlowController)Environs.Hardware.Instruments["FlowControllers"];
-        BigSkyYAG LatticeYAG = (BigSkyYAG)Environs.Hardware.Instruments["LatticeYAG"];
 
-        Hashtable digitalTasks = new Hashtable();
-        Form1 form;
-
-        private void CreateDigitalTask(String name)
+        public override Object InitializeLifetimeService()
         {
-            //if (!Environs.Debug)
-            //{
-            Task digitalTask = new Task(name);
-            ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[name]).AddToTask(digitalTask);
-            digitalTask.Control(TaskAction.Verify);
-            digitalTasks.Add(name, digitalTask);
-            //}
+            return null;
         }
-
-
-        private void SetDigitalLine(string name, bool value)
-        {
-            //if (!Environs.Debug)
-            //{
-            Task digitalTask1 = ((Task)digitalTasks[name]);
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitalTask1.Stream);
-            writer.WriteSingleSampleSingleLine(true, value);
-            digitalTask1.Control(TaskAction.Unreserve);
-            //}
-        }
-        private double ReadAnalogInput(Task task)
-        {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
-
-            double val;
-            Random rnd = new Random();
-            //if (!Environs.Debug)
-            //{
-            val = reader.ReadSingleSample();
-            task.Control(TaskAction.Unreserve);
-            //}
-            //else
-
-            //{
-            //    val = rnd.NextDouble();
-            //}
-            return val;
-        }
-        private Task CreateAnalogInputTask(string channel)
-        {
-            Task task = new Task("EDMHCIn" + channel);
-            //if (!Environs.Debug)
-            //{
-            ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-                task,
-                0,
-                10
-            );
-            task.Control(TaskAction.Verify);
-            //}
-            return task;
-        }
-
-
 
         public void Start()
         {
-            CreateDigitalTask("cryoCooler");
-            pressuretask = CreateAnalogInputTask("pressure");
             // make the control window
             form = new Form1();
             form.controller = this;
             Application.Run(form);
-          }
-
-
-        public void activatecryo()
-        {
-            SetDigitalLine("cryoCooler", true);
-        }
-        public void deactivatecryo()
-        {
-            SetDigitalLine("cryoCooler", false);
-        }
-        public void pressurevalue()
-        {
-            pressure=ReadAnalogInput(pressuretask);
-            form.SetTextBox(form.tbHeliumFlowSetpoint, (pressure).ToString());
         }
 
-        #region Helium Flow Controller
+        Form1 form;
 
-        private double newHeliumFlowSetpoint;
-        private double newSF6FlowSetpoint;
-        private string lastHeliumFlowAct;
-        private string heliumFlowActSeries = "Helium Flow";
-        private double heliumFlowUpperLimit = 10.0; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
-        private double heliumFlowLowerLimit = 0.0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
-        private double SF6FlowUpperLimit = 4.0; // Maximum neon flow that the MKS PR4000B flow controller is capable of.
-        private double SF6FlowLowerLimit = 0.0; // Minimum neon flow that the MKS PR4000B flow controller is capable of.
-
-        public void SetSetpointHelium()
+        //Alicat Flow Control
+        AlicatFlowController Alicat = new AlicatFlowController("ASRL15::INSTR");
+        public void AlicatFlowSet(string ControllerAddress, string flowrate)
         {
-            //if (!Environs.Debug)
-            //{
-            string flowrate = form.tbNewHeliumFlowSetPoint.Text.ToString();
-            string output = FlowControllers.SetSetpoint("a", flowrate);
-            string[] outputs = output.Split(); //the ouput is always a series of info in the form: unitID/AbsPress/Temp/VolumetricFlow/Stand.MassFlow/Setpoint/Gas
-            form.SetTextBox(form.tbHeliumFlowSetpoint, outputs[5]); //We split the string and output the setpoint
-            //}
-        }
+            lock (Alicat)
+            { 
+                query = Alicat.SetSetpoint(ControllerAddress, flowrate);
+               // 
 
-
-        public void GetDataHelium()
-        {
-            //if (!Environs.Debug)
-            //{
-           
-            string output = FlowControllers.QueryData("a");
-            form.SetTextBox(form.tbHeliumFlowSetpoint, output);
-            //}
-        }
-
-        public string GetFlowHelium()
-        {
-            //if (!Environs.Debug)
-            //{
-
-            string Heliumdata = FlowControllers.QueryFlow("a");
-            return Heliumdata;
-
-            //}
-        }
-
-
-        public void UpdateHeliumFlowActMonitor()
-        {
-            //sample the neon flow (actual)
-            lastHeliumFlowAct = FlowControllers.QueryFlow("a");
-
-            //update text boxes
-            form.SetTextBox(form.tbHeliumFlowActual, lastHeliumFlowAct);
-        }
-
-        public void UpdateHeliumFlowSetpointMonitor()
-        {
-            //sample the neon flow (actual)
-            string lastHeliumFlowSetpoint = FlowControllers.QuerySetpoint("a");
-
-            //update text boxes
-            form.SetTextBox(form.tbHeliumFlowSetpoint, lastHeliumFlowSetpoint);
-        }
-
-        public void UpdateSF6FlowActMonitor()
-        {
-            //sample the neon flow (actual)
-            string lastSF6FlowAct = FlowControllers.QueryFlow("b");
-
-            //update text boxes
-            form.SetTextBox(form.tbSF6FlowActual, lastSF6FlowAct);
-        }
-
-        public void UpdateSF6FlowSetpointMonitor()
-        {
-            //sample the neon flow (actual)
-            string lastSF6FlowSetpoint = FlowControllers.QuerySetpoint("b");
-
-            //update text boxes
-            form.SetTextBox(form.tbHeliumFlowSetpoint, lastSF6FlowSetpoint);
-        }
-
-        private Thread FlowMonitorPollThread;
-        private int FlowMonitorPollPeriod = 1000;
-        private bool FlowMonitorFlag;
-        private bool HeliumFlowSetPointFlag;
-        private bool SF6FlowSetPointFlag;
-        private Object FlowMonitorLock;
-        internal void StartFlowMonitorPoll()
-        {
-            FlowMonitorPollThread = new Thread(new ThreadStart(FlowActMonitorPollWorker));
-            FlowMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldnn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
-            FlowMonitorPollPeriod = Int32.Parse(form.tbFlowActPollPeriod.Text);
-            form.EnableControl(form.btStartFlowActMonitor, false);
-            form.EnableControl(form.btStopFlowActMonitor, true);
-            form.EnableControl(form.tbNewHeliumFlowSetPoint, true);
-            form.EnableControl(form.btSetNewHeliumFlowSetpoint, true);
-            form.EnableControl(form.tbNewSF6FlowSetPoint, true);
-            form.EnableControl(form.btSetNewSF6FlowSetpoint, true);
-            FlowMonitorLock = new Object();
-            FlowMonitorFlag = false;
-            HeliumFlowSetPointFlag = false;
-            SF6FlowSetPointFlag = false;
-            FlowMonitorPollThread.Start();
-        }
-
-        internal void StopFlowMonitorPoll()
-        {
-            FlowMonitorFlag = true;
-        }
-
-        public void SetHeliumFlowSetpoint()
-        {
-            if (Double.TryParse(form.tbNewHeliumFlowSetPoint.Text, out newHeliumFlowSetpoint))
-            {
-                if (newHeliumFlowSetpoint <= heliumFlowUpperLimit & heliumFlowLowerLimit <= newHeliumFlowSetpoint)
-                {
-                    HeliumFlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
-                }
-                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + heliumFlowLowerLimit.ToString() + " - " + heliumFlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
             }
-            else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
-
         }
 
-        public void SetSF6FlowSetpoint()
+        #region Pressure Monitors
+
+        //// Create variable names for storing data////
+        ///Right we create new pressure gauges and relock and connect eveyr update, innecesary and hsoul dbe changed///
+        // For pressure monitors:
+        private double lastSourcePressure;
+        private double P_Down_last;
+
+        private double SourceGaugeCorrectionFactor;
+        private int pressureMovingAverageSampleLength = 10;
+
+
+        //// Create queues to gather data
+        // For pressure monitors:
+        private Queue<double> pressureSamplesSource = new Queue<double>();
+        private Queue<double> P_Samps_Down = new Queue<double>();
+
+        private string sourceSeries = "Source";
+
+        public void UpdatePressureMonitor()
         {
-            if (Double.TryParse(form.tbNewSF6FlowSetPoint.Text, out newSF6FlowSetpoint))
+            // For Leybold Display 2 (Source & Downstream):
+            LeyboldPTR225PressureGauge sourcePressureMonitor = new LeyboldPTR225PressureGauge("PressureGaugeSource", "pressureGaugeS");
+            LeyboldPTR225PressureGauge downstreamPressureMonitor = new LeyboldPTR225PressureGauge("PressureGaugeDownstream", "Pressure_Downstream");
+
+            //sample the pressure
+            lock (LatticeHardwareControllerDAQCardLock) // Lock access to the DAQ card
             {
-                if (newSF6FlowSetpoint <= SF6FlowUpperLimit & SF6FlowLowerLimit <= newSF6FlowSetpoint)
-                {
-                    SF6FlowSetPointFlag = true; // set flag that will trigger the setpoint to be changed in NeonFlowActMonitorPollWorker()
-                }
-                else MessageBox.Show("Setpoint request is outside of the Alicat flow range (" + SF6FlowLowerLimit.ToString() + " - " + SF6FlowUpperLimit.ToString() + " SCCM)", "User input exception", MessageBoxButtons.OK);
+                lastSourcePressure = sourcePressureMonitor.Pressure;
+                P_Down_last = downstreamPressureMonitor.Pressure;
             }
-            else MessageBox.Show("Unable to parse setpoint string. Ensure that a number has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
+
+            //add samples to Queues for averaging
+            pressureSamplesSource.Enqueue(lastSourcePressure);
+            P_Samps_Down.Enqueue(P_Down_last);
+
+
+            //drop samples when array is larger than the moving average sample length
+            while (P_Samps_Down.Count > pressureMovingAverageSampleLength)
+            {
+                P_Samps_Down.Dequeue();
+            }
+
+            while (pressureSamplesSource.Count > pressureMovingAverageSampleLength)
+            {
+                pressureSamplesSource.Dequeue();
+            }
+
+            //average samples
+            double avgPressureSource = pressureSamplesSource.Average();
+            //SL Dec 07 2023
+            if (avgPressureSource > 0)
+            {
+                string avgPressureSourceExpForm = avgPressureSource.ToString("E");
+                form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
+                //sourcePressureMonitor.DisposePressureTask();
+            }
+            else
+            {
+                //Display error message
+                string avgPressureSourceExpForm = "Error Low";
+                form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
+                //sourcePressureMonitor.DisposePressureTask();
+            }
+            //SL end
+
+            double P_avg_Down = P_Samps_Down.Average();
+            string P_avg_Down_ExpForm = P_avg_Down.ToString("E");
+
+            //update UI monitor text boxes
+            //form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
+            //sourcePressureMonitor.DisposePressureTask();
+            form.SetTextBox(form.textBoxDownstreamPressure, P_avg_Down_ExpForm.ToString());
+            //downstreamPressureMonitor.DisposePressureTask();
 
         }
 
-        public void SetHeliumFlow(double flowrate)
-        {
-            FlowControllers.SetSetpoint("a", flowrate.ToString());
-        }
+        private Thread PTMonitorPollThread;
+        private int PTMonitorPollPeriod = 1000;
+        private bool PTMonitorFlag;
+        private string query;
+        private readonly object LatticeHardwareControllerDAQCardLock = new object(); // Object for locking access to the DAQ card used for this hardware controller
 
-        private void FlowActMonitorPollWorker()
+        private void PTMonitorPollWorker()
         {
+            int count = 0;
+            //int NumberofMovingAveragePoints = 2;
+            //int MaxChartPoints = 100; // Maximum number of points that will be plotted on a given chart
+
             for (; ; )// for (; ; ) is an infinite loop, equivalent to while(true)
             {
-                Thread.Sleep(FlowMonitorPollPeriod);
-                lock (FlowMonitorLock)
+                var watch = System.Diagnostics.Stopwatch.StartNew();  // Use stopwatch to track how long it takes to measure pressure and temperature. This is subtracted from the poll period so that the loop is executed at the proper frequency.
+                ++count;
+                // Measure pressures
+                // Note that locks are used to prevent threads attempting to access the DAQ card
+                UpdatePressureMonitor(); // Measure pressures and update the window textboxes with the current values
+
+
+                if (PTMonitorFlag)
                 {
-                    UpdateHeliumFlowActMonitor();
-                    PlotLastHeliumFlowAct();
-                    UpdateHeliumFlowSetpointMonitor();
-                    if (HeliumFlowSetPointFlag)
-                    {
-                        FlowControllers.SetSetpoint("a", newHeliumFlowSetpoint.ToString());
-                        HeliumFlowSetPointFlag = false;
-                    }
-                    if (SF6FlowSetPointFlag)
-                    {
-                        FlowControllers.SetSetpoint("b", newSF6FlowSetpoint.ToString());
-                        SF6FlowSetPointFlag = false;
-                    }
-                    if (FlowMonitorFlag)
-                    {
-                        FlowMonitorFlag = false;
-                        break;
-                    }
+                    PTMonitorFlag = false;
+                    break;  //Is this closing the software?
                 }
+
+
+                // Subtract from the poll period the amount of time taken to perform the contents of this loop (so that the temperature and pressure are polled at the correct frequency)
+                watch.Stop(); // Stop the stopwatch that was started at the start of the for loop
+                int TimeElapsedMeasuringP = Convert.ToInt32(watch.ElapsedMilliseconds);
+                int ThreadWaitPeriod = PTMonitorPollPeriod - TimeElapsedMeasuringP; // Subtract the time elapsed from the user defined poll period
+                if (ThreadWaitPeriod < 0)// If the result of the above subtraction was negative, set the value to zero so that Thread.Sleep() doesn't throw an exception
+                {
+                    ThreadWaitPeriod = 0;
+                }
+
+                System.GC.Collect();
+                Thread.Sleep(ThreadWaitPeriod);
             }
-            form.EnableControl(form.btStartFlowActMonitor, true);
-            form.EnableControl(form.btStopFlowActMonitor, false);
-            form.EnableControl(form.tbNewHeliumFlowSetPoint, false);
-            form.EnableControl(form.btSetNewHeliumFlowSetpoint, false);
-            form.EnableControl(form.tbNewSF6FlowSetPoint, false);
-            form.EnableControl(form.btSetNewSF6FlowSetpoint, false);
         }
 
-        public void PlotLastHeliumFlowAct()
+        internal void StartPTMonitorPoll()
         {
-            DateTime localDate = DateTime.Now;
+            // Setup pressure and temperature monitoring thread
+            PTMonitorPollThread = new Thread(() =>
+            {
+                PTMonitorPollWorker();
+            });
+            PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
+                                                     //PTMonitorPollThread.Priority = ThreadPriority.AboveNormal;
+                                                     // Setup pressure and temperature plotting thread
 
-            //plot the most recent sample
-            form.AddPointToChart(form.chartHeliumFlow, heliumFlowActSeries, localDate, Convert.ToDouble(lastHeliumFlowAct));
+
+            pressureMovingAverageSampleLength = 10;
+            pressureSamplesSource.Clear();
+            PTMonitorFlag = false;
+            PTMonitorPollThread.Start();
+
         }
 
-        #endregion 
-
-        #region
-        //YAG Commands
-        public void CheckYAGTemp()
+        internal void StopPTMonitorPoll()
         {
-            //if (!Environs.Debug)
-            //{
-
-            string output = LatticeYAG.CheckTemperature();
-            form.SetTextBox(form.tbHeliumFlowSetpoint, output);
-            //}
+            PTMonitorFlag = true;
         }
 
-        #endregion
+        //// Flow Controller codes
+        /// <summary>
+        /// /*
+        /// </summary>
 
+        internal void ConnectFlowControl()
+        {
+            // Setup gas flow controller
+            // all of the options for a serial device
+            // ---- can be sent through the constructor of the SerialPort class
+            // ---- PortName = "COM14", Baud Rate = 19200, Parity = None,
+            // ---- Data Bits = 8, Stop Bits = One, Handshake = None
+            SerialPort _serialPort = new SerialPort("COM14", 19200, Parity.None, 8, StopBits.One);
+            _serialPort.Handshake = Handshake.None;
+
+            // "sp_DataReceived" is a custom method that I have created
+            //_serialPort.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
+
+            // milliseconds _serialPort.ReadTimeout = 500;
+            _serialPort.WriteTimeout = 500;
+
+            // Opens serial port
+            _serialPort.Open();
+
+        }
+        /*
+        // delegate is used to write to a UI control from a non-UI thread
+        private delegate void SetTextDeleg(string text);
+        void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            Thread.Sleep(500);
+            string data = _serialPort.ReadLine();
+            // Invokes the delegate on the UI thread, and sends the data that was received to the invoked method.
+            // ---- The "si_DataReceived" method will be executed on the UI thread, which allows populating the textbox.
+            this.BeginInvoke(new SetTextDeleg(si_DataReceived), new object[] { data });
+        }
+
+        private void si_DataReceived(string data) 
+        { 
+            textBox1.Text = data.Trim()
+        }
+        */
     }
+        #endregion
 }

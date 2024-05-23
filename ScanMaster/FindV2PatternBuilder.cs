@@ -22,7 +22,7 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0, 
-			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime, int DurationIR)
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime, int DurationIR, int CameraTrigger, int BgTrigger)
 		{
 			int time;
 			if (padStart == 0)
@@ -51,6 +51,9 @@ namespace ScanMaster.Acquire.Patterns
 
 					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber);
 					Pulse(time, shutterV2delay - padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber);
+					Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
+					Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
+
 					//Pulse(time, shutterslowdelay - padStart-3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//this is the v0 aom - high is off//think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
 					//Pulse(time, shutterslowdelay - padStart+ DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//the 1000 is to account for the delay in the shutter
 					//Pulse(time, shutterslowdelay - padStart-4000, DurationV0+4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//turns on shutter for v0 2ms before and 2ms longer
@@ -85,6 +88,8 @@ namespace ScanMaster.Acquire.Patterns
 					Pulse(time, shutterslowdelay - padStart - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);
 					Pulse(time, shutterV1delay-padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber);
 					Pulse(time, shutterV2delay-padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber);
+					Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
+					Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
 					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detectorprime");
 					//Pulse(time, ShutterslowPulseLength+shutterslowdelay-padStart, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);//seems to turn off at the next pattern needs to be negative not sure why
 					//Pulse(startTime, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work

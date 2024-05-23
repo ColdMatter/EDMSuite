@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ScanMaster.Acquire.Plugin;
-using WavemeterLock;
+
 using DAQ.WavemeterLock;
 using System.Xml.Serialization;
 using DAQ.Environment;

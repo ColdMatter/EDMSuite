@@ -43,10 +43,10 @@ public class Patterns : MOTMasterScript
         //Rb light
 
 
-        Parameters["ImagingFrequency"] = 1.45;
+        Parameters["ImagingFrequency"] = 1.50; //2.91 resonance
         Parameters["ProbePumpTime"] = 50; //This is for investigating the time it takes atoms to reach the strectched state when taking an absorption image
         //Parameters["MOTCoolingLoadingFrequency"] = 3.4; //  13/03/2023
-        //Parameters["MOTCoolingLoadingFrequency"] = 4.0;
+        //Parameters["MOTCoolingLoadingFrequency"] = 4.1;
         Parameters["MOTCoolingLoadingFrequency"] = 4.6; //13/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 4.60; //  06/03/2023
         //Parameters["MOTCoolingLoadingFrequency"] = 5.0;// it was 5.0 @ 27.04.2022
@@ -121,13 +121,15 @@ public class Patterns : MOTMasterScript
         Parameters["Det"] = 4.9;
         Parameters["Dummy"] = 0.0;
 
-        Parameters["FreeExpTime"] = 1;
+        Parameters["FreeExpTime"] = 100;
         Parameters["image2DMOTTime"] = 100;
         Parameters["RbRepumpSwitch"] = 0.0; // 0.0 will keep it on and 10.0 will switch it off
 
         Parameters["CoolingAttenuation"] = 0.0;
         Parameters["RepumpAttenuation"] = 0.0;
-        Parameters["RbOffsetLockSetPoint"] = 0.9;//1.23;// 0.87;
+        //Parameters["RbOffsetLockSetPoint"] = 0.925;//1.23;// 0.87;
+        Parameters["RbOffsetLockSetPoint"] = 3.20;
+        Parameters["RbRepumpOffsetLockSetPoint"] = 1.80;
 
     }
 
@@ -158,18 +160,17 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBeam", rbMOTLoadTime - 200, true);
         p.AddEdge("rbD1CoolingSwitch", 0, true);
         p.AddEdge("rbRepump", 0, false);
+        p.AddEdge("rbRepump", rbMOTSwitchOffTime, true);
 
-        //p.AddEdge("UVFlashSwitch", 0, true);
-        p.AddEdge("UVFlashSwitch", 0, false);
-        //p.AddEdge("UVFlashSwitch", rbMOTLoadTime - (int)Parameters["UVLightShutOff"], true);
+        
 
 
         //Turn everything back on at end of sequence:
 
         p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
+        p.AddEdge("rbRepump", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("UVFlashSwitch", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], true);
 
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
@@ -181,10 +182,10 @@ public class Patterns : MOTMasterScript
         // Abs image
         //p.Pulse(0, 94000, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
         p.Pulse(0, cameraTrigger1, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig");
-        p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
-        p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background rbAbsImgCamTrig
+        //p.Pulse(0, cameraTrigger2, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of probe
+        //p.Pulse(0, cameraTrigger3, (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //trigger camera to take image of background rbAbsImgCamTrig
 
-        p.Pulse(0, cameraTrigger1 - 2000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, cameraTrigger1 - 2000 , (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
         p.AddEdge("rb3DMOTShutter", 0, true);
         p.AddEdge("rbOPShutter", 0, true);
@@ -244,7 +245,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
-        p.AddAnalogValue("rbRepumpOffsetLock", 0, 0.88);
+        p.AddAnalogValue("rbRepumpOffsetLock", 0, (double)Parameters["RbRepumpOffsetLockSetPoint"]);
 
         p.AddAnalogValue("rbOffsetLock", 0, (double)Parameters["RbOffsetLockSetPoint"]);
         

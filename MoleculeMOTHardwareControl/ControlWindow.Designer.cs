@@ -119,7 +119,7 @@ namespace MoleculeMOTHardwareControl
             this.tableLayoutPanel9.ColumnCount = 3;
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.848485F));
             this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.15151F));
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tableLayoutPanel9.Controls.Add(this.messageBoxCollapseExpandButton, 2, 0);
             this.tableLayoutPanel9.Controls.Add(this.label8, 1, 0);
             this.tableLayoutPanel9.Controls.Add(this.messageNumberPanel, 0, 0);
@@ -195,6 +195,7 @@ namespace MoleculeMOTHardwareControl
             this.MaximizeBox = false;
             this.Name = "ControlWindow";
             this.Text = "Molecule MOT Hardware Controller";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlWindow_FormClosing);
             this.splitPanel.Panel1.ResumeLayout(false);
             this.splitPanel.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitPanel)).EndInit();

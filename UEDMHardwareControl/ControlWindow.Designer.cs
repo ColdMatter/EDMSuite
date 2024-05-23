@@ -64,6 +64,9 @@
             System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series22 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -85,6 +88,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.plotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pressureAndTemperaturePlotsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +103,7 @@
             this.ToolStripMenuItemSaveNeonFlowDataCSV = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pressureAndTemperatureDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parametersToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,10 +159,23 @@
             this.Show_DeviceKey = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.labelStirapRFAmp = new System.Windows.Forms.Label();
+            this.labelStirapRFFreq = new System.Windows.Forms.Label();
+            this.cbStirapRFOn = new System.Windows.Forms.CheckBox();
+            this.btQueryStirapRFFrequency = new System.Windows.Forms.Button();
+            this.comboBoxStirapRFIncrementUnit = new System.Windows.Forms.ComboBox();
+            this.comboBoxStirapRFSetpointUnit = new System.Windows.Forms.ComboBox();
+            this.tbStirapRFAmplitude = new System.Windows.Forms.TextBox();
+            this.btUpdateStirapRFFrequency = new System.Windows.Forms.Button();
+            this.tbStirapRFFrequency = new System.Windows.Forms.TextBox();
+            this.labelStirapRF = new System.Windows.Forms.Label();
+            this.tbStirapRFFreqMon = new System.Windows.Forms.TextBox();
             this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
             this.btQueryMWSynthTemperatureDetection = new System.Windows.Forms.Button();
             this.labelDetectSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHATrigger = new System.Windows.Forms.CheckBox();
             this.cbCHAPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHAPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHARFMutedDetection = new System.Windows.Forms.CheckBox();
@@ -179,6 +197,7 @@
             this.tbMWCHAFrequencyMonitorDetection = new System.Windows.Forms.TextBox();
             this.tbMWSynthTemperatureMonitorDetection = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHBdetection = new System.Windows.Forms.GroupBox();
+            this.cbCHBTrigger = new System.Windows.Forms.CheckBox();
             this.cbCHBPLLPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHBPAPoweredOnDetection = new System.Windows.Forms.CheckBox();
             this.cbCHBRFMutedDetection = new System.Windows.Forms.CheckBox();
@@ -225,6 +244,7 @@
             this.tbMWCHAFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tbMWSynthTemperatureMonitor = new System.Windows.Forms.TextBox();
             this.groupBoxMWCHB = new System.Windows.Forms.GroupBox();
+            this.cbCHBRFTrigger = new System.Windows.Forms.CheckBox();
             this.btCHBPLLPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHBPAPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHBRFMuteInfo = new System.Windows.Forms.Button();
@@ -312,7 +332,6 @@
             this.DegaussFreqTextBox = new System.Windows.Forms.TextBox();
             this.StartDegauss = new System.Windows.Forms.Button();
             this.tabPageEfield = new System.Windows.Forms.TabPage();
-            this.labelSwitchingLED = new System.Windows.Forms.Label();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -332,7 +351,12 @@
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.labelRampingLED = new System.Windows.Forms.Label();
+            this.eConnectCheck = new System.Windows.Forms.CheckBox();
+            this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
             this.eDisableSwitching = new System.Windows.Forms.CheckBox();
+            this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.labelSwitchingLED = new System.Windows.Forms.Label();
             this.label78 = new System.Windows.Forms.Label();
             this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
@@ -490,23 +514,36 @@
             this.labelPressureLogPeriod = new System.Windows.Forms.Label();
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
-            this.gbSF6FlowController = new System.Windows.Forms.GroupBox();
+            this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.TargetStepButton = new System.Windows.Forms.Button();
+            this.lbTargetStep = new System.Windows.Forms.Label();
+            this.TargetNumStepsTextBox = new System.Windows.Forms.TextBox();
             this.gbNeonFlowController = new System.Windows.Forms.GroupBox();
-            this.btSetNewNeonFlowSetpoint = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.cbSF6Valve = new System.Windows.Forms.CheckBox();
+            this.cbHeFlowValveOnOff = new System.Windows.Forms.CheckBox();
+            this.btSetNewSF6FlowSetpoint = new System.Windows.Forms.Button();
+            this.lbNewFlowStptSF6 = new System.Windows.Forms.Label();
+            this.cbHeliumFlowRemoteMode = new System.Windows.Forms.CheckBox();
+            this.tbNewSF6FlowSetpoint = new System.Windows.Forms.TextBox();
+            this.btSetNewHeliumFlowSetpoint = new System.Windows.Forms.Button();
+            this.tbSF6FlowSetpoint = new System.Windows.Forms.TextBox();
+            this.labelHeliumFlowNewSetpoint = new System.Windows.Forms.Label();
+            this.lbSF6Flow = new System.Windows.Forms.Label();
             this.chart3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.tbNewNeonFlowSetPoint = new System.Windows.Forms.TextBox();
-            this.btStartNeonFlowActMonitor = new System.Windows.Forms.Button();
-            this.labelMonitorActualNeonFlow = new System.Windows.Forms.Label();
+            this.lbActFlowSetpointSF6 = new System.Windows.Forms.Label();
+            this.tbNewHeliumFlowSetPoint = new System.Windows.Forms.TextBox();
+            this.tbSF6FlowActual = new System.Windows.Forms.TextBox();
+            this.btStartHeliumFlowActMonitor = new System.Windows.Forms.Button();
+            this.labelMonitorActualHeliumFlow = new System.Windows.Forms.Label();
             this.btClearNeonFlowActPlotData = new System.Windows.Forms.Button();
             this.labelClearNeonFlowActData = new System.Windows.Forms.Label();
-            this.tbNeonFlowSetpoint = new System.Windows.Forms.TextBox();
-            this.btStopNeonFlowActMonitor = new System.Windows.Forms.Button();
-            this.labelNeonFlowMonitorFL = new System.Windows.Forms.Label();
+            this.tbHeliumFlowSetpoint = new System.Windows.Forms.TextBox();
+            this.btStopHeliumFlowActMonitor = new System.Windows.Forms.Button();
+            this.labelHeliumFlowMonitorFL = new System.Windows.Forms.Label();
             this.tbNeonFlowActPollPeriod = new System.Windows.Forms.TextBox();
-            this.labelNeonFlowMonitorSP = new System.Windows.Forms.Label();
-            this.labelNeonFlowActPollPeriod = new System.Windows.Forms.Label();
-            this.tbNeonFlowActual = new System.Windows.Forms.TextBox();
+            this.labelHeliumFlowMonitorSP = new System.Windows.Forms.Label();
+            this.labelHeliumFlowActPollPeriod = new System.Windows.Forms.Label();
+            this.tbHeliumFlowActual = new System.Windows.Forms.TextBox();
             this.tabPageHeatersControl = new System.Windows.Forms.TabPage();
             this.groupBoxHeaterControlSettings = new System.Windows.Forms.GroupBox();
             this.checkBoxMonitorPressureWhenHeating = new System.Windows.Forms.CheckBox();
@@ -652,6 +689,26 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label28 = new System.Windows.Forms.Label();
+            this.FreqMonitorErrorTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorSampleLengthTextBox = new System.Windows.Forms.TextBox();
+            this.FreqMonitorPollPeriodInput = new System.Windows.Forms.TextBox();
+            this.stopFreqMonitorPollButton = new System.Windows.Forms.Button();
+            this.startFreqMonitorPollButton = new System.Windows.Forms.Button();
+            this.LogFreqDataCheckBox = new System.Windows.Forms.CheckBox();
+            this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
+            this.UpdateBeatFreq = new System.Windows.Forms.Button();
+            this.TargetManualButton = new System.Windows.Forms.Button();
+            this.TargetExtButton = new System.Windows.Forms.Button();
+            this.TargetTriggerButton = new System.Windows.Forms.Button();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -660,6 +717,7 @@
             this.groupBoxStatus.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
+            this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
             this.groupBoxMWCHBdetection.SuspendLayout();
@@ -679,6 +737,8 @@
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
@@ -693,6 +753,7 @@
             this.gbLakeShore336PIDLoops.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPageFlowControllers.SuspendLayout();
+            this.gBTargetStepper.SuspendLayout();
             this.gbNeonFlowController.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart3)).BeginInit();
             this.tabPageHeatersControl.SuspendLayout();
@@ -717,6 +778,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.tabControl.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -930,17 +993,27 @@
             // 
             // openToolStripMenuItem
             // 
+            this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.parametersToolStripMenuItem});
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.openToolStripMenuItem.Text = "Load";
+            // 
+            // parametersToolStripMenuItem
+            // 
+            this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.parametersToolStripMenuItem.Text = "Parameters";
+            this.parametersToolStripMenuItem.Click += new System.EventHandler(this.parametersToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.plotsToolStripMenuItem,
-            this.dataToolStripMenuItem});
+            this.dataToolStripMenuItem,
+            this.parametersToolStripMenuItem1});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
@@ -949,7 +1022,7 @@
             this.pressureAndTemperaturePlotsToolStripMenuItem,
             this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -1035,7 +1108,7 @@
             this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pressureAndTemperatureDataToolStripMenuItem});
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.dataToolStripMenuItem.Text = "Data";
             // 
             // pressureAndTemperatureDataToolStripMenuItem
@@ -1045,10 +1118,17 @@
             this.pressureAndTemperatureDataToolStripMenuItem.Text = "Pressure and temperature data";
             this.pressureAndTemperatureDataToolStripMenuItem.Click += new System.EventHandler(this.pressureAndTemperatureDataToolStripMenuItem_Click);
             // 
+            // parametersToolStripMenuItem1
+            // 
+            this.parametersToolStripMenuItem1.Name = "parametersToolStripMenuItem1";
+            this.parametersToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
+            this.parametersToolStripMenuItem1.Text = "Parameters";
+            this.parametersToolStripMenuItem1.Click += new System.EventHandler(this.parametersToolStripMenuItem1_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1600,6 +1680,7 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
@@ -1609,6 +1690,141 @@
             this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
+            // 
+            // groupBoxStirapRF
+            // 
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmp);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFFreq);
+            this.groupBoxStirapRF.Controls.Add(this.cbStirapRFOn);
+            this.groupBoxStirapRF.Controls.Add(this.btQueryStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.comboBoxStirapRFIncrementUnit);
+            this.groupBoxStirapRF.Controls.Add(this.comboBoxStirapRFSetpointUnit);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFAmplitude);
+            this.groupBoxStirapRF.Controls.Add(this.btUpdateStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFrequency);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRF);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFreqMon);
+            this.groupBoxStirapRF.Location = new System.Drawing.Point(2, 190);
+            this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxStirapRF.Name = "groupBoxStirapRF";
+            this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxStirapRF.Size = new System.Drawing.Size(254, 188);
+            this.groupBoxStirapRF.TabIndex = 50;
+            this.groupBoxStirapRF.TabStop = false;
+            this.groupBoxStirapRF.Text = "Stirap RF";
+            // 
+            // labelStirapRFAmp
+            // 
+            this.labelStirapRFAmp.AutoSize = true;
+            this.labelStirapRFAmp.Location = new System.Drawing.Point(17, 105);
+            this.labelStirapRFAmp.Name = "labelStirapRFAmp";
+            this.labelStirapRFAmp.Size = new System.Drawing.Size(77, 13);
+            this.labelStirapRFAmp.TabIndex = 60;
+            this.labelStirapRFAmp.Text = "RF amp (dBm):";
+            // 
+            // labelStirapRFFreq
+            // 
+            this.labelStirapRFFreq.AutoSize = true;
+            this.labelStirapRFFreq.Location = new System.Drawing.Point(17, 79);
+            this.labelStirapRFFreq.Name = "labelStirapRFFreq";
+            this.labelStirapRFFreq.Size = new System.Drawing.Size(76, 13);
+            this.labelStirapRFFreq.TabIndex = 59;
+            this.labelStirapRFFreq.Text = "RF freq (MHz):";
+            // 
+            // cbStirapRFOn
+            // 
+            this.cbStirapRFOn.AutoSize = true;
+            this.cbStirapRFOn.Location = new System.Drawing.Point(117, 146);
+            this.cbStirapRFOn.Name = "cbStirapRFOn";
+            this.cbStirapRFOn.Size = new System.Drawing.Size(87, 17);
+            this.cbStirapRFOn.TabIndex = 58;
+            this.cbStirapRFOn.Text = "Stirap RF On";
+            this.cbStirapRFOn.UseVisualStyleBackColor = true;
+            this.cbStirapRFOn.CheckedChanged += new System.EventHandler(this.cbStirapRFOn_CheckedChanged);
+            // 
+            // btQueryStirapRFFrequency
+            // 
+            this.btQueryStirapRFFrequency.Location = new System.Drawing.Point(18, 51);
+            this.btQueryStirapRFFrequency.Name = "btQueryStirapRFFrequency";
+            this.btQueryStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
+            this.btQueryStirapRFFrequency.TabIndex = 55;
+            this.btQueryStirapRFFrequency.Text = "Query";
+            this.btQueryStirapRFFrequency.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxStirapRFIncrementUnit
+            // 
+            this.comboBoxStirapRFIncrementUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxStirapRFIncrementUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxStirapRFIncrementUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStirapRFIncrementUnit.FormattingEnabled = true;
+            this.comboBoxStirapRFIncrementUnit.Items.AddRange(new object[] {
+            "MHz",
+            "kHz",
+            "Hz"});
+            this.comboBoxStirapRFIncrementUnit.Location = new System.Drawing.Point(178, 102);
+            this.comboBoxStirapRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxStirapRFIncrementUnit.Name = "comboBoxStirapRFIncrementUnit";
+            this.comboBoxStirapRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxStirapRFIncrementUnit.TabIndex = 42;
+            // 
+            // comboBoxStirapRFSetpointUnit
+            // 
+            this.comboBoxStirapRFSetpointUnit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxStirapRFSetpointUnit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxStirapRFSetpointUnit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStirapRFSetpointUnit.FormattingEnabled = true;
+            this.comboBoxStirapRFSetpointUnit.Items.AddRange(new object[] {
+            "MHz"});
+            this.comboBoxStirapRFSetpointUnit.Location = new System.Drawing.Point(178, 76);
+            this.comboBoxStirapRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxStirapRFSetpointUnit.Name = "comboBoxStirapRFSetpointUnit";
+            this.comboBoxStirapRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
+            this.comboBoxStirapRFSetpointUnit.TabIndex = 41;
+            // 
+            // tbStirapRFAmplitude
+            // 
+            this.tbStirapRFAmplitude.Location = new System.Drawing.Point(98, 102);
+            this.tbStirapRFAmplitude.Name = "tbStirapRFAmplitude";
+            this.tbStirapRFAmplitude.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFAmplitude.TabIndex = 38;
+            // 
+            // btUpdateStirapRFFrequency
+            // 
+            this.btUpdateStirapRFFrequency.Location = new System.Drawing.Point(17, 140);
+            this.btUpdateStirapRFFrequency.Name = "btUpdateStirapRFFrequency";
+            this.btUpdateStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
+            this.btUpdateStirapRFFrequency.TabIndex = 36;
+            this.btUpdateStirapRFFrequency.Text = "Update";
+            this.btUpdateStirapRFFrequency.UseVisualStyleBackColor = true;
+            this.btUpdateStirapRFFrequency.Click += new System.EventHandler(this.btUpdateStirapRFFrequency_Click);
+            // 
+            // tbStirapRFFrequency
+            // 
+            this.tbStirapRFFrequency.Location = new System.Drawing.Point(98, 76);
+            this.tbStirapRFFrequency.Name = "tbStirapRFFrequency";
+            this.tbStirapRFFrequency.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFFrequency.TabIndex = 36;
+            this.tbStirapRFFrequency.Text = "32";
+            // 
+            // labelStirapRF
+            // 
+            this.labelStirapRF.AutoSize = true;
+            this.labelStirapRF.Location = new System.Drawing.Point(16, 34);
+            this.labelStirapRF.Name = "labelStirapRF";
+            this.labelStirapRF.Size = new System.Drawing.Size(105, 13);
+            this.labelStirapRF.TabIndex = 36;
+            this.labelStirapRF.Text = "RF frequency (MHz):";
+            // 
+            // tbStirapRFFreqMon
+            // 
+            this.tbStirapRFFreqMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbStirapRFFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbStirapRFFreqMon.Location = new System.Drawing.Point(98, 54);
+            this.tbStirapRFFreqMon.Margin = new System.Windows.Forms.Padding(2);
+            this.tbStirapRFFreqMon.Name = "tbStirapRFFreqMon";
+            this.tbStirapRFFreqMon.ReadOnly = true;
+            this.tbStirapRFFreqMon.Size = new System.Drawing.Size(75, 20);
+            this.tbStirapRFFreqMon.TabIndex = 36;
             // 
             // groupBoxWindfreakDetection
             // 
@@ -1649,6 +1865,7 @@
             // groupBoxMWCHAdetection
             // 
             this.groupBoxMWCHAdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHAdetection.Controls.Add(this.cbCHATrigger);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPAPoweredOnDetection);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHAPLLPoweredOnDetection);
             this.groupBoxMWCHAdetection.Controls.Add(this.cbCHARFMutedDetection);
@@ -1676,6 +1893,17 @@
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
             this.groupBoxMWCHAdetection.Text = "Channel A";
+            // 
+            // cbCHATrigger
+            // 
+            this.cbCHATrigger.AutoSize = true;
+            this.cbCHATrigger.Location = new System.Drawing.Point(462, 19);
+            this.cbCHATrigger.Name = "cbCHATrigger";
+            this.cbCHATrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHATrigger.TabIndex = 52;
+            this.cbCHATrigger.Text = "Trigger Armed";
+            this.cbCHATrigger.UseVisualStyleBackColor = true;
+            this.cbCHATrigger.CheckedChanged += new System.EventHandler(this.cbCHATrigger_CheckedChanged);
             // 
             // cbCHAPAPoweredOnDetection
             // 
@@ -1852,7 +2080,7 @@
             this.tbMWCHAFrequencySetpointDetection.Name = "tbMWCHAFrequencySetpointDetection";
             this.tbMWCHAFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpointDetection.TabIndex = 36;
-            this.tbMWCHAFrequencySetpointDetection.Text = "14.467242";
+            this.tbMWCHAFrequencySetpointDetection.Text = "14.458087";
             // 
             // labelDetectMicrowavesChAFreq
             // 
@@ -1888,6 +2116,7 @@
             // groupBoxMWCHBdetection
             // 
             this.groupBoxMWCHBdetection.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBTrigger);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPLLPoweredOnDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBPAPoweredOnDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.cbCHBRFMutedDetection);
@@ -1914,6 +2143,17 @@
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
             this.groupBoxMWCHBdetection.Text = "Channel B";
+            // 
+            // cbCHBTrigger
+            // 
+            this.cbCHBTrigger.AutoSize = true;
+            this.cbCHBTrigger.Location = new System.Drawing.Point(463, 18);
+            this.cbCHBTrigger.Name = "cbCHBTrigger";
+            this.cbCHBTrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHBTrigger.TabIndex = 53;
+            this.cbCHBTrigger.Text = "Trigger Armed";
+            this.cbCHBTrigger.UseVisualStyleBackColor = true;
+            this.cbCHBTrigger.CheckedChanged += new System.EventHandler(this.cbCHBTrigger_CheckedChanged);
             // 
             // cbCHBPLLPoweredOnDetection
             // 
@@ -2090,7 +2330,7 @@
             this.tbMWCHBFrequencySetpointDetection.Name = "tbMWCHBFrequencySetpointDetection";
             this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpointDetection.TabIndex = 36;
-            this.tbMWCHBFrequencySetpointDetection.Text = "14.5";
+            this.tbMWCHBFrequencySetpointDetection.Text = "14.467242";
             // 
             // tbMWCHBFrequencyMonitorDetection
             // 
@@ -2417,6 +2657,7 @@
             // groupBoxMWCHB
             // 
             this.groupBoxMWCHB.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHB.Controls.Add(this.cbCHBRFTrigger);
             this.groupBoxMWCHB.Controls.Add(this.btCHBPLLPowerOnInfo);
             this.groupBoxMWCHB.Controls.Add(this.btCHBPAPowerOnInfo);
             this.groupBoxMWCHB.Controls.Add(this.btCHBRFMuteInfo);
@@ -2447,6 +2688,17 @@
             this.groupBoxMWCHB.TabIndex = 47;
             this.groupBoxMWCHB.TabStop = false;
             this.groupBoxMWCHB.Text = "Channel B";
+            // 
+            // cbCHBRFTrigger
+            // 
+            this.cbCHBRFTrigger.AutoSize = true;
+            this.cbCHBRFTrigger.Location = new System.Drawing.Point(463, 17);
+            this.cbCHBRFTrigger.Name = "cbCHBRFTrigger";
+            this.cbCHBRFTrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHBRFTrigger.TabIndex = 57;
+            this.cbCHBRFTrigger.Text = "Trigger Armed";
+            this.cbCHBRFTrigger.UseVisualStyleBackColor = true;
+            this.cbCHBRFTrigger.CheckedChanged += new System.EventHandler(this.cbCHBRFTrigger_CheckedChanged);
             // 
             // btCHBPLLPowerOnInfo
             // 
@@ -2653,7 +2905,7 @@
             this.tbMWCHBFrequencySetpoint.Name = "tbMWCHBFrequencySetpoint";
             this.tbMWCHBFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpoint.TabIndex = 36;
-            this.tbMWCHBFrequencySetpoint.Text = "14.5";
+            this.tbMWCHBFrequencySetpoint.Text = "14.4754";
             // 
             // labelMicrowavesChannelBFrequency
             // 
@@ -2863,6 +3115,7 @@
             this.calFlipCheck.Size = new System.Drawing.Size(40, 24);
             this.calFlipCheck.TabIndex = 1;
             this.calFlipCheck.Text = "dB";
+            this.calFlipCheck.CheckedChanged += new System.EventHandler(this.calFlipCheck_CheckedChanged);
             // 
             // bFlipCheck
             // 
@@ -2871,6 +3124,7 @@
             this.bFlipCheck.Size = new System.Drawing.Size(61, 24);
             this.bFlipCheck.TabIndex = 0;
             this.bFlipCheck.Text = "DB";
+            this.bFlipCheck.CheckedChanged += new System.EventHandler(this.bFlipCheck_CheckedChanged);
             // 
             // groupBoxbCurrentMon
             // 
@@ -3004,6 +3258,7 @@
             this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updateBCurrentMonitorButton.TabIndex = 40;
             this.updateBCurrentMonitorButton.Text = "Update";
+            this.updateBCurrentMonitorButton.Click += new System.EventHandler(this.updateBCurrentMonitorButton_Click);
             // 
             // labelbCurrentMon4
             // 
@@ -3083,6 +3338,7 @@
             this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.SteppingBBoxBiasUpdateButton.TabIndex = 40;
             this.SteppingBBoxBiasUpdateButton.Text = "Update";
+            this.SteppingBBoxBiasUpdateButton.Click += new System.EventHandler(this.SteppingBBoxBiasUpdateButton_Click);
             // 
             // labelbStep1
             // 
@@ -3327,7 +3583,6 @@
             // tabPageEfield
             // 
             this.tabPageEfield.BackColor = System.Drawing.Color.Transparent;
-            this.tabPageEfield.Controls.Add(this.labelSwitchingLED);
             this.tabPageEfield.Controls.Add(this.groupBox21);
             this.tabPageEfield.Controls.Add(this.groupBox13);
             this.tabPageEfield.Controls.Add(this.groupBox6);
@@ -3339,16 +3594,6 @@
             this.tabPageEfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
-            // 
-            // labelSwitchingLED
-            // 
-            this.labelSwitchingLED.AutoSize = true;
-            this.labelSwitchingLED.Location = new System.Drawing.Point(519, 37);
-            this.labelSwitchingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.labelSwitchingLED.Name = "labelSwitchingLED";
-            this.labelSwitchingLED.Size = new System.Drawing.Size(96, 13);
-            this.labelSwitchingLED.TabIndex = 48;
-            this.labelSwitchingLED.Text = "Switching Ongoing";
             // 
             // groupBox21
             // 
@@ -3366,7 +3611,7 @@
             this.eManualStateCheckBox.Name = "eManualStateCheckBox";
             this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
             this.eManualStateCheckBox.TabIndex = 53;
-            this.eManualStateCheckBox.Text = "State (Checked is 0=>N+)";
+            this.eManualStateCheckBox.Text = "State (Checked is 0=>W+)";
             // 
             // groupBox13
             // 
@@ -3528,7 +3773,12 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.labelRampingLED);
+            this.groupBox4.Controls.Add(this.eConnectCheck);
+            this.groupBox4.Controls.Add(this.switchingLED);
             this.groupBox4.Controls.Add(this.eDisableSwitching);
+            this.groupBox4.Controls.Add(this.rampLED);
+            this.groupBox4.Controls.Add(this.labelSwitchingLED);
             this.groupBox4.Controls.Add(this.label78);
             this.groupBox4.Controls.Add(this.eOvershootHoldTextBox);
             this.groupBox4.Controls.Add(this.label79);
@@ -3552,18 +3802,65 @@
             this.groupBox4.Controls.Add(this.eOnCheck);
             this.groupBox4.Location = new System.Drawing.Point(207, 16);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(280, 276);
+            this.groupBox4.Size = new System.Drawing.Size(299, 276);
             this.groupBox4.TabIndex = 11;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Switch";
             // 
+            // labelRampingLED
+            // 
+            this.labelRampingLED.AutoSize = true;
+            this.labelRampingLED.Location = new System.Drawing.Point(240, 101);
+            this.labelRampingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelRampingLED.Name = "labelRampingLED";
+            this.labelRampingLED.Size = new System.Drawing.Size(49, 13);
+            this.labelRampingLED.TabIndex = 58;
+            this.labelRampingLED.Text = "Ramping";
+            // 
+            // eConnectCheck
+            // 
+            this.eConnectCheck.Location = new System.Drawing.Point(166, 41);
+            this.eConnectCheck.Name = "eConnectCheck";
+            this.eConnectCheck.Size = new System.Drawing.Size(123, 23);
+            this.eConnectCheck.TabIndex = 56;
+            this.eConnectCheck.Text = "Disconnect supplies";
+            this.eConnectCheck.CheckedChanged += new System.EventHandler(this.eConnectCheck_CheckedChanged);
+            // 
+            // switchingLED
+            // 
+            this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.switchingLED.Location = new System.Drawing.Point(217, 70);
+            this.switchingLED.Name = "switchingLED";
+            this.switchingLED.OffColor = System.Drawing.Color.Maroon;
+            this.switchingLED.OnColor = System.Drawing.Color.Red;
+            this.switchingLED.Size = new System.Drawing.Size(21, 22);
+            this.switchingLED.TabIndex = 54;
+            // 
             // eDisableSwitching
             // 
-            this.eDisableSwitching.Location = new System.Drawing.Point(174, 17);
+            this.eDisableSwitching.Location = new System.Drawing.Point(166, 15);
             this.eDisableSwitching.Name = "eDisableSwitching";
-            this.eDisableSwitching.Size = new System.Drawing.Size(82, 45);
+            this.eDisableSwitching.Size = new System.Drawing.Size(110, 33);
             this.eDisableSwitching.TabIndex = 53;
             this.eDisableSwitching.Text = "Disable switching";
+            // 
+            // rampLED
+            // 
+            this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.rampLED.Location = new System.Drawing.Point(217, 98);
+            this.rampLED.Name = "rampLED";
+            this.rampLED.Size = new System.Drawing.Size(21, 22);
+            this.rampLED.TabIndex = 55;
+            // 
+            // labelSwitchingLED
+            // 
+            this.labelSwitchingLED.AutoSize = true;
+            this.labelSwitchingLED.Location = new System.Drawing.Point(240, 74);
+            this.labelSwitchingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSwitchingLED.Name = "labelSwitchingLED";
+            this.labelSwitchingLED.Size = new System.Drawing.Size(53, 13);
+            this.labelSwitchingLED.TabIndex = 48;
+            this.labelSwitchingLED.Text = "Switching";
             // 
             // label78
             // 
@@ -3579,7 +3876,7 @@
             this.eOvershootHoldTextBox.Name = "eOvershootHoldTextBox";
             this.eOvershootHoldTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootHoldTextBox.TabIndex = 50;
-            this.eOvershootHoldTextBox.Text = "1";
+            this.eOvershootHoldTextBox.Text = "10";
             // 
             // label79
             // 
@@ -3595,7 +3892,7 @@
             this.eOvershootFactorTextBox.Name = "eOvershootFactorTextBox";
             this.eOvershootFactorTextBox.Size = new System.Drawing.Size(64, 20);
             this.eOvershootFactorTextBox.TabIndex = 49;
-            this.eOvershootFactorTextBox.Text = "2";
+            this.eOvershootFactorTextBox.Text = "1.1";
             // 
             // label62
             // 
@@ -3611,7 +3908,7 @@
             this.eSwitchTimeTextBox.Name = "eSwitchTimeTextBox";
             this.eSwitchTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eSwitchTimeTextBox.TabIndex = 3;
-            this.eSwitchTimeTextBox.Text = "1";
+            this.eSwitchTimeTextBox.Text = "5";
             // 
             // label61
             // 
@@ -3627,7 +3924,7 @@
             this.eBleedTimeTextBox.Name = "eBleedTimeTextBox";
             this.eBleedTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eBleedTimeTextBox.TabIndex = 2;
-            this.eBleedTimeTextBox.Text = "0.01";
+            this.eBleedTimeTextBox.Text = "1";
             // 
             // label60
             // 
@@ -3651,7 +3948,7 @@
             this.eRampUpDelayTextBox.Name = "eRampUpDelayTextBox";
             this.eRampUpDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpDelayTextBox.TabIndex = 5;
-            this.eRampUpDelayTextBox.Text = "1";
+            this.eRampUpDelayTextBox.Text = "10";
             // 
             // label58
             // 
@@ -3667,7 +3964,7 @@
             this.eRampDownDelayTextBox.Name = "eRampDownDelayTextBox";
             this.eRampDownDelayTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownDelayTextBox.TabIndex = 1;
-            this.eRampDownDelayTextBox.Text = "3";
+            this.eRampDownDelayTextBox.Text = "10";
             // 
             // label59
             // 
@@ -3683,7 +3980,7 @@
             this.eRampDownTimeTextBox.Name = "eRampDownTimeTextBox";
             this.eRampDownTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampDownTimeTextBox.TabIndex = 0;
-            this.eRampDownTimeTextBox.Text = "2";
+            this.eRampDownTimeTextBox.Text = "30";
             // 
             // eRampUpTimeTextBox
             // 
@@ -3691,7 +3988,7 @@
             this.eRampUpTimeTextBox.Name = "eRampUpTimeTextBox";
             this.eRampUpTimeTextBox.Size = new System.Drawing.Size(64, 20);
             this.eRampUpTimeTextBox.TabIndex = 4;
-            this.eRampUpTimeTextBox.Text = "2";
+            this.eRampUpTimeTextBox.Text = "30";
             // 
             // fieldsOffButton
             // 
@@ -5284,7 +5581,7 @@
             // tabPageFlowControllers
             // 
             this.tabPageFlowControllers.BackColor = System.Drawing.Color.DarkGray;
-            this.tabPageFlowControllers.Controls.Add(this.gbSF6FlowController);
+            this.tabPageFlowControllers.Controls.Add(this.gBTargetStepper);
             this.tabPageFlowControllers.Controls.Add(this.gbNeonFlowController);
             this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 22);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
@@ -5293,32 +5590,75 @@
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
             // 
-            // gbSF6FlowController
+            // gBTargetStepper
             // 
-            this.gbSF6FlowController.Location = new System.Drawing.Point(6, 355);
-            this.gbSF6FlowController.Name = "gbSF6FlowController";
-            this.gbSF6FlowController.Size = new System.Drawing.Size(1166, 343);
-            this.gbSF6FlowController.TabIndex = 1;
-            this.gbSF6FlowController.TabStop = false;
-            this.gbSF6FlowController.Text = "SF6 Flow Controller";
+            this.gBTargetStepper.Controls.Add(this.TargetTriggerButton);
+            this.gBTargetStepper.Controls.Add(this.TargetExtButton);
+            this.gBTargetStepper.Controls.Add(this.TargetManualButton);
+            this.gBTargetStepper.Controls.Add(this.TargetStepButton);
+            this.gBTargetStepper.Controls.Add(this.lbTargetStep);
+            this.gBTargetStepper.Controls.Add(this.TargetNumStepsTextBox);
+            this.gBTargetStepper.Location = new System.Drawing.Point(6, 355);
+            this.gBTargetStepper.Name = "gBTargetStepper";
+            this.gBTargetStepper.Size = new System.Drawing.Size(683, 86);
+            this.gBTargetStepper.TabIndex = 48;
+            this.gBTargetStepper.TabStop = false;
+            this.gBTargetStepper.Text = "Target stepper";
+            // 
+            // TargetStepButton
+            // 
+            this.TargetStepButton.Location = new System.Drawing.Point(256, 20);
+            this.TargetStepButton.Name = "TargetStepButton";
+            this.TargetStepButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetStepButton.TabIndex = 2;
+            this.TargetStepButton.Text = "Step!";
+            this.TargetStepButton.UseVisualStyleBackColor = true;
+            this.TargetStepButton.Click += new System.EventHandler(this.TargetStepButton_Click);
+            // 
+            // lbTargetStep
+            // 
+            this.lbTargetStep.AutoSize = true;
+            this.lbTargetStep.Location = new System.Drawing.Point(19, 25);
+            this.lbTargetStep.Name = "lbTargetStep";
+            this.lbTargetStep.Size = new System.Drawing.Size(89, 13);
+            this.lbTargetStep.TabIndex = 1;
+            this.lbTargetStep.Text = "Number of pulses";
+            // 
+            // TargetNumStepsTextBox
+            // 
+            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(158, 22);
+            this.TargetNumStepsTextBox.Name = "TargetNumStepsTextBox";
+            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(66, 20);
+            this.TargetNumStepsTextBox.TabIndex = 0;
+            this.TargetNumStepsTextBox.Text = "10";
             // 
             // gbNeonFlowController
             // 
-            this.gbNeonFlowController.Controls.Add(this.btSetNewNeonFlowSetpoint);
-            this.gbNeonFlowController.Controls.Add(this.label1);
+            this.gbNeonFlowController.Controls.Add(this.cbSF6Valve);
+            this.gbNeonFlowController.Controls.Add(this.cbHeFlowValveOnOff);
+            this.gbNeonFlowController.Controls.Add(this.btSetNewSF6FlowSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.lbNewFlowStptSF6);
+            this.gbNeonFlowController.Controls.Add(this.cbHeliumFlowRemoteMode);
+            this.gbNeonFlowController.Controls.Add(this.tbNewSF6FlowSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.btSetNewHeliumFlowSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.tbSF6FlowSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowNewSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.lbSF6Flow);
             this.gbNeonFlowController.Controls.Add(this.chart3);
-            this.gbNeonFlowController.Controls.Add(this.tbNewNeonFlowSetPoint);
-            this.gbNeonFlowController.Controls.Add(this.btStartNeonFlowActMonitor);
-            this.gbNeonFlowController.Controls.Add(this.labelMonitorActualNeonFlow);
+            this.gbNeonFlowController.Controls.Add(this.lbActFlowSetpointSF6);
+            this.gbNeonFlowController.Controls.Add(this.tbNewHeliumFlowSetPoint);
+            this.gbNeonFlowController.Controls.Add(this.tbSF6FlowActual);
+            this.gbNeonFlowController.Controls.Add(this.btStartHeliumFlowActMonitor);
+            this.gbNeonFlowController.Controls.Add(this.labelMonitorActualHeliumFlow);
             this.gbNeonFlowController.Controls.Add(this.btClearNeonFlowActPlotData);
             this.gbNeonFlowController.Controls.Add(this.labelClearNeonFlowActData);
-            this.gbNeonFlowController.Controls.Add(this.tbNeonFlowSetpoint);
-            this.gbNeonFlowController.Controls.Add(this.btStopNeonFlowActMonitor);
-            this.gbNeonFlowController.Controls.Add(this.labelNeonFlowMonitorFL);
+            this.gbNeonFlowController.Controls.Add(this.tbHeliumFlowSetpoint);
+            this.gbNeonFlowController.Controls.Add(this.btStopHeliumFlowActMonitor);
+            this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowMonitorFL);
             this.gbNeonFlowController.Controls.Add(this.tbNeonFlowActPollPeriod);
-            this.gbNeonFlowController.Controls.Add(this.labelNeonFlowMonitorSP);
-            this.gbNeonFlowController.Controls.Add(this.labelNeonFlowActPollPeriod);
-            this.gbNeonFlowController.Controls.Add(this.tbNeonFlowActual);
+            this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowMonitorSP);
+            this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowActPollPeriod);
+            this.gbNeonFlowController.Controls.Add(this.tbHeliumFlowActual);
             this.gbNeonFlowController.Location = new System.Drawing.Point(6, 6);
             this.gbNeonFlowController.Name = "gbNeonFlowController";
             this.gbNeonFlowController.Size = new System.Drawing.Size(1021, 343);
@@ -5326,25 +5666,105 @@
             this.gbNeonFlowController.TabStop = false;
             this.gbNeonFlowController.Text = "Neon flow controller";
             // 
-            // btSetNewNeonFlowSetpoint
+            // cbSF6Valve
             // 
-            this.btSetNewNeonFlowSetpoint.Enabled = false;
-            this.btSetNewNeonFlowSetpoint.Location = new System.Drawing.Point(930, 161);
-            this.btSetNewNeonFlowSetpoint.Name = "btSetNewNeonFlowSetpoint";
-            this.btSetNewNeonFlowSetpoint.Size = new System.Drawing.Size(85, 23);
-            this.btSetNewNeonFlowSetpoint.TabIndex = 34;
-            this.btSetNewNeonFlowSetpoint.Text = "Set setpoint";
-            this.btSetNewNeonFlowSetpoint.UseVisualStyleBackColor = true;
-            this.btSetNewNeonFlowSetpoint.Click += new System.EventHandler(this.btSetNewNeonFlowSetpoint_Click);
+            this.cbSF6Valve.AutoSize = true;
+            this.cbSF6Valve.Location = new System.Drawing.Point(923, 203);
+            this.cbSF6Valve.Name = "cbSF6Valve";
+            this.cbSF6Valve.Size = new System.Drawing.Size(80, 17);
+            this.cbSF6Valve.TabIndex = 46;
+            this.cbSF6Valve.Text = "Use Alicat?";
+            this.cbSF6Valve.UseVisualStyleBackColor = true;
+            this.cbSF6Valve.CheckedChanged += new System.EventHandler(this.cbSF6Valve_CheckedChanged);
             // 
-            // label1
+            // cbHeFlowValveOnOff
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(746, 166);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
-            this.label1.TabIndex = 33;
-            this.label1.Text = "New setpoint:";
+            this.cbHeFlowValveOnOff.AutoSize = true;
+            this.cbHeFlowValveOnOff.Location = new System.Drawing.Point(922, 92);
+            this.cbHeFlowValveOnOff.Name = "cbHeFlowValveOnOff";
+            this.cbHeFlowValveOnOff.Size = new System.Drawing.Size(89, 17);
+            this.cbHeFlowValveOnOff.TabIndex = 36;
+            this.cbHeFlowValveOnOff.Text = "Valve On/Off";
+            this.cbHeFlowValveOnOff.UseVisualStyleBackColor = true;
+            this.cbHeFlowValveOnOff.CheckedChanged += new System.EventHandler(this.cbFlowValveOnOff_CheckedChanged);
+            // 
+            // btSetNewSF6FlowSetpoint
+            // 
+            this.btSetNewSF6FlowSetpoint.Enabled = false;
+            this.btSetNewSF6FlowSetpoint.Location = new System.Drawing.Point(923, 248);
+            this.btSetNewSF6FlowSetpoint.Name = "btSetNewSF6FlowSetpoint";
+            this.btSetNewSF6FlowSetpoint.Size = new System.Drawing.Size(85, 23);
+            this.btSetNewSF6FlowSetpoint.TabIndex = 45;
+            this.btSetNewSF6FlowSetpoint.Text = "Set setpoint";
+            this.btSetNewSF6FlowSetpoint.UseVisualStyleBackColor = true;
+            this.btSetNewSF6FlowSetpoint.Click += new System.EventHandler(this.btSetNewSF6FlowSetpoint_Click);
+            // 
+            // lbNewFlowStptSF6
+            // 
+            this.lbNewFlowStptSF6.AutoSize = true;
+            this.lbNewFlowStptSF6.Location = new System.Drawing.Point(748, 253);
+            this.lbNewFlowStptSF6.Name = "lbNewFlowStptSF6";
+            this.lbNewFlowStptSF6.Size = new System.Drawing.Size(72, 13);
+            this.lbNewFlowStptSF6.TabIndex = 44;
+            this.lbNewFlowStptSF6.Text = "New setpoint:";
+            // 
+            // cbHeliumFlowRemoteMode
+            // 
+            this.cbHeliumFlowRemoteMode.AutoSize = true;
+            this.cbHeliumFlowRemoteMode.Location = new System.Drawing.Point(922, 116);
+            this.cbHeliumFlowRemoteMode.Name = "cbHeliumFlowRemoteMode";
+            this.cbHeliumFlowRemoteMode.Size = new System.Drawing.Size(93, 17);
+            this.cbHeliumFlowRemoteMode.TabIndex = 35;
+            this.cbHeliumFlowRemoteMode.Text = "Remote Mode";
+            this.cbHeliumFlowRemoteMode.UseVisualStyleBackColor = true;
+            this.cbHeliumFlowRemoteMode.CheckedChanged += new System.EventHandler(this.cBRemoteMode_CheckedChanged);
+            // 
+            // tbNewSF6FlowSetpoint
+            // 
+            this.tbNewSF6FlowSetpoint.Enabled = false;
+            this.tbNewSF6FlowSetpoint.Location = new System.Drawing.Point(824, 250);
+            this.tbNewSF6FlowSetpoint.Name = "tbNewSF6FlowSetpoint";
+            this.tbNewSF6FlowSetpoint.Size = new System.Drawing.Size(85, 20);
+            this.tbNewSF6FlowSetpoint.TabIndex = 43;
+            // 
+            // btSetNewHeliumFlowSetpoint
+            // 
+            this.btSetNewHeliumFlowSetpoint.Enabled = false;
+            this.btSetNewHeliumFlowSetpoint.Location = new System.Drawing.Point(923, 161);
+            this.btSetNewHeliumFlowSetpoint.Name = "btSetNewHeliumFlowSetpoint";
+            this.btSetNewHeliumFlowSetpoint.Size = new System.Drawing.Size(85, 23);
+            this.btSetNewHeliumFlowSetpoint.TabIndex = 34;
+            this.btSetNewHeliumFlowSetpoint.Text = "Set setpoint";
+            this.btSetNewHeliumFlowSetpoint.UseVisualStyleBackColor = true;
+            this.btSetNewHeliumFlowSetpoint.Click += new System.EventHandler(this.btSetNewNeonFlowSetpoint_Click);
+            // 
+            // tbSF6FlowSetpoint
+            // 
+            this.tbSF6FlowSetpoint.BackColor = System.Drawing.Color.Black;
+            this.tbSF6FlowSetpoint.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbSF6FlowSetpoint.Location = new System.Drawing.Point(824, 226);
+            this.tbSF6FlowSetpoint.Name = "tbSF6FlowSetpoint";
+            this.tbSF6FlowSetpoint.ReadOnly = true;
+            this.tbSF6FlowSetpoint.Size = new System.Drawing.Size(85, 20);
+            this.tbSF6FlowSetpoint.TabIndex = 42;
+            // 
+            // labelHeliumFlowNewSetpoint
+            // 
+            this.labelHeliumFlowNewSetpoint.AutoSize = true;
+            this.labelHeliumFlowNewSetpoint.Location = new System.Drawing.Point(746, 166);
+            this.labelHeliumFlowNewSetpoint.Name = "labelHeliumFlowNewSetpoint";
+            this.labelHeliumFlowNewSetpoint.Size = new System.Drawing.Size(72, 13);
+            this.labelHeliumFlowNewSetpoint.TabIndex = 33;
+            this.labelHeliumFlowNewSetpoint.Text = "New setpoint:";
+            // 
+            // lbSF6Flow
+            // 
+            this.lbSF6Flow.AutoSize = true;
+            this.lbSF6Flow.Location = new System.Drawing.Point(746, 204);
+            this.lbSF6Flow.Name = "lbSF6Flow";
+            this.lbSF6Flow.Size = new System.Drawing.Size(72, 13);
+            this.lbSF6Flow.TabIndex = 37;
+            this.lbSF6Flow.Text = "SF6 flow (FL):";
             // 
             // chart3
             // 
@@ -5388,41 +5808,60 @@
             this.chart3.Series.Add(series13);
             this.chart3.Size = new System.Drawing.Size(701, 324);
             this.chart3.TabIndex = 19;
-            this.chart3.Text = "chartNeonFlow";
+            this.chart3.Text = "chartHeliumFlow";
             title2.BackColor = System.Drawing.Color.Black;
             title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             title2.ForeColor = System.Drawing.Color.White;
-            title2.Name = "chartTitleNeonFlow";
-            title2.Text = "Neon Flow (FL)";
+            title2.Name = "chartTitleHeliumFlow";
+            title2.Text = "Helium Flow (FL)";
             this.chart3.Titles.Add(title2);
             // 
-            // tbNewNeonFlowSetPoint
+            // lbActFlowSetpointSF6
             // 
-            this.tbNewNeonFlowSetPoint.Enabled = false;
-            this.tbNewNeonFlowSetPoint.Location = new System.Drawing.Point(824, 163);
-            this.tbNewNeonFlowSetPoint.Name = "tbNewNeonFlowSetPoint";
-            this.tbNewNeonFlowSetPoint.Size = new System.Drawing.Size(100, 20);
-            this.tbNewNeonFlowSetPoint.TabIndex = 32;
-            this.tbNewNeonFlowSetPoint.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbNewNeonFlowSetPoint_KeyDown);
+            this.lbActFlowSetpointSF6.AutoSize = true;
+            this.lbActFlowSetpointSF6.Location = new System.Drawing.Point(744, 229);
+            this.lbActFlowSetpointSF6.Name = "lbActFlowSetpointSF6";
+            this.lbActFlowSetpointSF6.Size = new System.Drawing.Size(74, 13);
+            this.lbActFlowSetpointSF6.TabIndex = 41;
+            this.lbActFlowSetpointSF6.Text = "SF6 flow (SP):";
             // 
-            // btStartNeonFlowActMonitor
+            // tbNewHeliumFlowSetPoint
             // 
-            this.btStartNeonFlowActMonitor.Location = new System.Drawing.Point(831, 25);
-            this.btStartNeonFlowActMonitor.Name = "btStartNeonFlowActMonitor";
-            this.btStartNeonFlowActMonitor.Size = new System.Drawing.Size(85, 23);
-            this.btStartNeonFlowActMonitor.TabIndex = 20;
-            this.btStartNeonFlowActMonitor.Text = "Start";
-            this.btStartNeonFlowActMonitor.UseVisualStyleBackColor = true;
-            this.btStartNeonFlowActMonitor.Click += new System.EventHandler(this.btStartNeonFlowActMonitor_Click);
+            this.tbNewHeliumFlowSetPoint.Enabled = false;
+            this.tbNewHeliumFlowSetPoint.Location = new System.Drawing.Point(824, 163);
+            this.tbNewHeliumFlowSetPoint.Name = "tbNewHeliumFlowSetPoint";
+            this.tbNewHeliumFlowSetPoint.Size = new System.Drawing.Size(85, 20);
+            this.tbNewHeliumFlowSetPoint.TabIndex = 32;
+            this.tbNewHeliumFlowSetPoint.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbNewNeonFlowSetPoint_KeyDown);
             // 
-            // labelMonitorActualNeonFlow
+            // tbSF6FlowActual
             // 
-            this.labelMonitorActualNeonFlow.AutoSize = true;
-            this.labelMonitorActualNeonFlow.Location = new System.Drawing.Point(731, 27);
-            this.labelMonitorActualNeonFlow.Name = "labelMonitorActualNeonFlow";
-            this.labelMonitorActualNeonFlow.Size = new System.Drawing.Size(94, 13);
-            this.labelMonitorActualNeonFlow.TabIndex = 22;
-            this.labelMonitorActualNeonFlow.Text = "Monitor neon flow:";
+            this.tbSF6FlowActual.BackColor = System.Drawing.Color.Black;
+            this.tbSF6FlowActual.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbSF6FlowActual.Location = new System.Drawing.Point(824, 200);
+            this.tbSF6FlowActual.Name = "tbSF6FlowActual";
+            this.tbSF6FlowActual.ReadOnly = true;
+            this.tbSF6FlowActual.Size = new System.Drawing.Size(85, 20);
+            this.tbSF6FlowActual.TabIndex = 38;
+            // 
+            // btStartHeliumFlowActMonitor
+            // 
+            this.btStartHeliumFlowActMonitor.Location = new System.Drawing.Point(824, 21);
+            this.btStartHeliumFlowActMonitor.Name = "btStartHeliumFlowActMonitor";
+            this.btStartHeliumFlowActMonitor.Size = new System.Drawing.Size(85, 23);
+            this.btStartHeliumFlowActMonitor.TabIndex = 20;
+            this.btStartHeliumFlowActMonitor.Text = "Start";
+            this.btStartHeliumFlowActMonitor.UseVisualStyleBackColor = true;
+            this.btStartHeliumFlowActMonitor.Click += new System.EventHandler(this.btStartNeonFlowActMonitor_Click);
+            // 
+            // labelMonitorActualHeliumFlow
+            // 
+            this.labelMonitorActualHeliumFlow.AutoSize = true;
+            this.labelMonitorActualHeliumFlow.Location = new System.Drawing.Point(746, 26);
+            this.labelMonitorActualHeliumFlow.Name = "labelMonitorActualHeliumFlow";
+            this.labelMonitorActualHeliumFlow.Size = new System.Drawing.Size(67, 13);
+            this.labelMonitorActualHeliumFlow.TabIndex = 22;
+            this.labelMonitorActualHeliumFlow.Text = "Monitor flow:";
             // 
             // btClearNeonFlowActPlotData
             // 
@@ -5443,65 +5882,71 @@
             this.labelClearNeonFlowActData.TabIndex = 28;
             this.labelClearNeonFlowActData.Text = "Clear plot data:";
             // 
-            // tbNeonFlowSetpoint
+            // tbHeliumFlowSetpoint
             // 
-            this.tbNeonFlowSetpoint.Location = new System.Drawing.Point(824, 138);
-            this.tbNeonFlowSetpoint.Name = "tbNeonFlowSetpoint";
-            this.tbNeonFlowSetpoint.Size = new System.Drawing.Size(100, 20);
-            this.tbNeonFlowSetpoint.TabIndex = 31;
+            this.tbHeliumFlowSetpoint.BackColor = System.Drawing.Color.Black;
+            this.tbHeliumFlowSetpoint.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbHeliumFlowSetpoint.Location = new System.Drawing.Point(824, 138);
+            this.tbHeliumFlowSetpoint.Name = "tbHeliumFlowSetpoint";
+            this.tbHeliumFlowSetpoint.ReadOnly = true;
+            this.tbHeliumFlowSetpoint.Size = new System.Drawing.Size(85, 20);
+            this.tbHeliumFlowSetpoint.TabIndex = 31;
             // 
-            // btStopNeonFlowActMonitor
+            // btStopHeliumFlowActMonitor
             // 
-            this.btStopNeonFlowActMonitor.Enabled = false;
-            this.btStopNeonFlowActMonitor.Location = new System.Drawing.Point(831, 49);
-            this.btStopNeonFlowActMonitor.Name = "btStopNeonFlowActMonitor";
-            this.btStopNeonFlowActMonitor.Size = new System.Drawing.Size(85, 23);
-            this.btStopNeonFlowActMonitor.TabIndex = 21;
-            this.btStopNeonFlowActMonitor.Text = "Stop";
-            this.btStopNeonFlowActMonitor.UseVisualStyleBackColor = true;
-            this.btStopNeonFlowActMonitor.Click += new System.EventHandler(this.btStopNeonFlowActMonitor_Click);
+            this.btStopHeliumFlowActMonitor.Enabled = false;
+            this.btStopHeliumFlowActMonitor.Location = new System.Drawing.Point(824, 49);
+            this.btStopHeliumFlowActMonitor.Name = "btStopHeliumFlowActMonitor";
+            this.btStopHeliumFlowActMonitor.Size = new System.Drawing.Size(85, 23);
+            this.btStopHeliumFlowActMonitor.TabIndex = 21;
+            this.btStopHeliumFlowActMonitor.Text = "Stop";
+            this.btStopHeliumFlowActMonitor.UseVisualStyleBackColor = true;
+            this.btStopHeliumFlowActMonitor.Click += new System.EventHandler(this.btStopNeonFlowActMonitor_Click);
             // 
-            // labelNeonFlowMonitorFL
+            // labelHeliumFlowMonitorFL
             // 
-            this.labelNeonFlowMonitorFL.AutoSize = true;
-            this.labelNeonFlowMonitorFL.Location = new System.Drawing.Point(739, 116);
-            this.labelNeonFlowMonitorFL.Name = "labelNeonFlowMonitorFL";
-            this.labelNeonFlowMonitorFL.Size = new System.Drawing.Size(79, 13);
-            this.labelNeonFlowMonitorFL.TabIndex = 23;
-            this.labelNeonFlowMonitorFL.Text = "Neon flow (FL):";
+            this.labelHeliumFlowMonitorFL.AutoSize = true;
+            this.labelHeliumFlowMonitorFL.Location = new System.Drawing.Point(739, 116);
+            this.labelHeliumFlowMonitorFL.Name = "labelHeliumFlowMonitorFL";
+            this.labelHeliumFlowMonitorFL.Size = new System.Drawing.Size(85, 13);
+            this.labelHeliumFlowMonitorFL.TabIndex = 23;
+            this.labelHeliumFlowMonitorFL.Text = "Helium flow (FL):";
             // 
             // tbNeonFlowActPollPeriod
             // 
             this.tbNeonFlowActPollPeriod.Location = new System.Drawing.Point(824, 86);
             this.tbNeonFlowActPollPeriod.Name = "tbNeonFlowActPollPeriod";
-            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(100, 20);
+            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(85, 20);
             this.tbNeonFlowActPollPeriod.TabIndex = 26;
             this.tbNeonFlowActPollPeriod.Text = "1000";
             // 
-            // labelNeonFlowMonitorSP
+            // labelHeliumFlowMonitorSP
             // 
-            this.labelNeonFlowMonitorSP.AutoSize = true;
-            this.labelNeonFlowMonitorSP.Location = new System.Drawing.Point(737, 142);
-            this.labelNeonFlowMonitorSP.Name = "labelNeonFlowMonitorSP";
-            this.labelNeonFlowMonitorSP.Size = new System.Drawing.Size(81, 13);
-            this.labelNeonFlowMonitorSP.TabIndex = 30;
-            this.labelNeonFlowMonitorSP.Text = "Neon flow (SP):";
+            this.labelHeliumFlowMonitorSP.AutoSize = true;
+            this.labelHeliumFlowMonitorSP.Location = new System.Drawing.Point(737, 142);
+            this.labelHeliumFlowMonitorSP.Name = "labelHeliumFlowMonitorSP";
+            this.labelHeliumFlowMonitorSP.Size = new System.Drawing.Size(87, 13);
+            this.labelHeliumFlowMonitorSP.TabIndex = 30;
+            this.labelHeliumFlowMonitorSP.Text = "Helium flow (SP):";
             // 
-            // labelNeonFlowActPollPeriod
+            // labelHeliumFlowActPollPeriod
             // 
-            this.labelNeonFlowActPollPeriod.AutoSize = true;
-            this.labelNeonFlowActPollPeriod.Location = new System.Drawing.Point(737, 90);
-            this.labelNeonFlowActPollPeriod.Name = "labelNeonFlowActPollPeriod";
-            this.labelNeonFlowActPollPeriod.Size = new System.Drawing.Size(81, 13);
-            this.labelNeonFlowActPollPeriod.TabIndex = 25;
-            this.labelNeonFlowActPollPeriod.Text = "Poll period (ms):";
+            this.labelHeliumFlowActPollPeriod.AutoSize = true;
+            this.labelHeliumFlowActPollPeriod.Location = new System.Drawing.Point(737, 90);
+            this.labelHeliumFlowActPollPeriod.Name = "labelHeliumFlowActPollPeriod";
+            this.labelHeliumFlowActPollPeriod.Size = new System.Drawing.Size(81, 13);
+            this.labelHeliumFlowActPollPeriod.TabIndex = 25;
+            this.labelHeliumFlowActPollPeriod.Text = "Poll period (ms):";
             // 
-            // tbNeonFlowActual
+            // tbHeliumFlowActual
             // 
-            this.tbNeonFlowActual.Location = new System.Drawing.Point(824, 112);
-            this.tbNeonFlowActual.Name = "tbNeonFlowActual";
-            this.tbNeonFlowActual.Size = new System.Drawing.Size(100, 20);
-            this.tbNeonFlowActual.TabIndex = 24;
+            this.tbHeliumFlowActual.BackColor = System.Drawing.Color.Black;
+            this.tbHeliumFlowActual.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbHeliumFlowActual.Location = new System.Drawing.Point(824, 112);
+            this.tbHeliumFlowActual.Name = "tbHeliumFlowActual";
+            this.tbHeliumFlowActual.ReadOnly = true;
+            this.tbHeliumFlowActual.Size = new System.Drawing.Size(85, 20);
+            this.tbHeliumFlowActual.TabIndex = 24;
             // 
             // tabPageHeatersControl
             // 
@@ -7236,11 +7681,260 @@
             this.tabControl.Controls.Add(this.tabPageBfield);
             this.tabControl.Controls.Add(this.tabPagePumping);
             this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1041, 741);
             this.tabControl.TabIndex = 23;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPage2.Controls.Add(this.label32);
+            this.tabPage2.Controls.Add(this.label31);
+            this.tabPage2.Controls.Add(this.label30);
+            this.tabPage2.Controls.Add(this.label29);
+            this.tabPage2.Controls.Add(this.button1);
+            this.tabPage2.Controls.Add(this.label28);
+            this.tabPage2.Controls.Add(this.FreqMonitorErrorTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorSampleLengthTextBox);
+            this.tabPage2.Controls.Add(this.FreqMonitorPollPeriodInput);
+            this.tabPage2.Controls.Add(this.stopFreqMonitorPollButton);
+            this.tabPage2.Controls.Add(this.startFreqMonitorPollButton);
+            this.tabPage2.Controls.Add(this.LogFreqDataCheckBox);
+            this.tabPage2.Controls.Add(this.chart6);
+            this.tabPage2.Controls.Add(this.BeatFreqMonitor);
+            this.tabPage2.Controls.Add(this.UpdateBeatFreq);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1033, 715);
+            this.tabPage2.TabIndex = 10;
+            this.tabPage2.Text = "Frequency Counter";
+            // 
+            // label32
+            // 
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.Location = new System.Drawing.Point(22, 14);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(205, 23);
+            this.label32.TabIndex = 90;
+            this.label32.Text = "GPIB COUNTER CHANNEL";
+            // 
+            // label31
+            // 
+            this.label31.Location = new System.Drawing.Point(38, 158);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(149, 23);
+            this.label31.TabIndex = 89;
+            this.label31.Text = "Rolling Average + RMS";
+            // 
+            // label30
+            // 
+            this.label30.Location = new System.Drawing.Point(156, 129);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(85, 23);
+            this.label30.TabIndex = 88;
+            this.label30.Text = "Poll Period (ms)";
+            // 
+            // label29
+            // 
+            this.label29.Location = new System.Drawing.Point(133, 103);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(108, 23);
+            this.label29.TabIndex = 87;
+            this.label29.Text = "Samples to Average";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(214, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(80, 23);
+            this.button1.TabIndex = 86;
+            this.button1.Text = "Clear";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label28
+            // 
+            this.label28.Location = new System.Drawing.Point(262, 158);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(12, 23);
+            this.label28.TabIndex = 85;
+            this.label28.Text = "±";
+            // 
+            // FreqMonitorErrorTextBox
+            // 
+            this.FreqMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
+            this.FreqMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.FreqMonitorErrorTextBox.Location = new System.Drawing.Point(277, 155);
+            this.FreqMonitorErrorTextBox.Name = "FreqMonitorErrorTextBox";
+            this.FreqMonitorErrorTextBox.ReadOnly = true;
+            this.FreqMonitorErrorTextBox.Size = new System.Drawing.Size(79, 20);
+            this.FreqMonitorErrorTextBox.TabIndex = 84;
+            this.FreqMonitorErrorTextBox.Text = "0";
+            // 
+            // FreqMonitorTextBox
+            // 
+            this.FreqMonitorTextBox.BackColor = System.Drawing.Color.Black;
+            this.FreqMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
+            this.FreqMonitorTextBox.Location = new System.Drawing.Point(187, 155);
+            this.FreqMonitorTextBox.Name = "FreqMonitorTextBox";
+            this.FreqMonitorTextBox.ReadOnly = true;
+            this.FreqMonitorTextBox.Size = new System.Drawing.Size(73, 20);
+            this.FreqMonitorTextBox.TabIndex = 83;
+            this.FreqMonitorTextBox.Text = "0";
+            // 
+            // FreqMonitorSampleLengthTextBox
+            // 
+            this.FreqMonitorSampleLengthTextBox.Location = new System.Drawing.Point(248, 100);
+            this.FreqMonitorSampleLengthTextBox.Name = "FreqMonitorSampleLengthTextBox";
+            this.FreqMonitorSampleLengthTextBox.Size = new System.Drawing.Size(46, 20);
+            this.FreqMonitorSampleLengthTextBox.TabIndex = 82;
+            this.FreqMonitorSampleLengthTextBox.Text = "50";
+            // 
+            // FreqMonitorPollPeriodInput
+            // 
+            this.FreqMonitorPollPeriodInput.Location = new System.Drawing.Point(248, 125);
+            this.FreqMonitorPollPeriodInput.Name = "FreqMonitorPollPeriodInput";
+            this.FreqMonitorPollPeriodInput.Size = new System.Drawing.Size(46, 20);
+            this.FreqMonitorPollPeriodInput.TabIndex = 81;
+            this.FreqMonitorPollPeriodInput.Text = "1000";
+            // 
+            // stopFreqMonitorPollButton
+            // 
+            this.stopFreqMonitorPollButton.Enabled = false;
+            this.stopFreqMonitorPollButton.Location = new System.Drawing.Point(122, 204);
+            this.stopFreqMonitorPollButton.Name = "stopFreqMonitorPollButton";
+            this.stopFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.stopFreqMonitorPollButton.TabIndex = 80;
+            this.stopFreqMonitorPollButton.Text = "Stop poll";
+            this.stopFreqMonitorPollButton.UseVisualStyleBackColor = true;
+            this.stopFreqMonitorPollButton.Click += new System.EventHandler(this.stopFreqMonitorPollButton_Click);
+            // 
+            // startFreqMonitorPollButton
+            // 
+            this.startFreqMonitorPollButton.Location = new System.Drawing.Point(25, 204);
+            this.startFreqMonitorPollButton.Name = "startFreqMonitorPollButton";
+            this.startFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
+            this.startFreqMonitorPollButton.TabIndex = 79;
+            this.startFreqMonitorPollButton.Text = "Start poll";
+            this.startFreqMonitorPollButton.UseVisualStyleBackColor = true;
+            this.startFreqMonitorPollButton.Click += new System.EventHandler(this.startFreqMonitorPollButton_Click);
+            // 
+            // LogFreqDataCheckBox
+            // 
+            this.LogFreqDataCheckBox.AutoSize = true;
+            this.LogFreqDataCheckBox.Location = new System.Drawing.Point(316, 208);
+            this.LogFreqDataCheckBox.Name = "LogFreqDataCheckBox";
+            this.LogFreqDataCheckBox.Size = new System.Drawing.Size(68, 17);
+            this.LogFreqDataCheckBox.TabIndex = 78;
+            this.LogFreqDataCheckBox.Text = "Log data";
+            this.LogFreqDataCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // chart6
+            // 
+            this.chart6.BackColor = System.Drawing.Color.Black;
+            chartArea6.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea6.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.Title = "Time";
+            chartArea6.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.Title = "Frequency";
+            chartArea6.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.BackColor = System.Drawing.Color.Black;
+            chartArea6.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea6.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea6.BorderColor = System.Drawing.Color.White;
+            chartArea6.Name = "ChartArea1";
+            this.chart6.ChartAreas.Add(chartArea6);
+            legend6.Alignment = System.Drawing.StringAlignment.Center;
+            legend6.BackColor = System.Drawing.Color.Black;
+            legend6.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend6.ForeColor = System.Drawing.Color.White;
+            legend6.IsEquallySpacedItems = true;
+            legend6.Name = "Legend1";
+            legend6.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart6.Legends.Add(legend6);
+            this.chart6.Location = new System.Drawing.Point(25, 230);
+            this.chart6.Name = "chart6";
+            series22.ChartArea = "ChartArea1";
+            series22.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series22.Legend = "Legend1";
+            series22.Name = "Beat Frequency";
+            series22.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart6.Series.Add(series22);
+            this.chart6.Size = new System.Drawing.Size(973, 261);
+            this.chart6.TabIndex = 77;
+            this.chart6.Text = "chart6";
+            // 
+            // BeatFreqMonitor
+            // 
+            this.BeatFreqMonitor.BackColor = System.Drawing.Color.Black;
+            this.BeatFreqMonitor.ForeColor = System.Drawing.Color.Chartreuse;
+            this.BeatFreqMonitor.Location = new System.Drawing.Point(197, 58);
+            this.BeatFreqMonitor.Name = "BeatFreqMonitor";
+            this.BeatFreqMonitor.ReadOnly = true;
+            this.BeatFreqMonitor.Size = new System.Drawing.Size(97, 20);
+            this.BeatFreqMonitor.TabIndex = 43;
+            this.BeatFreqMonitor.Text = "0";
+            // 
+            // UpdateBeatFreq
+            // 
+            this.UpdateBeatFreq.Location = new System.Drawing.Point(25, 55);
+            this.UpdateBeatFreq.Name = "UpdateBeatFreq";
+            this.UpdateBeatFreq.Size = new System.Drawing.Size(155, 23);
+            this.UpdateBeatFreq.TabIndex = 41;
+            this.UpdateBeatFreq.Text = "Update Beat Frequency";
+            this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
+            // 
+            // TargetManualButton
+            // 
+            this.TargetManualButton.Location = new System.Drawing.Point(590, 22);
+            this.TargetManualButton.Name = "TargetManualButton";
+            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetManualButton.TabIndex = 3;
+            this.TargetManualButton.Text = "Manual";
+            this.TargetManualButton.UseVisualStyleBackColor = true;
+            this.TargetManualButton.Click += new System.EventHandler(this.TargetManualbutton_Click);
+            // 
+            // TargetExtButton
+            // 
+            this.TargetExtButton.Location = new System.Drawing.Point(508, 22);
+            this.TargetExtButton.Name = "TargetExtButton";
+            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetExtButton.TabIndex = 4;
+            this.TargetExtButton.Text = "External";
+            this.TargetExtButton.UseVisualStyleBackColor = true;
+            this.TargetExtButton.Click += new System.EventHandler(this.TargetExtButton_Click);
+            // 
+            // TargetTriggerButton
+            // 
+            this.TargetTriggerButton.Location = new System.Drawing.Point(426, 22);
+            this.TargetTriggerButton.Name = "TargetTriggerButton";
+            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetTriggerButton.TabIndex = 5;
+            this.TargetTriggerButton.Text = "Triggered";
+            this.TargetTriggerButton.UseVisualStyleBackColor = true;
+            this.TargetTriggerButton.Click += new System.EventHandler(this.TargetTriggerButton_Click);
             // 
             // ControlWindow
             // 
@@ -7276,6 +7970,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPagePumping.ResumeLayout(false);
+            this.groupBoxStirapRF.ResumeLayout(false);
+            this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
             this.groupBoxWindfreakDetection.PerformLayout();
             this.groupBoxMWCHAdetection.ResumeLayout(false);
@@ -7303,7 +7999,6 @@
             this.groupBoxDegauss.ResumeLayout(false);
             this.groupBoxDegauss.PerformLayout();
             this.tabPageEfield.ResumeLayout(false);
-            this.tabPageEfield.PerformLayout();
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
@@ -7311,6 +8006,8 @@
             this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -7333,6 +8030,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPageFlowControllers.ResumeLayout(false);
+            this.gBTargetStepper.ResumeLayout(false);
+            this.gBTargetStepper.PerformLayout();
             this.gbNeonFlowController.ResumeLayout(false);
             this.gbNeonFlowController.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart3)).EndInit();
@@ -7373,6 +8072,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             this.tabControl.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -7776,23 +8478,22 @@
         private System.Windows.Forms.Label labelPressureLogPeriod;
         public System.Windows.Forms.TextBox tbpressureMonitorLogPeriod;
         private System.Windows.Forms.TabPage tabPageFlowControllers;
-        private System.Windows.Forms.GroupBox gbSF6FlowController;
         private System.Windows.Forms.GroupBox gbNeonFlowController;
-        public System.Windows.Forms.Button btSetNewNeonFlowSetpoint;
-        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.Button btSetNewHeliumFlowSetpoint;
+        private System.Windows.Forms.Label labelHeliumFlowNewSetpoint;
         public System.Windows.Forms.DataVisualization.Charting.Chart chart3;
-        public System.Windows.Forms.TextBox tbNewNeonFlowSetPoint;
-        public System.Windows.Forms.Button btStartNeonFlowActMonitor;
-        private System.Windows.Forms.Label labelMonitorActualNeonFlow;
+        public System.Windows.Forms.TextBox tbNewHeliumFlowSetPoint;
+        public System.Windows.Forms.Button btStartHeliumFlowActMonitor;
+        private System.Windows.Forms.Label labelMonitorActualHeliumFlow;
         private System.Windows.Forms.Button btClearNeonFlowActPlotData;
         private System.Windows.Forms.Label labelClearNeonFlowActData;
-        public System.Windows.Forms.TextBox tbNeonFlowSetpoint;
-        public System.Windows.Forms.Button btStopNeonFlowActMonitor;
-        private System.Windows.Forms.Label labelNeonFlowMonitorFL;
+        public System.Windows.Forms.TextBox tbHeliumFlowSetpoint;
+        public System.Windows.Forms.Button btStopHeliumFlowActMonitor;
+        private System.Windows.Forms.Label labelHeliumFlowMonitorFL;
         public System.Windows.Forms.TextBox tbNeonFlowActPollPeriod;
-        private System.Windows.Forms.Label labelNeonFlowMonitorSP;
-        private System.Windows.Forms.Label labelNeonFlowActPollPeriod;
-        public System.Windows.Forms.TextBox tbNeonFlowActual;
+        private System.Windows.Forms.Label labelHeliumFlowMonitorSP;
+        private System.Windows.Forms.Label labelHeliumFlowActPollPeriod;
+        public System.Windows.Forms.TextBox tbHeliumFlowActual;
         private System.Windows.Forms.TabPage tabPageHeatersControl;
         private System.Windows.Forms.GroupBox groupBoxHeaterControlSettings;
         private System.Windows.Forms.CheckBox checkBoxMonitorPressureWhenHeating;
@@ -7969,5 +8670,60 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TabPage tabPage2;
+        public System.Windows.Forms.TextBox BeatFreqMonitor;
+        public System.Windows.Forms.DataVisualization.Charting.Chart chart6;
+        public System.Windows.Forms.CheckBox LogFreqDataCheckBox;
+        public System.Windows.Forms.Button stopFreqMonitorPollButton;
+        public System.Windows.Forms.Button startFreqMonitorPollButton;
+        public System.Windows.Forms.TextBox FreqMonitorPollPeriodInput;
+        public System.Windows.Forms.TextBox FreqMonitorSampleLengthTextBox;
+        private System.Windows.Forms.Label label28;
+        public System.Windows.Forms.TextBox FreqMonitorErrorTextBox;
+        public System.Windows.Forms.TextBox FreqMonitorTextBox;
+        public System.Windows.Forms.Button UpdateBeatFreq;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label32;
+        public NationalInstruments.UI.WindowsForms.Led switchingLED;
+        public NationalInstruments.UI.WindowsForms.Led rampLED;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem1;
+        private System.Windows.Forms.GroupBox groupBoxStirapRF;
+        private System.Windows.Forms.Button btQueryStirapRFFrequency;
+        public System.Windows.Forms.ComboBox comboBoxStirapRFIncrementUnit;
+        public System.Windows.Forms.ComboBox comboBoxStirapRFSetpointUnit;
+        public System.Windows.Forms.TextBox tbStirapRFAmplitude;
+        private System.Windows.Forms.Button btUpdateStirapRFFrequency;
+        public System.Windows.Forms.TextBox tbStirapRFFrequency;
+        private System.Windows.Forms.Label labelStirapRF;
+        public System.Windows.Forms.TextBox tbStirapRFFreqMon;
+        public System.Windows.Forms.CheckBox cbCHATrigger;
+        public System.Windows.Forms.CheckBox cbCHBRFTrigger;
+        public System.Windows.Forms.CheckBox cbStirapRFOn;
+        private System.Windows.Forms.Label labelStirapRFAmp;
+        private System.Windows.Forms.Label labelStirapRFFreq;
+        public System.Windows.Forms.CheckBox cbCHBTrigger;
+        public System.Windows.Forms.CheckBox cbHeliumFlowRemoteMode;
+        public System.Windows.Forms.CheckBox cbHeFlowValveOnOff;
+        public System.Windows.Forms.CheckBox cbSF6Valve;
+        public System.Windows.Forms.Button btSetNewSF6FlowSetpoint;
+        private System.Windows.Forms.Label lbNewFlowStptSF6;
+        public System.Windows.Forms.TextBox tbNewSF6FlowSetpoint;
+        public System.Windows.Forms.TextBox tbSF6FlowSetpoint;
+        private System.Windows.Forms.Label lbSF6Flow;
+        private System.Windows.Forms.Label lbActFlowSetpointSF6;
+        public System.Windows.Forms.TextBox tbSF6FlowActual;
+        private System.Windows.Forms.GroupBox gBTargetStepper;
+        private System.Windows.Forms.Button TargetStepButton;
+        private System.Windows.Forms.Label lbTargetStep;
+        public System.Windows.Forms.TextBox TargetNumStepsTextBox;
+        public System.Windows.Forms.CheckBox eConnectCheck;
+        private System.Windows.Forms.Label labelRampingLED;
+        private System.Windows.Forms.Button TargetManualButton;
+        private System.Windows.Forms.Button TargetExtButton;
+        private System.Windows.Forms.Button TargetTriggerButton;
     }
 }

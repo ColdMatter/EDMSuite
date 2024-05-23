@@ -304,7 +304,7 @@ namespace EDMBlockHead.GUI
             // 
             // yAxis1
             // 
-            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis1.Mode = NationalInstruments.UI.AxisMode.AutoScaleVisibleLoose;
             this.yAxis1.Range = new NationalInstruments.UI.Range(0D, 2D);
             // 
             // progressTank
@@ -313,7 +313,7 @@ namespace EDMBlockHead.GUI
             this.progressTank.FillStyle = NationalInstruments.UI.FillStyle.ZigZag;
             this.progressTank.Location = new System.Drawing.Point(0, 563);
             this.progressTank.Name = "progressTank";
-            this.progressTank.Range = new NationalInstruments.UI.Range(0D, 4096D);
+            this.progressTank.Range = new NationalInstruments.UI.Range(0D, Convert.ToDouble(controller.Config.Settings["numberOfPoints"]));
             this.progressTank.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.progressTank.ScalePosition = NationalInstruments.UI.NumericScalePosition.Bottom;
             this.progressTank.Size = new System.Drawing.Size(925, 55);
@@ -355,7 +355,7 @@ namespace EDMBlockHead.GUI
             // 
             // yAxis2
             // 
-            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            this.yAxis2.Mode = NationalInstruments.UI.AxisMode.AutoScaleVisibleLoose;
             this.yAxis2.Range = new NationalInstruments.UI.Range(0D, 2D);
             // 
             // GateStart

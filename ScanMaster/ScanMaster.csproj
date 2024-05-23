@@ -564,9 +564,16 @@
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=22.5.45.49180, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -612,6 +619,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
+    <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
+    <Compile Include="DTCLOutputPlugin.cs" />
     <Compile Include="DualAomPatternBuilder.cs" />
     <Compile Include="DualAomPatternPlugin.cs" />
     <Compile Include="Find4fNewPatternBuilder.cs" />
@@ -628,11 +638,24 @@
     <Compile Include="FourShutterPatternPlugin.cs" />
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
-    <Compile Include="DTCLOutputPlugin.cs" />
+    <Compile Include="DMMInputPlugin.cs" />
+    <Compile Include="LatticePatternBuilder.cs" />
+    <Compile Include="LatticePatternPlugin.cs" />
+    <Compile Include="MOTMasterScan.cs" />
+    <Compile Include="MSquaredOutputPlugin.cs" />
+    <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
+    <Compile Include="TwoShutterSlowingPatternPlugin.cs" />
+    <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />
+    <Compile Include="TwoShutterTwoYAGPatternPlugin.cs" />
+    <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="ManualOutputPlugin.cs" />
+    <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
     <Compile Include="CaFBECPatternBuilder.cs" />
     <Compile Include="HardwareControllerOutputPlugin.cs" />
+    <Compile Include="STIRAPpatternBuilder.cs" />
+    <Compile Include="STIRAPpatternPlugin.cs" />
     <Compile Include="PumpProbeDualCCDPatternBuilder.cs" />
     <Compile Include="PumpProbeDualCCDPatternPlugin.cs" />
     <Compile Include="TenHzTwoHzPatternBuilder2.cs" />
@@ -641,8 +664,10 @@
     <Compile Include="TwoShutterPatternPlugin.cs" />
     <Compile Include="VelocityMeasSlowedPatternBuilder3.cs" />
     <Compile Include="VelocityMeasSlowedPatternPlugin.cs" />
-    <Compile Include="WMLOutputPlugin.cs" />
-    <Compile Include="WavemeterInputPlugin.cs" />
+    <Compile Include="WindfriekOPAmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF1AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthF0AmplitudeOutputPlugin.cs" />
+    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />
@@ -668,7 +693,6 @@
     <Compile Include="SuperPumpingPulsedRFScanPatternPlugin.cs" />
     <Compile Include="MOTPatternBuilder.cs" />
     <Compile Include="MOTPatternPlugin.cs" />
-    <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
     <Compile Include="TweakViewerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

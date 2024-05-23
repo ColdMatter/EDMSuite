@@ -327,7 +327,7 @@ namespace CaFBECHadwareController.Controls
             this.chkAO1Enable.TabIndex = 13;
             this.chkAO1Enable.Text = "Flow ON";
             this.chkAO1Enable.UseVisualStyleBackColor = true;
-            this.chkAO1Enable.CheckedChanged += new System.EventHandler(this.chkAO1Enable_CheckedChanged);
+            
             // 
             // chkAO0Enable
             // 
@@ -338,7 +338,7 @@ namespace CaFBECHadwareController.Controls
             this.chkAO0Enable.TabIndex = 12;
             this.chkAO0Enable.Text = "Flow ON";
             this.chkAO0Enable.UseVisualStyleBackColor = true;
-            this.chkAO0Enable.CheckedChanged += new System.EventHandler(this.chkAO0Enable_CheckedChanged);
+            
             // 
             // lblAO1
             // 
@@ -375,7 +375,7 @@ namespace CaFBECHadwareController.Controls
             this.numAO1.Name = "numAO1";
             this.numAO1.Size = new System.Drawing.Size(77, 20);
             this.numAO1.TabIndex = 9;
-            this.numAO1.ValueChanged += new System.EventHandler(this.numAO1_ValueChanged);
+            
             // 
             // numAO0
             // 
@@ -394,7 +394,7 @@ namespace CaFBECHadwareController.Controls
             this.numAO0.Name = "numAO0";
             this.numAO0.Size = new System.Drawing.Size(77, 20);
             this.numAO0.TabIndex = 8;
-            this.numAO0.ValueChanged += new System.EventHandler(this.numAO0_ValueChanged);
+            
             // 
             // label10
             // 

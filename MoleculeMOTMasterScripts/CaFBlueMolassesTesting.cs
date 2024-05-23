@@ -26,10 +26,10 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 1550;
 
         Parameters["ExpansionTime"] = 10;
-        Parameters["MolassesDelay"] = 100;
-        Parameters["MolassesHoldTime"] = 200;
-        Parameters["MolassesRampDuration"] = 100;
-        Parameters["MolassesLowIntensityHoldDuration"] = 900;
+        Parameters["MolassesDelay"] = 10;
+        Parameters["MolassesHoldTime"] = 100;
+        Parameters["MolassesRampDuration"] = 1;
+        Parameters["MolassesLowIntensityHoldDuration"] = 1;
 
         // Camera
         Parameters["Frame0TriggerDuration"] = 10;
@@ -39,21 +39,21 @@ public class Patterns : MOTMasterScript
         Parameters["MOTLoadDuration"] = 4000;
 
         // Slowing
-        Parameters["slowingAOMOnStart"] = 180; //180
+        Parameters["slowingAOMOnStart"] = 160; //180
         Parameters["PMTTrigger"] = 5000;
         Parameters["slowingAOMOnDuration"] = 45000;
-        Parameters["slowingAOMOffStart"] = 1520;//started from 1520
+        Parameters["slowingAOMOffStart"] = 1760;//started from 1520
         Parameters["slowingAOMOffDuration"] = 40000;
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
         Parameters["slowingRepumpAOMOnDuration"] = 45000;
-        Parameters["slowingRepumpAOMOffStart"] = 1520;//1520
+        Parameters["slowingRepumpAOMOffStart"] = 1760;//1520
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 380;// 380;
-        Parameters["SlowingChirpDuration"] = 1160; //1160
+        Parameters["SlowingChirpStartTime"] = 360;// 380;
+        Parameters["SlowingChirpDuration"] = 1400; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25; //-1.25
+        Parameters["SlowingChirpEndValue"] = -1.3; //-1.25
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.42; //1.1;
@@ -65,16 +65,16 @@ public class Patterns : MOTMasterScript
         Parameters["zShimLoadCurrent"] = -0.22;// -0.22 is zero
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampDuration"] = 100;
-        Parameters["MOTHoldTime"] = 1000;
-        Parameters["v0IntensityRampStartValue"] = 5.6;
-        Parameters["v0IntensityRampEndValue"] = 7.78;
-        Parameters["v0IntensityMolassesValue"] = 5.6;
-        Parameters["v0MolassesIntensityRampEndValue"] = 8.17;
+        Parameters["v0IntensityRampDuration"] = 2000;
+        Parameters["MOTHoldTime"] = 1;
+        Parameters["v0IntensityRampStartValue"] = 7.0;
+        Parameters["v0IntensityRampEndValue"] = 9.0;
+        Parameters["v0IntensityMolassesValue"] = 7.0;
+        Parameters["v0MolassesIntensityRampEndValue"] = 7.0;
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 0.0; //set this to 0.0 for 114.1MHz 
-        Parameters["v0FrequencyNewValue"] = 22.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
+        Parameters["v0FrequencyNewValue"] = 25.0; //set this to MHz detuning desired if doing frequency jump (positive for blue detuning)
 
         //v0aomCalibrationValues
         Parameters["calibGradient"] = 11.4;
@@ -102,7 +102,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, motSwitchOffTime, (int)Parameters["MolassesDelay"], "v00MOTAOM"); //pulse off the MOT light whilst MOT fields are turning off
         p.Pulse(patternStartBeforeQ, releaseTime, imagingLightOnTime - releaseTime, "v00MOTAOM"); //pulse off the MOT light to release the cloud
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, cameraTriggerTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, motLoadEndTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         return p;
     }
@@ -150,7 +150,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("v00Intensity", cameraTriggerTime, (double)Parameters["v0IntensityRampStartValue"]);
 
         // F=0
-        p.AddAnalogValue("v00EOMAmp", 0, 4.8);
+        p.AddAnalogValue("v00EOMAmp", 0, 4.9);
 
         // v0 Frequency Ramp
         p.AddAnalogValue("v00Frequency", 0, 10.0 - (double)Parameters["v0FrequencyStartValue"] / (double)Parameters["calibGradient"]);

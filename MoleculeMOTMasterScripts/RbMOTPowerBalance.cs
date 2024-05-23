@@ -33,7 +33,7 @@ public class Patterns : MOTMasterScript
 
 
         // Camera
-        Parameters["MOTLoadTime"] = 100000;
+        Parameters["MOTLoadTime"] = 50000;
         Parameters["CameraTriggerDelayAfterFirstImage"] = 15000;
         Parameters["Frame0TriggerDuration"] = 5;
         Parameters["TriggerJitter"] = 3;
@@ -128,7 +128,8 @@ public class Patterns : MOTMasterScript
 
         Parameters["CoolingAttenuation"] = 0.0;
         Parameters["RepumpAttenuation"] = 0.0;
-        Parameters["RbOffsetLockSetPoint"] = 0.87;
+        Parameters["RbOffsetLockSetPoint"] = 0.88;
+        Parameters["RbRepumpOffsetLockSetPoint"] = 1.55;
 
     }
 
@@ -159,15 +160,14 @@ public class Patterns : MOTMasterScript
         p.AddEdge("rbPushBeam", rbMOTLoadTime - 200, true);
 
         p.AddEdge("rbRepump", 0, false);
-
-        p.AddEdge("UVFlashSwitch", 0, false);
+        p.AddEdge("rbD1CoolingSwitch", 0, true);
 
         //Turn everything back on at end of sequence:
 
         p.AddEdge("rb3DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rb2DCooling", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
         p.AddEdge("rbPushBeam", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
-        p.AddEdge("UVFlashSwitch", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], true);
+        p.AddEdge("rbD1CoolingSwitch", (int)Parameters["PatternLength"] - (int)Parameters["TurnAllLightOn"], false);
 
         p.AddEdge("rbAbsImagingBeam", 0, true); //Absorption imaging probe
 
@@ -243,7 +243,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
 
-        p.AddAnalogValue("rbRepumpOffsetLock", 0, 0.88);
+        p.AddAnalogValue("rbRepumpOffsetLock", 0, (double)Parameters["RbRepumpOffsetLockSetPoint"]);
 
         p.AddAnalogValue("rbOffsetLock", 0, (double)Parameters["RbOffsetLockSetPoint"]);
         

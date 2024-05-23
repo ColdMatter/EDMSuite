@@ -1,24 +1,4 @@
-﻿using NationalInstruments;
-using NationalInstruments.Analysis;
-using NationalInstruments.Analysis.Conversion;
-using NationalInstruments.Analysis.Dsp;
-using NationalInstruments.Analysis.Dsp.Filters;
-using NationalInstruments.Analysis.Math;
-using NationalInstruments.Analysis.Monitoring;
-using NationalInstruments.Analysis.SignalGeneration;
-using NationalInstruments.Analysis.SpectralMeasurements;
-using NationalInstruments.Controls;
-using NationalInstruments.Controls.Rendering;
-using NationalInstruments.NetworkVariable;
-using NationalInstruments.NetworkVariable.WindowsForms;
-using NationalInstruments.Tdms;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.Visa;
-using NationalInstruments.DAQmx;
-using NationalInstruments.ModularInstruments.NIScope;
-using NationalInstruments.ModularInstruments;
-using NationalInstruments.ModularInstruments.SystemServices.TimingServices;
+﻿using NationalInstruments.DAQmx;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,8 +10,9 @@ using System.Threading;
 using System.Windows.Forms;
 using DAQ.Environment;
 using DAQ.HAL;
+using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
-
+using System.Net.Mail;
 
 namespace AlFHardwareControl
 {
@@ -44,6 +25,7 @@ namespace AlFHardwareControl
         public AlFController controller;
         public Dictionary<string, DataGrapher> graphers = new Dictionary<string, DataGrapher> { };
         public TaskScheduler tSched;
+        public MOTMasterStuff mmStuff;
 
         public AlFControlWindow(AlFController _controller)
         {
@@ -65,8 +47,22 @@ namespace AlFHardwareControl
             AddTemperature();
             AddPressure();
             AddTypeK();
+            AddBake();
             AddTaskScheduler();
+            AddMiscInstruments();
+            AddMMStuff();
 
+        }
+
+        private void AddMiscInstruments()
+        {
+            TabPage temp = new TabPage("Misc Instruments");
+            MiscInstruments misc = new MiscInstruments();
+            misc.mSquaredLaserView1.EnableFallback(File.ReadAllText(@"C:\Users\alfultra\M2Auth.txt"), @"C:\Users\alfultra\M2WlChange.json");
+            controller.MiscDataUpdate += (object a, EventArgs args) => { misc.YAG_Control.UpdateStatus(); };
+            controller.MiscDataUpdate += (object a, EventArgs args) => { misc.mSquaredLaserView1.UpdateStatus(); };
+                temp.Controls.Add(misc);
+            MainTabs.TabPages.Add(temp);
         }
 
         private void AddSafetyInterlocks()
@@ -75,6 +71,23 @@ namespace AlFHardwareControl
             Func<bool> Loop1On = () => { return Loop1Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> Loop2On = () => { return Loop2Status.Text == "ON" && controller.interlocksActive; };
             Func<bool> heaterOn = () => { return Loop1On() || Loop2On(); };
+
+            bool MOT_pressure_email_sent = false;
+            Func<bool> MOT_pressure_failCond = () => {
+                if (MOT_pressure_email_sent && tSched.Comparisons["<"](tSched.Resources["MOT Pressure"](), "5e-4"))
+                {
+                    MOT_pressure_email_sent = false;
+                    return true;
+                }
+                if (MOT_pressure_email_sent)
+                {
+                    return false;
+                }
+                MOT_pressure_email_sent = tSched.Comparisons[">"](tSched.Resources["MOT Pressure"](), "1e-3");
+                return true;
+            };
+
+
             tSched.AddEvent(new SafetyInterlock(tSched, LabelA.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
             tSched.AddEvent(new SafetyInterlock(tSched, LabelB.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
             tSched.AddEvent(new SafetyInterlock(tSched, LabelC.Text + " Temperature", ">", Convert.ToString(TYPE_K_SHUTOFF + 273.15), "Turn off heaters", heaterOn));
@@ -82,6 +95,9 @@ namespace AlFHardwareControl
 
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 1", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 1", Loop1On));
             tSched.AddEvent(new SafetyInterlock(tSched, "Type-K Loop 2", ">", Convert.ToString(TYPE_K_SHUTOFF), "Turn off Loop 2", Loop2On));
+            tSched.AddEvent(new SafetyInterlock(tSched, "Cryo state", "is", "ON", "Turn off heaters", heaterOn));
+
+            tSched.AddEvent(new SafetyInterlock(tSched, "MOT Pressure", ">", "1e-3", "Send e-mail warning", MOT_pressure_failCond));
 
         }
 
@@ -153,7 +169,7 @@ namespace AlFHardwareControl
                 if ((Loop1Status.Text == "ON" || Loop2Status.Text == "ON") && controller.InterlocksActive)
                 {
                     tScheduler.UpdateEventLog("Can't turn on cryo while heaters are actve!");
-                    return null;
+                    return null; // Fix
                 }
                 if (Convert.ToDouble(controller.pressure1) > Convert.ToDouble(CRYO_SHUTOFF) && controller.InterlocksActive)
                 {
@@ -306,6 +322,52 @@ namespace AlFHardwareControl
                 this.Loop2Disengage_Click(null, new EventArgs());
                 return null;
             });
+
+            tScheduler.AddTask("Send e-mail warning", (bool discard) =>
+            {
+                try
+                {
+
+                    SmtpClient mySmtpClient = new SmtpClient("automail.cc.ic.ac.uk");
+
+                    // set smtp-client with basicAuthentication
+                    mySmtpClient.UseDefaultCredentials = false;
+                    System.Net.NetworkCredential basicAuthenticationInfo = new
+                       System.Net.NetworkCredential();
+                    mySmtpClient.Credentials = basicAuthenticationInfo;
+
+                    // add from,to mailaddresses
+                    MailAddress from = new MailAddress("alfultra@ic.ac.uk", "AlF Ultracold");
+                    MailAddress to = new MailAddress("LP618@ic.ac.uk", "Lajos Palanki");
+                    MailMessage myMail = new System.Net.Mail.MailMessage(from, to);
+
+                    // add ReplyTo
+                    MailAddress replyTo = new MailAddress("alfultra@ic.ac.uk");
+                    myMail.ReplyToList.Add(replyTo);
+
+                    // set subject and encoding
+                    myMail.Subject = "!!SYSTEM WARNING!!";
+                    myMail.SubjectEncoding = System.Text.Encoding.UTF8;
+
+                    // set body-message and encoding
+                    myMail.Body = "The experiment control detected something unusual, which it cannot handle itself. Please verify the error and if needed fix.";
+                    myMail.BodyEncoding = System.Text.Encoding.UTF8;
+                    // text or html
+                    myMail.IsBodyHtml = false;
+
+                    mySmtpClient.Send(myMail);
+                }
+
+                catch (SmtpException ex)
+                {
+                    tScheduler.UpdateEventLog("SmtpException has occured: " + ex.Message);
+                    if (!discard)
+                    {
+                        tScheduler.AddEvent(new TimedEvent(tSched, DateTime.Now, "Send e-mail warning", false));
+                    }
+                }
+                return null;
+            });
             #endregion
 
             taskScheduler.Controls.Add(tScheduler);
@@ -344,6 +406,9 @@ namespace AlFHardwareControl
             graphers.Add("Temperature", tempGrapher);
             temp.Controls.Add(tempGrapher);
             MainTabs.TabPages.Add(temp);
+
+            tempGrapher.SetupDataDisplay();
+            tempGrapher.unit = "K";
         }
 
         private void AddTypeK()
@@ -371,6 +436,9 @@ namespace AlFHardwareControl
             typeKGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Tyoe-K_logs\\Default.csv";
             typeK.Controls.Add(typeKGrapher);
             MainTabs.TabPages.Add(typeK);
+
+            typeKGrapher.SetupDataDisplay();
+            typeKGrapher.unit = "C";
         }
 
         private void AddPressure()
@@ -400,6 +468,91 @@ namespace AlFHardwareControl
             pressureGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Pressure_logs\\Default.csv";
             pressure.Controls.Add(pressureGrapher);
             MainTabs.TabPages.Add(pressure);
+
+            pressureGrapher.SetupDataDisplay();
+            pressureGrapher.unit = "mbar";
+        }
+
+        private Task bakeTask;
+        private AnalogMultiChannelReader bakeReader;
+
+        private void AddBake()
+        {
+            try
+            {
+                bakeTask = new Task("bakeTask");
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+
+                bakeTask.Timing.ConfigureSampleClock("", 2, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples);
+                bakeTask.Timing.SamplesPerChannel = 2;
+
+                bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
+            } catch (NationalInstruments.DAQmx.DaqException)
+            {
+                
+            }
+            TabPage pressure = new TabPage("Baking Temperature");
+            DataGrapher pressureGrapher = new DataGrapher("Type-K Temperature", "Temperature [C]", (DataGrapher grapher) =>
+            {
+
+                DateTime localDate = DateTime.Now;
+                try
+                {
+                    if (bakeReader == null)
+                    {
+                        bakeTask = new Task("bakeTask");
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai0", "Dispenser", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai1", "Top", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai2", "Bottom", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+                        bakeTask.AIChannels.CreateThermocoupleChannel("/Dev1/ai3", "Window", 0, 300, AIThermocoupleType.K, AITemperatureUnits.DegreesC);
+
+                        bakeTask.Timing.ConfigureSampleClock("", 2, SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples);
+                        bakeTask.Timing.SamplesPerChannel = 2;
+
+                        bakeReader = new AnalogMultiChannelReader(bakeTask.Stream);
+                    }
+                    double[] res = bakeReader.ReadSingleSample();
+
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Dispenser"].Points.AddXY(localDate, res[0]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Top"].Points.AddXY(localDate, res[1]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Bottom"].Points.AddXY(localDate, res[2]); });
+                    grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series["Window"].Points.AddXY(localDate, res[3]); });
+                }
+                catch (NationalInstruments.DAQmx.DaqException)
+                {
+                    grapher.Invoke((System.Action)(()=> { grapher.takeData.Checked = false; }));
+                }
+
+            });
+            pressureGrapher.DataGraph.Series.Add("Dispenser").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Top").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Bottom").ChartType = SeriesChartType.Line;
+            pressureGrapher.DataGraph.Series.Add("Window").ChartType = SeriesChartType.Line;
+
+            foreach (Series series in pressureGrapher.DataGraph.Series)
+            {
+                series.XValueType = ChartValueType.DateTime;
+            }
+
+            graphers.Add("Bake Temp", pressureGrapher);
+            pressureGrapher.TempDataSaveLoc.Text = "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Bake_logs\\Default.csv";
+            pressure.Controls.Add(pressureGrapher);
+            MainTabs.TabPages.Add(pressure);
+
+            pressureGrapher.SetupDataDisplay();
+            //pressureGrapher.takeData.Checked = false;
+            pressureGrapher.unit = "C";
+        }
+
+        private void AddMMStuff()
+        {
+            TabPage tp = new TabPage("MOTMaster");
+            this.mmStuff = new MOTMasterStuff();
+            tp.Controls.Add(mmStuff);
+            MainTabs.Controls.Add(tp);
         }
 
         public void SetTextField(Control box, string text)
@@ -637,6 +790,7 @@ namespace AlFHardwareControl
         private void AlFControlWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.exiting = true;
+            MSquaredLaserView.saveLineData();
             controller.UpdateThread.Abort();
             controller.DAQ_sync.AbortThreads();
             tSched.Exit();

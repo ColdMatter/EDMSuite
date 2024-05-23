@@ -18,7 +18,7 @@ namespace WavemeterLock
 {
     public class Controller : MarshalByRefObject
     {
-    
+
         private string computer;
         private string name;
         string thisComputerName;
@@ -39,9 +39,9 @@ namespace WavemeterLock
 
         public void initializeTCPChannel()
         {
-            computer = "IC-CZC136CFDJ"; //Computer name of the server
+            //computer = "IC-CZC136CFDJ"; //Computer name of the server
             EnvironsHelper eHelper = new EnvironsHelper(computer);
-            hostTCPChannel = eHelper.serverTCPChannel;
+            //hostTCPChannel = eHelper.serverTCPChannel;
             foreach (var addr in Dns.GetHostEntry(computer).AddressList)
             {
                 if (addr.AddressFamily == AddressFamily.InterNetwork)
@@ -55,7 +55,7 @@ namespace WavemeterLock
                 wavemeterContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + name + ":" + hostTCPChannel.ToString() + "/controller.rem"));
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 connectionError(e);
             }
@@ -66,7 +66,7 @@ namespace WavemeterLock
             {
                 wavemeterContrller.registerWavemeterLock(thisComputerName);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 connectionError(e);
             }
@@ -77,16 +77,16 @@ namespace WavemeterLock
         public string acquireWavelength(int channelNum) //Display wavelength
         {
             string display = null;
-            
+
             display = wavemeterContrller.displayWavelength(channelNum);
-            
+
             return display;
 
         }
 
         public double getWavelength(int channelNum) //Return wavelength in nm
         {
-            
+
 
             return wavemeterContrller.getWavelength(channelNum);
 
@@ -94,17 +94,22 @@ namespace WavemeterLock
 
         public string acquireFrequency(int channelNum) //Display frequency
         {
-            
+
             return wavemeterContrller.displayFrequency(channelNum);
 
         }
 
         public double getFrequency(int channelNum) //Return frequency in THz
         {
-           
+
 
             return wavemeterContrller.getFrequency(channelNum);
 
+        }
+
+        public double getSetFrequency(string laser)
+        {
+            return lasers[laser].setFrequency;
         }
 
         //Remote Methods
@@ -135,13 +140,17 @@ namespace WavemeterLock
         #endregion
 
         public Dictionary<string, Laser> lasers;
+        public Dictionary<string, int> wmChannels;
         public Dictionary<string, bool> lockBlocked;
+        public Dictionary<string, bool> lastMeasurementLockBlocked;
         public Dictionary<string, DAQMxWavemeterLockLaserControlHelper> helper = new Dictionary<string, DAQMxWavemeterLockLaserControlHelper>();
         public Dictionary<string, DAQMxWavemeterLockBlockHelper> blockHelper = new Dictionary<string, DAQMxWavemeterLockBlockHelper>();
         public Dictionary<string, LockControlPanel> panelList = new Dictionary<string, LockControlPanel>();
-        public Dictionary<string, double> timeList = new Dictionary<string,double>();
+        public Dictionary<string, double> timeList = new Dictionary<string, double>();
         private LockForm ui;
         public WavemeterLockConfig config;
+
+        private static string logfilePath = (string)Environs.FileSystem.Paths["wavemeterLockData"];
 
         //Constructor
         public Controller(string configName, string hostName, int channelNumber)
@@ -150,7 +159,7 @@ namespace WavemeterLock
             computer = hostName;
             hostTCPChannel = channelNumber;
         }
-        
+
         public Color selectColor(int par)//Assign a plot line color for each laser
         {
             switch (par)
@@ -162,7 +171,7 @@ namespace WavemeterLock
                     return Color.FromName("Lime");
 
                 case 2:
-                    return Color.FromName("Red"); 
+                    return Color.FromName("Red");
 
                 case 3:
                     return Color.FromName("Blue");
@@ -181,7 +190,7 @@ namespace WavemeterLock
 
 
             }
-                
+
         }
 
 
@@ -199,19 +208,23 @@ namespace WavemeterLock
         public void startWML()
         {
             Thread mainThread = new Thread(new ThreadStart(mainLoop));
-            mainThread.Start();
+            mainThread.Start(); 
+            Thread blockThread = new Thread(new ThreadStart(checkBlockLoop));
+            blockThread.Start();
         }
 
 
         public void indicateRemoteConnection(int channelNum, bool status)
         {
-            wavemeterContrller.changeConnectionStatus(channelNum,status);
+            wavemeterContrller.changeConnectionStatus(channelNum, status);
         }
 
         public void initializeLasers()
         {
             lasers = new Dictionary<string, Laser>();
             lockBlocked = new Dictionary<string, bool>();
+            lastMeasurementLockBlocked = new Dictionary<string, bool>();
+            wmChannels = new Dictionary<string, int>();
 
             //Config hardware channel and time stamp
             foreach (string slaveLaser in config.slaveLasers.Keys)
@@ -227,6 +240,7 @@ namespace WavemeterLock
                 Laser slave = new Laser(laser, entry.Value, helper[laser]);
                 lasers.Add(laser, slave);
                 slave.WLMChannel = config.channelNumbers[laser];
+                wmChannels.Add(laser, slave.WLMChannel);
             }
 
             //Config lock block
@@ -235,6 +249,7 @@ namespace WavemeterLock
                 string laser = entry.Key;
                 blockHelper.Add(laser, new DAQMxWavemeterLockBlockHelper(laser, config.lockBlockFlag[laser]));
                 lockBlocked.Add(laser, false);
+                lastMeasurementLockBlocked.Add(laser, false);
             }
 
             //Config initial set points and gains
@@ -260,6 +275,13 @@ namespace WavemeterLock
             {
                 ui.AddLaserControlPanel(slaveLaser, config.slaveLasers[slaveLaser], config.channelNumbers[slaveLaser]);
             }
+
+            //Asign an LED to each laser
+            foreach (int n in wmChannels.Values)
+            {
+                ui.enable_LED(n);
+            }
+
 
         }
 
@@ -330,7 +352,7 @@ namespace WavemeterLock
         {
             Laser laser = lasers[slavename];
             laser.PGain = g;
-            
+
         }
 
         internal void setIGain(string slavename, double g)
@@ -365,16 +387,17 @@ namespace WavemeterLock
             else return "Unlocked";
         }
 
-        
 
-        public bool returnLaserState(string slavename){
+
+        public bool returnLaserState(string slavename)
+        {
             Laser laser = lasers[slavename];
             if (laser.lState == Laser.LaserState.LOCKED)
                 return true;
-            else 
+            else
                 return false;
-            
-            }
+
+        }
 
         public string getChannelNum(string slavename)
         {
@@ -404,7 +427,10 @@ namespace WavemeterLock
             wavemeterContrller.changeConnectionStatus(laser.WLMChannel, false);
         }
 
-
+        public void toggle_led_state(int n, bool val)
+        {
+            ui.toggle_led(n, val);
+        }
 
         #endregion
 
@@ -419,7 +445,7 @@ namespace WavemeterLock
                 ui.UpdateLockRate(averageUpdateRate);
                 scanTimes = new List<double>();
             }
-            
+
         }
 
         public void updateFrequency(Laser laser)
@@ -432,8 +458,7 @@ namespace WavemeterLock
             if (WMLState != ControllerState.STOPPED)
             {
                 if (wavemeterContrller.getMeasurementStatus(thisComputerName))//SocketException thrown here when server turned off while running
-                    
-                { 
+                {
                     updateLockMaster();
                     wavemeterContrller.resetMeasurementStatus(thisComputerName);
                 }
@@ -466,7 +491,23 @@ namespace WavemeterLock
                     //lasers[laser].DisposeLaserControl();
                 }
             }
-            
+
+        }
+
+        private void checkBlockLoop()
+        {
+            while (true)
+            {
+                if (WMLState != ControllerState.STOPPED) { 
+                    foreach (string slave in lasers.Keys){
+                    
+                        if (lockBlocked.ContainsKey(slave)){
+                        
+                            checkBlockStatus(slave);
+                        }
+                    }
+                }
+            }
         }
 
         private void updateLockMaster()
@@ -478,22 +519,22 @@ namespace WavemeterLock
                 {
                     if (lockBlocked.ContainsKey(slave))
                     {
-                        checkBlockStatus(slave);
-                        updateFrequency(lasers[slave]);
+                        //checkBlockStatus(slave);
                         panelList[slave].updateLockBlockStatus(lockBlocked[slave]);
 
-                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lockBlocked[slave])
+                        if (lasers[slave].lState == Laser.LaserState.LOCKED && !lasers[slave].isBlocked )
                         {
 
+                            updateFrequency(lasers[slave]);
 
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {
@@ -501,8 +542,11 @@ namespace WavemeterLock
                             }
                         }
 
+                        
+
                         else
-                            lasers[slave].UpdateBlockedLock();
+                        lasers[slave].UpdateBlockedLock();
+
                     }
 
                     else
@@ -519,9 +563,9 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                Thread msgThread = new Thread(errorMsg);
+                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                msgThread.Start();
+                                //msgThread.Start();
                             }
                             else
                             {
@@ -532,31 +576,38 @@ namespace WavemeterLock
                         else
                             lasers[slave].UpdateBlockedLock();
                     }
-                }
-            }
 
-                loopcount++;
-
-                //Calculate the time
-                foreach (string slave in lasers.Keys)
-                {
-                    if (lasers[slave].lState == Laser.LaserState.LOCKED)
+                    if (lasers[slave].logData)
                     {
-                        timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
+                        logSlaveDate(slave);
                     }
                 }
 
-                stopWatchGraph.Restart();
+                
+            }
 
-                foreach (string slave in lasers.Keys)
+            loopcount++;
+
+            //Calculate the time
+            foreach (string slave in lasers.Keys)
+            {
+                if (lasers[slave].lState == Laser.LaserState.LOCKED)
                 {
-                    panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
+                    timeList[slave] += stopWatchGraph.Elapsed.TotalSeconds;
                 }
+            }
 
-                updateLockRate(stopWatch);
-                stopWatch.Restart();
-            
-            
+            stopWatchGraph.Restart();
+
+            foreach (string slave in lasers.Keys)
+            {
+                panelList[slave].AppendToErrorGraph(timeList[slave], 1000000 * lasers[slave].FrequencyError);
+            }
+
+            updateLockRate(stopWatch);
+            stopWatch.Restart();
+
+
         }
 
         public void removeWavemeterLock()
@@ -568,6 +619,7 @@ namespace WavemeterLock
         {
             blockHelper[laser].checkLockBlockStatus();
             lockBlocked[laser] = blockHelper[laser].isBlocked;
+            lasers[laser].isBlocked = blockHelper[laser].isBlocked;
         }
 
         public void errorMsg()
@@ -590,7 +642,127 @@ namespace WavemeterLock
             }
         }
 
+        public void updateLaserRMSNoise(Laser laser)
+        {
+            if (laser.lState == Laser.LaserState.LOCKED)
+            {
+                laser.sumedNoise += Math.Pow((laser.FrequencyError * Math.Pow(10, 6)), 2);
+                laser.loopCount++;
+                laser.RMSNoise = Math.Sqrt(laser.sumedNoise / laser.loopCount);
+            }
+
+        }
+
+        public void logSlaveDate(string slave)
+        {
+            DateTime dt = DateTime.Now;
+            String filename = logfilePath + slave + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+
+            if (!System.IO.File.Exists(filename))
+            {
+                string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
+                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
+                using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(filename, false))
+                    file.WriteLine(header);
+            }
+
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(filename, true))
+            {
+                file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
+                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
+                file.Flush();
+            }
+        }
+
+        public void logSetPoints(bool isManual)
+        {
+            string date = DateTime.Now.ToString("yyyy-MM-dd");
+            string dt = DateTime.Now.TimeOfDay.ToString();
+            string note;
+
+            if (isManual)
+                note = "Manual log";
+            else
+                note = "Auto log";
+
+            foreach(string slave in lasers.Keys)
+            {
+                String filename = logfilePath + "LaserSetPoints\\" +  slave + "_LaserSetpoints" + ".txt";
+
+                if (!System.IO.File.Exists(filename))
+                {
+                    string header = "Time \t" + "Set Frequency (THz) \t" + "PGain \t"  + "IGain (THz) \t" + "Offset(V) \t" + "Note";
+                    using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, false))
+                        file.WriteLine(header);
+                }
+
+                string content = date + " " + dt + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].PGain + "\t" + lasers[slave].IGain 
+                    + "\t" + lasers[slave].offsetVoltage + "\t" + note + "\t";
+                
+
+                using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, true))
+                {
+                    file.WriteLine(content);
+                    file.Flush();
+                }
+            }
+
+        }
+
+        public void loadSetPoints()
+        {
+            foreach (string slave in lasers.Keys)
+            {
+                String filename = logfilePath + "LaserSetPoints\\" + slave + "_LaserSetpoints" + ".txt";
+                if (System.IO.File.Exists(filename))
+                {
+                    string log = System.IO.File.ReadLines(filename).Last();
+                    Console.WriteLine(log);
+
+                    List<string> resultList = log.Split('\t').ToList();
+                    lasers[slave].setFrequency = Convert.ToDouble(resultList[1]);
+                    lasers[slave].PGain = Convert.ToDouble(resultList[2]);
+                    setIGain(slave, Convert.ToDouble(resultList[3]));
+                    lasers[slave].offsetVoltage = Convert.ToDouble(resultList[4]);
+                }
+            }
+
+            foreach (LockControlPanel panel in panelList.Values)
+            {
+                panel.updateParameters();
+            }
+        }
+
+        /// <summary>
+        /// Log laser setpoint and frequency for each iteration of experiment
+        /// </summary>
+        public void logCurrentSetpoints()
+        {
+            string filePath = (string)DAQ.Environment.Environs.FileSystem.Paths["ToFFilesPath"];
+            string filename = filePath + "LaserSetPoints\\" + "WavemeterLockLog" + ".txt";
+
+            foreach (string slave in lasers.Keys)
+            {
+                string header = "Laser:" + "\t" + slave + "\t" + "Lock Status" + "\t" + lasers[slave].lState.ToString();
+
+                string content = "Set frequency (THz):" + "\t" + lasers[slave].setFrequency + "\t" + 
+                    "Current frequency (THz):" + "\t" + lasers[slave].currentFrequency + "\t" +
+                    "Frequency error (MHz):" + "\t" + (1e6 * lasers[slave].currentFrequency - lasers[slave].setFrequency).ToString() + "\t";
 
 
+                using (System.IO.StreamWriter file =
+                    new System.IO.StreamWriter(filename, true))
+                {
+                    file.WriteLine(header);
+                    file.WriteLine(content);
+                    file.Flush();
+                }
+            }
+        }
+        
     }
 }

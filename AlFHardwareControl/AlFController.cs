@@ -6,10 +6,13 @@ using System.Threading;
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using Data;
+using NewFocus.PicomotorApp;
+using Newport.DeviceIOLib;
+using System.Collections.Generic;
 
 namespace AlFHardwareControl
 {
-    public class AlFController : MarshalByRefObject
+    public class AlFController : MarshalByRefObject, ExperimentReportable
     {
 
         private AlFControlWindow window;
@@ -32,13 +35,43 @@ namespace AlFHardwareControl
             Application.SetCompatibleTextRenderingDefault(false);
         }
 
+        public void ExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Uncaught exception! Take care program might be unstable\n\n" +
+                    "Exception:\n" + ((Exception)e.ExceptionObject).Message + "\n\n" + ((Exception)e.ExceptionObject), "Uncaught Exception",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public Dictionary<string, object> GetExperimentReport()
+        {
+            Dictionary<string,object> dict = new Dictionary<string, object>();
+            dict["scanActive"] = window.mmStuff.ScanRunning;
+            if (window.mmStuff.ScanRunning)
+            {
+                dict["scanParam"] = window.mmStuff.ScanRunning;
+                dict["scanName"] = window.mmStuff.ScanPlugin;
+                dict["scanSettings"] = window.mmStuff.ScanSettings;
+            }
+
+            while (!window.mmStuff.isDataSaved && window.mmStuff.ToFArmed) ;
+            window.mmStuff.resetDataSaveStatus();
+            return dict;
+        }
+
         public void Start()
         {
+
+            //DeviceIOLib deviceIOLib = new DeviceIOLib();
+            //CmdLib8742 cmdlib = new CmdLib8742(deviceIOLib);
+            //deviceIOLib.DiscoverDevices(0b0001, 5000);
+
+
 
             window = new AlFControlWindow(this);
             window.controller = this;
             Application.Run(window);
         }
+
 
         #region Resource related functions
         public string nameA;
@@ -145,8 +178,11 @@ namespace AlFHardwareControl
         {
             lock (eurotherm)
             {
-                loop1Off = eurotherm.GetAMSwitch(0);
-                loop2Off = eurotherm.GetAMSwitch(1);
+                //loop1Off = eurotherm.GetAMSwitch(0);
+                //loop2Off = eurotherm.GetAMSwitch(1);
+
+                loop1Off = eurotherm.GetHeaterShutoff(0);
+                loop2Off = eurotherm.GetHeaterShutoff(1);
 
                 loop1Out = eurotherm.GetActiveOut(0);
                 loop2Out = eurotherm.GetActiveOut(1);
@@ -186,6 +222,28 @@ namespace AlFHardwareControl
 
             window.UpdateRenderedObject(window.Loop1Out, (ProgressBar bar) => { bar.Value = (int)loop1Out; });
             window.UpdateRenderedObject(window.Loop2Out, (ProgressBar bar) => { bar.Value = (int)loop2Out; });
+
+
+            // Send data to ccmmonitoring
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("TEC Output").Tag("name", "Eurotherm 1");
+            if (loop1Off)
+            {
+                data.Field("Loop 1", 0d);
+            }
+            else
+            {
+                data.Field("Loop 1", loop1Out);
+            }
+            if (loop2Off)
+            {
+                data.Field("Loop 2", 0d);
+            }
+            else
+            {
+                data.Field("Loop 2", loop2Out);
+            }
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
         }
 
         private void UpdateCryoState()
@@ -215,7 +273,16 @@ namespace AlFHardwareControl
                 window.UpdateRenderedObject(window.DisengageCryo, (Button but) => { but.Enabled = true; });
             }
 
+
+            // Send data to ccmmonitoring
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Cryo state").Tag("name", "Cryo 1");
+            data.Field("Cryo state", !CRYO_off);
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
+
         }
+
+        public event EventHandler MiscDataUpdate;
 
         public bool exiting = false;
         public ThreadSync DAQ_sync = new ThreadSync();
@@ -228,8 +295,9 @@ namespace AlFHardwareControl
                     UpdateLakeshoreTemperature();
                     UpdateCryoState();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    lakeshore.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with LakeShore:" + e.ToString());
                 }
             });
@@ -239,8 +307,9 @@ namespace AlFHardwareControl
                 {
                     UpdatePressure();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    leybold.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with Leybold pressure controller:" + e.ToString());
                 }
             });
@@ -250,10 +319,15 @@ namespace AlFHardwareControl
                 {
                     UpdateTypeK();
                 }
-                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException)
+                catch (Exception e) when (e is Ivi.Visa.NativeVisaException || e is Ivi.Visa.IOTimeoutException || e is AccessViolationException)
                 {
+                    eurotherm.Disconnect();
                     window.tSched.UpdateEventLog("Error in communicating with EuroTherm:" + e.ToString());
                 }
+            });
+
+            DAQ_sync.CreateDelegateThread(() => {
+                MiscDataUpdate?.Invoke(this, null);
             });
 
             DAQ_sync.SwitchToData();

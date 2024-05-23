@@ -17,7 +17,8 @@ namespace Data.EDM
 		private BlockConfig config = new BlockConfig();
 
         // ratio of distance from source for the two detectors
-        private static double kDetectorDistanceRatio = 1715.0 / 1500.0;
+        private static double kDetectorDistanceRatioClassicEDM = 1715.0 / 1500.0; // For ClassicEDM
+        private static double kDetectorDistanceRatioUEDM = 3903.0 / 3513.0; // For UEDM
 
         public List<string> detectors = new List<string>();
 
@@ -95,9 +96,9 @@ namespace Data.EDM
         // Also has the option of converting single point data to TOFs
         public void AddDetectorsToBlock()
         {
-            SubtractBackgroundFromProbeDetectorTOFs();
+            SubtractBackgroundFromProbeDetectorTOFs(50000, 114590, 50000, 114590);    //Jan 2024 temporarily changed this for UEDM
 
-            CreateScaledBottomProbe();
+            CreateScaledDetA();
 
             ConstructAsymmetryTOF();
 
@@ -117,9 +118,12 @@ namespace Data.EDM
             for (int i = 0; i < points.Count; i++)
             {
                 Shot shot = ((EDMPoint)points[i]).Shot;
-                int bottomScaledIndex = detectors.IndexOf("bottomProbeScaled");
-                int topIndex = detectors.IndexOf("topProbeNoBackground");
-                TOF asymmetry = ((TOF)shot.TOFs[bottomScaledIndex] - (TOF)shot.TOFs[topIndex]) / ((TOF)shot.TOFs[bottomScaledIndex] + (TOF)shot.TOFs[topIndex]);
+                //int bottomScaledIndex = detectors.IndexOf("bottomProbeScaled");               //ClassicEDM
+                //int topIndex = detectors.IndexOf("topProbeNoBackground");
+                //TOF asymmetry = ((TOF)shot.TOFs[bottomScaledIndex] - (TOF)shot.TOFs[topIndex]) / ((TOF)shot.TOFs[bottomScaledIndex] + (TOF)shot.TOFs[topIndex]);
+                int AScaledIndex = detectors.IndexOf("detAScaled");               //UEDM
+                int BIndex = detectors.IndexOf("detBNoBackground");
+                TOF asymmetry = ((TOF)shot.TOFs[AScaledIndex] - (TOF)shot.TOFs[BIndex]) / ((TOF)shot.TOFs[AScaledIndex] + (TOF)shot.TOFs[BIndex]);
                 asymmetry.Calibration = 1;
                 shot.TOFs.Add(asymmetry);
             }
@@ -134,26 +138,38 @@ namespace Data.EDM
                 EDMPoint point = (EDMPoint)points[i];
                 Shot shot = point.Shot;
 
-                TOF bottomScaled = (TOF)shot.TOFs[detectors.IndexOf("bottomProbeScaled")];
-                TOF top = (TOF)shot.TOFs[detectors.IndexOf("topProbeNoBackground")];
+                //TOF bottomScaled = (TOF)shot.TOFs[detectors.IndexOf("bottomProbeScaled")];
+                //TOF top = (TOF)shot.TOFs[detectors.IndexOf("topProbeNoBackground")];
+                TOF detAScaled = (TOF)shot.TOFs[detectors.IndexOf("detAScaled")];
+                TOF detB = (TOF)shot.TOFs[detectors.IndexOf("detBNoBackground")];
 
                 // Multiply TOFs by their calibrations
-                bottomScaled *= bottomScaled.Calibration;
-                top *= top.Calibration;
+                //bottomScaled *= bottomScaled.Calibration;
+                //top *= top.Calibration;
+                detAScaled *= detAScaled.Calibration;
+                detB *= detB.Calibration;
 
                 // Need the total signal TOF for later calculations
-                TOF total = bottomScaled + top;
+                //TOF total = bottomScaled + top;
+                TOF total = detAScaled + detB;
 
                 // Get background counts
-                double topLaserBackground = (double)point.SinglePointData["TopDetectorBackground"] * bottomScaled.Calibration;
-                double bottomLaserBackground = (double)point.SinglePointData["BottomDetectorBackground"] * top.Calibration;
+                //double topLaserBackground = (double)point.SinglePointData["TopDetectorBackground"] * bottomScaled.Calibration;
+                //double bottomLaserBackground = (double)point.SinglePointData["BottomDetectorBackground"] * top.Calibration;
+                double detBLaserBackground = (double)point.SinglePointData["DetectorBBackground"] * detB.Calibration;
+                double detALaserBackground = (double)point.SinglePointData["DetectorABackground"] * detAScaled.Calibration;
 
                 // Calculate the shot noise variance in the asymmetry detector
+                //TOF asymmetryVariance =
+                //    bottomScaled * bottomScaled * top * 4.0
+                //    + bottomScaled * top * top * 4.0
+                //    + top * top * bottomLaserBackground * 8.0
+                //    + bottomScaled * bottomScaled * topLaserBackground * 8.0;
                 TOF asymmetryVariance =
-                    bottomScaled * bottomScaled * top * 4.0
-                    + bottomScaled * top * top * 4.0
-                    + top * top * bottomLaserBackground * 8.0
-                    + bottomScaled * bottomScaled * topLaserBackground * 8.0;
+                    detAScaled * detAScaled * detB * 4.0
+                    + detAScaled * detB * detB * 4.0
+                    + detB * detB * detALaserBackground * 8.0
+                    + detAScaled * detAScaled * detBLaserBackground * 8.0;
                 asymmetryVariance /= total * total * total * total;
                 shot.TOFs.Add(asymmetryVariance);
             }
@@ -171,12 +187,29 @@ namespace Data.EDM
                 int topIndex = detectors.IndexOf("topProbeNoBackground");
                 TOF bottomTOF = (TOF)shot.TOFs[bottomIndex];
                 TOF topTOF = (TOF)shot.TOFs[topIndex];
-                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF(bottomTOF, topTOF, kDetectorDistanceRatio);
+                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF(bottomTOF, topTOF, kDetectorDistanceRatioClassicEDM);
                 bottomScaled.Calibration = bottomTOF.Calibration;
                 shot.TOFs.Add(bottomScaled);
             }
             // give these data a name
             detectors.Add("bottomProbeScaled");
+        }
+
+        public void CreateScaledDetA()
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                Shot shot = ((EDMPoint)points[i]).Shot;
+                int AIndex = detectors.IndexOf("detANoBackground");
+                int BIndex = detectors.IndexOf("detBNoBackground");
+                TOF ATOF = (TOF)shot.TOFs[AIndex];
+                TOF BTOF = (TOF)shot.TOFs[BIndex];
+                TOF bottomScaled = TOF.ScaleTOFInTimeToMatchAnotherTOF(ATOF, BTOF, kDetectorDistanceRatioUEDM);
+                bottomScaled.Calibration = ATOF.Calibration;
+                shot.TOFs.Add(bottomScaled);
+            }
+            // give these data a name
+            detectors.Add("detAScaled");
         }
 
         // this function subtracts the background off a TOF signal
@@ -226,6 +259,55 @@ namespace Data.EDM
             detectors.Add("topProbeNoBackground");
         }
 
+        public void SubtractBackgroundFromProbeDetectorTOFs(double gateAst, double gateAend, double gateBst, double gateBend)
+
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[0];
+                double bg = t.GatedMeanAndUncertainty(gateAst, gateAend)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                //point.SinglePointData.Add("BottomDetectorBackground", bg);    // ClassicEDM
+                point.SinglePointData.Add("DetectorABackground", bg);           // UEDM
+            }
+            // give these data a name
+            //detectors.Add("bottomProbeNoBackground");     // ClassicEDM
+            detectors.Add("detANoBackground");              // UEDM
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                EDMPoint point = (EDMPoint)points[i];
+                Shot shot = point.Shot;
+                TOF t = (TOF)shot.TOFs[1];
+                double bg = t.GatedMeanAndUncertainty(gateBst, gateBend)[0];
+                TOF bgSubtracted = t - bg;
+
+                // if value if negative, set to zero
+                for (int j = 0; j < bgSubtracted.Length; j++)
+                {
+                    if (bgSubtracted.Data[j] < 0) bgSubtracted.Data[j] = 0.0;
+                }
+
+                bgSubtracted.Calibration = t.Calibration;
+                shot.TOFs.Add(bgSubtracted);
+                //point.SinglePointData.Add("TopDetectorBackground", bg);       // ClassicEDM
+                point.SinglePointData.Add("DetectorBBackground", bg);         // UEDM
+            }
+            // give these data a name
+            //detectors.Add("topProbeNoBackground");        // ClassicEDM
+            detectors.Add("detBNoBackground");          // UEDM
+        }
         // this function takes some of the single point data and adds it to the block shots as TOFs
         // with one data point in them. This allows us to use the same code to break all of the data
         // into channels.

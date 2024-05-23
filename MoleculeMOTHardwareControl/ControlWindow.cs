@@ -37,5 +37,10 @@ namespace MoleculeMOTHardwareControl
         {
 
         }
+
+        private void ControlWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
     }
 }

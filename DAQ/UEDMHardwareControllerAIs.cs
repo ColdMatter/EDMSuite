@@ -51,15 +51,15 @@ namespace DAQ.HAL
                 AI13Reader = new AnalogSingleChannelReader(readAI13.Stream);
                 readAI13.Control(TaskAction.Verify);
 
-                readAI14 = new Task("Read AI14 -" + name[3]);
-                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[3]]).AddToTask(readAI14, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-                AI14Reader = new AnalogSingleChannelReader(readAI14.Stream);
-                readAI14.Control(TaskAction.Verify);
+                //readAI14 = new Task("Read AI14 -" + name[3]);
+                //((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[3]]).AddToTask(readAI14, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                //AI14Reader = new AnalogSingleChannelReader(readAI14.Stream);
+                //readAI14.Control(TaskAction.Verify);
 
-                readAI15 = new Task("Read AI15 -" + name[4]);
-                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[4]]).AddToTask(readAI15, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
-                AI15Reader = new AnalogSingleChannelReader(readAI15.Stream);
-                readAI15.Control(TaskAction.Verify);
+                //readAI15 = new Task("Read AI15 -" + name[4]);
+                //((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channelName[4]]).AddToTask(readAI15, VOLTAGE_LOWER_BOUND, VOLTAGE_UPPER_BOUND);
+                //AI15Reader = new AnalogSingleChannelReader(readAI15.Stream);
+                //readAI15.Control(TaskAction.Verify);
             }
         }
 

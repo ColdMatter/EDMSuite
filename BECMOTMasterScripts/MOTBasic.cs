@@ -21,26 +21,48 @@ public class Patterns : MOTMasterScript
         Parameters["FlashToQ"] = 16;
         Parameters["QSwitchPulseDuration"] = 10;
 
-        // Slowing parameters
+        Parameters["CameraTriggerStart"] = 1800;
+        Parameters["CameraTriggerDuration"] = 2000;
+
+
+        // Fundamental slowing parameters
+        double slowingMHzPerVolt = -1350.0;             // Azurlight BX laser 1V --> -1350 MHz
+        double slowingRepumpMHzPerVolt = 330.0;         // Precilaser V1 laser 1V --> 330 MHz
+        double slowingToRepumpFreqRatio = 0.845;        // 496.958758/564.582380
+
+        // Requires modifications
+        double slowingChirpMHzSpan = 310.0;
+        int slowingDuration = 800;
+
+
+        double repumpChirpSpanInVoltage = (slowingChirpMHzSpan * slowingToRepumpFreqRatio) / slowingRepumpMHzPerVolt;
+
+
+        // Derived slowing parameters, try not to change
         Parameters["SlowingAOMONStartTime"] = 10;
-        Parameters["SlowingAOMONDuration"] = 1700;
-        Parameters["SlowingChirpStartTime"] = 150;
-        Parameters["SlowingChirpDuration"] = 800;
+        Parameters["SlowingChirpStartTime"] = 100;
+        Parameters["SlowingAOMONDuration"] = slowingDuration + 100;
+        Parameters["SlowingChirpDuration"] = slowingDuration;
         Parameters["SlowingChirpStartValue"] = 0.0;
-        Parameters["SlowingChirpEndValue"] = -0.08;
-        Parameters["SlowingChirpRepumpStartValue"] = 0.0;
-        Parameters["SlowingChirpRepumpEndValue"] = 0.16;
+        Parameters["SlowingChirpEndValue"] = slowingChirpMHzSpan / slowingMHzPerVolt;
+
+        Parameters["RepumpStartValue"] = 0.0;
+        Parameters["RepumpChirpStartValue"] = -0.5;
+        Parameters["RepumpChirpEndValue"] = -0.5 + repumpChirpSpanInVoltage;
 
         // B Field
         Parameters["MOTCoilsStartTime"] = 0;
-        Parameters["MOTCoilsStopTime"] = 10000;
-        Parameters["MOTCoilsOnValue"] = 0.9;
+        Parameters["MOTCoilsStopTime"] = 20000;
+        Parameters["MOTCoilsOnValue"] = -1.0;
         Parameters["MOTCoilsOffValue"] = 0.0;
 
-        // Switching control for iterative operations. Higher voltage leads to active state.
-        Parameters["slowingONorOFF"] = 1.0;
+        // Switching control for iterative operations.
+        // Voltage higher than 5.0 leads to active state.
+        Parameters["yagONorOFF"] = 10.0;
+        Parameters["slowingONorOFF"] = 10.0;
         Parameters["slowingRepumpONorOFF"] = 10.0;
-
+        Parameters["chirpONorOFF"] = 10.0;
+        Parameters["magneticFieldONorOFF"] = 1.0;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -49,27 +71,51 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int repumpAOMON = patternStartBeforeQ + (int)Parameters["SlowingAOMONStartTime"];
         int repumpAOMOFF = repumpAOMON + (int)Parameters["SlowingAOMONDuration"];
-        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 200, "blockTCL");
-        p.Pulse(patternStartBeforeQ, -(int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flash");
+        int allOFF = (int)Parameters["PatternLength"] - patternStartBeforeQ - 100;
+
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["SlowingAOMONStartTime"],
+            (2 * (int)Parameters["SlowingChirpDuration"]) + 1000,
+            "blockTCL"
+        );
+        p.Pulse(
+            patternStartBeforeQ,
+            -(int)Parameters["FlashToQ"],
+            (int)Parameters["QSwitchPulseDuration"],
+            "flash"
+        );
         p.Pulse(patternStartBeforeQ, 0, 10, "analogPatternTrigger");
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "q");
+        if ((double)Parameters["yagONorOFF"] > 5.0)
+        {
+            p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "q");
+        }
+        p.Pulse(patternStartBeforeQ, 0, allOFF, "coolingAOM");
+
+
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
-            p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingAOMONStartTime"], (int)Parameters["SlowingAOMONDuration"], "slowingAOM");
+            p.Pulse(
+                patternStartBeforeQ,
+                (int)Parameters["SlowingAOMONStartTime"],
+                (int)Parameters["SlowingAOMONDuration"],
+                "slowingAOM"
+            );
         }
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["PatternLength"] - patternStartBeforeQ - 100, "coolingAOM");
+        // p.AddEdge("slowingRepumpAOM", repumpAOMON, true);
+
         if ((double)Parameters["slowingRepumpONorOFF"] > 5.0)
         {
-            p.AddEdge("slowingRepumpAOM", patternStartBeforeQ, true);
-            p.AddEdge("slowingRepumpAOM", repumpAOMON, false);
-            p.AddEdge("slowingRepumpAOM", repumpAOMOFF, true);
-        }
-        else
-        {
-            p.AddEdge("slowingRepumpAOM", patternStartBeforeQ, true);
+            p.AddEdge("slowingRepumpAOM", repumpAOMON, true);
+            p.AddEdge("slowingRepumpAOM", repumpAOMOFF, false);
         }
 
-        p.Pulse(patternStartBeforeQ, 10000, 10000, "shutterV2");
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["CameraTriggerStart"],
+            (int)Parameters["CameraTriggerDuration"],
+            "cameraTrigger"
+        );
 
         return p;
     }
@@ -81,47 +127,56 @@ public class Patterns : MOTMasterScript
         p.AddChannel("slowingRepumpChirp");
         p.AddChannel("motCoils");
 
-        p.AddPolynomialRamp(
-            "slowingChirp",
-            (int)Parameters["SlowingChirpStartTime"],
-            (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"],
-            (double)Parameters["SlowingChirpEndValue"],
-                1.0,                    // Parameters["SlowingChirpUpperThreshold"]
-                -1.5,                   // Parameters["SlowingChirpLowerThreshold"]
-                1.0,                    // (double)parameters["weight1"],
-                -0.5,                   // (double)parameters["weight2"],
-                1.0 / 6.0,              // (double)parameters["weight3"],
-                -1.0 / 24.0             // (double)parameters["weight4"]
-        );
-        p.AddLinearRamp(
-            "slowingChirp",
-            (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200,
-            (int)Parameters["SlowingChirpDuration"],
-            (double)Parameters["SlowingChirpStartValue"]
-        );
+        if ((double)Parameters["chirpONorOFF"] > 5.0)
+        {
+            p.AddLinearRamp(
+                "slowingChirp",
+                (int)Parameters["SlowingChirpStartTime"],
+                (int)Parameters["SlowingChirpDuration"],
+                (double)Parameters["SlowingChirpEndValue"]
+            );
+            p.AddLinearRamp(
+                "slowingChirp",
+                (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200,
+                100,
+                (double)Parameters["SlowingChirpStartValue"]
+            );
 
-        p.AddPolynomialRamp(
-            "slowingRepumpChirp",
-            (int)Parameters["SlowingChirpStartTime"],
-            (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"],
-            (double)Parameters["SlowingChirpRepumpEndValue"],
-            1.0,                    // Parameters["SlowingChirpUpperThreshold"]
-            -1.0,                   // Parameters["SlowingChirpLowerThreshold"]
-            1.0,                    // (double)parameters["weight1"],
-            -0.5,                   // (double)parameters["weight2"],
-            1.0 / 6.0,              // (double)parameters["weight3"],
-            -1.0 / 24.0             // (double)parameters["weight4"]
-        );
-        p.AddLinearRamp(
-            "slowingRepumpChirp",
-            (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200,
-            100,
-            (double)Parameters["SlowingChirpRepumpStartValue"]
-        );
+            p.AddLinearRamp(
+                "slowingRepumpChirp",
+                (int)Parameters["SlowingAOMONStartTime"],
+                50,
+                (double)Parameters["RepumpChirpStartValue"]
+            );
 
-        p.AddAnalogValue("motCoils", (int)Parameters["MOTCoilsStartTime"], (double)Parameters["MOTCoilsOnValue"]);
-        p.AddAnalogValue("motCoils", (int)Parameters["MOTCoilsStopTime"], (double)Parameters["MOTCoilsOffValue"]);
+            p.AddLinearRamp(
+                "slowingRepumpChirp",
+                (int)Parameters["SlowingChirpStartTime"],
+                (int)Parameters["SlowingChirpDuration"],
+                (double)Parameters["RepumpChirpEndValue"]
+            );
 
+            p.AddLinearRamp(
+                "slowingRepumpChirp",
+                (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 50,
+                50,
+                (double)Parameters["RepumpStartValue"]
+            );
+        }
+
+        if ((double)Parameters["magneticFieldONorOFF"] > 5.0)
+        {
+            p.AddAnalogValue(
+                "motCoils",
+                (int)Parameters["MOTCoilsStartTime"],
+                (double)Parameters["MOTCoilsOnValue"]
+            );
+            p.AddAnalogValue(
+                "motCoils",
+                (int)Parameters["MOTCoilsStopTime"],
+                (double)Parameters["MOTCoilsOffValue"]
+            );
+        }
         return p;
     }
 

@@ -38,7 +38,7 @@ namespace ScanMaster
 			SerializeSettings();
 		}
 
-		public bool HasParameter(String key)
+		public virtual bool HasParameter(String key)
 		{
 			DataRow row = parameterTable.Rows.Find(key);
 			return (row != null);

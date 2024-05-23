@@ -146,14 +146,14 @@ public class Patterns : MOTMasterScript
 
         //Rb repump light
         p.AddEdge("rbRepump", 0, false);
-        //p.AddEdge("rbRepump", rbCloudPrep - (int)Parameters["RepumpSwitchOffDelay"], true); //switch off repump light for magnetic trap
-        //p.AddEdge("rbRepump", secondCameraTrigger , false); //switch light back on to take a fluorescence image of the cloud in the magnetic trap
+        p.AddEdge("rbRepump", rbCloudPrep - (int)Parameters["RepumpSwitchOffDelay"], true); //switch off repump light for magnetic trap
+        p.AddEdge("rbRepump", secondCameraTrigger , false); //switch light back on to take a fluorescence image of the cloud in the magnetic trap
 
         p.AddEdge("rbOpticalPumpingAOM", 0, false);
          
         //2D MOT light
         p.AddEdge("rb2DCooling", 0, false);
-        //p.AddEdge("rb2DCooling", (int)Parameters["MOTLoadTime"], true);
+        p.AddEdge("rb2DCooling", (int)Parameters["MOTLoadTime"], true);
         p.AddEdge("rbPushBeam", 0, false);
         p.AddEdge("rbPushBeam", (int)Parameters["MOTLoadTime"], true);
 
@@ -212,8 +212,8 @@ public class Patterns : MOTMasterScript
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
         p.AddChannel("rb3DCoolingAttenuation");
-        p.AddChannel("rbRepumpFrequency");
-        p.AddChannel("rbRepumpAttenuation");
+        //p.AddChannel("rbRepumpFrequency");
+        //p.AddChannel("rbRepumpAttenuation");
         p.AddChannel("rbAbsImagingFrequency");
 
         // Slowing field
@@ -259,7 +259,7 @@ public class Patterns : MOTMasterScript
 
         //Rb Laser detunings
         p.AddAnalogValue("rb3DCoolingFrequency", 0, (double)Parameters["MOTCoolingLoadingFrequency"]);
-        p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
+        //p.AddAnalogValue("rbRepumpFrequency", 0, (double)Parameters["MOTRepumpLoadingFrequency"]);
         p.AddAnalogValue("rbAbsImagingFrequency", 0, (double)Parameters["ImagingFrequency"]);
         p.AddAnalogValue("rb3DCoolingAttenuation", 0, 0.0);
 
