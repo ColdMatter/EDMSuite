@@ -22,7 +22,7 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0, 
-			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime, int DurationIR)
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation,int switchLineDelay,int shutter1offdelay,int v3delaytime, int DurationIR, int CameraTrigger, int BgTrigger)
 		{
 			int time;
 			if (padStart == 0)
@@ -42,21 +42,23 @@ namespace ScanMaster.Acquire.Patterns
 					// first the pulse with the switch line high
 					//Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
 					//Pulse(time, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
-			
+					//STEVE shutter
+					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the STEVE shutter. The newport ones need a pulse to turn on and one to turn off
+					if (DurationIR != 0) //To not use shutter when not desired set duratiopn to 0
+					{
+					Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber); // this is the V1/V2 STEVE shutter
+					}
 
-					//IR shutter
-					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the IR shutter. The newport ones need a pulse to turn on and one to turn off
-					Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber); // this is the IR shutter
-
-
-					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber);
+					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1/v2"]).BitNumber);
 					Pulse(time, shutterV2delay - padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber);
+					Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
+					Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
 					//Pulse(time, shutterslowdelay - padStart-3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//this is the v0 aom - high is off//think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
 					//Pulse(time, shutterslowdelay - padStart+ DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//the 1000 is to account for the delay in the shutter
 					//Pulse(time, shutterslowdelay - padStart-4000, DurationV0+4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//turns on shutter for v0 2ms before and 2ms longer
-					//Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber);
+					//Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1/v2"]).BitNumber);
 					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector");// how does this work in terms of time - it does though - time has been added from previosu
-					//Pulse(time, shutter1offdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber);
+					//Pulse(time, shutter1offdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber);
 					//Pulse(time, shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);
 					//Pulse(time, DurationV0 + shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);
 
@@ -75,16 +77,22 @@ namespace ScanMaster.Acquire.Patterns
 					//Pulse(time, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
 
 
-					//IR shutter
-					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the IR shutter. The newport ones need a pulse to turn on and one to turn off
-					Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber); // this is the IR shutter
-
+					//STEVE shutter
+					Pulse(time, valveToQ - switchLineDelay, shutterPulseLength, switchChannel); // This is just a digital output ttl. This is used for the opening pulse of the STEVE shutter. The newport ones need a pulse to turn on and one to turn off
+					if (DurationIR != 0) //To not use shutter when not desired set duratiopn to 0
+					{
+						Pulse(time, DurationIR, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber); // this is the V1/V2 STEVE shutter
+					}
 					Pulse(time, v3delaytime, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
-					Pulse(time, shutterslowdelay-padStart-3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//this is the v0 think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
-					Pulse(time, shutterslowdelay - padStart+ DurationV0,3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);
-					Pulse(time, shutterslowdelay - padStart - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);
-					Pulse(time, shutterV1delay-padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber);
-					Pulse(time, shutterV2delay-padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber);
+
+					Pulse(time, shutterslowdelay-padStart-3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
+					Pulse(time, shutterslowdelay - padStart+ DurationV0,3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
+					Pulse(time, shutterslowdelay - padStart - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz SHutter
+
+					Pulse(time, shutterV1delay-padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1/v2"]).BitNumber);
+					Pulse(time, shutterV2delay-padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber); //This is V2 aom, not used in practice
+					Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
+					Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
 					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detectorprime");
 					//Pulse(time, ShutterslowPulseLength+shutterslowdelay-padStart, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);//seems to turn off at the next pattern needs to be negative not sure why
 					//Pulse(startTime, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work

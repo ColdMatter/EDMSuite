@@ -109,5 +109,14 @@ namespace Data
             }
         }
 
+        public void AbortThreads()
+        {
+
+            foreach (Thread thread in threads)
+            {
+                thread.Abort();
+            }
+        }
+
     }
 }

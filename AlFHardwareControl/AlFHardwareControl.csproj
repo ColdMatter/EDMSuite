@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,7 +53,26 @@
   <PropertyGroup>
     <ApplicationIcon>Alf.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlFHardwareControl|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AlFHardwareControl\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;INFLUX_DB</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AlFHardwareControl.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CmdLib8742">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\CmdLib8742.dll</HintPath>
+    </Reference>
+    <Reference Include="DeviceIOLib">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\DeviceIOLib.dll</HintPath>
+    </Reference>
     <Reference Include="Ivi.Driver, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -80,16 +100,16 @@
     <Reference Include="NationalInstruments.Controls.Numerics, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=22.5.45.49180, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.NIScope.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.ModularInstruments.NIScope.Fx45, Version=22.5.0.49213, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=3.2.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=22.5.0.49179, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.NetworkVariable, Version=19.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
@@ -112,6 +132,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -122,6 +144,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UsbDllWrap">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\UsbDllWrap.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlFControlWindow.cs">
@@ -131,11 +156,56 @@
       <DependentUpon>AlFControlWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="AlFController.cs" />
+    <Compile Include="DictionaryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DictionaryView.Designer.cs">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacroConfiguration.cs" />
+    <Compile Include="MacroConfigurationCollection.cs" />
     <Compile Include="DataGrapher.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataGrapher.Designer.cs">
       <DependentUpon>DataGrapher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MOTMasterData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterData.Designer.cs">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MOTMasterStuff.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterStuff.Designer.cs">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MiscInstruments.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MiscInstruments.Designer.cs">
+      <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MSquaredLaserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MSquaredLaserView.Designer.cs">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParamSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParamSet.Designer.cs">
+      <DependentUpon>ParamSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceCondition.cs" />
+    <Compile Include="MacroEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MacroEditor.Designer.cs">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ResourceEvent.cs">
       <SubType>UserControl</SubType>
@@ -148,6 +218,19 @@
     </Compile>
     <Compile Include="SafetyInterlock.Designer.cs">
       <DependentUpon>SafetyInterlock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacroEvent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MacroEvent.Designer.cs">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ITaskSchedulerEvent.cs" />
+    <Compile Include="ShutterSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShutterSet.Designer.cs">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
     </Compile>
     <Compile Include="TimedEvent.cs">
       <SubType>UserControl</SubType>
@@ -163,14 +246,56 @@
     <Compile Include="TaskScheduler.Designer.cs">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shutter_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shutter_Control.Designer.cs">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YAG_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="YAG_Control.Designer.cs">
+      <DependentUpon>YAG_Control.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AlFControlWindow.resx">
       <DependentUpon>AlFControlWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataGrapher.resx">
       <DependentUpon>DataGrapher.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DictionaryView.resx">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEditor.resx">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterData.resx">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterStuff.resx">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MiscInstruments.resx">
+      <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MSquaredLaserView.resx">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParamSet.resx">
+      <DependentUpon>ParamSet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourceEvent.resx">
       <DependentUpon>ResourceEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEvent.resx">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SafetyInterlock.resx">
+      <DependentUpon>SafetyInterlock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShutterSet.resx">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TimedEvent.resx">
       <DependentUpon>TimedEvent.cs</DependentUpon>
@@ -189,6 +314,13 @@
     <EmbeddedResource Include="TaskScheduler.resx">
       <DependentUpon>TaskScheduler.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shutter_Control.resx">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YAG_Control.resx">
+      <DependentUpon>YAG_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\DataSources\MOTMasterStuff.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -206,6 +338,14 @@
     <ProjectReference Include="..\DAQ\DAQ.csproj">
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
+      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
+      <Name>MOTMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
+      <Name>ScanMaster</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>

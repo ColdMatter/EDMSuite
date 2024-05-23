@@ -36,11 +36,11 @@ public class Patterns : MOTMasterScript
 
 
         //Rb light
-        Parameters["ImagingFrequency"] = 2.1; //2.1
-        Parameters["MOTCoolingLoadingFrequency"] = 5.0;
-        Parameters["MOTRepumpLoadingFrequency"] = 6.9; //6.9
+        Parameters["ImagingFrequency"] = 1.50; //2.1
+        Parameters["MOTCoolingLoadingFrequency"] = 4.6;
+        Parameters["MOTRepumpLoadingFrequency"] = 6.6; //6.9
         Parameters["CMOTDetuning"] = 1.5;
-        Parameters["OpticalPumpingDuration"] = 100;
+        Parameters["OpticalPumpingDuration"] = 1;
 
         //Rb molasses after CMOT:
         Parameters["MolassesDuration"] = 800;

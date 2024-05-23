@@ -51,12 +51,27 @@ namespace DAQ.HAL
             return crc;
         }
 
+        private void AttemptReset()
+        {
+            if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
+            if (!Environs.Debug)
+            {
+                List<byte> s = new List<byte>();
+                s.Add(SpecialCharacters["EOT"]);
+                serial.RawIO.Write(s.ToArray());
+                serial.RawIO.Read();
+            }
+
+            Disconnect();
+        }
+
         private Response Send(List<byte> s)
         {
             int attempt = 0;
         func_start:
             attempt++;
-            if (attempt > 5) throw new Exception("More than 5 failed CRCs. Try restarting the controller.");
+            if (attempt % 2 == 0) AttemptReset();
+            if (attempt > 5) throw new Ivi.Visa.NativeVisaException(0,"More than 5 failed CRCs. Try restarting the controller.");
             List<byte> resp = new List<byte> { };
             if (!connected) Connect(SerialTerminationMethod.TerminationCharacter);
             if (!Environs.Debug)
@@ -90,7 +105,7 @@ namespace DAQ.HAL
                 Response resp = Send(s);
                 if (resp.ack) return resp.resp;
             }
-            throw new Exception("No valid response after 5 tries");
+            throw new Ivi.Visa.NativeVisaException(0,"No valid response after 5 tries");
         }
 
         public string ReadValue(string s)

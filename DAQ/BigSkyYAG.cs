@@ -42,6 +42,7 @@ namespace DAQ.HAL
             base.DataBits = 8;
             base.ParitySetting = SerialParity.None;
             base.StopBit = SerialStopBitsMode.One;
+            base.TimeoutMilliseconds = 100;
     }
 
         private string SetLineFeed(string Command)
@@ -49,6 +50,21 @@ namespace DAQ.HAL
             return String.Concat(Command, "\n"); // Concatenate the command and carriage return "\n".
         }
 
+
+        private string YAGQuery(string q)
+        {
+            this.serial.RawIO.Write(q + "\x0d\x0a");
+            try
+            {
+                string response = this.Read(4 + q.Length + 15);
+                return response.Substring(4 + q.Length, 15);
+            }
+            catch(Exception e) 
+            {
+                Disconnect();
+                throw e;
+            }
+        }
 
         #region YAG commands
 
@@ -60,13 +76,13 @@ namespace DAQ.HAL
         /// <param name="FlowRate"></param>
         /// <returns></returns>
 
-        public string CheckTemperature()
+        public string SendCommand(string comm)
         {
-            Connect(SerialTerminationMethod.TerminationCharacter);
+            Connect();
             //string TempRequest = String.Concat(CommandTypes.CheckTemp, "\");
-            //string response = Query(">cg\n");
+            string response = YAGQuery(">" + comm);
             Disconnect();
-            return "";
+            return response;
         }
         #endregion
 

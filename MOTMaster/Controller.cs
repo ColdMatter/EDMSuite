@@ -52,10 +52,8 @@ namespace MOTMaster
         private static string motMasterDataPath = (string)Environs.FileSystem.Paths["MOTMasterDataPath"];
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
-        private static string digitalPGBoard = (string)Environs.Hardware.Boards["multiDAQ"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-
-
+        
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
@@ -136,8 +134,8 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
-            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-            //    "tcp://localhost:1172/controller.rem");
+            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+                "tcp://localhost:1172/controller.rem");
 
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
@@ -327,6 +325,7 @@ namespace MOTMaster
             saveEnable = value;
             controllerWindow.SetSaveCheckBox(value);
         }
+
         private int batchNumber = 0;
         public void SetBatchNumber(Int32 number)
         {
@@ -356,6 +355,11 @@ namespace MOTMaster
         public void SetDictionaryPath(String path)
         {
             dictionaryPath = path;
+        }
+
+        public Dictionary<string,List<bool>> GetSwitchConfiguration()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
         }
 
         public void Run()
@@ -417,7 +421,7 @@ namespace MOTMaster
 
                         watch.Start();
 
-                        if (controllerWindow.RunUntilStoppedState)
+                    if (controllerWindow.RunUntilStoppedState)
                         {
                             while (status == RunningState.running)
                             {
@@ -473,6 +477,8 @@ namespace MOTMaster
                         }
                         //if (config.CameraUsed) finishCameraControl();
                         //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                        //if (config.CameraUsed) finishCameraControl();
+                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
 
                         if (!config.Debug) clearDigitalPattern(sequence);
                     //}
@@ -516,6 +522,7 @@ namespace MOTMaster
         {
             initializeHardware(sequence);
             run(sequence);
+            while (pgMaster.TaskRunning && status == RunningState.running) ;
             releaseHardware();
         }
 
@@ -562,6 +569,14 @@ namespace MOTMaster
             CompilerParameters options = new CompilerParameters();
 
             options.ReferencedAssemblies.Add(motMasterPath);
+            if (Environs.FileSystem.Paths.ContainsKey("AdditionalMOTMasterAssemblies"))
+            {
+                foreach (string path in (List<string>)Environs.FileSystem.Paths["AdditionalMOTMasterAssemblies"])
+                {
+                    options.ReferencedAssemblies.Add(path);
+                }
+            }
+
             options.ReferencedAssemblies.Add(daqPath);
 
             TempFileCollection tempFiles = new TempFileCollection();

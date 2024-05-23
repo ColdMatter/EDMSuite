@@ -46,8 +46,8 @@ namespace DAQ
 
         }
 
-        private static double hthresh = 0.05;
-        private static double lthresh = 0.05;
+        private static double hthresh = 0.04;
+        private static double lthresh = 0.04;
 
         public static void SetThresholds(double low, double high)
         {
@@ -69,9 +69,9 @@ namespace DAQ
         public static double peakLocator(List<DataPoint> data)
         {
             List<DataPoint> processed = new List<DataPoint> { };
-            for (int i = 2; i < data.Count() - 2; ++i)
+            for (int i = 2; i < data.Count()-2; ++i)
             {
-                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y)/10));
+                processed.Add(new DataPoint(data[i].x,(-2*data[i-2].y - data[i-1].y + data[i+1].y + 2*data[i+2].y) /10));
             }
 
 
@@ -120,7 +120,7 @@ namespace DAQ
 
             }
 
-            return 0; // Probably a better err handling is preferred. This is non destructive so it's used
+            return Double.NaN; // Probably a better err handling is preferred. This is non destructive so it's used
 
         }
 

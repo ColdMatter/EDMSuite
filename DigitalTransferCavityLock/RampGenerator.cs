@@ -9,6 +9,8 @@ namespace DigitalTransferCavityLock
 {
     public class RampGenerator
     {
+        public Controller controller;
+
         public string syncCounter;
         public string rampOut;
         public string sharedTimebase;
@@ -40,8 +42,9 @@ namespace DigitalTransferCavityLock
             }
         }
 
-        public RampGenerator(string _rampOut, string _syncCounter, string timebase, int timebaseFreq)
+        public RampGenerator(string _rampOut, string _syncCounter, string timebase, int timebaseFreq, Controller cont)
         {
+            controller = cont;
             rampOut = _rampOut;
             syncCounter = _syncCounter;
             sharedTimebase = timebase;
@@ -50,8 +53,8 @@ namespace DigitalTransferCavityLock
                 throw new Exception("Timebase must be faster than sampling clock! set it above 1e6");
         }
 
-        public RampGenerator(string _rampOut, string _syncCounter, string timebase, int timebaseFreq, string resetOut)
-            : this(_rampOut, _syncCounter, timebase, timebaseFreq)
+        public RampGenerator(string _rampOut, string _syncCounter, string timebase, int timebaseFreq, Controller cont, string resetOut)
+            : this(_rampOut, _syncCounter, timebase, timebaseFreq, cont)
         {
             resetOutput = resetOut;
         }
@@ -75,10 +78,12 @@ namespace DigitalTransferCavityLock
         {
             get
             {
-                return samplesPerHalfPeriod / 1000;
+                return samplesPerHalfPeriod / 500;
             }
         }
 
+        List<double> rampPattern = new List<double>();
+        List<double> rampX = new List<double>();
         public int SetUpTasks(double amplitude, double frequency, double offset) // Returns samples per half period (aka half period in units of us)
         {
             samplesPerHalfPeriod = GetSamplesPerHalfPeriod(frequency);
@@ -90,17 +95,20 @@ namespace DigitalTransferCavityLock
                 throw new Exception("Ramp cannot exceed output channel limits");
             AOChannel outChannel = rampTask.AOChannels.CreateVoltageChannel(RampOut.PhysicalChannel, RampOut.Name, Math.Min(offset, offset + amplitude), Math.Max(offset, offset + amplitude), AOVoltageUnits.Volts);
             rampTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(SyncCounter.PhysicalChannel + "InternalOutput", DigitalEdgeStartTriggerEdge.Rising);
-            List<double> rampPattern = new List<double>();
+            rampPattern.Clear();
+            rampX.Clear();
             double val = offset;
             for (int i = 0; i < samplesPerHalfPeriod; ++i)
             {
                 rampPattern.Add(val);
                 val = val + (double)amplitude / samplesPerHalfPeriod;
+                rampX.Add((double)i / 1000);
             }
             for (int i = 0; i < samplesPerHalfPeriod; ++i)
             {
                 rampPattern.Add(val);
                 val = val - (double)amplitude / samplesPerHalfPeriod;
+                rampX.Add(((double)samplesPerHalfPeriod + i - 1) / 1000);
             }
             //rampTask.Timing.ReferenceClockRate = 10e6;
             rampTask.Timing.ConfigureSampleClock(string.Empty, 1000000, SampleClockActiveEdge.Rising, SampleQuantityMode.ContinuousSamples);
@@ -114,13 +122,18 @@ namespace DigitalTransferCavityLock
 
             syncTask = new Task("Sync task");
             //COChannel freqChannel = syncTask.COChannels.CreatePulseChannelFrequency("/PXI1Slot5/ctr2", "ref", COPulseFrequencyUnits.Hertz, COPulseIdleState.High, 0, 200, 0.5);
-            COChannel freqChannel = syncTask.COChannels.CreatePulseChannelTicks(SyncCounter.PhysicalChannel, SyncCounter.Name, "", COPulseIdleState.Low, 0, (timebaseFrequency/1000000) * samplesPerHalfPeriod, (timebaseFrequency/1000000) * samplesPerHalfPeriod);
+            COChannel freqChannel = syncTask.COChannels.CreatePulseChannelTicks(SyncCounter.PhysicalChannel, SyncCounter.Name, "", COPulseIdleState.Low, 0, (timebaseFrequency / 1000000) * samplesPerHalfPeriod, (timebaseFrequency / 1000000) * samplesPerHalfPeriod);
             freqChannel.CounterTimebaseSource = sharedTimebase;
             if (ResetOutput != null)
                 freqChannel.PulseTerminal = ResetOutput.PhysicalChannel;
             syncTask.Timing.ConfigureImplicit(SampleQuantityMode.ContinuousSamples);
             syncTask.Triggers.StartTrigger.ConfigureNone();
             syncTask.Timing.SampleQuantityMode = SampleQuantityMode.ContinuousSamples;
+
+            syncTask.CounterOutput += (object ob, CounterOutputEventArgs e) => { controller.updateReady = true; ++controller.loopCount; };
+            //syncTask.EveryNSamplesWrittenEventInterval = 2;
+            //syncTask.EveryNSamplesWritten += (object ob, EveryNSamplesWrittenEventArgs e) => { controller.Update(); };
+
             syncTask.Control(TaskAction.Verify);
             syncTask.Control(TaskAction.Commit);
             syncTask.Start();
@@ -128,10 +141,10 @@ namespace DigitalTransferCavityLock
             return samplesPerHalfPeriod;
         }
 
-        public double ConvertToVoltage(double timeMS)
+        public double ConvertToVoltage(double timeMS) // Fix bug
         {
             timeMS = timeMS % (samplesPerHalfPeriod / 500);
-            if (timeMS < samplesPerHalfPeriod / 500)
+            if (timeMS < samplesPerHalfPeriod / 1000)
                 return (timeMS * 1000 / samplesPerHalfPeriod) * Amplitude + Offset;
             return (2 - timeMS * 1000 / samplesPerHalfPeriod) * Amplitude + Offset;
         }
@@ -140,6 +153,23 @@ namespace DigitalTransferCavityLock
         {
             rampTask.Dispose();
             syncTask.Dispose();
+        }
+
+        public void UpdateRampPlot(ControlWindow win, bool active)
+        {
+            if (!active)
+            {
+                rampPattern.Clear();
+                for (int i = 0; i < samplesPerHalfPeriod; ++i)
+                {
+                    rampPattern.Add(0);
+                }
+                for (int i = 0; i < samplesPerHalfPeriod; ++i)
+                {
+                    rampPattern.Add(0);
+                }
+            }
+            win.UpdateRenderedObject<NationalInstruments.UI.WindowsForms.ScatterGraph>(win.PeakPlot, (NationalInstruments.UI.WindowsForms.ScatterGraph g) => { g.Plots[0].PlotXY(rampX.ToArray(), rampPattern.ToArray()); });
         }
 
     }

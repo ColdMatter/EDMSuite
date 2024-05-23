@@ -43,13 +43,13 @@ namespace DigitalTransferCavityLock
             this.slaveLocMS = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.ErrorGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.RMSError = new System.Windows.Forms.TextBox();
             this.ResetRMS = new System.Windows.Forms.Button();
+            this.RMSError = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ErrorGraph)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -204,6 +204,8 @@ namespace DigitalTransferCavityLock
             // 
             // scatterPlot1
             // 
+            this.scatterPlot1.LineColor = System.Drawing.Color.Red;
+            this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.scatterPlot1.XAxis = this.xAxis1;
             this.scatterPlot1.YAxis = this.yAxis1;
             // 
@@ -220,23 +222,6 @@ namespace DigitalTransferCavityLock
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Error";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 147);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "RMS Error [MHz]";
-            // 
-            // RMSError
-            // 
-            this.RMSError.Enabled = false;
-            this.RMSError.Location = new System.Drawing.Point(152, 147);
-            this.RMSError.Name = "RMSError";
-            this.RMSError.Size = new System.Drawing.Size(100, 20);
-            this.RMSError.TabIndex = 5;
-            // 
             // ResetRMS
             // 
             this.ResetRMS.Location = new System.Drawing.Point(6, 164);
@@ -246,6 +231,23 @@ namespace DigitalTransferCavityLock
             this.ResetRMS.Text = "Reset Error";
             this.ResetRMS.UseVisualStyleBackColor = true;
             this.ResetRMS.Click += new System.EventHandler(this.ResetRMS_Click);
+            // 
+            // RMSError
+            // 
+            this.RMSError.Enabled = false;
+            this.RMSError.Location = new System.Drawing.Point(152, 147);
+            this.RMSError.Name = "RMSError";
+            this.RMSError.Size = new System.Drawing.Size(100, 20);
+            this.RMSError.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 147);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "RMS Error [MHz]";
             // 
             // SlaveLaserControl
             // 

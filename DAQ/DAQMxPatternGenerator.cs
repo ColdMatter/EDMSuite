@@ -24,6 +24,14 @@ namespace DAQ.HAL
         string clock_line;
         private bool taskRunning;
 
+        public bool TaskRunning
+        {
+            get
+            {
+                return taskRunning;
+            }
+        }
+
 		public DAQMxPatternGenerator(String device)
 		{
 			this.device = device;
@@ -47,6 +55,7 @@ namespace DAQ.HAL
             //pgTask.Start();
             
             writer.WriteMultiSamplePort(false, pattern);
+            taskRunning = true;
             pgTask.Start();
             if(sleep==true)
                 SleepOnePattern();

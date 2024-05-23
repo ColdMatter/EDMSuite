@@ -25,6 +25,18 @@ namespace DAQ.DigitalTransferCavityLock
 
         public double MHzConv = 500;
 
+        public string resetOut = "";
+
+        public int TCPChannel = 2555;
+
+        public CounterChannel ResetOut
+        {
+            get
+            {
+                return (CounterChannel)Environs.Hardware.CounterChannels[resetOut];
+            }
+        }
+
         public AnalogOutputChannel RampOut
         {
             get

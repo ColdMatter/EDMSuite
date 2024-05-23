@@ -5,10 +5,11 @@ using System.Net;
 using System.Net.Sockets;
 using WavemeterLockServer;
 using NationalInstruments.DAQmx;
-
+using WavemeterLockServer;
 using DAQ.Environment;
 using DAQ.HAL;
 
+using System.Net;
 using ScanMaster.Acquire.Plugin;
 
 namespace ScanMaster.Acquire.Plugins
@@ -28,12 +29,12 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
 		private string ipAddr;
 
-		private string hostName = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+		//private string hostName = "IC-CZC136CFDJ";// (String)System.Environment.GetEnvironmentVariables()["IC-CZC136CFDJ"];
 
 		protected override void InitialiseSettings()
 		{
 			settings["channel"] =  1;
-			settings["computer"] = hostName;
+			settings["computer"] = "IC-CZC136CFDJ";
 			settings["offset"] = 0.0;//Frequency offset in THz
 		}
 
@@ -42,16 +43,16 @@ namespace ScanMaster.Acquire.Plugins
             if (!Environs.Debug)
             {
 				serverComputerName = (string)settings["computer"];
-
-				foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
+				
+				/*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
 				{
 					if (addr.AddressFamily == AddressFamily.InterNetwork)
 						ipAddr = addr.ToString();
-				}
+				}*/
 
 				EnvironsHelper eHelper = new EnvironsHelper(serverComputerName);
 
-				wavemeterServerContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + ipAddr + ":" + eHelper.wavemeterLockTCPChannel + "/controller.rem"));
+				wavemeterServerContrller = (WavemeterLockServer.Controller)(Activator.GetObject(typeof(WavemeterLockServer.Controller), "tcp://" + Dns.GetHostByName(serverComputerName).AddressList[0].ToString() + ":" + eHelper.serverTCPChannel + "/controller.rem"));
 			}
 			
 		}
@@ -74,7 +75,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = 1000*(wavemeterServerContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
+					latestData = (wavemeterServerContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
 				}
 			}
 		}

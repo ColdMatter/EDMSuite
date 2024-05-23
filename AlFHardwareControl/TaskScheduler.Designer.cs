@@ -49,10 +49,16 @@ namespace AlFHardwareControl
             this.ResourceEventDiscard = new System.Windows.Forms.CheckBox();
             this.ScheduleResourceEvent = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.macroGroupBox = new System.Windows.Forms.GroupBox();
+            this.editMacro = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.macrosDropbox = new System.Windows.Forms.ComboBox();
+            this.runMacro = new System.Windows.Forms.Button();
             this.ScheduledEventsBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.macroGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // ScheduledEventsBox
@@ -257,10 +263,63 @@ namespace AlFHardwareControl
             this.label4.TabIndex = 0;
             this.label4.Text = "Condition";
             // 
+            // macroGroupBox
+            // 
+            this.macroGroupBox.Controls.Add(this.editMacro);
+            this.macroGroupBox.Controls.Add(this.label5);
+            this.macroGroupBox.Controls.Add(this.macrosDropbox);
+            this.macroGroupBox.Controls.Add(this.runMacro);
+            this.macroGroupBox.Location = new System.Drawing.Point(413, 237);
+            this.macroGroupBox.Name = "macroGroupBox";
+            this.macroGroupBox.Size = new System.Drawing.Size(313, 79);
+            this.macroGroupBox.TabIndex = 10;
+            this.macroGroupBox.TabStop = false;
+            this.macroGroupBox.Text = "Run Macro";
+            // 
+            // editMacro
+            // 
+            this.editMacro.Location = new System.Drawing.Point(9, 46);
+            this.editMacro.Name = "editMacro";
+            this.editMacro.Size = new System.Drawing.Size(138, 23);
+            this.editMacro.TabIndex = 6;
+            this.editMacro.Text = "Edit Macros";
+            this.editMacro.UseVisualStyleBackColor = true;
+            this.editMacro.Click += new System.EventHandler(this.editMacro_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 22);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Macro name";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // macrosDropbox
+            // 
+            this.macrosDropbox.FormattingEnabled = true;
+            this.macrosDropbox.Location = new System.Drawing.Point(107, 19);
+            this.macrosDropbox.Name = "macrosDropbox";
+            this.macrosDropbox.Size = new System.Drawing.Size(200, 21);
+            this.macrosDropbox.TabIndex = 0;
+            this.macrosDropbox.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
+            // runMacro
+            // 
+            this.runMacro.Location = new System.Drawing.Point(169, 46);
+            this.runMacro.Name = "runMacro";
+            this.runMacro.Size = new System.Drawing.Size(138, 23);
+            this.runMacro.TabIndex = 5;
+            this.runMacro.Text = "Run";
+            this.runMacro.UseVisualStyleBackColor = true;
+            this.runMacro.Click += new System.EventHandler(this.runMacro_Click);
+            // 
             // TaskScheduler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.macroGroupBox);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
@@ -274,6 +333,8 @@ namespace AlFHardwareControl
             this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.macroGroupBox.ResumeLayout(false);
+            this.macroGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -299,5 +360,10 @@ namespace AlFHardwareControl
         private System.Windows.Forms.CheckBox ResourceEventDiscard;
         private System.Windows.Forms.Button ScheduleResourceEvent;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox macrosDropbox;
+        private System.Windows.Forms.Button runMacro;
+        private System.Windows.Forms.Button editMacro;
+        public System.Windows.Forms.GroupBox macroGroupBox;
     }
 }

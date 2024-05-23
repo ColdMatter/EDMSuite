@@ -189,7 +189,7 @@ namespace DAQ.HAL
             short PV = 0;
             PV |= (short)(data[0] << 8);
             PV |= (short)(data[1] & 0xFF);
-            return (double)PV / 10;
+            return (double)PV / 100;
         }
 
         public void SetHeaterShutoff(int loop, bool Man)

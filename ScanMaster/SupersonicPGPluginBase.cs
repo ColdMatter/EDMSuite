@@ -80,17 +80,47 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void ScanStarting()
 		{
+			pg.StopPattern();
+			pg.Configure(
+				(int)settings["clockFrequency"],
+				true,
+				(bool)settings["fullWidth"],
+				(bool)settings["lowGroup"],
+				patternLength,
+				(bool)settings["internalClock"],
+				(bool)settings["triggered"]
+				);
 			OutputPattern(GetScanPattern());
 		}
 
 		public override void ScanFinished()
 		{
+			pg.StopPattern();
+			pg.Configure(
+				(int)settings["clockFrequency"],
+				true,
+				(bool)settings["fullWidth"],
+				(bool)settings["lowGroup"],
+				patternLength,
+				(bool)settings["internalClock"],
+				(bool)settings["triggered"]
+				);
 			// switch back to the flashlamp only pattern
 			loadFlashlampPattern();
 		}
 
 		public override void AcquisitionFinished()
 		{
+			pg.StopPattern();
+			pg.Configure(
+				(int)settings["clockFrequency"],
+				true,
+				(bool)settings["fullWidth"],
+				(bool)settings["lowGroup"],
+				patternLength,
+				(bool)settings["internalClock"],
+				(bool)settings["triggered"]
+				);
 			// check whether to stop flashlamp pattern
 			if ((bool)settings["stopFlashlamps"]) 
 			{
@@ -102,10 +132,22 @@ namespace ScanMaster.Acquire.Plugins
 				// reload the flashlamp pattern
 				loadFlashlampPattern();
 			}
+			pg.StopPattern();
 		}
 
 		public override void ReloadPattern()
 		{
+
+			pg.StopPattern();
+			pg.Configure(
+				(int)settings["clockFrequency"],
+				true,
+				(bool)settings["fullWidth"],
+				(bool)settings["lowGroup"],
+				patternLength,
+				(bool)settings["internalClock"],
+				(bool)settings["triggered"]
+				);
 			OutputPattern(GetScanPattern());
 			System.GC.Collect();
 		}
@@ -150,9 +192,10 @@ namespace ScanMaster.Acquire.Plugins
             get
             {
                 long gateStartShotUnits = (int)config.shotGathererPlugin.Settings["gateStartTime"];
-                long clockFreq = (int)Settings["clockFrequency"];
+				long shotGathererSampleRate = (int)config.shotGathererPlugin.Settings["sampleRate"]; //We should use the sample rate to determine the gate start time, not a fixed 1MHz
+				long clockFreq = (int)Settings["clockFrequency"];
                 return (int)(
-                    (double)(gateStartShotUnits * clockFreq) / 1000000.0
+                    (double)(gateStartShotUnits * clockFreq) / shotGathererSampleRate //This used to be divided by 1000000.0
                     );
             }
         }

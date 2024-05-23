@@ -11,8 +11,13 @@ namespace MOTMaster
     {
         public abstract PatternBuilder32 GetDigitalPattern();
         public abstract AnalogPatternBuilder GetAnalogPattern();
-        public abstract AnalogStaticBuilder GetAnalogStatic();
+        public virtual AnalogStaticBuilder GetAnalogStatic()
+        {
+            return new AnalogStaticBuilder();
+        }
         public Dictionary<String,Object> Parameters;
+
+        public Dictionary<string, List<bool>> switchConfiguration = new Dictionary<string, List<bool>> { };
 
         public MOTMasterSequence GetSequence()
         {

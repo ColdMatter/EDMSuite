@@ -13,7 +13,7 @@ namespace DigitalTransferCavityLock
     {
         public string laserName;
         public Laser laser;
-        public CounterReader laserCounter;
+        public CounterReaderHelper laserCounter;
         public RampGenerator rampGen;
         public CavityControl cavity;
 
@@ -25,7 +25,7 @@ namespace DigitalTransferCavityLock
             laserName = name;
             cavity = _cavity;
             laser = new Laser(() => { return laserCounter.dataMS; }, feedback, cavity.cavity);
-            laserCounter = new CounterReader(counter, samplingClock, refClock, _refClockFreq, sync);
+            laserCounter = new CounterReaderHelper(counter, samplingClock, refClock, _refClockFreq, sync);
             rampGen = _rampGen;
             VToMHz = ((DTCLConfig)Environs.Hardware.GetInfo("DTCLConfig")).MHzConv;
         }
@@ -115,7 +115,7 @@ namespace DigitalTransferCavityLock
                 this.UpdateRenderedObject(cavity.LockReference, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = false; });
                 this.UpdateRenderedObject(this.InputEnable, (Control a) => { a.Enabled = false; });
-                this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = false; });
+                //this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = false; });
             }
             else
             {
@@ -123,7 +123,7 @@ namespace DigitalTransferCavityLock
                 cavity.UpdateAfterSlaveUnlock();
                 this.UpdateRenderedObject(this.SlaveVoltageFeedback, (Control a) => { a.Enabled = true; });
                 this.UpdateRenderedObject(this.InputEnable, (Control a) => { a.Enabled = true; });
-                this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = true; });
+                //this.UpdateRenderedObject(this.slaveGain, (Control a) => { a.Enabled = true; });
             }
         }
 
@@ -134,6 +134,8 @@ namespace DigitalTransferCavityLock
                 if(cavity.LockReference.Checked)
                     this.UpdateRenderedObject(this.LockSlave, (Control c) => { c.Enabled = true; });
                 laserCounter.SetUpTask(rampGen.periodMS);
+                laserCounter.ready = true;
+                laserCounter.fail = true;
             }
             else
             {
@@ -158,6 +160,34 @@ namespace DigitalTransferCavityLock
         {
             UpdateRenderedObject(this.ErrorGraph, (ScatterGraph g) => { g.ClearData(); });
             MHzErr.Clear();
+        }
+
+        public void UpdateRampPlot(ControlWindow win)
+        {
+            List<double> x = new List<double>();
+            List<double> y = new List<double>();
+            y.Add(rampGen.Offset);
+            y.Add(rampGen.Offset + 0.25 * rampGen.Amplitude);
+            y.Add(rampGen.Offset + 0.50 * rampGen.Amplitude);
+            y.Add(rampGen.Offset + 0.75 * rampGen.Amplitude);
+            y.Add(rampGen.Offset + 1.00 * rampGen.Amplitude);
+            if (this.InputEnable.Checked)
+            {
+                x.Add(laserCounter.dataMS);
+                x.Add(laserCounter.dataMS);
+                x.Add(laserCounter.dataMS);
+                x.Add(laserCounter.dataMS);
+                x.Add(laserCounter.dataMS);
+            }
+            else
+            {
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+                x.Add(0);
+            }
+            win.UpdateRenderedObject<NationalInstruments.UI.WindowsForms.ScatterGraph>(win.PeakPlot, (NationalInstruments.UI.WindowsForms.ScatterGraph g) => { g.Plots[2].PlotXY(x.ToArray(), y.ToArray()); });
         }
     }
 }

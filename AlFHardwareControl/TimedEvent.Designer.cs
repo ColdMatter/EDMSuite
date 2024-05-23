@@ -64,7 +64,7 @@ namespace AlFHardwareControl
             // 
             // Dismiss
             // 
-            this.Dismiss.Location = new System.Drawing.Point(228, 82);
+            this.Dismiss.Location = new System.Drawing.Point(3, 82);
             this.Dismiss.Name = "Dismiss";
             this.Dismiss.Size = new System.Drawing.Size(138, 23);
             this.Dismiss.TabIndex = 8;
@@ -76,7 +76,7 @@ namespace AlFHardwareControl
             // 
             this.DiscardTimedSchedOnInterlockFail.AutoSize = true;
             this.DiscardTimedSchedOnInterlockFail.Enabled = false;
-            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(9, 86);
+            this.DiscardTimedSchedOnInterlockFail.Location = new System.Drawing.Point(209, 86);
             this.DiscardTimedSchedOnInterlockFail.Name = "DiscardTimedSchedOnInterlockFail";
             this.DiscardTimedSchedOnInterlockFail.Size = new System.Drawing.Size(157, 17);
             this.DiscardTimedSchedOnInterlockFail.TabIndex = 7;

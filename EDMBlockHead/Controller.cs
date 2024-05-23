@@ -86,15 +86,22 @@ namespace EDMBlockHead
             MakeDefaultBlockConfig();
 
             // ask the remoting system for access to the EDMHardwareController
+            //RemotingConfiguration.RegisterWellKnownClientType(
+            //    Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
+            //    "tcp://localhost:1172/controller.rem"
+            //    );
+            Console.WriteLine(Type.GetType("ScanMaster.Controller, ScanMaster").ToString());
+            Console.WriteLine(Type.GetType("EDMPhaseLock.MainForm, EDMPhaseLock").ToString());
+            Console.WriteLine(Type.GetType("UEDMHardwareControl.UEDMController, UEDMHardwareControl").ToString());
             RemotingConfiguration.RegisterWellKnownClientType(
-                Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl"),
-                "tcp://localhost:1172/controller.rem"
+                Type.GetType("UEDMHardwareControl.UEDMController, UEDMHardwareControl"),
+                "tcp://localhost:1172/UEDMController.rem"
                 );
 
             // ask the remoting system for access to ScanMaster 
             RemotingConfiguration.RegisterWellKnownClientType(
                 Type.GetType("ScanMaster.Controller, ScanMaster"),
-                "tcp://localhost:1170/controller.rem"
+                "tcp://localhost:1191/controller.rem"
                 );
 
             // ask the remoting system for access to PhaseLock
@@ -118,31 +125,31 @@ namespace EDMBlockHead
         // is to use BlockHead to save this config and then modify it.
         private void MakeDefaultBlockConfig()
         {
-            const int CODE_LENGTH = 12;
+            const int CODE_LENGTH = 8; //(256 shots) Was 12 for 4096 shots
             config = new BlockConfig();
 
             DigitalModulation dm = new DigitalModulation();
             dm.Name = "E";
             dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
-            dm.Waveform.Code = new bool[] { true, true, true, true, false, false, false, false, false, false, false, false };
+            dm.Waveform.Code = new bool[] { true, true, false, false, false, false, false, false }; //{ true, true, true , true, false ,false , false, false, false, false, false, false };
             config.DigitalModulations.Add(dm);
 
-            DigitalModulation mw = new DigitalModulation();
-            mw.Name = "MW";
-            mw.Waveform = new Waveform("Mw Modulation", CODE_LENGTH);
-            mw.Waveform.Code = new bool[] { false, true, false, true, true, true, false, true, false, false, false, false };
-            config.DigitalModulations.Add(mw);
+            //DigitalModulation mw = new DigitalModulation();
+            //mw.Name = "MW";
+            //mw.Waveform = new Waveform("Mw Modulation", CODE_LENGTH);
+            //mw.Waveform.Code = new bool[] { false, true, false, true, true, true, false, true, false, false, false, false };
+            //config.DigitalModulations.Add(mw);
 
-            DigitalModulation pi = new DigitalModulation();
-            pi.Name = "PI";
-            pi.Waveform = new Waveform("Pi Modulation", CODE_LENGTH);
-            pi.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, false, true };
-            config.DigitalModulations.Add(pi);
+            //DigitalModulation pi = new DigitalModulation();
+            //pi.Name = "PI";
+            //pi.Waveform = new Waveform("Pi Modulation", CODE_LENGTH);
+            //pi.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, false, true };
+            //config.DigitalModulations.Add(pi);
 
             AnalogModulation b = new AnalogModulation();
             b.Name = "B";
             b.Waveform = new Waveform("B Modulation", CODE_LENGTH);
-            b.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, true };
+            b.Waveform.Code = new bool[] { false, false, false, false, false, false, true, true }; //{ false, false, false, false, false, false, false, false, false, false, true, true };
             b.DelayAfterSwitch = 5;
             b.Centre = 0;
             b.Step = 0.46;
@@ -151,56 +158,56 @@ namespace EDMBlockHead
             AnalogModulation db = new AnalogModulation();
             db.Name = "DB";
             db.Waveform = new Waveform("DB Modulation", CODE_LENGTH);
-            db.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, false, true, false };
+            db.Waveform.Code = new bool[] { false, false, false, false, false, false, true, false }; //{ false, false, false, false, false, false, false, false, false, false, true, false };
             db.DelayAfterSwitch = 5;
             db.Centre = 0;
             db.Step = 0.1;
             config.AnalogModulations.Add(db);
 
-            AnalogModulation rf1A = new AnalogModulation();
-            rf1A.Name = "RF1A";
-            rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
-            rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, true, true, false };
-            rf1A.DelayAfterSwitch = 0;
-            rf1A.Centre = 1.5;
-            rf1A.Step = 0.1;
-            config.AnalogModulations.Add(rf1A);
+            //AnalogModulation rf1A = new AnalogModulation();
+            //rf1A.Name = "RF1A";
+            //rf1A.Waveform = new Waveform("rf1 Amplitude modulation", CODE_LENGTH);
+            //rf1A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, false, true, true, false };
+            //rf1A.DelayAfterSwitch = 0;
+            //rf1A.Centre = 1.5;
+            //rf1A.Step = 0.1;
+            //config.AnalogModulations.Add(rf1A);
 
-            AnalogModulation rf2A = new AnalogModulation();
-            rf2A.Name = "RF2A";
-            rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
-            rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, true, false, true, false };
-            rf2A.DelayAfterSwitch = 0;
-            rf2A.Centre = 2.5;
-            rf2A.Step = 0.1;
-            config.AnalogModulations.Add(rf2A);
+            //AnalogModulation rf2A = new AnalogModulation();
+            //rf2A.Name = "RF2A";
+            //rf2A.Waveform = new Waveform("rf2 Amplitude modulation", CODE_LENGTH);
+            //rf2A.Waveform.Code = new bool[] { false, false, false, false, false, false, false, false, true, false, true, false };
+            //rf2A.DelayAfterSwitch = 0;
+            //rf2A.Centre = 2.5;
+            //rf2A.Step = 0.1;
+            //config.AnalogModulations.Add(rf2A);
 
-            AnalogModulation rf1F = new AnalogModulation();
-            rf1F.Name = "RF1F";
-            rf1F.Waveform = new Waveform("rf1 frequency modulation", CODE_LENGTH);
-            rf1F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, true, false, false, true, false };
-            rf1F.DelayAfterSwitch = 0;
-            rf1F.Centre = 2.5;
-            rf1F.Step = 0.1;
-            config.AnalogModulations.Add(rf1F);
+            //AnalogModulation rf1F = new AnalogModulation();
+            //rf1F.Name = "RF1F";
+            //rf1F.Waveform = new Waveform("rf1 frequency modulation", CODE_LENGTH);
+            //rf1F.Waveform.Code = new bool[] { false, false, false, false, false, false, false, true, false, false, true, false };
+            //rf1F.DelayAfterSwitch = 0;
+            //rf1F.Centre = 2.5;
+            //rf1F.Step = 0.1;
+            //config.AnalogModulations.Add(rf1F);
 
-            AnalogModulation rf2F = new AnalogModulation();
-            rf2F.Name = "RF2F";
-            rf2F.Waveform = new Waveform("rf2 frequency modulation", CODE_LENGTH);
-            rf2F.Waveform.Code = new bool[] { false, false, false, false, false, false, true, false, false, false, true, false };
-            rf2F.DelayAfterSwitch = 0;
-            rf2F.Centre = 2.5;
-            rf2F.Step = 0.1;
-            config.AnalogModulations.Add(rf2F);
+            //AnalogModulation rf2F = new AnalogModulation();
+            //rf2F.Name = "RF2F";
+            //rf2F.Waveform = new Waveform("rf2 frequency modulation", CODE_LENGTH);
+            //rf2F.Waveform.Code = new bool[] { false, false, false, false, false, false, true, false, false, false, true, false };
+            //rf2F.DelayAfterSwitch = 0;
+            //rf2F.Centre = 2.5;
+            //rf2F.Step = 0.1;
+            //config.AnalogModulations.Add(rf2F);
 
-            AnalogModulation lf1 = new AnalogModulation();
-            lf1.Name = "LF1";
-            lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
-            lf1.Waveform.Code = new bool[] { false, false, false, true, false, false, false, true, false,false, false, true };
-            lf1.DelayAfterSwitch = 0;
-            lf1.Centre = 8.58;
-            lf1.Step = 0.05;
-            config.AnalogModulations.Add(lf1);
+            //AnalogModulation lf1 = new AnalogModulation();
+            //lf1.Name = "LF1";
+            //lf1.Waveform = new Waveform("laser frequency 1 modulation", CODE_LENGTH);
+            //lf1.Waveform.Code = new bool[] { false, false, false, true, false, false, false, true, false,false, false, true };
+            //lf1.DelayAfterSwitch = 0;
+            //lf1.Centre = 8.58;
+            //lf1.Step = 0.05;
+            //config.AnalogModulations.Add(lf1);
 
             //AnalogModulation lf2 = new AnalogModulation();
             //lf2.Name = "LF2";
@@ -212,7 +219,7 @@ namespace EDMBlockHead
             //config.AnalogModulations.Add(lf2);
 
             config.Settings["codeLength"] = CODE_LENGTH;
-            config.Settings["numberOfPoints"] = 4096;
+            config.Settings["numberOfPoints"] = 256; //4096 for Classic before Jan 2024
             config.Settings["pgClockFrequency"] = 1000000;
             config.Settings["eDischargeTime"] = 1000;
             config.Settings["eBleedTime"] = 1000;
@@ -223,7 +230,7 @@ namespace EDMBlockHead
             config.Settings["eRampUpTime"] = 10;
             config.Settings["eDischargeTime"] = 10;
             config.Settings["greenDCMF"] = 10;
-            config.Settings["magnetCalibration"] = 16.9;
+            config.Settings["magnetCalibration"] = 5; //16.9 for ClassicEDM
             config.Settings["dummy"] = "jack";
             config.Settings["cluster"] = "28May1701";
             config.Settings["phaseScramblerV"] = 1.0;
@@ -255,9 +262,9 @@ namespace EDMBlockHead
             if (appState == AppState.running) StopAcquisition();
         }
 
-        #endregion
+#endregion
 
-        #region Remote methods
+#region Remote methods
 
         public void CaptureRemote()
         {
@@ -402,16 +409,16 @@ namespace EDMBlockHead
             }
         }
 
-        #endregion
+#endregion
 
-        #region Local methods
+#region Local methods
 
         public void AcquisitionFinished(Block b)
         {
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
-            b.AddDetectorsToBlock();
-            DBlock = blockDemodulator.QuickDemodulateBlock(b);
+             b.AddDetectorsToBlock();
+            DBlock = blockDemodulator.QuickDemodulateBlock(b);            //This is commented out while we figure out the differences between UEDM and ClassicEDM
             AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
             liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
@@ -454,14 +461,14 @@ namespace EDMBlockHead
         }
 
         private bool targetHealthy; 
-        double[] northLeakages = new double[UPDATE_EVERY];
-        double[] southLeakages = new double[UPDATE_EVERY];
+        double[] westLeakages = new double[UPDATE_EVERY];
+        double[] eastLeakages = new double[UPDATE_EVERY];
         int leakageIndex = 0;
         public void GotPoint(int point, EDMPoint p)
         {
             // store the leakage measurements ready for the graph update
-            northLeakages[leakageIndex] = (double)p.SinglePointData["NorthCurrent"];
-            southLeakages[leakageIndex] = (double)p.SinglePointData["SouthCurrent"];
+            westLeakages[leakageIndex] = (double)p.SinglePointData["WestCurrent"];
+            eastLeakages[leakageIndex] = (double)p.SinglePointData["EastCurrent"];
             leakageIndex++;
 
             if ((point % UPDATE_EVERY) == 0)
@@ -473,14 +480,14 @@ namespace EDMBlockHead
                 mainWindow.PlotTOF(0, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[1];
                 mainWindow.PlotTOF(1, tof.Data, tof.GateStartTime, tof.ClockPeriod);
-                mainWindow.PlotGates(2800,3000);
+                mainWindow.PlotGates(12000,38000);
                 tof = (TOF)data.TOFs[2];
                 mainWindow.PlotTOF(2, tof.Data, tof.GateStartTime, tof.ClockPeriod);
                 tof = (TOF)data.TOFs[3];
                 mainWindow.PlotTOF(3, tof.Data, tof.GateStartTime, tof.ClockPeriod);
 
                 // update the leakage graphs
-                mainWindow.AppendLeakageMeasurement(new double[]{northLeakages[0]}, new double[]{southLeakages[0]});
+                mainWindow.AppendLeakageMeasurement(new double[]{westLeakages[0]}, new double[]{eastLeakages[0]});
                 leakageIndex = 0;
             }
         }
@@ -575,7 +582,7 @@ namespace EDMBlockHead
             liveViewer.Show();
         }
 
-        #endregion
+#endregion
 
 
         internal void TestLiveAnalysis()
@@ -585,9 +592,10 @@ namespace EDMBlockHead
 
         internal void ActuallyTestLiveAnalysis()
         {
-            for (int i = 0; i <= 44; i++)
+            for (int i = 0; i <= 0; i++)
             {
-                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2019\\November2019\\13Nov1903_";
+                //string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2019\\November2019\\13Nov1903_";
+                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\TestLiveAnalysis\\25Apr2400_";
                 BlockSerializer bs = new BlockSerializer();
                 Block b = bs.DeserializeBlockFromZippedXML(fileRoot + (i.ToString()) + ".zip", "block.xml");
                 AcquisitionFinished(b);

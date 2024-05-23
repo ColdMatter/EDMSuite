@@ -191,6 +191,7 @@
             this.label3.Size = new System.Drawing.Size(168, 18);
             this.label3.TabIndex = 2;
             this.label3.Text = "xxxxxxxxxxx";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // groupBox4
             // 
