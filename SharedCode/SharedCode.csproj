@@ -152,6 +152,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ultracoldEDM|AnyCPU'">
     <OutputPath>bin\ultracoldEDM\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ScanMaster|AnyCPU'">
     <OutputPath>bin\ScanMaster\</OutputPath>
@@ -604,6 +605,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockDemodulator.cs" />
+    <Compile Include="SerializableDictionary.cs" />
     <Compile Include="ThreadSync.cs" />
     <Compile Include="DemodulationConfig.cs" />
     <Compile Include="GateManager.cs" />

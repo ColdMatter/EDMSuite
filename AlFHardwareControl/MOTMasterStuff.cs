@@ -6,16 +6,12 @@ using System.Threading;
 
 using NationalInstruments.DAQmx;
 using DAQ.Environment;
-using DAQ;
 using DAQ.HAL;
 using ScanMaster.Acquire.Plugin;
 using ScanMaster.Acquire.Plugins;
-using System.Xml.Serialization;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Tcp;
-using System.Runtime.Remoting;
+using Data;
+
 using System.Collections;
-using System.Runtime.Serialization.Formatters;
 using System.Drawing;
 
 namespace AlFHardwareControl
@@ -24,7 +20,8 @@ namespace AlFHardwareControl
     public partial class MOTMasterStuff : UserControl
     {
 
-        public static Type MMScanDataType = typeof(MOTMasterStuff.KVPair<ScanOutputPlugin, List<MOTMasterStuff.KVPair<double, List<List<List<MOTMasterStuff.KVPair<string, double[]>>>>>>>);
+        public static Type MMScanDataType = typeof(MOTMasterStuff.ScanResults);
+        public static Type OldMMScanDataType = typeof(MOTMasterStuff.KVPair<ScanOutputPlugin, List<MOTMasterStuff.KVPair<double, List<List<List<MOTMasterStuff.KVPair<string, double[]>>>>>>>);
         //private XYCursor cursor1 = new XYCursor();
         //private XYCursor cursor2 = new XYCursor();
 
@@ -33,8 +30,11 @@ namespace AlFHardwareControl
 
 
         private Task DAQTask;
+        private Task CtrTask;
         private AnalogMultiChannelReader dataReader;
+        private CounterMultiChannelReader counterReader;
         private List<string> AIchannels = (List<string>)Environs.Hardware.GetInfo("MMAnalogInputs");
+        private List<string> Ctrchannels = (List<string>)Environs.Hardware.GetInfo("MMCtrInputs");
         public List<MOTMasterData> mmdata = new List<MOTMasterData>();
         private bool dataSaved = false;
         public bool isDataSaved
@@ -104,9 +104,8 @@ namespace AlFHardwareControl
             }
             PluginSelector.SelectedIndex = 0;
 
-            /*WMLServer.Text = (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"];
+            reloadPatterns_Click(null, new EventArgs());
 
-            selectedScan = ParamScan;*/
         }
 
         private void initPanels()
@@ -114,29 +113,82 @@ namespace AlFHardwareControl
             foreach (string aichannel in AIchannels)
             {
                 TabPage dataGraph = new TabPage(aichannel);
-                mmdata.Add(new MOTMasterData());
+                mmdata.Add(new MOTMasterData(aichannel));
                 mmdata.Last().mmstuff = this;
                 mmdata.Last().initNormalisation(AIchannels);
                 dataGraph.Controls.Add(mmdata.Last());
                 DataTabs.Controls.Add(dataGraph);
 
             }
+
+            foreach (string ctrchannel in Ctrchannels)
+            {
+                TabPage dataGraph = new TabPage(ctrchannel);
+                mmdata.Add(new MOTMasterData(ctrchannel, "Count rate [kHz]"));
+                mmdata.Last().mmstuff = this;
+                mmdata.Last().initNormalisation(AIchannels);
+                dataGraph.Controls.Add(mmdata.Last());
+                DataTabs.Controls.Add(dataGraph);
+
+            }
+
         }
 
-        private bool dataAcquired = false;
 
-        public Dictionary<string, double[]> AIData = new Dictionary<string, double[]>();
+        AutoResetEvent dataAcquired = new AutoResetEvent(false);
+        private bool AIReady = false;
+        private bool CtrReady = false;
 
+        public SerializableDictionary<string, List<double[]>> AIData = new SerializableDictionary<string, List<double[]>>();
+        private int patternProgress = 0;
         private void UpdateReadings(object sender, TaskDoneEventArgs args)
         {
-            double[,] data = dataReader.ReadMultiSample(Convert.ToInt32(this.sampNum.Text));
-
-            for (int i = 0; i < mmdata.Count; ++i)
+            if ((!AIReady && AI) || (!CtrReady && Ctr)) return;
+            int samples = Convert.ToInt32(this.sampNum.Text);
+            int frequency = Convert.ToInt32(this.cmbSamplingRate.Text);
+            double[,] data = new double[1,1];
+            if (AI)
+                data = dataReader.ReadMultiSample(samples);
+            int[,] ctrData = new int[1, 1];
+            double[,] ctrFreq = new double[1, 1];
+            if (Ctr)
             {
-                AIData[AIchannels[i]] = Enumerable.Range(0, data.GetLength(1))
-                .Select(x => data[i, x])
-                .ToArray();
-                mmdata[i].UpdateData(xdata, AIData[AIchannels[i]]);
+                ctrData = counterReader.ReadMultiSampleInt32(samples);
+                ctrFreq = new double[Ctrchannels.Count, samples];
+            }
+
+            int offset = 0;
+            for (int i = 0; i < Ctrchannels.Count; ++i)
+            {
+                int count = 0;
+                if (!mmdata[i + AIchannels.Count].SourceEnabled)
+                {
+                    ++offset;
+                    continue;
+                }
+                for (int j = 0; j < samples; ++j)
+                {
+                    ctrFreq[i - offset, j] = (ctrData[i - offset, j] - count) * frequency / 1000;
+                    count += ctrData[i - offset, j];
+                }
+            }
+
+            offset = 0;
+            if (patternProgress == 0)
+                AIData = new SerializableDictionary<string, List<double[]>>();
+            for (int i = 0; i < AIchannels.Count; ++i)
+            {
+                if (!mmdata[i].SourceEnabled)
+                {
+                    ++offset;
+                    continue;
+                }
+                if (!AIData.ContainsKey(AIchannels[i]))
+                    AIData.Add(AIchannels[i], new List<double[]> { });
+                AIData[AIchannels[i]].Add(Enumerable.Range(0, data.GetLength(1))
+                .Select(x => data[i-offset, x])
+                .ToArray());
+                mmdata[i].ReDraw();
                 if (!saveEnable.Checked) continue;
                 using (System.IO.StreamWriter file =
                             new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + AIchannels[i] + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
@@ -148,23 +200,62 @@ namespace AlFHardwareControl
                 }
             }
 
+            offset = 0;
+            for (int i = 0; i < Ctrchannels.Count; ++i)
+            {
+                if (!mmdata[AIchannels.Count + i].SourceEnabled)
+                {
+                    ++offset;
+                    continue;
+                }
+                if (!AIData.ContainsKey(Ctrchannels[i]))
+                    AIData.Add(Ctrchannels[i], new List<double[]> { });
+                AIData[Ctrchannels[i]].Add(Enumerable.Range(0, ctrFreq.GetLength(1))
+                .Select(x => ctrFreq[i - offset, x])
+                .ToArray());
+                mmdata[i + AIchannels.Count].ReDraw();
+                if (!saveEnable.Checked) continue;
+                using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + Ctrchannels[i] + "Tof_" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
+                {
+                    file.WriteLine("Sampling Rate: " + this.cmbSamplingRate.Text + ", Number of points :" + this.sampNum.Text);
+                    for (int j = 0; j < Convert.ToInt32(this.sampNum.Text); ++j)
+                        file.WriteLine(xdata[i].ToString() + "," + ctrFreq[i, j].ToString());
+                    file.Flush();
+                }
+            }
+
             dataSaved = true;
 
-            DAQTask.Stop();
+            CtrReady = false;
+            AIReady = false;
+
+            if (AI)
+                DAQTask.Stop();
+            if (Ctr)
+                CtrTask.Stop();
 
             if (scanRunning)
             {
-                lock (scanResults)
+                lock (this)
                 {
-                    scanResults.Last().Item2.Add(data);
+                    if (patternProgress == 0)
+                        scanResults.Last().Item2.Add(AIData);
                 }   
             }
-            dataAcquired = true;
-            DAQTask.Start();
+            if (Ctr)
+                CtrTask.Start();
+            if (AI)
+                DAQTask.Start();
+            dataAcquired.Set();
         }
 
+
+        private bool AI = false;
+        private bool Ctr = false;
         private void setUpTasks()
         {
+            AIData = new SerializableDictionary<string, List<double[]>> { };
             dataSaved = false;
 
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo((string)Environs.FileSystem.Paths["ToFFilesPath"]);
@@ -181,25 +272,76 @@ namespace AlFHardwareControl
                 xdata[i] = 1000*((double)i) / Convert.ToInt32(this.cmbSamplingRate.Text);
             }
 
-            DAQTask = new Task("DAQTask");
-
-            foreach (string aichannel in AIchannels)
+            foreach (MOTMasterData data in mmdata)
             {
-                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[aichannel]).AddToTask(DAQTask, 0, 10);
+                data.UpdateXData(xdata);
             }
 
-            DAQTask.Timing.ConfigureSampleClock("", Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
-            DAQTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMAITrigger"), DigitalEdgeStartTriggerEdge.Rising);
+            DAQTask = new Task("DAQTask");
+            CtrTask = new Task("CtrTask");
 
-            DAQTask.Done += UpdateReadings;
+            AI = false;
+            for (int c = 0; c < AIchannels.Count; ++c)
+            {
+                mmdata[c].Invoke((Action)(()=>
+                {
+                    mmdata[c].sourceEnable.Enabled = false;
+                }));
+                if (!mmdata[c].SourceEnabled) continue;
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[AIchannels[c]]).AddToTask(DAQTask, 0, 10);
+                AI = true;
+            }
 
-            dataReader = new AnalogMultiChannelReader(DAQTask.Stream);
+            Ctr = false;
+            for (int c = 0; c < Ctrchannels.Count; ++c)
+            {
+                mmdata[c + AIchannels.Count].Invoke((Action)(() =>
+                {
+                    mmdata[c + AIchannels.Count].sourceEnable.Enabled = false;
+                }));
+                if (!mmdata[c + AIchannels.Count].SourceEnabled) continue;
+                CtrTask.CIChannels.CreateCountEdgesChannel(((CounterChannel)Environs.Hardware.CounterChannels[Ctrchannels[c]]).PhysicalChannel, Ctrchannels[c], CICountEdgesActiveEdge.Rising, 0,CICountEdgesCountDirection.Up);
+                Ctr = true;
+            }
 
-            DAQTask.Control(TaskAction.Verify);
-            DAQTask.Control(TaskAction.Commit);
+            if (AI)
+            {
+                DAQTask.Timing.ConfigureSampleClock("", Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
+                DAQTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMAITrigger"), DigitalEdgeStartTriggerEdge.Rising);
+                DAQTask.Done += (object ob, TaskDoneEventArgs args) => { AIReady = true; UpdateReadings(ob, args); }; ;
+                dataReader = new AnalogMultiChannelReader(DAQTask.Stream);
+            }
+            
+            if (Ctr)
+            {
+                CtrTask.Timing.ConfigureSampleClock((string)Environs.Hardware.GetInfo("MMCtrSampleClock"), Convert.ToDouble(this.cmbSamplingRate.Text), SampleClockActiveEdge.Rising, SampleQuantityMode.FiniteSamples, Convert.ToInt32(this.sampNum.Text));
+                CtrTask.Triggers.ArmStartTrigger.ConfigureDigitalEdgeTrigger((string)Environs.Hardware.GetInfo("MMCtrTrigger"), DigitalEdgeArmStartTriggerEdge.Rising);
+                CtrTask.Done += (object ob, TaskDoneEventArgs args) => { CtrReady = true; UpdateReadings(ob, args); };
+                counterReader = new CounterMultiChannelReader(CtrTask.Stream);
+            }
+            //CtrTask.Triggers.Type = StartTriggerType.DigitalEdge;
+            //CtrTask.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
+            //CtrTask.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.GetInfo("MMCtrTrigger");
 
-            DAQTask.Start();
+            if (AI)
+            {
+                DAQTask.Control(TaskAction.Verify);
+                DAQTask.Control(TaskAction.Commit);
+            }
 
+            if (Ctr)
+            {
+                CtrTask.Control(TaskAction.Verify);
+                CtrTask.Control(TaskAction.Commit);
+            }
+
+            CtrReady = false;
+            AIReady = false;
+
+            if (AI)
+                DAQTask.Start();
+            if (Ctr)
+                CtrTask.Start();
         }
 
         private System.Collections.ArrayList scanValues;
@@ -274,10 +416,10 @@ namespace AlFHardwareControl
         }
 
         private int scanNumber = 0;
-        private List<Tuple<double,List<double[,]>>> scanResults = new List<Tuple<double, List<double[,]>>>();
-        private Dictionary<double,List<List<double[,]>>> prevScanResults = new Dictionary<double, List<List<double[,]>>>();
+        private List<Tuple<double,List<SerializableDictionary<string, List<double[]>>>>> scanResults = new List<Tuple<double, List<SerializableDictionary<string, List<double[]>>>>>();
+        private SerializableDictionary<double,List<List<SerializableDictionary<string, List<double[]>>>>> prevScanResults = new SerializableDictionary<double, List<List<SerializableDictionary<string, List<double[]>>>>>();
 
-        public Dictionary<double, List<List<double[,]>>> ScanData
+        public SerializableDictionary<double, List<List<SerializableDictionary<string, List<double[]>>>>> ScanData
         {
             get
             {
@@ -313,51 +455,145 @@ namespace AlFHardwareControl
             }
         }
 
-        private ScanOutputPlugin scanPlugin = null;
-
-        private void runScan()
+        private void runPattern()
         {
-            ++scanNumber;
-            scanGraph.Plots[0].ClearData();
-
             MOTMaster.Controller mmaster = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1187/controller.rem"));
             Dictionary<string, Object> dict = new Dictionary<string, object>();
 
             mmaster.SetIterations(1);
             mmaster.SetRunUntilStopped(false);
+            mmaster.SetScriptPath(selectedPattern);
 
-            /*
-            if (selectedScan == ParamScan)
+            switchConfiguration = mmaster.GetSwitchConfiguration();
+            switchStates = switchConfiguration.Count == 0 ? 1 : switchConfiguration.Values.First().Count;
+            UpdateScanViewSize();
+
+            foreach (MOTMasterData data in mmdata)
             {
-                scanPlugin = new MOTMasterScan();
-                dict = new Dictionary<string, Object>();
-                scanPlugin.Settings["scanOut"] = dict;
-                scanPlugin.Settings["scanKey"] = this.pParam.Text;
-                scanPlugin.Settings["start"] = Convert.ToDouble(this.pStart.Text);
-                scanPlugin.Settings["end"] = Convert.ToDouble(this.pEnd.Text);
-                scanPlugin.Settings["pointsPerScan"] = Convert.ToInt32(this.pSteps.Text);
-                scanPlugin.Settings["shotsPerPoint"] = Convert.ToInt32(this.pShots.Text);
-                this.Invoke((Action)(()=>{ scanPlugin.Settings["scanMode"] = this.pScanDir.Text; }));
+                data.UpdateScanStatus(true);
             }
-            if (selectedScan == WMLScan)
+
+            do
             {
-                scanPlugin = new WMLOutputPlugin();
-                scanPlugin.Settings["laser"] = this.WMLLaser.Text;
-                scanPlugin.Settings["computer"] = this.WMLServer.Text;
-                scanPlugin.Settings["WMLConfig"] = "WMLConfig";
-                scanPlugin.Settings["scannedParameter"] = "setpoint";
-                scanPlugin.Settings["setVoltageWaitTime"] = 50;
-                scanPlugin.Settings["setSetPointWaitTime"] = 500;
-                scanPlugin.Settings["offset"] = Convert.ToDouble(this.WMLOffset.Text); //Frequency offset in THz
-                scanPlugin.Settings["start"] = Convert.ToDouble(this.WMLStart.Text);
-                scanPlugin.Settings["end"] = Convert.ToDouble(this.WMLEnd.Text);
-                scanPlugin.Settings["pointsPerScan"] = Convert.ToInt32(this.WMLSteps.Text);
-                scanPlugin.Settings["shotsPerPoint"] = Convert.ToInt32(this.WMLShots.Text);
-                this.Invoke((Action)(() => { scanPlugin.Settings["scanMode"] = this.WMLScanDir.Text; }));
+                runSinglePattern(mmaster, dict, () => { return !patternRunning; });
+            } while (repeatScanChecked && patternRunning);
+            patternRunning = false;
+            foreach (MOTMasterData data in mmdata)
+            {
+                data.UpdateScanStatus(false);
             }
+            EnableScanControls();
+
+        }
+
+        private void runSinglePattern(MOTMaster.Controller mmaster, Dictionary<string, Object> dict, Func<bool> breakCondition)
+        {
+            string text = "ACCEPTED";
+            do
+            {
+                for (int  i = 0; i < switchStates; ++i)
+                {
+                    foreach (KeyValuePair<string, List<bool>> Switch in switchConfiguration)
+                    {
+                        if (!dict.ContainsKey(Switch.Key))
+                            dict.Add(Switch.Key, false);
+                        dict[Switch.Key] = Switch.Value[i];
+                    }
+
+                    dataAcquired.Reset();
+                    mmaster.Go(dict);
+
+                    dataAcquired.WaitOne();
+                    ++patternProgress;
+                }
+
+                if (breakCondition()) break;
+
+                text = "ACCEPTED";
+                Color color = Color.PaleGreen;
+                foreach (MOTMasterData data in mmdata)
+                {
+                    if (data.SourceEnabled && data.reject_shot())
+                    {
+                        text = "REJECTED";
+                        color = Color.Salmon;
+                        if (!scanRunning) break;
+                        lock (this)
+                        {
+                            scanResults.Last().Item2.RemoveAt(scanResults.Last().Item2.Count - 1);
+                        }
+                        break;
+                    }
+                }
+
+                this.Invoke((Action)(() =>
+                {
+                    this.RejectionStatus.BackColor = color;
+                    this.RejectionStatus.Text = text;
+                }));
+
+
+                patternProgress = 0;
+            } while (text != "ACCEPTED");
+            patternProgress = 0;
+
+        }
+
+        private void UpdateScanViewSize()
+        {
+            this.Invoke((Action)(() =>
+            {
+                while (switchStates * 2 < scanGraph.Plots.Count)
+                {
+                    scanGraph.Plots.RemoveAt(scanGraph.Plots.Count - 1);
+                }
+                while (switchStates * 2 > scanGraph.Plots.Count)
+                {
+                    NationalInstruments.UI.ScatterPlot points = new NationalInstruments.UI.ScatterPlot(scanGraph.XAxes[0], scanGraph.YAxes[0]);
+                    NationalInstruments.UI.ScatterPlot scan = new NationalInstruments.UI.ScatterPlot(scanGraph.XAxes[0], scanGraph.YAxes[0]);
+                    scanGraph.Plots.Add(points);
+                    scanGraph.Plots.Add(scan);
+                    points.PointColor = points.LineColor;
+                    points.LineStyle = NationalInstruments.UI.LineStyle.None;
+                    points.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+                    scan.LineColor = points.LineColor;
+                }
+                foreach (NationalInstruments.UI.ScatterPlot plot in scanGraph.Plots)
+                {
+                    plot.ClearData();
+                }
+            }));
+        }
+
+        private ScanOutputPlugin scanPlugin = null;
+        private Dictionary<string, List<bool>> switchConfiguration;
+        private int switchStates = 1;
+
+        public int SwitchStates
+        {
+            get
+            {
+                return switchStates;
+            }
+        }
+
+        private void runScan()
+        {
+            ++scanNumber;
+
             
-            if (scanPlugin == null)
-                throw new Exception("Bad configuration of scan setup. Check MOTMasterStuff:runScan");*/
+            MOTMaster.Controller mmaster = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1187/controller.rem"));
+            Dictionary<string, Object> dict = new Dictionary<string, object>();
+
+            mmaster.SetIterations(1);
+            mmaster.SetRunUntilStopped(false);
+            mmaster.SetScriptPath(selectedPattern);
+
+            switchConfiguration = mmaster.GetSwitchConfiguration();
+            int prevSwitchStates = switchStates;
+            switchStates = switchConfiguration.Count == 0 ? 1 : switchConfiguration.Values.First().Count;
+            if (prevSwitchStates != switchStates) clear_data_Click(null, new EventArgs());
+            UpdateScanViewSize();
 
             this.Invoke((Action)(() =>
             {
@@ -370,121 +606,107 @@ namespace AlFHardwareControl
                 data.UpdateScanStatus(true);
             }
 
-
-            scanResults.Clear();
-
             scanPlugin.AcquisitionStarting();
-            scanPlugin.ScanStarting();
 
-            for (int i = 0; i < (int)scanPlugin.Settings["pointsPerScan"]; ++i)
+            do
             {
+                for (int i = 0; i < switchStates; ++i)
+                    scanGraph.Plots[2 * i].ClearData();
+                scanResults.Clear();
+                scanPlugin.ScanStarting();
 
-
-                scanPlugin.ScanParameter = NextScanParameter(scanPlugin, i, scanNumber);
-                lock (scanResults)
+                for (int i = 0; i < (int)scanPlugin.Settings["pointsPerScan"]; ++i)
                 {
-                    scanResults.Add(new Tuple<double, List<double[,]>>(scanPlugin.ScanParameter, new List<double[,]>()));
+
+
+                    scanPlugin.ScanParameter = NextScanParameter(scanPlugin, i, scanNumber);
+                    lock (this)
+                    {
+                        scanResults.Add(new Tuple<double, List<SerializableDictionary<string, List<double[]>>>>(scanPlugin.ScanParameter, new List<SerializableDictionary<string, List<double[]>>>()));
+                    }
+
+                    for (int j = 0; j < (int)scanPlugin.Settings["shotsPerPoint"]; ++j)
+                    {
+
+                        this.Invoke((Action)(() => { this.scanPointProgress.Text = String.Format("{0}/{1}", j + 1, (int)scanPlugin.Settings["shotsPerPoint"]); }));
+                        runSinglePattern(mmaster, dict, () => { return !scanRunning; });
+
+                        if (!scanRunning) break;
+
+                    }
+
+                    if (!scanRunning)
+                    {
+                        lock (this)
+                        {
+                            scanResults.RemoveAt(scanResults.Count - 1);
+                        }
+                        break;
+                    }
+
+                    if (!mmdata[dataTabsSelectedIndex].SourceEnabled) continue;
+                    Tuple<double, List<SerializableDictionary<string, List<double[]>>>> dp = scanResults.Last();
+                    List<List<double[]>> normedData = Enumerable.Range(0, dp.Item2.Count).Select(
+                                            ind => mmdata[dataTabsSelectedIndex].NormaliseData(dp.Item2[ind])).ToList();
+                    List<double> intavg = Enumerable.Range(0, switchStates).Select(
+                                        ind => Enumerable.Range(0, normedData.Count).Select(
+                                        j => normedData[j][ind].Sum()).Average()).ToList();
+                    this.Invoke((Action)(() => {
+                        for (int j = 0; j < switchStates; ++j)
+                        {
+                            scanGraph.Plots[2 * j].PlotXYAppend(dp.Item1, intavg[j]);
+                            scanGraph.Update();
+                        }
+                    }));
+
+
                 }
 
-                for (int j = 0; j < (int)scanPlugin.Settings["shotsPerPoint"]; ++j)
+                scanPlugin.ScanFinished();
+
+
+                /* using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + "Scan" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
                 {
-                    dataAcquired = false;
-                    mmaster.Go(dict);
 
-                    while (!dataAcquired) ;
+                    (new System.Xml.Serialization.XmlSerializer(typeof(List<Tuple<double, List<double[,]>>>))).Serialize(file, scanResults);
+                    file.Flush();
+                }*/
 
-                    string text = "ACCEPTED";
-                    Color color = Color.PaleGreen;
+                lock (this)
+                {
+                    scanResults.Sort((Tuple<double, List<SerializableDictionary<string, List<double[]>>>> a, Tuple<double, List<SerializableDictionary<string, List<double[]>>>> b) => { return Comparer<double>.Default.Compare(a.Item1, b.Item1); });
+                }
 
-                    if (!scanRunning) break;
+                this.Invoke((Action)(() => { DataTabs_SelectedIndexChanged(null, new EventArgs()); }));
 
-                    foreach (MOTMasterData data in mmdata)
+                if (scanRunning)
+                {
+                    lock (this)
                     {
-                        if (data.reject_shot())
+                        foreach (Tuple<double, List<SerializableDictionary<string, List<double[]>>>> scanPoint in scanResults)
                         {
-                            text = "REJECTED";
-                            color = Color.Salmon;
-                            --j;
-                            lock (scanResults)
-                            {
-                                scanResults.Last().Item2.RemoveAt(scanResults.Last().Item2.Count - 1);
-                            }
-                            break;
+                            if (!prevScanResults.ContainsKey(scanPoint.Item1))
+                                prevScanResults[scanPoint.Item1] = new List<List<SerializableDictionary<string, List<double[]>>>>();
+                            prevScanResults[scanPoint.Item1].Add(scanPoint.Item2);
                         }
                     }
 
-                    this.Invoke((Action)(() => {
-                        this.RejectionStatus.BackColor = color;
-                        this.RejectionStatus.Text = text;
-                    }));
+                    UpdateScanAverage();
 
-                }
-
-                if (!scanRunning)
-                {
-                    lock (scanResults)
+                    foreach (MOTMasterData mm in mmdata)
                     {
-                        scanResults.RemoveAt(scanResults.Count - 1);
+                        mm.UpdateScan();
                     }
-                    break;
+
                 }
 
-                Tuple<double, List<double[,]>> dp = scanResults.Last();
-                double intavg = Enumerable.Range(0, dp.Item2.Count).Select(ind => mmdata[dataTabsSelectedIndex].NormaliseData(dp.Item2[ind]).Sum()).Average();
-                this.Invoke((Action)(() => { scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg); }));
-
-
-            }
-
-            scanPlugin.ScanFinished();
+            } while (scanRunning && repeatScanChecked);
             scanPlugin.AcquisitionFinished();
 
-            /* using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter((string)Environs.FileSystem.Paths["ToFFilesPath"] + "Scan" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss-fff") + ".txt", false))
-            {
+            this.Invoke((Action)(() => { stopScan.PerformClick(); }));
+            EnableScanControls();
 
-                (new System.Xml.Serialization.XmlSerializer(typeof(List<Tuple<double, List<double[,]>>>))).Serialize(file, scanResults);
-                file.Flush();
-            }*/
-
-            lock (scanResults)
-            {
-                scanResults.Sort((Tuple<double, List<double[,]>> a, Tuple<double, List<double[,]>> b) => { return Comparer<double>.Default.Compare(a.Item1, b.Item1); });
-            }
-
-            this.Invoke((Action)(()=> { DataTabs_SelectedIndexChanged(null, new EventArgs()); }));
-
-            if (scanRunning)
-            {
-                lock (ScanData)
-                {
-                    foreach (Tuple<double, List<double[,]>> scanPoint in scanResults)
-                    {
-                        if (!prevScanResults.ContainsKey(scanPoint.Item1))
-                            prevScanResults[scanPoint.Item1] = new List<List<double[,]>>();
-                        prevScanResults[scanPoint.Item1].Add(scanPoint.Item2);
-                    }
-                }
-
-                UpdateScanAverage();
-
-                foreach (MOTMasterData mm in mmdata)
-                {
-                    mm.UpdateScan();
-                }
-
-            } 
-
-            this.Invoke((Action)(() =>
-            {
-                stopScan.PerformClick();
-                armToF.Enabled = true;
-                //scanTabs.Enabled = true;
-                stopScan.Enabled = false;
-                startScan.Enabled = true;
-                save_data.Enabled = true;
-                clear_data.Enabled = true;
-            }));
             foreach (MOTMasterData data in mmdata)
             {
                 data.UpdateScanStatus(false);
@@ -492,26 +714,64 @@ namespace AlFHardwareControl
 
         }
 
+        private void EnableScanControls()
+        {
+            this.Invoke((Action)(() =>
+            {
+                armToF.Enabled = true;
+                //scanTabs.Enabled = true;
+                stopScan.Enabled = false;
+                startScan.Enabled = true;
+                save_data.Enabled = true;
+                clear_data.Enabled = true;
+                repeatScan.Enabled = true;
+                reloadPatterns.Enabled = true;
+                startPattern.Enabled = true;
+                PatternPicker.Enabled = true;
+            }));
+        }
+
+        private void DisableScanControls()
+        {
+
+            save_data.Enabled = false;
+            clear_data.Enabled = false;
+            armToF.Enabled = false;
+            //scanTabs.Enabled = false;
+            stopScan.Enabled = true;
+            startScan.Enabled = false;
+            repeatScan.Enabled = false;
+            reloadPatterns.Enabled = false;
+            startPattern.Enabled = false;
+            PatternPicker.Enabled = false;
+        }
+
         private void UpdateScanAverage()
         {
+            if (!mmdata[dataTabsSelectedIndex].SourceEnabled) return;
             if (ScanData.Count == 0) return;
             int index = dataTabsSelectedIndex;
 
             double[] xs = ScanData.Keys.ToArray();
-            double[] ydata;
+            List<double[]> ydata;
 
-            lock (ScanData)
+            lock (this)
             {
-                ydata = Enumerable.Range(0, ScanData.Values.Count).Select(
+                ydata = Enumerable.Range(0, switchStates).Select(
+                    m => Enumerable.Range(0, ScanData.Values.Count).Select(
                     i => Enumerable.Range(0, ScanData.Values.ToArray()[i].Count).Select(
-                        j => Enumerable.Range(0, ScanData.Values.ToArray()[i][j].Count).Select(
-                            k => mmdata[index].NormaliseData(ScanData.Values.ToArray()[i][j][k]).Sum()).Average()).Average()).ToArray();
+                    j => Enumerable.Range(0, ScanData.Values.ToArray()[i][j].Count).Select(
+                    k => mmdata[index].NormaliseData(ScanData.Values.ToArray()[i][j][k])[m].Sum()).Average()).Average()).ToArray()).ToList();
             }
 
             this.Invoke((Action)(() =>
             {
-                scanGraph.Plots[1].ClearData();
-                scanGraph.Plots[1].PlotXY(xs, ydata);
+                for (int i = 0; i < switchStates; ++i)
+                {
+                    scanGraph.Plots[2 * i + 1].ClearData();
+                    scanGraph.Plots[2 * i + 1].PlotXY(xs, ydata[i]);
+
+                }
                 scanGraph.Update();
             }));
 
@@ -539,8 +799,20 @@ namespace AlFHardwareControl
             }
             else
             {
+
                 DAQTask.Stop();
                 DAQTask.Dispose();
+
+                CtrTask.Stop();
+                CtrTask.Dispose();
+
+                for (int c = 0; c < mmdata.Count; ++c)
+                {
+                    mmdata[c].Invoke((Action)(() =>
+                    {
+                        mmdata[c].sourceEnable.Enabled = true;
+                    }));
+                }
                 sampNum.Enabled = true;
                 cmbSamplingRate.Enabled = true;
                 scanCtrl.Enabled = false;
@@ -550,12 +822,7 @@ namespace AlFHardwareControl
         private void startScan_Click(object sender, EventArgs e)
         {
             scanRunning = true;
-            save_data.Enabled = false;
-            clear_data.Enabled = false;
-            armToF.Enabled = false;
-            //scanTabs.Enabled = false;
-            stopScan.Enabled = true;
-            startScan.Enabled = false;
+            DisableScanControls();
 
             (new Thread(new ThreadStart(()=> { runScan(); }))).Start();
         }
@@ -563,6 +830,7 @@ namespace AlFHardwareControl
         private void stopScan_Click(object sender, EventArgs e)
         {
             scanRunning = false;
+            patternRunning = false;
         }
         public bool ScanRunning
         {
@@ -576,17 +844,21 @@ namespace AlFHardwareControl
 
         public void ReDrawScanResults() 
         {
-            scanGraph.Plots[0].ClearData();
-            scanGraph.Plots[1].ClearData();
+            foreach (NationalInstruments.UI.ScatterPlot plot in scanGraph.Plots)
+                plot.ClearData();
+            if (!mmdata[dataTabsSelectedIndex].SourceEnabled) return;
             if (scanResults.Count == 0) return;
             UpdateScanAverage();
-            lock (scanResults)
+            lock (this)
             {
-                foreach (Tuple<double, List<double[,]>> dp in scanResults)
+                foreach (Tuple<double, List<SerializableDictionary<string, List<double[]>>>> dp in scanResults)
                 {
-                    if (dp.Item2.Count == 0) continue;
-                    double intavg = Enumerable.Range(0, dp.Item2.Count).Select(i => mmdata[dataTabsSelectedIndex].NormaliseData(dp.Item2[i]).Sum()).Average();
-                    scanGraph.Plots[0].PlotXYAppend(dp.Item1, intavg);
+                    if (dp.Item2.Count < switchStates) continue;
+                    List<double> intavg = Enumerable.Range(0, switchStates).Select(
+                                    j => Enumerable.Range(0, dp.Item2.Count).Select(
+                                    i => mmdata[dataTabsSelectedIndex].NormaliseData(dp.Item2[i])[j].Sum()).Average()).ToList();
+                    for (int i = 0; i < switchStates; ++i)
+                        scanGraph.Plots[2 * i].PlotXYAppend(dp.Item1, intavg[i]);
                 }
             }
         }
@@ -661,10 +933,29 @@ namespace AlFHardwareControl
 
         }
 
+        [Serializable]
+        public class ScanResults
+        {
+            public ScanOutputPlugin scanOutputPlugin { get; set; }
+            public double[] xData { get; set; }
+            public SerializableDictionary<double, List<List<SerializableDictionary<string, List<double[]>>>>> scanResults { get; set; }
+            public SerializableDictionary<string, object> additionalParameters { get; set; }
+
+            public ScanResults() { }
+
+            public ScanResults(ScanOutputPlugin _outplugin, double[] _xdata, SerializableDictionary<double, List<List<SerializableDictionary<string, List<double[]>>>>> _results, SerializableDictionary<string, object> _miscParams)
+            {
+                scanOutputPlugin = _outplugin;
+                xData = _xdata;
+                scanResults = _results;
+                additionalParameters = _miscParams;
+            }
+        }
+
         private void save_data_Click(object sender, EventArgs e)
         {
+            if (ScanData.Count == 0) return;
             scanCtrl.Enabled = false;
-            if (ScanData.Count == 0) goto end;
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "xml data file|*.xml";
@@ -678,18 +969,8 @@ namespace AlFHardwareControl
 
             //Dictionary<double,List<List<double[,]>>>
 
-            KVPair<ScanOutputPlugin, List<KVPair<double, List<List<List<KVPair<string,double[]>>>>>>> results
-                = new KVPair<ScanOutputPlugin, List<KVPair<double, List<List<List<KVPair<string, double[]>>>>>>>(scanPlugin, new List<KVPair<double, List<List<List<KVPair<string, double[]>>>>>>());
-
-            foreach (double k in ScanData.Keys)
-            {
-                results.Value.Add(new KVPair<double, List<List<List<KVPair<string, double[]>>>>>(k,
-                    Enumerable.Range(0, ScanData[k].Count).Select(
-                    i=>Enumerable.Range(0,ScanData[k][i].Count).Select(
-                        j=>Enumerable.Range(0, ScanData[k][i][j].GetLength(0)).Select(
-                            l=>new KVPair<string,double[]>(AIchannels[l],Enumerable.Range(0,ScanData[k][i][j].GetLength(1)).Select(
-                                m=>ScanData[k][i][j][l,m]).ToArray())).ToList()).ToList()).ToList()));
-            }
+            ScanResults results
+                = new ScanResults(scanPlugin, xdata, ScanData, new SerializableDictionary<string, object>());
 
 
             using (System.IO.StreamWriter file =
@@ -700,7 +981,7 @@ namespace AlFHardwareControl
                 file.Flush();
 
             }
-        end:
+            end:
             scanCtrl.Enabled = true;
         }
 
@@ -712,6 +993,40 @@ namespace AlFHardwareControl
         private void fixY_CheckedChanged(object sender, EventArgs e)
         {
             scanGraph.YAxes[0].Mode = fixY.Checked ? NationalInstruments.UI.AxisMode.Fixed : NationalInstruments.UI.AxisMode.AutoScaleLoose;
+        }
+
+        private bool repeatScanChecked = false;
+        private void repeatScan_CheckedChanged(object sender, EventArgs e)
+        {
+            repeatScanChecked = repeatScan.Checked;
+        }
+
+        private Dictionary<string, string> patternPaths = new Dictionary<string, string> { };
+        private void reloadPatterns_Click(object sender, EventArgs e)
+        {
+            patternPaths.Clear();
+            PatternPicker.Items.Clear();
+            List<Tuple<string,string>> scriptList = System.IO.Directory.EnumerateFiles((string)Environs.FileSystem.Paths["scriptListPath"], "*.cs").Select(i=>new Tuple<string, string> (i, System.IO.Path.GetFileName(i))).ToList();
+            foreach (Tuple<string,string> script in scriptList)
+            {
+                PatternPicker.Items.Add(script.Item2);
+                patternPaths.Add(script.Item2, script.Item1);
+            }
+            PatternPicker.SelectedIndex = 0;
+        }
+
+        private bool patternRunning = false;
+        private void startPattern_Click(object sender, EventArgs e)
+        {
+            DisableScanControls();
+            patternRunning = true;
+            (new Thread(new ThreadStart(runPattern))).Start();
+        }
+
+        private string selectedPattern = "";
+        private void PatternPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectedPattern = patternPaths[PatternPicker.Text];
         }
     }
 }

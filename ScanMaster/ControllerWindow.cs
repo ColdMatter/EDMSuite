@@ -63,7 +63,8 @@ namespace ScanMaster.GUI
 		private System.Windows.Forms.MenuItem menuItem11;
 		private System.Windows.Forms.MenuItem patternMenu;
 		private System.Windows.Forms.MenuItem menuItem8;
-		private System.Windows.Forms.MenuItem menuItem15;
+        private MenuItem menuItem16;
+        private System.Windows.Forms.MenuItem menuItem15;
 
 		public ControllerWindow(Controller controller)
 		{
@@ -145,6 +146,7 @@ namespace ScanMaster.GUI
             this.newButton = new System.Windows.Forms.Button();
             this.selectButton = new System.Windows.Forms.Button();
             this.profileListBox = new System.Windows.Forms.ListBox();
+            this.menuItem16 = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // mainMenu1
@@ -229,7 +231,8 @@ namespace ScanMaster.GUI
             this.acquireMenu.Index = 1;
             this.acquireMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem5,
-            this.menuItem6});
+            this.menuItem6,
+            this.menuItem16});
             this.acquireMenu.Text = "Acquire";
             // 
             // menuItem5
@@ -399,6 +402,12 @@ namespace ScanMaster.GUI
             this.profileListBox.Size = new System.Drawing.Size(232, 251);
             this.profileListBox.TabIndex = 14;
             this.profileListBox.DoubleClick += new System.EventHandler(this.SelectProfileHandler);
+            // 
+            // menuItem16
+            // 
+            this.menuItem16.Index = 2;
+            this.menuItem16.Text = "Acquire (1) scan";
+            this.menuItem16.Click += new System.EventHandler(this.menuItem16_Click);
             // 
             // ControllerWindow
             // 
@@ -721,9 +730,11 @@ namespace ScanMaster.GUI
 
         }
 
-        
-
-	}
+        private void menuItem16_Click(object sender, EventArgs e)
+        {
+            controller.AcquireStart(1);
+        }
+    }
 }
 
 

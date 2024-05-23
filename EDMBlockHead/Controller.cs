@@ -125,7 +125,7 @@ namespace EDMBlockHead
         // is to use BlockHead to save this config and then modify it.
         private void MakeDefaultBlockConfig()
         {
-            const int CODE_LENGTH = 8; //Was 12 for 4096 shots
+            const int CODE_LENGTH = 8; //(256 shots) Was 12 for 4096 shots
             config = new BlockConfig();
 
             DigitalModulation dm = new DigitalModulation();
@@ -230,7 +230,7 @@ namespace EDMBlockHead
             config.Settings["eRampUpTime"] = 10;
             config.Settings["eDischargeTime"] = 10;
             config.Settings["greenDCMF"] = 10;
-            config.Settings["magnetCalibration"] = 16.9;
+            config.Settings["magnetCalibration"] = 5; //16.9 for ClassicEDM
             config.Settings["dummy"] = "jack";
             config.Settings["cluster"] = "28May1701";
             config.Settings["phaseScramblerV"] = 1.0;
@@ -418,9 +418,9 @@ namespace EDMBlockHead
             this.Block = b;
             mainWindow.AppendToTextArea("Demodulating block.");
              b.AddDetectorsToBlock();
-            //DBlock = blockDemodulator.QuickDemodulateBlock(b);            //This is commented out while we figure out the differences between UEDM and ClassicEDM
-            //AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
-            //liveViewer.AddAnalysedDBlock(AnalysedDBlock);
+            DBlock = blockDemodulator.QuickDemodulateBlock(b);            //This is commented out while we figure out the differences between UEDM and ClassicEDM
+            AnalysedDBlock = QuickEDMAnalysis.AnalyseDBlock(DBlock, (double)b.Config.Settings["liveAnalysisGateLow"], (double)b.Config.Settings["liveAnalysisGateHigh"]);
+            liveViewer.AddAnalysedDBlock(AnalysedDBlock);
        
             //config.g
             haveBlock = true;
@@ -592,10 +592,10 @@ namespace EDMBlockHead
 
         internal void ActuallyTestLiveAnalysis()
         {
-            for (int i = 0; i <= 19; i++)
+            for (int i = 0; i <= 0; i++)
             {
                 //string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2019\\November2019\\13Nov1903_";
-                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\2023\\13Apr2300_";
+                string fileRoot = Environs.FileSystem.Paths["edmDataPath"] + "\\TestLiveAnalysis\\25Apr2400_";
                 BlockSerializer bs = new BlockSerializer();
                 Block b = bs.DeserializeBlockFromZippedXML(fileRoot + (i.ToString()) + ".zip", "block.xml");
                 AcquisitionFinished(b);

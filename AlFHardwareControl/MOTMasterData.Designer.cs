@@ -30,24 +30,26 @@ namespace AlFHardwareControl
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.sourceEnable = new System.Windows.Forms.CheckBox();
+            this.RejectVal = new System.Windows.Forms.TextBox();
+            this.RejectCondPicker = new System.Windows.Forms.ComboBox();
+            this.RejectEnable = new System.Windows.Forms.CheckBox();
             this.NormSource = new System.Windows.Forms.ComboBox();
             this.Normalise = new System.Windows.Forms.CheckBox();
             this.fixY = new System.Windows.Forms.CheckBox();
             this.fixX = new System.Windows.Forms.CheckBox();
             this.dataGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.scatterPlot1 = new NationalInstruments.UI.ScatterPlot();
+            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot2 = new NationalInstruments.UI.ScatterPlot();
-            this.RejectCondPicker = new System.Windows.Forms.ComboBox();
-            this.RejectEnable = new System.Windows.Forms.CheckBox();
-            this.RejectVal = new System.Windows.Forms.TextBox();
+            this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.sourceEnable);
             this.groupBox1.Controls.Add(this.RejectVal);
             this.groupBox1.Controls.Add(this.RejectCondPicker);
             this.groupBox1.Controls.Add(this.RejectEnable);
@@ -61,6 +63,45 @@ namespace AlFHardwareControl
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
+            // 
+            // sourceEnable
+            // 
+            this.sourceEnable.AutoSize = true;
+            this.sourceEnable.Checked = true;
+            this.sourceEnable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sourceEnable.Location = new System.Drawing.Point(273, 43);
+            this.sourceEnable.Name = "sourceEnable";
+            this.sourceEnable.Size = new System.Drawing.Size(96, 17);
+            this.sourceEnable.TabIndex = 7;
+            this.sourceEnable.Text = "Enable Source";
+            this.sourceEnable.UseVisualStyleBackColor = true;
+            this.sourceEnable.CheckedChanged += new System.EventHandler(this.sourceEnable_CheckedChanged);
+            // 
+            // RejectVal
+            // 
+            this.RejectVal.Location = new System.Drawing.Point(509, 16);
+            this.RejectVal.Name = "RejectVal";
+            this.RejectVal.Size = new System.Drawing.Size(74, 20);
+            this.RejectVal.TabIndex = 6;
+            // 
+            // RejectCondPicker
+            // 
+            this.RejectCondPicker.FormattingEnabled = true;
+            this.RejectCondPicker.Location = new System.Drawing.Point(381, 16);
+            this.RejectCondPicker.Name = "RejectCondPicker";
+            this.RejectCondPicker.Size = new System.Drawing.Size(121, 21);
+            this.RejectCondPicker.TabIndex = 5;
+            // 
+            // RejectEnable
+            // 
+            this.RejectEnable.AutoSize = true;
+            this.RejectEnable.Location = new System.Drawing.Point(273, 20);
+            this.RejectEnable.Name = "RejectEnable";
+            this.RejectEnable.Size = new System.Drawing.Size(102, 17);
+            this.RejectEnable.TabIndex = 4;
+            this.RejectEnable.Text = "Enable rejection";
+            this.RejectEnable.UseVisualStyleBackColor = true;
+            this.RejectEnable.CheckedChanged += new System.EventHandler(this.RejectEnable_CheckedChanged);
             // 
             // NormSource
             // 
@@ -116,8 +157,8 @@ namespace AlFHardwareControl
             this.dataGraph.Location = new System.Drawing.Point(4, 4);
             this.dataGraph.Name = "dataGraph";
             this.dataGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.scatterPlot1,
-            this.scatterPlot2});
+            this.scatterPlot3,
+            this.scatterPlot4});
             this.dataGraph.Size = new System.Drawing.Size(589, 260);
             this.dataGraph.TabIndex = 2;
             this.dataGraph.UseColorGenerator = true;
@@ -126,47 +167,27 @@ namespace AlFHardwareControl
             this.dataGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
             // 
-            // scatterPlot1
+            // scatterPlot3
             // 
-            this.scatterPlot1.LineColor = System.Drawing.Color.Yellow;
-            this.scatterPlot1.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.scatterPlot1.XAxis = this.xAxis1;
-            this.scatterPlot1.YAxis = this.yAxis1;
+            this.scatterPlot3.LineStyle = NationalInstruments.UI.LineStyle.Dot;
+            this.scatterPlot3.PointColor = System.Drawing.Color.Lime;
+            this.scatterPlot3.XAxis = this.xAxis1;
+            this.scatterPlot3.YAxis = this.yAxis1;
             // 
             // xAxis1
             // 
             this.xAxis1.Caption = "Time [ms]";
             // 
-            // scatterPlot2
+            // yAxis1
             // 
-            this.scatterPlot2.XAxis = this.xAxis1;
-            this.scatterPlot2.YAxis = this.yAxis1;
+            this.yAxis1.Caption = "Voltage [V]";
             // 
-            // RejectCondPicker
+            // scatterPlot4
             // 
-            this.RejectCondPicker.FormattingEnabled = true;
-            this.RejectCondPicker.Location = new System.Drawing.Point(381, 16);
-            this.RejectCondPicker.Name = "RejectCondPicker";
-            this.RejectCondPicker.Size = new System.Drawing.Size(121, 21);
-            this.RejectCondPicker.TabIndex = 5;
-            // 
-            // RejectEnable
-            // 
-            this.RejectEnable.AutoSize = true;
-            this.RejectEnable.Location = new System.Drawing.Point(273, 20);
-            this.RejectEnable.Name = "RejectEnable";
-            this.RejectEnable.Size = new System.Drawing.Size(102, 17);
-            this.RejectEnable.TabIndex = 4;
-            this.RejectEnable.Text = "Enable rejection";
-            this.RejectEnable.UseVisualStyleBackColor = true;
-            this.RejectEnable.CheckedChanged += new System.EventHandler(this.RejectEnable_CheckedChanged);
-            // 
-            // RejectVal
-            // 
-            this.RejectVal.Location = new System.Drawing.Point(509, 16);
-            this.RejectVal.Name = "RejectVal";
-            this.RejectVal.Size = new System.Drawing.Size(74, 20);
-            this.RejectVal.TabIndex = 6;
+            this.scatterPlot4.LineColor = System.Drawing.Color.Lime;
+            this.scatterPlot4.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.scatterPlot4.XAxis = this.xAxis1;
+            this.scatterPlot4.YAxis = this.yAxis1;
             // 
             // MOTMasterData
             // 
@@ -187,15 +208,16 @@ namespace AlFHardwareControl
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox fixX;
         private NationalInstruments.UI.WindowsForms.ScatterGraph dataGraph;
-        private NationalInstruments.UI.ScatterPlot scatterPlot1;
         private NationalInstruments.UI.XAxis xAxis1;
         private NationalInstruments.UI.YAxis yAxis1;
         private System.Windows.Forms.CheckBox fixY;
         private System.Windows.Forms.ComboBox NormSource;
         private System.Windows.Forms.CheckBox Normalise;
-        private NationalInstruments.UI.ScatterPlot scatterPlot2;
         private System.Windows.Forms.TextBox RejectVal;
         private System.Windows.Forms.ComboBox RejectCondPicker;
         private System.Windows.Forms.CheckBox RejectEnable;
+        public System.Windows.Forms.CheckBox sourceEnable;
+        private NationalInstruments.UI.ScatterPlot scatterPlot3;
+        private NationalInstruments.UI.ScatterPlot scatterPlot4;
     }
 }

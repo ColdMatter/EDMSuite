@@ -536,6 +536,10 @@
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WavemeterLock\WavemeterLock.csproj">
+      <Project>{e091da4c-f52b-47e3-9670-a36c4f16ecf7}</Project>
+      <Name>WavemeterLock</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

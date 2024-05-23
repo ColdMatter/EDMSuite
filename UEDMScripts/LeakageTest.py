@@ -9,6 +9,9 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	'''
 	# Logging started 
 	hc.FieldsOff()
+	hc.SetCPlusOffVoltage(0.0)
+	hc.SetCMinusOffVoltage(0.0)
+	# hc.EnableEField(True)
 
 	hc.SetLeakageCurrentLogCheck(True)
 	hc.SetiMonitorPollPeriod(200)

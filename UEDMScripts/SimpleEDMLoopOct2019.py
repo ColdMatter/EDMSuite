@@ -173,8 +173,8 @@ def measureParametersAndMakeBC(cluster, eState, bState): #used to have, rfState,
 	bc.Settings["minimumSignalToRun"] = 100.0
 	bc.Settings["targetStepperGateStartTime"] = 2050.0
 	bc.Settings["targetStepperGateEndTime"] = 2850.0
-	bc.Settings["liveAnalysisGateLow"] = 1600.0
-	bc.Settings["liveAnalysisGateHigh"] = 3800.0
+	bc.Settings["liveAnalysisGateLow"] = 10000.0
+	bc.Settings["liveAnalysisGateHigh"] = 45000.0
 	return bc
 
 # lock gains
@@ -183,11 +183,11 @@ kSteppingBiasCurrentPerVolt = 350.79
 # max change in the b-bias voltage per block
 kBMaxChange = 0.2
 # volts of rf*a input required per cal's worth of offset
-kRFAVoltsPerCal = 3.2
-kRFAMaxChange = 0.05
+# kRFAVoltsPerCal = 3.2
+# kRFAMaxChange = 0.05
 # volts of rf*f input required per cal's worth of offset
-kRFFVoltsPerCal = 8
-kRFFMaxChange = 0.05
+# kRFFVoltsPerCal = 8
+# kRFFMaxChange = 0.05
 
 def updateLocks(bState):
 	detectorAChannelValues = bh.DBlock.ChannelValues[0]
@@ -202,18 +202,18 @@ def updateLocks(bState):
 	sigValue = detectorAChannelValues.GetValue(("SIG",))
 	bValue = detectorAChannelValues.GetValue(("B",))
 	dbValue = detectorAChannelValues.GetValue(("DB",))
-	rf1aValue = detectorAChannelValues.GetValue(("RF1A","DB"))
-	rf2aValue = detectorAChannelValues.GetValue(("RF2A","DB"))
-	rf1fValue = detectorAChannelValues.GetValue(("RF1F","DB"))
-	rf2fValue = detectorAChannelValues.GetValue(("RF2F","DB"))
-	print "SIG: " + str(sigValue)
-	print "B: " + str(bValue) + " DB: " + str(dbValue)
-	print "RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue)
-	print "RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue)
+	# rf1aValue = detectorAChannelValues.GetValue(("RF1A","DB"))
+	# rf2aValue = detectorAChannelValues.GetValue(("RF2A","DB"))
+	# rf1fValue = detectorAChannelValues.GetValue(("RF1F","DB"))
+	# rf2fValue = detectorAChannelValues.GetValue(("RF2F","DB"))
+	print("SIG: " + str(sigValue))
+	print("B: " + str(bValue) + " DB: " + str(dbValue))
+	# print("RF1A: " + str(rf1aValue) + " RF2A: " + str(rf2aValue))
+	# print("RF1F: " + str(rf1fValue) + " RF2F: " + str(rf2fValue))
 	if dbValue < 4:
-		print "DB value too low, not applying feedback"
+		print("DB value too low, not applying feedback")
 	else:
-		print "feeding back to Bias and rf parameters"
+		print("feeding back to Bias")
 		# B bias lock
 		# the sign of the feedback depends on the b-state and the microwave state
 		if bState:
@@ -222,7 +222,7 @@ def updateLocks(bState):
 			feedbackSign = -1
 		deltaBias = - (1.0/10.0) * feedbackSign * (hc.CalStepCurrent * (bValue / dbValue)) / kSteppingBiasCurrentPerVolt
 		deltaBias = windowValue(deltaBias, -kBMaxChange, kBMaxChange)
-		print "Attempting to change stepping B bias by " + str(deltaBias) + " V."
+		print("Attempting to change stepping B bias by " + str(deltaBias) + " V.")
 		newBiasVoltage = windowValue( hc.SteppingBiasVoltage - deltaBias, -5, 5)
 		hc.SetSteppingBBiasVoltage( newBiasVoltage )
 		# RFA  locks
@@ -306,23 +306,19 @@ def EDMGo():
 	hc.FieldsOff()
 	# hc.EnableGreenSynth( False )
 	# hc.EnableEField( False )
-	System.Threading.Thread.CurrentThread.Join(40000)
+	System.Threading.Thread.CurrentThread.Join(60000)
 	# hc.EnableBleed( True )
 	# System.Threading.Thread.CurrentThread.Join(5000)
 	hc.CalibrateIMonitors()
 	# hc.EnableBleed( False )
 	# System.Threading.Thread.CurrentThread.Join(500)
-	hc.SetCPlusVoltage(cPlusV)
-	hc.SetCMinusVoltage(cMinusV)
+	# hc.SetCPlusVoltage(cPlusV)
+	# hc.SetCMinusVoltage(cMinusV)
 	print("E Params refreshed")
 	System.Threading.Thread.CurrentThread.Join(5000)
 	print("E-field on")
-	hc.SwitchEAndWait(eCurrentState)
-	print("E Switch Finished")
-	System.Threading.Thread.CurrentThread.Join(5000)
-	print("E Switch wait finished")
-	# hc.EnableEField( True )
-	# hc.EnableGreenSynth( True )
+	hc.EnableEField(True)
+	System.Threading.Thread.CurrentThread.Join(20000)
 	print("leakage monitors calibrated")
 
 	bc = measureParametersAndMakeBC(cluster, eState, bState)#, rfState, mwState, scramblerV)
@@ -372,6 +368,11 @@ def EDMGo():
 		writeLatestBlockNotificationFile(cluster, blockIndex)
 		System.Threading.Thread.CurrentThread.Join(5000)
 		print("Done.")
+
+		#Step target
+		for step in range(4):
+			hc.StepTarget(3)
+			System.Threading.Thread.CurrentThread.Join(500)
 		# increment and loop
 		File.Delete(tempConfigFile)
 		# checkYAGAndFix()
@@ -441,11 +442,12 @@ def EDMGo():
 			# hc.EnableBleed( False )
 			# System.Threading.Thread.CurrentThread.Join(500)
 			print("E-field on")
-			hc.SetCPlusVoltage(cPlusV)
-			hc.SetCMinusVoltage(cMinusV)
-			hc.SwitchEAndWait(eCurrentState)
-			print("E Switch Finished")
-			System.Threading.Thread.CurrentThread.Join(10000)
+			hc.EnableEField(True)
+			# hc.SetCPlusVoltage(cPlusV)
+			# hc.SetCMinusVoltage(cMinusV)
+			# hc.SwitchEAndWait(eCurrentState)
+			# print("E Switch Finished")
+			System.Threading.Thread.CurrentThread.Join(20000)
 
 			print("leakage monitors calibrated")
 

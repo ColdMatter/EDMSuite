@@ -79,7 +79,7 @@ Available scripts:''')
 import nt
 pp = Path.GetFullPath("..\\UEDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py"]
+scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "uedm_init_pythonnet.py"]
 for i in range(len(scriptsToLoad)):
             print(str(i) + ": " + scriptsToLoad[i])
 print("")

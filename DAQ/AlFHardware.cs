@@ -45,6 +45,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("PMT", (string)Boards["pg"] + "/ai1", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("UV_Circ_Pow", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("Spec_PMT", (string)Boards["pg"] + "/ai4", AITerminalConfiguration.Rse);
 
             // Output signals
             AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
@@ -85,14 +86,23 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
+            Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
 
+            // Analog inputs for MOTMasterStuff
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
             MMAI.Add("UV_Circ_Pow");
             MMAI.Add("UV_I");
+            MMAI.Add("Spec_PMT");
             Info.Add("MMAnalogInputs", MMAI);
             Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
-            Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
+
+            // Counter inputs for MOTMasterStuff
+            List<string> MMCtr = new List<string> { };
+            MMCtr.Add("PMT_Edges");
+            Info.Add("MMCtrInputs", MMCtr);
+            Info.Add("MMCtrTrigger", (string)Boards["pg"] + "/PFI0");
+            Info.Add("MMCtrSampleClock", (string)Boards["pg"] + "/ai/SampleClock");
 
             // Shutters
             // Name of shutter, Name of shutter channel, invert
@@ -130,7 +140,7 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
             //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
             wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -1000, -800);
-            wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 6);
+            wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 7);
             wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
             wmlConfig.AddLaserConfiguration("MBR", 384.234493, 500, 2000);

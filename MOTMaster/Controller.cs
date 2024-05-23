@@ -357,6 +357,11 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
+        public Dictionary<string,List<bool>> GetSwitchConfiguration()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
+        }
+
         public void Run()
         {
             runThread = new Thread(new ThreadStart(this.Go));
@@ -564,6 +569,14 @@ namespace MOTMaster
             CompilerParameters options = new CompilerParameters();
 
             options.ReferencedAssemblies.Add(motMasterPath);
+            if (Environs.FileSystem.Paths.ContainsKey("AdditionalMOTMasterAssemblies"))
+            {
+                foreach (string path in (List<string>)Environs.FileSystem.Paths["AdditionalMOTMasterAssemblies"])
+                {
+                    options.ReferencedAssemblies.Add(path);
+                }
+            }
+
             options.ReferencedAssemblies.Add(daqPath);
 
             TempFileCollection tempFiles = new TempFileCollection();

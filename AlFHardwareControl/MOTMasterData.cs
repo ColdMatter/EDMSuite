@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Data;
+
 namespace AlFHardwareControl
 {
     public partial class MOTMasterData : UserControl
@@ -27,17 +29,39 @@ namespace AlFHardwareControl
             }},
         };
 
+        private string name;
+
         public MOTMasterData()
         {
             InitializeComponent();
             RejectCondPicker.Items.AddRange(comparisons.Keys.ToArray<string>());
             RejectCondPicker.SelectedIndex = 0;
+            sourceEnabled = sourceEnable.Checked;
+            name = "";
+        }
+
+        public MOTMasterData(string _name)
+        {
+            InitializeComponent();
+            RejectCondPicker.Items.AddRange(comparisons.Keys.ToArray<string>());
+            RejectCondPicker.SelectedIndex = 0;
+            sourceEnabled = sourceEnable.Checked;
+            name = _name;
+        }
+
+        public MOTMasterData(string _name, string yaxis_caption)
+        {
+            InitializeComponent();
+            RejectCondPicker.Items.AddRange(comparisons.Keys.ToArray<string>());
+            RejectCondPicker.SelectedIndex = 0;
+            sourceEnabled = sourceEnable.Checked;
+            name = _name;
+            dataGraph.YAxes[0].Caption = yaxis_caption;
         }
 
         private string normSourceName;
         private int normSourceID;
         private double[] xData;
-        private double[] rawYData;
 
         public void initNormalisation(List<string> options)
         {
@@ -50,97 +74,113 @@ namespace AlFHardwareControl
 
         public MOTMasterStuff mmstuff;
 
-        public void UpdateData(double[] xdata, double[] newData)
+        public void UpdateXData(double[] xdata)
         {
             xData = xdata;
-            rawYData = newData;
             ReDraw();
         }
 
         public void UpdateScan()
         {
             if (xData == null) return;
+            if (!this.SourceEnabled) return;
             this.Invoke((Action)(() =>
             {
-                dataGraph.Plots[1].ClearData();
+                for (int i = 0; i < mmstuff.SwitchStates; ++i)
+                {
+                    dataGraph.Plots[2 * i + 1].ClearData();
+                }
             }));
             if (mmstuff.ScanData.Count == 0) return;
-            Dictionary<double,List<List<double[,]>>> ScanData = mmstuff.ScanData;
+            Dictionary<double,List<List<SerializableDictionary<string, List<double[]>>>>> ScanData = mmstuff.ScanData;
 
-            int index = mmstuff.mmdata.FindIndex((MOTMasterData mmdata) => { return System.Object.ReferenceEquals(mmdata,this); });
+            List<SerializableDictionary<string,List<double[]>>> flatData = ScanData.Values.ToList().SelectMany(i => i).SelectMany(i=>i).ToList();
+            List<double[]>[] normedData = Enumerable.Range(0, flatData.Count).Select(
+                i => NormaliseData(flatData[i])).ToArray();
 
-            List<double[,]> flatData = ScanData.Values.ToList().SelectMany(i => i).SelectMany(i=>i).ToList();
-            double[][] normedData = Enumerable.Range(0, flatData.Count).Select(
-                i => NormaliseData(Enumerable.Range(0, flatData[i].GetLength(1)).Select(j => flatData[i][index, j]).ToArray(), Enumerable.Range(0, flatData[i].GetLength(1)).Select(j => flatData[i][normSourceID, j]).ToArray())).ToArray();
-
-            double[] data = Enumerable.Range(0, normedData[0].Length).Select(
-                i => Enumerable.Range(0, normedData.Length).Select(
-                    j => normedData[j][i]).Average()).ToArray();
+            List<double[]> data = Enumerable.Range(0, normedData[0].Count).Select(
+                                k => Enumerable.Range(0, normedData[0][0].Length).Select(
+                                i => Enumerable.Range(0, normedData.Length).Select(
+                                j => normedData[j][k][i]).Average()).ToArray()).ToList();
 
             this.Invoke((Action)(() =>
-            {;
-                dataGraph.Plots[1].PlotXY(xData,data);
+            {
+                for (int i = 0; i < data.Count; ++i)
+                {
+                    dataGraph.Plots[2 * i + 1].PlotXY(xData, data[i]);
+                }
             }));
         }
 
-        private void ReDraw()
+        public void ReDraw()
         {
-            if (xData == null) return;
-            double[] data = NormaliseData();
+            if (xData == null || mmstuff.AIData.Count == 0) return;
+            List<double[]> data = NormaliseData();
             this.Invoke((Action)(() =>
             {
-                dataGraph.Plots[0].ClearData();
-                dataGraph.Plots[0].PlotXY(xData, data);
+                while (mmstuff.SwitchStates * 2 < dataGraph.Plots.Count)
+                {
+                    dataGraph.Plots.RemoveAt(dataGraph.Plots.Count - 1);
+                }
+                while (mmstuff.SwitchStates * 2 > dataGraph.Plots.Count)
+                {
+                    NationalInstruments.UI.ScatterPlot points = new NationalInstruments.UI.ScatterPlot(dataGraph.XAxes[0], dataGraph.YAxes[0]);
+                    NationalInstruments.UI.ScatterPlot scan = new NationalInstruments.UI.ScatterPlot(dataGraph.XAxes[0], dataGraph.YAxes[0]);
+                    dataGraph.Plots.Add(points);
+                    dataGraph.Plots.Add(scan);
+                    points.PointColor = points.LineColor;
+                    points.LineStyle = NationalInstruments.UI.LineStyle.Dot;
+                    scan.LineColor = points.LineColor;
+                }
+                for (int i = 0; i < data.Count; ++i)
+                {
+                    dataGraph.Plots[2 * i].ClearData();
+                    dataGraph.Plots[2 * i].PlotXY(xData, data[i]);
+                }
                 dataGraph.Update();
             }));
         }
 
-        public double[] NormaliseData()
+        public List<double[]> NormaliseData()
         {
-            if (!Normalise.Checked) return rawYData;
-            double[] normedData = new double[xData.Length];
-            double[] normaliser = mmstuff.AIData[normSourceName];
-            for (int i = 0; i < xData.Length; ++i)
+            if (!sourceEnabled) return new List<double[]> { };
+            if (!Normalise.Checked) return mmstuff.AIData[name];
+            List<double[]> normedData = new List<double[]> { };
+            List<double[]> normaliser = mmstuff.AIData[normSourceName];
+            lock (mmstuff)
             {
-                if (normaliser[i] != 0)
-                    normedData[i] = rawYData[i] / normaliser[i];
-                else
-                    normedData[i] = 0;
+                for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
+                {
+                    normedData.Add(new double[xData.Length]);
+                    for (int i = 0; i < xData.Length; ++i)
+                    {
+                        if (normaliser[j][i] != 0)
+                            normedData[j][i] = mmstuff.AIData[name][j][i] / normaliser[j][i];
+                        else
+                            normedData[j][i] = 0;
+                    }
+                }
             }
             return normedData;
 
         }
 
-        public double[] NormaliseData(double[,] rawData)
+        public List<double[]> NormaliseData(Dictionary<string, List<double[]>> rawData)
         {
-            int index = mmstuff.mmdata.FindIndex((MOTMasterData mmdata) => { return System.Object.ReferenceEquals(mmdata, this); });
-            double[][] data = Enumerable.Range(0, rawData.GetLength(0)).Select(
-                i => Enumerable.Range(0, rawData.GetLength(1)).Select(
-                    j => rawData[i, j]).ToArray()).ToArray();
-            if (!Normalise.Checked) return data[index];
-            double[] normaliser = data[normSourceID];
-            double[] normedData = new double[xData.Length];
-            for (int i = 0; i < xData.Length; ++i)
+            if (!sourceEnabled) return new List<double[]> { };
+            if (!Normalise.Checked) return rawData[name];
+            List<double[]> normaliser = rawData[normSourceName];
+            List<double[]> normedData = new List<double[]> { };
+            for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
             {
-                if (normaliser[i] != 0)
-                    normedData[i] = data[index][i] / normaliser[i];
-                else
-                    normedData[i] = 0;
-            }
-            return normedData;
-
-        }
-
-        public double[] NormaliseData(double[] rawData, double[] normaliser)
-        {
-            if (!Normalise.Checked) return rawData;
-            double[] normedData = new double[xData.Length];
-            for (int i = 0; i < xData.Length; ++i)
-            {
-                if (normaliser[i] != 0)
-                    normedData[i] = rawData[i] / normaliser[i];
-                else
-                    normedData[i] = 0;
+                normedData.Add(new double[xData.Length]);
+                for (int i = 0; i < xData.Length; ++i)
+                {
+                    if (normaliser[j][i] != 0)
+                        normedData[j][i] = mmstuff.AIData[name][j][i] / normaliser[j][i];
+                    else
+                        normedData[j][i] = 0;
+                }
             }
             return normedData;
 
@@ -152,12 +192,23 @@ namespace AlFHardwareControl
         {
             if (comparer != null)
             {
+                lock (mmstuff)
+                foreach (double[] rawYData in mmstuff.AIData[name])
                 foreach (double y in rawYData)
                     if (comparer(y)) return true;
             }
 
 
             return false;
+        }
+
+        private bool sourceEnabled;
+        public bool SourceEnabled
+        {
+            get
+            {
+                return sourceEnabled;
+            }
         }
 
         private void fixX_CheckedChanged(object sender, EventArgs e)
@@ -172,6 +223,10 @@ namespace AlFHardwareControl
 
         private void Normalise_CheckedChanged(object sender, EventArgs e)
         {
+            if (!mmstuff.mmdata[normSourceID].SourceEnabled && Normalise.Checked)
+            {
+                Normalise.Checked = false;
+            }
             ReDraw();
             UpdateScan();
             mmstuff.ReDrawScanResults();
@@ -219,5 +274,9 @@ namespace AlFHardwareControl
             }));
         }
 
+        private void sourceEnable_CheckedChanged(object sender, EventArgs e)
+        {
+            sourceEnabled = sourceEnable.Checked;
+        }
     }
 }

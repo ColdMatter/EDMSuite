@@ -133,7 +133,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Optimize>false</Optimize>
@@ -612,6 +612,9 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
@@ -633,12 +636,16 @@
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
+    <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
     <Compile Include="DAQMxStaticAnalogGenerator.cs" />
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
+    <Compile Include="InfluxDBDataLogger.cs" />
+    <Compile Include="JsonParser.cs" />
+    <Compile Include="M2LaserInterface.cs" />
     <Compile Include="RigolDG811.cs" />
     <Compile Include="RigolDG822.cs" />
     <Compile Include="GobelinHardware.cs" />
@@ -646,6 +653,7 @@
     <Compile Include="RhysFileSystem.cs" />
     <Compile Include="PeakFinder.cs" />
     <Compile Include="AlicatFlowController.cs" />
+    <Compile Include="TCPConnection.cs" />
     <Compile Include="WavemeterLockConfig.cs" />
     <Compile Include="WMLServerFileSystem.cs" />
     <Compile Include="AlFFileSystem.cs" />
