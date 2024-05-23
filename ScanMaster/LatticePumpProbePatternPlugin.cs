@@ -45,14 +45,13 @@ namespace ScanMaster.Acquire.Plugins
 			settings["shutter1offdelay"] = 450000;
 			settings["shutterslowdelay"] = 10000;
 			settings["DurationV0"] = 6000;
-			settings["shutterV1delay"] = 0;
+			settings["steve1delay"] = 0;
 			settings["shutterV2delay"] = 0;
 			settings["DurationV2"] = 5000;
 			settings["DurationV1"] = 40000;
 			settings["v3delaytime"] = 14000;
-			//settings["newPrtDuration"] = 10000;
-			settings["CameraTrigger"] = 5000; //trigger for the image of molecule, default value is 5ms after the startTrigger
-			settings["BgTrigger"] = 250000; // trigger for the light background, default value is 250ms after the startTrigger which is fired at 2Hz. 
+			settings["repumpDelay"] = 5000;
+			settings["repumpDuration"] = 10000;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -89,10 +88,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["switchLineDelay"],
 				(int)settings["shutter1offdelay"],
 				(int)settings["v3delaytime"],
-				(int)settings["newPrtDuration"],
-				(int)settings["CameraTrigger"],// a camera trigger, 20Sept2023 by Guanchen
-				(int)settings["BgTrigger"],// a trigger for the light background image, 20Sept2023 by Guanchen
-				(int)settings["newPrtDelay"]);
+				(int)settings["repumpDuration"],
+				(int)settings["repumpDelay"]);
 			/*
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);

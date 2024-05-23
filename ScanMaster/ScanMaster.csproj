@@ -561,6 +561,9 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -636,9 +639,9 @@
     <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
-    <Compile Include="MOTMasterScan.cs" />
     <Compile Include="LatticePumpProbePatternBuilder.cs" />
     <Compile Include="LatticePumpProbePatternPlugin.cs" />
+    <Compile Include="MOTMasterScan.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
     <Compile Include="TwoShutterSlowingPatternPlugin.cs" />
     <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />
@@ -983,7 +986,7 @@
     <None Include="bin\LatticeEDM\WavemeterLock.exe.config" />
     <None Include="bin\x86\LatticeEDM\ScanMaster.exe.config" />
     <None Include="bin\x86\LatticeEDM\TransferCavityLock.exe.config" />
-    <None Include="Properties\app.manifest" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="ScanMaster_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

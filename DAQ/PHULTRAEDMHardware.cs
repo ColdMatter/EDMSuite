@@ -31,13 +31,15 @@ namespace DAQ.HAL
             string ExtraBoard = "/PXI1Slot5";
             string Analogboard = "/PXI1Slot4";
             string usbbreakout = "/Dev5";
+            string smallUSBBoard = "/Dev6";
 
-            Info.Add("ScanMasterConfig", "D:\\EDM Suite Files\\Settings\\ScanMaster\\2024Mar0.xml");
+            //Info.Add("ScanMasterConfig", "D:\\EDM Suite Files\\Settings\\ScanMaster\\2024Mar06.xml");
 
             Boards.Add("daq", "/PXI1Slot5");
             Boards.Add("tclBoardProbe", "/PXI1Slot5");
             Boards.Add("pg", "/PXI1Slot6");
             Boards.Add("analog", "/PXI1Slot4");
+            Boards.Add("smallUSBAnalog", "/Dev6");
             //Boards.Add("tclBoardPump", "/PXI1Slot6");
 
             //string tclBoardPump = (string)Boards["tclBoardPump"];
@@ -87,8 +89,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("ProbeCavityLengthVoltage", digitalPatternBoardAddress + "/ao0", -9, 0); //tick //this is the voltage that stabilises the length of the cavity (needs to have 0 because thats where its intialises)
             AddAnalogOutputChannel("v3laser", digitalPatternBoardAddress + "/ao3", 0, 10);
             AddAnalogOutputChannel("mattisse", Analogboard + "/ao1", 0, 10);
+            AddAnalogOutputChannel("irecdl", Analogboard + "/ao13", 0, 10);
             AddAnalogOutputChannel("v2aom", Analogboard + "/ao2", -10, 10);
-            AddAnalogOutputChannel("v1laser", Analogboard + "/ao4", 0, 10);
+            AddAnalogOutputChannel("v1laser", smallUSBBoard + "/ao1", -10, 10);
+            AddAnalogOutputChannel("ClassicECDL", Analogboard + "/ao4", -10, 10);
             //
 
             // V2 cavity inputs
@@ -103,8 +107,12 @@ namespace DAQ.HAL
 
             //Configuration for wavemeterlock
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("LatticeProbeLaser", "LatticeProbeLaser", 7);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddSlaveLaser("Mattisse", "mattisse", 5);//Laser name, analog channel, wavemeter channel
+            /*wmlConfig.AddSlaveLaser("LatticeProbeLaser", "LatticeProbeLaser", 5);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("LatticeProbeLaser", 542.809112, 5, 1); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)*/
+            wmlConfig.AddSlaveLaser("IR-ECDL", "irecdl", 5);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddSlaveLaser("Classic-ECDL", "ClassicECDL", 5);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("IR-ECDL", 288.7301, -100, -100); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddLaserConfiguration("Classic-ECDL", 446.7996977, -100, -100); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
             //TCL coniguration for Lattice EDM
@@ -250,10 +258,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1);
             AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4); //NOT A SHUTTER, V0 Slowing AOM Near
             AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);//Unused it seems
-            AddDigitalOutputChannel("shutterSTEVEoff", digitalPatternBoardAddress, 0, 7);//STEVE newport Shutter A Signal (closure TTL)
+            AddDigitalOutputChannel("shutterSTEVE1off", digitalPatternBoardAddress, 0, 7);//STEVE newport Shutter A Signal (closure TTL)
             // shutter 1 on is done in the switch line of the pattern (port 0 0)
             AddDigitalOutputChannel("shutterslow", digitalPatternBoardAddress, 0, 8); //UNKNOWN
-            AddDigitalOutputChannel("shutterv1/v2", digitalPatternBoardAddress, 0, 9); //Thorlabs Shutter for V1 and V2 slowing beams
+            AddDigitalOutputChannel("shutterSTEVE2", digitalPatternBoardAddress, 0, 9); //Thorlabs Shutter for V1 and V2 slowing beams
             AddDigitalOutputChannel("shutterv2", digitalPatternBoardAddress, 0, 10); //NOT A SHUTTER ITS THE V2 AOM
             ////AddAnalogInputChannel("4Kthermistor", analogPatternBoardAddress + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("pmt", ExtraBoard + "/ai0", AITerminalConfiguration.Rse);
@@ -352,6 +360,8 @@ namespace DAQ.HAL
             //Info.Add("DefaultCavity", tclConfigProbe);
             #endregion
             #endregion
+
+
 
         }
 

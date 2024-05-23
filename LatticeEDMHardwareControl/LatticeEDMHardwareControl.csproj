@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E5009235-D487-44C3-81C3-0C245E4F1672}</ProjectGuid>
+    <ProjectGuid>{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>LatticeEDMHardwareControl</RootNamespace>
     <AssemblyName>LatticeEDMHardwareControl</AssemblyName>
@@ -33,14 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=20.1.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,91 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControlWindow.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ControlWindow.Designer.cs">
-      <DependentUpon>ControlWindow.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="CooldownModeOptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CooldownModeOptionsDialog.Designer.cs">
-      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LatticeEDMController.cs" />
-    <Compile Include="LatticeEDMRunner.cs" />
-    <Compile Include="RefreshModeOptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RefreshModeOptionsDialog.Designer.cs">
-      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LatticeEDMSavePlotDataDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LatticeEDMSavePlotDataDialog.Designer.cs">
-      <DependentUpon>LatticeEDMSavePlotDataDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WarmUpModeOptionsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WarmUpModeOptionsDialog.Designer.cs">
-      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="ControlWindow.resx">
-      <DependentUpon>ControlWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CooldownModeOptionsDialog.resx">
-      <DependentUpon>CooldownModeOptionsDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="RefreshModeOptionsDialog.resx">
-      <DependentUpon>RefreshModeOptionsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LatticeEDMSavePlotDataDialog.resx">
-      <DependentUpon>LatticeEDMSavePlotDataDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="WarmUpModeOptionsDialog.resx">
-      <DependentUpon>WarmUpModeOptionsDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="Properties\app.manifest" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="LatticeEDMHardwareControl_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DAQ\DAQ.csproj">
-      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
-      <Name>DAQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
-      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
-      <Name>SharedCode</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="LatticeEDMIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
