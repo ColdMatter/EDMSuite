@@ -120,17 +120,19 @@ namespace ScanMaster.GUI
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
             if (startTOFGate == 0)
             {
-                startTOFGate = (int)shotSettings["gateStartTime"];
-            }
+				// startTOFGate = (int)shotSettings["gateStartTime"];
+				startTOFGate = 1300;// TOF gate starts with 14 ms, modified by Guanchen on 7April2024
+			}
             else
             {
                 startTOFGate = window.TOFGate.Minimum;
             }
 
             if (endTOFGate == 0) 
-            { 
-                endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"]; 
-            }
+            {
+				//endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"]; 
+				 endTOFGate =1800;// TOF gate starts with 24 ms, modified by Guanchen on 7April2024
+			}
             else
             {
                 endTOFGate = window.TOFGate.Maximum;
