@@ -90,6 +90,7 @@ namespace MoleculeMOTHardwareControl.Controls
         private double softTempLimInC = 20.0;
 
         Stopwatch cycleHoldTimer = new Stopwatch();
+        Stopwatch dataLogTimer = new Stopwatch();
 
         CmdLib8742 cmdLib;
         DeviceIOLib diolib;
@@ -200,6 +201,9 @@ namespace MoleculeMOTHardwareControl.Controls
             //Initialize Analog Outputs to 0V 
             SetAnalogOutput(0, 0.0);
             SetAnalogOutput(1, 0.0);
+
+            //Start timer for data logging
+            dataLogTimer.Start();
         }
 
         private void set_Time_Axis()
@@ -592,30 +596,34 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (castView.LogStatus())
                 {
-                    DateTime dt = DateTime.Now;
-                    String filename = logfilePath + "" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                    
-                    if (!System.IO.File.Exists(filename))
+                    if (dataLogTimer.ElapsedMilliseconds > 1000)
                     {
-                        //string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
-                        string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t " +
-                            "Source_Temperature(in C) \t Source_Temperature_1(in K) \t Source_Temperature_2(in K) \t " +
-                            "SF6_Temperature(in degree C) \t " +
-                            "40K_Temperature(in degree C) \t 40K_Temperature(in degree K)";
-                        using (System.IO.StreamWriter file =
-                        new System.IO.StreamWriter(filename, false))
-                            file.WriteLine(header);
-                    }
+                        DateTime dt = DateTime.Now;
+                        String filename = logfilePath + "" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-                    using (System.IO.StreamWriter file =
-                        new System.IO.StreamWriter(filename, true))
-                    {
-                        //file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40KTemp.ToString());
-                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString() + "\t" +
-                            sourceTemp.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sourceTemp3.ToString() + "\t" +
-                            sf6Temp.ToString() + "\t" +
-                            source40KTemp.ToString() + "\t" + source40KTemp2.ToString());
-                        file.Flush();
+                        if (!System.IO.File.Exists(filename))
+                        {
+                            //string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
+                            string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t " +
+                                "Source_Temperature(in C) \t Source_Temperature_1(in K) \t Source_Temperature_2(in K) \t " +
+                                "SF6_Temperature(in degree C) \t " +
+                                "40K_Temperature(in degree C) \t 40K_Temperature(in degree K)";
+                            using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, false))
+                                file.WriteLine(header);
+                        }
+
+                        using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, true))
+                        {
+                            //file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40KTemp.ToString());
+                            file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString() + "\t" +
+                                sourceTemp.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sourceTemp3.ToString() + "\t" +
+                                sf6Temp.ToString() + "\t" +
+                                source40KTemp.ToString() + "\t" + source40KTemp2.ToString());
+                            file.Flush();
+                        }
+                        dataLogTimer.Restart();
                     }
                 }
 
