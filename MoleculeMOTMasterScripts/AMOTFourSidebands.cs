@@ -34,29 +34,33 @@ public class Patterns : MOTMasterScript
         //PMT
         Parameters["PMTTriggerDuration"] = 10;
 
-        // Slowing
-        Parameters["slowingAOMOnStart"] = 400;//160
-        Parameters["slowingAOMOnDuration"] = 45000;
-        
-        Parameters["slowingAOMOffStart"] = 1250;
-        Parameters["slowingAOMOffDuration"] = 40000;//40000;
-
-
-        
-        Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = 1250;// 1760;//1520
-        Parameters["slowingRepumpAOMOffDuration"] = 35000;
+      
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 650;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 600;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.3;//-1.25; //-1.25 //225MHz/V 120m/s/V
+        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
+
+        // Slowing
+        Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
+        Parameters["slowingAOMOnDuration"] = 45000;
+
+
+
+        Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
+        Parameters["slowingAOMOffDuration"] = 40000;//40000;
+
+
+
+        Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
+        Parameters["slowingRepumpAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"];
+        Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
-        Parameters["slowingCoilsOffTime"] = 2000; // 1500;
+        Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
@@ -102,16 +106,18 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
         Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
         Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq4"] = 352.00 / 2.0; //+ F = 1+
 
         Parameters["BXAOMAttenuation"] = 4.0;
+        Parameters["SlowingReumoAttenuation"] = 6.2;
 
         //Sideband Amplitudes
 
-        Parameters["SidebandAmp1"] = 6.0;
-        Parameters["SidebandAmp2"] = 7.0;
+        //Parameters["SidebandAmp1"] = 6.5;
+        Parameters["SidebandAmp1"] = 3.85;
+        Parameters["SidebandAmp2"] = 7.8;
         Parameters["SidebandAmp3"] = 7.5;
-        Parameters["SidebandAmp4"] = 7.5; //7.5
+        Parameters["SidebandAmp4"] = 8.0; //7.5
 
         //VCO Calibration
         //VCO frequency in MHz = offset + vol * gradient
@@ -187,6 +193,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("Rf2Amp");
         p.AddChannel("Rf3Amp");
         p.AddChannel("Rf4Amp");
+        p.AddChannel("SlowingRepumpAttenuation");
 
         //Switch BX AOM via analog output Mar 05 2024
         p.AddAnalogValue("BXAttenuation", 0, 0.0);
@@ -198,6 +205,7 @@ public class Patterns : MOTMasterScript
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
         p.AddAnalogValue("TCoolSidebandVCO", 0, 4.6); //4.6V, 61.3MHz
+        p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingReumoAttenuation"]);
         p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
 
         // Slowing field

@@ -52,6 +52,7 @@ namespace MOTMaster.SnippetLibrary
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);
             //p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
             
+            
             p.AddPolynomialRamp("slowingChirp",
             (int)parameters["SlowingChirpStartTime"],
             (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"],
@@ -62,6 +63,8 @@ namespace MOTMaster.SnippetLibrary
             -0.5,                   // (double)parameters["weight2"],
             1.0/6.0,                // (double)parameters["weight3"],
             -1.0 / 24.0);           // (double)parameters["weight4"]
+            
+
             //p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
 
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 2500, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);

@@ -120,7 +120,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
-
+            AddDigitalOutputChannel("v0ddsSwitchA", digitalPatternBoardAddress2, 2, 0);
+            AddDigitalOutputChannel("v0ddsSwitchB", digitalPatternBoardAddress2, 2, 1);
 
             // Rb Digital Pattern
             AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
@@ -172,6 +173,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("lightSwitch", analogPatternBoardAddress + "/ao19");
 
             AddAnalogOutputChannel("BXAttenuation", analogPatternBoardAddress2 + "/ao1");
+            AddAnalogOutputChannel("SlowingRepumpAttenuation", analogPatternBoardAddress2 + "/ao5");
 
 
             // Old Rb Analog Pattern
