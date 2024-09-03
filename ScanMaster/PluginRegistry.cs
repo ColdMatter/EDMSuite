@@ -30,6 +30,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("No scan", typeof(NullOutputPlugin));
 			scanOutputPlugins.Add("Analog output", typeof(DAQMxAnalogOutputPlugin));
 			scanOutputPlugins.Add("Synth frequency output", typeof(SynthFrequencyOutputPlugin));
+			scanOutputPlugins.Add("USB current output", typeof(BFieldUSBOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth frequency output", typeof(WindfriekSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth F0 Amplitude output", typeof(WindfriekSynthF0AmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth F1 Amplitude output", typeof(WindfriekSynthF1AmplitudeOutputPlugin));
@@ -78,6 +79,7 @@ namespace ScanMaster.Acquire.Plugin
             patternPlugins.Add("Flashlamps only", typeof(FlashlampsOnlyPatternPlugin));
             patternPlugins.Add("Zeeman Sisyphus", typeof(ZeemanSisyphusPatternPlugin));
 			patternPlugins.Add("N shots", typeof(NshotsPatternPlugin));
+			patternPlugins.Add("N shots CCD", typeof(NshotsPatternPluginCCD));
 			patternPlugins.Add("Two Shutter", typeof(TwoShutterPatternPlugin));
 			patternPlugins.Add("Two Shutter Slowing", typeof(TwoShutterSlowingPatternPlugin));
 			patternPlugins.Add("Two Shutter Two YAG", typeof(TwoShutterTwoYAGPatternPlugin));
@@ -104,6 +106,7 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("Constant, fake data", typeof(NullShotGathererPlugin));
 			shotGathererPlugins.Add("Analog gatherer", typeof(AnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Modulated Analog gatherer", typeof(ModulatedAnalogShotGathererPlugin));
+			shotGathererPlugins.Add("PMT CCD Modulated Analog gatherer", typeof(CCDModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
             shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
 

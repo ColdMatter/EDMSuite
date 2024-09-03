@@ -775,28 +775,28 @@ namespace EDMBlockHead.Acquire
         public void MapAnalogInputs()
         {
             inputs = new ScannedAnalogInputCollection();
-            inputs.RawSampleRate = 100000; 
+            inputs.RawSampleRate = 10000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime"); // Classic used ~700
-            inputs.GateLength = 12000; //Classic used 280
+            inputs.GateLength = 1200; //Classic used 280
 
             ScannedAnalogInput detectorA = new ScannedAnalogInput();
             detectorA.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorA"];
             detectorA.ReductionMode = DataReductionMode.Chop;
-            detectorA.ChopStart = 600; //Classic had 140
-            detectorA.ChopLength = 10800; //Classic had 80
+            detectorA.ChopStart = 0; //Classic had 140
+            detectorA.ChopLength = 1140; //Classic had 80
             detectorA.LowLimit = 0;
             detectorA.HighLimit = 10;
-            detectorA.Calibration = 22.5;
+            detectorA.Calibration = 225;
             inputs.Channels.Add(detectorA);
 
             ScannedAnalogInput detectorB = new ScannedAnalogInput();
             detectorB.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorB"];
             detectorB.ReductionMode = DataReductionMode.Chop;
-            detectorB.ChopStart = 600; //Classic had 180
-            detectorB.ChopLength = 10800; //Classic had 80
+            detectorB.ChopStart = 0; //Classic had 180
+            detectorB.ChopLength = 1140; //Classic had 80
             detectorB.LowLimit = 0;
             detectorB.HighLimit = 10;
-            detectorB.Calibration = 22.5;
+            detectorB.Calibration = 225;
             inputs.Channels.Add(detectorB);
 
             //ScannedAnalogInput bottomProbe = new ScannedAnalogInput();
