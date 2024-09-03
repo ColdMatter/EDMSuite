@@ -38,6 +38,22 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	print("Holding at full potential for "+str(holduptime)+" seconds")
 	System.Threading.Thread.CurrentThread.Join(holduptime*1000)
 
+	print("Testing disconnections and RC time to discharge and charge")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	for j in range(5):
+		hc.ConnectEField(False)
+		System.Threading.Thread.CurrentThread.Join(1000)
+		hc.EnableBleed(True)
+		System.Threading.Thread.CurrentThread.Join(15000)
+		hc.EnableBleed(False)
+		System.Threading.Thread.CurrentThread.Join(1000)
+		hc.ConnectEField(True)
+		System.Threading.Thread.CurrentThread.Join(15000)
+	
+	print("Holding for another 20 seconds")
+	System.Threading.Thread.CurrentThread.Join(20000)
+
 	a = reversed(r)
 	
 	for j in a:

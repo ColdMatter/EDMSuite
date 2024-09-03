@@ -2,7 +2,6 @@
 # ramp up of the potential up to a given value
 
 from DAQ.Environment import *
-from uedmfuncs import *
 
 def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	'''
@@ -17,7 +16,7 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	hc.SetLeakageCurrentLogCheck(True)
 	hc.SetiMonitorPollPeriod(200)
 
-	loggingcheck=input("Have you started logging? (y/n)\n")
+	loggingcheck=raw_input("Have you started logging? (y/n)\n")
 	if loggingcheck!="y":
 		print("Start the logging first")
 		return
@@ -26,10 +25,10 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	System.Threading.Thread.CurrentThread.Join(1000)
 
 	r = range(int(start*10), int((stop+step)*10), int(step*10))
-	for i in r:
-		print("E fields at +/- " + str(float(i)/10) + " kV")
-		hc.SetCPlusOffVoltage(float(i)/10)
-		hc.SetCMinusOffVoltage(float(i)/10)
+	for i in range(len(r)):
+		print("E fields at +/- " + str(float(r[i])/10) + " kV")
+		hc.SetCPlusOffVoltage(float(r[i])/30)
+		hc.SetCMinusOffVoltage(float(r[i])/30)
 		hc.UpdateVoltages()
 		print("waiting for " +  str(stepuptime) + " seconds")
 		System.Threading.Thread.CurrentThread.Join(stepuptime*1000)
@@ -38,12 +37,12 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	print("Holding at full potential for "+str(holduptime)+" seconds")
 	System.Threading.Thread.CurrentThread.Join(holduptime*1000)
 
-	a = reversed(r)
+	r.reverse()
 	
-	for j in a:
-		print("E fields at +/- " + str(float(j)/10) + " kV")
-		hc.SetCPlusOffVoltage(float(j)/10)
-		hc.SetCMinusOffVoltage(float(j)/10)
+	for i in range(len(r)):
+		print("E fields at +/- " + str(float(r[i])/10) + " kV")
+		hc.SetCPlusOffVoltage(float(r[i])/30)
+		hc.SetCMinusOffVoltage(float(r[i])/30)
 		hc.UpdateVoltages()
 		print("waiting for " +  str(stepdowntime) + " seconds")
 		System.Threading.Thread.CurrentThread.Join(stepdowntime*1000)
