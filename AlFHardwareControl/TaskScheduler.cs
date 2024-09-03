@@ -18,9 +18,6 @@ namespace AlFHardwareControl
         public delegate bool ComparisonFunc(string a, string b);
         public Dictionary<string, ComparisonFunc> Comparisons = new Dictionary<string, ComparisonFunc>();
 
-        public Dictionary<string, Func<List<string>, Func<bool, object>>> taskCommands = new Dictionary<string, Func<List<string>, Func<bool, object>>>();
-        public Dictionary<string, Func<List<string>, Func<string>>> resourceCommands = new Dictionary<string, Func<List<string>, Func<string>>>();
-
         public MacroConfigurationCollection macroCollection;
 
         public Thread UpdateThread;
@@ -189,49 +186,6 @@ namespace AlFHardwareControl
             UpdateRenderedObject(this.ScheduledEventsPanel, (Panel box) => { box.Controls.Remove(uc); });
             UpdateScheduledLayout();
         }
-
-
-        #region Command Parsing
-
-        private struct Token
-        {
-            string value;
-            bool regex;
-            bool dictionary;
-
-        }
-        /// <summary>
-        /// Parses command strings. These have the form "!command param1 param2"
-        /// Space is considered a delimiter between the tokens. Quotes can be used
-        /// to have longer tokens. [] can be used to refer to a variable in a dictionary. Using quotes here are possible
-        /// but not necessary. A resource can be prefaced with # to indicate that it should match all of the
-        /// keys in the data dictionary and it should be expanded. Example command would be:
-        /// !run #[Turn off.*]
-        /// For a dictionary having keys "Turn off A", "Turn off B" and "Do C" this will expand to:
-        /// !run "Turn off A" "Turn off B"
-        /// </summary>
-        /// <returns>
-        /// A tokenised list of the command
-        /// </returns>
-        private List<Token> ParseCommand(string command)
-        {
-            List<Token> parsedCommand = new List<Token>();
-
-            bool escaped = false;
-            bool regex = false;
-            bool dictionary = false;
-
-            foreach (char c in command)
-            {
-
-            }
-
-
-
-            return parsedCommand;
-        }
-
-        #endregion
 
         public void SetTextField(Control box, string text)
         {

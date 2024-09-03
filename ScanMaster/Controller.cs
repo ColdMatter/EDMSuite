@@ -127,13 +127,6 @@ namespace ScanMaster
 			profileManager.Window = controllerWindow;
 			profileManager.Start();
 
-			if (Environs.Hardware.GetInfo("ScanMasterConfig") != null)
-			{
-				using (FileStream fs = System.IO.File.Open((string)Environs.Hardware.GetInfo("ScanMasterConfig"), FileMode.Open))
-				{
-					controllerInstance.profileManager.LoadProfileSetFromXml(fs);
-				}
-			}
 
 			// try to load in the last profile set
 			// first deserialize the profile set path
@@ -171,6 +164,13 @@ namespace ScanMaster
             // Get access to any other applications required
             Environs.Hardware.ConnectApplications();
 	
+			if (Environs.Hardware.GetInfo("ScanMasterConfig") != null)
+			{
+				using (FileStream fs = System.IO.File.Open((string)Environs.Hardware.GetInfo("ScanMasterConfig"), FileMode.Open))
+				{
+					controllerInstance.profileManager.LoadProfileSetFromXml(fs);
+				}
+			}
 			// run the main event loop
 			Application.Run(controllerWindow);
 					

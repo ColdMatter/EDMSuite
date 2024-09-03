@@ -35,6 +35,13 @@ namespace AlFHardwareControl
             Application.SetCompatibleTextRenderingDefault(false);
         }
 
+        public void ExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Uncaught exception! Take care program might be unstable\n\n" +
+                    "Exception:\n" + ((Exception)e.ExceptionObject).Message + "\n\n" + ((Exception)e.ExceptionObject), "Uncaught Exception",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         public Dictionary<string, object> GetExperimentReport()
         {
             Dictionary<string,object> dict = new Dictionary<string, object>();
@@ -215,6 +222,28 @@ namespace AlFHardwareControl
 
             window.UpdateRenderedObject(window.Loop1Out, (ProgressBar bar) => { bar.Value = (int)loop1Out; });
             window.UpdateRenderedObject(window.Loop2Out, (ProgressBar bar) => { bar.Value = (int)loop2Out; });
+
+
+            // Send data to ccmmonitoring
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("TEC Output").Tag("name", "Eurotherm 1");
+            if (loop1Off)
+            {
+                data.Field("Loop 1", 0d);
+            }
+            else
+            {
+                data.Field("Loop 1", loop1Out);
+            }
+            if (loop2Off)
+            {
+                data.Field("Loop 2", 0d);
+            }
+            else
+            {
+                data.Field("Loop 2", loop2Out);
+            }
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
         }
 
         private void UpdateCryoState()
@@ -243,6 +272,13 @@ namespace AlFHardwareControl
                 window.UpdateRenderedObject(window.EngageCryo, (Button but) => { but.Enabled = false; });
                 window.UpdateRenderedObject(window.DisengageCryo, (Button but) => { but.Enabled = true; });
             }
+
+
+            // Send data to ccmmonitoring
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Cryo state").Tag("name", "Cryo 1");
+            data.Field("Cryo state", !CRYO_off);
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
 
         }
 

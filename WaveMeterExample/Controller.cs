@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
+using DAQ;
 
 namespace WavemeterLockServer
 {
@@ -23,7 +24,7 @@ namespace WavemeterLockServer
         public int switchTime;
         private ServerForm ui;
         public bool[] remoteConnection = new bool[8];//an array of boolean to show if the channel is being used by wavemeterLock remotely
-        
+
         public event measurementHandler measurementAcquired;
         public Dictionary<string, bool> measurementStatus = new Dictionary<string, bool>();
         public List<string> viewerList = new List<string>();
@@ -34,7 +35,7 @@ namespace WavemeterLockServer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ui = new ServerForm(this);
-            
+
 
         }
 
@@ -49,14 +50,15 @@ namespace WavemeterLockServer
         private WLM.CallbackProcEx callbackObj;
         public void start()
         {
-            
+
             callbackObj = new WLM.CallbackProcEx(callback);
             WLM.Instantiate(WLM.cInstNotification, WLM.cNotifyInstallCallback, callbackObj, 0);
             measurementAcquired += () => { indicateNewMeasurement(); };
+            measurementAcquired += () => { logToInfluxDB(); };
             Application.Run(ui);
             for (int i = 0; i < 8; i++)
                 remoteConnection[i] = false;
-            
+
         }
 
 
@@ -124,7 +126,7 @@ namespace WavemeterLockServer
 
         public void indicateNewMeasurement()
         {
-            
+
             for (int index = 0; index < measurementStatus.Count(); index++)
             {
                 string dummy;
@@ -263,6 +265,22 @@ namespace WavemeterLockServer
                 WLM.Operation(2);
                 bMeas = true;
             }
+        }
+
+        private void logToInfluxDB()
+        {
+            if (System.Environment.GetEnvironmentVariable("INFLUX_TOKEN") == null) return;
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Wavemeter").Tag("computer", ((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]));
+
+            for (int i = 1; i <=8; ++i)
+            {
+                data = data.Field("Channel" + i.ToString(), getFrequency(i));
+            }
+            data.Field("Temperature", WLM.GetTemperature(0));
+            data.Field("Pressure", WLM.GetPressure(0));
+            data = data.TimestampMS(DateTime.UtcNow);
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "CCM Wavemeters", "CentreForColdMatter");
         }
 
     }

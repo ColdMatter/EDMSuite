@@ -75,7 +75,7 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				if (!Environs.Debug)
 				{
-					latestData = 1000*(wavemeterServerContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
+					latestData = (wavemeterServerContrller.getFrequency((int)settings["channel"]) - (double)settings["offset"]);
 				}
 			}
 		}

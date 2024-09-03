@@ -49,6 +49,16 @@ namespace AlFHardwareControl
             name = _name;
         }
 
+        public MOTMasterData(string _name, string yaxis_caption)
+        {
+            InitializeComponent();
+            RejectCondPicker.Items.AddRange(comparisons.Keys.ToArray<string>());
+            RejectCondPicker.SelectedIndex = 0;
+            sourceEnabled = sourceEnable.Checked;
+            name = _name;
+            dataGraph.YAxes[0].Caption = yaxis_caption;
+        }
+
         private string normSourceName;
         private int normSourceID;
         private double[] xData;
@@ -73,6 +83,7 @@ namespace AlFHardwareControl
         public void UpdateScan()
         {
             if (xData == null) return;
+            if (!this.SourceEnabled) return;
             this.Invoke((Action)(() =>
             {
                 for (int i = 0; i < mmstuff.SwitchStates; ++i)

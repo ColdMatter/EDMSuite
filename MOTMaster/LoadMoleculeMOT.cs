@@ -35,7 +35,7 @@ namespace MOTMaster.SnippetLibrary
             p.Pulse(patternStartBeforeQ, 0, (int)parameters["QSwitchPulseDuration"], "qSwitch"); 
             p.Pulse(patternStartBeforeQ, -(int)parameters["HeliumShutterToQ"], (int)parameters["HeliumShutterDuration"], "heliumShutter");
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingAOMOnStart"], (int)parameters["slowingAOMOffStart"] - (int)parameters["slowingAOMOnStart"], "bXSlowingAOM"); //first pulse to slowing AOM
-            p.AddEdge("bXSlowingAOM", patternStartBeforeQ + (int)parameters["slowingAOMOffStart"] + (int)parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
+            //p.AddEdge("bXSlowingAOM", patternStartBeforeQ + (int)parameters["slowingAOMOffStart"] + (int)parameters["slowingAOMOffDuration"], true); // send slowing aom high and hold it high
             p.Pulse(patternStartBeforeQ, (int)parameters["slowingRepumpAOMOnStart"], (int)parameters["slowingRepumpAOMOffStart"] - (int)parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
             //p.AddEdge("v10SlowingAOM", patternStartBeforeQ + (int)parameters["slowingRepumpAOMOffStart"] + (int)parameters["slowingRepumpAOMOffDuration"], true); // send slowing repump aom high and hold it high
             //p.Pulse(patternStartBeforeQ, (int)parameters["PMTTrigger"], (int)parameters["PMTTriggerDuration"], "detector"); // trigger data acquistion from PMT
@@ -46,7 +46,7 @@ namespace MOTMaster.SnippetLibrary
             p.AddChannel("slowingChirp");
             p.AddChannel("slowingCoilsCurrent");
             p.AddChannel("MOTCoilsCurrent");
-            p.AddChannel("newAnalogTest");
+            //p.AddChannel("newAnalogTest");
 
             // Slowing Chirp
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);

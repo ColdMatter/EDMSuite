@@ -92,7 +92,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
             AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("TCoolSidebandVCO", tclBoard1Address + "/ao1"); //Reused for Rb Repump Wavemeter Lock 20/03/23
+            AddAnalogOutputChannel("TCoolSidebandVCO", analogPatternBoardAddress2 + "/ao3"); //Reused for Rb Repump Wavemeter Lock 20/03/23
             //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
 
 
@@ -100,7 +100,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("flashLamp", digitalPatternBoardAddress, 0, 0);
             AddDigitalOutputChannel("qSwitch", digitalPatternBoardAddress, 0, 1);
             AddDigitalOutputChannel("bXSlowingAOM", digitalPatternBoardAddress, 0, 2);
-            AddDigitalOutputChannel("v00MOTAOM", digitalPatternBoardAddress, 0, 3);
+            AddDigitalOutputChannel("v0rfswitch1", digitalPatternBoardAddress, 0, 3);
             AddDigitalOutputChannel("v10SlowingAOM", digitalPatternBoardAddress, 0, 4);
             //AddDigitalOutputChannel("microwaveA", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("microwaveB", digitalPatternBoardAddress, 0, 6);
@@ -114,11 +114,12 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("topCoilDirection", digitalPatternBoardAddress, 1, 4);
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
-            AddDigitalOutputChannel("v00Sidebands", digitalPatternBoardAddress, 2, 0);
+            AddDigitalOutputChannel("v0rfswitch2", digitalPatternBoardAddress, 2, 0);
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
             AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
-            AddDigitalOutputChannel("cafPushSwitch", digitalPatternBoardAddress, 0, 5);
+            AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
+            AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
 
 
             // Rb Digital Pattern
@@ -209,7 +210,7 @@ namespace DAQ.HAL
              * If you plan on changing the name make sure you change it inside
              * those files too.
             */
-            AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
+            //AddAnalogOutputChannel("newAnalogTest", analogPatternBoardAddress2 + "/ao7");
 
             // Source
             AddDigitalOutputChannel("cryoCooler", tclBoard2Address, 0, 0);

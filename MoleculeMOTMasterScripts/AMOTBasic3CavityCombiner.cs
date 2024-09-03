@@ -49,10 +49,10 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 600;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25;//-1.25; //-1.25 //225MHz/V 120m/s/V
+        Parameters["SlowingChirpEndValue"] = -0.3;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
         // Slowing field
         Parameters["slowingCoilsValue"] = 0.4; //1.05;
@@ -94,49 +94,25 @@ public class Patterns : MOTMasterScript
         Parameters["v0F1AOMOffValue"] = 0.0;
         Parameters["dummy"] = 0.0;
 
-        //Sideband frequencies, double pass so divede by 2.0
-        //Sideband 2 has opposite polarization
 
-        /*Canonical MOT
-        Parameters["SidebandFreq1"] = 250.00 / 2.0;
-        Parameters["SidebandFreq2"] = 275.00 / 2.0;
-        Parameters["SidebandFreq3"] = 318.50 / 2.0;
-        Parameters["SidebandFreq4"] = 397.00 / 2.0;
-        */
-
-        //Flip polarization for F=0 and F=1-, flip mag field
-        //+ AOM order
-        /*
-        Parameters["SidebandFreq1"] = 250.00 / 2.0;
-        Parameters["SidebandFreq2"] = 275.00 / 2.0;
-        Parameters["SidebandFreq3"] = 318.50 / 2.0;
-        Parameters["SidebandFreq4"] = 397.00 / 2.0;
-        */
 
         //- AOM order
-        
-        Parameters["SidebandFreq1"] = 252.00 / 2.0; //+ F = 1-
-        Parameters["SidebandFreq2"] = 393.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq3"] = 322.50 / 2.0; //+ F = 0
-        Parameters["SidebandFreq4"] = 346.00 / 2.0; //+ F = 1+
-        
-
-
-        //Hannover scheme #11
+        // V0 blue from original for 80MHz
+        // 494.432408THz
         /*
-        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1-
-        Parameters["SidebandFreq2"] = 382.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq3"] = 321.00 / 2.0; //+ F = 0
-        Parameters["SidebandFreq4"] = 405.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 397.00 / 2.0; //- F = 2
+        Parameters["SidebandFreq3"] = 318.50 / 2.0; //- F = 0
+        Parameters["SidebandFreq4"] = 372.00 / 2.0; //+ F = 1+
         */
-        /*
-        
-        Parameters["SidebandFreq1"] = 260.00 / 2.0;
-        Parameters["SidebandFreq2"] = 292.00 / 2.0;
-        Parameters["SidebandFreq3"] = 335.50 / 2.0;
-        Parameters["SidebandFreq4"] = 401.90 / 2.0;
-        */
-        
+        //Lambda configuration
+        Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 326.00 / 2.0; //- F = 0
+        Parameters["SidebandFreq3"] = 400.00 / 2.0; //- F = 2
+        Parameters["SidebandFreq4"] = 374.00 / 2.0; //+ F = 1+
+
+        Parameters["BXAOMAttenuation"] = 4.0;
+
         //Sideband Amplitudes
 
         Parameters["SidebandAmp1"] = 6.0;
@@ -173,14 +149,18 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
+        p.AddEdge("v0rfswitch1", 0, false);
+        p.AddEdge("v0rfswitch2", 0, false);
+        p.AddEdge("v0rfswitch3", 0, false);
+        p.AddEdge("v0rfswitch4", 0, false);
+
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
-        //p.AddEdge("cafPushSwitch", 0, false);
-        p.AddEdge("cafPushSwitch", 200, true);
-        p.AddEdge("cafPushSwitch", 400, false);
+      
 
-
+        p.AddEdge("bXSlowingShutter", 0, false);
+        p.AddEdge("bXSlowingShutter", 20000, true);
 
 
 
@@ -200,6 +180,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("xShimCoilCurrent");
         p.AddChannel("yShimCoilCurrent");
         p.AddChannel("zShimCoilCurrent");
+        p.AddChannel("BXAttenuation");
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
@@ -214,6 +195,11 @@ public class Patterns : MOTMasterScript
         p.AddChannel("Rf3Amp");
         p.AddChannel("Rf4Amp");
 
+        //Switch BX AOM via analog output Mar 05 2024
+        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -253,6 +239,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf3Amp", 0, (double)Parameters["SidebandAmp3"]);
         p.AddAnalogValue("Rf4Amp", 0, (double)Parameters["SidebandAmp4"]);
 
+        
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
 

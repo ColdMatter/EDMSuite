@@ -95,7 +95,8 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Ultra STIRAP", typeof(STIRAPpatternPlugin));
 			patternPlugins.Add("YAGFire", typeof(YAGFirePatternPlugin));
 			patternPlugins.Add("CaFBEC", typeof(CaFBECPatternPlugin));
-			patternPlugins.Add("Lattice pattern", typeof(LatticePatternPlugin));
+			patternPlugins.Add("Lattice LIF pattern", typeof(LatticePatternPlugin));
+			patternPlugins.Add("Lattice Pump Probe Pattern", typeof(LatticePumpProbePatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -113,7 +114,7 @@ namespace ScanMaster.Acquire.Plugin
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
-			//analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
+			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
 
             //GPIB Input plugins
             gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));

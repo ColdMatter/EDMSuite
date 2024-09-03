@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 200;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 10;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -130,6 +130,8 @@ public class Patterns : MOTMasterScript
         }
         */
         // p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        
+       
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
@@ -164,8 +166,8 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("v00MOTAOM", patternStartBeforeQ+1000, true);
         //p.AddEdge("v00MOTAOM", 48000, false);
 
-
-
+        
+        
 
         return p;
     }
@@ -177,6 +179,7 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
+        
 
         p.AddChannel("v00Intensity");
         p.AddChannel("v00Frequency");
@@ -189,6 +192,8 @@ public class Patterns : MOTMasterScript
         p.AddChannel("TCoolSidebandVCO");
         p.AddChannel("v0AOMSidebandAmp");
         p.AddChannel("BXAttenuation");
+
+        
 
         //Switch BX AOM via analog output Mar 05 2024
         p.AddAnalogValue("BXAttenuation", 0, 0.0);
@@ -236,7 +241,7 @@ public class Patterns : MOTMasterScript
 
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
-
+        
         //p.AddAnalogValue("transferCoils", 0, 1.0);
 
         //p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["Dummy"]);

@@ -124,8 +124,9 @@ namespace DAQ.Environment
                     Hardware = new PHULTRAEDMHardware();
                     FileSystem = new PHULTRAEDMFileSystem();
                     Debug = false;
-                    wavemeterLockTCPChannel = 6666;
+                    serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 5438;
                     //ExperimentType = "edm";
                     break;
 
@@ -377,7 +378,9 @@ namespace DAQ.Environment
                 case "IC-CZC225B85M":
                     Hardware = new AlFHardware();
                     FileSystem = new AlFFileSystem();
+                    viewerServerComputerName = "IC-CZC136CFDJ";
                     serverComputerName = "IC-CZC136CFDJ";
+                    viewerServerTCPChannel = 1984;
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1984;
                     Debug = false;

@@ -49,7 +49,7 @@ namespace ScanMaster.Acquire.Patterns
 				{
 					int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
 					Pulse(time, valveToQ + Probe1ShutterDelay - padStart, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the newport shutters
-					Pulse(time, shutter1offdelay - padStart, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter1off"]).BitNumber); // The newport control box needs a ttl to turn on shutter
+					Pulse(time, shutter1offdelay - padStart, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber); // The newport control box needs a ttl to turn on shutter
 					Pulse(time, shutter1offdelay+Probe1ShutterDelay+Probe2ShutterDelay+valveToQ-padStart, shutter1offdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber); // Probe shutter (one of the newport ones but with a different control box so doesn't need an off pulse)
 				}
 
@@ -63,7 +63,7 @@ namespace ScanMaster.Acquire.Patterns
 					Pulse(time, shutterslowdelay - padStart - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber); // Uniblitz shutter for v=0 control
 					Pulse(time, shutterslowdelay - padStart - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); // This is the AOM off pulse
 					Pulse(time, shutterslowdelay - padStart + DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //Two AOM off pulses as the AOM's default state is on.
-					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber); // This is just the shutter for v1
+					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1/v2"]).BitNumber); // This is just the shutter for v1
 					Pulse(time, shutterV2delay - padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber); // This is just the shutter for v2
 				}
 
@@ -72,7 +72,7 @@ namespace ScanMaster.Acquire.Patterns
 				if (i % 2 == 1)
 				{
 					// The laser triggers
-					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1"]).BitNumber); // This is just the shutter for v1
+					Pulse(time, shutterV1delay - padStart, DurationV1, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv1/v2"]).BitNumber); // This is just the shutter for v1
 					Pulse(time, shutterV2delay - padStart, DurationV2, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterv2"]).BitNumber); // This is just the shutter for v2
 
 					// now with the switch line low, if modulation is true (otherwise another with line high)

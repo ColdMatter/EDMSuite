@@ -39,9 +39,9 @@ namespace AlFHardwareControl
             this.fixY = new System.Windows.Forms.CheckBox();
             this.fixX = new System.Windows.Forms.CheckBox();
             this.dataGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
@@ -167,16 +167,20 @@ namespace AlFHardwareControl
             this.dataGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
             // 
-            // xAxis1
-            // 
-            this.xAxis1.Caption = "Time [ms]";
-            // 
             // scatterPlot3
             // 
             this.scatterPlot3.LineStyle = NationalInstruments.UI.LineStyle.Dot;
             this.scatterPlot3.PointColor = System.Drawing.Color.Lime;
             this.scatterPlot3.XAxis = this.xAxis1;
             this.scatterPlot3.YAxis = this.yAxis1;
+            // 
+            // xAxis1
+            // 
+            this.xAxis1.Caption = "Time [ms]";
+            // 
+            // yAxis1
+            // 
+            this.yAxis1.Caption = "Voltage [V]";
             // 
             // scatterPlot4
             // 

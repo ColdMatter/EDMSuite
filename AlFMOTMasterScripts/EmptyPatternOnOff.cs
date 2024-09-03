@@ -18,10 +18,12 @@ public class Patterns : MOTMasterScript
         Parameters["PatternLength"] = 1000;
         Parameters["Void"] = 0;
         Parameters["Switch"] = true;
+        Parameters["Switch2"] = true;
 
         switchConfiguration = new Dictionary<string, List<bool>>
             {
-                {"Switch", new List<bool>{true, false}}
+                {"Switch", new List<bool>{true, false, false, true}},
+                {"Switch2", new List<bool>{false, false, true, true } }
             };
     }
 
