@@ -568,9 +568,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
@@ -644,6 +641,8 @@
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
     <Compile Include="CCDModulatedAnalogShotGathererPlugin.cs" />
+    <Compile Include="LatticePumpProbePatternBuilder.cs" />
+    <Compile Include="LatticePumpProbePatternPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
     <Compile Include="NshotsPatternBuilderCCD.cs" />
@@ -958,6 +957,7 @@
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
