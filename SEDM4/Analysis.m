@@ -77,7 +77,7 @@ detADistance = 1.5;(*m*)
 detBDistance = 1.715;(*m*)
 
 (*measured values*)
-\[Alpha]s={"\[Alpha]RF1F"->-6*48 10^-12(*Hz^-2*),"\[Alpha]RF2F"->-6*35 10^-12(*Hz^-2*),"\[Alpha]RF1A"->-1.056(*dimensionless*),"\[Alpha]RF2A"->-0.342(*dimensionless*),"\[Alpha]LF1"->-0.8 10^-3(*MHz^-2*)};
+\[Alpha]s={"\[Alpha]RF1F"->-6*48 10^-12(*Hz^-2*),"\[Alpha]RF2F"->-6*35 10^-12(*Hz^-2*),"\[Alpha]RF1A"->-1.056(*dimensionless*),"\[Alpha]RF2A"->-0.342(*dimensionless*),"\[Alpha]LF1"->-0.8*10^-3(*MHz^-2*)};
 
 
 (* ::Input::Initialization:: *)
@@ -87,7 +87,7 @@ detBDistance = 1.715;(*m*)
 (* ::Input::Initialization:: *)
 basis[bit_, length_] := Flatten[Table[ { Table[ 1, {2^(bit-1)}], Table[-1, {2^(bit-1)}]} , {length/ (2^bit)}]];
 edmWaveform[code_]:= Module[{numWave},numWave=\!\(
-\*UnderoverscriptBox[\(\[Product]\), \(i\  = \ 1\), \(Length[code]\)]\ \(If[\ code[[i]], \ basis[Length[code] - \ i + 1, \ 
+\*UnderoverscriptBox[\(\[Product]\), \(i\  = \ 1\), \(Length[code]\)]\ \(If[\ code[\([i]\)], \ basis[Length[code] - \ i + 1, \ 
 \*SuperscriptBox[\(2\), \(Length[code]\)]], \ Table[1, {
 \*SuperscriptBox[\(2\), \(Length[code]\)]}]]\)\);
 (#==1)&/@numWave
@@ -218,7 +218,6 @@ Transpose[{getTOFChannelTimes[{"DB"},"asymmetry",dblock],10^6 Sqrt[asymmetrySnWi
 
 (* ::Input::Initialization:: *)
 contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep,mwSign},
-contrast[dblock_]:= Module[{dbStep,magCal,interferometerLength,phaseStep,mwSign},
 dbStep=dblock@Config@GetModulationByName["DB"]@Step;
 magCal=dblock@Config@Settings["magnetCalibration"];
 interferometerLength=Check[dblock@Config@Settings["rf2CentreTime"]-dblock@Config@Settings["rf1CentreTime"],800]*10^-6;
@@ -229,6 +228,8 @@ mwSign=boolSign[dblock@Config@Settings["mwState"]];
 {#[[1]],(mwSign #[[2]])/(2phaseStep),(mwSign #[[3]])/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 {#[[1]],(mwSign #[[2]])/(2phaseStep),(mwSign #[[3]])/(2 phaseStep)}&/@getTOFChannel[{"DB"},"asymmetry",dblock]
 ]
+
+
 
 
 (* ::Input::Initialization:: *)
