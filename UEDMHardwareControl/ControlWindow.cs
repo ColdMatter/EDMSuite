@@ -1705,5 +1705,20 @@ namespace UEDMHardwareControl
         {
             controller.SetTargetStepperTriggeredMove();
         }
+
+        private void cBMWSwitchState_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdateMWSwitchState(cBMWSwitchState.Checked);
+        }
+
+        private void USBbBoxUpdateButton_Click(object sender, EventArgs e)
+        {
+            controller.SetUSBBBias();
+        }
+
+        private void UsbBBoxCmdBtn_Click(object sender, EventArgs e)
+        {
+            controller.SendUsbBBoxQuery();
+        }
     }
 }

@@ -74,7 +74,6 @@ namespace UEDMHardwareControl
 
         // Temperature sensors
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
-        SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
 
         // Microwave Synth for Optical pumping
         WindfreakSynthHD microwaveSynth = (WindfreakSynthHD)Environs.Hardware.Instruments["WindfreakOpticalPumping"];
@@ -88,8 +87,14 @@ namespace UEDMHardwareControl
         // DMM for bias field current monitoring
         HP34401A bCurrentMeter = (HP34401A)Environs.Hardware.Instruments["bCurrentMeter"];
 
+        // CSB for bias field current generation
+        TwinleafCSB bCurrentSource = (TwinleafCSB)Environs.Hardware.Instruments["bCurrentSource"];
+
         // RF DDS
         AD9850DDS RFDDS = (AD9850DDS)Environs.Hardware.Instruments["AD9850DDS"];
+
+
+        SiliconDiodeTemperatureMonitors tempMonitors = new SiliconDiodeTemperatureMonitors(Names, ChannelNames);
 
         //TargetStepperController
         StepperMotorController targetStepperControl = (StepperMotorController)Environs.Hardware.Instruments["targetStepperControl"];
@@ -633,6 +638,9 @@ namespace UEDMHardwareControl
             public double frequency;
             public double amplitude;
             public double steppingBias;
+            public double calStep;
+            public double bStep;
+            public double usbBias;
             //public double dcfm;
             //public double rf1AttC;
             //public double rf1AttS;
@@ -717,6 +725,9 @@ namespace UEDMHardwareControl
             dataStore.frequency = GreenSynthOnFrequency;
             dataStore.amplitude = GreenSynthOnAmplitude;
             //dataStore.dcfm = GreenSynthDCFM;
+            dataStore.bStep = UsbFlipStepCurrent;
+            dataStore.calStep = UsbCalStepCurrent;
+            dataStore.usbBias = UsbBiasCurrent;
             //dataStore.rf1AttC = RF1AttCentre;
             //dataStore.rf1AttS = RF1AttStep;
             //dataStore.rf2AttC = RF2AttCentre;
@@ -811,6 +822,9 @@ namespace UEDMHardwareControl
                 GreenSynthOnFrequency = dataStore.frequency;
                 GreenSynthOnAmplitude = dataStore.amplitude;
                 //GreenSynthDCFM = dataStore.dcfm;
+                UsbBiasCurrent = dataStore.usbBias;
+                UsbFlipStepCurrent = dataStore.bStep;
+                UsbCalStepCurrent = dataStore.calStep;
                 //RF1AttCentre = dataStore.rf1AttC;
                 //RF1AttStep = dataStore.rf1AttS;
                 //RF2AttCentre = dataStore.rf2AttC;
@@ -5222,7 +5236,7 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.iMonitorPollPeriodInput, time.ToString());
         }
 
-        private static int iMonitorPollPeriodLowerLimit = 100;
+        private static int iMonitorPollPeriodLowerLimit = 50;
         private Object iMonitorLock;
         private bool iMonitorFlag;
         public string leakageFileSave = "";
@@ -5308,7 +5322,7 @@ namespace UEDMHardwareControl
                         string fullPath = folder + fileName;
                         StreamWriter w;
                         w = new StreamWriter(leakageFileSave, true);
-                        csvDataLeakage = String.Format("{4,8:D}, {4,8:T}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}",
+                        csvDataLeakage = String.Format("{4,8:D}, {4,5:HH:mm:ss.fff}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}", // local time format was "8:T"
                             lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
                         w.WriteLine(csvDataLeakage);
                         w.Close();
@@ -5554,14 +5568,23 @@ namespace UEDMHardwareControl
 
         public void SetBFlip(bool enable)
         {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             SetDigitalLine("bSwitch", enable);
             SetDigitalLine("notB", !enable);
+            string reply = UpdateUSBCurrent();
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for B flip with response "+reply);
+
         }
 
         public void SetCalFlip(bool enable)
         {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             SetDigitalLine("dB", enable);
             SetDigitalLine("notDB", !enable);
+            string reply = UpdateUSBCurrent();
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for dB flip with response " + reply);
         }
 
         public bool CalFlipEnabled
@@ -5623,6 +5646,114 @@ namespace UEDMHardwareControl
             SetAnalogOutput(steppingBBiasAnalogOutputTask, v);
         }
 
+        public double UsbBiasCurrent
+        {
+            get
+            {
+                return Double.Parse(window.UsbBiasTextBox.Text)/1000.0;
+            }
+            set
+            {
+                double input = 1000 * value;
+                window.SetTextBox(window.UsbBiasTextBox, input.ToString());
+            }
+        }
+        public double UsbFlipStepCurrent
+        {
+            get
+            {
+                return Double.Parse(window.UsbBigBTextBox.Text)/1000.0;
+            }
+            set
+            {
+                double input = 1000 * value;
+                window.SetTextBox(window.UsbBigBTextBox, input.ToString());
+            }
+        }
+
+        public double UsbCalStepCurrent
+        {
+            get
+            {
+                return Double.Parse(window.UsbSmallBTextBox.Text)/1000.0;
+            }
+            set
+            {
+                double input = 1000 * value;
+                window.SetTextBox(window.UsbSmallBTextBox, input.ToString());
+            }
+        }
+
+        public void SetUSBBBias()
+        {
+            //DateTime localtime;
+            //localtime = DateTime.Now;
+            //Console.WriteLine(String.Format("{0,8:HH:mm:ss.fff}", localtime));
+
+            double bBoxSetPoint = Double.Parse(window.USBbBoxTextBox.Text)/1000.0;
+            SetUSBBCurrent(bBoxSetPoint);
+        }
+
+        public string SetUSBBCurrent(double setpoint)
+        {
+            var response = bCurrentSource.SetCurrent(setpoint);//in mA
+            //bCurrentSource.QuerySession("dev.name ");
+            //bCurrentSource.QuerySession("dev.desc ");
+            //bCurrentSource.QuerySession("dev.serial ");
+            //bCurrentSource.QuerySession("data.timebase.list");
+            return response;
+        }
+
+        public void SendUsbBBoxQuery()
+        {
+            string cmd = window.tbUsbBBoxCmd.Text;
+            if (cmd == ""){
+                try
+                {
+                    string output = bCurrentSource.ReadOutput();
+                    Console.WriteLine("Output: " + output);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+            try
+            {
+                bCurrentSource.QuerySession(cmd);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+        }
+
+        public string UpdateUSBCurrent()
+        {
+            int FlipBState = 0;
+            int CalBState = 0;
+            if (BFlipEnabled)
+            {
+                FlipBState = 1;
+            }
+            else
+            {
+                FlipBState = -1;
+            }
+            if (CalFlipEnabled)
+            {
+                CalBState = 1;
+            }
+            else
+            {
+                CalBState = -1;
+            }
+            double setpoint = UsbBiasCurrent  + (FlipBState * UsbFlipStepCurrent) + (FlipBState * CalBState * UsbCalStepCurrent);
+            var reply = SetUSBBCurrent(setpoint);
+            return reply;
+        }
+
         public void SetScanningBVoltage()
         {
             double bBoxVoltage = Double.Parse(window.scanningBVoltageBox.Text);
@@ -5657,6 +5788,7 @@ namespace UEDMHardwareControl
             // DB0 dB0
             BFlipEnabled = false;
             CalFlipEnabled = false;
+            Thread.Sleep(50);
             double i00 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent00TextBox, i00.ToString());
             Thread.Sleep(50);
@@ -5664,6 +5796,7 @@ namespace UEDMHardwareControl
             // DB0 dB1
             BFlipEnabled = false;
             CalFlipEnabled = true;
+            Thread.Sleep(50);
             double i01 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent01TextBox, i01.ToString());
             Thread.Sleep(50);
@@ -5671,6 +5804,7 @@ namespace UEDMHardwareControl
             // DB1 dB0
             BFlipEnabled = true;
             CalFlipEnabled = false;
+            Thread.Sleep(50);
             double i10 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent10TextBox, i10.ToString());
             Thread.Sleep(50);
@@ -5678,6 +5812,7 @@ namespace UEDMHardwareControl
             // DB1 dB1
             BFlipEnabled = true;
             CalFlipEnabled = true;
+            Thread.Sleep(50);
             double i11 = 1000000 * bCurrentMeter.ReadCurrent();
             window.SetTextBox(window.bCurrent11TextBox, i11.ToString());
             Thread.Sleep(50);
@@ -6601,6 +6736,7 @@ namespace UEDMHardwareControl
                     if (MWFrequencyParseValue * MetricPrefix <= MWFrequencyMax)
                     {
                         UpdateMWFrequencyDetection(channel, Convert.ToInt64(MWFrequencyParseValue * MetricPrefix));
+
                     }
                     else MessageBox.Show("Frequency too large. The maximum frequency the Windfreak can provide is " + MWFrequencyMax / Math.Pow(1000, 3) + " GHz.", "User input exception", MessageBoxButtons.OK);
                 }
@@ -7027,6 +7163,77 @@ namespace UEDMHardwareControl
             //QueryPLLPowerOn(channel);
             //microwaveSynthDetection.QueryTriggerOn();
             //microwaveSynthDetection.QueryChannel();
+        }
+
+        public bool DetAChAIndicator
+        {
+            set
+            {
+                window.SetLED(window.ledChADetA, value);
+            }
+        }
+
+        public bool DetAChBIndicator
+        {
+            set
+            {
+                window.SetLED(window.ledChBDetA, value);
+            }
+        }
+
+        public bool DetBChAIndicator
+        {
+            set
+            {
+                window.SetLED(window.ledChADetB, value);
+            }
+        }
+
+        public bool DetBChBIndicator
+        {
+            set
+            {
+                window.SetLED(window.ledChBDetB, value);
+            }
+        }
+
+        private long MWF0Freq = 14467242000; // Hz
+        private long MWF1Freq = 14458087000; // Hz
+        private double MWF0Pow = 7.0; // dBm
+        private double MWF1Pow = 7.0; // dBm
+
+        public void UpdateMWSwitchState(bool trueState)
+        {
+            try
+            {
+                if (trueState)
+                {
+                    UpdateMWFrequencyDetection(1, MWF1Freq);
+                    UpdateMWFrequencyDetection(0, MWF0Freq);
+                    SetMWPowerDetection(1, MWF1Pow);
+                    SetMWPowerDetection(0, MWF0Pow);
+                    DetAChAIndicator = false;
+                    DetAChBIndicator = true;
+                    DetBChAIndicator = true;
+                    DetBChBIndicator = false;
+                }
+                else
+                {
+                    UpdateMWFrequencyDetection(0, MWF1Freq);
+                    UpdateMWFrequencyDetection(1, MWF0Freq);
+                    SetMWPowerDetection(0, MWF0Pow);
+                    SetMWPowerDetection(1, MWF1Pow);
+                    DetAChAIndicator = true;
+                    DetAChBIndicator = false;
+                    DetBChAIndicator = false;
+                    DetBChBIndicator = true;
+                }
+
+            }
+            catch
+            {
+
+            }
         }
 
         #endregion

@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
      XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
 	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(NshotsPatternPluginCCD)),
 	 XmlInclude(typeof(YAGFirePatternPlugin)),
 	 XmlInclude(typeof(TwoShutterPatternPlugin)),
 	 XmlInclude(typeof(TwoShutterSlowingPatternPlugin)),
@@ -48,8 +49,9 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(CaFBECPatternPlugin)),
 	 XmlInclude(typeof(STIRAPpatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),
-     XmlInclude(typeof(LatticePatternPlugin))]
-     //XmlInclude(typeof(MMPatternPlugin))]
+     XmlInclude(typeof(LatticePatternPlugin)),
+     XmlInclude(typeof(LatticePumpProbePatternPlugin))]
+	//XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{
 
@@ -61,6 +63,6 @@ namespace ScanMaster.Acquire.Plugin
 	
 		// calling this reloads the pattern with the current settings. Use if you've changed those settings.
 		public abstract void ReloadPattern();
-		
+
 	}
 }

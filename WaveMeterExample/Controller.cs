@@ -276,6 +276,8 @@ namespace WavemeterLockServer
             {
                 data = data.Field("Channel" + i.ToString(), getFrequency(i));
             }
+            data.Field("Temperature", WLM.GetTemperature(0));
+            data.Field("Pressure", WLM.GetPressure(0));
             data = data.TimestampMS(DateTime.UtcNow);
 
             data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "CCM Wavemeters", "CentreForColdMatter");

@@ -113,7 +113,7 @@
     <BaseAddress>285212672</BaseAddress>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
@@ -561,19 +561,18 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=22.5.45.49180, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
@@ -641,14 +640,20 @@
     <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
+    <Compile Include="CCDModulatedAnalogShotGathererPlugin.cs" />
+    <Compile Include="LatticePumpProbePatternBuilder.cs" />
+    <Compile Include="LatticePumpProbePatternPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
+    <Compile Include="NshotsPatternBuilderCCD.cs" />
+    <Compile Include="NshotsPatternPluginCCD.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
     <Compile Include="TwoShutterSlowingPatternPlugin.cs" />
     <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />
     <Compile Include="TwoShutterTwoYAGPatternPlugin.cs" />
     <Compile Include="WavemeterInputPlugin.cs" />
     <Compile Include="ManualOutputPlugin.cs" />
+    <Compile Include="BFieldUSBOutputPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />
@@ -891,11 +896,69 @@
     <Compile Include="CaFBECPatternPlugin.cs" />
     <Compile Include="ZeemanSisyphusPatternPlugin.cs" />
     <Content Include="App.ico" />
-    <EmbeddedResource Include="licenses.licx" />
+    <Content Include="bin\LatticeEDM\alglibnet2.dll" />
+    <Content Include="bin\LatticeEDM\bdc-comm-92.exe" />
+    <Content Include="bin\LatticeEDM\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\DAQ.dll" />
+    <Content Include="bin\LatticeEDM\de\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\DigitalTransferCavityLock.exe" />
+    <Content Include="bin\LatticeEDM\DigitalTransferCavityLock.pdb" />
+    <Content Include="bin\LatticeEDM\es\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="bin\LatticeEDM\it\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\Microsoft.QualityTools.Testing.Fakes.dll" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.Common.dll" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.Common.xml" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.UI.dll" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.UI.Styles3D.dll" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.UI.WindowsForms.dll" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.UI.WindowsForms.xml" />
+    <Content Include="bin\LatticeEDM\NationalInstruments.UI.xml" />
+    <Content Include="bin\LatticeEDM\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\ScanMaster.exe" />
+    <Content Include="bin\LatticeEDM\ScanMaster.pdb" />
+    <Content Include="bin\LatticeEDM\SharedCode.dll" />
+    <Content Include="bin\LatticeEDM\TransferCavityLock.exe" />
+    <Content Include="bin\LatticeEDM\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\Wavemeter Lock Server.exe" />
+    <Content Include="bin\LatticeEDM\Wavemeter Lock Server.pdb" />
+    <Content Include="bin\LatticeEDM\WavemeterLock.exe" />
+    <Content Include="bin\LatticeEDM\WavemeterLock.pdb" />
+    <Content Include="bin\LatticeEDM\Wolfram.NETLink.dll" />
+    <Content Include="bin\LatticeEDM\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\LatticeEDM\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
+    <Content Include="bin\x86\LatticeEDM\alglibnet2.dll" />
+    <Content Include="bin\x86\LatticeEDM\bdc-comm-92.exe" />
+    <Content Include="bin\x86\LatticeEDM\DAQ.dll" />
+    <Content Include="bin\x86\LatticeEDM\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="bin\x86\LatticeEDM\Ivi.Visa.dll" />
+    <Content Include="bin\x86\LatticeEDM\Ivi.Visa.xml" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Common.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Common.xml" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.DAQmx.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.DAQmx.xml" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.UI.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.UI.Styles3D.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.UI.WindowsForms.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.UI.WindowsForms.xml" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.UI.xml" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Visa.dll" />
+    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Visa.xml" />
+    <Content Include="bin\x86\LatticeEDM\ScanMaster.exe" />
+    <Content Include="bin\x86\LatticeEDM\SharedCode.dll" />
+    <Content Include="bin\x86\LatticeEDM\TransferCavityLock.exe" />
+    <Content Include="bin\x86\LatticeEDM\Wolfram.NETLink.dll" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="licenses.licx" />
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -923,7 +986,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Properties\app.manifest" />
+    <None Include="bin\LatticeEDM\DigitalTransferCavityLock.exe.config" />
+    <None Include="bin\LatticeEDM\ScanMaster.exe.config" />
+    <None Include="bin\LatticeEDM\TransferCavityLock.exe.config" />
+    <None Include="bin\LatticeEDM\Wavemeter Lock Server.exe.config" />
+    <None Include="bin\LatticeEDM\WavemeterLock.exe.config" />
+    <None Include="bin\x86\LatticeEDM\ScanMaster.exe.config" />
+    <None Include="bin\x86\LatticeEDM\TransferCavityLock.exe.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="ScanMaster_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -955,6 +1025,58 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\AlF\" />
+    <Folder Include="bin\BufferClassic\" />
+    <Folder Include="bin\Buffer\" />
+    <Folder Include="bin\CaFBEC\" />
+    <Folder Include="bin\CaF\" />
+    <Folder Include="bin\Decelerator\" />
+    <Folder Include="bin\EDM TCL\" />
+    <Folder Include="bin\EDMAnalysis\" />
+    <Folder Include="bin\EDMBlockHead\" />
+    <Folder Include="bin\EDMTestCrate\" />
+    <Folder Include="bin\EDM\" />
+    <Folder Include="bin\SrF\" />
+    <Folder Include="bin\Stefan\" />
+    <Folder Include="bin\Sympathetic\" />
+    <Folder Include="bin\TransferCavityLock2023\" />
+    <Folder Include="bin\ultracoldEDM\" />
+    <Folder Include="bin\x64\AlF\" />
+    <Folder Include="bin\x64\BufferClassic\" />
+    <Folder Include="bin\x64\Buffer\" />
+    <Folder Include="bin\x64\CaF\" />
+    <Folder Include="bin\x64\Decelerator\" />
+    <Folder Include="bin\x64\EDM TCL\" />
+    <Folder Include="bin\x64\EDMAnalysis\" />
+    <Folder Include="bin\x64\EDMBlockHead\" />
+    <Folder Include="bin\x64\EDMTestCrate\" />
+    <Folder Include="bin\x64\EDM\" />
+    <Folder Include="bin\x64\LatticeEDM\" />
+    <Folder Include="bin\x64\SrF\" />
+    <Folder Include="bin\x64\Stefan\" />
+    <Folder Include="bin\x64\Sympathetic\" />
+    <Folder Include="bin\x64\TransferCavityLock2023\" />
+    <Folder Include="bin\x64\ultracoldEDM\" />
+    <Folder Include="bin\x64\ZeemanSisyphus\" />
+    <Folder Include="bin\x86\AlF\" />
+    <Folder Include="bin\x86\BufferClassic\" />
+    <Folder Include="bin\x86\Buffer\" />
+    <Folder Include="bin\x86\CaF\" />
+    <Folder Include="bin\x86\Decelerator\" />
+    <Folder Include="bin\x86\EDM TCL\" />
+    <Folder Include="bin\x86\EDMAnalysis\" />
+    <Folder Include="bin\x86\EDMBlockHead\" />
+    <Folder Include="bin\x86\EDMTestCrate\" />
+    <Folder Include="bin\x86\EDM\" />
+    <Folder Include="bin\x86\SrF\" />
+    <Folder Include="bin\x86\Stefan\" />
+    <Folder Include="bin\x86\Sympathetic\" />
+    <Folder Include="bin\x86\TransferCavityLock2023\" />
+    <Folder Include="bin\x86\ultracoldEDM\" />
+    <Folder Include="bin\x86\ZeemanSisyphus\" />
+    <Folder Include="bin\ZeemanSisyphus\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
