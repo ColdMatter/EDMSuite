@@ -70,7 +70,7 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 
 	print("Finished leakage test")
 
-def run_script():
+if __name__ == "__main__":
 	# Ensure the data will be logged + set sensible poll period
 	print("Ticking Log Checkbox + setting sensible poll period. Please start polling leakage monitors")
 	hc.SetLeakageCurrentLogCheck(True)
