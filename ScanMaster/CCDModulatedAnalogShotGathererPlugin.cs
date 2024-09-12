@@ -60,15 +60,6 @@ namespace ScanMaster.Acquire.Plugins
 			settings["inputRangeHigh"] = 10.0;
 		}
 
-		private void SetDigitalLine(Task digitask, bool value)
-		{
-			if (!Environs.Debug)
-			{
-				DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(digitask.Stream);
-				writer.WriteSingleSampleSingleLine(true, value);
-				digitask.Control(TaskAction.Unreserve);
-			}
-		}
 		protected override void InitialiseSettings()
 		{
 		}

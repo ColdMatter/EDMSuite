@@ -180,7 +180,7 @@ def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, 
 
 def plotTOF(file, scanStart=-1000, scanEnd=1000, bgStart=4100, bgEnd=5000):
     #get the file from the normal file path
-    file = getFile('29Aug2400_01.zip')
+    file = getFile(file)
 
     #get the scan deserializer and import the scan
     scanSerializer = ScanSerializer()

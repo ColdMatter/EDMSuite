@@ -41,17 +41,17 @@ def v1scan():
 
     # Scan around rough setpoint
     print("Current v1 setpoint is: " + str(currentSetpoint)+"\n")
-    print("Scanning 0.4 around setpoint\n")
+    print("Scanning 0.35 around setpoint\n")
     [filepath,file] = getNextFile()
     print("Saving as " + file + "_*.zip")
     print("")
     SelectProfile("TCL Setpoint Scan V1")
     sm.AdjustProfileParameter("switch","switchActive", str(True), False)
     sm.AdjustProfileParameter("shot","gateLength", str(5000), False)
-    sm.AdjustProfileParameter("out", "start", str(round(currentSetpoint-0.4,2)), False)
-    sm.AdjustProfileParameter("out", "end", str(round(currentSetpoint+0.4,2)), False)
+    sm.AdjustProfileParameter("out", "start", str(round(currentSetpoint-0.35,2)), False)
+    sm.AdjustProfileParameter("out", "end", str(round(currentSetpoint+0.35,2)), False)
     sm.AdjustProfileParameter("out", "scanMode", "updown", False)
-    sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
+    sm.AdjustProfileParameter("out", "pointsPerScan", "150", False)
     print("\nScanning!\n")
     sm.AcquireAndWait(1)
     scanFile = file + "_v1scan" + ".zip"

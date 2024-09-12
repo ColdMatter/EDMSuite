@@ -1,5 +1,6 @@
 ﻿using DAQ.Environment;
 using DAQ.HAL;
+using DAQ;
 using Data;
 using System;
 using System.Timers;
@@ -2368,6 +2369,17 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.tbPSource, (avgPressureSourceExpForm).ToString());
             window.SetTextBox(window.tbPBeamline, (avgPressureBeamlineExpForm).ToString());
             window.SetTextBox(window.tbPDetection, (avgPressureDetectionExpForm).ToString());
+
+            //Post to ccmmonitoring database
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Experiment Conditions").Tag("Type", "Pressure");
+            data.Field("Source", avgPressureSource);
+            data.Field("Beamline", avgPressureBeamline);
+            data.Field("Detection", avgPressureDetection);
+
+            data = data.TimestampMS(DateTime.UtcNow);
+
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
+            //Console.WriteLine("Tried posting!");
         }
 
         public void ClearPressureMonitorAv()
@@ -2618,6 +2630,15 @@ namespace UEDMHardwareControl
                 TryParseTemperatureString(lastS2TempString, S2TSeries);
                 TryParseTemperatureString(lastS1TempString, S1TSeries);
                 TryParseTemperatureString(lastSF6TempString, SF6TSeries);
+
+                // Post data to the InfluxDB website
+                InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Experiment Conditions").Tag("Type", "Temperature");
+                data.Field("Cell", lastCellTemp);
+                data.Field("S1", lastS1Temp);
+                data.Field("S2", lastS2Temp);
+                data.Field("SF6", lastSF6Temp);
+
+                data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
             }
             else
             {

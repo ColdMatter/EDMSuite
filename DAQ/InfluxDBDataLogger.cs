@@ -107,7 +107,7 @@ namespace DAQ
             }
             catch (Exception e) when (e is ArgumentNullException || e is HttpRequestException)
             {
-
+                Console.WriteLine("Failed to post to influxDB with exception: " + e.Message);
             }
         }
     }
