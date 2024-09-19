@@ -12,7 +12,7 @@ clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs
-clr.AddReference(Path.GetFullPath(".\\Libraries\\SharedCode"))
+clr.AddReference(Path.GetFullPath("..\\..\\SEDM4\\Libraries"))
 
 # create connections to the control programs
 import System
