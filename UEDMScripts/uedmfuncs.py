@@ -109,7 +109,7 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
         return
     return [voltage,signal]
 
-def getSetPoint(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector=0,intStart=750, intEnd=4000, bgStart=600, bgEnd=750):
+def getSetPoint(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector=0,intStart=60, intEnd=500, bgStart=510, bgEnd=650):
     scanSerializer = ScanSerializer()
     #gfitter = GaussianFitter()
 

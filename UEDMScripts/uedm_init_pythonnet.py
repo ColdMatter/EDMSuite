@@ -1,6 +1,5 @@
 # uedm_init.py - sets up the Python environment ready for scripting
 # the edm control software.
-
 import pythonnet
 import clr
 import sys

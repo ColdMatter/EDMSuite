@@ -1720,5 +1720,10 @@ namespace UEDMHardwareControl
         {
             controller.SendUsbBBoxQuery();
         }
+
+        private void TargetHomeButton_Click(object sender, EventArgs e)
+        {
+            controller.ResetTargetStepperPosition();
+        }
     }
 }

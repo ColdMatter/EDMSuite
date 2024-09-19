@@ -56,6 +56,7 @@ sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localho
 bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem'), EDMBlockHead.Controller)
 hc = typedproxy(System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/UEDMController.rem'), UEDMHardwareControl.UEDMController)
 tcl = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem'), TransferCavityLock2012.Controller)
+# lattcl = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem'), TransferCavityLock2012.Controller)
 pl = typedproxy(System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem'), EDMPhaseLock.MainForm)
 fl = typedproxy(System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem'), EDMFieldLock.MainForm)
 

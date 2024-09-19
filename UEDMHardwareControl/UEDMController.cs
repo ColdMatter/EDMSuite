@@ -3457,9 +3457,22 @@ namespace UEDMHardwareControl
             for (int i = 0; i < numSteps; i++)
             {
                 SetDigitalLine("targetStepper", true);
-                Thread.Sleep(20);
+                Thread.Sleep(50);
                 SetDigitalLine("targetStepper", false);
-                Thread.Sleep(20);
+                Thread.Sleep(50);
+            }
+        }
+
+        public void ResetTargetStepperPosition()
+        {
+            try
+            {
+                targetStepperControl.ResetPosition();
+            }
+            catch (Exception e)
+            {
+                string errorMsg = e.ToString();
+                Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
             }
         }
 
