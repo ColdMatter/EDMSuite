@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 5000;
-        Parameters["Frame0TriggerDuration"] = 100;
+        Parameters["Frame0TriggerDuration"] = 200;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
         Parameters["waitbeforeimage"] = 1;
@@ -35,8 +35,8 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 650;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 600;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 700;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 500;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.3;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
@@ -104,10 +104,10 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
 
         //Lambda frequency
-        Parameters["LambdaDetuning1"] = 35.0;
+        Parameters["LambdaDetuning1"] = 35.00;
         //Parameters["LambdaDetuning2"] = 35.0;
         //Parameters["LambdaDetuning3"] = 35.0;
-        Parameters["LambdaDetuning4"] = 37.00;
+        Parameters["LambdaDetuning4"] = 36.00;
 
         Parameters["SidebandFreqLambda1"] = (228.00 - (double)Parameters["LambdaDetuning1"]) / 2.0; //+ F = 1-
         //Parameters["SidebandFreqLambda2"] = (326.00 - (double)Parameters["LambdaDetuning2"]) / 2.0; //- F = 0
@@ -118,24 +118,26 @@ public class Patterns : MOTMasterScript
 
         //Sideband Amplitudes
 
-        Parameters["SidebandAmp1"] = 6.3;
-        Parameters["SidebandAmp2"] = 7.0;
+        Parameters["SidebandAmp1"] = 3.95;
+        Parameters["SidebandAmp2"] = 8.0;
         Parameters["SidebandAmp3"] = 7.5;
-        Parameters["SidebandAmp4"] = 8.5;
+        Parameters["SidebandAmp4"] = 7.5;
 
-        Parameters["SidebandAmpRampEnd1"] = 4.8;
-        Parameters["SidebandAmpRampEnd2"] = 3.6;
-        Parameters["SidebandAmpRampEnd3"] = 3.4;
-        Parameters["SidebandAmpRampEnd4"] = 3.2;
+        //10% saturation, Sep 03, 2024
 
-        Parameters["SidebandAmpLambda4"] = 6.55;
-        Parameters["SidebandAmpLambda1"] = 10.0;
+        Parameters["SidebandAmpRampEnd1"] = 3.2;
+        Parameters["SidebandAmpRampEnd2"] = 3.5;
+        Parameters["SidebandAmpRampEnd3"] = 3.7;
+        Parameters["SidebandAmpRampEnd4"] = 3.45;
+
+        Parameters["SidebandAmpLambda4"] = 4.3;
+        Parameters["SidebandAmpLambda1"] = 5.0;
 
 
         //Timings
         Parameters["MOTLoadTime"] = 4000;
         Parameters["MOTHoldTime"] = 500;
-        Parameters["LambdaCoolingDuration"] = 200;
+        Parameters["LambdaCoolingDuration"] = 500;
         Parameters["FreeExpTime"] = 100;
 
         //VCO Calibration
@@ -175,7 +177,10 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0rfswitch1", 0, false);
         p.AddEdge("v0rfswitch2", 0, false);
         p.AddEdge("v0rfswitch3", 0, false);
-        p.AddEdge("v0rfswitch4", 0, false);
+        p.AddEdge("v0rfswitch4", 0, false); 
+        p.AddEdge("v0ddsSwitchA", 0, false);
+        p.AddEdge("v0ddsSwitchB", 0, false);
+
 
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
@@ -245,7 +250,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
-        p.AddAnalogValue("TCoolSidebandVCO", 0, 4.6); //4.6V, 61.3MHz
+        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);

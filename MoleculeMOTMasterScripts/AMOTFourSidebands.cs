@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 5000;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
@@ -53,13 +53,14 @@ public class Patterns : MOTMasterScript
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
 
 
-
+        Parameters["slowingRepumpSwitchDelay"] = 0;
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
-        Parameters["slowingRepumpAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"];
+        Parameters["slowingRepumpAOMOffStart"] = 1450;
+        //Parameters["slowingRepumpAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + (int)Parameters["slowingRepumpSwitchDelay"];
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 0.4; //1.05;
+        Parameters["slowingCoilsValue"] = 1.0; //1.05;
         Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
@@ -78,7 +79,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAOMDuration"] = 500;
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 4000;
+        Parameters["v0IntensityRampStartTime"] = 5000;
         Parameters["v0IntensityRampDuration"] = 400;
         Parameters["v0IntensityRampStartValue"] = 7.2; //5.6
         Parameters["v0IntensityEndValue"] = 8.0;//7.8
@@ -106,18 +107,23 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
         Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
         Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq4"] = 352.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 4.0;
-        Parameters["SlowingReumoAttenuation"] = 6.2;
+        Parameters["BXAOMAttenuation"] = 1.0;
+        Parameters["SlowingRepumoAttenuation"] = 6.2;
 
         //Sideband Amplitudes
 
         //Parameters["SidebandAmp1"] = 6.5;
-        Parameters["SidebandAmp1"] = 3.85;
-        Parameters["SidebandAmp2"] = 7.8;
+        Parameters["SidebandAmp1"] = 4.5;
+        Parameters["SidebandAmp2"] = 8.0;
         Parameters["SidebandAmp3"] = 7.5;
-        Parameters["SidebandAmp4"] = 8.0; //7.5
+        Parameters["SidebandAmp4"] = 7.5; //7.5
+
+        Parameters["SidebandImAmp1"] = 4.5;
+        Parameters["SidebandImAmp2"] = 8.0;
+        Parameters["SidebandImAmp3"] = 7.5;
+        Parameters["SidebandImAmp4"] = 7.5;
 
         //VCO Calibration
         //VCO frequency in MHz = offset + vol * gradient
@@ -137,7 +143,12 @@ public class Patterns : MOTMasterScript
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
-        
+
+
+        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
+        p.Pulse(patternStartBeforeQ, (int)Parameters["slowingAOMOnStart"], (int)Parameters["slowingAOMOffStart"] - (int)Parameters["slowingAOMOnStart"], "bXSlowingAOM"); //first pulse to slowing AOM
+        p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["slowingRepumpAOMOffStart"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
+
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
@@ -152,6 +163,8 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0rfswitch2", 0, false);
         p.AddEdge("v0rfswitch3", 0, false);
         p.AddEdge("v0rfswitch4", 0, false);
+        p.AddEdge("v0ddsSwitchA", 0, false);
+        p.AddEdge("v0ddsSwitchB", 0, false);
 
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
@@ -204,8 +217,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
-        p.AddAnalogValue("TCoolSidebandVCO", 0, 4.6); //4.6V, 61.3MHz
-        p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingReumoAttenuation"]);
+        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
+        p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingRepumoAttenuation"]);
         p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
 
         // Slowing field
@@ -240,7 +253,12 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf3Amp", 0, (double)Parameters["SidebandAmp3"]);
         p.AddAnalogValue("Rf4Amp", 0, (double)Parameters["SidebandAmp4"]);
 
-        
+        p.AddAnalogValue("Rf1Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp1"]);
+        p.AddAnalogValue("Rf2Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp2"]);
+        p.AddAnalogValue("Rf3Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp3"]);
+        p.AddAnalogValue("Rf4Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp4"]);
+
+
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
         

@@ -35,8 +35,8 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 650;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 600;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.3;//-1.25; //-1.25 //225MHz/V 120m/s/V
 
@@ -117,17 +117,23 @@ public class Patterns : MOTMasterScript
 
         //Sideband Amplitudes
 
-        Parameters["SidebandAmp1"] = 6.5;
-        Parameters["SidebandAmp2"] = 7.0;
+        Parameters["SidebandAmp1"] = 3.95;
+        Parameters["SidebandAmp2"] = 8.0;
         Parameters["SidebandAmp3"] = 7.5;
-        Parameters["SidebandAmp4"] = 8.5;
+        Parameters["SidebandAmp4"] = 7.5;
 
-        //10% saturation, July 24, 2024
+        //10% saturation, Sep 03, 2024
         
-        Parameters["SidebandAmpRampEnd1"] = 5.4;
-        Parameters["SidebandAmpRampEnd2"] = 3.7;
-        Parameters["SidebandAmpRampEnd3"] = 3.3;
-        Parameters["SidebandAmpRampEnd4"] = 3.5;
+        Parameters["SidebandAmpRampEnd1"] = 3.2;
+        Parameters["SidebandAmpRampEnd2"] = 3.5;
+        Parameters["SidebandAmpRampEnd3"] = 3.7;
+        Parameters["SidebandAmpRampEnd4"] = 3.45;
+
+        
+        //Parameters["SidebandAmpRampEnd1"] = 3.2;
+        //Parameters["SidebandAmpRampEnd2"] = 3.4;
+        //Parameters["SidebandAmpRampEnd3"] = 3.6;
+        //Parameters["SidebandAmpRampEnd4"] = 3.4;
 
         // 1%
         //Parameters["SidebandAmpRampEnd1"] = 4.3;
@@ -164,9 +170,10 @@ public class Patterns : MOTMasterScript
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
-        
+
 
         p.Pulse(imageTime, 0, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(imageTime, 0, 1000, "cameraTrigger");
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
         p.AddEdge("rb2DMOTShutter", 0, true);
@@ -244,16 +251,20 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
-        p.AddAnalogValue("TCoolSidebandVCO", 0, 4.6); 
-        p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
+        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
+        p.AddAnalogValue("v0AOMSidebandAmp", imageTime, (double)Parameters["V00AOMSidebandAmplitude"]);
 
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
+        p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
         p.AddAnalogValue("slowingCoilsCurrent", (int)Parameters["slowingCoilsOffTime"], 0.0);
 
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", motHoldEnd, 0.0);
+
+        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);
+        //p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 
 
         // Shim Fields
