@@ -327,7 +327,6 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.TransferCavityLock2023|x86.ActiveCfg = TransferCavityLock2023|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.TransferCavityLock2023|x86.Build.0 = TransferCavityLock2023|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
-		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.Build.0 = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
@@ -1081,7 +1080,6 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.TransferCavityLock2023|x64.ActiveCfg = TransferCavityLock2023|x64
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.TransferCavityLock2023|x86.ActiveCfg = TransferCavityLock2023|x86
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
@@ -2878,7 +2876,6 @@ Global
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.TransferCavityLock2023|x64.ActiveCfg = TransferCavityLock2023|x64
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.TransferCavityLock2023|x86.ActiveCfg = TransferCavityLock2023|x86
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
-		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
@@ -3216,7 +3213,6 @@ Global
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.TransferCavityLock2023|x64.ActiveCfg = TransferCavityLock2023|x64
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.TransferCavityLock2023|x86.ActiveCfg = TransferCavityLock2023|x86
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.ultracoldEDM|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.ultracoldEDM|Any CPU.Build.0 = Debug|Any CPU
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.ultracoldEDM|x64.ActiveCfg = Debug|x64
 		{D2B91C87-F586-4EBC-9F5B-86B71999EAFC}.ultracoldEDM|x64.Build.0 = Debug|x64
@@ -3404,7 +3400,6 @@ Global
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.TransferCavityLock2023|x86.ActiveCfg = TransferCavityLock2023|x86
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.TransferCavityLock2023|x86.Build.0 = TransferCavityLock2023|x86
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.ultracoldEDM|Any CPU.ActiveCfg = Debug|Any CPU
-		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.ultracoldEDM|Any CPU.Build.0 = Debug|Any CPU
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.ultracoldEDM|x64.ActiveCfg = Debug|x64
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.ultracoldEDM|x64.Build.0 = Debug|x64
@@ -4859,7 +4854,6 @@ Global
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.TransferCavityLock2023|x86.ActiveCfg = Debug|Any CPU
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.TransferCavityLock2023|x86.Build.0 = Debug|Any CPU
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.ultracoldEDM|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.ultracoldEDM|Any CPU.Build.0 = Debug|Any CPU
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.ultracoldEDM|x64.ActiveCfg = Debug|Any CPU
 		{C1CF3395-C7C3-4FCF-851C-B2F967950CA5}.ultracoldEDM|x64.Build.0 = Debug|Any CPU
@@ -5049,7 +5043,6 @@ Global
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.TransferCavityLock2023|x86.ActiveCfg = Debug|Any CPU
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.TransferCavityLock2023|x86.Build.0 = Debug|Any CPU
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.ultracoldEDM|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.ultracoldEDM|Any CPU.Build.0 = Debug|Any CPU
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.ultracoldEDM|Mixed Platforms.Build.0 = Debug|Any CPU
 		{5C6833DD-6E40-4C33-AD70-E7F31C1696BD}.ultracoldEDM|x64.ActiveCfg = Debug|Any CPU

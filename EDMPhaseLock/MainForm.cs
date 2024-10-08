@@ -235,7 +235,7 @@ namespace EDMPhaseLock
             // MainForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(736, 561);
+            this.ClientSize = new System.Drawing.Size(1400, 561);
             this.Controls.Add(this.phaseGraph);
             this.Controls.Add(this.outputGraph);
             this.Controls.Add(this.deviationGraph);
