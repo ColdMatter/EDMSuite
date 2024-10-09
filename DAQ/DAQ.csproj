@@ -629,6 +629,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Agilent33250Synth.cs" />
+    <Compile Include="UILED.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="AnalogStaticBuilderSingleBoard.cs" />
     <Compile Include="AnalogStaticBuilder.cs" />
     <Compile Include="CaFBECFileSystem.cs" />

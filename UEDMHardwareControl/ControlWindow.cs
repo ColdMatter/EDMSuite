@@ -363,14 +363,14 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void SetLED(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        public void SetLED(DAQ.UI.Led led, bool val)
         {
-            led.Invoke(new SetLedDelegate(SetLedHelper), new object[] { led, val });
+            led.Invoke(new SetDAQLedDelegate(SetLedHelper), new object[] { led, val });
         }
-        private delegate void SetLedDelegate(NationalInstruments.UI.WindowsForms.Led led, bool val);
-        private void SetLedHelper(NationalInstruments.UI.WindowsForms.Led led, bool val)
+        private delegate void SetDAQLedDelegate(DAQ.UI.Led led, bool val);
+        private void SetLedHelper(DAQ.UI.Led led, bool val)
         {
-            led.Value = val;
+            led.On = val;
         }
 
         public void AddAlert(string alertText)

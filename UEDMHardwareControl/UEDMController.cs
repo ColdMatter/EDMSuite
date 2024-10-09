@@ -18,7 +18,6 @@ using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.UI.WindowsForms;
 //using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;

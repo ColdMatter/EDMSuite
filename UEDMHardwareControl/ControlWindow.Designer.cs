@@ -164,10 +164,6 @@
             this.labelF1 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.ledChBDetB = new NationalInstruments.UI.WindowsForms.Led();
-            this.ledChADetB = new NationalInstruments.UI.WindowsForms.Led();
-            this.ledChBDetA = new NationalInstruments.UI.WindowsForms.Led();
-            this.ledChADetA = new NationalInstruments.UI.WindowsForms.Led();
             this.labelMWSwitchState = new System.Windows.Forms.Label();
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
@@ -377,9 +373,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.labelRampingLED = new System.Windows.Forms.Label();
             this.eConnectCheck = new System.Windows.Forms.CheckBox();
-            this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
             this.eDisableSwitching = new System.Windows.Forms.CheckBox();
-            this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
             this.labelSwitchingLED = new System.Windows.Forms.Label();
             this.label78 = new System.Windows.Forms.Label();
             this.eOvershootHoldTextBox = new System.Windows.Forms.TextBox();
@@ -539,6 +533,7 @@
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
             this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.TargetHomeButton = new System.Windows.Forms.Button();
             this.TargetTriggerButton = new System.Windows.Forms.Button();
             this.TargetExtButton = new System.Windows.Forms.Button();
             this.TargetManualButton = new System.Windows.Forms.Button();
@@ -733,7 +728,12 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.TargetHomeButton = new System.Windows.Forms.Button();
+            this.switchingLED = new DAQ.UI.Led();
+            this.rampLED = new DAQ.UI.Led();
+            this.ledChADetA = new DAQ.UI.Led();
+            this.ledChADetB = new DAQ.UI.Led();
+            this.ledChBDetB = new DAQ.UI.Led();
+            this.ledChBDetA = new DAQ.UI.Led();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -743,10 +743,6 @@
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
             this.groupBoxMWSwitch.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).BeginInit();
             this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
@@ -768,8 +764,6 @@
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart5)).BeginInit();
@@ -1725,14 +1719,14 @@
             // 
             // groupBoxMWSwitch
             // 
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetA);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
             this.groupBoxMWSwitch.Controls.Add(this.labelF0);
             this.groupBoxMWSwitch.Controls.Add(this.labelF1);
             this.groupBoxMWSwitch.Controls.Add(this.label33);
             this.groupBoxMWSwitch.Controls.Add(this.label1);
-            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetB);
-            this.groupBoxMWSwitch.Controls.Add(this.ledChADetB);
-            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetA);
-            this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
             this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
             this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
             this.groupBoxMWSwitch.Location = new System.Drawing.Point(3, 384);
@@ -1777,38 +1771,6 @@
             this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "Detector A";
-            // 
-            // ledChBDetB
-            // 
-            this.ledChBDetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChBDetB.Location = new System.Drawing.Point(216, 56);
-            this.ledChBDetB.Name = "ledChBDetB";
-            this.ledChBDetB.Size = new System.Drawing.Size(16, 20);
-            this.ledChBDetB.TabIndex = 5;
-            // 
-            // ledChADetB
-            // 
-            this.ledChADetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChADetB.Location = new System.Drawing.Point(194, 56);
-            this.ledChADetB.Name = "ledChADetB";
-            this.ledChADetB.Size = new System.Drawing.Size(16, 20);
-            this.ledChADetB.TabIndex = 4;
-            // 
-            // ledChBDetA
-            // 
-            this.ledChBDetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChBDetA.Location = new System.Drawing.Point(216, 32);
-            this.ledChBDetA.Name = "ledChBDetA";
-            this.ledChBDetA.Size = new System.Drawing.Size(16, 20);
-            this.ledChBDetA.TabIndex = 3;
-            // 
-            // ledChADetA
-            // 
-            this.ledChADetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChADetA.Location = new System.Drawing.Point(194, 32);
-            this.ledChADetA.Name = "ledChADetA";
-            this.ledChADetA.Size = new System.Drawing.Size(16, 20);
-            this.ledChADetA.TabIndex = 2;
             // 
             // labelMWSwitchState
             // 
@@ -4032,11 +3994,11 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.switchingLED);
+            this.groupBox4.Controls.Add(this.rampLED);
             this.groupBox4.Controls.Add(this.labelRampingLED);
             this.groupBox4.Controls.Add(this.eConnectCheck);
-            this.groupBox4.Controls.Add(this.switchingLED);
             this.groupBox4.Controls.Add(this.eDisableSwitching);
-            this.groupBox4.Controls.Add(this.rampLED);
             this.groupBox4.Controls.Add(this.labelSwitchingLED);
             this.groupBox4.Controls.Add(this.label78);
             this.groupBox4.Controls.Add(this.eOvershootHoldTextBox);
@@ -4085,16 +4047,6 @@
             this.eConnectCheck.Text = "Disconnect supplies";
             this.eConnectCheck.CheckedChanged += new System.EventHandler(this.eConnectCheck_CheckedChanged);
             // 
-            // switchingLED
-            // 
-            this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.switchingLED.Location = new System.Drawing.Point(217, 70);
-            this.switchingLED.Name = "switchingLED";
-            this.switchingLED.OffColor = System.Drawing.Color.Maroon;
-            this.switchingLED.OnColor = System.Drawing.Color.Red;
-            this.switchingLED.Size = new System.Drawing.Size(21, 22);
-            this.switchingLED.TabIndex = 54;
-            // 
             // eDisableSwitching
             // 
             this.eDisableSwitching.Location = new System.Drawing.Point(166, 15);
@@ -4102,14 +4054,6 @@
             this.eDisableSwitching.Size = new System.Drawing.Size(110, 33);
             this.eDisableSwitching.TabIndex = 53;
             this.eDisableSwitching.Text = "Disable switching";
-            // 
-            // rampLED
-            // 
-            this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(217, 98);
-            this.rampLED.Name = "rampLED";
-            this.rampLED.Size = new System.Drawing.Size(21, 22);
-            this.rampLED.TabIndex = 55;
             // 
             // labelSwitchingLED
             // 
@@ -5864,6 +5808,16 @@
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
+            // 
+            // TargetHomeButton
+            // 
+            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
+            this.TargetHomeButton.Name = "TargetHomeButton";
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetHomeButton.TabIndex = 6;
+            this.TargetHomeButton.Text = "Reset Pos";
+            this.TargetHomeButton.UseVisualStyleBackColor = true;
+            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
             // 
             // TargetTriggerButton
             // 
@@ -8196,15 +8150,61 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // TargetHomeButton
+            // switchingLED
             // 
-            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
-            this.TargetHomeButton.Name = "TargetHomeButton";
-            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
-            this.TargetHomeButton.TabIndex = 6;
-            this.TargetHomeButton.Text = "Reset Pos";
-            this.TargetHomeButton.UseVisualStyleBackColor = true;
-            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
+            this.switchingLED.Color = System.Drawing.Color.Red;
+            this.switchingLED.Location = new System.Drawing.Point(221, 73);
+            this.switchingLED.Name = "switchingLED";
+            this.switchingLED.On = true;
+            this.switchingLED.Size = new System.Drawing.Size(15, 15);
+            this.switchingLED.TabIndex = 60;
+            this.switchingLED.Text = "led2";
+            // 
+            // rampLED
+            // 
+            this.rampLED.Color = System.Drawing.Color.Lime;
+            this.rampLED.Location = new System.Drawing.Point(221, 101);
+            this.rampLED.Name = "rampLED";
+            this.rampLED.On = true;
+            this.rampLED.Size = new System.Drawing.Size(15, 15);
+            this.rampLED.TabIndex = 59;
+            this.rampLED.Text = "led1";
+            // 
+            // ledChADetA
+            // 
+            this.ledChADetA.Location = new System.Drawing.Point(194, 34);
+            this.ledChADetA.Name = "ledChADetA";
+            this.ledChADetA.On = false;
+            this.ledChADetA.Size = new System.Drawing.Size(13, 13);
+            this.ledChADetA.TabIndex = 52;
+            this.ledChADetA.Text = "ledChADetA";
+            // 
+            // ledChADetB
+            // 
+            this.ledChADetB.Location = new System.Drawing.Point(194, 60);
+            this.ledChADetB.Name = "ledChADetB";
+            this.ledChADetB.On = false;
+            this.ledChADetB.Size = new System.Drawing.Size(13, 13);
+            this.ledChADetB.TabIndex = 53;
+            this.ledChADetB.Text = "led1";
+            // 
+            // ledChBDetB
+            // 
+            this.ledChBDetB.Location = new System.Drawing.Point(216, 60);
+            this.ledChBDetB.Name = "ledChBDetB";
+            this.ledChBDetB.On = false;
+            this.ledChBDetB.Size = new System.Drawing.Size(13, 13);
+            this.ledChBDetB.TabIndex = 54;
+            this.ledChBDetB.Text = "led2";
+            // 
+            // ledChBDetA
+            // 
+            this.ledChBDetA.Location = new System.Drawing.Point(216, 34);
+            this.ledChBDetA.Name = "ledChBDetA";
+            this.ledChBDetA.On = false;
+            this.ledChBDetA.Size = new System.Drawing.Size(13, 13);
+            this.ledChBDetA.TabIndex = 55;
+            this.ledChBDetA.Text = "led3";
             // 
             // ControlWindow
             // 
@@ -8242,10 +8242,6 @@
             this.tabPagePumping.ResumeLayout(false);
             this.groupBoxMWSwitch.ResumeLayout(false);
             this.groupBoxMWSwitch.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).EndInit();
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
@@ -8284,8 +8280,6 @@
             this.groupBox6.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchingLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rampLED)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox7.ResumeLayout(false);
@@ -8965,8 +8959,6 @@
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label32;
-        public NationalInstruments.UI.WindowsForms.Led switchingLED;
-        public NationalInstruments.UI.WindowsForms.Led rampLED;
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem1;
         private System.Windows.Forms.GroupBox groupBoxStirapRF;
@@ -9006,14 +8998,10 @@
         private System.Windows.Forms.GroupBox groupBoxMWSwitch;
         private System.Windows.Forms.Label labelMWSwitchState;
         private System.Windows.Forms.CheckBox cBMWSwitchState;
-        public NationalInstruments.UI.WindowsForms.Led ledChADetA;
         private System.Windows.Forms.Label labelF0;
         private System.Windows.Forms.Label labelF1;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Label label1;
-        public NationalInstruments.UI.WindowsForms.Led ledChBDetB;
-        public NationalInstruments.UI.WindowsForms.Led ledChADetB;
-        public NationalInstruments.UI.WindowsForms.Led ledChBDetA;
         private System.Windows.Forms.GroupBox groupBoxbUSB;
         public System.Windows.Forms.TextBox USBbBoxTextBox;
         private System.Windows.Forms.Button USBbBoxUpdateButton;
@@ -9028,5 +9016,11 @@
         private System.Windows.Forms.Button UsbBBoxCmdBtn;
         private System.Windows.Forms.Label UsbBboxCmdlb;
         private System.Windows.Forms.Button TargetHomeButton;
+        public DAQ.UI.Led ledChBDetA;
+        public DAQ.UI.Led ledChBDetB;
+        public DAQ.UI.Led ledChADetB;
+        public DAQ.UI.Led ledChADetA;
+        public DAQ.UI.Led rampLED;
+        public DAQ.UI.Led switchingLED;
     }
 }
