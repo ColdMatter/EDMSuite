@@ -24,11 +24,11 @@ def probescan():
     sm.AdjustProfileParameter("out", "scanMode", "updown", False)
     sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
     print("\nScanning!\n")
-    sm.AcquireAndWait(1)
+    sm.AcquireAndWait(1) #this sets amount of "passes" per scan and will start scanning immediately
     scanFile = file + "_probescan" + ".zip"
     scanPath = filepath + "_probescan" + ".zip" # 'C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\2023\\December2023\\19Dec2300_01.zip'
     print("\nSaving scan as "+scanFile)
-    sm.SaveAverageData(scanPath)
+    sm.SaveAverageData(scanPath) # 
     System.Threading.Thread.CurrentThread.Join(5000)
     newSetPoint = round(getSetPoint(scanFile, 'On', 0, 60, 500, 550, 850),6)
     print("\nSetting new probe setpoint at " + str(newSetPoint))

@@ -80,6 +80,11 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
         bg = np.array(scan.GetTOFOnIntegralArray(detector, bgStart, bgEnd))
         
         signal = 22.5*(integral - bg)
+    elif scantype=='Off':
+        integral = np.array(scan.GetTOFOffIntegralArray(detector, intStart, intEnd))
+        bg = np.array(scan.GetTOFOffIntegralArray(detector, bgStart, bgEnd))
+        
+        signal = 22.5*(integral - bg)
     elif scantype=='OnOff':
         int1 = np.array(scan.GetTOFOnIntegralArray(detector, intStart, intEnd))
         int2 = np.array(scan.GetTOFOffIntegralArray(detector, intStart, intEnd))
@@ -104,6 +109,14 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
         sig1 =  int1 - bg1
         sig2 =  int2 - bg2
         signal = sig1 / sig2
+    elif scantype=='OffOnRatio':
+        int1 = np.array(scan.GetTOFOnIntegralArray(detector, intStart, intEnd))
+        int2 = np.array(scan.GetTOFOffIntegralArray(detector, intStart, intEnd))
+        bg1 = np.array(scan.GetTOFOnIntegralArray(detector, bgStart, bgEnd))
+        bg2 = np.array(scan.GetTOFOffIntegralArray(detector, bgStart, bgEnd))
+        sig1 =  int1 - bg1
+        sig2 =  int2 - bg2
+        signal = sig2 / sig1
     else:
         print("Incorrect Scantype, try again")
         return
@@ -148,8 +161,9 @@ def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, 
     scanSerializer = ScanSerializer()
 
     #file = r"C:\\Users\UEDM\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2024\\2024-07\\080724\\LOG\\probescan\\scan_01.zip"
+    fitfile = getFile(file)
 
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(fitfile),"average.xml")
 
     [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
 
@@ -180,11 +194,11 @@ def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, 
 
 def plotTOF(file, scanStart=-1000, scanEnd=1000, bgStart=4100, bgEnd=5000):
     #get the file from the normal file path
-    file = getFile(file)
+    TOFfile = getFile(file)
 
     #get the scan deserializer and import the scan
     scanSerializer = ScanSerializer()
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(TOFfile),"average.xml")
 
     #make arrays for timebase and signal and background subtract the laser scatter
     times=np.array(scan.GetGatedAverageOnShot(scanStart,scanEnd).TOFs[0].Times)
