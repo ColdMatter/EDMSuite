@@ -1,12 +1,13 @@
 # uedm_init.py - sets up the Python environment ready for scripting
 # the edm control software.
-
 import pythonnet
 import clr
 import sys
 from System.IO import Path
 
+
 # Load some system assemblies that we'll need
+
 clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
@@ -36,6 +37,21 @@ hc = System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://local
 tcl = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem')
 pl = System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem')
 fl = System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem')
+
+# code for IronPython remoting problem workaround
+class typedproxy(object):
+    __slots__ = ['obj', 'proxyType']
+    def __init__(self, obj, proxyType):
+        self.obj = obj
+        self.proxyType = proxyType
+    def __getattribute__(self, attr):
+        proxyType = object.__getattribute__(self, 'proxyType')
+        obj = object.__getattribute__(self, 'obj')
+        return getattr(proxyType, attr).__get__(obj, proxyType)
+    def __setattribute__(self, attr):
+        proxyType = object.__setattribute__(self, 'proxyType')
+        obj = object.__setattribute__(self, 'obj')
+        return setattr(proxyType, attr).__set__(obj, proxyType)
 
 # usage message
 print('UEDM interactive scripting control')

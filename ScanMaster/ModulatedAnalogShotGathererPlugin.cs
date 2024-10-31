@@ -143,6 +143,7 @@ namespace ScanMaster.Acquire.Plugins
 				lock(this)
 				{
 					Shot s = new Shot();
+					s.SetTimeStamp();
 					if (!Environs.Debug)
 					{
 						for (int i = 0 ; i < inputTask1.AIChannels.Count ; i++)

@@ -28,8 +28,8 @@ sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
 print("\nScanning!\n")
 
 sm.AcquireAndWait(1)
-scanFile = file + "_01" + ".zip"
-scanPath = filepath + "_01" + ".zip" # 'C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\2023\\December2023\\19Dec2300_01.zip'
+scanFile = file + "_probescan" + ".zip"
+scanPath = filepath + "_probescan" + ".zip" # 'C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\2023\\December2023\\19Dec2300_01.zip'
 print("\nSaving scan as "+scanFile)
 
 sm.SaveAverageData(scanPath)

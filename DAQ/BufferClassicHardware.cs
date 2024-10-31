@@ -35,7 +35,7 @@ namespace DAQ.HAL
             Info.Add("sourceToDetect", 3.5);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
-            Info.Add("defaultGate", new double[] { 2190, 80 });
+            Info.Add("defaultGate", new double[] { 2190, 800 });
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10

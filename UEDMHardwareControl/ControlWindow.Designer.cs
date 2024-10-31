@@ -292,6 +292,9 @@
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tabPageBfield = new System.Windows.Forms.TabPage();
             this.groupBoxbUSB = new System.Windows.Forms.GroupBox();
+            this.tbUsbBBoxCmd = new System.Windows.Forms.TextBox();
+            this.UsbBBoxCmdBtn = new System.Windows.Forms.Button();
+            this.UsbBboxCmdlb = new System.Windows.Forms.Label();
             this.UsbSmallBTextBox = new System.Windows.Forms.TextBox();
             this.labelUsbSmallB = new System.Windows.Forms.Label();
             this.UsbBigBTextBox = new System.Windows.Forms.TextBox();
@@ -730,9 +733,7 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.tbUsbBBoxCmd = new System.Windows.Forms.TextBox();
-            this.UsbBboxCmdlb = new System.Windows.Forms.Label();
-            this.UsbBBoxCmdBtn = new System.Windows.Forms.Button();
+            this.TargetHomeButton = new System.Windows.Forms.Button();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -3238,6 +3239,31 @@
             this.groupBoxbUSB.TabIndex = 101;
             this.groupBoxbUSB.TabStop = false;
             this.groupBoxbUSB.Text = "USB B box";
+            // 
+            // tbUsbBBoxCmd
+            // 
+            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(58, 142);
+            this.tbUsbBBoxCmd.Name = "tbUsbBBoxCmd";
+            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(121, 20);
+            this.tbUsbBBoxCmd.TabIndex = 52;
+            this.tbUsbBBoxCmd.Text = "0";
+            // 
+            // UsbBBoxCmdBtn
+            // 
+            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(185, 142);
+            this.UsbBBoxCmdBtn.Name = "UsbBBoxCmdBtn";
+            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(75, 23);
+            this.UsbBBoxCmdBtn.TabIndex = 54;
+            this.UsbBBoxCmdBtn.Text = "Send";
+            this.UsbBBoxCmdBtn.Click += new System.EventHandler(this.UsbBBoxCmdBtn_Click);
+            // 
+            // UsbBboxCmdlb
+            // 
+            this.UsbBboxCmdlb.Location = new System.Drawing.Point(55, 127);
+            this.UsbBboxCmdlb.Name = "UsbBboxCmdlb";
+            this.UsbBboxCmdlb.Size = new System.Drawing.Size(85, 21);
+            this.UsbBboxCmdlb.TabIndex = 53;
+            this.UsbBboxCmdlb.Text = "Send Command";
             // 
             // UsbSmallBTextBox
             // 
@@ -5825,6 +5851,7 @@
             // 
             // gBTargetStepper
             // 
+            this.gBTargetStepper.Controls.Add(this.TargetHomeButton);
             this.gBTargetStepper.Controls.Add(this.TargetTriggerButton);
             this.gBTargetStepper.Controls.Add(this.TargetExtButton);
             this.gBTargetStepper.Controls.Add(this.TargetManualButton);
@@ -8169,30 +8196,15 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // tbUsbBBoxCmd
+            // TargetHomeButton
             // 
-            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(58, 142);
-            this.tbUsbBBoxCmd.Name = "tbUsbBBoxCmd";
-            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(121, 20);
-            this.tbUsbBBoxCmd.TabIndex = 52;
-            this.tbUsbBBoxCmd.Text = "0";
-            // 
-            // UsbBboxCmdlb
-            // 
-            this.UsbBboxCmdlb.Location = new System.Drawing.Point(55, 127);
-            this.UsbBboxCmdlb.Name = "UsbBboxCmdlb";
-            this.UsbBboxCmdlb.Size = new System.Drawing.Size(85, 21);
-            this.UsbBboxCmdlb.TabIndex = 53;
-            this.UsbBboxCmdlb.Text = "Send Command";
-            // 
-            // UsbBBoxCmdBtn
-            // 
-            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(185, 142);
-            this.UsbBBoxCmdBtn.Name = "UsbBBoxCmdBtn";
-            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(75, 23);
-            this.UsbBBoxCmdBtn.TabIndex = 54;
-            this.UsbBBoxCmdBtn.Text = "Send";
-            this.UsbBBoxCmdBtn.Click += new System.EventHandler(this.UsbBBoxCmdBtn_Click);
+            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
+            this.TargetHomeButton.Name = "TargetHomeButton";
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetHomeButton.TabIndex = 6;
+            this.TargetHomeButton.Text = "Reset Pos";
+            this.TargetHomeButton.UseVisualStyleBackColor = true;
+            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
             // 
             // ControlWindow
             // 
@@ -9015,5 +9027,6 @@
         public System.Windows.Forms.TextBox tbUsbBBoxCmd;
         private System.Windows.Forms.Button UsbBBoxCmdBtn;
         private System.Windows.Forms.Label UsbBboxCmdlb;
+        private System.Windows.Forms.Button TargetHomeButton;
     }
 }

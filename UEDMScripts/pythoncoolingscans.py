@@ -6,22 +6,28 @@ from DAQ.Analyze import *
 import time
 from uedmfuncs import *
 
-currentSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
+probeSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
+v1Setpoint = tcl.GetLaserSetpoint("VISCavity", "v1laser")
+v0Setpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")-(6*0.0122)
 
-print("Current setpoint is: " + str(currentSetpoint)+"\n")
-print("Scanning 0.25 around setpoint\n")
+print("V0 set to probe setpoint: " + str(probeSetpoint)+"\n")
+
+tcl.SetLaserSetpoint("VISCavity", "v0laser", probeSetpoint)
+
+print("Scanning 0.35 around V1 setpoint\n")
+print("Make sure the V0 switch is ON\n")
 
 [filepath,file] = getNextFile()
 
 print("Saving as " + file + "_*.zip")
 print("")
 
-SelectProfile("TCL Setpoint Scan Probe")
+SelectProfile("TCL Setpoint Scan V1")
 
-sm.AdjustProfileParameter("switch","switchActive", str(False), False)
+sm.AdjustProfileParameter("switch","switchActive", str(True), False)
 sm.AdjustProfileParameter("shot","gateLength", str(5000), False)
-sm.AdjustProfileParameter("out", "start", str(round(currentSetpoint-0.15,2)), False)
-sm.AdjustProfileParameter("out", "end", str(round(currentSetpoint+0.15,2)), False)
+sm.AdjustProfileParameter("out", "start", str(round(v1Setpoint-0.35,2)), False)
+sm.AdjustProfileParameter("out", "end", str(round(v1Setpoint+0.35,2)), False)
 sm.AdjustProfileParameter("out", "scanMode", "updown", False)
 sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
 
@@ -36,11 +42,11 @@ sm.SaveAverageData(scanPath)
 
 System.Threading.Thread.CurrentThread.Join(5000)
 
-newSetPoint = round(getSetPoint(scanFile),6)
+newSetPoint = round(getSetPoint(scanFile,'OnOffRatio'),6)
 
 print("\nSetting new probe setpoint at " + str(newSetPoint))
 
-tcl.SetLaserSetpoint("VISCavity", "probelaser", newSetPoint)
+tcl.SetLaserSetpoint("VISCavity", "v1laser", newSetPoint)
 
 print("plotting...")
 

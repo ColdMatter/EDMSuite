@@ -60,7 +60,7 @@ def getNextFile():
     filepath = fileSystem.GetDataDirectory(fileSystem.Paths["scanMasterDataPath"]) + file
     return [filepath,file]
 
-#Fitting and Plotting
+#Processing and fitting
 def fitGaussian(voltage,signal):
     first_try = [max(signal)-min(signal), voltage[np.argmax(signal)], (max(voltage)-min(voltage))/5, ((max(signal)-min(signal))/5)+min(signal)]
     popt, pcov = curve_fit(gaussian, voltage, signal, p0=first_try)
@@ -78,6 +78,11 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
     if scantype=='On':
         integral = np.array(scan.GetTOFOnIntegralArray(detector, intStart, intEnd))
         bg = np.array(scan.GetTOFOnIntegralArray(detector, bgStart, bgEnd))
+        
+        signal = 22.5*(integral - bg)
+    elif scantype=='Off':
+        integral = np.array(scan.GetTOFOffIntegralArray(detector, intStart, intEnd))
+        bg = np.array(scan.GetTOFOffIntegralArray(detector, bgStart, bgEnd))
         
         signal = 22.5*(integral - bg)
     elif scantype=='OnOff':
@@ -104,12 +109,20 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
         sig1 =  int1 - bg1
         sig2 =  int2 - bg2
         signal = sig1 / sig2
+    elif scantype=='OffOnRatio':
+        int1 = np.array(scan.GetTOFOnIntegralArray(detector, intStart, intEnd))
+        int2 = np.array(scan.GetTOFOffIntegralArray(detector, intStart, intEnd))
+        bg1 = np.array(scan.GetTOFOnIntegralArray(detector, bgStart, bgEnd))
+        bg2 = np.array(scan.GetTOFOffIntegralArray(detector, bgStart, bgEnd))
+        sig1 =  int1 - bg1
+        sig2 =  int2 - bg2
+        signal = sig2 / sig1
     else:
         print("Incorrect Scantype, try again")
         return
     return [voltage,signal]
 
-def getSetPoint(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector=0,intStart=750, intEnd=4000, bgStart=600, bgEnd=750):
+def getSetPoint(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector=0,intStart=60, intEnd=500, bgStart=510, bgEnd=650):
     scanSerializer = ScanSerializer()
     #gfitter = GaussianFitter()
 
@@ -143,12 +156,14 @@ def getSetPoint2(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector
     center=round(gfitter.returncenter(),6)
     return center
 
-def plotfit(file, scantype='On', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
+# Plotting
+def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
     scanSerializer = ScanSerializer()
 
     #file = r"C:\\Users\UEDM\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2024\\2024-07\\080724\\LOG\\probescan\\scan_01.zip"
+    fitfile = getFile(file)
 
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(fitfile),"average.xml")
 
     [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
 
@@ -164,27 +179,30 @@ def plotfit(file, scantype='On', detector=0, intStart=1000, intEnd=4000, bgStart
     ax.set_ylabel("Photons")
 
     # Executing curve_fit on data 
-    popt, pcov = fitDoubleGaussian(x,y) 
+    if fitfunc=='doublegaussian':
+        popt, pcov = fitDoubleGaussian(x,y)
+        ym = doublegaussian(x, popt[0], popt[1], popt[2], popt[3], popt[4], popt[5], popt[6]) 
+    else:
+        popt, pcov = fitGaussian(x,y) 
+        ym = gaussian(x, popt[0], popt[1], popt[2], popt[3]) 
 
     #popt returns the best fit values for parameters of the given model (func) 
     print ("New setpoint is %3.6f" % popt[1]) 
-
-    ym = doublegaussian(x, popt[0], popt[1], popt[2], popt[3], popt[4], popt[5], popt[6]) 
     ax.plot(x, ym, c='r', label='Best fit') 
     ax.legend() 
     plt.show()
 
-def plotTOF(file, scanStart=0, scanEnd=1, bgStart=4100, bgEnd=5000):
+def plotTOF(file, scanStart=-1000, scanEnd=1000, bgStart=4100, bgEnd=5000):
     #get the file from the normal file path
-    file = getFile('29Aug2400_01.zip')
+    TOFfile = getFile(file)
 
     #get the scan deserializer and import the scan
     scanSerializer = ScanSerializer()
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(TOFfile),"average.xml")
 
     #make arrays for timebase and signal and background subtract the laser scatter
-    times=np.array(scan.GetGatedAverageOnShot(0,1).TOFs[0].Times)
-    data=np.array(scan.GetGatedAverageOnShot(0,1).TOFs[0].Data)
+    times=np.array(scan.GetGatedAverageOnShot(scanStart,scanEnd).TOFs[0].Times)
+    data=np.array(scan.GetGatedAverageOnShot(scanStart,scanEnd).TOFs[0].Data)
     bg=np.mean(data[bgStart:bgEnd])
     signal=data-bg
 
