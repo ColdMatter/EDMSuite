@@ -31,6 +31,12 @@ namespace LatticeHardwareControl
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cryoStatus = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label33 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.richTextBox_output = new System.Windows.Forms.RichTextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -70,20 +76,21 @@ namespace LatticeHardwareControl
             this.label11 = new System.Windows.Forms.Label();
             this.button_Flow_controller_disconnect = new System.Windows.Forms.Button();
             this.button_Flow_controller_connect = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonSetSF6 = new System.Windows.Forms.Button();
+            this.buttonSetHe = new System.Windows.Forms.Button();
             this.button_Clear_All = new System.Windows.Forms.Button();
             this.button_Set_All = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
+            this.textBoxSF6Flow = new System.Windows.Forms.TextBox();
+            this.button_Off_flow_SF6 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
-            this.button_stop_flow_He = new System.Windows.Forms.Button();
-            this.button_set_flow_He = new System.Windows.Forms.Button();
+            this.textBoxHeFlow = new System.Windows.Forms.TextBox();
+            this.button_On_flow_SF6 = new System.Windows.Forms.Button();
+            this.button_Off_flow_He = new System.Windows.Forms.Button();
+            this.button_On_flow_He = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.YAG_Control = new System.Windows.Forms.TabPage();
             this.Refresh = new System.Windows.Forms.TabPage();
             this.ScanMaster = new System.Windows.Forms.TabPage();
@@ -103,6 +110,32 @@ namespace LatticeHardwareControl
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label38 = new System.Windows.Forms.Label();
+            this.PulseMode_disable_button = new System.Windows.Forms.Button();
+            this.PulseMode_enable_button = new System.Windows.Forms.Button();
+            this.label37 = new System.Windows.Forms.Label();
+            this.AnapicoSetPowerCH2Textbox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetPowerCH1Textbox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetPowerCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetPowerCH1Button = new System.Windows.Forms.Button();
+            this.label36 = new System.Windows.Forms.Label();
+            this.AnapicoSetFMDevCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFMDevCH1Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFMDevCH2TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFMDevCH1TextBox = new System.Windows.Forms.TextBox();
+            this.CH2FMDisableButton = new System.Windows.Forms.Button();
+            this.CH2FMEnableButton = new System.Windows.Forms.Button();
+            this.CH1FMDisableButton = new System.Windows.Forms.Button();
+            this.CH1FMEnableButton = new System.Windows.Forms.Button();
+            this.label35 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.anapicoDisableButton = new System.Windows.Forms.Button();
+            this.anapicoEnableButton = new System.Windows.Forms.Button();
+            this.AnapicoSetFreqCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFreqCH1Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFreqCH2TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFreqCH1TextBox = new System.Windows.Forms.TextBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
             this.textBox_freq_4f = new System.Windows.Forms.TextBox();
@@ -119,21 +152,23 @@ namespace LatticeHardwareControl
             this.button_Freq_start = new System.Windows.Forms.Button();
             this.textBox_freq_V1 = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.Flow_Controllers.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBox7);
             this.panel1.Controls.Add(this.groupBox5);
             this.panel1.Controls.Add(this.groupBox4);
@@ -142,23 +177,86 @@ namespace LatticeHardwareControl
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(271, 597);
             this.panel1.TabIndex = 0;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.cryoStatus);
+            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.label33);
+            this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.groupBox2.Location = new System.Drawing.Point(15, 424);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(256, 73);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Cryo Control";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter_1);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(72, 18);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(42, 14);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Status";
+            // 
+            // cryoStatus
+            // 
+            this.cryoStatus.Location = new System.Drawing.Point(120, 15);
+            this.cryoStatus.Name = "cryoStatus";
+            this.cryoStatus.ReadOnly = true;
+            this.cryoStatus.Size = new System.Drawing.Size(75, 20);
+            this.cryoStatus.TabIndex = 13;
+            this.cryoStatus.TextChanged += new System.EventHandler(this.cryoStatus_TextChanged);
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button2.Location = new System.Drawing.Point(120, 42);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 12;
+            this.button2.Text = "Disengage";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button1.Location = new System.Drawing.Point(39, 42);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Engage";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(6, 34);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(0, 14);
+            this.label33.TabIndex = 10;
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.richTextBox_output);
             this.groupBox7.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox7.Location = new System.Drawing.Point(12, 484);
+            this.groupBox7.Location = new System.Drawing.Point(15, 503);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(256, 100);
+            this.groupBox7.Size = new System.Drawing.Size(253, 81);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Output Dialog";
             // 
             // richTextBox_output
             // 
-            this.richTextBox_output.Location = new System.Drawing.Point(9, 19);
+            this.richTextBox_output.Location = new System.Drawing.Point(6, 19);
             this.richTextBox_output.Name = "richTextBox_output";
-            this.richTextBox_output.Size = new System.Drawing.Size(241, 75);
+            this.richTextBox_output.Size = new System.Drawing.Size(241, 56);
             this.richTextBox_output.TabIndex = 0;
             this.richTextBox_output.Text = "";
             // 
@@ -177,7 +275,7 @@ namespace LatticeHardwareControl
             this.groupBox5.Controls.Add(this.button_Temp_start);
             this.groupBox5.Controls.Add(this.textbox_Temp_4K);
             this.groupBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox5.Location = new System.Drawing.Point(12, 256);
+            this.groupBox5.Location = new System.Drawing.Point(15, 202);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(256, 216);
             this.groupBox5.TabIndex = 13;
@@ -186,7 +284,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_SF6
             // 
-            this.textbox_Temp_SF6.Location = new System.Drawing.Point(123, 132);
+            this.textbox_Temp_SF6.Location = new System.Drawing.Point(100, 138);
             this.textbox_Temp_SF6.Name = "textbox_Temp_SF6";
             this.textbox_Temp_SF6.ReadOnly = true;
             this.textbox_Temp_SF6.Size = new System.Drawing.Size(127, 20);
@@ -195,16 +293,16 @@ namespace LatticeHardwareControl
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 138);
+            this.label12.Location = new System.Drawing.Point(62, 141);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(71, 14);
+            this.label12.Size = new System.Drawing.Size(29, 14);
             this.label12.TabIndex = 11;
-            this.label12.Text = "SF6: (~220K)";
+            this.label12.Text = "SF6:";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 34);
+            this.label13.Location = new System.Drawing.Point(62, 40);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(29, 14);
             this.label13.TabIndex = 10;
@@ -212,7 +310,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_50K
             // 
-            this.textbox_Temp_50K.Location = new System.Drawing.Point(123, 28);
+            this.textbox_Temp_50K.Location = new System.Drawing.Point(100, 34);
             this.textbox_Temp_50K.Name = "textbox_Temp_50K";
             this.textbox_Temp_50K.ReadOnly = true;
             this.textbox_Temp_50K.Size = new System.Drawing.Size(127, 20);
@@ -220,7 +318,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_Cell
             // 
-            this.textbox_Temp_Cell.Location = new System.Drawing.Point(123, 106);
+            this.textbox_Temp_Cell.Location = new System.Drawing.Point(100, 112);
             this.textbox_Temp_Cell.Name = "textbox_Temp_Cell";
             this.textbox_Temp_Cell.ReadOnly = true;
             this.textbox_Temp_Cell.Size = new System.Drawing.Size(127, 20);
@@ -230,7 +328,7 @@ namespace LatticeHardwareControl
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 112);
+            this.label14.Location = new System.Drawing.Point(60, 115);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(31, 14);
             this.label14.TabIndex = 7;
@@ -238,7 +336,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_1K
             // 
-            this.textbox_Temp_1K.Location = new System.Drawing.Point(123, 80);
+            this.textbox_Temp_1K.Location = new System.Drawing.Point(100, 86);
             this.textbox_Temp_1K.Name = "textbox_Temp_1K";
             this.textbox_Temp_1K.ReadOnly = true;
             this.textbox_Temp_1K.Size = new System.Drawing.Size(127, 20);
@@ -247,7 +345,7 @@ namespace LatticeHardwareControl
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 86);
+            this.label15.Location = new System.Drawing.Point(68, 89);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(23, 14);
             this.label15.TabIndex = 5;
@@ -256,7 +354,7 @@ namespace LatticeHardwareControl
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 60);
+            this.label16.Location = new System.Drawing.Point(68, 63);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(23, 14);
             this.label16.TabIndex = 4;
@@ -265,7 +363,7 @@ namespace LatticeHardwareControl
             // button_Temp_stop
             // 
             this.button_Temp_stop.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Temp_stop.Location = new System.Drawing.Point(90, 183);
+            this.button_Temp_stop.Location = new System.Drawing.Point(120, 178);
             this.button_Temp_stop.Name = "button_Temp_stop";
             this.button_Temp_stop.Size = new System.Drawing.Size(75, 23);
             this.button_Temp_stop.TabIndex = 3;
@@ -275,7 +373,7 @@ namespace LatticeHardwareControl
             // button_Temp_start
             // 
             this.button_Temp_start.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Temp_start.Location = new System.Drawing.Point(9, 183);
+            this.button_Temp_start.Location = new System.Drawing.Point(39, 178);
             this.button_Temp_start.Name = "button_Temp_start";
             this.button_Temp_start.Size = new System.Drawing.Size(75, 23);
             this.button_Temp_start.TabIndex = 2;
@@ -284,7 +382,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_4K
             // 
-            this.textbox_Temp_4K.Location = new System.Drawing.Point(123, 54);
+            this.textbox_Temp_4K.Location = new System.Drawing.Point(100, 60);
             this.textbox_Temp_4K.Name = "textbox_Temp_4K";
             this.textbox_Temp_4K.ReadOnly = true;
             this.textbox_Temp_4K.Size = new System.Drawing.Size(127, 20);
@@ -305,16 +403,16 @@ namespace LatticeHardwareControl
             this.groupBox4.Controls.Add(this.buttonStartPMonitor);
             this.groupBox4.Controls.Add(this.textBoxSourcePressure);
             this.groupBox4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox4.Location = new System.Drawing.Point(12, 9);
+            this.groupBox4.Location = new System.Drawing.Point(12, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 241);
+            this.groupBox4.Size = new System.Drawing.Size(259, 184);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Pressure Monitor";
             // 
             // textbox_P_MOT
             // 
-            this.textbox_P_MOT.Location = new System.Drawing.Point(123, 167);
+            this.textbox_P_MOT.Location = new System.Drawing.Point(103, 121);
             this.textbox_P_MOT.Name = "textbox_P_MOT";
             this.textbox_P_MOT.ReadOnly = true;
             this.textbox_P_MOT.Size = new System.Drawing.Size(127, 20);
@@ -323,7 +421,7 @@ namespace LatticeHardwareControl
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 173);
+            this.label4.Location = new System.Drawing.Point(63, 124);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 14);
             this.label4.TabIndex = 11;
@@ -333,7 +431,7 @@ namespace LatticeHardwareControl
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 34);
+            this.label3.Location = new System.Drawing.Point(55, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 14);
             this.label3.TabIndex = 10;
@@ -342,15 +440,16 @@ namespace LatticeHardwareControl
             // 
             // textbox_P_dump
             // 
-            this.textbox_P_dump.Location = new System.Drawing.Point(123, 34);
+            this.textbox_P_dump.Location = new System.Drawing.Point(103, 17);
             this.textbox_P_dump.Name = "textbox_P_dump";
             this.textbox_P_dump.ReadOnly = true;
             this.textbox_P_dump.Size = new System.Drawing.Size(127, 20);
             this.textbox_P_dump.TabIndex = 9;
+            this.textbox_P_dump.TextChanged += new System.EventHandler(this.textbox_P_dump_TextChanged);
             // 
             // textBoxDownstreamPressure
             // 
-            this.textBoxDownstreamPressure.Location = new System.Drawing.Point(123, 141);
+            this.textBoxDownstreamPressure.Location = new System.Drawing.Point(103, 95);
             this.textBoxDownstreamPressure.Name = "textBoxDownstreamPressure";
             this.textBoxDownstreamPressure.ReadOnly = true;
             this.textBoxDownstreamPressure.Size = new System.Drawing.Size(127, 20);
@@ -360,7 +459,7 @@ namespace LatticeHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 147);
+            this.label2.Location = new System.Drawing.Point(16, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(81, 14);
             this.label2.TabIndex = 7;
@@ -368,7 +467,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_P_source_scroll
             // 
-            this.textbox_P_source_scroll.Location = new System.Drawing.Point(123, 89);
+            this.textbox_P_source_scroll.Location = new System.Drawing.Point(103, 43);
             this.textbox_P_source_scroll.Name = "textbox_P_source_scroll";
             this.textbox_P_source_scroll.ReadOnly = true;
             this.textbox_P_source_scroll.Size = new System.Drawing.Size(127, 20);
@@ -378,7 +477,7 @@ namespace LatticeHardwareControl
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 95);
+            this.label1.Location = new System.Drawing.Point(14, 46);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 14);
             this.label1.TabIndex = 5;
@@ -388,7 +487,7 @@ namespace LatticeHardwareControl
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 121);
+            this.label8.Location = new System.Drawing.Point(48, 72);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(49, 14);
             this.label8.TabIndex = 4;
@@ -396,8 +495,9 @@ namespace LatticeHardwareControl
             // 
             // buttonStopPMonitor
             // 
+            this.buttonStopPMonitor.Enabled = false;
             this.buttonStopPMonitor.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonStopPMonitor.Location = new System.Drawing.Point(90, 208);
+            this.buttonStopPMonitor.Location = new System.Drawing.Point(123, 147);
             this.buttonStopPMonitor.Name = "buttonStopPMonitor";
             this.buttonStopPMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonStopPMonitor.TabIndex = 3;
@@ -408,7 +508,7 @@ namespace LatticeHardwareControl
             // buttonStartPMonitor
             // 
             this.buttonStartPMonitor.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonStartPMonitor.Location = new System.Drawing.Point(9, 208);
+            this.buttonStartPMonitor.Location = new System.Drawing.Point(42, 147);
             this.buttonStartPMonitor.Name = "buttonStartPMonitor";
             this.buttonStartPMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonStartPMonitor.TabIndex = 2;
@@ -418,7 +518,7 @@ namespace LatticeHardwareControl
             // 
             // textBoxSourcePressure
             // 
-            this.textBoxSourcePressure.Location = new System.Drawing.Point(123, 115);
+            this.textBoxSourcePressure.Location = new System.Drawing.Point(103, 69);
             this.textBoxSourcePressure.Name = "textBoxSourcePressure";
             this.textBoxSourcePressure.ReadOnly = true;
             this.textBoxSourcePressure.Size = new System.Drawing.Size(127, 20);
@@ -428,10 +528,12 @@ namespace LatticeHardwareControl
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.Flow_Controllers);
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.YAG_Control);
             this.tabControl1.Controls.Add(this.Refresh);
             this.tabControl1.Controls.Add(this.ScanMaster);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(277, 9);
             this.tabControl1.Name = "tabControl1";
@@ -445,7 +547,6 @@ namespace LatticeHardwareControl
             this.Flow_Controllers.Controls.Add(this.textBox14);
             this.Flow_Controllers.Controls.Add(this.textBox13);
             this.Flow_Controllers.Controls.Add(this.groupBox3);
-            this.Flow_Controllers.Controls.Add(this.groupBox2);
             this.Flow_Controllers.Controls.Add(this.groupBox1);
             this.Flow_Controllers.Location = new System.Drawing.Point(4, 21);
             this.Flow_Controllers.Name = "Flow_Controllers";
@@ -547,40 +648,21 @@ namespace LatticeHardwareControl
             this.button_Flow_controller_connect.UseVisualStyleBackColor = true;
             this.button_Flow_controller_connect.Click += new System.EventHandler(this.button_Flow_controller_connect_Click);
             // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox2.Location = new System.Drawing.Point(21, 146);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(288, 108);
-            this.groupBox2.TabIndex = 14;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "SF6 Flow Control";
-            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 56);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(97, 12);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "(Default: 0.0100)";
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonSetSF6);
+            this.groupBox1.Controls.Add(this.buttonSetHe);
             this.groupBox1.Controls.Add(this.button_Clear_All);
             this.groupBox1.Controls.Add(this.button_Set_All);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textBox5);
-            this.groupBox1.Controls.Add(this.button_stop_flow_SF6);
+            this.groupBox1.Controls.Add(this.textBoxSF6Flow);
+            this.groupBox1.Controls.Add(this.button_Off_flow_SF6);
             this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.textBox6);
-            this.groupBox1.Controls.Add(this.button_set_flow_SF6);
-            this.groupBox1.Controls.Add(this.button_stop_flow_He);
-            this.groupBox1.Controls.Add(this.button_set_flow_He);
+            this.groupBox1.Controls.Add(this.textBoxHeFlow);
+            this.groupBox1.Controls.Add(this.button_On_flow_SF6);
+            this.groupBox1.Controls.Add(this.button_Off_flow_He);
+            this.groupBox1.Controls.Add(this.button_On_flow_He);
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox1.Location = new System.Drawing.Point(21, 13);
             this.groupBox1.Name = "groupBox1";
@@ -590,32 +672,56 @@ namespace LatticeHardwareControl
             this.groupBox1.Text = "Flow Control";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // buttonSetSF6
+            // 
+            this.buttonSetSF6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonSetSF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonSetSF6.Location = new System.Drawing.Point(233, 57);
+            this.buttonSetSF6.Name = "buttonSetSF6";
+            this.buttonSetSF6.Size = new System.Drawing.Size(46, 23);
+            this.buttonSetSF6.TabIndex = 14;
+            this.buttonSetSF6.Text = "Set";
+            this.buttonSetSF6.UseVisualStyleBackColor = false;
+            this.buttonSetSF6.Click += new System.EventHandler(this.buttonSetSF6_Click);
+            // 
+            // buttonSetHe
+            // 
+            this.buttonSetHe.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonSetHe.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonSetHe.Location = new System.Drawing.Point(233, 28);
+            this.buttonSetHe.Name = "buttonSetHe";
+            this.buttonSetHe.Size = new System.Drawing.Size(46, 23);
+            this.buttonSetHe.TabIndex = 13;
+            this.buttonSetHe.Text = "Set";
+            this.buttonSetHe.UseVisualStyleBackColor = false;
+            this.buttonSetHe.Click += new System.EventHandler(this.buttonSetHe_Click);
+            // 
             // button_Clear_All
             // 
             this.button_Clear_All.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Clear_All.Location = new System.Drawing.Point(160, 87);
+            this.button_Clear_All.Location = new System.Drawing.Point(149, 87);
             this.button_Clear_All.Name = "button_Clear_All";
             this.button_Clear_All.Size = new System.Drawing.Size(75, 23);
             this.button_Clear_All.TabIndex = 12;
-            this.button_Clear_All.Text = "Clear All";
+            this.button_Clear_All.Text = "All Off";
             this.button_Clear_All.UseVisualStyleBackColor = true;
             this.button_Clear_All.Click += new System.EventHandler(this.button_Clear_All_Click);
             // 
             // button_Set_All
             // 
             this.button_Set_All.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Set_All.Location = new System.Drawing.Point(79, 87);
+            this.button_Set_All.Location = new System.Drawing.Point(63, 87);
             this.button_Set_All.Name = "button_Set_All";
             this.button_Set_All.Size = new System.Drawing.Size(75, 23);
             this.button_Set_All.TabIndex = 11;
-            this.button_Set_All.Text = "Set All";
+            this.button_Set_All.Text = "All On";
             this.button_Set_All.UseVisualStyleBackColor = true;
             this.button_Set_All.Click += new System.EventHandler(this.button_Set_All_Click);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(181, 13);
+            this.label5.Location = new System.Drawing.Point(147, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(101, 12);
             this.label5.TabIndex = 10;
@@ -632,25 +738,25 @@ namespace LatticeHardwareControl
             this.label6.Text = "He";
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
-            // textBox5
+            // textBoxSF6Flow
             // 
-            this.textBox5.Location = new System.Drawing.Point(200, 57);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(59, 20);
-            this.textBox5.TabIndex = 9;
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            this.textBoxSF6Flow.Location = new System.Drawing.Point(168, 59);
+            this.textBoxSF6Flow.Name = "textBoxSF6Flow";
+            this.textBoxSF6Flow.Size = new System.Drawing.Size(59, 20);
+            this.textBoxSF6Flow.TabIndex = 9;
+            this.textBoxSF6Flow.Text = "0.01";
+            this.textBoxSF6Flow.TextChanged += new System.EventHandler(this.textBoxSF6Flow_TextChanged);
             // 
-            // button_stop_flow_SF6
+            // button_Off_flow_SF6
             // 
-            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_SF6.Location = new System.Drawing.Point(119, 55);
-            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
-            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_SF6.TabIndex = 3;
-            this.button_stop_flow_SF6.Text = "Clear";
-            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
-            this.button_stop_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
+            this.button_Off_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Off_flow_SF6.Location = new System.Drawing.Point(103, 57);
+            this.button_Off_flow_SF6.Name = "button_Off_flow_SF6";
+            this.button_Off_flow_SF6.Size = new System.Drawing.Size(59, 23);
+            this.button_Off_flow_SF6.TabIndex = 3;
+            this.button_Off_flow_SF6.Text = "Off";
+            this.button_Off_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_Off_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
             // 
             // label10
             // 
@@ -662,47 +768,59 @@ namespace LatticeHardwareControl
             this.label10.Text = "SF6";
             this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
-            // textBox6
+            // textBoxHeFlow
             // 
-            this.textBox6.Location = new System.Drawing.Point(200, 31);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(59, 20);
-            this.textBox6.TabIndex = 9;
-            this.textBox6.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
+            this.textBoxHeFlow.BackColor = System.Drawing.SystemColors.Window;
+            this.textBoxHeFlow.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxHeFlow.Location = new System.Drawing.Point(168, 29);
+            this.textBoxHeFlow.Name = "textBoxHeFlow";
+            this.textBoxHeFlow.Size = new System.Drawing.Size(59, 20);
+            this.textBoxHeFlow.TabIndex = 9;
+            this.textBoxHeFlow.Text = "2.0";
+            this.textBoxHeFlow.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
             // 
-            // button_set_flow_SF6
+            // button_On_flow_SF6
             // 
-            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_SF6.Location = new System.Drawing.Point(38, 56);
-            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
-            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_SF6.TabIndex = 2;
-            this.button_set_flow_SF6.Text = "Set";
-            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
-            this.button_set_flow_SF6.Click += new System.EventHandler(this.button_set_flow_SF6_Click);
+            this.button_On_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_On_flow_SF6.Location = new System.Drawing.Point(38, 56);
+            this.button_On_flow_SF6.Name = "button_On_flow_SF6";
+            this.button_On_flow_SF6.Size = new System.Drawing.Size(59, 23);
+            this.button_On_flow_SF6.TabIndex = 2;
+            this.button_On_flow_SF6.Text = "On";
+            this.button_On_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_On_flow_SF6.Click += new System.EventHandler(this.button_On_flow_SF6_Click);
             // 
-            // button_stop_flow_He
+            // button_Off_flow_He
             // 
-            this.button_stop_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_He.Location = new System.Drawing.Point(119, 29);
-            this.button_stop_flow_He.Name = "button_stop_flow_He";
-            this.button_stop_flow_He.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_He.TabIndex = 3;
-            this.button_stop_flow_He.Text = "Clear";
-            this.button_stop_flow_He.UseVisualStyleBackColor = true;
-            this.button_stop_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
+            this.button_Off_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Off_flow_He.Location = new System.Drawing.Point(103, 28);
+            this.button_Off_flow_He.Name = "button_Off_flow_He";
+            this.button_Off_flow_He.Size = new System.Drawing.Size(59, 23);
+            this.button_Off_flow_He.TabIndex = 3;
+            this.button_Off_flow_He.Text = "Off";
+            this.button_Off_flow_He.UseVisualStyleBackColor = true;
+            this.button_Off_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
             // 
-            // button_set_flow_He
+            // button_On_flow_He
             // 
-            this.button_set_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_He.Location = new System.Drawing.Point(38, 29);
-            this.button_set_flow_He.Name = "button_set_flow_He";
-            this.button_set_flow_He.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_He.TabIndex = 2;
-            this.button_set_flow_He.Text = "Set";
-            this.button_set_flow_He.UseVisualStyleBackColor = true;
-            this.button_set_flow_He.Click += new System.EventHandler(this.button_set_flow_He_Click);
+            this.button_On_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_On_flow_He.Location = new System.Drawing.Point(38, 29);
+            this.button_On_flow_He.Name = "button_On_flow_He";
+            this.button_On_flow_He.Size = new System.Drawing.Size(59, 23);
+            this.button_On_flow_He.TabIndex = 2;
+            this.button_On_flow_He.Text = "On";
+            this.button_On_flow_He.UseVisualStyleBackColor = true;
+            this.button_On_flow_He.Click += new System.EventHandler(this.button_On_flow_He_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 21);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(682, 550);
+            this.tabPage2.TabIndex = 5;
+            this.tabPage2.Text = "Pressure Plot";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // YAG_Control
             // 
@@ -889,6 +1007,289 @@ namespace LatticeHardwareControl
             this.label17.TabIndex = 0;
             this.label17.Text = "V0 v-insensitive: 542.8089676 THz (Dec 11 2023)\r\n";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label38);
+            this.tabPage3.Controls.Add(this.PulseMode_disable_button);
+            this.tabPage3.Controls.Add(this.PulseMode_enable_button);
+            this.tabPage3.Controls.Add(this.label37);
+            this.tabPage3.Controls.Add(this.AnapicoSetPowerCH2Textbox);
+            this.tabPage3.Controls.Add(this.AnapicoSetPowerCH1Textbox);
+            this.tabPage3.Controls.Add(this.AnapicoSetPowerCH2Button);
+            this.tabPage3.Controls.Add(this.AnapicoSetPowerCH1Button);
+            this.tabPage3.Controls.Add(this.label36);
+            this.tabPage3.Controls.Add(this.AnapicoSetFMDevCH2Button);
+            this.tabPage3.Controls.Add(this.AnapicoSetFMDevCH1Button);
+            this.tabPage3.Controls.Add(this.AnapicoSetFMDevCH2TextBox);
+            this.tabPage3.Controls.Add(this.AnapicoSetFMDevCH1TextBox);
+            this.tabPage3.Controls.Add(this.CH2FMDisableButton);
+            this.tabPage3.Controls.Add(this.CH2FMEnableButton);
+            this.tabPage3.Controls.Add(this.CH1FMDisableButton);
+            this.tabPage3.Controls.Add(this.CH1FMEnableButton);
+            this.tabPage3.Controls.Add(this.label35);
+            this.tabPage3.Controls.Add(this.label34);
+            this.tabPage3.Controls.Add(this.anapicoDisableButton);
+            this.tabPage3.Controls.Add(this.anapicoEnableButton);
+            this.tabPage3.Controls.Add(this.AnapicoSetFreqCH2Button);
+            this.tabPage3.Controls.Add(this.AnapicoSetFreqCH1Button);
+            this.tabPage3.Controls.Add(this.AnapicoSetFreqCH2TextBox);
+            this.tabPage3.Controls.Add(this.AnapicoSetFreqCH1TextBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 21);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(682, 550);
+            this.tabPage3.TabIndex = 6;
+            this.tabPage3.Text = "AnaPico";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label38.Location = new System.Drawing.Point(43, 441);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(169, 18);
+            this.label38.TabIndex = 27;
+            this.label38.Text = "External Pulse Mode";
+            this.label38.Click += new System.EventHandler(this.label38_Click);
+            // 
+            // PulseMode_disable_button
+            // 
+            this.PulseMode_disable_button.Location = new System.Drawing.Point(165, 473);
+            this.PulseMode_disable_button.Name = "PulseMode_disable_button";
+            this.PulseMode_disable_button.Size = new System.Drawing.Size(75, 23);
+            this.PulseMode_disable_button.TabIndex = 26;
+            this.PulseMode_disable_button.Text = "Disable";
+            this.PulseMode_disable_button.UseVisualStyleBackColor = true;
+            this.PulseMode_disable_button.Click += new System.EventHandler(this.PulseMode_disable_button_Click);
+            // 
+            // PulseMode_enable_button
+            // 
+            this.PulseMode_enable_button.Location = new System.Drawing.Point(46, 473);
+            this.PulseMode_enable_button.Name = "PulseMode_enable_button";
+            this.PulseMode_enable_button.Size = new System.Drawing.Size(75, 23);
+            this.PulseMode_enable_button.TabIndex = 25;
+            this.PulseMode_enable_button.Text = "Enable";
+            this.PulseMode_enable_button.UseVisualStyleBackColor = true;
+            this.PulseMode_enable_button.Click += new System.EventHandler(this.PulseMode_enable_button_Click);
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label37.Location = new System.Drawing.Point(370, 153);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(261, 18);
+            this.label37.TabIndex = 24;
+            this.label37.Text = "Set powers (make sure FLOAT!)";
+            this.label37.Click += new System.EventHandler(this.label37_Click);
+            // 
+            // AnapicoSetPowerCH2Textbox
+            // 
+            this.AnapicoSetPowerCH2Textbox.Location = new System.Drawing.Point(374, 225);
+            this.AnapicoSetPowerCH2Textbox.Name = "AnapicoSetPowerCH2Textbox";
+            this.AnapicoSetPowerCH2Textbox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetPowerCH2Textbox.TabIndex = 23;
+            this.AnapicoSetPowerCH2Textbox.Text = "20.0";
+            this.AnapicoSetPowerCH2Textbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetPowerCH2Textbox.TextChanged += new System.EventHandler(this.AnapicoSetPowerCH2Textbox_TextChanged);
+            // 
+            // AnapicoSetPowerCH1Textbox
+            // 
+            this.AnapicoSetPowerCH1Textbox.Location = new System.Drawing.Point(374, 188);
+            this.AnapicoSetPowerCH1Textbox.Name = "AnapicoSetPowerCH1Textbox";
+            this.AnapicoSetPowerCH1Textbox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetPowerCH1Textbox.TabIndex = 22;
+            this.AnapicoSetPowerCH1Textbox.Text = "20.0";
+            this.AnapicoSetPowerCH1Textbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetPowerCH1Textbox.TextChanged += new System.EventHandler(this.AnapicoSetPowerCH1Textbox_TextChanged);
+            // 
+            // AnapicoSetPowerCH2Button
+            // 
+            this.AnapicoSetPowerCH2Button.Location = new System.Drawing.Point(491, 223);
+            this.AnapicoSetPowerCH2Button.Name = "AnapicoSetPowerCH2Button";
+            this.AnapicoSetPowerCH2Button.Size = new System.Drawing.Size(140, 23);
+            this.AnapicoSetPowerCH2Button.TabIndex = 21;
+            this.AnapicoSetPowerCH2Button.Text = "Set CH2 Power (dBm)";
+            this.AnapicoSetPowerCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetPowerCH2Button.Click += new System.EventHandler(this.AnapicoSetPowerCH2Button_Click);
+            // 
+            // AnapicoSetPowerCH1Button
+            // 
+            this.AnapicoSetPowerCH1Button.Location = new System.Drawing.Point(491, 186);
+            this.AnapicoSetPowerCH1Button.Name = "AnapicoSetPowerCH1Button";
+            this.AnapicoSetPowerCH1Button.Size = new System.Drawing.Size(140, 23);
+            this.AnapicoSetPowerCH1Button.TabIndex = 20;
+            this.AnapicoSetPowerCH1Button.Text = "Set CH1 Power (dBm)";
+            this.AnapicoSetPowerCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetPowerCH1Button.Click += new System.EventHandler(this.AnapicoSetPowerCH1Button_Click);
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label36.Location = new System.Drawing.Point(21, 290);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(329, 18);
+            this.label36.TabIndex = 19;
+            this.label36.Text = "Set FM Deviation (sideband frequencies)";
+            // 
+            // AnapicoSetFMDevCH2Button
+            // 
+            this.AnapicoSetFMDevCH2Button.Location = new System.Drawing.Point(140, 361);
+            this.AnapicoSetFMDevCH2Button.Name = "AnapicoSetFMDevCH2Button";
+            this.AnapicoSetFMDevCH2Button.Size = new System.Drawing.Size(172, 23);
+            this.AnapicoSetFMDevCH2Button.TabIndex = 18;
+            this.AnapicoSetFMDevCH2Button.Text = "Set CH2 FM Deviation (Hz)";
+            this.AnapicoSetFMDevCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFMDevCH2Button.Click += new System.EventHandler(this.AnapicoSetFMDevCH2Button_Click);
+            // 
+            // AnapicoSetFMDevCH1Button
+            // 
+            this.AnapicoSetFMDevCH1Button.Location = new System.Drawing.Point(140, 323);
+            this.AnapicoSetFMDevCH1Button.Name = "AnapicoSetFMDevCH1Button";
+            this.AnapicoSetFMDevCH1Button.Size = new System.Drawing.Size(172, 23);
+            this.AnapicoSetFMDevCH1Button.TabIndex = 17;
+            this.AnapicoSetFMDevCH1Button.Text = "Set CH1 FM Deviation (Hz)";
+            this.AnapicoSetFMDevCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFMDevCH1Button.Click += new System.EventHandler(this.AnapicoSetFMDevCH1Button_Click);
+            // 
+            // AnapicoSetFMDevCH2TextBox
+            // 
+            this.AnapicoSetFMDevCH2TextBox.Location = new System.Drawing.Point(24, 363);
+            this.AnapicoSetFMDevCH2TextBox.Name = "AnapicoSetFMDevCH2TextBox";
+            this.AnapicoSetFMDevCH2TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFMDevCH2TextBox.TabIndex = 16;
+            this.AnapicoSetFMDevCH2TextBox.Text = "400";
+            this.AnapicoSetFMDevCH2TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // AnapicoSetFMDevCH1TextBox
+            // 
+            this.AnapicoSetFMDevCH1TextBox.Location = new System.Drawing.Point(24, 325);
+            this.AnapicoSetFMDevCH1TextBox.Name = "AnapicoSetFMDevCH1TextBox";
+            this.AnapicoSetFMDevCH1TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFMDevCH1TextBox.TabIndex = 15;
+            this.AnapicoSetFMDevCH1TextBox.Text = "400";
+            this.AnapicoSetFMDevCH1TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // CH2FMDisableButton
+            // 
+            this.CH2FMDisableButton.Location = new System.Drawing.Point(491, 366);
+            this.CH2FMDisableButton.Name = "CH2FMDisableButton";
+            this.CH2FMDisableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH2FMDisableButton.TabIndex = 14;
+            this.CH2FMDisableButton.Text = "CH2 FM Disable";
+            this.CH2FMDisableButton.UseVisualStyleBackColor = true;
+            this.CH2FMDisableButton.Click += new System.EventHandler(this.CH2FMDisableButton_Click);
+            // 
+            // CH2FMEnableButton
+            // 
+            this.CH2FMEnableButton.Location = new System.Drawing.Point(363, 366);
+            this.CH2FMEnableButton.Name = "CH2FMEnableButton";
+            this.CH2FMEnableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH2FMEnableButton.TabIndex = 13;
+            this.CH2FMEnableButton.Text = "CH2 FM Enable";
+            this.CH2FMEnableButton.UseVisualStyleBackColor = true;
+            this.CH2FMEnableButton.Click += new System.EventHandler(this.CH2FMEnableButton_Click);
+            // 
+            // CH1FMDisableButton
+            // 
+            this.CH1FMDisableButton.Location = new System.Drawing.Point(491, 323);
+            this.CH1FMDisableButton.Name = "CH1FMDisableButton";
+            this.CH1FMDisableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH1FMDisableButton.TabIndex = 12;
+            this.CH1FMDisableButton.Text = "CH1 FM Disable";
+            this.CH1FMDisableButton.UseVisualStyleBackColor = true;
+            this.CH1FMDisableButton.Click += new System.EventHandler(this.CH1FMDisableButton_Click);
+            // 
+            // CH1FMEnableButton
+            // 
+            this.CH1FMEnableButton.Location = new System.Drawing.Point(363, 323);
+            this.CH1FMEnableButton.Name = "CH1FMEnableButton";
+            this.CH1FMEnableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH1FMEnableButton.TabIndex = 11;
+            this.CH1FMEnableButton.Text = "CH1 FM Enable";
+            this.CH1FMEnableButton.UseVisualStyleBackColor = true;
+            this.CH1FMEnableButton.Click += new System.EventHandler(this.CH1FMEnableButton_Click);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label35.Location = new System.Drawing.Point(59, 153);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(165, 18);
+            this.label35.TabIndex = 10;
+            this.label35.Text = "Set CW frequencies";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.Location = new System.Drawing.Point(43, 36);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(197, 18);
+            this.label34.TabIndex = 9;
+            this.label34.Text = "AnaPico Enable/Disable";
+            // 
+            // anapicoDisableButton
+            // 
+            this.anapicoDisableButton.Location = new System.Drawing.Point(165, 65);
+            this.anapicoDisableButton.Name = "anapicoDisableButton";
+            this.anapicoDisableButton.Size = new System.Drawing.Size(75, 23);
+            this.anapicoDisableButton.TabIndex = 8;
+            this.anapicoDisableButton.Text = "Disable";
+            this.anapicoDisableButton.UseVisualStyleBackColor = true;
+            this.anapicoDisableButton.Click += new System.EventHandler(this.anapicoDisableButton_Click);
+            // 
+            // anapicoEnableButton
+            // 
+            this.anapicoEnableButton.Location = new System.Drawing.Point(46, 65);
+            this.anapicoEnableButton.Name = "anapicoEnableButton";
+            this.anapicoEnableButton.Size = new System.Drawing.Size(75, 23);
+            this.anapicoEnableButton.TabIndex = 7;
+            this.anapicoEnableButton.Text = "Enable";
+            this.anapicoEnableButton.UseVisualStyleBackColor = true;
+            this.anapicoEnableButton.Click += new System.EventHandler(this.anapicoEnableButton_Click);
+            // 
+            // AnapicoSetFreqCH2Button
+            // 
+            this.AnapicoSetFreqCH2Button.Location = new System.Drawing.Point(140, 227);
+            this.AnapicoSetFreqCH2Button.Name = "AnapicoSetFreqCH2Button";
+            this.AnapicoSetFreqCH2Button.Size = new System.Drawing.Size(130, 23);
+            this.AnapicoSetFreqCH2Button.TabIndex = 6;
+            this.AnapicoSetFreqCH2Button.Text = "Set CH2 Freq (Hz)";
+            this.AnapicoSetFreqCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFreqCH2Button.Click += new System.EventHandler(this.AnapicoSetFreqCH2Button_Click);
+            // 
+            // AnapicoSetFreqCH1Button
+            // 
+            this.AnapicoSetFreqCH1Button.Location = new System.Drawing.Point(140, 184);
+            this.AnapicoSetFreqCH1Button.Name = "AnapicoSetFreqCH1Button";
+            this.AnapicoSetFreqCH1Button.Size = new System.Drawing.Size(130, 23);
+            this.AnapicoSetFreqCH1Button.TabIndex = 5;
+            this.AnapicoSetFreqCH1Button.Text = "Set CH1 Freq (Hz)";
+            this.AnapicoSetFreqCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFreqCH1Button.Click += new System.EventHandler(this.AnapicoSetFreqCH1Button_Click);
+            // 
+            // AnapicoSetFreqCH2TextBox
+            // 
+            this.AnapicoSetFreqCH2TextBox.Location = new System.Drawing.Point(24, 230);
+            this.AnapicoSetFreqCH2TextBox.Name = "AnapicoSetFreqCH2TextBox";
+            this.AnapicoSetFreqCH2TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFreqCH2TextBox.TabIndex = 4;
+            this.AnapicoSetFreqCH2TextBox.Text = "14456087000";
+            this.AnapicoSetFreqCH2TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // AnapicoSetFreqCH1TextBox
+            // 
+            this.AnapicoSetFreqCH1TextBox.Location = new System.Drawing.Point(24, 188);
+            this.AnapicoSetFreqCH1TextBox.Name = "AnapicoSetFreqCH1TextBox";
+            this.AnapicoSetFreqCH1TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFreqCH1TextBox.TabIndex = 3;
+            this.AnapicoSetFreqCH1TextBox.Text = "14465242000";
+            this.AnapicoSetFreqCH1TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.label32);
@@ -1040,14 +1441,16 @@ namespace LatticeHardwareControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(58)))), ((int)(((byte)(54)))));
             this.ClientSize = new System.Drawing.Size(1237, 597);
-            this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Lattice EDM Controller";
             this.panel1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
@@ -1058,13 +1461,13 @@ namespace LatticeHardwareControl
             this.Flow_Controllers.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
@@ -1098,18 +1501,15 @@ namespace LatticeHardwareControl
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button button_Flow_controller_disconnect;
         private System.Windows.Forms.Button button_Flow_controller_connect;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label5;
-        public System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button_stop_flow_SF6;
-        private System.Windows.Forms.Button button_set_flow_SF6;
+        public System.Windows.Forms.TextBox textBoxSF6Flow;
+        private System.Windows.Forms.Button button_Off_flow_SF6;
+        private System.Windows.Forms.Button button_On_flow_SF6;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label6;
-        public System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button button_stop_flow_He;
-        private System.Windows.Forms.Button button_set_flow_He;
+        private System.Windows.Forms.Button button_Off_flow_He;
+        private System.Windows.Forms.Button button_On_flow_He;
         private System.Windows.Forms.GroupBox groupBox5;
         public System.Windows.Forms.TextBox textbox_Temp_SF6;
         private System.Windows.Forms.Label label12;
@@ -1161,6 +1561,42 @@ namespace LatticeHardwareControl
         private System.Windows.Forms.Button button_Get_Serial_Ports;
         private System.Windows.Forms.Button button_Clear_All;
         private System.Windows.Forms.Button button_Set_All;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TextBox textBoxHeFlow;
+        private System.Windows.Forms.Button buttonSetHe;
+        private System.Windows.Forms.Button buttonSetSF6;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.TextBox cryoStatus;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button AnapicoSetFreqCH2Button;
+        private System.Windows.Forms.Button AnapicoSetFreqCH1Button;
+        private System.Windows.Forms.TextBox AnapicoSetFreqCH2TextBox;
+        private System.Windows.Forms.TextBox AnapicoSetFreqCH1TextBox;
+        private System.Windows.Forms.Button anapicoEnableButton;
+        private System.Windows.Forms.Button anapicoDisableButton;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Button AnapicoSetFMDevCH2Button;
+        private System.Windows.Forms.Button AnapicoSetFMDevCH1Button;
+        private System.Windows.Forms.TextBox AnapicoSetFMDevCH2TextBox;
+        private System.Windows.Forms.TextBox AnapicoSetFMDevCH1TextBox;
+        private System.Windows.Forms.Button CH2FMDisableButton;
+        private System.Windows.Forms.Button CH2FMEnableButton;
+        private System.Windows.Forms.Button CH1FMDisableButton;
+        private System.Windows.Forms.Button CH1FMEnableButton;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox AnapicoSetPowerCH2Textbox;
+        private System.Windows.Forms.TextBox AnapicoSetPowerCH1Textbox;
+        private System.Windows.Forms.Button AnapicoSetPowerCH2Button;
+        private System.Windows.Forms.Button AnapicoSetPowerCH1Button;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Button PulseMode_disable_button;
+        private System.Windows.Forms.Button PulseMode_enable_button;
     }
 }
 

@@ -81,7 +81,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
             AddAnalogInputChannel("Probep4", digitalPatternBoardAddress + "/ai13", AITerminalConfiguration.Rse); //now v1 //v2 photodiode slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
             AddAnalogInputChannel("Probep5", digitalPatternBoardAddress + "/ai19", AITerminalConfiguration.Rse); //used for the attisse
-            AddAnalogInputChannel("Probep6", digitalPatternBoardAddress + "/ai16", AITerminalConfiguration.Rse); //placeholder for v2 aom
+            AddAnalogInputChannel("Probep6", digitalPatternBoardAddress + "/ai15", AITerminalConfiguration.Rse); //placeholder for v2 aom
 
             // Lasers locked to Probe cavity
             AddAnalogOutputChannel("slowingLaser", digitalPatternBoardAddress + "/ao2", -4, 4); // connected to slowing v0 now
@@ -90,10 +90,10 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v3laser", digitalPatternBoardAddress + "/ao3", 0, 10);
             AddAnalogOutputChannel("mattisse", Analogboard + "/ao1", 0, 10);
             AddAnalogOutputChannel("irecdl", Analogboard + "/ao13", 0, 10);
-            AddAnalogOutputChannel("v2aom", Analogboard + "/ao2", -10, 10);
+            AddAnalogOutputChannel("vexlum", Analogboard + "/ao2", 0, 10);
             AddAnalogOutputChannel("v1laser", smallUSBBoard + "/ao1", -10, 10);
             AddAnalogOutputChannel("ClassicECDL", Analogboard + "/ao4", -10, 10);
-            //
+
 
             // V2 cavity inputs
             AddAnalogInputChannel("V2CavityRampVoltage", digitalPatternBoardAddress + "/ai4", AITerminalConfiguration.Rse); //tick this is the ramp input
@@ -103,6 +103,10 @@ namespace DAQ.HAL
             //Outputs for V2 cavity
             AddAnalogOutputChannel("V2CavityLengthVoltage", ExtraBoard + "/ao1", -10, 10);  //this is the voltage that stabilises the length of the cavity
             AddAnalogOutputChannel("v2laser", ExtraBoard + "/ao0", 0, 10);
+
+
+            //TCL Digital Inputs
+            AddDigitalInputChannel("blockV0Flag", tclBoardProbe, 0, 0);//
 
 
             //Configuration for wavemeterlock
@@ -151,7 +155,7 @@ namespace DAQ.HAL
             string v2cavity = "V2Cavity";
             tclConfigProbe.AddCavity(v2cavity);
             tclConfigProbe.Cavities[v2cavity].AddSlaveLaser("v2laser", "V2CavityP1");
-            tclConfigProbe.Cavities[v2cavity].AddSlaveLaser("v2aom", "Probep6");
+            tclConfigProbe.Cavities[v2cavity].AddSlaveLaser("vexlum", "Probep6");
             
 
             tclConfigProbe.Cavities[v2cavity].MasterLaser = "V2CavityMaster";
@@ -159,10 +163,11 @@ namespace DAQ.HAL
             tclConfigProbe.Cavities[v2cavity].AddDefaultGain("Master", -0.04);
             tclConfigProbe.Cavities[v2cavity].AddDefaultGain("v2laser", 1.00);
             tclConfigProbe.Cavities[v2cavity].AddFSRCalibration("v2laser", 3.84);
-            tclConfigProbe.Cavities[v2cavity].AddDefaultGain("v2aom", 0.1);
-            tclConfigProbe.Cavities[v2cavity].AddFSRCalibration("v2aom", 3.84);
+            tclConfigProbe.Cavities[v2cavity].AddDefaultGain("vexlum", 1.00);
+            tclConfigProbe.Cavities[v2cavity].AddFSRCalibration("vexlum", 3.84);
 
-
+            //Chirp Block
+            tclConfigProbe.Cavities[probe].AddLockBlocker("slowingLaser", "blockV0Flag");
 
             //Info.Add("TCLConfigPump", tclConfigPump);
             Info.Add("TCLConfigProbe", tclConfigProbe);
@@ -242,11 +247,12 @@ namespace DAQ.HAL
             ////
             AddDigitalOutputChannel("q", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("flash", digitalPatternBoardAddress, 0, 3);
-            AddDigitalOutputChannel("q2", digitalPatternBoardAddress, 0, 14);
-            //AddDigitalOutputChannel("flash2", digitalPatternBoardAddress, 0, 13);
-            AddDigitalOutputChannel("magswitch", digitalPatternBoardAddress, 0, 13);
+            AddDigitalOutputChannel("v0chirpTrigger", digitalPatternBoardAddress, 0, 14);
+            AddDigitalOutputChannel("vacuumShutter", digitalPatternBoardAddress, 0, 13);
+            //AddDigitalOutputChannel("magswitch", digitalPatternBoardAddress, 0, 13);
             AddDigitalOutputChannel("scopetrigger", digitalPatternBoardAddress, 0, 15);
-            AddDigitalOutputChannel("camerashutter", digitalPatternBoardAddress, 0, 16);
+            //AddDigitalOutputChannel("camerashutter", digitalPatternBoardAddress, 0, 16);
+            AddDigitalOutputChannel("cameratrigger", digitalPatternBoardAddress, 0, 16);
             //AddDigitalOutputChannel("analogPatternTrigger", digitalPatternBoardAddress, 0, 8);//connect to daq board PFI 0 - not needed 01/2/22
 
             //AddDigitalOutputChannel("analogtriggertest0", digitalPatternBoardAddress, 0, 4);
@@ -254,8 +260,8 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("cryoCooler", digitalPatternBoardAddress, 0, 9);
             //AddDigitalOutputChannel("unused", digitalPatternBoardAddress, 0, 2);
             AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 0, 11);//it seeems to like having this here
+            AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1); 
             AddDigitalOutputChannel("detector", digitalPatternBoardAddress, 0, 2);
-            AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1);
             AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4); //NOT A SHUTTER, V0 Slowing AOM Near
             AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);//Unused it seems
             AddDigitalOutputChannel("shutterSTEVE1off", digitalPatternBoardAddress, 0, 7);//STEVE newport Shutter A Signal (closure TTL)
@@ -312,6 +318,7 @@ namespace DAQ.HAL
             //USB Instruments
             Instruments.Add("FlowControllers", new AlicatFlowController("ASRL12::INSTR"));
             Instruments.Add("LatticeYAG", new BigSkyYAG("ASRL9::INSTR"));
+            Instruments.Add("anapicoSYN420", new AnapicoSynth("USB0::0x03EB::0xAFFF::322-03A100005-0539::INSTR")); // Anapico microwave synthesizer from Classic
             #region Depreciated Code
             // Analog inputs
             //AddAnalogInputChannel("CavityRampVoltage", tclBoardProbe + "/ai0", AITerminalConfiguration.Rse); //tick

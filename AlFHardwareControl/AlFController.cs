@@ -6,8 +6,6 @@ using System.Threading;
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using Data;
-using NewFocus.PicomotorApp;
-using Newport.DeviceIOLib;
 using System.Collections.Generic;
 
 namespace AlFHardwareControl

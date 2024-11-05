@@ -21,10 +21,10 @@ namespace ScanMaster.Acquire.Plugins
     /// pattern requires a minimum of 2 shots per sequence, one for the ttl line high and one for the ttl line low).
 	/// </summary>
 	[Serializable]
-	public class LatticePumpProbePatternPlugin : SupersonicPGPluginBase
+	public class LatticePnPModYAGFourShotsPatternPlugin : SupersonicPGPluginBase
 	{
 		[NonSerialized]
-		private LatticePumpProbePatternBuilder scanPatternBuilder;
+		private LatticePnPModYAGFourShotsPatternBuilder scanPatternBuilder;
 
 		protected override void InitialiseCustomSettings()
 		{
@@ -38,7 +38,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["valveToQ"] = 570;
 			settings["flashlampPulseLength"] = 100;
 			settings["shutterPulseLength"] = 1000;
-			settings["flashlampPulseInterval"] = 500000;
+			settings["flashlampPulseInterval"] = 250000;
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
 			settings["shutterPulseLength"] = 2000;
@@ -54,23 +54,20 @@ namespace ScanMaster.Acquire.Plugins
 			settings["repumpDuration"] = 4000;
 			settings["shutterV1delay"] = 0;
 			settings["shutterV2delay"] = 0;
-			settings["vacShutterDelay"] = 0;
-			settings["vacShutterDuration"] = 1000;
+			settings["commonDelayStartpoint"] = 0;
 			settings["v0chirpTriggerDelay"] = 10000;
-			settings["v0chirpTriggerDuration"] = 5000;//10Sept2024, modified to access the chirpTriggerDuration, which is the duration by which the TCL is blocked. N.B. The actual chirp duration is set by Moku:Go GUI. (search liquid instrument on the desktop)
-			settings["cameraTriggerDelay"] = 30000;
-			settings["cameraBackgroundDelay"] = 70000;
+			settings["v0chirpTriggerDuration"] = 5000;
 		}
 
 		protected override void DoAcquisitionStarting()
 		{
-			scanPatternBuilder = new LatticePumpProbePatternBuilder();
+			scanPatternBuilder = new LatticePnPModYAGFourShotsPatternBuilder();
 		}
 
 		protected override IPatternSource GetScanPattern()
 		{
 			scanPatternBuilder.Clear();
-			int time = scanPatternBuilder.ShotSequence(
+            int time = scanPatternBuilder.ShotSequence(
 				(int)settings["padStart"],
 				(int)settings["sequenceLength"],
 				(int)settings["padShots"],
@@ -88,7 +85,7 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["shutteroffDelay"],
 				(int)settings["shutterslowdelay"],
 				(int)settings["DurationV0"],
-				(int)settings["steve1delay"],
+				(int)settings["shutterV1delay"],
 				(int)settings["shutterV2delay"],
 				(int)settings["DurationV2"],
 				(int)settings["DurationV1"],
@@ -98,12 +95,9 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["v3delaytime"],
 				(int)settings["repumpDuration"],
 				(int)settings["repumpDelay"],
-				(int)settings["vacShutterDelay"],
-				(int)settings["vacShutterDuration"],
+				(int)settings["commonDelayStartpoint"],
 				(int)settings["v0chirpTriggerDelay"],
-				(int)settings["v0chirpTriggerDuration"],
-				(int)settings["cameraTriggerDelay"],
-				(int)settings["cameraBackgroundDelay"]);
+				(int)settings["v0chirpTriggerDuration"]);
 			/*
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);

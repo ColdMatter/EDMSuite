@@ -27,6 +27,12 @@ namespace ScanMaster.Acquire.Plugin
 			settings["channel"] = "pmt";
 			settings["inputRangeLow"] = -1.0;
 			settings["inputRangeHigh"] = 1.0;
+			//01Oct2024, we decided to add below new variables for our purpose to change the TOF gate via terminal communication
+			settings["TOFgateSelectionStartInMs"] = 25;
+			settings["TOFgateSelectionEndInMs"] = 28;
+			settings["TOFgateBgStartInMs"] =35;
+			settings["TOFgateBgEndInMs"] = 40;
+			
 		}
 		
 		/// <summary>

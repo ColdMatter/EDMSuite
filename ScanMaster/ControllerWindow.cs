@@ -441,7 +441,8 @@ namespace ScanMaster.GUI
 		private void AcquireStartClicked(object sender, System.EventArgs e)
 		{
 			controller.AcquireStart(-1);
-		}
+            //using LatticeHardwareControl
+        }
 
 		private void AcquireStopClicked(object sender, System.EventArgs e)
 		{

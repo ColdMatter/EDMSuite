@@ -22,6 +22,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using DAQ.HAL;
 using DAQ.Environment;
 using System.Diagnostics;
+using DAQ;
 using Data;
 
 namespace LatticeHardwareControl
@@ -53,9 +54,27 @@ namespace LatticeHardwareControl
         }
 
         Form1 form;
+        //Cryo Control
 
+
+
+
+
+
+        #region Setup
         //Alicat Flow Control
         AlicatFlowController Alicat = new AlicatFlowController("ASRL15::INSTR");
+        AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapicoSYN420"];
+        double AnapicoCWFrequencyCH1 = 14500000000; // in Hz
+        double AnapicoCWFrequencyCH2 = 14500000000; // in Hz
+        double AnapicoPowerCH1 = 20.0;                // in dBm
+        double AnapicoPowerCH2 = 20.0;                // in dBm
+        double AnapicoFMDeviationCH1 = 10000000;    // in Hz
+        double AnapicoFMDeviationCH2 = 10000000;    // in Hz
+        string AnapicoCurrentList;
+        #endregion
+
+        #region Alicat
         public void AlicatFlowSet(string ControllerAddress, string flowrate)
         {
             lock (Alicat)
@@ -65,6 +84,7 @@ namespace LatticeHardwareControl
 
             }
         }
+        #endregion
 
         #region Pressure Monitors
 
@@ -116,11 +136,19 @@ namespace LatticeHardwareControl
 
             //average samples
             double avgPressureSource = pressureSamplesSource.Average();
+            
+            InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Pressure").Tag("name", "Source Pressure");
+            data = data.Field("Lattice Machine", avgPressureSource);
+            data = data.Timestamp(DateTime.UtcNow);
+            data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "Lattice EDM", "CentreForColdMatter");
+
             //SL Dec 07 2023
             if (avgPressureSource > 0)
             {
+               
                 string avgPressureSourceExpForm = avgPressureSource.ToString("E");
                 form.SetTextBox(form.textBoxSourcePressure, avgPressureSourceExpForm.ToString());
+
                 //sourcePressureMonitor.DisposePressureTask();
             }
             else
@@ -133,6 +161,12 @@ namespace LatticeHardwareControl
             //SL end
 
             double P_avg_Down = P_Samps_Down.Average();
+
+            InfluxDBDataLogger dataD = InfluxDBDataLogger.Measurement("Pressure").Tag("name", "Downstream Pressure");
+            dataD = dataD.Field("Lattice Machine", P_avg_Down);
+            dataD = dataD.Timestamp(DateTime.UtcNow);
+            dataD.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", "Lattice EDM", "CentreForColdMatter");
+
             string P_avg_Down_ExpForm = P_avg_Down.ToString("E");
 
             //update UI monitor text boxes
@@ -167,7 +201,7 @@ namespace LatticeHardwareControl
                 if (PTMonitorFlag)
                 {
                     PTMonitorFlag = false;
-                    break;  //Is this closing the software?
+                    break; 
                 }
 
 
@@ -251,6 +285,278 @@ namespace LatticeHardwareControl
             textBox1.Text = data.Trim()
         }
         */
-    }
         #endregion
+
+        #region Anapico
+
+        public void EnableAnapico(bool enable)
+        {
+            // UpdateAnapicoRAMList(MwSwitchState);
+            // UpdateAnapicoSYN420RAMList(MwSwitchState);
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.CWFrequencyCH1 = AnapicoCWFrequencyCH1;
+                anapico.CWFrequencyCH2 = AnapicoCWFrequencyCH2;
+                anapico.Enabled = true;
+            }
+            else
+            {
+                anapico.Enabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+        public void EnablePulseMode(bool enable)
+        {
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.EnablePulseMode = true;
+            }
+            else
+            {
+                anapico.EnablePulseMode = false;
+            }
+            anapico.Disconnect();
+        }
+
+        public void EnableFMCH1(bool enable)
+        {
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.FrequencyModulationCH1Enabled = true;
+            }
+            else
+            {
+                anapico.FrequencyModulationCH1Enabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+        public void EnableFMCH2(bool enable)
+        {
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.FrequencyModulationCH2Enabled = true;
+            }
+            else
+            {
+                anapico.FrequencyModulationCH2Enabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoPowerCH1()
+        {
+            anapico.Connect();
+            anapico.PowerCH1 = AnapicoPowerCH1;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoPowerCH2()
+        {
+            anapico.Connect();
+            anapico.PowerCH2 = AnapicoPowerCH2;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoCWCH1()
+        {
+            anapico.Connect();
+            anapico.CWFrequencyCH1 = AnapicoCWFrequencyCH1;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoCWCH2()
+        {
+            anapico.Connect();
+            anapico.CWFrequencyCH2 = AnapicoCWFrequencyCH2;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoFMDeviationCH1()
+        {
+            anapico.Connect();
+            anapico.FMDeviationCH1 = AnapicoFMDeviationCH1;
+            anapico.Disconnect();
+        }
+
+        public void UpdateAnapicoFMDeviationCH2()
+        {
+            anapico.Connect();
+            anapico.FMDeviationCH2 = AnapicoFMDeviationCH2;
+            anapico.Disconnect();
+        }
+
+        public void SetAnapicoCWFrequencyCH1(double freq) { AnapicoCWFrequencyCH1 = freq; }
+        public void SetAnapicoCWFrequencyCH2(double freq) { AnapicoCWFrequencyCH2 = freq; }
+        public void SetAnapicoPowerCH1(double power) { AnapicoPowerCH1 = power; }
+        public void SetAnapicoPowerCH2(double power) { AnapicoPowerCH2 = power; }
+        public void SetAnapicoFMDeviationCH1(double dev) { AnapicoFMDeviationCH1 = dev; }
+        public void SetAnapicoFMDeviationCH2(double dev) { AnapicoFMDeviationCH2 = dev; }
+
+        // When writing a list to RAM, the data has to be transferred according to the IEEE 488.2 Definite Length Block Response Data format.
+        // This is #<number of digits that follows this><number of data bytes><data>
+        // <data> has to be the form <frequency in Hz>;<power in dBm>;<dwell on time>;<dwell off time>\r\n<next frequency in Hz>...
+        //public void UpdateAnapicoRAMList(bool trueState)
+        //{
+        //    try
+        //    {
+        //        bool currentMwListSweepStatus = MwListSweepEnabled;
+        //        MwListSweepEnabled = false;
+        //        anapico.Connect();
+        //        if (trueState)
+        //        {
+        //            string list = AnapicoCWFrequencyCH1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
+        //                + AnapicoFrequency0.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString("E") + ";" + AnapicoBottomProbeMWDwellOffTime.ToString("E") + "\r\n"
+        //                + AnapicoFrequency1.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString("E") + ";" + AnapicoTopProbeMWDwellOffTime.ToString("E") + "\r\n";
+
+        //            int numBytes = list.Length;
+
+        //            int numDigits = numBytes.ToString().Length;
+
+        //            string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+
+        //            AnapicoBottomProbeMWf0Indicator = true;
+        //            AnapicoBottomProbeMWf1Indicator = false;
+        //            AnapicoTopProbeMWf0Indicator = false;
+        //            AnapicoTopProbeMWf1Indicator = true;
+
+        //            anapico.WriteList(sendList);
+        //        }
+        //        else
+        //        {
+        //            string list = AnapicoCWFrequencyCH1.ToString() + ";15;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+        //                + AnapicoFrequency1.ToString() + ";15;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n"
+        //                + AnapicoFrequency0.ToString() + ";15;" + AnapicoTopProbeMWDwellOnTime.ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+        //            int numBytes = list.Length;
+
+        //            int numDigits = numBytes.ToString().Length;
+
+        //            string sendList = "#" + numDigits.ToString() + numBytes.ToString() + list;
+
+        //            AnapicoBottomProbeMWf0Indicator = false;
+        //            AnapicoBottomProbeMWf1Indicator = true;
+        //            AnapicoTopProbeMWf0Indicator = true;
+        //            AnapicoTopProbeMWf1Indicator = false;
+
+        //            anapico.WriteList(sendList);
+        //        }
+        //        anapico.Disconnect();
+        //        MwListSweepEnabled = currentMwListSweepStatus;
+        //    }
+        //    catch
+        //    {
+        //        //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+        //        Thread.Sleep((int)(1000));
+        //        EnableAnapico(false);
+        //        EnableAnapico(true);
+        //    }
+        //}
+
+        /*public void UpdateAnapicoSYN420RAMList(bool trueState)
+        {
+            //The anapico has a fixed output power of +23dBm, so writing power values to the RAM does nothing. Channel 1 is sent to the pump region and bottom probe, and Ch2 is sent to the top probe.
+            try
+            {
+                string[] chList = new string[2];
+
+                bool currentMwListSweepStatus = MwListSweepEnabled;
+                MwListSweepEnabled = false;
+                anapico.Connect();
+                if (trueState)
+                {
+                    string ch1list = AnapicoCWFrequency.ToString() + ";23;" + AnapicoPumpMWDwellOnTime.ToString("E") + ";" + AnapicoPumpMWDwellOffTime.ToString("E") + "\r\n"
+                        + AnapicoFrequency0.ToString() + ";23;" + AnapicoBottomProbeMWDwellOnTime.ToString("E") + ";" + AnapicoBottomProbeMWDwellOffTime.ToString("E") + "\r\n";
+
+                    string ch2list = AnapicoFrequency1.ToString() + ";23;" + (AnapicoPumpMWDwellOnTime + AnapicoPumpMWDwellOffTime + AnapicoBottomProbeMWDwellOnTime + AnapicoBottomProbeMWDwellOffTime + AnapicoTopProbeMWDwellOnTime).ToString() + ";" + AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    chList[0] = ch2list;
+                    chList[1] = ch1list;
+                    
+                }
+                else
+                {
+                    string ch1list = AnapicoCWFrequency.ToString() + ";23;" + AnapicoPumpMWDwellOnTime.ToString() + ";" + AnapicoPumpMWDwellOffTime.ToString() + "\r\n"
+                        + AnapicoFrequency1.ToString() + ";23;" + AnapicoBottomProbeMWDwellOnTime.ToString() + ";" + AnapicoBottomProbeMWDwellOffTime.ToString() + "\r\n";
+                    string ch2list = AnapicoFrequency0.ToString() + ";23;" + (AnapicoPumpMWDwellOnTime + AnapicoPumpMWDwellOffTime + AnapicoBottomProbeMWDwellOnTime + AnapicoBottomProbeMWDwellOffTime + AnapicoTopProbeMWDwellOnTime).ToString() +";" +  AnapicoTopProbeMWDwellOffTime.ToString() + "\r\n";
+
+                    chList[0] = ch2list;
+                    chList[1] = ch1list;
+
+                }
+                anapico.WriteList(chList);
+
+                anapico.Disconnect();
+                MwListSweepEnabled = currentMwListSweepStatus;
+            }
+            catch
+            {
+                //If the command fails, try waiting a second and turnning the synth on and off. This also re-loads the list into the memmory
+                Thread.Sleep((int)(1000));
+                EnableAnapico(false);
+                EnableAnapico(true);
+            }
+        }*/
+
+        public void EnableAnapicoListSweep(bool enable)
+        {
+            anapico.Connect();
+            if (enable)
+            {
+                anapico.ListSweepEnabled = true;
+            }
+            else
+            {
+                anapico.ListSweepEnabled = false;
+            }
+            anapico.Disconnect();
+        }
+
+
+
+        // When reading a list to RAM, the data is transferred according to the IEEE 488.2 Definite Length Block Response Data format.
+        // This is #<number of digits that follows this><number of data bytes><data>
+        // <data> is in the form <frequency in Hz>;<power in dBm>;<dwell on time>;<dwell off time>\r\n<next frequency in Hz>...
+        public void GetAnapicoCurrentList()
+        {
+            anapico.Connect();
+
+            string list = anapico.ReadList();
+            int numDigits = Convert.ToInt32(list[1].ToString());
+            string subList = list.Substring(numDigits + 2);
+
+            char[] delimiters = { ';', '\r', '\n' };
+            string[] splitList = subList.Split(delimiters);
+
+            string displayList = string.Empty;
+
+            for (int i = 0; i < splitList.Length / 4; ++i)
+            {
+                int j = 4 * i;
+                string num = Convert.ToString(i + 1);
+                displayList += "Frequency " + num + " (Hz): " + splitList[j] + "\r\n"
+                    + "Dwell on time " + num + " (s): " + splitList[j + 2] + "\r\n"
+                    + "Dwell off time " + num + " (s): " + splitList[j + 3] + "\r\n";
+            }
+
+            AnapicoCurrentList = displayList;
+
+            anapico.Disconnect();
+        }
+
+        public void GetAnapicoCWFreqs()
+        {
+            anapico.Connect();
+            string displayList = "CH1 CW Freq: " + Convert.ToString(anapico.CWFrequencyCH1) + " Hz\r\n" + "CH2 CW Freq: " + Convert.ToString(anapico.CWFrequencyCH2) + " Hz";
+            AnapicoCurrentList = displayList;
+            anapico.Disconnect();
+        }
+        #endregion
+    }
+
 }

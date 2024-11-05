@@ -34,20 +34,18 @@ namespace ScanMaster.GUI
 		private NationalInstruments.UI.ScatterPlot pmtOffPlot;
 		private NationalInstruments.UI.XYCursor pmtLowCursor;
 		private NationalInstruments.UI.XAxis xAxis5;
-		private NationalInstruments.UI.WindowsForms.ScatterGraph differenceGraph;
+		private NationalInstruments.UI.WindowsForms.ScatterGraph ratioGraph;
 		private NationalInstruments.UI.WindowsForms.WaveformGraph tofGraph;
 		private NationalInstruments.UI.XAxis xAxis4;
 		private NationalInstruments.UI.WaveformPlot tofOnPlot;
 		private NationalInstruments.UI.WaveformPlot tofOffPlot;
-		private NationalInstruments.UI.ScatterPlot differencePlot;
-		private NationalInstruments.UI.ScatterPlot differenceAvgPlot;
 		private NationalInstruments.UI.XYCursor tofLowCursor;
 		private NationalInstruments.UI.XYCursor tofHighCursor;
 		private NationalInstruments.UI.WaveformPlot tofOnAveragePlot;
 		private NationalInstruments.UI.WaveformPlot tofOffAveragePlot;
 		private NationalInstruments.UI.ScatterPlot pmtOnAvgPlot;
 		private NationalInstruments.UI.ScatterPlot pmtOffAvgPlot;
-		private NationalInstruments.UI.YAxis differenceYAxis;
+		private NationalInstruments.UI.YAxis ratioYAxis;
 		private NationalInstruments.UI.YAxis tofYAxis;
 		private NationalInstruments.UI.YAxis tofAvgYAxis;
 		private NationalInstruments.UI.ScatterPlot pmtFitPlot;
@@ -101,7 +99,26 @@ namespace ScanMaster.GUI
         private ToolStripPropertyEditor toolStripPropertyEditor3;
         private XYCursor normBgGateLow;
         private XYCursor normBgGateHigh;
-		private NationalInstruments.UI.XYCursor pmtHighCursor;
+        private ScatterPlot ratioPlot;
+        private ScatterPlot ratioAvgPlot;
+        private ScatterGraph differenceGraph;
+        private XAxis xAxis8;
+        private YAxis differenceYAxis;
+        private ScatterPlot differencePlot;
+        private ScatterPlot differenceAvgPlot;
+        private InstrumentControlStrip instrumentControlStrip1;
+        private ToolStripLabel toolStripLabel4;
+        private ToolStripPropertyEditor toolStripPropertyEditor4;
+        private ToolStripLabel toolStripLabel5;
+        private ToolStripPropertyEditor toolStripPropertyEditor5;
+        private ToolStripLabel toolStripLabel6;
+        private ToolStripPropertyEditor toolStripPropertyEditor6;
+        private ToolStripLabel toolStripLabel7;
+        private ToolStripPropertyEditor toolStripPropertyEditor7;
+        private Label label5;
+        private Label label4;
+        private Label label6;
+        private NationalInstruments.UI.XYCursor pmtHighCursor;
 
 		public StandardViewerWindow(StandardViewer viewer)
 		{
@@ -150,10 +167,8 @@ namespace ScanMaster.GUI
             this.pmtFitPlot = new NationalInstruments.UI.ScatterPlot();
             this.pmtXAxis = new NationalInstruments.UI.XAxis();
             this.xAxis5 = new NationalInstruments.UI.XAxis();
-            this.differenceYAxis = new NationalInstruments.UI.YAxis();
-            this.differenceGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.differencePlot = new NationalInstruments.UI.ScatterPlot();
-            this.differenceAvgPlot = new NationalInstruments.UI.ScatterPlot();
+            this.ratioYAxis = new NationalInstruments.UI.YAxis();
+            this.ratioGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
             this.tofGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.tofLowCursor = new NationalInstruments.UI.XYCursor();
             this.tofOnAveragePlot = new NationalInstruments.UI.WaveformPlot();
@@ -214,12 +229,31 @@ namespace ScanMaster.GUI
             this.toolStripPropertyEditor2 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPropertyEditor3 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.ratioPlot = new NationalInstruments.UI.ScatterPlot();
+            this.ratioAvgPlot = new NationalInstruments.UI.ScatterPlot();
+            this.differenceGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.xAxis8 = new NationalInstruments.UI.XAxis();
+            this.differenceYAxis = new NationalInstruments.UI.YAxis();
+            this.differencePlot = new NationalInstruments.UI.ScatterPlot();
+            this.differenceAvgPlot = new NationalInstruments.UI.ScatterPlot();
+            this.instrumentControlStrip1 = new NationalInstruments.UI.WindowsForms.InstrumentControlStrip();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor4 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor5 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel6 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor6 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.toolStripLabel7 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPropertyEditor7 = new NationalInstruments.UI.WindowsForms.ToolStripPropertyEditor();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.analog1Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.analog2Graph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtLowCursor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtHighCursor)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ratioGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).BeginInit();
@@ -239,6 +273,8 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraphNormed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).BeginInit();
+            this.instrumentControlStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // analog1Graph
@@ -321,7 +357,7 @@ namespace ScanMaster.GUI
             | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
             | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
             | NationalInstruments.UI.GraphInteractionModes.EditRange)));
-            this.pmtGraph.Location = new System.Drawing.Point(375, 269);
+            this.pmtGraph.Location = new System.Drawing.Point(375, 292);
             this.pmtGraph.Name = "pmtGraph";
             this.pmtGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.pmtOnPlot,
@@ -329,7 +365,7 @@ namespace ScanMaster.GUI
             this.pmtOnAvgPlot,
             this.pmtOffAvgPlot,
             this.pmtFitPlot});
-            this.pmtGraph.Size = new System.Drawing.Size(586, 255);
+            this.pmtGraph.Size = new System.Drawing.Size(586, 232);
             this.pmtGraph.TabIndex = 9;
             this.pmtGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis3});
@@ -375,7 +411,7 @@ namespace ScanMaster.GUI
             // pmtOffPlot
             // 
             this.pmtOffPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.pmtOffPlot.PointColor = System.Drawing.Color.Magenta;
+            this.pmtOffPlot.PointColor = System.Drawing.Color.LawnGreen;
             this.pmtOffPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
             this.pmtOffPlot.XAxis = this.xAxis3;
             this.pmtOffPlot.YAxis = this.pmtYAxis;
@@ -405,39 +441,31 @@ namespace ScanMaster.GUI
             this.xAxis5.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
             this.xAxis5.Mode = NationalInstruments.UI.AxisMode.Fixed;
             // 
-            // differenceYAxis
+            // ratioYAxis
             // 
-            this.differenceYAxis.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
+            this.ratioYAxis.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
             // 
-            // differenceGraph
+            // ratioGraph
             // 
-            this.differenceGraph.Location = new System.Drawing.Point(375, 530);
-            this.differenceGraph.Name = "differenceGraph";
-            this.differenceGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.differencePlot,
-            this.differenceAvgPlot});
-            this.differenceGraph.Size = new System.Drawing.Size(585, 255);
-            this.differenceGraph.TabIndex = 15;
-            this.differenceGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.ratioGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.ratioGraph.Location = new System.Drawing.Point(672, 554);
+            this.ratioGraph.Name = "ratioGraph";
+            this.ratioGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.ratioPlot,
+            this.ratioAvgPlot});
+            this.ratioGraph.Size = new System.Drawing.Size(288, 231);
+            this.ratioGraph.TabIndex = 15;
+            this.ratioGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis5});
-            this.differenceGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.differenceYAxis});
-            this.differenceGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.differenceGraph_PlotDataChanged);
-            // 
-            // differencePlot
-            // 
-            this.differencePlot.LineStyle = NationalInstruments.UI.LineStyle.None;
-            this.differencePlot.PointColor = System.Drawing.Color.Lime;
-            this.differencePlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
-            this.differencePlot.XAxis = this.xAxis5;
-            this.differencePlot.YAxis = this.differenceYAxis;
-            // 
-            // differenceAvgPlot
-            // 
-            this.differenceAvgPlot.LineColor = System.Drawing.Color.Magenta;
-            this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
-            this.differenceAvgPlot.XAxis = this.xAxis5;
-            this.differenceAvgPlot.YAxis = this.differenceYAxis;
+            this.ratioGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.ratioYAxis});
+            this.ratioGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.differenceGraph_PlotDataChanged);
             // 
             // tofGraph
             // 
@@ -992,10 +1020,185 @@ namespace ScanMaster.GUI
             this.toolStripPropertyEditor3.Source = new NationalInstruments.UI.PropertyEditorSource(this.tofGraph, "Annotations");
             this.toolStripPropertyEditor3.Text = "(Collection)";
             // 
+            // ratioPlot
+            // 
+            this.ratioPlot.LineColor = System.Drawing.Color.Orange;
+            this.ratioPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.ratioPlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.ratioPlot.PointColor = System.Drawing.Color.Orange;
+            this.ratioPlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.ratioPlot.XAxis = this.xAxis5;
+            this.ratioPlot.YAxis = this.ratioYAxis;
+            // 
+            // ratioAvgPlot
+            // 
+            this.ratioAvgPlot.LineColor = System.Drawing.Color.Orange;
+            this.ratioAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.ratioAvgPlot.XAxis = this.xAxis5;
+            this.ratioAvgPlot.YAxis = this.ratioYAxis;
+            // 
+            // differenceGraph
+            // 
+            this.differenceGraph.ImmediateUpdates = true;
+            this.differenceGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
+            | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
+            | NationalInstruments.UI.GraphInteractionModes.PanX) 
+            | NationalInstruments.UI.GraphInteractionModes.PanY) 
+            | NationalInstruments.UI.GraphInteractionModes.DragCursor) 
+            | NationalInstruments.UI.GraphInteractionModes.DragAnnotationCaption) 
+            | NationalInstruments.UI.GraphInteractionModes.EditRange)));
+            this.differenceGraph.Location = new System.Drawing.Point(375, 554);
+            this.differenceGraph.Name = "differenceGraph";
+            this.differenceGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
+            this.differencePlot,
+            this.differenceAvgPlot});
+            this.differenceGraph.Size = new System.Drawing.Size(291, 231);
+            this.differenceGraph.TabIndex = 36;
+            this.differenceGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
+            this.xAxis8});
+            this.differenceGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
+            this.differenceYAxis});
+            // 
+            // xAxis8
+            // 
+            this.xAxis8.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
+            this.xAxis8.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
+            // differenceYAxis
+            // 
+            this.differenceYAxis.CaptionBackColor = System.Drawing.SystemColors.ControlLight;
+            // 
+            // differencePlot
+            // 
+            this.differencePlot.LineColor = System.Drawing.Color.Orange;
+            this.differencePlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.differencePlot.LineStyle = NationalInstruments.UI.LineStyle.None;
+            this.differencePlot.PointColor = System.Drawing.Color.Magenta;
+            this.differencePlot.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.differencePlot.XAxis = this.xAxis8;
+            this.differencePlot.YAxis = this.differenceYAxis;
+            // 
+            // differenceAvgPlot
+            // 
+            this.differenceAvgPlot.LineColor = System.Drawing.Color.Magenta;
+            this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
+            this.differenceAvgPlot.XAxis = this.xAxis8;
+            this.differenceAvgPlot.YAxis = this.differenceYAxis;
+            // 
+            // instrumentControlStrip1
+            // 
+            this.instrumentControlStrip1.AutoSize = false;
+            this.instrumentControlStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.instrumentControlStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel4,
+            this.toolStripPropertyEditor4,
+            this.toolStripLabel5,
+            this.toolStripPropertyEditor5,
+            this.toolStripLabel6,
+            this.toolStripPropertyEditor6,
+            this.toolStripLabel7,
+            this.toolStripPropertyEditor7});
+            this.instrumentControlStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.instrumentControlStrip1.Location = new System.Drawing.Point(375, 785);
+            this.instrumentControlStrip1.Name = "instrumentControlStrip1";
+            this.instrumentControlStrip1.Size = new System.Drawing.Size(291, 25);
+            this.instrumentControlStrip1.TabIndex = 37;
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(98, 22);
+            this.toolStripLabel4.Text = "InteractionMode:";
+            // 
+            // toolStripPropertyEditor4
+            // 
+            this.toolStripPropertyEditor4.AutoSize = false;
+            this.toolStripPropertyEditor4.Name = "toolStripPropertyEditor4";
+            this.toolStripPropertyEditor4.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor4.Size = new System.Drawing.Size(120, 23);
+            this.toolStripPropertyEditor4.Source = new NationalInstruments.UI.PropertyEditorSource(this.differenceGraph, "InteractionMode");
+            this.toolStripPropertyEditor4.Text = "ZoomX, ZoomY, ZoomAroundPoint, PanX, PanY, DragCursor, DragAnnotationCaption";
+            // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(50, 15);
+            this.toolStripLabel5.Text = "Cursors:";
+            // 
+            // toolStripPropertyEditor5
+            // 
+            this.toolStripPropertyEditor5.AutoSize = false;
+            this.toolStripPropertyEditor5.Name = "toolStripPropertyEditor5";
+            this.toolStripPropertyEditor5.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor5.Size = new System.Drawing.Size(120, 16);
+            this.toolStripPropertyEditor5.Source = new NationalInstruments.UI.PropertyEditorSource(this.differenceGraph, "Cursors");
+            // 
+            // toolStripLabel6
+            // 
+            this.toolStripLabel6.Name = "toolStripLabel6";
+            this.toolStripLabel6.Size = new System.Drawing.Size(75, 15);
+            this.toolStripLabel6.Text = "Annotations:";
+            // 
+            // toolStripPropertyEditor6
+            // 
+            this.toolStripPropertyEditor6.AutoSize = false;
+            this.toolStripPropertyEditor6.Name = "toolStripPropertyEditor6";
+            this.toolStripPropertyEditor6.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor6.Size = new System.Drawing.Size(120, 16);
+            this.toolStripPropertyEditor6.Source = new NationalInstruments.UI.PropertyEditorSource(this.differenceGraph, "Annotations");
+            // 
+            // toolStripLabel7
+            // 
+            this.toolStripLabel7.Name = "toolStripLabel7";
+            this.toolStripLabel7.Size = new System.Drawing.Size(36, 15);
+            this.toolStripLabel7.Text = "Plots:";
+            // 
+            // toolStripPropertyEditor7
+            // 
+            this.toolStripPropertyEditor7.AutoSize = false;
+            this.toolStripPropertyEditor7.Name = "toolStripPropertyEditor7";
+            this.toolStripPropertyEditor7.RenderMode = NationalInstruments.UI.PropertyEditorRenderMode.Inherit;
+            this.toolStripPropertyEditor7.Size = new System.Drawing.Size(120, 16);
+            this.toolStripPropertyEditor7.Source = new NationalInstruments.UI.PropertyEditorSource(this.differenceGraph, "Plots");
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(709, 530);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(203, 23);
+            this.label5.TabIndex = 39;
+            this.label5.Text = "(signalOn - bgOn) / (signalOff - bgOff)";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(421, 530);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(202, 23);
+            this.label4.TabIndex = 40;
+            this.label4.Text = "(signalOn - bgOn) - (singalOff - bgOff)";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label4.Click += new System.EventHandler(this.label4_Click_1);
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(401, 269);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(440, 23);
+            this.label6.TabIndex = 41;
+            this.label6.Text = "Spectrum (gated TOF): signalOn-bgOn (red), signalOff-bgOff (blue)";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
             // StandardViewerWindow
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(970, 862);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.differenceGraph);
             this.Controls.Add(this.tofGraphNormed);
             this.Controls.Add(this.tofGraph2);
             this.Controls.Add(this.noiseResultsLabel);
@@ -1014,10 +1217,11 @@ namespace ScanMaster.GUI
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tofFitModeCombo);
             this.Controls.Add(this.tofGraph);
-            this.Controls.Add(this.differenceGraph);
+            this.Controls.Add(this.ratioGraph);
             this.Controls.Add(this.pmtGraph);
             this.Controls.Add(this.analog2Graph);
             this.Controls.Add(this.analog1Graph);
+            this.Controls.Add(this.instrumentControlStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -1030,7 +1234,7 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.pmtGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtLowCursor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pmtHighCursor)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ratioGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofLowCursor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tofHighCursor)).EndInit();
@@ -1050,6 +1254,9 @@ namespace ScanMaster.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tofGraphNormed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xyCursor4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.differenceGraph)).EndInit();
+            this.instrumentControlStrip1.ResumeLayout(false);
+            this.instrumentControlStrip1.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -1102,25 +1309,29 @@ namespace ScanMaster.GUI
 			ClearNIGraph(analog1Graph);
 			ClearNIGraph(analog2Graph);
 			ClearNIGraph(pmtGraph);
-			ClearNIGraph(tofGraph);
+            ClearNIGraph(differenceGraph);
+            ClearNIGraph(ratioGraph);
+            ClearNIGraph(tofGraph);
             ClearNIGraph(tofGraph2);
             ClearNIGraph(tofGraphNormed);
-			ClearNIGraph(differenceGraph);
+			ClearNIGraph(ratioGraph);
 		}
 		public void ClearSpectra()
 		{
 			ClearNIGraph(analog1Graph);
 			ClearNIGraph(analog2Graph);
 			ClearNIGraph(pmtGraph);
-			ClearNIGraph(differenceGraph);
-		}
+			ClearNIGraph(ratioGraph);
+            ClearNIGraph(differenceGraph);
+        }
 
 		public void ClearRealtimeSpectra()
 		{
 			ClearNIPlot(pmtGraph, pmtOnPlot);
 			ClearNIPlot(pmtGraph, pmtOffPlot);
-			ClearNIPlot(differenceGraph, differencePlot);
-			ClearNIPlot(analog1Graph, analog1Plot);
+			ClearNIPlot(ratioGraph, ratioPlot);
+            ClearNIPlot(differenceGraph, differencePlot);
+            ClearNIPlot(analog1Graph, analog1Plot);
 			ClearNIPlot(analog2Graph, analog2Plot);
 		}
 
@@ -1132,8 +1343,9 @@ namespace ScanMaster.GUI
             ClearNIPlot(tofGraph2, tofOffPlot2);
 			ClearNIPlot(pmtGraph, pmtOnPlot);
 			ClearNIPlot(pmtGraph, pmtOffPlot);
-			ClearNIPlot(differenceGraph, differencePlot);
-		}
+			ClearNIPlot(ratioGraph, ratioPlot);
+            ClearNIPlot(differenceGraph, differencePlot);
+        }
 
 		public void ClearSpectrumFit()
 		{
@@ -1145,8 +1357,9 @@ namespace ScanMaster.GUI
 			set
 			{
 				SetGraphXAxisRange(pmtGraph, value.Minimum, value.Maximum);
-				SetGraphXAxisRange(differenceGraph, value.Minimum, value.Maximum);
-				SetGraphXAxisRange(analog1Graph, value.Minimum, value.Maximum);
+				SetGraphXAxisRange(ratioGraph, value.Minimum, value.Maximum);
+                SetGraphXAxisRange(differenceGraph, value.Minimum, value.Maximum);
+                SetGraphXAxisRange(analog1Graph, value.Minimum, value.Maximum);
 				SetGraphXAxisRange(analog2Graph, value.Minimum, value.Maximum);
 			}
 		}
@@ -1194,7 +1407,7 @@ namespace ScanMaster.GUI
 			{
 				double min = GetCursorPosition(pmtGraph, pmtLowCursor);
 				double max = GetCursorPosition(pmtGraph, pmtHighCursor);
-				if (max <= min) max = min + 1; //highly arbitrary
+				if (max <= min) max = min + 0.1; //highly arbitrary
 				return new Range(min, max);
 			}
 		}
@@ -1322,8 +1535,12 @@ namespace ScanMaster.GUI
 		{
 			PlotXYAppend(differenceGraph, differencePlot, x, y);
 		}
+        public void AppendToRatio(double[] x, double[] y)
+        {
+            PlotXYAppend(ratioGraph, ratioPlot, x, y);
+        }
 
-		public void PlotAveragePMTOn(double[] x, double[] y)
+        public void PlotAveragePMTOn(double[] x, double[] y)
 		{
 			PlotXY(pmtGraph, pmtOnAvgPlot, x, y);
 		}
@@ -1335,7 +1552,11 @@ namespace ScanMaster.GUI
 		{
 			PlotXY(differenceGraph, differenceAvgPlot, x, y);
 		}
-		public void PlotSpectrumFit(double[] x, double[] y)
+        public void PlotAverageRatio(double[] x, double[] y)
+        {
+            PlotXY(ratioGraph, ratioAvgPlot, x, y);
+        }
+        public void PlotSpectrumFit(double[] x, double[] y)
 		{
 			PlotXY(pmtGraph, pmtFitPlot, x, y);
 		}
@@ -1502,6 +1723,26 @@ namespace ScanMaster.GUI
         }
 
         private void differenceGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
         {
 
         }

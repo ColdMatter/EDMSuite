@@ -616,6 +616,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AnapicoCH2PowerOutputPlugin.cs" />
+    <Compile Include="AnapicoCH2FrequencyOutputPlugin.cs" />
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
@@ -639,10 +641,16 @@
     <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
+    <Compile Include="LatticePnPModYAGFourShotsPatternBuilder.cs" />
+    <Compile Include="LatticePnPModYAGFourShotsPatternPlugin.cs" />
+    <Compile Include="LatticePnPModYAGPatternBuilder.cs" />
     <Compile Include="LatticePumpProbePatternBuilder.cs" />
+    <Compile Include="LatticePnPModYAGPatternPlugin.cs" />
     <Compile Include="LatticePumpProbePatternPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
+    <Compile Include="AnapicoCH1FrequencyOutputPlugin.cs" />
+    <Compile Include="AnapicoCH1PowerOutputPlugin.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
     <Compile Include="TwoShutterSlowingPatternPlugin.cs" />
     <Compile Include="TwoShutterTwoYAGPatternBuilder.cs" />

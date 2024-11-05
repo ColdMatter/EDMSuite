@@ -28,6 +28,8 @@ namespace ScanMaster.GUI
         double endSpectrumGate;
         double startTOFGate;
 		double endTOFGate;
+		double bgStartTime;
+		double bgEndTime;
 		private int shotCounter = 0;
 		private int onAverages = 1;
 		private int offAverages = 1;
@@ -112,18 +114,22 @@ namespace ScanMaster.GUI
             PluginSettings pgSettings = Controller.GetController().ProfileManager.CurrentProfile.AcquisitorConfig.pgPlugin.Settings;
 
 			// initially set the gates to full
-			startSpectrumGate = (double)outputSettings["start"];
-			endSpectrumGate = (double)outputSettings["end"];
+			startSpectrumGate = (double)outputSettings["start"]+ 0.1*((double)outputSettings["end"]- (double)outputSettings["start"]);
+			endSpectrumGate = (double)outputSettings["end"] - 0.1 * ((double)outputSettings["end"] - (double)outputSettings["start"]);
 
 			// prepare the front panel
 			window.ClearAll();
 			window.SpectrumAxes = new NationalInstruments.UI.Range(
 				(double)outputSettings["start"], (double)outputSettings["end"]);
 			window.SpectrumGate = new NationalInstruments.UI.Range(startSpectrumGate, endSpectrumGate);
-            // startTOFGate = (int)shotSettings["gateStartTime"];
-			startTOFGate = 1300;// TOF gate starts with 14 ms, modified by Guanchen on 7April2024
-			//endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
-			endTOFGate = 1800;// TOF gate starts with 24 ms, modified by Guanchen on 7April2024
+            //startTOFGate = (int)shotSettings["gateStartTime"];
+			startTOFGate = 100* (int)shotSettings["TOFgateSelectionStartInMs"];// 100 is the convertion factor for the unit of ms to the unit of clock period. 
+			// Example:TOFgateSelectionStartInMs=14 means we want to select gate from 14 ms. Then the startTOFGate=1400, which is 1400 numbers of the clock period. 
+			// The clock period is set to be 10 us, so 1400 clock period is 14000 us, which is 14 ms. 
+			 //endTOFGate = startTOFGate + (int)shotSettings["gateLength"] * (int)shotSettings["clockPeriod"];
+			endTOFGate = 100 * (int)shotSettings["TOFgateSelectionEndInMs"];// This is modified by Guanchen on 01Oct2024
+			bgStartTime = 100 * (int)shotSettings["TOFgateBgStartInMs"];
+			bgEndTime = 100 * (int)shotSettings["TOFgateBgEndInMs"];
 			window.TOFGate = new NationalInstruments.UI.Range(startTOFGate, endTOFGate);
                      
             
@@ -256,16 +262,22 @@ namespace ScanMaster.GUI
                 if (pointsToPlot.AnalogChannelCount >= 2) 
                     window.AppendToAnalog2(pointsToPlot.ScanParameterArray, pointsToPlot.GetAnalogArray(1));
 				window.AppendToPMTOn(pointsToPlot.ScanParameterArray,
-					pointsToPlot.GetTOFOnIntegralArray(0,
-					startTOFGate, endTOFGate));
+					//pointsToPlot.GetTOFOnIntegralArray(0,startTOFGate, endTOFGate)//Without background subtraction
+					pointsToPlot.GetBackgroundSubstractedTOFOnIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//with bg subtraction
+					);
 				if ((bool)currentProfile.AcquisitorConfig.switchPlugin.Settings["switchActive"])
 				{
 					window.AppendToPMTOff(pointsToPlot.ScanParameterArray,
-						pointsToPlot.GetTOFOffIntegralArray(0,
-						startTOFGate, endTOFGate));
+						//pointsToPlot.GetTOFOffIntegralArray(0,startTOFGate, endTOFGate)//Without background subtraction
+						pointsToPlot.GetBackgroundSubstractedTOFOffIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//with bg subtraction
+						);
 					window.AppendToDifference(pointsToPlot.ScanParameterArray,
-						pointsToPlot.GetDifferenceIntegralArray(0,
-						startTOFGate, endTOFGate));
+						//pointsToPlot.GetDifferenceIntegralArray(0,startTOFGate, endTOFGate)//Without background subtraction
+						pointsToPlot.GetBgSubtractedDifferenceIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//with bg subtraction
+						);
+					window.AppendToRatio(pointsToPlot.ScanParameterArray,
+						pointsToPlot.GetBgSubtractedRatioIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//with bg subtraction
+						);
 				}
                 // update the spectrum fit if in shot mode.
                 if (spectrumFitMode == FitMode.Shot)
@@ -303,8 +315,8 @@ namespace ScanMaster.GUI
 		public void ScanFinished()
 		{
 			// update the gate window
-			startSpectrumGate = window.SpectrumGate.Minimum;
-			endSpectrumGate = window.SpectrumGate.Maximum;
+			startSpectrumGate = window.SpectrumGate.Minimum+0.1* (window.SpectrumGate.Maximum- window.SpectrumGate.Minimum);
+			endSpectrumGate = window.SpectrumGate.Maximum - 0.1 * (window.SpectrumGate.Maximum - window.SpectrumGate.Minimum);
 			startTOFGate = window.TOFGate.Minimum;
 			endTOFGate = window.TOFGate.Maximum;
 			
@@ -536,18 +548,27 @@ namespace ScanMaster.GUI
 			if (averageScan.Points.Count == 0) return;
             window.SpectrumAxes = new NationalInstruments.UI.Range(averageScan.MinimumScanParameter,
                  averageScan.MaximumScanParameter);
-			window.PlotAveragePMTOn(averageScan.ScanParameterArray,
-				averageScan.GetTOFOnIntegralArray(0,
-				startTOFGate, endTOFGate));
+			window.PlotAveragePMTOn(
+				averageScan.ScanParameterArray,
+				//averageScan.GetTOFOnIntegralArray(0,startTOFGate, endTOFGate)//this is without background substraction
+				averageScan.GetBackgroundSubstractedTOFOnIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//this is using background substraction
+				);
 			Profile p = Controller.GetController().ProfileManager.CurrentProfile;
 			if (p != null && (bool)p.AcquisitorConfig.switchPlugin.Settings["switchActive"]) 
 			{
 				window.PlotAveragePMTOff(averageScan.ScanParameterArray,
-					averageScan.GetTOFOffIntegralArray(0,
-					startTOFGate, endTOFGate));
+					//averageScan.GetTOFOffIntegralArray(0,startTOFGate, endTOFGate)// this is without background substraction
+					averageScan.GetBackgroundSubstractedTOFOffIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//this is using background substraction
+					);
 				window.PlotAverageDifference(averageScan.ScanParameterArray,
-					averageScan.GetDifferenceIntegralArray(0,
-					startTOFGate, endTOFGate));
+					//averageScan.GetDifferenceIntegralArray(0,startTOFGate, endTOFGate)// this is not bg substracted
+					averageScan.GetBgSubtractedDifferenceIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//this is using background substraction
+					);
+				window.PlotAverageRatio(averageScan.ScanParameterArray,
+					//averageScan.GetDifferenceIntegralArray(0,startTOFGate, endTOFGate)// this is not bg substracted
+					averageScan.GetBgSubtractedRatioIntegralArray(0, startTOFGate, endTOFGate, bgStartTime, bgEndTime)//this is using background substraction
+					);
+
 			}
 		}
 
