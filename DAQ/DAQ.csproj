@@ -133,7 +133,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Optimize>false</Optimize>
@@ -594,9 +594,8 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=22.5.45.49247, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86" />
+    <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -637,6 +636,7 @@
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
     <Compile Include="CryoRS232.cs" />
+    <Compile Include="InfluxDBDataLogger.cs" />
     <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
@@ -644,7 +644,6 @@
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
-    <Compile Include="InfluxDBDataLogger.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="M2LaserInterface.cs" />
     <Compile Include="RigolDG811.cs" />
@@ -655,6 +654,7 @@
     <Compile Include="PeakFinder.cs" />
     <Compile Include="AlicatFlowController.cs" />
     <Compile Include="TCPConnection.cs" />
+    <Compile Include="TwinleafCSB.cs" />
     <Compile Include="WavemeterLockConfig.cs" />
     <Compile Include="WMLServerFileSystem.cs" />
     <Compile Include="AlFFileSystem.cs" />
@@ -897,77 +897,9 @@
     <Content Include="bdc-comm-92.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="bin\Decelerator\alglibnet2.dll" />
-    <Content Include="bin\Decelerator\bdc-comm-92.exe" />
-    <Content Include="bin\Decelerator\DAQ.dll" />
-    <Content Include="bin\Decelerator\DAQ.pdb" />
-    <Content Include="bin\Decelerator\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="bin\Decelerator\Ivi.Visa.dll" />
-    <Content Include="bin\Decelerator\Ivi.Visa.xml" />
-    <Content Include="bin\Decelerator\NationalInstruments.DAQmx.dll" />
-    <Content Include="bin\Decelerator\NationalInstruments.DAQmx.xml" />
-    <Content Include="bin\Decelerator\SharedCode.dll" />
-    <Content Include="bin\Decelerator\SharedCode.pdb" />
-    <Content Include="bin\Decelerator\Wolfram.NETLink.dll" />
-    <Content Include="bin\LatticeEDM\alglibnet2.dll" />
-    <Content Include="bin\LatticeEDM\bdc-comm-92.exe" />
-    <Content Include="bin\LatticeEDM\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\DAQ.dll" />
-    <Content Include="bin\LatticeEDM\DAQ.pdb" />
-    <Content Include="bin\LatticeEDM\de\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\es\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="bin\LatticeEDM\it\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\Ivi.Visa.dll" />
-    <Content Include="bin\LatticeEDM\Ivi.Visa.xml" />
-    <Content Include="bin\LatticeEDM\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\Microsoft.QualityTools.Testing.Fakes.dll" />
-    <Content Include="bin\LatticeEDM\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\SharedCode.dll" />
-    <Content Include="bin\LatticeEDM\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\Wolfram.NETLink.dll" />
-    <Content Include="bin\LatticeEDM\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\LatticeEDM\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\alglibnet2.dll" />
-    <Content Include="bin\ultracoldEDM\bdc-comm-92.exe" />
-    <Content Include="bin\ultracoldEDM\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\DAQ.dll" />
-    <Content Include="bin\ultracoldEDM\de\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\es\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="bin\ultracoldEDM\it\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\Ivi.Visa.dll" />
-    <Content Include="bin\ultracoldEDM\Ivi.Visa.xml" />
-    <Content Include="bin\ultracoldEDM\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\Microsoft.QualityTools.Testing.Fakes.dll" />
-    <Content Include="bin\ultracoldEDM\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\SharedCode.dll" />
-    <Content Include="bin\ultracoldEDM\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\Wolfram.NETLink.dll" />
-    <Content Include="bin\ultracoldEDM\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\ultracoldEDM\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll" />
-    <Content Include="bin\x86\LatticeEDM\alglibnet2.dll" />
-    <Content Include="bin\x86\LatticeEDM\bdc-comm-92.exe" />
-    <Content Include="bin\x86\LatticeEDM\DAQ.dll" />
-    <Content Include="bin\x86\LatticeEDM\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="bin\x86\LatticeEDM\Ivi.Visa.dll" />
-    <Content Include="bin\x86\LatticeEDM\Ivi.Visa.xml" />
-    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Common.dll" />
-    <Content Include="bin\x86\LatticeEDM\NationalInstruments.Common.xml" />
-    <Content Include="bin\x86\LatticeEDM\NationalInstruments.DAQmx.dll" />
-    <Content Include="bin\x86\LatticeEDM\NationalInstruments.DAQmx.xml" />
-    <Content Include="bin\x86\LatticeEDM\SharedCode.dll" />
-    <Content Include="bin\x86\LatticeEDM\Wolfram.NETLink.dll" />
     <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
+    <EmbeddedResource Include="licenses.licx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
@@ -977,61 +909,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bin\AlF\" />
-    <Folder Include="bin\BufferClassic\" />
-    <Folder Include="bin\Buffer\" />
-    <Folder Include="bin\CaF\" />
-    <Folder Include="bin\EDM TCL\" />
-    <Folder Include="bin\EDMAnalysis\" />
-    <Folder Include="bin\EDMBlockHead\" />
-    <Folder Include="bin\EDMTestCrate\" />
-    <Folder Include="bin\EDM\" />
-    <Folder Include="bin\ScanMaster\" />
-    <Folder Include="bin\SrF\" />
-    <Folder Include="bin\Stefan\" />
-    <Folder Include="bin\Sympathetic\" />
-    <Folder Include="bin\TransferCavityLock2012\" />
-    <Folder Include="bin\TransferCavityLock2023\" />
-    <Folder Include="bin\x64\AlF\" />
-    <Folder Include="bin\x64\BufferClassic\" />
-    <Folder Include="bin\x64\Buffer\" />
-    <Folder Include="bin\x64\CaF\" />
-    <Folder Include="bin\x64\Decelerator\" />
-    <Folder Include="bin\x64\EDM TCL\" />
-    <Folder Include="bin\x64\EDMAnalysis\" />
-    <Folder Include="bin\x64\EDMBlockHead\" />
-    <Folder Include="bin\x64\EDMTestCrate\" />
-    <Folder Include="bin\x64\EDM\" />
-    <Folder Include="bin\x64\LatticeEDM\" />
-    <Folder Include="bin\x64\ScanMaster\" />
-    <Folder Include="bin\x64\SrF\" />
-    <Folder Include="bin\x64\Stefan\" />
-    <Folder Include="bin\x64\Sympathetic\" />
-    <Folder Include="bin\x64\TransferCavityLock2012\" />
-    <Folder Include="bin\x64\TransferCavityLock2023\" />
-    <Folder Include="bin\x64\ultracoldEDM\" />
-    <Folder Include="bin\x64\ZeemanSisyphus\" />
-    <Folder Include="bin\x86\AlF\" />
-    <Folder Include="bin\x86\BufferClassic\" />
-    <Folder Include="bin\x86\Buffer\" />
-    <Folder Include="bin\x86\CaF\" />
-    <Folder Include="bin\x86\Decelerator\" />
-    <Folder Include="bin\x86\EDM TCL\" />
-    <Folder Include="bin\x86\EDMAnalysis\" />
-    <Folder Include="bin\x86\EDMBlockHead\" />
-    <Folder Include="bin\x86\EDMTestCrate\" />
-    <Folder Include="bin\x86\EDM\" />
-    <Folder Include="bin\x86\ScanMaster\" />
-    <Folder Include="bin\x86\SrF\" />
-    <Folder Include="bin\x86\Stefan\" />
-    <Folder Include="bin\x86\Sympathetic\" />
-    <Folder Include="bin\x86\TransferCavityLock2012\" />
-    <Folder Include="bin\x86\TransferCavityLock2023\" />
-    <Folder Include="bin\x86\ultracoldEDM\" />
-    <Folder Include="bin\x86\ZeemanSisyphus\" />
-    <Folder Include="bin\ZeemanSisyphus\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

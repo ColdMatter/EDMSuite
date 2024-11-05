@@ -20,6 +20,7 @@ namespace ScanMaster.Acquire.Plugin
 	XmlInclude(typeof(WindfriekSynthF0AmplitudeOutputPlugin)),
 	XmlInclude(typeof(WindfriekSynthF1AmplitudeOutputPlugin)),
 	XmlInclude(typeof(WindfriekOPAmplitudeOutputPlugin)),
+	XmlInclude(typeof(BFieldUSBOutputPlugin)),
 	XmlInclude(typeof(WMLOutputPlugin)),
 	XmlInclude(typeof(DTCLOutputPlugin)),
 	XmlInclude(typeof(MOTMasterScan)),
@@ -36,6 +37,9 @@ namespace ScanMaster.Acquire.Plugin
     ,XmlInclude(typeof(NIRfsgAmplitudeOutputPlugin))
     ,XmlInclude(typeof(NIRfsgFrequencyOutputPlugin))
     ,XmlInclude(typeof(HardwareControllerOutputPlugin))
+#endif
+#if ultracoldEDM
+	,XmlInclude(
 #endif
 	]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin

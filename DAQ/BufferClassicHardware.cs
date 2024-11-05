@@ -35,17 +35,19 @@ namespace DAQ.HAL
             Info.Add("sourceToDetect", 3.5);
             Info.Add("moleculeMass", 193.0);
             Info.Add("machineLengthRatio", 3.842);
-            Info.Add("defaultGate", new double[] { 2190, 80 });
+            Info.Add("defaultGate", new double[] { 2190, 800 });
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 0);//Pin 10
             AddDigitalOutputChannel("probe", pgBoard, 0, 1);
             AddDigitalOutputChannel("flash", pgBoard, 0, 2);//Pin 45
-            AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 3); // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
+            AddDigitalOutputChannel("digitalSwitchChannel", pgBoard, 0, 5); // this is the digital output from the daq board that the TTlSwitchPlugin will switch
             AddDigitalOutputChannel("valve", pgBoard, 0, 6);
 
             AddDigitalOutputChannel("detectorprime", pgBoard, 0, 7);    //Pin 15 (OffShot)from pg to daq
             AddDigitalOutputChannel("detector", pgBoard, 1, 0);         //Pin 16 (onShot)from pg to daq
+            AddDigitalOutputChannel("ccdtrigger", pgBoard, 2, 0);         //Pin 23 from pg to daq (both on and off shot)
+
 
             AddDigitalOutputChannel("ccd1", pgBoard, 1, 1);         // previously "aom"         if problem, change in the plugin, not here
             AddDigitalOutputChannel("ccd2", pgBoard, 1, 2);         // previously "aom2"        if problem, change in the plugin, not here
@@ -55,25 +57,26 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("ttl4", pgBoard, 1, 6);
             AddDigitalOutputChannel("ttl5", pgBoard, 1, 7);
 
-            
+
 
             // map the digital channels of the "daq" card
             // this is the digital output from the daq board that the TTlSwitchPlugin wil switch
             //AddDigitalOutputChannel("digitalSwitchChannel", daqBoard, 0, 0);//enable for camera
             //AddDigitalOutputChannel("cryoTriggerDigitalOutputTask", daqBoard, 0, 0);// cryo cooler digital logic
 
-           
+
             // add things to the info
             // the analog triggers
             Info.Add("analogTrigger0", daqBoard + "/PFI0");
             Info.Add("analogTrigger1", daqBoard + "/PFI1");
+            Info.Add("analogTrigger2", daqBoard + "/PFI2");
             Info.Add("phaseLockControlMethod", "usb");
-            Info.Add("PGClockLine", Boards["pg"] + "/PFI4");
+            Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
 
             // Scanmaster config
-            Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_Feb.xml");
+            Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_July_Rhys.xml");
 
             // external triggering control
             Info.Add("PGTriggerLine", pgBoard + "/PFI1"); //Mapped to no where in particular
@@ -90,6 +93,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("detectorA", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34 Used to be detector3
             AddAnalogInputChannel("detectorB", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin    Used to be detector2
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
+            //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
 
             // map the analog input channels for "daq" part 2 (magnetometers and coil currents)
@@ -153,6 +157,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
             AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
             AddDigitalOutputChannel("targetStepper", usbDAQ2, 0, 4);
+            //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
+            AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19);
 
             //Magnetic feedback channels
             //AddAnalogInputChannel("bFieldFeedbackInput", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
@@ -222,6 +228,7 @@ namespace DAQ.HAL
             Instruments.Add("rigolWavGen", new RigolDG811("USB0::0x1AB1::0x0643::DG8A250800641::INSTR"));
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("targetStepperControl", new StepperMotorController("ASRL4::INSTR"));
+            Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL13::INSTR"));
 
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)

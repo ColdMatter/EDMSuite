@@ -159,6 +159,17 @@
             this.Show_DeviceKey = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.groupBoxMWSwitch = new System.Windows.Forms.GroupBox();
+            this.labelF0 = new System.Windows.Forms.Label();
+            this.labelF1 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ledChBDetB = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChADetB = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChBDetA = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChADetA = new NationalInstruments.UI.WindowsForms.Led();
+            this.labelMWSwitchState = new System.Windows.Forms.Label();
+            this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
             this.labelStirapRFAmp = new System.Windows.Forms.Label();
             this.labelStirapRFFreq = new System.Windows.Forms.Label();
@@ -280,6 +291,19 @@
             this.labelRF = new System.Windows.Forms.Label();
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tabPageBfield = new System.Windows.Forms.TabPage();
+            this.groupBoxbUSB = new System.Windows.Forms.GroupBox();
+            this.tbUsbBBoxCmd = new System.Windows.Forms.TextBox();
+            this.UsbBBoxCmdBtn = new System.Windows.Forms.Button();
+            this.UsbBboxCmdlb = new System.Windows.Forms.Label();
+            this.UsbSmallBTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbSmallB = new System.Windows.Forms.Label();
+            this.UsbBigBTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbBigB = new System.Windows.Forms.Label();
+            this.UsbBiasTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbBiasB = new System.Windows.Forms.Label();
+            this.USBbBoxTextBox = new System.Windows.Forms.TextBox();
+            this.USBbBoxUpdateButton = new System.Windows.Forms.Button();
+            this.labelUSBbBoxCurrent = new System.Windows.Forms.Label();
             this.groupBoxBManualState = new System.Windows.Forms.GroupBox();
             this.bManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBoxManualBflip = new System.Windows.Forms.GroupBox();
@@ -515,6 +539,9 @@
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
             this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.TargetTriggerButton = new System.Windows.Forms.Button();
+            this.TargetExtButton = new System.Windows.Forms.Button();
+            this.TargetManualButton = new System.Windows.Forms.Button();
             this.TargetStepButton = new System.Windows.Forms.Button();
             this.lbTargetStep = new System.Windows.Forms.Label();
             this.TargetNumStepsTextBox = new System.Windows.Forms.TextBox();
@@ -706,9 +733,7 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.TargetManualButton = new System.Windows.Forms.Button();
-            this.TargetExtButton = new System.Windows.Forms.Button();
-            this.TargetTriggerButton = new System.Windows.Forms.Button();
+            this.TargetHomeButton = new System.Windows.Forms.Button();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -717,6 +742,11 @@
             this.groupBoxStatus.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
+            this.groupBoxMWSwitch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).BeginInit();
             this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
@@ -726,6 +756,7 @@
             this.groupBoxMWCHB.SuspendLayout();
             this.groupBoxRF.SuspendLayout();
             this.tabPageBfield.SuspendLayout();
+            this.groupBoxbUSB.SuspendLayout();
             this.groupBoxBManualState.SuspendLayout();
             this.groupBoxManualBflip.SuspendLayout();
             this.groupBoxbCurrentMon.SuspendLayout();
@@ -1680,6 +1711,7 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.groupBoxMWSwitch);
             this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
@@ -1690,6 +1722,113 @@
             this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
+            // 
+            // groupBoxMWSwitch
+            // 
+            this.groupBoxMWSwitch.Controls.Add(this.labelF0);
+            this.groupBoxMWSwitch.Controls.Add(this.labelF1);
+            this.groupBoxMWSwitch.Controls.Add(this.label33);
+            this.groupBoxMWSwitch.Controls.Add(this.label1);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetA);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
+            this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
+            this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
+            this.groupBoxMWSwitch.Location = new System.Drawing.Point(3, 384);
+            this.groupBoxMWSwitch.Name = "groupBoxMWSwitch";
+            this.groupBoxMWSwitch.Size = new System.Drawing.Size(253, 113);
+            this.groupBoxMWSwitch.TabIndex = 51;
+            this.groupBoxMWSwitch.TabStop = false;
+            this.groupBoxMWSwitch.Text = "MW Switch";
+            // 
+            // labelF0
+            // 
+            this.labelF0.AutoSize = true;
+            this.labelF0.Location = new System.Drawing.Point(213, 12);
+            this.labelF0.Name = "labelF0";
+            this.labelF0.Size = new System.Drawing.Size(19, 13);
+            this.labelF0.TabIndex = 9;
+            this.labelF0.Text = "F0";
+            // 
+            // labelF1
+            // 
+            this.labelF1.AutoSize = true;
+            this.labelF1.Location = new System.Drawing.Point(191, 12);
+            this.labelF1.Name = "labelF1";
+            this.labelF1.Size = new System.Drawing.Size(19, 13);
+            this.labelF1.TabIndex = 8;
+            this.labelF1.Text = "F1";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(130, 60);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(58, 13);
+            this.label33.TabIndex = 7;
+            this.label33.Text = "Detector B";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(130, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Detector A";
+            // 
+            // ledChBDetB
+            // 
+            this.ledChBDetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChBDetB.Location = new System.Drawing.Point(216, 56);
+            this.ledChBDetB.Name = "ledChBDetB";
+            this.ledChBDetB.Size = new System.Drawing.Size(16, 20);
+            this.ledChBDetB.TabIndex = 5;
+            // 
+            // ledChADetB
+            // 
+            this.ledChADetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChADetB.Location = new System.Drawing.Point(194, 56);
+            this.ledChADetB.Name = "ledChADetB";
+            this.ledChADetB.Size = new System.Drawing.Size(16, 20);
+            this.ledChADetB.TabIndex = 4;
+            // 
+            // ledChBDetA
+            // 
+            this.ledChBDetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChBDetA.Location = new System.Drawing.Point(216, 32);
+            this.ledChBDetA.Name = "ledChBDetA";
+            this.ledChBDetA.Size = new System.Drawing.Size(16, 20);
+            this.ledChBDetA.TabIndex = 3;
+            // 
+            // ledChADetA
+            // 
+            this.ledChADetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChADetA.Location = new System.Drawing.Point(194, 32);
+            this.ledChADetA.Name = "ledChADetA";
+            this.ledChADetA.Size = new System.Drawing.Size(16, 20);
+            this.ledChADetA.TabIndex = 2;
+            // 
+            // labelMWSwitchState
+            // 
+            this.labelMWSwitchState.AutoSize = true;
+            this.labelMWSwitchState.Location = new System.Drawing.Point(13, 93);
+            this.labelMWSwitchState.Name = "labelMWSwitchState";
+            this.labelMWSwitchState.Size = new System.Drawing.Size(201, 13);
+            this.labelMWSwitchState.TabIndex = 1;
+            this.labelMWSwitchState.Text = "(Unchecked => Det A -> F1, Det B -> F0)";
+            // 
+            // cBMWSwitchState
+            // 
+            this.cBMWSwitchState.AutoSize = true;
+            this.cBMWSwitchState.Location = new System.Drawing.Point(9, 24);
+            this.cBMWSwitchState.Name = "cBMWSwitchState";
+            this.cBMWSwitchState.Size = new System.Drawing.Size(109, 17);
+            this.cBMWSwitchState.TabIndex = 0;
+            this.cBMWSwitchState.Text = "MW Switch State";
+            this.cBMWSwitchState.UseVisualStyleBackColor = true;
+            this.cBMWSwitchState.CheckedChanged += new System.EventHandler(this.cBMWSwitchState_CheckedChanged);
             // 
             // groupBoxStirapRF
             // 
@@ -1892,7 +2031,7 @@
             this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
-            this.groupBoxMWCHAdetection.Text = "Channel A";
+            this.groupBoxMWCHAdetection.Text = "Channel A - Nominally F1";
             // 
             // cbCHATrigger
             // 
@@ -2142,7 +2281,7 @@
             this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
-            this.groupBoxMWCHBdetection.Text = "Channel B";
+            this.groupBoxMWCHBdetection.Text = "Channel B - Nominally F0";
             // 
             // cbCHBTrigger
             // 
@@ -3064,6 +3203,7 @@
             // tabPageBfield
             // 
             this.tabPageBfield.BackColor = System.Drawing.Color.Silver;
+            this.tabPageBfield.Controls.Add(this.groupBoxbUSB);
             this.tabPageBfield.Controls.Add(this.groupBoxBManualState);
             this.tabPageBfield.Controls.Add(this.groupBoxManualBflip);
             this.tabPageBfield.Controls.Add(this.groupBoxbCurrentMon);
@@ -3078,6 +3218,125 @@
             this.tabPageBfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageBfield.TabIndex = 8;
             this.tabPageBfield.Text = "B-field";
+            // 
+            // groupBoxbUSB
+            // 
+            this.groupBoxbUSB.Controls.Add(this.tbUsbBBoxCmd);
+            this.groupBoxbUSB.Controls.Add(this.UsbBBoxCmdBtn);
+            this.groupBoxbUSB.Controls.Add(this.UsbBboxCmdlb);
+            this.groupBoxbUSB.Controls.Add(this.UsbSmallBTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbSmallB);
+            this.groupBoxbUSB.Controls.Add(this.UsbBigBTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbBigB);
+            this.groupBoxbUSB.Controls.Add(this.UsbBiasTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbBiasB);
+            this.groupBoxbUSB.Controls.Add(this.USBbBoxTextBox);
+            this.groupBoxbUSB.Controls.Add(this.USBbBoxUpdateButton);
+            this.groupBoxbUSB.Controls.Add(this.labelUSBbBoxCurrent);
+            this.groupBoxbUSB.Location = new System.Drawing.Point(625, 13);
+            this.groupBoxbUSB.Name = "groupBoxbUSB";
+            this.groupBoxbUSB.Size = new System.Drawing.Size(296, 190);
+            this.groupBoxbUSB.TabIndex = 101;
+            this.groupBoxbUSB.TabStop = false;
+            this.groupBoxbUSB.Text = "USB B box";
+            // 
+            // tbUsbBBoxCmd
+            // 
+            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(58, 142);
+            this.tbUsbBBoxCmd.Name = "tbUsbBBoxCmd";
+            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(121, 20);
+            this.tbUsbBBoxCmd.TabIndex = 52;
+            this.tbUsbBBoxCmd.Text = "0";
+            // 
+            // UsbBBoxCmdBtn
+            // 
+            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(185, 142);
+            this.UsbBBoxCmdBtn.Name = "UsbBBoxCmdBtn";
+            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(75, 23);
+            this.UsbBBoxCmdBtn.TabIndex = 54;
+            this.UsbBBoxCmdBtn.Text = "Send";
+            this.UsbBBoxCmdBtn.Click += new System.EventHandler(this.UsbBBoxCmdBtn_Click);
+            // 
+            // UsbBboxCmdlb
+            // 
+            this.UsbBboxCmdlb.Location = new System.Drawing.Point(55, 127);
+            this.UsbBboxCmdlb.Name = "UsbBboxCmdlb";
+            this.UsbBboxCmdlb.Size = new System.Drawing.Size(85, 21);
+            this.UsbBboxCmdlb.TabIndex = 53;
+            this.UsbBboxCmdlb.Text = "Send Command";
+            // 
+            // UsbSmallBTextBox
+            // 
+            this.UsbSmallBTextBox.Location = new System.Drawing.Point(115, 92);
+            this.UsbSmallBTextBox.Name = "UsbSmallBTextBox";
+            this.UsbSmallBTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbSmallBTextBox.TabIndex = 51;
+            this.UsbSmallBTextBox.Text = "0";
+            // 
+            // labelUsbSmallB
+            // 
+            this.labelUsbSmallB.Location = new System.Drawing.Point(55, 95);
+            this.labelUsbSmallB.Name = "labelUsbSmallB";
+            this.labelUsbSmallB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbSmallB.TabIndex = 50;
+            this.labelUsbSmallB.Text = "dB (uA)";
+            // 
+            // UsbBigBTextBox
+            // 
+            this.UsbBigBTextBox.Location = new System.Drawing.Point(115, 69);
+            this.UsbBigBTextBox.Name = "UsbBigBTextBox";
+            this.UsbBigBTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbBigBTextBox.TabIndex = 49;
+            this.UsbBigBTextBox.Text = "0";
+            // 
+            // labelUsbBigB
+            // 
+            this.labelUsbBigB.Location = new System.Drawing.Point(55, 72);
+            this.labelUsbBigB.Name = "labelUsbBigB";
+            this.labelUsbBigB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbBigB.TabIndex = 48;
+            this.labelUsbBigB.Text = "DB (uA)";
+            // 
+            // UsbBiasTextBox
+            // 
+            this.UsbBiasTextBox.Location = new System.Drawing.Point(115, 46);
+            this.UsbBiasTextBox.Name = "UsbBiasTextBox";
+            this.UsbBiasTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbBiasTextBox.TabIndex = 47;
+            this.UsbBiasTextBox.Text = "0";
+            // 
+            // labelUsbBiasB
+            // 
+            this.labelUsbBiasB.Location = new System.Drawing.Point(55, 49);
+            this.labelUsbBiasB.Name = "labelUsbBiasB";
+            this.labelUsbBiasB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbBiasB.TabIndex = 46;
+            this.labelUsbBiasB.Text = "Bias (uA)";
+            // 
+            // USBbBoxTextBox
+            // 
+            this.USBbBoxTextBox.Location = new System.Drawing.Point(115, 19);
+            this.USBbBoxTextBox.Name = "USBbBoxTextBox";
+            this.USBbBoxTextBox.Size = new System.Drawing.Size(64, 20);
+            this.USBbBoxTextBox.TabIndex = 45;
+            this.USBbBoxTextBox.Text = "0";
+            // 
+            // USBbBoxUpdateButton
+            // 
+            this.USBbBoxUpdateButton.Location = new System.Drawing.Point(193, 16);
+            this.USBbBoxUpdateButton.Name = "USBbBoxUpdateButton";
+            this.USBbBoxUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.USBbBoxUpdateButton.TabIndex = 40;
+            this.USBbBoxUpdateButton.Text = "Update";
+            this.USBbBoxUpdateButton.Click += new System.EventHandler(this.USBbBoxUpdateButton_Click);
+            // 
+            // labelUSBbBoxCurrent
+            // 
+            this.labelUSBbBoxCurrent.Location = new System.Drawing.Point(24, 22);
+            this.labelUSBbBoxCurrent.Name = "labelUSBbBoxCurrent";
+            this.labelUSBbBoxCurrent.Size = new System.Drawing.Size(85, 23);
+            this.labelUSBbBoxCurrent.TabIndex = 36;
+            this.labelUSBbBoxCurrent.Text = "Set Current (uA)";
             // 
             // groupBoxBManualState
             // 
@@ -3101,7 +3360,7 @@
             // 
             this.groupBoxManualBflip.Controls.Add(this.calFlipCheck);
             this.groupBoxManualBflip.Controls.Add(this.bFlipCheck);
-            this.groupBoxManualBflip.Location = new System.Drawing.Point(419, 140);
+            this.groupBoxManualBflip.Location = new System.Drawing.Point(419, 209);
             this.groupBoxManualBflip.Name = "groupBoxManualBflip";
             this.groupBoxManualBflip.Size = new System.Drawing.Size(233, 56);
             this.groupBoxManualBflip.TabIndex = 99;
@@ -5592,6 +5851,7 @@
             // 
             // gBTargetStepper
             // 
+            this.gBTargetStepper.Controls.Add(this.TargetHomeButton);
             this.gBTargetStepper.Controls.Add(this.TargetTriggerButton);
             this.gBTargetStepper.Controls.Add(this.TargetExtButton);
             this.gBTargetStepper.Controls.Add(this.TargetManualButton);
@@ -5604,6 +5864,36 @@
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
+            // 
+            // TargetTriggerButton
+            // 
+            this.TargetTriggerButton.Location = new System.Drawing.Point(426, 22);
+            this.TargetTriggerButton.Name = "TargetTriggerButton";
+            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetTriggerButton.TabIndex = 5;
+            this.TargetTriggerButton.Text = "Triggered";
+            this.TargetTriggerButton.UseVisualStyleBackColor = true;
+            this.TargetTriggerButton.Click += new System.EventHandler(this.TargetTriggerButton_Click);
+            // 
+            // TargetExtButton
+            // 
+            this.TargetExtButton.Location = new System.Drawing.Point(508, 22);
+            this.TargetExtButton.Name = "TargetExtButton";
+            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetExtButton.TabIndex = 4;
+            this.TargetExtButton.Text = "External";
+            this.TargetExtButton.UseVisualStyleBackColor = true;
+            this.TargetExtButton.Click += new System.EventHandler(this.TargetExtButton_Click);
+            // 
+            // TargetManualButton
+            // 
+            this.TargetManualButton.Location = new System.Drawing.Point(590, 22);
+            this.TargetManualButton.Name = "TargetManualButton";
+            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetManualButton.TabIndex = 3;
+            this.TargetManualButton.Text = "Manual";
+            this.TargetManualButton.UseVisualStyleBackColor = true;
+            this.TargetManualButton.Click += new System.EventHandler(this.TargetManualbutton_Click);
             // 
             // TargetStepButton
             // 
@@ -7906,35 +8196,15 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // TargetManualButton
+            // TargetHomeButton
             // 
-            this.TargetManualButton.Location = new System.Drawing.Point(590, 22);
-            this.TargetManualButton.Name = "TargetManualButton";
-            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetManualButton.TabIndex = 3;
-            this.TargetManualButton.Text = "Manual";
-            this.TargetManualButton.UseVisualStyleBackColor = true;
-            this.TargetManualButton.Click += new System.EventHandler(this.TargetManualbutton_Click);
-            // 
-            // TargetExtButton
-            // 
-            this.TargetExtButton.Location = new System.Drawing.Point(508, 22);
-            this.TargetExtButton.Name = "TargetExtButton";
-            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetExtButton.TabIndex = 4;
-            this.TargetExtButton.Text = "External";
-            this.TargetExtButton.UseVisualStyleBackColor = true;
-            this.TargetExtButton.Click += new System.EventHandler(this.TargetExtButton_Click);
-            // 
-            // TargetTriggerButton
-            // 
-            this.TargetTriggerButton.Location = new System.Drawing.Point(426, 22);
-            this.TargetTriggerButton.Name = "TargetTriggerButton";
-            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetTriggerButton.TabIndex = 5;
-            this.TargetTriggerButton.Text = "Triggered";
-            this.TargetTriggerButton.UseVisualStyleBackColor = true;
-            this.TargetTriggerButton.Click += new System.EventHandler(this.TargetTriggerButton_Click);
+            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
+            this.TargetHomeButton.Name = "TargetHomeButton";
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetHomeButton.TabIndex = 6;
+            this.TargetHomeButton.Text = "Reset Pos";
+            this.TargetHomeButton.UseVisualStyleBackColor = true;
+            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
             // 
             // ControlWindow
             // 
@@ -7970,6 +8240,12 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPagePumping.ResumeLayout(false);
+            this.groupBoxMWSwitch.ResumeLayout(false);
+            this.groupBoxMWSwitch.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).EndInit();
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
@@ -7988,6 +8264,8 @@
             this.groupBoxRF.PerformLayout();
             this.tabPageBfield.ResumeLayout(false);
             this.tabPageBfield.PerformLayout();
+            this.groupBoxbUSB.ResumeLayout(false);
+            this.groupBoxbUSB.PerformLayout();
             this.groupBoxBManualState.ResumeLayout(false);
             this.groupBoxManualBflip.ResumeLayout(false);
             this.groupBoxbCurrentMon.ResumeLayout(false);
@@ -8725,5 +9003,30 @@
         private System.Windows.Forms.Button TargetManualButton;
         private System.Windows.Forms.Button TargetExtButton;
         private System.Windows.Forms.Button TargetTriggerButton;
+        private System.Windows.Forms.GroupBox groupBoxMWSwitch;
+        private System.Windows.Forms.Label labelMWSwitchState;
+        private System.Windows.Forms.CheckBox cBMWSwitchState;
+        public NationalInstruments.UI.WindowsForms.Led ledChADetA;
+        private System.Windows.Forms.Label labelF0;
+        private System.Windows.Forms.Label labelF1;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label1;
+        public NationalInstruments.UI.WindowsForms.Led ledChBDetB;
+        public NationalInstruments.UI.WindowsForms.Led ledChADetB;
+        public NationalInstruments.UI.WindowsForms.Led ledChBDetA;
+        private System.Windows.Forms.GroupBox groupBoxbUSB;
+        public System.Windows.Forms.TextBox USBbBoxTextBox;
+        private System.Windows.Forms.Button USBbBoxUpdateButton;
+        private System.Windows.Forms.Label labelUSBbBoxCurrent;
+        public System.Windows.Forms.TextBox UsbSmallBTextBox;
+        private System.Windows.Forms.Label labelUsbSmallB;
+        public System.Windows.Forms.TextBox UsbBigBTextBox;
+        private System.Windows.Forms.Label labelUsbBigB;
+        public System.Windows.Forms.TextBox UsbBiasTextBox;
+        private System.Windows.Forms.Label labelUsbBiasB;
+        public System.Windows.Forms.TextBox tbUsbBBoxCmd;
+        private System.Windows.Forms.Button UsbBBoxCmdBtn;
+        private System.Windows.Forms.Label UsbBboxCmdlb;
+        private System.Windows.Forms.Button TargetHomeButton;
     }
 }
