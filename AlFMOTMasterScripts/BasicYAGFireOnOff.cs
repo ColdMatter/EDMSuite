@@ -15,14 +15,21 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 1000;
+        Parameters["PatternLength"] = 50000;
         Parameters["Void"] = 0;
-      
+        Parameters["CameraDelay"] = 2000;
+        Parameters["YAGSwitch"] = true;
+
+        switchConfiguration = new Dictionary<string, List<bool>>
+            {
+                {"YAGSwitch", new List<bool>{true, false}}
+            };
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
+        int cameraDelay = Convert.ToInt32(Parameters["CameraDelay"]);
 
         //MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters); // This is how you load "preset" patterns.          
         //   p.AddEdge("v00Shutter", 0, true);
@@ -32,9 +39,17 @@ public class Patterns : MOTMasterScript
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
-        p.AddEdge("q",0,true);
-        p.AddEdge("q",10,false);
-        
+        p.AddEdge("q",14,true);
+        p.AddEdge("q",100,false);
+
+        if ((bool)Parameters["YAGSwitch"])
+        {
+            p.AddEdge("flash", 0, true);
+            p.AddEdge("flash", 100, false);
+        }
+
+        p.AddEdge("detector", cameraDelay, true);
+        p.AddEdge("detector", cameraDelay + 10, false);
 
         return p;
     }

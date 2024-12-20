@@ -26,15 +26,17 @@ namespace DAQ.HAL
             Info.Add("PGClockCounter", "/ctr0");
             Info.Add("PGClockLine", Boards["pg"] + "/PFI15");
             Info.Add("PGTriggerLine", Boards["pg"] + "/PFI0");
-            //Info.Add("AOPatternTrigger", Boards["pg"] + "/PFI15");
-            Info.Add("AOPatternTrigger", Boards["pg"] + "/do/StartTrigger");
             Info.Add("analogTrigger0", (string)Boards["pg"] + "/PFI0");
             Info.Add("ScanMasterConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\ScanProfils.xml");
             Info.Add("MacroConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\Macros.xml");
 
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
-            //analogBoards.Add("AO", (string)Boards["pg"]);
+            analogBoards.Add("AO", (string)Boards["analog"]);
+            //Info.Add("AOPatternTrigger", Boards["pg"] + "/PFI15");
+            Info.Add("AOPatternTrigger", Boards["pg"] + "/do/StartTrigger");
+            //Info.Add("AOPatternTrigger", (string)Boards["analog"] + "/PFI0");
+            Info.Add("AOClockLine", (string)Boards["analog"] + "/PFI1");
             Info.Add("AnalogBoards", analogBoards);
 
 
@@ -56,6 +58,9 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
             AddAnalogOutputChannel("VECSEL3_PZO", (string)Boards["pg"]+"/ao0", 0, 10);
             //AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
+            AddAnalogOutputChannel("VECSEL3_AOM_VCA", (string)Boards["analog"]+"/ao0",0,10);
+            AddAnalogOutputChannel("VECSEL1_CHIRP", (string)Boards["analog"]+"/ao1",0,6);
+            AddAnalogOutputChannel("VECSEL2_CHIRP", (string)Boards["analog"]+"/ao2",0,6);
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("flash", (string)Boards["pg"], 0, 0);
@@ -135,13 +140,13 @@ namespace DAQ.HAL
 
 
 
-            wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 7);
+            wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 5);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
-            //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600);
+            //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600); //329.3907327752221`
             wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -1000, -800);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 7);
-            wmlConfig.AddLaserConfiguration("VECSEL3", 329.390872 * 2, -2000, -1600);
+            wmlConfig.AddLaserConfiguration("VECSEL3", 654.932482, -1000, -800);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
             wmlConfig.AddLaserConfiguration("MBR", 384.234493, 500, 2000);
             Info.Add("Default", wmlConfig);

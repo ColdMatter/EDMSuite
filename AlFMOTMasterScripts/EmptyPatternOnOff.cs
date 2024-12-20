@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 1000;
+        Parameters["PatternLength"] = 50000;
         Parameters["Void"] = 0;
         Parameters["Switch"] = true;
         Parameters["Switch2"] = true;
@@ -41,6 +41,9 @@ public class Patterns : MOTMasterScript
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
         p.AddEdge("q",0,true);
         p.AddEdge("q",10,false);
+
+        p.AddEdge("detector", 100, true);
+        p.AddEdge("detector", 110, false);
         
 
         return p;
@@ -49,7 +52,8 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
+        p.AddChannel("VECSEL3_AOM_VCA");
+        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

@@ -93,10 +93,11 @@ namespace DAQ.Analog
             analogOutputTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo(pattern_trigger),
                 DigitalEdgeStartTriggerEdge.Rising);
-            
 
+            analogOutputTask.Stream.Buffer.OutputBufferSize = aPattern.PatternLength;
             
             analogOutputTask.Control(TaskAction.Verify);
+            analogOutputTask.Control(TaskAction.Commit);
 
         }
 
