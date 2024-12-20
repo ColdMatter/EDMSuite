@@ -77,7 +77,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("ProbeCavityRampVoltage", digitalPatternBoardAddress + "/ai8", AITerminalConfiguration.Rse); //tick this is the ramp impute
             AddAnalogInputChannel("Probemaster", digitalPatternBoardAddress + "/ai14", AITerminalConfiguration.Rse); //tick this is the 780nm photodiode
             AddAnalogInputChannel("Probep1", digitalPatternBoardAddress + "/ai12", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input
-            AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai10", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - v3
+            AddAnalogInputChannel("Probep2", digitalPatternBoardAddress + "/ai9", AITerminalConfiguration.Rse); //tick //this is the probe laser photodiode input - v3
             AddAnalogInputChannel("Probep3", digitalPatternBoardAddress + "/ai11", AITerminalConfiguration.Rse); //slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
             AddAnalogInputChannel("Probep4", digitalPatternBoardAddress + "/ai13", AITerminalConfiguration.Rse); //now v1 //v2 photodiode slowing photothis photodiode does not exist but because we want to be able to scan the voltage of this laser through tcl we need this here
             AddAnalogInputChannel("Probep5", digitalPatternBoardAddress + "/ai19", AITerminalConfiguration.Rse); //used for the attisse
@@ -123,7 +123,7 @@ namespace DAQ.HAL
             TCLConfig tclConfigProbe = new TCLConfig("Probe");
             tclConfigProbe.Trigger = digitalPatternBoardAddress + "/PFI0";
             tclConfigProbe.BaseRamp = "ProbeCavityRampVoltage";
-            tclConfigProbe.TCPChannel = 1190;
+            tclConfigProbe.TCPChannel = 1190;//it was 1190, I am trying 1191 to see scanmaster would still work
             tclConfigProbe.DefaultScanPoints = 700;
             tclConfigProbe.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
             tclConfigProbe.AnalogSampleRate = 20000;// 245000 * 1 / 8;//reduce number 12/3/21 by factr 10
@@ -262,6 +262,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("valve", digitalPatternBoardAddress, 0, 11);//it seeems to like having this here
             AddDigitalOutputChannel("detectorprime", digitalPatternBoardAddress, 0, 1); 
             AddDigitalOutputChannel("detector", digitalPatternBoardAddress, 0, 2);
+            AddDigitalOutputChannel("cameraEnablerTrigger", digitalPatternBoardAddress, 0, 17);
             AddDigitalOutputChannel("shutter2on", digitalPatternBoardAddress, 0, 4); //NOT A SHUTTER, V0 Slowing AOM Near
             AddDigitalOutputChannel("shutter2off", digitalPatternBoardAddress, 0, 5);//Unused it seems
             AddDigitalOutputChannel("shutterSTEVE1off", digitalPatternBoardAddress, 0, 7);//STEVE newport Shutter A Signal (closure TTL)
@@ -288,10 +289,10 @@ namespace DAQ.HAL
 
 
             //// ScanMaster configuration
-
-            Info.Add("analogTrigger0", ExtraBoard + "/PFI0");
-            Info.Add("analogTrigger1", ExtraBoard + "/PFI1");
-
+            //extra board is the PXIslot 5
+            Info.Add("analogTrigger0", ExtraBoard + "/PFI0");// waitting for a trigger to start the data aquestion of PMT on shot
+            Info.Add("analogTrigger1", ExtraBoard + "/PFI1");// waiting  for a trigger to start the data aquestion of PMT off shot
+            Info.Add("analogTrigger2", ExtraBoard + "/PFI2");// waiting  for a trigger to start the camera enabler,n.b. camera enabler is not the same as the camera trigger. The enabler is an extra layer to ensure that camera takes data on condition that PMT takes data
             //Info.Add("defaultTOFRange", new double[] { 4000, 12000 }); // these entries are the two ends of the range for the upper TOF graph
             //Info.Add("defaultTOF2Range", new double[] { 0, 1000 }); // these entries are the two ends of the range for the middle TOF graph
             //Info.Add("defaultGate", new double[] { 6000, 2000 }); // the first entry is the centre of the gate, the second is the half width of the gate (upper TOF graph)
@@ -303,8 +304,10 @@ namespace DAQ.HAL
             AddCounterChannel("sample clock", ExtraBoard + "/ctr1"); // channel used for photon counting PFI13 is output 
 
 
-            AddCounterChannel("westLeakage", digitalPatternBoardAddress+"/ctr0");
-            AddCounterChannel("eastLeakage", digitalPatternBoardAddress+"/ctr1");
+            //Guanchen modified below leakage channel (ultracold) to be cameraEnabler channel for lattice
+            AddCounterChannel("cameraEnabler", digitalPatternBoardAddress + "/ctr1");//although /ctrl1 is the same as /PFI13 on this board,for some reason, it is the /ctr1 works for the pattern
+            //AddCounterChannel("westLeakage", digitalPatternBoardAddress+"/ctr0");
+            //AddCounterChannel("eastLeakage", digitalPatternBoardAddress+"/ctr1");
 
             AddAnalogInputChannel("cPlusMonitor", digitalPatternBoardAddress + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", digitalPatternBoardAddress + "/ai7", AITerminalConfiguration.Rse);

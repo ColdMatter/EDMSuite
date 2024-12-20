@@ -18,12 +18,13 @@ namespace ScanMaster.Acquire.Patterns
     //	private const int FLASH_PULSE_LENGTH = 100;
 		private const int Q_PULSE_LENGTH = 15;
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
-	
+		private const int CAMERA_TRIGGER_LENGTH = 10000;
+
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0,
 			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay, 
-			int v3delaytime, int repumpDuration, int repumpDelay, int vacShutterDelay, int vacShutterDuration, int v0chirpTriggerDelay, int v0chirpTriggerDuration, int cameraTriggerDelay, int cameraBackgroundDelay) 
+			int v3delaytime, int repumpDuration, int repumpDelay, int vacShutterDelay, int vacShutterDuration, int v0chirpTriggerDelay, int v0chirpTriggerDuration, int cameraTriggerDelay, int cameraBackgroundDelay, int offShotSlowingDuration) 
 		{
 			int padEnd = padStart;
 			int time;
@@ -56,10 +57,10 @@ namespace ScanMaster.Acquire.Patterns
                 //Camera
                 //Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
                 //Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
-                onShot(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+                pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
 					valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
 					ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
-					shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime, repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration);
+					shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime, repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, true, offShotSlowingDuration);
 
 
 				Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector",  vacShutterDelay,  vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay);
@@ -81,6 +82,11 @@ namespace ScanMaster.Acquire.Patterns
 
 					//Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
 					//Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
+
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
+						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime, repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, false, offShotSlowingDuration); // Guanchen 20/11/2024
 
 					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detectorprime",  vacShutterDelay,  vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay);
 
@@ -109,11 +115,12 @@ namespace ScanMaster.Acquire.Patterns
 					//Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);//Guanchen added camera trigger for the molecule image
 					//Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); //Guanchen added camera trigger for the light background image
 
-
-					onShot(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+					/// Michail (20-11-24) added a boolean statement to toggle slowing light,
+					/// Horacio (21-11-24) veerified workign of the pattern and changed the method name onShot to pattern.
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
 						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
 						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
-						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime, repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration);
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime, repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, true, offShotSlowingDuration);
 
 					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector", vacShutterDelay,  vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay);
 
@@ -133,18 +140,33 @@ namespace ScanMaster.Acquire.Patterns
             return Pulse(startTime, valveToQ - flashToQ, flashlampPulseLength,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 		}
-		public void onShot(int time, int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
+		public void pattern(int time, int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0,
-			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay, int v3delaytime, int repumpDuration, int repumpDelay, int v0chirpTriggerDelay, int v0chirpTriggerDuration)
-
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay, int v3delaytime, int repumpDuration, int repumpDelay, int v0chirpTriggerDelay, int v0chirpTriggerDuration, bool V0slowingOn, int offShotSlowingDuration)
+		    // patterns that only do operations for the on shot measurement
 		{
-			///V0 Slowing
-			// The complicated pulse sequence below is to make the V0 AOM following a sequence of constantly on, quickly switch off, pulsed on, quickly switch off, constantly on, which makes it most of the time warm to reduce the warm-up effect
-			int shutterslowdelayCorrection = 570;//29Sept2024 we found an extra 0.6 ms correction is needed. This may change depends on the alignment of the V0 slowing beam relative to its shutters.
-			Pulse(time, shutterslowdelay+ shutterslowdelayCorrection - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
-			Pulse(time, shutterslowdelay+ shutterslowdelayCorrection + DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
-			Pulse(time, shutterslowdelay+ shutterslowdelayCorrection - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz Shutter. Which takes approximately 2ms (2000 us) to respond and up to 1ms to change state. 
+
+			if (V0slowingOn)
+			{
+				///V0 Slowing
+				// The complicated pulse sequence below is to make the V0 AOM following a sequence of constantly on, quickly switch off, pulsed on, quickly switch off, constantly on, which makes it most of the time warm to reduce the warm-up effect
+				int shutterslowdelayCorrection = 570;//29Sept2024 we found an extra 0.6 ms correction is needed. This may change depends on the alignment of the V0 slowing beam relative to its shutters.
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection + DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz Shutter. Which takes approximately 2ms (2000 us) to respond and up to 1ms to change state. 
+			}
+
+			else // Michail 24/11/2024. On the OFF shots, v0 slowing still shines but only for 30 us
+            {
+				// int offShotSlowingDuration = 10;
+				///V0 Slowing
+				// The complicated pulse sequence below is to make the V0 AOM following a sequence of constantly on, quickly switch off, pulsed on, quickly switch off, constantly on, which makes it most of the time warm to reduce the warm-up effect
+				int shutterslowdelayCorrection = 570;//29Sept2024 we found an extra 0.6 ms correction is needed. This may change depends on the alignment of the V0 slowing beam relative to its shutters.
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection + offShotSlowingDuration, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 4000, offShotSlowingDuration + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz Shutter. Which takes approximately 2ms (2000 us) to respond and up to 1ms to change state. 
+			}
 
 			///V1V2V3, all the repumps are controlled by the same two Shutters		
 			//This shutter, Tom U (it was Thorlab) is responsible for the opening edge of the repump light pulse, we only care about the timing of the rising edge of this shutter itself
@@ -171,7 +193,7 @@ namespace ScanMaster.Acquire.Patterns
 
 		}
 		public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int delayToDetectorTrigger, string detectorTriggerSource, int vacShutterDelay, int vacShutterDuration, int padStart, int cameraTriggerDelay, int cameraBackgroundDelay)
-		{
+		{	// operations that happens in both on and off shots. The detector trigger changes its trigger source for di
 			int time = 0;
 			int tempTime = 0;
 
@@ -193,20 +215,25 @@ namespace ScanMaster.Acquire.Patterns
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
-			// Detector trigger
+			// Detector trigger, PMT data acquisition trigger
 			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
+			// Dector trigger, Camera enabler trigger: enable the camera data acquisition trigger
+			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, CAMERA_TRIGGER_LENGTH,
+		    ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameraEnablerTrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
+
 			// Camera trigger
-			tempTime = Pulse(startTime, cameraTriggerDelay + valveToQ, DETECTOR_TRIGGER_LENGTH,
+			tempTime = Pulse(startTime, cameraTriggerDelay + valveToQ, CAMERA_TRIGGER_LENGTH,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
 			// Camera background trigger
-			//tempTime = Pulse(startTime, cameraBackgroundDelay + valveToQ, DETECTOR_TRIGGER_LENGTH,
-			//	((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
-			//if (tempTime > time) time = tempTime;
+			tempTime = Pulse(startTime, cameraBackgroundDelay + valveToQ, CAMERA_TRIGGER_LENGTH,	// Uncommented by Michail, 26/11/2024
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
 
 			return time;
 		}

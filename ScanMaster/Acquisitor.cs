@@ -179,7 +179,7 @@ namespace ScanMaster.Acquire
                 }
 
             }
-            catch (Exception e)
+             catch (Exception e)
             {
                 // last chance exception handler - this stops a rogue exception in the
                 // acquire loop from killing the whole program

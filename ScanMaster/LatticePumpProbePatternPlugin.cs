@@ -60,6 +60,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["v0chirpTriggerDuration"] = 5000;//10Sept2024, modified to access the chirpTriggerDuration, which is the duration by which the TCL is blocked. N.B. The actual chirp duration is set by Moku:Go GUI. (search liquid instrument on the desktop)
 			settings["cameraTriggerDelay"] = 30000;
 			settings["cameraBackgroundDelay"] = 70000;
+			settings["offShotSlowingDuration"] = 10;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -103,7 +104,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["v0chirpTriggerDelay"],
 				(int)settings["v0chirpTriggerDuration"],
 				(int)settings["cameraTriggerDelay"],
-				(int)settings["cameraBackgroundDelay"]);
+				(int)settings["cameraBackgroundDelay"],
+				(int)settings["offShotSlowingDuration"]);
 			/*
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);
