@@ -67,8 +67,6 @@ namespace AlFHardwareControl
             // sourceEnable
             // 
             this.sourceEnable.AutoSize = true;
-            this.sourceEnable.Checked = true;
-            this.sourceEnable.CheckState = System.Windows.Forms.CheckState.Checked;
             this.sourceEnable.Location = new System.Drawing.Point(273, 43);
             this.sourceEnable.Name = "sourceEnable";
             this.sourceEnable.Size = new System.Drawing.Size(96, 17);

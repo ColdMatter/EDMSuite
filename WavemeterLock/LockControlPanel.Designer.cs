@@ -73,6 +73,7 @@ namespace WavemeterLock
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
             this.RMSValue = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
@@ -85,7 +86,6 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.controlPanel.SuspendLayout();
@@ -421,6 +421,17 @@ namespace WavemeterLock
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
             // 
+            // checkBoxLogData
+            // 
+            this.checkBoxLogData.AutoSize = true;
+            this.checkBoxLogData.Location = new System.Drawing.Point(284, 103);
+            this.checkBoxLogData.Name = "checkBoxLogData";
+            this.checkBoxLogData.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxLogData.TabIndex = 75;
+            this.checkBoxLogData.Text = "Log Data";
+            this.checkBoxLogData.UseVisualStyleBackColor = true;
+            this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
+            // 
             // RMSValue
             // 
             this.RMSValue.AutoSize = true;
@@ -547,17 +558,6 @@ namespace WavemeterLock
             this.labelOutOfRange.Size = new System.Drawing.Size(74, 13);
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
-            // 
-            // checkBoxLogData
-            // 
-            this.checkBoxLogData.AutoSize = true;
-            this.checkBoxLogData.Location = new System.Drawing.Point(284, 103);
-            this.checkBoxLogData.Name = "checkBoxLogData";
-            this.checkBoxLogData.Size = new System.Drawing.Size(70, 17);
-            this.checkBoxLogData.TabIndex = 75;
-            this.checkBoxLogData.Text = "Log Data";
-            this.checkBoxLogData.UseVisualStyleBackColor = true;
-            this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
             // 
             // LockControlPanel
             // 
