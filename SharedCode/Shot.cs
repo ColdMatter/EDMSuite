@@ -14,12 +14,25 @@ namespace Data
 	{
 		private ArrayList tofs = new ArrayList();
 
+		private DateTime timeStamp = DateTime.Now;
+
 		[XmlArray]
 		[XmlArrayItem(Type = typeof(TOF))]
 		public ArrayList TOFs
 		{
 			get { return tofs; }
 		}
+
+		public DateTime TimeStamp
+        {
+            get { return timeStamp;  }
+			set { timeStamp = value; }
+		}
+
+		public void SetTimeStamp()
+        {
+			timeStamp = DateTime.Now;
+        }
 
 		public double Integrate( int index, double startTime, double endTime ) 
 		{

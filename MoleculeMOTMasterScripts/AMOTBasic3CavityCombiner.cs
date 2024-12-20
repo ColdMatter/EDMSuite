@@ -107,8 +107,8 @@ public class Patterns : MOTMasterScript
         */
         //Lambda configuration
         Parameters["SidebandFreq1"] = 248.00 / 2.0; //+ F = 1- 
-        Parameters["SidebandFreq2"] = 318.50 / 2.0; //- F = 0
-        Parameters["SidebandFreq3"] = 395.00 / 2.0; //- F = 2
+        Parameters["SidebandFreq2"] = 326.00 / 2.0; //- F = 0
+        Parameters["SidebandFreq3"] = 400.00 / 2.0; //- F = 2
         Parameters["SidebandFreq4"] = 374.00 / 2.0; //+ F = 1+
 
         Parameters["BXAOMAttenuation"] = 4.0;
@@ -117,7 +117,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["SidebandAmp1"] = 6.0;
         Parameters["SidebandAmp2"] = 7.0;
-        Parameters["SidebandAmp3"] = 6.5;
+        Parameters["SidebandAmp3"] = 7.0;
         Parameters["SidebandAmp4"] = 7.0;
 
         //VCO Calibration
@@ -149,12 +149,15 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
+        p.AddEdge("v0rfswitch1", 0, false);
+        p.AddEdge("v0rfswitch2", 0, false);
+        p.AddEdge("v0rfswitch3", 0, false);
+        p.AddEdge("v0rfswitch4", 0, false);
+
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
-        //p.AddEdge("cafPushSwitch", 0, false);
-        p.AddEdge("cafPushSwitch", 200, true);
-        p.AddEdge("cafPushSwitch", 400, false);
+      
 
         p.AddEdge("bXSlowingShutter", 0, false);
         p.AddEdge("bXSlowingShutter", 20000, true);
@@ -236,6 +239,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf3Amp", 0, (double)Parameters["SidebandAmp3"]);
         p.AddAnalogValue("Rf4Amp", 0, (double)Parameters["SidebandAmp4"]);
 
+        
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
 
