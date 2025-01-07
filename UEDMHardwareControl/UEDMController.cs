@@ -194,12 +194,23 @@ namespace UEDMHardwareControl
         }
         private double ReadAnalogInput(Task task)
         {
-            AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
+            try
+            {
+                AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
 
-
-            double val = reader.ReadSingleSample();
-            task.Control(TaskAction.Unreserve);
-            return val;
+                task.Start();
+                double val = reader.ReadSingleSample();
+                task.Stop();
+                task.Control(TaskAction.Unreserve);
+                return val;
+            }
+            catch (Exception e)
+            {
+                UpdateStatus("Measurement error:    " + e.Message + ". Missed Analog data.");
+                Console.WriteLine("Could not read data, ran into exception: " + e.Message + " " + e.StackTrace);
+                double fakepoint = 1.0;
+                return fakepoint;
+            }
         }
 
         private double ReadAnalogInput(Task task, double sampleRate, int numOfSamples)
@@ -397,7 +408,8 @@ namespace UEDMHardwareControl
             QueryMWPowerDetection(1);
             QueryMWFrequencyDetection(0);
             QueryMWFrequencyDetection(1);
-
+            //USB Box enabled?
+            UsbBBoxEnabler();
         }
 
         #endregion
@@ -2330,12 +2342,20 @@ namespace UEDMHardwareControl
         public void UpdatePressureMonitor()
         {
             //sample the pressure
-            //lock (HardwareControllerDAQCardLock) // Lock access to the DAQ card
-            //{
-            lastSourcePressure = sourcePressureMonitor.Pressure * SourceGaugeCorrectionFactor;
-            lastBeamlinePressure = beamlinePressureMonitor.Pressure * BeamlineGaugeCorrectionFactor;
-            lastDetectionPressure = detectionPressureMonitor.Pressure * DetectionGaugeCorrectionFactor;
-            //}
+            try
+            {
+                lock (HardwareControllerDAQCardLock) // Lock access to the DAQ card
+                {
+                    lastSourcePressure = sourcePressureMonitor.Pressure * SourceGaugeCorrectionFactor;
+                    lastBeamlinePressure = beamlinePressureMonitor.Pressure * BeamlineGaugeCorrectionFactor;
+                    lastDetectionPressure = detectionPressureMonitor.Pressure * DetectionGaugeCorrectionFactor;
+                }
+            }
+            catch (Exception e)
+            {
+                UpdateStatus("Measurement error:    " + e.Message + ". Missed pressure data.");
+                Console.WriteLine("Could not read pressure, ran into exception: " + e.Message + " " + e.StackTrace);
+            }
 
             //add samples to Queues for averaging
             pressureSamplesSource.Enqueue(lastSourcePressure);
@@ -3505,6 +3525,34 @@ namespace UEDMHardwareControl
             try
             {
                 targetStepperControl.TriggerMoveMode("20","2","5");
+            }
+            catch (Exception e)
+            {
+                string errorMsg = e.ToString();
+                Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
+            }
+        }
+
+        public bool targetStepDirection
+        {
+            get
+            {
+                return window.TargetStepDirectionCBox.Checked;
+            }
+            set
+            {
+                window.SetCheckBoxCheckedStatus(window.TargetStepDirectionCBox, value);
+            }
+        }
+
+        public void SetTargetStepperDirection()
+        {
+            try
+            {
+                if (targetStepDirection)
+                {
+
+                }
             }
             catch (Exception e)
             {
@@ -4930,11 +4978,11 @@ namespace UEDMHardwareControl
         {
             lock (switchingLock)
             {
-                Thread.Sleep((int)(1000 * ERampDownTime));
-                Thread.Sleep((int)(1000 * ERampDownDelay));
+                //Thread.Sleep((int)(1000 * ERampDownTime));
+                //Thread.Sleep((int)(1000 * ERampDownDelay));
                 Thread.Sleep((int)(1000 * EBleedTime));
                 Thread.Sleep((int)(1000 * ESwitchTime));
-                Thread.Sleep((int)(1000 * ERampUpTime));
+                //Thread.Sleep((int)(1000 * ERampUpTime));
                 Thread.Sleep((int)(1000 * EOvershootHold));
                 Thread.Sleep((int)(1000 * ERampUpDelay));
             }
@@ -5249,6 +5297,7 @@ namespace UEDMHardwareControl
         public void ClearLeakageFileSave()
         {
             leakageFileSave = "";
+            csvDataLeakage = "";
         }
 
         private Thread iMonitorPollThread;
@@ -5257,11 +5306,11 @@ namespace UEDMHardwareControl
         {
             get
             {
-                return int.Parse(window.iMonitorPollPeriodInput.Text);
+                return int.Parse(window.tbiMonitorPollPeriod.Text);
             }
             set
             {
-                window.SetTextBox(window.iMonitorPollPeriodInput, value.ToString());
+                window.SetTextBox(window.tbiMonitorPollPeriod, value.ToString());
             }
         }
 
@@ -5278,11 +5327,15 @@ namespace UEDMHardwareControl
         {
             if (window.logCurrentDataCheckBox.Checked)
             {
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "CSV|*.csv";
-                saveFileDialog1.Title = "Save a CSV File";
-                saveFileDialog1.ShowDialog();
-                leakageFileSave += saveFileDialog1.FileName;
+                if (leakageFileSave == "")
+                {
+                    Console.WriteLine("leakage string is " + leakageFileSave);
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                    saveFileDialog1.Filter = "CSV|*.csv";
+                    saveFileDialog1.Title = "Save a CSV File";
+                    saveFileDialog1.ShowDialog();
+                    leakageFileSave += saveFileDialog1.FileName;
+                }
                 if (leakageFileSave != "")
                 {
                     if (csvDataLeakage == "") SetLeakageCSVHeaderLine();
@@ -5341,26 +5394,29 @@ namespace UEDMHardwareControl
                 lock (iMonitorLock)
                 {
                     UpdateIMonitor();
-                    UpdateVMonitorUI();
-
-                    if (iMonitorFlag)
+                    if (window.pollVCheckBox.Checked)
                     {
-                        iMonitorFlag = false;
-                        break;
+                        UpdateVMonitorUI();
                     }
+                }
 
-                    if (window.logCurrentDataCheckBox.Checked)
-                    {
-                        string folder = @" C:\Users\ultraedm\Desktop\Leakage_Current_Tests\";
-                        string fileName = "Plate_Test_East_neg_West_pos_210602_01.csv";
-                        string fullPath = folder + fileName;
-                        StreamWriter w;
-                        w = new StreamWriter(leakageFileSave, true);
-                        csvDataLeakage = String.Format("{4,8:D}, {4,5:HH:mm:ss.fff}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}", // local time format was "8:T"
-                            lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
-                        w.WriteLine(csvDataLeakage);
-                        w.Close();
-                    }
+                if (iMonitorFlag)
+                {
+                    iMonitorFlag = false;
+                    break;
+                }
+
+                if (window.logCurrentDataCheckBox.Checked)
+                {
+                    string folder = @" C:\Users\ultraedm\Desktop\Leakage_Current_Tests\";
+                    string fileName = "Plate_Test_East_neg_West_pos_210602_01.csv";
+                    string fullPath = folder + fileName;
+                    StreamWriter w;
+                    w = new StreamWriter(leakageFileSave, true);
+                    csvDataLeakage = String.Format("{4,8:D}, {4,5:HH:mm:ss.fff}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}", // local time format was "8:T"
+                        lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                    w.WriteLine(csvDataLeakage);
+                    w.Close();
                 }
             }
             window.EnableControl(window.startIMonitorPollButton, true);
@@ -5605,7 +5661,10 @@ namespace UEDMHardwareControl
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             SetDigitalLine("bSwitch", enable);
             SetDigitalLine("notB", !enable);
-            string reply = UpdateUSBCurrent();
+            string reply = "No USB";
+            if (UsbBBoxEnabled){
+                reply = UpdateUSBCurrent();
+            }
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for B flip with response "+reply);
 
@@ -5616,7 +5675,11 @@ namespace UEDMHardwareControl
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             SetDigitalLine("dB", enable);
             SetDigitalLine("notDB", !enable);
-            string reply = UpdateUSBCurrent();
+            string reply = "No USB";
+            if (UsbBBoxEnabled)
+            {
+                reply = UpdateUSBCurrent();
+            }
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for dB flip with response " + reply);
         }
@@ -5718,14 +5781,40 @@ namespace UEDMHardwareControl
             }
         }
 
+        public bool UsbBBoxEnabled
+        {
+            get
+            {
+                return window.UsbBBoxCheck.Checked;
+            }
+        }
+
+        public void UsbBBoxEnabler()
+        {
+            if (UsbBBoxEnabled)
+            {
+                window.USBbBoxUpdateButton.Enabled = true;
+                window.UsbBBoxCmdBtn.Enabled = true;
+            }
+            else
+            {
+                window.USBbBoxUpdateButton.Enabled = false;
+                window.UsbBBoxCmdBtn.Enabled = false;
+            }
+        }
+
         public void SetUSBBBias()
         {
+
             //DateTime localtime;
             //localtime = DateTime.Now;
             //Console.WriteLine(String.Format("{0,8:HH:mm:ss.fff}", localtime));
 
             double bBoxSetPoint = Double.Parse(window.USBbBoxTextBox.Text)/1000.0;
-            SetUSBBCurrent(bBoxSetPoint);
+            if (UsbBBoxEnabled)
+            {
+                SetUSBBCurrent(bBoxSetPoint);
+            }
         }
 
         public string SetUSBBCurrent(double setpoint)
@@ -7432,7 +7521,7 @@ namespace UEDMHardwareControl
             FreqMonitorFlag = true;
             window.EnableControl(window.UpdateBeatFreq, true);
             window.EnableControl(window.LogFreqDataCheckBox, true);
-            ClearLeakageFileSave();
+            ClearFreqFileSave();
         }
         private void FreqMonitorPollWorker()
         {

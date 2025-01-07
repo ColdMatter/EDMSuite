@@ -156,6 +156,20 @@ def getSetPoint2(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector
     center=round(gfitter.returncenter(),6)
     return center
 
+def getCoolingRatio(filePath='..\\..\\Example_scan_01.zip', scantype='OnOffRatio', detector=0,intStart=60, intEnd=500, bgStart=510, bgEnd=650):
+    scanSerializer = ScanSerializer()
+    #gfitter = GaussianFitter()
+
+    file = getFile(filePath)
+
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
+
+    [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
+    mean=np.mean(signal)
+    std=np.std(signal)
+    if mean<1:
+        mean=1/mean
+    return [mean,std]
 # Plotting
 def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
     scanSerializer = ScanSerializer()

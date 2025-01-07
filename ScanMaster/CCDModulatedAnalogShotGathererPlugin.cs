@@ -44,8 +44,6 @@ namespace ScanMaster.Acquire.Plugins
         private double[,] latestData;
 
 
-		//Rhys Try
-
 		protected override void InitialiseBaseSettings()
 		{
 			settings["gateStartTime"] = 600;
@@ -103,7 +101,7 @@ namespace ScanMaster.Acquire.Plugins
 					COPulseIdleState.Low,
 					0,
 					100,
-					200*(int)settings["ccdEnableLength"]
+					(20000000/(int)settings["sampleRate"]) * (int)settings["ccdEnableLength"]
 					);
 				
 				//counterTask1.COChannels[0].PulseTerminal = "/DAQ_PXIe_6363/PFI12";

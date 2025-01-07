@@ -292,6 +292,7 @@
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tabPageBfield = new System.Windows.Forms.TabPage();
             this.groupBoxbUSB = new System.Windows.Forms.GroupBox();
+            this.UsbBBoxCheck = new System.Windows.Forms.CheckBox();
             this.tbUsbBBoxCmd = new System.Windows.Forms.TextBox();
             this.UsbBBoxCmdBtn = new System.Windows.Forms.Button();
             this.UsbBboxCmdlb = new System.Windows.Forms.Label();
@@ -414,6 +415,7 @@
             this.cMinusTextBox = new System.Windows.Forms.TextBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.pollVCheckBox = new System.Windows.Forms.CheckBox();
             this.tbiMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.changePollPeriodButton = new System.Windows.Forms.Button();
             this.rescaleIMonitorChartButton = new System.Windows.Forms.Button();
@@ -539,6 +541,7 @@
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
             this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.TargetHomeButton = new System.Windows.Forms.Button();
             this.TargetTriggerButton = new System.Windows.Forms.Button();
             this.TargetExtButton = new System.Windows.Forms.Button();
             this.TargetManualButton = new System.Windows.Forms.Button();
@@ -733,7 +736,7 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.TargetHomeButton = new System.Windows.Forms.Button();
+            this.TargetStepDirectionCBox = new System.Windows.Forms.CheckBox();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -3221,6 +3224,7 @@
             // 
             // groupBoxbUSB
             // 
+            this.groupBoxbUSB.Controls.Add(this.UsbBBoxCheck);
             this.groupBoxbUSB.Controls.Add(this.tbUsbBBoxCmd);
             this.groupBoxbUSB.Controls.Add(this.UsbBBoxCmdBtn);
             this.groupBoxbUSB.Controls.Add(this.UsbBboxCmdlb);
@@ -3239,6 +3243,15 @@
             this.groupBoxbUSB.TabIndex = 101;
             this.groupBoxbUSB.TabStop = false;
             this.groupBoxbUSB.Text = "USB B box";
+            // 
+            // UsbBBoxCheck
+            // 
+            this.UsbBBoxCheck.Location = new System.Drawing.Point(193, 79);
+            this.UsbBBoxCheck.Name = "UsbBBoxCheck";
+            this.UsbBBoxCheck.Size = new System.Drawing.Size(87, 46);
+            this.UsbBBoxCheck.TabIndex = 55;
+            this.UsbBBoxCheck.Text = "Use USB B box?";
+            this.UsbBBoxCheck.CheckedChanged += new System.EventHandler(this.UsbBBoxCheck_CheckedChanged);
             // 
             // tbUsbBBoxCmd
             // 
@@ -4398,6 +4411,7 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.pollVCheckBox);
             this.groupBox7.Controls.Add(this.tbiMonitorPollPeriod);
             this.groupBox7.Controls.Add(this.changePollPeriodButton);
             this.groupBox7.Controls.Add(this.rescaleIMonitorChartButton);
@@ -4439,6 +4453,16 @@
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // pollVCheckBox
+            // 
+            this.pollVCheckBox.AutoSize = true;
+            this.pollVCheckBox.Location = new System.Drawing.Point(678, 88);
+            this.pollVCheckBox.Name = "pollVCheckBox";
+            this.pollVCheckBox.Size = new System.Drawing.Size(58, 17);
+            this.pollVCheckBox.TabIndex = 79;
+            this.pollVCheckBox.Text = "poll V?";
+            this.pollVCheckBox.UseVisualStyleBackColor = true;
             // 
             // tbiMonitorPollPeriod
             // 
@@ -4799,7 +4823,7 @@
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(40, 23);
             this.label18.TabIndex = 37;
-            this.label18.Text = "S (nA)";
+            this.label18.Text = "E (nA)";
             // 
             // label19
             // 
@@ -4807,7 +4831,7 @@
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(40, 23);
             this.label19.TabIndex = 36;
-            this.label19.Text = "N (nA)";
+            this.label19.Text = "W (nA)";
             // 
             // tabPageADIO
             // 
@@ -5851,6 +5875,7 @@
             // 
             // gBTargetStepper
             // 
+            this.gBTargetStepper.Controls.Add(this.TargetStepDirectionCBox);
             this.gBTargetStepper.Controls.Add(this.TargetHomeButton);
             this.gBTargetStepper.Controls.Add(this.TargetTriggerButton);
             this.gBTargetStepper.Controls.Add(this.TargetExtButton);
@@ -5864,6 +5889,16 @@
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
+            // 
+            // TargetHomeButton
+            // 
+            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
+            this.TargetHomeButton.Name = "TargetHomeButton";
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetHomeButton.TabIndex = 6;
+            this.TargetHomeButton.Text = "Reset Pos";
+            this.TargetHomeButton.UseVisualStyleBackColor = true;
+            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
             // 
             // TargetTriggerButton
             // 
@@ -8196,15 +8231,14 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // TargetHomeButton
+            // TargetStepDirectionCBox
             // 
-            this.TargetHomeButton.Location = new System.Drawing.Point(591, 51);
-            this.TargetHomeButton.Name = "TargetHomeButton";
-            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
-            this.TargetHomeButton.TabIndex = 6;
-            this.TargetHomeButton.Text = "Reset Pos";
-            this.TargetHomeButton.UseVisualStyleBackColor = true;
-            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
+            this.TargetStepDirectionCBox.Location = new System.Drawing.Point(256, 51);
+            this.TargetStepDirectionCBox.Name = "TargetStepDirectionCBox";
+            this.TargetStepDirectionCBox.Size = new System.Drawing.Size(118, 24);
+            this.TargetStepDirectionCBox.TabIndex = 20;
+            this.TargetStepDirectionCBox.Text = "Direction C/AC?";
+            this.TargetStepDirectionCBox.CheckedChanged += new System.EventHandler(this.TargetStepDirectionCBox_CheckedChanged);
             // 
             // ControlWindow
             // 
@@ -9016,7 +9050,6 @@
         public NationalInstruments.UI.WindowsForms.Led ledChBDetA;
         private System.Windows.Forms.GroupBox groupBoxbUSB;
         public System.Windows.Forms.TextBox USBbBoxTextBox;
-        private System.Windows.Forms.Button USBbBoxUpdateButton;
         private System.Windows.Forms.Label labelUSBbBoxCurrent;
         public System.Windows.Forms.TextBox UsbSmallBTextBox;
         private System.Windows.Forms.Label labelUsbSmallB;
@@ -9025,8 +9058,12 @@
         public System.Windows.Forms.TextBox UsbBiasTextBox;
         private System.Windows.Forms.Label labelUsbBiasB;
         public System.Windows.Forms.TextBox tbUsbBBoxCmd;
-        private System.Windows.Forms.Button UsbBBoxCmdBtn;
         private System.Windows.Forms.Label UsbBboxCmdlb;
         private System.Windows.Forms.Button TargetHomeButton;
+        public System.Windows.Forms.CheckBox UsbBBoxCheck;
+        public System.Windows.Forms.CheckBox pollVCheckBox;
+        public System.Windows.Forms.Button USBbBoxUpdateButton;
+        public System.Windows.Forms.Button UsbBBoxCmdBtn;
+        public System.Windows.Forms.CheckBox TargetStepDirectionCBox;
     }
 }

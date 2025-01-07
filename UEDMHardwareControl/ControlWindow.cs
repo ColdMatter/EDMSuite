@@ -1725,5 +1725,15 @@ namespace UEDMHardwareControl
         {
             controller.ResetTargetStepperPosition();
         }
+
+        private void UsbBBoxCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UsbBBoxEnabler();
+        }
+
+        private void TargetStepDirectionCBox_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetTargetStepperDirection();
+        }
     }
 }

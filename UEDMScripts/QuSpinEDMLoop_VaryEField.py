@@ -1,4 +1,4 @@
-# Import a whole load of stuff
+## Import a whole load of stuff
 from System.IO import *
 from System.Drawing import *
 from System.Runtime.Remoting import *
@@ -60,8 +60,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default.xml")
-
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+    
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState

@@ -52,6 +52,9 @@ namespace ScanMaster.Acquire.Plugin
             scanOutputPlugins.Add("NI Rfsg amplitude output", typeof(NIRfsgAmplitudeOutputPlugin));
             scanOutputPlugins.Add("EDM hardware control output", typeof(HardwareControllerOutputPlugin));
 #endif
+#if ultracoldEDM
+			scanOutputPlugins.Add("UEDM hardware control output", typeof(UEDMHardwareControllerOutputPlugin));
+#endif
 			// switchOutputPlugins
 			switchOutputPlugins.Add("No switch", typeof(NullSwitchPlugin));
             switchOutputPlugins.Add("TTL switch", typeof(TTLSwitchPlugin));

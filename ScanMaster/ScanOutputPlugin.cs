@@ -35,7 +35,7 @@ namespace ScanMaster.Acquire.Plugin
     ,XmlInclude(typeof(HardwareControllerOutputPlugin))
 #endif
 #if ultracoldEDM
-	,XmlInclude(
+	,XmlInclude(typeof(UEDMHardwareControllerOutputPlugin))
 #endif
 	]
 	public abstract class ScanOutputPlugin : AcquisitorPlugin
