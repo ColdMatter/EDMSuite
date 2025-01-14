@@ -638,6 +638,7 @@
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="DMMInputPlugin.cs" />
+    <Compile Include="UEDMHardwareControllerOutputPlugin.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
     <Compile Include="CCDModulatedAnalogShotGathererPlugin.cs" />

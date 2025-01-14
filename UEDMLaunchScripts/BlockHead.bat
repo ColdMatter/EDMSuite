@@ -1,6 +1,5 @@
-start ..\ScanMaster\bin\ultracoldEDM\ScanMaster.exe
-start ..\UEDMHardwareControl\bin\ultracoldEDM\UEDMHardwareControl.exe
-start ..\EDMPhaseLock\bin\ultracoldEDM\EDMPhaseLock.exe
-start ..\EDMFieldLock\bin\ultracoldEDM\EDMFieldLock.exe
-start ..\EDMBlockHead\bin\ultracoldEDM\EDMBlockHead.exe
+start ..\ScanMaster\bin\x64\ultracoldEDM\ScanMaster.exe
+start ..\UEDMHardwareControl\bin\x64\ultracoldEDM\UEDMHardwareControl.exe
+start ..\EDMPhaseLock\bin\x64\ultracoldEDM\EDMPhaseLock.exe
+start ..\EDMBlockHead\bin\x64\ultracoldEDM\EDMBlockHead.exe
 

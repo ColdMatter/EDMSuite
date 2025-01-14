@@ -17,37 +17,34 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 100000;
         Parameters["Void"] = 0;
-        Parameters["YAGSwitch"] = true;
+        Parameters["CameraDelay"] = 1000;
+        Parameters["MOT_probe_on"] = true;
+        Parameters["Abs_delay"] = 10000;
 
         switchConfiguration = new Dictionary<string, List<bool>>
             {
-                {"YAGSwitch", new List<bool>{true, false}}
+                {"MOT_probe_on", new List<bool>{true, false}}
             };
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
+        int cameraDelay = Convert.ToInt32(Parameters["CameraDelay"]);
+        int absDelay = Convert.ToInt32(Parameters["Abs_delay"]);
 
-        //MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters); // This is how you load "preset" patterns.          
-        //   p.AddEdge("v00Shutter", 0, true);
-        //p.Pulse(patternStartBeforeQ, 3000 - 1400, 10000, "bXSlowingShutter"); //Takes 14ms to start closing
+        p.AddEdge("VECSEL2_Shutter", 0, true);
+        if (!(bool)Parameters["MOT_probe_on"])
+            p.AddEdge("VECSEL2_Shutter", 1, false);
 
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.AddEdge("q", absDelay + 14, true);
+        p.AddEdge("q", absDelay + 100, false);
 
-        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
-        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
+        p.AddEdge("flash", absDelay + 0, true);
+        p.AddEdge("flash", absDelay + 100, false);
 
-
-        if ((bool)Parameters["YAGSwitch"])
-        {
-            p.AddEdge("flash", 0, true);
-            p.AddEdge("flash", 100, false);
-        }
-
-        p.AddEdge("q", 14, true);
-        p.AddEdge("q", 100, false);
-        
+        p.AddEdge("detector", absDelay + cameraDelay, true);
+        p.AddEdge("detector", absDelay + cameraDelay + 10, false);
 
         return p;
     }
@@ -55,7 +52,8 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
+        p.AddChannel("VECSEL3_AOM_VCA");
+        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

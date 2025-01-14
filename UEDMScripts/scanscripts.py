@@ -5,7 +5,7 @@ from DAQ.Analyze import *
 import time
 from uedmfuncs import *
 
-VOLT_PER_GAMMA = 0.0122 # V / Gamma
+VOLT_PER_GAMMA = 0.0102 # V / Gamma (used to be 0.0122 before cavity change Nov24)
 
 def probescan():
     currentSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
@@ -98,10 +98,94 @@ def v2scan():
     print("\nSetting new probe setpoint at " + str(newSetPoint))
     tcl.SetLaserSetpoint("VISCavity", "probelaser", newSetPoint)
 
+def coolingTOF():
+    # Not scanning anything but switching the cooling on and off
+    [filepath,file] = getNextFile()
+    scanFile = file + "_coolingTOF" + ".zip"
+    scanPath = filepath + "_coolingTOF" + ".zip"
+    print("Saving as " + file + "_*.zip")
+    print("")
+    SelectProfile("DownstreamTOF")
+    sm.AdjustProfileParameter("switch","switchActive", str(True), False)
+    sm.AdjustProfileParameter("shot","sampleRate", str(10000), False)
+    sm.AdjustProfileParameter("shot","gateStartTime", str(40), False)
+    sm.AdjustProfileParameter("shot","gateLength", str(1200), False)
+    sm.AdjustProfileParameter("out", "start", str(0), False)
+    sm.AdjustProfileParameter("out", "end", str(1), False)
+    sm.AdjustProfileParameter("out", "pointsPerScan", "256", False)
+    print("\nScanning!\n")
+    sm.AcquireAndWait(1)
+    print("\nSaving scan as "+scanFile)
+    sm.SaveAverageData(scanPath)
+    System.Threading.Thread.CurrentThread.Join(5000)
+    coolingRatio=getCoolingRatio(scanFile)
+    print("\nCooling ratio is " + str(coolingRatio))
+
+def p12scan():
+    # Check the setpoint
+    currentSetpoint = tcl.GetLaserSetpoint("OPCavity", "P12")
+
+    # Scan around rough setpoint
+    print("Current p12 setpoint is: " + str(currentSetpoint)+"\n")
+    print("Scanning 0.35 around setpoint\n")
+    [filepath,file] = getNextFile()
+    scanFile = file + "_p12scan" + ".zip"
+    scanPath = filepath + "_p12scan" + ".zip"
+    print("Saving as " + file + "_*.zip")
+    print("")
+    SelectProfile("TCL Setpoint Scan P12")
+    sm.AdjustProfileParameter("switch","switchActive", str(True), False)
+    sm.AdjustProfileParameter("shot","sampleRate", str(10000), False)
+    sm.AdjustProfileParameter("shot","gateStartTime", str(40), False)
+    sm.AdjustProfileParameter("shot","gateLength", str(900), False)
+    sm.AdjustProfileParameter("out", "start", str(round(currentSetpoint-0.35,2)), False)
+    sm.AdjustProfileParameter("out", "end", str(round(currentSetpoint+0.35,2)), False)
+    sm.AdjustProfileParameter("out", "scanMode", "updown", False)
+    sm.AdjustProfileParameter("out", "pointsPerScan", "150", False)
+    print("\nScanning!\n")
+    sm.AcquireAndWait(1)
+    print("\nSaving scan as "+scanFile)
+    sm.SaveAverageData(scanPath)
+    System.Threading.Thread.CurrentThread.Join(5000)
+    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 60, 500, 550, 850),6)
+    print("\nSetting new p12 setpoint at " + str(newSetPoint))
+    tcl.SetLaserSetpoint("OPCavity", "P12", newSetPoint)
+
+def q0scan():
+    # Check the setpoint
+    currentSetpoint = tcl.GetLaserSetpoint("OPCavity", "Q0")
+
+    # Scan around rough setpoint
+    print("Current q0 setpoint is: " + str(currentSetpoint)+"\n")
+    print("Scanning 0.6 below and 0.2 above the setpoint\n")
+    [filepath,file] = getNextFile()
+    scanFile = file + "_q0scan" + ".zip"
+    scanPath = filepath + "_q0scan" + ".zip"
+    print("Saving as " + file + "_*.zip")
+    print("")
+    SelectProfile("TCL Setpoint Scan P12")
+    sm.AdjustProfileParameter("switch","switchActive", str(True), False)
+    sm.AdjustProfileParameter("shot","sampleRate", str(10000), False)
+    sm.AdjustProfileParameter("shot","gateStartTime", str(40), False)
+    sm.AdjustProfileParameter("shot","gateLength", str(900), False)
+    sm.AdjustProfileParameter("out", "start", str(round(currentSetpoint-0.6,2)), False)
+    sm.AdjustProfileParameter("out", "end", str(round(currentSetpoint+0.2,2)), False)
+    sm.AdjustProfileParameter("out", "scanMode", "updown", False)
+    sm.AdjustProfileParameter("out", "pointsPerScan", "150", False)
+    print("\nScanning!\n")
+    sm.AcquireAndWait(1)
+    print("\nSaving scan as "+scanFile)
+    sm.SaveAverageData(scanPath)
+    System.Threading.Thread.CurrentThread.Join(5000)
+    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 60, 500, 550, 850),6)
+    print("\nSetting new q0 setpoint at " + str(newSetPoint))
+    tcl.SetLaserSetpoint("OPCavity", "Q0", newSetPoint)
+
+
 def main():
     print("To scan the lasers on TCL, put them roughly where we expect using the wavemeter and lock them on TCL.")
     print("Then use these functions to complete scans of the appropriate laser, each one assume the previous has been completed:")
-    print("\n probescan() \n v1scan()")
+    print("\n probescan() \n v1scan() \n coolingTOF() \n p12scan() \n q0scan()")
     pass
 
 if __name__ == "__main__":

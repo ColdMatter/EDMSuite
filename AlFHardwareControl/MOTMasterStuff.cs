@@ -486,13 +486,60 @@ namespace AlFHardwareControl
 
         }
 
+
+        private System.IO.DirectoryInfo camera_dir = new System.IO.DirectoryInfo((string)Environs.FileSystem.Paths["ExternalFilesPath"]);
+        private System.IO.DirectoryInfo temp_dir = new System.IO.DirectoryInfo((string)Environs.FileSystem.Paths["MMStuffTemp"]);
+        private void clear_camera_dir()
+        {
+            foreach (System.IO.FileInfo file in camera_dir.EnumerateFiles())
+                file.Delete();
+
+            foreach (System.IO.DirectoryInfo dir in camera_dir.EnumerateDirectories())
+                dir.Delete(true);
+        }
+
+        private void clear_scan_dir(int scan)
+        {
+            System.IO.DirectoryInfo scan_directory = System.IO.Directory.CreateDirectory(System.IO.Path.Combine(temp_dir.FullName, scan.ToString()));
+            if (!scan_directory.Exists) return;
+            scan_directory.Delete(true);
+        }
+
+
+        private void clear_temp_dir()
+        {
+            foreach (System.IO.FileInfo file in temp_dir.EnumerateFiles())
+                file.Delete();
+
+            foreach (System.IO.DirectoryInfo dir in temp_dir.EnumerateDirectories())
+                dir.Delete(true);
+
+        }
+
+        private void push_to_temp_dir(int scan, double point, int shot)
+        {
+            System.IO.DirectoryInfo new_directory = System.IO.Directory.CreateDirectory(System.IO.Path.Combine(temp_dir.FullName, scan.ToString(), point.ToString(), shot.ToString()));
+            foreach (System.IO.DirectoryInfo dir in camera_dir.EnumerateDirectories())
+                dir.MoveTo(System.IO.Path.Combine(new_directory.FullName, dir.Name));
+        }
+
+        private void move_files_to_switch(int switchstate)
+        {
+            System.IO.DirectoryInfo new_directory = System.IO.Directory.CreateDirectory(System.IO.Path.Combine(camera_dir.FullName, switchstate.ToString()));
+            foreach (System.IO.FileInfo file in camera_dir.EnumerateFiles())
+                file.MoveTo(System.IO.Path.Combine(new_directory.FullName, file.Name));
+        }
+
         private void runSinglePattern(MOTMaster.Controller mmaster, Dictionary<string, Object> dict, Func<bool> breakCondition)
         {
+
             string text = "ACCEPTED";
             do
             {
+                clear_camera_dir();
                 for (int  i = 0; i < switchStates; ++i)
                 {
+                    
                     foreach (KeyValuePair<string, List<bool>> Switch in switchConfiguration)
                     {
                         if (!dict.ContainsKey(Switch.Key))
@@ -503,8 +550,12 @@ namespace AlFHardwareControl
                     dataAcquired.Reset();
                     mmaster.Go(dict);
 
+                    if (AI || Ctr)
                     dataAcquired.WaitOne();
                     ++patternProgress;
+
+                    if (camera)
+                        move_files_to_switch(i);
                 }
 
                 if (breakCondition()) break;
@@ -580,7 +631,6 @@ namespace AlFHardwareControl
         private void runScan()
         {
             ++scanNumber;
-
             
             MOTMaster.Controller mmaster = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1187/controller.rem"));
             Dictionary<string, Object> dict = new Dictionary<string, object>();
@@ -631,6 +681,8 @@ namespace AlFHardwareControl
                         this.Invoke((Action)(() => { this.scanPointProgress.Text = String.Format("{0}/{1}", j + 1, (int)scanPlugin.Settings["shotsPerPoint"]); }));
                         runSinglePattern(mmaster, dict, () => { return !scanRunning; });
 
+                        if (camera)
+                            push_to_temp_dir(scanNumber, scanPlugin.ScanParameter, j);
                         if (!scanRunning) break;
 
                     }
@@ -640,6 +692,8 @@ namespace AlFHardwareControl
                         lock (this)
                         {
                             scanResults.RemoveAt(scanResults.Count - 1);
+                            clear_scan_dir(scanNumber);
+                            --scanNumber;
                         }
                         break;
                     }
@@ -786,6 +840,7 @@ namespace AlFHardwareControl
             }
         }
 
+        private bool camera = false;
         private void armToF_CheckedChanged(object sender, EventArgs e)
         {
             tofArmed = armToF.Checked;
@@ -796,9 +851,11 @@ namespace AlFHardwareControl
                 sampNum.Enabled = false;
                 cmbSamplingRate.Enabled = false;
                 scanCtrl.Enabled = true;
+                cameraEnable.Enabled = false;
             }
             else
             {
+                cameraEnable.Enabled = true;
 
                 DAQTask.Stop();
                 DAQTask.Dispose();
@@ -817,6 +874,7 @@ namespace AlFHardwareControl
                 cmbSamplingRate.Enabled = true;
                 scanCtrl.Enabled = false;
             }
+            camera = cameraEnable.Checked;
         }
 
         private void startScan_Click(object sender, EventArgs e)
@@ -930,6 +988,7 @@ namespace AlFHardwareControl
             ScanData.Clear();
             scanResults.Clear();
             scanNumber = 0;
+            clear_temp_dir();
 
         }
 
@@ -958,7 +1017,7 @@ namespace AlFHardwareControl
             scanCtrl.Enabled = false;
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "xml data file|*.xml";
+            saveFileDialog1.Filter = "Bundled scanData|*.zip";
             saveFileDialog1.Title = "Save scan data";
             saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
                                                 (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
@@ -972,15 +1031,20 @@ namespace AlFHardwareControl
             ScanResults results
                 = new ScanResults(scanPlugin, xdata, ScanData, new SerializableDictionary<string, object>());
 
+            foreach (System.IO.FileInfo file in temp_dir.EnumerateFiles())
+                file.Delete();
 
             using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(saveFileDialog1.FileName))
+            new System.IO.StreamWriter(System.IO.Path.Combine(temp_dir.FullName, "scan_data.xml")))
             {
 
                 (new System.Xml.Serialization.XmlSerializer(MMScanDataType)).Serialize(file, results);
                 file.Flush();
 
             }
+
+            System.IO.Compression.ZipFile.CreateFromDirectory(temp_dir.FullName, saveFileDialog1.FileName);
+
             end:
             scanCtrl.Enabled = true;
         }

@@ -137,7 +137,7 @@ namespace DAQ.HAL
                         currentLeakageCounterChannel.PhysicalChannel,
                         "",
                         0,
-                        150000,
+                        150000,//maybe change to 200000
                         CIFrequencyStartingEdge.Rising,
                       CIFrequencyMeasurementMethod.HighFrequencyTwoCounter,
                        // the units of measurement time are not specified anywhere in the docs :-(
@@ -146,7 +146,7 @@ namespace DAQ.HAL
                         100,
                         CIFrequencyUnits.Hertz
                         );
-                    counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime);
+                    counterTask.Stream.Timeout = (int)(10.1 * 1000 * measurementTime); // was previously 5.1 times the measurement time
                     counterLeakageReader = new CounterReader(counterTask.Stream);
                 }
             //}
