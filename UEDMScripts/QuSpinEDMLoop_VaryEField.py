@@ -47,7 +47,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	# hc.UpdateBCurrentMonitor()
+	hc.UpdateBCurrentMonitor()
 	hc.PollVMonitor()
 	bh.StartPattern()
 
@@ -60,7 +60,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState

@@ -185,7 +185,7 @@ def q0scan():
 def main():
     print("To scan the lasers on TCL, put them roughly where we expect using the wavemeter and lock them on TCL.")
     print("Then use these functions to complete scans of the appropriate laser, each one assume the previous has been completed:")
-    print("\n probescan() \n v1scan()")
+    print("\n probescan() \n v1scan() \n coolingTOF() \n p12scan() \n q0scan()")
     pass
 
 if __name__ == "__main__":

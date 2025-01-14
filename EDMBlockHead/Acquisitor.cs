@@ -929,14 +929,14 @@ namespace EDMBlockHead.Acquire
             magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
             magInputs.GateLength = 1200;//usually this is 280, I changed this to take more mag data per block (10 June 2021)
 
-            //ScannedAnalogInput mag = new ScannedAnalogInput();
-            //mag.ReductionMode = DataReductionMode.Average;
-            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_X"];
-            //mag.AverageEvery = 20;
-            //mag.LowLimit = -10;
-            //mag.HighLimit = 10;
-            //mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
-            //magInputs.Channels.Add(mag);
+            ScannedAnalogInput mag = new ScannedAnalogInput();
+            mag.ReductionMode = DataReductionMode.Average;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            mag.AverageEvery = 20;
+            mag.LowLimit = -10;
+            mag.HighLimit = 10;
+            mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(mag);
 
             ScannedAnalogInput fvy = new ScannedAnalogInput();
             fvy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Y"];
@@ -1004,16 +1004,16 @@ namespace EDMBlockHead.Acquire
             hpy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             magInputs.Channels.Add(hpy);
 
-            ScannedAnalogInput hoy = new ScannedAnalogInput();
-            hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
-            hoy.ReductionMode = quspinReductionMode;
-            hoy.ChopStart = quspinChopStart;
-            hoy.ChopLength = quspinChopLength;
-            hoy.AverageEvery = quspinAverageEvery;
-            hoy.LowLimit = quspinLowerLim;
-            hoy.HighLimit = quspinUpperLim;
-            hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hoy);
+            //ScannedAnalogInput hoy = new ScannedAnalogInput();
+            //hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
+            //hoy.ReductionMode = quspinReductionMode;
+            //hoy.ChopStart = quspinChopStart;
+            //hoy.ChopLength = quspinChopLength;
+            //hoy.AverageEvery = quspinAverageEvery;
+            //hoy.LowLimit = quspinLowerLim;
+            //hoy.HighLimit = quspinUpperLim;
+            //hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hoy);
 
             ScannedAnalogInput hmy = new ScannedAnalogInput();
             hmy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Y"];
