@@ -12,11 +12,7 @@ clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs
-<<<<<<< HEAD
-clr.AddReference(Path.GetFullPath("..\\..\\SEDM4\\Libraries\\SharedCode"))
-=======
 clr.AddReference(Path.GetFullPath("..\\..\\SEDM4\\Libraries\\SharedCode.dll"))
->>>>>>> 8ea0648ffb1b7766cb65908c7bef969ae9f1587d
 
 # create connections to the control programs
 import System
@@ -31,10 +27,6 @@ import nt
 pp = Path.GetFullPath("..\\..\\UEDMScripts\\Analysis")
 files = nt.listdir(pp)
 scriptsToLoad = [e for e in files if e.endswith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py" and e != "uedm_analysis.py"]
-<<<<<<< HEAD
-
-=======
->>>>>>> 8ea0648ffb1b7766cb65908c7bef969ae9f1587d
 for i in range(len(scriptsToLoad)):
             print(str(i+1) + ": " + scriptsToLoad[i])
 print("")
