@@ -12,7 +12,7 @@ clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs
-clr.AddReference(Path.GetFullPath("..\\..\\SEDM4\\Libraries"))
+clr.AddReference(Path.GetFullPath("..\\..\\SEDM4\\Libraries\\SharedCode.dll"))
 
 # create connections to the control programs
 import System
@@ -24,9 +24,9 @@ print('''This should import the SharedCode dll and create a scan serialiser to i
 
 # script shortcuts
 import nt
-pp = Path.GetFullPath("..\\UEDMScripts")
+pp = Path.GetFullPath("..\\..\\UEDMScripts\\Analysis")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.endswith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py",e != "uedm_analysis.py"]
+scriptsToLoad = [e for e in files if e.endswith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py" and e != "uedm_analysis.py"]
 for i in range(len(scriptsToLoad)):
             print(str(i+1) + ": " + scriptsToLoad[i])
 print("")
