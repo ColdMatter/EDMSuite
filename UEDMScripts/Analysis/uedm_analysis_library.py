@@ -35,11 +35,46 @@ import Data
 def GetScanParameterArray(Scan):
     return np.array(Scan.ScanParameterArray)
 
-def ReadScansInZippedXML(Filename):
+def ReadAverageScanInZippedXML(Filename):
     ss = Data.Scans.ScanSerializer()
     Scan = ss.DeserializeScanFromZippedXML(Filename,"average.xml")
     # TODO: Adjust for zip-files with multiple passes
     return Scan
+
+def GetTOFs(Scan):
+    """Returns the TOFs of a scan. The datasets are On/Off shots and for each 
+    detector (TOFs in one shot)"""
+    SampleRate = GetTOFSampleRate(Scan)
+    NrScanPoints = len(Scan.Points)
+    NrOnShotsPerPoint = len(Scan.Points[0].OnShots)
+    NrOffShotsPerPoint = len(Scan.Points[0].OffShots)
+    NrTOFs = NrOnShotsPerPoint*NrScanPoints
+    NrDetectors = len(Scan.Points[0].OnShots[0].TOFs)
+    TimeOn = np.array(Scan.Points[0].OnShots[0].TOFs[0].Times)/SampleRate
+    DataOn = np.empty((TimeOn.shape[0], NrTOFs, NrDetectors))*np.nan
+    Index = 0
+    for indPoint in range(NrScanPoints):
+        for indOn in range(NrOnShotsPerPoint):
+            for indDet in range(NrDetectors):
+                Data = np.array(Scan.Points[indPoint].OnShots[indOn].TOFs[indDet].Data)
+                DataOn[:,Index, indDet] = Data
+            Index = Index+1
+
+    if NrOffShotsPerPoint == 0:
+        TimeOff = []
+        DataOff = []
+    else:
+        Index = 0
+        TimeOff = np.array(Scan.Points[0].OffShots[0].TOFs[0].Times)/SampleRate
+        DataOff = np.empty((TimeOff.shape[0], NrTOFs, NrDetectors))*np.nan
+        for indPoint in range(NrScanPoints):
+            for indOn in range(NrOffShotsPerPoint):
+                for indDet in range(NrDetectors):
+                    Data = np.array(Scan.Points[indPoint].OffShots[indOn].TOFs[indDet].Data)
+                    DataOff[:,Index, indDet] = Data
+                Index = Index+1
+
+    return TimeOn, DataOn, TimeOff, DataOff
 
 def DownsampleTOFs(Scan, DownSampleRate):
     """Returns the TOFs of a scan, but downsampled to reduce the memory usage.
@@ -105,11 +140,19 @@ def GetTOFSampleRate(Scan):
 
 
 #%% Functions for the TOF
-def GetBackground(Data,Time,Start,Stop):
+def GetCounts(Data,Time,Start,Stop):
     Indi = (Time*1000>Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
-    Background = np.sum(Data[Indi,:,:], axis=0)/(Time[IndiArray[-1]]-Time[IndiArray[0]])/1000
-    return Background
+    Counts = np.sum(Data[Indi,:,:], axis=0)
+    TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
+    return Counts, TimeWindow
+
+def GetSignalwithBackgroundSubtraction(Data,Time,StartSig,StopSig,StartBg,StopBg):
+    [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
+    [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,StartSig,StopSig)
+    BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
+    Signal = SignalAndBg - BackgroundScaled
+    return [Signal, BackgroundScaled]
 
 
 #%% Functions for Blocks
