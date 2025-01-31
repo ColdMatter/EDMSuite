@@ -292,7 +292,8 @@ namespace UEDMHardwareControl
             //CreateDigitalTask("cryoTriggerDigitalOutputTask");
             CreateDigitalTask("heatersS2TriggerDigitalOutputTask");
             CreateDigitalTask("heatersS1TriggerDigitalOutputTask");
-            CreateDigitalTask("targetStepper");
+            CreateDigitalTask("targetStepperStep");
+            CreateDigitalTask("targetStepperDirection");
 
             CreateDigitalTask("ePol");
             CreateDigitalTask("eBleed");
@@ -3472,15 +3473,36 @@ namespace UEDMHardwareControl
             StepTarget(numSteps);
         }
 
+        public int targetTTLWaitTime = 100;
+
+        private void PulseStepperTTL()
+        {
+            SetDigitalLine("targetStepperStep", true);
+            Thread.Sleep(targetTTLWaitTime);
+            SetDigitalLine("targetStepperStep", false);
+            Thread.Sleep(targetTTLWaitTime);
+        }
+
         public void StepTarget(int numSteps)
         {
             for (int i = 0; i < numSteps; i++)
             {
-                SetDigitalLine("targetStepper", true);
-                Thread.Sleep(50);
-                SetDigitalLine("targetStepper", false);
-                Thread.Sleep(50);
+                PulseStepperTTL();
             }
+        }
+
+        public void StepTargetForTime()
+        {
+            if (targetStepTime < 100)
+            {
+                targetStepTime = 100;
+            }
+            bool initDir = targetStepDirection;
+            PulseStepperTTL();
+            Thread.Sleep(targetStepTime);
+            targetStepDirection = !initDir;
+            PulseStepperTTL();
+            targetStepDirection = initDir;
         }
 
         public void ResetTargetStepperPosition()
@@ -3545,19 +3567,42 @@ namespace UEDMHardwareControl
             }
         }
 
+        public int targetStepTime
+        {
+            get
+            {
+                try
+                {
+                    return (int)Double.Parse(window.TargetLengthTimeTextBox.Text);
+                }
+                catch (Exception e)
+                {
+                    return 100;
+                }
+            }
+            set
+            {
+                window.SetTextBox(window.TargetLengthTimeTextBox, value.ToString());
+            }
+        }
+
         public void SetTargetStepperDirection()
         {
             try
             {
                 if (targetStepDirection)
                 {
-
+                    SetDigitalLine("targetStepperDirection", true);
+                }
+                else
+                {
+                    SetDigitalLine("targetStepperDirection", false);
                 }
             }
             catch (Exception e)
             {
                 string errorMsg = e.ToString();
-                Console.WriteLine(String.Concat("Could not connect with exception ", errorMsg));
+                Console.WriteLine(String.Concat("Could not set TargetStepper direction", errorMsg));
             }
         }
 
@@ -5667,7 +5712,33 @@ namespace UEDMHardwareControl
             }
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for B flip with response "+reply);
+        }
 
+        private object bswitchingLock = new object();
+        private Thread bswitchThread;
+        private bool newB;
+
+        public void SwitchBWorker()
+        {
+            lock (bswitchingLock)
+            {
+                BFlipEnabled = newB;
+            }
+        }
+        public void SwitchBFlip(bool state)
+        {
+            lock (bswitchingLock)
+            {
+                newB = state;
+                bswitchThread = new Thread(new ThreadStart(SwitchBWorker));
+                bswitchThread.Start();
+            }
+        }
+
+        public void SwitchBAndWait(bool state)
+        {
+            SwitchBFlip(state);
+            bswitchThread.Join();
         }
 
         public void SetCalFlip(bool enable)
@@ -5682,6 +5753,32 @@ namespace UEDMHardwareControl
             }
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds + " ms for dB flip with response " + reply);
+        }
+
+        private object dbswitchingLock = new object();
+        private Thread dbswitchThread;
+        private bool newdB;
+
+        public void SwitchdBWorker()
+        {
+            lock (bswitchingLock)
+            {
+                CalFlipEnabled = newdB;
+            }
+        }
+        public void SwitchCalFlip(bool state)
+        {
+            lock (dbswitchingLock)
+            {
+                newdB = state;
+                dbswitchThread = new Thread(new ThreadStart(SwitchdBWorker));
+                dbswitchThread.Start();
+            }
+        }
+        public void SwitchCalAndWait(bool state)
+        {
+            SwitchCalFlip(state);
+            dbswitchThread.Join();
         }
 
         public bool CalFlipEnabled
@@ -7369,6 +7466,12 @@ namespace UEDMHardwareControl
                 case "eChan":
                     SwitchEAndWait(state);
                     break;
+                case "bSwitch":
+                    SwitchBAndWait(state);
+                    break;
+                case "dB":
+                    SwitchCalAndWait(state);
+                    break;
                 case "probeAOM": //probe laser
                     //SwitchLF1(state);
                     break;
@@ -7393,6 +7496,10 @@ namespace UEDMHardwareControl
                     break;
                 case "mwChan":
                     //ReSwitchMwAndWait(state);
+                    break;
+                case "bSwitch":
+                    break;
+                case "dB":
                     break;
             }
         }
