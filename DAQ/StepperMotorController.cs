@@ -52,6 +52,14 @@ namespace DAQ.HAL
             if (serial.RawIO.ReadString(1) == "!") return true;
             else return false;
         }
+        private void ResetToDefault()
+        {
+            string command = String.Concat("default", "\n\r");
+            Clear();
+            if (Precommand()) serial.RawIO.Write(command);
+            string response = serial.RawIO.ReadString(5);
+            Console.WriteLine(String.Concat("set to default with response: ", response));
+        }
         private void Feedback(bool active)
         {
             string feedbackValue = active ? "1" : "0";
@@ -103,7 +111,13 @@ namespace DAQ.HAL
             Feedback(false);
             Disconnect();
         }
-        
+        public void FeedbackOn()
+        {
+            if (!connected) Connect();
+            Feedback(true);
+            Disconnect();
+        }
+
         public void DisableMotor()
         {
             if (!connected) Connect();
@@ -145,6 +159,7 @@ namespace DAQ.HAL
         public void ResetPosition()
         {
             if (!connected) Connect();
+            ResetToDefault();
             string command = String.Concat("home", "\n\r");
             Clear();
             if (Precommand()) serial.RawIO.Write(command);

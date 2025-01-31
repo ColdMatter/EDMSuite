@@ -653,29 +653,29 @@ namespace EDMBlockHead.Acquire
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            bChan.Channel = "bSwitch";
-            bChan.Invert = false;
-            bChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(bChan);
+            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            //bChan.Channel = "bSwitch";
+            //bChan.Invert = false;
+            //bChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(bChan);
 
-            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            notBChan.Channel = "notB";
-            notBChan.Invert = true;
-            notBChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(notBChan);
+            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            //notBChan.Channel = "notB";
+            //notBChan.Invert = true;
+            //notBChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(notBChan);
 
-            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            dbChan.Channel = "dB";
-            dbChan.Invert = false;
-            dbChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(dbChan);
+            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            //dbChan.Channel = "dB";
+            //dbChan.Invert = false;
+            //dbChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(dbChan);
 
-            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            notDBChan.Channel = "notDB";
-            notDBChan.Invert = true;
-            notDBChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(notDBChan);
+            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            //notDBChan.Channel = "notDB";
+            //notDBChan.Invert = true;
+            //notDBChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -736,6 +736,18 @@ namespace EDMBlockHead.Acquire
             //rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             //switchedChannels.Add(rf2FChannel);
 
+            HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
+
+            HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
+
             HardwareControllerSwitchChannel eChan = new HardwareControllerSwitchChannel();
             eChan.Channel = "eChan";
             eChan.Modulation = config.GetModulationByName("E");
@@ -768,7 +780,7 @@ namespace EDMBlockHead.Acquire
 
         }
 
-#region Map Inputs
+        #region Map Inputs
         /* THIS VERSION FOR AR */
         // this sets up the scanned analog inputs. It's complicated a bit by the fact that
         // each input would ideally have a different clock rate and gateLength. The board
