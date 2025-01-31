@@ -132,9 +132,9 @@ kReZeroLeakageMonitorsPeriod = 10
 
 def QuSpinGo():
 	# Setup E field voltages
-    eFieldVoltagesInput = input("E-field voltages in kV: ")
-    eFieldVoltages = eFieldVoltagesInput.split(",")
-    
+    eFieldInput = input("E-field switch delay time in seconds: ")
+    #eFieldVoltages = eFieldVoltagesInput.split(",")
+    eFieldSwitchTimes = eFieldInput.split(",")
     # Setup file
     f = None
     fileSystem = Environs.FileSystem
@@ -207,10 +207,11 @@ def QuSpinGo():
     Emini2List=[]
     Emini3List=[]
     while blockIndex < maxBlockIndex:
-        for i in eFieldVoltages:
+        for i in eFieldSwitchTimes:
             eCurrentState = hc.EFieldPolarity
-            hc.SetCPlusVoltage(float(i))
-            hc.SetCMinusVoltage(float(i))
+            # hc.SetCPlusVoltage(float(i))
+            # hc.SetCMinusVoltage(float(i))
+            hc.ERampUpDelay = float(i)
             System.Threading.Thread.CurrentThread.Join(1000)
             hc.SwitchEAndWait(eCurrentState)
 

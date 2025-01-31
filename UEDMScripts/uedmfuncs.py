@@ -269,7 +269,7 @@ def plotfit(scan, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, 
 
     #popt returns the best fit values for parameters of the given model (func) 
     print ("New setpoint is %3.6f" % popt[1]) 
-    ax.plot(x, ym, c='r', label='Best fit') 
+    ax.plot(x, ym, c='r', label=f'Best fit: mu={popt[1]:3.6f}') 
     ax.legend() 
     plt.show()
 
@@ -306,3 +306,29 @@ def StartPattern():
 
 def StopPattern():
     sm.StopPatternOutput()
+
+#TCL control
+def lineformat(cavity,laser,setpoint):
+    outstr=cavity+"\t"+laser+"\t"+str(round(setpoint,5))+"\n"
+    return outstr
+
+def saveTCLSetPoints():
+    probeSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
+    v0Setpoint = tcl.GetLaserSetpoint("VISCavity", "v0laser")
+    v1Setpoint = tcl.GetLaserSetpoint("VISCavity", "v1laser")
+    q0Setpoint = tcl.GetLaserSetpoint("OPCavity", "Q0")
+    p12Setpoint = tcl.GetLaserSetpoint("OPCavity", "P12")
+    stirapSetpoint = tcl.GetLaserSetpoint("IRCavity", "STIRAP")
+    [filepath,file] = getNextFile()
+    probeline=lineformat("VISCavity","probe",probeSetpoint)
+    v0line=lineformat("VISCavity","v0",v0Setpoint)
+    v1line=lineformat("VISCavity","v1",v1Setpoint)
+    q0line=lineformat("OPCavity","Q0",q0Setpoint)
+    p12line=lineformat("OPCavity","P12",p12Setpoint)
+    stirapline=lineformat("IRCavity","STIRAP",stirapSetpoint)
+    linelist=[probeline,v0line,v1line,q0line,p12line,stirapline]
+    with open(filepath[:-2]+'_TCLSetpoints.txt','w') as patternfile:
+            for line in linelist:
+                patternfile.write(line)
+
+

@@ -301,9 +301,14 @@ def EDMGo():
 		bh.StartPattern()
 		System.Threading.Thread.CurrentThread.Join(2000)
 
-		for step in range(4):
-			hc.StepTarget(3)
-			System.Threading.Thread.CurrentThread.Join(500)
+		hc.targetStepTime = 200
+		if ((blockIndex % 11) == 0):
+			stepdir = hc.targetStepDirection
+			hc.targetStepDirection = not(stepdir)
+
+		for step in range(3):
+			hc.StepTargetForTime()
+			System.Threading.Thread.CurrentThread.Join(1000)
 
 		System.Threading.Thread.CurrentThread.Join(2000)
 		bh.StopPattern()
