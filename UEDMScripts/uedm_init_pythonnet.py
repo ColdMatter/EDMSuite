@@ -1,25 +1,42 @@
-# uedm_init.py - sets up the IronPython environment ready for scripting
+# uedm_init.py - sets up the Python environment ready for scripting
 # the edm control software.
-
 import pythonnet
 import clr
 import sys
 from System.IO import Path
 
+
 # Load some system assemblies that we'll need
+
 clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
 # Import the edm control software assemblies into IronPython
-clr.AddReference(Path.GetFullPath("..\\DAQ\\bin\\ultracoldEDM\\DAQ"))
-clr.AddReference(Path.GetFullPath("..\\SharedCode\\bin\\ultracoldEDM\\SharedCode"))
-clr.AddReference(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\ultracoldEDM\\UEDMHardwareControl"))
-clr.AddReference(Path.GetFullPath("..\\EDMBlockHead\\bin\\ultracoldEDM\\EDMBlockHead.exe"))
-clr.AddReference(Path.GetFullPath("..\\EDMPhaseLock\\bin\\ultracoldEDM\\EDMPhaseLock.exe"))
-clr.AddReference(Path.GetFullPath("..\\EDMFieldLock\\bin\\ultracoldEDM\\EDMFieldLock.exe"))
-clr.AddReference(Path.GetFullPath("..\\ScanMaster\\bin\\ultracoldEDM\\ScanMaster"))
-clr.AddReference(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\ultracoldEDM\\TransferCavityLock.exe"))
+clr.AddReference(Path.GetFullPath("..\\DAQ\\bin\\x64\\ultracoldEDM\\DAQ"))
+clr.AddReference(Path.GetFullPath("..\\SharedCode\\bin\\x64\\ultracoldEDM\\SharedCode"))
+clr.AddReference(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\x64\\ultracoldEDM\\UEDMHardwareControl"))
+clr.AddReference(Path.GetFullPath("..\\EDMBlockHead\\bin\\x64\\ultracoldEDM\\EDMBlockHead.exe"))
+clr.AddReference(Path.GetFullPath("..\\EDMPhaseLock\\bin\\x64\\ultracoldEDM\\EDMPhaseLock.exe"))
+clr.AddReference(Path.GetFullPath("..\\EDMFieldLock\\bin\\x64\\ultracoldEDM\\EDMFieldLock.exe"))
+clr.AddReference(Path.GetFullPath("..\\ScanMaster\\bin\\x64\\ultracoldEDM\\ScanMaster"))
+clr.AddReference(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\x64\\ultracoldEDM\\TransferCavityLock.exe"))
+
+# create connections to the control programs
+import System
+import ScanMaster
+import EDMBlockHead
+import UEDMHardwareControl
+import TransferCavityLock2012
+import EDMPhaseLock
+import EDMFieldLock
+
+sm = System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1191/controller.rem')
+bh = System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem')
+hc = System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/UEDMController.rem')
+tcl = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem')
+pl = System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem')
+fl = System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem')
 
 # code for IronPython remoting problem workaround
 class typedproxy(object):
@@ -36,27 +53,11 @@ class typedproxy(object):
         obj = object.__setattribute__(self, 'obj')
         return setattr(proxyType, attr).__set__(obj, proxyType)
 
-# create connections to the control programs
-import System
-import ScanMaster
-import EDMBlockHead
-import UEDMHardwareControl
-import TransferCavityLock2012
-import EDMPhaseLock
-import EDMFieldLock
-
-sm = typedproxy(System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1191/controller.rem'), ScanMaster.Controller)
-bh = typedproxy(System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem'), EDMBlockHead.Controller)
-hc = typedproxy(System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/UEDMController.rem'), UEDMHardwareControl.UEDMController)
-tcl = typedproxy(System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem'), TransferCavityLock2012.Controller)
-pl = typedproxy(System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem'), EDMPhaseLock.MainForm)
-fl = typedproxy(System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem'), EDMFieldLock.MainForm)
-
 # usage message
 print('UEDM interactive scripting control')
 print('''
-The variables sm, tclProbe and hc are pre-assigned to the ScanMaster, TransferCavityLock 
-and EDMHardwareControl Controller objects respectively. You can call any of
+The variables sm, tcl and hc are pre-assigned to the ScanMaster, TransferCavityLock 
+and UEDMHardwareControl Controller objects respectively. You can call any of
 these objects methods, for example: sm.AcquireAndWait(5). Look at the c#
 code to see which remote methods are available. You can use any Python code
 you like to script these calls.
@@ -72,12 +73,10 @@ Available scripts:''')
 import nt
 pp = Path.GetFullPath("..\\UEDMScripts")
 files = nt.listdir(pp)
-scriptsToLoad = [e for e in files if e.EndsWith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py"]
+scriptsToLoad = [e for e in files if e.endswith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py"]
 for i in range(len(scriptsToLoad)):
-            print(str(i) + ": " + scriptsToLoad[i])
+            print(str(i+1) + ": " + scriptsToLoad[i])
 print("")
 
 def run(i):
-	global run_script
-	execfile(scriptsToLoad[i], globals())
-	run_script()
+	execfile(scriptsToLoad[i-1], globals())

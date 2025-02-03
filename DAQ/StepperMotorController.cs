@@ -12,14 +12,14 @@ namespace DAQ.HAL
     public class StepperMotorController : DAQ.HAL.SerialInstrument
     {
 
-        /// This is a summary of all the commands that can be sent to the Alicat flow controller.
+        /// This is a summary of all the commands that can be sent to the homemade stepper motor controller.
         /// This document defines all the possible commands for the controller.
         /// </summary>
         public static class CommandTypes
         {
-            public static String ChangeFlowSetpoint { get { return "s"; } } // Changes the flow rate going through the flow controller. Really this command is asXXXX where XXXX is a number but we will compose the full command later
-            public static String CollectFlowData { get { return "a"; } } // Command needed to return large string of all the data
-            public static String StopStreaming { get { return "@@=a"; } } // Command to stop streaming data
+            //public static String ChangeFlowSetpoint { get { return "s"; } } // Changes the flow rate going through the flow controller. Really this command is asXXXX where XXXX is a number but we will compose the full command later
+            //public static String CollectFlowData { get { return "a"; } } // Command needed to return large string of all the data
+            //public static String StopStreaming { get { return "@@=a"; } } // Command to stop streaming data
         }
 
         // Serial connection parameters for the Stepper Motor Controller:
@@ -52,7 +52,14 @@ namespace DAQ.HAL
             if (serial.RawIO.ReadString(1) == "!") return true;
             else return false;
         }
-
+        private void ResetToDefault()
+        {
+            string command = String.Concat("default", "\n\r");
+            Clear();
+            if (Precommand()) serial.RawIO.Write(command);
+            string response = serial.RawIO.ReadString(5);
+            Console.WriteLine(String.Concat("set to default with response: ", response));
+        }
         private void Feedback(bool active)
         {
             string feedbackValue = active ? "1" : "0";
@@ -104,7 +111,13 @@ namespace DAQ.HAL
             Feedback(false);
             Disconnect();
         }
-        
+        public void FeedbackOn()
+        {
+            if (!connected) Connect();
+            Feedback(true);
+            Disconnect();
+        }
+
         public void DisableMotor()
         {
             if (!connected) Connect();
@@ -140,6 +153,18 @@ namespace DAQ.HAL
             Triggers(triggers);
             Steps(steps);
             Mode("5");
+            Disconnect();
+        }
+
+        public void ResetPosition()
+        {
+            if (!connected) Connect();
+            ResetToDefault();
+            string command = String.Concat("home", "\n\r");
+            Clear();
+            if (Precommand()) serial.RawIO.Write(command);
+            string response = serial.RawIO.ReadString(5);
+            Console.WriteLine(String.Concat("reset home position with response: ", response));
             Disconnect();
         }
     }

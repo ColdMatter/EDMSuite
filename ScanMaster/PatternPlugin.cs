@@ -33,6 +33,7 @@ namespace ScanMaster.Acquire.Plugin
      XmlInclude(typeof(FlashlampsOnlyPatternPlugin)),
      XmlInclude(typeof(ZeemanSisyphusPatternPlugin)),
 	 XmlInclude(typeof(NshotsPatternPlugin)),
+	 XmlInclude(typeof(NshotsPatternPluginCCD)),
 	 XmlInclude(typeof(YAGFirePatternPlugin)),
 	 XmlInclude(typeof(TwoShutterPatternPlugin)),
 	 XmlInclude(typeof(TwoShutterSlowingPatternPlugin)),
@@ -62,6 +63,6 @@ namespace ScanMaster.Acquire.Plugin
 	
 		// calling this reloads the pattern with the current settings. Use if you've changed those settings.
 		public abstract void ReloadPattern();
-		
+
 	}
 }

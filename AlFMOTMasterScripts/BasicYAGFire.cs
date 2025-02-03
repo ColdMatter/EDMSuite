@@ -17,11 +17,13 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 100000;
         Parameters["Void"] = 0;
+        Parameters["CameraDelay"] = 1500;
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
+        int cameraDelay = Convert.ToInt32(Parameters["CameraDelay"]);
 
         //MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters); // This is how you load "preset" patterns.          
         //   p.AddEdge("v00Shutter", 0, true);
@@ -36,7 +38,9 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("flash", 0, true);
         p.AddEdge("flash", 100, false);
-        
+
+        p.AddEdge("detector", cameraDelay, true);
+        p.AddEdge("detector", cameraDelay + 10, false);
 
         return p;
     }
@@ -44,7 +48,8 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
+        p.AddChannel("VECSEL3_AOM_VCA");
+        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

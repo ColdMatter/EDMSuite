@@ -333,6 +333,11 @@ namespace DAQ.Environment
                     Hardware = new BufferClassicHardware();
                     FileSystem = new CENTAURFileSystem();
                     Debug = false;
+                    viewerServerComputerName = "ULTRACOLDEDM";
+                    serverComputerName = "ULTRACOLDEDM";
+                    viewerServerTCPChannel = 1997;
+                    serverTCPChannel = 1997;
+                    wavemeterLockTCPChannel = 2345;
                     break;
 
                 case "PH-RHENDRIC-02":

@@ -52,10 +52,7 @@ def getNextFile():
     fileSystem = Environs.FileSystem
     dataPath = fileSystem.GetDataDirectory(fileSystem.Paths["edmDataPath"])
     file=fileSystem.GenerateNextDataFileName()
-    filepath = \
-        fileSystem.GetDataDirectory(\
-                    fileSystem.Paths["scanMasterDataPath"])\
-        + file
+    filepath = fileSystem.GetDataDirectory(fileSystem.Paths["scanMasterDataPath"]) + file
     return [filepath,file]
 
 def getSetPoint(filePath='Example_scan_01.zip', scantype='On', detector=0,intStart=750, intEnd=4000, bgStart=600, bgEnd=750):
@@ -127,9 +124,6 @@ def probeScan():
     sm.AdjustProfileParameter("out", "scanMode", "updown", False)
     sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
 
-    reply=prompt("Ready to acquire? Gas on? (y/n)\n")
-    if reply!="y":
-        return
     print("\nScanning!\n")
 
     sm.AcquireAndWait(1)

@@ -68,6 +68,22 @@ namespace WavemeterViewer
             }
         }
 
+        //public string getLabelString(string label)
+        //{
+        //    return label;
+        //}
+        //public string GetTextField(Control box)
+        //{
+        //    box.Invoke(new GetTextDelegate(GetTextHelper), new object[] { box });
+        //}
+
+        //private delegate void GetTextDelegate(Control box);
+
+        //private string GetTextHelper(Control box)
+        //{
+        //    box.Text = text;
+        //}
+
         public void connectionError(Exception e)
         {
             MessageBox.Show($"Connection failed: {e.Message}");

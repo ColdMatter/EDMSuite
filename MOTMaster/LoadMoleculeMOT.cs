@@ -46,7 +46,7 @@ namespace MOTMaster.SnippetLibrary
             p.AddChannel("slowingChirp");
             p.AddChannel("slowingCoilsCurrent");
             p.AddChannel("MOTCoilsCurrent");
-            p.AddChannel("newAnalogTest");
+            //p.AddChannel("newAnalogTest");
 
             // Slowing Chirp
             p.AddAnalogValue("slowingChirp", 0, (double)parameters["SlowingChirpStartValue"]);

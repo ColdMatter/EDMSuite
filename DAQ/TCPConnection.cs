@@ -36,7 +36,8 @@ namespace DAQ
             catch (SocketException e)
             {
                 ConnectionInterrupted?.Invoke();
-                client.Close();
+                if (client != null)
+                    client.Close();
             }
             finally
             {

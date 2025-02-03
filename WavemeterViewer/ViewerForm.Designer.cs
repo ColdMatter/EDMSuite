@@ -49,6 +49,8 @@ namespace WavemeterViewer
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.labelHostName = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.displayFreqRadioButton = new System.Windows.Forms.RadioButton();
+            this.displayWavRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -72,9 +74,10 @@ namespace WavemeterViewer
             // 
             // label8
             // 
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(17, 26);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(168, 18);
+            this.label8.Size = new System.Drawing.Size(168, 24);
             this.label8.TabIndex = 2;
             this.label8.Text = "xxxxxxxxxxx";
             // 
@@ -90,9 +93,10 @@ namespace WavemeterViewer
             // 
             // label7
             // 
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(17, 26);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(168, 18);
+            this.label7.Size = new System.Drawing.Size(168, 24);
             this.label7.TabIndex = 2;
             this.label7.Text = "xxxxxxxxxxx";
             // 
@@ -108,9 +112,10 @@ namespace WavemeterViewer
             // 
             // label6
             // 
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(17, 26);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(168, 18);
+            this.label6.Size = new System.Drawing.Size(168, 24);
             this.label6.TabIndex = 2;
             this.label6.Text = "xxxxxxxxxxx";
             // 
@@ -126,9 +131,10 @@ namespace WavemeterViewer
             // 
             // label5
             // 
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(17, 26);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(168, 18);
+            this.label5.Size = new System.Drawing.Size(168, 24);
             this.label5.TabIndex = 2;
             this.label5.Text = "xxxxxxxxxxx";
             // 
@@ -144,9 +150,10 @@ namespace WavemeterViewer
             // 
             // label4
             // 
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(17, 26);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(168, 18);
+            this.label4.Size = new System.Drawing.Size(168, 24);
             this.label4.TabIndex = 2;
             this.label4.Text = "xxxxxxxxxxx";
             // 
@@ -162,9 +169,10 @@ namespace WavemeterViewer
             // 
             // label3
             // 
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(17, 26);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(168, 18);
+            this.label3.Size = new System.Drawing.Size(168, 24);
             this.label3.TabIndex = 2;
             this.label3.Text = "xxxxxxxxxxx";
             // 
@@ -180,9 +188,10 @@ namespace WavemeterViewer
             // 
             // label2
             // 
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(17, 26);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(168, 18);
+            this.label2.Size = new System.Drawing.Size(168, 24);
             this.label2.TabIndex = 2;
             this.label2.Text = "xxxxxxxxxxx";
             // 
@@ -198,18 +207,19 @@ namespace WavemeterViewer
             // 
             // label1
             // 
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(17, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 18);
+            this.label1.Size = new System.Drawing.Size(168, 24);
             this.label1.TabIndex = 2;
             this.label1.Text = "xxxxxxxxxxx";
             // 
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.labelHostName);
-            this.groupBox9.Location = new System.Drawing.Point(75, 24);
+            this.groupBox9.Location = new System.Drawing.Point(12, 12);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(137, 56);
+            this.groupBox9.Size = new System.Drawing.Size(200, 57);
             this.groupBox9.TabIndex = 20;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Host Name";
@@ -228,11 +238,37 @@ namespace WavemeterViewer
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.Timer_tick);
             // 
+            // displayFreqRadioButton
+            // 
+            this.displayFreqRadioButton.AutoSize = true;
+            this.displayFreqRadioButton.Checked = true;
+            this.displayFreqRadioButton.Location = new System.Drawing.Point(230, 52);
+            this.displayFreqRadioButton.Name = "displayFreqRadioButton";
+            this.displayFreqRadioButton.Size = new System.Drawing.Size(75, 17);
+            this.displayFreqRadioButton.TabIndex = 28;
+            this.displayFreqRadioButton.TabStop = true;
+            this.displayFreqRadioButton.Text = "Frequency";
+            this.displayFreqRadioButton.UseVisualStyleBackColor = true;
+            this.displayFreqRadioButton.CheckedChanged += new System.EventHandler(this.displayFreqRadioButton_CheckedChanged);
+            // 
+            // displayWavRadioButton
+            // 
+            this.displayWavRadioButton.AutoSize = true;
+            this.displayWavRadioButton.Location = new System.Drawing.Point(230, 25);
+            this.displayWavRadioButton.Name = "displayWavRadioButton";
+            this.displayWavRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.displayWavRadioButton.TabIndex = 29;
+            this.displayWavRadioButton.Text = "Wavelength";
+            this.displayWavRadioButton.UseVisualStyleBackColor = true;
+            this.displayWavRadioButton.CheckedChanged += new System.EventHandler(this.displayWavRadioButton_CheckedChanged);
+            // 
             // ViewerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(893, 315);
+            this.Controls.Add(this.displayWavRadioButton);
+            this.Controls.Add(this.displayFreqRadioButton);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox6);
@@ -256,6 +292,7 @@ namespace WavemeterViewer
             this.groupBox1.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -280,6 +317,8 @@ namespace WavemeterViewer
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Label labelHostName;
         private System.Windows.Forms.Timer timer1;
+        public System.Windows.Forms.RadioButton displayFreqRadioButton;
+        public System.Windows.Forms.RadioButton displayWavRadioButton;
     }
 }
 

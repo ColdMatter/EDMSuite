@@ -54,10 +54,11 @@ namespace AlFHardwareControl
             this.stopScan = new System.Windows.Forms.Button();
             this.startScan = new System.Windows.Forms.Button();
             this.scanGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
-            this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
+            this.cameraEnable = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
@@ -74,6 +75,7 @@ namespace AlFHardwareControl
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cameraEnable);
             this.groupBox1.Controls.Add(this.saveEnable);
             this.groupBox1.Controls.Add(this.fixY);
             this.groupBox1.Controls.Add(this.fixX);
@@ -367,6 +369,16 @@ namespace AlFHardwareControl
             this.scatterPlot4.XAxis = this.xAxis1;
             this.scatterPlot4.YAxis = this.yAxis1;
             // 
+            // cameraEnable
+            // 
+            this.cameraEnable.AutoSize = true;
+            this.cameraEnable.Location = new System.Drawing.Point(138, 88);
+            this.cameraEnable.Name = "cameraEnable";
+            this.cameraEnable.Size = new System.Drawing.Size(98, 17);
+            this.cameraEnable.TabIndex = 9;
+            this.cameraEnable.Text = "Enable Camera";
+            this.cameraEnable.UseVisualStyleBackColor = true;
+            // 
             // MOTMasterStuff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -417,5 +429,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.ComboBox PatternPicker;
         private NationalInstruments.UI.ScatterPlot scatterPlot3;
         private NationalInstruments.UI.ScatterPlot scatterPlot4;
+        private System.Windows.Forms.CheckBox cameraEnable;
     }
 }
