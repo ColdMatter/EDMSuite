@@ -394,6 +394,15 @@ namespace DAQ.Environment
                     wavemeterLockTCPChannel = 6666;
                     break;
 
+                case "ULTRACOLDEDM":
+                    Hardware = new WMLServerHuxleyHardware();
+                    FileSystem = new WMLServerHuxleyFileSystem();
+                    Debug = false;
+                    serverComputerName = "ULTRACOLDEDM";
+                    serverTCPChannel = 1997;
+                    wavemeterLockTCPChannel = 2345;
+                    break;
+
                 default:
                     Hardware = new EDMHardware();
                     FileSystem = new FileSystem();
