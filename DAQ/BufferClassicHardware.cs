@@ -98,15 +98,15 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai11", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("bartington_Y", daqBoard + "/ai9", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("bartington_Y", daqBoard + "/ai9", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
             AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery", magBoard + "/ai2", AITerminalConfiguration.Differential); 
-            //AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHQ_Y", magBoard + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHR_Y", magBoard + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHS_Y", magBoard + "/ai5", AITerminalConfiguration.Differential);
@@ -165,7 +165,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("notB", usbDAQ2, 0, 1);
             AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
             AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
-            AddDigitalOutputChannel("targetStepper", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19);
 

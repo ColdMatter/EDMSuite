@@ -653,29 +653,29 @@ namespace EDMBlockHead.Acquire
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            bChan.Channel = "bSwitch";
-            bChan.Invert = false;
-            bChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(bChan);
+            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            //bChan.Channel = "bSwitch";
+            //bChan.Invert = false;
+            //bChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(bChan);
 
-            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            notBChan.Channel = "notB";
-            notBChan.Invert = true;
-            notBChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(notBChan);
+            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            //notBChan.Channel = "notB";
+            //notBChan.Invert = true;
+            //notBChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(notBChan);
 
-            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            dbChan.Channel = "dB";
-            dbChan.Invert = false;
-            dbChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(dbChan);
+            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            //dbChan.Channel = "dB";
+            //dbChan.Invert = false;
+            //dbChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(dbChan);
 
-            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            notDBChan.Channel = "notDB";
-            notDBChan.Invert = true;
-            notDBChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(notDBChan);
+            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            //notDBChan.Channel = "notDB";
+            //notDBChan.Invert = true;
+            //notDBChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -736,6 +736,18 @@ namespace EDMBlockHead.Acquire
             //rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             //switchedChannels.Add(rf2FChannel);
 
+            HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
+
+            HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
+
             HardwareControllerSwitchChannel eChan = new HardwareControllerSwitchChannel();
             eChan.Channel = "eChan";
             eChan.Modulation = config.GetModulationByName("E");
@@ -768,7 +780,7 @@ namespace EDMBlockHead.Acquire
 
         }
 
-#region Map Inputs
+        #region Map Inputs
         /* THIS VERSION FOR AR */
         // this sets up the scanned analog inputs. It's complicated a bit by the fact that
         // each input would ideally have a different clock rate and gateLength. The board
@@ -929,14 +941,14 @@ namespace EDMBlockHead.Acquire
             magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
             magInputs.GateLength = 1200;//usually this is 280, I changed this to take more mag data per block (10 June 2021)
 
-            //ScannedAnalogInput mag = new ScannedAnalogInput();
-            //mag.ReductionMode = DataReductionMode.Average;
-            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_X"];
-            //mag.AverageEvery = 20;
-            //mag.LowLimit = -10;
-            //mag.HighLimit = 10;
-            //mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
-            //magInputs.Channels.Add(mag);
+            ScannedAnalogInput mag = new ScannedAnalogInput();
+            mag.ReductionMode = DataReductionMode.Average;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            mag.AverageEvery = 20;
+            mag.LowLimit = -10;
+            mag.HighLimit = 10;
+            mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(mag);
 
             ScannedAnalogInput fvy = new ScannedAnalogInput();
             fvy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Y"];
@@ -1004,16 +1016,16 @@ namespace EDMBlockHead.Acquire
             hpy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             magInputs.Channels.Add(hpy);
 
-            ScannedAnalogInput hoy = new ScannedAnalogInput();
-            hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
-            hoy.ReductionMode = quspinReductionMode;
-            hoy.ChopStart = quspinChopStart;
-            hoy.ChopLength = quspinChopLength;
-            hoy.AverageEvery = quspinAverageEvery;
-            hoy.LowLimit = quspinLowerLim;
-            hoy.HighLimit = quspinUpperLim;
-            hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hoy);
+            //ScannedAnalogInput hoy = new ScannedAnalogInput();
+            //hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
+            //hoy.ReductionMode = quspinReductionMode;
+            //hoy.ChopStart = quspinChopStart;
+            //hoy.ChopLength = quspinChopLength;
+            //hoy.AverageEvery = quspinAverageEvery;
+            //hoy.LowLimit = quspinLowerLim;
+            //hoy.HighLimit = quspinUpperLim;
+            //hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hoy);
 
             ScannedAnalogInput hmy = new ScannedAnalogInput();
             hmy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Y"];

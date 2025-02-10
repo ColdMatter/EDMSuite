@@ -47,7 +47,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	# hc.UpdateBCurrentMonitor()
+	hc.UpdateBCurrentMonitor()
 	hc.PollVMonitor()
 	bh.StartPattern()
 
@@ -60,6 +60,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
+	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
 	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
     
 	bc.Settings["cluster"] = str(cluster)
@@ -213,6 +214,9 @@ def QuSpinGo():
             System.Threading.Thread.CurrentThread.Join(1000)
             hc.SwitchEAndWait(eCurrentState)
 
+            # Make new block config with correct E Field
+            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
+
             print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
             # save the block config and load into blockhead
             print("Saving temp config.")
@@ -238,8 +242,6 @@ def QuSpinGo():
             File.Delete(tempConfigFile)
             
             blockIndex = blockIndex + 1
-
-            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
 
             if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
                 print("Recalibrating leakage monitors.")
