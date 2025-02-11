@@ -1,0 +1,421 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>DCAM-SDK4 code samples </title>
+    <style type="text/css">
+            body {
+                font-family: sans-serif;
+            }
+            .arg-name {
+              font-style: italic;
+            }
+            .arg-decl {
+              text-indent: 5ex;
+            }
+            .arg-help {
+              text-indent: 2ex;
+            }
+            .fileinformation {
+                text-align: right;
+                color: #808080;
+            }
+            .chapter {
+                font-size: 200%;
+                line-height: 2em;
+                text-align: center;
+                border:	1px solid gray;
+                background-color: #C0FFC0;
+            }
+            .section {
+                font-size: 175%;
+                font-family: serif;
+                font-style: italic;
+            }
+            .title {
+                font-size: 125%;
+                color: #008080;
+            }
+            .fname {
+                font-family: serif;
+                font-style: italic;
+                font-size: 200%;
+                font-weight: bold;
+            }
+            .formula {
+                font-size: 150%;
+                line-height: 2em;
+                text-align: center;
+                font-family: serif;
+                font-style: italic;
+            }
+            .proplist {
+                font-family: sans-serif;
+            }
+            .prop_groupname {
+                font-size: 150%;
+                line-height: 2em;
+            }
+            .prop_id {
+                background-color: #FFFFC0;
+            }
+            .prop_indent {
+                background-color: #C0C0C0;
+            }
+            .pname
+            {
+                font-family: serif;
+                font-style: italic;
+                font-size: 150%;
+                font-weight: bold;
+            }
+            .psection
+            {
+                font-size: 130%;
+                font-family: serif;
+                font-style: italic;
+            }
+            .chaptercontent
+            {
+                font-size: 125%;
+            }
+            table {
+              text-indent: 0;
+            }
+            a.go-top   { text-decoration:none;}
+            a.go-top:link { color: #000080; }
+            a.go-top:hover { color: #808080; }
+            a.go-top:visited { color: #000080; }
+			txtind1 {
+         	 text-indent: 1em;
+          	}
+          	txtindhalf {
+          	text-indent: 50%;
+          	}
+        </style>
+  </head>
+  <body>
+    <div>
+      <div class="fileinformation">
+		<div>v24.9.6861</div>
+	</div>
+    </div>
+    <div><a class="go-top" href="#Chapter_appendix_detail"></a></div>
+    <hr>
+    <div id="Chapter_sampledcam4_detail">
+      <div class="chapter">DCAM-SDK4 code samples</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				<div class="title">CPP</div>
+                  <div></div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/init_uninit">init_uninit</a></td>
+                          <td width="75%">
+                            <div><b>DCAM-APIの初期化と終了処理</b><br>DCAMを初期化し、インデックスを使ってデバイス情報を表示します。ディレクティブでオプションやGUIDの設定ができます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/open_show_modelinfo">open_show_modelinfo</a></td>
+                          <td width="75%">
+                            <div><b>デバイスハンドルの取得とデバイス情報の表示</b><br>デバイスをオープンし、DCAMハンドルを使ってデバイス情報を表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/propertylist">propertylist</a></td>
+                          <td width="75%">
+                            <div><b>デバイスがサポートしているプロパティの表示</b><br>サポートしているすべてのプロパティの名前とIDを表示します。ディレクティブでプロパティの詳細を表示することができます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/live_average">live_average</a></td>
+                          <td width="75%">
+                            <div><b>画像取得と画像の平均値の表示</b><br>画像を読み出し、それぞれの画像の平均値を表示します。ディレクティブで画像取得を終了するタイミングを変えることができます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/access_image">access_image</a></td>
+                          <td width="75%">
+                            <div><b>各種関数による画像アクセス</b><br>画像を取得し、画像データにアクセスします。ディレクティブでアクセスする関数を変えることができます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/binning_subarray">binning_subarray</a></td>
+                          <td width="75%">
+                            <div><b>ビニングとサブアレイの設定</b><br>ディレクティブで定義された値をビニングとサブアレイに設定します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/software_trigger">software_trigger</a></td>
+                          <td width="75%">
+                            <div><b>ソフトウエアトリガによる画像取得</b><br>ソフトウエアトリガを使って画像を取得します。キー入力でトリガが発行されます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/framebundle">framebundle</a></td>
+                          <td width="75%">
+                            <div><b>フレームバンドル設定時の画像とメタデータアクセス</b><br>フレームバンドル設定をし、各画像データとメタデータにアクセスします。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/recording">recording</a></td>
+                          <td width="75%">
+                            <div><b>ハードディスクへの画像の自動保存</b><br>指定されたファイルに画像を記録します。ディレクティブでfile, session, frameのメタデータを書くことができます。Windowsのみサポートしています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/copymetadata">copymetadata</a></td>
+                          <td width="75%">
+                            <div><b>画像取得とメタデータのコピー</b><br>画像のメタデータ（タイムスタンプ、フレームスタンプ）をコピーし、表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/attach_imagebuf">attach_imagebuf</a></td>
+                          <td width="75%">
+                            <div><b>画像データ取得用バッファの割り当て</b><br>画像データを受け取るためのバッファを渡します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/attach_metadatabuf">attach_metadatabuf</a></td>
+                          <td width="75%">
+                            <div><b>メタデータ取得用バッファの割り当て</b><br>メタデータ（タイムスタンプ、フレームスタンプ）を受け取るためのバッファを渡します。ディレクティブでバッファの形式を変えることができます。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/splitview">splitview</a></td>
+                          <td width="75%">
+                            <div><b>Split Viewモードのパラメータ設定と画像取得</b><br>Split Viewモードに設定し、分かれた画像を取得します。このモードは一部のカメラのみサポートしています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/setdata_lut">setdata_lut</a></td>
+                          <td width="75%">
+                            <div><b>Lookup Tableの設定</b><br>カメラの出力にLUTを適用します。この機能は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/setdata_region">setdata_region</a></td>
+                          <td width="75%">
+                            <div><b>データ削減用領域指定</b><br>矩形領域かバイトマスクを適用して出力データを削減します。この機能は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/unpack_mono12">unpack_mono12</a></td>
+                          <td width="75%">
+                            <div><b>パックされたモノクロ12bitデータの展開</b><br>DCAMからモノクロ12bitのパッキングデータを取得し、データを展開します。この出力は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/imageproc_option">imageproc_option</a></td>
+                          <td width="75%">
+                            <div><b>画像アクセス時の画像処理</b><br>DCAMからHigh Contrastの画像を取得します。この機能は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/control_calibration">control_calibration</a></td>
+                          <td width="75%">
+                            <div><b>補正データの取得と保存</b><br>カメラに補正データを生成させ、メモリ内に保存します。この機能は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/devicebuffermode">devicebuffermode</a></td>
+                          <td width="75%">
+                            <div><b>デバイスバッファモードに関連するパラメータの設定と画像アクセス</b><br>デバイスバッファモードに関連するパラメータの設定、取得をし、すべての画像に最短でアクセスします。この機能は一部のカメラのみ対応しています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cpp/burst_copy	">burst_copy	</a></td>
+                          <td width="75%">
+                            <div><b>ユーザバッファへの連続コピー	</b><br>転送された画像の枚数を確認し、ローカルバッファに各画像をコピーします。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+				<div class="title">MFC</div>
+                  <div></div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="mfc/ExCap4">ExCap4</a></td>
+                          <td width="75%">
+                            <div>このアプリケーションはDCAM-APIのランタイムに含まれています。DCAM4.0の基本的な関数のみで実装されています。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+				<div class="title">C#</div>
+                  <div></div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cs/csAcq4">csAcq4</a></td>
+                          <td width="75%">
+                            <div>DCAM4.0の基本的な関数をボタンで操作し、画像表示を行います。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+				<div class="title">VB.NET</div>
+                  <div></div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="vbnet/vbAcq4">vbAcq4</a></td>
+                          <td width="75%">
+                            <div>DCAM4.0の基本的な関数をボタンで操作し、画像表示を行います。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+				<div class="title">Python</div>
+                  <div></div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="python">Source Folder</a></td>
+                          <td width="75%">
+                            <div>リンクされたディレクトリに次のソースが含まれています。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcam_show_device_list.py</td>
+                          <td width="75%">
+                            <div>認識されたデバイスのリストを表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcam_show_properties.py</td>
+                          <td width="75%">
+                            <div>オープンされたデバイスがサポートしているプロパティのリストを表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcam_show_single_captured_image.py</td>
+                          <td width="75%">
+                            <div>画像を1フレーム取得し、OpenCVで表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcam_live_capturing.py</td>
+                          <td width="75%">
+                            <div>決まったキー入力があるまでOpenCVでライブ画像を表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcamcon_live_capturing.py</td>
+                          <td width="75%">
+                            <div>プロンプトで基本的なパラメータを設定して、OpenCVでライブ画像を表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcamcon_lightsheet.py</td>
+                          <td width="75%">
+                            <div>Light Sheetに関連するパラメータをプロンプトから設定し、OpenCVでLight Sheetのライブ画像を表示します。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcamcon_framebundle.py</td>
+                          <td width="75%">
+                            <div>フレームバンドルに関連するパラメータをプロンプトから設定し、OpenCVでバンドルされた画像をライブ表示します。1フレームのサイズは最小サイズになります。<br></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="25%">dcamcon_masterpulse.py</td>
+                          <td width="75%">
+                            <div>MASTERPULSEトリガモードに関連するパラメータをプロンプトから設定し、OpenCVでライブ画像を表示します。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+				<div class="title">CUDA</div>
+                  <div>
+                    <div>
+						<div>CUDAを使用したサンプルとなります。CUDA Toolkit 10.2、Visual Studio 2019で作成しています。</div>
+					</div>
+                  </div>
+                  <div>
+                    <div class="samplelist">
+                      <table width="100%" border="1" rules="all">
+                        <tr>
+                          <th bgcolor="#BBBBBB" width="25%" align="left">Sample</th>
+                          <th bgcolor="#BBBBBB" width="75%" align="left">Explanation</th>
+                        </tr>
+                        <tr>
+                          <td width="25%"><a class="go-top" href="cuda/cuda_live_attach">cuda_live_attach</a></td>
+                          <td width="75%">
+                            <div>画像を読み出し、それぞれの画像の平均値をGPUで計算し表示します。ディレクティブで使用するGPUのバッファタイプを変えることができます。<br></div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <p></p>
+                  </div>
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <p><a class="go-top" href="#Chapter_sampledcam4_detail">このチャプターの先頭へ戻る</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

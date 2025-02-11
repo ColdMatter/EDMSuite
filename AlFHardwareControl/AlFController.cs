@@ -249,6 +249,7 @@ namespace AlFHardwareControl
         private void UpdateCryoState()
         {
 
+            
             bool OK_pressure = Convert.ToDouble(pressure1) < 1e-4 || !InterlocksActive;
             bool OK_heaters = !(window.Loop1Status.Text == "ON" || window.Loop2Status.Text == "ON") || !InterlocksActive;
             bool CRYO_off = false;
@@ -277,6 +278,7 @@ namespace AlFHardwareControl
             // Send data to ccmmonitoring
             InfluxDBDataLogger data = InfluxDBDataLogger.Measurement("Cryo state").Tag("name", "Cryo 1");
             data.Field("Cryo state", !CRYO_off);
+            data.TimestampMS(DateTime.UtcNow);
 
             data.Write("https://ccmmonitoring.ph.ic.ac.uk:8086", Environment.GetEnvironmentVariable("INFLUX_BUCKET"), "CentreForColdMatter");
 

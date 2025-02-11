@@ -40,6 +40,21 @@ namespace DAQ.HAL
             }
         }
 
+        public bool SquareWave
+        {
+            set
+            {
+                if (value)
+                {
+                    Write(":SOUR1:FUNC SQU\n");
+                }
+                else
+                {
+                    Write(":SOUR1:FUNC SIN\n");
+                }
+            }
+        }
+
         public double Frequency
         {
             set

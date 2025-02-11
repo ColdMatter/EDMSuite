@@ -158,7 +158,7 @@ namespace TransferCavityLock2012
             LorentzianFit bestGuessFit = new LorentzianFit(background, amplitude, centre, width);
             return CavityScanFitHelper.FitLorentzianToData(rampData, scanData, bestGuessFit);
         }
-
+ 
         public virtual void UpdateLock()
         {
             if (lState == LaserState.LOCKED)

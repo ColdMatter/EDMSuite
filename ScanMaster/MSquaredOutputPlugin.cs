@@ -37,6 +37,8 @@ namespace ScanMaster.Acquire.Plugins
             settings["setSetPointWaitTime"] = 500;
             settings["useHTTPFallback"] = false;
             settings["offset"] = 0.0; //Frequency offset in THz
+            settings["useRemoteHost"] = true;
+            settings["remoteHost"] = "ic-czc225b85m";
         }
 
 
@@ -44,7 +46,10 @@ namespace ScanMaster.Acquire.Plugins
         public override void AcquisitionStarting()
         {
 
-            laser = M2LaserInterface.getInterface((string) settings["local_addr"], (string) settings["remote_addr"]);
+            if ((bool)settings["useRemoteHost"])
+                laser = M2LaserInterface.getRemoteInterface((string)settings["remoteHost"], (string)settings["local_addr"], (string)settings["remote_addr"]);
+            else
+                laser = M2LaserInterface.getInterface((string) settings["local_addr"], (string) settings["remote_addr"]);
 
             scanParameter = 0;
 

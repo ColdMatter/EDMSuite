@@ -131,7 +131,8 @@ namespace EDMBlockHead
             DigitalModulation dm = new DigitalModulation();
             dm.Name = "E";
             dm.Waveform = new Waveform("E Modulation", CODE_LENGTH);
-            dm.Waveform.Code = new bool[] { true, true, false, false, false, false, false, false }; //{ true, true, true , true, false ,false , false, false, false, false, false, false };
+            //dm.Waveform.Code = new bool[] { true, true, false, false, false, false, false, false }; //{ true, true, true , true, false ,false , false, false, false, false, false, false };
+            dm.Waveform.Code = new bool[] { true, true, true, true, true, true, true, false }; // EW change for magnetic field blocks
             config.DigitalModulations.Add(dm);
 
             //DigitalModulation mw = new DigitalModulation();

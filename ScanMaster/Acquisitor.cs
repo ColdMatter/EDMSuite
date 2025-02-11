@@ -110,8 +110,7 @@ namespace ScanMaster.Acquire
 						}
 
                         ScanPoint sp = new ScanPoint();
-						sp.ScanParameter = config.outputPlugin.ScanParameter;
-                        
+                        sp.ScanParameter = config.outputPlugin.ScanParameter;
 
                         for (int shotNum = 0; shotNum < (int)(config.outputPlugin.Settings["shotsPerPoint"]); shotNum++)
                         {
