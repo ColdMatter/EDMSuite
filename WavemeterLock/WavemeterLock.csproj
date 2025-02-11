@@ -168,13 +168,9 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-<<<<<<< HEAD
-    <Reference Include="NationalInstruments.DAQmx, Version=19.6.45.1, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
-=======
     <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
->>>>>>> 1c17998b82a8a4d3cda71e1b42558bf60bab2da6
     <Reference Include="NationalInstruments.DAQmx.Fakes">
       <HintPath>FakesAssemblies\NationalInstruments.DAQmx.Fakes.dll</HintPath>
     </Reference>
@@ -197,13 +193,17 @@
   <ItemGroup>
     <Compile Include="Lasers.cs" />
     <Compile Include="Controller.cs" />
-    <Compile Include="LockForm.cs" />
+    <Compile Include="LockForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LockForm.Designer.cs">
       <DependentUpon>LockForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LockControlPanel.cs" />
+    <Compile Include="LockControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="LockControlPanel.Designer.cs">
       <DependentUpon>LockControlPanel.cs</DependentUpon>
     </Compile>
