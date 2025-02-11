@@ -77,7 +77,7 @@ def CapacitorTest(plateVoltage, EPol, holdstart, holdend, holdstep, holdgap):
 	return
 
 
-def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
+def RampTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	'''
 	RampStart is how to run the leakage test file
 	'''
@@ -109,7 +109,7 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	
 	print("Brief wait for initialisation")
 	hc.EnableEField(True)
-	System.Threading.Thread.CurrentThread.Join(1000)
+	System.Threading.Thread.CurrentThread.Join(10*1000)
 
 	r = np.arange(float(start), float(stop+step), float(step))
 	for i in r:
@@ -135,6 +135,90 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 		System.Threading.Thread.CurrentThread.Join(stepdowntime*1000)
 
 	print("Waiting at 0 potential for a minute")
+	hc.EnableEField(False)
+	System.Threading.Thread.CurrentThread.Join(60*1000)
+	hc.StopIMonitorPoll()
+
+	print("Finished leakage test")
+
+def RampSwitchTest(start, stop, step, stepuptime, holduptime, stepdowntime):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	#Logging stopped
+	hc.StopIMonitorPoll()
+	
+	#Fields Off and plate voltage prepped
+	hc.FieldsOff()
+	hc.SetCPlusVoltage(float(start))
+	hc.SetCMinusVoltage(float(start))
+	hc.UpdateVoltages()
+	hc.ConnectEField(True)
+	currentEpolarity = hc.EFieldPolarity
+	
+	hc.SetLeakageCurrentLogCheck(True)
+	hc.SetiMonitorPollPeriod(100)
+
+	[filepath,file] = getNextFile()
+
+	hc.leakageFileSave = filepath+'_EFieldRampSwitchTest.csv'
+
+	if (hc.leakageFileSave==''):
+		loggingcheck=input("Have you started logging? (y/n)\n")
+		if loggingcheck!="y":
+			print("Start the logging first")
+			return
+	else:
+		hc.StartIMonitorPoll()
+	
+	print("Brief wait for initialisation")
+	hc.EnableEField(True)
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = np.arange(float(start), float(stop+step), float(step))
+	for i in r:
+		print("E fields at +/- " + str(i) + " kV")
+		hc.SetCPlusVoltage(float(i))
+		hc.SetCMinusVoltage(float(i))
+		hc.UpdateVoltages()
+		print("waiting for " +  str(stepuptime) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(stepuptime*1000)
+		
+
+	print("Holding at full potential for "+str(holduptime)+" seconds")
+	System.Threading.Thread.CurrentThread.Join(holduptime*1000)
+
+	print("Testing disconnections and RC time to discharge and charge:")
+	print("Disconnect -> Bleed 15 s -> Switch EPol -> Reconnect -> wait 15s")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	for j in range(5):
+		currentEpolarity = hc.EFieldPolarity
+		hc.ConnectEField(False)
+		System.Threading.Thread.CurrentThread.Join(1000)
+		hc.EnableBleed(True)
+		System.Threading.Thread.CurrentThread.Join(15000)
+		hc.EnableBleed(False)
+		System.Threading.Thread.CurrentThread.Join(1000)
+		hc.EFieldPolarity = not(currentEpolarity)
+		System.Threading.Thread.CurrentThread.Join(1000)
+		hc.ConnectEField(True)
+		System.Threading.Thread.CurrentThread.Join(15000)
+	
+	print("Holding for another 20 seconds")
+	System.Threading.Thread.CurrentThread.Join(20000)
+	
+	a = reversed(r)
+	
+	for i in a:
+		print("E fields at +/- " + str(float(i)) + " kV")
+		hc.SetCPlusVoltage(float(i))
+		hc.SetCMinusVoltage(float(i))
+		hc.UpdateVoltages()
+		print("waiting for " +  str(stepdowntime) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(stepdowntime*1000)
+
+	print("Waiting at 0 potential for a minute")
 	System.Threading.Thread.CurrentThread.Join(60*1000)
 	hc.EnableEField(False)
 	hc.StopIMonitorPoll()
@@ -148,7 +232,8 @@ def main():
 	#hc.SetiMonitorPollPeriod(100)
 	#print("Hi new stuff")
 	print("Use CapacitorTest(plateVoltage, EPol, holdstart, holdend, holdstep, holdgap)")
-	print("or use RampStart(start, stop, step, stepuptime, holduptime, stepdowntime)")
+	print("or try RampTest(start, stop, step, stepuptime, holduptime, stepdowntime)")
+	print("or use RampSwitchTest(start, stop, step, stepuptime, holduptime, stepdowntime)")
 	print("Voltages in kV, EPol in True/False, waiting times in seconds")
 	pass
 

@@ -410,7 +410,7 @@ namespace EDMBlockHead.GUI
             // 
             // northPlot
             // 
-            this.northPlot.HistoryCapacity = 5000;
+            this.northPlot.HistoryCapacity = 500;
             this.northPlot.LineColor = System.Drawing.Color.Red;
             this.northPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.northPlot.XAxis = this.xAxis4;
@@ -419,12 +419,12 @@ namespace EDMBlockHead.GUI
             // xAxis4
             // 
             this.xAxis4.Mode = NationalInstruments.UI.AxisMode.Fixed;
-            this.xAxis4.Range = new NationalInstruments.UI.Range(0D, 820D);
+            this.xAxis4.Range = new NationalInstruments.UI.Range(0D, Convert.ToDouble(controller.Config.Settings["numberOfPoints"]));
             this.xAxis4.Visible = false;
             // 
             // southPlot
             // 
-            this.southPlot.HistoryCapacity = 5000;
+            this.southPlot.HistoryCapacity = 500;
             this.southPlot.LineColor = System.Drawing.Color.DodgerBlue;
             this.southPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.southPlot.XAxis = this.xAxis4;

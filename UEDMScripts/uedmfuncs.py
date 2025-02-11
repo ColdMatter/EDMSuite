@@ -37,6 +37,34 @@ def frange(start, stop=None, step=None):
 			break
 		yield temp
 		count += 1
+          
+def windowValue(value,lowerlim,upperlim):
+    output=value
+    if value<lowerlim:
+        output=lowerlim
+    if value>upperlim:
+        output=upperlim
+    return output
+
+def scanSettings(scan:Scan,pattern):
+    scansettings=list(scan.ScanSettings.StringKeyList)
+    keylist=[i for i in scansettings if pattern in i]
+    valuelist=list()
+    for i,param in enumerate(keylist):
+        valuelist.append(scan.ScanSettings[param])
+    output=np.vstack((keylist,valuelist))
+    return output.transpose()
+
+def scanSettingsFromFile(filename:str,pattern:str):
+    ss=ScanSerializer()
+    scan=ss.DeserializeScanFromZippedXML(filename,"average.xml")
+    scansettings=list(scan.ScanSettings.StringKeyList)
+    keylist=[i for i in scansettings if pattern in i]
+    valuelist=list()
+    for i,param in enumerate(keylist):
+        valuelist.append(scan.ScanSettings[param])
+    output=np.vstack((keylist,valuelist))
+    return output.transpose()
 
 def getFiles(pattern):
     fileSystem = Environs.FileSystem
@@ -53,6 +81,18 @@ def getFiles(pattern):
 def getFile(file):
     return getFiles(file)[0]
 
+def getScans(files):
+    ss=ScanSerializer()
+    scans=[]
+    for file in files:
+        scans.append(ss.DeserializeScanFromZippedXML(str(file),"average.xml"))
+    return scans
+
+def getScan(file):
+    ss=ScanSerializer()
+    scan=ss.DeserializeScanFromZippedXML(str(file),"average.xml")
+    return scan
+               
 def getNextFile():
     fileSystem = Environs.FileSystem
     dataPath = fileSystem.GetDataDirectory(fileSystem.Paths["edmDataPath"])
@@ -71,8 +111,22 @@ def fitDoubleGaussian(voltage,signal):
     popt, pcov = curve_fit(doublegaussian, voltage, signal, p0=first_try)
     return [popt,pcov]
 
-def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
-    
+def processScanType(scan:Scan, scantype='On', detector=0, intst=0, intend=50, bgst=55, bgend=120):
+    '''A function to process a scan into a list of voltage and signal.
+    Inputs:
+        - a scan
+        - a scantype ('On','Off','OnOff' (minus),'OnOffRatio' (ratio),'OffOn' or 'OffOnRatio')
+        - detector (0,1)
+        - intst, intend, bgst, bgend as start and end times in ms
+    '''
+    sr=float(scan.ScanSettings["shot:sampleRate"])
+    gateStart=int(scan.ScanSettings["shot:gateStartTime"])
+    gateLength=int(scan.ScanSettings["shot:gateLength"])
+    intStart=int(windowValue(((sr/1000)*intst),gateStart,(gateStart+gateLength)))
+    intEnd=int(windowValue(((sr/1000)*intend),gateStart,(gateStart+gateLength)))
+    bgStart=int(windowValue(((sr/1000)*bgst),gateStart,(gateStart+gateLength)))
+    bgEnd=int(windowValue(((sr/1000)*bgend),gateStart,(gateStart+gateLength)))
+
     voltage = np.array(scan.ScanParameterArray)
 
     if scantype=='On':
@@ -120,7 +174,7 @@ def processScanType(scan, scantype='On', detector=0, intStart=1000, intEnd=4000,
     else:
         print("Incorrect Scantype, try again")
         return
-    return [voltage,signal]
+    return [voltage,signal] 
 
 def getSetPoint(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector=0,intStart=60, intEnd=500, bgStart=510, bgEnd=650):
     scanSerializer = ScanSerializer()
@@ -156,15 +210,42 @@ def getSetPoint2(filePath='..\\..\\Example_scan_01.zip', scantype='On', detector
     center=round(gfitter.returncenter(),6)
     return center
 
-# Plotting
-def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
+def getCoolingRatio(filePath='..\\..\\Example_scan_01.zip', scantype='OnOffRatio', detector=0,intStart=60, intEnd=500, bgStart=510, bgEnd=650):
     scanSerializer = ScanSerializer()
+    #gfitter = GaussianFitter()
 
-    #file = r"C:\\Users\UEDM\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2024\\2024-07\\080724\\LOG\\probescan\\scan_01.zip"
-    fitfile = getFile(file)
+    file = getFile(filePath)
 
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(fitfile),"average.xml")
+    scan = scanSerializer.DeserializeScanFromZippedXML(str(file),"average.xml")
 
+    [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
+    mean=np.mean(signal)
+    std=np.std(signal)
+    if mean<1:
+        mean=1/mean
+    return [mean,std]
+
+def getfit(scan, scantype='On', fitfunc='gaussian', detector=0, intStart=10, intEnd=40, bgStart=41, bgEnd=90):
+    # Process the scan into arrays
+    [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
+
+    x = voltage
+    y = signal
+
+    # Executing curve_fit on data 
+    if fitfunc=='doublegaussian':
+        popt, pcov = fitDoubleGaussian(x,y)
+        ym = doublegaussian(x, *popt) 
+    else:
+        popt, pcov = fitGaussian(x,y) 
+        ym = gaussian(x, *popt) 
+
+    #popt returns the best fit values for parameters of the given model (func) 
+    return [x,y,ym,popt,pcov]
+
+# Plotting
+def plotfit(scan, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, intEnd=4000, bgStart=4100, bgEnd=5000):
+    # Process the scan into arrays
     [voltage,signal] = processScanType(scan, scantype, detector, intStart, intEnd, bgStart, bgEnd)
 
     x = voltage
@@ -188,19 +269,21 @@ def plotfit(file, scantype='On', fitfunc='gaussian', detector=0, intStart=1000, 
 
     #popt returns the best fit values for parameters of the given model (func) 
     print ("New setpoint is %3.6f" % popt[1]) 
-    ax.plot(x, ym, c='r', label='Best fit') 
+    ax.plot(x, ym, c='r', label=f'Best fit: mu={popt[1]:3.6f}') 
     ax.legend() 
     plt.show()
 
-def plotTOF(file, scanStart=-1000, scanEnd=1000, bgStart=4100, bgEnd=5000):
-    #get the file from the normal file path
-    TOFfile = getFile(file)
+def plotTOF(scan, scanst=-1000, scanend=1000, bgst=41, bgend=120):
+    # Window inputs for sensible results
+    sr=float(scan.ScanSettings["shot:sampleRate"])
+    gateStart=int(scan.ScanSettings["shot:gateStartTime"])
+    gateLength=int(scan.ScanSettings["shot:gateLength"])
+    bgStart=int(windowValue(((sr/1000)*bgst),gateStart,(gateStart+gateLength)))
+    bgEnd=int(windowValue(((sr/1000)*bgend),gateStart,(gateStart+gateLength)))
+    scanStart=windowValue(scanst,min(scan.ScanParameterArray),max(scan.ScanParameterArray))
+    scanEnd=windowValue(scanend,min(scan.ScanParameterArray),max(scan.ScanParameterArray))
 
-    #get the scan deserializer and import the scan
-    scanSerializer = ScanSerializer()
-    scan = scanSerializer.DeserializeScanFromZippedXML(str(TOFfile),"average.xml")
-
-    #make arrays for timebase and signal and background subtract the laser scatter
+    # Make arrays for timebase and signal and background subtract the laser scatter
     times=np.array(scan.GetGatedAverageOnShot(scanStart,scanEnd).TOFs[0].Times)
     data=np.array(scan.GetGatedAverageOnShot(scanStart,scanEnd).TOFs[0].Data)
     bg=np.mean(data[bgStart:bgEnd])
@@ -223,3 +306,29 @@ def StartPattern():
 
 def StopPattern():
     sm.StopPatternOutput()
+
+#TCL control
+def lineformat(cavity,laser,setpoint):
+    outstr=cavity+"\t"+laser+"\t"+str(round(setpoint,5))+"\n"
+    return outstr
+
+def saveTCLSetPoints():
+    probeSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
+    v0Setpoint = tcl.GetLaserSetpoint("VISCavity", "v0laser")
+    v1Setpoint = tcl.GetLaserSetpoint("VISCavity", "v1laser")
+    q0Setpoint = tcl.GetLaserSetpoint("OPCavity", "Q0")
+    p12Setpoint = tcl.GetLaserSetpoint("OPCavity", "P12")
+    stirapSetpoint = tcl.GetLaserSetpoint("IRCavity", "STIRAP")
+    [filepath,file] = getNextFile()
+    probeline=lineformat("VISCavity","probe",probeSetpoint)
+    v0line=lineformat("VISCavity","v0",v0Setpoint)
+    v1line=lineformat("VISCavity","v1",v1Setpoint)
+    q0line=lineformat("OPCavity","Q0",q0Setpoint)
+    p12line=lineformat("OPCavity","P12",p12Setpoint)
+    stirapline=lineformat("IRCavity","STIRAP",stirapSetpoint)
+    linelist=[probeline,v0line,v1line,q0line,p12line,stirapline]
+    with open(filepath[:-2]+'_TCLSetpoints.txt','w') as patternfile:
+            for line in linelist:
+                patternfile.write(line)
+
+

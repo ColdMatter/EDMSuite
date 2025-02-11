@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExCap4", "ExCap4.vcxproj", "{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Debug|x64.ActiveCfg = Debug|x64
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Debug|x64.Build.0 = Debug|x64
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Debug|x86.ActiveCfg = Debug|Win32
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Debug|x86.Build.0 = Debug|Win32
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Release|x64.ActiveCfg = Release|x64
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Release|x64.Build.0 = Release|x64
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Release|x86.ActiveCfg = Release|Win32
+		{568FCDC4-62E4-41AA-BAEC-D4E96E29A84E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32A0C4CE-06E9-41BC-93CD-4B9169A5F472}
+	EndGlobalSection
+EndGlobal

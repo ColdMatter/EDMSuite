@@ -84,9 +84,9 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private int PlotChannel = 0;
         private int flowTimeoutCount = 15;
-        private double hardTempLimInK = 300.0;
+        private double hardTempLimInK = 310.0;
         private double hardTempLimInC = 27.0;
-        private double softTempLimInK = 293.0;
+        private double softTempLimInK = 300.0;
         private double softTempLimInC = 20.0;
 
         Stopwatch cycleHoldTimer = new Stopwatch();
@@ -475,7 +475,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (IsCyling)
                 {
-                    checkCycleStatus(sourceTemp3);
+                    checkCycleStatus(sourceTemp2);
                     /*double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
                     if (!finishedHeating && sourceTemp2 > cycleLimit)
                     {
@@ -490,16 +490,16 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
 
                     double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
-                    if (sourceTemp3 < cycleLimit && !maxTempReached)
+                    if (sourceTemp2 < cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(true);
                     }
-                    else if (sourceTemp3 > cycleLimit && !maxTempReached)
+                    else if (sourceTemp2 > cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(false);
                         maxTempReached = true;
                     }
-                    else if (sourceTemp3 < cycleLimit - 5 && maxTempReached)
+                    else if (sourceTemp2 < cycleLimit - 5 && maxTempReached)
                     {
                         SetHeaterState(true);
                         maxTempReached = false;
@@ -513,11 +513,11 @@ namespace MoleculeMOTHardwareControl.Controls
 
                     double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
                     //double cycleLimit = castView.GetCycleLimit40K();
-                    if (sourceTemp3 < cycleLimit && !maxTempReached40K)
+                    if (source40KTemp2 < cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                     }
-                    else if (sourceTemp3 > cycleLimit && !maxTempReached40K)
+                    else if (source40KTemp2 > cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(false);
                         maxTempReached40K = true;
@@ -558,6 +558,8 @@ namespace MoleculeMOTHardwareControl.Controls
                 }
 
                 SetHeaterStateMaster(isHeaterOn || isHeaterOn40K);
+
+                cryoHeaterCheck();
 
                 castView.UpdateCurrentSourceTemperature2(sourceTemp2.ToString("0.##") + " K");
                 castView.UpdateCurrentSourceTemperature3(sourceTemp3.ToString("0.##") + " K");
@@ -773,6 +775,19 @@ namespace MoleculeMOTHardwareControl.Controls
                 this.stopPanic();
             }
 
+        }
+
+        /// <summary>
+        /// Check if cryo and heaters are on at the same time.
+        /// If so, switch them all off.
+        /// </summary>
+        public void cryoHeaterCheck()
+        {
+            if (isCryoOn && isHeaterOn || isCryoOn&&isHeaterOn40K)
+            {
+                stopHeating();
+                SetCryoState(false);
+            }
         }
 
         /// <summary>

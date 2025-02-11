@@ -17,10 +17,14 @@ def RampStart(start, stop, step, stepuptime, holduptime, stepdowntime):
 	hc.SetLeakageCurrentLogCheck(True)
 	hc.SetiMonitorPollPeriod(200)
 
-	loggingcheck=input("Have you started logging? (y/n)\n")
-	if loggingcheck!="y":
-		print("Start the logging first")
-		return
+	hc.leakageFileSave = ''
+
+	# loggingcheck=input("Have you started logging? (y/n)\n")
+	# if loggingcheck!="y":
+	# 	print("Start the logging first")
+	# 	return
+
+	hc.StartIMonitorPoll()
 
 	print("waiting for initialisation")
 	System.Threading.Thread.CurrentThread.Join(1000)
