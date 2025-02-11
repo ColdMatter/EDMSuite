@@ -12,12 +12,12 @@ using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
-	
-	/// <summary>
-	/// This is the specific hardware that the molecule MOT experiment has. This class conforms
-	/// to the Hardware interface.
-	/// </summary>
-	public class MoleculeMOTHardware : DAQ.HAL.Hardware
+
+    /// <summary>
+    /// This is the specific hardware that the molecule MOT experiment has. This class conforms
+    /// to the Hardware inteSidebandImAmp1ce.
+    /// </summary>
+    public class MoleculeMOTHardware : DAQ.HAL.Hardware
 	{
 
 		public MoleculeMOTHardware()
@@ -75,7 +75,7 @@ namespace DAQ.HAL
             AddDigitalInputChannel("v00LockBlockFlag", tclBoard1Address, 0, 1);
             AddAnalogInputChannel("refPDHamish", tclBoard1Address + "/ai3", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0");//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
+            AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0", 0, 10);//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
             AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
             AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2"); 
             //AddAnalogOutputChannel("rbD1Frequency", tclBoard1Address + "/ao0"); //Reused Channel 14/03/23
@@ -89,8 +89,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("refPDCarlos", tclBoard1Address + "/ai7", AITerminalConfiguration.Rse);/////////////////////////////////////////
             AddAnalogInputChannel("bXBeastPD", tclBoard1Address + "/ai9", AITerminalConfiguration.Rse);
 
-            AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 5.0);
-            AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0, 5);
+            AddAnalogOutputChannel("v21Lock", usbBoard2Address + "/ao0", 0.0, 1.0);         // 0-5 v range was for DBR
+            AddAnalogOutputChannel("v32Lock", usbBoard1Address + "/ao0", 0.0, 1.0);         // 0-5 v range was for DBR
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
             AddAnalogOutputChannel("TCoolSidebandVCO", analogPatternBoardAddress2 + "/ao3"); //Reused for Rb Repump Wavemeter Lock 20/03/23
             //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
@@ -102,6 +102,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("bXSlowingAOM", digitalPatternBoardAddress, 0, 2);
             AddDigitalOutputChannel("v0rfswitch1", digitalPatternBoardAddress, 0, 3);
             AddDigitalOutputChannel("v10SlowingAOM", digitalPatternBoardAddress, 0, 4);
+            AddDigitalOutputChannel("QCLShutter", digitalPatternBoardAddress2, 2, 2);
             //AddDigitalOutputChannel("microwaveA", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("microwaveB", digitalPatternBoardAddress, 0, 6);
             AddDigitalOutputChannel("cameraTrigger", digitalPatternBoardAddress, 0, 7);
@@ -120,8 +121,12 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
+
+            // Lambda cooling and blue MOT
             AddDigitalOutputChannel("v0ddsSwitchA", digitalPatternBoardAddress2, 2, 0);
             AddDigitalOutputChannel("v0ddsSwitchB", digitalPatternBoardAddress2, 2, 1);
+            AddDigitalOutputChannel("v0ddsSwitchC", digitalPatternBoardAddress2, 1, 5);
+            AddDigitalOutputChannel("v0ddsSwitchD", digitalPatternBoardAddress2, 1, 6);
 
             // Rb Digital Pattern
             AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
@@ -256,13 +261,16 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("Rf4Amp", analogPatternBoardAddress2 + "/ao23");
 
 
+            AddAnalogOutputChannel("BXFreq", analogPatternBoardAddress2 + "/ao9");
+
+
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
             //wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
             
             wmlConfig.AddSlaveLaser("v0", "v00Lock", 1);
-            wmlConfig.AddLaserConfiguration("v0", 494.432329, -100, -1000);
+            wmlConfig.AddLaserConfiguration("v0", 494.432395, -500, -1500);
 
             wmlConfig.AddSlaveLaser("v1", "v10Lock", 2);
             wmlConfig.AddLaserConfiguration("v1", 476.958908, -200, -1000);
@@ -274,13 +282,13 @@ namespace DAQ.HAL
             wmlConfig.AddLaserConfiguration("v3", 477.628176, -50, -500);
 
             wmlConfig.AddSlaveLaser("BX", "bXLock", 5);
-            wmlConfig.AddLaserConfiguration("BX", 564.582306, 500, 500);
+            wmlConfig.AddLaserConfiguration("BX", 564.582406, 500, 500);
             //Use TC for sowing Mar 5th 2024
             //wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
             wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
 
             wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
-            wmlConfig.AddLaserConfiguration("TCool", 564.582462, 50, 500);
+            wmlConfig.AddLaserConfiguration("TCool", 564.582240, 50, 500);
 
             Info.Add("Default", wmlConfig);
 
