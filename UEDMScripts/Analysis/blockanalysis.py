@@ -162,4 +162,5 @@ for file in files[:10]:
     analysisCount+=1
 # %%
 for block in blockData:
-    print(block['timestamp'])
+    print(block['eChan']['fvy'])
+# %%
