@@ -1735,5 +1735,10 @@ namespace UEDMHardwareControl
         {
             controller.SetTargetStepperDirection();
         }
+
+        private void TargetLengthTimeButton_Click(object sender, EventArgs e)
+        {
+            controller.StepTargetForTime();
+        }
     }
 }

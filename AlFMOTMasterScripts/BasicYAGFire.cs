@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 100000;
+        Parameters["PatternLength"] = 50000;
         Parameters["Void"] = 0;
         Parameters["CameraDelay"] = 1500;
     }

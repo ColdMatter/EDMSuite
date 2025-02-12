@@ -81,10 +81,6 @@ detBDistance = 1.715;(*m*)
 
 
 (* ::Input::Initialization:: *)
-
-
-
-(* ::Input::Initialization:: *)
 basis[bit_, length_] := Flatten[Table[ { Table[ 1, {2^(bit-1)}], Table[-1, {2^(bit-1)}]} , {length/ (2^bit)}]];
 edmWaveform[code_]:= Module[{numWave},numWave=\!\(
 \*UnderoverscriptBox[\(\[Product]\), \(i\  = \ 1\), \(Length[code]\)]\ \(If[\ code[\([i]\)], \ basis[Length[code] - \ i + 1, \ 

@@ -1,0 +1,667 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#include ""res\\ExCap4.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""      // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\ExCap4.ico"
+IDR_EXCAPTYPE           ICON                    "res\\ExCapDoc.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_TOOLBAR_PLAY        BITMAP                  "res\\playbar.bmp"
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 36, 36
+BEGIN
+    BUTTON      ID_APP_EXIT
+    SEPARATOR
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE_AS
+    SEPARATOR
+    BUTTON      ID_CAPTURE_SEQUENCE
+    BUTTON      ID_CAPTURE_SNAP
+    BUTTON      ID_CAPTURE_RECORD
+    BUTTON      ID_CAPTURE_IDLE
+    SEPARATOR
+    BUTTON      ID_CAPTURE_FIRETRIGGER
+    BUTTON      ID_SETUP_PROPERTIES
+    BUTTON      ID_VIEW_LUT
+    SEPARATOR
+    BUTTON      ID_VIEW_FRAMERATE
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_TOOLBAR_PLAY TOOLBAR 16, 16
+BEGIN
+    BUTTON      ID_FRAME_HEAD
+    BUTTON      ID_FRAME_PREV
+    BUTTON      ID_FRAME_NEXT
+    BUTTON      ID_FRAME_TAIL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Camera...\tCtrl+N",      ID_FILE_NEW
+        MENUITEM "&Open File...\tCtrl+O",       ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ExCap4...",            ID_APP_ABOUT
+    END
+END
+
+IDR_EXCAPTYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Camera...\tCtrl+N",      ID_FILE_NEW
+        MENUITEM "&Open File...\tCtrl+O",       ID_FILE_OPEN
+        MENUITEM "Save &As...\tCtrl+S",         ID_FILE_SAVE_AS
+        MENUITEM "&Close\tCtrl+W",              ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM SEPARATOR
+        MENUITEM "&LUT...",                     ID_VIEW_LUT
+        MENUITEM SEPARATOR
+        POPUP "Frame"
+        BEGIN
+            MENUITEM "Head\tHome",                  ID_FRAME_HEAD
+            MENUITEM "Tail\tEnd",                   ID_FRAME_TAIL
+            MENUITEM SEPARATOR
+            MENUITEM "Prev\tLeft",                  ID_FRAME_PREV
+            MENUITEM "Next\tRight",                 ID_FRAME_NEXT
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Framerate...",               ID_VIEW_FRAMERATE
+    END
+    POPUP "&Capture"
+    BEGIN
+        MENUITEM "&Data Frames...",             ID_CAPTURE_DATAFRAMES
+        MENUITEM SEPARATOR
+        MENUITEM "&Sequence\tF5",               ID_CAPTURE_SEQUENCE
+        MENUITEM "S&nap\tF6",                   ID_CAPTURE_SNAP
+        MENUITEM "&Idle\tF7",                   ID_CAPTURE_IDLE
+        MENUITEM SEPARATOR
+        MENUITEM "Fire &trigger\tF9",           ID_CAPTURE_FIRETRIGGER
+        MENUITEM SEPARATOR
+        MENUITEM "&Play\tF8",                   ID_CAPTURE_PLAY
+        MENUITEM "&Record\tF10",                ID_CAPTURE_RECORD
+    END
+    POPUP "&Setup"
+    BEGIN
+        MENUITEM "Properties...",               ID_SETUP_PROPERTIES
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ExCap4 and Camera...", ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "I",            ID_APP_ABOUT,           VIRTKEY, CONTROL, NOINVERT
+    VK_F9,          ID_CAPTURE_FIRETRIGGER, VIRTKEY, NOINVERT
+    VK_F7,          ID_CAPTURE_IDLE,        VIRTKEY, NOINVERT
+    VK_F8,          ID_CAPTURE_PLAY,        VIRTKEY, NOINVERT
+    VK_F5,          ID_CAPTURE_SEQUENCE,    VIRTKEY, NOINVERT
+    VK_F6,          ID_CAPTURE_SNAP,        VIRTKEY, NOINVERT
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "W",            ID_FILE_CLOSE,          VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE_AS,        VIRTKEY, CONTROL, NOINVERT
+    VK_HOME,        ID_FRAME_HEAD,          VIRTKEY, NOINVERT
+    VK_RIGHT,       ID_FRAME_NEXT,          VIRTKEY, NOINVERT
+    VK_LEFT,        ID_FRAME_PREV,          VIRTKEY, NOINVERT
+    VK_END,         ID_FRAME_TAIL,          VIRTKEY, NOINVERT
+    VK_F10,         ID_CAPTURE_RECORD,      VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DLGDCAMABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 323
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 188
+    END
+
+    IDD_DLGDCAMOPEN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 98
+    END
+
+    IDD_DLGDCAMPROPERTY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 506
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 238
+    END
+
+    IDD_EXCAPLUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_EXCAPFRAMERATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 164
+    END
+
+    IDD_EXCAPDATAFRAMES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 106
+    END
+
+    IDD_EXCAPRECORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 198
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLGDCAMABOUT DIALOGEX 0, 0, 330, 195
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "Arial", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,273,176,50,12,WS_GROUP
+    PUSHBUTTON      "Copy",IDC_DLGDCAMABOUT_BTNCOPY,7,176,50,12
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,10,21,18
+#if _WIN64
+    LTEXT           "ExCap4 - Version 24.9.663.6861",IDC_DLGDCAMABOUT_TXTVERSION,40,10,170,8,SS_NOPREFIX
+#else
+    LTEXT           "ExCap4 - Version 24.9.343.6861",IDC_DLGDCAMABOUT_TXTVERSION,40,10,170,8,SS_NOPREFIX
+#endif
+    LTEXT           "Copyright (C) 2006-2024, Hamamatsu Photonics K.K.",IDC_STATIC,40,20,177,8
+    CONTROL         "",IDC_DLGDCAMABOUT_LVSTRINGS,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,40,316,130
+END
+
+IDD_DLGDCAMOPEN DIALOG 0, 0, 235, 105
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+FONT 8, "Arial"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,10,20,20
+#if _WIN64    
+    LTEXT           "ExCap4 - Version 24.9.663.6861",IDC_STATIC,40,10,170,8,SS_NOPREFIX
+#else
+    LTEXT           "ExCap4 - Version 24.9.343.6861",IDC_STATIC,40,10,170,8,SS_NOPREFIX
+#endif
+    LTEXT           "Copyright (C) 2006-2024, Hamamatsu Photonics K.K.",IDC_STATIC,40,20,177,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,7,32,221,1
+    LTEXT           "Initializing DCAM-API...",IDC_STATIC,19,40,200,8
+    LTEXT           "( status )",IDC_DLGDCAMOPEN_TXTSTATUS,19,50,200,8,SS_WORDELLIPSIS
+    LTEXT           "(camera name)",IDC_DLGDCAMOPEN_TXTCAMERANAME,20,62,200,8
+    COMBOBOX        IDC_DLGDCAMOPEN_CBCAMERANAMES,20,62,200,96,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "D&etail...",IDC_DLGDCAMOPEN_BTNDETAIL,19,86,50,12,NOT WS_VISIBLE | WS_GROUP
+    PUSHBUTTON      "&Retry",IDRETRY,119,86,50,12,NOT WS_VISIBLE | WS_GROUP
+    PUSHBUTTON      "&No camera",IDCANCEL,178,86,50,12,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "&Open",IDOK,127,86,50,12,NOT WS_VISIBLE
+END
+
+IDD_DLGDCAMPROPERTY DIALOGEX 0, 0, 513, 247
+STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Property"
+FONT 8, "Arial", 0, 0, 0x0
+BEGIN
+    CONTROL         "List1",IDC_DLGDCAMPROPERTY_LISTVIEW,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,25,362,213
+    LTEXT           "Attributes:",IDC_STATIC,382,20,96,8
+    LISTBOX         IDC_DLGDCAMPROPERTY_LBATTR,382,30,124,103,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Value:",IDC_STATIC,386,138,22,8
+    CONTROL         "Use listbox always",IDC_DLGDCAMPROPERTY_BTNUSELISTBOX,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,412,137,94,10
+    LTEXT           "Maximum:",IDC_DLGDCAMPROPERTY_WNDMAX,386,153,32,8
+    LTEXT           "Maximum",IDC_DLGDCAMPROPERTY_TXTMAX,466,153,30,8
+    EDITTEXT        IDC_DLGDCAMPROPERTY_EBVALUE,406,184,47,12,ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_DLGDCAMPROPERTY_SPINVALUE,"msctls_updown32",UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,454,183,11,14
+    CONTROL         "Slider1",IDC_DLGDCAMPROPERTY_SLIDERVALUE,
+                    "msctls_trackbar32",TBS_VERT | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,473,165,20,61
+    LTEXT           "Minimum",IDC_DLGDCAMPROPERTY_WNDMIN,386,228,28,8
+    LTEXT           "Minimum",IDC_DLGDCAMPROPERTY_TXTMIN,466,228,27,8
+    LISTBOX         IDC_DLGDCAMPROPERTY_LBVALUES,382,151,124,87,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Whole",IDC_DLGDCAMPROPERTY_BTNWHOLEIDPROP,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,7,7,36,14
+    CONTROL         "Array Element",IDC_DLGDCAMPROPERTY_BTNARRAYELEMENT,
+                    "Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,45,7,61,14
+    CONTROL         "periodically",IDC_DLGDCAMPROPERTY_BTNUPDATEPERIODICALLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,256,9,52,10
+    PUSHBUTTON      "Update values ",IDC_DLGDCAMPROPERTY_BTNUPDATEVALUES,317,7,53,14
+    CONTROL         "All CH",IDC_DLGDCAMPROPERTY_BTNALL,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_GROUP,387,7,34,12
+    CONTROL         "CH 1",IDC_DLGDCAMPROPERTY_BTN1,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,423,7,24,12
+    CONTROL         "CH 2",IDC_DLGDCAMPROPERTY_BTN2,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,449,7,24,12
+    CONTROL         "CH 3",IDC_DLGDCAMPROPERTY_BTN3,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,475,7,24,12
+    COMBOBOX        IDC_DLGDCAMPROPERTY_CBSELECTVIEW,382,6,113,80,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
+END
+
+IDD_EXCAPLUT DIALOG 0, 0, 200, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "LUT"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "max",IDC_STATIC,7,10,14,8
+    CONTROL         "Slider2",IDC_EXCAPLUT_SLIDERINMAX,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,28,7,120,15
+    EDITTEXT        IDC_EXCAPLUT_EBINMAX,153,7,40,14,ES_AUTOHSCROLL
+    LTEXT           "min",IDC_STATIC,7,31,12,8
+    CONTROL         "Slider2",IDC_EXCAPLUT_SLIDERINMIN,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | WS_TABSTOP,28,28,120,15
+    EDITTEXT        IDC_EXCAPLUT_EBINMIN,153,28,40,14,ES_AUTOHSCROLL
+END
+
+IDD_EXCAPFRAMERATE DIALOGEX 0, 0, 200, 169
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Framerate"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "Reset",IDC_EXCAPFRAMERATE_BTNRESETFRAMECOUNT,133,150,50,14
+    RTEXT           "Frame/second",IDC_STATIC,63,7,47,8
+    RTEXT           "Frame Interval",IDC_STATIC,123,7,47,8
+    RTEXT           "(Hz)",IDC_STATIC,75,15,35,8
+    RTEXT           "(second)",IDC_STATIC,135,15,35,8
+    LTEXT           "Lastest:",IDC_STATIC,20,28,26,8
+    RTEXT           "11.1",IDC_EXCAPFRAMERATE_TXTLATESTFPS,75,28,35,8
+    RTEXT           "0.9",IDC_EXCAPFRAMERATE_TXTLATESTPERIOD,135,28,35,8
+    LTEXT           "Average:",IDC_STATIC,20,40,30,8
+    RTEXT           "11.1",IDC_EXCAPFRAMERATE_TXTAVERAGEFPS,75,40,35,8
+    RTEXT           "0.9",IDC_EXCAPFRAMERATE_TXTAVERAGEPERIOD,135,40,35,8
+    LTEXT           "Fastest:",IDC_STATIC,20,52,26,8
+    RTEXT           "12.5",IDC_EXCAPFRAMERATE_TXTFASTESTFPS,75,52,35,8
+    RTEXT           "0.8",IDC_EXCAPFRAMERATE_TXTFASTESTPERIOD,135,52,35,8
+    LTEXT           "Slowest:",IDC_STATIC,20,64,28,8
+    RTEXT           "10.0",IDC_EXCAPFRAMERATE_TXTSLOWESTFPS,75,64,35,8
+    RTEXT           "1.0",IDC_EXCAPFRAMERATE_TXTSLOWESTPERIOD,135,64,35,8
+    GROUPBOX        "Events",IDC_STATIC,7,77,186,73
+    CONTROL         "Exposure End",IDC_EXCAPFRAMERATE_BTNEXPOSUREEND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,89,60,10
+    RTEXT           "10000",IDC_EXCAPFRAMERATE_TXTEVENTXE,75,90,35,8
+    CONTROL         "Transferred",IDC_EXCAPFRAMERATE_BTNTRANSFERRED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,101,52,10
+    RTEXT           "10000",IDC_EXCAPFRAMERATE_TXTEVENTTR,75,102,35,8
+    CONTROL         "Frame Ready",IDC_EXCAPFRAMERATE_BTNFRAMEREADY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,113,58,10
+    RTEXT           "10000",IDC_EXCAPFRAMERATE_TXTEVENTFR,75,114,35,8
+    LTEXT           "( Frame rate Measuring )",IDC_STATIC,115,102,77,8
+    CONTROL         "Stopped",IDC_EXCAPFRAMERATE_BTNSTOPPED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,125,43,10
+    RTEXT           "10000",IDC_EXCAPFRAMERATE_TXTEVENTST,75,126,35,8
+    LTEXT           "Lost Frames:",IDC_STATIC,25,138,41,8
+    RTEXT           "10000",IDC_EXCAPFRAMERATE_TXTLOSTFRAMECOUNT,75,138,35,8
+    CONTROL         "Fire trigger repeatedly ",IDC_EXCAPFRAMERATE_BTNFIRETRIGGERREPEATEDLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,154,85,10
+END
+
+IDD_EXCAPDATAFRAMES DIALOG 0, 0, 200, 113
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Data frames"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,86,92,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,143,92,50,14
+    LTEXT           "Datatype:",IDC_STATIC,7,28,44,8
+    COMBOBOX        IDC_EXCAPDATAFRAMES_CBDATATYPE,53,26,130,84,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Number of frames for one cycle:",IDC_STATIC,7,46,105,8
+    EDITTEXT        IDC_EXCAPDATAFRAMES_EBFRAMEPERCYCLE,120,43,40,14,ES_AUTOHSCROLL
+    CONTROL         "Use user allocated memory. ( dcambuf_attach()  )",IDC_EXCAPDATAFRAMES_BUSEATTACHBUFFER,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,178,10
+    LTEXT           "Width:",IDC_STATIC,7,7,44,8
+    LTEXT           "( Width )",IDC_EXCAPDATAFRAMES_TXTWIDTH,53,7,44,8
+    LTEXT           "Height:",IDC_STATIC,99,7,44,8
+    LTEXT           "( Height )",IDC_EXCAPDATAFRAMES_TXTHEIGHT,145,7,44,8
+END
+
+IDD_EXCAPRECORD DIALOGEX 0, 0, 205, 115
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Record"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,92,94,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,149,94,50,14
+    LTEXT           "Max Frames:",IDC_STATIC,11,76,42,8
+    GROUPBOX        "File Location",IDC_STATIC,6,7,192,59
+    LTEXT           "Folder:",IDC_STATIC,11,26,24,8
+    LTEXT           "Name:",IDC_STATIC,11,46,22,8
+    EDITTEXT        IDC_EXCAPRECORD_EBFOLDER,40,24,138,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "...",IDC_EXCAPRECORD_BTNBROWSE,179,24,16,14
+    EDITTEXT        IDC_EXCAPRECORD_EBNAME,40,44,138,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EXCAPRECORD_EBMAXFRAMES,59,74,40,14,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_FILTER_DCIMG        "DCImg Files (*.dcimg)"
+    IDS_FILTER_EXCAP        "Image Files (*.img)"
+    IDS_FILTER_ALL          "All Files (*.*)"
+    IDS_EXT_DCIMG           "*.dcimg"
+    IDS_EXT_EXCAP           "*.img"
+    IDS_EXT_ALL             "*.*"
+    ID_INDICATOR_FRAMES     "####"
+    ID_INDICATOR_CURRENTFRAME "####"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_ZOOM       "####"
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "ExCap4\n\nImage\nImage Files (*.img)\n.img\nImage.Document\nImage Document"
+    IDR_EXCAPTYPE           "ExCap4\n\nImage\nImage Files (*.img)\n.img\nImage.Document\nImage Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "ExCap4"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Open a new camera\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle Status Bar"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_DLGDCAMOPEN_FAILDCAMINIT "Fail: dcamapi_init()"
+    IDS_DLGDCAMOPEN_FINDNODEVICE "Found no device."
+    IDS_DLGDCAMOPEN_FINDADEVICE "Found a following device and now opening."
+    IDS_DLGDCAMOPEN_FINDDEVICESANDCHOOSE 
+                            "Found following devices. Please choose a device."
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_LUT             "Setup LUT for dcambuf_lockframe()\nLUT"
+    ID_CAPTURE_DATAFRAMES   "Setup data frames to capture, e.g. datatype, number of cycle\nData Frames"
+    ID_CAPTURE_USE_ATTACHBUFFER 
+                            "Use dcambuf_attach() when prepare image buffer\nuse dcambuf_attach()"
+    ID_CAPTURE_SEQUENCE     "Contiguous capturing - dcamcap_start( ccCapture_Sequence )\nSequence"
+    ID_CAPTURE_SNAP         "One time capturing - dcamcap_start( ccCapture_Snap )\nSnap"
+    ID_CAPTURE_IDLE         "Stop capturing - dcamcap_stop()\\Stop"
+    ID_CAPTURE_PLAY         "Play\nPlay"
+END
+
+STRINGTABLE
+BEGIN
+    ID_CAPTURE_FIRETRIGGER  "Fire software trigger - dcamcap_firetrigger()\nFire Trigger"
+    ID_SETUP_PROPERTIES     "Show or hide the properties dialog\nToggle Properties Dialog"
+    ID_SETUP_CUSTOM         "Show Custom Dialog\nCustom Dialog"
+    ID_CAPTURE_RECORD       "Record dcimg\nRecord"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_FRAMERATE       "Show frame rate\nFramerate"
+    ID_FRAME_HEAD           "First Frame\nFirst"
+    ID_FRAME_PREV           "Previous Frame\nPrevious"
+    ID_FRAME_NEXT           "Next Frame\nNext"
+    ID_FRAME_TAIL           "Last Frame\nLast"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERR_NOTENOUGHMEMORY "Not enough memory."
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#include "res\ExCap4.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"      // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED

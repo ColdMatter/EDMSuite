@@ -270,9 +270,9 @@
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(4, 108);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(76, 13);
+            this.label15.Size = new System.Drawing.Size(60, 13);
             this.label15.TabIndex = 16;
-            this.label15.Text = "4K Top Diode:";
+            this.label15.Text = "SF6 Diode:";
             // 
             // txtSourceTemp3
             // 
@@ -353,9 +353,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(4, 86);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(90, 13);
+            this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 8;
-            this.label3.Text = "4K Bottom Diode:";
+            this.label3.Text = "4K Diode:";
             // 
             // sf6Temperature
             // 

@@ -165,7 +165,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("notB", usbDAQ2, 0, 1);
             AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
             AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
-            AddDigitalOutputChannel("targetStepper", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19);
 

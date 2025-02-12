@@ -30,7 +30,7 @@ def probescan():
     print("\nSaving scan as "+scanFile)
     sm.SaveAverageData(scanPath) # 
     System.Threading.Thread.CurrentThread.Join(5000)
-    newSetPoint = round(getSetPoint(scanFile, 'On', 0, 60, 500, 550, 850),6)
+    newSetPoint = round(getSetPoint(scanFile, 'On', 0, 6, 50, 55, 90),6)
     print("\nSetting new probe setpoint at " + str(newSetPoint))
     tcl.SetLaserSetpoint("VISCavity", "probelaser", newSetPoint)
 
@@ -63,7 +63,7 @@ def v1scan():
     print("\nSaving scan as "+scanFile)
     sm.SaveAverageData(scanPath)
     System.Threading.Thread.CurrentThread.Join(5000)
-    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 60, 500, 550, 850),6)
+    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 6, 50, 55, 120),6)
     print("\nSetting new v1 setpoint at " + str(newSetPoint))
     tcl.SetLaserSetpoint("VISCavity", "v1laser", newSetPoint)
 
@@ -147,7 +147,7 @@ def p12scan():
     print("\nSaving scan as "+scanFile)
     sm.SaveAverageData(scanPath)
     System.Threading.Thread.CurrentThread.Join(5000)
-    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 60, 500, 550, 850),6)
+    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 6, 50, 55, 120),6)
     print("\nSetting new p12 setpoint at " + str(newSetPoint))
     tcl.SetLaserSetpoint("OPCavity", "P12", newSetPoint)
 
@@ -177,7 +177,7 @@ def q0scan():
     print("\nSaving scan as "+scanFile)
     sm.SaveAverageData(scanPath)
     System.Threading.Thread.CurrentThread.Join(5000)
-    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 60, 500, 550, 850),6)
+    newSetPoint = round(getSetPoint(scanFile,'OnOffRatio', 0, 6, 50, 55, 120),6)
     print("\nSetting new q0 setpoint at " + str(newSetPoint))
     tcl.SetLaserSetpoint("OPCavity", "Q0", newSetPoint)
 
@@ -185,7 +185,7 @@ def q0scan():
 def main():
     print("To scan the lasers on TCL, put them roughly where we expect using the wavemeter and lock them on TCL.")
     print("Then use these functions to complete scans of the appropriate laser, each one assume the previous has been completed:")
-    print("\n probescan() \n v1scan() \n coolingTOF() \n p12scan() \n q0scan()")
+    print("\n probescan(time) \n v1scan() \n coolingTOF() \n p12scan() \n q0scan()")
     pass
 
 if __name__ == "__main__":
