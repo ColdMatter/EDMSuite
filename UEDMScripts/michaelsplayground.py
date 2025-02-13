@@ -44,13 +44,13 @@ import numpy as np
 
 # plotfit(scanPath)
 STIRAPSetpoint = tcl.GetLaserSetpoint("IRCavity", "STIRAP") #Save SP set currently for future reference
-SPLaserStart = -0.9 # Define Startpoint of STIRAP laser scan
-SPLaserEnd = 0.6 # Define Endpoint of STIRAP laser scan
-PointsLaser = 10 # Define Nr of Points of STIRAP laser scan
-nrtriggers = 20 # Define how often the Stage is supposed to be triggered
+SPLaserStart = -1.9 # Define Startpoint of STIRAP laser scan
+SPLaserEnd = -1.3 # Define Endpoint of STIRAP laser scan
+PointsLaser = 8 # Define Nr of Points of STIRAP laser scan
+nrtriggers = 18 # Define how often the Stage is supposed to be triggered
 stepsize = 0.05
 startposition = 10.60
-datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-01\20250129\STIRAPStage25mW\\'
+datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-02\20250211\STIRAP\Low Power Test Around Resonance\\'
 
 for j in range(nrtriggers):
     
@@ -71,15 +71,15 @@ for j in range(nrtriggers):
         time.sleep(2)
 
         #Select STIRAP AOM scan and set parameters
-        SelectProfile("STIRAP AOM scan")
-        sm.AdjustProfileParameter("switch","switchActive", str(False), False)
-        sm.AdjustProfileParameter("shot","gateLength", str(1100), False)
-        sm.AdjustProfileParameter("out", "start", "171.25", False)
-        sm.AdjustProfileParameter("out", "end", "171.37", False)
-        sm.AdjustProfileParameter("out", "scanMode", "up", False)
-        sm.AdjustProfileParameter("out", "pointsPerScan", "50", False)
-        sm.AdjustProfileParameter("out", "shotsPerPoint", "3", False)
-        print("\nScanning!\n")
+        SelectProfile("Scan B")
+        # sm.AdjustProfileParameter("switch","switchActive", str(False), False)
+        # sm.AdjustProfileParameter("shot","gateLength", str(1100), False)
+        # sm.AdjustProfileParameter("out", "start", "171.25", False)
+        # sm.AdjustProfileParameter("out", "end", "171.37", False)
+        # sm.AdjustProfileParameter("out", "scanMode", "up", False)
+        # sm.AdjustProfileParameter("out", "pointsPerScan", "50", False)
+        # sm.AdjustProfileParameter("out", "shotsPerPoint", "3", False)
+        # print("\nScanning!\n")
 
         # Create Timestamp, Scan
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

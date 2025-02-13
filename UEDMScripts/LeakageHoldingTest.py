@@ -79,7 +79,7 @@ def CapacitorTest(plateVoltage, EPol, holdstart, holdend, holdstep, holdgap):
 
 def RampTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	'''
-	RampStart is how to run the leakage test file
+	RampStart is how to run the leakage ramp test.
 	'''
 	#Logging stopped
 	hc.StopIMonitorPoll()
@@ -139,7 +139,14 @@ def RampTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	System.Threading.Thread.CurrentThread.Join(60*1000)
 	hc.StopIMonitorPoll()
 
+	# with open(filepath[:-2]+'00_EFieldTestList.txt','a') as patternfile:
+	# 	s=str(r)[0]+' '+str(r)[1:-1]+' '+str(r)[-1]
+	# 	line=file+'_EFieldTest'+'\t'+s+'\n'
+	# 	patternfile.write(line)
+
 	print("Finished leakage test")
+
+
 
 def RampSwitchTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	'''
