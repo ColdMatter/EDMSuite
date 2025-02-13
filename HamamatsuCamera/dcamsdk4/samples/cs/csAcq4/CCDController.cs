@@ -1295,6 +1295,25 @@ namespace csAcq4
             auto_lut();
         }
 
+
+        #region Remote methods only
+
+        public void RemoteSnap()
+        {
+            Snap();
+        }
+
+        public void RemoteBufRelease()
+        {
+            BufRelease();
+        }
+
+        public void RemoteStop()
+        {
+            StopAcquisition();
+        }
+
+        #endregion
     }
 }
 
