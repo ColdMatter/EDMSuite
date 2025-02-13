@@ -542,6 +542,10 @@
       <Project>{5e693c98-6205-4be6-a9d2-3ca4484c41a6}</Project>
       <Name>DigitalTransferCavityLock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj">
+      <Project>{7443f26b-16b4-4191-b841-cf864abdd579}</Project>
+      <Name>Hamamatsu EMCCD Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
