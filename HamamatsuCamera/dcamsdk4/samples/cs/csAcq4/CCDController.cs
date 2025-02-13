@@ -1318,6 +1318,10 @@ namespace csAcq4
             UpdateCCDGain();
         }
 
+        public void RemoteQueryCCDGain()
+        {
+            QueryCCDGain();
+        }
         #endregion
     }
 }
