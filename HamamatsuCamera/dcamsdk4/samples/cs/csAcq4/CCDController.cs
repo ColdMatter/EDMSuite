@@ -856,6 +856,11 @@ namespace csAcq4
             }
         }
 
+        public void RemoteFunction()
+        {
+            Console.WriteLine("Remote Ping!");
+        }
+
         public void UpdateCCDGain()
         {
             if (mydcam == null)
