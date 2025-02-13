@@ -12,6 +12,7 @@ using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
 using ScanMaster.Acquire.Plugin;
+using csAcq4;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -43,6 +44,10 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
         private double[,] latestData;
 
+		//add ccd
+		[NonSerialized]
+		private csAcq4.CCDController controller;
+
 
 		protected override void InitialiseBaseSettings()
 		{
@@ -60,10 +65,13 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseSettings()
 		{
+			//Set Up TCP
+			//controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + "ULTRACOLDEDM" + ":" + 5555 + "/controller.rem"));
 		}
 
 		public override void AcquisitionStarting()
 		{
+			//controller.Snap();
 			// configure the analog input
 			inputTask1 = new Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
 			inputTask2 = new Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
