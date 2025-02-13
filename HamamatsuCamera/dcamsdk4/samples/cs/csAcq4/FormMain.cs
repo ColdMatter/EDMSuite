@@ -481,7 +481,7 @@ namespace csAcq4
         public FormMain()
         {
             InitializeComponent();
-            controller = new CCDController(); // Initialize CCD controller
+            //controller = new CCDController(); // Initialize CCD controller
             m_image = new MyImage();
             m_lut = new MyLut();
             BitmapLock = new object();

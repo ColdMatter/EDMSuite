@@ -24,19 +24,22 @@ namespace csAcq4
             //Application.Run(formMain);
 
             CCDController controller = new CCDController();
-            controller.Start();
+            
+            //FormMain mainwindow = new FormMain();
+            //mainwindow.controller = controller;
 
-            FormMain mainwindow = new FormMain();
-            mainwindow.controller = controller;
+            //controller.window = mainwindow;
 
-            controller.window = mainwindow;
+            //Application.Run(mainwindow);
 
-            Application.Run(mainwindow);
+            int tcpchannelnum = 5555;
 
             // publish the controller to the remoting system
-            TcpChannel clientChannel = new TcpChannel(5555);
+            TcpChannel clientChannel = new TcpChannel(tcpchannelnum);
             ChannelServices.RegisterChannel(clientChannel, false);
             RemotingServices.Marshal(controller, "controller.rem");
+
+            controller.Start();
         }
     }
 }
