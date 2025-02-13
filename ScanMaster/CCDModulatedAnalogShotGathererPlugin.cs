@@ -4,6 +4,9 @@ using System.Collections;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels.Tcp;
 
 using NationalInstruments.DAQmx;
 
@@ -12,7 +15,8 @@ using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
 using ScanMaster.Acquire.Plugin;
-using csAcq4;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -44,12 +48,12 @@ namespace ScanMaster.Acquire.Plugins
 		[NonSerialized]
         private double[,] latestData;
 
-		//add ccd
-		[NonSerialized]
-		private csAcq4.CCDController controller;
+		// add ccd function
+        [NonSerialized]
+        private csAcq4.CCDController controller;
 
 
-		protected override void InitialiseBaseSettings()
+        protected override void InitialiseBaseSettings()
 		{
 			settings["gateStartTime"] = 600;
 			settings["gateLength"] = 12000;
@@ -66,12 +70,12 @@ namespace ScanMaster.Acquire.Plugins
 		protected override void InitialiseSettings()
 		{
 			//Set Up TCP
-			//controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + "ULTRACOLDEDM" + ":" + 5555 + "/controller.rem"));
+			controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + "ULTRACOLDEDM" + ":" + 5555 + "/controller.rem"));
 		}
 
-		public override void AcquisitionStarting()
+        public override void AcquisitionStarting()
 		{
-			//controller.Snap();
+			controller.Snap();
 			// configure the analog input
 			inputTask1 = new Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
 			inputTask2 = new Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
@@ -101,8 +105,8 @@ namespace ScanMaster.Acquire.Plugins
 				}
 
 				CounterChannel pulseChannel = ((CounterChannel)Environs.Hardware.CounterChannels[camChannel]);
-
-				counterTask1.COChannels.CreatePulseChannelTicks(
+                // CCD enable TTL pulse
+                counterTask1.COChannels.CreatePulseChannelTicks(
 					pulseChannel.PhysicalChannel,
 					pulseChannel.Name,
 					"20MHzTimebase",
@@ -176,33 +180,75 @@ namespace ScanMaster.Acquire.Plugins
 			counterTask1.Dispose();
 		}
 
-		public override void ArmAndWait()
-		{
-			lock (this)
-			{
-				if (!Environs.Debug) 
-				{
-					if (config.switchPlugin.State == true)
-					{
-						counterTask1.Start();
-						inputTask1.Start();
-						latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
-						inputTask1.Stop();
-						counterTask1.Stop();
-					}
-					else
-					{
-						counterTask1.Start();
-						inputTask2.Start();
-						latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
-						inputTask2.Stop();
-						counterTask1.Stop();
-					}
-				}
-			}
-		}
+        //public override void ArmAndWait()
+        //{
+        //	lock (this)
+        //	{
+        //		if (!Environs.Debug) 
+        //		{
+        //			if (config.switchPlugin.State == true)
+        //			{
+        //				counterTask1.Start();
+        //				inputTask1.Start();
+        //				latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
 
-		public override Shot Shot
+        //				inputTask1.Stop();
+        //				counterTask1.Stop();
+
+        //			}
+        //			else
+        //			{
+        //				counterTask1.Start();
+        //				inputTask2.Start();
+        //				latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
+        //				inputTask2.Stop();
+        //				counterTask1.Stop();
+        //			}
+        //		}
+        //	}
+        //}
+
+        private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
+        private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
+
+        public override void ArmAndWait()
+        {
+            lock (this)
+            {
+                if (!Environs.Debug)
+                {
+                   
+                    Console.WriteLine("Waiting for camera to start capturing...");
+                    cameraStarted.Wait();  // Wait until the camera signals frame capture start
+
+                    if (config.switchPlugin.State == true)
+                    {
+                        counterTask1.Start(); // Start camera trigger
+                        inputTask1.Start();
+                        latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
+                        inputTask1.Stop();
+                    }
+                    else
+                    {
+                        counterTask1.Start(); // Start camera trigger
+                        inputTask2.Start();
+                        latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
+                        inputTask2.Stop();
+                    }
+
+                    Console.WriteLine("Waiting for camera to finish capturing...");
+                    cameraFinished.Wait();  // Wait for the camera to confirm frame completion
+
+                    counterTask1.Stop();
+                    cameraStarted.Reset();
+                    cameraFinished.Reset();
+                    Console.WriteLine("Camera handshake complete, system rearmed.");
+                }
+            }
+        }
+
+
+        public override Shot Shot
 		{
 			get 
 			{

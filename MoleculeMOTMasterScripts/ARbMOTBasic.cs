@@ -218,6 +218,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("zShimCoilCurrent");
         p.AddChannel("v00EOMAmp");
         p.AddChannel("v00Chirp");
+        p.AddChannel("Rf1Freq");
 
         // Add Rb Analog channels
         p.AddChannel("rb3DCoolingFrequency");
