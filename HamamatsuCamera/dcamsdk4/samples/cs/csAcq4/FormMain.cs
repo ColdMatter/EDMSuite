@@ -478,10 +478,10 @@ namespace csAcq4
 
         // ---------------- constructor of FormMain ----------------
 
-        public FormMain()
+        public FormMain(CCDController _controller)
         {
             InitializeComponent();
-            //controller = new CCDController(); // Initialize CCD controller
+            controller = _controller;//new CCDController(); // Initialize CCD controller
             m_image = new MyImage();
             m_lut = new MyLut();
             BitmapLock = new object();
