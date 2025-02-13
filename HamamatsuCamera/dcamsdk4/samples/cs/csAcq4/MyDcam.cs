@@ -245,7 +245,7 @@ namespace csAcq4
         //    return !m_lasterr.failed();
         //}
 
-        public bool cap_start()
+        public bool cap_start(CCDController controller)
         {
             if (m_hdcam == IntPtr.Zero)
             {
@@ -268,8 +268,9 @@ namespace csAcq4
                 // If in Internal Start, Reapply Settings to Ensure Correct Mode
                 if (isInternalStartTrigger)
                 {
-                    FormMain formMain = new FormMain();
-                    formMain.controller.ApplySelectedTriggerSource();
+                    //FormMain formMain = new FormMain();
+                    //formMain.controller.ApplySelectedTriggerSource();
+                    controller.ApplySelectedTriggerSource();
                 }
 
                 Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");

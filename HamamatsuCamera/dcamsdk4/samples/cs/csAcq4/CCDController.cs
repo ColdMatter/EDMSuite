@@ -106,8 +106,8 @@ namespace csAcq4
         public void Start()
         {
             // Create FormMain and assign this CCDController instance to it
-            window = new FormMain();
-            window.controller = this;  // Set this instance of CCDController to FormMain
+            window = new FormMain(this);
+            //window.controller = this;  // Set this instance of CCDController to FormMain
 
             System.Windows.Forms.Application.Run(window);
         }
@@ -990,13 +990,13 @@ namespace csAcq4
                 // Success: dcambuf_alloc()
 
                 //update lut can be changed back to true
-                update_lut(true);
+                update_lut(false);
             }
 
             // start acquisition
             m_cap_stopping = false;
             mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  acqusition will stop after capturing m_nFrameCount frame
-            if (!mydcam.cap_start())
+            if (!mydcam.cap_start(this))
             {
                 // acquisition was failed. In this sample, frame buffer is also released.
                 MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
@@ -1128,7 +1128,7 @@ namespace csAcq4
             // start acquisition
             m_cap_stopping = false;
             mydcam.m_capmode = DCAMCAP_START.SEQUENCE;    // continuous capturing.  continuously acqusition will be done
-            if (!mydcam.cap_start())
+            if (!mydcam.cap_start(this))
             {
                 // acquisition was failed. In this sample, frame buffer is also released.
                 MyShowStatusNG("dcamcap_start()", mydcam.m_lasterr);
@@ -1311,6 +1311,11 @@ namespace csAcq4
         public void RemoteStop()
         {
             StopAcquisition();
+        }
+
+        public void RemoteUpdateGain()
+        {
+            UpdateCCDGain();
         }
 
         #endregion
