@@ -10,6 +10,7 @@ using Spcm;
 
 namespace NeanderthalDDSController
 {
+    public delegate void updateHandler();
     public class Controller : MarshalByRefObject
     {
         IntPtr hDevice, pBuffer;
@@ -27,7 +28,7 @@ namespace NeanderthalDDSController
         private NeanderthalForm ui;
         public Dictionary<string, List<List<double>>> patternList = new Dictionary<string, List<List<double>>> ();
         public Dictionary<string, List<List<double>>> sortedPatternList = new Dictionary<string, List<List<double>>>();
-        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        public event updateHandler parameterUpdated;
 
         public void readCard()
         {
@@ -53,14 +54,13 @@ namespace NeanderthalDDSController
             Console.WriteLine(sCardName + " sn {0}\n", lSerialNumber);
             MessageBox.Show("Card found: " + sCardName + " sn " + lSerialNumber.ToString(), "Serial Number", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            Drv.spcm_vClose(hDevice);
+            closeCard();
         }
 
         public void start()
         {
-            ApplicationConfiguration.Initialize();
-            ui = new NeanderthalForm();
-            ui.controller = this;
+            //ApplicationConfiguration.Initialize();
+            ui = new NeanderthalForm(this);
             Application.Run(ui);
         }
 
@@ -74,22 +74,25 @@ namespace NeanderthalDDSController
         {
             isPatternRunning = true;
 
-            cancellationTokenSource = new CancellationTokenSource(); // Reset token
             Task.Run(() =>
             {
-                
-                while (isPatternRunning && !cancellationTokenSource.Token.IsCancellationRequested)
+
+                while (isPatternRunning)
                 {
+                    // This is when the DDS stops all the signal output
+                    openCard();
                     startSinglePattern();
+                    // Wait till sequence ends
+                    Thread.Sleep(patternLength);
+                    closeCard();
                 }
-            }, cancellationTokenSource.Token);
+            });
 
         }
 
         public void stopPattern()
         {
             isPatternRunning = false;  // Stop the loop
-            cancellationTokenSource.Cancel();  // Signal task cancellation
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_FORCETRIGGER);
         }
 
@@ -100,6 +103,7 @@ namespace NeanderthalDDSController
 
             if (!isPatternRunning)
             {
+                closeCard();
                 return;
             }
 
@@ -112,27 +116,21 @@ namespace NeanderthalDDSController
                 // Loop until the condition is met.
             }
 
-            // Wait till sequence ends
-            Thread.Sleep(patternLength);
+            
 
-            // ----- close card -----
-            Drv.spcm_vClose(hDevice);
+            
         }
 
         public void initializeCard()
         {
 
-            // Initialize card
-            //Drv.spcm_vClose(hDevice);
-            hDevice = Drv.spcm_hOpen("/dev/spcm0");
+            
             if (hDevice == IntPtr.Zero)
             {
                 MessageBox.Show("Error: Could not open card\n", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Drv.spcm_vClose(hDevice);
+                closeCard();
                 stopPattern();
-                //hDevice = Drv.spcm_hOpen("/dev/spcm0");
                 return;
-                //Environment.Exit(1);
             }
 
 
@@ -189,6 +187,7 @@ namespace NeanderthalDDSController
                 }
 
                 patternList.Add(name, new List<List<double>> { timeDelay, freq, amp, freq_slpoe, amp_slpoe });
+                parameterUpdated.Invoke();
             }
             catch (ArgumentException ex)
             {
@@ -213,6 +212,7 @@ namespace NeanderthalDDSController
 
                 // Remove the item from the dictionary
                 patternList.Remove(name);
+                parameterUpdated.Invoke();
                 //MessageBox.Show($"'{name}' has been removed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (KeyNotFoundException ex)
@@ -223,6 +223,12 @@ namespace NeanderthalDDSController
             {
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public void clearPatternList()
+        {
+            patternList.Clear();
+            parameterUpdated.Invoke();
         }
 
 
@@ -301,9 +307,15 @@ namespace NeanderthalDDSController
             return comNum;
         }
 
-        public void close_card()
+        public void closeCard()
         {
             Drv.spcm_vClose(hDevice);
+        }
+
+        // This is when the DDS stops all the signal output
+        public void openCard()
+        {
+            hDevice = Drv.spcm_hOpen("/dev/spcm0");
         }
 
         public static void indexTable(string key, out int row, out int col)
@@ -400,6 +412,7 @@ namespace NeanderthalDDSController
             indexTable(key, out row, out col); 
             UpdatePatternValue(patternList, key, row, col, val);
         }
+
 
 
     }

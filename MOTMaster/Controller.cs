@@ -53,7 +53,8 @@ namespace MOTMaster
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-        
+        private NeanderthalDDSController.Controller DDSCtrl;
+
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
@@ -136,6 +137,9 @@ namespace MOTMaster
 
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
+
+            if (config.UseDDS) DDSCtrl = (NeanderthalDDSController)Activator.GetObject(typeof(NeanderthalDDSController),
+                "tcp://localhost:1818/controller.rem");
 
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,

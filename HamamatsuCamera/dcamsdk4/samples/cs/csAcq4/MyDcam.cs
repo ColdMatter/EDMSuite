@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using Hamamatsu.DCAM4;
+using System.Threading;
 
 namespace csAcq4
 {
@@ -17,6 +18,7 @@ namespace csAcq4
         public static DCAMERR m_lasterr;
         public static Int32 m_devcount;
 
+        
         public static bool init()
         {
             DCAMAPI_INIT param = new DCAMAPI_INIT(0);
@@ -222,22 +224,76 @@ namespace csAcq4
 
         // ---------------- capture control ----------------
 
-        public bool cap_start()
+        //public bool cap_start()
+        //{
+        //    if (m_hdcam == IntPtr.Zero)
+        //    {
+        //        m_lasterr = DCAMERR.INVALIDHANDLE;
+        //    }
+        //    else
+        //    {
+        //        // Check if the camera is in external trigger mode
+        //        MyDcamProp triggerSourceProp = new MyDcamProp(this, DCAMIDPROP.TRIGGERSOURCE);
+        //        double triggerMode = 0;
+        //        triggerSourceProp.getvalue(ref triggerMode);
+        //        bool isExternalTrigger = (triggerMode == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+
+        //        Console.WriteLine($"Starting frame capture... (Trigger mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
+        //        m_lasterr = dcamcap.start(m_hdcam, m_capmode);
+        //    }
+
+        //    return !m_lasterr.failed();
+        //}
+
+        public bool cap_start(CCDController controller)
         {
-            if( m_hdcam == IntPtr.Zero)
+            if (m_hdcam == IntPtr.Zero)
             {
                 m_lasterr = DCAMERR.INVALIDHANDLE;
             }
             else
             {
+                //  Check if the camera is in the correct trigger mode
+                MyDcamProp triggerSourceProp = new MyDcamProp(this, DCAMIDPROP.TRIGGERSOURCE);
+                MyDcamProp triggerModeProp = new MyDcamProp(this, DCAMIDPROP.TRIGGER_MODE);
+
+                double triggerSource = 0;
+                double triggerMode = 0;
+                triggerSourceProp.getvalue(ref triggerSource);
+                triggerModeProp.getvalue(ref triggerMode);
+                bool isExternalTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+                bool isExternalStartTrigger = (triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+                bool isInternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.INTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+
+                // If in Internal Start, Reapply Settings to Ensure Correct Mode
+                if (isInternalStartTrigger)
+                {
+                    //FormMain formMain = new FormMain();
+                    //formMain.controller.ApplySelectedTriggerSource();
+                    controller.ApplySelectedTriggerSource();
+                }
+
+                Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
+                Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalStartTrigger ? "Start" : "EDGE")})");
+
+                ////  If external trigger is required but not set, return an error
+                //if (isExternalTrigger && m_capmode != DCAMCAP_START.SNAP)
+                //{
+                //    Console.WriteLine(" External trigger mode requires SNAP mode.", DCAMERR.INVALIDPARAM);
+                //    return false;
+                //}
+
+                //  Start capturing
                 m_lasterr = dcamcap.start(m_hdcam, m_capmode);
             }
 
-            return ! m_lasterr.failed();
+            return !m_lasterr.failed();
         }
+
+
         public bool cap_stop()
         {
-            if( m_hdcam == IntPtr.Zero)
+            if (m_hdcam == IntPtr.Zero)
             {
                 m_lasterr = DCAMERR.INVALIDHANDLE;
             }
@@ -246,8 +302,79 @@ namespace csAcq4
                 m_lasterr = dcamcap.stop(m_hdcam);
             }
 
-            return ! m_lasterr.failed();
+            return !m_lasterr.failed();
         }
+
+
+        //private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
+        //private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
+
+        //public bool cap_start()
+        //{
+        //    if( m_hdcam == IntPtr.Zero)
+        //    {
+        //        m_lasterr = DCAMERR.INVALIDHANDLE;
+        //        Console.WriteLine("Error: Invalid camera handle");
+        //        return false;
+        //    }
+
+        //    // Check if the camera is in external trigger mode
+        //    MyDcamProp triggerSourceProp = new MyDcamProp(this, DCAMIDPROP.TRIGGERSOURCE);
+        //    double triggerMode = 0;
+        //    triggerSourceProp.getvalue(ref triggerMode);
+        //    bool isExternalTrigger = (triggerMode == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+
+        //    Console.WriteLine($"Starting frame capture... (Trigger mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
+        //    m_lasterr = dcamcap.start(m_hdcam, m_capmode);
+
+        //    if (!m_lasterr.failed())
+        //    {
+        //        cameraStarted.Set(); // Notify the ArmAndWait function that the camera has started capturing
+        //        Console.WriteLine("Camera capture started");
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"Failed to start camera capture: {m_lasterr}");
+        //    }
+
+        //    return ! m_lasterr.failed();
+        //}
+
+        //public bool cap_stop()
+        //{
+        //    if (m_hdcam == IntPtr.Zero)
+        //    {
+        //        m_lasterr = DCAMERR.INVALIDHANDLE;
+        //        Console.WriteLine("Error: Invalid camera handle");
+        //        return false;
+        //    }
+
+        //    Console.WriteLine("Stopping camera frame capture...");
+        //    m_lasterr = dcamcap.stop(m_hdcam);
+
+        //    if (!m_lasterr.failed())
+        //    {
+        //        // Check if the camera status is acquired. 
+        //        //MyDcamProp triggerSourceProp = new MyDcamProp(this, DCAMIDPROP.TRIGGERSOURCE);
+        //        //double triggerMode = 0;
+        //        //triggerSourceProp.getvalue(ref triggerMode);
+        //        //bool isExternalTrigger = (triggerMode == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+
+        //        FormMain formMain = new FormMain();
+        //        if (!formMain.IsMyFormStatus_Acquired())
+        //        {
+        //            cameraFinished.Set();  // Notify ArmAndWait function that the camera has finished capturing
+        //            Console.WriteLine($"Camera has finished capturing.");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"Failed to stop capture. Error: {m_lasterr}");
+        //    }
+
+        //    return !m_lasterr.failed();
+        //}
+
         public DCAMCAP_STATUS cap_status()
         {
             DCAMCAP_STATUS  stat = DCAMCAP_STATUS.ERROR;

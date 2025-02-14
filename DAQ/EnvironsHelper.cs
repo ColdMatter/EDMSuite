@@ -76,6 +76,13 @@ namespace DAQ.Environment
         /// </summary>
         public int wavemeterLockTCPChannel;
 
+
+        public int HamamatsuCameraTCPChannel;
+
+        /// <summary>
+        ///  TCP channel for Hamamatsu camera.
+        /// This is the channel shared between wavemeter lock and other programmes.
+        /// Add this to the computer config on which you run the Hamamatsu camera.
         /// <summary>
         /// Experiment type is for code that needs to know what experiment it's running on.
         /// </summary>
@@ -406,6 +413,7 @@ namespace DAQ.Environment
                     serverComputerName = "ULTRACOLDEDM";
                     serverTCPChannel = 1997;
                     wavemeterLockTCPChannel = 2345;
+                    HamamatsuCameraTCPChannel = 2346;
                     break;
 
                 default:

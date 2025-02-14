@@ -59,6 +59,7 @@ namespace csAcq4
                 _propname = _dcamprop.getname();
                 _dcamprop.getvalue(ref _propvalue);
             }
+
             public bool is_readonly() 
             {
                 return _dcamprop.is_attr_readonly();

@@ -60,8 +60,10 @@
             this.PushClose = new System.Windows.Forms.Button();
             this.PushUninit = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.comboTriggerSource = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.PicDisplay)).BeginInit();
             this.SuspendLayout();
+
             // 
             // LabelStatus
             // 
@@ -382,6 +384,24 @@
             this.PushUninit.TabIndex = 18;
             this.PushUninit.Text = "Uninit";
             this.PushUninit.UseVisualStyleBackColor = false;
+            //
+            // DropDown box for trigger source
+            //
+            this.comboTriggerSource = new System.Windows.Forms.ComboBox();
+            this.comboTriggerSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTriggerSource.FormattingEnabled = true;
+            //this.comboTriggerSource.Items.AddRange(new object[] {
+            //"Internal Trigger",
+            //"External Start Trigger",
+            //"External Edge Trigger"});
+            this.comboTriggerSource.Location = new System.Drawing.Point(490,150);  // Adjust position
+            this.comboTriggerSource.Name = "comboTriggerSource";
+            this.comboTriggerSource.Size = new System.Drawing.Size(150, 25);
+            //this.comboTriggerSource.SelectedIndex = 0; // Default to Internal Trigger
+            this.comboTriggerSource.SelectedIndexChanged += new System.EventHandler(this.comboTriggerSource_SelectedIndexChanged);
+            this.comboTriggerSource.Visible = true;
+            this.comboTriggerSource.TabIndex = 29;
+
             // 
             // FormMain
             // 
@@ -415,6 +435,7 @@
             this.Controls.Add(this.ExposureTimeTextBox);
             this.Controls.Add(this.QuerySensorTemperatureButton);
             this.Controls.Add(this.SensorTemperatureLabel);
+            this.Controls.Add(this.comboTriggerSource);
             this.Name = "FormMain";
             this.Text = "Hamamatsu EMCCD Camera Automation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -458,5 +479,6 @@
         public System.Windows.Forms.TextBox ExposureTimeTextBox;
         public System.Windows.Forms.Button QuerySensorTemperatureButton;
         public System.Windows.Forms.Label SensorTemperatureLabel;
+        public System.Windows.Forms.ComboBox comboTriggerSource;
     }
 }
