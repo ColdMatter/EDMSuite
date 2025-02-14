@@ -24,6 +24,20 @@ namespace DAQ
             ExternalFilePattern = null;
         }
 
+        // Overload to add DDS option
+        public MMConfig(bool camera, bool translation, bool reporter, bool dbg, bool dds)
+        {
+            CameraUsed = camera;
+            TranslationStageUsed = translation;
+            ReporterUsed = reporter;
+            Debug = dbg;
+            DigitalPatternClockFrequency = 100000; //default value
+            AnalogPatternClockFrequency = 100000; //default value
+            ExternalFilePattern = null;
+            DdsUsed = dds;
+        }
+
+
         private bool debug;
         public bool Debug
         {
@@ -50,6 +64,13 @@ namespace DAQ
         {
             get { return reporterUsed; }
             set { reporterUsed = value; }
+        }
+
+        private bool ddsUsed = false;
+        public bool DdsUsed
+        {
+            get { return ddsUsed; }
+            set { ddsUsed = value; }
         }
 
         private int digitalClockFreq;
