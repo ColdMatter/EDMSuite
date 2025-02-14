@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net4.6.2-windows7.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -11,6 +11,9 @@
   <ItemGroup>
     <Reference Include="SpcmDrv64.NET">
       <HintPath>..\..\Examples\.NET\SpcmDrv64.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Runtime.Remoting.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -383,7 +383,7 @@ namespace DAQ.HAL
             */
 
             // MOTMaster configuration
-            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            MMConfig mmConfig = new MMConfig(false, false, true, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
             

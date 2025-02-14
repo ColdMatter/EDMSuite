@@ -13,9 +13,11 @@ namespace NeanderthalDDSController
 
         public Controller controller;
 
-        public NeanderthalForm()
+        public NeanderthalForm(Controller ctrl)
         {
             InitializeComponent();
+            controller = ctrl;
+            controller.parameterUpdated += () => { updatePatternList(); };
         }
 
 
@@ -126,7 +128,6 @@ namespace NeanderthalDDSController
 
             controller.addParToPatternList(eventName, timeDelay, freqs, amps, freq_slopes, amp_slpoes);
 
-            updatePatternList();
             updatePatternIndicator();
         }
 
@@ -198,7 +199,6 @@ namespace NeanderthalDDSController
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            updatePatternList();
         }
 
         private void button_start_pattern_clicked(object sender, EventArgs e)
