@@ -13,18 +13,8 @@ namespace DAQ
 
         }
 
-        public MMConfig(bool camera, bool translation, bool reporter, bool dbg)
-        {
-            CameraUsed = camera;
-            TranslationStageUsed = translation;
-            ReporterUsed = reporter;
-            Debug = dbg;
-            DigitalPatternClockFrequency = 100000; //default value
-            AnalogPatternClockFrequency = 100000; //default value
-            ExternalFilePattern = null;
-        }
 
-        public MMConfig(bool camera, bool translation, bool reporter, bool dbg, bool dds)
+        public MMConfig(bool camera, bool translation, bool reporter, bool dbg, bool dds = false)
         {
             CameraUsed = camera;
             TranslationStageUsed = translation;

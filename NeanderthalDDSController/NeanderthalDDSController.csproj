@@ -5,12 +5,11 @@
     <TargetFramework>net461</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="SpcmDrv64.NET">
-      <HintPath>E:\Examples\.NET\SpcmDrv64.NET.dll</HintPath>
+      <HintPath>..\..\Examples\.NET\SpcmDrv64.NET.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Remoting">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Runtime.Remoting.dll</HintPath>
