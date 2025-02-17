@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Spcm;
+using System.Threading;
 
 namespace NeanderthalDDSController
 {
