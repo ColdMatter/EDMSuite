@@ -188,12 +188,14 @@ public class Patterns : MOTMasterScript
 
     private void prePatternSetup()
     {
-        EnvironsHelper eHelper = new EnvironsHelper((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]);
         MOTMaster.Controller mmController = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1178/controller.rem"));
+
         mmController.addDDSPattern("PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
             (double)Parameters["SidebandAmpDDS1"], (double)Parameters["SidebandAmpDDS2"], (double)Parameters["SidebandAmpDDS3"], (double)Parameters["SidebandAmpDDS4"]);
         mmController.addDDSPattern("Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
+
+        mmController.runDDSPattern();
     }
 
 
