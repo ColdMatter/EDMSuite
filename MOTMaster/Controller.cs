@@ -138,7 +138,7 @@ namespace MOTMaster
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseDDS) DDSCtrl = (NeanderthalDDSController)Activator.GetObject(typeof(NeanderthalDDSController),
+            if (config.UseDDS) DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),
                 "tcp://localhost:1818/controller.rem");
 
 
