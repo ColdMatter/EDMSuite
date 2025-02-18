@@ -14,6 +14,7 @@ import matplotlib.dates as mdates
 import time
 import glob
 from matplotlib.pyplot import cm
+from scipy.special import erfcinv
 
 repo = git.Repo(os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
 RootFolder = repo.working_tree_dir
@@ -166,35 +167,51 @@ def ExtractMagneticFields(Block, TOFnumber, Gain):
     NrShots = len(Block.Points)
     TOFlength = len(Block.Points[0].Shot.TOFs[TOFnumber].Data)
     Data = np.full((NrShots, TOFlength), np.nan)
-    if Gain ==3:
-        Factor = 1/8.1*1000
-    elif Gain==1:
-        Factor = 1/2.7*1000
-    elif Gain == 0.33:
-        Factor = 1/0.9*1000
-    else:
-        Factor = 1
+    Names = GetDetectorNames(Block)
+    Factor = 1
+    Offset = 0
+    if Names[TOFnumber][0:6] == 'quSpin':
+        if Gain ==3:
+            Factor = 1/8.1*1000 # Converts to pT
+        elif Gain==1:
+            Factor = 1/2.7*1000
+        elif Gain == 0.33:
+            Factor = 1/0.9*1000
+        else:
+            Factor = 1
+    elif Names[TOFnumber][0:6] == 'bartin':
+        Factor = 10000000 # 1V = 10uT
+    elif Names[TOFnumber][0:6] == 'MiniFl':
+        Offset = 2.5
+        Factor = 50e6 # (OUT+ - 2.5)*50 to convert from V to uT
     for PointNumber in range(NrShots):
-        Data[PointNumber,:] = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
+        Data[PointNumber,:] = (np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)-Offset)*Factor
     return Data
 
 def ExtractAverageMagneticFields(Block, TOFnumber, Gain):
     NrShots = len(Block.Points)
-    TOFlength = len(Block.Points[0].Shot.TOFs[TOFnumber].Data)
     Data = np.full((NrShots), np.nan)
     DataStd = np.full((NrShots), np.nan)
     DataNr = np.full((NrShots), np.nan)
-    if Gain ==3:
-        Factor = 1/8.1*1000
-    elif Gain==1:
-        Factor = 1/2.7*1000
-    elif Gain == 0.33:
-        Factor = 1/0.9*1000
-    else:
-        Factor = 1
-
+    Names = GetDetectorNames(Block)
+    Factor = 1
+    Offset = 0
+    if Names[TOFnumber][0:6] == 'quSpin':
+        if Gain ==3:
+            Factor = 1/8.1*1000 # Converts to pT
+        elif Gain==1:
+            Factor = 1/2.7*1000
+        elif Gain == 0.33:
+            Factor = 1/0.9*1000
+        else:
+            Factor = 1
+    elif Names[TOFnumber][0:6] == 'bartin':
+        Factor = 10000000 # 1V = 10uT
+    elif Names[TOFnumber][0:6] == 'MiniFl':
+        Offset = 2.5
+        Factor = 50e6 # (OUT+ - 2.5)*50 to convert from V to uT
     for PointNumber in range(NrShots):
-        Dataset = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
+        Dataset = (np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)-Offset)*Factor
         Data[PointNumber] = np.mean(Dataset)
         DataStd[PointNumber] = np.std(Dataset)
         DataNr[PointNumber] = len(Dataset)
@@ -206,17 +223,25 @@ def ExtractAverageMagneticFieldsAnd50HzPhase(Block, TOFnumber, Gain):
     DataStd = np.full((NrShots), np.nan)
     DataNr = np.full((NrShots), np.nan)
     Phases = np.full((NrShots), np.nan)
-    if Gain ==3:
-        Factor = 1/8.1*1000
-    elif Gain==1:
-        Factor = 1/2.7*1000
-    elif Gain == 0.33:
-        Factor = 1/0.9*1000
-    else:
-        Factor = 1
-
+    Names = GetDetectorNames(Block)
+    Factor = 1
+    Offset = 0
+    if Names[TOFnumber][0:6] == 'quSpin':
+        if Gain ==3:
+            Factor = 1/8.1*1000 # Converts to pT
+        elif Gain==1:
+            Factor = 1/2.7*1000
+        elif Gain == 0.33:
+            Factor = 1/0.9*1000
+        else:
+            Factor = 1
+    elif Names[TOFnumber][0:6] == 'bartin':
+        Factor = 10000000 # 1V = 10uT
+    elif Names[TOFnumber][0:6] == 'MiniFl':
+        Offset = 2.5
+        Factor = 50e6 # (OUT+ - 2.5)*50 to convert from V to uT
     for PointNumber in range(NrShots):
-        Dataset = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
+        Dataset = (np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)-Offset)*Factor
         Time = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Times)
         Data[PointNumber] = np.mean(Dataset)
         DataStd[PointNumber] = np.std(Dataset)
@@ -328,4 +353,29 @@ def GetBSwitchState(Block):
     return SwitchState
     
 
+#%% Function for analysis
 
+def ScaledMAD(x):
+    """
+    Calculate the scaled median absolute deviation (MAD), should correspond to the 
+    standard deviation for a dataset without outliers
+
+    Parameters
+    ----------
+    x : array of floats
+        Array of which the scaled MAD should be determined.
+
+    Returns
+    -------
+    float
+        The scaled MAD of the array x.
+
+    """
+    c = -1/(np.sqrt(2)*erfcinv(3/2))
+    return c*np.median(np.abs(x-np.median(x)))
+
+def DetectOutliersOfDistributionMAD(x, MADlevel):
+    Median = np.median(x)
+    Sigma = ScaledMAD(x)
+    Indi = np.abs(x-Median) > MADlevel*Sigma
+    return Indi
