@@ -53,7 +53,8 @@ namespace MOTMaster
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-        
+        private NeanderthalDDSController.Controller DDSCtrl;
+
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
         private Thread runThread;
@@ -136,6 +137,9 @@ namespace MOTMaster
 
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
+
+            if (config.UseDDS) DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),
+                "tcp://localhost:1818/controller.rem");
 
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
@@ -737,6 +741,50 @@ namespace MOTMaster
             Thread.Sleep(50);
             tstage.TSDisconnect();
         }
+        #endregion
+
+        #region NeanderthalDDSController
+
+        public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4, 
+            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+        {
+            //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
+            List<double> timePar = new List<double>();
+            timePar.Add(time/100.0);
+            List<double> freq = new List<double>(); 
+            freq.Add(freq1);
+            freq.Add(freq2);
+            freq.Add(freq3);
+            freq.Add(freq4);
+            List<double> amp = new List<double>();
+            amp.Add(amp1);
+            amp.Add(amp2);
+            amp.Add(amp3);
+            amp.Add(amp4);
+            List<double> freqSlope = new List<double>();
+            freqSlope.Add(freqSlope1);
+            freqSlope.Add(freqSlope2);
+            freqSlope.Add(freqSlope3);
+            freqSlope.Add(freqSlope4);
+            List<double> ampSlpoe = new List<double>();
+            ampSlpoe.Add(ampSlope1);
+            ampSlpoe.Add(ampSlope2);
+            ampSlpoe.Add(ampSlope3);
+            ampSlpoe.Add(ampSlope4);
+
+            DDSCtrl.clearPatternList();
+            DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
+            
+        }
+
+        public void runDDSPattern()
+        {
+            DDSCtrl.openCard();
+            DDSCtrl.startSinglePattern();
+            // Wait till sequence ends
+            DDSCtrl.closeCard();
+        }
+
         #endregion
 
         #region Re-Running a script (intended for reloading old scripts)
