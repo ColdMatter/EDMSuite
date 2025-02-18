@@ -53,7 +53,7 @@ namespace MOTMaster
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-        private NeanderthalDDSController.Controller DDSCtrl;
+        //private NeanderthalDDSController.Controller DDSCtrl;
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -138,8 +138,8 @@ namespace MOTMaster
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            if (config.UseDDS) DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),
-                "tcp://localhost:1818/controller.rem");
+            //if (config.UseDDS) DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),
+                //"tcp://localhost:1818/controller.rem");
 
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
@@ -742,7 +742,7 @@ namespace MOTMaster
             tstage.TSDisconnect();
         }
         #endregion
-
+        /*
         #region NeanderthalDDSController
 
         public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4, 
@@ -786,7 +786,7 @@ namespace MOTMaster
         }
 
         #endregion
-
+        */
         #region Re-Running a script (intended for reloading old scripts)
 
         /// <summary>
