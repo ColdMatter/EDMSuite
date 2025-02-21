@@ -32,11 +32,18 @@ namespace csAcq4
 
             //Application.Run(mainwindow);
 
-            int tcpchannelnum = 5555;
+            int tcpchannelnumccd1 = 5555;
+            int tcpchannelnumccd2 = 4444;
 
             // publish the controller to the remoting system
-            TcpChannel clientChannel = new TcpChannel(tcpchannelnum);
-            ChannelServices.RegisterChannel(clientChannel, false);
+            TcpChannel clientChannelccd1 = new TcpChannel(tcpchannelnumccd1);
+            ChannelServices.RegisterChannel(clientChannelccd1, false);
+            RemotingServices.Marshal(controller, "controller.rem");
+
+
+            // publish the controller to the remoting system
+            TcpChannel clientChannelccd2 = new TcpChannel(tcpchannelnumccd2);
+            ChannelServices.RegisterChannel(clientChannelccd2, false);
             RemotingServices.Marshal(controller, "controller.rem");
 
             controller.Start();
