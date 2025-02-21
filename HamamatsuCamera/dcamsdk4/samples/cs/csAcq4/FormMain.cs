@@ -72,7 +72,7 @@ namespace csAcq4
             public DCAM_PIXELTYPE pixeltype { get { return bufframe.type; } }
             public bool isValid()
             {
-                if (width <= 0 || height <= 0 || pixeltype == DCAM_PIXELTYPE.NONE)
+                if (width <= 0 || height <= 0 || pixeltype == DCAM_PIXELTYPE.MONO16)
                 {
                     return false;
                 }
@@ -85,7 +85,7 @@ namespace csAcq4
             {
                 bufframe.width = 0;
                 bufframe.height = 0;
-                bufframe.type = DCAM_PIXELTYPE.NONE;
+                bufframe.type = DCAM_PIXELTYPE.MONO16;
             }
             public void set_iFrame(int index)
             {
@@ -111,9 +111,9 @@ namespace csAcq4
             PushLive.Enabled = isInitialized || isAcquired;
             PushFireTrigger.Enabled = isInitialized || isAcquired;
             PushIdle.Enabled = isAcquiring;
-            PushBufRelease.Enabled = isAcquired;
+            //PushBufRelease.Enabled = isAcquired; rhys remove 14/02
             PushClose.Enabled = isInitialized || isAcquired;
-            PushUninit.Enabled = isInitialized;
+            //PushUninit.Enabled = isInitialized; rhys remove 14/02
 
             //PushProperties.Enabled = (isInitialized || isAcquired);
 
@@ -322,7 +322,7 @@ namespace csAcq4
                 }
 
                 // Create a new bitmap. Ensure we always use the fixed PictureBox dimensions
-                Bitmap bmp = new Bitmap(PicDisplay.Width, PicDisplay.Height, PixelFormat.Format24bppRgb);
+                Bitmap bmp = new Bitmap(PicDisplay.Width, PicDisplay.Height, PixelFormat.Format16bppGrayScale);
                 using (var gr = Graphics.FromImage(bmp))
                 {
                     lock (BitmapLock)
@@ -359,7 +359,7 @@ namespace csAcq4
                     {
                         Console.WriteLine("Initializing new bitmap...");
                         m_bitmap?.Dispose(); // Dispose old bitmap if it exists
-                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
+                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format16bppGrayScale);
                     }
 
                     // Copy image data into Bitmap
@@ -981,7 +981,22 @@ namespace csAcq4
             controller.UpdateExposureTime();
         }
 
+        private void QueryFrameCountButton_Click(object sender, EventArgs e)
+        {
+            controller.QueryFrameCount();
+        }
 
+
+        private void UpdateFrameCountButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFrameCount();
+        }
+
+        // Button Click Event to Set Save Directory
+        private void SetSaveDirectoryButton_Click(object sender, EventArgs e)
+        {
+            controller.SetSaveDirectory();
+        }
         //private void PushInfo_Click(object sender, EventArgs e)
         //{
         //    FormInfo formInfo = new FormInfo();

@@ -22,6 +22,7 @@ namespace Hamamatsu.subacq4
         INVALID_SRC = 0x80000021,
         INVALID_SRCPIXELTYPE = 0x80000022,
 
+
         NOSUPPORT_LUTARRAY = 0x80000101,
 
         // success
@@ -62,52 +63,61 @@ namespace Hamamatsu.subacq4
         //    if (h > src.height) h = src.height;
 
         //    SUBACQERR err;
-        //    BitmapData dst = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format8bppIndexed);
+        //    // Use 16bpp grayscale pixel format
+        //    BitmapData dst = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 
         //    if (src.type == DCAM_PIXELTYPE.MONO16)
-        //        err = copydib_gray8_from_mono16(dst.Scan0, dst.Stride, src.buf, src.rowbytes, w, h, lutmax, lutmin, bpp);
+        //    {
+        //        // Process the source buffer to copy to 16bpp grayscale bitmap
+        //        err = copydib_gray16_from_mono16(dst.Scan0, dst.Stride, src.buf, src.rowbytes, w, h, lutmax, lutmin, bpp);
+        //    }
         //    else
+        //    {
         //        err = SUBACQERR.INVALID_SRCPIXELTYPE;
+        //    }
 
         //    bitmap.UnlockBits(dst);
-
-        //    // Apply grayscale palette (required for 8-bit images)
-        //    ColorPalette pal = bitmap.Palette;
-        //    for (int i = 0; i < 256; i++)
-        //        pal.Entries[i] = Color.FromArgb(i, i, i);
-        //    bitmap.Palette = pal;
 
         //    return err;
         //}
 
-    //    private static SUBACQERR copydib_gray8_from_mono16(
-    //IntPtr dst, Int32 dstrowbytes, IntPtr src, Int32 srcrowbytes, Int32 width, Int32 height,
-    //Int32 lutmax, Int32 lutmin, Int32 bpp)
-    //    {
-    //        Int16[] s = new Int16[width];
-    //        byte[] d = new byte[dstrowbytes];
 
-    //        double gain = 256.0 / (lutmax - lutmin + 1);
-    //        double inBase = lutmin;
+        //private static SUBACQERR copydib_gray16_from_mono16(IntPtr dst, int dstrowbytes, IntPtr src, int srcrowbytes, int width, int height, int lutmax, int lutmin, int bpp)
+        //{
+        //    short[] s = new short[width];
+        //    byte[] d = new byte[dstrowbytes];
 
-    //        for (int y = 0; y < height; y++)
-    //        {
-    //            Int32 offsetSrc = srcrowbytes * y;
-    //            Marshal.Copy((IntPtr)(src.ToInt64() + offsetSrc), s, 0, width);
+        //    // Apply LUT scaling factors
+        //    double gain = 256.0 / (lutmax - lutmin + 1);
+        //    double inBase = lutmin;
 
-    //            for (int x = 0; x < width; x++)
-    //            {
-    //                UInt16 u = (UInt16)s[x];
-    //                double v = gain * (u - inBase);
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        // Copy source row to array
+        //        int offsetSrc = srcrowbytes * y;
+        //        Marshal.Copy((IntPtr)(src.ToInt64() + offsetSrc), s, 0, width);
 
-    //                d[x] = (Byte)(v > 255 ? 255 : (v < 0 ? 0 : v)); // Clamp to 0-255
-    //            }
+        //        // Process each pixel
+        //        for (int x = 0; x < width; x++)
+        //        {
+        //            // Convert 16-bit pixel to grayscale with LUT scaling
+        //            ushort u = (ushort)s[x];
+        //            double v = gain * (u - inBase);
 
-    //            Int32 offsetDst = dstrowbytes * y;
-    //            Marshal.Copy(d, 0, (IntPtr)(dst.ToInt64() + offsetDst), width);
-    //        }
-    //        return SUBACQERR.SUCCESS;
-    //    }
+        //            // Clamp value to the range [0, 65535] and set the destination byte array
+        //            byte grayValue = (byte)(v > 255 ? 255 : (v < 0 ? 0 : v));
+        //            d[x * 2] = grayValue; // Low byte
+        //            d[x * 2 + 1] = grayValue; // High byte (16-bit grayscale format)
+        //        }
+
+        //        // Copy the processed row to the destination bitmap
+        //        int offsetDst = dstrowbytes * y;
+        //        Marshal.Copy(d, 0, (IntPtr)(dst.ToInt64() + offsetDst), width);
+        //    }
+
+        //    return SUBACQERR.SUCCESS;
+        //}
+
 
         private static SUBACQERR copydib_rgb24_from_mono16(IntPtr dst, Int32 dstrowbytes, IntPtr src, Int32 srcrowbytes, Int32 width, Int32 height, Int32 lutmax, Int32 lutmin, Int32 bpp)
         {
