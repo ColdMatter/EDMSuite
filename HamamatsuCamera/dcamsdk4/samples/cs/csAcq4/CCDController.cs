@@ -7,16 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Threading;
+using System.Threading.Tasks;
+
 using System.Drawing.Imaging;
 
 using Hamamatsu.DCAM4;
 using Hamamatsu.subacq4;
 using static System.Windows.Forms.AxHost;
 using System.IO;
+using BitMiracle.LibTiff.Classic;
 using csAcq4;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics.Eventing.Reader;
+using System.Xml.Linq;
+using System.Windows.Controls;
 
 namespace csAcq4
 {
@@ -53,28 +61,22 @@ namespace csAcq4
         };
 
         private int m_indexCamera = 0;          // index of DCAM device.  This is used at allocating mydcam instance.
-        private int m_nFrameCount;              // frame count of allocation buffer for DCAM capturing
+        private int m_nFrameCount = 4;              // frame count of allocation buffer for DCAM capturing
         private FormStatus m_formstatus;        // Indicate current Form status. For setting, Use MyFormStatus() functions
         private Thread m_threadCapture;         // System.Threading.  Assigned for monitoring updated frames during capturing
         private Bitmap m_bitmap;                // bitmap data for displaying in this Windows Form
         private bool m_cap_stopping = false;    // reset to false when starting capture and set to true if stopping capture
 
-        public CCDController()
-        {
-            m_image = new MyImage();
-            m_lut = new MyLut();
-            BitmapLock = new object();
-        }
-        //private FormProperties formProperties;  // Properties Form
 
         // ---------------- private class MyImage ----------------
 
-        private class MyImage
+        public class MyImage
         {
             public DCAMBUF_FRAME bufframe;
             public MyImage()
             {
                 bufframe = new DCAMBUF_FRAME(0);
+                bufframe.type = DCAM_PIXELTYPE.MONO16;
             }
             public int width { get { return bufframe.width; } }
             public int height { get { return bufframe.height; } }
@@ -89,8 +91,22 @@ namespace csAcq4
                 {
                     return true;
                 }
+
+                //if (width <= 0 || height <= 0)
+                //{
+
+                //    return false;
+                //}
+
+                //if (!pixeltype.Equals(DCAM_PIXELTYPE.MONO16))
+                //{
+                //    Console.WriteLine($"Invalid Pixel Type - Expected: {(int)DCAM_PIXELTYPE.MONO16}, Found: {(int)pixeltype}");
+                //    return false;
+                //}
+
+                //return true;
             }
-            public void clear()
+        public void clear()
             {
                 bufframe.width = 0;
                 bufframe.height = 0;
@@ -107,7 +123,7 @@ namespace csAcq4
         {
             // Create FormMain and assign this CCDController instance to it
             window = new FormMain(this);
-            //window.controller = this;  // Set this instance of CCDController to FormMain
+            window.controller = this;  // Set this instance of CCDController to FormMain
 
             System.Windows.Forms.Application.Run(window);
         }
@@ -135,7 +151,18 @@ namespace csAcq4
         {
             if (window != null && window.LabelStatus != null)
             {
-                window.LabelStatus.Text = text;
+                if (window.LabelStatus.InvokeRequired)
+                {
+                    window.LabelStatus.Invoke(new Action(() =>
+                    {
+                        window.LabelStatus.Text = text;
+                    }));
+                }
+                else
+                {
+                    window.LabelStatus.Text = text;
+                }
+             //window.LabelStatus.Text = text;
             }
             else
             {
@@ -164,6 +191,7 @@ namespace csAcq4
 
                 double v = 0;
                 prop.getvalue(ref v);
+                Console.WriteLine($"BITSPERCHANNEL: {v}");
                 bool reset = false;
 
                 // Check if bit depth has changed 
@@ -177,9 +205,32 @@ namespace csAcq4
                 m_lut.inmax = window.HScrollLutMax.Value;
                 m_lut.inmin = window.HScrollLutMin.Value;
 
-                window.HScrollLutMax.Maximum = m_lut.cameramax;
-                window.HScrollLutMin.Maximum = m_lut.cameramax;
+                if (window.HScrollLutMax.InvokeRequired)
+                {
+                    window.HScrollLutMax.Invoke(new Action(() =>
+                    {
+                        window.HScrollLutMax.Maximum = m_lut.cameramax;
+                    }
+                    ));
+                }
+                else
+                {
+                    window.HScrollLutMax.Maximum = m_lut.cameramax;
+                }
 
+                if (window.HScrollLutMin.InvokeRequired)
+                {
+                    window.HScrollLutMin.Invoke(new Action(() =>
+                    {
+                        window.HScrollLutMin.Maximum = m_lut.cameramax;
+                    }
+                    ));
+                }
+                else
+                {
+                    window.HScrollLutMin.Maximum = m_lut.cameramax;
+                }
+             
                 if (reset)
                 {
                     window.HScrollLutMax.Value = m_lut.cameramax;
@@ -293,12 +344,17 @@ namespace csAcq4
                 return;
             }
 
-            MyUpdatePicture();
+            //m_image.bufframe.type = DCAM_PIXELTYPE.MONO16;
             //Console.WriteLine($"Locked frame dimensions: {m_image.width}x{m_image.height}");
+            //Console.WriteLine($"Pixel Type: {m_image.pixeltype.ToString()}, Raw Value: {(int)m_image.pixeltype}");
+
+            MyUpdatePicture();
+
         }
 
         // Draw Bitmap in the PictureBox 
         private delegate void MyDelegate_UpdateDisplay();
+
 
         private void MyUpdateDisplay()
         {
@@ -331,7 +387,7 @@ namespace csAcq4
                 }
 
                 // Create a new bitmap. Ensure we always use the fixed PictureBox dimensions
-                Bitmap bmp = new Bitmap(window.PicDisplay.Width, window.PicDisplay.Height, PixelFormat.Format24bppRgb);
+                Bitmap bmp = new Bitmap(window.PicDisplay.Width, window.PicDisplay.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 using (var gr = Graphics.FromImage(bmp))
                 {
                     lock (BitmapLock)
@@ -353,45 +409,102 @@ namespace csAcq4
         }
 
         // Updating Bitmap and Display
+        //private void MyUpdatePicture()
+        //{
+
+        //    if (m_image.isValid())
+        //    {
+        //        m_lut.inmax = window.HScrollLutMax.Value;
+        //        m_lut.inmin = window.HScrollLutMin.Value;
+
+        //        Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
+        //        lock (BitmapLock)
+        //        {
+        //            // Always initialize bitmap if it's null or size changes
+        //            if (m_bitmap == null || m_bitmap.Width != m_image.width || m_bitmap.Height != m_image.height)
+        //            {
+        //                Console.WriteLine("Initializing new bitmap...");
+        //                m_bitmap?.Dispose(); // Dispose old bitmap if it exists
+        //                m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
+        //            }
+
+        //            // Copy image data into Bitmap
+        //            SUBACQERR err = subacq.copydib(ref m_bitmap, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
+        //            if (err != SUBACQERR.SUCCESS)
+        //            {
+        //                Console.WriteLine($"Error copying DIB: {err}, using fallback blank image.");
+
+        //                // Fallback: Assign a blank image to avoid null issues
+        //                using (Graphics g = Graphics.FromImage(m_bitmap))
+        //                {
+        //                    g.Clear(Color.Black);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Warning: Image is not valid, skipping update.");
+        //        return;
+        //    }
+
+        //    if (window.PicDisplay.InvokeRequired)
+        //    {
+        //        window.PicDisplay.Invoke(new MyDelegate_UpdateDisplay(MyUpdateDisplay));
+        //        return;
+        //    }
+
+        //    MyUpdateDisplay();
+        //}
+
         private void MyUpdatePicture()
         {
-
-            if (m_image.isValid())
+            if (!m_image.isValid())
             {
-                m_lut.inmax = window.HScrollLutMax.Value;
-                m_lut.inmin = window.HScrollLutMin.Value;
-
-                Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
-                lock (BitmapLock)
-                {
-                    // Always initialize bitmap if it's null or size changes
-                    if (m_bitmap == null || m_bitmap.Width != m_image.width || m_bitmap.Height != m_image.height)
-                    {
-                        Console.WriteLine("Initializing new bitmap...");
-                        m_bitmap?.Dispose(); // Dispose old bitmap if it exists
-                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
-                    }
-
-                    // Copy image data into Bitmap
-                    SUBACQERR err = subacq.copydib(ref m_bitmap, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
-                    if (err != SUBACQERR.SUCCESS)
-                    {
-                        Console.WriteLine($"Error copying DIB: {err}, using fallback blank image.");
-
-                        // Fallback: Assign a blank image to avoid null issues
-                        using (Graphics g = Graphics.FromImage(m_bitmap))
-                        {
-                            g.Clear(Color.Black);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("Warning: Image is not valid, skipping update.");
+                Console.WriteLine(" Warning: Image is not valid, skipping update.");
                 return;
             }
 
+            m_lut.inmax = window.HScrollLutMax.Value;
+            m_lut.inmin = window.HScrollLutMin.Value;
+
+            Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
+
+            lock (BitmapLock)
+            {
+                // Allocate a 24-bit RGB bitmap for display
+                if (m_bitmap == null || m_bitmap.Width != m_image.width || m_bitmap.Height != m_image.height)
+                {
+                    Console.WriteLine($" Re-initializing bitmap for display: {m_image.width}x{m_image.height}");
+                    m_bitmap?.Dispose();
+                    m_bitmap = new Bitmap(m_image.width, m_image.height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                }
+
+                // Convert 16-bit grayscale to 8-bit grayscale
+                byte[] gray8bitImage = Convert16BitTo8Bit(m_image.bufframe.buf, m_image.width, m_image.height, m_image.bufframe.rowbytes);
+
+                // Convert 8-bit grayscale to RGB for display
+                byte[] rgbImage = Convert8BitToRGB(gray8bitImage, m_image.width, m_image.height);
+
+                // Lock bitmap & copy converted RGB data
+                BitmapData bitmapData = m_bitmap.LockBits(rc, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Marshal.Copy(rgbImage, 0, bitmapData.Scan0, rgbImage.Length);
+                m_bitmap.UnlockBits(bitmapData);
+
+                //Copy image data into Bitmap
+                SUBACQERR err = subacq.copydib(ref m_bitmap, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
+                if (err != SUBACQERR.SUCCESS)
+                {
+                    Console.WriteLine($"Error copying DIB: {err}, using fallback blank image.");
+
+                    // Fallback: Assign a blank image to avoid null issues
+                    using (Graphics g = Graphics.FromImage(m_bitmap))
+                    {
+                        g.Clear(System.Drawing.Color.Black);
+                    }
+                }
+            }
+            // Display the image
             if (window.PicDisplay.InvokeRequired)
             {
                 window.PicDisplay.Invoke(new MyDelegate_UpdateDisplay(MyUpdateDisplay));
@@ -400,6 +513,44 @@ namespace csAcq4
 
             MyUpdateDisplay();
         }
+
+        private byte[] Convert16BitTo8Bit(IntPtr srcPtr, int width, int height, int rowbytes)
+        {
+            byte[] gray8bitImage = new byte[width * height];
+            byte[] srcBytes = new byte[width * 2];  // Each pixel is 2 bytes (16-bit)
+
+            for (int y = 0; y < height; y++)
+            {
+                int srcOffset = rowbytes * y;
+                Marshal.Copy((IntPtr)(srcPtr.ToInt64() + srcOffset), srcBytes, 0, width * 2);
+
+                for (int x = 0; x < width; x++)
+                {
+                    ushort pixel16 = BitConverter.ToUInt16(srcBytes, x * 2);  // Convert 2 bytes to 16-bit value
+                    gray8bitImage[y * width + x] = (byte)(pixel16 >> 8);      // Extract top 8 bits for 8-bit grayscale
+                }
+            }
+
+            return gray8bitImage;
+        }
+
+
+        private byte[] Convert8BitToRGB(byte[] gray8bitImage, int width, int height)
+        {
+            byte[] rgbImage = new byte[width * height * 3];
+
+            for (int i = 0; i < gray8bitImage.Length; i++)
+            {
+                byte gray = gray8bitImage[i];
+
+                rgbImage[i * 3] = gray;     // Red
+                rgbImage[i * 3 + 1] = gray; // Green
+                rgbImage[i * 3 + 2] = gray; // Blue
+            }
+
+            return rgbImage;
+        }
+
 
 
         // Capturing Thread helper functions
@@ -484,6 +635,18 @@ namespace csAcq4
                     }
                 }
             }
+        }
+
+
+
+        public CCDController()
+        {
+
+            m_image = new MyImage();
+            m_lut = new MyLut();
+            BitmapLock = new object();
+
+            m_image.bufframe.type = DCAM_PIXELTYPE.MONO16;
         }
 
         // <summary>
@@ -596,6 +759,13 @@ namespace csAcq4
                 //    return;                         // fail: incorrect camera
                 //}
 
+                //MyDcamProp colortypeProp = new MyDcamProp(mydcam, DCAMIDPROP.COLORTYPE);
+                //if (!colortypeProp.setvalue(DCAMPROP.COLORTYPE.BW))
+                //{
+                //    MyShowStatusNG("Failed to set CCD mode", colortypeProp.m_lasterr);
+                //    return false;                         // Fail: setting colour type
+                //}
+
                 // * Camera Control (Gain and Exposure Time) * //
                 // Set CCD mode to EMCCD
                 MyDcamProp ccdModeProp = new MyDcamProp(mydcam, DCAMIDPROP.CCDMODE);
@@ -695,6 +865,22 @@ namespace csAcq4
                 return false;
             }
 
+            // Ensure the call to `SelectedIndex` is done on the UI thread. This was added by rhys
+            int selectedIndex = 2;
+            if (window.comboTriggerSource.InvokeRequired)
+            {
+                // If not on the UI thread, use Invoke to marshal the call
+                window.comboTriggerSource.Invoke(new Action(() =>
+                {
+                    selectedIndex = window.comboTriggerSource.SelectedIndex;
+                }));
+            }
+            else
+            {
+                // If already on the UI thread, simply access the property
+                selectedIndex = window.comboTriggerSource.SelectedIndex;
+            }
+
             MyDcamProp triggerSourceProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
             MyDcamProp triggerModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGER_MODE);
             MyDcamProp triggerActiveModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERACTIVE);
@@ -702,7 +888,7 @@ namespace csAcq4
 
             bool success = false;
 
-            switch (window.comboTriggerSource.SelectedIndex)
+            switch (selectedIndex)
             {
                 case 0: // Internal Trigger
                     if (triggerSourceProp.setvalue(DCAMPROP.TRIGGERSOURCE.INTERNAL))
@@ -848,7 +1034,31 @@ namespace csAcq4
             if (sensitivitygainprop.getvalue(ref currentSensitivity))
             {
                 Console.WriteLine($"Current Sensitivity Gain: {currentSensitivity}");
-                window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+
+                //NOTE: The invoke functionality prevents a cross thread error when communicating via TCP. The invoke method allows
+                //you to communicate with the UI thread (i.e. formMain) from the controller thread. This is needed because normally
+                //the UI controls (i.e. labels) within a Windows Form are not thread safe and thus you cannot update them directly from a background thread
+                //i.e. the controller thread handling the TCP communication.
+                //The invoke method allows you to update the UI controls from the controller thread. Any code that interacts with the UI must be wrapped
+                //within the Invoke method. If the function is not called via TCP and is invoked (locally e.g. from a button click
+                // then the invoke method is not needed as the function that includes the UI owned controls (e.g. label) is executed by the UI thread itself.
+                // This means InvokeRequired boolean will be false and the else statement will be executed.
+
+                if (window.SensitivityGainLabel.InvokeRequired)
+                {
+                    // If called from a non-UI thread i.e. this thread, we invoke to update the label on the UI thread
+                    window.SensitivityGainLabel.Invoke(new Action(() =>
+                    {
+                        window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+                    }));
+
+                }
+                else
+                {
+                    // If already on the UI thread, update the label directly
+                    window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+                }
+
             }
             else
             {
@@ -888,6 +1098,17 @@ namespace csAcq4
                 if (sensitivitygainprop.setvalue(newGain))
                 {
                     Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
+                    //if (window.SensitivityGainLabel.InvokeRequired)
+                    //{
+                    //    window.SensitivityGainLabel.Invoke(new Action(() =>
+                    //    {
+                    //        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                    //    }));
+                    //}
+                    //else
+                    //{
+                    //    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                    //}
                     window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
                 }
                 else
@@ -902,15 +1123,28 @@ namespace csAcq4
             }
         }
 
+        double currentExposureTime;
         public void QueryExposureTime()
         {
             MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
-            double currentExposureTime = 0;
+
             if (exposuretimeprop.getvalue(ref currentExposureTime))
             {
                 double roundedExposureTime = Math.Round(currentExposureTime, 5); // Round to 5 decimal places
                 Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F5}");
-                window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                
+                if (window.ExposureTimeLabel.InvokeRequired)
+                {
+                    window.ExposureTimeLabel.Invoke(new Action(() =>
+                    {
+                        window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                    }));
+                
+                }
+                else
+                {
+                    window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                }
             }
             else
             {
@@ -939,7 +1173,18 @@ namespace csAcq4
                 if (exposuretimeprop.setvalue(newExposureTime))
                 {
                     Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
-                    window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                    
+                    if (window.ExposureTimeLabel.InvokeRequired)
+                    {
+                        window.ExposureTimeLabel.Invoke(new Action(() =>
+                            {
+                                window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                            }));
+                    }
+                    else
+                    {
+                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                    }
                 }
                 else
                 {
@@ -953,22 +1198,64 @@ namespace csAcq4
             }
         }
 
+        public void QueryFrameCount()
+        {
+            if (window.FrameCountLabel.InvokeRequired)
+            {
+                window.FrameCountLabel.Invoke(new Action(() =>
+                {
+                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                }));
+            }
+            else
+            {
+                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+            }
+
+            Console.WriteLine($"Queried Frame Count: {m_nFrameCount}");
+        }
+
+        public void UpdateFrameCount()
+        {
+            if (int.TryParse(window.FrameCountTextBox.Text, out int newFrameCount) && newFrameCount > 0)
+            {
+                m_nFrameCount = newFrameCount;
+                Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
+
+                if (window.FrameCountLabel.InvokeRequired)
+                {
+                    window.FrameCountLabel.Invoke(new Action(() =>
+                    {
+                        window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                    }));
+                }
+                else
+                {
+                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input: Frame count must be a positive integer.");
+            }
+        }
+
+
         public void Snap()
         {
             if (mydcam == null)
             {
                 MyShowStatus("Internal Error: mydcam is null");
                 Console.WriteLine("Error: mydcam is null");
-                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+                //window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
                 return;                         // internal error
             }
 
-            
             window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
 
             string text = "";
 
-            m_nFrameCount = 20;
+            //m_nFrameCount = 4;
 
             if (window.IsMyFormStatus_Initialized())
             {
@@ -983,26 +1270,24 @@ namespace csAcq4
                     // allocation was failed
                     Console.WriteLine("Failed to allocate buffer");
                     MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
-                    window.MyFormStatus_Initialized(); // Reset form status to initialized
+                    //window.MyFormStatus_Initialized(); // Reset form status to initialized
                     return;                     // Fail: dcambuf_alloc()
                 }
 
                 // Success: dcambuf_alloc()
-
-                //update lut can be changed back to true
-                update_lut(false);
+                update_lut(true);
             }
 
             // start acquisition
             m_cap_stopping = false;
-            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  acqusition will stop after capturing m_nFrameCount frame
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing m_nFrameCount frame
             if (!mydcam.cap_start(this))
             {
                 // acquisition was failed. In this sample, frame buffer is also released.
                 MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
 
                 mydcam.buf_release();           // release unnecessary buffer in DCAM
-                window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
+                //window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
                 return;                         // Fail: dcamcap_start()
             }
             else
@@ -1026,11 +1311,11 @@ namespace csAcq4
 
             if (v == DCAMPROP.TRIGGERSOURCE.SOFTWARE)
             {
-                window.MyFormStatus_AcquiringSoftwareTrigger(); // change dialog FormStatus to AcquiringSoftwareTrigger
+                //window.MyFormStatus_AcquiringSoftwareTrigger(); // change dialog FormStatus to AcquiringSoftwareTrigger
             }
             else
             {
-                window.MyFormStatus_Acquiring();           // change dialog FormStatus to Acquiring
+                //window.MyFormStatus_Acquiring();           // change dialog FormStatus to Acquiring
             }
 
             MyThreadCapture_Start();            // start monitoring thread
@@ -1085,6 +1370,7 @@ namespace csAcq4
             // Update the image to display the snap  
             MyUpdateImage(0);
             MyUpdateDisplay(); // Refresh the display to show the snap
+            //auto_lut();
         }
 
         public void Live()
@@ -1102,7 +1388,7 @@ namespace csAcq4
 
             window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
 
-            m_nFrameCount = 20;
+            //m_nFrameCount = 20;
 
             if (window.IsMyFormStatus_Initialized())
             {
@@ -1133,7 +1419,7 @@ namespace csAcq4
                 // acquisition was failed. In this sample, frame buffer is also released.
                 MyShowStatusNG("dcamcap_start()", mydcam.m_lasterr);
 
-                mydcam.buf_release();           // release unnecessary buffer in DCAM
+                //mydcam.buf_release();           // release unnecessary buffer in DCAM
                 window.MyFormStatus_Initialized();          // change dialog FormStatus to Opened
                 return;                         // Fail: dcamcap_start()
             }
@@ -1194,70 +1480,108 @@ namespace csAcq4
             MyShowStatus("Acquisition stopped, ready for further operations");
         }
 
+        private void SaveFrameAs16BitTiff(Tiff tiff, byte[] rawData, int width, int height, int pageIndex)
+        {
+            tiff.SetField(TiffTag.IMAGEWIDTH, width);
+            tiff.SetField(TiffTag.IMAGELENGTH, height);
+            tiff.SetField(TiffTag.SAMPLESPERPIXEL, 1); 
+            tiff.SetField(TiffTag.BITSPERSAMPLE, 16);
+            //tiff.SetField(TiffTag.ORIENTATION, Orientation.TOPLEFT);
+            tiff.SetField(TiffTag.PLANARCONFIG, PlanarConfig.CONTIG);
+            tiff.SetField(TiffTag.PHOTOMETRIC, Photometric.MINISBLACK); // Black = 0
+            tiff.SetField(TiffTag.ROWSPERSTRIP, height);
+            tiff.SetField(TiffTag.COMPRESSION, Compression.NONE); // No compression for accuracy
+
+            // Write image data row by row
+            int stride = width * 2; // 16-bit per pixel
+            for (int row = 0; row < height; row++)
+            {
+                tiff.WriteScanline(rawData, row * stride, row, 0);
+            }
+
+            tiff.WriteDirectory(); // Create a new directory for the next page 
+        }
+
+
+        private string GetNextFileName(string directory, string baseFileName, string extension)
+        {
+            int fileIndex = 1;
+            string fileName;
+            do
+            {
+                fileName = Path.Combine(directory, $"{baseFileName}({fileIndex:D5}){extension}");
+                fileIndex++;
+            } while (File.Exists(fileName));
+            return fileName;
+        }
+
+        // Default save directory
+        private string saveDirectory = "E:\\Imperial College London\\OneDrive - Imperial College London\\Documents - Team ultracold - PH\\Data\\2025\\CCD data";
+
+        // Button Click Event to Set Save Directory
+        public void SetSaveDirectory() 
+        {
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                folderDialog.Description = "Select a folder to save captured frames";
+                folderDialog.SelectedPath = saveDirectory; // Set default directory
+
+                if (folderDialog.ShowDialog() == DialogResult.OK)
+                {
+                    saveDirectory = folderDialog.SelectedPath; // Update save path
+                    Console.WriteLine($"Save directory set to: {saveDirectory}");
+                    window.SaveDirectoryLabel.Text = $"Save Directory: {saveDirectory}";
+                }
+            }
+        }
         public void BufRelease()
         {
             if (mydcam == null)
             {
                 MyShowStatus("Internal Error: mydcam is null");
-                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
-                return;                         // internal error
+                window.MyFormStatus_Initialized(); // FormStatus should be Initialized.
+                return; // Internal error
             }
 
             if (!window.IsMyFormStatus_Acquired())
             {
                 MyShowStatus("Internal Error: BufRelease is only available when FormStatus is Acquired");
-                return;                         // internal error
+                return; // Internal error
             }
 
-            // Save images to disk before releasing buffer
-            string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
-            Directory.CreateDirectory(saveDirectory); // Create the directory if it does not exist 
+            Directory.CreateDirectory(saveDirectory);
+
+            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff"); // Get the next available file name
 
             try
             {
-                for (int i = 0; i < m_nFrameCount; i++)
+                using (Tiff tiff = Tiff.Open(multiTiffPath, "w")) // Open a new multi-page TIFF
                 {
-                    // Lock the frame to access its data
-                    m_image.set_iFrame(i);
-                    if (!mydcam.buf_lockframe(ref m_image.bufframe))
+                    for (int i = 0; i < m_nFrameCount; i++)
                     {
-                        MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
-                        continue; // Skip to the next frame if locking fails
-                    }
-
-                    // Convert the frame to a Bitmap
-                    Bitmap frame;
-                    lock (BitmapLock)
-                    {
-                        frame = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
-                        Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
-                        SUBACQERR err = subacq.copydib(ref frame, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
-
-                        if (err != SUBACQERR.SUCCESS)
+                        // Lock the frame to access its data
+                        m_image.set_iFrame(i);
+                        if (!mydcam.buf_lockframe(ref m_image.bufframe))
                         {
-                            MyShowStatusNG($"Failed to convert frame {i} to Bitmap", mydcam.m_lasterr);
-                            frame.Dispose();
-                            continue;
+                            MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
+                            continue; // Skip if frame locking fails
                         }
+
+                        // Extract raw image data (in 16-bit grayscale)
+                        int width = m_image.width;
+                        int height = m_image.height;
+                        int stride = width * 2; // 16-bit = 2 bytes per pixel
+
+                        byte[] rawData = new byte[height * stride]; // Buffer for pixel data
+                        Marshal.Copy(m_image.bufframe.buf, rawData, 0, rawData.Length); // Copy raw data
+
+                        // **Save as 16-bit grayscale TIFF using BitMiracle.LibTiff**
+                        SaveFrameAs16BitTiff(tiff, rawData, width, height, i);
                     }
-
-                    // Generate a unique file name for the frame
-                    string tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}.tiff");
-
-                    // Check if the file already exists and generate a new name if necessary
-                    int counter = 1;
-                    while (File.Exists(tiffFilePath))
-                    {
-                        tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}_{counter}.tiff");
-                        counter++;
-                    }
-
-                    // Save the frame as an individual TIFF file
-                    frame.Save(tiffFilePath, ImageFormat.Tiff);
-                    frame.Dispose(); // Release the frame bitmap
                 }
-                Console.WriteLine($"{m_nFrameCount} frames are saving to the directory...");
-                MyShowStatusOK($"Saved {m_nFrameCount} frames as individual TIFF files to {saveDirectory}");
+
+                Console.WriteLine($"{m_nFrameCount} frames saved in MTIFF.");
+                MyShowStatusOK($"Saved {m_nFrameCount} frames as a MTIFF at {multiTiffPath}");
             }
             catch (Exception ex)
             {
@@ -1265,30 +1589,115 @@ namespace csAcq4
             }
             finally
             {
-                bool isError = false; // Flag to track if any errors occur during buffer release
-
-                // Release the buffer only if no error occurred during the main execution
                 if (!mydcam.buf_release())
                 {
                     MyShowStatusNG("dcambuf_release()", mydcam.m_lasterr);
-                    isError = true; // Fail: dcambuf_release()
                 }
-
-                // Success: dcambuf_release()
-                MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved to the directory.");
-                Console.WriteLine($"{m_nFrameCount} frames have been successfully saved to the directory.");
-                window.MyFormStatus_Initialized(); // Change dialog FormStatus to Opened
-                m_image.clear();
-
-                // If there was an error during buffer release, handle accordingly
-                if (isError)
+                else
                 {
-                    // If you want to show a specific message or handle other things due to failure
-                    MyShowStatus("Buffer release failed, cleanup needed.");
+                    MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved.");
                 }
+
+                window.MyFormStatus_Initialized(); // Reset FormStatus
+                m_image.clear();
             }
         }
 
+
+        //public void BufRelease()
+        //{
+        //    if (mydcam == null)
+        //    {
+        //        MyShowStatus("Internal Error: mydcam is null");
+        //        window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+        //        return;                         // internal error
+        //    }
+
+        //    if (!window.IsMyFormStatus_Acquired())
+        //    {
+        //        MyShowStatus("Internal Error: BufRelease is only available when FormStatus is Acquired");
+        //        return;                         // internal error
+        //    }
+
+        //    // Save images to disk before releasing buffer
+        //    string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
+        //    Directory.CreateDirectory(saveDirectory); // Create the directory if it does not exist 
+
+        //    try
+        //    {
+        //        for (int i = 0; i < m_nFrameCount; i++)
+        //        {
+        //            // Lock the frame to access its data
+        //            m_image.set_iFrame(i);
+        //            if (!mydcam.buf_lockframe(ref m_image.bufframe))
+        //            {
+        //                MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
+        //                continue; // Skip to the next frame if locking fails
+        //            }
+
+        //            // Convert the frame to a Bitmap
+        //            Bitmap frame;
+        //            lock (BitmapLock)
+        //            {
+        //                frame = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
+        //                Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
+        //                SUBACQERR err = subacq.copydib(ref frame, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
+
+        //                if (err != SUBACQERR.SUCCESS)
+        //                {
+        //                    MyShowStatusNG($"Failed to convert frame {i} to Bitmap", mydcam.m_lasterr);
+        //                    frame.Dispose();
+        //                    continue;
+        //                }
+        //            }
+
+        //            // Generate a unique file name for the frame
+        //            string tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}.tiff");
+
+        //            // Check if the file already exists and generate a new name if necessary
+        //            int counter = 1;
+        //            while (File.Exists(tiffFilePath))
+        //            {
+        //                tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}_{counter}.tiff");
+        //                counter++;
+        //            }
+
+        //            // Save the frame as an individual TIFF file
+        //            frame.Save(tiffFilePath, ImageFormat.Tiff);
+        //            frame.Dispose(); // Release the frame bitmap
+        //        }
+        //        Console.WriteLine($"{m_nFrameCount} frames are saving to the directory...");
+        //        MyShowStatusOK($"Saved {m_nFrameCount} frames as individual TIFF files to {saveDirectory}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MyShowStatusNG($"Error saving TIFF files: {ex.Message}", DCAMERR.SUCCESS);
+        //    }
+        //    finally
+        //    {
+        //        bool isError = false; // Flag to track if any errors occur during buffer release
+
+        //        // Release the buffer only if no error occurred during the main execution
+        //        if (!mydcam.buf_release())
+        //        {
+        //            MyShowStatusNG("dcambuf_release()", mydcam.m_lasterr);
+        //            isError = true; // Fail: dcambuf_release()
+        //        }
+
+        //        // Success: dcambuf_release()
+        //        MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved to the directory.");
+        //        Console.WriteLine($"{m_nFrameCount} frames have been successfully saved to the directory.");
+        //        window.MyFormStatus_Initialized(); // Change dialog FormStatus to Opened
+        //        m_image.clear();
+
+        //        // If there was an error during buffer release, handle accordingly
+        //        if (isError)
+        //        {
+        //            // If you want to show a specific message or handle other things due to failure
+        //            MyShowStatus("Buffer release failed, cleanup needed.");
+        //        }
+        //    }
+        //}
 
         public void AutoIntensity()
         {
@@ -1300,7 +1709,8 @@ namespace csAcq4
 
         public void RemoteSnap()
         {
-            Snap();
+            //Task.Run sets up the function to be run Asynchronously 
+            Task.Run(()=>Snap());
         }
 
         public void RemoteBufRelease()
@@ -1313,14 +1723,19 @@ namespace csAcq4
             StopAcquisition();
         }
 
+        private Thread updateGainThread;
         public void RemoteUpdateGain()
         {
             UpdateCCDGain();
         }
 
+        private Thread queryGainThread;
         public void RemoteQueryCCDGain()
         {
-            QueryCCDGain();
+
+            queryGainThread = new Thread(new ThreadStart(QueryCCDGain));
+            queryGainThread.Start();
+            //QueryCCDGain();
         }
         #endregion
     }
