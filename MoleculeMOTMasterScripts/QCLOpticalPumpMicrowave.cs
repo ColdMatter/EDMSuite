@@ -69,8 +69,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;// -1.35; 
-        Parameters["yShimLoadCurrent"] = 0.0;// -1.92; 
+        Parameters["xShimLoadCurrent"] = -1.35;//-1.35;
+        Parameters["yShimLoadCurrent"] = -1.92;// -1.82; //-1.92
         Parameters["zShimLoadCurrent"] = -0.22;
 
 
@@ -136,10 +136,10 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandImAmp4"] = 8.0;
 
 
-        Parameters["SidebandOPAmp1"] = 2.5; //3.3; // F = - 1
+        Parameters["SidebandOPAmp1"] = 3.3; // F = - 1
         Parameters["SidebandOPAmp2"] = 0.0; //3.1; // F = 0
-        Parameters["SidebandOPAmp3"] = 2.8; //3.2; // F = 2 
-        Parameters["SidebandOPAmp4"] = 0.0; //3.1; // F = + 1
+        Parameters["SidebandOPAmp3"] = 3.2; // F = 2 
+        Parameters["SidebandOPAmp4"] = 3.1; // F = + 1
 
 
         //10% saturation, 6Feb25
@@ -167,7 +167,7 @@ public class Patterns : MOTMasterScript
         Parameters["LambdaSettleTime"] = 5;
         Parameters["OpticalPumpDuration"] = 50;
         Parameters["FreeExpTime"] = 10;
-        Parameters["MicrowaveDuration"] = 6;
+        Parameters["MicrowaveDuration"] = 5;
 
 
 
@@ -348,7 +348,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", motCompressionStartTime, (int)Parameters["MOTCompressoinDuratoin"], (double)Parameters["MOTCoilsCompressionValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, -0.2);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime, 1.0);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 

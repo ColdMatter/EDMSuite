@@ -166,7 +166,7 @@ public class Patterns : MOTMasterScript
         Parameters["LambdaCoolingDuration"] = 1000;
         Parameters["LambdaSettleTime"] = 5;
         Parameters["OpticalPumpDuration"] = 50;
-        Parameters["FreeExpTime"] = 500;
+        Parameters["FreeExpTime"] = 2000;
 
 
 

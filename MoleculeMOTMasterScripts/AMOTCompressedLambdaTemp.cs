@@ -158,7 +158,7 @@ public class Patterns : MOTMasterScript
         Parameters["POS150Gradient"] = 7.68;
 
         Parameters["FrequencySettleTime"] = 50;
-        Parameters["LambdaCoolingDuration"] = 800;
+        Parameters["LambdaCoolingDuration"] = 1000;
         Parameters["FreeExpTime"] = 10;
 
 

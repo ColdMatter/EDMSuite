@@ -69,10 +69,16 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0; //-1.35; old value?
-        Parameters["yShimLoadCurrent"] = 0.0; //-1.92; old value?
+        Parameters["xShimLoadCurrent"] = -1.35; 
+        Parameters["yShimLoadCurrent"] = -1.92; 
         Parameters["zShimLoadCurrent"] = -0.22;
 
+        // Shim Lambda fields
+        Parameters["xShimLambdaCurrent"] = -1.35;
+        Parameters["yShimLambdaCurrent"] = -1.92;
+        Parameters["zShimLambdaCurrent"] = -0.22;
+
+        Parameters["BfieldEnd"] = -0.3;
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -93,7 +99,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCompressoinStartTime"] = 5000;
         Parameters["MOTCompressoinDuratoin"] = 1000;
         Parameters["MOTCompressoinHoldDuratoin"] = 500;
-        Parameters["MOTCoilsCompressionValue"] = 1.75; 
+        Parameters["MOTCoilsCompressionValue"] = 1.75;
+
+
 
         // v0 Light Frequency
         Parameters["v0FrequencyStartValue"] = 10.0; //9.0
@@ -151,9 +159,11 @@ public class Patterns : MOTMasterScript
         Parameters["POS150OffsetFreq"] = 62.6;
         Parameters["POS150Gradient"] = 7.68;
 
-        Parameters["FrequencySettleTime"] = 50;
-        Parameters["LambdaCoolingDuration"] = 5000;
-        Parameters["FreeExpTime"] = 1000;
+        Parameters["FrequencySettleTime"] = 100;
+        Parameters["LambdaCoolingDuration"] = 1000;
+        Parameters["FreeExpTime"] = 1;
+
+        
 
 
 
@@ -180,9 +190,11 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
+
+        p.Pulse(patternStartBeforeQ, motEndTime-1000, 10, "cameraTrigger");
 
 
 
@@ -298,7 +310,7 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", motCompressionStartTime, (int)Parameters["MOTCompressoinDuratoin"], (double)Parameters["MOTCoilsCompressionValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, 0.0);
+        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, (double)Parameters["BfieldEnd"]);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime, 1.0);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 
@@ -308,6 +320,11 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["V00EOMsidebandRatio"]); //24/03/2023
+
+        // Shim Fields
+        p.AddAnalogValue("xShimCoilCurrent", motEndTime, (double)Parameters["xShimLambdaCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", motEndTime, (double)Parameters["yShimLambdaCurrent"]);
+        p.AddAnalogValue("zShimCoilCurrent", motEndTime, (double)Parameters["zShimLambdaCurrent"]);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
