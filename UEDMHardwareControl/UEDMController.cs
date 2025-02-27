@@ -3504,6 +3504,7 @@ namespace UEDMHardwareControl
             targetStepDirection = !initDir;
             PulseStepperTTL();
             targetStepDirection = initDir;
+            SetTargetStepperExt();
         }
 
         public void ResetTargetStepperPosition()
@@ -4911,7 +4912,7 @@ namespace UEDMHardwareControl
 
                 // disconnect supplies from plates - impose 100ms wait time
                 ESuppliesConnected = false;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
 
                 if (!EFieldEnabled)
                 {
@@ -4934,7 +4935,7 @@ namespace UEDMHardwareControl
 
                 // connect supplies to plates
                 ESuppliesConnected = true;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
 
                 // overshoot delay
                 Thread.Sleep((int)(1000 * EOvershootHold));
