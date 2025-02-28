@@ -31,6 +31,14 @@ namespace csAcq4
 {
     public class CCDController : MarshalByRefObject
     {
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -1002,7 +1010,7 @@ namespace csAcq4
             Console.WriteLine("Remote Ping!");
         }
 
-        public void UpdateCCDGain()
+        public void UpdateCCDGain(double? newGain = null)
         {
             if (mydcam == null)
             {
@@ -1010,49 +1018,106 @@ namespace csAcq4
                 return;
             }
 
-            if (double.TryParse(window.SensitivityGainTextBox.Text, out double newGain))
+            if (!newGain.HasValue)
             {
-                MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
-
-                // Query the current value
-                double currentGain = 0;
-                if (sensitivitygainprop.getvalue(ref currentGain))
+                if (double.TryParse(window.SensitivityGainTextBox.Text, out double parsedSensitivityGain))
                 {
-                    Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
+                    newGain = parsedSensitivityGain;
                 }
                 else
                 {
-                    MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+                    MessageBox.Show("Please enter a valid number for gain.");
+                    return;
                 }
+            }
+            MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
 
-                // Attempt to update the property
-                if (sensitivitygainprop.setvalue(newGain))
-                {
-                    Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
-                    //if (window.SensitivityGainLabel.InvokeRequired)
-                    //{
-                    //    window.SensitivityGainLabel.Invoke(new Action(() =>
-                    //    {
-                    //        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-                    //    }));
-                    //}
-                    //else
-                    //{
-                    //    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-                    //}
-                    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
-                    MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
-                }
+            // Query the current value
+            double currentGain = 0;
+            if (sensitivitygainprop.getvalue(ref currentGain))
+            {
+                Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
             }
             else
             {
-                MessageBox.Show("Please enter a valid number for Sensitivity Gain.");
+                MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+            }
+
+            // Attempt to update the property
+            if (sensitivitygainprop.setvalue(newGain.Value))
+            {
+                Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
+                if (window.SensitivityGainLabel.InvokeRequired)
+                {
+                    window.SensitivityGainLabel.Invoke(new Action(() =>
+                    {
+                        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                    }));
+                }
+                else
+                {
+                    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                }
+                window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
+                MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
             }
         }
+
+        //public void UpdateCCDGain()
+        //{
+        //    if (mydcam == null)
+        //    {
+        //        Console.WriteLine("Error: mydcam is not initialized.");
+        //        return;
+        //    }
+
+        //    if (double.TryParse(window.SensitivityGainTextBox.Text, out double newGain))
+        //    {
+        //        MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
+
+        //        // Query the current value
+        //        double currentGain = 0;
+        //        if (sensitivitygainprop.getvalue(ref currentGain))
+        //        {
+        //            Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
+        //        }
+        //        else
+        //        {
+        //            MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+        //        }
+
+        //        // Attempt to update the property
+        //        if (sensitivitygainprop.setvalue(newGain))
+        //        {
+        //            Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
+        //            //if (window.SensitivityGainLabel.InvokeRequired)
+        //            //{
+        //            //    window.SensitivityGainLabel.Invoke(new Action(() =>
+        //            //    {
+        //            //        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //            //    }));
+        //            //}
+        //            //else
+        //            //{
+        //            //    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //            //}
+        //            window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
+        //            MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Please enter a valid number for Sensitivity Gain.");
+        //    }
+        //}
 
         double currentExposureTime;
         public void QueryExposureTime()
@@ -1131,6 +1196,10 @@ namespace csAcq4
 
         public void UpdateExposureTime(double? newExposureTime = null)
         {
+            //We create a method that the allows the parameter newExposureTime to be a double or null via "double?".
+            //This gives us the choice of either updating the exposure time remotley through scanmaster by defining
+            //newexposureTime as a double OR if no double is passed e.g. UpdateExposureTime(null) a value will
+            //be obtained locally via the ExposureTime Text box. 
             if (!newExposureTime.HasValue)
             {
                 if (double.TryParse(window.ExposureTimeTextBox.Text, out double parsedExposureTime))
@@ -1198,30 +1267,63 @@ namespace csAcq4
             Console.WriteLine($"Queried Frame Count: {m_nFrameCount}");
         }
 
-        public void UpdateFrameCount()
+        public void UpdateFrameCount(int? setFrameCount = null)
         {
-            if (int.TryParse(window.FrameCountTextBox.Text, out int newFrameCount) && newFrameCount > 0)
+            if (!setFrameCount.HasValue)
             {
-                m_nFrameCount = newFrameCount;
-                Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
-
-                if (window.FrameCountLabel.InvokeRequired)
+                if (int.TryParse(window.FrameCountTextBox.Text, out int parsedFrameCount) && parsedFrameCount >0)
                 {
-                    window.FrameCountLabel.Invoke(new Action(() =>
-                    {
-                        window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
-                    }));
+                    setFrameCount = parsedFrameCount;
                 }
                 else
                 {
-                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                    MessageBox.Show("Invalid input: Frame count must be a positive integer.");
+                    return;
                 }
+            }
+
+            m_nFrameCount = setFrameCount.Value;
+
+            Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
+
+            if (window.FrameCountLabel.InvokeRequired)
+            {
+                window.FrameCountLabel.Invoke(new Action(() =>
+                {
+                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                }));
             }
             else
             {
-                Console.WriteLine("Invalid input: Frame count must be a positive integer.");
+                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
             }
         }
+
+        //public void UpdateFrameCount()
+        //{
+
+        //    if (int.TryParse(window.FrameCountTextBox.Text, out int newFrameCount) && newFrameCount > 0)
+        //    {
+        //        m_nFrameCount = newFrameCount;
+        //        Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
+
+        //        if (window.FrameCountLabel.InvokeRequired)
+        //        {
+        //            window.FrameCountLabel.Invoke(new Action(() =>
+        //            {
+        //                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+        //            }));
+        //        }
+        //        else
+        //        {
+        //            window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Invalid input: Frame count must be a positive integer.");
+        //    }
+        //}
 
 
         public void Snap()
@@ -1907,102 +2009,7 @@ namespace csAcq4
             {
                 client.Close();
             }
-        }
-
-        //public void BufRelease()
-        //{
-        //    if (mydcam == null)
-        //    {
-        //        MyShowStatus("Internal Error: mydcam is null");
-        //        window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
-        //        return;                         // internal error
-        //    }
-
-        //    if (!window.IsMyFormStatus_Acquired())
-        //    {
-        //        MyShowStatus("Internal Error: BufRelease is only available when FormStatus is Acquired");
-        //        return;                         // internal error
-        //    }
-
-        //    // Save images to disk before releasing buffer
-        //    string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
-        //    Directory.CreateDirectory(saveDirectory); // Create the directory if it does not exist 
-
-        //    try
-        //    {
-        //        for (int i = 0; i < m_nFrameCount; i++)
-        //        {
-        //            // Lock the frame to access its data
-        //            m_image.set_iFrame(i);
-        //            if (!mydcam.buf_lockframe(ref m_image.bufframe))
-        //            {
-        //                MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
-        //                continue; // Skip to the next frame if locking fails
-        //            }
-
-        //            // Convert the frame to a Bitmap
-        //            Bitmap frame;
-        //            lock (BitmapLock)
-        //            {
-        //                frame = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
-        //                Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
-        //                SUBACQERR err = subacq.copydib(ref frame, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
-
-        //                if (err != SUBACQERR.SUCCESS)
-        //                {
-        //                    MyShowStatusNG($"Failed to convert frame {i} to Bitmap", mydcam.m_lasterr);
-        //                    frame.Dispose();
-        //                    continue;
-        //                }
-        //            }
-
-        //            // Generate a unique file name for the frame
-        //            string tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}.tiff");
-
-        //            // Check if the file already exists and generate a new name if necessary
-        //            int counter = 1;
-        //            while (File.Exists(tiffFilePath))
-        //            {
-        //                tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}_{counter}.tiff");
-        //                counter++;
-        //            }
-
-        //            // Save the frame as an individual TIFF file
-        //            frame.Save(tiffFilePath, ImageFormat.Tiff);
-        //            frame.Dispose(); // Release the frame bitmap
-        //        }
-        //        Console.WriteLine($"{m_nFrameCount} frames are saving to the directory...");
-        //        MyShowStatusOK($"Saved {m_nFrameCount} frames as individual TIFF files to {saveDirectory}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MyShowStatusNG($"Error saving TIFF files: {ex.Message}", DCAMERR.SUCCESS);
-        //    }
-        //    finally
-        //    {
-        //        bool isError = false; // Flag to track if any errors occur during buffer release
-
-        //        // Release the buffer only if no error occurred during the main execution
-        //        if (!mydcam.buf_release())
-        //        {
-        //            MyShowStatusNG("dcambuf_release()", mydcam.m_lasterr);
-        //            isError = true; // Fail: dcambuf_release()
-        //        }
-
-        //        // Success: dcambuf_release()
-        //        MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved to the directory.");
-        //        Console.WriteLine($"{m_nFrameCount} frames have been successfully saved to the directory.");
-        //        window.MyFormStatus_Initialized(); // Change dialog FormStatus to Opened
-        //        m_image.clear();
-
-        //        // If there was an error during buffer release, handle accordingly
-        //        if (isError)
-        //        {
-        //            // If you want to show a specific message or handle other things due to failure
-        //            MyShowStatus("Buffer release failed, cleanup needed.");
-        //        }
-        //    }
-        //}
+        }   
 
         public void AutoIntensity()
         {
