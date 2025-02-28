@@ -29,7 +29,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        public void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             this.LabelStatus = new System.Windows.Forms.Label();
@@ -53,17 +53,25 @@
             this.PicDisplay = new System.Windows.Forms.PictureBox();
             this.PushInit = new System.Windows.Forms.Button();
             this.PushSnap = new System.Windows.Forms.Button();
+            this.BurstCapture = new System.Windows.Forms.Button();
+            this.SaveBurstBuffer = new System.Windows.Forms.Button();
             this.PushLive = new System.Windows.Forms.Button();
             this.PushIdle = new System.Windows.Forms.Button();
-            this.PushFireTrigger = new System.Windows.Forms.Button();
+            this.BurstTriggerRearm = new System.Windows.Forms.Button();
             this.PushBufRelease = new System.Windows.Forms.Button();
             this.PushClose = new System.Windows.Forms.Button();
             this.PushUninit = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.comboTriggerSource = new System.Windows.Forms.ComboBox();
+            this.QueryFrameCountButton = new System.Windows.Forms.Button();
+            this.UpdateFrameCountButton = new System.Windows.Forms.Button();
+            this.FrameCountTextBox = new System.Windows.Forms.TextBox();
+            this.FrameCountLabel = new System.Windows.Forms.Label();
+            this.TriggerSourceLabel = new System.Windows.Forms.Label();
+            this.SetSaveDirectoryButton = new System.Windows.Forms.Button();
+            this.SaveDirectoryLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PicDisplay)).BeginInit();
             this.SuspendLayout();
-
             // 
             // LabelStatus
             // 
@@ -267,7 +275,7 @@
             this.PicDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.PicDisplay.Cursor = System.Windows.Forms.Cursors.Default;
             this.PicDisplay.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PicDisplay.Location = new System.Drawing.Point(139, 283);
+            this.PicDisplay.Location = new System.Drawing.Point(143, 271);
             this.PicDisplay.Name = "PicDisplay";
             this.PicDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PicDisplay.Size = new System.Drawing.Size(392, 275);
@@ -302,6 +310,34 @@
             this.PushSnap.UseVisualStyleBackColor = false;
             this.PushSnap.Click += new System.EventHandler(this.PushSnap_Click);
             // 
+            // BurstCapture
+            // 
+            this.BurstCapture.BackColor = System.Drawing.SystemColors.Control;
+            this.BurstCapture.Cursor = System.Windows.Forms.Cursors.Default;
+            this.BurstCapture.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.BurstCapture.Location = new System.Drawing.Point(14, 241);
+            this.BurstCapture.Name = "BurstCapture";
+            this.BurstCapture.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.BurstCapture.Size = new System.Drawing.Size(113, 33);
+            this.BurstCapture.TabIndex = 36;
+            this.BurstCapture.Text = "Burst Capture";
+            this.BurstCapture.UseVisualStyleBackColor = false;
+            this.BurstCapture.Click += new System.EventHandler(this.BurstCapture_Click);
+            // 
+            // SaveBurstBuffer
+            // 
+            this.SaveBurstBuffer.BackColor = System.Drawing.SystemColors.Control;
+            this.SaveBurstBuffer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.SaveBurstBuffer.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.SaveBurstBuffer.Location = new System.Drawing.Point(14, 339);
+            this.SaveBurstBuffer.Name = "SaveBurstBuffer";
+            this.SaveBurstBuffer.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.SaveBurstBuffer.Size = new System.Drawing.Size(113, 33);
+            this.SaveBurstBuffer.TabIndex = 36;
+            this.SaveBurstBuffer.Text = "Save Burst Buffer";
+            this.SaveBurstBuffer.UseVisualStyleBackColor = false;
+            this.SaveBurstBuffer.Click += new System.EventHandler(this.SaveBurstBuffer_Click);
+            // 
             // PushLive
             // 
             this.PushLive.BackColor = System.Drawing.SystemColors.Control;
@@ -330,26 +366,26 @@
             this.PushIdle.UseVisualStyleBackColor = false;
             this.PushIdle.Click += new System.EventHandler(this.PushIdle_Click);
             // 
-            // PushFireTrigger
+            // BurstTriggerRearm
             // 
-            this.PushFireTrigger.BackColor = System.Drawing.SystemColors.Control;
-            this.PushFireTrigger.Cursor = System.Windows.Forms.Cursors.Default;
-            this.PushFireTrigger.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushFireTrigger.Location = new System.Drawing.Point(14, 243);
-            this.PushFireTrigger.Name = "PushFireTrigger";
-            this.PushFireTrigger.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.PushFireTrigger.Size = new System.Drawing.Size(113, 33);
-            this.PushFireTrigger.TabIndex = 15;
-            this.PushFireTrigger.Text = "Fire Trigger";
-            this.PushFireTrigger.UseVisualStyleBackColor = false;
-            this.PushFireTrigger.Click += new System.EventHandler(this.PushFireTrigger_Click);
+            this.BurstTriggerRearm.BackColor = System.Drawing.SystemColors.Control;
+            this.BurstTriggerRearm.Cursor = System.Windows.Forms.Cursors.Default;
+            this.BurstTriggerRearm.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.BurstTriggerRearm.Location = new System.Drawing.Point(14, 291);
+            this.BurstTriggerRearm.Name = "BurstTriggerRearm";
+            this.BurstTriggerRearm.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.BurstTriggerRearm.Size = new System.Drawing.Size(113, 33);
+            this.BurstTriggerRearm.TabIndex = 15;
+            this.BurstTriggerRearm.Text = "BurstTriggerRearm";
+            this.BurstTriggerRearm.UseVisualStyleBackColor = false;
+            this.BurstTriggerRearm.Click += new System.EventHandler(this.BurstTriggerRearm_Click);
             // 
             // PushBufRelease
             // 
             this.PushBufRelease.BackColor = System.Drawing.SystemColors.Control;
             this.PushBufRelease.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushBufRelease.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushBufRelease.Location = new System.Drawing.Point(14, 428);
+            this.PushBufRelease.Location = new System.Drawing.Point(14, 438);
             this.PushBufRelease.Name = "PushBufRelease";
             this.PushBufRelease.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushBufRelease.Size = new System.Drawing.Size(113, 33);
@@ -384,30 +420,89 @@
             this.PushUninit.TabIndex = 18;
             this.PushUninit.Text = "Uninit";
             this.PushUninit.UseVisualStyleBackColor = false;
-            //
-            // DropDown box for trigger source
-            //
-            this.comboTriggerSource = new System.Windows.Forms.ComboBox();
+            // 
+            // comboTriggerSource
+            // 
             this.comboTriggerSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboTriggerSource.FormattingEnabled = true;
-            //this.comboTriggerSource.Items.AddRange(new object[] {
-            //"Internal Trigger",
-            //"External Start Trigger",
-            //"External Edge Trigger"});
-            this.comboTriggerSource.Location = new System.Drawing.Point(490,150);  // Adjust position
+            this.comboTriggerSource.Location = new System.Drawing.Point(678, 190);
             this.comboTriggerSource.Name = "comboTriggerSource";
-            this.comboTriggerSource.Size = new System.Drawing.Size(150, 25);
-            //this.comboTriggerSource.SelectedIndex = 0; // Default to Internal Trigger
-            this.comboTriggerSource.SelectedIndexChanged += new System.EventHandler(this.comboTriggerSource_SelectedIndexChanged);
-            this.comboTriggerSource.Visible = true;
+            this.comboTriggerSource.Size = new System.Drawing.Size(150, 21);
             this.comboTriggerSource.TabIndex = 29;
-
+            this.comboTriggerSource.SelectedIndexChanged += new System.EventHandler(this.comboTriggerSource_SelectedIndexChanged);
+            // 
+            // QueryFrameCountButton
+            // 
+            this.QueryFrameCountButton.Location = new System.Drawing.Point(505, 128);
+            this.QueryFrameCountButton.Name = "QueryFrameCountButton";
+            this.QueryFrameCountButton.Size = new System.Drawing.Size(150, 23);
+            this.QueryFrameCountButton.TabIndex = 29;
+            this.QueryFrameCountButton.Text = "Query Frame Count";
+            this.QueryFrameCountButton.UseVisualStyleBackColor = true;
+            this.QueryFrameCountButton.Click += new System.EventHandler(this.QueryFrameCountButton_Click);
+            // 
+            // UpdateFrameCountButton
+            // 
+            this.UpdateFrameCountButton.Location = new System.Drawing.Point(505, 157);
+            this.UpdateFrameCountButton.Name = "UpdateFrameCountButton";
+            this.UpdateFrameCountButton.Size = new System.Drawing.Size(150, 23);
+            this.UpdateFrameCountButton.TabIndex = 30;
+            this.UpdateFrameCountButton.Text = "Update Frame Count";
+            this.UpdateFrameCountButton.UseVisualStyleBackColor = true;
+            this.UpdateFrameCountButton.Click += new System.EventHandler(this.UpdateFrameCountButton_Click);
+            // 
+            // FrameCountTextBox
+            // 
+            this.FrameCountTextBox.Location = new System.Drawing.Point(678, 156);
+            this.FrameCountTextBox.Name = "FrameCountTextBox";
+            this.FrameCountTextBox.Size = new System.Drawing.Size(100, 20);
+            this.FrameCountTextBox.TabIndex = 31;
+            this.FrameCountTextBox.Text = "4";
+            // 
+            // FrameCountLabel
+            // 
+            this.FrameCountLabel.AutoSize = true;
+            this.FrameCountLabel.Location = new System.Drawing.Point(675, 133);
+            this.FrameCountLabel.Name = "FrameCountLabel";
+            this.FrameCountLabel.Size = new System.Drawing.Size(130, 13);
+            this.FrameCountLabel.TabIndex = 32;
+            this.FrameCountLabel.Text = "Current Frame Count: N/A";
+            // 
+            // TriggerSourceLabel
+            // 
+            this.TriggerSourceLabel.AutoSize = true;
+            this.TriggerSourceLabel.Location = new System.Drawing.Point(538, 193);
+            this.TriggerSourceLabel.Name = "TriggerSourceLabel";
+            this.TriggerSourceLabel.Size = new System.Drawing.Size(117, 13);
+            this.TriggerSourceLabel.TabIndex = 33;
+            this.TriggerSourceLabel.Text = "Current Trigger Source:";
+            // 
+            // SetSaveDirectoryButton
+            // 
+            this.SetSaveDirectoryButton.Location = new System.Drawing.Point(598, 12);
+            this.SetSaveDirectoryButton.Name = "SetSaveDirectoryButton";
+            this.SetSaveDirectoryButton.Size = new System.Drawing.Size(180, 30);
+            this.SetSaveDirectoryButton.TabIndex = 34;
+            this.SetSaveDirectoryButton.Text = "Set Save Directory";
+            this.SetSaveDirectoryButton.UseVisualStyleBackColor = true;
+            this.SetSaveDirectoryButton.Click += new System.EventHandler(this.SetSaveDirectoryButton_Click);
+            // 
+            // SaveDirectoryLabel
+            // 
+            this.SaveDirectoryLabel.AutoSize = true;
+            this.SaveDirectoryLabel.Location = new System.Drawing.Point(595, 51);
+            this.SaveDirectoryLabel.MaximumSize = new System.Drawing.Size(400, 0);
+            this.SaveDirectoryLabel.Name = "SaveDirectoryLabel";
+            this.SaveDirectoryLabel.Size = new System.Drawing.Size(312, 39);
+            this.SaveDirectoryLabel.TabIndex = 35;
+            this.SaveDirectoryLabel.Text = "Current Save Directory: \nE:\\Imperial College London\\OneDrive - Imperial College L" +
+    "ondon\\\nDocuments - Team ultracold - PH\\Data\\2025\\CCD data";
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(658, 573);
+            this.ClientSize = new System.Drawing.Size(911, 573);
             this.Controls.Add(this.LabelStatus);
             this.Controls.Add(this.LabelLutMin);
             this.Controls.Add(this.LabelLutMax);
@@ -419,8 +514,10 @@
             this.Controls.Add(this.PicDisplay);
             this.Controls.Add(this.PushInit);
             this.Controls.Add(this.PushSnap);
+            this.Controls.Add(this.BurstCapture);
+            this.Controls.Add(this.SaveBurstBuffer);
             this.Controls.Add(this.PushLive);
-            this.Controls.Add(this.PushFireTrigger);
+            this.Controls.Add(this.BurstTriggerRearm);
             this.Controls.Add(this.PushIdle);
             this.Controls.Add(this.PushBufRelease);
             this.Controls.Add(this.PushClose);
@@ -436,6 +533,13 @@
             this.Controls.Add(this.QuerySensorTemperatureButton);
             this.Controls.Add(this.SensorTemperatureLabel);
             this.Controls.Add(this.comboTriggerSource);
+            this.Controls.Add(this.QueryFrameCountButton);
+            this.Controls.Add(this.UpdateFrameCountButton);
+            this.Controls.Add(this.FrameCountTextBox);
+            this.Controls.Add(this.FrameCountLabel);
+            this.Controls.Add(this.TriggerSourceLabel);
+            this.Controls.Add(this.SaveDirectoryLabel);
+            this.Controls.Add(this.SetSaveDirectoryButton);
             this.Name = "FormMain";
             this.Text = "Hamamatsu EMCCD Camera Automation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -462,8 +566,10 @@
         //public System.Windows.Forms.Button PushInfo;
         //public System.Windows.Forms.Button PushProperties;
         public System.Windows.Forms.Button PushSnap;
+        public System.Windows.Forms.Button BurstCapture;
+        public System.Windows.Forms.Button SaveBurstBuffer;
         public System.Windows.Forms.Button PushLive;
-        public System.Windows.Forms.Button PushFireTrigger;
+        public System.Windows.Forms.Button BurstTriggerRearm;
         public System.Windows.Forms.Button PushIdle;
         public System.Windows.Forms.Button PushBufRelease;
         public System.Windows.Forms.Button PushClose;
@@ -480,5 +586,12 @@
         public System.Windows.Forms.Button QuerySensorTemperatureButton;
         public System.Windows.Forms.Label SensorTemperatureLabel;
         public System.Windows.Forms.ComboBox comboTriggerSource;
+        public System.Windows.Forms.Button QueryFrameCountButton;
+        public System.Windows.Forms.Button UpdateFrameCountButton;
+        public System.Windows.Forms.TextBox FrameCountTextBox;
+        public System.Windows.Forms.Label FrameCountLabel;
+        public System.Windows.Forms.Label TriggerSourceLabel;
+        public System.Windows.Forms.Button SetSaveDirectoryButton;
+        public System.Windows.Forms.Label SaveDirectoryLabel;
     }
 }

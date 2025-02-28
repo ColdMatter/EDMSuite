@@ -121,6 +121,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
+            AddDigitalOutputChannel("microwaveSwitch", digitalPatternBoardAddress2, 1, 7);
 
             // Lambda cooling and blue MOT
             AddDigitalOutputChannel("v0ddsSwitchA", digitalPatternBoardAddress2, 2, 0);
@@ -383,7 +384,7 @@ namespace DAQ.HAL
             */
 
             // MOTMaster configuration
-            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            MMConfig mmConfig = new MMConfig(false, false, true, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
             

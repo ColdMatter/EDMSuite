@@ -1,4 +1,8 @@
-﻿namespace NeanderthalDDSController
+﻿using System.Windows.Forms;
+using System.Drawing;
+
+namespace NeanderthalDDSController
+
 {
     partial class NeanderthalForm : Form
     {
