@@ -6,6 +6,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
+using DAQ.Environment;
 
 namespace csAcq4
 {
@@ -23,8 +24,6 @@ namespace csAcq4
             //FormMain formMain = new FormMain();
             //Application.Run(formMain);
 
-            CCDController controller = new CCDController();
-            
             //FormMain mainwindow = new FormMain();
             //mainwindow.controller = controller;
 
@@ -32,10 +31,17 @@ namespace csAcq4
 
             //Application.Run(mainwindow);
 
-            int tcpchannelnum = 5555;
+            CCDController controller = new CCDController();
+
+            string thisComputerName = Environment.MachineName;
+            EnvironsHelper eHelper = new EnvironsHelper(thisComputerName);
+            int serverChannelNumber = eHelper.emccdTCPChannel;
+            //int tcpchannelnum = 5555;
+            Console.WriteLine(thisComputerName);
+            Console.WriteLine(serverChannelNumber);
 
             // publish the controller to the remoting system
-            TcpChannel clientChannel = new TcpChannel(tcpchannelnum);
+            TcpChannel clientChannel = new TcpChannel(serverChannelNumber);
             ChannelServices.RegisterChannel(clientChannel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 

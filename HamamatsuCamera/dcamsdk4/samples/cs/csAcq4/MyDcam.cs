@@ -262,19 +262,26 @@ namespace csAcq4
                 triggerSourceProp.getvalue(ref triggerSource);
                 triggerModeProp.getvalue(ref triggerMode);
                 bool isExternalTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
-                bool isExternalStartTrigger = (triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+                bool isStartTrigger = (triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+                bool isExternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
                 bool isInternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.INTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
 
-                // If in Internal Start, Reapply Settings to Ensure Correct Mode
-                if (isInternalStartTrigger)
-                {
-                    //FormMain formMain = new FormMain();
-                    //formMain.controller.ApplySelectedTriggerSource();
-                    controller.ApplySelectedTriggerSource();
-                }
+                //// If in Internal Start, Reapply Settings to Ensure Correct Mode
+                //if (isInternalStartTrigger)
+                //{
+                //    //FormMain formMain = new FormMain();
+                //    //formMain.controller.ApplySelectedTriggerSource();
+                //    controller.ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+                //}
+
+                //// If in External Start, Reapply Settings to Ensure Correct Mode
+                //if (isExternalStartTrigger)
+                //{
+                //    controller.ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+                //}
 
                 Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
-                Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalStartTrigger ? "Start" : "EDGE")})");
+                Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isStartTrigger ? "Start" : "EDGE")})");
 
                 ////  If external trigger is required but not set, return an error
                 //if (isExternalTrigger && m_capmode != DCAMCAP_START.SNAP)
@@ -458,7 +465,7 @@ namespace csAcq4
             }
             else
             {
-                DCAMWAIT_OPEN   param = new DCAMWAIT_OPEN(0);
+                DCAMWAIT_OPEN   param = new DCAMWAIT_OPEN(0); // this used to be (0)!!!!
                 param.hdcam = mydcam.m_hdcam;
 
                 m_lasterr = dcamwait.open(ref param);
@@ -474,7 +481,7 @@ namespace csAcq4
                 }
             }
 
-            m_timeout = 1000;        // 1 second
+            m_timeout = 10000;        // 10 second
         }
 
         public void Dispose()

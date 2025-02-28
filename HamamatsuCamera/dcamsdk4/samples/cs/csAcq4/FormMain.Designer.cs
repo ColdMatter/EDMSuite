@@ -53,9 +53,11 @@
             this.PicDisplay = new System.Windows.Forms.PictureBox();
             this.PushInit = new System.Windows.Forms.Button();
             this.PushSnap = new System.Windows.Forms.Button();
+            this.BurstCapture = new System.Windows.Forms.Button();
+            this.SaveBurstBuffer = new System.Windows.Forms.Button();
             this.PushLive = new System.Windows.Forms.Button();
             this.PushIdle = new System.Windows.Forms.Button();
-            this.PushFireTrigger = new System.Windows.Forms.Button();
+            this.BurstTriggerRearm = new System.Windows.Forms.Button();
             this.PushBufRelease = new System.Windows.Forms.Button();
             this.PushClose = new System.Windows.Forms.Button();
             this.PushUninit = new System.Windows.Forms.Button();
@@ -308,6 +310,34 @@
             this.PushSnap.UseVisualStyleBackColor = false;
             this.PushSnap.Click += new System.EventHandler(this.PushSnap_Click);
             // 
+            // BurstCapture
+            // 
+            this.BurstCapture.BackColor = System.Drawing.SystemColors.Control;
+            this.BurstCapture.Cursor = System.Windows.Forms.Cursors.Default;
+            this.BurstCapture.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.BurstCapture.Location = new System.Drawing.Point(14, 241);
+            this.BurstCapture.Name = "BurstCapture";
+            this.BurstCapture.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.BurstCapture.Size = new System.Drawing.Size(113, 33);
+            this.BurstCapture.TabIndex = 36;
+            this.BurstCapture.Text = "Burst Capture";
+            this.BurstCapture.UseVisualStyleBackColor = false;
+            this.BurstCapture.Click += new System.EventHandler(this.BurstCapture_Click);
+            // 
+            // SaveBurstBuffer
+            // 
+            this.SaveBurstBuffer.BackColor = System.Drawing.SystemColors.Control;
+            this.SaveBurstBuffer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.SaveBurstBuffer.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.SaveBurstBuffer.Location = new System.Drawing.Point(14, 339);
+            this.SaveBurstBuffer.Name = "SaveBurstBuffer";
+            this.SaveBurstBuffer.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.SaveBurstBuffer.Size = new System.Drawing.Size(113, 33);
+            this.SaveBurstBuffer.TabIndex = 36;
+            this.SaveBurstBuffer.Text = "Save Burst Buffer";
+            this.SaveBurstBuffer.UseVisualStyleBackColor = false;
+            this.SaveBurstBuffer.Click += new System.EventHandler(this.SaveBurstBuffer_Click);
+            // 
             // PushLive
             // 
             this.PushLive.BackColor = System.Drawing.SystemColors.Control;
@@ -336,26 +366,26 @@
             this.PushIdle.UseVisualStyleBackColor = false;
             this.PushIdle.Click += new System.EventHandler(this.PushIdle_Click);
             // 
-            // PushFireTrigger
+            // BurstTriggerRearm
             // 
-            this.PushFireTrigger.BackColor = System.Drawing.SystemColors.Control;
-            this.PushFireTrigger.Cursor = System.Windows.Forms.Cursors.Default;
-            this.PushFireTrigger.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushFireTrigger.Location = new System.Drawing.Point(14, 243);
-            this.PushFireTrigger.Name = "PushFireTrigger";
-            this.PushFireTrigger.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.PushFireTrigger.Size = new System.Drawing.Size(113, 33);
-            this.PushFireTrigger.TabIndex = 15;
-            this.PushFireTrigger.Text = "Fire Trigger";
-            this.PushFireTrigger.UseVisualStyleBackColor = false;
-            this.PushFireTrigger.Click += new System.EventHandler(this.PushFireTrigger_Click);
+            this.BurstTriggerRearm.BackColor = System.Drawing.SystemColors.Control;
+            this.BurstTriggerRearm.Cursor = System.Windows.Forms.Cursors.Default;
+            this.BurstTriggerRearm.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.BurstTriggerRearm.Location = new System.Drawing.Point(14, 291);
+            this.BurstTriggerRearm.Name = "BurstTriggerRearm";
+            this.BurstTriggerRearm.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.BurstTriggerRearm.Size = new System.Drawing.Size(113, 33);
+            this.BurstTriggerRearm.TabIndex = 15;
+            this.BurstTriggerRearm.Text = "BurstTriggerRearm";
+            this.BurstTriggerRearm.UseVisualStyleBackColor = false;
+            this.BurstTriggerRearm.Click += new System.EventHandler(this.BurstTriggerRearm_Click);
             // 
             // PushBufRelease
             // 
             this.PushBufRelease.BackColor = System.Drawing.SystemColors.Control;
             this.PushBufRelease.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushBufRelease.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushBufRelease.Location = new System.Drawing.Point(14, 428);
+            this.PushBufRelease.Location = new System.Drawing.Point(14, 438);
             this.PushBufRelease.Name = "PushBufRelease";
             this.PushBufRelease.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushBufRelease.Size = new System.Drawing.Size(113, 33);
@@ -484,8 +514,10 @@
             this.Controls.Add(this.PicDisplay);
             this.Controls.Add(this.PushInit);
             this.Controls.Add(this.PushSnap);
+            this.Controls.Add(this.BurstCapture);
+            this.Controls.Add(this.SaveBurstBuffer);
             this.Controls.Add(this.PushLive);
-            this.Controls.Add(this.PushFireTrigger);
+            this.Controls.Add(this.BurstTriggerRearm);
             this.Controls.Add(this.PushIdle);
             this.Controls.Add(this.PushBufRelease);
             this.Controls.Add(this.PushClose);
@@ -534,8 +566,10 @@
         //public System.Windows.Forms.Button PushInfo;
         //public System.Windows.Forms.Button PushProperties;
         public System.Windows.Forms.Button PushSnap;
+        public System.Windows.Forms.Button BurstCapture;
+        public System.Windows.Forms.Button SaveBurstBuffer;
         public System.Windows.Forms.Button PushLive;
-        public System.Windows.Forms.Button PushFireTrigger;
+        public System.Windows.Forms.Button BurstTriggerRearm;
         public System.Windows.Forms.Button PushIdle;
         public System.Windows.Forms.Button PushBufRelease;
         public System.Windows.Forms.Button PushClose;

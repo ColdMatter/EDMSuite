@@ -77,7 +77,7 @@ namespace DAQ.Environment
         public int wavemeterLockTCPChannel;
 
 
-        public int HamamatsuCameraTCPChannel;
+        public int emccdTCPChannel;
 
         /// <summary>
         ///  TCP channel for Hamamatsu camera.
@@ -116,7 +116,10 @@ namespace DAQ.Environment
                 case "PH-NI-LAB":
                     Hardware = new GobelinHardware();
                     FileSystem = new FileSystem();
-                    Debug = true;
+                    Debug = false;
+                    serverComputerName = "PH-NI-LAB";
+                    serverTCPChannel = 1984;
+                    emccdTCPChannel = 2406;
                     //ExperimentType = "edm";
                     break;
 
@@ -413,7 +416,7 @@ namespace DAQ.Environment
                     serverComputerName = "ULTRACOLDEDM";
                     serverTCPChannel = 1997;
                     wavemeterLockTCPChannel = 2345;
-                    HamamatsuCameraTCPChannel = 2346;
+                    emccdTCPChannel = 1107;
                     break;
 
                 default:

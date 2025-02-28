@@ -105,11 +105,22 @@ namespace csAcq4
             Boolean isAcquired = (status == FormStatus.Acquired);
             Boolean isAcquiringSoftwareTrigger = (status == FormStatus.AcquiringSoftwareTrigger);
             PushInit.Enabled = isStartup;
-            //PushOpen.Enabled = isInitialized;
-            //PushInfo.Enabled = (isInitialized || isAcquired || isAcquiring);
+            // Shirley added the constraints below on 26/02 to improve the stability of the program
+            comboTriggerSource.Enabled = isInitialized || isAcquired; 
+            QueryFrameCountButton.Enabled = isInitialized || isAcquired;
+            UpdateFrameCountButton.Enabled = isInitialized || isAcquired;
+            FrameCountTextBox.Enabled = isInitialized || isAcquired;
+            QuerySensitivityGainButton.Enabled = isInitialized || isAcquired;
+            UpdateSensitivityGainButton.Enabled = isInitialized || isAcquired;
+            QueryExposureTimeButton.Enabled = isInitialized || isAcquired;
+            UpdateExposureTimeButton.Enabled = isInitialized || isAcquired;
+            QuerySensorTemperatureButton.Enabled = isInitialized || isAcquired;
+            BurstCapture.Enabled = isInitialized || isAcquired;
+            SaveBurstBuffer.Enabled = isInitialized || isAcquired;
+
             PushSnap.Enabled = isInitialized || isAcquired;
             PushLive.Enabled = isInitialized || isAcquired;
-            PushFireTrigger.Enabled = isInitialized || isAcquired;
+            BurstTriggerRearm.Enabled = isInitialized || isAcquired;
             PushIdle.Enabled = isAcquiring;
             //PushBufRelease.Enabled = isAcquired; rhys remove 14/02
             PushClose.Enabled = isInitialized || isAcquired;
@@ -1146,6 +1157,11 @@ namespace csAcq4
             controller.Snap();
         }
 
+        private void BurstCapture_Click(object sender, EventArgs e)
+        {
+            controller.BurstCapture();
+        }
+
 
         private void PushLive_Click(object sender, EventArgs e)
         {
@@ -1253,33 +1269,40 @@ namespace csAcq4
             controller.StopAcquisition();
         }
 
-        private void PushFireTrigger_Click(object sender, EventArgs e)
+        private void BurstTriggerRearm_Click(object sender, EventArgs e)
         {
-            if (mydcam == null)
-            {
-                MyShowStatus("Internal Error: mydcam is null");
-                MyFormStatus_Initialized();     // FormStatus should be Initialized.
-                return;                         // internal error
-            }
+            //if (mydcam == null)
+            //{
+            //    MyShowStatus("Internal Error: mydcam is null");
+            //    MyFormStatus_Initialized();     // FormStatus should be Initialized.
+            //    return;                         // internal error
+            //}
 
-            if (!IsMyFormStatus_Acquiring())
-            {
-                MyShowStatus("Internal Error: FireTrigger button is only available when FormStatus is Acquiring");
-                return;                         // internal error
-            }
+            //if (!IsMyFormStatus_Acquiring())
+            //{
+            //    MyShowStatus("Internal Error: FireTrigger button is only available when FormStatus is Acquiring");
+            //    return;                         // internal error
+            //}
 
-            // fire software trigger
-            if (!mydcam.cap_firetrigger())
-            {
-                MyShowStatusNG("dcamcap_firetrigger()", mydcam.m_lasterr);
-                return;                         // Fail: dcamcap_firetrigger()
-            }
+            //// fire software trigger
+            //if (!mydcam.cap_firetrigger())
+            //{
+            //    MyShowStatusNG("dcamcap_firetrigger()", mydcam.m_lasterr);
+            //    return;                         // Fail: dcamcap_firetrigger()
+            //}
 
-            // Success: dcamcap_firetrigger()
+            //// Success: dcamcap_firetrigger()
 
-            MyShowStatusOK("dcamcap_firetrigger()");
+            //MyShowStatusOK("dcamcap_firetrigger()");
 
-            // FormStatus is not changed here
+            //// FormStatus is not changed here
+
+            controller.BurstTriggerRearm();
+        }
+
+        private void SaveBurstBuffer_Click(object sender, EventArgs e)
+        {
+            controller.SaveBurstBuffer();
         }
 
         private void PushBufRelease_Click(object sender, EventArgs e)
