@@ -43,6 +43,35 @@ def FrequencyScan(start,stop,step,amp=1,waiting=5,holding=60):
 		print("waiting for " +  str(holding) + " seconds")
 		System.Threading.Thread.CurrentThread.Join(waiting*100)
 
+def FrequencyListScan(freqlist,amp=1,waiting=5,holding=60):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	# Logging started
+	loggingcheck=input("Have you started logging? (y/n)\n")
+	if loggingcheck!="y":
+		print("Start the logging first")
+		return
+
+	holdinglist=[]
+
+	if type(holding) != list:
+		for item in freqlist:
+			holdinglist.append(holding)
+	else:
+		holdinglist = holding
+
+
+	print("waiting for initialisation")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = freqlist
+	for index,i in enumerate(r):
+		print("External B fields at " + str(i) + " Hz")
+		shieldingPoint(amplitude=amp,frequency=float(i),waittime=waiting,time=holdinglist[index])
+		print("waiting for " +  str(holdinglist[index]) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(waiting*100)
+
 def AmplitudeScan(start,stop,step,freq=1,waiting=5,holding=60):
 	'''
 	RampStart is how to run the leakage test file

@@ -520,8 +520,12 @@ namespace EDMBlockHead.Acquire
                 for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
                 {
                     // set the switch states and impose the appropriate wait times
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                    
                     ThrowSwitches(point);
 
+                    stopwatch.Stop();
+                    Console.WriteLine("Time to switch = " + stopwatch.ElapsedMilliseconds+" ms");
                     // take a point
                     Shot s;
                     EDMPoint p;
@@ -539,15 +543,19 @@ namespace EDMBlockHead.Acquire
                     {
                         // everything should be ready now so start the analog
                         // input task (it will wait for a trigger)
+                        var stopwatchAI = System.Diagnostics.Stopwatch.StartNew();
                         inputTask.Start();
-
+                        
                         // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(magInputs.GateLength);
                         inputTask.Stop();
+                        stopwatchAI.Stop();
+                        Console.WriteLine("Time to collect data = " + stopwatchAI.ElapsedMilliseconds + " ms");
 
 
                         // extract the data for each scanned channel and put it in a TOF
                         s = new Shot();
+                        var stopwatchstoringAI = System.Diagnostics.Stopwatch.StartNew();
                         for (int i = 0; i < magInputs.Channels.Count; i++)
                         {
                             // extract the raw data
@@ -575,11 +583,15 @@ namespace EDMBlockHead.Acquire
 
                         p = new EDMPoint();
                         p.Shot = s;
+                        stopwatchstoringAI.Stop();
+                        Console.WriteLine("Time to store data = " + stopwatchstoringAI.ElapsedMilliseconds + " ms");
 
                     }
                     // do the "SinglePointData" (i.e. things that are measured once per point)
                     // We'll save the leakage monitor until right at the end.
                     // keep an eye on what the phase lock is doing
+
+                    var stopwatchsinglepoint = System.Diagnostics.Stopwatch.StartNew();
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
                     // scan the analog inputs
@@ -609,6 +621,8 @@ namespace EDMBlockHead.Acquire
                     p.SinglePointData.Add("EastCurrent", hardwareController.EastCurrent);
 
                     b.Points.Add(p);
+                    stopwatchsinglepoint.Stop();
+                    Console.WriteLine("Time to collect and store single point data = " + stopwatchsinglepoint.ElapsedMilliseconds + " ms");
 
                     // update the front end
                     Controller.GetController().GotPoint(point, p);
@@ -653,29 +667,29 @@ namespace EDMBlockHead.Acquire
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            //bChan.Channel = "bSwitch";
-            //bChan.Invert = false;
-            //bChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(bChan);
+            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
 
-            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            //notBChan.Channel = "notB";
-            //notBChan.Invert = true;
-            //notBChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(notBChan);
+            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            notBChan.Channel = "notB";
+            notBChan.Invert = true;
+            notBChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(notBChan);
 
-            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            //dbChan.Channel = "dB";
-            //dbChan.Invert = false;
-            //dbChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(dbChan);
+            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
 
-            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            //notDBChan.Channel = "notDB";
-            //notDBChan.Invert = true;
-            //notDBChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(notDBChan);
+            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            notDBChan.Channel = "notDB";
+            notDBChan.Invert = true;
+            notDBChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -736,17 +750,17 @@ namespace EDMBlockHead.Acquire
             //rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             //switchedChannels.Add(rf2FChannel);
 
-            HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
-            bChan.Channel = "bSwitch";
-            bChan.Invert = false;
-            bChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(bChan);
+            //HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
+            //bChan.Channel = "bSwitch";
+            //bChan.Invert = false;
+            //bChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(bChan);
 
-            HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
-            dbChan.Channel = "dB";
-            dbChan.Invert = false;
-            dbChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(dbChan);
+            //HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
+            //dbChan.Channel = "dB";
+            //dbChan.Invert = false;
+            //dbChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(dbChan);
 
             HardwareControllerSwitchChannel eChan = new HardwareControllerSwitchChannel();
             eChan.Channel = "eChan";
@@ -939,7 +953,7 @@ namespace EDMBlockHead.Acquire
             magInputs = new ScannedAnalogInputCollection();
             magInputs.RawSampleRate = 10000;
             magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            magInputs.GateLength = 1200;//usually this is 280, I changed this to take more mag data per block (10 June 2021)
+            magInputs.GateLength = (int)(((int)scanMaster.GetPGSetting("flashlampPulseInterval")-100000)/(1000000/magInputs.RawSampleRate));//Changed from 1200 to scanMaster related to get as much data per shot //usually this is 280, I changed this to take more mag data per block (10 June 2021)
 
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;
@@ -1173,6 +1187,7 @@ namespace EDMBlockHead.Acquire
             //AddChannelToSinglePointTask("bottomPD");
             //AddChannelToSinglePointTask("ground");
             AddChannelToSinglePointTask("miniFlux1");
+            //AddChannelToSinglePointTask("bartington_relays");
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("miniFlux2");
             //AddChannelToSinglePointTask("ground");
@@ -1182,7 +1197,7 @@ namespace EDMBlockHead.Acquire
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("cMinusMonitor");
             //AddChannelToSinglePointTask("northLeakage");
-           //AddChannelToSinglePointTask("ground");
+            //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("southLeakage");
             //AddChannelToSinglePointTask("ground");
             //AddChannelToSinglePointTask("valveMonVoltage");
@@ -1207,6 +1222,8 @@ namespace EDMBlockHead.Acquire
             // here we configure the scan of analog inputs that happens after each shot.
             singlePointInputTask = new Task("Blockhead single point inputs for magnetic field blocks");
             AddChannelToSinglePointTask("miniFlux1");
+            //AddChannelToSinglePointTask("bartington_relays");
+            //AddChannelToSinglePointTask("battery");
             //AddChannelToSinglePointTask("miniFlux2");
             //AddChannelToSinglePointTask("miniFlux3");
 

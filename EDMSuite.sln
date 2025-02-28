@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35617.110 d17.13
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33423.256
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanMaster", "ScanMaster\ScanMaster.csproj", "{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}"
 EndProject
@@ -332,6 +332,7 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.Build.0 = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x64.Build.0 = ultracoldEDM|x64
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x86.Build.0 = ultracoldEDM|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Wavemeter|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
@@ -1080,7 +1081,6 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x64.Build.0 = ultracoldEDM|x64
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|x86
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x86.Build.0 = ultracoldEDM|x86
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Wavemeter|Any CPU.ActiveCfg = Wavemeter|Any CPU
@@ -2866,7 +2866,6 @@ Global
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
-		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|x64.Build.0 = ultracoldEDM|x64
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|x86
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.ultracoldEDM|x86.Build.0 = ultracoldEDM|x86
 		{CFD6EB01-F4FC-4F62-B476-F132F79D22E4}.Wavemeter|Any CPU.ActiveCfg = ScanMaster|Any CPU
@@ -5203,7 +5202,6 @@ Global
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|Mixed Platforms.Build.0 = Debug|Any CPU
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|x64.ActiveCfg = Debug|Any CPU
-		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|x64.Build.0 = Debug|Any CPU
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|x86.ActiveCfg = Debug|Any CPU
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.ultracoldEDM|x86.Build.0 = Debug|Any CPU
 		{7443F26B-16B4-4191-B841-CF864ABDD579}.Wavemeter|Any CPU.ActiveCfg = Debug|Any CPU

@@ -301,14 +301,14 @@ def EDMGo():
 		bh.StartPattern()
 		System.Threading.Thread.CurrentThread.Join(2000)
 
-		hc.targetStepTime = 200
-		if ((blockIndex % 11) == 0):
-			stepdir = hc.targetStepDirection
-			hc.targetStepDirection = not(stepdir)
+		# hc.targetStepTime = 200
+		# if ((blockIndex % 11) == 0):
+		# 	stepdir = hc.targetStepDirection
+		# 	hc.targetStepDirection = not(stepdir)
 
-		for step in range(3):
-			hc.StepTargetForTime()
-			System.Threading.Thread.CurrentThread.Join(1000)
+		# for step in range(3):
+		# 	hc.StepTargetForTime()
+		# 	System.Threading.Thread.CurrentThread.Join(1000)
 
 		System.Threading.Thread.CurrentThread.Join(2000)
 		bh.StopPattern()
@@ -317,7 +317,7 @@ def EDMGo():
 		# checkYAGAndFix()
 		blockIndex = blockIndex + 1
 		
-		updateLocks(bState, mwState)
+		# updateLocks(bState, mwState)
 		# updateLocksNL(bState, mwState)
 		# randomise Ramsey phase
 		# scramblerV = 0.97156 * r.NextDouble()

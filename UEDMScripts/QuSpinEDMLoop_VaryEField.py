@@ -61,7 +61,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
@@ -211,7 +212,7 @@ def QuSpinGo():
             eCurrentState = hc.EFieldPolarity
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            System.Threading.Thread.CurrentThread.Join(1000)
+            System.Threading.Thread.CurrentThread.Join(5000)
             hc.SwitchEAndWait(eCurrentState)
 
             # Make new block config with correct E Field
