@@ -101,50 +101,53 @@ namespace ScanMaster.Acquire.Plugins
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
-                //Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
-                //IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
+				//Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
+				//IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
 
-                //foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
-                //{
-                //    if (addr.AddressFamily == AddressFamily.InterNetwork)
-                //        nameCCD2 = addr.ToString();
-                //    Console.WriteLine(nameCCD2);
-                //}
-                //EnvironsHelper eHelper2 = new EnvironsHelper(computerCCD2);
-                //int ccd2Port = eHelper2.emccdTCPChannel;
-                //Console.WriteLine(ccd2Port.ToString());
-                //ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
+				//foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
+				//{
+				//    if (addr.AddressFamily == AddressFamily.InterNetwork)
+				//        nameCCD2 = addr.ToString();
+				//    Console.WriteLine(nameCCD2);
+				//}
+				//EnvironsHelper eHelper2 = new EnvironsHelper(computerCCD2);
+				//int ccd2Port = eHelper2.emccdTCPChannel;
+				//Console.WriteLine(ccd2Port.ToString());
+				//ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
+
+				int CCDpoints = (int)config.outputPlugin.Settings["pointsPerScan"];
+				Console.WriteLine(CCDpoints.ToString());
+				//ccdcontroller.RemoteQueryCCDGain();
 
 
-                //ccdcontroller.RemoteQueryCCDGain();
+				//System.Threading.Tasks.Task.Run(() =>
+				//{
+				//    try
+				//    {
+				//        ccd1controller.RemoteSnap();
 
-                System.Threading.Tasks.Task.Run(() =>
-                {
-                    try
-                    {
-                        ccd1controller.RemoteSnap();
+				//    }
+				//    catch (Exception ex)
+				//    {
+				//        Console.WriteLine("CCD aquisition error", ex);
+				//    }
+				//});
 
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("CCD aquisition error", ex);
-                    }
-                });
+				//double CCDExposureTime = 0.1;
+				//ccd1controller.UpdateExposureTime(CCDExposureTime);
 
-				ccd1controller.UpdateExposureTime();
-
-                //System.Threading.Tasks.Task.Run(() =>
-                //            {
-                //                try
-                //                {
-                //                    ccd2controller.RemoteSnap();
-                //                }
-                //                catch (Exception ex)
-                //                {
-                //                    Console.WriteLine("CCD aquisition error", ex);
-                //                }
-                //            });
-            }
+				//System.Threading.Tasks.Task.Run(() =>
+				//            {
+				//                try
+				//                {
+				//                    ccd2controller.RemoteSnap();
+				//                }
+				//                catch (Exception ex)
+				//                {
+				//                    Console.WriteLine("CCD aquisition error", ex);
+				//                }
+				//            });
+			}
 
             // configure the analog input
             inputTask1 = new NationalInstruments.DAQmx.Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
