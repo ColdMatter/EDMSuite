@@ -45,6 +45,12 @@ namespace csAcq4
             ChannelServices.RegisterChannel(clientChannel, false);
             RemotingServices.Marshal(controller, "controller.rem");
 
+
+            // publish the controller to the remoting system
+            //TcpChannel clientChannelccd2 = new TcpChannel(tcpchannelnumccd2);
+            //ChannelServices.RegisterChannel(clientChannelccd2, false);
+            //RemotingServices.Marshal(controller, "controller.rem");
+
             controller.Start();
         }
     }
