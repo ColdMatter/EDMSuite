@@ -97,8 +97,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
-            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai11", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("bartington_Y", daqBoard + "/ai9", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("miniFlux1", daqBoard + "/ai9", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("bartington_Y", daqBoard + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
@@ -171,10 +171,10 @@ namespace DAQ.HAL
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19);
 
             //Magnetic feedback channels
-            //AddAnalogInputChannel("bFieldFeedbackInput", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
-            //AddAnalogOutputChannel("bFieldFeedbackOutput", UEDMHardwareControllerBoard + "/ao0", 0, 5);
+            AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogOutputChannel("bFieldFeedbackOutput", usbDAQ2 + "/ao1", 0, 5);
             //AddCounterChannel("bFieldFeedbackClock", UEDMHardwareControllerBoard + "/pfi3");
-            //AddCounterChannel("bFieldFeedbackClock", UEDMHardwareControllerBoard + "/ctr1");
+            AddCounterChannel("bFieldFeedbackClock", usbDAQ2 + "/pfi0");
 
             //Counter Channels
             AddCounterChannel("westLeakage", counterBoard + "/ctr6"); //UEDMHardwareControllerBoard + "/ctr0");//

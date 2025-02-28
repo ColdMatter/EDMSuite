@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections;
 using System.Xml.Serialization;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Net;
+using System.Net.Sockets;
 
 using NationalInstruments.DAQmx;
 
@@ -15,8 +18,6 @@ using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
 using ScanMaster.Acquire.Plugin;
-using System.Net.Sockets;
-using System.Net;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -33,27 +34,35 @@ namespace ScanMaster.Acquire.Plugins
 	{
 	
 		[NonSerialized]
-		private Task inputTask1;
+		private NationalInstruments.DAQmx.Task inputTask1;
 		[NonSerialized]
-		private Task inputTask2;
+		private NationalInstruments.DAQmx.Task inputTask2;
 		[NonSerialized]
-		private Task counterTask1;
+		private NationalInstruments.DAQmx.Task counterTask1;
 		[NonSerialized]
 		private AnalogMultiChannelReader reader1;
 		[NonSerialized]
 		private AnalogMultiChannelReader reader2;
-
 		[NonSerialized]
 		private CounterSingleChannelWriter counter1;
+		//private System.Threading.Tasks.Task ccdTask;
+		
 		[NonSerialized]
         private double[,] latestData;
 
+		private string nameCCD1;
+		private string nameCCD2;
+		private string computerCCD1 = "ULTRACOLDEDM";
+		private string computerCCD2 = "PH-NI-LAB";
+
 		// add ccd function
-        [NonSerialized]
-        private csAcq4.CCDController controller;
+		[NonSerialized]
+        private csAcq4.CCDController ccd1controller;
+		[NonSerialized]
+		private csAcq4.CCDController ccd2controller;
 
 
-        protected override void InitialiseBaseSettings()
+		protected override void InitialiseBaseSettings()
 		{
 			settings["gateStartTime"] = 600;
 			settings["gateLength"] = 12000;
@@ -63,23 +72,84 @@ namespace ScanMaster.Acquire.Plugins
 			settings["sampleRate"] = 100000;
 			settings["channel"] = "detectorA,detectorB";
 			settings["cameraChannel"] = "cameraEnabler";
+			settings["cameraEnabled"] = false;
 			settings["inputRangeLow"] = -1.0;
 			settings["inputRangeHigh"] = 10.0;
 		}
-
 		protected override void InitialiseSettings()
 		{
-			//Set Up TCP
-			controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + "ULTRACOLDEDM" + ":" + 5555 + "/controller.rem"));
 		}
 
         public override void AcquisitionStarting()
 		{
-			controller.Snap();
-			// configure the analog input
-			inputTask1 = new Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
-			inputTask2 = new Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
-			counterTask1 = new Task("CCD enable Task Counter");
+			//Boolean CameraEnabled = (bool)settings["cameraEnabled"];
+
+            if ((bool)settings["cameraEnabled"])
+            {
+                //Set Up TCP CCD1 - ULTRAEDM
+                IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
+
+                foreach (var addr in Dns.GetHostEntry(computerCCD1).AddressList)
+                {
+                    if (addr.AddressFamily == AddressFamily.InterNetwork)
+                        nameCCD1 = addr.ToString();
+
+                    Console.WriteLine(nameCCD1);
+                }
+                EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
+                int ccd1Port = eHelper1.emccdTCPChannel;
+                Console.WriteLine(ccd1Port.ToString());
+                ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
+
+                //Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
+                //IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
+
+                //foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
+                //{
+                //    if (addr.AddressFamily == AddressFamily.InterNetwork)
+                //        nameCCD2 = addr.ToString();
+                //    Console.WriteLine(nameCCD2);
+                //}
+                //EnvironsHelper eHelper2 = new EnvironsHelper(computerCCD2);
+                //int ccd2Port = eHelper2.emccdTCPChannel;
+                //Console.WriteLine(ccd2Port.ToString());
+                //ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
+
+
+                //ccdcontroller.RemoteQueryCCDGain();
+
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    try
+                    {
+                        ccd1controller.RemoteSnap();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CCD aquisition error", ex);
+                    }
+                });
+
+				ccd1controller.UpdateExposureTime();
+
+                //System.Threading.Tasks.Task.Run(() =>
+                //            {
+                //                try
+                //                {
+                //                    ccd2controller.RemoteSnap();
+                //                }
+                //                catch (Exception ex)
+                //                {
+                //                    Console.WriteLine("CCD aquisition error", ex);
+                //                }
+                //            });
+            }
+
+            // configure the analog input
+            inputTask1 = new NationalInstruments.DAQmx.Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
+			inputTask2 = new NationalInstruments.DAQmx.Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
+			counterTask1 = new NationalInstruments.DAQmx.Task("CCD enable Task Counter");
 
 			// new analog channel, range -10 to 10 volts
 			if (!Environs.Debug)
@@ -178,56 +248,86 @@ namespace ScanMaster.Acquire.Plugins
 			inputTask1.Dispose();
 			inputTask2.Dispose();
 			counterTask1.Dispose();
-		}
+            //ccd1controller.RemoteBufRelease();
 
-        //public override void ArmAndWait()
-        //{
-        //	lock (this)
-        //	{
-        //		if (!Environs.Debug) 
-        //		{
-        //			if (config.switchPlugin.State == true)
-        //			{
-        //				counterTask1.Start();
-        //				inputTask1.Start();
-        //				latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
+            //if ((bool)settings["cameraEnabled"] && ccd2controller != null)
+            //{
 
-        //				inputTask1.Stop();
-        //				counterTask1.Stop();
+            //    try
+            //    {
+            //        ccd2controller.RemoteBufRelease();
+            //        // Disconnect the remote object (if using .NET Remoting)
+            //        RemotingServices.Disconnect(ccd2controller);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Error during disconnection: " + ex.ToString());
+            //    }
+            //}
 
-        //			}
-        //			else
-        //			{
-        //				counterTask1.Start();
-        //				inputTask2.Start();
-        //				latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
-        //				inputTask2.Stop();
-        //				counterTask1.Stop();
-        //			}
-        //		}
-        //	}
-        //}
+        }
 
-        private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
-        private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
+		//public override void ArmAndWait()
+		//{
+		//	lock (this)
+		//	{
+		//		if (!Environs.Debug) 
+		//		{
+		//			if (config.switchPlugin.State == true)
+		//			{
+		//				counterTask1.Start();
+		//				inputTask1.Start();
+		//				latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
 
-        public override void ArmAndWait()
+		//				inputTask1.Stop();
+		//				counterTask1.Stop();
+
+		//			}
+		//			else
+		//			{
+		//				counterTask1.Start();
+		//				inputTask2.Start();
+		//				latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
+		//				inputTask2.Stop();
+		//				counterTask1.Stop();
+		//			}
+		//		}
+		//	}
+		//}
+
+		//private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
+		//private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
+
+		public override void ArmAndWait()
         {
             lock (this)
             {
                 if (!Environs.Debug)
                 {
                    
-                    Console.WriteLine("Waiting for camera to start capturing...");
-                    cameraStarted.Wait();  // Wait until the camera signals frame capture start
+                    //Console.WriteLine("Waiting for camera to start capturing...");
+                    //cameraStarted.Wait();  // Wait until the camera signals frame capture start
 
                     if (config.switchPlugin.State == true)
                     {
-                        counterTask1.Start(); // Start camera trigger
+						//System.Threading.Tasks.Task.Run(() =>
+						//{
+						//	try
+						//	{
+						//		ccd1controller.RemoteSnap();
+
+						//	}
+						//	catch (Exception ex)
+						//	{
+						//		Console.WriteLine("CCD aquisition error", ex);
+						//	}
+						//});
+						counterTask1.Start(); // Start camera trigger
                         inputTask1.Start();
                         latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
                         inputTask1.Stop();
-                    }
+						//ccd1controller.RemoteBufRelease();
+					}
                     else
                     {
                         counterTask1.Start(); // Start camera trigger
@@ -236,13 +336,13 @@ namespace ScanMaster.Acquire.Plugins
                         inputTask2.Stop();
                     }
 
-                    Console.WriteLine("Waiting for camera to finish capturing...");
-                    cameraFinished.Wait();  // Wait for the camera to confirm frame completion
+                    //Console.WriteLine("Waiting for camera to finish capturing...");
+                    //cameraFinished.Wait();  // Wait for the camera to confirm frame completion
 
                     counterTask1.Stop();
-                    cameraStarted.Reset();
-                    cameraFinished.Reset();
-                    Console.WriteLine("Camera handshake complete, system rearmed.");
+                    //cameraStarted.Reset();
+                    //cameraFinished.Reset();
+                    //Console.WriteLine("Camera handshake complete, system rearmed.");
                 }
             }
         }
