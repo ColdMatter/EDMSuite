@@ -72,7 +72,7 @@ namespace csAcq4
             public DCAM_PIXELTYPE pixeltype { get { return bufframe.type; } }
             public bool isValid()
             {
-                if (width <= 0 || height <= 0 || pixeltype == DCAM_PIXELTYPE.NONE)
+                if (width <= 0 || height <= 0 || pixeltype == DCAM_PIXELTYPE.MONO16)
                 {
                     return false;
                 }
@@ -85,7 +85,7 @@ namespace csAcq4
             {
                 bufframe.width = 0;
                 bufframe.height = 0;
-                bufframe.type = DCAM_PIXELTYPE.NONE;
+                bufframe.type = DCAM_PIXELTYPE.MONO16;
             }
             public void set_iFrame(int index)
             {
@@ -105,15 +105,26 @@ namespace csAcq4
             Boolean isAcquired = (status == FormStatus.Acquired);
             Boolean isAcquiringSoftwareTrigger = (status == FormStatus.AcquiringSoftwareTrigger);
             PushInit.Enabled = isStartup;
-            //PushOpen.Enabled = isInitialized;
-            //PushInfo.Enabled = (isInitialized || isAcquired || isAcquiring);
+            // Shirley added the constraints below on 26/02 to improve the stability of the program
+            comboTriggerSource.Enabled = isInitialized || isAcquired; 
+            QueryFrameCountButton.Enabled = isInitialized || isAcquired;
+            UpdateFrameCountButton.Enabled = isInitialized || isAcquired;
+            FrameCountTextBox.Enabled = isInitialized || isAcquired;
+            QuerySensitivityGainButton.Enabled = isInitialized || isAcquired;
+            UpdateSensitivityGainButton.Enabled = isInitialized || isAcquired;
+            QueryExposureTimeButton.Enabled = isInitialized || isAcquired;
+            UpdateExposureTimeButton.Enabled = isInitialized || isAcquired;
+            QuerySensorTemperatureButton.Enabled = isInitialized || isAcquired;
+            BurstCapture.Enabled = isInitialized || isAcquired;
+            SaveBurstBuffer.Enabled = isInitialized || isAcquired;
+
             PushSnap.Enabled = isInitialized || isAcquired;
             PushLive.Enabled = isInitialized || isAcquired;
-            PushFireTrigger.Enabled = isInitialized || isAcquired;
+            BurstTriggerRearm.Enabled = isInitialized || isAcquired;
             PushIdle.Enabled = isAcquiring;
-            PushBufRelease.Enabled = isAcquired;
+            //PushBufRelease.Enabled = isAcquired; rhys remove 14/02
             PushClose.Enabled = isInitialized || isAcquired;
-            PushUninit.Enabled = isInitialized;
+            //PushUninit.Enabled = isInitialized; rhys remove 14/02
 
             //PushProperties.Enabled = (isInitialized || isAcquired);
 
@@ -322,7 +333,7 @@ namespace csAcq4
                 }
 
                 // Create a new bitmap. Ensure we always use the fixed PictureBox dimensions
-                Bitmap bmp = new Bitmap(PicDisplay.Width, PicDisplay.Height, PixelFormat.Format24bppRgb);
+                Bitmap bmp = new Bitmap(PicDisplay.Width, PicDisplay.Height, PixelFormat.Format16bppGrayScale);
                 using (var gr = Graphics.FromImage(bmp))
                 {
                     lock (BitmapLock)
@@ -359,7 +370,7 @@ namespace csAcq4
                     {
                         Console.WriteLine("Initializing new bitmap...");
                         m_bitmap?.Dispose(); // Dispose old bitmap if it exists
-                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
+                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format16bppGrayScale);
                     }
 
                     // Copy image data into Bitmap
@@ -981,7 +992,22 @@ namespace csAcq4
             controller.UpdateExposureTime();
         }
 
+        private void QueryFrameCountButton_Click(object sender, EventArgs e)
+        {
+            controller.QueryFrameCount();
+        }
 
+
+        private void UpdateFrameCountButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFrameCount();
+        }
+
+        // Button Click Event to Set Save Directory
+        private void SetSaveDirectoryButton_Click(object sender, EventArgs e)
+        {
+            controller.SetSaveDirectory();
+        }
         //private void PushInfo_Click(object sender, EventArgs e)
         //{
         //    FormInfo formInfo = new FormInfo();
@@ -1131,6 +1157,11 @@ namespace csAcq4
             controller.Snap();
         }
 
+        private void BurstCapture_Click(object sender, EventArgs e)
+        {
+            controller.BurstCapture();
+        }
+
 
         private void PushLive_Click(object sender, EventArgs e)
         {
@@ -1238,33 +1269,40 @@ namespace csAcq4
             controller.StopAcquisition();
         }
 
-        private void PushFireTrigger_Click(object sender, EventArgs e)
+        private void BurstTriggerRearm_Click(object sender, EventArgs e)
         {
-            if (mydcam == null)
-            {
-                MyShowStatus("Internal Error: mydcam is null");
-                MyFormStatus_Initialized();     // FormStatus should be Initialized.
-                return;                         // internal error
-            }
+            //if (mydcam == null)
+            //{
+            //    MyShowStatus("Internal Error: mydcam is null");
+            //    MyFormStatus_Initialized();     // FormStatus should be Initialized.
+            //    return;                         // internal error
+            //}
 
-            if (!IsMyFormStatus_Acquiring())
-            {
-                MyShowStatus("Internal Error: FireTrigger button is only available when FormStatus is Acquiring");
-                return;                         // internal error
-            }
+            //if (!IsMyFormStatus_Acquiring())
+            //{
+            //    MyShowStatus("Internal Error: FireTrigger button is only available when FormStatus is Acquiring");
+            //    return;                         // internal error
+            //}
 
-            // fire software trigger
-            if (!mydcam.cap_firetrigger())
-            {
-                MyShowStatusNG("dcamcap_firetrigger()", mydcam.m_lasterr);
-                return;                         // Fail: dcamcap_firetrigger()
-            }
+            //// fire software trigger
+            //if (!mydcam.cap_firetrigger())
+            //{
+            //    MyShowStatusNG("dcamcap_firetrigger()", mydcam.m_lasterr);
+            //    return;                         // Fail: dcamcap_firetrigger()
+            //}
 
-            // Success: dcamcap_firetrigger()
+            //// Success: dcamcap_firetrigger()
 
-            MyShowStatusOK("dcamcap_firetrigger()");
+            //MyShowStatusOK("dcamcap_firetrigger()");
 
-            // FormStatus is not changed here
+            //// FormStatus is not changed here
+
+            controller.BurstTriggerRearm();
+        }
+
+        private void SaveBurstBuffer_Click(object sender, EventArgs e)
+        {
+            controller.SaveBurstBuffer();
         }
 
         private void PushBufRelease_Click(object sender, EventArgs e)

@@ -7,12 +7,18 @@ using System.Collections.Generic;
 using DAQ.Pattern;
 using DAQ.Analog;
 using DAQ.Environment;
+using System.Threading;
 
 // This script is supposed to be the basic script for loading a molecule MOT.
 // Note that times are all in units of the clock periods of the two pattern generator boards (at present, both are 10us).
 // All times are relative to the Q switch, though note that this is not the first event in the pattern.
 public class Patterns : MOTMasterScript
 {
+
+    NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
+    //EnvironsHelper eHelper = new EnvironsHelper((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]);
+    //WavemeterLock.Controller wmlController = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"] + ":" + eHelper.wavemeterLockTCPChannel.ToString() + "/controller.rem"));
+    
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
@@ -116,42 +122,6 @@ public class Patterns : MOTMasterScript
 
         //Sideband Amplitudes
 
-        // Nov 14 2024
-        //Parameters["SidebandAmp1"] = 4.0;
-        //Parameters["SidebandAmp2"] = 4.4;
-        //Parameters["SidebandAmp3"] = 7.0;
-        //Parameters["SidebandAmp4"] = 6.0;
-
-        //Parameters["SidebandImAmp1"] = 4.0;
-        //Parameters["SidebandImAmp2"] = 4.4;
-        //Parameters["SidebandImAmp3"] = 7.0;
-        //Parameters["SidebandImAmp4"] = 6.0;
-
-        // Nov 21 2024
-        /*
-        Parameters["SidebandAmp1"] = 6.0;
-        Parameters["SidebandAmp2"] = 4.5;
-        Parameters["SidebandAmp3"] = 8.0;
-        Parameters["SidebandAmp4"] = 7.5;
-
-        Parameters["SidebandImAmp1"] = 6.0;
-        Parameters["SidebandImAmp2"] = 4.5;
-        Parameters["SidebandImAmp3"] = 8.0;
-        Parameters["SidebandImAmp4"] = 7.5;
-        */
-
-        // 10s only
-        
-        //Parameters["SidebandAmp1"] = 10.0;
-        //Parameters["SidebandAmp2"] = 10.0;
-        //Parameters["SidebandAmp3"] = 10.0;
-        //Parameters["SidebandAmp4"] = 10.0;
-
-        //Parameters["SidebandImAmp1"] = 10.0;
-        //Parameters["SidebandImAmp2"] = 10.0;
-        //Parameters["SidebandImAmp3"] = 10.0;
-        //Parameters["SidebandImAmp4"] = 10.0;
-
         // Recalibrated 06/02/25
 
         Parameters["SidebandAmp1"] = 6.7;
@@ -183,19 +153,21 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandImAmpDDS2"] = 1.0;
         Parameters["SidebandImAmpDDS3"] = 1.0;
         Parameters["SidebandImAmpDDS4"] = 1.0;
+        
 
     }
 
     private void prePatternSetup()
     {
-        MOTMaster.Controller mmController = (MOTMaster.Controller)(Activator.GetObject(typeof(MOTMaster.Controller), "tcp://localhost:1178/controller.rem"));
-
-        mmController.addDDSPattern("PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
+        addDDSPattern("PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
             (double)Parameters["SidebandAmpDDS1"], (double)Parameters["SidebandAmpDDS2"], (double)Parameters["SidebandAmpDDS3"], (double)Parameters["SidebandAmpDDS4"]);
-        mmController.addDDSPattern("Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
+        addDDSPattern("Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
 
-        mmController.runDDSPattern();
+        runDDSPattern();
+
+        //wmlController.setSlaveFrequency((string)Parameters["Laser"], (bool)Parameters["Switch"] ? (double)Parameters["OnFrequency"] : (double)Parameters["OffFrequency"]);
+        //Thread.Sleep((int)Parameters["WaitTime"]);
     }
 
 
@@ -343,4 +315,43 @@ public class Patterns : MOTMasterScript
         return p;
     }
 
+    public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+    {
+        //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
+        List<double> timePar = new List<double>();
+        timePar.Add(time / 100.0);
+        List<double> freq = new List<double>();
+        freq.Add(freq1);
+        freq.Add(freq2);
+        freq.Add(freq3);
+        freq.Add(freq4);
+        List<double> amp = new List<double>();
+        amp.Add(amp1);
+        amp.Add(amp2);
+        amp.Add(amp3);
+        amp.Add(amp4);
+        List<double> freqSlope = new List<double>();
+        freqSlope.Add(freqSlope1);
+        freqSlope.Add(freqSlope2);
+        freqSlope.Add(freqSlope3);
+        freqSlope.Add(freqSlope4);
+        List<double> ampSlpoe = new List<double>();
+        ampSlpoe.Add(ampSlope1);
+        ampSlpoe.Add(ampSlope2);
+        ampSlpoe.Add(ampSlope3);
+        ampSlpoe.Add(ampSlope4);
+
+        DDSCtrl.clearPatternList();
+        DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
+
+    }
+
+    public void runDDSPattern()
+    {
+        DDSCtrl.openCard();
+        DDSCtrl.startSinglePattern();
+        // Wait till sequence ends
+        DDSCtrl.closeCard();
+    }
 }

@@ -7,21 +7,38 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Threading;
+using System.Threading.Tasks;
+
 using System.Drawing.Imaging;
 
 using Hamamatsu.DCAM4;
 using Hamamatsu.subacq4;
 using static System.Windows.Forms.AxHost;
 using System.IO;
+using BitMiracle.LibTiff.Classic;
 using csAcq4;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics.Eventing.Reader;
+using System.Xml.Linq;
+using System.Windows.Controls;
+using System.Net.Sockets;
 
 namespace csAcq4
 {
     public class CCDController : MarshalByRefObject
     {
+        // without this method, any remote connections to this object will time out after
+        // five minutes of inactivity.
+        // It just overrides the lifetime lease system completely.
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -53,28 +70,22 @@ namespace csAcq4
         };
 
         private int m_indexCamera = 0;          // index of DCAM device.  This is used at allocating mydcam instance.
-        private int m_nFrameCount;              // frame count of allocation buffer for DCAM capturing
+        private int m_nFrameCount = 4;              // frame count of allocation buffer for DCAM capturing
         private FormStatus m_formstatus;        // Indicate current Form status. For setting, Use MyFormStatus() functions
         private Thread m_threadCapture;         // System.Threading.  Assigned for monitoring updated frames during capturing
         private Bitmap m_bitmap;                // bitmap data for displaying in this Windows Form
         private bool m_cap_stopping = false;    // reset to false when starting capture and set to true if stopping capture
 
-        public CCDController()
-        {
-            m_image = new MyImage();
-            m_lut = new MyLut();
-            BitmapLock = new object();
-        }
-        //private FormProperties formProperties;  // Properties Form
 
         // ---------------- private class MyImage ----------------
 
-        private class MyImage
+        public class MyImage
         {
             public DCAMBUF_FRAME bufframe;
             public MyImage()
             {
                 bufframe = new DCAMBUF_FRAME(0);
+                bufframe.type = DCAM_PIXELTYPE.MONO16;
             }
             public int width { get { return bufframe.width; } }
             public int height { get { return bufframe.height; } }
@@ -89,8 +100,22 @@ namespace csAcq4
                 {
                     return true;
                 }
+
+                //if (width <= 0 || height <= 0)
+                //{
+
+                //    return false;
+                //}
+
+                //if (!pixeltype.Equals(DCAM_PIXELTYPE.MONO16))
+                //{
+                //    Console.WriteLine($"Invalid Pixel Type - Expected: {(int)DCAM_PIXELTYPE.MONO16}, Found: {(int)pixeltype}");
+                //    return false;
+                //}
+
+                //return true;
             }
-            public void clear()
+        public void clear()
             {
                 bufframe.width = 0;
                 bufframe.height = 0;
@@ -107,7 +132,7 @@ namespace csAcq4
         {
             // Create FormMain and assign this CCDController instance to it
             window = new FormMain(this);
-            //window.controller = this;  // Set this instance of CCDController to FormMain
+            window.controller = this;  // Set this instance of CCDController to FormMain
 
             System.Windows.Forms.Application.Run(window);
         }
@@ -135,7 +160,18 @@ namespace csAcq4
         {
             if (window != null && window.LabelStatus != null)
             {
-                window.LabelStatus.Text = text;
+                if (window.LabelStatus.InvokeRequired)
+                {
+                    window.LabelStatus.Invoke(new Action(() =>
+                    {
+                        window.LabelStatus.Text = text;
+                    }));
+                }
+                else
+                {
+                    window.LabelStatus.Text = text;
+                }
+             //window.LabelStatus.Text = text;
             }
             else
             {
@@ -164,6 +200,7 @@ namespace csAcq4
 
                 double v = 0;
                 prop.getvalue(ref v);
+                Console.WriteLine($"BITSPERCHANNEL: {v}");
                 bool reset = false;
 
                 // Check if bit depth has changed 
@@ -177,9 +214,32 @@ namespace csAcq4
                 m_lut.inmax = window.HScrollLutMax.Value;
                 m_lut.inmin = window.HScrollLutMin.Value;
 
-                window.HScrollLutMax.Maximum = m_lut.cameramax;
-                window.HScrollLutMin.Maximum = m_lut.cameramax;
+                if (window.HScrollLutMax.InvokeRequired)
+                {
+                    window.HScrollLutMax.Invoke(new Action(() =>
+                    {
+                        window.HScrollLutMax.Maximum = m_lut.cameramax;
+                    }
+                    ));
+                }
+                else
+                {
+                    window.HScrollLutMax.Maximum = m_lut.cameramax;
+                }
 
+                if (window.HScrollLutMin.InvokeRequired)
+                {
+                    window.HScrollLutMin.Invoke(new Action(() =>
+                    {
+                        window.HScrollLutMin.Maximum = m_lut.cameramax;
+                    }
+                    ));
+                }
+                else
+                {
+                    window.HScrollLutMin.Maximum = m_lut.cameramax;
+                }
+             
                 if (reset)
                 {
                     window.HScrollLutMax.Value = m_lut.cameramax;
@@ -294,11 +354,12 @@ namespace csAcq4
             }
 
             MyUpdatePicture();
-            //Console.WriteLine($"Locked frame dimensions: {m_image.width}x{m_image.height}");
+
         }
 
         // Draw Bitmap in the PictureBox 
         private delegate void MyDelegate_UpdateDisplay();
+
 
         private void MyUpdateDisplay()
         {
@@ -331,7 +392,7 @@ namespace csAcq4
                 }
 
                 // Create a new bitmap. Ensure we always use the fixed PictureBox dimensions
-                Bitmap bmp = new Bitmap(window.PicDisplay.Width, window.PicDisplay.Height, PixelFormat.Format24bppRgb);
+                Bitmap bmp = new Bitmap(window.PicDisplay.Width, window.PicDisplay.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
                 using (var gr = Graphics.FromImage(bmp))
                 {
                     lock (BitmapLock)
@@ -352,46 +413,54 @@ namespace csAcq4
             }
         }
 
-        // Updating Bitmap and Display
         private void MyUpdatePicture()
         {
-
-            if (m_image.isValid())
+            if (!m_image.isValid())
             {
-                m_lut.inmax = window.HScrollLutMax.Value;
-                m_lut.inmin = window.HScrollLutMin.Value;
-
-                Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
-                lock (BitmapLock)
-                {
-                    // Always initialize bitmap if it's null or size changes
-                    if (m_bitmap == null || m_bitmap.Width != m_image.width || m_bitmap.Height != m_image.height)
-                    {
-                        Console.WriteLine("Initializing new bitmap...");
-                        m_bitmap?.Dispose(); // Dispose old bitmap if it exists
-                        m_bitmap = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
-                    }
-
-                    // Copy image data into Bitmap
-                    SUBACQERR err = subacq.copydib(ref m_bitmap, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
-                    if (err != SUBACQERR.SUCCESS)
-                    {
-                        Console.WriteLine($"Error copying DIB: {err}, using fallback blank image.");
-
-                        // Fallback: Assign a blank image to avoid null issues
-                        using (Graphics g = Graphics.FromImage(m_bitmap))
-                        {
-                            g.Clear(Color.Black);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("Warning: Image is not valid, skipping update.");
+                Console.WriteLine(" Warning: Image is not valid, skipping update.");
                 return;
             }
 
+            m_lut.inmax = window.HScrollLutMax.Value;
+            m_lut.inmin = window.HScrollLutMin.Value;
+
+            Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
+
+            lock (BitmapLock)
+            {
+                // Allocate a 24-bit RGB bitmap for display
+                if (m_bitmap == null || m_bitmap.Width != m_image.width || m_bitmap.Height != m_image.height)
+                {
+                    Console.WriteLine($" Re-initializing bitmap for display: {m_image.width}x{m_image.height}");
+                    m_bitmap?.Dispose();
+                    m_bitmap = new Bitmap(m_image.width, m_image.height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                }
+
+                // Convert 16-bit grayscale to 8-bit grayscale
+                byte[] gray8bitImage = Convert16BitTo8Bit(m_image.bufframe.buf, m_image.width, m_image.height, m_image.bufframe.rowbytes);
+
+                // Convert 8-bit grayscale to RGB for display
+                byte[] rgbImage = Convert8BitToRGB(gray8bitImage, m_image.width, m_image.height);
+
+                // Lock bitmap & copy converted RGB data
+                BitmapData bitmapData = m_bitmap.LockBits(rc, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Marshal.Copy(rgbImage, 0, bitmapData.Scan0, rgbImage.Length);
+                m_bitmap.UnlockBits(bitmapData);
+
+                //Copy image data into Bitmap
+                SUBACQERR err = subacq.copydib(ref m_bitmap, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
+                if (err != SUBACQERR.SUCCESS)
+                {
+                    Console.WriteLine($"Error copying DIB: {err}, using fallback blank image.");
+
+                    // Fallback: Assign a blank image to avoid null issues
+                    using (Graphics g = Graphics.FromImage(m_bitmap))
+                    {
+                        g.Clear(System.Drawing.Color.Black);
+                    }
+                }
+            }
+            // Display the image
             if (window.PicDisplay.InvokeRequired)
             {
                 window.PicDisplay.Invoke(new MyDelegate_UpdateDisplay(MyUpdateDisplay));
@@ -400,6 +469,44 @@ namespace csAcq4
 
             MyUpdateDisplay();
         }
+
+        private byte[] Convert16BitTo8Bit(IntPtr srcPtr, int width, int height, int rowbytes)
+        {
+            byte[] gray8bitImage = new byte[width * height];
+            byte[] srcBytes = new byte[width * 2];  // Each pixel is 2 bytes (16-bit)
+
+            for (int y = 0; y < height; y++)
+            {
+                int srcOffset = rowbytes * y;
+                Marshal.Copy((IntPtr)(srcPtr.ToInt64() + srcOffset), srcBytes, 0, width * 2);
+
+                for (int x = 0; x < width; x++)
+                {
+                    ushort pixel16 = BitConverter.ToUInt16(srcBytes, x * 2);  // Convert 2 bytes to 16-bit value
+                    gray8bitImage[y * width + x] = (byte)(pixel16 >> 8);      // Extract top 8 bits for 8-bit grayscale
+                }
+            }
+
+            return gray8bitImage;
+        }
+
+
+        private byte[] Convert8BitToRGB(byte[] gray8bitImage, int width, int height)
+        {
+            byte[] rgbImage = new byte[width * height * 3];
+
+            for (int i = 0; i < gray8bitImage.Length; i++)
+            {
+                byte gray = gray8bitImage[i];
+
+                rgbImage[i * 3] = gray;     // Red
+                rgbImage[i * 3 + 1] = gray; // Green
+                rgbImage[i * 3 + 2] = gray; // Blue
+            }
+
+            return rgbImage;
+        }
+
 
 
         // Capturing Thread helper functions
@@ -484,6 +591,18 @@ namespace csAcq4
                     }
                 }
             }
+        }
+
+
+
+        public CCDController()
+        {
+
+            m_image = new MyImage();
+            m_lut = new MyLut();
+            BitmapLock = new object();
+
+            m_image.bufframe.type = DCAM_PIXELTYPE.MONO16;
         }
 
         // <summary>
@@ -596,6 +715,13 @@ namespace csAcq4
                 //    return;                         // fail: incorrect camera
                 //}
 
+                //MyDcamProp colortypeProp = new MyDcamProp(mydcam, DCAMIDPROP.COLORTYPE);
+                //if (!colortypeProp.setvalue(DCAMPROP.COLORTYPE.BW))
+                //{
+                //    MyShowStatusNG("Failed to set CCD mode", colortypeProp.m_lasterr);
+                //    return false;                         // Fail: setting colour type
+                //}
+
                 // * Camera Control (Gain and Exposure Time) * //
                 // Set CCD mode to EMCCD
                 MyDcamProp ccdModeProp = new MyDcamProp(mydcam, DCAMIDPROP.CCDMODE);
@@ -695,6 +821,22 @@ namespace csAcq4
                 return false;
             }
 
+            // Ensure the call to `SelectedIndex` is done on the UI thread. This was added by rhys
+            int selectedIndex = 2;
+            if (window.comboTriggerSource.InvokeRequired)
+            {
+                // If not on the UI thread, use Invoke to marshal the call
+                window.comboTriggerSource.Invoke(new Action(() =>
+                {
+                    selectedIndex = window.comboTriggerSource.SelectedIndex;
+                }));
+            }
+            else
+            {
+                // If already on the UI thread, simply access the property
+                selectedIndex = window.comboTriggerSource.SelectedIndex;
+            }
+
             MyDcamProp triggerSourceProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
             MyDcamProp triggerModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGER_MODE);
             MyDcamProp triggerActiveModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERACTIVE);
@@ -702,7 +844,7 @@ namespace csAcq4
 
             bool success = false;
 
-            switch (window.comboTriggerSource.SelectedIndex)
+            switch (selectedIndex)
             {
                 case 0: // Internal Trigger
                     if (triggerSourceProp.setvalue(DCAMPROP.TRIGGERSOURCE.INTERNAL))
@@ -718,64 +860,47 @@ namespace csAcq4
                     break;
 
                 case 1: // External Start Trigger
+                    // Let's try applying the External Start trigger settings twice to ensure the camera is in correct mode
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (!triggerActiveModeProp.setvalue(DCAMPROP.TRIGGERACTIVE.EDGE))
+                        {
+                            MyShowStatusNG("Failed to set trigger active mode to EDGE", triggerActiveModeProp.m_lasterr);
+                            return false;
+                        }
 
-                    // Step 1: First, set it to External Edge Mode
-                    if (!triggerModeProp.setvalue(DCAMPROP.TRIGGER_MODE.NORMAL))
-                    {
-                        MyShowStatusNG("Failed to set trigger mode to NORMAL before External Start", triggerModeProp.m_lasterr);
-                        return false;
-                    }
+                        if (!triggerPolarityProp.setvalue(DCAMPROP.TRIGGERPOLARITY.POSITIVE))
+                        {
+                            MyShowStatusNG("Failed to set trigger polarity to POSITIVE", triggerPolarityProp.m_lasterr);
+                            return false;
+                        }
 
-                    if (!triggerActiveModeProp.setvalue(DCAMPROP.TRIGGERACTIVE.EDGE))
-                    {
-                        MyShowStatusNG("Failed to set trigger active mode to EDGE", triggerActiveModeProp.m_lasterr);
-                        return false;
-                    }
+                        if (!triggerSourceProp.setvalue(DCAMPROP.TRIGGERSOURCE.EXTERNAL))
+                        {
+                            MyShowStatusNG("Failed to set trigger source to EXTERNAL before External Start", triggerSourceProp.m_lasterr);
+                            return false;
+                        }
 
-                    if (!triggerPolarityProp.setvalue(DCAMPROP.TRIGGERPOLARITY.POSITIVE))
-                    {
-                        MyShowStatusNG("Failed to set trigger polarity to POSITIVE", triggerPolarityProp.m_lasterr);
-                        return false;
-                    }
+                        if (!triggerModeProp.setvalue(DCAMPROP.TRIGGER_MODE.START))
+                        {
+                            MyShowStatusNG("Failed to set trigger mode to START", triggerModeProp.m_lasterr);
+                            return false;
+                        }
 
-                    if (!triggerSourceProp.setvalue(DCAMPROP.TRIGGERSOURCE.EXTERNAL))
-                    {
-                        MyShowStatusNG("Failed to set trigger source to EXTERNAL before External Start", triggerSourceProp.m_lasterr);
-                        return false;
-                    }
-
-                    // Step 2: Now switch to External Start
-                    if (!triggerActiveModeProp.setvalue(DCAMPROP.TRIGGERACTIVE.EDGE))
-                    {
-                        MyShowStatusNG("Failed to set trigger active mode to EDGE", triggerActiveModeProp.m_lasterr);
-                        return false;
-                    }
-
-                    if (!triggerPolarityProp.setvalue(DCAMPROP.TRIGGERPOLARITY.POSITIVE))
-                    {
-                        MyShowStatusNG("Failed to set trigger polarity to POSITIVE", triggerPolarityProp.m_lasterr);
-                        return false;
-                    }
-
-                    if (!triggerModeProp.setvalue(DCAMPROP.TRIGGER_MODE.START))
-                    {
-                        MyShowStatusNG("Failed to set trigger mode to START", triggerModeProp.m_lasterr);
-                        return false;
-                    }
-
-                    // Verify trigger source
-                    double triggerCheck = 0;
-                    triggerSourceProp.getvalue(ref triggerCheck);
-                    triggerModeProp.getvalue(ref triggerCheck);
-                    if (triggerCheck == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerCheck == (double)DCAMPROP.TRIGGER_MODE.START)
-                    {
-                        MyShowStatusOK("Trigger source set to External Start Trigger.");
-                        Console.WriteLine("Trigger source set to External Start Trigger.");
-                        success = true;
-                    }
-                    else
-                    {
-                        MyShowStatusNG("Trigger source verification failed: It did not switch to External Start.", triggerSourceProp.m_lasterr);
+                        // Verify trigger source
+                        double triggerCheck = 0;
+                        triggerSourceProp.getvalue(ref triggerCheck);
+                        triggerModeProp.getvalue(ref triggerCheck);
+                        if (triggerCheck == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerCheck == (double)DCAMPROP.TRIGGER_MODE.START)
+                        {
+                            MyShowStatusOK("Trigger source set to External Start Trigger.");
+                            Console.WriteLine("Trigger source set to External Start Trigger.");
+                            success = true;
+                        }
+                        else
+                        {
+                            MyShowStatusNG("Trigger source verification failed: It did not switch to External Start.", triggerSourceProp.m_lasterr);
+                        }
                     }
                     break;
 
@@ -848,7 +973,31 @@ namespace csAcq4
             if (sensitivitygainprop.getvalue(ref currentSensitivity))
             {
                 Console.WriteLine($"Current Sensitivity Gain: {currentSensitivity}");
-                window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+
+                //NOTE: The invoke functionality prevents a cross thread error when communicating via TCP. The invoke method allows
+                //you to communicate with the UI thread (i.e. formMain) from the controller thread. This is needed because normally
+                //the UI controls (i.e. labels) within a Windows Form are not thread safe and thus you cannot update them directly from a background thread
+                //i.e. the controller thread handling the TCP communication.
+                //The invoke method allows you to update the UI controls from the controller thread. Any code that interacts with the UI must be wrapped
+                //within the Invoke method. If the function is not called via TCP and is invoked (locally e.g. from a button click
+                // then the invoke method is not needed as the function that includes the UI owned controls (e.g. label) is executed by the UI thread itself.
+                // This means InvokeRequired boolean will be false and the else statement will be executed.
+
+                if (window.SensitivityGainLabel.InvokeRequired)
+                {
+                    // If called from a non-UI thread i.e. this thread, we invoke to update the label on the UI thread
+                    window.SensitivityGainLabel.Invoke(new Action(() =>
+                    {
+                        window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+                    }));
+
+                }
+                else
+                {
+                    // If already on the UI thread, update the label directly
+                    window.SensitivityGainLabel.Text = $"Current Sensitivity Gain: {currentSensitivity}";
+                }
+
             }
             else
             {
@@ -861,7 +1010,7 @@ namespace csAcq4
             Console.WriteLine("Remote Ping!");
         }
 
-        public void UpdateCCDGain()
+        public void UpdateCCDGain(double? newGain = null)
         {
             if (mydcam == null)
             {
@@ -869,48 +1018,129 @@ namespace csAcq4
                 return;
             }
 
-            if (double.TryParse(window.SensitivityGainTextBox.Text, out double newGain))
+            if (!newGain.HasValue)
             {
-                MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
-
-                // Query the current value
-                double currentGain = 0;
-                if (sensitivitygainprop.getvalue(ref currentGain))
+                if (double.TryParse(window.SensitivityGainTextBox.Text, out double parsedSensitivityGain))
                 {
-                    Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
+                    newGain = parsedSensitivityGain;
                 }
                 else
                 {
-                    MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+                    MessageBox.Show("Please enter a valid number for gain.");
+                    return;
                 }
+            }
+            MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
 
-                // Attempt to update the property
-                if (sensitivitygainprop.setvalue(newGain))
-                {
-                    Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
-                    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
-                    MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
-                }
+            // Query the current value
+            double currentGain = 0;
+            if (sensitivitygainprop.getvalue(ref currentGain))
+            {
+                Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
             }
             else
             {
-                MessageBox.Show("Please enter a valid number for Sensitivity Gain.");
+                MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+            }
+
+            // Attempt to update the property
+            if (sensitivitygainprop.setvalue(newGain.Value))
+            {
+                Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
+                if (window.SensitivityGainLabel.InvokeRequired)
+                {
+                    window.SensitivityGainLabel.Invoke(new Action(() =>
+                    {
+                        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                    }));
+                }
+                else
+                {
+                    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+                }
+                window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
+                MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
             }
         }
 
+        //public void UpdateCCDGain()
+        //{
+        //    if (mydcam == null)
+        //    {
+        //        Console.WriteLine("Error: mydcam is not initialized.");
+        //        return;
+        //    }
+
+        //    if (double.TryParse(window.SensitivityGainTextBox.Text, out double newGain))
+        //    {
+        //        MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
+
+        //        // Query the current value
+        //        double currentGain = 0;
+        //        if (sensitivitygainprop.getvalue(ref currentGain))
+        //        {
+        //            Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
+        //        }
+        //        else
+        //        {
+        //            MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
+        //        }
+
+        //        // Attempt to update the property
+        //        if (sensitivitygainprop.setvalue(newGain))
+        //        {
+        //            Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
+        //            //if (window.SensitivityGainLabel.InvokeRequired)
+        //            //{
+        //            //    window.SensitivityGainLabel.Invoke(new Action(() =>
+        //            //    {
+        //            //        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //            //    }));
+        //            //}
+        //            //else
+        //            //{
+        //            //    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //            //}
+        //            window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
+        //            MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Please enter a valid number for Sensitivity Gain.");
+        //    }
+        //}
+
+        double currentExposureTime;
         public void QueryExposureTime()
         {
             MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
-            double currentExposureTime = 0;
+
             if (exposuretimeprop.getvalue(ref currentExposureTime))
             {
                 double roundedExposureTime = Math.Round(currentExposureTime, 5); // Round to 5 decimal places
                 Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F5}");
-                window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                
+                if (window.ExposureTimeLabel.InvokeRequired)
+                {
+                    window.ExposureTimeLabel.Invoke(new Action(() =>
+                    {
+                        window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                    }));
+                
+                }
+                else
+                {
+                    window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                }
             }
             else
             {
@@ -918,40 +1148,183 @@ namespace csAcq4
             }
         }
 
-        public void UpdateExposureTime()
+        //public void UpdateExposureTime()
+        //{
+        //    if (double.TryParse(window.ExposureTimeTextBox.Text, out double newExposureTime))
+        //    {
+        //        MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
+
+        //        // Query the current value 
+        //        double roundedExposureTime = 0;
+        //        if (exposuretimeprop.getvalue(ref roundedExposureTime))
+        //        {
+        //            Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F2}");
+        //        }
+        //        else
+        //        {
+        //            MyShowStatusNG("Failed to query current exposure time", exposuretimeprop.m_lasterr);
+        //        }
+
+        //        // Attempt to update the property
+        //        if (exposuretimeprop.setvalue(newExposureTime))
+        //        {
+        //            Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
+
+        //            if (window.ExposureTimeLabel.InvokeRequired)
+        //            {
+        //                window.ExposureTimeLabel.Invoke(new Action(() =>
+        //                    {
+        //                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+        //                    }));
+        //            }
+        //            else
+        //            {
+        //                window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"Failed to update exposure time. Error: {exposuretimeprop.m_lasterr:X}");
+        //            MyShowStatusNG("Failed to update exposure time", exposuretimeprop.m_lasterr);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Please enter a valid number for Exposure Time.");
+        //    }
+        //}
+
+        public void UpdateExposureTime(double? newExposureTime = null)
         {
-            if (double.TryParse(window.ExposureTimeTextBox.Text, out double newExposureTime))
+            //We create a method that the allows the parameter newExposureTime to be a double or null via "double?".
+            //This gives us the choice of either updating the exposure time remotley through scanmaster by defining
+            //newexposureTime as a double OR if no double is passed e.g. UpdateExposureTime(null) a value will
+            //be obtained locally via the ExposureTime Text box. 
+            if (!newExposureTime.HasValue)
             {
-                MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
-
-                // Query the current value 
-                double roundedExposureTime = 0;
-                if (exposuretimeprop.getvalue(ref roundedExposureTime))
+                if (double.TryParse(window.ExposureTimeTextBox.Text, out double parsedExposureTime))
                 {
-                    Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F2}");
+                    newExposureTime = parsedExposureTime;
                 }
                 else
                 {
-                    MyShowStatusNG("Failed to query current exposure time", exposuretimeprop.m_lasterr);
+                    MessageBox.Show("Please enter a valid number for Exposure Time.");
+                    return;
                 }
+            }
 
-                // Attempt to update the property
-                if (exposuretimeprop.setvalue(newExposureTime))
+            MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
+
+            // Query the current value 
+            double roundedExposureTime = 0;
+            if (exposuretimeprop.getvalue(ref roundedExposureTime))
+            {
+                Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F2}");
+            }
+            else
+            {
+                MyShowStatusNG("Failed to query current exposure time", exposuretimeprop.m_lasterr);
+            }
+
+            // Attempt to update the property
+            if (exposuretimeprop.setvalue(newExposureTime.Value))
+            {
+                Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
+
+                if (window.ExposureTimeLabel.InvokeRequired)
                 {
-                    Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
+                    window.ExposureTimeLabel.Invoke(new Action(() =>
+                    {
+                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                    }));
+                }
+                else
+                {
                     window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to update exposure time. Error: {exposuretimeprop.m_lasterr:X}");
-                    MyShowStatusNG("Failed to update exposure time", exposuretimeprop.m_lasterr);
                 }
             }
             else
             {
-                MessageBox.Show("Please enter a valid number for Exposure Time.");
+                Console.WriteLine($"Failed to update exposure time. Error: {exposuretimeprop.m_lasterr:X}");
+                MyShowStatusNG("Failed to update exposure time", exposuretimeprop.m_lasterr);
             }
         }
+
+        public void QueryFrameCount()
+        {
+            if (window.FrameCountLabel.InvokeRequired)
+            {
+                window.FrameCountLabel.Invoke(new Action(() =>
+                {
+                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                }));
+            }
+            else
+            {
+                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+            }
+
+            Console.WriteLine($"Queried Frame Count: {m_nFrameCount}");
+        }
+
+        public void UpdateFrameCount(int? setFrameCount = null)
+        {
+            if (!setFrameCount.HasValue)
+            {
+                if (int.TryParse(window.FrameCountTextBox.Text, out int parsedFrameCount) && parsedFrameCount >0)
+                {
+                    setFrameCount = parsedFrameCount;
+                }
+                else
+                {
+                    MessageBox.Show("Invalid input: Frame count must be a positive integer.");
+                    return;
+                }
+            }
+
+            m_nFrameCount = setFrameCount.Value;
+
+            Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
+
+            if (window.FrameCountLabel.InvokeRequired)
+            {
+                window.FrameCountLabel.Invoke(new Action(() =>
+                {
+                    window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+                }));
+            }
+            else
+            {
+                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+            }
+        }
+
+        //public void UpdateFrameCount()
+        //{
+
+        //    if (int.TryParse(window.FrameCountTextBox.Text, out int newFrameCount) && newFrameCount > 0)
+        //    {
+        //        m_nFrameCount = newFrameCount;
+        //        Console.WriteLine($"Frame Count updated to {m_nFrameCount}");
+
+        //        if (window.FrameCountLabel.InvokeRequired)
+        //        {
+        //            window.FrameCountLabel.Invoke(new Action(() =>
+        //            {
+        //                window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+        //            }));
+        //        }
+        //        else
+        //        {
+        //            window.FrameCountLabel.Text = $"Current Frame Count: {m_nFrameCount}";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Invalid input: Frame count must be a positive integer.");
+        //    }
+        //}
+
 
         public void Snap()
         {
@@ -963,12 +1336,11 @@ namespace csAcq4
                 return;                         // internal error
             }
 
-            
-            window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+            //window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
 
             string text = "";
 
-            m_nFrameCount = 20;
+            //m_nFrameCount = 4;
 
             if (window.IsMyFormStatus_Initialized())
             {
@@ -983,19 +1355,18 @@ namespace csAcq4
                     // allocation was failed
                     Console.WriteLine("Failed to allocate buffer");
                     MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
-                    window.MyFormStatus_Initialized(); // Reset form status to initialized
+                    //window.MyFormStatus_Initialized(); // Reset form status to initialized
                     return;                     // Fail: dcambuf_alloc()
                 }
 
                 // Success: dcambuf_alloc()
-
-                //update lut can be changed back to true
-                update_lut(false);
+                update_lut(true);
             }
 
             // start acquisition
             m_cap_stopping = false;
-            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  acqusition will stop after capturing m_nFrameCount frame
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing m_nFrameCount frame
+            
             if (!mydcam.cap_start(this))
             {
                 // acquisition was failed. In this sample, frame buffer is also released.
@@ -1017,7 +1388,7 @@ namespace csAcq4
             // Success: dcamcap_start()
             // acquisition has started
 
-            MyShowStatusOK(text + "dcamcap_start()");
+            MyShowStatusOK(text + $"Camera starts capturing {m_nFrameCount}...");
 
             MyDcamProp prop = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
 
@@ -1026,15 +1397,147 @@ namespace csAcq4
 
             if (v == DCAMPROP.TRIGGERSOURCE.SOFTWARE)
             {
-                window.MyFormStatus_AcquiringSoftwareTrigger(); // change dialog FormStatus to AcquiringSoftwareTrigger
+                //window.MyFormStatus_AcquiringSoftwareTrigger(); // change dialog FormStatus to AcquiringSoftwareTrigger
             }
             else
             {
-                window.MyFormStatus_Acquiring();           // change dialog FormStatus to Acquiring
+                //window.MyFormStatus_Acquiring();           // change dialog FormStatus to Acquiring
             }
 
-            MyThreadCapture_Start();            // start monitoring thread
+            //MyThreadCapture_Start();            // start monitoring thread
 
+
+
+            using (mydcamwait = new MyDcamWait(ref mydcam))
+            {
+                bool bcontinue2 = true;
+                while (bcontinue2)
+                {
+                    DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+                    DCAMWAIT eventhappened = DCAMWAIT.NONE;
+
+                    if (mydcamwait.start(eventmask, ref eventhappened))
+                    {
+                        //if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
+                        //{
+                        //    //break;
+                        //}
+
+                        //if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
+                        //{
+                        //    break;
+                        //}
+
+                        if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
+                        {
+                            int iNewestFrame = 0;
+                            int iFrameCount = 0;
+
+                            if (mydcam.cap_transferinfo(ref iNewestFrame, ref iFrameCount))
+                            {
+                                MyUpdateImage(iNewestFrame);
+                            }
+                        }
+
+                        if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
+                        {
+                            bcontinue2 = false;
+                            if (m_cap_stopping == false && mydcam.m_capmode == DCAMCAP_START.SNAP)
+                            {
+                                // in this condition, cap_stop() happens automatically, so update the main dialog
+                                MySnapCaptureFinished();
+                                break;
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (mydcamwait.m_lasterr == DCAMERR.TIMEOUT)
+                        {
+                            Console.WriteLine("Failed wait, DCAMERR.TIMEOUT.");
+                            break;
+                        }
+                        else
+                        if (mydcamwait.m_lasterr == DCAMERR.ABORT)
+                        {
+                            Console.WriteLine("Failed wait, DCAMERR.ABORT.");
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Stop acquisition after the snap is completed.
+            if (mydcam.cap_stop())
+            {
+                MyShowStatusOK($"{m_nFrameCount} frames has been successfully taken, now please click Save Snaps.");
+                window.MyFormStatus_Acquired(); // Update status to Acquired to reflect successful capture.
+            }
+            else
+            {
+                MyShowStatusNG("Failed to stop acquisition after snap", mydcam.m_lasterr);
+            }
+            // Update the image to display the snap  
+            MyUpdateImage(0);
+            MyUpdateDisplay(); // Refresh the display to show the snap
+        }
+        private int accumulatedFrameCount = 0;
+        private bool bufferAllocated = false; // flag to track buffer allocation
+        public void BurstCapture()
+        {
+            if (mydcam == null)
+            {
+                MyShowStatus("Internal Error: mydcam is null");
+                Console.WriteLine("Error: mydcam is null");
+                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+                return;                         // internal error
+            }
+            int nNewestFrameIndex = 0;
+            int nFrameCount = 0;
+
+            // Get the actual number of frames captured
+            if (!mydcam.cap_transferinfo(ref nNewestFrameIndex, ref nFrameCount))
+            {
+                Console.WriteLine("Failed to retrieve frame count.");
+                return;
+            }
+
+            string text = "";
+
+            // allocate m_nFrameCount frames to the buffer
+            if (window.IsMyFormStatus_Initialized())
+            {
+                // Only allocate buffer on the first call, do not allocate again if already allocated
+                if (!bufferAllocated)
+                {
+                    Console.WriteLine($"Allocating buffer for {m_nFrameCount} frames.");
+                    if (!mydcam.buf_alloc(m_nFrameCount))
+                    {
+                        Console.WriteLine("Failed to allocate buffer.");
+                        MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+                        return;
+                    }
+                    bufferAllocated = true;  // Flag that buffer is allocated
+                }
+            }
+
+            update_lut(true);
+
+
+            // start acquisition
+            m_cap_stopping = false;
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing m_nFrameCount frame
+
+            if (!mydcam.cap_start(this))
+            {
+                // acquisition was failed. In this sample, frame buffer is also released.
+                MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+                window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
+                return;                         // Fail: dcamcap_start()
+            }
+            Console.WriteLine($"Burst Capture started for {m_nFrameCount} frames.");
+            MyShowStatusOK($"Camera capturing {m_nFrameCount} frames...");
 
             using (mydcamwait = new MyDcamWait(ref mydcam))
             {
@@ -1059,32 +1562,118 @@ namespace csAcq4
                     {
                         if (mydcamwait.m_lasterr == DCAMERR.TIMEOUT)
                         {
-                            Console.WriteLine("Failed wait.");
+                            Console.WriteLine("Failed wait, DCAMERR.TIMEOUT.");
                             break;
                         }
                         else
                         if (mydcamwait.m_lasterr == DCAMERR.ABORT)
                         {
-                            Console.WriteLine("Failed wait.");
+                            Console.WriteLine("Failed wait, DCAMERR.ABORT.");
                             break;
                         }
                     }
                 }
             }
 
-            // Stop acquisition after the snap is completed.
+            // Stop acquisition but do NOT release the buffer
             if (mydcam.cap_stop())
             {
-                MyShowStatusOK($"{m_nFrameCount} frames has been successfully taken, now please click Save Snaps.");
-                window.MyFormStatus_Acquired(); // Update status to Acquired to reflect successful capture.
+                accumulatedFrameCount += m_nFrameCount; // Track total frames acquired
+                Console.WriteLine($"Snap completed. {m_nFrameCount} frames stored in temporary buffer. Total: {accumulatedFrameCount} has been stored.");
+                MyShowStatusOK("Snap completed. Frames stored in buffer.");
+                window.MyFormStatus_Acquired(); // Update status to Acquired.
             }
             else
             {
                 MyShowStatusNG("Failed to stop acquisition after snap", mydcam.m_lasterr);
             }
+
             // Update the image to display the snap  
             MyUpdateImage(0);
-            MyUpdateDisplay(); // Refresh the display to show the snap
+            MyUpdateDisplay();
+        }
+
+        // New function to save all stored frames in buffer to disk
+        public void SaveBurstBuffer()
+        {
+            if (mydcam == null)
+            {
+                Console.WriteLine("Error: mydcam is null. Cannot save buffer.");
+                return;
+            }
+
+            int nNewestFrameIndex = 0;
+            int nFrameCount = 0;
+
+            // Get the actual number of frames captured
+            if (!mydcam.cap_transferinfo(ref nNewestFrameIndex, ref nFrameCount))
+            {
+                Console.WriteLine("Failed to retrieve frame count.");
+                return;
+            }
+
+            if (nFrameCount == 0)
+            {
+                Console.WriteLine("No frames to save.");
+                return;
+            }
+
+            if (!window.IsMyFormStatus_Acquired())
+            {
+                Console.WriteLine("SaveBurstBuffer is only available after acquisition.");
+                return;
+            }
+
+            Directory.CreateDirectory(saveDirectory);
+            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff");
+
+            try
+            {
+                using (Tiff tiff = Tiff.Open(multiTiffPath, "w"))
+                {
+                    Console.WriteLine($"Saving {accumulatedFrameCount} frames...");
+
+                    for (int i = 0; i < accumulatedFrameCount; i++)
+                    {
+                        m_image.set_iFrame(i);
+                        if (!mydcam.buf_lockframe(ref m_image.bufframe))
+                        {
+                            Console.WriteLine($"Failed to lock frame {i}");
+                            continue;
+                        }
+
+                        int width = m_image.width;
+                        int height = m_image.height;
+                        int stride = width * 2;
+                        byte[] rawData = new byte[height * stride];
+                        Marshal.Copy(m_image.bufframe.buf, rawData, 0, rawData.Length);
+
+                        SaveFrameAs16BitTiff(tiff, rawData, width, height, i);
+                    }
+                }
+
+                Console.WriteLine("All frames saved successfully.");
+                MyShowStatusOK($"Saved {accumulatedFrameCount} frames to {multiTiffPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving TIFF files: {ex.Message}");
+            }
+            finally
+            {
+                if (!mydcam.buf_release())
+                {
+                    Console.WriteLine("Failed to release buffer.");
+                }
+                else
+                {
+                    Console.WriteLine("Buffer released.");
+                }
+                accumulatedFrameCount = 0; // Reset the accumulated frame count after saving
+                bufferAllocated = false; // reset flag to allow re-allocation
+                window.MyFormStatus_Initialized();
+                m_image.clear();
+            }
         }
 
         public void Live()
@@ -1102,7 +1691,8 @@ namespace csAcq4
 
             window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
 
-            m_nFrameCount = 20;
+
+            //m_nFrameCount = 20;
 
             if (window.IsMyFormStatus_Initialized())
             {
@@ -1133,7 +1723,7 @@ namespace csAcq4
                 // acquisition was failed. In this sample, frame buffer is also released.
                 MyShowStatusNG("dcamcap_start()", mydcam.m_lasterr);
 
-                mydcam.buf_release();           // release unnecessary buffer in DCAM
+                //mydcam.buf_release();           // release unnecessary buffer in DCAM
                 window.MyFormStatus_Initialized();          // change dialog FormStatus to Opened
                 return;                         // Fail: dcamcap_start()
             }
@@ -1194,70 +1784,154 @@ namespace csAcq4
             MyShowStatus("Acquisition stopped, ready for further operations");
         }
 
+        // shirley added this on 27/02
+        public void BurstTriggerRearm()
+        {
+            //  Check if the camera is in the correct trigger mode
+            MyDcamProp triggerSourceProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
+            MyDcamProp triggerModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGER_MODE);
+
+            double triggerSource = 0;
+            double triggerMode = 0;
+            triggerSourceProp.getvalue(ref triggerSource);
+            triggerModeProp.getvalue(ref triggerMode);
+            bool isExternalTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+            bool isStartTrigger = (triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+            bool isExternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+            bool isInternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.INTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+
+            // If in Internal Start, Reapply Settings to Ensure Correct Mode
+            if (isInternalStartTrigger)
+            {
+                //FormMain formMain = new FormMain();
+                //formMain.controller.ApplySelectedTriggerSource();
+                ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+                Console.WriteLine("Internal Start trigger is detected, now rearm to external start trigger.");
+            }
+
+            //// If in External Start, Reapply Settings to Ensure Correct Mode
+            //if (isExternalStartTrigger)
+            //{
+            //    ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+            //    Console.WriteLine("External Start trigger is detected, now rearm to external start trigger.");
+
+            //}
+
+            // Just out of curiosity, I found this property that can tell us the maximum frame count the device
+            // can keep in temporary buffer
+            //MyDcamProp FrameCountMaxprop = new MyDcamProp(mydcam, DCAMIDPROP.DEVICEBUFFER_FRAMECOUNTMAX);
+            //double allowedMaxFrameCount = 0;
+            //if (FrameCountMaxprop.getvalue(ref allowedMaxFrameCount))
+            //{
+            //    Console.WriteLine($"The maximum frame count the device can store to device temporary buffer is {allowedMaxFrameCount}.");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Failed to retrieve the maximum frame count allowed.");
+            //}
+        }
+        private void SaveFrameAs16BitTiff(Tiff tiff, byte[] rawData, int width, int height, int pageIndex)
+        {
+            tiff.SetField(TiffTag.IMAGEWIDTH, width);
+            tiff.SetField(TiffTag.IMAGELENGTH, height);
+            tiff.SetField(TiffTag.SAMPLESPERPIXEL, 1); 
+            tiff.SetField(TiffTag.BITSPERSAMPLE, 16);
+            //tiff.SetField(TiffTag.ORIENTATION, Orientation.TOPLEFT);
+            tiff.SetField(TiffTag.PLANARCONFIG, PlanarConfig.CONTIG);
+            tiff.SetField(TiffTag.PHOTOMETRIC, Photometric.MINISBLACK); // Black = 0
+            tiff.SetField(TiffTag.ROWSPERSTRIP, height);
+            tiff.SetField(TiffTag.COMPRESSION, Compression.NONE); // No compression for accuracy
+
+            // Write image data row by row
+            int stride = width * 2; // 16-bit per pixel
+            for (int row = 0; row < height; row++)
+            {
+                tiff.WriteScanline(rawData, row * stride, row, 0);
+            }
+
+            tiff.WriteDirectory(); // Create a new directory for the next page 
+        }
+
+
+        private string GetNextFileName(string directory, string baseFileName, string extension)
+        {
+            int fileIndex = 1;
+            string fileName;
+            do
+            {
+                fileName = Path.Combine(directory, $"{baseFileName}({fileIndex:D5}){extension}");
+                fileIndex++;
+            } while (File.Exists(fileName));
+            return fileName;
+        }
+
+        // Default save directory
+        private string saveDirectory = "E:\\Imperial College London\\OneDrive - Imperial College London\\Documents - Team ultracold - PH\\Data\\2025\\CCD data";
+
+        // Button Click Event to Set Save Directory
+        public void SetSaveDirectory() 
+        {
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                folderDialog.Description = "Select a folder to save captured frames";
+                folderDialog.SelectedPath = saveDirectory; // Set default directory
+
+                if (folderDialog.ShowDialog() == DialogResult.OK)
+                {
+                    saveDirectory = folderDialog.SelectedPath; // Update save path
+                    Console.WriteLine($"Save directory set to: {saveDirectory}");
+                    window.SaveDirectoryLabel.Text = $"Save Directory: {saveDirectory}";
+                }
+            }
+        }
         public void BufRelease()
         {
             if (mydcam == null)
             {
                 MyShowStatus("Internal Error: mydcam is null");
-                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
-                return;                         // internal error
+                window.MyFormStatus_Initialized(); // FormStatus should be Initialized.
+                return; // Internal error
             }
 
             if (!window.IsMyFormStatus_Acquired())
             {
                 MyShowStatus("Internal Error: BufRelease is only available when FormStatus is Acquired");
-                return;                         // internal error
+                return; // Internal error
             }
 
-            // Save images to disk before releasing buffer
-            string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
-            Directory.CreateDirectory(saveDirectory); // Create the directory if it does not exist 
+            Directory.CreateDirectory(saveDirectory);
+
+            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff"); // Get the next available file name
 
             try
             {
-                for (int i = 0; i < m_nFrameCount; i++)
+                using (Tiff tiff = Tiff.Open(multiTiffPath, "w")) // Open a new multi-page TIFF
                 {
-                    // Lock the frame to access its data
-                    m_image.set_iFrame(i);
-                    if (!mydcam.buf_lockframe(ref m_image.bufframe))
+                    for (int i = 0; i < m_nFrameCount; i++)
                     {
-                        MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
-                        continue; // Skip to the next frame if locking fails
-                    }
-
-                    // Convert the frame to a Bitmap
-                    Bitmap frame;
-                    lock (BitmapLock)
-                    {
-                        frame = new Bitmap(m_image.width, m_image.height, PixelFormat.Format24bppRgb);
-                        Rectangle rc = new Rectangle(0, 0, m_image.width, m_image.height);
-                        SUBACQERR err = subacq.copydib(ref frame, m_image.bufframe, ref rc, m_lut.inmax, m_lut.inmin, m_lut.camerabpp);
-
-                        if (err != SUBACQERR.SUCCESS)
+                        // Lock the frame to access its data
+                        m_image.set_iFrame(i);
+                        if (!mydcam.buf_lockframe(ref m_image.bufframe))
                         {
-                            MyShowStatusNG($"Failed to convert frame {i} to Bitmap", mydcam.m_lasterr);
-                            frame.Dispose();
-                            continue;
+                            MyShowStatusNG($"Failed to lock frame {i}", mydcam.m_lasterr);
+                            continue; // Skip if frame locking fails
                         }
+
+                        // Extract raw image data (in 16-bit grayscale)
+                        int width = m_image.width;
+                        int height = m_image.height;
+                        int stride = width * 2; // 16-bit = 2 bytes per pixel
+
+                        byte[] rawData = new byte[height * stride]; // Buffer for pixel data
+                        Marshal.Copy(m_image.bufframe.buf, rawData, 0, rawData.Length); // Copy raw data
+
+                        // **Save as 16-bit grayscale TIFF using BitMiracle.LibTiff**
+                        SaveFrameAs16BitTiff(tiff, rawData, width, height, i);
                     }
-
-                    // Generate a unique file name for the frame
-                    string tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}.tiff");
-
-                    // Check if the file already exists and generate a new name if necessary
-                    int counter = 1;
-                    while (File.Exists(tiffFilePath))
-                    {
-                        tiffFilePath = Path.Combine(saveDirectory, $"Frame_{i + 1:D2}_{counter}.tiff");
-                        counter++;
-                    }
-
-                    // Save the frame as an individual TIFF file
-                    frame.Save(tiffFilePath, ImageFormat.Tiff);
-                    frame.Dispose(); // Release the frame bitmap
                 }
-                Console.WriteLine($"{m_nFrameCount} frames are saving to the directory...");
-                MyShowStatusOK($"Saved {m_nFrameCount} frames as individual TIFF files to {saveDirectory}");
+
+                Console.WriteLine($"{m_nFrameCount} frames saved in MTIFF.");
+                MyShowStatusOK($"Saved {m_nFrameCount} frames as a MTIFF at {multiTiffPath}");
             }
             catch (Exception ex)
             {
@@ -1265,30 +1939,77 @@ namespace csAcq4
             }
             finally
             {
-                bool isError = false; // Flag to track if any errors occur during buffer release
-
-                // Release the buffer only if no error occurred during the main execution
                 if (!mydcam.buf_release())
                 {
                     MyShowStatusNG("dcambuf_release()", mydcam.m_lasterr);
-                    isError = true; // Fail: dcambuf_release()
+                }
+                else
+                {
+                    MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved.");
                 }
 
-                // Success: dcambuf_release()
-                MyShowStatusOK($"{m_nFrameCount} frames have been successfully saved to the directory.");
-                Console.WriteLine($"{m_nFrameCount} frames have been successfully saved to the directory.");
-                window.MyFormStatus_Initialized(); // Change dialog FormStatus to Opened
+                window.MyFormStatus_Initialized(); // Reset FormStatus
                 m_image.clear();
 
-                // If there was an error during buffer release, handle accordingly
-                if (isError)
-                {
-                    // If you want to show a specific message or handle other things due to failure
-                    MyShowStatus("Buffer release failed, cleanup needed.");
-                }
+                ////  Check if the camera is in the correct trigger mode
+                //MyDcamProp triggerSourceProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
+                //MyDcamProp triggerModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGER_MODE);
+
+                //double triggerSource = 0;
+                //double triggerMode = 0;
+                //triggerSourceProp.getvalue(ref triggerSource);
+                //triggerModeProp.getvalue(ref triggerMode);
+                //bool isExternalTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL);
+                //bool isStartTrigger = (triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+                //bool isExternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+                //bool isInternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.INTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
+
+                //// If in Internal Start, Reapply Settings to Ensure Correct Mode
+                //if (isInternalStartTrigger)
+                //{
+                //    //FormMain formMain = new FormMain();
+                //    //formMain.controller.ApplySelectedTriggerSource();
+                //    ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+                //}
+
+                //// If in External Start, Reapply Settings to Ensure Correct Mode
+                //if (isExternalStartTrigger)
+                //{
+                //    ApplySelectedTriggerSource(); // Reapply the external trigger source selection
+                //}
+
+                //Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
+                //Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isStartTrigger ? "Start" : "EDGE")})");
             }
         }
 
+        //rhys test receiving text from client
+        private void HandleClient(TcpClient client)
+        {
+            try
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                // Read data from the client
+                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    Console.WriteLine($"Received from client: {receivedMessage}");
+
+                    // Here you can process the message as needed, for example, updating a UI element
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while handling client: {ex.Message}");
+            }
+            finally
+            {
+                client.Close();
+            }
+        }   
 
         public void AutoIntensity()
         {
@@ -1300,12 +2021,15 @@ namespace csAcq4
 
         public void RemoteSnap()
         {
-            Snap();
+            
+            //Task.Run sets up the function to be run Asynchronously 
+            Task.Run(()=>Snap());
         }
 
         public void RemoteBufRelease()
         {
             BufRelease();
+            BurstTriggerRearm();
         }
 
         public void RemoteStop()
@@ -1313,15 +2037,35 @@ namespace csAcq4
             StopAcquisition();
         }
 
+        private Thread updateGainThread;
         public void RemoteUpdateGain()
         {
             UpdateCCDGain();
         }
-
+        
+        //private Thread queryGainThread;
         public void RemoteQueryCCDGain()
         {
+
             QueryCCDGain();
+            //queryGainThread = new Thread(new ThreadStart(QueryCCDGain));
+            //queryGainThread.Start();
+            //QueryCCDGain();
         }
+
+        public void RemoteFrameUpdate()
+        {
+            UpdateFrameCount();
+        }
+
+        //public void RemoteApplyTriggerSource()
+        //{
+        //    ApplySelectedTriggerSource();
+        //}
+        //public void RemoteClientHandle()
+        //{
+        //    HandleClient();
+        //}
         #endregion
     }
 }
