@@ -266,29 +266,8 @@ namespace csAcq4
                 bool isExternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.EXTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
                 bool isInternalStartTrigger = (triggerSource == (double)DCAMPROP.TRIGGERSOURCE.INTERNAL || triggerMode == (double)DCAMPROP.TRIGGER_MODE.START);
 
-                //// If in Internal Start, Reapply Settings to Ensure Correct Mode
-                //if (isInternalStartTrigger)
-                //{
-                //    //FormMain formMain = new FormMain();
-                //    //formMain.controller.ApplySelectedTriggerSource();
-                //    controller.ApplySelectedTriggerSource(); // Reapply the external trigger source selection
-                //}
-
-                //// If in External Start, Reapply Settings to Ensure Correct Mode
-                //if (isExternalStartTrigger)
-                //{
-                //    controller.ApplySelectedTriggerSource(); // Reapply the external trigger source selection
-                //}
-
                 Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isExternalTrigger ? "EXTERNAL" : "INTERNAL")})");
                 Console.WriteLine($" Starting frame capture... (Trigger Mode: {(isStartTrigger ? "Start" : "EDGE")})");
-
-                ////  If external trigger is required but not set, return an error
-                //if (isExternalTrigger && m_capmode != DCAMCAP_START.SNAP)
-                //{
-                //    Console.WriteLine(" External trigger mode requires SNAP mode.", DCAMERR.INVALIDPARAM);
-                //    return false;
-                //}
 
                 //  Start capturing
                 m_lasterr = dcamcap.start(m_hdcam, m_capmode);
