@@ -592,33 +592,33 @@ namespace EDMBlockHead.Acquire
                     // keep an eye on what the phase lock is doing
 
                     var stopwatchsinglepoint = System.Diagnostics.Stopwatch.StartNew();
-                    p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
-                    p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                    //p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+                    //p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
                     // scan the analog inputs
                     double[] spd;
                     // fake some data if we're in debug mode
-                    if (Environs.Debug)
-                    {
-                        spd = new double[7];
-                        spd[0] = 1;
-                        spd[1] = 2;
-                        spd[2] = 3;
-                    }
-                    else
-                    {
-                        singlePointInputTask.Start();
-                        spd = singlePointInputReader.ReadSingleSample();
-                        singlePointInputTask.Stop();
-                    }
+                    //if (Environs.Debug)
+                    //{
+                    spd = new double[7];
+                    spd[0] = 1;
+                    spd[1] = 2;
+                    spd[2] = 3;
+                    //}
+                    //else
+                    //{
+                    //    singlePointInputTask.Start();
+                    //    spd = singlePointInputReader.ReadSingleSample();
+                    //    singlePointInputTask.Stop();
+                    //}
                     p.SinglePointData.Add("MiniFlux1", spd[0]);
                     //p.SinglePointData.Add("MiniFlux2", spd[1]);
                     //p.SinglePointData.Add("MiniFlux3", spd[2]);
 
-                    hardwareController.ReadIMonitor();
+                    //hardwareController.ReadIMonitor();
                     //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
                     //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
-                    p.SinglePointData.Add("WestCurrent", hardwareController.WestCurrent);
-                    p.SinglePointData.Add("EastCurrent", hardwareController.EastCurrent);
+                    p.SinglePointData.Add("WestCurrent", spd[1]);// hardwareController.WestCurrent);
+                    p.SinglePointData.Add("EastCurrent", spd[2]);// hardwareController.EastCurrent);
 
                     b.Points.Add(p);
                     stopwatchsinglepoint.Stop();
@@ -953,7 +953,9 @@ namespace EDMBlockHead.Acquire
             magInputs = new ScannedAnalogInputCollection();
             magInputs.RawSampleRate = 10000;
             magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            magInputs.GateLength = (int)(((int)scanMaster.GetPGSetting("flashlampPulseInterval")-100000)/(1000000/magInputs.RawSampleRate));//Changed from 1200 to scanMaster related to get as much data per shot //usually this is 280, I changed this to take more mag data per block (10 June 2021)
+            magInputs.GateLength = (int)(((int)scanMaster.GetPGSetting("flashlampPulseInterval")-50000)/(1000000/magInputs.RawSampleRate));//Changed from 1200 to scanMaster related to get as much data per shot //usually this is 280, I changed this to take more mag data per block (10 June 2021)
+
+            Console.WriteLine((magInputs.GateLength).ToString());
 
             ScannedAnalogInput mag = new ScannedAnalogInput();
             mag.ReductionMode = DataReductionMode.Average;

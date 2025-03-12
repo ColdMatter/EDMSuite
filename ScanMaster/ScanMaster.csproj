@@ -661,6 +661,7 @@
     <Compile Include="WavemeterInputPlugin.cs" />
     <Compile Include="ManualOutputPlugin.cs" />
     <Compile Include="BFieldUSBOutputPlugin.cs" />
+    <Compile Include="WindfreakOPFrequencyOutputPlugin.cs" />
     <Compile Include="WMLOutputPlugin.cs" />
     <Compile Include="YAGFirePatternBuilder.cs" />
     <Compile Include="YAGFirePatternPlugin.cs" />

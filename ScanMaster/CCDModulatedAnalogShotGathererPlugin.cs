@@ -66,25 +66,27 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			settings["gateStartTime"] = 600;
 			settings["gateLength"] = 12000;
+			settings["cameraEnabled"] = false;
 			settings["ccdEnableStartTime"] = 600;
 			settings["ccdEnableLength"] = 10000;
+			settings["ccdTriggerMode"] = 2;
+			settings["ccdNBurstFrames"] = 20;
+			settings["ccdExposureTime"] = 0.05;
+			settings["ccd1Gain"] = 100;
 			settings["clockPeriod"] = 1;
 			settings["sampleRate"] = 100000;
 			settings["channel"] = "detectorA,detectorB";
 			settings["cameraChannel"] = "cameraEnabler";
-			settings["cameraEnabled"] = false;
 			settings["inputRangeLow"] = -1.0;
 			settings["inputRangeHigh"] = 10.0;
 		}
 		protected override void InitialiseSettings()
 		{
 		}
-
-        public override void AcquisitionStarting()
+		
+		public override void AcquisitionStarting()
 		{
-			//Boolean CameraEnabled = (bool)settings["cameraEnabled"];
-
-            if ((bool)settings["cameraEnabled"])
+			if ((bool)settings["cameraEnabled"])
             {
                 //Set Up TCP CCD1 - ULTRAEDM
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
@@ -115,39 +117,64 @@ namespace ScanMaster.Acquire.Plugins
 				//Console.WriteLine(ccd2Port.ToString());
 				//ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
 
-				int CCDpoints = (int)config.outputPlugin.Settings["pointsPerScan"];
-				Console.WriteLine(CCDpoints.ToString());
-				//ccdcontroller.RemoteQueryCCDGain();
+
+				//set Trigger Mode 0 = internal, 1 = burst mode, 2 = external edge
+				int ccdTriggerMode = (int)settings["ccdTriggerMode"];
+				ccd1controller.ApplySelectedTriggerSource(ccdTriggerMode);
+
+				//set the number of ccd frames 
+				if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
+				{
+					int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+					//ccd1controller.UpdateNumSnaps(CCDsnaps);
+				}
+				else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
+				{
+					int CCDsnaps = (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+					//ccd1controller.UpdateNumSnaps(CCDsnaps);
+					int CCDBurstframes = (int)settings["ccdNBurstFrames"];
+					ccd1controller.UpdateFrameCount(CCDBurstframes);
+				}
+
+				//set the CCD exposure Time
+				double CCDExposureTime = (double)settings["ccdExposureTime"];
+                ccd1controller.UpdateExposureTime(CCDExposureTime);
+
+				//set the CCD gain 
+				int ccdGain = (int)settings["ccd1Gain"];
+                ccd1controller.UpdateCCDGain(ccdGain);
 
 
-				//System.Threading.Tasks.Task.Run(() =>
-				//{
-				//    try
-				//    {
-				//        ccd1controller.RemoteSnap();
+				if (ccdTriggerMode == 2)
+				{
 
-				//    }
-				//    catch (Exception ex)
-				//    {
-				//        Console.WriteLine("CCD aquisition error", ex);
-				//    }
-				//});
-
-				//double CCDExposureTime = 0.1;
-				//ccd1controller.UpdateExposureTime(CCDExposureTime);
-
-				//System.Threading.Tasks.Task.Run(() =>
-				//            {
-				//                try
-				//                {
-				//                    ccd2controller.RemoteSnap();
-				//                }
-				//                catch (Exception ex)
-				//                {
-				//                    Console.WriteLine("CCD aquisition error", ex);
-				//                }
-				//            });
-			}
+					System.Threading.Tasks.Task.Run(() =>
+							{
+								try
+								{
+									ccd1controller.RemoteSnap();
+								}
+								catch (Exception ex)
+								{
+									Console.WriteLine("CCD aquisition error", ex);
+								}
+							});
+				}
+				else if (ccdTriggerMode == 1)
+				{
+					System.Threading.Tasks.Task.Run(() =>
+					{
+						try
+						{
+							ccd1controller.ContinuousSnapAndSave();
+						}
+						catch (Exception ex)
+						{
+							Console.WriteLine("CCD aquisition error", ex);
+						}
+					});
+				}
+            }
 
             // configure the analog input
             inputTask1 = new NationalInstruments.DAQmx.Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
@@ -251,22 +278,43 @@ namespace ScanMaster.Acquire.Plugins
 			inputTask1.Dispose();
 			inputTask2.Dispose();
 			counterTask1.Dispose();
-            //ccd1controller.RemoteBufRelease();
 
-            //if ((bool)settings["cameraEnabled"] && ccd2controller != null)
-            //{
+            if ((bool)settings["cameraEnabled"] && ccd1controller != null)
+            {
 
-            //    try
-            //    {
-            //        ccd2controller.RemoteBufRelease();
-            //        // Disconnect the remote object (if using .NET Remoting)
-            //        RemotingServices.Disconnect(ccd2controller);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("Error during disconnection: " + ex.ToString());
-            //    }
-            //}
+                try
+                {
+					if ((int)settings["ccdTriggerMode"] == 2)
+					{
+						ccd1controller.RemoteBufRelease();
+					}
+                    // Disconnect the remote object (if using .NET Remoting)
+                    RemotingServices.Disconnect(ccd1controller);
+				}
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error during disconnection: " + ex.ToString());
+                }
+            }
+
+            if ((bool)settings["cameraEnabled"] && ccd2controller != null)
+            {
+
+                try
+                {
+					if ((int)settings["ccdTriggerMode"] == 2)
+					{
+						ccd2controller.RemoteBufRelease();
+					}
+
+                    // Disconnect the remote object (if using .NET Remoting)
+                    RemotingServices.Disconnect(ccd2controller);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error during disconnection: " + ex.ToString());
+                }
+            }
 
         }
 
@@ -307,42 +355,96 @@ namespace ScanMaster.Acquire.Plugins
             {
                 if (!Environs.Debug)
                 {
-                   
+
                     //Console.WriteLine("Waiting for camera to start capturing...");
                     //cameraStarted.Wait();  // Wait until the camera signals frame capture start
 
-                    if (config.switchPlugin.State == true)
+                    if (config.switchPlugin.State == true) 
                     {
-						//System.Threading.Tasks.Task.Run(() =>
-						//{
-						//	try
-						//	{
-						//		ccd1controller.RemoteSnap();
+                        //Thread.Sleep(50);
+                        //System.Threading.Tasks.Task.Run(() =>
+                        //{
+                        //    try
+                        //    {
+                        //        ccd1controller.RemoteSnap();
 
-						//	}
-						//	catch (Exception ex)
-						//	{
-						//		Console.WriteLine("CCD aquisition error", ex);
-						//	}
-						//});
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
+                        //        Console.WriteLine("CCD aquisition error", ex);
+                        //    }
+                        //});
+                        //Thread.Sleep(50);
+                        //bool success = System.Threading.Tasks.Task.Run(() => ccd1controller.SnapAsync()).Result;
+
+                        //bool success = System.Threading.Tasks.Task.Run(() => ccd1controller.SnapAsync()).Result;
+
+                        //if (!success)
+                        //{
+                        //	Console.WriteLine("Failed to start Snap.");
+                        //	return; // Exit if Snap did not start successfully
+                        //}
+                        //Console.WriteLine("Snap started successfully.");
 						counterTask1.Start(); // Start camera trigger
                         inputTask1.Start();
-                        latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
-                        inputTask1.Stop();
-						//ccd1controller.RemoteBufRelease();
+						latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
+						inputTask1.Stop();
+						counterTask1.Stop();
+						//ccd2controller.ContinuousSnapAndSave();
+
+						//bool result = await ccd1controller.RemoteBufReleaseAsync();
+						//if (result)
+						//{
+						//    Console.WriteLine("BufRelease completed successfully.");
+						//}
+						//else
+						//{
+						//    Console.WriteLine("BufRelease failed.");
+						//}
+
+						//bool result = System.Threading.Tasks.Task.Run(() => ccd1controller.RemoteBufReleaseAsync()).Result;
+						//bool result = ccd1controller.RemoteBufReleaseAsync().GetAwaiter().GetResult();
+						//if (result)
+						//{
+						//    Console.WriteLine("BufRelease completed successfully.");
+						//}
+						//else
+						//{
+						//    Console.WriteLine("BufRelease failed.");
+						//}
+						
+						//Thread.Sleep(200);
+						//ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
+
 					}
-                    else
+					else
                     {
+                        //System.Threading.Tasks.Task.Run(() =>
+                        //{
+                        //    try
+                        //    {
+                        //        ccd1controller.RemoteSnap();
+
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
+                        //        Console.WriteLine("CCD aquisition error", ex);
+                        //    }
+                        //});
+                        //Thread.Sleep(50);
                         counterTask1.Start(); // Start camera trigger
                         inputTask2.Start();
                         latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
                         inputTask2.Stop();
-                    }
+						counterTask1.Stop();
+						//Thread.Sleep(200);
+						//ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
+					}
 
                     //Console.WriteLine("Waiting for camera to finish capturing...");
                     //cameraFinished.Wait();  // Wait for the camera to confirm frame completion
 
-                    counterTask1.Stop();
+                    
                     //cameraStarted.Reset();
                     //cameraFinished.Reset();
                     //Console.WriteLine("Camera handshake complete, system rearmed.");
@@ -351,37 +453,37 @@ namespace ScanMaster.Acquire.Plugins
         }
 
 
-        public override Shot Shot
-		{
-			get 
-			{
-				lock(this)
-				{
-					Shot s = new Shot();
-					s.SetTimeStamp();
-					if (!Environs.Debug)
-					{
-						for (int i = 0 ; i < inputTask1.AIChannels.Count ; i++)
-						{
-							TOF t = new TOF();
-							t.ClockPeriod = (int)settings["clockPeriod"];
-                            t.GateStartTime = (int)settings["gateStartTime"];
-							double[] tmp = new double[(int)settings["gateLength"]];
-							for (int j = 0 ; j < (int)settings["gateLength"] ; j++)
-								tmp[j] = latestData[i,j];
-							t.Data = tmp;
-							s.TOFs.Add(t);
-						}
-						return s;
-					}
-					else 
-					{
-						Thread.Sleep(50);
-						return DataFaker.GetFakeShot((int)settings["gateStartTime"], (int)settings["gateLength"],
-							(int)settings["clockPeriod"], 1, 1);
-					}
-				}
-			}
-		}
-	}
+    public override Shot Shot
+    {
+        get
+        {
+            lock (this)
+            {
+                Shot s = new Shot();
+                s.SetTimeStamp();
+                if (!Environs.Debug)
+                {
+                    for (int i = 0; i < inputTask1.AIChannels.Count; i++)
+                    {
+                        TOF t = new TOF();
+                        t.ClockPeriod = (int)settings["clockPeriod"];
+                        t.GateStartTime = (int)settings["gateStartTime"];
+                        double[] tmp = new double[(int)settings["gateLength"]];
+                        for (int j = 0; j < (int)settings["gateLength"]; j++)
+                            tmp[j] = latestData[i, j];
+                        t.Data = tmp;
+                        s.TOFs.Add(t);
+                    }
+                    return s;
+                }
+                else
+                {
+                    Thread.Sleep(50);
+                    return DataFaker.GetFakeShot((int)settings["gateStartTime"], (int)settings["gateLength"],
+                        (int)settings["clockPeriod"], 1, 1);
+                }
+            }
+        }
+    }
+}
 }
