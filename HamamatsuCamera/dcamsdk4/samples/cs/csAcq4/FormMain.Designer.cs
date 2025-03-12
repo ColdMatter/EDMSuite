@@ -53,11 +53,8 @@
             this.PicDisplay = new System.Windows.Forms.PictureBox();
             this.PushInit = new System.Windows.Forms.Button();
             this.PushSnap = new System.Windows.Forms.Button();
-            this.BurstCapture = new System.Windows.Forms.Button();
-            this.SaveBurstBuffer = new System.Windows.Forms.Button();
             this.PushLive = new System.Windows.Forms.Button();
             this.PushIdle = new System.Windows.Forms.Button();
-            this.BurstTriggerRearm = new System.Windows.Forms.Button();
             this.PushBufRelease = new System.Windows.Forms.Button();
             this.PushClose = new System.Windows.Forms.Button();
             this.PushUninit = new System.Windows.Forms.Button();
@@ -67,9 +64,17 @@
             this.UpdateFrameCountButton = new System.Windows.Forms.Button();
             this.FrameCountTextBox = new System.Windows.Forms.TextBox();
             this.FrameCountLabel = new System.Windows.Forms.Label();
+            this.FrameCounterLabel = new System.Windows.Forms.Label();
             this.TriggerSourceLabel = new System.Windows.Forms.Label();
             this.SetSaveDirectoryButton = new System.Windows.Forms.Button();
             this.SaveDirectoryLabel = new System.Windows.Forms.Label();
+            this.ContinuousSnapAndSaveButton = new System.Windows.Forms.Button();
+            this.QueryNumSnapsButton = new System.Windows.Forms.Button();
+            this.UpdateNumSnapsButton = new System.Windows.Forms.Button();
+            this.NumSnapsLabel = new System.Windows.Forms.Label();
+            this.NumSnapsTextBox = new System.Windows.Forms.TextBox();
+            this.comboBoxCameraSelection = new System.Windows.Forms.ComboBox();
+            this.CameraSelectionLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PicDisplay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -310,34 +315,6 @@
             this.PushSnap.UseVisualStyleBackColor = false;
             this.PushSnap.Click += new System.EventHandler(this.PushSnap_Click);
             // 
-            // BurstCapture
-            // 
-            this.BurstCapture.BackColor = System.Drawing.SystemColors.Control;
-            this.BurstCapture.Cursor = System.Windows.Forms.Cursors.Default;
-            this.BurstCapture.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.BurstCapture.Location = new System.Drawing.Point(14, 241);
-            this.BurstCapture.Name = "BurstCapture";
-            this.BurstCapture.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.BurstCapture.Size = new System.Drawing.Size(113, 33);
-            this.BurstCapture.TabIndex = 36;
-            this.BurstCapture.Text = "Burst Capture";
-            this.BurstCapture.UseVisualStyleBackColor = false;
-            this.BurstCapture.Click += new System.EventHandler(this.BurstCapture_Click);
-            // 
-            // SaveBurstBuffer
-            // 
-            this.SaveBurstBuffer.BackColor = System.Drawing.SystemColors.Control;
-            this.SaveBurstBuffer.Cursor = System.Windows.Forms.Cursors.Default;
-            this.SaveBurstBuffer.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SaveBurstBuffer.Location = new System.Drawing.Point(14, 339);
-            this.SaveBurstBuffer.Name = "SaveBurstBuffer";
-            this.SaveBurstBuffer.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.SaveBurstBuffer.Size = new System.Drawing.Size(113, 33);
-            this.SaveBurstBuffer.TabIndex = 36;
-            this.SaveBurstBuffer.Text = "Save Burst Buffer";
-            this.SaveBurstBuffer.UseVisualStyleBackColor = false;
-            this.SaveBurstBuffer.Click += new System.EventHandler(this.SaveBurstBuffer_Click);
-            // 
             // PushLive
             // 
             this.PushLive.BackColor = System.Drawing.SystemColors.Control;
@@ -357,7 +334,7 @@
             this.PushIdle.BackColor = System.Drawing.SystemColors.Control;
             this.PushIdle.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushIdle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushIdle.Location = new System.Drawing.Point(14, 389);
+            this.PushIdle.Location = new System.Drawing.Point(14, 340);
             this.PushIdle.Name = "PushIdle";
             this.PushIdle.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushIdle.Size = new System.Drawing.Size(113, 33);
@@ -366,26 +343,12 @@
             this.PushIdle.UseVisualStyleBackColor = false;
             this.PushIdle.Click += new System.EventHandler(this.PushIdle_Click);
             // 
-            // BurstTriggerRearm
-            // 
-            this.BurstTriggerRearm.BackColor = System.Drawing.SystemColors.Control;
-            this.BurstTriggerRearm.Cursor = System.Windows.Forms.Cursors.Default;
-            this.BurstTriggerRearm.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.BurstTriggerRearm.Location = new System.Drawing.Point(14, 291);
-            this.BurstTriggerRearm.Name = "BurstTriggerRearm";
-            this.BurstTriggerRearm.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.BurstTriggerRearm.Size = new System.Drawing.Size(113, 33);
-            this.BurstTriggerRearm.TabIndex = 15;
-            this.BurstTriggerRearm.Text = "BurstTriggerRearm";
-            this.BurstTriggerRearm.UseVisualStyleBackColor = false;
-            this.BurstTriggerRearm.Click += new System.EventHandler(this.BurstTriggerRearm_Click);
-            // 
             // PushBufRelease
             // 
             this.PushBufRelease.BackColor = System.Drawing.SystemColors.Control;
             this.PushBufRelease.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushBufRelease.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushBufRelease.Location = new System.Drawing.Point(14, 438);
+            this.PushBufRelease.Location = new System.Drawing.Point(14, 241);
             this.PushBufRelease.Name = "PushBufRelease";
             this.PushBufRelease.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushBufRelease.Size = new System.Drawing.Size(113, 33);
@@ -399,7 +362,7 @@
             this.PushClose.BackColor = System.Drawing.SystemColors.Control;
             this.PushClose.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushClose.Location = new System.Drawing.Point(14, 486);
+            this.PushClose.Location = new System.Drawing.Point(12, 389);
             this.PushClose.Name = "PushClose";
             this.PushClose.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushClose.Size = new System.Drawing.Size(113, 33);
@@ -413,7 +376,7 @@
             this.PushUninit.BackColor = System.Drawing.SystemColors.Control;
             this.PushUninit.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushUninit.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushUninit.Location = new System.Drawing.Point(14, 525);
+            this.PushUninit.Location = new System.Drawing.Point(12, 438);
             this.PushUninit.Name = "PushUninit";
             this.PushUninit.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushUninit.Size = new System.Drawing.Size(113, 33);
@@ -425,7 +388,7 @@
             // 
             this.comboTriggerSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboTriggerSource.FormattingEnabled = true;
-            this.comboTriggerSource.Location = new System.Drawing.Point(678, 190);
+            this.comboTriggerSource.Location = new System.Drawing.Point(678, 248);
             this.comboTriggerSource.Name = "comboTriggerSource";
             this.comboTriggerSource.Size = new System.Drawing.Size(150, 21);
             this.comboTriggerSource.TabIndex = 29;
@@ -433,7 +396,7 @@
             // 
             // QueryFrameCountButton
             // 
-            this.QueryFrameCountButton.Location = new System.Drawing.Point(505, 128);
+            this.QueryFrameCountButton.Location = new System.Drawing.Point(505, 120);
             this.QueryFrameCountButton.Name = "QueryFrameCountButton";
             this.QueryFrameCountButton.Size = new System.Drawing.Size(150, 23);
             this.QueryFrameCountButton.TabIndex = 29;
@@ -443,7 +406,7 @@
             // 
             // UpdateFrameCountButton
             // 
-            this.UpdateFrameCountButton.Location = new System.Drawing.Point(505, 157);
+            this.UpdateFrameCountButton.Location = new System.Drawing.Point(505, 149);
             this.UpdateFrameCountButton.Name = "UpdateFrameCountButton";
             this.UpdateFrameCountButton.Size = new System.Drawing.Size(150, 23);
             this.UpdateFrameCountButton.TabIndex = 30;
@@ -453,25 +416,35 @@
             // 
             // FrameCountTextBox
             // 
-            this.FrameCountTextBox.Location = new System.Drawing.Point(678, 156);
+            this.FrameCountTextBox.Location = new System.Drawing.Point(678, 149);
             this.FrameCountTextBox.Name = "FrameCountTextBox";
             this.FrameCountTextBox.Size = new System.Drawing.Size(100, 20);
             this.FrameCountTextBox.TabIndex = 31;
-            this.FrameCountTextBox.Text = "4";
+            this.FrameCountTextBox.Text = "20";
             // 
             // FrameCountLabel
             // 
             this.FrameCountLabel.AutoSize = true;
-            this.FrameCountLabel.Location = new System.Drawing.Point(675, 133);
+            this.FrameCountLabel.Location = new System.Drawing.Point(675, 125);
             this.FrameCountLabel.Name = "FrameCountLabel";
             this.FrameCountLabel.Size = new System.Drawing.Size(130, 13);
             this.FrameCountLabel.TabIndex = 32;
             this.FrameCountLabel.Text = "Current Frame Count: N/A";
             // 
+            // FrameCounterLabel
+            // 
+            this.FrameCounterLabel.AutoSize = true;
+            this.FrameCounterLabel.Location = new System.Drawing.Point(675, 105);
+            this.FrameCounterLabel.Name = "FrameCounterLabel";
+            this.FrameCounterLabel.Size = new System.Drawing.Size(83, 13);
+            this.FrameCounterLabel.TabIndex = 36;
+            this.FrameCounterLabel.Text = "Frames taken: 0";
+            this.FrameCounterLabel.Click += new System.EventHandler(this.UpdateFrameCounter);
+            // 
             // TriggerSourceLabel
             // 
             this.TriggerSourceLabel.AutoSize = true;
-            this.TriggerSourceLabel.Location = new System.Drawing.Point(538, 193);
+            this.TriggerSourceLabel.Location = new System.Drawing.Point(538, 251);
             this.TriggerSourceLabel.Name = "TriggerSourceLabel";
             this.TriggerSourceLabel.Size = new System.Drawing.Size(117, 13);
             this.TriggerSourceLabel.TabIndex = 33;
@@ -498,6 +471,74 @@
             this.SaveDirectoryLabel.Text = "Current Save Directory: \nE:\\Imperial College London\\OneDrive - Imperial College L" +
     "ondon\\\nDocuments - Team ultracold - PH\\Data\\2025\\CCD data";
             // 
+            // ContinuousSnapAndSaveButton
+            // 
+            this.ContinuousSnapAndSaveButton.AutoSize = true;
+            this.ContinuousSnapAndSaveButton.Location = new System.Drawing.Point(12, 289);
+            this.ContinuousSnapAndSaveButton.Name = "ContinuousSnapAndSaveButton";
+            this.ContinuousSnapAndSaveButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ContinuousSnapAndSaveButton.Size = new System.Drawing.Size(123, 33);
+            this.ContinuousSnapAndSaveButton.TabIndex = 38;
+            this.ContinuousSnapAndSaveButton.Text = "Burst Mode";
+            this.ContinuousSnapAndSaveButton.UseVisualStyleBackColor = false;
+            this.ContinuousSnapAndSaveButton.Click += new System.EventHandler(this.ContinuousSnapAndSave_Click);
+            // 
+            // QueryNumSnapsButton
+            // 
+            this.QueryNumSnapsButton.Location = new System.Drawing.Point(505, 188);
+            this.QueryNumSnapsButton.Name = "QueryNumSnapsButton";
+            this.QueryNumSnapsButton.Size = new System.Drawing.Size(150, 23);
+            this.QueryNumSnapsButton.TabIndex = 39;
+            this.QueryNumSnapsButton.Text = "Query Shot Count";
+            this.QueryNumSnapsButton.UseVisualStyleBackColor = true;
+            this.QueryNumSnapsButton.Click += new System.EventHandler(this.QueryNumSnapsButton_Click);
+            // 
+            // UpdateNumSnapsButton
+            // 
+            this.UpdateNumSnapsButton.Location = new System.Drawing.Point(505, 217);
+            this.UpdateNumSnapsButton.Name = "UpdateNumSnapsButton";
+            this.UpdateNumSnapsButton.Size = new System.Drawing.Size(150, 23);
+            this.UpdateNumSnapsButton.TabIndex = 40;
+            this.UpdateNumSnapsButton.Text = "Update Shot Count";
+            this.UpdateNumSnapsButton.UseVisualStyleBackColor = true;
+            this.UpdateNumSnapsButton.Click += new System.EventHandler(this.UpdateNumSnapsButton_Click);
+            // 
+            // NumSnapsLabel
+            // 
+            this.NumSnapsLabel.AutoSize = true;
+            this.NumSnapsLabel.Location = new System.Drawing.Point(675, 193);
+            this.NumSnapsLabel.Name = "NumSnapsLabel";
+            this.NumSnapsLabel.Size = new System.Drawing.Size(126, 13);
+            this.NumSnapsLabel.TabIndex = 42;
+            this.NumSnapsLabel.Text = "Current Shot Count: N/A";
+            // 
+            // NumSnapsTextBox
+            // 
+            this.NumSnapsTextBox.Location = new System.Drawing.Point(678, 217);
+            this.NumSnapsTextBox.Name = "NumSnapsTextBox";
+            this.NumSnapsTextBox.Size = new System.Drawing.Size(100, 20);
+            this.NumSnapsTextBox.TabIndex = 41;
+            this.NumSnapsTextBox.Text = "100";
+            //
+            // comboBoxCameraSelection 
+            //
+            this.comboBoxCameraSelection.Location = new System.Drawing.Point(678, 280);
+            this.comboBoxCameraSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCameraSelection.FormattingEnabled = true;
+            this.comboBoxCameraSelection.Name = "comboBoxCameraSelection";
+            this.comboBoxCameraSelection.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxCameraSelection.TabIndex = 43;
+            this.comboBoxCameraSelection.SelectedIndexChanged += new System.EventHandler(this.ComboBoxCameraSelection_SelectedIndexChanged);
+            // 
+            // CameraSelectionLabel
+            // 
+            this.CameraSelectionLabel.AutoSize = true;
+            this.CameraSelectionLabel.Location = new System.Drawing.Point(538, 280);
+            this.CameraSelectionLabel.Name = "CameraSelectionLabel";
+            this.CameraSelectionLabel.Size = new System.Drawing.Size(117, 13);
+            this.CameraSelectionLabel.TabIndex = 44;
+            this.CameraSelectionLabel.Text = "Current Selected Camera:";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -514,10 +555,7 @@
             this.Controls.Add(this.PicDisplay);
             this.Controls.Add(this.PushInit);
             this.Controls.Add(this.PushSnap);
-            this.Controls.Add(this.BurstCapture);
-            this.Controls.Add(this.SaveBurstBuffer);
             this.Controls.Add(this.PushLive);
-            this.Controls.Add(this.BurstTriggerRearm);
             this.Controls.Add(this.PushIdle);
             this.Controls.Add(this.PushBufRelease);
             this.Controls.Add(this.PushClose);
@@ -537,9 +575,17 @@
             this.Controls.Add(this.UpdateFrameCountButton);
             this.Controls.Add(this.FrameCountTextBox);
             this.Controls.Add(this.FrameCountLabel);
+            this.Controls.Add(this.FrameCounterLabel);
             this.Controls.Add(this.TriggerSourceLabel);
             this.Controls.Add(this.SaveDirectoryLabel);
             this.Controls.Add(this.SetSaveDirectoryButton);
+            this.Controls.Add(this.ContinuousSnapAndSaveButton);
+            this.Controls.Add(this.QueryNumSnapsButton);
+            this.Controls.Add(this.UpdateNumSnapsButton);
+            this.Controls.Add(this.NumSnapsTextBox);
+            this.Controls.Add(this.NumSnapsLabel);
+            this.Controls.Add(this.comboBoxCameraSelection);
+            this.Controls.Add(this.CameraSelectionLabel);
             this.Name = "FormMain";
             this.Text = "Hamamatsu EMCCD Camera Automation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -562,14 +608,8 @@
         public System.Windows.Forms.HScrollBar HScrollLutMax;
         public System.Windows.Forms.PictureBox PicDisplay;
         public System.Windows.Forms.Button PushInit;
-        //public System.Windows.Forms.Button PushOpen;
-        //public System.Windows.Forms.Button PushInfo;
-        //public System.Windows.Forms.Button PushProperties;
         public System.Windows.Forms.Button PushSnap;
-        public System.Windows.Forms.Button BurstCapture;
-        public System.Windows.Forms.Button SaveBurstBuffer;
         public System.Windows.Forms.Button PushLive;
-        public System.Windows.Forms.Button BurstTriggerRearm;
         public System.Windows.Forms.Button PushIdle;
         public System.Windows.Forms.Button PushBufRelease;
         public System.Windows.Forms.Button PushClose;
@@ -586,12 +626,20 @@
         public System.Windows.Forms.Button QuerySensorTemperatureButton;
         public System.Windows.Forms.Label SensorTemperatureLabel;
         public System.Windows.Forms.ComboBox comboTriggerSource;
+        public System.Windows.Forms.ComboBox comboBoxCameraSelection;
         public System.Windows.Forms.Button QueryFrameCountButton;
         public System.Windows.Forms.Button UpdateFrameCountButton;
         public System.Windows.Forms.TextBox FrameCountTextBox;
         public System.Windows.Forms.Label FrameCountLabel;
+        public System.Windows.Forms.Button QueryNumSnapsButton;
+        public System.Windows.Forms.Button UpdateNumSnapsButton;
+        public System.Windows.Forms.TextBox NumSnapsTextBox;
+        public System.Windows.Forms.Label NumSnapsLabel;
+        public System.Windows.Forms.Label FrameCounterLabel;
         public System.Windows.Forms.Label TriggerSourceLabel;
         public System.Windows.Forms.Button SetSaveDirectoryButton;
         public System.Windows.Forms.Label SaveDirectoryLabel;
+        public System.Windows.Forms.Button ContinuousSnapAndSaveButton;
+        public System.Windows.Forms.Label CameraSelectionLabel;
     }
 }
