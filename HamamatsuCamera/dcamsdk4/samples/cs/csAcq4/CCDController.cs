@@ -1452,7 +1452,7 @@ namespace csAcq4
                         //{
                         //    break;
                         //}
-
+                        
                         if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
                         {
                             int iNewestFrame = 0;
