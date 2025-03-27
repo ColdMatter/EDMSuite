@@ -15,6 +15,7 @@ import time
 import glob
 from matplotlib.pyplot import cm
 from scipy.special import erfcinv
+import datetime
 
 repo = git.Repo(os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
 RootFolder = repo.working_tree_dir
@@ -77,7 +78,7 @@ def GetTOFs(Scan):
 
     return TimeOn, DataOn, TimeOff, DataOff
 
-def DownsampleTOFs(Scan, DownSampleRate):
+def DownsampleTOFsInScan(Scan, DownSampleRate):
     """Returns the TOFs of a scan, but downsampled to reduce the memory usage.
     The datasets are On/Off shots and for each detector (TOFs in one shot)"""
     OriginalRate = GetTOFSampleRate(Scan)
@@ -139,6 +140,14 @@ def GetTOFSampleRate(Scan):
     """
     return Scan.GetSetting("shot","sampleRate")
 
+def GetShotTimestamps(Scan):
+    NrShots = len(Scan.Points)
+    TimeStamps = np.full((NrShots),np.nan)
+    for i in range(NrShots):
+        T = Scan.Points[i].OnShots[0].TimeStamp
+        TimeStamps[i] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
+    return TimeStamps
+
 
 #%% Functions for the TOF
 def GetCounts(Data,Time,Start,Stop):
@@ -154,6 +163,14 @@ def GetSignalwithBackgroundSubtraction(Data,Time,StartSig,StopSig,StartBg,StopBg
     BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
     Signal = SignalAndBg - BackgroundScaled
     return [Signal, BackgroundScaled]
+
+def DownsampleTOF(Data, Time, NrSamples):
+    NrRows = int(len(Data)/NrSamples)
+    NrCols = NrSamples
+    DownsampledDataRect = Data.reshape((NrRows,NrCols))                
+    DownsampledData = np.sum(DownsampledDataRect, axis=1)
+    DownsampledTime = Time[int(NrSamples/2)::NrSamples]
+    return DownsampledTime, DownsampledData
 
 
 #%% Functions for Blocks
@@ -216,6 +233,81 @@ def ExtractAverageMagneticFields(Block, TOFnumber, Gain):
         DataStd[PointNumber] = np.std(Dataset)
         DataNr[PointNumber] = len(Dataset)
     return Data, DataStd, DataNr
+
+def ExtractAverageMagneticFieldSegments(Block, TOFnumber, Gain, NrSegments):
+    NrShots = len(Block.Points)
+    Data = np.full((NrShots,NrSegments), np.nan)
+    DataStd = np.full((NrShots,NrSegments), np.nan)
+    DataNr = np.full((NrShots,NrSegments), np.nan)
+    Names = GetDetectorNames(Block)
+    Factor = 1
+    Offset = 0
+    if Names[TOFnumber][0:6] == 'quSpin':
+        if Gain ==3:
+            Factor = 1/8.1*1000 # Converts to pT
+        elif Gain==1:
+            Factor = 1/2.7*1000
+        elif Gain == 0.33:
+            Factor = 1/0.9*1000
+        else:
+            Factor = 1
+    elif Names[TOFnumber][0:6] == 'bartin':
+        Factor = 10000000 # 1V = 10uT
+    elif Names[TOFnumber][0:6] == 'MiniFl':
+        Offset = 2.5
+        Factor = 50e6 # (OUT+ - 2.5)*50 to convert from V to uT
+    for PointNumber in range(NrShots):
+        Dataset = (np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)-Offset)*Factor
+        for Seg in range(NrSegments):
+            Datalength = len(Dataset)
+            Seglength = int(Datalength/NrSegments)
+            Data[PointNumber,Seg] = np.mean(Dataset[Seglength*Seg:Seglength*(Seg+1)])
+            DataStd[PointNumber,Seg] = np.std(Dataset[Seglength*Seg:Seglength*(Seg+1)])
+            DataNr[PointNumber,Seg] = len(Dataset[Seglength*Seg:Seglength*(Seg+1)])
+    return Data, DataStd, DataNr
+
+def ExtractAverageMagneticFieldTimeseries(Block, TOFnumber, Gain):
+    Datalength = len(Block.Points[0].Shot.TOFs[TOFnumber].Data)
+    Data = np.full((Datalength,4), np.nan)
+    DataStd = np.full((Datalength,4), np.nan)
+    DataNr = np.full((Datalength,4), np.nan)
+    Labels = ['E- switch before', 'E- no switch', 'E+ no switch', 'E+ switch before']
+    Names = GetDetectorNames(Block)
+    
+    Factor = 1
+    Offset = 0
+    if Names[TOFnumber][0:6] == 'quSpin':
+        if Gain ==3:
+            Factor = 1/8.1*1000 # Converts to pT
+        elif Gain==1:
+            Factor = 1/2.7*1000
+        elif Gain == 0.33:
+            Factor = 1/0.9*1000
+        else:
+            Factor = 1
+    elif Names[TOFnumber][0:6] == 'bartin':
+        Factor = 10000000 # 1V = 10uT
+    elif Names[TOFnumber][0:6] == 'MiniFl':
+        Offset = 2.5
+        Factor = 50e6 # (OUT+ - 2.5)*50 to convert from V to uT
+
+    # Get the Efield pattern
+    EfieldPattern = ExtractEfieldWaveformFromBlock(Block, 1)
+    Switches = np.diff(EfieldPattern)
+    Switches = np.insert(Switches,0,0)
+    States = Switches + EfieldPattern
+    Values = [-3, -1, 1, 3]
+    for i in range(4):
+        Indi = np.where(States == Values[i])[0]
+        Dataset = np.full((len(Indi),Datalength), np.nan)
+        for j in range(len(Indi)):
+            Dataset[j,:] = (np.array(Block.Points[int(Indi[j])].Shot.TOFs[TOFnumber].Data)-Offset)*Factor
+        for k in range(Datalength):
+            Data[k,i] = np.mean(Dataset[:,k])
+            DataStd[k,i] = np.std(Dataset[:,k])
+            DataNr[k,i] = len(Dataset[:,k])
+    return Data, DataStd, DataNr, Labels
+
 
 def ExtractAverageMagneticFieldsAnd50HzPhase(Block, TOFnumber, Gain):
     NrShots = len(Block.Points)
@@ -320,6 +412,27 @@ def ExtractTOFsfromBlock(Block, TOFnumber):
         Data[PointNumber,:] = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
     return Data
 
+def GetTOFsFromBlock(Block, TOFnumber):
+    """Returns the TOFs of a block. The datasets are On/Off shots and for each 
+    detector (TOFs in one shot)"""
+    SampleRate = Block.Config.Settings["clockFrequency"]
+    NrShots = len(Block.Points)
+    TOFlength = len(Block.Points[0].Shot.TOFs[0].Data)
+    Time = np.array(Block.Points[0].Shot.TOFs[0].Times)/SampleRate
+    Data = np.empty((TOFlength, NrShots, 1))*np.nan
+    for indPoint in range(NrShots):
+        DataTemp = np.array(Block.Points[indPoint].Shot.TOFs[TOFnumber].Data)
+        Data[:,indPoint,0] = DataTemp
+    return Time, Data
+
+def GetShotTimestampsFromBlock(Block):
+    NrShots = len(Block.Points)
+    TimeStamps = np.full((NrShots),np.nan)
+    for i in range(NrShots):
+        T = Block.Points[i].Shot.TimeStamp
+        TimeStamps[i] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
+    return TimeStamps
+
 def GetBlockConfigurationList(Block):
     return list(Block.Config.Settings.StringKeyList)
 
@@ -331,7 +444,8 @@ def GetAppliedBiasCurrent(Block):
     Itotal = np.full((NrShots),np.nan)
 
     # Read the bias current always applied
-    Ibias = Block.Config.Settings["bBiasV"]
+    # Ibias = Block.Config.Settings["bBiasV"]
+    Ibias = Block.Config.GetModulationByName('B').PhysicalCentre
     B = ExtractBfieldWaveformFromBlock(Block)
     dB = ExtractdBfieldWaveformFromBlock(Block)
     Itotal = Ibias - B + np.sign(B)*dB
@@ -351,6 +465,10 @@ def GetBSwitchState(Block):
         elif (BitsB[i] == True) & (BitsdB[i] == True):
             SwitchState[i] = 3
     return SwitchState
+
+def GetSettleTime(Block):
+    SettleTime = Block.Config.Settings["eRampUpDelay"]
+    return SettleTime
     
 
 #%% Function for analysis
@@ -379,3 +497,14 @@ def DetectOutliersOfDistributionMAD(x, MADlevel):
     Sigma = ScaledMAD(x)
     Indi = np.abs(x-Median) > MADlevel*Sigma
     return Indi
+
+def MovingAverage(data,N):
+    ma = np.full((len(data)), np.nan)
+    for ind in range(len(data)):
+        if (ind < N/2-1) | (ind > len(data)-N/2):
+            continue
+        else:
+            datacut = data[ind-int(N/2):ind+int(N/2)]
+            ma[ind] = np.mean(datacut[~np.isnan(datacut)])
+    return ma
+
