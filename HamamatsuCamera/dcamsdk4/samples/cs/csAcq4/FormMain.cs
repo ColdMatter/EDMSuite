@@ -107,7 +107,7 @@ namespace csAcq4
             Boolean isAcquiringSoftwareTrigger = (status == FormStatus.AcquiringSoftwareTrigger);
             PushInit.Enabled = isStartup;
             // Shirley added the constraints below on 26/02 to improve the stability of the program
-            comboTriggerSource.Enabled = isInitialized || isAcquired; 
+            comboTriggerSource.Enabled = isInitialized || isAcquired;
             QueryFrameCountButton.Enabled = isInitialized || isAcquired;
             UpdateFrameCountButton.Enabled = isInitialized || isAcquired;
             FrameCountTextBox.Enabled = isInitialized || isAcquired;
@@ -122,7 +122,7 @@ namespace csAcq4
             ContinuousSnapAndSaveButton.Enabled = isInitialized || isAcquired;
             PushSnap.Enabled = isInitialized || isAcquired;
             PushLive.Enabled = isInitialized || isAcquired;
-            PushIdle.Enabled = isAcquiring;
+            //PushIdle.Enabled = isAcquiring;
             //PushBufRelease.Enabled = isAcquired; 
             PushClose.Enabled = isInitialized || isAcquired;
             //PushUninit.Enabled = isInitialized; rhys remove 14/02
@@ -487,12 +487,15 @@ namespace csAcq4
             comboTriggerSource.Items.Add("Internal Trigger");
             comboTriggerSource.Items.Add("External Start Trigger");
             comboTriggerSource.Items.Add("External Edge Trigger");
-
             comboTriggerSource.SelectedIndex = 0; // Default to Internal Trigger
 
-            comboBoxCameraSelection.Items.Add("CCD1");
-            comboBoxCameraSelection.Items.Add("CCD2");
-            comboBoxCameraSelection.SelectedIndex = 1; // Default to CCD2
+            comboBoxCameraSelection.Items.Add("CCDA");
+            comboBoxCameraSelection.Items.Add("CCDB");
+            comboBoxCameraSelection.SelectedIndex = 0; // Default to CCDA
+
+            // Auto-detect camera serial number
+            // controller.SelectCamera(); // Detect camera using serial number
+            comboBoxCameraSelection.SelectedIndex = controller.SelectedCamera; //Sync the selected camera index
 
         }
 
@@ -527,9 +530,13 @@ namespace csAcq4
 
         private void ComboBoxCameraSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            controller.SelectedCamera = comboBoxCameraSelection.SelectedIndex;
-            Console.WriteLine($"Selected Camera: {(controller.SelectedCamera == 0 ? "CCD1" : "CCD2")}");
+            if (comboBoxCameraSelection.SelectedIndex >= 0) // Ensure a valid selection
+            {
+                controller.SelectedCamera = comboBoxCameraSelection.SelectedIndex;
+                Console.WriteLine($"Selected Camera: {(controller.SelectedCamera == 0 ? "CCDA" : "CCDB")}");
+            }
         }
+
 
 
         // Event handler for Sensor Temperature Query
@@ -577,9 +584,20 @@ namespace csAcq4
         {
             controller.FrameCounter();
         }
-        private void ContinuousSnapAndSave_Click(object sender, EventArgs e)
+
+        //private void ContinuousSnapAndSave_Click(object sender, EventArgs e)
+        //{
+        //    controller.ContinuousSnapAndSave();
+        //}
+
+        private void StartBurstAcquisition_Click(object sender, EventArgs e)
         {
-            controller.ContinuousSnapAndSave();
+            controller.StartBurstAcquisition();
+        }
+
+        private void StopBurstAcquisition_Click(object sender, EventArgs e)
+        {
+            controller.StopBurstAcquisition();
         }
 
         // Button Click Event to Set Save Directory
@@ -682,10 +700,10 @@ namespace csAcq4
             controller.StopAcquisition();
         }
 
-        private void InitializeCsvFile_Click(object sender, EventArgs e)
-        {
-            controller.InitializeCsvFile();
-        }
+        //private void InitializeCsvFile_Click(object sender, EventArgs e)
+        //{
+        //    controller.InitializeCsvFile();
+        //}
         private void BurstTriggerRearm_Click(object sender, EventArgs e)
         {
             controller.BurstTriggerRearm();
@@ -782,6 +800,11 @@ namespace csAcq4
         }
 
         private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+
+        }
+
+        private void SaveDirectoryLabel_Click(object sender, EventArgs e)
         {
 
         }
