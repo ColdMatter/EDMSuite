@@ -212,9 +212,11 @@ def QuSpinGo():
             eCurrentState = hc.EFieldPolarity
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            System.Threading.Thread.CurrentThread.Join(5000)
             hc.SwitchEAndWait(eCurrentState)
-
+            if (float(i)==0.0):
+                System.Threading.Thread.CurrentThread.Join(20000)
+            else:
+                System.Threading.Thread.CurrentThread.Join(5000)
             # Make new block config with correct E Field
             bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
 

@@ -297,9 +297,9 @@ def EDMGo():
 		print("Done.")
 
 		#Step target
-		print("New target position.")
-		bh.StartPattern()
-		System.Threading.Thread.CurrentThread.Join(2000)
+		# print("New target position.")
+		# bh.StartPattern()
+		# System.Threading.Thread.CurrentThread.Join(2000)
 
 		# hc.targetStepTime = 200
 		# if ((blockIndex % 11) == 0):
@@ -310,8 +310,8 @@ def EDMGo():
 		# 	hc.StepTargetForTime()
 		# 	System.Threading.Thread.CurrentThread.Join(1000)
 
-		System.Threading.Thread.CurrentThread.Join(2000)
-		bh.StopPattern()
+		# System.Threading.Thread.CurrentThread.Join(2000)
+		# bh.StopPattern()
 		# increment and loop
 		File.Delete(tempConfigFile)
 		# checkYAGAndFix()

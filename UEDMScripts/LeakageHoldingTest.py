@@ -112,6 +112,12 @@ def RampTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	System.Threading.Thread.CurrentThread.Join(10*1000)
 
 	r = np.arange(float(start), float(stop+step), float(step))
+
+	with open(filepath[:-2]+'00_EFieldTestList.txt','a') as patternfile:
+		s=str(r)[0]+' '+str(r)[1:-1]+' '+str(r)[-1]
+		line=file+'_EFieldTest'+'\t'+s+'\n'
+		patternfile.write(line)
+
 	for i in r:
 		print("E fields at +/- " + str(i) + " kV")
 		hc.SetCPlusVoltage(float(i))
@@ -138,11 +144,6 @@ def RampTest(start, stop, step, stepuptime, holduptime, stepdowntime):
 	hc.EnableEField(False)
 	System.Threading.Thread.CurrentThread.Join(60*1000)
 	hc.StopIMonitorPoll()
-
-	# with open(filepath[:-2]+'00_EFieldTestList.txt','a') as patternfile:
-	# 	s=str(r)[0]+' '+str(r)[1:-1]+' '+str(r)[-1]
-	# 	line=file+'_EFieldTest'+'\t'+s+'\n'
-	# 	patternfile.write(line)
 
 	print("Finished leakage test")
 

@@ -966,6 +966,8 @@ namespace EDMBlockHead.Acquire
             mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
             magInputs.Channels.Add(mag);
 
+            Console.WriteLine("Added Bartington _Y");
+
             ScannedAnalogInput fvy = new ScannedAnalogInput();
             fvy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Y"];
             fvy.ReductionMode = quspinReductionMode;
@@ -1120,16 +1122,25 @@ namespace EDMBlockHead.Acquire
             hpz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             magInputs.Channels.Add(hpz);
 
-            ScannedAnalogInput hoz = new ScannedAnalogInput();
-            hoz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Z"];
-            hoz.ReductionMode = quspinReductionMode;
-            hoz.ChopStart = quspinChopStart;
-            hoz.ChopLength = quspinChopLength;
-            hoz.AverageEvery = quspinAverageEvery;
-            hoz.LowLimit = quspinLowerLim;
-            hoz.HighLimit = quspinUpperLim;
-            hoz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hoz);
+            ScannedAnalogInput magRelay = new ScannedAnalogInput();
+            magRelay.ReductionMode = DataReductionMode.Average;
+            magRelay.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Z_nearRelay"];
+            magRelay.AverageEvery = 20;
+            magRelay.LowLimit = -10;
+            magRelay.HighLimit = 10;
+            magRelay.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(magRelay);
+
+            //ScannedAnalogInput hoz = new ScannedAnalogInput();
+            //hoz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Z"];
+            //hoz.ReductionMode = quspinReductionMode;
+            //hoz.ChopStart = quspinChopStart;
+            //hoz.ChopLength = quspinChopLength;
+            //hoz.AverageEvery = quspinAverageEvery;
+            //hoz.LowLimit = quspinLowerLim;
+            //hoz.HighLimit = quspinUpperLim;
+            //hoz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hoz);
 
             ScannedAnalogInput hmz = new ScannedAnalogInput();
             hmz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Z"];

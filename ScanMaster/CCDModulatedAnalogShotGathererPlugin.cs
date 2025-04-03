@@ -71,8 +71,9 @@ namespace ScanMaster.Acquire.Plugins
 			settings["ccdEnableLength"] = 10000;
 			settings["ccdTriggerMode"] = 2;
 			settings["ccdNBurstFrames"] = 20;
-			settings["ccdExposureTime"] = 0.05;
-			settings["ccd1Gain"] = 100;
+			settings["ccdExposureTime"] = 0.04;
+			settings["ccdAGain"] = 100;
+			settings["ccdBGain"] = 100;
 			settings["clockPeriod"] = 1;
 			settings["sampleRate"] = 100000;
 			settings["channel"] = "detectorA,detectorB";
@@ -101,49 +102,72 @@ namespace ScanMaster.Acquire.Plugins
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
-                ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
+				ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
-				//Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
-				//IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
+                //Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
+                IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
 
-				//foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
-				//{
-				//    if (addr.AddressFamily == AddressFamily.InterNetwork)
-				//        nameCCD2 = addr.ToString();
-				//    Console.WriteLine(nameCCD2);
-				//}
-				//EnvironsHelper eHelper2 = new EnvironsHelper(computerCCD2);
-				//int ccd2Port = eHelper2.emccdTCPChannel;
-				//Console.WriteLine(ccd2Port.ToString());
-				//ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
+                foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
+                {
+                    if (addr.AddressFamily == AddressFamily.InterNetwork)
+                        nameCCD2 = addr.ToString();
+                    Console.WriteLine(nameCCD2);
+                }
+                EnvironsHelper eHelper2 = new EnvironsHelper(computerCCD2);
+                int ccd2Port = eHelper2.emccdTCPChannel;
+                Console.WriteLine(ccd2Port.ToString());
+                ccd2controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD2 + ":" + ccd2Port.ToString() + "/controller.rem"));
 
 
-				//set Trigger Mode 0 = internal, 1 = burst mode, 2 = external edge
-				int ccdTriggerMode = (int)settings["ccdTriggerMode"];
+                //set Trigger Mode 0 = internal, 1 = burst mode, 2 = external edge
+                int ccdTriggerMode = (int)settings["ccdTriggerMode"];
 				ccd1controller.ApplySelectedTriggerSource(ccdTriggerMode);
+				ccd2controller.ApplySelectedTriggerSource(ccdTriggerMode);
 
 				//set the number of ccd frames 
 				if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
 				{
-					int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-					//ccd1controller.UpdateNumSnaps(CCDsnaps);
+					if (config.switchPlugin.State == true)
+					{
+						int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+						ccd1controller.UpdateNumSnaps(CCDsnaps);
+						ccd2controller.UpdateNumSnaps(CCDsnaps);
+					}
+					else
+					{
+						int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+						ccd1controller.UpdateNumSnaps(CCDsnaps);
+						ccd2controller.UpdateNumSnaps(CCDsnaps);
+					}
 				}
 				else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
 				{
 					int CCDsnaps = (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-					//ccd1controller.UpdateNumSnaps(CCDsnaps);
+					ccd1controller.UpdateNumSnaps(CCDsnaps);
+					ccd2controller.UpdateNumSnaps(CCDsnaps);
 					int CCDBurstframes = (int)settings["ccdNBurstFrames"];
 					ccd1controller.UpdateFrameCount(CCDBurstframes);
+					ccd2controller.UpdateFrameCount(CCDBurstframes);
 				}
 
 				//set the CCD exposure Time
 				double CCDExposureTime = (double)settings["ccdExposureTime"];
                 ccd1controller.UpdateExposureTime(CCDExposureTime);
+                //set the number of ccd frames 
+                if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
+                {
+                    ccd2controller.UpdateExposureTime(CCDExposureTime);
+                }
+                else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
+                {
+                    ccd2controller.UpdateExposureTime(CCDExposureTime * 1.1);
+                }
 
-				//set the CCD gain 
-				int ccdGain = (int)settings["ccd1Gain"];
-                ccd1controller.UpdateCCDGain(ccdGain);
-
+                //set the CCD gain 
+                int ccdAGain = (int)settings["ccdAGain"];
+				int ccdBGain = (int)settings["ccdBGain"];
+				ccd1controller.UpdateCCDGain(ccdAGain);
+				ccd2controller.UpdateCCDGain(ccdBGain);
 
 				if (ccdTriggerMode == 2)
 				{
@@ -159,7 +183,19 @@ namespace ScanMaster.Acquire.Plugins
 									Console.WriteLine("CCD aquisition error", ex);
 								}
 							});
-				}
+
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        try
+                        {
+                            ccd2controller.RemoteSnap();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("CCD aquisition error", ex);
+                        }
+                    });
+                }
 				else if (ccdTriggerMode == 1)
 				{
 					System.Threading.Tasks.Task.Run(() =>
@@ -173,7 +209,20 @@ namespace ScanMaster.Acquire.Plugins
 							Console.WriteLine("CCD aquisition error", ex);
 						}
 					});
+
+					System.Threading.Tasks.Task.Run(() =>
+					{
+						try
+						{
+							ccd2controller.ContinuousSnapAndSave();
+						}
+						catch (Exception ex)
+						{
+							Console.WriteLine("CCD aquisition error", ex);
+						}
+					});
 				}
+
             }
 
             // configure the analog input

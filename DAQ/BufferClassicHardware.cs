@@ -113,7 +113,8 @@ namespace DAQ.HAL
             AddAnalogInputChannel("quSpinHT_Y", magBoard + "/ai6", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinFV_Y", magBoard + "/ai7", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHM_Z", magBoard + "/ai16", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHO_Z", magBoard + "/ai17", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Z_nearRelay", magBoard + "/ai17", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHO_Z", magBoard + "/ai17", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHP_Z", magBoard + "/ai18", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHQ_Z", magBoard + "/ai19", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHR_Z", magBoard + "/ai20", AITerminalConfiguration.Differential);
