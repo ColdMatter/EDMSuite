@@ -24,19 +24,12 @@ namespace csAcq4
             //FormMain formMain = new FormMain();
             //Application.Run(formMain);
 
-            //FormMain mainwindow = new FormMain();
-            //mainwindow.controller = controller;
-
-            //controller.window = mainwindow;
-
-            //Application.Run(mainwindow);
-
             CCDController controller = new CCDController();
 
             string thisComputerName = Environment.MachineName;
             EnvironsHelper eHelper = new EnvironsHelper(thisComputerName);
             int serverChannelNumber = eHelper.emccdTCPChannel;
-            //int tcpchannelnum = 5555;
+
             Console.WriteLine(thisComputerName);
             Console.WriteLine(serverChannelNumber);
 
@@ -44,7 +37,6 @@ namespace csAcq4
             TcpChannel clientChannel = new TcpChannel(serverChannelNumber);
             ChannelServices.RegisterChannel(clientChannel, false);
             RemotingServices.Marshal(controller, "controller.rem");
-
 
             // publish the controller to the remoting system
             //TcpChannel clientChannelccd2 = new TcpChannel(tcpchannelnumccd2);

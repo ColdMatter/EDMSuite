@@ -81,7 +81,7 @@ namespace csAcq4
         private Thread m_threadCapture;         // System.Threading.  Assigned for monitoring updated frames during capturing
         private Bitmap m_bitmap;                // bitmap data for displaying in this Windows Form
         private bool m_cap_stopping = false;    // reset to false when starting capture and set to true if stopping capture
-
+ 
 
         // ---------------- private class MyImage ----------------
 
@@ -486,23 +486,49 @@ namespace csAcq4
 
 
         // Capturing Thread helper functions
+        private CancellationTokenSource snapCancelTokenSource;
+
         private void MyThreadCapture_Start()
         {
-            m_threadCapture = new Thread(new ThreadStart(OnThreadCapture));
+            // Ensure any previous token source is cancelled before starting a new task
+            snapCancelTokenSource?.Cancel();
+            snapCancelTokenSource = new CancellationTokenSource();
 
-            m_threadCapture.IsBackground = true;
-            m_threadCapture.Start();
+            window.MyFormStatus_Acquiring();
+            // Start the async capture task
+            Task.Run(() => OnThreadCapture(snapCancelTokenSource.Token));
         }
         private void MyThreadCapture_Abort()
         {
-            if (m_threadCapture != null)
+            if (snapCancelTokenSource != null)
             {
-                if (mydcamwait != null)
-                    mydcamwait.abort();
-
-                m_threadCapture.Abort();
+                snapCancelTokenSource.Cancel(); // Cancel the running capture task
             }
+
+            if (mydcamwait != null)
+            {
+                mydcamwait.abort(); // Abort DCAM wait to immediately stop capture
+            }
+            window.MyFormStatus_Acquired(); // Change dialog FormStatus to Acquired
         }
+
+        //private void MyThreadCapture_Start()
+        //{
+        //    m_threadCapture = new Thread(new ThreadStart(OnThreadCapture));
+
+        //    m_threadCapture.IsBackground = true;
+        //    m_threadCapture.Start();
+        //}
+        //private void MyThreadCapture_Abort()
+        //{
+        //    if (m_threadCapture != null)
+        //    {
+        //        if (mydcamwait != null)
+        //            mydcamwait.abort();
+
+        //        m_threadCapture.Abort();
+        //    }
+        //}
 
         // Updating myimage by DCAM frame
         private delegate void MyDelegate_SnapCaptureFinished();
@@ -519,14 +545,16 @@ namespace csAcq4
             window.MyFormStatus_Acquired();            // change dialog FormStatus to Acquired
         }
 
-        private void OnThreadCapture()
+        private async Task OnThreadCapture(CancellationToken cancellationToken)
         {
-            bool bContinue = true;
-
+            var timer2 = new Stopwatch();
+            timer2.Start();
+            Console.WriteLine("timer2 started...");
             using (mydcamwait = new MyDcamWait(ref mydcam))
             {
-                while (bContinue)
-                {
+                
+                while (!cancellationToken.IsCancellationRequested) // Check if Stop Acquisition was requested
+                {   
                     DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
                     DCAMWAIT eventhappened = DCAMWAIT.NONE;
 
@@ -540,21 +568,14 @@ namespace csAcq4
                             if (mydcam.cap_transferinfo(ref iNewestFrame, ref iFrameCount))
                             {
                                 MyUpdateImage(iNewestFrame);
-                                MyUpdateDisplay(); // Ensure UI is refreshed
-
+                                MyUpdateDisplay();
                             }
                         }
 
-                        if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
+                        if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0 || cancellationToken.IsCancellationRequested)
                         {
-                            bContinue = false;
-                            if (!m_cap_stopping) // If stopping was not manual, update UI
-                            {
-                                if (mydcam.m_capmode == DCAMCAP_START.SNAP)
-                                {
-                                    MySnapCaptureFinished();
-                                }
-                            }
+                            Console.WriteLine("Capture stopped.");
+                            break;
                         }
                     }
                     else
@@ -563,16 +584,84 @@ namespace csAcq4
                         {
                             Console.WriteLine("Waiting for frame timed out...");
                         }
-                        else
-                        if (mydcamwait.m_lasterr == DCAMERR.ABORT)
+                        else if (mydcamwait.m_lasterr == DCAMERR.ABORT)
                         {
                             Console.WriteLine("Capture aborted...");
-                            bContinue = false;
+                            break;
                         }
                     }
+
+                    await Task.Delay(1); // Allow UI updates
                 }
             }
+            // If task was not cancelled, snap completed naturally
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                MyShowStatusOK("Capture has finished, now click Save Snaps.");
+                Console.WriteLine("Capture has finished, now click Save Snaps.");
+            }
+
+            timer2.Stop();
+            Console.WriteLine($"Time taken to capture {numSnaps} frames: {timer2.Elapsed} s");
+
+            window.MyFormStatus_Acquired();
+            Console.WriteLine("FormStatus updated to Acquired.");
         }
+
+        //private void OnThreadCapture()
+        //{
+        //    bool bContinue = true;
+
+        //    using (mydcamwait = new MyDcamWait(ref mydcam))
+        //    {
+        //        while (bContinue)
+        //        {
+        //            if (m_cap_stopping)
+        //            {
+        //                Console.WriteLine("Capture thread stopping...");
+        //                break;
+        //            }
+        //            DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+        //            DCAMWAIT eventhappened = DCAMWAIT.NONE;
+
+        //            if (mydcamwait.start(eventmask, ref eventhappened))
+        //            {
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
+        //                {
+        //                    int iNewestFrame = 0;
+        //                    int iFrameCount = 0;
+
+        //                    if (mydcam.cap_transferinfo(ref iNewestFrame, ref iFrameCount))
+        //                    {
+        //                        MyUpdateImage(iNewestFrame);
+        //                        MyUpdateDisplay(); // Ensure UI is refreshed
+
+        //                    }
+        //                }
+
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0 || m_cap_stopping)
+        //                {
+        //                    bContinue = false;
+        //                    Console.WriteLine("Capture stopped.");
+        //                    break;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (mydcamwait.m_lasterr == DCAMERR.TIMEOUT)
+        //                {
+        //                    Console.WriteLine("Waiting for frame timed out...");
+        //                }
+        //                else
+        //                if (mydcamwait.m_lasterr == DCAMERR.ABORT)
+        //                {
+        //                    Console.WriteLine("Capture aborted...");
+        //                    bContinue = false;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
 
 
@@ -590,7 +679,6 @@ namespace csAcq4
         // Controller functions for event handlers in FormMain are defined here
         // </summary>
         //----------------DCAM-API related command Handler----------------
-        public int SelectedCamera { get; set; } = 0; // 0 = CCD1, 1 = CCD2
 
         public void CameraInit()
         {
@@ -645,6 +733,8 @@ namespace csAcq4
 
             MyShowStatusOK("Initialisation and camera configuration complete.");
             window.MyFormStatus_Initialized();
+
+            SelectCamera();
             Cursor.Current = Cursors.Default;
         }
 
@@ -653,13 +743,14 @@ namespace csAcq4
         {
             try
             {
-                // Query the camera model and serial number using dev_getstring()
-                string cameraName = mydcam.dev_getstring(DCAMIDSTR.MODEL);
-                string serialNumber = mydcam.dev_getstring(DCAMIDSTR.CAMERAID);
+                //// Query the camera model and serial number using dev_getstring()
+                //string cameraName = mydcam.dev_getstring(DCAMIDSTR.MODEL);
+                //string serialNumber = mydcam.dev_getstring(DCAMIDSTR.CAMERAID);
 
-                // Print out the retrieved values
-                Console.WriteLine($"Current Camera Model: {cameraName}");
-                Console.WriteLine($"Current Serial Number: {serialNumber}");
+                //// Print out the retrieved values
+                //Console.WriteLine($"Current Camera Model: {cameraName}");
+                //Console.WriteLine($"Current Serial Number: {serialNumber}");
+
 
 
                 // * Camera Control (Gain and Exposure Time) * //
@@ -795,7 +886,6 @@ namespace csAcq4
                 }
             }
 
-
             MyDcamProp triggerSourceProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERSOURCE);
             MyDcamProp triggerModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGER_MODE);
             MyDcamProp triggerActiveModeProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERACTIVE);
@@ -903,30 +993,76 @@ namespace csAcq4
             return success;
         }
 
-        public void SelectCamera()
+        public int SelectedCamera { get; set; } = 0; // 0 = CCDA, 1 = CCDB
+
+        public void SelectCamera(int? newCameraIndex = null)
         {
+            if (mydcam == null)
+            {
+                Console.WriteLine("Error: mydcam instance is null.");
+                MyShowStatus("Error: Camera instance not initialized.");
+                return;
+            }
+
             // Query the camera model and serial number using dev_getstring()
-            string cameraName = mydcam.dev_getstring(DCAMIDSTR.MODEL);
-            string serialNumber = mydcam.dev_getstring(DCAMIDSTR.CAMERAID);
+            string cameraName = mydcam.dev_getstring(DCAMIDSTR.MODEL)?.Trim();
+            string serialNumber = mydcam.dev_getstring(DCAMIDSTR.CAMERAID)?.Trim();
 
             // Debugging: Print out the retrieved values
             Console.WriteLine($"Detected Camera Model: {cameraName}");
             Console.WriteLine($"Detected Serial Number: {serialNumber}");
 
-            // Check if the camera is the expected model
-            if (cameraName != "C9100-23B" || serialNumber != "000620") // Make sure the case matches exactly
+            // Assign camera based on serial number
+            if (serialNumber == "S/N: 000620")
             {
-                MyShowStatus("Camera model or serial number does not match. Closing the device.");
-                mydcam.dev_close();
-                mydcam = null;
-                Cursor.Current = Cursors.Default;
-                return;  // Fail: Incorrect camera
+                SelectedCamera = 0; // CCDA
+            }
+            else if (serialNumber == "S/N: 000592")
+            {
+                SelectedCamera = 1; // CCDB
+            }
+            else
+            {
+                Console.WriteLine("Warning: Unknown serial number detected!");
+                MyShowStatus("Warning: Camera serial number not recognized.");
+                return; 
             }
 
-            MyShowStatus("Camera model and serial number verified.");
+            if (newCameraIndex.HasValue)
+            {
+                SelectedCamera = newCameraIndex.Value;
+                if (window.comboBoxCameraSelection.InvokeRequired)
+                {
+                    window.comboBoxCameraSelection.Invoke(new Action(() =>
+                    {
+                        window.comboBoxCameraSelection.SelectedIndex = SelectedCamera;
+                    }));
+                }
+            }
+            else
+            {
+                // Ensure the call to `SelectedCamera` is done on the UI thread. Define the default as CCDA
+                SelectedCamera = 0;
+                if (window.comboBoxCameraSelection.InvokeRequired)
+                {
+                    // If not on the UI thread, use Invoke to marshal the call
+                    window.comboBoxCameraSelection.Invoke(new Action(() =>
+                    {
+                        SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+                    }));
+                }
+                else
+                {
+                    SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+                    // If already on the UI thread, simply access the property
 
+                }
+            }
 
+            Console.WriteLine($"Selected Camera: {(SelectedCamera == 0 ? "CCDA" : "CCDB")}");
+            MyShowStatus($"Camera model and serial number verified. You are operating {(SelectedCamera == 0 ? "CCDA" : "CCDB")} :)");
         }
+
 
         public void QuerySensorTemperature()
         {
@@ -1071,58 +1207,6 @@ namespace csAcq4
                 MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
             }
         }
-
-        //public void UpdateCCDGain()
-        //{
-        //    if (mydcam == null)
-        //    {
-        //        Console.WriteLine("Error: mydcam is not initialized.");
-        //        return;
-        //    }
-
-        //    if (double.TryParse(window.SensitivityGainTextBox.Text, out double newGain))
-        //    {
-        //        MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
-
-        //        // Query the current value
-        //        double currentGain = 0;
-        //        if (sensitivitygainprop.getvalue(ref currentGain))
-        //        {
-        //            Console.WriteLine($"Current Sensitivity Gain: {currentGain}");
-        //        }
-        //        else
-        //        {
-        //            MyShowStatusNG("Failed to query current sensitivity gain", sensitivitygainprop.m_lasterr);
-        //        }
-
-        //        // Attempt to update the property
-        //        if (sensitivitygainprop.setvalue(newGain))
-        //        {
-        //            Console.WriteLine($"Updated Sensitivity Gain to {newGain}");
-        //            //if (window.SensitivityGainLabel.InvokeRequired)
-        //            //{
-        //            //    window.SensitivityGainLabel.Invoke(new Action(() =>
-        //            //    {
-        //            //        window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-        //            //    }));
-        //            //}
-        //            //else
-        //            //{
-        //            //    window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-        //            //}
-        //            window.SensitivityGainLabel.Text = $"Updated Sensitivity Gain: {newGain}";
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"Failed to update sensitivity gain. Error: {sensitivitygainprop.m_lasterr:X}");
-        //            MyShowStatusNG("Failed to update sensitivity gain", sensitivitygainprop.m_lasterr);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Please enter a valid number for Sensitivity Gain.");
-        //    }
-        //}
 
         double currentExposureTime;
         public void QueryExposureTime()
@@ -1367,6 +1451,7 @@ namespace csAcq4
             }
         }
 
+
         public void Snap()
         {
             if (mydcam == null)
@@ -1378,6 +1463,17 @@ namespace csAcq4
             }
             window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
 
+            //// Set trigger delay of 400 ms in between frames for testing
+            //MyDcamProp triggerDelayProp = new MyDcamProp(mydcam, DCAMIDPROP.TRIGGERDELAY);
+            //if (!triggerDelayProp.setvalue(0.5)) // 
+            //{
+            //    MyShowStatusNG("Failed to set trigger delay", triggerDelayProp.m_lasterr);
+            //    return;
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"Trigger delay set to 500ms.");
+            //}
             string text = "";
 
             if (window.IsMyFormStatus_Initialized())
@@ -1399,16 +1495,11 @@ namespace csAcq4
 
                 // Success: dcambuf_alloc()
                 update_lut(false);
-            }
+            }            
 
             // start acquisition
             m_cap_stopping = false;
             mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing {numSnaps} frame
-
-            //if (!frameCounterTimer.Enabled)
-            //{
-            //    frameCounterTimer.Start();
-            //}
 
             if (!mydcam.cap_start(this))
             {
@@ -1419,101 +1510,99 @@ namespace csAcq4
                 window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
                 return;                         // Fail: dcamcap_start()
             }
-            else
-            {
-                // Acquisition started successfully
-                MyShowStatusOK("Capture started successfully.");
-
-                // Log message to indicate successful start
-                Console.WriteLine("Capture started successfully.");
-            }
-
             // Success: dcamcap_start()
             // acquisition has started
 
-            MyShowStatusOK(text + $"Camera starts capturing {numSnaps} frames...");
+            Console.WriteLine("Capture started successfully."); // Log message to indicate successful start
+            MyShowStatusOK($"Camera starts capturing {numSnaps} frames...");
+             
+            // Start async capture task
+            snapCancelTokenSource = new CancellationTokenSource();
+            Task.Run(() => OnThreadCapture(snapCancelTokenSource.Token));
+            // window.MyFormStatus_Acquired(); // Update status to Acquired to reflect successful capture.
             
-            using (mydcamwait = new MyDcamWait(ref mydcam))
-            {
-                bool bcontinue2 = true;
-                while (bcontinue2)
-                {
-                    DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
-                    DCAMWAIT eventhappened = DCAMWAIT.NONE;
 
-                    if (mydcamwait.start(eventmask, ref eventhappened))
-                    {
-                        //if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
-                        //{
-                        //    //break;
-                        //}
+            //using (mydcamwait = new MyDcamWait(ref mydcam))
+            //{
+            //    bool bcontinue2 = true;
+            //    while (bcontinue2)
+            //    {
+            //        DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+            //        DCAMWAIT eventhappened = DCAMWAIT.NONE;
 
-                        //if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
-                        //{
-                        //    break;
-                        //}
+            //        if (mydcamwait.start(eventmask, ref eventhappened))
+            //        {
+            //            //if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
+            //            //{
+            //            //    //break;
+            //            //}
 
-                        if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
-                        {
-                            int iNewestFrame = 0;
-                            int iFrameCount = 0;
+            //            //if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
+            //            //{
+            //            //    break;
+            //            //}
 
-                            if (mydcam.cap_transferinfo(ref iNewestFrame, ref iFrameCount))
-                            {
-                                MyUpdateImage(iNewestFrame);
-                            }
-                        }
+            //            if (eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY)
+            //            {
+            //                int iNewestFrame = 0;
+            //                int iFrameCount = 0;
 
-                        if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
-                        {
-                            bcontinue2 = false;
-                            if (m_cap_stopping == false && mydcam.m_capmode == DCAMCAP_START.SNAP)
-                            {
-                                // in this condition, cap_stop() happens automatically, so update the main dialog
-                                MySnapCaptureFinished();
-                                break;
-                            }
-                        }
+            //                if (mydcam.cap_transferinfo(ref iNewestFrame, ref iFrameCount))
+            //                {
+            //                    MyUpdateImage(iNewestFrame);
+            //                }
+            //            }
 
-                    }
-                    else
-                    {
-                        if (mydcamwait.m_lasterr == DCAMERR.TIMEOUT)
-                        {
-                            Console.WriteLine("Failed wait, DCAMERR.TIMEOUT.");
-                            break;
-                        }
-                        else
-                        if (mydcamwait.m_lasterr == DCAMERR.ABORT)
-                        {
-                            Console.WriteLine("Failed wait, DCAMERR.ABORT.");
-                            break;
-                        }
-                    }
-                }
-            }
-            int nNewestFrameIndex = 0;
-            int nFrameCount = 0;
+            //            if (eventhappened & DCAMWAIT.CAPEVENT.STOPPED)
+            //            {
+            //                bcontinue2 = false;
+            //                if (m_cap_stopping == false && mydcam.m_capmode == DCAMCAP_START.SNAP)
+            //                {
+            //                    // in this condition, cap_stop() happens automatically, so update the main dialog
+            //                    MySnapCaptureFinished();
+            //                    break;
+            //                }
+            //            }
 
-            if (!mydcam.cap_transferinfo(ref nNewestFrameIndex, ref nFrameCount))
-            {
-                Console.WriteLine("Failed to retrieve frame count.");
-                return;
-            }
+            //        }
+            //        else
+            //        {
+            //            if (mydcamwait.m_lasterr == DCAMERR.TIMEOUT)
+            //            {
+            //                Console.WriteLine("Failed wait, DCAMERR.TIMEOUT.");
+            //                break;
+            //            }
+            //            else
+            //            if (mydcamwait.m_lasterr == DCAMERR.ABORT)
+            //            {
+            //                Console.WriteLine("Failed wait, DCAMERR.ABORT.");
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+            //int nNewestFrameIndex = 0;
+            //int nFrameCount = 0;
 
-            // Stop acquisition after the snap is completed.
-            if (mydcam.cap_stop())
-            {
-                MyShowStatusOK($"{nFrameCount} frames has been successfully taken, now please click Save Snaps.");
-                window.MyFormStatus_Acquired(); // Update status to Acquired to reflect successful capture.
-            }
-            else
-            {
-                MyShowStatusNG("Failed to stop acquisition after snap", mydcam.m_lasterr);
-            }
-            // Update the image to display the snap  
-            MyUpdateImage(0);
-            MyUpdateDisplay(); // Refresh the display to show the snap
+            //if (!mydcam.cap_transferinfo(ref nNewestFrameIndex, ref nFrameCount))
+            //{
+            //    Console.WriteLine("Failed to retrieve frame count.");
+            //    return;
+            //}
+
+            //// Stop acquisition after the snap is completed.
+            //if (mydcam.cap_stop())
+            //{
+            //    MyShowStatusOK($"{nFrameCount} frames has been successfully taken, now please click Save Snaps.");
+            //    window.MyFormStatus_Acquired(); // Update status to Acquired to reflect successful capture.
+            //}
+            //else
+            //{
+            //    MyShowStatusNG("Failed to stop acquisition after snap", mydcam.m_lasterr);
+            //}
+
+            //MyUpdateImage(0);
+            //MyUpdateDisplay(); 
         }
 
         public void Live()
@@ -1582,14 +1671,25 @@ namespace csAcq4
                 return;                         // internal error
             }
 
-            if (!window.IsMyFormStatus_Acquiring())
-            {
-                MyShowStatus("Internal Error: Idle button is only available when FormStatus is Acquiring");
-                return;                         // internal error
-            }
+            //if (!window.IsMyFormStatus_Acquiring())
+            //{
+            //    MyShowStatus("Internal Error: Stop Acquisition is only available when FormStatus is Acquiring");
+            //    return;                         // internal error
+            //}
+
+            Console.WriteLine("Stopping acquisition...");
+
+            // Cancel the async capture task
+            snapCancelTokenSource.Cancel();
 
             // stop acquisition
-            m_cap_stopping = true;
+            m_cap_stopping = true; // set stopping flag
+
+            if (mydcamwait !=null)
+            {
+                mydcamwait.abort();
+            }
+
             if (!mydcam.cap_stop())
             {
                 MyShowStatusNG("dcamcap_stop()", mydcam.m_lasterr);
@@ -1599,9 +1699,9 @@ namespace csAcq4
             // Success: dcamcap_stop()
             mydcam.buf_release(); // on 11/03 Shirley added this to ensure any buffer acquired from Live would be released upon StopAcquisition
 
-            MyShowStatusOK("Frames capturing is stopped.");
             window.MyFormStatus_Acquired();            // change dialog FormStatus to Acquired
-            MyShowStatus("Acquisition stopped, ready for further operations");
+            MyShowStatus("Acquisition stopped and buffer is emptied, ready for further operations");
+            Console.WriteLine("Acquisition stopped and buffer is emptied, ready for further operations");
         }
 
         // shirley added this on 27/02
@@ -1653,30 +1753,64 @@ namespace csAcq4
         }
 
 
-        private string GetNextFileName(string directory, string baseName, string extension)
+        private string GetNextFileName(string directory, string extension, int selectedCamera)
         {
             int counter = 1;
+            string cameraSuffix = (selectedCamera == 0) ? "CCDA" : "CCDB";
             string filePath;
 
             do
             {
-                filePath = Path.Combine(directory, $"{baseName}({counter:D5}){extension}");
+                filePath = Path.Combine(directory, $"{cameraSuffix}_{counter:D5}{extension}");
                 counter++;
             } while (File.Exists(filePath)); // Ensure we don't overwrite existing files
 
             return filePath;
         }
 
+
         // Default save directory
-        private string saveDirectory = "E:\\Imperial College London\\OneDrive - Imperial College London\\Documents - Team ultracold - PH\\Data\\2025\\CCD data";
-        
-        public void ContinuousSnapAndSave()
+        private string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
+
+        public void StartBurstAcquisition()
+        {
+            if (snapCancelTokenSource != null)
+            {
+                snapCancelTokenSource.Cancel(); // Ensure any previous acquisition stops
+            }
+
+            snapCancelTokenSource = new CancellationTokenSource();
+            CancellationToken token = snapCancelTokenSource.Token;
+
+            // Run ContinuousSnapAndSave on a separate task
+            Task.Run(() => ContinuousSnapAndSave(token), token);
+        }
+
+        public void StopBurstAcquisition()
+        {
+            if (snapCancelTokenSource != null)
+            {
+                snapCancelTokenSource.Cancel();
+                Console.WriteLine("Stop Acquisition requested. Attempting to stop burst mode...");
+            }
+        }
+
+        public void ContinuousSnapAndSave(CancellationToken token)
         {
             if (mydcam == null)
             {
                 MyShowStatus("Internal Error: mydcam is null");
                 return;
             }
+
+            MyDcamProp frameIntervalProp = new MyDcamProp(mydcam, DCAMIDPROP.INTERNAL_FRAMEINTERVAL);
+            double frameInterval = 0;
+            if (frameIntervalProp.getvalue(ref frameInterval))
+            {
+                Console.WriteLine($"Checked: Current frame interval is {frameInterval * 1000} ms."); // This is exposure time + dead time of 0.298 ms.
+            }
+
+
 
             // Allocate buffer once for multiple snaps
             if (!mydcam.buf_alloc(m_nFrameCount))
@@ -1695,8 +1829,18 @@ namespace csAcq4
             var Timer = new Stopwatch();
             Timer.Start();
 
+            Task.Run(() => OnThreadCapture(token));
+
             for (int snapIndex = 0; snapIndex < numSnaps; snapIndex++)
             {
+                // Check if stop acquisition has been triggered
+                if (token.IsCancellationRequested)
+                {
+                    Console.WriteLine($"Burst capture is aborted at the {snapIndex}th shot and saved.");
+                    mydcam.cap_stop(); // Stop the burst acquisition immediately
+                    break;
+                }
+
                 Console.WriteLine($"Starting Snap {snapIndex + 1}/{numSnaps}...");
                 List<ushort[]> snapFrames = new List<ushort[]>();  // Buffer for this snap
 
@@ -1708,14 +1852,25 @@ namespace csAcq4
                     MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
                     continue;
                 }
-
+                var timer1 = new Stopwatch();
+                timer1.Start();
                 using (mydcamwait = new MyDcamWait(ref mydcam))
                 {
                     for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
                     {
+                        // Check if stop acquisition has been triggered
+                        if (token.IsCancellationRequested)
+                        {
+                            Console.WriteLine($"Burst capture is aborted at the {frameIndex}th frame of the {snapIndex}th shot and saved.");
+                            mydcam.cap_stop();
+                            break;
+                        }
+                        //var timer = new Stopwatch();
+                        //timer.Start();
+
                         DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
                         DCAMWAIT eventhappened = DCAMWAIT.NONE;
-
+                        
                         if (!mydcamwait.start(eventmask, ref eventhappened))
                         {
                             Console.WriteLine($"Frame {frameIndex}: Wait failed.");
@@ -1724,6 +1879,7 @@ namespace csAcq4
 
                         if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
                         {
+                            
                             // Lock frame to access pixel data
                             m_image.set_iFrame(frameIndex);
                             if (!mydcam.buf_lockframe(ref m_image.bufframe))
@@ -1731,21 +1887,20 @@ namespace csAcq4
                                 Console.WriteLine($"Failed to lock frame {frameIndex}");
                                 continue;
                             }
-                            // var timer = new Stopwatch();
-                            // timer.Start();
+                            
                             // Store image data
                             ushort[] framePixels = GetPixelData(m_image.bufframe);
                             snapFrames.Add(framePixels);
-                            // timer.Stop();
-
-                            // Console.WriteLine($"Time taken for storing one frame data: {timer.Elapsed}");
+                            
+                            //timer.Stop();
+                            //Console.WriteLine($"Time taken for taking one frame with 20ms delay: {timer.Elapsed}");
                             // Compute total pixel sum (frame count)
                             //long frameCount = framePixels.Sum(v => (long)v);
                             //countData.Add($"{snapIndex},{frameIndex},{frameCount}");
 
                             //Console.WriteLine($"Snap {snapIndex}, Frame {frameIndex}: Total Count = {frameCount}");
                         }
-
+                        
                         if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
                         {
                             Console.WriteLine("Capture stopped.");
@@ -1769,8 +1924,110 @@ namespace csAcq4
 
             // Save images and counts after collection
             SaveAllData(imageData);
-            Console.WriteLine($"Successfully saved all snaps data as a MTIFF to disk.");
+            Console.WriteLine($"Successfully saved all snaps data as a MTIF to disk.");
         }
+
+        //public void ContinuousSnapAndSave()
+        //{
+        //    if (mydcam == null)
+        //    {
+        //        MyShowStatus("Internal Error: mydcam is null");
+        //        return;
+        //    }
+
+        //    // Allocate buffer once for multiple snaps
+        //    if (!mydcam.buf_alloc(m_nFrameCount))
+        //    {
+        //        MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+        //        return;
+        //    }
+
+        //    // Prepare directories
+        //    Directory.CreateDirectory(saveDirectory);
+
+        //    // Prepare data structures
+        //    // List<string> countData = new List<string> { "Snap Index,Frame Index,No. Counts" };  // CSV header
+        //    List<List<ushort[]>> imageData = new List<List<ushort[]>>();  // Empty array for storing all frame buffers
+
+        //    var Timer = new Stopwatch();
+        //    Timer.Start();
+
+        //    for (int snapIndex = 0; snapIndex < numSnaps; snapIndex++)
+        //    {
+        //        Console.WriteLine($"Starting Snap {snapIndex + 1}/{numSnaps}...");
+        //        List<ushort[]> snapFrames = new List<ushort[]>();  // Buffer for this snap
+
+        //        // Start acquisition for current snap
+        //        m_cap_stopping = false;
+        //        mydcam.m_capmode = DCAMCAP_START.SNAP;
+        //        if (!mydcam.cap_start(this))
+        //        {
+        //            MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+        //            continue;
+        //        }
+
+        //        using (mydcamwait = new MyDcamWait(ref mydcam))
+        //        {
+        //            for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
+        //            {
+        //                DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+        //                DCAMWAIT eventhappened = DCAMWAIT.NONE;
+
+        //                if (!mydcamwait.start(eventmask, ref eventhappened))
+        //                {
+        //                    Console.WriteLine($"Frame {frameIndex}: Wait failed.");
+        //                    continue;
+        //                }
+
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
+        //                {
+        //                    // Lock frame to access pixel data
+        //                    m_image.set_iFrame(frameIndex);
+        //                    if (!mydcam.buf_lockframe(ref m_image.bufframe))
+        //                    {
+        //                        Console.WriteLine($"Failed to lock frame {frameIndex}");
+        //                        continue;
+        //                    }
+        //                    // var timer = new Stopwatch();
+        //                    // timer.Start();
+        //                    // Store image data
+        //                    ushort[] framePixels = GetPixelData(m_image.bufframe);
+        //                    snapFrames.Add(framePixels);
+        //                    // timer.Stop();
+
+        //                    // Console.WriteLine($"Time taken for storing one frame data: {timer.Elapsed}");
+        //                    // Compute total pixel sum (frame count)
+        //                    //long frameCount = framePixels.Sum(v => (long)v);
+        //                    //countData.Add($"{snapIndex},{frameIndex},{frameCount}");
+
+        //                    //Console.WriteLine($"Snap {snapIndex}, Frame {frameIndex}: Total Count = {frameCount}");
+        //                }
+
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
+        //                {
+        //                    Console.WriteLine("Capture stopped.");
+        //                    break;
+        //                }
+        //            }
+        //            BurstTriggerRearm();
+        //        }
+
+        //        // Store frames of this snap
+        //        imageData.Add(snapFrames);
+
+        //        mydcam.cap_stop();
+        //    }
+
+        //    // Release buffer after all snaps are completed
+        //    mydcam.buf_release();
+        //    Console.WriteLine("Buffer released.");
+        //    Timer.Stop();
+        //    Console.WriteLine($"Total time taken: {Timer.Elapsed}");
+
+        //    // Save images and counts after collection
+        //    SaveAllData(imageData);
+        //    Console.WriteLine($"Successfully saved all snaps data as a MTIF to disk.");
+        //}
 
         // Extract Pixel Data as 16-bit Array
         private ushort[] GetPixelData(DCAMBUF_FRAME frame)
@@ -1787,7 +2044,7 @@ namespace csAcq4
         }
 
 
-        // Save MTIFF After Collection
+        // Save MTIF After Collection
         private void SaveAllData(List<List<ushort[]>> imageData)
         {
             var saveTimer = Stopwatch.StartNew();
@@ -1796,7 +2053,7 @@ namespace csAcq4
             // File.WriteAllLines(csvFilePath, countData);
             // Console.WriteLine("Successfully saved count data.");
 
-            string tiffPath = GetNextFileName(saveDirectory, $"CCD2",".tiff");
+            string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
             SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
 
             saveTimer.Stop();
@@ -1848,14 +2105,14 @@ namespace csAcq4
 
                         tiff.WriteDirectory(); // Create a new directory for the next frame
 
-                        Console.WriteLine($"Saved Snap {snapIndex}, Frame {frameIndex} into MTIFF.");
+                        //Console.WriteLine($"Saved Snap {snapIndex}, Frame {frameIndex} into MTIF.");
                         frameIndex++;
                     }
                     snapIndex++;
                 }
             }
 
-            Console.WriteLine($" All {allSnapsData.Count} snaps saved in a MTIFF file.");
+            Console.WriteLine($" All {allSnapsData.Count} snaps saved in a MTIF file.");
         }
 
         // Button Click Event to Set Save Directory
@@ -1879,24 +2136,24 @@ namespace csAcq4
         private bool isCsvInitialized = false;
         private int snapIndex = 1;
 
-        public void InitializeCsvFile()
-        {
-            if (!isCsvInitialized)
-            {
-                var timer1 = new Stopwatch();
-                timer1.Start();
-                csvFilePath = GetNextFileName(saveDirectory, "CCD2_N_Counts", ".csv");
-                using (StreamWriter writer = new StreamWriter(csvFilePath, false)) // Overwrite if exists, create new
-                {
-                    writer.WriteLine("Snap Index,Frame Index,No.Counts"); // CSV Header
-                }
-                isCsvInitialized = true;
-                Console.WriteLine("CSV file has been initialised.");
-                timer1.Stop();
-                TimeSpan timeTaken1 = timer1.Elapsed;
-                Console.WriteLine(timeTaken1);
-            }
-        }
+        //public void InitializeCsvFile()
+        //{
+        //    if (!isCsvInitialized)
+        //    {
+        //        var timer1 = new Stopwatch();
+        //        timer1.Start();
+        //        csvFilePath = GetNextFileName(saveDirectory, "CCD2_N_Counts", ".csv");
+        //        using (StreamWriter writer = new StreamWriter(csvFilePath, false)) // Overwrite if exists, create new
+        //        {
+        //            writer.WriteLine("Snap Index,Frame Index,No.Counts"); // CSV Header
+        //        }
+        //        isCsvInitialized = true;
+        //        Console.WriteLine("CSV file has been initialised.");
+        //        timer1.Stop();
+        //        TimeSpan timeTaken1 = timer1.Elapsed;
+        //        Console.WriteLine(timeTaken1);
+        //    }
+        //}
         
         public void BufRelease()
         {
@@ -1932,9 +2189,9 @@ namespace csAcq4
                 Console.WriteLine("No frames to save.");
                 return;
             }
-
+            string cameraSuffix = (SelectedCamera == 0) ? "CCDA" : "CCDB";
             Directory.CreateDirectory(saveDirectory);
-            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff");
+            string multiTiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
 
             try
             {
@@ -1969,7 +2226,7 @@ namespace csAcq4
                 }
 
                 // Console.WriteLine($"Successfully saved the number of counts for {nFrameCount} frames.");
-                Console.WriteLine($"{nFrameCount} frames saved in MTIFF.");
+                Console.WriteLine($"{nFrameCount} frames saved in MTIF.");
                 MyShowStatusOK($"Saved {nFrameCount} number of frames into the CSV file.");
             }
             catch (Exception ex)
@@ -2082,7 +2339,7 @@ namespace csAcq4
             }
             catch (Exception ex)
             {
-                MyShowStatusNG($"Error saving TIFF files: {ex.Message}", DCAMERR.SUCCESS);
+                MyShowStatusNG($"Error saving TIF files: {ex.Message}", DCAMERR.SUCCESS);
             }
             finally
             {

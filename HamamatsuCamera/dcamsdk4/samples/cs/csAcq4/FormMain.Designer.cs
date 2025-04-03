@@ -69,6 +69,7 @@
             this.SetSaveDirectoryButton = new System.Windows.Forms.Button();
             this.SaveDirectoryLabel = new System.Windows.Forms.Label();
             this.ContinuousSnapAndSaveButton = new System.Windows.Forms.Button();
+            this.StopBurstAcquisitionButton = new System.Windows.Forms.Button();
             this.QueryNumSnapsButton = new System.Windows.Forms.Button();
             this.UpdateNumSnapsButton = new System.Windows.Forms.Button();
             this.NumSnapsLabel = new System.Windows.Forms.Label();
@@ -280,7 +281,7 @@
             this.PicDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.PicDisplay.Cursor = System.Windows.Forms.Cursors.Default;
             this.PicDisplay.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PicDisplay.Location = new System.Drawing.Point(143, 271);
+            this.PicDisplay.Location = new System.Drawing.Point(140, 251);
             this.PicDisplay.Name = "PicDisplay";
             this.PicDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PicDisplay.Size = new System.Drawing.Size(392, 275);
@@ -334,7 +335,7 @@
             this.PushIdle.BackColor = System.Drawing.SystemColors.Control;
             this.PushIdle.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushIdle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushIdle.Location = new System.Drawing.Point(14, 340);
+            this.PushIdle.Location = new System.Drawing.Point(14, 289);
             this.PushIdle.Name = "PushIdle";
             this.PushIdle.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushIdle.Size = new System.Drawing.Size(113, 33);
@@ -362,7 +363,7 @@
             this.PushClose.BackColor = System.Drawing.SystemColors.Control;
             this.PushClose.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushClose.Location = new System.Drawing.Point(12, 389);
+            this.PushClose.Location = new System.Drawing.Point(14, 443);
             this.PushClose.Name = "PushClose";
             this.PushClose.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushClose.Size = new System.Drawing.Size(113, 33);
@@ -376,7 +377,7 @@
             this.PushUninit.BackColor = System.Drawing.SystemColors.Control;
             this.PushUninit.Cursor = System.Windows.Forms.Cursors.Default;
             this.PushUninit.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PushUninit.Location = new System.Drawing.Point(12, 438);
+            this.PushUninit.Location = new System.Drawing.Point(14, 482);
             this.PushUninit.Name = "PushUninit";
             this.PushUninit.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PushUninit.Size = new System.Drawing.Size(113, 33);
@@ -466,22 +467,35 @@
             this.SaveDirectoryLabel.Location = new System.Drawing.Point(595, 51);
             this.SaveDirectoryLabel.MaximumSize = new System.Drawing.Size(400, 0);
             this.SaveDirectoryLabel.Name = "SaveDirectoryLabel";
-            this.SaveDirectoryLabel.Size = new System.Drawing.Size(312, 39);
+            this.SaveDirectoryLabel.Size = new System.Drawing.Size(302, 39);
             this.SaveDirectoryLabel.TabIndex = 35;
-            this.SaveDirectoryLabel.Text = "Current Save Directory: \nE:\\Imperial College London\\OneDrive - Imperial College L" +
-    "ondon\\\nDocuments - Team ultracold - PH\\Data\\2025\\CCD data";
+            this.SaveDirectoryLabel.Text = "Current Save Directory: \r\nE:\\Imperial College London\\Team ultracold - PH - Docume" +
+    "nts\\\r\nData\\2025\\CCD data";
+            this.SaveDirectoryLabel.Click += new System.EventHandler(this.SaveDirectoryLabel_Click);
             // 
             // ContinuousSnapAndSaveButton
             // 
             this.ContinuousSnapAndSaveButton.AutoSize = true;
-            this.ContinuousSnapAndSaveButton.Location = new System.Drawing.Point(12, 289);
+            this.ContinuousSnapAndSaveButton.Location = new System.Drawing.Point(12, 337);
             this.ContinuousSnapAndSaveButton.Name = "ContinuousSnapAndSaveButton";
             this.ContinuousSnapAndSaveButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ContinuousSnapAndSaveButton.Size = new System.Drawing.Size(123, 33);
+            this.ContinuousSnapAndSaveButton.Size = new System.Drawing.Size(115, 34);
             this.ContinuousSnapAndSaveButton.TabIndex = 38;
-            this.ContinuousSnapAndSaveButton.Text = "Burst Mode";
+            this.ContinuousSnapAndSaveButton.Text = "Start Burst";
             this.ContinuousSnapAndSaveButton.UseVisualStyleBackColor = false;
-            this.ContinuousSnapAndSaveButton.Click += new System.EventHandler(this.ContinuousSnapAndSave_Click);
+            this.ContinuousSnapAndSaveButton.Click += new System.EventHandler(this.StartBurstAcquisition_Click);
+            // 
+            // StopBurstAcquisitionButton
+            // 
+            this.StopBurstAcquisitionButton.AutoSize = true;
+            this.StopBurstAcquisitionButton.Location = new System.Drawing.Point(12, 388);
+            this.StopBurstAcquisitionButton.Name = "StopBurstAcquisitionButton";
+            this.StopBurstAcquisitionButton.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.StopBurstAcquisitionButton.Size = new System.Drawing.Size(115, 37);
+            this.StopBurstAcquisitionButton.TabIndex = 45;
+            this.StopBurstAcquisitionButton.Text = "Stop Burst";
+            this.StopBurstAcquisitionButton.UseVisualStyleBackColor = false;
+            this.StopBurstAcquisitionButton.Click += new System.EventHandler(this.StopBurstAcquisition_Click);
             // 
             // QueryNumSnapsButton
             // 
@@ -508,7 +522,7 @@
             this.NumSnapsLabel.AutoSize = true;
             this.NumSnapsLabel.Location = new System.Drawing.Point(675, 193);
             this.NumSnapsLabel.Name = "NumSnapsLabel";
-            this.NumSnapsLabel.Size = new System.Drawing.Size(126, 13);
+            this.NumSnapsLabel.Size = new System.Drawing.Size(123, 13);
             this.NumSnapsLabel.TabIndex = 42;
             this.NumSnapsLabel.Text = "Current Shot Count: N/A";
             // 
@@ -519,12 +533,12 @@
             this.NumSnapsTextBox.Size = new System.Drawing.Size(100, 20);
             this.NumSnapsTextBox.TabIndex = 41;
             this.NumSnapsTextBox.Text = "100";
-            //
-            // comboBoxCameraSelection 
-            //
-            this.comboBoxCameraSelection.Location = new System.Drawing.Point(678, 280);
+            // 
+            // comboBoxCameraSelection
+            // 
             this.comboBoxCameraSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxCameraSelection.FormattingEnabled = true;
+            this.comboBoxCameraSelection.Location = new System.Drawing.Point(678, 280);
             this.comboBoxCameraSelection.Name = "comboBoxCameraSelection";
             this.comboBoxCameraSelection.Size = new System.Drawing.Size(150, 21);
             this.comboBoxCameraSelection.TabIndex = 43;
@@ -535,7 +549,7 @@
             this.CameraSelectionLabel.AutoSize = true;
             this.CameraSelectionLabel.Location = new System.Drawing.Point(538, 280);
             this.CameraSelectionLabel.Name = "CameraSelectionLabel";
-            this.CameraSelectionLabel.Size = new System.Drawing.Size(117, 13);
+            this.CameraSelectionLabel.Size = new System.Drawing.Size(128, 13);
             this.CameraSelectionLabel.TabIndex = 44;
             this.CameraSelectionLabel.Text = "Current Selected Camera:";
             // 
@@ -543,7 +557,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 573);
+            this.ClientSize = new System.Drawing.Size(949, 573);
             this.Controls.Add(this.LabelStatus);
             this.Controls.Add(this.LabelLutMin);
             this.Controls.Add(this.LabelLutMax);
@@ -580,6 +594,7 @@
             this.Controls.Add(this.SaveDirectoryLabel);
             this.Controls.Add(this.SetSaveDirectoryButton);
             this.Controls.Add(this.ContinuousSnapAndSaveButton);
+            this.Controls.Add(this.StopBurstAcquisitionButton);
             this.Controls.Add(this.QueryNumSnapsButton);
             this.Controls.Add(this.UpdateNumSnapsButton);
             this.Controls.Add(this.NumSnapsTextBox);
@@ -641,5 +656,6 @@
         public System.Windows.Forms.Label SaveDirectoryLabel;
         public System.Windows.Forms.Button ContinuousSnapAndSaveButton;
         public System.Windows.Forms.Label CameraSelectionLabel;
+        public System.Windows.Forms.Button StopBurstAcquisitionButton;
     }
 }
