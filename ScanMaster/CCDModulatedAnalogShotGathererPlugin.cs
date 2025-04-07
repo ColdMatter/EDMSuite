@@ -21,72 +21,72 @@ using ScanMaster.Acquire.Plugin;
 
 namespace ScanMaster.Acquire.Plugins
 {
-	/// <summary>
-	/// A plugin to capture time of flight data by sampling an analog input
-	/// on an E-series board. Deals with the case where shots are to be gathered
-	/// synchronously with something that switches. This is done by making use
-	/// of both detector trigger inputs on the board. The pattern that modulates 
-	/// the switched channel, should also modulate the trigger channel so that this
-	/// shot gatherer has the right behaviour.
-	/// </summary>
-	[Serializable]
-	public class CCDModulatedAnalogShotGathererPlugin : ShotGathererPlugin
-	{
-	
-		[NonSerialized]
-		private NationalInstruments.DAQmx.Task inputTask1;
-		[NonSerialized]
-		private NationalInstruments.DAQmx.Task inputTask2;
-		[NonSerialized]
-		private NationalInstruments.DAQmx.Task counterTask1;
-		[NonSerialized]
-		private AnalogMultiChannelReader reader1;
-		[NonSerialized]
-		private AnalogMultiChannelReader reader2;
-		[NonSerialized]
-		private CounterSingleChannelWriter counter1;
-		//private System.Threading.Tasks.Task ccdTask;
-		
-		[NonSerialized]
+    /// <summary>
+    /// A plugin to capture time of flight data by sampling an analog input
+    /// on an E-series board. Deals with the case where shots are to be gathered
+    /// synchronously with something that switches. This is done by making use
+    /// of both detector trigger inputs on the board. The pattern that modulates 
+    /// the switched channel, should also modulate the trigger channel so that this
+    /// shot gatherer has the right behaviour.
+    /// </summary>
+    [Serializable]
+    public class CCDModulatedAnalogShotGathererPlugin : ShotGathererPlugin
+    {
+
+        [NonSerialized]
+        private NationalInstruments.DAQmx.Task inputTask1;
+        [NonSerialized]
+        private NationalInstruments.DAQmx.Task inputTask2;
+        [NonSerialized]
+        private NationalInstruments.DAQmx.Task counterTask1;
+        [NonSerialized]
+        private AnalogMultiChannelReader reader1;
+        [NonSerialized]
+        private AnalogMultiChannelReader reader2;
+        [NonSerialized]
+        private CounterSingleChannelWriter counter1;
+        //private System.Threading.Tasks.Task ccdTask;
+
+        [NonSerialized]
         private double[,] latestData;
 
-		private string nameCCD1;
-		private string nameCCD2;
-		private string computerCCD1 = "ULTRACOLDEDM";
-		private string computerCCD2 = "PH-NI-LAB";
+        private string nameCCD1;
+        private string nameCCD2;
+        private string computerCCD1 = "ULTRACOLDEDM";
+        private string computerCCD2 = "PH-NI-LAB";
 
-		// add ccd function
-		[NonSerialized]
+        // add ccd function
+        [NonSerialized]
         private csAcq4.CCDController ccd1controller;
-		[NonSerialized]
-		private csAcq4.CCDController ccd2controller;
+        [NonSerialized]
+        private csAcq4.CCDController ccd2controller;
 
 
-		protected override void InitialiseBaseSettings()
-		{
-			settings["gateStartTime"] = 600;
-			settings["gateLength"] = 12000;
-			settings["cameraEnabled"] = false;
-			settings["ccdEnableStartTime"] = 600;
-			settings["ccdEnableLength"] = 10000;
-			settings["ccdTriggerMode"] = 2;
-			settings["ccdNBurstFrames"] = 20;
-			settings["ccdExposureTime"] = 0.04;
-			settings["ccd1Gain"] = 100;
-			settings["clockPeriod"] = 1;
-			settings["sampleRate"] = 100000;
-			settings["channel"] = "detectorA,detectorB";
-			settings["cameraChannel"] = "cameraEnabler";
-			settings["inputRangeLow"] = -1.0;
-			settings["inputRangeHigh"] = 10.0;
-		}
-		protected override void InitialiseSettings()
-		{
-		}
-		
-		public override void AcquisitionStarting()
-		{
-			if ((bool)settings["cameraEnabled"])
+        protected override void InitialiseBaseSettings()
+        {
+            settings["gateStartTime"] = 600;
+            settings["gateLength"] = 12000;
+            settings["cameraEnabled"] = false;
+            settings["ccdEnableStartTime"] = 600;
+            settings["ccdEnableLength"] = 10000;
+            settings["ccdTriggerMode"] = 2;
+            settings["ccdNBurstFrames"] = 20;
+            settings["ccdExposureTime"] = 0.04;
+            settings["ccd1Gain"] = 100;
+            settings["clockPeriod"] = 1;
+            settings["sampleRate"] = 100000;
+            settings["channel"] = "detectorA,detectorB";
+            settings["cameraChannel"] = "cameraEnabler";
+            settings["inputRangeLow"] = -1.0;
+            settings["inputRangeHigh"] = 10.0;
+        }
+        protected override void InitialiseSettings()
+        {
+        }
+
+        public override void AcquisitionStarting()
+        {
+            if ((bool)settings["cameraEnabled"])
             {
                 //Set Up TCP CCD1 - ULTRAEDM
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
@@ -101,7 +101,7 @@ namespace ScanMaster.Acquire.Plugins
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
-				ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
+                ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
                 //Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
@@ -152,7 +152,7 @@ namespace ScanMaster.Acquire.Plugins
                 //set the CCD exposure Time
                 double CCDExposureTime = (double)settings["ccdExposureTime"];
                 ccd1controller.UpdateExposureTime(CCDExposureTime);
-                //set the number of ccd frames
+                //set the number of ccd frames 
                 if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
                 {
                     ccd2controller.UpdateExposureTime(CCDExposureTime);
@@ -171,16 +171,16 @@ namespace ScanMaster.Acquire.Plugins
                 {
 
                     System.Threading.Tasks.Task.Run(() =>
-                            {
-                                try
-                                {
-                                    ccd1controller.RemoteSnap();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("CCD aquisition error", ex);
-                                }
-                            });
+                    {
+                        try
+                        {
+                            ccd1controller.RemoteSnap();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("CCD acquisition error", ex);
+                        }
+                    });
 
                     System.Threading.Tasks.Task.Run(() =>
                     {
@@ -190,7 +190,7 @@ namespace ScanMaster.Acquire.Plugins
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("CCD aquisition error", ex);
+                            Console.WriteLine("CCD acquisition error", ex);
                         }
                     });
                 }
@@ -204,7 +204,7 @@ namespace ScanMaster.Acquire.Plugins
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("CCD aquisition error", ex);
+                            Console.WriteLine("CCD acquisition error", ex);
                         }
                     });
 
@@ -216,7 +216,7 @@ namespace ScanMaster.Acquire.Plugins
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("CCD aquisition error", ex);
+                            Console.WriteLine("CCD acquisition error", ex);
                         }
                     });
                 }
@@ -225,160 +225,108 @@ namespace ScanMaster.Acquire.Plugins
 
             // configure the analog input
             inputTask1 = new NationalInstruments.DAQmx.Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
-			inputTask2 = new NationalInstruments.DAQmx.Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
-			counterTask1 = new NationalInstruments.DAQmx.Task("CCD enable Task Counter");
+            inputTask2 = new NationalInstruments.DAQmx.Task("analog gatherer 2 -" /*+ (string)settings["channel"]*/);
+            counterTask1 = new NationalInstruments.DAQmx.Task("CCD enable Task Counter");
 
-			// new analog channel, range -10 to 10 volts
-			if (!Environs.Debug)
-			{
+            // new analog channel, range -10 to 10 volts
+            if (!Environs.Debug)
+            {
 
-				string channelList = (string)settings["channel"];
-				string[] channels = channelList.Split(new char[] { ',' });
+                string channelList = (string)settings["channel"];
+                string[] channels = channelList.Split(new char[] { ',' });
 
-				string camChannel = (string)settings["cameraChannel"];
+                string camChannel = (string)settings["cameraChannel"];
 
-				foreach (string channel in channels)
-				{
-					((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-						inputTask1,
-						(double)settings["inputRangeLow"],
-						(double)settings["inputRangeHigh"]
-						);
-					((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
-					inputTask2,
-					(double)settings["inputRangeLow"],
-					(double)settings["inputRangeHigh"]
-					);
-				}
+                foreach (string channel in channels)
+                {
+                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                        inputTask1,
+                        (double)settings["inputRangeLow"],
+                        (double)settings["inputRangeHigh"]
+                        );
+                    ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    inputTask2,
+                    (double)settings["inputRangeLow"],
+                    (double)settings["inputRangeHigh"]
+                    );
+                }
 
-				CounterChannel pulseChannel = ((CounterChannel)Environs.Hardware.CounterChannels[camChannel]);
+                CounterChannel pulseChannel = ((CounterChannel)Environs.Hardware.CounterChannels[camChannel]);
                 // CCD enable TTL pulse
                 counterTask1.COChannels.CreatePulseChannelTicks(
-					pulseChannel.PhysicalChannel,
-					pulseChannel.Name,
-					"20MHzTimebase",
-					COPulseIdleState.Low,
-					0,
-					100,
-					(20000000/(int)settings["sampleRate"]) * (int)settings["ccdEnableLength"]
-					);
-				
-				//counterTask1.COChannels[0].PulseTerminal = "/DAQ_PXIe_6363/PFI12";
-				
+                    pulseChannel.PhysicalChannel,
+                    pulseChannel.Name,
+                    "20MHzTimebase",
+                    COPulseIdleState.Low,
+                    0,
+                    100,
+                    (20000000 / (int)settings["sampleRate"]) * (int)settings["ccdEnableLength"]
+                    );
+
+                //counterTask1.COChannels[0].PulseTerminal = "/DAQ_PXIe_6363/PFI12";
 
 
-				// internal clock, finite acquisition
-				inputTask1.Timing.ConfigureSampleClock(
-					"",
-					(int)settings["sampleRate"],
-					SampleClockActiveEdge.Rising,
-					SampleQuantityMode.FiniteSamples,
-					(int)settings["gateLength"]);
 
-				inputTask2.Timing.ConfigureSampleClock(
-					"",
-					(int)settings["sampleRate"],
-					SampleClockActiveEdge.Rising,
-					SampleQuantityMode.FiniteSamples,
-					(int)settings["gateLength"]);
+                // internal clock, finite acquisition
+                inputTask1.Timing.ConfigureSampleClock(
+                    "",
+                    (int)settings["sampleRate"],
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.FiniteSamples,
+                    (int)settings["gateLength"]);
 
-				
-				counterTask1.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples,1);
+                inputTask2.Timing.ConfigureSampleClock(
+                    "",
+                    (int)settings["sampleRate"],
+                    SampleClockActiveEdge.Rising,
+                    SampleQuantityMode.FiniteSamples,
+                    (int)settings["gateLength"]);
+
+
+                counterTask1.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
 
 
                 // trigger off PFI0 (with the standard routing, that's the same as trig1)
                 inputTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					(string)Environs.Hardware.GetInfo("analogTrigger0"),
-					DigitalEdgeStartTriggerEdge.Rising);
-				// trigger off PFI1 (with the standard routing, that's the same as trig2)
-				inputTask2.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					(string)Environs.Hardware.GetInfo("analogTrigger1"),
-					DigitalEdgeStartTriggerEdge.Rising);				
-				// trigger off PFI2 (with the standard routing, that's the same as trig1)
-				counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-					(string)Environs.Hardware.GetInfo("analogTrigger2"),
-					DigitalEdgeStartTriggerEdge.Rising);
+                    (string)Environs.Hardware.GetInfo("analogTrigger0"),
+                    DigitalEdgeStartTriggerEdge.Rising);
+                // trigger off PFI1 (with the standard routing, that's the same as trig2)
+                inputTask2.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                    (string)Environs.Hardware.GetInfo("analogTrigger1"),
+                    DigitalEdgeStartTriggerEdge.Rising);
+                // trigger off PFI2 (with the standard routing, that's the same as trig1)
+                counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                    (string)Environs.Hardware.GetInfo("analogTrigger2"),
+                    DigitalEdgeStartTriggerEdge.Rising);
 
 
-				inputTask1.Control(TaskAction.Verify);
-				inputTask2.Control(TaskAction.Verify);
-				counterTask1.Control(TaskAction.Verify);
-			}
+                inputTask1.Control(TaskAction.Verify);
+                inputTask2.Control(TaskAction.Verify);
+                counterTask1.Control(TaskAction.Verify);
+            }
 
 
-			reader1 = new AnalogMultiChannelReader(inputTask1.Stream);
-			reader2 = new AnalogMultiChannelReader(inputTask2.Stream);
-			counter1 = new CounterSingleChannelWriter(counterTask1.Stream);
-		}
+            reader1 = new AnalogMultiChannelReader(inputTask1.Stream);
+            reader2 = new AnalogMultiChannelReader(inputTask2.Stream);
+            counter1 = new CounterSingleChannelWriter(counterTask1.Stream);
+        }
 
 
-		public override void ScanStarting()
-		{
-		}
+        public override void ScanStarting()
+        {
+        }
 
-		public override void ScanFinished()
-		{
-		}
+        public override void ScanFinished()
+        {
+        }
 
 		public override void AcquisitionFinished()
 		{
-
 			// release the analog input
 			inputTask1.Dispose();
 			inputTask2.Dispose();
 			counterTask1.Dispose();
-
-			if ((bool)settings["cameraEnabled"] && ccd1controller != null)
-            {
-
-                try
-                {
-					// **shirley adds on 04/04**
-					if ((int)settings["ccdTriggerMode"] == 1)
-                    {
-						ccd1controller.StopBurstAcquisition();
-                    }
-					// **end**
-					if ((int)settings["ccdTriggerMode"] == 2)
-					{
-
-						ccd1controller.RemoteBufRelease();
-					}
-                    // Disconnect the remote object (if using .NET Remoting)
-                    RemotingServices.Disconnect(ccd1controller);
-				}
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error during disconnection: " + ex.ToString());
-                }
-            }
-
-            if ((bool)settings["cameraEnabled"] && ccd2controller != null)
-            {
-
-                try
-                {
-					// **shirley adds on 04/04**
-					if ((int)settings["ccdTriggerMode"] == 1)
-					{
-						ccd2controller.StopBurstAcquisition();
-					}
-					// **end**
-					if ((int)settings["ccdTriggerMode"] == 2)
-					{
-						ccd2controller.RemoteBufRelease();
-					}
-
-                    // Disconnect the remote object (if using .NET Remoting)
-                    RemotingServices.Disconnect(ccd2controller);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error during disconnection: " + ex.ToString());
-                }
-            }
-
-        }
+		}
 
 		//public override void ArmAndWait()
 		//{
@@ -408,8 +356,8 @@ namespace ScanMaster.Acquire.Plugins
 		//	}
 		//}
 
-		//private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
-		//private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
+        //private ManualResetEventSlim cameraStarted = new ManualResetEventSlim(false);
+        //private ManualResetEventSlim cameraFinished = new ManualResetEventSlim(false);
 
 		public override void ArmAndWait()
         {
@@ -448,39 +396,40 @@ namespace ScanMaster.Acquire.Plugins
                         //	return; // Exit if Snap did not start successfully
                         //}
                         //Console.WriteLine("Snap started successfully.");
-						counterTask1.Start(); // Start camera trigger
+                        counterTask1.Start(); // Start camera trigger
                         inputTask1.Start();
-						latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
-						inputTask1.Stop();
-						counterTask1.Stop();
-						//ccd2controller.ContinuousSnapAndSave();
 
-						//bool result = await ccd1controller.RemoteBufReleaseAsync();
-						//if (result)
-						//{
-						//    Console.WriteLine("BufRelease completed successfully.");
-						//}
-						//else
-						//{
-						//    Console.WriteLine("BufRelease failed.");
-						//}
+                        latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
+                        inputTask1.Stop();
+                        counterTask1.Stop();
+                        //ccd2controller.ContinuousSnapAndSave();
 
-						//bool result = System.Threading.Tasks.Task.Run(() => ccd1controller.RemoteBufReleaseAsync()).Result;
-						//bool result = ccd1controller.RemoteBufReleaseAsync().GetAwaiter().GetResult();
-						//if (result)
-						//{
-						//    Console.WriteLine("BufRelease completed successfully.");
-						//}
-						//else
-						//{
-						//    Console.WriteLine("BufRelease failed.");
-						//}
-						
-						//Thread.Sleep(200);
-						//ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
+                        //bool result = await ccd1controller.RemoteBufReleaseAsync();
+                        //if (result)
+                        //{
+                        //    Console.WriteLine("BufRelease completed successfully.");
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine("BufRelease failed.");
+                        //}
 
-					}
-					else
+                        //bool result = System.Threading.Tasks.Task.Run(() => ccd1controller.RemoteBufReleaseAsync()).Result;
+                        //bool result = ccd1controller.RemoteBufReleaseAsync().GetAwaiter().GetResult();
+                        //if (result)
+                        //{
+                        //    Console.WriteLine("BufRelease completed successfully.");
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine("BufRelease failed.");
+                        //}
+
+                        //Thread.Sleep(200);
+                        //ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
+
+                    }
+                    else
                     {
                         //System.Threading.Tasks.Task.Run(() =>
                         //{
@@ -499,15 +448,15 @@ namespace ScanMaster.Acquire.Plugins
                         inputTask2.Start();
                         latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
                         inputTask2.Stop();
-						counterTask1.Stop();
-						//Thread.Sleep(200);
-						//ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
-					}
+                        counterTask1.Stop();
+                        //Thread.Sleep(200);
+                        //ccd1controller.RemoteBufRelease(); //save ccd data and rearm to external start
+                    }
 
                     //Console.WriteLine("Waiting for camera to finish capturing...");
                     //cameraFinished.Wait();  // Wait for the camera to confirm frame completion
 
-                    
+
                     //cameraStarted.Reset();
                     //cameraFinished.Reset();
                     //Console.WriteLine("Camera handshake complete, system rearmed.");
@@ -516,37 +465,37 @@ namespace ScanMaster.Acquire.Plugins
         }
 
 
-    public override Shot Shot
-    {
-        get
+        public override Shot Shot
         {
-            lock (this)
+            get
             {
-                Shot s = new Shot();
-                s.SetTimeStamp();
-                if (!Environs.Debug)
+                lock (this)
                 {
-                    for (int i = 0; i < inputTask1.AIChannels.Count; i++)
+                    Shot s = new Shot();
+                    s.SetTimeStamp();
+                    if (!Environs.Debug)
                     {
-                        TOF t = new TOF();
-                        t.ClockPeriod = (int)settings["clockPeriod"];
-                        t.GateStartTime = (int)settings["gateStartTime"];
-                        double[] tmp = new double[(int)settings["gateLength"]];
-                        for (int j = 0; j < (int)settings["gateLength"]; j++)
-                            tmp[j] = latestData[i, j];
-                        t.Data = tmp;
-                        s.TOFs.Add(t);
+                        for (int i = 0; i < inputTask1.AIChannels.Count; i++)
+                        {
+                            TOF t = new TOF();
+                            t.ClockPeriod = (int)settings["clockPeriod"];
+                            t.GateStartTime = (int)settings["gateStartTime"];
+                            double[] tmp = new double[(int)settings["gateLength"]];
+                            for (int j = 0; j < (int)settings["gateLength"]; j++)
+                                tmp[j] = latestData[i, j];
+                            t.Data = tmp;
+                            s.TOFs.Add(t);
+                        }
+                        return s;
                     }
-                    return s;
-                }
-                else
-                {
-                    Thread.Sleep(50);
-                    return DataFaker.GetFakeShot((int)settings["gateStartTime"], (int)settings["gateLength"],
-                        (int)settings["clockPeriod"], 1, 1);
+                    else
+                    {
+                        Thread.Sleep(50);
+                        return DataFaker.GetFakeShot((int)settings["gateStartTime"], (int)settings["gateLength"],
+                            (int)settings["clockPeriod"], 1, 1);
+                    }
                 }
             }
         }
     }
-}
 }
