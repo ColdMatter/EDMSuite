@@ -2191,7 +2191,7 @@ namespace csAcq4
             }
             string cameraSuffix = (SelectedCamera == 0) ? "CCDA" : "CCDB";
             Directory.CreateDirectory(saveDirectory);
-            string multiTiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff");
 
             try
             {
