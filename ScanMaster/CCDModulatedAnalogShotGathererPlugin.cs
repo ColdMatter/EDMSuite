@@ -72,8 +72,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["ccdTriggerMode"] = 2;
 			settings["ccdNBurstFrames"] = 20;
 			settings["ccdExposureTime"] = 0.04;
-			settings["ccdAGain"] = 100;
-			settings["ccdBGain"] = 100;
+			settings["ccd1Gain"] = 100;
 			settings["clockPeriod"] = 1;
 			settings["sampleRate"] = 100000;
 			settings["channel"] = "detectorA,detectorB";
@@ -121,39 +120,39 @@ namespace ScanMaster.Acquire.Plugins
 
                 //set Trigger Mode 0 = internal, 1 = burst mode, 2 = external edge
                 int ccdTriggerMode = (int)settings["ccdTriggerMode"];
-				ccd1controller.ApplySelectedTriggerSource(ccdTriggerMode);
-				ccd2controller.ApplySelectedTriggerSource(ccdTriggerMode);
+                ccd1controller.ApplySelectedTriggerSource(ccdTriggerMode);
+                ccd2controller.ApplySelectedTriggerSource(ccdTriggerMode);
 
-				//set the number of ccd frames 
-				if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
-				{
-					if (config.switchPlugin.State == true)
-					{
-						int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-						ccd1controller.UpdateNumSnaps(CCDsnaps);
-						ccd2controller.UpdateNumSnaps(CCDsnaps);
-					}
-					else
-					{
-						int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-						ccd1controller.UpdateNumSnaps(CCDsnaps);
-						ccd2controller.UpdateNumSnaps(CCDsnaps);
-					}
-				}
-				else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
-				{
-					int CCDsnaps = (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-					ccd1controller.UpdateNumSnaps(CCDsnaps);
-					ccd2controller.UpdateNumSnaps(CCDsnaps);
-					int CCDBurstframes = (int)settings["ccdNBurstFrames"];
-					ccd1controller.UpdateFrameCount(CCDBurstframes);
-					ccd2controller.UpdateFrameCount(CCDBurstframes);
-				}
-
-				//set the CCD exposure Time
-				double CCDExposureTime = (double)settings["ccdExposureTime"];
-                ccd1controller.UpdateExposureTime(CCDExposureTime);
                 //set the number of ccd frames 
+                if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
+                {
+                    if (config.switchPlugin.State == true)
+                    {
+                        int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                        ccd1controller.UpdateNumSnaps(CCDsnaps);
+                        ccd2controller.UpdateNumSnaps(CCDsnaps);
+                    }
+                    else
+                    {
+                        int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                        ccd1controller.UpdateNumSnaps(CCDsnaps);
+                        ccd2controller.UpdateNumSnaps(CCDsnaps);
+                    }
+                }
+                else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
+                {
+                    int CCDsnaps = (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                    ccd1controller.UpdateNumSnaps(CCDsnaps);
+                    ccd2controller.UpdateNumSnaps(CCDsnaps);
+                    int CCDBurstframes = (int)settings["ccdNBurstFrames"];
+                    ccd1controller.UpdateFrameCount(CCDBurstframes);
+                    ccd2controller.UpdateFrameCount(CCDBurstframes);
+                }
+
+                //set the CCD exposure Time
+                double CCDExposureTime = (double)settings["ccdExposureTime"];
+                ccd1controller.UpdateExposureTime(CCDExposureTime);
+                //set the number of ccd frames
                 if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
                 {
                     ccd2controller.UpdateExposureTime(CCDExposureTime);
@@ -164,25 +163,24 @@ namespace ScanMaster.Acquire.Plugins
                 }
 
                 //set the CCD gain 
-                int ccdAGain = (int)settings["ccdAGain"];
-				int ccdBGain = (int)settings["ccdBGain"];
-				ccd1controller.UpdateCCDGain(ccdAGain);
-				ccd2controller.UpdateCCDGain(ccdBGain);
+                int ccdGain = (int)settings["ccd1Gain"];
+                ccd1controller.UpdateCCDGain(ccdGain);
+                ccd2controller.UpdateCCDGain(ccdGain);
 
-				if (ccdTriggerMode == 2)
-				{
+                if (ccdTriggerMode == 2)
+                {
 
-					System.Threading.Tasks.Task.Run(() =>
-							{
-								try
-								{
-									ccd1controller.RemoteSnap();
-								}
-								catch (Exception ex)
-								{
-									Console.WriteLine("CCD aquisition error", ex);
-								}
-							});
+                    System.Threading.Tasks.Task.Run(() =>
+                            {
+                                try
+                                {
+                                    ccd1controller.RemoteSnap();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("CCD aquisition error", ex);
+                                }
+                            });
 
                     System.Threading.Tasks.Task.Run(() =>
                     {
@@ -196,32 +194,32 @@ namespace ScanMaster.Acquire.Plugins
                         }
                     });
                 }
-				else if (ccdTriggerMode == 1)
-				{
-					System.Threading.Tasks.Task.Run(() =>
-					{
-						try
-						{
-							ccd1controller.ContinuousSnapAndSave();
-						}
-						catch (Exception ex)
-						{
-							Console.WriteLine("CCD aquisition error", ex);
-						}
-					});
+                else if (ccdTriggerMode == 1)
+                {
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        try
+                        {
+                            ccd1controller.StartBurstAcquisition();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("CCD aquisition error", ex);
+                        }
+                    });
 
-					System.Threading.Tasks.Task.Run(() =>
-					{
-						try
-						{
-							ccd2controller.ContinuousSnapAndSave();
-						}
-						catch (Exception ex)
-						{
-							Console.WriteLine("CCD aquisition error", ex);
-						}
-					});
-				}
+                    System.Threading.Tasks.Task.Run(() =>
+                    {
+                        try
+                        {
+                            ccd2controller.StartBurstAcquisition();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("CCD aquisition error", ex);
+                        }
+                    });
+                }
 
             }
 
@@ -313,6 +311,7 @@ namespace ScanMaster.Acquire.Plugins
 			counter1 = new CounterSingleChannelWriter(counterTask1.Stream);
 		}
 
+
 		public override void ScanStarting()
 		{
 		}
@@ -323,18 +322,26 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionFinished()
 		{
+
 			// release the analog input
 			inputTask1.Dispose();
 			inputTask2.Dispose();
 			counterTask1.Dispose();
 
-            if ((bool)settings["cameraEnabled"] && ccd1controller != null)
+			if ((bool)settings["cameraEnabled"] && ccd1controller != null)
             {
 
                 try
                 {
+					// **shirley adds on 04/04**
+					if ((int)settings["ccdTriggerMode"] == 1)
+                    {
+						ccd1controller.StopBurstAcquisition();
+                    }
+					// **end**
 					if ((int)settings["ccdTriggerMode"] == 2)
 					{
+
 						ccd1controller.RemoteBufRelease();
 					}
                     // Disconnect the remote object (if using .NET Remoting)
@@ -351,6 +358,12 @@ namespace ScanMaster.Acquire.Plugins
 
                 try
                 {
+					// **shirley adds on 04/04**
+					if ((int)settings["ccdTriggerMode"] == 1)
+					{
+						ccd2controller.StopBurstAcquisition();
+					}
+					// **end**
 					if ((int)settings["ccdTriggerMode"] == 2)
 					{
 						ccd2controller.RemoteBufRelease();
@@ -410,6 +423,7 @@ namespace ScanMaster.Acquire.Plugins
 
                     if (config.switchPlugin.State == true) 
                     {
+
                         //Thread.Sleep(50);
                         //System.Threading.Tasks.Task.Run(() =>
                         //{
