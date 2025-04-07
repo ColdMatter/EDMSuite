@@ -834,6 +834,20 @@ namespace csAcq4
                     MyShowStatusNG("Failed to set readout speed", readoutspeedprop.m_lasterr);
                     return false; // Exit on failure
                 }
+
+                // ** output trigger settings ** shirley adds on 07/04
+                MyDcamProp outputTriggerSource = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_SOURCE);
+                if (!outputTriggerSource.setvalue(DCAMPROP.OUTPUTTRIGGER_SOURCE.EXPOSURE))
+                {
+                    MyShowStatusNG("Failed to set output trigger source", outputTriggerSource.m_lasterr);
+                    return false; // Exit on failure
+                }
+                MyDcamProp outputTriggerKind = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_KIND);
+                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.GLOBALEXPOSURE))
+                {
+                    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                    return false; // Exit on failure
+                }
                 return true;
             }
             catch (Exception ex)
@@ -1212,6 +1226,7 @@ namespace csAcq4
         public void QueryExposureTime()
         {
             MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
+            MyDcamProp frameIntervalProp = new MyDcamProp(mydcam, DCAMIDPROP.INTERNAL_FRAMEINTERVAL);
 
             if (exposuretimeprop.getvalue(ref currentExposureTime))
             {
@@ -1222,18 +1237,26 @@ namespace csAcq4
                 {
                     window.ExposureTimeLabel.Invoke(new Action(() =>
                     {
-                        window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                        window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime * 1000:F5} ms";
                     }));
                 
                 }
                 else
                 {
-                    window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime:F5} seconds";
+                    window.ExposureTimeLabel.Text = $"Current Exposure Time: {roundedExposureTime * 1000:F5} ms";
                 }
             }
             else
             {
                 MyShowStatusNG("Failed to query exposure time", exposuretimeprop.m_lasterr);
+            }
+
+            double frameInterval = 0;
+            if (frameIntervalProp.getvalue(ref frameInterval))
+            {
+                window.FrameIntervalLabel.Text = $"Current Frame Interval: {frameInterval * 1000} ms"; // Convert to milliseconds
+                Console.WriteLine($"Checked: Current frame interval is {frameInterval * 1000} ms."); // This is exposure time + dead time of 0.298 ms.
+
             }
         }
 
@@ -1308,7 +1331,7 @@ namespace csAcq4
             double roundedExposureTime = 0;
             if (exposuretimeprop.getvalue(ref roundedExposureTime))
             {
-                Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F2}");
+                Console.WriteLine($"Current Exposure Time: {roundedExposureTime * 1000 :F2} ms");
             }
             else
             {
@@ -1318,18 +1341,18 @@ namespace csAcq4
             // Attempt to update the property
             if (exposuretimeprop.setvalue(newExposureTime.Value))
             {
-                Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
+                Console.WriteLine($"Updated Exposure Time to {newExposureTime * 1000:F2} ms");
 
                 if (window.ExposureTimeLabel.InvokeRequired)
                 {
                     window.ExposureTimeLabel.Invoke(new Action(() =>
                     {
-                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime * 1000:F2} ms";
                     }));
                 }
                 else
                 {
-                    window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
+                    window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime * 1000:F2} ms";
                 }
             }
             else
@@ -1451,6 +1474,16 @@ namespace csAcq4
             }
         }
 
+        public int GetFrameCount()
+        {
+            int newestFrameIndex = 0;
+            int nFrameCount = 0;
+
+            if (mydcam.cap_transferinfo(ref newestFrameIndex, ref nFrameCount))
+                return nFrameCount;
+            else
+                return -1; // error case
+        }
 
         public void Snap()
         {
@@ -1791,6 +1824,7 @@ namespace csAcq4
             if (snapCancelTokenSource != null)
             {
                 snapCancelTokenSource.Cancel();
+                mydcam.buf_release(); // shirley adds to test if we can abort the burst scan
                 Console.WriteLine("Stop Acquisition requested. Attempting to stop burst mode...");
             }
         }
@@ -2194,6 +2228,8 @@ namespace csAcq4
             string multiTiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
 
             try
+
+
             {
                 using (Tiff tiff = Tiff.Open(multiTiffPath, "w"))
                 // using (StreamWriter writer = new StreamWriter(csvFilePath, true)) // Append to CSV file
