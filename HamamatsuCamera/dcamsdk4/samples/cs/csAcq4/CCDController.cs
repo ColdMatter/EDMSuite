@@ -1028,36 +1028,36 @@ namespace csAcq4
                 return; 
             }
 
-            if (newCameraIndex.HasValue)
-            {
-                SelectedCamera = newCameraIndex.Value;
-                if (window.comboBoxCameraSelection.InvokeRequired)
-                {
-                    window.comboBoxCameraSelection.Invoke(new Action(() =>
-                    {
-                        window.comboBoxCameraSelection.SelectedIndex = SelectedCamera;
-                    }));
-                }
-            }
-            else
-            {
-                // Ensure the call to `SelectedCamera` is done on the UI thread. Define the default as CCDA
-                SelectedCamera = 0;
-                if (window.comboBoxCameraSelection.InvokeRequired)
-                {
-                    // If not on the UI thread, use Invoke to marshal the call
-                    window.comboBoxCameraSelection.Invoke(new Action(() =>
-                    {
-                        SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
-                    }));
-                }
-                else
-                {
-                    SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
-                    // If already on the UI thread, simply access the property
+            //if (newCameraIndex.HasValue)
+            //{
+            //    SelectedCamera = newCameraIndex.Value;
+            //    if (window.comboBoxCameraSelection.InvokeRequired)
+            //    {
+            //        window.comboBoxCameraSelection.Invoke(new Action(() =>
+            //        {
+            //            window.comboBoxCameraSelection.SelectedIndex = SelectedCamera;
+            //        }));
+            //    }
+            //}
+            //else
+            //{
+            //    // Ensure the call to `SelectedCamera` is done on the UI thread. Define the default as CCDA
+            //    SelectedCamera = 0;
+            //    if (window.comboBoxCameraSelection.InvokeRequired)
+            //    {
+            //        // If not on the UI thread, use Invoke to marshal the call
+            //        window.comboBoxCameraSelection.Invoke(new Action(() =>
+            //        {
+            //            SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+            //        }));
+            //    }
+            //    else
+            //    {
+            //        SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+            //        // If already on the UI thread, simply access the property
 
-                }
-            }
+            //    }
+            //}
 
             Console.WriteLine($"Selected Camera: {(SelectedCamera == 0 ? "CCDA" : "CCDB")}");
             MyShowStatus($"Camera model and serial number verified. You are operating {(SelectedCamera == 0 ? "CCDA" : "CCDB")} :)");
@@ -2191,7 +2191,7 @@ namespace csAcq4
             }
             string cameraSuffix = (SelectedCamera == 0) ? "CCDA" : "CCDB";
             Directory.CreateDirectory(saveDirectory);
-            string multiTiffPath = GetNextFileName(saveDirectory, "CCD2", ".tiff");
+            string multiTiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
 
             try
             {

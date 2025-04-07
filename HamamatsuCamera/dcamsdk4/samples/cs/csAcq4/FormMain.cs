@@ -106,7 +106,7 @@ namespace csAcq4
             Boolean isAcquiringSoftwareTrigger = (status == FormStatus.AcquiringSoftwareTrigger);
             PushInit.Enabled = isStartup;
             // Shirley added the constraints below on 26/02 to improve the stability of the program
-            comboTriggerSource.Enabled = isInitialized || isAcquired;
+            //comboTriggerSource.Enabled = isInitialized || isAcquired;
             QueryFrameCountButton.Enabled = isInitialized || isAcquired;
             UpdateFrameCountButton.Enabled = isInitialized || isAcquired;
             FrameCountTextBox.Enabled = isInitialized || isAcquired;
@@ -523,7 +523,7 @@ namespace csAcq4
 
             comboBoxCameraSelection.Items.Add("CCDA");
             comboBoxCameraSelection.Items.Add("CCDB");
-            comboBoxCameraSelection.SelectedIndex = 0; // Default to CCDA
+            //comboBoxCameraSelection.SelectedIndex = 0; // Default to CCDA
 
             // Auto-detect camera serial number
             // controller.SelectCamera(); // Detect camera using serial number
@@ -996,6 +996,16 @@ namespace csAcq4
         private void QueryFrameCountButton_Click(object sender, EventArgs e)
         {
             controller.QueryFrameCount();
+        }
+
+        private void QueryNumSnapsButton_Click(object sender, EventArgs e)
+        {
+            controller.QueryNumSnaps();
+        }
+
+        private void UpdateNumSnapsButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateNumSnaps();
         }
 
 
