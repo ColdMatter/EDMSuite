@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
@@ -51,6 +51,8 @@ public class Patterns : MOTMasterScript
 
         Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
+
+        Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
 
 
         Parameters["slowingRepumpSwitchDelay"] = 0;
@@ -69,16 +71,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -1.35; 
-        Parameters["yShimLoadCurrent"] = -1.92; 
-        Parameters["zShimLoadCurrent"] = -0.22;
-
-        // Shim Lambda fields
-        Parameters["xShimLambdaCurrent"] = -1.35;
-        Parameters["yShimLambdaCurrent"] = -1.92;
-        Parameters["zShimLambdaCurrent"] = -0.22;
-
-        Parameters["BfieldEnd"] = -0.3;
+        Parameters["xShimLoadCurrent"] = -2.21;
+        Parameters["yShimLoadCurrent"] = -2.13;
+        Parameters["zShimLoadCurrent"] = -0.17;
 
         // v0 Light Switch
         Parameters["MOTAOMStartTime"] = 15000;
@@ -122,7 +117,7 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
         Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 3.0;
+        Parameters["BXAOMAttenuation"] = 5.0;
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
         //Sideband Amplitudes
@@ -159,8 +154,8 @@ public class Patterns : MOTMasterScript
         Parameters["POS150OffsetFreq"] = 62.6;
         Parameters["POS150Gradient"] = 7.68;
 
-        Parameters["FrequencySettleTime"] = 100;
-        Parameters["LambdaCoolingDuration"] = 1000;
+        Parameters["FrequencySettleTime"] = 200;
+        Parameters["LambdaCoolingDuration"] = 400;
         Parameters["FreeExpTime"] = 1;
 
         
@@ -179,6 +174,7 @@ public class Patterns : MOTMasterScript
         int lambdaCoolingStart = motEndTime + (int)Parameters["FrequencySettleTime"];
         int lambdaCoolingEnd = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int imageTime = lambdaCoolingEnd + (int)Parameters["FreeExpTime"];
+        int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
 
@@ -190,13 +186,9 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
-
-        p.Pulse(patternStartBeforeQ, motEndTime-1000, 10, "cameraTrigger");
-
-
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
@@ -244,10 +236,11 @@ public class Patterns : MOTMasterScript
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
-      
 
-        p.AddEdge("bXSlowingShutter", 0, false);
-        p.AddEdge("bXSlowingShutter", 20000, true);
+
+        p.AddEdge("bXSlowingShutter", 0, true);
+        p.AddEdge("bXSlowingShutter", BXShutterClose, false);
+        p.AddEdge("bXSlowingShutter", 26000, true);
 
 
 
@@ -291,10 +284,10 @@ public class Patterns : MOTMasterScript
         p.AddChannel("SlowingRepumpAttenuation");
 
         //Switch BX AOM via analog output Mar 05 2024
-        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        //p.AddAnalogValue("BXAttenuation", 0, 0.0);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
+        //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -310,21 +303,21 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", motCompressionStartTime, (int)Parameters["MOTCompressoinDuratoin"], (double)Parameters["MOTCoilsCompressionValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, (double)Parameters["BfieldEnd"]);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime, 1.0);
+        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, -0.2);
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime-175, 1.0); // -175 added to account for time it takes for B field current to respond to change in control voltage from a negative set point
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 
 
-        // Shim Fields
+        // MOT Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
         p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["V00EOMsidebandRatio"]); //24/03/2023
 
-        // Shim Fields
-        p.AddAnalogValue("xShimCoilCurrent", motEndTime, (double)Parameters["xShimLambdaCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", motEndTime, (double)Parameters["yShimLambdaCurrent"]);
-        p.AddAnalogValue("zShimCoilCurrent", motEndTime, (double)Parameters["zShimLambdaCurrent"]);
+        // Recap MOT Shim Fields
+        p.AddAnalogValue("xShimCoilCurrent", imageTime, (double)Parameters["xShimLoadCurrent"]);
+        p.AddAnalogValue("yShimCoilCurrent", imageTime, (double)Parameters["yShimLoadCurrent"]);
+        p.AddAnalogValue("zShimCoilCurrent", imageTime, (double)Parameters["zShimLoadCurrent"]);
 
         // v0 Intensity Ramp
         p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);

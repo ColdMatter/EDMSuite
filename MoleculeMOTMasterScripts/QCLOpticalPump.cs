@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
@@ -47,10 +47,14 @@ public class Patterns : MOTMasterScript
         Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
         Parameters["slowingAOMOnDuration"] = 45000;
 
+        //Parameters["BXshutterTriggerDuration"] = (int)Parameters["SlowingChirpDuration"] - 
+
 
 
         Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
+
+        Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
 
 
         Parameters["slowingRepumpSwitchDelay"] = 0;
@@ -69,9 +73,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0; // -1.35;// old value?
-        Parameters["yShimLoadCurrent"] = 0.0; // -1.92;// old value?
-        Parameters["zShimLoadCurrent"] = -0.22;
+        Parameters["xShimLoadCurrent"] = -2.21;
+        Parameters["yShimLoadCurrent"] = -2.13;
+        Parameters["zShimLoadCurrent"] = -0.17;
 
 
         // v0 Light Switch
@@ -117,10 +121,10 @@ public class Patterns : MOTMasterScript
         //Optical pumping configuration
         Parameters["OPfreq1"] = 228.00 / 2.0;//109.00; //+ F = 1- 
         //Parameters["OPfreq2"] = 306.00 / 2.0; //- F = 0
-        Parameters["OPfreq3"] = 380.00 / 2.0;//172.00; //- F = 2
-        Parameters["OPfreq4"] = 354.00 / 2.0;//181.00; //+ F = 1+
+        Parameters["OPfreq3"] = 370.00 / 2.0;//172.00; //- F = 2
+        //Parameters["OPfreq4"] = 354.00 / 2.0;//181.00; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 3.0;
+        Parameters["BXAOMAttenuation"] = 5.0;
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
          // 6Feb25
@@ -167,6 +171,8 @@ public class Patterns : MOTMasterScript
         Parameters["LambdaSettleTime"] = 5;
         Parameters["OpticalPumpDuration"] = 50;
         Parameters["FreeExpTime"] = 2000;
+        Parameters["BFieldPrelay"] = 200;
+
 
 
 
@@ -185,6 +191,7 @@ public class Patterns : MOTMasterScript
         int OpticalPumpStart = lambdaCoolingEnd + (int)Parameters["LambdaSettleTime"];
         int OpticalPumpEnd = OpticalPumpStart + (int)Parameters["OpticalPumpDuration"];
         int imageTime = OpticalPumpEnd + (int)Parameters["FreeExpTime"];
+        int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
 
@@ -245,23 +252,14 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0rfswitch1", OpticalPumpStart, false);
         //p.AddEdge("v0rfswitch2", OpticalPumpStart, false);
         p.AddEdge("v0rfswitch3", OpticalPumpStart, false);
-        p.AddEdge("v0rfswitch4", OpticalPumpStart, false);
-
-        //switch on microwaves
-
-        //p.AddEdge("microwaveSwitch", 0, false);
-        //p.AddEdge("microwaveSwitch", OpticalPumpEnd, true);
-
-        //switch off microwaves
-
-        //p.AddEdge("microwaveSwitch", MicrowavesEnd, false);
+        //p.AddEdge("v0rfswitch4", OpticalPumpStart, false);
 
         //switch OFF MOT sidebands for FET INCLUDE
 
         p.AddEdge("v0rfswitch1", OpticalPumpEnd, true);
         //p.AddEdge("v0rfswitch2", OpticalPumpEnd, true);
         p.AddEdge("v0rfswitch3", OpticalPumpEnd, true);
-        p.AddEdge("v0rfswitch4", OpticalPumpEnd, true);
+        //p.AddEdge("v0rfswitch4", OpticalPumpEnd, true);
 
         //switch on for second image INCLUDE
 
@@ -279,8 +277,10 @@ public class Patterns : MOTMasterScript
 
       
 
-        p.AddEdge("bXSlowingShutter", 0, false);
-        p.AddEdge("bXSlowingShutter", 20000, true);
+        p.AddEdge("bXSlowingShutter", 0, true);
+        p.AddEdge("bXSlowingShutter", BXShutterClose, false);
+        p.AddEdge("bXSlowingShutter", 26000, true);
+
 
 
 
@@ -327,10 +327,10 @@ public class Patterns : MOTMasterScript
         p.AddChannel("SlowingRepumpAttenuation");
 
         //Switch BX AOM via analog output Mar 05 2024
-        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        //p.AddAnalogValue("BXAttenuation", 0, 0.0);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
+        //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
@@ -346,8 +346,8 @@ public class Patterns : MOTMasterScript
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", motCompressionStartTime, (int)Parameters["MOTCompressoinDuratoin"], (double)Parameters["MOTCoilsCompressionValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime, 1.0);
+        p.AddAnalogValue("MOTCoilsCurrent", motEndTime, -0.2);
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime - (int)Parameters["BFieldPrelay"], 1.0);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + 1000, 0.0);
 
 
@@ -391,8 +391,13 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf1Freq", OpticalPumpStart, ((double)Parameters["OPfreq1"] - (double)Parameters["POS150OffsetFreq"]) / (double)Parameters["POS150Gradient"]);
         //p.AddAnalogValue("Rf2Freq", OpticalPumpStart, ((double)Parameters["OPfreq2"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
         p.AddAnalogValue("Rf3Freq", OpticalPumpStart, ((double)Parameters["OPfreq3"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
-        p.AddAnalogValue("Rf4Freq", OpticalPumpStart, ((double)Parameters["OPfreq4"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
+        //p.AddAnalogValue("Rf4Freq", OpticalPumpStart, ((double)Parameters["OPfreq4"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
 
+        // Image frequency
+        p.AddAnalogValue("Rf1Freq", imageTime, ((double)Parameters["SidebandFreq1"] - (double)Parameters["POS150OffsetFreq"]) / (double)Parameters["POS150Gradient"]);
+        p.AddAnalogValue("Rf2Freq", imageTime, ((double)Parameters["SidebandFreq2"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
+        p.AddAnalogValue("Rf3Freq", imageTime, ((double)Parameters["SidebandFreq3"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
+        p.AddAnalogValue("Rf4Freq", imageTime, ((double)Parameters["SidebandFreq4"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
 
         // sidebands for Optical pumping
 

@@ -337,6 +337,8 @@ namespace NeanderthalDDSController
             }
         }
 
+        
+
         #region FormatTsar
         private void TextBox_Amp_TextChanged(object sender, EventArgs e)
         {

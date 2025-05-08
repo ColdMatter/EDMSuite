@@ -181,7 +181,7 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-#if CaF || ZS
+
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
@@ -191,7 +191,7 @@ namespace DAQ.Environment
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
-#endif
+
 
                 case "CLAM":
                     Hardware = new SympatheticHardware();
