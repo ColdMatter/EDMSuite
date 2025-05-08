@@ -73,6 +73,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hamamatsu EMCCD Camera", "HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj", "{7443F26B-16B4-4191-B841-CF864ABDD579}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeanderthalDDSController", "NeanderthalDDSController\NeanderthalDDSController.csproj", "{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeanderthalDDSController", "NeanderthalDDSController\NeanderthalDDSController.csproj", "{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -399,6 +400,7 @@ Global
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.CaFBEC|x86.ActiveCfg = CaF|x86
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.CaFBEC|x86.Build.0 = CaF|x86
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
+		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{BB737B99-2E9F-40C9-9809-895A7C51AD40}.Debug|x64.ActiveCfg = Decelerator|x64
@@ -587,6 +589,7 @@ Global
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.CaFBEC|x86.ActiveCfg = CaFBEC|x86
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.CaFBEC|x86.Build.0 = CaFBEC|x86
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Any CPU.ActiveCfg = ultracoldEDM|Any CPU
+		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Any CPU.Build.0 = ultracoldEDM|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.ActiveCfg = TransferCavityLock2012|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|Mixed Platforms.Build.0 = TransferCavityLock2012|Any CPU
 		{BA0A0540-3F1C-483B-A180-CB78DF424F15}.Debug|x64.ActiveCfg = Decelerator|x64
@@ -3268,7 +3271,6 @@ Global
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.CaFBEC|x86.ActiveCfg = CaFBEC|x86
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.CaFBEC|x86.Build.0 = CaFBEC|x86
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.Debug|x64.ActiveCfg = Debug|x64
 		{E091DA4C-F52B-47E3-9670-A36C4F16ECF7}.Debug|x64.Build.0 = Debug|x64
@@ -5263,7 +5265,6 @@ Global
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.CaFBEC|x86.ActiveCfg = Debug|Any CPU
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.CaFBEC|x86.Build.0 = Debug|Any CPU
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}.Debug|x64.ActiveCfg = Debug|Any CPU

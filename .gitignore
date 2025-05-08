@@ -20,3 +20,6 @@ iamjoe.sh
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Settings.Designer.cs
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Settings.settings
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Program.cs
+/packages/BitMiracle.LibTiff.NET.2.4.660
+/BECMOTMasterScripts/app.config
+/MoleculeMOTMasterScripts/app.config
