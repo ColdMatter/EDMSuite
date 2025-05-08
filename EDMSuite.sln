@@ -73,7 +73,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hamamatsu EMCCD Camera", "HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj", "{7443F26B-16B4-4191-B841-CF864ABDD579}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeanderthalDDSController", "NeanderthalDDSController\NeanderthalDDSController.csproj", "{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeanderthalDDSController", "NeanderthalDDSController\NeanderthalDDSController.csproj", "{67CBABE4-303C-4034-99A0-25D7DD2E5D2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

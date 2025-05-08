@@ -76,9 +76,9 @@ namespace NeanderthalDDSController
             dwErrorCode = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_PCISERIALNR, out lSerialNumber);
 
             Console.WriteLine(sCardName + " sn {0}\n", lSerialNumber);
-            MessageBox.Show("Card found: " + sCardName + " sn " + lSerialNumber.ToString(), "Serial Number", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Card found: " + sCardName + " sn " + lSerialNumber.ToString(), "Serial Number", MessageBoxButtons.OK, MessageBoxIcon.Information);
             initializeCard();
-           
+            closeCard();
         }
 
         public void start()
@@ -102,6 +102,7 @@ namespace NeanderthalDDSController
             {
 
                 while (isPatternRunning)
+                //for (int i = 0; i < 10; i++)
                 {
                     // This is when the DDS stops all the signal output
                     openCard();
@@ -110,6 +111,8 @@ namespace NeanderthalDDSController
                     Thread.Sleep(patternLength);
                     closeCard();
                 }
+                stopPattern();
+                
             });
 
         }
@@ -129,17 +132,13 @@ namespace NeanderthalDDSController
         public void startSinglePattern()
         {
 
-            if (!isPatternRunning)
-            {
-                //closeCard();
-                return;
-            }
+            
 
-            //initializeCard();
+            initializeCard();
             addPatternToBuffer(patternList);
 
             // Check if all commands are excecuted
-            while (checkCommandNum(hDevice) != 0 && breakFlag == false)
+            while (checkCommandNum(hDevice) != 0)
             {
                 // Loop until the condition is met.
 
@@ -178,16 +177,17 @@ namespace NeanderthalDDSController
             }
 
             uint code;
+            
             // reset first
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
 
             // Enable channels
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CHENABLE, Regs.CHANNEL0 | Regs.CHANNEL1 | Regs.CHANNEL2 | Regs.CHANNEL3);
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_ENABLEOUT0, 1);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CHENABLE, Regs.CHANNEL0 | Regs.CHANNEL1 | Regs.CHANNEL2 | Regs.CHANNEL3);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_ENABLEOUT0, 1);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_ENABLEOUT1, 1);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_ENABLEOUT2, 1);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_ENABLEOUT3, 1);
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_AMP0, 1000);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_AMP0, 1000);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_AMP1, 1000);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_AMP2, 1000);
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_AMP3, 1000);
@@ -195,33 +195,34 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER1, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER2, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER3, 0); // full bandwidth, no filter
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CARDMODE, Regs.SPC_REP_STD_DDS);
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
 
             // setup the external trigger input
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_MODE, Regs.SPC_TM_POS);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_LEVEL0, 1500);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_ACDC, Regs.COUPLING_DC);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_MODE, Regs.SPC_TM_POS);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_LEVEL0, 1500);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_EXT0_ACDC, Regs.COUPLING_DC);
 
 
             // card start
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_START | Regs.M2CMD_CARD_ENABLETRIGGER);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_START);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_START | Regs.M2CMD_CARD_ENABLETRIGGER);
+
 
             // Core distribution
-            code = Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH0, Regs.SPCM_DDS_CORE0);
-            code = Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH1, Regs.SPCM_DDS_CORE47);
-            code = Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH2, Regs.SPCM_DDS_CORE48);
-            code = Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH3, Regs.SPCM_DDS_CORE49);
+            Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH0, Regs.SPCM_DDS_CORE0);
+            Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH1, Regs.SPCM_DDS_CORE47);
+            Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH2, Regs.SPCM_DDS_CORE48);
+            Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH3, Regs.SPCM_DDS_CORE49);
 
-            
+
 
         }
 
 
         // Add parameters to pattern list
+
+
         public void addParToPatternList(string name, List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe)
         {
             try
@@ -232,7 +233,19 @@ namespace NeanderthalDDSController
                 }
 
                 patternList.Add(name, new List<List<double>> { timeDelay, freq, amp, freq_slpoe, amp_slpoe });
-                parameterUpdated.Invoke();
+                //parameterUpdated.Invoke();
+                // Ensure parameterUpdated.Invoke() runs on the UI thread
+                if (parameterUpdated != null)
+                {
+                    if (parameterUpdated.Target is Control control && control.InvokeRequired)
+                    {
+                        control.Invoke(new MethodInvoker(() => parameterUpdated.Invoke()));
+                    }
+                    else
+                    {
+                        parameterUpdated.Invoke();
+                    }
+                }
             }
             catch (ArgumentException ex)
             {
@@ -301,51 +314,28 @@ namespace NeanderthalDDSController
 
             int i = 0;
 
-            //fixed (ST_LIST_PARAM* pAslist = &aslist[0])
-            //{
-                // global time in s
-                foreach (string key in sortedPatternList.Keys)
+            uint code;
+            // global time in s
+            foreach (string key in sortedPatternList.Keys)
+            {
+
+
+                if (i < sortedPatternList.Count - 1)
                 {
+                    double length;
+                    length = timeList[i + 1] - timeList[i];
 
-
-                    if (i < sortedPatternList.Count - 1)
-                    {
-                        double length;
-                        length = timeList[i + 1] - timeList[i];
-
-                        Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, length);
-                        i++;
-                        //aslist[j].lReg = Regs.SPC_DDS_TRG_TIMER;
-                        //aslist[j].lType = 1;
-                        //aslist[j].dValue = length;
-                        //j++;
-                    }
+                    code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, length);
+                    i++;
+                    
+                }
 
                 // Ch 0 core 0
-                Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ, 1e6 * sortedPatternList[key][1][0]);
-                Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, sortedPatternList[key][2][0]);
-                Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][0]);
-                Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP_SLOPE, 1e3 * sortedPatternList[key][4][0]);
+                code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ, 1e6 * sortedPatternList[key][1][0]);
+                code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, sortedPatternList[key][2][0]);
+                code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][0]);
+                code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP_SLOPE, 1e3 * sortedPatternList[key][4][0]);
 
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e6 * sortedPatternList[key][1][0];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = sortedPatternList[key][2][0];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e9 * sortedPatternList[key][3][0];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e3 * sortedPatternList[key][4][0];
-                //j++;
 
                 // Ch 1 core 47
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_FREQ, 1e6 * sortedPatternList[key][1][1]);
@@ -353,25 +343,7 @@ namespace NeanderthalDDSController
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][1]);
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_AMP_SLOPE, 1e3 * sortedPatternList[key][4][1]);
 
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ;
-                //    aslist[j].lType = 1;
-                //    aslist[j].dValue = 1e6 * sortedPatternList[key][1][1];
-                //    j++;
-
-                //    aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP;
-                //    aslist[j].lType = 1;
-                //    aslist[j].dValue = sortedPatternList[key][2][1];
-                //    j++;
-
-                //    aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ_SLOPE;
-                //    aslist[j].lType = 1;
-                //    aslist[j].dValue = 1e9 * sortedPatternList[key][3][1];
-                //    j++;
-
-                //    aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP_SLOPE;
-                //    aslist[j].lType = 1;
-                //    aslist[j].dValue = 1e3 * sortedPatternList[key][4][1];
-                //    j++;
+           
 
                 // Ch 2 core 48
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_FREQ, 1e6 * sortedPatternList[key][1][2]);
@@ -379,25 +351,6 @@ namespace NeanderthalDDSController
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][2]);
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_AMP_SLOPE, 1e3 * sortedPatternList[key][4][2]);
 
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e6 * sortedPatternList[key][1][2];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = sortedPatternList[key][2][2];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e9 * sortedPatternList[key][3][2];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e3 * sortedPatternList[key][4][2];
-                //j++;
 
                 // Ch 3 core 49
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ, 1e6 * sortedPatternList[key][1][3]);
@@ -405,43 +358,12 @@ namespace NeanderthalDDSController
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][3]);
                 Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_AMP_SLOPE, 1e3 * sortedPatternList[key][4][3]);
 
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e6 * sortedPatternList[key][1][3];
-                //j++;
+                code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
 
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = sortedPatternList[key][2][3];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_FREQ_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e9 * sortedPatternList[key][3][3];
-                //j++;
-
-                //aslist[j].lReg = Regs.SPC_DDS_CORE0_AMP_SLOPE;
-                //aslist[j].lType = 1;
-                //aslist[j].dValue = 1e3 * sortedPatternList[key][4][3];
-                //j++;
-
-                Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
-
-                    //aslist[j].lReg = Regs.SPC_DDS_CMD;
-                    //aslist[j].lType = 0;
-                    //aslist[j].dValue = Regs.SPCM_DDS_CMD_EXEC_AT_TRG;
-                    //j++;
+            }
 
 
-                }
-                //Write command in one libraray call
-                //    int size = Marshal.SizeOf<ST_LIST_PARAM>();
-                //int totalSize = parLength * size;
-                //Drv.spcm_dwSetParam_ptr(hDevice, Regs.SPC_REGISTER_LIST, (IntPtr)pAslist, (ulong)totalSize);
-                //}
-
-
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
+            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
 
 
 
@@ -464,19 +386,9 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ, 1e6 * pattern[6]);
             Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_AMP, pattern[7]);
 
-            // read back the exact signal frequency
-            Drv.spcm_dwGetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ, out double dFreq_Hz);
-            Console.WriteLine(dFreq_Hz);
-
-            Drv.spcm_dwGetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, out double amp);
-            Console.WriteLine(amp);
 
             code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
             code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_FORCETRIGGER);
-
-            code = Drv.spcm_dwGetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, out amp);
-            Console.WriteLine(amp);
         }
 
         public int checkCommandNum(nint dev)
@@ -497,100 +409,9 @@ namespace NeanderthalDDSController
             hDevice = Drv.spcm_hOpen("/dev/spcm0");
         }
 
-        public static void indexTable(string key, out int row, out int col)
-        {
-            row = -1; col = -1;
-            switch (key)
-            {
-                case "time":
-                    row = 0; col = 0; break;
+        
 
-                case "Ch0Freq":
-                    row = 1; col = 0; break;
-
-                case "Ch1Freq":
-                    row = 1; col = 1; break;
-
-                case "Ch2Freq":
-                    row = 1; col = 2; break;
-
-                case "Ch3Freq":
-                    row = 1; col = 3; break;
-
-                case "Ch0Amp":
-                    row = 2; col = 0; break;
-
-                case "Ch1Amp":
-                    row = 2; col = 1; break;
-
-                case "Ch2Amp":
-                    row = 2; col = 2; break;
-
-                case "Ch3Amp":
-                    row = 2; col = 3; break;
-
-                case "Ch0FreqSlope":
-                    row = 3; col = 0; break;
-
-                case "Ch1FreqSlope":
-                    row = 3; col = 1; break;
-
-                case "Ch2FreqSlope":
-                    row = 3; col = 2; break;
-
-                case "Ch3FreqSlope":
-                    row = 3; col = 3; break;
-
-                case "Ch0AmpSlope":
-                    row = 4; col = 0; break;
-
-                case "Ch1AmpSlope":
-                    row = 4; col = 1; break;
-
-                case "Ch2AmpSlope":
-                    row = 4; col = 2; break;
-
-                case "Ch3AmpSlope":
-                    row = 4; col = 3; break;
-
-                default:
-                    throw new KeyNotFoundException($"Key '{key}' not found in the index table.");
-            }
-        }
-
-        public void UpdatePatternValue(Dictionary<string, List<List<double>>> patternList, string key, int row, int col, double newValue)
-        {
-            try
-            {
-                if (!patternList.ContainsKey(key))
-                    throw new KeyNotFoundException($"Key '{key}' not found in dictionary.");
-
-                if (row < 0 || row >= patternList[key].Count || col < 0 || col >= patternList[key][row].Count)
-                    throw new ArgumentOutOfRangeException("Row or column index is out of range.");
-
-                patternList[key][row][col] = newValue;
-                //MessageBox.Show($"Updated [{key}][{row}][{col}] to {newValue}", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                MessageBox.Show(ex.Message, "Error: Key Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                MessageBox.Show(ex.Message, "Error: Index Out of Range", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public void varySingleParameter(string parName, string key, double val)
-        {
-            int row; int col;
-            indexTable(key, out row, out col); 
-            UpdatePatternValue(patternList, key, row, col, val);
-        }
+       
 
         private void InvokeParameterUpdatedSafely()
         {

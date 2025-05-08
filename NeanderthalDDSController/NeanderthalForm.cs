@@ -241,6 +241,8 @@ namespace NeanderthalDDSController
             lablePatternName.Text = filename;
         }
 
+       
+
 
 
         public static void SaveDataToFile(Controller controller)
@@ -385,6 +387,16 @@ namespace NeanderthalDDSController
         private void Menu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
+        }
+
+        private void NeanderthalForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NeanderthalForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.closeCard();
         }
     }
 }

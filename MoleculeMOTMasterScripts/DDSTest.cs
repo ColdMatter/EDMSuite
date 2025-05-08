@@ -117,24 +117,23 @@ public class Patterns : MOTMasterScript
 
         NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
         //DDSCtrl.setBreakFlag(true);
-        //DDSCtrl.clearPatternList();
-        DDSCtrl.addPatternToBufferSingle(new List<double> { (double)Parameters["SidebandFreq1"], 1.0, (double)Parameters["SidebandFreq2"], 1.0,
-            (double)Parameters["SidebandFreq3"], 1.0, (double)Parameters["SidebandFreq4"], 1.0 });
-
-        /*
+        DDSCtrl.clearPatternList();
+        //DDSCtrl.stopPattern();
+        
         addDDSPattern(DDSCtrl, "PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
             (double)Parameters["SidebandAmpDDS1"], (double)Parameters["SidebandAmpDDS2"], (double)Parameters["SidebandAmpDDS3"], (double)Parameters["SidebandAmpDDS4"]);
         addDDSPattern(DDSCtrl, "Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
         addDDSPattern(DDSCtrl, "ImageEnd", (int)Parameters["Frame0Trigger"] + 1000, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
            0.0, 0.0, 0.0, 0.0);
-        addDDSPattern(DDSCtrl, "LightsOn", (int)Parameters["Frame0Trigger"] + 10000, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
+        addDDSPattern(DDSCtrl, "LightsOn", (int)Parameters["Frame0Trigger"] + 3000, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
         //addDDSPattern(DDSCtrl, "PatternEnd", (int)Parameters["PatternLength"] - 5000, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
         //    (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
+        //DDSCtrl.setBreakFlag(false);
+        runDDSPattern(DDSCtrl);
+        //DDSCtrl.startPatternExternal();
 
-        DDSCtrl.startPatternExternal();
-        */
 
 
     }
@@ -219,7 +218,7 @@ public class Patterns : MOTMasterScript
         //Switch BX AOM via analog output Mar 05 2024
         //p.AddAnalogValue("BXAttenuation", 0, 0.1);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.1);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
         //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
 
@@ -281,7 +280,7 @@ public class Patterns : MOTMasterScript
     public void runDDSPattern(NeanderthalDDSController.Controller DDSCtrl)
     {
         //DDSCtrl.openCard();
-        DDSCtrl.startSinglePattern();
+        DDSCtrl.startRepetitivePattern();
         // Wait till sequence ends
         //Thread.Sleep((int)Parameters["DDSSleepTime"]);
         //DDSCtrl.closeCard();
