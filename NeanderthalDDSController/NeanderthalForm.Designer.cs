@@ -35,8 +35,6 @@ namespace NeanderthalDDSController
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button_add = new System.Windows.Forms.Button();
-            this.button_delete = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_eventName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -86,8 +84,6 @@ namespace NeanderthalDDSController
             this.dataGridCh2AmpSlope = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridCh3AmpSlope = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label11 = new System.Windows.Forms.Label();
-            this.buttonStartPattern = new System.Windows.Forms.Button();
-            this.buttonStopPattern = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.textBoxPatternLength = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -97,29 +93,13 @@ namespace NeanderthalDDSController
             this.label13 = new System.Windows.Forms.Label();
             this.lablePatternName = new System.Windows.Forms.Label();
             this.labelRunIndicator = new System.Windows.Forms.Label();
+            this.button_add = new System.Windows.Forms.Button();
+            this.button_delete = new System.Windows.Forms.Button();
+            this.buttonStopPattern = new System.Windows.Forms.Button();
+            this.buttonStartPattern = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.patternGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button_add
-            // 
-            this.button_add.Location = new System.Drawing.Point(556, 68);
-            this.button_add.Name = "button_add";
-            this.button_add.Size = new System.Drawing.Size(64, 20);
-            this.button_add.TabIndex = 1;
-            this.button_add.Text = "Add";
-            this.button_add.UseVisualStyleBackColor = true;
-            this.button_add.Click += new System.EventHandler(this.button_add_click);
-            // 
-            // button_delete
-            // 
-            this.button_delete.Location = new System.Drawing.Point(556, 94);
-            this.button_delete.Name = "button_delete";
-            this.button_delete.Size = new System.Drawing.Size(64, 20);
-            this.button_delete.TabIndex = 2;
-            this.button_delete.Text = "Delete";
-            this.button_delete.UseVisualStyleBackColor = true;
-            this.button_delete.Click += new System.EventHandler(this.button_Delete_Click);
             // 
             // label1
             // 
@@ -129,6 +109,7 @@ namespace NeanderthalDDSController
             this.label1.Size = new System.Drawing.Size(66, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Event Name";
+            this.label1.Visible = false;
             // 
             // textBox_eventName
             // 
@@ -137,6 +118,7 @@ namespace NeanderthalDDSController
             this.textBox_eventName.Size = new System.Drawing.Size(151, 20);
             this.textBox_eventName.TabIndex = 4;
             this.textBox_eventName.Text = "PatternStart";
+            this.textBox_eventName.Visible = false;
             // 
             // label2
             // 
@@ -146,6 +128,7 @@ namespace NeanderthalDDSController
             this.label2.Size = new System.Drawing.Size(88, 13);
             this.label2.TabIndex = 5;
             this.label2.Text = "Frequency (MHz)";
+            this.label2.Visible = false;
             // 
             // label3
             // 
@@ -155,6 +138,7 @@ namespace NeanderthalDDSController
             this.label3.Size = new System.Drawing.Size(26, 13);
             this.label3.TabIndex = 6;
             this.label3.Text = "Ch0";
+            this.label3.Visible = false;
             // 
             // textBox_ch0_freq
             // 
@@ -163,6 +147,7 @@ namespace NeanderthalDDSController
             this.textBox_ch0_freq.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch0_freq.TabIndex = 7;
             this.textBox_ch0_freq.Text = "100";
+            this.textBox_ch0_freq.Visible = false;
             // 
             // textBox_ch1_freq
             // 
@@ -171,6 +156,7 @@ namespace NeanderthalDDSController
             this.textBox_ch1_freq.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch1_freq.TabIndex = 9;
             this.textBox_ch1_freq.Text = "100";
+            this.textBox_ch1_freq.Visible = false;
             // 
             // label4
             // 
@@ -180,6 +166,7 @@ namespace NeanderthalDDSController
             this.label4.Size = new System.Drawing.Size(26, 13);
             this.label4.TabIndex = 8;
             this.label4.Text = "Ch1";
+            this.label4.Visible = false;
             // 
             // textBox_ch2_freq
             // 
@@ -188,6 +175,7 @@ namespace NeanderthalDDSController
             this.textBox_ch2_freq.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch2_freq.TabIndex = 11;
             this.textBox_ch2_freq.Text = "100";
+            this.textBox_ch2_freq.Visible = false;
             // 
             // label5
             // 
@@ -197,6 +185,7 @@ namespace NeanderthalDDSController
             this.label5.Size = new System.Drawing.Size(26, 13);
             this.label5.TabIndex = 10;
             this.label5.Text = "Ch2";
+            this.label5.Visible = false;
             // 
             // textBox_ch3_freq
             // 
@@ -205,6 +194,7 @@ namespace NeanderthalDDSController
             this.textBox_ch3_freq.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch3_freq.TabIndex = 13;
             this.textBox_ch3_freq.Text = "100";
+            this.textBox_ch3_freq.Visible = false;
             // 
             // label6
             // 
@@ -214,6 +204,7 @@ namespace NeanderthalDDSController
             this.label6.Size = new System.Drawing.Size(26, 13);
             this.label6.TabIndex = 12;
             this.label6.Text = "Ch3";
+            this.label6.Visible = false;
             // 
             // textBox_ch3_amp
             // 
@@ -222,6 +213,7 @@ namespace NeanderthalDDSController
             this.textBox_ch3_amp.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch3_amp.TabIndex = 18;
             this.textBox_ch3_amp.Text = "1";
+            this.textBox_ch3_amp.Visible = false;
             // 
             // textBox_ch2_amp
             // 
@@ -230,6 +222,7 @@ namespace NeanderthalDDSController
             this.textBox_ch2_amp.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch2_amp.TabIndex = 17;
             this.textBox_ch2_amp.Text = "1";
+            this.textBox_ch2_amp.Visible = false;
             // 
             // textBox_ch1_amp
             // 
@@ -238,6 +231,7 @@ namespace NeanderthalDDSController
             this.textBox_ch1_amp.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch1_amp.TabIndex = 16;
             this.textBox_ch1_amp.Text = "1";
+            this.textBox_ch1_amp.Visible = false;
             // 
             // textBox_ch0_amp
             // 
@@ -246,6 +240,7 @@ namespace NeanderthalDDSController
             this.textBox_ch0_amp.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch0_amp.TabIndex = 15;
             this.textBox_ch0_amp.Text = "1";
+            this.textBox_ch0_amp.Visible = false;
             // 
             // label7
             // 
@@ -255,6 +250,7 @@ namespace NeanderthalDDSController
             this.label7.Size = new System.Drawing.Size(53, 13);
             this.label7.TabIndex = 14;
             this.label7.Text = "Amplitude";
+            this.label7.Visible = false;
             // 
             // textBox_ch3_freq_slope
             // 
@@ -263,6 +259,7 @@ namespace NeanderthalDDSController
             this.textBox_ch3_freq_slope.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch3_freq_slope.TabIndex = 23;
             this.textBox_ch3_freq_slope.Text = "0";
+            this.textBox_ch3_freq_slope.Visible = false;
             // 
             // textBox_ch2_freq_slope
             // 
@@ -271,6 +268,7 @@ namespace NeanderthalDDSController
             this.textBox_ch2_freq_slope.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch2_freq_slope.TabIndex = 22;
             this.textBox_ch2_freq_slope.Text = "0";
+            this.textBox_ch2_freq_slope.Visible = false;
             // 
             // textBox_ch1_freq_slope
             // 
@@ -279,6 +277,7 @@ namespace NeanderthalDDSController
             this.textBox_ch1_freq_slope.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch1_freq_slope.TabIndex = 21;
             this.textBox_ch1_freq_slope.Text = "0";
+            this.textBox_ch1_freq_slope.Visible = false;
             // 
             // textBox_ch0_freq_slope
             // 
@@ -287,6 +286,7 @@ namespace NeanderthalDDSController
             this.textBox_ch0_freq_slope.Size = new System.Drawing.Size(73, 20);
             this.textBox_ch0_freq_slope.TabIndex = 20;
             this.textBox_ch0_freq_slope.Text = "0";
+            this.textBox_ch0_freq_slope.Visible = false;
             // 
             // label8
             // 
@@ -296,6 +296,7 @@ namespace NeanderthalDDSController
             this.label8.Size = new System.Drawing.Size(87, 13);
             this.label8.TabIndex = 19;
             this.label8.Text = "Frequency Slpoe";
+            this.label8.Visible = false;
             // 
             // textBox_ch3_amp_slope
             // 
@@ -304,6 +305,7 @@ namespace NeanderthalDDSController
             this.textBox_ch3_amp_slope.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch3_amp_slope.TabIndex = 28;
             this.textBox_ch3_amp_slope.Text = "0";
+            this.textBox_ch3_amp_slope.Visible = false;
             // 
             // textBox_ch2_amp_slope
             // 
@@ -312,6 +314,7 @@ namespace NeanderthalDDSController
             this.textBox_ch2_amp_slope.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch2_amp_slope.TabIndex = 27;
             this.textBox_ch2_amp_slope.Text = "0";
+            this.textBox_ch2_amp_slope.Visible = false;
             // 
             // textBox_ch1_amp_slope
             // 
@@ -320,6 +323,7 @@ namespace NeanderthalDDSController
             this.textBox_ch1_amp_slope.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch1_amp_slope.TabIndex = 26;
             this.textBox_ch1_amp_slope.Text = "0";
+            this.textBox_ch1_amp_slope.Visible = false;
             // 
             // textBox_ch0_amp_slope
             // 
@@ -328,6 +332,7 @@ namespace NeanderthalDDSController
             this.textBox_ch0_amp_slope.Size = new System.Drawing.Size(54, 20);
             this.textBox_ch0_amp_slope.TabIndex = 25;
             this.textBox_ch0_amp_slope.Text = "0";
+            this.textBox_ch0_amp_slope.Visible = false;
             // 
             // label9
             // 
@@ -337,6 +342,7 @@ namespace NeanderthalDDSController
             this.label9.Size = new System.Drawing.Size(83, 13);
             this.label9.TabIndex = 24;
             this.label9.Text = "Amplitude Slpoe";
+            this.label9.Visible = false;
             // 
             // label10
             // 
@@ -346,6 +352,7 @@ namespace NeanderthalDDSController
             this.label10.Size = new System.Drawing.Size(83, 13);
             this.label10.TabIndex = 29;
             this.label10.Text = "Event Time (ms)";
+            this.label10.Visible = false;
             // 
             // textBox_eventTime
             // 
@@ -354,6 +361,7 @@ namespace NeanderthalDDSController
             this.textBox_eventTime.Size = new System.Drawing.Size(72, 20);
             this.textBox_eventTime.TabIndex = 30;
             this.textBox_eventTime.Text = "0";
+            this.textBox_eventTime.Visible = false;
             // 
             // timer1
             // 
@@ -381,9 +389,9 @@ namespace NeanderthalDDSController
             this.dataGridCh1AmpSlope,
             this.dataGridCh2AmpSlope,
             this.dataGridCh3AmpSlope});
-            this.patternGridView.Location = new System.Drawing.Point(10, 169);
+            this.patternGridView.Location = new System.Drawing.Point(10, 46);
             this.patternGridView.Name = "patternGridView";
-            this.patternGridView.Size = new System.Drawing.Size(1014, 218);
+            this.patternGridView.Size = new System.Drawing.Size(1014, 341);
             this.patternGridView.TabIndex = 31;
             // 
             // dataGridEventName
@@ -520,26 +528,7 @@ namespace NeanderthalDDSController
             this.label11.Size = new System.Drawing.Size(307, 13);
             this.label11.TabIndex = 32;
             this.label11.Text = "All frequencies in MHz, amplitudes between 0 to 1, slope per ms";
-            // 
-            // buttonStartPattern
-            // 
-            this.buttonStartPattern.Location = new System.Drawing.Point(645, 68);
-            this.buttonStartPattern.Name = "buttonStartPattern";
-            this.buttonStartPattern.Size = new System.Drawing.Size(93, 20);
-            this.buttonStartPattern.TabIndex = 33;
-            this.buttonStartPattern.Text = "Start Pattern";
-            this.buttonStartPattern.UseVisualStyleBackColor = true;
-            this.buttonStartPattern.Click += new System.EventHandler(this.button_start_pattern_clicked);
-            // 
-            // buttonStopPattern
-            // 
-            this.buttonStopPattern.Location = new System.Drawing.Point(645, 93);
-            this.buttonStopPattern.Name = "buttonStopPattern";
-            this.buttonStopPattern.Size = new System.Drawing.Size(93, 20);
-            this.buttonStopPattern.TabIndex = 34;
-            this.buttonStopPattern.Text = "Stop Pattern";
-            this.buttonStopPattern.UseVisualStyleBackColor = true;
-            this.buttonStopPattern.Click += new System.EventHandler(this.button_stop_pattern_clicked);
+            this.label11.Visible = false;
             // 
             // label12
             // 
@@ -549,6 +538,7 @@ namespace NeanderthalDDSController
             this.label12.Size = new System.Drawing.Size(99, 13);
             this.label12.TabIndex = 35;
             this.label12.Text = "Pattern Length (ms)";
+            this.label12.Visible = false;
             // 
             // textBoxPatternLength
             // 
@@ -557,6 +547,7 @@ namespace NeanderthalDDSController
             this.textBoxPatternLength.Size = new System.Drawing.Size(72, 20);
             this.textBoxPatternLength.TabIndex = 36;
             this.textBoxPatternLength.Text = "300";
+            this.textBoxPatternLength.Visible = false;
             // 
             // menuStrip1
             // 
@@ -581,14 +572,14 @@ namespace NeanderthalDDSController
             // toolStripSavePattern
             // 
             this.toolStripSavePattern.Name = "toolStripSavePattern";
-            this.toolStripSavePattern.Size = new System.Drawing.Size(180, 22);
+            this.toolStripSavePattern.Size = new System.Drawing.Size(141, 22);
             this.toolStripSavePattern.Text = "Save Pattern";
             this.toolStripSavePattern.Click += new System.EventHandler(this.save_pattern_clicked);
             // 
             // toolStripLoadPattern
             // 
             this.toolStripLoadPattern.Name = "toolStripLoadPattern";
-            this.toolStripLoadPattern.Size = new System.Drawing.Size(180, 22);
+            this.toolStripLoadPattern.Size = new System.Drawing.Size(141, 22);
             this.toolStripLoadPattern.Text = "Load Pattern";
             this.toolStripLoadPattern.Click += new System.EventHandler(this.load_pattern_clicked);
             // 
@@ -600,6 +591,7 @@ namespace NeanderthalDDSController
             this.label13.Size = new System.Drawing.Size(75, 13);
             this.label13.TabIndex = 38;
             this.label13.Text = "Pattern in use:";
+            this.label13.Visible = false;
             // 
             // lablePatternName
             // 
@@ -609,6 +601,7 @@ namespace NeanderthalDDSController
             this.lablePatternName.Size = new System.Drawing.Size(33, 13);
             this.lablePatternName.TabIndex = 39;
             this.lablePatternName.Text = "None";
+            this.lablePatternName.Visible = false;
             // 
             // labelRunIndicator
             // 
@@ -620,6 +613,51 @@ namespace NeanderthalDDSController
             this.labelRunIndicator.TabIndex = 40;
             this.labelRunIndicator.Text = "Pattern Stopped";
             this.labelRunIndicator.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelRunIndicator.Visible = false;
+            // 
+            // button_add
+            // 
+            this.button_add.Location = new System.Drawing.Point(556, 68);
+            this.button_add.Name = "button_add";
+            this.button_add.Size = new System.Drawing.Size(64, 20);
+            this.button_add.TabIndex = 1;
+            this.button_add.Text = "Add";
+            this.button_add.UseVisualStyleBackColor = true;
+            this.button_add.Visible = false;
+            this.button_add.Click += new System.EventHandler(this.button_add_click);
+            // 
+            // button_delete
+            // 
+            this.button_delete.Location = new System.Drawing.Point(556, 94);
+            this.button_delete.Name = "button_delete";
+            this.button_delete.Size = new System.Drawing.Size(64, 20);
+            this.button_delete.TabIndex = 2;
+            this.button_delete.Text = "Delete";
+            this.button_delete.UseVisualStyleBackColor = true;
+            this.button_delete.Visible = false;
+            this.button_delete.Click += new System.EventHandler(this.button_Delete_Click);
+            // 
+            // buttonStopPattern
+            // 
+            this.buttonStopPattern.Location = new System.Drawing.Point(645, 93);
+            this.buttonStopPattern.Name = "buttonStopPattern";
+            this.buttonStopPattern.Size = new System.Drawing.Size(93, 20);
+            this.buttonStopPattern.TabIndex = 34;
+            this.buttonStopPattern.Text = "Stop Pattern";
+            this.buttonStopPattern.UseVisualStyleBackColor = true;
+            this.buttonStopPattern.Visible = false;
+            this.buttonStopPattern.Click += new System.EventHandler(this.button_stop_pattern_clicked);
+            // 
+            // buttonStartPattern
+            // 
+            this.buttonStartPattern.Location = new System.Drawing.Point(645, 68);
+            this.buttonStartPattern.Name = "buttonStartPattern";
+            this.buttonStartPattern.Size = new System.Drawing.Size(93, 20);
+            this.buttonStartPattern.TabIndex = 33;
+            this.buttonStartPattern.Text = "Start Pattern";
+            this.buttonStartPattern.UseVisualStyleBackColor = true;
+            this.buttonStartPattern.Visible = false;
+            this.buttonStartPattern.Click += new System.EventHandler(this.button_start_pattern_clicked);
             // 
             // NeanderthalForm
             // 
@@ -712,8 +750,6 @@ namespace NeanderthalDDSController
         private System.Windows.Forms.Timer timer1;
         private DataGridView patternGridView;
         private Label label11;
-        private Button buttonStartPattern;
-        private Button buttonStopPattern;
         private Label label12;
         private TextBox textBoxPatternLength;
         private MenuStrip menuStrip1;
@@ -741,5 +777,9 @@ namespace NeanderthalDDSController
         private DataGridViewTextBoxColumn dataGridCh2AmpSlope;
         private DataGridViewTextBoxColumn dataGridCh3AmpSlope;
         private Label labelRunIndicator;
+        private Button button_add;
+        private Button button_delete;
+        private Button buttonStopPattern;
+        private Button buttonStartPattern;
     }
 }

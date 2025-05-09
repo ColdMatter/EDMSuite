@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 100000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 4000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -98,10 +98,10 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
 
-        Parameters["SidebandAmpDDS1"] = 0.19;
-        Parameters["SidebandAmpDDS2"] = 0.43;
-        Parameters["SidebandAmpDDS3"] = 0.94;
-        Parameters["SidebandAmpDDS4"] = 0.55;
+        Parameters["SidebandAmpDDS1"] = 1.0;
+        Parameters["SidebandAmpDDS2"] = 0.0;
+        Parameters["SidebandAmpDDS3"] = 0.0;
+        Parameters["SidebandAmpDDS4"] = 0.0;
 
         Parameters["SidebandImAmpDDS1"] = 0.19;
         Parameters["SidebandImAmpDDS2"] = 0.43;
@@ -116,7 +116,7 @@ public class Patterns : MOTMasterScript
     {
 
         NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
-        //DDSCtrl.setBreakFlag(true);
+        DDSCtrl.setBreakFlag(true);
         DDSCtrl.clearPatternList();
         //DDSCtrl.stopPattern();
         
@@ -130,7 +130,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
         //addDDSPattern(DDSCtrl, "PatternEnd", (int)Parameters["PatternLength"] - 5000, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
         //    (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
-        //DDSCtrl.setBreakFlag(false);
+        DDSCtrl.setBreakFlag(false);
         runDDSPattern(DDSCtrl);
         //DDSCtrl.startPatternExternal();
 

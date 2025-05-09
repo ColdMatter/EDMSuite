@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 100000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -125,15 +125,28 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreqCVB3"] = 340.67 / 2.0; //- F = 2sig- 170.78MHz 341.56MHz
         Parameters["SidebandFreqCVB4"] = 342.42 / 2.0; //+ F = 2sig+ 170.48MHz 340.96MHz
 
+        // DDS parameters
+
         Parameters["DDSFreq0"] = 171.40;
         Parameters["DDSFreq1"] = 98.00;
         Parameters["DDSFreq2"] = 171.80;
         Parameters["DDSFreq3"] = 171.58;
 
-        Parameters["DDSAmp0"] = 0.45;
-        Parameters["DDSAmp1"] = 0.4;
-        Parameters["DDSAmp2"] = 0.6;
+        Parameters["DDSLambdFreq0"] = 171.40;
+        Parameters["DDSLambdFreq1"] = 98.00;
+        Parameters["DDSLambdFreq2"] = 171.80;
+        Parameters["DDSLambdFreq3"] = 171.58;
+
+        Parameters["DDSAmp0"] = 1.0;
+        Parameters["DDSAmp1"] = 1.0;
+        Parameters["DDSAmp2"] = 1.0;
         Parameters["DDSAmp3"] = 1.0;
+
+        Parameters["DDSMOTRampEndAmp0"] = 0.1;
+        Parameters["DDSMOTRampEndAmp1"] = 0.1;
+        Parameters["DDSMOTRampEndAmp2"] = 0.1;
+        Parameters["DDSMOTRampEndAmp3"] = 0.1;
+
 
         Parameters["BXAOMAttenuation"] = 3.0;
         Parameters["SlowingRepumoAttenuation"] = 6.2;
@@ -211,12 +224,40 @@ public class Patterns : MOTMasterScript
     {
 
         NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
-        DDSCtrl.addPatternToBufferSingle(new List<double> { DDSAmp0
+        // Add number of command equal to the number of total triggers to DDS
+        // Parameter is a list of length 16
+
+        // Initial MOT
+        DDSCtrl.addPatternToBufferSingle(new List<double> { 
             (double)Parameters["DDSFreq0"], (double)Parameters["DDSAmp0"], 0.0, 0.0,
             (double)Parameters["DDSFreq1"], (double)Parameters["DDSAmp1"], 0.0, 0.0,
             (double)Parameters["DDSFreq2"], (double)Parameters["DDSAmp2"], 0.0, 0.0,
             (double)Parameters["DDSFreq3"], (double)Parameters["DDSAmp3"], 0.0, 0.0 });
-        //DDSCtrl.writePatternToCard();
+
+
+        // motEndTime
+        DDSCtrl.addPatternToBufferSingle(new List<double> {
+            (double)Parameters["DDSLambdFreq0"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq1"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq2"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq3"], 0.0, 0.0, 0.0 });
+
+        // lambdaCoolingStart
+        DDSCtrl.addPatternToBufferSingle(new List<double> {
+            (double)Parameters["DDSLambdFreq0"], (double)Parameters["DDSAmp0"], 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq1"], (double)Parameters["DDSAmp1"], 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq2"], (double)Parameters["DDSAmp2"], 0.0, 0.0,
+            (double)Parameters["DDSLambdFreq3"], (double)Parameters["DDSAmp3"], 0.0, 0.0 });
+
+        // lambdaCoolingEnd
+        DDSCtrl.addPatternToBufferSingle(new List<double> {
+            (double)Parameters["DDSFreq0"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSFreq1"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSFreq2"], 0.0, 0.0, 0.0,
+            (double)Parameters["DDSFreq3"], 0.0, 0.0, 0.0 });
+
+        DDSCtrl.writePatternToCard();
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -244,13 +285,18 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(0, blueMOTEnd - (int)Parameters["Frame0TriggerDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); 
+        p.Pulse(0, blueMOTEnd - (int)Parameters["Frame0TriggerDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         // Pulse(delay time, start time, duration, channel)
         //p.Pulse(0, lambdaCoolingEnd + (int)Parameters["ImageInBlueMOT"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
-
+        // DDS trigger
+        p.Pulse(patternStartBeforeQ, 0, 10, "DDSTrigger"); // Always send a trigger at time 0
+        p.Pulse(patternStartBeforeQ, 1000, 10, "DDSTrigger");
+        p.Pulse(patternStartBeforeQ, 2000, 10, "DDSTrigger");
+        p.Pulse(patternStartBeforeQ, 3000, 10, "DDSTrigger");
+        
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 

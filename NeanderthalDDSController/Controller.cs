@@ -78,7 +78,7 @@ namespace NeanderthalDDSController
             Console.WriteLine(sCardName + " sn {0}\n", lSerialNumber);
             //MessageBox.Show("Card found: " + sCardName + " sn " + lSerialNumber.ToString(), "Serial Number", MessageBoxButtons.OK, MessageBoxIcon.Information);
             initializeCard();
-            closeCard();
+            //closeCard();
         }
 
         public void start()
@@ -97,6 +97,9 @@ namespace NeanderthalDDSController
         public void startRepetitivePattern()
         {
             isPatternRunning = true;
+            int iValue;
+            long lValue;
+            uint code;
 
             Task.Run(() =>
             {
@@ -104,12 +107,23 @@ namespace NeanderthalDDSController
                 while (isPatternRunning)
                 //for (int i = 0; i < 10; i++)
                 {
+                    
                     // This is when the DDS stops all the signal output
                     openCard();
+                    //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
+                    //Console.WriteLine(iValue);
+                    //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
+                    //Console.WriteLine(iValue);
                     startSinglePattern();
+
                     // Wait till sequence ends
                     Thread.Sleep(patternLength);
                     closeCard();
+                    //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
+                    //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
+                    //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+                    //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
+                    //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
                 }
                 stopPattern();
                 
@@ -122,9 +136,11 @@ namespace NeanderthalDDSController
             if (isPatternRunning == true)
             {
                 isPatternRunning = false;  // Stop the loop
+                
+                //closeCard();
             }
-
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_FORCETRIGGER);
+
         }
 
        
@@ -132,20 +148,36 @@ namespace NeanderthalDDSController
         public void startSinglePattern()
         {
 
-            
+            int iValue;
+            long lValue;
+            uint code;
 
             initializeCard();
             addPatternToBuffer(patternList);
 
             // Check if all commands are excecuted
-            while (checkCommandNum(hDevice) != 0)
+            while (checkCommandNum(hDevice) != 0 && !breakFlag)
             {
                 // Loop until the condition is met.
 
             }
 
+            
+
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
+            //Console.WriteLine(iValue);
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
+            //Console.WriteLine(iValue);
+
+            // error 288
+            //code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
+
+            
+
             if (breakFlag)
             {
+                isPatternRunning = false;
                 stopPattern();
             }
 
@@ -171,13 +203,18 @@ namespace NeanderthalDDSController
             if (hDevice == IntPtr.Zero)
             {
                 MessageBox.Show("Error: Could not open card\n", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                closeCard();
                 stopPattern();
                 return;
             }
 
             uint code;
-            
+            int iValue;
+
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
+            //Console.WriteLine(iValue);
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
+            //Console.WriteLine(iValue);
+
             // reset first
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
 
@@ -196,7 +233,7 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER2, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER3, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
 
             // setup the external trigger input
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
@@ -215,7 +252,10 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH2, Regs.SPCM_DDS_CORE48);
             Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH3, Regs.SPCM_DDS_CORE49);
 
-
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
+            //Console.WriteLine(iValue);
+            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
+            //Console.WriteLine(iValue);
 
         }
 
@@ -315,6 +355,9 @@ namespace NeanderthalDDSController
             int i = 0;
 
             uint code;
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
             // global time in s
             foreach (string key in sortedPatternList.Keys)
             {
@@ -374,21 +417,29 @@ namespace NeanderthalDDSController
         {
             uint code;
             //code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, 0.0);
-            code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ, 1e6 * pattern[0]);
-            code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, pattern[1]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ, 1e6 * pattern[0]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, pattern[1]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ_SLOPE, 1e9 * pattern[2]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP_SLOPE, 1e3 * pattern[3]);
 
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_FREQ, 1e6 * pattern[2]);
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_AMP, pattern[3]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_FREQ, 1e6 * pattern[4]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_AMP, pattern[5]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_FREQ_SLOPE, 1e9 * pattern[6]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE47_AMP_SLOPE, 1e3 * pattern[7]);
 
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_FREQ, 1e6 * pattern[4]);
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_AMP, pattern[5]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_FREQ, 1e6 * pattern[8]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_AMP, pattern[9]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_FREQ_SLOPE, 1e9 * pattern[10]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE48_AMP_SLOPE, 1e3 * pattern[11]);
 
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ, 1e6 * pattern[6]);
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_AMP, pattern[7]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ, 1e6 * pattern[12]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_AMP, pattern[13]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_FREQ_SLOPE, 1e9 * pattern[14]);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE49_AMP_SLOPE, 1e3 * pattern[15]);
 
 
             code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
-            code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
         }
 
         public int checkCommandNum(nint dev)
@@ -409,7 +460,10 @@ namespace NeanderthalDDSController
             hDevice = Drv.spcm_hOpen("/dev/spcm0");
         }
 
-        
+        public void writePatternToCard()
+        {
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
+        }
 
        
 

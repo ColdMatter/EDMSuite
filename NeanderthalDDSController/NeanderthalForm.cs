@@ -28,8 +28,6 @@ namespace NeanderthalDDSController
         {
 
         }
-        private Button button_add;
-        private Button button_delete;
 
 
         private void Form_Load(object sender, EventArgs e)
