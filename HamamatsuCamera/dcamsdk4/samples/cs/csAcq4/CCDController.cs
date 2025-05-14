@@ -454,6 +454,7 @@ namespace csAcq4
             for (int y = 0; y < height; y++)
             {
                 int srcOffset = rowbytes * y;
+                
                 Marshal.Copy((IntPtr)(srcPtr.ToInt64() + srcOffset), srcBytes, 0, width * 2);
 
                 for (int x = 0; x < width; x++)

@@ -152,14 +152,14 @@ namespace ScanMaster.Acquire.Plugins
                 //set the CCD exposure Time
                 double CCDExposureTime = (double)settings["ccdExposureTime"];
                 ccd1controller.UpdateExposureTime(CCDExposureTime);
-                //set the number of ccd frames 
                 if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
                 {
                     ccd2controller.UpdateExposureTime(CCDExposureTime);
                 }
                 else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
                 {
-                    ccd2controller.UpdateExposureTime(CCDExposureTime * 1.1);
+                    ccd2controller.UpdateExposureTime(CCDExposureTime * 1.11 + 0.000033); // ** shirley modifies on 08/04, based on
+                                                                                          // t_ex,2 = 1.11*t_ex,1 (exposure time of ccd1) + 0.11*t_d (dead time, 0.3ms) **
                 }
 
                 //set the CCD gain 
