@@ -599,6 +599,10 @@
       <Project>{216e6d83-0304-4a0c-9ba7-f9ddf58f274a}</Project>
       <Name>EDMPhaseLock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj">
+      <Project>{7443f26b-16b4-4191-b841-cf864abdd579}</Project>
+      <Name>Hamamatsu EMCCD Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
       <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
       <Name>ScanMaster</Name>

@@ -1486,6 +1486,37 @@ namespace csAcq4
                 return -1; // error case
         }
 
+        private string currentFileName;
+        public string CurrentFileName => currentFileName;
+
+        public void UpdateFileNames(int shotNumber)
+        {
+            int counter = 1;
+            string extension = ".tif";
+            string cameraSuffix = SelectedCamera == 0 ? "CCDA" : "CCDB";  // CCDA = 0, CCDB = 1
+            string filePath;
+
+            do
+            {
+                filePath = Path.Combine(saveDirectory, $"{cameraSuffix}_{counter:D5}{extension}");
+                counter++;
+            } while (File.Exists(filePath)); // Avoid overwriting existing files
+
+            currentFileName = filePath;
+
+            Console.WriteLine($"[CCDController] File name set: {currentFileName}");
+
+            try
+            {
+                File.AppendAllText(Path.Combine(saveDirectory, "ccd_filenames.txt"), currentFileName + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to write CCD filename log: " + ex.Message);
+            }
+        }
+
+
         public void Snap()
         {
             if (mydcam == null)
@@ -1804,7 +1835,7 @@ namespace csAcq4
 
 
         // Default save directory
-        private string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
+        public string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
 
         public void StartBurstAcquisition()
         {
@@ -2088,14 +2119,15 @@ namespace csAcq4
             // File.WriteAllLines(csvFilePath, countData);
             // Console.WriteLine("Successfully saved count data.");
 
-            string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            //string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            string tiffPath = currentFileName;
             SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
 
             saveTimer.Stop();
             Console.WriteLine($"Saving time: {saveTimer.Elapsed}");
         }
 
-        // Save MTIFF
+        // Write and save each frame data into MTIFF
         private void SaveMultiFrameTiff(string filePath, List<List<ushort[]>> allSnapsData, int width, int height)
         {
             using (Tiff tiff = Tiff.Open(filePath, "w"))
