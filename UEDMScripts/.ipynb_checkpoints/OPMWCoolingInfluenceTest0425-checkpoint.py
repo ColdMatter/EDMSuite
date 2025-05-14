@@ -50,10 +50,10 @@ TTL1DurationEnd =  10000# Define Endpoint of STIRAP laser scan
 PointsTTL1Duration = 7 # Define Nr of Points of STIRAP laser scan
 
 #TTL1StartStart = 2000 # Define Startpoint of STIRAP laser scan
-#TTL1StartEnd =  8000# Define Endpoint of STIRAP laser scan
-#PointsTTL1Duration = 13 # Define Nr of Points of STIRAP laser scan
+#TTL1StartEnd =  7000# Define Endpoint of STIRAP laser scan
+#PointsTTL1Duration = 11 # Define Nr of Points of STIRAP laser scan
 
-datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-04\20250407\OPCoolingInterference\Gate Type 2\\'
+datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-04\20250409\OPCoolingInterference\Gate Type 1\Cooling On\\'
 
 #for j in range(nrtriggers):
     
@@ -77,12 +77,12 @@ for i in np.linspace(TTL1DurationStart,TTL1DurationEnd,PointsTTL1Duration):
         SelectProfile("OPMWamplitudescan")
         sm.AdjustProfileParameter("switch","switchActive", str(True), False)
         sm.AdjustProfileParameter("pg","TTL1StartTimes", str(-2000), False)
-        sm.AdjustProfileParameter("pg", "TTL1Repetitions", str(2), False)
+        sm.AdjustProfileParameter("pg", "TTL1Repetitions", str(1), False)
         sm.AdjustProfileParameter("pg", "TTL1Durations", str(int(i)), False)
 
         #sm.AdjustProfileParameter("switch","switchActive", str(True), False)
         #sm.AdjustProfileParameter("pg","TTL1StartTimes", str(int(i)), False)
-        #sm.AdjustProfileParameter("pg", "TTL1Repetitions", str(2), False)
+        #sm.AdjustProfileParameter("pg", "TTL1Repetitions", str(1), False)
         #sm.AdjustProfileParameter("pg", "TTL1Durations", str(500), False)
 
         #sm.AdjustProfileParameter("pg", "end", "171.37", False)

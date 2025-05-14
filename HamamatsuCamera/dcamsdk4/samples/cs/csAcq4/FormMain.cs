@@ -107,7 +107,7 @@ namespace csAcq4
             Boolean isAcquiringSoftwareTrigger = (status == FormStatus.AcquiringSoftwareTrigger);
             PushInit.Enabled = isStartup;
             // Shirley added the constraints below on 26/02 to improve the stability of the program
-            comboTriggerSource.Enabled = isInitialized || isAcquired;
+            //comboTriggerSource.Enabled = isInitialized || isAcquired;
             QueryFrameCountButton.Enabled = isInitialized || isAcquired;
             UpdateFrameCountButton.Enabled = isInitialized || isAcquired;
             FrameCountTextBox.Enabled = isInitialized || isAcquired;

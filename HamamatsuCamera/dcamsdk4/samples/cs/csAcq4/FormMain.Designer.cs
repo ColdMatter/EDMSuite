@@ -76,6 +76,7 @@
             this.NumSnapsTextBox = new System.Windows.Forms.TextBox();
             this.comboBoxCameraSelection = new System.Windows.Forms.ComboBox();
             this.CameraSelectionLabel = new System.Windows.Forms.Label();
+            this.FrameIntervalLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PicDisplay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -166,7 +167,7 @@
             // SensorTemperatureLabel
             // 
             this.SensorTemperatureLabel.AutoSize = true;
-            this.SensorTemperatureLabel.Location = new System.Drawing.Point(313, 89);
+            this.SensorTemperatureLabel.Location = new System.Drawing.Point(306, 89);
             this.SensorTemperatureLabel.Name = "SensorTemperatureLabel";
             this.SensorTemperatureLabel.Size = new System.Drawing.Size(166, 13);
             this.SensorTemperatureLabel.TabIndex = 27;
@@ -281,7 +282,7 @@
             this.PicDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.PicDisplay.Cursor = System.Windows.Forms.Cursors.Default;
             this.PicDisplay.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.PicDisplay.Location = new System.Drawing.Point(140, 251);
+            this.PicDisplay.Location = new System.Drawing.Point(140, 264);
             this.PicDisplay.Name = "PicDisplay";
             this.PicDisplay.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.PicDisplay.Size = new System.Drawing.Size(392, 275);
@@ -553,6 +554,15 @@
             this.CameraSelectionLabel.TabIndex = 44;
             this.CameraSelectionLabel.Text = "Current Selected Camera:";
             // 
+            // FrameIntervalLabel
+            // 
+            this.FrameIntervalLabel.AutoSize = true;
+            this.FrameIntervalLabel.Location = new System.Drawing.Point(313, 248);
+            this.FrameIntervalLabel.Name = "FrameIntervalLabel";
+            this.FrameIntervalLabel.Size = new System.Drawing.Size(137, 13);
+            this.FrameIntervalLabel.TabIndex = 45;
+            this.FrameIntervalLabel.Text = "Current Frame Interval: N/A";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -601,6 +611,7 @@
             this.Controls.Add(this.NumSnapsLabel);
             this.Controls.Add(this.comboBoxCameraSelection);
             this.Controls.Add(this.CameraSelectionLabel);
+            this.Controls.Add(this.FrameIntervalLabel);
             this.Name = "FormMain";
             this.Text = "Hamamatsu EMCCD Camera Automation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -657,5 +668,6 @@
         public System.Windows.Forms.Button ContinuousSnapAndSaveButton;
         public System.Windows.Forms.Label CameraSelectionLabel;
         public System.Windows.Forms.Button StopBurstAcquisitionButton;
+        public System.Windows.Forms.Label FrameIntervalLabel;
     }
 }

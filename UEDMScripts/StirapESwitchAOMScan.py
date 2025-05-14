@@ -9,51 +9,12 @@ from datetime import datetime
 import os
 import numpy as np
 
-# [filepath,file] = getNextFile()
 
-# print("Saving as " + file + "_*.zip")
-# print("")
+AOMStart = 171.2 # Define Startpoint of STIRAP AOM scan
+AOMEnd =  171.4 # Define Endpoint of STIRAP AOM scan
+AOMNPoints = 30 # Define Nr of Points of STIRAP AOM scan
 
-# SelectProfile("TCL Setpoint Scan V1")
-
-# sm.AdjustProfileParameter("switch","switchActive", str(True), False)
-# sm.AdjustProfileParameter("shot","gateLength", str(5000), False)
-# sm.AdjustProfileParameter("out", "start", str(round(v1Setpoint-0.35,2)), False)
-# sm.AdjustProfileParameter("out", "end", str(round(v1Setpoint+0.35,2)), False)
-# sm.AdjustProfileParameter("out", "scanMode", "updown", False)
-# sm.AdjustProfileParameter("out", "pointsPerScan", "100", False)
-
-# print("\nScanning!\n")
-
-# sm.AcquireAndWait(1)
-# scanFile = file + "_01" + ".zip"
-# scanPath = filepath + "_01" + ".zip" # 'C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\2023\\December2023\\19Dec2300_01.zip'
-# print("\nSaving scan as "+scanFile)
-
-# sm.SaveAverageData(scanPath)
-
-# System.Threading.Thread.CurrentThread.Join(5000)
-
-# newSetPoint = round(getSetPoint(scanFile,'OnOffRatio'),6)
-
-# print("\nSetting new probe setpoint at " + str(newSetPoint))
-
-# tcl.SetLaserSetpoint("VISCavity", "v1laser", newSetPoint)
-
-# print("plotting...")
-
-# plotfit(scanPath)
-#STIRAPSetpoint = tcl.GetLaserSetpoint("IRCavity", "STIRAP") #Save SP set currently for future reference
-
-TTL1DurationStart = 4000 # Define Startpoint of STIRAP laser scan
-TTL1DurationEnd =  10000# Define Endpoint of STIRAP laser scan
-PointsTTL1Duration = 7 # Define Nr of Points of STIRAP laser scan
-
-#TTL1StartStart = 2000 # Define Startpoint of STIRAP laser scan
-#TTL1StartEnd =  7000# Define Endpoint of STIRAP laser scan
-#PointsTTL1Duration = 11 # Define Nr of Points of STIRAP laser scan
-
-datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-04\20250409\OPCoolingInterference\Gate Type 1\Cooling On\\'
+datafolder = r'C:\Users\UEDM\Imperial College London\Team ultracold - PH - Documents\Data\2025\2025-04\20250409\StirapESwitchAOMScan'
 
 #for j in range(nrtriggers):
     
