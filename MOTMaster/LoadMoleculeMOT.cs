@@ -67,9 +67,9 @@ namespace MOTMaster.SnippetLibrary
 
             p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpEndValue"]);
 
-            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 2500, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
-            
-            
+            //p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 2500, (int)parameters["SlowingChirpDuration"], (double)parameters["SlowingChirpStartValue"]);
+            p.AddLinearRamp("slowingChirp", (int)parameters["SlowingChirpStartTime"] + (int)parameters["SlowingChirpDuration"] + 10000, 2500, (double)parameters["SlowingChirpStartValue"]);
+
             /*
             addSigmoidRamp(p, "slowingChirp", (int)parameters["SlowingChirpStartTime"], (int)parameters["SlowingChirpDuration"],
                 (double)parameters["SlowingChirpStartValue"], (double)parameters["SlowingChirpEndValue"]);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DAQ.Environment
 {
@@ -20,6 +21,10 @@ namespace DAQ.Environment
             Paths.Add("transferCavityData", "E:\\TCL_DataLog\\");
             Paths.Add("wavemeterLockData", "E:\\WML_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+
+            List<string> MMAssemblies = new List<string> { };
+            MMAssemblies.Add(@"C:\ControlPrograms\EDMSuite\NeanderthalDDSController\bin\Debug\net461\NeanderthalDDSController.exe");
+            Paths.Add("AdditionalMOTMasterAssemblies", MMAssemblies);
 
             SortDataByDate = false;
         }

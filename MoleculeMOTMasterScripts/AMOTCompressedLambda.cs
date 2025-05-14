@@ -38,7 +38,7 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
@@ -51,7 +51,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
-
+        Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
 
         Parameters["slowingRepumpSwitchDelay"] = 0;
         Parameters["slowingRepumpAOMOnStart"] = 0;//started from 0
@@ -69,9 +69,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -3.00;// -3.00;// -1.35;// -1.35;
-        Parameters["yShimLoadCurrent"] = -2.25;// -1.92;// -1.92;
-        Parameters["zShimLoadCurrent"] = -0.25;
+        Parameters["xShimLoadCurrent"] = -2.21;
+        Parameters["yShimLoadCurrent"] = -2.13;
+        Parameters["zShimLoadCurrent"] = -0.17;
 
 
         // v0 Light Switch
@@ -126,15 +126,15 @@ public class Patterns : MOTMasterScript
         //Sideband Amplitudes
 
 
-        Parameters["SidebandAmp1"] = 6.0;
-        Parameters["SidebandAmp2"] = 4.5;
+        Parameters["SidebandAmp1"] = 8.0;
+        Parameters["SidebandAmp2"] = 8.0;
         Parameters["SidebandAmp3"] = 8.0;
-        Parameters["SidebandAmp4"] = 7.5;
+        Parameters["SidebandAmp4"] = 8.0;
 
-        Parameters["SidebandImAmp1"] = 6.0;
-        Parameters["SidebandImAmp2"] = 4.5;
+        Parameters["SidebandImAmp1"] = 8.0;
+        Parameters["SidebandImAmp2"] = 8.0;
         Parameters["SidebandImAmp3"] = 8.0;
-        Parameters["SidebandImAmp4"] = 7.5;
+        Parameters["SidebandImAmp4"] = 8.0;
 
         //10% saturation, Nov 14, 2024
 
@@ -152,7 +152,7 @@ public class Patterns : MOTMasterScript
 
         Parameters["FrequencySettleTime"] = 50;
         Parameters["LambdaCoolingDuration"] = 500;
-        Parameters["FreeExpTime"] = 1000;
+        Parameters["FreeExpTime"] = 100;
 
 
 
@@ -169,7 +169,7 @@ public class Patterns : MOTMasterScript
         int lambdaCoolingEnd = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int imageTime = lambdaCoolingEnd + (int)Parameters["FreeExpTime"];
 
-
+        int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
 
@@ -226,10 +226,11 @@ public class Patterns : MOTMasterScript
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
-      
 
-        p.AddEdge("bXSlowingShutter", 0, false);
-        p.AddEdge("bXSlowingShutter", 20000, true);
+
+        p.AddEdge("bXSlowingShutter", 0, true);
+        p.AddEdge("bXSlowingShutter", BXShutterClose, false);
+        p.AddEdge("bXSlowingShutter", 26000, true);
 
 
 
