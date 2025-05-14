@@ -129,6 +129,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("v0ddsSwitchC", digitalPatternBoardAddress2, 1, 5);
             AddDigitalOutputChannel("v0ddsSwitchD", digitalPatternBoardAddress2, 1, 6);
 
+            AddDigitalOutputChannel("DDSTrigger", digitalPatternBoardAddress2, 2, 3);
+
             // Rb Digital Pattern
             AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);

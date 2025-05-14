@@ -28,8 +28,6 @@ namespace NeanderthalDDSController
         {
 
         }
-        private Button button_add;
-        private Button button_delete;
 
 
         private void Form_Load(object sender, EventArgs e)
@@ -241,6 +239,8 @@ namespace NeanderthalDDSController
             lablePatternName.Text = filename;
         }
 
+       
+
 
 
         public static void SaveDataToFile(Controller controller)
@@ -337,6 +337,8 @@ namespace NeanderthalDDSController
             }
         }
 
+        
+
         #region FormatTsar
         private void TextBox_Amp_TextChanged(object sender, EventArgs e)
         {
@@ -383,6 +385,16 @@ namespace NeanderthalDDSController
         private void Menu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
+        }
+
+        private void NeanderthalForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NeanderthalForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.closeCard();
         }
     }
 }
