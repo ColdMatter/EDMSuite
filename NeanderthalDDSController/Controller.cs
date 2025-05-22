@@ -109,7 +109,7 @@ namespace NeanderthalDDSController
                 {
                     
                     // This is when the DDS stops all the signal output
-                    openCard();
+                    //openCard();
                     //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
                     //Console.WriteLine(iValue);
                     //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
@@ -118,7 +118,7 @@ namespace NeanderthalDDSController
 
                     // Wait till sequence ends
                     Thread.Sleep(patternLength);
-                    closeCard();
+                    //closeCard();
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
@@ -152,7 +152,7 @@ namespace NeanderthalDDSController
             long lValue;
             uint code;
 
-            initializeCard();
+            //initializeCard();
             addPatternToBuffer(patternList);
 
             // Check if all commands are excecuted
@@ -162,18 +162,9 @@ namespace NeanderthalDDSController
 
             }
 
-            
-
-            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
-            //Console.WriteLine(iValue);
-            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
-            //Console.WriteLine(iValue);
-
-            // error 288
-            //code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
-
-            
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, 1e-6);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
 
             if (breakFlag)
             {
@@ -233,7 +224,7 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER2, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER3, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
 
             // setup the external trigger input
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
@@ -355,9 +346,7 @@ namespace NeanderthalDDSController
             int i = 0;
 
             uint code;
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
+            
             // global time in s
             foreach (string key in sortedPatternList.Keys)
             {
@@ -404,6 +393,10 @@ namespace NeanderthalDDSController
                 code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
 
             }
+
+            // Added per instruction of Spectrum
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
 
 
             code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);

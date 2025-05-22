@@ -123,25 +123,27 @@ namespace ScanMaster.Acquire.Plugins
                 ccd1controller.ApplySelectedTriggerSource(ccdTriggerMode);
                 ccd2controller.ApplySelectedTriggerSource(ccdTriggerMode);
 
+                int shotsPerPoint = (int)config.outputPlugin.Settings["shotsPerPoint"];
+                int pointsPerScan = (int)config.outputPlugin.Settings["pointsPerScan"];
                 //set the number of ccd frames 
                 if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
                 {
                     if (config.switchPlugin.State == true)
                     {
-                        int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                        int CCDsnaps = 2 * pointsPerScan * shotsPerPoint;
                         ccd1controller.UpdateNumSnaps(CCDsnaps);
                         ccd2controller.UpdateNumSnaps(CCDsnaps);
                     }
                     else
                     {
-                        int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                        int CCDsnaps = 2 * pointsPerScan * shotsPerPoint;
                         ccd1controller.UpdateNumSnaps(CCDsnaps);
                         ccd2controller.UpdateNumSnaps(CCDsnaps);
                     }
                 }
-                else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
+                else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames per burst
                 {
-                    int CCDsnaps = (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                    int CCDsnaps = pointsPerScan * shotsPerPoint;
                     ccd1controller.UpdateNumSnaps(CCDsnaps);
                     ccd2controller.UpdateNumSnaps(CCDsnaps);
                     int CCDBurstframes = (int)settings["ccdNBurstFrames"];
@@ -152,20 +154,21 @@ namespace ScanMaster.Acquire.Plugins
                 //set the CCD exposure Time
                 double CCDExposureTime = (double)settings["ccdExposureTime"];
                 ccd1controller.UpdateExposureTime(CCDExposureTime);
-                //set the number of ccd frames 
                 if (ccdTriggerMode == 2) //external edge  mode. Number of shots equal to the pmt pointsperscan * shotsperpoint * 2 (for the background shots)
                 {
                     ccd2controller.UpdateExposureTime(CCDExposureTime);
                 }
                 else if (ccdTriggerMode == 1) //external burst mode. number of shots equal to the pmt pointsperscan * shotsperpoint. Also update the number of frames ber burst
                 {
-                    ccd2controller.UpdateExposureTime(CCDExposureTime * 1.1);
+                    ccd2controller.UpdateExposureTime(CCDExposureTime * 1.11 + 0.000033); // ** shirley modifies on 08/04, based on
+                                                                                          // t_ex,2 = 1.11*t_ex,1 (exposure time of ccd1) + 0.11*t_d (dead time, 0.3ms) **
                 }
 
                 //set the CCD gain 
                 int ccdGain = (int)settings["ccd1Gain"];
                 ccd1controller.UpdateCCDGain(ccdGain);
                 ccd2controller.UpdateCCDGain(ccdGain);
+
 
                 if (ccdTriggerMode == 2)
                 {
@@ -326,17 +329,62 @@ namespace ScanMaster.Acquire.Plugins
             inputTask1.Dispose();
             inputTask2.Dispose();
             counterTask1.Dispose();
-            //config.outputPlugin.ScanParameter
-            if ((bool)settings["cameraEnabled"] && ccd1controller != null && ccd2controller != null)
+
+            if ((bool)settings["cameraEnabled"] && ccd1controller != null)
             {
                 int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
-                //int ccd1Framecount = ccd1controller.GetFrameCount();
-                //int ccd2Framecount = ccd2controller.GetFrameCount();
+
                 if ((int)settings["ccdTriggerMode"] == 1)
                 {
                     try
                     {
                         ccd1controller.StopBurstAcquisition();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error during stopping acquisition: " + ex.ToString());
+                    }
+                }
+                else if ((int)settings["ccdTriggerMode"] == 2)
+                {
+                    try
+                    {
+                        if (ccd1controller.GetFrameCount() < CCDsnaps)
+                        {
+                            Console.WriteLine("Stopping acquisition...");
+                            ccd1controller.StopAcquisition();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Releasing remote buffer...");
+                            ccd1controller.RemoteBufRelease();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error during stopping acquisition: " + ex.ToString());
+                    }
+                }
+                try
+                {
+                    Thread.Sleep(500); // give CCD time to settle
+                    Console.WriteLine("Disconnecting CCD1...");
+                    RemotingServices.Disconnect(ccd1controller);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error disconnecting CCD1: " + ex.ToString());
+                }
+
+            }
+
+            if ((bool)settings["cameraEnabled"] && ccd2controller != null)
+            {
+                int CCDsnaps = 2 * (int)config.outputPlugin.Settings["pointsPerScan"] * (int)config.outputPlugin.Settings["shotsPerPoint"];
+                if ((int)settings["ccdTriggerMode"] == 1)
+                {
+                    try
+                    {
                         ccd2controller.StopBurstAcquisition();
                     }
                     catch (Exception ex)
@@ -348,13 +396,14 @@ namespace ScanMaster.Acquire.Plugins
                 {
                     try
                     {
-                        while (ccd1controller.GetFrameCount() < CCDsnaps || ccd2controller.GetFrameCount() < CCDsnaps)
+                        if (ccd2controller.GetFrameCount() < CCDsnaps)
                         {
-                            ccd1controller.StopAcquisition();
                             ccd2controller.StopAcquisition();
                         }
-                        ccd1controller.RemoteBufRelease();
-                        ccd2controller.RemoteBufRelease();
+                        else
+                        {
+                            ccd2controller.RemoteBufRelease();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -362,36 +411,40 @@ namespace ScanMaster.Acquire.Plugins
                     }
 
                 }
-                // Disconnect the remote object (if using .NET Remoting)
-                // RemotingServices.Disconnect(ccd1controller);
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine("Error during stopping acquisition: " + ex.ToString());
-                //}
+                try
+                {
+                    Thread.Sleep(500); // give CCD time to settle
+                    RemotingServices.Disconnect(ccd2controller);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error disconnecting CCD2: " + ex.ToString());
+                }
+
             }
         }
-            //if ((bool)settings["cameraEnabled"] && ccd2controller != null)
-            //{
+        //if ((bool)settings["cameraEnabled"] && ccd2controller != null)
+        //{
 
-            //    try
-            //    {
-            //        if ((int)settings["ccdTriggerMode"] == 1)
-            //        {
-            //            ccd2controller.StopBurstAcquisition();
-            //        }
-            //        if ((int)settings["ccdTriggerMode"] == 2)
-            //        {
-            //            ccd2controller.RemoteBufRelease();
-            //        }
+        //    try
+        //    {
+        //        if ((int)settings["ccdTriggerMode"] == 1)
+        //        {
+        //            ccd2controller.StopBurstAcquisition();
+        //        }
+        //        if ((int)settings["ccdTriggerMode"] == 2)
+        //        {
+        //            ccd2controller.RemoteBufRelease();
+        //        }
 
-            //        // Disconnect the remote object (if using .NET Remoting)
-            //        RemotingServices.Disconnect(ccd2controller);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine("Error during disconnection: " + ex.ToString());
-            //    }
-            //}
+        //        // Disconnect the remote object (if using .NET Remoting)
+        //        RemotingServices.Disconnect(ccd2controller);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Error during disconnection: " + ex.ToString());
+        //    }
+        //}
 
 
 
