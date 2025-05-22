@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 12000;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -44,8 +44,8 @@ public class Patterns : MOTMasterScript
         //Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
 
         // Slowing Chirp, QuantelLaser
-        Parameters["SlowingChirpStartTime"] = 450;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1150;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
@@ -68,7 +68,7 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 2.0; //1.05;
+        Parameters["slowingCoilsValue"] = 1.0; //1.05;
         //Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
@@ -233,13 +233,8 @@ public class Patterns : MOTMasterScript
 
         //Switch BX AOM via analog output Mar 05 2024
         //p.AddAnalogValue("BXAttenuation", 0, 0.1);
-
         p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
-
-       
-
-
         //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         //p.AddAnalogValue("BXFreq", 0, (double)Parameters["BXAOMFrequency"]);

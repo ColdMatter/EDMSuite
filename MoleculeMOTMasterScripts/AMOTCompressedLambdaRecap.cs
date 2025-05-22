@@ -38,10 +38,10 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
+        Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
         // Slowing
         Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
@@ -62,7 +62,7 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 1.0; //1.05;
+        Parameters["slowingCoilsValue"] = 2.0; //1.05;
         Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
@@ -122,17 +122,28 @@ public class Patterns : MOTMasterScript
 
         //Sideband Amplitudes
 
-        // 6Feb25
-
-        Parameters["SidebandAmp1"] = 6.7;
-        Parameters["SidebandAmp2"] = 7.7;
+        //21.5.25
+        Parameters["SidebandAmp1"] = 8.0;
+        Parameters["SidebandAmp2"] = 8.0;
         Parameters["SidebandAmp3"] = 8.0;
         Parameters["SidebandAmp4"] = 8.0;
 
-        Parameters["SidebandImAmp1"] = 6.7;
-        Parameters["SidebandImAmp2"] = 7.7;
+        Parameters["SidebandImAmp1"] = 8.0;
+        Parameters["SidebandImAmp2"] = 8.0;
         Parameters["SidebandImAmp3"] = 8.0;
         Parameters["SidebandImAmp4"] = 8.0;
+
+        // 6Feb25
+
+       // Parameters["SidebandAmp1"] = 6.7;
+        //Parameters["SidebandAmp2"] = 7.7;
+        //Parameters["SidebandAmp3"] = 8.0;
+        //Parameters["SidebandAmp4"] = 8.0;
+
+        //Parameters["SidebandImAmp1"] = 6.7;
+        //Parameters["SidebandImAmp2"] = 7.7;
+        //Parameters["SidebandImAmp3"] = 8.0;
+        //Parameters["SidebandImAmp4"] = 8.0;
 
         //10% saturation, 6Feb25
 
@@ -155,7 +166,7 @@ public class Patterns : MOTMasterScript
         Parameters["POS150Gradient"] = 7.68;
 
         Parameters["FrequencySettleTime"] = 200;
-        Parameters["LambdaCoolingDuration"] = 400;
+        Parameters["LambdaCoolingDuration"] = 1;
         Parameters["FreeExpTime"] = 1;
 
         
@@ -175,10 +186,11 @@ public class Patterns : MOTMasterScript
         int lambdaCoolingEnd = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int imageTime = lambdaCoolingEnd + (int)Parameters["FreeExpTime"];
         int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
+        int compressedmotimgtime = (int)Parameters["v0IntensityRampStartTime"] -500;
 
 
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
@@ -186,9 +198,10 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, motCompressoinEndTime-500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        //p.Pulse(patternStartBeforeQ, 20000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //background
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
 
@@ -258,7 +271,7 @@ public class Patterns : MOTMasterScript
         int lambdaCoolingEnd = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
         int imageTime = lambdaCoolingEnd + (int)Parameters["FreeExpTime"];
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
         // Add Analog Channels
         
@@ -337,13 +350,15 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf4Amp", 0, (double)Parameters["SidebandAmp4"]);
 
 
+
+
         p.AddLinearRamp("Rf1Amp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["SidebandAmpRampEnd1"]);
         p.AddLinearRamp("Rf2Amp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["SidebandAmpRampEnd2"]);
         p.AddLinearRamp("Rf3Amp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["SidebandAmpRampEnd3"]);
         p.AddLinearRamp("Rf4Amp", (int)Parameters["v0IntensityRampStartTime"], (int)Parameters["v0IntensityRampDuration"], (double)Parameters["SidebandAmpRampEnd4"]);
 
         // Lambda cooling sidebands
-
+       
         p.AddAnalogValue("Rf1Amp", lambdaCoolingStart, (double)Parameters["SidebandLambda1"]);
         p.AddAnalogValue("Rf2Amp", lambdaCoolingStart, (double)Parameters["SidebandLambda2"]);
         p.AddAnalogValue("Rf3Amp", lambdaCoolingStart, (double)Parameters["SidebandLambda3"]);
@@ -356,7 +371,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("Rf3Amp", imageTime, (double)Parameters["SidebandImAmp3"]);
         p.AddAnalogValue("Rf4Amp", imageTime, (double)Parameters["SidebandImAmp4"]);
 
-
+        //to here
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
         
