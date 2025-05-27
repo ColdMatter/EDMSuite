@@ -1740,5 +1740,157 @@ namespace UEDMHardwareControl
         {
             controller.StepTargetForTime();
         }
+
+        // Shirley adds on 22/05/2025 for CCD controlling event handlers
+
+        private void QueryTemperature_Click(object sender, EventArgs e)
+        {
+            controller.QueryTemperature();
+        }
+
+        private void QueryGain_Click(object sender, EventArgs e)
+        {
+            controller.QueryCCDGain();
+        }
+
+        private void QueryExposureTime_Click(object sender, EventArgs e)
+        {
+            controller.QueryExposureTime();
+        }
+
+        private void QueryFrameCount_Click(object sender, EventArgs e)
+        {
+            controller.QueryFrameCount();
+        }
+
+        private void UpdateCCDGainButton_Click(object sender, EventArgs e)
+        {
+            if (double.TryParse(tbCCDAGain.Text, out double gainA) &&
+                double.TryParse(tbCCDBGain.Text, out double gainB))
+            {
+                controller.SetCCDGain(gainA, gainB);
+            }
+            else
+            {
+                MessageBox.Show("Invalid gain value entered.");
+            }
+        }
+
+        private void UpdateCCDExposureButton_Click(object sender, EventArgs e)
+        {
+            if (double.TryParse(tbCCDAExposure.Text, out double exposureTimeMs))
+            {
+                controller.SetCCDExposureTime(exposureTimeMs);
+            }
+            else
+            {
+                MessageBox.Show("Invalid exposure time input for CCD A. Please enter a number in milliseconds.");
+            }
+        }
+
+
+        private void UpdateCCDFrameCount_Click(object sender, EventArgs e)
+        {
+            if(int.TryParse(tbCCDAFrameCount.Text, out int frameCount))
+            {
+                controller.SetCCDFrameCount(frameCount);
+            }
+            else
+            {
+                MessageBox.Show("Invalid frame count value entered. Please enter same value for both CCDs.");
+            }
+        }
+
+        private void btnSetCCDTriggerMode_Click(object sender, EventArgs e)
+        {
+            controller.SetCCDTriggerModeRemote();
+        }
+
+        private void SetupTCPtoCCDs_Click(object sender, EventArgs e)
+        {
+            if (checkboxTCPCCD.Checked)
+            {
+                try
+                {
+                    controller.InitialiseTCPforCCD();
+                    ToggleCCDControls(true);
+                    MessageBox.Show("CCD TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    checkboxTCPCCD.Checked = false;
+                    ToggleCCDControls(false);
+                }
+            }
+            else
+            {
+                try
+                {
+                    controller.DisconnectTCPforCCD();
+                    ToggleCCDControls(false);
+                    MessageBox.Show("CCD TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to disconnect CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
+        private void infoCCDExposure_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Exposure Time Note:\n\n" +
+                "In burst trigger mode, CCD B's exposure time is calculated automatically as:\n" +
+                "    t_B = 1.11 × t_A + 0.11 × t_dead\n\n" +
+                "Where t_dead = 0.3 ms.\n\n" +
+                "Please only enter the exposure time for CCD A in milliseconds.",
+                "CCD Exposure Time Info",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        public void ToggleCCDControls(bool enabled)
+        {
+            // Buttons for CCD query/update
+            btCCDQueryGain.Enabled = enabled;
+            btCCDUpdateGain.Enabled = enabled;
+            btCCDQueryExposure.Enabled = enabled;
+            btCCDUpdateExposureTime.Enabled = enabled;
+            btCCDQueryFrameCount.Enabled = enabled;
+            btCCDUpdateFrameCount.Enabled = enabled;
+            btCCDQueryTemp.Enabled = enabled;
+            btinfoCCDExposure.Enabled = enabled;
+
+            // Trigger mode controls
+            comboBoxCCDTriggerMode.Enabled = enabled;
+            btnSetCCDTriggerMode.Enabled = enabled;
+
+            // Textboxes for user input 
+            tbCCDAGain.Enabled = enabled;
+            tbCCDBGain.Enabled = enabled;
+            tbCCDAExposure.Enabled = enabled;
+            tbCCDBExposure.Enabled = enabled;
+            tbCCDAFrameCount.Enabled = enabled;
+
+            // Labels are usually for display only, not toggled unless needed
+            labelGainCCDA.Enabled = enabled;
+            labelGainCCDB.Enabled = enabled;
+            labelExposureTimeCCDA.Enabled = enabled;
+            labelExposureTimeCCDB.Enabled = enabled;
+            labelFrameCCDA.Enabled = enabled;
+            labelFrameCCDB.Enabled = enabled;
+            labelTemperatureCCDA.Enabled = enabled;
+            labelTemperatureCCDB.Enabled = enabled;
+            lblCCDA.Enabled = enabled;
+            lblCCDB.Enabled = enabled;
+        }
+
+
+
     }
 }
