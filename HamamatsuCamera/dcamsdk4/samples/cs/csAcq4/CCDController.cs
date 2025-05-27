@@ -1095,6 +1095,22 @@ namespace csAcq4
             }
         }
 
+        public double GetSensorTemperature()
+        {
+            MyDcamProp sensortemperatureprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSORTEMPERATURE);
+            double currentTemperature = 0;
+            double roundedTemperature = Math.Round(currentTemperature, 2);
+            if (sensortemperatureprop.getvalue(ref roundedTemperature))
+            {
+                return roundedTemperature;
+            }
+            else
+            {
+                MyShowStatusNG("Failed to query sensor temperature", sensortemperatureprop.m_lasterr);
+                return -1; // or throw exception
+            }
+        }
+
         public void QueryCCDGain()
         {
             if (mydcam == null)
@@ -1140,10 +1156,21 @@ namespace csAcq4
             }
         }
 
-        public void RemoteFunction()
+        public double GetGainValue()
         {
-            Console.WriteLine("Remote Ping!");
+            MyDcamProp sensitivitygainprop = new MyDcamProp(mydcam, DCAMIDPROP.SENSITIVITY);
+            double currentSensitivity = 0;
+            if (sensitivitygainprop.getvalue(ref currentSensitivity))
+            {
+                return currentSensitivity;
+            }
+            else
+            {
+                MyShowStatusNG("Failed to query gain", sensitivitygainprop.m_lasterr);
+                return -1; // or throw exception
+            }
         }
+
 
         public void UpdateCCDGain(double? newGain = null)
         {
@@ -1261,51 +1288,20 @@ namespace csAcq4
             }
         }
 
-        //public void UpdateExposureTime()
-        //{
-        //    if (double.TryParse(window.ExposureTimeTextBox.Text, out double newExposureTime))
-        //    {
-        //        MyDcamProp exposuretimeprop = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
-
-        //        // Query the current value 
-        //        double roundedExposureTime = 0;
-        //        if (exposuretimeprop.getvalue(ref roundedExposureTime))
-        //        {
-        //            Console.WriteLine($"Current Exposure Time: {roundedExposureTime:F2}");
-        //        }
-        //        else
-        //        {
-        //            MyShowStatusNG("Failed to query current exposure time", exposuretimeprop.m_lasterr);
-        //        }
-
-        //        // Attempt to update the property
-        //        if (exposuretimeprop.setvalue(newExposureTime))
-        //        {
-        //            Console.WriteLine($"Updated Exposure Time to {newExposureTime:F2}");
-
-        //            if (window.ExposureTimeLabel.InvokeRequired)
-        //            {
-        //                window.ExposureTimeLabel.Invoke(new Action(() =>
-        //                    {
-        //                        window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
-        //                    }));
-        //            }
-        //            else
-        //            {
-        //                window.ExposureTimeLabel.Text = $"Updated Exposure Time: {newExposureTime:F2} seconds";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"Failed to update exposure time. Error: {exposuretimeprop.m_lasterr:X}");
-        //            MyShowStatusNG("Failed to update exposure time", exposuretimeprop.m_lasterr);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Please enter a valid number for Exposure Time.");
-        //    }
-        //}
+        public double GetExposureTime()
+        {
+            MyDcamProp exposureProp = new MyDcamProp(mydcam, DCAMIDPROP.EXPOSURETIME);
+            double currentTime = 0;
+            if (exposureProp.getvalue(ref currentTime))
+            {
+                return currentTime;
+            }
+            else
+            {
+                MyShowStatusNG("Failed to query exposure time", exposureProp.m_lasterr);
+                return -1; // or throw exception
+            }
+        }
 
         public void UpdateExposureTime(double? newExposureTime = null)
         {
@@ -2119,8 +2115,8 @@ namespace csAcq4
             // File.WriteAllLines(csvFilePath, countData);
             // Console.WriteLine("Successfully saved count data.");
 
-            //string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
-            string tiffPath = currentFileName;
+            string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            //string tiffPath = currentFileName;
             SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
 
             saveTimer.Stop();
