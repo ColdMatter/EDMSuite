@@ -454,6 +454,7 @@ namespace csAcq4
             for (int y = 0; y < height; y++)
             {
                 int srcOffset = rowbytes * y;
+                
                 Marshal.Copy((IntPtr)(srcPtr.ToInt64() + srcOffset), srcBytes, 0, width * 2);
 
                 for (int x = 0; x < width; x++)
@@ -1042,36 +1043,36 @@ namespace csAcq4
                 return; 
             }
 
-            if (newCameraIndex.HasValue)
-            {
-                SelectedCamera = newCameraIndex.Value;
-                if (window.comboBoxCameraSelection.InvokeRequired)
-                {
-                    window.comboBoxCameraSelection.Invoke(new Action(() =>
-                    {
-                        window.comboBoxCameraSelection.SelectedIndex = SelectedCamera;
-                    }));
-                }
-            }
-            else
-            {
-                // Ensure the call to `SelectedCamera` is done on the UI thread. Define the default as CCDA
-                SelectedCamera = 0;
-                if (window.comboBoxCameraSelection.InvokeRequired)
-                {
-                    // If not on the UI thread, use Invoke to marshal the call
-                    window.comboBoxCameraSelection.Invoke(new Action(() =>
-                    {
-                        SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
-                    }));
-                }
-                else
-                {
-                    SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
-                    // If already on the UI thread, simply access the property
+            //if (newCameraIndex.HasValue)
+            //{
+            //    SelectedCamera = newCameraIndex.Value;
+            //    if (window.comboBoxCameraSelection.InvokeRequired)
+            //    {
+            //        window.comboBoxCameraSelection.Invoke(new Action(() =>
+            //        {
+            //            window.comboBoxCameraSelection.SelectedIndex = SelectedCamera;
+            //        }));
+            //    }
+            //}
+            //else
+            //{
+            //    // Ensure the call to `SelectedCamera` is done on the UI thread. Define the default as CCDA
+            //    SelectedCamera = 0;
+            //    if (window.comboBoxCameraSelection.InvokeRequired)
+            //    {
+            //        // If not on the UI thread, use Invoke to marshal the call
+            //        window.comboBoxCameraSelection.Invoke(new Action(() =>
+            //        {
+            //            SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+            //        }));
+            //    }
+            //    else
+            //    {
+            //        SelectedCamera = window.comboBoxCameraSelection.SelectedIndex;
+            //        // If already on the UI thread, simply access the property
 
-                }
-            }
+            //    }
+            //}
 
             Console.WriteLine($"Selected Camera: {(SelectedCamera == 0 ? "CCDA" : "CCDB")}");
             MyShowStatus($"Camera model and serial number verified. You are operating {(SelectedCamera == 0 ? "CCDA" : "CCDB")} :)");
@@ -1485,6 +1486,37 @@ namespace csAcq4
                 return -1; // error case
         }
 
+        private string currentFileName;
+        public string CurrentFileName => currentFileName;
+
+        public void UpdateFileNames(int shotNumber)
+        {
+            int counter = 1;
+            string extension = ".tif";
+            string cameraSuffix = SelectedCamera == 0 ? "CCDA" : "CCDB";  // CCDA = 0, CCDB = 1
+            string filePath;
+
+            do
+            {
+                filePath = Path.Combine(saveDirectory, $"{cameraSuffix}_{counter:D5}{extension}");
+                counter++;
+            } while (File.Exists(filePath)); // Avoid overwriting existing files
+
+            currentFileName = filePath;
+
+            Console.WriteLine($"[CCDController] File name set: {currentFileName}");
+
+            try
+            {
+                File.AppendAllText(Path.Combine(saveDirectory, "ccd_filenames.txt"), currentFileName + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to write CCD filename log: " + ex.Message);
+            }
+        }
+
+
         public void Snap()
         {
             if (mydcam == null)
@@ -1803,7 +1835,7 @@ namespace csAcq4
 
 
         // Default save directory
-        private string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
+        public string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
 
         public void StartBurstAcquisition()
         {
@@ -2087,14 +2119,15 @@ namespace csAcq4
             // File.WriteAllLines(csvFilePath, countData);
             // Console.WriteLine("Successfully saved count data.");
 
-            string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            //string tiffPath = GetNextFileName(saveDirectory, ".tif", SelectedCamera);
+            string tiffPath = currentFileName;
             SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
 
             saveTimer.Stop();
             Console.WriteLine($"Saving time: {saveTimer.Elapsed}");
         }
 
-        // Save MTIFF
+        // Write and save each frame data into MTIFF
         private void SaveMultiFrameTiff(string filePath, List<List<ushort[]>> allSnapsData, int width, int height)
         {
             using (Tiff tiff = Tiff.Open(filePath, "w"))

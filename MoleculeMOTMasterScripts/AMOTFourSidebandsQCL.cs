@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 5000;
         Parameters["Frame1Trigger"] = 10000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
@@ -39,7 +39,7 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 290;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
@@ -52,6 +52,8 @@ public class Patterns : MOTMasterScript
 
         Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
         Parameters["slowingAOMOffDuration"] = 40000;//40000;
+
+        Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
 
 
         Parameters["slowingRepumpSwitchDelay"] = 0;
@@ -70,9 +72,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = 0.0;
-        Parameters["yShimLoadCurrent"] = 0.0;
-        Parameters["zShimLoadCurrent"] = -0.22;
+        Parameters["xShimLoadCurrent"] = -2.21;
+        Parameters["yShimLoadCurrent"] = -2.13;
+        Parameters["zShimLoadCurrent"] = -0.17;
 
 
         // v0 Light Switch
@@ -110,48 +112,22 @@ public class Patterns : MOTMasterScript
         Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
         Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 3.0;
+        Parameters["BXAOMAttenuation"] = 5.0;
         //Parameters["BXAOMFrequency"] = 5.8; //113MHz
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
-        //Sideband Amplitudes
 
-        // Nov 14 2024
-        //Parameters["SidebandAmp1"] = 4.0;
-        //Parameters["SidebandAmp2"] = 4.4;
-        //Parameters["SidebandAmp3"] = 7.0;
-        //Parameters["SidebandAmp4"] = 6.0;
+        // Recalibrated 06/02/25
 
-        //Parameters["SidebandImAmp1"] = 4.0;
-        //Parameters["SidebandImAmp2"] = 4.4;
-        //Parameters["SidebandImAmp3"] = 7.0;
-        //Parameters["SidebandImAmp4"] = 6.0;
-
-        // Nov 21 2024
-        /*
-        Parameters["SidebandAmp1"] = 6.0;
-        Parameters["SidebandAmp2"] = 4.5;
+        Parameters["SidebandAmp1"] = 6.7;
+        Parameters["SidebandAmp2"] = 7.7;
         Parameters["SidebandAmp3"] = 8.0;
-        Parameters["SidebandAmp4"] = 7.5;
+        Parameters["SidebandAmp4"] = 8.0;
 
-        Parameters["SidebandImAmp1"] = 6.0;
-        Parameters["SidebandImAmp2"] = 4.5;
+        Parameters["SidebandImAmp1"] = 6.7;
+        Parameters["SidebandImAmp2"] = 7.7;
         Parameters["SidebandImAmp3"] = 8.0;
-        Parameters["SidebandImAmp4"] = 7.5;
-        */
-
-        // 10s only (max)
-        
-        Parameters["SidebandAmp1"] = 10.0;
-        Parameters["SidebandAmp2"] = 10.0;
-        Parameters["SidebandAmp3"] = 10.0;
-        Parameters["SidebandAmp4"] = 10.0;
-
-        Parameters["SidebandImAmp1"] = 10.0;
-        Parameters["SidebandImAmp2"] = 10.0;
-        Parameters["SidebandImAmp3"] = 10.0;
-        Parameters["SidebandImAmp4"] = 10.0;
-        
+        Parameters["SidebandImAmp4"] = 8.0;
 
         //VCO Calibration
         //VCO frequency in MHz = offset + vol * gradient
@@ -168,6 +144,7 @@ public class Patterns : MOTMasterScript
     {
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
+        int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
@@ -208,10 +185,11 @@ public class Patterns : MOTMasterScript
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
-      
 
-        p.AddEdge("bXSlowingShutter", 0, false);
-        p.AddEdge("bXSlowingShutter", 20000, true);
+
+        p.AddEdge("bXSlowingShutter", 0, true);
+        p.AddEdge("bXSlowingShutter", BXShutterClose, false);
+        p.AddEdge("bXSlowingShutter", 26000, true);
 
 
 
@@ -249,10 +227,10 @@ public class Patterns : MOTMasterScript
         p.AddChannel("BXFreq");
 
         //Switch BX AOM via analog output Mar 05 2024
-        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        //p.AddAnalogValue("BXAttenuation", 0, 0.0);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
+        //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         //p.AddAnalogValue("BXFreq", 0, (double)Parameters["BXAOMFrequency"]);
         //p.AddAnalogValue("BXFreq", 0, 0.0);

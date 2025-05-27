@@ -12,6 +12,11 @@ using EDMConfig;
 
 using EDMBlockHead.Acquire.Channels;
 using EDMBlockHead.Acquire.Input;
+using csAcq4;
+using System.Net.Sockets;
+using System.Net;
+using System.Runtime.Remoting;
+using System.IO;
 
 namespace EDMBlockHead.Acquire
 {
@@ -48,8 +53,25 @@ namespace EDMBlockHead.Acquire
         UEDMHardwareControl.UEDMController hardwareController;
         EDMFieldLock.MainForm fieldLock;
 
-		// calling this method starts acquisition
-		public void Start(BlockConfig config) 
+        // Start: Shirley added on 09/05/2025 for CCD integration
+        [NonSerialized]
+        Task counterTaskCCD; // CCD enable Task Counter
+        CounterSingleChannelWriter counterWriter;
+
+        [NonSerialized]
+        private csAcq4.CCDController ccdAController;
+        [NonSerialized]
+        private csAcq4.CCDController ccdBController;
+   
+        private string nameCCDA;
+        private string nameCCDB;
+        private string computerCCDA = "ULTRACOLDEDM";
+        private string computerCCDB = "PH-NI-LAB";
+
+        // End
+
+        // calling this method starts acquisition
+        public void Start(BlockConfig config) 
 		{
 			this.config = config;
 			acquireThread = new Thread(new ThreadStart(this.Acquire));
@@ -89,25 +111,54 @@ namespace EDMBlockHead.Acquire
 		}
 
 
-		// this is the method that actually takes the data. It is called by Start() and shouldn't
-		// be called directly
-		public void Acquire()
+        // this is the method that actually takes the data. It is called by Start() and shouldn't
+        // be called directly
+        // On 12/05/2025, Shirley added the CCD acquisition
+        public void Acquire()
 		{
-			// lock onto something that the front end can see
-			Monitor.Enter(MonitorLockObject);
+            // Shirley added on 12/05/2025 for CCD TCP connection
+            //if ((bool)config.Settings["cameraEnabled"])
+            //{
+            //    // CCD A
+            //    foreach (var addr in Dns.GetHostEntry(computerCCDA).AddressList)
+            //    {
+            //        if (addr.AddressFamily == AddressFamily.InterNetwork)
+            //            nameCCDA = addr.ToString();
+            //    }
+            //    int ccdAPort = new EnvironsHelper(computerCCDA).emccdTCPChannel;
+            //    ccdAController = (CCDController)(Activator.GetObject(
+            //        typeof(csAcq4.CCDController),
+            //        $"tcp://{nameCCDA}:{ccdAPort}/controller.rem"));
+
+            //    // CCD B
+            //    foreach (var addr in Dns.GetHostEntry(computerCCDB).AddressList)
+            //    {
+            //        if (addr.AddressFamily == AddressFamily.InterNetwork)
+            //            nameCCDB = addr.ToString();
+            //    }
+            //    int ccdBPort = new EnvironsHelper(computerCCDB).emccdTCPChannel;
+            //    ccdBController = (csAcq4.CCDController)(Activator.GetObject(
+            //        typeof(csAcq4.CCDController),
+            //        $"tcp://{nameCCDB}:{ccdBPort}/controller.rem"));
+            //}
+            // End
+
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
 
 			scanMaster = ScanMaster.Controller.GetController();
 			phaseLock = new EDMPhaseLock.MainForm();
             //hardwareController = new EDMHardwareControl.Controller();     //UEDM use the new hardware controller
             hardwareController = new UEDMHardwareControl.UEDMController();
             //fieldLock = new EDMFieldLock.MainForm();
-	
-			// map modulations to physical channels
-			MapChannels();
+
+            // map modulations to physical channels
+            MapChannels();
 
 			// map the analog inputs
 			MapAnalogInputs();
 
+            
 			Block b = new Block();
 			b.Config = config;
 			b.SetTimeStamp();
@@ -115,9 +166,39 @@ namespace EDMBlockHead.Acquire
             {
                 b.detectors.Add(channel.Channel.Name);
             }
-			
-			try
-			{
+
+            // Start: Shirley added on 12/05/2025 for configuring CCD software enable gate
+            //counterTaskCCD = new Task("CCD enable gate");
+
+            //CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
+
+            //// Configure counter for 1 TTL pulse per shot
+            //counterTaskCCD.COChannels.CreatePulseChannelTicks(
+            //    pulseChannel.PhysicalChannel,
+            //    pulseChannel.Name,
+            //    "20MHzTimebase",
+            //    COPulseIdleState.Low,
+            //    0,                  // Initial Delay
+            //    100,                // High ticks (duration of high pulse)
+            //    (20000000 / (int)config.Settings["sampleRate"]) * (int)config.Settings["ccdEnableLength"]  // Low ticks
+            //);
+
+            //// Trigger on same trigger as input task
+            //counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+            //    (string)Environs.Hardware.GetInfo("analogTrigger2"),
+            //    DigitalEdgeStartTriggerEdge.Rising
+            //);
+
+            //// Single pulse per shot
+            //counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
+            //counterTaskCCD.Control(TaskAction.Verify);
+
+            //counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
+
+            // End
+
+            try
+            {
                 Console.WriteLine("Trying to get SPData");
                 // get things going
 				AcquisitionStarting();
@@ -128,8 +209,12 @@ namespace EDMBlockHead.Acquire
 					// set the switch states and impose the appropriate wait times
 					ThrowSwitches(point);
 
-					// take a point
-					Shot s;
+                    // Shirley added on 13/05/2025 for CCD integration. Set the CCD file name tied to shot number
+                    //ccdAController.UpdateFileNames(point);
+                    //ccdBController.UpdateFileNames(point);
+
+                    // take a point
+                    Shot s;
 					EDMPoint p;
 					if (Environs.Debug)
 					{
@@ -143,17 +228,37 @@ namespace EDMBlockHead.Acquire
 					}
 					else
 					{
- 						// everything should be ready now so start the analog
-						// input task (it will wait for a trigger)
-						inputTask.Start();
+                        // Shirley added on 12/05/2025 for CCD integration
+                        //if ((bool)config.Settings["cameraEnabled"])
+                        //{
+                        //    int triggerMode = (int)config.Settings["ccdTriggerMode"];
 
-						// get the raw data
+                        //    if (triggerMode == 2)
+                        //    {
+                        //        System.Threading.Tasks.Task.Run(() => ccdAController.RemoteSnap());
+                        //        System.Threading.Tasks.Task.Run(() => ccdBController.RemoteSnap());
+                        //    }
+                        //    else if (triggerMode == 1)
+                        //    {
+                        //        System.Threading.Tasks.Task.Run(() => ccdAController.StartBurstAcquisition());
+                        //        System.Threading.Tasks.Task.Run(() => ccdBController.StartBurstAcquisition());
+                        //    }
+                        //}
+
+                        // everything should be ready now so start the analog
+                        // input task (it will wait for a trigger)
+                        inputTask.Start(); 
+                        //counterTaskCCD.Start(); // for CCDs
+
+                        // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+
                         inputTask.Stop();
+                        //counterTaskCCD.Stop();
+                        // End
 
-
-						// extract the data for each scanned channel and put it in a TOF
-						s = new Shot();
+                        // extract the data for each scanned channel and put it in a TOF
+                        s = new Shot();
 						for (int i = 0 ; i < inputs.Channels.Count ; i++)
 						{
 							// extract the raw data
@@ -178,7 +283,7 @@ namespace EDMBlockHead.Acquire
 
 							s.TOFs.Add(t);
 						}
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 						p = new EDMPoint();
 						p.Shot = s;
 
@@ -203,7 +308,7 @@ namespace EDMBlockHead.Acquire
                         spd[6] = 7;
                     }
                     else
-                    {
+                    {                                                      
                         singlePointInputTask.Start();
                         spd = singlePointInputReader.ReadSingleSample();
                         singlePointInputTask.Stop();
@@ -257,8 +362,34 @@ namespace EDMBlockHead.Acquire
 
 					if (CheckIfStopping()) 
 					{
-						// release hardware
-						AcquisitionStopping();
+                        //if ((bool)config.Settings["cameraEnabled"])
+                        //{
+                        //    int triggerMode = (int)config.Settings["ccdTriggerMode"];
+                        //    try
+                        //    {
+                        //        if (triggerMode == 1)
+                        //        {
+                        //            ccdAController.StopBurstAcquisition();
+                        //            ccdBController.StopBurstAcquisition();
+                        //        }
+                        //        else if (triggerMode == 2)
+                        //        {
+                        //            ccdAController.RemoteBufRelease();
+                        //            ccdBController.RemoteBufRelease();
+                        //        }
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
+                        //        Console.WriteLine("Error stopping CCDs: " + ex.ToString());
+                        //    }
+
+                        //    // Maybe this should happen in the final block?
+                        //    RemotingServices.Disconnect(ccdAController);
+                        //    RemotingServices.Disconnect(ccdBController);
+                        //}
+
+                        // release hardware
+                        AcquisitionStopping();
 						// signal anybody waiting on the lock that we're done
 						Monitor.Pulse(MonitorLockObject);
 						Monitor.Exit(MonitorLockObject);
@@ -855,14 +986,15 @@ namespace EDMBlockHead.Acquire
             //mag.Calibration = 0.00001;
             //inputs.Channels.Add(mag);
 
-            ScannedAnalogInput mag = new ScannedAnalogInput();
-            mag.ReductionMode = DataReductionMode.Average;
-            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
-            mag.AverageEvery = 800;
-            mag.LowLimit = -10;
-            mag.HighLimit = 10;
-            mag.Calibration = 1e-5; //Bartington calibration is 1V = 10uT
-            inputs.Channels.Add(mag);
+            // Commented out 14/05/2025
+            //ScannedAnalogInput mag = new ScannedAnalogInput();
+            //mag.ReductionMode = DataReductionMode.Average;
+            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            //mag.AverageEvery = 800;
+            //mag.LowLimit = -10;
+            //mag.HighLimit = 10;
+            //mag.Calibration = 1e-5; //Bartington calibration is 1V = 10uT
+            //inputs.Channels.Add(mag);
 
             //ScannedAnalogInput gnd = new ScannedAnalogInput();
             //gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
@@ -873,15 +1005,15 @@ namespace EDMBlockHead.Acquire
             //gnd.Calibration = 1;
             //inputs.Channels.Add(gnd);
 
-            ScannedAnalogInput battery = new ScannedAnalogInput();
-            battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
-            battery.ReductionMode = DataReductionMode.Chop;
-            battery.ChopStart = 140;
-            battery.ChopLength = 120;
-            battery.LowLimit = 0;
-            battery.HighLimit = 10;
-            battery.Calibration = 1;
-            inputs.Channels.Add(battery);
+            //ScannedAnalogInput battery = new ScannedAnalogInput();
+            //battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
+            //battery.ReductionMode = DataReductionMode.Chop;
+            //battery.ChopStart = 140;
+            //battery.ChopLength = 120;
+            //battery.LowLimit = 0;
+            //battery.HighLimit = 10;
+            //battery.Calibration = 1;
+            //inputs.Channels.Add(battery);
 
             /*ScannedAnalogInput battery2 = new ScannedAnalogInput();
             battery2.ReductionMode = DataReductionMode.Average;
@@ -1262,6 +1394,7 @@ namespace EDMBlockHead.Acquire
 
             // prepare the inputs
             inputTask = new Task("BlockHead analog input");
+            //counterTaskCCD = new Task("CCD enable gate");
 
             foreach (ScannedAnalogInput i in inputs.Channels)
                 i.Channel.AddToTask(
@@ -1418,6 +1551,7 @@ namespace EDMBlockHead.Acquire
 		{
 			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
 			inputTask.Dispose();
+            //counterTaskCCD.Dispose();   
             singlePointInputTask.Dispose();
 		}
 
