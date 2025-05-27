@@ -38,10 +38,10 @@ public class Patterns : MOTMasterScript
 
 
         // Slowing Chirp
-        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
+        Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
         // Slowing
         Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
@@ -207,17 +207,17 @@ public class Patterns : MOTMasterScript
 
     }
 
-    private void prePatternSetup()
+   private void prePatternSetup()
     {
 
         NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
-        DDSCtrl.addPatternToBufferSingle(new List<double> { DDSAmp0
+        DDSCtrl.addPatternToBufferSingle(new List<double> {
             (double)Parameters["DDSFreq0"], (double)Parameters["DDSAmp0"], 0.0, 0.0,
             (double)Parameters["DDSFreq1"], (double)Parameters["DDSAmp1"], 0.0, 0.0,
             (double)Parameters["DDSFreq2"], (double)Parameters["DDSAmp2"], 0.0, 0.0,
-            (double)Parameters["DDSFreq3"], (double)Parameters["DDSAmp3"], 0.0, 0.0 });
-        //DDSCtrl.writePatternToCard();
+            (double)Parameters["DDSFreq3"], (double)Parameters["DDSAmp3"], 0.0, 0.0});
     }
+
 
     public override PatternBuilder32 GetDigitalPattern()
     {
@@ -260,14 +260,13 @@ public class Patterns : MOTMasterScript
         p.AddEdge("cafOptPumpingAOM", 0, true); // false for switch off
         p.AddEdge("cafOptPumpingShutter", 0, true); // true for switch off
 
-        p.AddEdge("v0rfswitch1", 0, false);
+        p.AddEdge("v0rfswitch1", 0, false); // false for on
         p.AddEdge("v0rfswitch2", 0, false);
         p.AddEdge("v0rfswitch3", 0, false);
         p.AddEdge("v0rfswitch4", 0, false);
 
-        p.AddEdge("v0ddsSwitchA", 0, false);
+        p.AddEdge("v0ddsSwitchA", 0, false); // false for red mot
         p.AddEdge("v0ddsSwitchB", 0, false);
-
         p.AddEdge("v0ddsSwitchC", 0, false);
         p.AddEdge("v0ddsSwitchD", 0, false);
         
@@ -279,17 +278,17 @@ public class Patterns : MOTMasterScript
         // switch on lambda sideband
         p.AddEdge("v0rfswitch1", lambdaCoolingStart, false);
         p.AddEdge("v0rfswitch4", lambdaCoolingStart, false);
-        p.AddEdge("v0ddsSwitchA", lambdaCoolingStart, true);
+        p.AddEdge("v0ddsSwitchA", lambdaCoolingStart, true); 
         p.AddEdge("v0ddsSwitchB", lambdaCoolingStart, true);
 
         // switch on blue mot sideband
-        
+
         p.AddEdge("v0ddsSwitchC", lambdaCoolingEnd, true);
         p.AddEdge("v0ddsSwitchD", lambdaCoolingEnd, true);
         p.AddEdge("v0rfswitch3", lambdaCoolingEnd, false);
 
         // switch off blue mot
-        
+
         p.AddEdge("v0ddsSwitchA", blueMOTEnd, false);
         p.AddEdge("v0ddsSwitchB", blueMOTEnd, false);
         p.AddEdge("v0ddsSwitchC", blueMOTEnd, false);
@@ -303,8 +302,8 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0rfswitch2", imageTime, false);
         p.AddEdge("v0rfswitch3", imageTime, false);
         p.AddEdge("v0rfswitch4", imageTime, false);
-        
-        
+
+
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
         

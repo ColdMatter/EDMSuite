@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 12000;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -44,8 +44,8 @@ public class Patterns : MOTMasterScript
         //Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
 
         // Slowing Chirp, QuantelLaser
-        Parameters["SlowingChirpStartTime"] = 450;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1150;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
@@ -68,7 +68,7 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 2.0; //1.05;
+        Parameters["slowingCoilsValue"] = 1.0; //1.05;
         //Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
@@ -110,7 +110,7 @@ public class Patterns : MOTMasterScript
 
 
         //- AOM order
-
+        
         //Lambda configuration
         Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
         Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
@@ -139,7 +139,7 @@ public class Patterns : MOTMasterScript
         //VCO Calibration
         //VCO frequency in MHz = offset + vol * gradient
         Parameters["POS300OffsetFreq"] = 129.2;
-        Parameters["POS300Gradient"] = 10.6;
+        Parameters["POS300Gradient"] = 10.6; 
         Parameters["POS150OffsetFreq"] = 62.6;
         Parameters["POS150Gradient"] = 7.68;
 
@@ -154,7 +154,7 @@ public class Patterns : MOTMasterScript
         //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
@@ -193,7 +193,7 @@ public class Patterns : MOTMasterScript
         // p.AddEdge("bXSlowingShutter", 20000, true);
 
         p.AddEdge("bXSlowingShutter", 0, true);
-        p.AddEdge("bXSlowingShutter", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - 650, false);
+        p.AddEdge("bXSlowingShutter", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]-650, false);
         p.AddEdge("bXSlowingShutter", 26000, true);
 
 
@@ -205,10 +205,10 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
-
+        
         p.AddChannel("v00Intensity");
         p.AddChannel("v00Frequency");
         p.AddChannel("xShimCoilCurrent");
@@ -233,13 +233,8 @@ public class Patterns : MOTMasterScript
 
         //Switch BX AOM via analog output Mar 05 2024
         //p.AddAnalogValue("BXAttenuation", 0, 0.1);
-
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"]-100, (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
-
-       
-
-
         //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         //p.AddAnalogValue("BXFreq", 0, (double)Parameters["BXAOMFrequency"]);
@@ -295,7 +290,7 @@ public class Patterns : MOTMasterScript
 
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
-
+        
 
         return p;
     }

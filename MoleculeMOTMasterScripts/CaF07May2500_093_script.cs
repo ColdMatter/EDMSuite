@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 100000;
+        Parameters["PatternLength"] = 50000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 15000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -26,6 +26,7 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 5000;
+        Parameters["Frame0TriggerDurationSize"] = 500;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -84,8 +85,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAOMDuration"] = 500;
 
         // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 7000;
-        Parameters["v0IntensityRampDuration"] = 1;
+        Parameters["v0IntensityRampStartTime"] = 5000;
+        Parameters["v0IntensityRampDuration"] = 500;
         Parameters["v0IntensityRampStartValue"] = 7.2; //5.6
         Parameters["v0IntensityEndValue"] = 8.0;//7.8
         Parameters["v0IntensityMolassesValue"] = 5.6;
@@ -95,7 +96,7 @@ public class Patterns : MOTMasterScript
         Parameters["V00AOMSidebandAmplitude"] = 1.0;
 
         // Compression of MOT
-        Parameters["MOTCompressoinStartTime"] = 6000;
+        Parameters["MOTCompressoinStartTime"] = 4000;
         Parameters["MOTCompressoinDuratoin"] = 1000;
         Parameters["MOTCompressoinHoldDuratoin"] = 1000;
         Parameters["MOTCoilsCompressionValue"] = 1.75; 
@@ -193,21 +194,22 @@ public class Patterns : MOTMasterScript
         Parameters["POS150OffsetFreq"] = 62.6;
         Parameters["POS150Gradient"] = 7.68;
 
-        Parameters["BlueMOTField"] = 0.8;
+        Parameters["BlueMOTField"] = 0.2;
 
         Parameters["FrequencySettleTime"] = 50;
         Parameters["LambdaCoolingDuration"] = 500;
         Parameters["BlueMOTRampDuration"] = 2000;
         Parameters["BlueMOTDuration"] = 2000;
-        Parameters["FreeExpTime"] = 200;
+        Parameters["BlueMOTImageDelay"] = 500;
+        Parameters["FreeExpTime"] = 500;
         Parameters["ImageInBlueMOT"] = 0;
 
 
     }
 
-    private void prePatternSetup()
+   private void prePatternSetup()
     {
-
+    
         NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
         DDSCtrl.addPatternToBufferSingle(new List<double> {
             (double)Parameters["DDSFreq0"], (double)Parameters["DDSAmp0"], 0.0, 0.0,
@@ -243,10 +245,9 @@ public class Patterns : MOTMasterScript
         //p.Pulse(0, blueMOTEnd - (int)Parameters["Frame0TriggerDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); 
         // Pulse(delay time, start time, duration, channel)
         //p.Pulse(0, lambdaCoolingEnd + (int)Parameters["ImageInBlueMOT"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(patternStartBeforeQ, 5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(0, blueMOTEnd - (int)Parameters["Frame0TriggerDuration"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(patternStartBeforeQ, 4000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(0, blueMOTEnd - (int)Parameters["Frame0TriggerDurationSize"] - (int)Parameters["BlueMOTImageDelay"], (int)Parameters["Frame0TriggerDurationSize"], "cameraTrigger");
         p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(0, imageTime + 10000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
 
 
@@ -265,7 +266,6 @@ public class Patterns : MOTMasterScript
 
         p.AddEdge("v0ddsSwitchA", 0, false);
         p.AddEdge("v0ddsSwitchB", 0, false);
-
         p.AddEdge("v0ddsSwitchC", 0, false);
         p.AddEdge("v0ddsSwitchD", 0, false);
         
@@ -275,34 +275,32 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0rfswitch4", motEndTime, true);
         
         // switch on lambda sideband
-        p.AddEdge("v0rfswitch1", lambdaCoolingStart, false);
-        p.AddEdge("v0rfswitch4", lambdaCoolingStart, false);
-        p.AddEdge("v0ddsSwitchA", lambdaCoolingStart, true);
-        p.AddEdge("v0ddsSwitchB", lambdaCoolingStart, true);
+        p.AddEdge("v0rfswitch1", lambdaCoolingStart, false); //turn on F = 1-
+        p.AddEdge("v0rfswitch4", lambdaCoolingStart, false); //turn on F = 2
+        p.AddEdge("v0ddsSwitchA", lambdaCoolingStart, true); //rf comes from dds channel 1 instead of VCO
+        p.AddEdge("v0ddsSwitchB", lambdaCoolingStart, true); //rf comes from 
 
         // switch on blue mot sideband
         
         p.AddEdge("v0ddsSwitchC", lambdaCoolingEnd, true);
         p.AddEdge("v0ddsSwitchD", lambdaCoolingEnd, true);
-        //p.AddEdge("v0rfswitch2", lambdaCoolingEnd, false);
         p.AddEdge("v0rfswitch3", lambdaCoolingEnd, false);
-
+        
         // switch off blue mot
+        
+        //p.AddEdge("v0ddsSwitchA", blueMOTEnd, false);
+        //p.AddEdge("v0ddsSwitchB", blueMOTEnd, false);
+        //p.AddEdge("v0ddsSwitchC", blueMOTEnd, false);
+        //p.AddEdge("v0ddsSwitchD", blueMOTEnd, false);
 
-        p.AddEdge("v0ddsSwitchA", blueMOTEnd, false);
-        p.AddEdge("v0ddsSwitchB", blueMOTEnd, false);
-        p.AddEdge("v0ddsSwitchC", blueMOTEnd, false);
-        p.AddEdge("v0ddsSwitchD", blueMOTEnd, false);
+        //p.AddEdge("v0rfswitch1", blueMOTEnd, true);
+        //p.AddEdge("v0rfswitch3", blueMOTEnd, true);
+        //p.AddEdge("v0rfswitch4", blueMOTEnd, true);
 
-        p.AddEdge("v0rfswitch1", blueMOTEnd, true);
-        //p.AddEdge("v0rfswitch2", blueMOTEnd, true);
-        p.AddEdge("v0rfswitch3", blueMOTEnd, true);
-        p.AddEdge("v0rfswitch4", blueMOTEnd, true);
-
-        p.AddEdge("v0rfswitch1", imageTime, false);
-        p.AddEdge("v0rfswitch2", imageTime, false);
-        p.AddEdge("v0rfswitch3", imageTime, false);
-        p.AddEdge("v0rfswitch4", imageTime, false);
+        //p.AddEdge("v0rfswitch1", imageTime, false);
+        //p.AddEdge("v0rfswitch2", imageTime, false);
+        //p.AddEdge("v0rfswitch3", imageTime, false);
+        //p.AddEdge("v0rfswitch4", imageTime, false);
         
         
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);

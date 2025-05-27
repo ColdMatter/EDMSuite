@@ -273,7 +273,7 @@ namespace DAQ.HAL
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
             
             wmlConfig.AddSlaveLaser("v0", "v00Lock", 1);
-            wmlConfig.AddLaserConfiguration("v0", 494.432395, -500, -1500);
+            wmlConfig.AddLaserConfiguration("v0", 494.432395, 500, 1500);
 
             wmlConfig.AddSlaveLaser("v1", "v10Lock", 2);
             wmlConfig.AddLaserConfiguration("v1", 476.958908, -200, -1000);
@@ -282,13 +282,13 @@ namespace DAQ.HAL
             wmlConfig.AddLaserConfiguration("v2", 477.299380, 20, 200);
 
             wmlConfig.AddSlaveLaser("v3", "v32Lock", 4);
-            wmlConfig.AddLaserConfiguration("v3", 477.628176, -50, -500);
+            wmlConfig.AddLaserConfiguration("v3", 477.628176, 50, 500);
 
             wmlConfig.AddSlaveLaser("BX", "bXLock", 5);
             wmlConfig.AddLaserConfiguration("BX", 564.582406, 500, 500);
             //Use TC for sowing Mar 5th 2024
-            //wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
-            wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
+            wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
+            //wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
 
             wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
             wmlConfig.AddLaserConfiguration("TCool", 564.582240, 50, 500);
