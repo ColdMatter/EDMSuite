@@ -6,12 +6,19 @@ using System.Collections.Generic;
 
 using DAQ.Pattern;
 using DAQ.Analog;
+using DAQ.Environment;
+using System.Threading;
 
 // This script is supposed to be the basic script for loading a molecule MOT.
 // Note that times are all in units of the clock periods of the two pattern generator boards (at present, both are 10us).
 // All times are relative to the Q switch, though note that this is not the first event in the pattern.
 public class Patterns : MOTMasterScript
 {
+
+    
+    //EnvironsHelper eHelper = new EnvironsHelper((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]);
+    //WavemeterLock.Controller wmlController = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"] + ":" + eHelper.wavemeterLockTCPChannel.ToString() + "/controller.rem"));
+    
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
@@ -25,7 +32,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 12000;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -34,31 +41,23 @@ public class Patterns : MOTMasterScript
         //PMT
         Parameters["PMTTriggerDuration"] = 10;
 
+      
 
 
-
-        // Slowing Chirp, 5W ALS laser
-        //Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
-        //Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
-        //Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        //Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
-
-        // Slowing Chirp, QuantelLaser
-        Parameters["SlowingChirpStartTime"] = 450;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1150;////1400;//1160; //1160
+        // Slowing Chirp
+        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
+        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
 
         // Slowing
-        //Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
-        Parameters["slowingAOMOnDuration"] = 45000; //not used
+        Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
+        Parameters["slowingAOMOnDuration"] = 45000;
 
 
 
-        //Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
-        Parameters["slowingAOMOffDuration"] = 40000; //40000;
-
-        //Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
+        Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
+        Parameters["slowingAOMOffDuration"] = 40000;//40000;
 
 
         Parameters["slowingRepumpSwitchDelay"] = 0;
@@ -68,8 +67,8 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 2.0; //1.05;
-        //Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
+        Parameters["slowingCoilsValue"] = 1.0; //1.05;
+        Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
         Parameters["MOTCoilsSwitchOn"] = 0;
@@ -77,9 +76,9 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -2.21;
-        Parameters["yShimLoadCurrent"] = -2.13;
-        Parameters["zShimLoadCurrent"] = -0.17;
+        Parameters["xShimLoadCurrent"] = 0.0;
+        Parameters["yShimLoadCurrent"] = 0.0;
+        Parameters["zShimLoadCurrent"] = -0.22;
 
 
         // v0 Light Switch
@@ -110,51 +109,78 @@ public class Patterns : MOTMasterScript
 
 
         //- AOM order
-
+        
         //Lambda configuration
-        Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
-        Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
-        Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq1"] = 114.07; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 156.17; //- F = 0
+        Parameters["SidebandFreq3"] = 188.00; //- F = 2
+        Parameters["SidebandFreq4"] = 175.44; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 5.0;
+        Parameters["BXAOMAttenuation"] = 3.0;
         //Parameters["BXAOMFrequency"] = 5.8; //113MHz
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
         //Sideband Amplitudes
 
-        // Recalibrated 30/04/2025
+        // Recalibrated 06/02/25
 
         Parameters["SidebandAmp1"] = 6.7;
         Parameters["SidebandAmp2"] = 7.7;
         Parameters["SidebandAmp3"] = 8.0;
         Parameters["SidebandAmp4"] = 8.0;
 
-        Parameters["SidebandImAmp1"] = 8.0;// 4.0;
-        Parameters["SidebandImAmp2"] = 8.0;// 4.5;
-        Parameters["SidebandImAmp3"] = 8.0;// 6.0;
-        Parameters["SidebandImAmp4"] = 8.0;// 4.7;
+        Parameters["SidebandImAmp1"] = 6.7;
+        Parameters["SidebandImAmp2"] = 7.7;
+        Parameters["SidebandImAmp3"] = 8.0;
+        Parameters["SidebandImAmp4"] = 8.0;
 
 
         //VCO Calibration
         //VCO frequency in MHz = offset + vol * gradient
         Parameters["POS300OffsetFreq"] = 129.2;
-        Parameters["POS300Gradient"] = 10.6;
+        Parameters["POS300Gradient"] = 10.6; 
         Parameters["POS150OffsetFreq"] = 62.6;
         Parameters["POS150Gradient"] = 7.68;
 
+        Parameters["PatternStartTime"] = 0;
 
+        Parameters["SidebandAmpDDS1"] = 0.19;
+        Parameters["SidebandAmpDDS2"] = 0.43;
+        Parameters["SidebandAmpDDS3"] = 0.94;
+        Parameters["SidebandAmpDDS4"] = 0.55;
+
+        Parameters["SidebandImAmpDDS1"] = 0.0;
+        Parameters["SidebandImAmpDDS2"] = 0.0;
+        Parameters["SidebandImAmpDDS3"] = 0.0;
+        Parameters["SidebandImAmpDDS4"] = 0.0;
+        
 
     }
 
+    private void prePatternSetup()
+    {
+        NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
+        
+        addDDSPattern(DDSCtrl, "PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
+            (double)Parameters["SidebandAmpDDS1"], (double)Parameters["SidebandAmpDDS2"], (double)Parameters["SidebandAmpDDS3"], (double)Parameters["SidebandAmpDDS4"]);
+        addDDSPattern(DDSCtrl, "Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
+            (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
+
+        runDDSPattern(DDSCtrl);
+        
+        //wmlController.setSlaveFrequency((string)Parameters["Laser"], (bool)Parameters["Switch"] ? (double)Parameters["OnFrequency"] : (double)Parameters["OffFrequency"]);
+        //Thread.Sleep((int)Parameters["WaitTime"]);
+    }
+
+
     public override PatternBuilder32 GetDigitalPattern()
     {
+        //prePatternSetup();
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
-        //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
@@ -164,7 +190,7 @@ public class Patterns : MOTMasterScript
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(patternStartBeforeQ, 8000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); uncomment for second image
 
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
@@ -187,14 +213,10 @@ public class Patterns : MOTMasterScript
         p.AddEdge("TweezerChamberRbMOTAOMs", 1000, true);
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
+      
 
-        //these are the shutter settings for the fiber eom slowing light setup
-        // p.AddEdge("bXSlowingShutter", 0, false);
-        // p.AddEdge("bXSlowingShutter", 20000, true);
-
-        p.AddEdge("bXSlowingShutter", 0, true);
-        p.AddEdge("bXSlowingShutter", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - 650, false);
-        p.AddEdge("bXSlowingShutter", 26000, true);
+        p.AddEdge("bXSlowingShutter", 0, false);
+        p.AddEdge("bXSlowingShutter", 20000, true);
 
 
 
@@ -205,10 +227,10 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);
 
         // Add Analog Channels
-
+        
         p.AddChannel("v00Intensity");
         p.AddChannel("v00Frequency");
         p.AddChannel("xShimCoilCurrent");
@@ -232,15 +254,10 @@ public class Patterns : MOTMasterScript
         p.AddChannel("BXFreq");
 
         //Switch BX AOM via analog output Mar 05 2024
-        //p.AddAnalogValue("BXAttenuation", 0, 0.1);
-
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]);
-        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
-
-       
-
-
-        //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", 0, 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["slowingAOMOffStart"], 0.0);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
         //p.AddAnalogValue("BXFreq", 0, (double)Parameters["BXAOMFrequency"]);
         //p.AddAnalogValue("BXFreq", 0, 0.0);
@@ -251,7 +268,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
-        p.AddAnalogValue("TCoolSidebandVCO", 0, -3.461); //5.15V, 63.5MHz
+        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingRepumoAttenuation"]);
         p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
 
@@ -295,9 +312,48 @@ public class Patterns : MOTMasterScript
 
         //v0 chirp
         p.AddAnalogValue("v00Chirp", 0, 0.0);
-
+        
 
         return p;
     }
 
+    public void addDDSPattern(NeanderthalDDSController.Controller DDSCtrl, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+    {
+        //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
+        List<double> timePar = new List<double>();
+        timePar.Add(time / 100.0);
+        List<double> freq = new List<double>();
+        freq.Add(freq1);
+        freq.Add(freq2);
+        freq.Add(freq3);
+        freq.Add(freq4);
+        List<double> amp = new List<double>();
+        amp.Add(amp1);
+        amp.Add(amp2);
+        amp.Add(amp3);
+        amp.Add(amp4);
+        List<double> freqSlope = new List<double>();
+        freqSlope.Add(freqSlope1);
+        freqSlope.Add(freqSlope2);
+        freqSlope.Add(freqSlope3);
+        freqSlope.Add(freqSlope4);
+        List<double> ampSlpoe = new List<double>();
+        ampSlpoe.Add(ampSlope1);
+        ampSlpoe.Add(ampSlope2);
+        ampSlpoe.Add(ampSlope3);
+        ampSlpoe.Add(ampSlope4);
+
+        DDSCtrl.clearPatternList();
+        DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
+
+    }
+
+    public void runDDSPattern(NeanderthalDDSController.Controller DDSCtrl)
+    {
+        //DDSCtrl.openCard();
+        DDSCtrl.startSinglePattern();
+        // Wait till sequence ends
+        //DDSCtrl.closeCard();
+    }
 }

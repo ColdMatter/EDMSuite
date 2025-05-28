@@ -34,12 +34,12 @@ public class Patterns : MOTMasterScript
         //PMT
         Parameters["PMTTriggerDuration"] = 10;
 
-      
 
 
-        // Slowing Chirp
+
+        // Slowing Chirp, QuantelLaser
         Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
+        Parameters["SlowingChirpDuration"] = 1350;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
@@ -60,7 +60,7 @@ public class Patterns : MOTMasterScript
         Parameters["slowingRepumpAOMOffDuration"] = 35000;
 
         // Slowing field
-        Parameters["slowingCoilsValue"] = 1.0; //1.05;
+        Parameters["slowingCoilsValue"] = 2.0; //1.05;
         Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // B Field
@@ -235,7 +235,7 @@ public class Patterns : MOTMasterScript
 
         int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOT(p, Parameters);  // This is how you load "preset" patterns.
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
