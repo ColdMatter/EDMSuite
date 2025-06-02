@@ -1,4 +1,6 @@
-﻿namespace UEDMHardwareControl
+﻿using System.Windows.Forms;
+
+namespace UEDMHardwareControl
 {
     partial class ControlWindow
     {
@@ -45,6 +47,7 @@
             System.Windows.Forms.DataVisualization.Charting.Series series33 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series34 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series35 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -66,7 +69,6 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series44 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -541,6 +543,10 @@
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
             this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.lbTargetStepperInfo = new System.Windows.Forms.Label();
+            this.TargetLengthTimeButton = new System.Windows.Forms.Button();
+            this.lbTargetStepTime = new System.Windows.Forms.Label();
+            this.TargetLengthTimeTextBox = new System.Windows.Forms.TextBox();
             this.TargetStepDirectionCBox = new System.Windows.Forms.CheckBox();
             this.TargetHomeButton = new System.Windows.Forms.Button();
             this.TargetTriggerButton = new System.Windows.Forms.Button();
@@ -737,10 +743,34 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.TargetLengthTimeButton = new System.Windows.Forms.Button();
-            this.lbTargetStepTime = new System.Windows.Forms.Label();
-            this.TargetLengthTimeTextBox = new System.Windows.Forms.TextBox();
-            this.lbTargetStepperInfo = new System.Windows.Forms.Label();
+            this.tabCCDCamera = new System.Windows.Forms.TabPage();
+            this.btnSetCCDTriggerMode = new System.Windows.Forms.Button();
+            this.comboBoxCCDTriggerMode = new System.Windows.Forms.ComboBox();
+            this.tbCCDBExposure = new System.Windows.Forms.TextBox();
+            this.tbCCDBGain = new System.Windows.Forms.TextBox();
+            this.tbCCDAExposure = new System.Windows.Forms.TextBox();
+            this.tbCCDAGain = new System.Windows.Forms.TextBox();
+            this.labelFrameCCDA = new System.Windows.Forms.Label();
+            this.labelFrameCCDB = new System.Windows.Forms.Label();
+            this.labelGainCCDA = new System.Windows.Forms.Label();
+            this.labelGainCCDB = new System.Windows.Forms.Label();
+            this.labelExposureTimeCCDA = new System.Windows.Forms.Label();
+            this.labelExposureTimeCCDB = new System.Windows.Forms.Label();
+            this.labelTemperatureCCDA = new System.Windows.Forms.Label();
+            this.labelTemperatureCCDB = new System.Windows.Forms.Label();
+            this.tbCCDAFrameCount = new System.Windows.Forms.TextBox();
+            this.btCCDQueryFrameCount = new System.Windows.Forms.Button();
+            this.btCCDQueryExposure = new System.Windows.Forms.Button();
+            this.btCCDQueryGain = new System.Windows.Forms.Button();
+            this.btCCDQueryTemp = new System.Windows.Forms.Button();
+            this.lblCCDA = new System.Windows.Forms.Label();
+            this.lblCCDB = new System.Windows.Forms.Label();
+            this.btCCDUpdateFrameCount = new System.Windows.Forms.Button();
+            this.btCCDUpdateExposureTime = new System.Windows.Forms.Button();
+            this.btCCDUpdateGain = new System.Windows.Forms.Button();
+            this.labelTCPCCD = new System.Windows.Forms.Label();
+            this.checkboxTCPCCD = new System.Windows.Forms.CheckBox();
+            this.btinfoCCDExposure = new System.Windows.Forms.Button();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -818,6 +848,7 @@
             this.tabControl.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
+            this.tabCCDCamera.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -5898,6 +5929,44 @@
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
             // 
+            // lbTargetStepperInfo
+            // 
+            this.lbTargetStepperInfo.AutoSize = true;
+            this.lbTargetStepperInfo.Location = new System.Drawing.Point(5, 89);
+            this.lbTargetStepperInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbTargetStepperInfo.Name = "lbTargetStepperInfo";
+            this.lbTargetStepperInfo.Size = new System.Drawing.Size(657, 221);
+            this.lbTargetStepperInfo.TabIndex = 31;
+            this.lbTargetStepperInfo.Text = resources.GetString("lbTargetStepperInfo.Text");
+            this.lbTargetStepperInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // TargetLengthTimeButton
+            // 
+            this.TargetLengthTimeButton.Location = new System.Drawing.Point(255, 51);
+            this.TargetLengthTimeButton.Name = "TargetLengthTimeButton";
+            this.TargetLengthTimeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetLengthTimeButton.TabIndex = 23;
+            this.TargetLengthTimeButton.Text = "Step!";
+            this.TargetLengthTimeButton.UseVisualStyleBackColor = true;
+            this.TargetLengthTimeButton.Click += new System.EventHandler(this.TargetLengthTimeButton_Click);
+            // 
+            // lbTargetStepTime
+            // 
+            this.lbTargetStepTime.AutoSize = true;
+            this.lbTargetStepTime.Location = new System.Drawing.Point(18, 56);
+            this.lbTargetStepTime.Name = "lbTargetStepTime";
+            this.lbTargetStepTime.Size = new System.Drawing.Size(96, 13);
+            this.lbTargetStepTime.TabIndex = 22;
+            this.lbTargetStepTime.Text = "Length of time (ms)";
+            // 
+            // TargetLengthTimeTextBox
+            // 
+            this.TargetLengthTimeTextBox.Location = new System.Drawing.Point(157, 53);
+            this.TargetLengthTimeTextBox.Name = "TargetLengthTimeTextBox";
+            this.TargetLengthTimeTextBox.Size = new System.Drawing.Size(66, 20);
+            this.TargetLengthTimeTextBox.TabIndex = 21;
+            this.TargetLengthTimeTextBox.Text = "1000";
+            // 
             // TargetStepDirectionCBox
             // 
             this.TargetStepDirectionCBox.Location = new System.Drawing.Point(349, 51);
@@ -8024,6 +8093,7 @@
             this.tabControl.Controls.Add(this.tabPagePumping);
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabCCDCamera);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -8248,43 +8318,268 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // TargetLengthTimeButton
+            // tabCCDCamera
             // 
-            this.TargetLengthTimeButton.Location = new System.Drawing.Point(255, 51);
-            this.TargetLengthTimeButton.Name = "TargetLengthTimeButton";
-            this.TargetLengthTimeButton.Size = new System.Drawing.Size(75, 23);
-            this.TargetLengthTimeButton.TabIndex = 23;
-            this.TargetLengthTimeButton.Text = "Step!";
-            this.TargetLengthTimeButton.UseVisualStyleBackColor = true;
-            this.TargetLengthTimeButton.Click += new System.EventHandler(this.TargetLengthTimeButton_Click);
+            this.tabCCDCamera.BackColor = System.Drawing.Color.DarkGray;
+            this.tabCCDCamera.Controls.Add(this.btnSetCCDTriggerMode);
+            this.tabCCDCamera.Controls.Add(this.comboBoxCCDTriggerMode);
+            this.tabCCDCamera.Controls.Add(this.tbCCDBExposure);
+            this.tabCCDCamera.Controls.Add(this.tbCCDBGain);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAExposure);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAGain);
+            this.tabCCDCamera.Controls.Add(this.labelFrameCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelFrameCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelGainCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelGainCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelExposureTimeCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelExposureTimeCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelTemperatureCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelTemperatureCCDB);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryExposure);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryGain);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryTemp);
+            this.tabCCDCamera.Controls.Add(this.lblCCDA);
+            this.tabCCDCamera.Controls.Add(this.lblCCDB);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateExposureTime);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateGain);
+            this.tabCCDCamera.Controls.Add(this.labelTCPCCD);
+            this.tabCCDCamera.Controls.Add(this.checkboxTCPCCD);
+            this.tabCCDCamera.Controls.Add(this.btinfoCCDExposure);
+            this.tabCCDCamera.Location = new System.Drawing.Point(4, 22);
+            this.tabCCDCamera.Name = "tabCCDCamera";
+            this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCCDCamera.Size = new System.Drawing.Size(1033, 715);
+            this.tabCCDCamera.TabIndex = 11;
+            this.tabCCDCamera.Text = "CCD Camera";
             // 
-            // lbTargetStepTime
+            // btnSetCCDTriggerMode
             // 
-            this.lbTargetStepTime.AutoSize = true;
-            this.lbTargetStepTime.Location = new System.Drawing.Point(18, 56);
-            this.lbTargetStepTime.Name = "lbTargetStepTime";
-            this.lbTargetStepTime.Size = new System.Drawing.Size(96, 13);
-            this.lbTargetStepTime.TabIndex = 22;
-            this.lbTargetStepTime.Text = "Length of time (ms)";
+            this.btnSetCCDTriggerMode.Location = new System.Drawing.Point(136, 192);
+            this.btnSetCCDTriggerMode.Name = "btnSetCCDTriggerMode";
+            this.btnSetCCDTriggerMode.Size = new System.Drawing.Size(100, 24);
+            this.btnSetCCDTriggerMode.TabIndex = 30;
+            this.btnSetCCDTriggerMode.Text = "Set Trigger";
+            this.btnSetCCDTriggerMode.UseVisualStyleBackColor = true;
+            this.btnSetCCDTriggerMode.Click += new System.EventHandler(this.btnSetCCDTriggerMode_Click);
             // 
-            // TargetLengthTimeTextBox
+            // comboBoxCCDTriggerMode
             // 
-            this.TargetLengthTimeTextBox.Location = new System.Drawing.Point(157, 53);
-            this.TargetLengthTimeTextBox.Name = "TargetLengthTimeTextBox";
-            this.TargetLengthTimeTextBox.Size = new System.Drawing.Size(66, 20);
-            this.TargetLengthTimeTextBox.TabIndex = 21;
-            this.TargetLengthTimeTextBox.Text = "1000";
+            this.comboBoxCCDTriggerMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCCDTriggerMode.FormattingEnabled = true;
+            this.comboBoxCCDTriggerMode.Items.AddRange(new object[] {
+            "0 - Internal Trigger",
+            "1 - External Burst Trigger",
+            "2 - External Edge Trigger"});
+            this.comboBoxCCDTriggerMode.Location = new System.Drawing.Point(256, 192);
+            this.comboBoxCCDTriggerMode.Name = "comboBoxCCDTriggerMode";
+            this.comboBoxCCDTriggerMode.Size = new System.Drawing.Size(200, 21);
+            this.comboBoxCCDTriggerMode.TabIndex = 28;
             // 
-            // lbTargetStepperInfo
+            // tbCCDBExposure
             // 
-            this.lbTargetStepperInfo.AutoSize = true;
-            this.lbTargetStepperInfo.Location = new System.Drawing.Point(5, 89);
-            this.lbTargetStepperInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lbTargetStepperInfo.Name = "lbTargetStepperInfo";
-            this.lbTargetStepperInfo.Size = new System.Drawing.Size(657, 221);
-            this.lbTargetStepperInfo.TabIndex = 31;
-            this.lbTargetStepperInfo.Text = resources.GetString("lbTargetStepperInfo.Text");
-            this.lbTargetStepperInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tbCCDBExposure.Location = new System.Drawing.Point(403, 269);
+            this.tbCCDBExposure.Name = "tbCCDBExposure";
+            this.tbCCDBExposure.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDBExposure.TabIndex = 13;
+            // 
+            // tbCCDBGain
+            // 
+            this.tbCCDBGain.Location = new System.Drawing.Point(400, 137);
+            this.tbCCDBGain.Name = "tbCCDBGain";
+            this.tbCCDBGain.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDBGain.TabIndex = 7;
+            // 
+            // tbCCDAExposure
+            // 
+            this.tbCCDAExposure.Location = new System.Drawing.Point(256, 269);
+            this.tbCCDAExposure.Name = "tbCCDAExposure";
+            this.tbCCDAExposure.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDAExposure.TabIndex = 3;
+            // 
+            // tbCCDAGain
+            // 
+            this.tbCCDAGain.Location = new System.Drawing.Point(256, 136);
+            this.tbCCDAGain.Name = "tbCCDAGain";
+            this.tbCCDAGain.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDAGain.TabIndex = 1;
+            // 
+            // labelFrameCCDA
+            // 
+            this.labelFrameCCDA.Location = new System.Drawing.Point(256, 337);
+            this.labelFrameCCDA.Name = "labelFrameCCDA";
+            this.labelFrameCCDA.Size = new System.Drawing.Size(100, 20);
+            this.labelFrameCCDA.TabIndex = 19;
+            this.labelFrameCCDA.Text = "N/A";
+            // 
+            // labelFrameCCDB
+            // 
+            this.labelFrameCCDB.Location = new System.Drawing.Point(403, 334);
+            this.labelFrameCCDB.Name = "labelFrameCCDB";
+            this.labelFrameCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelFrameCCDB.TabIndex = 20;
+            this.labelFrameCCDB.Text = "N/A";
+            // 
+            // labelGainCCDA
+            // 
+            this.labelGainCCDA.Location = new System.Drawing.Point(256, 110);
+            this.labelGainCCDA.Name = "labelGainCCDA";
+            this.labelGainCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelGainCCDA.TabIndex = 21;
+            this.labelGainCCDA.Text = "N/A";
+            // 
+            // labelGainCCDB
+            // 
+            this.labelGainCCDB.Location = new System.Drawing.Point(403, 110);
+            this.labelGainCCDB.Name = "labelGainCCDB";
+            this.labelGainCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelGainCCDB.TabIndex = 22;
+            this.labelGainCCDB.Text = "N/A";
+            // 
+            // labelExposureTimeCCDA
+            // 
+            this.labelExposureTimeCCDA.Location = new System.Drawing.Point(256, 247);
+            this.labelExposureTimeCCDA.Name = "labelExposureTimeCCDA";
+            this.labelExposureTimeCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelExposureTimeCCDA.TabIndex = 23;
+            this.labelExposureTimeCCDA.Text = "N/A";
+            // 
+            // labelExposureTimeCCDB
+            // 
+            this.labelExposureTimeCCDB.Location = new System.Drawing.Point(400, 247);
+            this.labelExposureTimeCCDB.Name = "labelExposureTimeCCDB";
+            this.labelExposureTimeCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelExposureTimeCCDB.TabIndex = 24;
+            this.labelExposureTimeCCDB.Text = "N/A";
+            // 
+            // labelTemperatureCCDA
+            // 
+            this.labelTemperatureCCDA.Location = new System.Drawing.Point(256, 62);
+            this.labelTemperatureCCDA.Name = "labelTemperatureCCDA";
+            this.labelTemperatureCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelTemperatureCCDA.TabIndex = 26;
+            this.labelTemperatureCCDA.Text = "N/A";
+            // 
+            // labelTemperatureCCDB
+            // 
+            this.labelTemperatureCCDB.Location = new System.Drawing.Point(403, 62);
+            this.labelTemperatureCCDB.Name = "labelTemperatureCCDB";
+            this.labelTemperatureCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelTemperatureCCDB.TabIndex = 27;
+            this.labelTemperatureCCDB.Text = "N/A";
+            // 
+            // tbCCDAFrameCount
+            // 
+            this.tbCCDAFrameCount.Location = new System.Drawing.Point(256, 359);
+            this.tbCCDAFrameCount.Name = "tbCCDAFrameCount";
+            this.tbCCDAFrameCount.Size = new System.Drawing.Size(247, 20);
+            this.tbCCDAFrameCount.TabIndex = 31;
+            // 
+            // btCCDQueryFrameCount
+            // 
+            this.btCCDQueryFrameCount.Location = new System.Drawing.Point(136, 333);
+            this.btCCDQueryFrameCount.Name = "btCCDQueryFrameCount";
+            this.btCCDQueryFrameCount.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryFrameCount.TabIndex = 14;
+            this.btCCDQueryFrameCount.Text = "Query Frame Count";
+            this.btCCDQueryFrameCount.Click += new System.EventHandler(this.QueryFrameCount_Click);
+            // 
+            // btCCDQueryExposure
+            // 
+            this.btCCDQueryExposure.Location = new System.Drawing.Point(103, 245);
+            this.btCCDQueryExposure.Name = "btCCDQueryExposure";
+            this.btCCDQueryExposure.Size = new System.Drawing.Size(147, 20);
+            this.btCCDQueryExposure.TabIndex = 16;
+            this.btCCDQueryExposure.Text = "Query Exposure Time (ms)";
+            this.btCCDQueryExposure.Click += new System.EventHandler(this.QueryExposureTime_Click);
+            // 
+            // btCCDQueryGain
+            // 
+            this.btCCDQueryGain.Location = new System.Drawing.Point(136, 110);
+            this.btCCDQueryGain.Name = "btCCDQueryGain";
+            this.btCCDQueryGain.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryGain.TabIndex = 18;
+            this.btCCDQueryGain.Text = "Query Gain";
+            this.btCCDQueryGain.Click += new System.EventHandler(this.QueryGain_Click);
+            // 
+            // btCCDQueryTemp
+            // 
+            this.btCCDQueryTemp.Location = new System.Drawing.Point(136, 58);
+            this.btCCDQueryTemp.Name = "btCCDQueryTemp";
+            this.btCCDQueryTemp.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryTemp.TabIndex = 17;
+            this.btCCDQueryTemp.Text = "Query Temp";
+            this.btCCDQueryTemp.Click += new System.EventHandler(this.QueryTemperature_Click);
+            // 
+            // lblCCDA
+            // 
+            this.lblCCDA.Location = new System.Drawing.Point(276, 6);
+            this.lblCCDA.Name = "lblCCDA";
+            this.lblCCDA.Size = new System.Drawing.Size(100, 20);
+            this.lblCCDA.TabIndex = 19;
+            this.lblCCDA.Text = "CCD A";
+            // 
+            // lblCCDB
+            // 
+            this.lblCCDB.Location = new System.Drawing.Point(430, 6);
+            this.lblCCDB.Name = "lblCCDB";
+            this.lblCCDB.Size = new System.Drawing.Size(100, 20);
+            this.lblCCDB.TabIndex = 20;
+            this.lblCCDB.Text = "CCD B";
+            // 
+            // btCCDUpdateFrameCount
+            // 
+            this.btCCDUpdateFrameCount.Location = new System.Drawing.Point(136, 359);
+            this.btCCDUpdateFrameCount.Name = "btCCDUpdateFrameCount";
+            this.btCCDUpdateFrameCount.Size = new System.Drawing.Size(100, 20);
+            this.btCCDUpdateFrameCount.TabIndex = 21;
+            this.btCCDUpdateFrameCount.Text = "Update Frame Count";
+            this.btCCDUpdateFrameCount.Click += new System.EventHandler(this.UpdateCCDFrameCount_Click);
+            // 
+            // btCCDUpdateExposureTime
+            // 
+            this.btCCDUpdateExposureTime.Location = new System.Drawing.Point(103, 271);
+            this.btCCDUpdateExposureTime.Name = "btCCDUpdateExposureTime";
+            this.btCCDUpdateExposureTime.Size = new System.Drawing.Size(147, 20);
+            this.btCCDUpdateExposureTime.TabIndex = 22;
+            this.btCCDUpdateExposureTime.Text = "Update Exposure Time (ms)";
+            this.btCCDUpdateExposureTime.Click += new System.EventHandler(this.UpdateCCDExposureButton_Click);
+            // 
+            // btCCDUpdateGain
+            // 
+            this.btCCDUpdateGain.Location = new System.Drawing.Point(136, 136);
+            this.btCCDUpdateGain.Name = "btCCDUpdateGain";
+            this.btCCDUpdateGain.Size = new System.Drawing.Size(100, 20);
+            this.btCCDUpdateGain.TabIndex = 29;
+            this.btCCDUpdateGain.Text = "Update Gain";
+            this.btCCDUpdateGain.Click += new System.EventHandler(this.UpdateCCDGainButton_Click);
+            // 
+            // labelTCPCCD
+            // 
+            this.labelTCPCCD.Location = new System.Drawing.Point(22, 11);
+            this.labelTCPCCD.Name = "labelTCPCCD";
+            this.labelTCPCCD.Size = new System.Drawing.Size(130, 20);
+            this.labelTCPCCD.TabIndex = 32;
+            this.labelTCPCCD.Text = "TCP connection to CCDs";
+            // 
+            // checkboxTCPCCD
+            // 
+            this.checkboxTCPCCD.Location = new System.Drawing.Point(158, 8);
+            this.checkboxTCPCCD.Name = "checkboxTCPCCD";
+            this.checkboxTCPCCD.Size = new System.Drawing.Size(17, 20);
+            this.checkboxTCPCCD.TabIndex = 31;
+            this.checkboxTCPCCD.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
+            // 
+            // btinfoCCDExposure
+            // 
+            this.btinfoCCDExposure.Location = new System.Drawing.Point(509, 268);
+            this.btinfoCCDExposure.Name = "btinfoCCDExposure";
+            this.btinfoCCDExposure.Size = new System.Drawing.Size(25, 23);
+            this.btinfoCCDExposure.TabIndex = 33;
+            this.btinfoCCDExposure.Text = "?";
+            this.btinfoCCDExposure.Click += new System.EventHandler(this.infoCCDExposure_Click);
             // 
             // ControlWindow
             // 
@@ -8433,6 +8728,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
+            this.tabCCDCamera.ResumeLayout(false);
+            this.tabCCDCamera.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -9115,5 +9412,36 @@
         private System.Windows.Forms.Label lbTargetStepTime;
         public System.Windows.Forms.TextBox TargetLengthTimeTextBox;
         private System.Windows.Forms.Label lbTargetStepperInfo;
+
+        // shirley adds on 20/05/2025
+        private System.Windows.Forms.TabPage tabCCDCamera;
+        public System.Windows.Forms.TextBox tbCCDAGain;
+        public System.Windows.Forms.TextBox tbCCDAExposure;
+        public System.Windows.Forms.TextBox tbCCDBGain;
+        public System.Windows.Forms.TextBox tbCCDBExposure;
+        public System.Windows.Forms.Label labelFrameCCDA;
+        public System.Windows.Forms.Label labelFrameCCDB;
+        public System.Windows.Forms.Label labelGainCCDA;
+        public System.Windows.Forms.Label labelGainCCDB;
+        public System.Windows.Forms.Label labelExposureTimeCCDA;
+        public System.Windows.Forms.Label labelExposureTimeCCDB;
+        public System.Windows.Forms.Label labelTemperatureCCDA;
+        public System.Windows.Forms.Label labelTemperatureCCDB;
+        public System.Windows.Forms.TextBox tbCCDAFrameCount;
+        public System.Windows.Forms.Button btCCDQueryTemp;
+        public System.Windows.Forms.Button btCCDQueryGain;
+        public System.Windows.Forms.Button btCCDQueryExposure;
+        public System.Windows.Forms.Button btCCDQueryFrameCount;
+        private System.Windows.Forms.Label lblCCDA;
+        private System.Windows.Forms.Label lblCCDB;
+        public System.Windows.Forms.Button btCCDUpdateGain;
+        public System.Windows.Forms.Button btCCDUpdateExposureTime;
+        public System.Windows.Forms.Button btCCDUpdateFrameCount;
+        public System.Windows.Forms.Button btnSetCCDTriggerMode;
+        public System.Windows.Forms.ComboBox comboBoxCCDTriggerMode;
+        public System.Windows.Forms.CheckBox checkboxTCPCCD;
+        private System.Windows.Forms.Label labelTCPCCD;
+        public System.Windows.Forms.Button btinfoCCDExposure;
+
     }
 }

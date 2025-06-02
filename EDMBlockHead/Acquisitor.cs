@@ -12,6 +12,11 @@ using EDMConfig;
 
 using EDMBlockHead.Acquire.Channels;
 using EDMBlockHead.Acquire.Input;
+using csAcq4;
+using System.Net.Sockets;
+using System.Net;
+using System.Runtime.Remoting;
+using System.IO;
 
 namespace EDMBlockHead.Acquire
 {
@@ -48,8 +53,25 @@ namespace EDMBlockHead.Acquire
         UEDMHardwareControl.UEDMController hardwareController;
         EDMFieldLock.MainForm fieldLock;
 
-		// calling this method starts acquisition
-		public void Start(BlockConfig config) 
+        // Start: Shirley added on 09/05/2025 for CCD integration
+        [NonSerialized]
+        Task counterTaskCCD; // CCD enable Task Counter
+        CounterSingleChannelWriter counterWriter;
+
+        [NonSerialized]
+        private csAcq4.CCDController ccdAController;
+        [NonSerialized]
+        private csAcq4.CCDController ccdBController;
+   
+        private string nameCCDA;
+        private string nameCCDB;
+        private string computerCCDA = "ULTRACOLDEDM";
+        private string computerCCDB = "PH-NI-LAB";
+
+        // End
+
+        // calling this method starts acquisition
+        public void Start(BlockConfig config) 
 		{
 			this.config = config;
 			acquireThread = new Thread(new ThreadStart(this.Acquire));
@@ -89,25 +111,27 @@ namespace EDMBlockHead.Acquire
 		}
 
 
-		// this is the method that actually takes the data. It is called by Start() and shouldn't
-		// be called directly
-		public void Acquire()
+        // this is the method that actually takes the data. It is called by Start() and shouldn't
+        // be called directly
+        // On 12/05/2025, Shirley added the CCD acquisition
+        public void Acquire()
 		{
-			// lock onto something that the front end can see
-			Monitor.Enter(MonitorLockObject);
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
 
 			scanMaster = ScanMaster.Controller.GetController();
 			phaseLock = new EDMPhaseLock.MainForm();
             //hardwareController = new EDMHardwareControl.Controller();     //UEDM use the new hardware controller
             hardwareController = new UEDMHardwareControl.UEDMController();
             //fieldLock = new EDMFieldLock.MainForm();
-	
-			// map modulations to physical channels
-			MapChannels();
+
+            // map modulations to physical channels
+            MapChannels();
 
 			// map the analog inputs
 			MapAnalogInputs();
 
+            
 			Block b = new Block();
 			b.Config = config;
 			b.SetTimeStamp();
@@ -115,12 +139,14 @@ namespace EDMBlockHead.Acquire
             {
                 b.detectors.Add(channel.Channel.Name);
             }
-			
-			try
-			{
+            try
+            {
                 Console.WriteLine("Trying to get SPData");
+                hardwareController.SetCCDShotCount((int)config.Settings["numberOfPoints"]);
+                Console.WriteLine("Setting the number of shots to CCDs...");
+
                 // get things going
-				AcquisitionStarting();
+                AcquisitionStarting();
                 
 				// enter the main loop
 				for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
@@ -128,8 +154,8 @@ namespace EDMBlockHead.Acquire
 					// set the switch states and impose the appropriate wait times
 					ThrowSwitches(point);
 
-					// take a point
-					Shot s;
+                    // take a point
+                    Shot s;
 					EDMPoint p;
 					if (Environs.Debug)
 					{
@@ -143,17 +169,23 @@ namespace EDMBlockHead.Acquire
 					}
 					else
 					{
- 						// everything should be ready now so start the analog
-						// input task (it will wait for a trigger)
-						inputTask.Start();
+                        // Shirley adds on 22/05/2025: let the CCDs start burst acquisition via TCP connection between hardware controller and CCDs
+                        hardwareController.StartBurstAcquisition();
 
-						// get the raw data
+                        // everything should be ready now so start the analog
+                        // input task (it will wait for a trigger)
+                        inputTask.Start();
+                        counterTaskCCD.Start(); // for CCDs counter task
+
+                        // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+
                         inputTask.Stop();
+                        counterTaskCCD.Stop();
+                        // End
 
-
-						// extract the data for each scanned channel and put it in a TOF
-						s = new Shot();
+                        // extract the data for each scanned channel and put it in a TOF
+                        s = new Shot();
 						for (int i = 0 ; i < inputs.Channels.Count ; i++)
 						{
 							// extract the raw data
@@ -178,7 +210,7 @@ namespace EDMBlockHead.Acquire
 
 							s.TOFs.Add(t);
 						}
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 						p = new EDMPoint();
 						p.Shot = s;
 
@@ -203,7 +235,7 @@ namespace EDMBlockHead.Acquire
                         spd[6] = 7;
                     }
                     else
-                    {
+                    {                                                      
                         singlePointInputTask.Start();
                         spd = singlePointInputReader.ReadSingleSample();
                         singlePointInputTask.Stop();
@@ -257,8 +289,34 @@ namespace EDMBlockHead.Acquire
 
 					if (CheckIfStopping()) 
 					{
-						// release hardware
-						AcquisitionStopping();
+                        //if ((bool)config.Settings["cameraEnabled"])
+                        //{
+                        //    int triggerMode = (int)config.Settings["ccdTriggerMode"];
+                        //    try
+                        //    {
+                        //        if (triggerMode == 1)
+                        //        {
+                        //            ccdAController.StopBurstAcquisition();
+                        //            ccdBController.StopBurstAcquisition();
+                        //        }
+                        //        else if (triggerMode == 2)
+                        //        {
+                        //            ccdAController.RemoteBufRelease();
+                        //            ccdBController.RemoteBufRelease();
+                        //        }
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
+                        //        Console.WriteLine("Error stopping CCDs: " + ex.ToString());
+                        //    }
+
+                        //    // Maybe this should happen in the final block?
+                        //    RemotingServices.Disconnect(ccdAController);
+                        //    RemotingServices.Disconnect(ccdBController);
+                        //}
+
+                        // release hardware
+                        AcquisitionStopping();
 						// signal anybody waiting on the lock that we're done
 						Monitor.Pulse(MonitorLockObject);
 						Monitor.Exit(MonitorLockObject);
@@ -272,7 +330,9 @@ namespace EDMBlockHead.Acquire
 				try
 				{
 					AcquisitionStopping();
-				}
+                    // in case of exceptions, the CCD burst acquisition will be aborted
+                    hardwareController.StopBurstAcquisition();
+                }
 				catch (Exception) {}				// about the best that can be done at this stage
 				Monitor.Pulse(MonitorLockObject);
 				Monitor.Exit(MonitorLockObject);
@@ -1258,13 +1318,42 @@ namespace EDMBlockHead.Acquire
 
             ConfigureSinglePointAnalogInputs();
 
+            // Start: Shirley added on 19/05/2025 for configuring CCD enable gate
+            counterTaskCCD = new Task("CCD enable gate");
+
+            CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
+
+            // Configure counter for 1 TTL pulse per shot
+            counterTaskCCD.COChannels.CreatePulseChannelTicks(
+                pulseChannel.PhysicalChannel,
+                pulseChannel.Name,
+                "20MHzTimebase",
+                COPulseIdleState.Low,
+                0,                  // Initial Delay
+                100,                // High ticks (duration of high pulse)
+                (20000000 / 100000) * 10000 // Low ticks
+            );
+
+            // Trigger on same trigger as input task
+            counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+                (string)Environs.Hardware.GetInfo("analogTrigger2"),
+                DigitalEdgeStartTriggerEdge.Rising
+            );
+
+            // Single pulse per shot
+            counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
+            counterTaskCCD.Control(TaskAction.Verify);
+
+            counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
+            // End
+
             // set the leakage monitor measurement time to 5ms.
             // With this setting it actually takes 26ms total to acquire two channels.
             //hardwareController.LeakageMonitorMeasurementTime = 0.005;
             //hardwareController.ReconfigureIMonitors();
             // Start the first asynchronous acquisition
             //hardwareController.UpdateIMonitorAsync();
-		}
+        }
 
         // configure hardware for magnetic field data taking
         private void MagAcquisitionStarting()
@@ -1388,6 +1477,7 @@ namespace EDMBlockHead.Acquire
 		{
 			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
 			inputTask.Dispose();
+            counterTaskCCD.Dispose();   
             singlePointInputTask.Dispose();
 		}
 

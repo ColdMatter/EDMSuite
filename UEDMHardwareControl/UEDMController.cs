@@ -10,6 +10,8 @@ using System.Collections.Concurrent;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Runtime.Remoting;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.InteropServices;
@@ -72,6 +74,12 @@ namespace UEDMHardwareControl
 
         private static string[] AINames = { "AI11", "AI12", "AI13"};
         private static string[] AIChannelNames = { "AI11", "AI12", "AI13"};
+
+        // add ccd function
+        [NonSerialized]
+        public csAcq4.CCDController ccdA;
+        [NonSerialized]
+        public csAcq4.CCDController ccdB;
 
         // Temperature sensors
         LakeShore336TemperatureController tempController = (LakeShore336TemperatureController)Environs.Hardware.Instruments["tempController"];
@@ -411,6 +419,10 @@ namespace UEDMHardwareControl
             QueryMWFrequencyDetection(1);
             //USB Box enabled?
             UsbBBoxEnabler();
+
+            //disable all CCD controls until the TCP connections are made
+            window.ToggleCCDControls(false);
+
         }
 
         #endregion
@@ -421,6 +433,9 @@ namespace UEDMHardwareControl
             StopPTMonitorPoll();
             StopIMonitorPoll();
             StopFreqMonitorPoll();
+
+            // Disconnect the two CCD TCP connections 
+            DisconnectTCPforCCD();
 
             StoreParameters();
 
@@ -7455,6 +7470,347 @@ namespace UEDMHardwareControl
             {
 
             }
+        }
+
+        #endregion
+
+        #region CCD Camera for detection 
+        // Shirley adds on 20/05/2025
+
+        // Set up the TCP connection for remotely controlling CCDs
+        public void InitialiseTCPforCCD()
+        {
+            // --- CCD TCP Connection Setup --- //
+            string nameCCDA = null;
+            string nameCCDB = null;
+
+            string computerCCDA = "ULTRACOLDEDM";
+            string computerCCDB = "PH-NI-LAB";
+
+            // Resolve CCD A IP
+            IPHostEntry hostInfoCCDA = Dns.GetHostEntry(computerCCDA);
+            foreach (var addr in hostInfoCCDA.AddressList)
+            {
+                if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    nameCCDA = addr.ToString();
+                    break;
+                }
+            }
+            Console.WriteLine($"CCD A IP: {nameCCDA}");
+
+            EnvironsHelper eHelperCCDA = new EnvironsHelper(computerCCDA);
+            int portCCDA = eHelperCCDA.emccdTCPChannel;
+            Console.WriteLine($"CCD A Port: {portCCDA}");
+
+            ccdA = (csAcq4.CCDController)Activator.GetObject(
+                typeof(csAcq4.CCDController),
+                $"tcp://{nameCCDA}:{portCCDA}/controller.rem"
+            );
+
+            // Resolve CCD B IP
+            IPHostEntry hostInfoCCDB = Dns.GetHostEntry(computerCCDB);
+            foreach (var addr in hostInfoCCDB.AddressList)
+            {
+                if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    nameCCDB = addr.ToString();
+                    break;
+                }
+            }
+            Console.WriteLine($"CCD B IP: {nameCCDB}");
+
+            EnvironsHelper eHelperCCDB = new EnvironsHelper(computerCCDB);
+            int portCCDB = eHelperCCDB.emccdTCPChannel;
+            Console.WriteLine($"CCD B Port: {portCCDB}");
+
+            ccdB = (csAcq4.CCDController)Activator.GetObject(
+                typeof(csAcq4.CCDController),
+                $"tcp://{nameCCDB}:{portCCDB}/controller.rem"
+            );
+        }
+
+        public void DisconnectTCPforCCD()
+        {
+            RemotingServices.Disconnect(ccdA);
+            RemotingServices.Disconnect(ccdB);
+        }
+
+        public void QueryTemperature()
+        {
+            double tempA = ccdA.GetSensorTemperature();
+            double tempB = ccdB.GetSensorTemperature();
+
+            string textA = tempA >= 0 ? $"{tempA:F2} degree" : "Error";
+            string textB = tempB >= 0 ? $"{tempA:F2} degree" : "Error";
+
+            if (window.labelTemperatureCCDA.InvokeRequired)
+            {
+                window.labelTemperatureCCDA.Invoke(new Action(() =>
+                    window.labelTemperatureCCDA.Text = $"{textA}"));
+            }
+            else
+            {
+                window.labelTemperatureCCDA.Text = $"{textA}";
+            }
+
+            if (window.labelTemperatureCCDB.InvokeRequired)
+            {
+                window.labelTemperatureCCDB.Invoke(new Action(() =>
+                    window.labelTemperatureCCDB.Text = $"{textB}"));
+            }
+            else
+            {
+                window.labelTemperatureCCDB.Text = $"{textB}";
+            }
+        }
+
+        public void QueryExposureTime()
+        {
+            double expA = ccdA.GetExposureTime();
+            double expB = ccdB.GetExposureTime();
+
+            string textA = expA >= 0 ? $"{expA * 1000:F2} ms" : "Error";
+            string textB = expB >= 0 ? $"{expB * 1000:F2} ms" : "Error";
+
+            if (window.labelExposureTimeCCDA.InvokeRequired)
+            {
+                window.labelExposureTimeCCDA.Invoke(new Action(() =>
+                    window.labelExposureTimeCCDA.Text = $"{textA}"));
+            }
+            else
+            {
+                window.labelExposureTimeCCDA.Text = $"{textA}";
+            }
+
+            if (window.labelExposureTimeCCDB.InvokeRequired)
+            {
+                window.labelExposureTimeCCDB.Invoke(new Action(() =>
+                    window.labelExposureTimeCCDB.Text = $"{textB}"));
+            }
+            else
+            {
+                window.labelExposureTimeCCDB.Text = $"{textB}";
+            }
+        }
+
+        public void SetCCDExposureTime(double exposureTimeMs)
+        {
+            // Convert ms to s for internal use
+            double exposureTimeSecA = exposureTimeMs / 1000.0;
+            double exposureTimeSecB = (1.11 * exposureTimeMs + 0.000033 * 1000.0) / 1000.0;
+            // t_ex,2 = 1.11*t_ex,1 + 0.11*t_d
+
+            ccdA.UpdateExposureTime(exposureTimeSecA);
+            ccdB.UpdateExposureTime(exposureTimeSecB);
+
+            // Show updated values back in ms
+            window.SetTextBox(window.tbCCDAExposure, exposureTimeMs.ToString("F3"));
+            window.SetTextBox(window.tbCCDBExposure, (exposureTimeSecB * 1000.0).ToString("F3"));
+        }
+
+
+        public void SetCCDExposureTime(double exposureTimeA, double exposureTimeB)
+        {
+            ccdA.UpdateExposureTime(exposureTimeA);
+            ccdB.UpdateExposureTime(exposureTimeB);
+
+            window.SetTextBox(window.tbCCDAExposure, exposureTimeA.ToString("F5"));
+            window.SetTextBox(window.tbCCDBExposure, exposureTimeB.ToString("F5"));
+        }
+
+        public void QueryCCDGain()
+        {
+            double gainA = ccdA.GetGainValue();
+            double gainB = ccdB.GetGainValue();
+
+            string textA = gainA >= 0 ? $"{gainA:F1}" : "Error";
+            string textB = gainB >= 0 ? $"{gainB:F1}" : "Error";
+
+            if (window.labelGainCCDA.InvokeRequired)
+            {
+                window.labelGainCCDA.Invoke(new Action(() =>
+                    window.labelGainCCDA.Text = $"{textA}"));
+            }
+            else
+            {
+                window.labelGainCCDA.Text = $"{textA}";
+            }
+
+            if (window.labelGainCCDB.InvokeRequired)
+            {
+                window.labelGainCCDB.Invoke(new Action(() =>
+                    window.labelGainCCDB.Text = $"{textB}"));
+            }
+            else
+            {
+                window.labelGainCCDB.Text = $"{textB}";
+            }
+        }
+
+        public void SetCCDGain(double gainA, double gainB)
+        {
+            ccdA.UpdateCCDGain(gainA);
+            ccdB.UpdateCCDGain(gainB);
+
+            window.SetTextBox(window.tbCCDAGain, gainA.ToString("F5"));
+            window.SetTextBox(window.tbCCDBGain, gainB.ToString("F5"));
+        }
+
+        public void SetCCDTriggerModeRemote()
+        {
+            int triggerMode = window.comboBoxCCDTriggerMode.SelectedIndex; // Get selected index from ComboBox
+
+            ccdA.ApplySelectedTriggerSource(triggerMode);
+            ccdB.ApplySelectedTriggerSource(triggerMode);
+
+            string modeLabel;
+            switch (triggerMode)
+            {
+                case 0:
+                    modeLabel = "Internal Trigger";
+                    break;
+                case 1:
+                    modeLabel = "External Burst Trigger";
+                    break;
+                case 2:
+                    modeLabel = "External Edge Trigger";
+                    break;
+                default:
+                    modeLabel = "Unknown";
+                    break;
+            }
+
+            MessageBox.Show($"CCD Trigger mode set to: {modeLabel}", "Trigger Mode Update");
+        }
+
+
+        //public void SetCCDNumSnaps(int numSnaps)
+        //{
+        //    ccdA.SetNumSnaps(numSnaps);
+        //    ccdB.SetNumSnaps(numSnaps);
+        //    window.SetTextBox(window.tbCCDNumSnaps, numSnaps.ToString());
+        //}
+
+        public void QueryFrameCount()
+        {
+            int countA = ccdA.GetFrameCount();
+            int countB = ccdB.GetFrameCount();
+
+            string textA = countA >= 0 ? countA.ToString() : "Error";
+            string textB = countB >= 0 ? countB.ToString() : "Error";
+
+            if (window.labelFrameCCDA.InvokeRequired)
+            {
+                window.labelFrameCCDA.Invoke(new Action(() =>
+                    window.labelFrameCCDA.Text = $"{textA}"));
+            }
+            else
+            {
+                window.labelFrameCCDA.Text = $"{textA}";
+            }
+
+            if (window.labelFrameCCDB.InvokeRequired)
+            {
+                window.labelFrameCCDB.Invoke(new Action(() =>
+                    window.labelFrameCCDB.Text = $"{textB}"));
+            }
+            else
+            {
+                window.labelFrameCCDB.Text = $"{textB}";
+            }
+        }
+
+        // this sets the number of frames taken in one burst shot, default to be 20
+        public void SetCCDFrameCount(int frameCount)
+        {
+            ccdA.UpdateFrameCount(frameCount);
+            ccdB.UpdateFrameCount(frameCount);
+
+            window.SetTextBox(window.tbCCDAFrameCount, frameCount.ToString("F5"));
+        }
+
+        // From the acquisitor of blockhead, this sets the number of shots taken in one acquisition.
+        // this should be equal to the total number of shots in one block
+        public void SetCCDShotCount(int shotCount)
+        {
+            ccdA.UpdateNumSnaps(shotCount);
+            ccdB.UpdateNumSnaps(shotCount);
+        }
+
+
+        // --- Run/Stop Burst or Snap Acquisition---
+
+        // CCD External Burst Mode 
+        public void StartBurstAcquisition()
+        {
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    ccdA.StartBurstAcquisition();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("CCD A burst acquisition error", ex);
+                }
+            });
+
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    ccdB.StartBurstAcquisition();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("CCD B burst acquisition error", ex);
+                }
+            });
+        }
+
+        // NOTE: this method should only be called when ABORTING the current acquisition.
+        // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
+        public void StopBurstAcquisition()
+        {
+            ccdA.StopBurstAcquisition();
+            ccdB.StopBurstAcquisition();
+        }
+
+        // CCD External Edge Mode (snap)
+        public void StartSnapAcquisition()
+        {
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    ccdA.RemoteSnap();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("CCD A snap acquisition error", ex);
+                }
+            });
+
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    ccdB.RemoteSnap();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("CCD B snap acquisition error", ex);
+                }
+            });
+        }
+
+
+        public void StopSnapAcquisition()
+        {
+            // if the scan finishes naturally without interruption, this function will 
+            ccdA.RemoteBufRelease();
+            ccdB.RemoteBufRelease();
         }
 
         #endregion

@@ -15,7 +15,7 @@ using System.Threading;
 public class Patterns : MOTMasterScript
 {
 
-    NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
+    
     //EnvironsHelper eHelper = new EnvironsHelper((String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"]);
     //WavemeterLock.Controller wmlController = (WavemeterLock.Controller)(Activator.GetObject(typeof(WavemeterLock.Controller), "tcp://" + (String)System.Environment.GetEnvironmentVariables()["COMPUTERNAME"] + ":" + eHelper.wavemeterLockTCPChannel.ToString() + "/controller.rem"));
     
@@ -111,10 +111,10 @@ public class Patterns : MOTMasterScript
         //- AOM order
         
         //Lambda configuration
-        Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
-        Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
-        Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
+        Parameters["SidebandFreq1"] = 114.07; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 156.17; //- F = 0
+        Parameters["SidebandFreq3"] = 188.00; //- F = 2
+        Parameters["SidebandFreq4"] = 175.44; //+ F = 1+
 
         Parameters["BXAOMAttenuation"] = 3.0;
         //Parameters["BXAOMFrequency"] = 5.8; //113MHz
@@ -144,28 +144,30 @@ public class Patterns : MOTMasterScript
 
         Parameters["PatternStartTime"] = 0;
 
-        Parameters["SidebandAmpDDS1"] = 1.0;
-        Parameters["SidebandAmpDDS2"] = 1.0;
-        Parameters["SidebandAmpDDS3"] = 1.0;
-        Parameters["SidebandAmpDDS4"] = 1.0;
+        Parameters["SidebandAmpDDS1"] = 0.19;
+        Parameters["SidebandAmpDDS2"] = 0.43;
+        Parameters["SidebandAmpDDS3"] = 0.94;
+        Parameters["SidebandAmpDDS4"] = 0.55;
 
-        Parameters["SidebandImAmpDDS1"] = 1.0;
-        Parameters["SidebandImAmpDDS2"] = 1.0;
-        Parameters["SidebandImAmpDDS3"] = 1.0;
-        Parameters["SidebandImAmpDDS4"] = 1.0;
+        Parameters["SidebandImAmpDDS1"] = 0.19;
+        Parameters["SidebandImAmpDDS2"] = 0.43;
+        Parameters["SidebandImAmpDDS3"] = 0.94;
+        Parameters["SidebandImAmpDDS4"] = 0.55;
         
 
     }
 
     private void prePatternSetup()
     {
-        addDDSPattern("PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
+        //NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
+        /*
+        addDDSPattern(DDSCtrl, "PatternStart", 0, (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"], 
             (double)Parameters["SidebandAmpDDS1"], (double)Parameters["SidebandAmpDDS2"], (double)Parameters["SidebandAmpDDS3"], (double)Parameters["SidebandAmpDDS4"]);
-        addDDSPattern("Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
+        addDDSPattern(DDSCtrl, "Image", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandFreq1"], (double)Parameters["SidebandFreq2"], (double)Parameters["SidebandFreq3"], (double)Parameters["SidebandFreq4"],
             (double)Parameters["SidebandImAmpDDS1"], (double)Parameters["SidebandImAmpDDS2"], (double)Parameters["SidebandImAmpDDS3"], (double)Parameters["SidebandImAmpDDS4"]);
 
-        runDDSPattern();
-
+        runDDSPattern(DDSCtrl);
+        */
         //wmlController.setSlaveFrequency((string)Parameters["Laser"], (bool)Parameters["Switch"] ? (double)Parameters["OnFrequency"] : (double)Parameters["OffFrequency"]);
         //Thread.Sleep((int)Parameters["WaitTime"]);
     }
@@ -173,7 +175,7 @@ public class Patterns : MOTMasterScript
 
     public override PatternBuilder32 GetDigitalPattern()
     {
-        prePatternSetup();
+        //prePatternSetup();
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
 
@@ -315,7 +317,7 @@ public class Patterns : MOTMasterScript
         return p;
     }
 
-    public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+    public void addDDSPattern(NeanderthalDDSController.Controller DDSCtrl, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
             double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
     {
         //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
@@ -347,7 +349,7 @@ public class Patterns : MOTMasterScript
 
     }
 
-    public void runDDSPattern()
+    public void runDDSPattern(NeanderthalDDSController.Controller DDSCtrl)
     {
         DDSCtrl.openCard();
         DDSCtrl.startSinglePattern();
