@@ -423,6 +423,23 @@ namespace UEDMHardwareControl
             //disable all CCD controls until the TCP connections are made
             window.ToggleCCDControls(false);
 
+            // Pre-fill default values in UI
+            window.tbCCDAGain.Text = "100";
+            window.tbCCDBGain.Text = "100";
+            window.tbCCDAExposure.Text = "4.32";
+            window.tbCCDBExposure.Text = "4.83"; // based on 1.11 * 4.32 + deadtime
+            window.tbCCDAFrameCount.Text = "20";
+            window.comboBoxCCDTriggerMode.SelectedIndex = 1; // Burst mode
+
+            // Apply to hardware only if TCPs are already connected
+            if (window.checkboxTCPCCD.Checked)
+            {
+                SetCCDGain(100, 100);
+                SetCCDExposureTime(4.32);
+                SetCCDFrameCount(20);
+
+            }
+
         }
 
         #endregion
@@ -7533,9 +7550,19 @@ namespace UEDMHardwareControl
 
         public void DisconnectTCPforCCD()
         {
-            RemotingServices.Disconnect(ccdA);
-            RemotingServices.Disconnect(ccdB);
+            if (ccdA != null && RemotingServices.IsTransparentProxy(ccdA))
+            {
+                RemotingServices.Disconnect(ccdA);
+                Console.WriteLine("Disconnected CCD A");
+            }
+
+            if (ccdB != null && RemotingServices.IsTransparentProxy(ccdB))
+            {
+                RemotingServices.Disconnect(ccdB);
+                Console.WriteLine("Disconnected CCD B");
+            }
         }
+
 
         public void QueryTemperature()
         {
@@ -7543,7 +7570,7 @@ namespace UEDMHardwareControl
             double tempB = ccdB.GetSensorTemperature();
 
             string textA = tempA >= 0 ? $"{tempA:F2} degree" : "Error";
-            string textB = tempB >= 0 ? $"{tempA:F2} degree" : "Error";
+            string textB = tempB >= 0 ? $"{tempB:F2} degree" : "Error";
 
             if (window.labelTemperatureCCDA.InvokeRequired)
             {
@@ -7695,8 +7722,8 @@ namespace UEDMHardwareControl
 
         public void QueryFrameCount()
         {
-            int countA = ccdA.GetFrameCount();
-            int countB = ccdB.GetFrameCount();
+            int countA = ccdA.GetFrameCountforHardwareController();
+            int countB = ccdB.GetFrameCountforHardwareController();
 
             string textA = countA >= 0 ? countA.ToString() : "Error";
             string textB = countB >= 0 ? countB.ToString() : "Error";
@@ -7728,7 +7755,7 @@ namespace UEDMHardwareControl
             ccdA.UpdateFrameCount(frameCount);
             ccdB.UpdateFrameCount(frameCount);
 
-            window.SetTextBox(window.tbCCDAFrameCount, frameCount.ToString("F5"));
+            window.SetTextBox(window.tbCCDAFrameCount, frameCount.ToString("F0"));
         }
 
         // From the acquisitor of blockhead, this sets the number of shots taken in one acquisition.
@@ -7737,7 +7764,18 @@ namespace UEDMHardwareControl
         {
             ccdA.UpdateNumSnaps(shotCount);
             ccdB.UpdateNumSnaps(shotCount);
+
+            if (window.tbCCDShotCount.InvokeRequired)
+            {
+                window.tbCCDShotCount.Invoke(new Action(() =>
+                    window.tbCCDShotCount.Text = shotCount.ToString("F0")));
+            }
+            else
+            {
+                window.tbCCDShotCount.Text = shotCount.ToString("F0");
+            }
         }
+
 
 
         // --- Run/Stop Burst or Snap Acquisition---
