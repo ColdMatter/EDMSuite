@@ -1471,6 +1471,14 @@ namespace csAcq4
             }
         }
 
+        // this function returns a fixed integer of the total frame count, usually 20
+        public int GetFrameCountforHardwareController()
+        {
+            Console.WriteLine($"Queried Frame Count (static config): {m_nFrameCount}");
+            return m_nFrameCount;
+        }
+
+        // this function returns the frame that has been taken in real time
         public int GetFrameCount()
         {
             int newestFrameIndex = 0;
