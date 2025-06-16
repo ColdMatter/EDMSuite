@@ -101,13 +101,17 @@ namespace NeanderthalDDSController
             long lValue;
             uint code;
 
+           
+
             Task.Run(() =>
             {
 
                 while (isPatternRunning)
                 //for (int i = 0; i < 10; i++)
                 {
-                    
+                    // *** ADDED: Reset the card before programming the new pattern ***
+                    //ResetAndPrepareForNextPattern(hDevice);
+
                     // This is when the DDS stops all the signal output
                     //openCard();
                     //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
@@ -116,17 +120,34 @@ namespace NeanderthalDDSController
                     //Console.WriteLine(iValue);
                     startSinglePattern();
 
+
+                    Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_CARD);
+                    
+                    Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW); // execute the previous command
+
+                    Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+                    Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW); // execute the previous command
+
+
+
+
+
                     // Wait till sequence ends
-                    Thread.Sleep(patternLength);
+                    //Thread.Sleep(patternLength);
                     //closeCard();
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_NONE);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG);
                     //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
+
+                    if (breakFlag)
+                    {
+                        isPatternRunning = false;
+                    }
                 }
-                stopPattern();
-                
+                stopPattern();// it works without this
+
             });
 
         }
@@ -139,11 +160,10 @@ namespace NeanderthalDDSController
                 
                 //closeCard();
             }
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_FORCETRIGGER);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_FORCETRIGGER);
 
         }
 
-       
 
         public void startSinglePattern()
         {
@@ -161,10 +181,17 @@ namespace NeanderthalDDSController
                 // Loop until the condition is met.
 
             }
+            
+            
+            //Line added as per suggestion
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_CARD); 
+            //
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
 
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
-            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, 1e-6);
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER); // source to timer
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, 1e-6); // timer 1us
+
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG); // when external trigger comes, exec trigger source to timer trigger and trigger every 1us
 
             if (breakFlag)
             {
@@ -172,7 +199,6 @@ namespace NeanderthalDDSController
                 stopPattern();
             }
 
-            
         }
 
         public void startPatternExternal()
@@ -206,6 +232,8 @@ namespace NeanderthalDDSController
             //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
             //Console.WriteLine(iValue);
 
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_RESET);
+
             // reset first
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
 
@@ -224,7 +252,7 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER2, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER3, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
+            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
 
             // setup the external trigger input
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
@@ -323,7 +351,6 @@ namespace NeanderthalDDSController
 
 
 
-
         public unsafe void addPatternToBuffer(Dictionary<string, List<List<double>>> pattern)
         {
             // in second
@@ -401,6 +428,12 @@ namespace NeanderthalDDSController
 
             code = Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
 
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_CARD);
+            //
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_NOW); // set to external
+
+
+
 
 
         }
@@ -457,8 +490,6 @@ namespace NeanderthalDDSController
         {
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
         }
-
-       
 
         private void InvokeParameterUpdatedSafely()
         {
