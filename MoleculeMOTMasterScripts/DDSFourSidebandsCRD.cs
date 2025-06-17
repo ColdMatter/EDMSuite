@@ -51,7 +51,7 @@ public class Patterns : MOTMasterScript
 
 
 
-        Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
+        Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"];
         Parameters["slowingAOMOffDuration"] = 40000; //40000;
 
         //Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
@@ -82,7 +82,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAOMStartTime"] = 15000;
         Parameters["MOTAOMDuration"] = 500;
 
-       
+
         Parameters["dummy"] = 0.0;
 
         // Compression of MOT
@@ -94,6 +94,7 @@ public class Patterns : MOTMasterScript
         // v0 Light Intensity
         Parameters["v0IntensityRampStartTime"] = 6000;
         Parameters["v0IntensityRampDuration"] = 200;
+        Parameters['v0IntensityRampEndTime'] = (int)Parameters["v0IntensityRampStartTime"] + (int)Parameters["v0IntensityRampDuration"]
 
 
 
@@ -117,7 +118,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTFreqDDS3"] = 188.00; //- F = 2
         Parameters["MOTFreqDDS4"] = 175.44; //+ F = 1+
 
-        Parameters["MOTAmpDDS1"] = 0.1;
+        Parameters["MOTAmpDDS1"] = 1.0;
         Parameters["MOTAmpDDS2"] = 1.0;
         Parameters["MOTAmpDDS3"] = 1.0;
         Parameters["MOTAmpDDS4"] = 1.0;
@@ -136,40 +137,32 @@ public class Patterns : MOTMasterScript
 
     }
 
-
-    private void prePatternSetup()
+    public override Dictionary<string, List<List<double>>> GetDDSPattern()
     {
+        Dictionary<string, List<List<double>>> p = new Dictionary<string, List<List<double>>>();
 
-        NeanderthalDDSController.Controller DDSCtrl = (NeanderthalDDSController.Controller)(Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://localhost:1818/controller.rem"));
-        DDSCtrl.setBreakFlag(true);
-        DDSCtrl.clearPatternList();
-
-        addDDSPattern(DDSCtrl, "MOT", 0,
+        addDDSPattern(p, "MOT", 0,
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        addDDSPattern(DDSCtrl, "RampStart", (int)Parameters["v0IntensityRampStartTime"],
+        addDDSPattern(p, "RampStart", (int)Parameters["v0IntensityRampStartTime"],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"],
             0.0, 0.0, 0.0, 0.0, (double)Parameters["RampAmplitudeDDS1"], (double)Parameters["RampAmplitudeDDS2"], (double)Parameters["RampAmplitudeDDS3"], (double)Parameters["RampAmplitudeDDS4"]);
 
-        addDDSPattern(DDSCtrl, "RampEnd", (int)Parameters["v0IntensityRampStartTime"] + (int)Parameters["v0IntensityRampDuration"],
+        addDDSPattern(p, "RampEnd", (int)Parameters['v0IntensityRampEndTime'],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
-        
-        addDDSPattern(DDSCtrl, "SequenceEnd", (int)Parameters["MOTCoilsSwitchOff"],
+
+        addDDSPattern(p, "SequenceEnd", (int)Parameters["MOTCoilsSwitchOff"],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-        
-        DDSCtrl.setBreakFlag(false);
-        runDDSPattern(DDSCtrl);
 
+        return p;
     }
-
 
     public override PatternBuilder32 GetDigitalPattern()
     {
-        prePatternSetup();
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         int motCompressionStartTime = patternStartBeforeQ + (int)Parameters["MOTCompressoinStartTime"];
@@ -286,9 +279,10 @@ public class Patterns : MOTMasterScript
         return p;
     }
 
-    public void addDDSPattern(NeanderthalDDSController.Controller DDSCtrl, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
-            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+    public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+        double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
     {
+
         // List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
         List<double> timePar = new List<double>();
         timePar.Add(time / 100.0);
@@ -308,24 +302,23 @@ public class Patterns : MOTMasterScript
         freqSlope.Add(freqSlope2 * 100.0);
         freqSlope.Add(freqSlope3 * 100.0);
         freqSlope.Add(freqSlope4 * 100.0);
-        List<double> ampSlpoe = new List<double>();
-        ampSlpoe.Add(ampSlope1 * 100.0);
-        ampSlpoe.Add(ampSlope2 * 100.0);
-        ampSlpoe.Add(ampSlope3 * 100.0);
-        ampSlpoe.Add(ampSlope4 * 100.0);
+        List<double> ampSlope = new List<double>();
+        ampSlope.Add(ampSlope1 * 100.0);
+        ampSlope.Add(ampSlope2 * 100.0);
+        ampSlope.Add(ampSlope3 * 100.0);
+        ampSlope.Add(ampSlope4 * 100.0);
 
-        DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
+        var patternEvent = new List<List<double>>
+        {
+            timePar,
+            freq,
+            amp,
+            freqSlope,
+            ampSlope
+        };
 
-    }
+        p.Add(name, patternEvent);
 
-    //public void runDDSPattern(NeanderthalDDSController.Controller DDSCtrl)
-    //{
-    //    DDSCtrl.startRepetitivePattern();
-    //}
-
-    public void runDDSPattern(NeanderthalDDSController.Controller DDSCtrl)
-    {
-        DDSCtrl.startRepetitivePattern();
     }
 
 }
