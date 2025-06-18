@@ -53,7 +53,8 @@ namespace MOTMaster
         private static string cameraAttributesPath = (string)Environs.FileSystem.Paths["CameraAttributesPath"];
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
-        //private NeanderthalDDSController.Controller DDSCtrl;
+
+        private NeanderthalDDSController.Controller DDSCtrl;
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -127,7 +128,7 @@ namespace MOTMaster
                     staticAnalogs[address] = new DAQMxAnalogStaticGenerator();
                 }
             }
-            
+
 
             //if (config.CameraUsed) camera = (CameraControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
@@ -138,9 +139,9 @@ namespace MOTMaster
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
                 "tcp://localhost:1172/controller.rem");
 
-            //if (config.UseDDS) DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),
-                //"tcp://localhost:1818/controller.rem");
-
+            // --- Initialize the DDS Controller instance ---
+            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
+            DDSCtrl.testDDS();
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -361,7 +362,7 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public Dictionary<string,List<bool>> GetSwitchConfiguration()
+        public Dictionary<string, List<bool>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
         }
@@ -400,6 +401,8 @@ namespace MOTMaster
                 Go(null);
             }
         }
+
+
         public void Go(Dictionary<String, Object> dict)
         {
             if (status == RunningState.stopped)
@@ -411,80 +414,129 @@ namespace MOTMaster
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
+                    ////DDSCtrl.initializeCard();
+
+                    //Dictionary<string, List<List<double>>> pattern_test = new Dictionary<string, List<List<double>>>
+                    //{
+                    //    // The dictionary entry has one Key: "MOT"
+                    //    {
+                    //        "MOT", 
+        
+                    //        // The Value for the key is a new List of Lists
+                    //        new List<List<double>>
+                    //        {
+                    //            // List 1: Time Parameters. The function calculates time / 100.0. Here, 0 / 100.0 = 0.0.
+                    //            new List<double> { 0.0 },
+
+                    //            // List 2: Frequencies.
+                    //            new List<double> { 114.07, 156.17, 188.00, 175.44 },
+
+                    //            // List 3: Amplitudes.
+                    //            new List<double> { 1.0, 1.0, 1.0, 1.0 },
+
+                    //            // List 4: Frequency Slopes. Your function call uses the default value of 0.0 for all.
+                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 },
+
+                    //            // List 5: Amplitude Slopes. Your function call also uses the default value of 0.0 for all.
+                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 }
+                    //        }
+                    //    }
+                    //};
+
+                    //DDSCtrl.setBreakFlag(true);
+                    //DDSCtrl.clearPatternList();
+                    //DDSCtrl.patternList = pattern_test;
+                    //DDSCtrl.setBreakFlag(false);
+                    //DDSCtrl.startRepetitivePattern();
+
+
+                    // --- Add the new logic for handling the DDS pattern ---
+                    if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
+                    {
+                        // Set break flag to safely clear the old pattern
+                        DDSCtrl.PrepareForNewPattern();
+
+                        // Assign the newly loaded pattern to the DDS controller instance
+                        DDSCtrl.patternList = sequence.DDSPattern;
+
+                        // Set break flag to false and start the pattern running repetitively
+                        DDSCtrl.startRepetitivePattern();
+                    }
+                    */
                     //try
                     //{
-                        //if (config.CameraUsed) prepareCameraControl();
+                    //if (config.CameraUsed) prepareCameraControl();
 
-                        //if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
+                    //if (config.TranslationStageUsed) armTranslationStageForTimedMotion(script);
 
-                        //if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
+                    //if (config.CameraUsed) GrabImage((int)script.Parameters["NumberOfFrames"]);
 
-                        buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+                    buildPattern(sequence, (int)script.Parameters["PatternLength"]);
 
-                        //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
+                    //if (config.CameraUsed) waitUntilCameraIsReadyForAcquisition();
 
-                        watch.Start();
+                    watch.Start();
 
                     if (controllerWindow.RunUntilStoppedState)
+                    {
+                        while (status == RunningState.running)
                         {
-                            while (status == RunningState.running)
+                            if (!config.Debug) runPattern(sequence);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                        {
+                            if (!config.Debug) runPattern(sequence);
+                        }
+                    }
+
+
+                    watch.Stop();
+                    //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
+                    if (saveEnable)
+                    {
+                        if (config.CameraUsed)
+                        {
+                            waitUntilCameraAquisitionIsDone();
+                            try
                             {
-                                if (!config.Debug) runPattern(sequence);
+                                checkDataArrived();
                             }
+                            catch (DataNotArrivedFromHardwareControllerException)
+                            {
+                                return;
+                            }
+                            Dictionary<String, Object> report = null;
+                            if (config.ReporterUsed)
+                            {
+                                report = GetExperimentReport();
+                            }
+
+                            save(sequence, script, scriptPath, imageData, report);
+
                         }
                         else
                         {
-                            for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
+                            Dictionary<String, Object> report = null;
+                            if (config.ReporterUsed)
                             {
-                                if (!config.Debug) runPattern(sequence);
+                                report = GetExperimentReport();
                             }
+
+                            save(sequence, script, scriptPath, report);
+
                         }
 
 
-                        watch.Stop();
-                        //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
-                        if (saveEnable)
-                        {
-                            if (config.CameraUsed)
-                            {
-                                waitUntilCameraAquisitionIsDone();
-                                try
-                                {
-                                    checkDataArrived();
-                                }
-                                catch (DataNotArrivedFromHardwareControllerException)
-                                {
-                                    return;
-                                }
-                                Dictionary<String, Object> report = null;
-                                if (config.ReporterUsed)
-                                {
-                                    report = GetExperimentReport();
-                                }
+                    }
+                    //if (config.CameraUsed) finishCameraControl();
+                    //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
+                    //if (config.CameraUsed) finishCameraControl();
+                    //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
 
-                                save(sequence, script, scriptPath, imageData, report);
-
-                            }
-                            else
-                            {
-                                Dictionary<String, Object> report = null;
-                                if (config.ReporterUsed)
-                                {
-                                    report = GetExperimentReport();
-                                }
-
-                                save(sequence, script, scriptPath, report);
-
-                            }
-
-
-                        }
-                        //if (config.CameraUsed) finishCameraControl();
-                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-                        //if (config.CameraUsed) finishCameraControl();
-                        //if (config.TranslationStageUsed) disarmAndReturnTranslationStage();
-
-                        if (!config.Debug) clearDigitalPattern(sequence);
+                    if (!config.Debug) clearDigitalPattern(sequence);
                     //}
                     //catch (System.Net.Sockets.SocketException e)
                     //{
