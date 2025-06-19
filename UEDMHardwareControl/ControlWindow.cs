@@ -1818,7 +1818,7 @@ namespace UEDMHardwareControl
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}, please check if the cameras are opened and the CCD controller programs are built on wavemeter and gobelin computers.", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     checkboxTCPCCD.Checked = false;
                     ToggleCCDControls(false);
                 }
@@ -1876,6 +1876,7 @@ namespace UEDMHardwareControl
             tbCCDAExposure.Enabled = enabled;
             tbCCDBExposure.Enabled = enabled;
             tbCCDAFrameCount.Enabled = enabled;
+            tbCCDShotCount.Enabled = enabled;
 
             // Labels are usually for display only, not toggled unless needed
             labelGainCCDA.Enabled = enabled;
@@ -1888,6 +1889,7 @@ namespace UEDMHardwareControl
             labelTemperatureCCDB.Enabled = enabled;
             lblCCDA.Enabled = enabled;
             lblCCDB.Enabled = enabled;
+            labelCCDShotCount.Enabled = enabled;
         }
 
 
