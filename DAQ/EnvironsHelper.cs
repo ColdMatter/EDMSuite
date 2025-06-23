@@ -178,6 +178,14 @@ namespace DAQ.Environment
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
+<<<<<<< Updated upstream
+=======
+                    serverComputerName = "IC-CZC136CFDJ";
+                    serverTCPChannel = 1984;
+                    wavemeterLockTCPChannel = 1234;
+                    viewerServerComputerName = "PH-BONESAW";
+                    viewerServerTCPChannel = 1800;
+>>>>>>> Stashed changes
                     //ExperimentType = "edm";
                     break;
 

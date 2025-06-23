@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CE9FF52D-4C2C-4541-B16E-0B1A7DB360B3}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AlFHardwareControl</RootNamespace>
+    <AssemblyName>AlFHardwareControl</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Alf.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AlFHardwareControl|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AlFHardwareControl\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;INFLUX_DB</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AlFHardwareControl.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CmdLib8742">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\CmdLib8742.dll</HintPath>
+    </Reference>
+    <Reference Include="DeviceIOLib">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\DeviceIOLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Ivi.Driver, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Scope, Version=1.4.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Analysis.Enterprise, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Controls, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Controls.Booleans, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Controls.Graphs, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Controls.Numerics, Version=19.0.45.54571, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.DAQmx, Version=22.8.45.49361, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=19.0.45.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.NIScope.Fx45, Version=19.1.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.ModularInstruments.TClock.Fx45, Version=3.2.0.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.NetworkVariable, Version=19.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Tdms, Version=19.0.45.49153, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WebForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UsbDllWrap">
+      <HintPath>..\..\..\..\..\..\Program Files\New Focus\New Focus Picomotor Application\Bin\UsbDllWrap.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlFControlWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlFControlWindow.Designer.cs">
+      <DependentUpon>AlFControlWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AlFController.cs" />
+    <Compile Include="DictionaryView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DictionaryView.Designer.cs">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacroConfiguration.cs" />
+    <Compile Include="MacroConfigurationCollection.cs" />
+    <Compile Include="DataGrapher.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataGrapher.Designer.cs">
+      <DependentUpon>DataGrapher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MOTMasterData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterData.Designer.cs">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MOTMasterStuff.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MOTMasterStuff.Designer.cs">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MiscInstruments.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MiscInstruments.Designer.cs">
+      <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MSquaredLaserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MSquaredLaserView.Designer.cs">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParamSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParamSet.Designer.cs">
+      <DependentUpon>ParamSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceCondition.cs" />
+    <Compile Include="MacroEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MacroEditor.Designer.cs">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceEvent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResourceEvent.Designer.cs">
+      <DependentUpon>ResourceEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SafetyInterlock.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SafetyInterlock.Designer.cs">
+      <DependentUpon>SafetyInterlock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacroEvent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MacroEvent.Designer.cs">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ITaskSchedulerEvent.cs" />
+    <Compile Include="ShutterSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShutterSet.Designer.cs">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimedEvent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimedEvent.Designer.cs">
+      <DependentUpon>TimedEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskScheduler.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TaskScheduler.Designer.cs">
+      <DependentUpon>TaskScheduler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shutter_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shutter_Control.Designer.cs">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YAG_Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="YAG_Control.Designer.cs">
+      <DependentUpon>YAG_Control.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AlFControlWindow.resx">
+      <DependentUpon>AlFControlWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataGrapher.resx">
+      <DependentUpon>DataGrapher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DictionaryView.resx">
+      <DependentUpon>DictionaryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEditor.resx">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterData.resx">
+      <DependentUpon>MOTMasterData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MOTMasterStuff.resx">
+      <DependentUpon>MOTMasterStuff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MiscInstruments.resx">
+      <DependentUpon>MiscInstruments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MSquaredLaserView.resx">
+      <DependentUpon>MSquaredLaserView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParamSet.resx">
+      <DependentUpon>ParamSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceEvent.resx">
+      <DependentUpon>ResourceEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEvent.resx">
+      <DependentUpon>MacroEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SafetyInterlock.resx">
+      <DependentUpon>SafetyInterlock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShutterSet.resx">
+      <DependentUpon>ShutterSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimedEvent.resx">
+      <DependentUpon>TimedEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="TaskScheduler.resx">
+      <DependentUpon>TaskScheduler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shutter_Control.resx">
+      <DependentUpon>Shutter_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YAG_Control.resx">
+      <DependentUpon>YAG_Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\DataSources\MOTMasterStuff.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
+      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
+      <Name>MOTMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScanMaster\ScanMaster.csproj">
+      <Project>{373f31f0-a7b3-4eda-bfac-8f9e948f6d40}</Project>
+      <Name>ScanMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Alf.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
