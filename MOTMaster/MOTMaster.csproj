@@ -458,7 +458,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.cs" />
+    <Compile Include="..\..\..\Users\cafmot\Downloads\MOTMasterController.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

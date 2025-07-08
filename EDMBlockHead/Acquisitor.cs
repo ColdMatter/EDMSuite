@@ -145,11 +145,13 @@ namespace EDMBlockHead.Acquire
                 hardwareController.SetCCDShotCount((int)config.Settings["numberOfPoints"]);
                 Console.WriteLine("Setting the number of shots to CCDs...");
 
-                // get things going
+                // get things going, where the input task and counter task for CCD are configured
                 AcquisitionStarting();
-                
-				// enter the main loop
-				for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
+
+                hardwareController.StartBurstAcquisition();
+
+                // enter the main loop
+                for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
 				{
 					// set the switch states and impose the appropriate wait times
 					ThrowSwitches(point);
@@ -170,7 +172,7 @@ namespace EDMBlockHead.Acquire
 					else
 					{
                         // Shirley adds on 22/05/2025: let the CCDs start burst acquisition via TCP connection between hardware controller and CCDs
-                        hardwareController.StartBurstAcquisition();
+
 
                         // everything should be ready now so start the analog
                         // input task (it will wait for a trigger)
@@ -289,32 +291,6 @@ namespace EDMBlockHead.Acquire
 
 					if (CheckIfStopping()) 
 					{
-                        //if ((bool)config.Settings["cameraEnabled"])
-                        //{
-                        //    int triggerMode = (int)config.Settings["ccdTriggerMode"];
-                        //    try
-                        //    {
-                        //        if (triggerMode == 1)
-                        //        {
-                        //            ccdAController.StopBurstAcquisition();
-                        //            ccdBController.StopBurstAcquisition();
-                        //        }
-                        //        else if (triggerMode == 2)
-                        //        {
-                        //            ccdAController.RemoteBufRelease();
-                        //            ccdBController.RemoteBufRelease();
-                        //        }
-                        //    }
-                        //    catch (Exception ex)
-                        //    {
-                        //        Console.WriteLine("Error stopping CCDs: " + ex.ToString());
-                        //    }
-
-                        //    // Maybe this should happen in the final block?
-                        //    RemotingServices.Disconnect(ccdAController);
-                        //    RemotingServices.Disconnect(ccdBController);
-                        //}
-
                         // release hardware
                         AcquisitionStopping();
 						// signal anybody waiting on the lock that we're done
@@ -1330,8 +1306,8 @@ namespace EDMBlockHead.Acquire
                 "20MHzTimebase",
                 COPulseIdleState.Low,
                 0,                  // Initial Delay
-                100,                // High ticks (duration of high pulse)
-                (20000000 / 100000) * 10000 // Low ticks
+                100,                // Low ticks
+                (20000000 / inputs.RawSampleRate) * 1000 // High ticks (duration of high pulse)
             );
 
             // Trigger on same trigger as input task
