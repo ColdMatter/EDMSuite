@@ -396,5 +396,10 @@ namespace NeanderthalDDSController
         {
             controller.closeCard();
         }
+
+        private void testButton_Click(object sender, EventArgs e)
+        {
+            controller.testDDS();
+        }
     }
 }

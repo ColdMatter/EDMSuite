@@ -97,6 +97,7 @@ namespace NeanderthalDDSController
             this.button_delete = new System.Windows.Forms.Button();
             this.buttonStopPattern = new System.Windows.Forms.Button();
             this.buttonStartPattern = new System.Windows.Forms.Button();
+            this.testButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.patternGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -572,14 +573,14 @@ namespace NeanderthalDDSController
             // toolStripSavePattern
             // 
             this.toolStripSavePattern.Name = "toolStripSavePattern";
-            this.toolStripSavePattern.Size = new System.Drawing.Size(141, 22);
+            this.toolStripSavePattern.Size = new System.Drawing.Size(180, 22);
             this.toolStripSavePattern.Text = "Save Pattern";
             this.toolStripSavePattern.Click += new System.EventHandler(this.save_pattern_clicked);
             // 
             // toolStripLoadPattern
             // 
             this.toolStripLoadPattern.Name = "toolStripLoadPattern";
-            this.toolStripLoadPattern.Size = new System.Drawing.Size(141, 22);
+            this.toolStripLoadPattern.Size = new System.Drawing.Size(180, 22);
             this.toolStripLoadPattern.Text = "Load Pattern";
             this.toolStripLoadPattern.Click += new System.EventHandler(this.load_pattern_clicked);
             // 
@@ -659,11 +660,22 @@ namespace NeanderthalDDSController
             this.buttonStartPattern.Visible = false;
             this.buttonStartPattern.Click += new System.EventHandler(this.button_start_pattern_clicked);
             // 
+            // testButton
+            // 
+            this.testButton.Location = new System.Drawing.Point(348, 12);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(75, 23);
+            this.testButton.TabIndex = 41;
+            this.testButton.Text = "button1";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.Click += new System.EventHandler(this.testButton_Click);
+            // 
             // NeanderthalForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1048, 398);
+            this.Controls.Add(this.testButton);
             this.Controls.Add(this.labelRunIndicator);
             this.Controls.Add(this.lablePatternName);
             this.Controls.Add(this.label13);
@@ -781,5 +793,6 @@ namespace NeanderthalDDSController
         private Button button_delete;
         private Button buttonStopPattern;
         private Button buttonStartPattern;
+        private Button testButton;
     }
 }

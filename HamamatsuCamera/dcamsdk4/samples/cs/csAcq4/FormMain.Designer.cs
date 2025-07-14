@@ -77,6 +77,7 @@
             this.comboBoxCameraSelection = new System.Windows.Forms.ComboBox();
             this.CameraSelectionLabel = new System.Windows.Forms.Label();
             this.FrameIntervalLabel = new System.Windows.Forms.Label();
+            this.LocalBlockBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PicDisplay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -563,6 +564,16 @@
             this.FrameIntervalLabel.TabIndex = 45;
             this.FrameIntervalLabel.Text = "Current Frame Interval: N/A";
             // 
+            // LocalBlockBtn
+            // 
+            this.LocalBlockBtn.Location = new System.Drawing.Point(540, 388);
+            this.LocalBlockBtn.Name = "QueryNumSnapsButton";
+            this.LocalBlockBtn.Size = new System.Drawing.Size(150, 23);
+            this.LocalBlockBtn.TabIndex = 46;
+            this.LocalBlockBtn.Text = "Start Local Block (50)";
+            this.LocalBlockBtn.UseVisualStyleBackColor = true;
+            this.LocalBlockBtn.Click += new System.EventHandler(this.LocalBlock_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -612,6 +623,7 @@
             this.Controls.Add(this.comboBoxCameraSelection);
             this.Controls.Add(this.CameraSelectionLabel);
             this.Controls.Add(this.FrameIntervalLabel);
+            this.Controls.Add(this.LocalBlockBtn);
             this.Name = "FormMain";
             this.Text = "Hamamatsu EMCCD Camera Automation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -669,5 +681,6 @@
         public System.Windows.Forms.Label CameraSelectionLabel;
         public System.Windows.Forms.Button StopBurstAcquisitionButton;
         public System.Windows.Forms.Label FrameIntervalLabel;
+        public System.Windows.Forms.Button LocalBlockBtn;
     }
 }
