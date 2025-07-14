@@ -3,7 +3,7 @@ using MOTMaster.SnippetLibrary;
 
 using System;
 using System.Collections.Generic;
-
+using System.Threading;
 using DAQ.Pattern;
 using DAQ.Analog;
 
@@ -37,11 +37,6 @@ public class Patterns : MOTMasterScript
 
 
 
-        // Slowing Chirp, 5W ALS laser
-        //Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
-        //Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
-        //Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        //Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
 
         // Slowing Chirp, QuantelLaser
         Parameters["SlowingChirpStartTime"] = 500;//360; //400;// 380;
@@ -49,13 +44,14 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
 
+
         // Slowing
-        //Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
+        Parameters["slowingAOMOnStart"] = (int)Parameters["SlowingChirpStartTime"] - 100;//160
         Parameters["slowingAOMOnDuration"] = 45000; //not used
 
 
 
-        //Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"]; 
+        Parameters["slowingAOMOffStart"] = (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"];
         Parameters["slowingAOMOffDuration"] = 40000; //40000;
 
         //Parameters["BXShutterClose"] = (int)Parameters["slowingAOMOffStart"] - 650;
@@ -86,65 +82,37 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAOMStartTime"] = 15000;
         Parameters["MOTAOMDuration"] = 500;
 
-        // v0 Light Intensity
-        Parameters["v0IntensityRampStartTime"] = 5000;
-        Parameters["v0IntensityRampDuration"] = 200;
-        Parameters["v0IntensityRampStartValue"] = 7.2; //5.6
-        Parameters["v0IntensityEndValue"] = 8.0;//7.8
-        Parameters["v0IntensityMolassesValue"] = 5.6;
-        Parameters["v0IntensityRampBackTime"] = 20000;
 
-        Parameters["V00EOMsidebandRatio"] = 5.5;
-        Parameters["V00AOMSidebandAmplitude"] = 1.0;
-
-
-        // v0 Light Frequency
-        Parameters["v0FrequencyStartValue"] = 10.0; //9.0
-
-
-        // v0 F=1 (dodgy code using an analogue output to control a TTL)
-        Parameters["v0F1AOMStartValue"] = 5.0;
-        Parameters["v0F1AOMOffValue"] = 0.0;
         Parameters["dummy"] = 0.0;
+
+        // Compression of MOT
+        Parameters["MOTCompressoinStartTime"] = 5000;
+        Parameters["MOTCompressoinDuratoin"] = 1000;
+        Parameters["MOTCompressoinHoldDuratoin"] = 500;
+        Parameters["MOTCoilsCompressionValue"] = 1.75;
+
+        // v0 Light Intensity
+        Parameters["v0IntensityRampStartTime"] = 6000;
+        Parameters["v0IntensityRampDuration"] = 200;
+        Parameters['v0IntensityRampEndTime'] = (int)Parameters["v0IntensityRampStartTime"] + (int)Parameters["v0IntensityRampDuration"]
+
 
 
 
         //- AOM order
 
-        //Lambda configuration
-        Parameters["SidebandFreq1"] = 228.00 / 2.0; //+ F = 1- 
-        Parameters["SidebandFreq2"] = 306.00 / 2.0; //- F = 0
-        Parameters["SidebandFreq3"] = 380.00 / 2.0; //- F = 2
-        Parameters["SidebandFreq4"] = 354.00 / 2.0; //+ F = 1+
+        //Red MOT configuration
+        Parameters["SidebandFreq1"] = 114.07; //+ F = 1- 
+        Parameters["SidebandFreq2"] = 156.17; //- F = 0
+        Parameters["SidebandFreq3"] = 188.00; //- F = 2
+        Parameters["SidebandFreq4"] = 175.44; //+ F = 1+
 
-        Parameters["BXAOMAttenuation"] = 10.0;
+        Parameters["BXAOMAttenuation"] = 5.0;
         //Parameters["BXAOMFrequency"] = 5.8; //113MHz
         Parameters["SlowingRepumoAttenuation"] = 6.2;
 
-        //Sideband Amplitudes
 
-        // Recalibrated 30/04/2025
-
-        Parameters["SidebandAmp1"] = 10.0;//6.7;
-        Parameters["SidebandAmp2"] = 10.0;//7.7;
-        Parameters["SidebandAmp3"] = 10.0;//8.0;
-        Parameters["SidebandAmp4"] = 10.0;//8.0;
-
-        Parameters["SidebandImAmp1"] = 10.0;//8.0;// 4.0;
-        Parameters["SidebandImAmp2"] = 10.0;//8.0;// 4.5;
-        Parameters["SidebandImAmp3"] = 10.0;//8.0;// 6.0;
-        Parameters["SidebandImAmp4"] = 10.0;//8.0;// 4.7;
-
-
-        //VCO Calibration
-        //VCO frequency in MHz = offset + vol * gradient
-        Parameters["POS300OffsetFreq"] = 129.2;
-        Parameters["POS300Gradient"] = 10.6;
-        Parameters["POS150OffsetFreq"] = 62.6;
-        Parameters["POS150Gradient"] = 7.68;
-
-        //sidebands
-
+        //Sidebands
         Parameters["MOTFreqDDS1"] = 114.07; //+ F = 1- 
         Parameters["MOTFreqDDS2"] = 156.17; //- F = 0
         Parameters["MOTFreqDDS3"] = 188.00; //- F = 2
@@ -155,7 +123,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAmpDDS3"] = 1.0;
         Parameters["MOTAmpDDS4"] = 1.0;
 
-        Parameters["RampEndAmpDDS1"] = 0.3;
+        Parameters["RampEndAmpDDS1"] = 0.2;
         Parameters["RampEndAmpDDS2"] = 0.2;
         Parameters["RampEndAmpDDS3"] = 0.2;
         Parameters["RampEndAmpDDS4"] = 0.2;
@@ -164,6 +132,8 @@ public class Patterns : MOTMasterScript
         Parameters["RampAmplitudeDDS2"] = ((double)Parameters["RampEndAmpDDS2"] - (double)Parameters["MOTAmpDDS2"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
         Parameters["RampAmplitudeDDS3"] = ((double)Parameters["RampEndAmpDDS3"] - (double)Parameters["MOTAmpDDS3"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
         Parameters["RampAmplitudeDDS4"] = ((double)Parameters["RampEndAmpDDS4"] - (double)Parameters["MOTAmpDDS4"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
+
+        Parameters["FreeExpTime"] = 1;
 
     }
 
@@ -175,12 +145,12 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        addDDSPattern(p, "RampStart", 5000,
+        addDDSPattern(p, "RampStart", (int)Parameters["v0IntensityRampStartTime"],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"],
             0.0, 0.0, 0.0, 0.0, (double)Parameters["RampAmplitudeDDS1"], (double)Parameters["RampAmplitudeDDS2"], (double)Parameters["RampAmplitudeDDS3"], (double)Parameters["RampAmplitudeDDS4"]);
 
-        addDDSPattern(p, "RampEnd", 5200,
+        addDDSPattern(p, "RampEnd", (int)Parameters['v0IntensityRampEndTime'],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
 
@@ -191,52 +161,14 @@ public class Patterns : MOTMasterScript
         return p;
     }
 
-    public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
-    double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
-    {
-
-        // List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
-        List<double> timePar = new List<double>();
-        timePar.Add(time / 100.0);
-        List<double> freq = new List<double>();
-        freq.Add(freq1);
-        freq.Add(freq2);
-        freq.Add(freq3);
-        freq.Add(freq4);
-        List<double> amp = new List<double>();
-        amp.Add(amp1);
-        amp.Add(amp2);
-        amp.Add(amp3);
-        amp.Add(amp4);
-        // Scale ramp slope by 100 to convert 10 us clock periods to ms
-        List<double> freqSlope = new List<double>();
-        freqSlope.Add(freqSlope1 * 100.0);
-        freqSlope.Add(freqSlope2 * 100.0);
-        freqSlope.Add(freqSlope3 * 100.0);
-        freqSlope.Add(freqSlope4 * 100.0);
-        List<double> ampSlope = new List<double>();
-        ampSlope.Add(ampSlope1 * 100.0);
-        ampSlope.Add(ampSlope2 * 100.0);
-        ampSlope.Add(ampSlope3 * 100.0);
-        ampSlope.Add(ampSlope4 * 100.0);
-
-        var patternEvent = new List<List<double>>
-        {
-            timePar,
-            freq,
-            amp,
-            freqSlope,
-            ampSlope
-        };
-
-        p.Add(name, patternEvent);
-
-    }
-
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
+        int motCompressionStartTime = patternStartBeforeQ + (int)Parameters["MOTCompressoinStartTime"];
+        int motCompressoinEndTime = motCompressionStartTime + (int)Parameters["MOTCompressoinDuratoin"];
+        int motEndTime = motCompressoinEndTime + (int)Parameters["MOTCompressoinHoldDuratoin"];
+        int imageTime = motEndTime + (int)Parameters["FreeExpTime"];
         //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
 
@@ -249,8 +181,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for temperature
 
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
@@ -291,6 +223,11 @@ public class Patterns : MOTMasterScript
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
 
+        int motCompressionStartTime = (int)Parameters["MOTCompressoinStartTime"];
+        int motCompressoinEndTime = motCompressionStartTime + (int)Parameters["MOTCompressoinDuratoin"];
+        int motEndTime = motCompressoinEndTime + (int)Parameters["MOTCompressoinHoldDuratoin"];
+        int imageTime = motEndTime + (int)Parameters["FreeExpTime"];
+
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
         // Add Analog Channels
@@ -305,41 +242,22 @@ public class Patterns : MOTMasterScript
         p.AddChannel("v00Chirp");
         p.AddChannel("lightSwitch");
         p.AddChannel("TCoolSidebandVCO");
-        p.AddChannel("v0AOMSidebandAmp");
-        p.AddChannel("Rf1Freq");
-        p.AddChannel("Rf2Freq");
-        p.AddChannel("Rf3Freq");
-        p.AddChannel("Rf4Freq");
-        p.AddChannel("Rf1Amp");
-        p.AddChannel("Rf2Amp");
-        p.AddChannel("Rf3Amp");
-        p.AddChannel("Rf4Amp");
+
         p.AddChannel("SlowingRepumpAttenuation");
         p.AddChannel("BXFreq");
 
         //Switch BX AOM via analog output Mar 05 2024
         //p.AddAnalogValue("BXAttenuation", 0, 0.1);
-
         p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]);
         p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
-
-       
-
-
         //p.AddAnalogValue("BXAttenuation", (int)Parameters["PatternLength"] - 10000, (double)Parameters["BXAOMAttenuation"]);
 
-        //p.AddAnalogValue("BXFreq", 0, (double)Parameters["BXAOMFrequency"]);
-        //p.AddAnalogValue("BXFreq", 0, 0.0);
-        //p.AddAnalogValue("BXFreq", (int)Parameters["slowingAOMOnStart"], (double)Parameters["BXAOMFrequency"]);
-        //p.AddAnalogValue("BXFreq", (int)Parameters["slowingAOMOffStart"], 0.0);
-        //p.AddAnalogValue("BXFreq", (int)Parameters["PatternLength"] - 10000, BXAOMFrequency);
 
         p.AddAnalogValue("lightSwitch", 0, 0.0);
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
-        p.AddAnalogValue("TCoolSidebandVCO", 0, -3.461); //5.15V, 63.5MHz
+        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingRepumoAttenuation"]);
-        p.AddAnalogValue("v0AOMSidebandAmp", 0, (double)Parameters["V00AOMSidebandAmplitude"]);
 
         // Slowing field
         p.AddAnalogValue("slowingCoilsCurrent", 0, (double)Parameters["slowingCoilsValue"]);
@@ -347,43 +265,60 @@ public class Patterns : MOTMasterScript
 
         // B Field
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
+        p.AddLinearRamp("MOTCoilsCurrent", motCompressionStartTime, (int)Parameters["MOTCompressoinDuratoin"], (double)Parameters["MOTCoilsCompressionValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
+        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, 0.0); // switch off for temp
 
 
         // Shim Fields
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        p.AddAnalogValue("v00EOMAmp", 0, (double)Parameters["V00EOMsidebandRatio"]); //24/03/2023
-
-        // v0 Intensity Ramp
-        p.AddAnalogValue("v00Intensity", 0, (double)Parameters["v0IntensityRampStartValue"]);
-
-        // v0 Frequency Ramp
-        p.AddAnalogValue("v00Frequency", 0, (double)Parameters["v0FrequencyStartValue"]);
-
-        //Sideband VCOs
-        p.AddAnalogValue("Rf1Freq", 0, ((double)Parameters["SidebandFreq1"] - (double)Parameters["POS150OffsetFreq"]) / (double)Parameters["POS150Gradient"]);
-        p.AddAnalogValue("Rf2Freq", 0, ((double)Parameters["SidebandFreq2"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
-        p.AddAnalogValue("Rf3Freq", 0, ((double)Parameters["SidebandFreq3"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
-        p.AddAnalogValue("Rf4Freq", 0, ((double)Parameters["SidebandFreq4"] - (double)Parameters["POS300OffsetFreq"]) / (double)Parameters["POS300Gradient"]);
-
-        p.AddAnalogValue("Rf1Amp", 0, (double)Parameters["SidebandAmp1"]);
-        p.AddAnalogValue("Rf2Amp", 0, (double)Parameters["SidebandAmp2"]);
-        p.AddAnalogValue("Rf3Amp", 0, (double)Parameters["SidebandAmp3"]);
-        p.AddAnalogValue("Rf4Amp", 0, (double)Parameters["SidebandAmp4"]);
-
-        p.AddAnalogValue("Rf1Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp1"]);
-        p.AddAnalogValue("Rf2Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp2"]);
-        p.AddAnalogValue("Rf3Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp3"]);
-        p.AddAnalogValue("Rf4Amp", (int)Parameters["Frame0Trigger"], (double)Parameters["SidebandImAmp4"]);
-
-
-        //v0 chirp
-        p.AddAnalogValue("v00Chirp", 0, 0.0);
 
 
         return p;
+    }
+
+    public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
+        double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
+    {
+
+        // List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
+        List<double> timePar = new List<double>();
+        timePar.Add(time / 100.0);
+        List<double> freq = new List<double>();
+        freq.Add(freq1);
+        freq.Add(freq2);
+        freq.Add(freq3);
+        freq.Add(freq4);
+        List<double> amp = new List<double>();
+        amp.Add(amp1);
+        amp.Add(amp2);
+        amp.Add(amp3);
+        amp.Add(amp4);
+        // Scale ramp slope by 100 to convert 10 us clock periods to ms
+        List<double> freqSlope = new List<double>();
+        freqSlope.Add(freqSlope1 * 100.0);
+        freqSlope.Add(freqSlope2 * 100.0);
+        freqSlope.Add(freqSlope3 * 100.0);
+        freqSlope.Add(freqSlope4 * 100.0);
+        List<double> ampSlope = new List<double>();
+        ampSlope.Add(ampSlope1 * 100.0);
+        ampSlope.Add(ampSlope2 * 100.0);
+        ampSlope.Add(ampSlope3 * 100.0);
+        ampSlope.Add(ampSlope4 * 100.0);
+
+        var patternEvent = new List<List<double>>
+        {
+            timePar,
+            freq,
+            amp,
+            freqSlope,
+            ampSlope
+        };
+
+        p.Add(name, patternEvent);
+
     }
 
 }

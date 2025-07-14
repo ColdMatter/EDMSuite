@@ -13,5 +13,6 @@ namespace MOTMaster
         public PatternBuilder32 DigitalPattern;
         public AnalogPatternBuilder AnalogPattern;
         public AnalogStaticBuilder AnalogStatic;
+        public Dictionary<string, List<List<double>>> DDSPattern;
     }
 }
