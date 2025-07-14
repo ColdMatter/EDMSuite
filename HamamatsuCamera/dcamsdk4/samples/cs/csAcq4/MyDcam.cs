@@ -460,7 +460,7 @@ namespace csAcq4
                 }
             }
 
-            m_timeout = 10000;        // 10 second
+            m_timeout = 2000;        // 2 second
         }
 
         public void Dispose()
@@ -503,14 +503,20 @@ namespace csAcq4
 
             return ! m_lasterr.failed();
         }
+
+        //rhys add 10/07
+        public void SetTimeout(int timeoutMs) //added by rhys 10/07
+        {
+            m_timeout = timeoutMs; //added by rhys 10/07
+        }
     }
 
-    // ================================ MyDcamRec ================================
+// ================================ MyDcamRec ================================
 
-    /// <summary>
-    /// helper class for HDCAMREC and dcamrec functions
-    /// </summary>
-    class MyDcamRec
+/// <summary>
+/// helper class for HDCAMREC and dcamrec functions
+/// </summary>
+class MyDcamRec
     {
         // dcamrec_openA(ByRef param As DCAMREC_OPEN) As Integer
         // dcamrec_status(ByVal hrec As IntPtr, ByRef param As DCAMREC_STATUS) As Integer
@@ -536,12 +542,20 @@ namespace csAcq4
         public DCAMIDPROP m_idProp;
         public DCAMPROP_ATTR m_attr;
 
+        //public MyDcamProp(MyDcam mydcam, DCAMIDPROP _iprop)
+        //{
+        //    0.5 out (total)m_hdcam = mydcam.m_hdcam;
+        //    m_idProp = _iprop;
+        //    m_attr = new DCAMPROP_ATTR(m_idProp);
+        //}
+
         public MyDcamProp(MyDcam mydcam, DCAMIDPROP _iprop)
         {
             m_hdcam = mydcam.m_hdcam;
             m_idProp = _iprop;
             m_attr = new DCAMPROP_ATTR(m_idProp);
         }
+
         public MyDcamProp(IntPtr hdcam, DCAMIDPROP _iprop)
         {
             m_hdcam = hdcam;
