@@ -255,7 +255,7 @@ def EDMGo():
 	Emini2List=[]
 	Emini3List=[]
 	while blockIndex < maxBlockIndex:
-		
+		hc.SyncCCDBlockName(cluster, blockIndex)
 		print("Acquiring block " + str(blockIndex) + " ...")
 		# save the block config and load into blockhead
 		print("Saving temp config.")

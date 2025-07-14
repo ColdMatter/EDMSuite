@@ -13,6 +13,7 @@ using EDMConfig;
 
 using EDMBlockHead.Acquire.Channels;
 using EDMBlockHead.Acquire.Input;
+using System.Diagnostics;
 using csAcq4;
 using System.Net.Sockets;
 using System.Net;
@@ -53,6 +54,11 @@ namespace EDMBlockHead.Acquire
         //EDMHardwareControl.Controller hardwareController;         // new hardware controller
         UEDMHardwareControl.UEDMController hardwareController;
         EDMFieldLock.MainForm fieldLock;
+
+        [NonSerialized]
+        private NationalInstruments.DAQmx.Task CheckCCDStatusTask; //shirley add 09/07
+        [NonSerialized]
+         DigitalSingleChannelReader CCDInputReader; //shirley add 09/07
 
         // Start: Shirley added on 09/05/2025 for CCD integration
         [NonSerialized]
@@ -141,13 +147,19 @@ namespace EDMBlockHead.Acquire
             try
             {
                 Console.WriteLine("Trying to get SPData");
-                hardwareController.SetCCDShotCount((int)config.Settings["numberOfPoints"]);
-                Console.WriteLine("Setting the number of shots to CCDs...");
+                //hardwareController.SetCCDShotCount((int)config.Settings["numberOfPoints"]);
+                //Console.WriteLine("Setting the number of shots to CCDs...");
 
                 // get things going, where the input task and counter task for CCD are configured
                 AcquisitionStarting();
 
+                // shirley adds on 14/07 to implement the handshake between CCD ready for next block and blockhead
+                while (!hardwareController.IsCCDReady())
+                {
+                    Thread.Sleep(1);
+                }
                 hardwareController.StartBurstAcquisition();
+                Console.WriteLine("CCD Burst Acquisition Start!");
 
                 // enter the main loop
                 for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
@@ -170,20 +182,43 @@ namespace EDMBlockHead.Acquire
 					}
 					else
 					{
-                        // Shirley adds on 22/05/2025: let the CCDs start burst acquisition via TCP connection between hardware controller and CCDs
+                        // shirley add on 09/07
+                        // Wait for the CCD A TTL output trigger to be HIGH on analogTrigger3
+                        Console.WriteLine("Waiting for TTL HIGH on analogTrigger3...");
 
+                        bool isHigh = false;
+                        while (!isHigh)
+                        {
+                            bool[] ttlState = CCDInputReader.ReadSingleSampleMultiLine();
+                            isHigh = ttlState[0];
+                            if (!isHigh) Thread.Sleep(1);
+                        }
+
+                        Console.WriteLine("TTL HIGH detected. Starting tasks.");
 
                         // everything should be ready now so start the analog
                         // input task (it will wait for a trigger)
                         inputTask.Start();
                         counterTaskCCD.Start(); // for CCDs counter task
                         Console.WriteLine("Tasks have started!");
+
+                        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                        var timer1 = new Stopwatch(); 
+                        timer1.Start();
+
                         // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+
+                        timer1.Stop();
+                        Console.WriteLine($"Getting raw analog data took {timer1.ElapsedMilliseconds} ms.");
+
                         Console.WriteLine("PMT Samples gathered");
                         inputTask.Stop();
                         counterTaskCCD.Stop();
-                        // End
+
+                        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                        var timer2 = new Stopwatch();
+                        timer2.Start();
 
                         // extract the data for each scanned channel and put it in a TOF
                         s = new Shot();
@@ -215,10 +250,18 @@ namespace EDMBlockHead.Acquire
 						p = new EDMPoint();
 						p.Shot = s;
 
-					}
-					// do the "SinglePointData" (i.e. things that are measured once per point)
+                        timer2.Stop();
+                        Console.WriteLine($"Extracting the raw analog data and plotting them onto a TOF took {timer2.ElapsedMilliseconds} ms.");
+
+                    }
+                    // do the "SinglePointData" (i.e. things that are measured once per point)
                     // We'll save the leakage monitor until right at the end.
-					// keep an eye on what the phase lock is doing
+                    // keep an eye on what the phase lock is doing
+
+                    // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                    var timer3 = new Stopwatch();
+                    timer3.Start();
+
                     p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
                     p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
                     // scan the analog inputs
@@ -288,12 +331,15 @@ namespace EDMBlockHead.Acquire
 					// update the front end
 					Controller.GetController().GotPoint(point, p);
 
-					if (CheckIfStopping()) 
+                    timer3.Stop();
+                    Console.WriteLine($"Scannng and adding the single point data took {timer3.ElapsedMilliseconds} ms.");
+
+                    if (CheckIfStopping()) 
 					{
                         // release hardware
                         AcquisitionStopping();
-						// signal anybody waiting on the lock that we're done
-						Monitor.Pulse(MonitorLockObject);
+                        // signal anybody waiting on the lock that we're done
+                        Monitor.Pulse(MonitorLockObject);
 						Monitor.Exit(MonitorLockObject);
 						return;
 					}
@@ -306,7 +352,7 @@ namespace EDMBlockHead.Acquire
 				{
 					AcquisitionStopping();
                     // in case of exceptions, the CCD burst acquisition will be aborted
-                    hardwareController.StopBurstAcquisition();
+                    //hardwareController.StopCCDBurst();
                 }
 				catch (Exception) {}				// about the best that can be done at this stage
 				Monitor.Pulse(MonitorLockObject);
@@ -315,7 +361,7 @@ namespace EDMBlockHead.Acquire
 			}
 
 			AcquisitionStopping();
-			
+ 
 			// hand the new block back to the controller
 			Controller.GetController().AcquisitionFinished(b);
 
@@ -840,6 +886,7 @@ namespace EDMBlockHead.Acquire
             inputs.RawSampleRate = 10000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime"); // Classic used ~700
             inputs.GateLength = 1200; //Classic used 280
+            inputs.CCDEnableLength = 100; 
 
             ScannedAnalogInput detectorA = new ScannedAnalogInput();
             detectorA.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorA"];
@@ -1319,50 +1366,21 @@ namespace EDMBlockHead.Acquire
                 DigitalEdgeStartTriggerEdge.Rising
                 );
 
+            //shirley add below on 09/07
+            CheckCCDStatusTask = new NationalInstruments.DAQmx.Task();
+            string ttlChannel = (string)Environs.Hardware.GetInfo("analogTrigger3"); //shirley add 09/07
+ 
+            CheckCCDStatusTask.DIChannels.CreateChannel(
+                ttlChannel,
+                "TTLCheck",
+                ChannelLineGrouping.OneChannelForEachLine
+            );
+
             if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
+            if (!Environs.Debug) CheckCCDStatusTask.Control(TaskAction.Verify);
             inputReader = new AnalogMultiChannelReader(inputTask.Stream);
-
+            CCDInputReader = new DigitalSingleChannelReader(CheckCCDStatusTask.Stream);
             ConfigureSinglePointAnalogInputs();
-
-            // Start: Shirley added on 19/05/2025 for configuring CCD enable gate
-            //counterTaskCCD = new Task("CCD enable gate");
-            //try
-            //{
-            //    counterTaskCCD = new NationalInstruments.DAQmx.Task("CCD enable gate");
-
-            //    CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
-
-            //    // Configure counter for 1 TTL pulse per shot
-            //    counterTaskCCD.COChannels.CreatePulseChannelTicks(
-            //        pulseChannel.PhysicalChannel,
-            //        pulseChannel.Name,
-            //        "20MHzTimebase",
-            //        COPulseIdleState.Low,
-            //        0,                  // Initial Delay
-            //        100,                // Low Ticks 
-            //                            //(20000000 / 100000) * 10000 // Rhys - High Ticks. This should be the clock (time base / sample rate) * the enable length. Lets assume the sample rate in BH is 1 MHz. i.e. 20 ticks per uS. therefore 200,000 ticks = 10 ms
-            //        (20000000 / 100000) * 10000
-            //        );
-
-            //    counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
-
-            //    // Trigger on same trigger as input task
-            //    counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-            //        (string)Environs.Hardware.GetInfo("analogTrigger2"),
-            //        DigitalEdgeStartTriggerEdge.Rising
-            //    );
-
-            //    // Single pulse per shot
-
-            //    counterTaskCCD.Control(TaskAction.Verify);
-
-            //    counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
-            //    Console.WriteLine("CounterTaskCCD has been configured.");
-            //}
-            //catch (Exception e)
-            //{
-            //    throw e;
-            //}
 
             counterTaskCCD = new Task("CCD enable gate");
 
@@ -1376,7 +1394,7 @@ namespace EDMBlockHead.Acquire
                 COPulseIdleState.Low,
                 0,                  // Initial Delay
                 100,                // Low ticks
-                (20000000 / inputs.RawSampleRate) * 1000 // High ticks (duration of high pulse)
+                (20000000 / inputs.RawSampleRate) * inputs.CCDEnableLength // High ticks (duration of high pulse)
             );
 
             counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
@@ -1526,7 +1544,8 @@ namespace EDMBlockHead.Acquire
 			inputTask.Dispose();
             counterTaskCCD.Dispose();   
             singlePointInputTask.Dispose();
-		}
+            CheckCCDStatusTask.Dispose(); //shirley add 09/07
+        }
 
 		private bool CheckIfStopping() 
 		{
