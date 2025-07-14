@@ -98,12 +98,12 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai9", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("bartington_Y", daqBoard + "/ai11", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("bartington_Y", daqBoard + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
             AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery", magBoard + "/ai2", AITerminalConfiguration.Differential); 
             AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
@@ -203,10 +203,9 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai8", AITerminalConfiguration.Rse); unused
             //AddAnalogInputChannel("xxx", TCLBoard + "/ai9", AITerminalConfiguration.Rse); unused
             AddAnalogInputChannel("IRp1_STIRAP", TCLBoard + "/ai10", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("IRp2_v3laser", TCLBoard + "/ai16", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("IRp2_Q1", TCLBoard + "/ai16", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("IRp3_v2laser", TCLBoard + "/ai6", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("IRmaster", TCLBoard + "/ai11", AITerminalConfiguration.Rse);
-
             AddAnalogInputChannel("OPmaster", TCLBoard + "/ai17", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("OPp1_Q0", TCLBoard + "/ai5", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("OPp2_P12", TCLBoard + "/ai18", AITerminalConfiguration.Rse);
@@ -218,11 +217,11 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("v1laser", TCLBoard + "/ao1");
             AddAnalogOutputChannel("probelaser", TCLBoard + "/ao2", 0,8);
             AddAnalogOutputChannel("v0laser", TCLBoard + "/ao3", 0, 10);
-            //AddAnalogOutputChannel("v3laser", TCLOutBoard + "/ao4", 0, 3);
             AddAnalogOutputChannel("OPrampfb", TCLOutBoard + "/ao0");
             AddAnalogOutputChannel("Q0", TCLOutBoard + "/ao1", 0, 3);
             AddAnalogOutputChannel("P12", TCLOutBoard + "/ao2", 0, 3);
-            //AddAnalogOutputChannel("v2laser", TCLOutBoard + "/ao3", 0, 5);
+            AddAnalogOutputChannel("Q1", TCLOutBoard + "/ao3", 0, 5);
+            //AddAnalogOutputChannel("v2laser", TCLOutBoard + "/ao4", 0, 5);
 
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21
@@ -280,9 +279,9 @@ namespace DAQ.HAL
             tclConfig.Cavities[IRCavity].AddSlaveLaser("STIRAP", "IRp1_STIRAP");
             tclConfig.Cavities[IRCavity].AddDefaultGain("STIRAP", 0.2);
             tclConfig.Cavities[IRCavity].AddFSRCalibration("STIRAP", 3.84);
-            //tclConfig.Cavities[IRCavity].AddSlaveLaser("v3laser", "IRp2_v3laser");
-            //tclConfig.Cavities[IRCavity].AddDefaultGain("v3laser", 0.1);
-            //tclConfig.Cavities[IRCavity].AddFSRCalibration("v3laser", 3.84);
+            tclConfig.Cavities[IRCavity].AddSlaveLaser("Q1", "IRp2_Q1");
+            tclConfig.Cavities[IRCavity].AddDefaultGain("Q1", 0.1);
+            tclConfig.Cavities[IRCavity].AddFSRCalibration("Q1", 3.84);
             //tclConfig.Cavities[IRCavity].AddSlaveLaser("v2laser", "IRp3_v2laser");
             //tclConfig.Cavities[IRCavity].AddDefaultGain("v2laser", 0.1);
             //tclConfig.Cavities[IRCavity].AddFSRCalibration("v2laser", 3.84);

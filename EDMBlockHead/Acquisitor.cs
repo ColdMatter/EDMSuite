@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using NationalInstruments.DAQmx;
+//using NationalInstruments.Common;
 
 using DAQ.Environment;
 using DAQ.FakeData;
@@ -56,17 +57,15 @@ namespace EDMBlockHead.Acquire
         // Start: Shirley added on 09/05/2025 for CCD integration
         [NonSerialized]
         Task counterTaskCCD; // CCD enable Task Counter
-        CounterSingleChannelWriter counterWriter;
+        //NationalInstruments.DAQmx.Task counterTaskCCD;
 
-        [NonSerialized]
-        private csAcq4.CCDController ccdAController;
-        [NonSerialized]
-        private csAcq4.CCDController ccdBController;
+        //[NonSerialized]
+        //CounterSingleChannelWriter counterWriter;
    
-        private string nameCCDA;
-        private string nameCCDB;
-        private string computerCCDA = "ULTRACOLDEDM";
-        private string computerCCDB = "PH-NI-LAB";
+        //private string nameCCDA; 
+        //private string nameCCDB;
+        //private string computerCCDA = "ULTRACOLDEDM";
+        //private string computerCCDB = "PH-NI-LAB";
 
         // End
 
@@ -178,10 +177,10 @@ namespace EDMBlockHead.Acquire
                         // input task (it will wait for a trigger)
                         inputTask.Start();
                         counterTaskCCD.Start(); // for CCDs counter task
-
+                        Console.WriteLine("Tasks have started!");
                         // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
-
+                        Console.WriteLine("PMT Samples gathered");
                         inputTask.Stop();
                         counterTaskCCD.Stop();
                         // End
@@ -225,23 +224,23 @@ namespace EDMBlockHead.Acquire
                     // scan the analog inputs
                     double[] spd;
                     // fake some data if we're in debug mode
-                    if (Environs.Debug)
-                    {
-                        spd = new double[7];
-                        spd[0] = 1;
-                        spd[1] = 2;
-                        spd[2] = 3;
-                        spd[3] = 4;
-                        spd[4] = 5;
-                        spd[5] = 6;
-                        spd[6] = 7;
-                    }
-                    else
-                    {                                                      
-                        singlePointInputTask.Start();
-                        spd = singlePointInputReader.ReadSingleSample();
-                        singlePointInputTask.Stop();
-                    }
+                    //if (Environs.Debug)
+                    //{
+                    spd = new double[7];
+                    spd[0] = 1;
+                    spd[1] = 2;
+                    spd[2] = 3;
+                    spd[3] = 4;
+                    spd[4] = 5;
+                    spd[5] = 6;
+                    spd[6] = 7;
+                    //}
+                    //else
+                    //{                                                      
+                    //    singlePointInputTask.Start();
+                    //    spd = singlePointInputReader.ReadSingleSample();
+                    //    singlePointInputTask.Stop();
+                    //}
                     //p.SinglePointData.Add("topPD", spd[0]);
                     //p.SinglePointData.Add("bottomPD", spd[1]);
                     p.SinglePointData.Add("MiniFlux1", spd[0]);//near HV supplies
@@ -260,11 +259,11 @@ namespace EDMBlockHead.Acquire
                     //p.SinglePointData.Add("MiniFlux1", hardwareController.MiniFlux1Voltage);
                     //p.SinglePointData.Add("MiniFlux2", hardwareController.MiniFlux2Voltage);
                     //p.SinglePointData.Add("MiniFlux3", hardwareController.MiniFlux3Voltage);
-                    hardwareController.ReadIMonitor();
+                    //hardwareController.ReadIMonitor();
                     //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
                     //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
-                    p.SinglePointData.Add("WestCurrent", hardwareController.WestCurrent);
-                    p.SinglePointData.Add("EastCurrent", hardwareController.EastCurrent);
+                    p.SinglePointData.Add("WestCurrent", spd[1]);//p.SinglePointData.Add("WestCurrent", hardwareController.WestCurrent);
+                    p.SinglePointData.Add("EastCurrent", spd[2]); //p.SinglePointData.Add("EastCurrent", hardwareController.EastCurrent);
                     //hardwareController.UpdatePiMonitor();
                     //p.SinglePointData.Add("piMonitor", hardwareController.PiFlipMonVoltage);
                     //p.SinglePointData.Add("CminusV", hardwareController.CMinusMonitorVoltage);
@@ -285,7 +284,7 @@ namespace EDMBlockHead.Acquire
                     //hardwareController.SetScramblerVoltage(d);
 
                     b.Points.Add(p);
-
+                    Console.WriteLine("Finished EDMPoint");
 					// update the front end
 					Controller.GetController().GotPoint(point, p);
 
@@ -892,14 +891,14 @@ namespace EDMBlockHead.Acquire
             //inputs.Channels.Add(mag);
 
             // Commented out 14/05/2025
-            //ScannedAnalogInput mag = new ScannedAnalogInput();
-            //mag.ReductionMode = DataReductionMode.Average;
-            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
-            //mag.AverageEvery = 800;
-            //mag.LowLimit = -10;
-            //mag.HighLimit = 10;
-            //mag.Calibration = 1e-5; //Bartington calibration is 1V = 10uT
-            //inputs.Channels.Add(mag);
+            ScannedAnalogInput mag = new ScannedAnalogInput();
+            mag.ReductionMode = DataReductionMode.Average;
+            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            mag.AverageEvery = 800;
+            mag.LowLimit = -10;
+            mag.HighLimit = 10;
+            mag.Calibration = 1e-5; //Bartington calibration is 1V = 10uT
+            inputs.Channels.Add(mag);
 
             //ScannedAnalogInput gnd = new ScannedAnalogInput();
             //gnd.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["gnd"];
@@ -910,15 +909,15 @@ namespace EDMBlockHead.Acquire
             //gnd.Calibration = 1;
             //inputs.Channels.Add(gnd);
 
-            //ScannedAnalogInput battery = new ScannedAnalogInput();
-            //battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
-            //battery.ReductionMode = DataReductionMode.Chop;
-            //battery.ChopStart = 140;
-            //battery.ChopLength = 120;
-            //battery.LowLimit = 0;
-            //battery.HighLimit = 10;
-            //battery.Calibration = 1;
-            //inputs.Channels.Add(battery);
+            ScannedAnalogInput battery = new ScannedAnalogInput();
+            battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
+            battery.ReductionMode = DataReductionMode.Chop;
+            battery.ChopStart = 140;
+            battery.ChopLength = 120;
+            battery.LowLimit = 0;
+            battery.HighLimit = 10;
+            battery.Calibration = 1;
+            inputs.Channels.Add(battery);
 
             /*ScannedAnalogInput battery2 = new ScannedAnalogInput();
             battery2.ReductionMode = DataReductionMode.Average;
@@ -1326,6 +1325,45 @@ namespace EDMBlockHead.Acquire
             ConfigureSinglePointAnalogInputs();
 
             // Start: Shirley added on 19/05/2025 for configuring CCD enable gate
+            //counterTaskCCD = new Task("CCD enable gate");
+            //try
+            //{
+            //    counterTaskCCD = new NationalInstruments.DAQmx.Task("CCD enable gate");
+
+            //    CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
+
+            //    // Configure counter for 1 TTL pulse per shot
+            //    counterTaskCCD.COChannels.CreatePulseChannelTicks(
+            //        pulseChannel.PhysicalChannel,
+            //        pulseChannel.Name,
+            //        "20MHzTimebase",
+            //        COPulseIdleState.Low,
+            //        0,                  // Initial Delay
+            //        100,                // Low Ticks 
+            //                            //(20000000 / 100000) * 10000 // Rhys - High Ticks. This should be the clock (time base / sample rate) * the enable length. Lets assume the sample rate in BH is 1 MHz. i.e. 20 ticks per uS. therefore 200,000 ticks = 10 ms
+            //        (20000000 / 100000) * 10000
+            //        );
+
+            //    counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
+
+            //    // Trigger on same trigger as input task
+            //    counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+            //        (string)Environs.Hardware.GetInfo("analogTrigger2"),
+            //        DigitalEdgeStartTriggerEdge.Rising
+            //    );
+
+            //    // Single pulse per shot
+
+            //    counterTaskCCD.Control(TaskAction.Verify);
+
+            //    counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
+            //    Console.WriteLine("CounterTaskCCD has been configured.");
+            //}
+            //catch (Exception e)
+            //{
+            //    throw e;
+            //}
+
             counterTaskCCD = new Task("CCD enable gate");
 
             CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
@@ -1341,6 +1379,8 @@ namespace EDMBlockHead.Acquire
                 (20000000 / inputs.RawSampleRate) * 1000 // High ticks (duration of high pulse)
             );
 
+            counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
+
             // Trigger on same trigger as input task
             counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
                 (string)Environs.Hardware.GetInfo("analogTrigger2"),
@@ -1348,10 +1388,10 @@ namespace EDMBlockHead.Acquire
             );
 
             // Single pulse per shot
-            counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
-            counterTaskCCD.Control(TaskAction.Verify);
+            if (!Environs.Debug) counterTaskCCD.Control(TaskAction.Verify);
 
-            counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
+            //counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
+            Console.WriteLine("CounterTaskCCD has been configured.");
             // End
 
             // set the leakage monitor measurement time to 5ms.
