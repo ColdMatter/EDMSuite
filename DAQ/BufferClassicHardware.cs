@@ -72,11 +72,14 @@ namespace DAQ.HAL
             Info.Add("analogTrigger0", daqBoard + "/PFI0");
             Info.Add("analogTrigger1", daqBoard + "/PFI1");
             Info.Add("analogTrigger2", daqBoard + "/PFI2");
-            Info.Add("analogTrigger3", daqBoard + "/PFI3"); //rhys add 08/07
+            Info.Add("pfiTrigger3", daqBoard + "/PFI3"); //rhys add 08/07
             Info.Add("phaseLockControlMethod", "usb");
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
+            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line1"); //rhys add 20/07
+            Info.Add("ccdDigitalIn", daqBoard + "/port0/line1:2"); //rhys add 28/07 - Combine both CCD status lines
+
 
             // Scanmaster config
             Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_July_Rhys.xml");

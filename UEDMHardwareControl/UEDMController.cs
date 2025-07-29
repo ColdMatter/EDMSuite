@@ -7781,7 +7781,10 @@ namespace UEDMHardwareControl
         public void SyncCCDBlockName(string cluster, int blockIndex)
         {
             string nameMeassgae = $"{cluster}_{blockIndex:D5}";
-            
+            while (!IsCCDReady())
+            {
+                Thread.Sleep(1);
+            }
             try
             {
                 ccdA.SendBlockName(nameMeassgae);
@@ -7795,14 +7798,15 @@ namespace UEDMHardwareControl
         }
 
         // shirley adds on 14/07 to implement the handshake between CCD ready for next block and Blockhead ready to start next burst
-        public void QueryCCDReady()
-        {
-            bool readyA = ccdA.IsCCDReadyForNextBlock();
-            //bool readyB = ccdB.IsCCDReadyForNextBlock();
 
-            string textA = readyA ? "Ready" : "Not Ready";
-            //string textB = readyB ? "Ready" : "Not Ready";
-        }
+        //public void QueryCCDReady()
+        //{
+        //    bool readyA = ccdA.IsCCDReadyForNextBlock();
+        //    //bool readyB = ccdB.IsCCDReadyForNextBlock();
+
+        //    string textA = readyA ? "Ready" : "Not Ready";
+        //    //string textB = readyB ? "Ready" : "Not Ready";
+        //}
 
         public bool IsCCDReady()
         {

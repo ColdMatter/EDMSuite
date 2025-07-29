@@ -2068,6 +2068,15 @@ namespace csAcq4
                                 Console.WriteLine($"Too many wait failures in Snap {snapIndex + 1}, skipping remaining frames... Sorry I can't wait anymore :( ");
                                 break;
                             }
+                            //TTL LOW
+                            if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                            {
+                                MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Output trigger set to low for not available now...");
+                            }
                             continue;
                         }
 

@@ -311,13 +311,21 @@ namespace ScanMaster.Acquire.Plugins
                     DigitalEdgeStartTriggerEdge.Rising);
 
 
-                string ttlChannel = (string)Environs.Hardware.GetInfo("analogTrigger3"); //rhys add 08/07
-                //rhys add 08/07 below
+                // Set up CCD Ready Status Channel 
+                string CCDTTLChannel = (string)Environs.Hardware.GetInfo("ccdDigitalIn");
                 CheckCCDStatusTask.DIChannels.CreateChannel(
-                    ttlChannel,
-                    "TTLCheck",
+                    CCDTTLChannel,
+                    "ccdReadyStatusTTL",
                     ChannelLineGrouping.OneChannelForEachLine
                 );
+
+                //string ttlChannel = (string)Environs.Hardware.GetInfo("analogTrigger3"); //rhys add 08/07
+                ////rhys add 08/07 below
+                //CheckCCDStatusTask.DIChannels.CreateChannel(
+                //    ttlChannel,
+                //    "TTLCheck",
+                //    ChannelLineGrouping.OneChannelForEachLine
+                //);
                 //
 
                 inputTask1.Control(TaskAction.Verify);

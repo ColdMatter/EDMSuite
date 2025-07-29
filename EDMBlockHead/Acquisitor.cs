@@ -56,13 +56,20 @@ namespace EDMBlockHead.Acquire
         EDMFieldLock.MainForm fieldLock;
 
         [NonSerialized]
-        private NationalInstruments.DAQmx.Task CheckCCDStatusTask; //shirley add 09/07
+        Task CCDReadyStatusTask; //shirley add 09/07
         [NonSerialized]
-         DigitalSingleChannelReader CCDInputReader; //shirley add 09/07
-
-        // Start: Shirley added on 09/05/2025 for CCD integration
+        DigitalMultiChannelReader CCDReadyStatusReader; //shirley add 09/07
+        [NonSerialized]
+        Task CCDAcquireStatusTask;
+        [NonSerialized]
+        DigitalMultiChannelReader CCDAcquireStatusReader;
+        [NonSerialized]
+        Task TaskCompleteTask;
+        [NonSerialized]
+        DigitalSingleChannelWriter TaskCompleteWriter;
         [NonSerialized]
         Task counterTaskCCD; // CCD enable Task Counter
+    
         //NationalInstruments.DAQmx.Task counterTaskCCD;
 
         //[NonSerialized]
@@ -115,7 +122,6 @@ namespace EDMBlockHead.Acquire
 			}
 		}
 
-
         // this is the method that actually takes the data. It is called by Start() and shouldn't
         // be called directly
         // On 12/05/2025, Shirley added the CCD acquisition
@@ -162,98 +168,192 @@ namespace EDMBlockHead.Acquire
                 Console.WriteLine("CCD Burst Acquisition Start!");
 
                 // enter the main loop
-                for (int point = 0 ; point < (int)config.Settings["numberOfPoints"] ; point++)
-				{
-					// set the switch states and impose the appropriate wait times
-					ThrowSwitches(point);
+
+                for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
+                {
+                    // set the switch states and impose the appropriate wait times
+                    ThrowSwitches(point);
 
                     // take a point
                     Shot s;
-					EDMPoint p;
-					if (Environs.Debug)
-					{
-						// just stuff a made up shot in
-						//Thread.Sleep(10);
-						s = DataFaker.GetFakeShot(1900,200,10,3,9);
-						((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
-						p = new EDMPoint();
-						p.Shot = s;
-						//Thread.Sleep(20);
-					}
-					else
-					{
-                        // shirley add on 09/07
-                        // Wait for the CCD A TTL output trigger to be HIGH on analogTrigger3
-                        Console.WriteLine("Waiting for TTL HIGH on analogTrigger3...");
-
-                        bool isHigh = false;
-                        while (!isHigh)
-                        {
-                            bool[] ttlState = CCDInputReader.ReadSingleSampleMultiLine();
-                            isHigh = ttlState[0];
-                            if (!isHigh) Thread.Sleep(1);
-                        }
-
-                        Console.WriteLine("TTL HIGH detected. Starting tasks.");
-
-                        // everything should be ready now so start the analog
-                        // input task (it will wait for a trigger)
-                        inputTask.Start();
-                        counterTaskCCD.Start(); // for CCDs counter task
-                        Console.WriteLine("Tasks have started!");
-
-                        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
-                        var timer1 = new Stopwatch(); 
-                        timer1.Start();
-
-                        // get the raw data
-                        double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
-
-                        timer1.Stop();
-                        Console.WriteLine($"Getting raw analog data took {timer1.ElapsedMilliseconds} ms.");
-
-                        Console.WriteLine("PMT Samples gathered");
-                        inputTask.Stop();
-                        counterTaskCCD.Stop();
-
-                        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
-                        var timer2 = new Stopwatch();
-                        timer2.Start();
-
-                        // extract the data for each scanned channel and put it in a TOF
-                        s = new Shot();
-						for (int i = 0 ; i < inputs.Channels.Count ; i++)
-						{
-							// extract the raw data
-							double[] rawData = new double[inputs.GateLength];
-							for (int q = 0 ; q < inputs.GateLength ; q++) rawData[q] = analogData[i,q];
-							
-							ScannedAnalogInput ipt = (ScannedAnalogInput)inputs.Channels[i];
-							// reduce the data
-							double[] data = ipt.Reduce(rawData);
-							TOF t = new TOF();
-							t.Calibration = ipt.Calibration;
-                            // the 1000000 is because clock period is in microseconds;
-                            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
-                            t.GateStartTime = inputs.GateStartTime;
-                            // this is a bit confusing. The chop is measured in points, so the gate
-                            // has to be adjusted by the number of points times the clock period!
-                            if (ipt.ReductionMode == DataReductionMode.Chop)
-                                t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
-							t.Data = data;
-							// the 1000000 is because clock period is in microseconds;
-							t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
-
-							s.TOFs.Add(t);
-						}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-						p = new EDMPoint();
-						p.Shot = s;
-
-                        timer2.Stop();
-                        Console.WriteLine($"Extracting the raw analog data and plotting them onto a TOF took {timer2.ElapsedMilliseconds} ms.");
-
+                    EDMPoint p = null;
+                    if (Environs.Debug)
+                    {
+                        // just stuff a made up shot in
+                        //Thread.Sleep(10);
+                        s = DataFaker.GetFakeShot(1900, 200, 10, 3, 9);
+                        ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
+                        p = new EDMPoint();
+                        p.Shot = s;
+                        //Thread.Sleep(20);
                     }
+                    else
+                    {
+                        bool shotSuccessful = false;
+                        while (!shotSuccessful)
+                        {
+                            // shirley add on 09/07
+                            // Wait for the CCD TTL output trigger to be HIGH 
+                            // you dont have to start and stop the task explicitly. ReadSingleSampleMultiLine() will otherwise start and stop internally.
+                            // But this will happen each time it moves around the loop. Bit slower.
+
+                            //code for CCDA only
+                            //CCDReadyStatusTask.Start(); 
+                            //bool isHigh = false;
+                            //while (!isHigh)
+                            //{
+                            //    bool[] ttlState = CCDReadyStatusReader.ReadSingleSampleMultiLine();
+                            //    isHigh = ttlState[0];
+                            //    if (!isHigh) Thread.Sleep(1);
+                            //}
+                            //CCDReadyStatusTask.Stop();
+
+                            //code for CCDA and CCDB
+                            CCDReadyStatusTask.Start();
+                            bool isCCDAready = false;
+                            bool isCCDBready = false;
+                            while (!isCCDAready) //update to while (!isCCDAready || !isCCDBready)
+                            {
+                                bool[,] ttlState = CCDReadyStatusReader.ReadSingleSampleMultiLine();
+                                isCCDAready = ttlState[0, 0];
+                                isCCDBready = ttlState[1, 0];
+                                if (!isCCDAready) Thread.Sleep(1); //update to if (!isCCDAready || !isCCDBready) Thread.Sleep(1);
+                            }
+                            Console.WriteLine($"CCD Ready Status CCDA={isCCDAready}, CCDB={isCCDBready}");
+                            CCDReadyStatusTask.Stop();
+
+                            // everything should be ready now so start the analog
+                            // input task (it will wait for a trigger)
+                            //we also set up the CCD counter task and the ccd acquire status task
+
+                            var timer0 = new Stopwatch();
+                            timer0.Start();
+                            inputTask.Start(); //pmt read. Analogue in 
+                            counterTaskCCD.Start(); //ccd enable. Digital out
+                            CCDAcquireStatusTask.Start(); //ccd status. Digital in
+                            TaskCompleteTask.Start(); //task sync. Digital out
+                            timer0.Stop();
+
+                            TaskCompleteWriter.WriteSingleSampleSingleLine(false, true);
+                            Console.WriteLine($"Tasks initialisation took {timer0.ElapsedMilliseconds} ms. Set TTL High");
+
+                            // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                            var timer1 = new Stopwatch();
+                            timer1.Start();
+
+                            // get the raw data
+                            double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+
+                            timer1.Stop();
+                            Console.WriteLine($"Getting PMT analog data took {timer1.ElapsedMilliseconds} ms.");
+
+                            // Rhys - method 1. CCDA only. Read out the CCD status during the PMT shot. We pick a point mid way through the gateLength
+
+                            //uint[] ccdStartStatusSample = CCDAcquireStatusReader.ReadMultiSamplePortUInt32(inputs.GateLength);
+                            //int midpoint = inputs.GateLength / 2;
+                            ////int midpoint = 800;
+                            //bool ccdAStatus = (ccdStartStatusSample[midpoint] & (1 << 1)) != 0; //BitMask operation.
+                            //This line probes the digital line at a time within the pmt acquisition (midpoint) and returns false if the line is low.
+                            //(1 << "line")) is the bitmask. It selects the line within the port by shifting  a 1 "line" times along the binary literal (e.g. 0b00000010 for line 1 p0.1)
+                            //& is the bitwise AND operator which compares the state of all the digital lines on the port at the sample point e.g. (0b00000010)
+                            //with the binary literal of the line selection bitmask. For example, if at a given sample point line 1 was high and line 0 was false the digital port would read 0b00000010
+                            //line 1 0b00000010 & 0b00000010 = 0b00000010. line 0 0b00000010 & 0b00000001 = 0b00000000 Thus line 1 !=0 is true, line 0 !=0 is false
+
+                            //Console.WriteLine($"CCD Status for {point} is: CCDA={ccdAStatus}");
+
+                            //CCD Aquisition Status - Method 1. MultiChannel. Poll thr CCD status during the PMT shot. We pick a point mid way through the gateLength
+                            uint[,] ccdStartStatusSample = CCDAcquireStatusReader.ReadMultiSamplePortUInt32(inputs.GateLength);
+                            int midpoint = inputs.GateLength / 2;
+                            bool ccdAStatus = (ccdStartStatusSample[0, midpoint] & (1 << 1)) != 0;  //BitMask operation.
+                                                                                                    //This line probes the digital line at a time within the pmt acquisition (midpoint) and returns false if the line is low.
+                                                                                                    //(1 << "line")) is the bitmask. It selects the line within the port by shifting  a 1 "line" times along the binary literal (e.g. 0b00000010 for line 1 p0.1)
+                                                                                                    //& is the bitwise AND operator which compares the state of all the digital lines on the port at the sample point e.g. (0b00000010)
+                                                                                                    //with the binary literal of the line selection bitmask. For example, if at a given sample point line 1 was high and line 0 was false the digital port would read 0b00000010
+                                                                                                    //line 1 0b00000010 & 0b00000010 = 0b00000010. line 0 0b00000010 & 0b00000001 = 0b00000000 Thus line 1 !=0 is true, line 0 !=0 is false 
+                            bool ccdBStatus = (ccdStartStatusSample[0, midpoint] & (1 << 2)) != 0; //CCDB status
+                            Console.WriteLine($"CCD Aquisition Status for point {point} is: CCDA={(ccdAStatus ? "HIGH" : "LOW")}, CCDB={(ccdBStatus ? "HIGH" : "LOW")}");
+
+                            //method 2
+                            //bool ccdAStatus = true;
+                            //Console.WriteLine($"number of PMT samples {inputs.GateLength}");
+                            //Console.WriteLine($"Checking {ccdStartStatusSample.Length} Samples for a TTL Low");
+                            //for (int i = 0; i < ccdStartStatusSample.Length; i++)
+                            //{
+                            //    if ((ccdStartStatusSample[i] & (1 << 1)) != 0)
+                            //    {
+                            //        ccdAStatus = true;
+                            //    }
+                            //    else 
+                            //    {
+                            //        ccdAStatus = false;
+                            //        break; // No need to continue once we find one false (i.e. TTL low)
+                            //    }
+                            //}
+                            //Console.WriteLine($"CCD Status for {point} is: {(ccdStatus ? "HIGH" : "LOW")}");
+
+                            TaskCompleteWriter.WriteSingleSampleSingleLine(false, false); //Tasks stopping. Set the digital out to a TTL Low
+
+                            CCDAcquireStatusTask.Stop();
+                            inputTask.Stop();
+                            counterTaskCCD.Stop();
+                            TaskCompleteTask.Stop();
+
+                            if (!ccdAStatus && !ccdBStatus) // LOW TTL means CCD captured the shot
+                            {
+                                Console.WriteLine($"CCDA confirmed shot {point}. Proceeding.");
+
+                                // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                                var timer2 = new Stopwatch();
+                                timer2.Start();
+
+                                // extract the data for each scanned channel and put it in a TOF
+                                s = new Shot();
+                                for (int i = 0; i < inputs.Channels.Count; i++)
+                                {
+                                    // extract the raw data
+                                    double[] rawData = new double[inputs.GateLength];
+                                    for (int q = 0; q < inputs.GateLength; q++) rawData[q] = analogData[i, q];
+
+                                    ScannedAnalogInput ipt = (ScannedAnalogInput)inputs.Channels[i];
+                                    // reduce the data
+                                    double[] data = ipt.Reduce(rawData);
+                                    TOF t = new TOF();
+                                    t.Calibration = ipt.Calibration;
+                                    // the 1000000 is because clock period is in microseconds;
+                                    t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+                                    t.GateStartTime = inputs.GateStartTime;
+                                    // this is a bit confusing. The chop is measured in points, so the gate
+                                    // has to be adjusted by the number of points times the clock period!
+                                    if (ipt.ReductionMode == DataReductionMode.Chop)
+                                        t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
+                                    t.Data = data;
+                                    // the 1000000 is because clock period is in microseconds;
+                                    t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+
+                                    s.TOFs.Add(t);
+
+                                }
+
+                                p = new EDMPoint();
+                                p.Shot = s;
+
+                                timer2.Stop();
+                                Console.WriteLine($"Extracting the raw analog data and plotting them onto a TOF took {timer2.ElapsedMilliseconds} ms.");
+
+                                // Mark shot as successful so we can exit the while loop
+                                shotSuccessful = true;
+                            }
+                            else
+                            {
+
+
+                                // CCD missed the shot — retry this point
+                                Console.WriteLine($"CCD point {point} missed the shot. Retrying the same point.");
+                                Thread.Sleep(50); // wait some short time before retry
+                            }
+                        }
+                    }
+
                     // do the "SinglePointData" (i.e. things that are measured once per point)
                     // We'll save the leakage monitor until right at the end.
                     // keep an eye on what the phase lock is doing
@@ -328,24 +428,246 @@ namespace EDMBlockHead.Acquire
 
                     b.Points.Add(p);
                     Console.WriteLine("Finished EDMPoint");
-					// update the front end
-					Controller.GetController().GotPoint(point, p);
+                    // update the front end
+                    Controller.GetController().GotPoint(point, p);
 
                     timer3.Stop();
                     Console.WriteLine($"Scannng and adding the single point data took {timer3.ElapsedMilliseconds} ms.");
 
-                    if (CheckIfStopping()) 
-					{
+                    if (CheckIfStopping())
+                    {
                         // release hardware
                         AcquisitionStopping();
                         // signal anybody waiting on the lock that we're done
                         Monitor.Pulse(MonitorLockObject);
-						Monitor.Exit(MonitorLockObject);
-						return;
-					}
-				}
-			}		
-			catch (Exception e)
+                        Monitor.Exit(MonitorLockObject);
+                        return;
+                    }
+                }
+
+                //This is the above for loop without the retake data structure. Can be deleted once we have confirmed the retake is working correctly
+
+                //for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
+                //{
+                //    // set the switch states and impose the appropriate wait times
+                //    ThrowSwitches(point);
+
+                //    // take a point
+                //    Shot s;
+                //    EDMPoint p = null;
+                //    if (Environs.Debug)
+                //    {
+                //        // just stuff a made up shot in
+                //        //Thread.Sleep(10);
+                //        s = DataFaker.GetFakeShot(1900, 200, 10, 3, 9);
+                //        ((TOF)s.TOFs[0]).Calibration = ((ScannedAnalogInput)inputs.Channels[0]).Calibration;
+                //        p = new EDMPoint();
+                //        p.Shot = s;
+                //        //Thread.Sleep(20);
+                //    }
+                //    else
+                //    {
+
+                //        // shirley add on 09/07
+                //        // Wait for the CCD A TTL output trigger to be HIGH on analogTrigger3
+                //        Console.WriteLine("Waiting for TTL HIGH on analogTrigger3...");
+
+                //        bool isHigh = false;
+                //        while (!isHigh)
+                //        {
+                //            bool[] ttlState = CCDInputReader.ReadSingleSampleMultiLine();
+                //            isHigh = ttlState[0];
+                //            if (!isHigh) Thread.Sleep(1);
+                //        }
+
+                //        Console.WriteLine("TTL HIGH detected. Starting tasks.");
+
+                //        // everything should be ready now so start the analog
+                //        // input task (it will wait for a trigger)
+                //        //also set up the CCD counter task and the ccd status task
+                //        CCDAcquireStatusTask.Start();
+                //        //CCDinputTask.Start();
+                //        inputTask.Start();
+                //        counterTaskCCD.Start(); // for CCDs counter task
+                //        Console.WriteLine("Tasks have started!");
+
+                //        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                //        var timer1 = new Stopwatch();
+                //        timer1.Start();
+
+                //        // get the raw data
+                //        double[,] analogData = inputReader.ReadMultiSample(inputs.GateLength);
+                //        //double[] ccdinputData = CCDinputTaskReader.ReadMultiSample(inputs.GateLength);
+
+                //        timer1.Stop();
+                //        Console.WriteLine($"Getting raw analog data took {timer1.ElapsedMilliseconds} ms.");
+                //        Console.WriteLine("PMT Samples gathered");
+
+
+
+                //        //rhys - analague method
+                //        //int midpoint = inputs.GateLength / 2;
+                //        //double midValue = ccdinputData[midpoint];
+                //        //bool isAboveThreshold = midValue > 2.7;
+                //        //Console.WriteLine($"Midpoint value at index {midpoint}: {midValue:F3}");
+                //        //Console.WriteLine($"Is above 2.7 V? {isAboveThreshold}");
+
+                //        // Rhys - digital method 1. Read out the CCD status during the PMT shot. We pick a point mid way through the gateLength
+
+                //        uint[] ccdStartStatusSample = CCDStartStatusReader.ReadMultiSamplePortUInt32(inputs.GateLength);
+                //        int midpoint = inputs.GateLength / 2;
+                //        bool ccd1Status = (ccdStartStatusSample[midpoint] & (1 << 1)) != 0;
+                //        //bool ccd2Status = (ccdStartStatusSample[midpoint] & (1 << 1)) != 0;
+                //        //Console.WriteLine($"CCD Status for {point} is: {(ccdStatus ? "HIGH" : "LOW")}");
+                //        Console.WriteLine($"CCD Status for {point} is: CCDA={ccd1Status}");
+
+                //        // Rhys - digital method 2. Read out the CCD status during the PMT shot. We pick a point mid way through the gateLength
+
+                //        //bool isHigh2;
+                //        //bool[] ttlState2 = CCDStartStatusReader.ReadSingleSampleMultiLine();
+                //        //isHigh2 = ttlState2[0];
+                //        //Console.WriteLine($"CCD Status for {point} is: {(isHigh2 ? "HIGH" : "LOW")}");
+
+                //        CCDAcquireStatusTask.Stop();
+                //        //CCDinputTask.Stop();
+                //        inputTask.Stop();
+                //        counterTaskCCD.Stop();
+
+
+
+
+                //        // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                //        var timer2 = new Stopwatch();
+                //        timer2.Start();
+
+                //        // extract the data for each scanned channel and put it in a TOF
+                //        s = new Shot();
+                //        for (int i = 0; i < inputs.Channels.Count; i++)
+                //        {
+                //            // extract the raw data
+                //            double[] rawData = new double[inputs.GateLength];
+                //            for (int q = 0; q < inputs.GateLength; q++) rawData[q] = analogData[i, q];
+
+                //            ScannedAnalogInput ipt = (ScannedAnalogInput)inputs.Channels[i];
+                //            // reduce the data
+                //            double[] data = ipt.Reduce(rawData);
+                //            TOF t = new TOF();
+                //            t.Calibration = ipt.Calibration;
+                //            // the 1000000 is because clock period is in microseconds;
+                //            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+                //            t.GateStartTime = inputs.GateStartTime;
+                //            // this is a bit confusing. The chop is measured in points, so the gate
+                //            // has to be adjusted by the number of points times the clock period!
+                //            if (ipt.ReductionMode == DataReductionMode.Chop)
+                //                t.GateStartTime += (ipt.ChopStart * t.ClockPeriod);
+                //            t.Data = data;
+                //            // the 1000000 is because clock period is in microseconds;
+                //            t.ClockPeriod = 1000000 / ipt.CalculateClockRate(inputs.RawSampleRate);
+
+                //            s.TOFs.Add(t);
+
+                //        }
+
+                //        p = new EDMPoint();
+                //        p.Shot = s;
+
+                //        timer2.Stop();
+                //        Console.WriteLine($"Extracting the raw analog data and plotting them onto a TOF took {timer2.ElapsedMilliseconds} ms.");
+                //    }
+
+                //    // do the "SinglePointData" (i.e. things that are measured once per point)
+                //    // We'll save the leakage monitor until right at the end.
+                //    // keep an eye on what the phase lock is doing
+
+                //    // Shirley adds the timer on 18/06 to test how long each section in the Acquire function takes
+                //    var timer3 = new Stopwatch();
+                //    timer3.Start();
+
+                //    p.SinglePointData.Add("PhaseLockFrequency", phaseLock.OutputFrequency);
+                //    p.SinglePointData.Add("PhaseLockError", phaseLock.PhaseError);
+                //    // scan the analog inputs
+                //    double[] spd;
+                //    // fake some data if we're in debug mode
+                //    //if (Environs.Debug)
+                //    //{
+                //    spd = new double[7];
+                //    spd[0] = 1;
+                //    spd[1] = 2;
+                //    spd[2] = 3;
+                //    spd[3] = 4;
+                //    spd[4] = 5;
+                //    spd[5] = 6;
+                //    spd[6] = 7;
+                //    //}
+                //    //else
+                //    //{                                                      
+                //    //    singlePointInputTask.Start();
+                //    //    spd = singlePointInputReader.ReadSingleSample();
+                //    //    singlePointInputTask.Stop();
+                //    //}
+                //    //p.SinglePointData.Add("topPD", spd[0]);
+                //    //p.SinglePointData.Add("bottomPD", spd[1]);
+                //    p.SinglePointData.Add("MiniFlux1", spd[0]);//near HV supplies
+                //    //p.SinglePointData.Add("MiniFlux2", spd[1]);
+                //    //p.SinglePointData.Add("MiniFlux3", spd[2]);
+                //    //p.SinglePointData.Add("CplusV", spd[5]);
+                //    //p.SinglePointData.Add("CminusV", spd[6]);
+                //    //p.SinglePointData.Add("ValveMonV", spd[3]);
+
+                //    //hardwareController.UpdateVMonitor();
+                //    //p.SinglePointData.Add("CplusV", hardwareController.CPlusMonitorVoltage);
+                //    //hardwareController.UpdateLaserPhotodiodes();
+                //    //p.SinglePointData.Add("ProbePD", hardwareController.ProbePDVoltage);
+                //    //p.SinglePointData.Add("PumpPD", hardwareController.PumpPDVoltage);
+                //    //hardwareController.UpdateMiniFluxgates();
+                //    //p.SinglePointData.Add("MiniFlux1", hardwareController.MiniFlux1Voltage);
+                //    //p.SinglePointData.Add("MiniFlux2", hardwareController.MiniFlux2Voltage);
+                //    //p.SinglePointData.Add("MiniFlux3", hardwareController.MiniFlux3Voltage);
+                //    //hardwareController.ReadIMonitor();
+                //    //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent);
+                //    //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                //    p.SinglePointData.Add("WestCurrent", spd[1]);//p.SinglePointData.Add("WestCurrent", hardwareController.WestCurrent);
+                //    p.SinglePointData.Add("EastCurrent", spd[2]); //p.SinglePointData.Add("EastCurrent", hardwareController.EastCurrent);
+                //    //hardwareController.UpdatePiMonitor();
+                //    //p.SinglePointData.Add("piMonitor", hardwareController.PiFlipMonVoltage);
+                //    //p.SinglePointData.Add("CminusV", hardwareController.CMinusMonitorVoltage);
+
+                //    // Hopefully the leakage monitors will have finished reading by now.
+                //    // We join them, read out the data, and then launch another asynchronous
+                //    // acquisition. [If this is the first shot of the block, the leakage monitor
+                //    // measurement will have been launched in AcquisitionStarting() ].
+                //    //hardwareController.WaitForIMonitorAsync();
+                //    //p.SinglePointData.Add("NorthCurrent", hardwareController.NorthCurrent); 
+                //    //p.SinglePointData.Add("SouthCurrent", hardwareController.SouthCurrent);
+                //    //hardwareController.UpdateIMonitorAsync();
+
+                //    // randomise the Ramsey phase
+                //    // TODO: check whether the .NET rng is good enough
+                //    // TODO: reference where this number comes from
+                //    //double d = 2.3814 * (new Random().NextDouble());
+                //    //hardwareController.SetScramblerVoltage(d);
+
+                //    b.Points.Add(p);
+                //    Console.WriteLine("Finished EDMPoint");
+                //    // update the front end
+                //    Controller.GetController().GotPoint(point, p);
+
+                //    timer3.Stop();
+                //    Console.WriteLine($"Scannng and adding the single point data took {timer3.ElapsedMilliseconds} ms.");
+
+                //    if (CheckIfStopping())
+                //    {
+                //        // release hardware
+                //        AcquisitionStopping();
+                //        // signal anybody waiting on the lock that we're done
+                //        Monitor.Pulse(MonitorLockObject);
+                //        Monitor.Exit(MonitorLockObject);
+                //        return;
+                //    }
+                //}
+
+            }
+            catch (Exception e)
 			{
 				// try and stop the experiment gracefully
 				try
@@ -886,7 +1208,7 @@ namespace EDMBlockHead.Acquire
             inputs.RawSampleRate = 10000; 
             inputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime"); // Classic used ~700
             inputs.GateLength = 1200; //Classic used 280
-            inputs.CCDEnableLength = 100; 
+            inputs.CCDEnableLength = 100;
 
             ScannedAnalogInput detectorA = new ScannedAnalogInput();
             detectorA.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["detectorA"];
@@ -1343,9 +1665,14 @@ namespace EDMBlockHead.Acquire
 			// copy running parameters into the BlockConfig
 			StuffConfig();
 
-            // prepare the inputs
-            inputTask = new Task("BlockHead analog input");
+            // Create the Tasks
+            inputTask = new Task("AnalogInput");
+            counterTaskCCD = new Task("ccdEnableGateOutput");
+            CCDAcquireStatusTask = new Task("ccdReadyStatusInput");
+            CCDReadyStatusTask = new Task("ccdAcquireStatusInput");
+            TaskCompleteTask = new Task("tasksCompleteOutput");
 
+            // Set up the inputTask Channel
             foreach (ScannedAnalogInput i in inputs.Channels)
                 i.Channel.AddToTask(
                     inputTask,
@@ -1366,27 +1693,9 @@ namespace EDMBlockHead.Acquire
                 DigitalEdgeStartTriggerEdge.Rising
                 );
 
-            //shirley add below on 09/07
-            CheckCCDStatusTask = new NationalInstruments.DAQmx.Task();
-            string ttlChannel = (string)Environs.Hardware.GetInfo("analogTrigger3"); //shirley add 09/07
- 
-            CheckCCDStatusTask.DIChannels.CreateChannel(
-                ttlChannel,
-                "TTLCheck",
-                ChannelLineGrouping.OneChannelForEachLine
-            );
-
-            if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
-            if (!Environs.Debug) CheckCCDStatusTask.Control(TaskAction.Verify);
-            inputReader = new AnalogMultiChannelReader(inputTask.Stream);
-            CCDInputReader = new DigitalSingleChannelReader(CheckCCDStatusTask.Stream);
-            ConfigureSinglePointAnalogInputs();
-
-            counterTaskCCD = new Task("CCD enable gate");
-
-            CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
-
+            // set up the CCD counterTask Channel.
             // Configure counter for 1 TTL pulse per shot
+            CounterChannel pulseChannel = (CounterChannel)Environs.Hardware.CounterChannels["cameraEnabler"];
             counterTaskCCD.COChannels.CreatePulseChannelTicks(
                 pulseChannel.PhysicalChannel,
                 pulseChannel.Name,
@@ -1399,17 +1708,67 @@ namespace EDMBlockHead.Acquire
 
             counterTaskCCD.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
 
-            // Trigger on same trigger as input task
             counterTaskCCD.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
-                (string)Environs.Hardware.GetInfo("analogTrigger2"),
+                (string)Environs.Hardware.GetInfo("analogTrigger0"),
                 DigitalEdgeStartTriggerEdge.Rising
             );
+            
+            Console.WriteLine("CCD CounterTask has been configured.");
 
-            // Single pulse per shot
+
+            // Set up CCD Ready Status Channel 
+            string CCDTTLChannel = (string)Environs.Hardware.GetInfo("ccdDigitalIn");
+            CCDReadyStatusTask.DIChannels.CreateChannel(
+                CCDTTLChannel,
+                "ccdReadyStatusTTL",
+                ChannelLineGrouping.OneChannelForEachLine
+            );
+            Console.WriteLine("CCD ready status Task has been configured.");
+
+            // Set up the CCD Acquire Status Channel
+             CCDAcquireStatusTask.DIChannels.CreateChannel(
+                CCDTTLChannel,
+                "ccdReadyStatusTTL",
+                ChannelLineGrouping.OneChannelForEachLine
+                );
+
+            CCDAcquireStatusTask.Timing.ConfigureSampleClock(
+                "",
+                inputs.RawSampleRate,
+                SampleClockActiveEdge.Rising,
+                SampleQuantityMode.FiniteSamples,
+                inputs.GateLength
+                );
+
+            CCDAcquireStatusTask.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+               (string)Environs.Hardware.GetInfo("analogTrigger0"),
+               DigitalEdgeStartTriggerEdge.Rising
+               );
+            Console.WriteLine("CCD acquire status Task has been configured.");
+
+            // Set up digital output task for the Task Complete 
+            string digitalOutputChannelName = (string)Environs.Hardware.GetInfo("pfiTrigger3");
+            TaskCompleteTask.DOChannels.CreateChannel(
+                digitalOutputChannelName, 
+                "DigitalOutLine", 
+                ChannelLineGrouping.OneChannelForAllLines);
+            Console.WriteLine("Digital Out Task has been configured.");
+
+            // Verify the Tasks now before calling them in the main code. This can give more meaniful error messages
+            if (!Environs.Debug) inputTask.Control(TaskAction.Verify);
             if (!Environs.Debug) counterTaskCCD.Control(TaskAction.Verify);
+            if (!Environs.Debug) CCDReadyStatusTask.Control(TaskAction.Verify);
+            if (!Environs.Debug) CCDAcquireStatusTask.Control(TaskAction.Verify);
+            if (!Environs.Debug) TaskCompleteTask.Control(TaskAction.Verify);
 
-            //counterWriter = new CounterSingleChannelWriter(counterTaskCCD.Stream);
-            Console.WriteLine("CounterTaskCCD has been configured.");
+            // Set up readers for the relevant Tasks 
+            inputReader = new AnalogMultiChannelReader(inputTask.Stream);
+            CCDReadyStatusReader = new DigitalMultiChannelReader(CCDReadyStatusTask.Stream);
+            CCDAcquireStatusReader = new DigitalMultiChannelReader(CCDAcquireStatusTask.Stream);
+            TaskCompleteWriter = new DigitalSingleChannelWriter(TaskCompleteTask.Stream);
+
+            ConfigureSinglePointAnalogInputs();
+
             // End
 
             // set the leakage monitor measurement time to 5ms.
@@ -1542,9 +1901,11 @@ namespace EDMBlockHead.Acquire
 		{
 			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
 			inputTask.Dispose();
-            counterTaskCCD.Dispose();   
+            counterTaskCCD.Dispose();
+            CCDAcquireStatusTask.Dispose();
+            CCDReadyStatusTask.Dispose(); 
+            TaskCompleteTask.Dispose();
             singlePointInputTask.Dispose();
-            CheckCCDStatusTask.Dispose(); //shirley add 09/07
         }
 
 		private bool CheckIfStopping() 

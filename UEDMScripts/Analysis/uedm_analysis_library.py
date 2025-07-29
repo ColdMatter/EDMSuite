@@ -7,7 +7,7 @@ import sys
 import os
 from System.IO import Path
 import numpy as np
-import git
+# import git
 from matplotlib import pyplot as plt
 import pandas as pd
 import matplotlib.dates as mdates
@@ -17,8 +17,10 @@ from matplotlib.pyplot import cm
 from scipy.special import erfcinv
 import datetime
 
-repo = git.Repo(os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
-RootFolder = repo.working_tree_dir
+EDMSuiteFolder = os.environ["EDMSuite"]
+
+# repo = git.Repo(EDMSuiteFolder)#os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
+# RootFolder = repo.working_tree_dir
 
 # Load some system assemblies that we'll need
 clr.AddReference("System.Drawing")
@@ -28,7 +30,7 @@ clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs, assumes you are executing this function from within
 # the EDMSuite Git repository
-clr.AddReference(Path.GetFullPath(RootFolder + r"\SEDM4\Libraries\SharedCode.dll"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"SEDM4\Libraries\SharedCode.dll"))
 import System
 import Data
 

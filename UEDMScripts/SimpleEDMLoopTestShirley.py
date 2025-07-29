@@ -102,9 +102,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState): #used to have,
 	##lf1Wave.Name = "LF1"
 	##mwWave = bc.GetModulationByName("MW").Waveform
 	##mwWave.Name = "MW"
-	# ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
-	# bc.GetModulationByName("B").Waveform = ws["B"]
-	# bc.GetModulationByName("DB").Waveform = ws["DB"]
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
+	bc.GetModulationByName("B").Waveform = ws["B"]
+	bc.GetModulationByName("DB").Waveform = ws["DB"]
 
 	# change the inversions of the static codes E
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
