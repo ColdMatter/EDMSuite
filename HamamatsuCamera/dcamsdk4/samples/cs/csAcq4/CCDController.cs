@@ -842,7 +842,7 @@ namespace csAcq4
 
                 // ** output trigger settings ** shirley changes on 23/06
                 MyDcamProp numOutputTrigger = new MyDcamProp(mydcam, DCAMIDPROP.NUMBEROF_OUTPUTTRIGGERCONNECTOR);
-                if (!numOutputTrigger.setvalue(3)) // Set number of output trigger connectors to 1
+                if (!numOutputTrigger.setvalue(3)) // Set number of output trigger connectors to 3
                 {
                     MyShowStatusNG("Failed to set number of output trigger connectors", numOutputTrigger.m_lasterr);
                     return false; // Exit on failure
@@ -2006,13 +2006,19 @@ namespace csAcq4
                 // Start acquisition for current snap
                 m_cap_stopping = false;
 
-                //TTL HIGH
-                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
+                //trigger ready - TTL HIGH
+                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.TRIGGERREADY))
                 {
                     MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
                     continue;
                 }
-                Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
+                Console.WriteLine("Output trigger set to Trigger Ready, ready to receive next trigger...");
+                //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
+                //{
+                //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                //    continue;
+                //}
+                //Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
                 mydcam.m_capmode = DCAMCAP_START.SNAP;
 
                 if (!mydcam.cap_start(this))
@@ -2031,7 +2037,6 @@ namespace csAcq4
                 using (mydcamwait = new MyDcamWait(ref mydcam))
                 {
 
-
                     for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
                     {
                         // Check if stop acquisition has been triggered
@@ -2047,7 +2052,7 @@ namespace csAcq4
                         DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
                         DCAMWAIT eventhappened = DCAMWAIT.NONE;
 
-                        int timeoutMs = 30000; // in ms //added by rhys 10/07
+                        int timeoutMs = 15000; // in ms //added by rhys 10/07
                         mydcamwait.SetTimeout(timeoutMs); //added by rhys 10/07
 
                         Stopwatch waitTimer = Stopwatch.StartNew(); //added by rhys 10/07
@@ -2069,33 +2074,34 @@ namespace csAcq4
                                 break;
                             }
                             //TTL LOW
-                            if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                            {
-                                MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Output trigger set to low for not available now...");
-                            }
+                            //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                            //{
+                            //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                            //}
+                            //else
+                            //{
+                            //    Console.WriteLine("Output trigger set to low for acquiring data...");
+                            //}
+
                             continue;
                         }
 
                         waitTimer.Stop(); //added by rhys 10/07
                         Console.WriteLine($"Frame {frameIndex + 1} ready after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
 
-                        if (frameIndex == 0) 
-                        {
-                            //TTL LOW
-                            if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                            {
-                                MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Output trigger set to low for acquiring data...");
-                            }
+                        //if (frameIndex == 0) 
+                        //{
+                        //    //TTL LOW
+                        //    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                        //    {
+                        //        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                        //    }
+                        //    else
+                        //    {
+                        //        Console.WriteLine("Output trigger set to low for acquiring data...");
+                        //    }
 
-                        }
+                        //}
 
                         if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
 
@@ -2130,6 +2136,16 @@ namespace csAcq4
 
                 }
 
+                //TTL LOW
+                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                {
+                    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                }
+                else
+                {
+                    Console.WriteLine("Output trigger set to low for acquiring data...");
+                }
+
                 // Store frames of this snap
                 imageData.Add(snapFrames);
 
@@ -2146,14 +2162,6 @@ namespace csAcq4
                 }
 
                 mydcam.cap_stop();
-
-                // shirley adds on 08/07 to configure the output trigger to be high when the camera is available to receive the next external trigger (idle)
-                //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
-                //{
-                //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                //    continue;
-                //}
-                //Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
 
             }
             Timer.Stop();
