@@ -78,6 +78,41 @@ def GetTOFs(Scan):
 
     return TimeOn, DataOn, TimeOff, DataOff
 
+def GetTOFsSPP(Scan):
+    """Returns the TOFs of a scan. The datasets are On/Off shots and for each 
+    detector (TOFs in one shot)"""
+    SampleRate = GetTOFSampleRate(Scan)
+    NrScanPoints = len(Scan.Points)
+    NrOnShotsPerPoint = len(Scan.Points[0].OnShots)
+    NrOffShotsPerPoint = len(Scan.Points[0].OffShots)
+    NrTOFs = NrOnShotsPerPoint*NrScanPoints
+    NrDetectors = len(Scan.Points[0].OnShots[0].TOFs)
+    TimeOn = np.array(Scan.Points[0].OnShots[0].TOFs[0].Times)/SampleRate
+    DataOn = np.empty((TimeOn.shape[0], NrScanPoints, NrOnShotsPerPoint, NrDetectors))*np.nan
+    Index = 0
+    for indPoint in range(NrScanPoints):
+        for indOn in range(NrOnShotsPerPoint):
+            for indDet in range(NrDetectors):
+                Data = np.array(Scan.Points[indPoint].OnShots[indOn].TOFs[indDet].Data)
+                DataOn[:, indPoint, indOn, indDet] = Data
+            Index = Index+1
+
+    if NrOffShotsPerPoint == 0:
+        TimeOff = []
+        DataOff = []
+    else:
+        Index = 0
+        TimeOff = np.array(Scan.Points[0].OffShots[0].TOFs[0].Times)/SampleRate
+        DataOff = np.empty((TimeOn.shape[0], NrScanPoints, NrOnShotsPerPoint, NrDetectors))*np.nan
+        for indPoint in range(NrScanPoints):
+            for indOn in range(NrOffShotsPerPoint):
+                for indDet in range(NrDetectors):
+                    Data = np.array(Scan.Points[indPoint].OffShots[indOn].TOFs[indDet].Data)
+                    DataOff[:, indPoint, indOn, indDet] = Data
+                Index = Index+1
+
+    return TimeOn, DataOn, TimeOff, DataOff
+
 def DownsampleTOFsInScan(Scan, DownSampleRate):
     """Returns the TOFs of a scan, but downsampled to reduce the memory usage.
     The datasets are On/Off shots and for each detector (TOFs in one shot)"""
@@ -147,9 +182,12 @@ def GetShotTimestamps(Scan):
         T = Scan.Points[i].OnShots[0].TimeStamp
         TimeStamps[i] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
     return TimeStamps
-
-
 #%% Functions for the TOF
+def BgSubTOF(Data,Time,StartBg,StopBg):
+    Indi= (Time*1000>StartBg) & (Time*1000 < StopBg)
+    BgMean=np.mean(Data[Indi,:,:,:],axis=0)
+    return (Data-BgMean)
+
 def GetCounts(Data,Time,Start,Stop):
     Indi = (Time*1000>Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
@@ -157,12 +195,31 @@ def GetCounts(Data,Time,Start,Stop):
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
     return Counts, TimeWindow
 
+def GetCountsSPP(Data,Time,Start,Stop):
+    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    IndiArray = np.where(Indi)[0]
+    RawCounts = np.sum(Data[Indi,:,:,:], axis=0)
+    
+    MeanCounts = np.mean(RawCounts,axis=1)
+    StderrCounts = np.std(RawCounts,axis=1)/np.sqrt(RawCounts.shape[1])
+    TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
+    return MeanCounts, StderrCounts, TimeWindow
+
 def GetSignalwithBackgroundSubtraction(Data,Time,StartSig,StopSig,StartBg,StopBg):
     [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
     [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,StartSig,StopSig)
     BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
     Signal = SignalAndBg - BackgroundScaled
     return [Signal, BackgroundScaled]
+
+def GetSignalwithBackgroundSubtractionSPP(Data,Time,StartSig,StopSig,StartBg,StopBg):
+    [MeanBackground, StderrBackground, BgTimeWindow] = GetCountsSPP(Data,Time,StartBg,StopBg)
+    [MeanSignalAndBg, StderrSignalAndBg, SignalTimeWindow] = GetCountsSPP(Data,Time,StartSig,StopSig)
+    BackgroundScaled = MeanBackground*SignalTimeWindow/BgTimeWindow
+    ErrBackgroundScaled = StderrBackground*SignalTimeWindow/BgTimeWindow
+    MeanSignal = MeanSignalAndBg - BackgroundScaled
+    StderrSignal = np.sqrt(StderrSignalAndBg**2 + ErrBackgroundScaled**2)
+    return [MeanSignal, StderrSignal, BackgroundScaled]
 
 def DownsampleTOF(Data, Time, NrSamples):
     NrRows = int(len(Data)/NrSamples)
