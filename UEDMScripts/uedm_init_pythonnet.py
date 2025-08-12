@@ -39,6 +39,7 @@ sm = System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1191/con
 bh = System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem')
 hc = System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/UEDMController.rem')
 tcl = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem')
+tclLattice = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://155.198.194.212:1190/controller.rem')
 pl = System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem')
 fl = System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem')
 

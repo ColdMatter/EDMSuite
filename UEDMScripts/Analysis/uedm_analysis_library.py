@@ -15,8 +15,10 @@ import time
 import glob
 from matplotlib.pyplot import cm
 from scipy.special import erfcinv
+from scipy.signal import find_peaks
 import datetime
 
+# Set the EDMSuite folder using an environmental variable in the computer
 EDMSuiteFolder = os.environ["EDMSuite"]
 
 # repo = git.Repo(EDMSuiteFolder)#os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
@@ -33,6 +35,14 @@ clr.AddReference("System.Xml")
 clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"SEDM4\Libraries\SharedCode.dll"))
 import System
 import Data
+
+#%% Functions related to finding files
+def computerCheck():
+    if (os.environ['COMPUTERNAME']=='CENTAUR'):
+        return True
+    else:
+        return False
+    
 
 
 #%% Functions related to Scan objects
@@ -567,3 +577,11 @@ def MovingAverage(data,N):
             ma[ind] = np.mean(datacut[~np.isnan(datacut)])
     return ma
 
+def gaussian(x, a, mu, sigma, c): 
+    return (a*np.exp(-(x-mu)**2/(2*sigma**2))+c) 
+
+def fitGaussian(voltage,signal):
+    first_try = [max(signal)-min(signal), voltage[np.argmax(signal)], (max(voltage)-min(voltage))/5, ((max(signal)-min(signal))/5)+min(signal)]
+    popt, pcov = curve_fit(gaussian, voltage, signal, p0=first_try)
+    perr=np.sqrt(np.diag(pcov))
+    return [popt,perr]
