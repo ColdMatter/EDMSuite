@@ -23,6 +23,7 @@ namespace DAQ.HAL
             Boards.Add("mag", "/MAG_PXI_6229");
             Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
+            Boards.Add("usbTherm", "/Dev7");
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -32,6 +33,7 @@ namespace DAQ.HAL
             string magBoard = (string)Boards["mag"];
             string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
+            string usbTherm = (string)Boards["usbTherm"];
 
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -78,8 +80,8 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
             //Info.Add("ccdDigitalIn", daqBoard + "/port0/line1"); //rhys add 20/07
-            Info.Add("ccdDigitalIn", daqBoard + "/port0/line1:2"); //rhys add 28/07 - Combine both CCD status lines
-
+            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
+            AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19); //labelled as PFI12 - this is the counter channel for PXIe 6363
 
             // Scanmaster config
             Info.Add("ScanMasterConfig", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Settings\\Scanmaster\\2024_July_Rhys.xml");
@@ -89,16 +91,16 @@ namespace DAQ.HAL
 
 
             // map the analog input channels for "daq" card
-            AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31
-            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"   unused at the moment, should be renamed
+            AddAnalogInputChannel("Temp1", daqBoard + "/ai0", AITerminalConfiguration.Rse);//Pin 31 //Note on 29/07, this port isnt connected to anything. 
+            AddAnalogInputChannel("pressureGauge_beamline", daqBoard + "/ai1", AITerminalConfiguration.Rse);//Pin 31. Used to be "Temp2"   unused at the moment, should be renamed //Note on 29/07, this port isnt connected to anything. 
             AddAnalogInputChannel("TempRef", daqBoard + "/ai2", AITerminalConfiguration.Rse);//Pin 66
-            //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment
-            AddAnalogInputChannel("upstreamPMT", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68   Used to be detector1
+            //AddAnalogInputChannel("pressureGauge_source", daqBoard + "/ai3", AITerminalConfiguration.Rse);//Pin 33 pressure reading at the moment //Note on 29/07, this port isnt connected to anything. 
+            AddAnalogInputChannel("upstreamPMT", daqBoard + "/ai4", AITerminalConfiguration.Rse);//Pin 68   Used to be detector1 //Note on 29/07, this port is labelled as PMT1
             //AddAnalogInputChannel("detector1", TCLBoard + "/ai6", AITerminalConfiguration.Rse); //trying another card because of cross talks
             //AddAnalogInputChannel("detector1", UEDMHardwareControllerBoard + "/ai10", AITerminalConfiguration.Rse); //trying another card because of cross talks
-            AddAnalogInputChannel("detectorA", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34 Used to be detector3
-            AddAnalogInputChannel("detectorB", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin    Used to be detector2
-            AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28
+            AddAnalogInputChannel("detectorA", daqBoard + "/ai6", AITerminalConfiguration.Rse);//Pin 34 Used to be detector3 //Note on 29/07, this port is labelled as PMT3
+            AddAnalogInputChannel("detectorB", daqBoard + "/ai5", AITerminalConfiguration.Rse);//Pin    Used to be detector2 //Note on 29/07, this port is labelled as PMT2
+            AddAnalogInputChannel("cavitylong", daqBoard + "/ai7", AITerminalConfiguration.Rse);//Pin 28 
             //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai9", AITerminalConfiguration.Rse);
@@ -173,7 +175,9 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
             AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
-            AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19);
+
+            //UsbThermocouple channels
+            AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
 
             //Magnetic feedback channels
             AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);
@@ -228,7 +232,7 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("v2laser", TCLOutBoard + "/ao4", 0, 5);
 
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
-            AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21
+            AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21 ////Note on 29/07, this port is labelled as V2 laser
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));

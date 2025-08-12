@@ -1892,7 +1892,9 @@ namespace UEDMHardwareControl
             labelCCDShotCount.Enabled = enabled;
         }
 
-
-
+        private void updateFeedthroughTempButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFeedthroughTempUI();
+        }
     }
 }
