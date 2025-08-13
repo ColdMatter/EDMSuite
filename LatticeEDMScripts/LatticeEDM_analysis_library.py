@@ -75,13 +75,27 @@ def GetScanSettings(Scan):
     V0time = Scan.ScanSettings["pg:DurationV0"]
     detectors = Scan.ScanSettings["shot:channel"]
     
+    repumpDelay = Scan.ScanSettings["pg:repumpDelay"]
+    repumpDuration = Scan.ScanSettings["pg:repumpDuration"]
+    shutterslowDelay = Scan.ScanSettings["pg:shutterslowdelay"]
+    
+    Switch = Scan.ScanSettings["switch:switchActive"]
+    
+    bfieldDuration = Scan.ScanSettings["pg:bfieldDuration"]
+    bfieldDelay = Scan.ScanSettings["pg:bfieldDelay"]
+    v1toMOTdelay = Scan.ScanSettings["pg:v2OffDupoint"]
+    
     Tconv = 1/sampleRate * 1000 #convert to ms
     
     Settings = {"pointsPerScan":pointsPerScan, "start":ScanStart, \
                              "end":ScanEnd, "channel":channel, "param":param, \
                             "clockFreq":clockFreq, "sampleRate":sampleRate, \
                             "Tconv":Tconv, "shotsPerPoint":shotsPerPoint, \
-                            "slowing time":V0time, "detectors":detectors}
+                            "slowing time":V0time, "detectors":detectors,\
+                            "repumpDelay":repumpDelay, "repumpDuration":repumpDuration,\
+                            "shutterslowDelay":shutterslowDelay, "v1 to MOT": v1toMOTdelay,\
+                            "switch":Switch, "B field duration": bfieldDuration,\
+                            "B field delay":bfieldDelay}
     
     return Settings
 
@@ -268,18 +282,39 @@ def GetGatedAvgCounts(Scan, TOFData,Time,Start,Stop):
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
     return MeanCounts, StderrCounts, TimeWindow
 
-def PlotGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,error=False, display=True):
+def GatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
+                SigStart,SigStop,BkgStart,BkgStop):
+    "Get gated counts against scanned parameter, with background subtraction"
+    OnMeanCounts, OnStderrCounts, OnTimeWindow = GetGatedAvgCounts(Scan,\
+                                        TOFDataOn,TimeOn,SigStart,SigStop)
+    OnBkgMeanCounts, OnBkgStderrCounts, OnBkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                        TOFDataOn,TimeOn,BkgStart,BkgStop)
+    OnBkgSub = OnMeanCounts - OnBkgMeanCounts * OnTimeWindow/OnBkgTimeWindow
+
+    OffMeanCounts, OffStderrCounts, OffTimeWindow = GetGatedAvgCounts(Scan,\
+                                        TOFDataOff,TimeOff,SigStart,SigStop)
+    OffBkgMeanCounts, OffBkgStderrCounts, OffBkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                        TOFDataOff,TimeOff,BkgStart,BkgStop)
+    OffBkgSub = OffMeanCounts - OffBkgMeanCounts * OffTimeWindow/OffBkgTimeWindow
+    
+    return OnBkgSub, OffBkgSub
+
+def PlotGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,\
+                       error=False, display=True, extraTitle=""):
     "Plot gated counts against scanned parameter, with background subtraction"
-    MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop)
-    BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = GetGatedAvgCounts(Scan,TOFData,Time,BkgStart,BkgStop)
+    MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,TOFData,\
+                                                        Time,SigStart,SigStop)
+    BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                                TOFData,Time,BkgStart,BkgStop)
     BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
     
     #Scan params for plotting
     ScannedParam = np.array(Scan.ScanParameterArray)
     Settings = GetScanSettings(Scan)
     
-    title = "Gated TOF over " + Settings["param"] + " with " + str(Settings["shotsPerPoint"]) \
-        + " shots per point \n from " + str(SigStart) + "ms to " + str(SigStop) + "ms gate"
+    title = "Gated TOF over " + Settings["param"] + " with " +\
+        str(Settings["shotsPerPoint"]) + " shots per point \n from " + \
+        str(SigStart) + "ms to " + str(SigStop) + "ms gate" + extraTitle
     if Settings["param"] == 'setpoint':
         Xunit = " (V)"
     else:
@@ -297,10 +332,47 @@ def PlotGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,error
     if display:
         plt.show()
     
+    plt.close()
+    
+    return fig
+
+def PlotGatedAvgCountsWM(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,\
+                       error=False, display=True, extraTitle=""):
+    "Plot gated counts against scanned parameter, with background subtraction"
+    MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,TOFData,\
+                                                        Time,SigStart,SigStop)
+    BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                                TOFData,Time,BkgStart,BkgStop)
+    BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
+    
+    #Scan params for plotting
+    f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
+    Settings = GetScanSettings(Scan)
+    
+    title = "Gated TOF over " + Settings["param"] + " with " +\
+        str(Settings["shotsPerPoint"]) + " shots per point \n from " + \
+        str(SigStart) + "ms to " + str(SigStop) + "ms gate" + extraTitle
+    
+    xlabel = "Relative frequency from %.8g THz"%f_iniTHz
+    ylabel = "Gated LIF (ms.V)"
+    
+    fig = plt.figure()
+    plt.plot(f_relMHz, BkgSub, '.')
+    if error==True:
+        plt.errorbar(f_relMHz, BkgSub, yerr = StderrCounts, fmt=" ")
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    if display:
+        plt.show()
+    
+    plt.close()
+    
     return fig
 
 def PlotGatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
-                SigStart,SigStop,BkgStart,BkgStop,error=False, display=True):
+                SigStart,SigStop,BkgStart,BkgStop,error=False, display=True,\
+                    extraTitle=""):
     "Plot gated counts against scanned parameter, with background subtraction"
     OnMeanCounts, OnStderrCounts, OnTimeWindow = GetGatedAvgCounts(Scan,\
                                         TOFDataOn,TimeOn,SigStart,SigStop)
@@ -318,13 +390,24 @@ def PlotGatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
     ScannedParam = np.array(Scan.ScanParameterArray)
     Settings = GetScanSettings(Scan)
     
-    title = "Gated TOF over " + Settings["param"] + " with " + str(Settings["shotsPerPoint"]) \
-        + " shots per point \n from " + str(SigStart) + "ms to " + str(SigStop) + "ms gate"
+    if isinstance(Settings["param"], str):
+        title = "Gated TOF over " + Settings["param"] + " with " +\
+            str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+            str(SigStart) + "ms to " + str(SigStop) + "ms gate" + extraTitle
+    else:
+        title = "Gated TOF over " +\
+            str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+            str(SigStart) + "ms to " + str(SigStop) + "ms gate" + extraTitle
     if Settings["param"] == 'setpoint':
         Xunit = " (V)"
     else:
         Xunit = ""
-    xlabel = Settings["channel"] + " " + Settings["param"] + Xunit
+    if isinstance(Settings["param"], str):
+        if isinstance(Settings["channel"], str):
+            xlabel = Settings["channel"] + " " + Settings["param"] + Xunit
+    else:
+        xlabel = "V0 slowing duration (us)"
+        
     ylabel = "Gated LIF (ms.V)"
     
     fig = plt.figure()
@@ -340,10 +423,13 @@ def PlotGatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
     if display:
         plt.show()
     
+    plt.close()
+    
     return fig
 
 def PlotGatedAvgCountsOnOffWM(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
-                SigStart,SigStop,BkgStart,BkgStop,error=False, display=True):
+                SigStart,SigStop,BkgStart,BkgStop,error=False, display=True,\
+                    extraTitle=""):
     "Plot gated counts against scanned parameter, with background subtraction"
     OnMeanCounts, OnStderrCounts, OnTimeWindow = GetGatedAvgCounts(Scan,\
                                         TOFDataOn,TimeOn,SigStart,SigStop)
@@ -361,8 +447,9 @@ def PlotGatedAvgCountsOnOffWM(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
     f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
     Settings = GetScanSettings(Scan)
     
-    title = "Gated TOF over " + Settings["param"] + " with " + str(Settings["shotsPerPoint"]) \
-        + " shots per point \n from " + str(SigStart) + "ms to " + str(SigStop) + "ms gate"
+    title = "Gated TOF over " + Settings["param"] + " with " +\
+        str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+            str(SigStart) + "ms to " + str(SigStop) + "ms gate" + extraTitle
     
     xlabel = "Relative frequency from %.8g THz"%f_iniTHz
     ylabel = "Gated LIF (ms.V)"
@@ -379,6 +466,8 @@ def PlotGatedAvgCountsOnOffWM(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
     plt.legend()
     if display:
         plt.show()
+    
+    plt.close()
     
     return fig
 
@@ -439,6 +528,425 @@ def DownsampleTOF(Data, Time, NrSamples):
     DownsampledTime = Time[int(NrSamples/2)::NrSamples]
     return DownsampledTime, DownsampledData
 
+#%% Functions for slowing
+def ExpectedVelocity(distance, gateCenter):
+    """
+    Calculate expected velocity of molecules from Doppler effect
+
+    Parameters
+    ----------
+    distance : float
+        Distance from source to detector, in meters.
+    gateCenter : float
+        Center of signal gate, in ms.
+
+    Returns
+    -------
+    Expected velocity, in m/s
+
+    """
+    return distance/gateCenter * 1000
+
+def VelocityfromSetpoint(meanSetpoint, meanSetpointerr, refSetpoint, refSetpointerr, \
+                         TCLconv, TCLconverr, wavelength):
+    #in m/s
+    v = (meanSetpoint - refSetpoint) * TCLconv * (-1) * np.sqrt(2) *wavelength * 1e-3
+    
+    fac = TCLconv * (-1) * np.sqrt(2) *wavelength * 1e-3
+    fac2 = (meanSetpoint - refSetpoint) * (-1) * np.sqrt(2) *wavelength * 1e-3
+    err = np.sqrt((fac*meanSetpointerr)**2 + (-fac*meanSetpointerr)**2 +\
+                  (fac2*TCLconverr)**2)
+    
+    return v, err
+
+def VelocityfromFreq(meanFreq, meanFreqerr, refFreq, refFreqerr, \
+                         f_iniTHz, wavelength):
+    #in m/s
+    v = (meanFreq*1e-3+f_iniTHz - refFreq) * (-1) * np.sqrt(2) *wavelength #freqs are in THz
+    
+    fac = np.sqrt(2) *wavelength * 1e-3
+    err = np.sqrt((fac*meanFreqerr)**2 + (-fac*meanFreqerr)**2)
+    
+    return v, err
+
+def VelocityOnOff(FitResultsOn, FitResultsOff, refSetpoint, refSetpointerr, v_exp,\
+                  TCLconv, TCLconverr, wavelength, slowing_time, gateCenter, gateLength,\
+                      file='', display=True):
+    meanSPOn = []
+    meanSPOnerr = []
+    meanSPOff = []
+    meanSPOfferr = []
+    for i in range(0, len(FitResultsOn)):
+        meanSPOn.append(FitResultsOn[i]["best fit"][0])
+        meanSPOnerr.append(FitResultsOn[i]["error"][0])
+        meanSPOff.append(FitResultsOff[i]["best fit"][0])
+        meanSPOfferr.append(FitResultsOff[i]["error"][0])
+
+    meanSPOn = np.array(meanSPOn)
+    meanSPOnerr = np.array(meanSPOnerr)
+    meanSPOff = np.array(meanSPOff)
+    meanSPOfferr = np.array(meanSPOfferr)
+
+    meanVOn, meanVOnerr = VelocityfromSetpoint(meanSPOn, meanSPOnerr,\
+                        refSetpoint, refSetpointerr,\
+                            TCLconv, TCLconverr, wavelength)
+        
+    meanVOff, meanVOfferr = VelocityfromSetpoint(meanSPOff, meanSPOfferr,\
+                        refSetpoint, refSetpointerr,\
+                            TCLconv, TCLconverr, wavelength)
+    
+    fig = plt.figure()
+    plt.plot(gateCenter, meanVOn, '.', label="On", markersize=15)
+    plt.errorbar(gateCenter, meanVOn, yerr=meanVOnerr, fmt=' ', capsize=3)
+    plt.plot(gateCenter, meanVOff, '.', label="Off", markersize=15)
+    plt.errorbar(gateCenter, meanVOff, yerr=meanVOfferr, fmt=' ', capsize=3)
+    plt.plot(gateCenter, v_exp, label="Expected unslowed")
+    plt.title("Velocity changes of molecules in different gates, \
+              \n %g ms slowing, %g ms gate"%(slowing_time, gateLength) +\
+                  ", " + file)
+    plt.xlabel("Gate center (ms)")
+    plt.ylabel("Velocity (m/s)")
+    plt.legend()
+    if display:
+        plt.show(fig)
+        
+    plt.close()
+    
+    return fig, meanVOn, meanVOnerr, meanVOff, meanVOfferr
+
+def VelocityOnOffWM(FitResultsOn, FitResultsOff, refFreq, refFreqerr, v_exp,\
+                  f_iniTHz, wavelength, slowing_time, gateCenter, gateLength,\
+                      file=''):
+    meanSPOn = []
+    meanSPOnerr = []
+    meanSPOff = []
+    meanSPOfferr = []
+    for i in range(0, len(FitResultsOn)):
+        meanSPOn.append(FitResultsOn[i]["best fit"][0])
+        meanSPOnerr.append(FitResultsOn[i]["error"][0])
+        meanSPOff.append(FitResultsOff[i]["best fit"][0])
+        meanSPOfferr.append(FitResultsOff[i]["error"][0])
+
+    meanSPOn = np.array(meanSPOn)
+    meanSPOnerr = np.array(meanSPOnerr)
+    meanSPOff = np.array(meanSPOff)
+    meanSPOfferr = np.array(meanSPOfferr)
+
+    meanVOn, meanVOnerr = VelocityfromFreq(meanSPOn, meanSPOnerr,\
+                        refFreq, refFreqerr,\
+                            f_iniTHz, wavelength)
+        
+    meanVOff, meanVOfferr = VelocityfromFreq(meanSPOff, meanSPOfferr,\
+                        refFreq, refFreqerr,\
+                            f_iniTHz, wavelength)
+    
+    fig = plt.figure()
+    plt.plot(gateCenter, meanVOn, '.', label="On", markersize=15)
+    plt.errorbar(gateCenter, meanVOn, yerr=meanVOnerr, fmt=' ', capsize=3)
+    plt.plot(gateCenter, meanVOff, '.', label="Off", markersize=15)
+    plt.errorbar(gateCenter, meanVOff, yerr=meanVOfferr, fmt=' ', capsize=3)
+    plt.plot(gateCenter, v_exp, label="Expected unslowed")
+    plt.title("Velocity changes of molecules in different gates, \
+              \n %g ms slowing, %g ms gate"%(slowing_time, gateLength) +\
+                  ", " + file)
+    plt.xlabel("Gate center (ms)")
+    plt.ylabel("Velocity (m/s)")
+    plt.legend()
+    plt.show(fig)
+    plt.close()
+    
+    return fig, meanVOn, meanVOnerr, meanVOff, meanVOfferr
+
+def FitGatedTOFOn(Scan, SigStart, SigEnd, BkgStart, BkgEnd, distance,\
+                      detector=0, display=True, showTOF=False, TOFshot=20):
+    Settings = GetScanSettings(Scan)
+    ScanParams = GetScanParameterArray(Scan)
+    
+    BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
+    BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+
+    f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
+    if int(f_iniTHz) == 542:
+        #TCL_WM_cali = TCL_WM_Calibration(Data, plot=True)
+        HasWM = True
+    else:
+        HasWM = False
+        print("Wrong fibre in WM.")
+    
+    #v_exp = ExpectedVelocity(distance, np.mean(SigStart, SigEnd))
+    
+    TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = GetTOFsSPP(Scan)
+    BkgOn = np.average(DataOnSPP[detector][0][BkgStartIndex:BkgEndIndex])
+    
+    if showTOF:
+        plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[detector][TOFshot], axis=1)\
+                 -BkgOn, label="On")
+        #plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][TOFshow], axis=1)\
+        #         -BkgOff, label="Off")
+        plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
+                   ymin=np.min(DataOnSPP[detector][TOFshot])-BkgOn, \
+                   ymax=np.max(DataOnSPP[detector][TOFshot])-BkgOn,\
+                       linestyles="dashed", colors="black")
+        plt.title("TOF of the 20th scan point, averaged for all shots,\n \
+                  background subtracted")
+        plt.xlabel("time (ms)")
+        plt.ylabel("PMT signal (V)")
+        plt.ylim(-0.3, np.max(DataOnSPP[detector][TOFshot])+0.5)
+        plt.legend()
+        plt.show()
+    
+    MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,DataOnSPP[detector],\
+                                                        TimeOnSPP,SigStart,SigEnd)
+
+    BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                            DataOnSPP[detector],TimeOnSPP,BkgStart,BkgEnd)
+    BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
+
+    #% Plot gated TOF
+    GatedTOF = PlotGatedAvgCounts(Scan,DataOnSPP[detector],TimeOnSPP,SigStart,\
+                                      SigEnd,BkgStart,BkgEnd,display=False)
+    #% Fitting
+
+    FittedGatedTOFSP, fit_resultsSP = tools.FitGaussian(GatedTOF, ScanParams,\
+       BkgSub, p0=[np.mean(ScanParams), 0.5, np.max(DataOnSPP[detector][TOFshot]), 0.])
+    
+    mean_setpoint = fit_resultsSP['best fit'][0]
+    mean_setpoint_err = fit_resultsSP['error'][0]
+    print("Fit mean setpoint = %.3g +- %.2g V"%\
+           (mean_setpoint, mean_setpoint_err))    
+    
+    if HasWM:
+        GatedTOFWM = PlotGatedAvgCountsWM(Scan,DataOnSPP[detector],TimeOnSPP,SigStart,\
+                                          SigEnd,BkgStart,BkgEnd,display=False)
+        FittedGatedTOFWM, fit_resultsWM = tools.FitGaussian(GatedTOFWM, f_relMHz,\
+           BkgSub, p0=[np.mean(f_relMHz), 10., np.max(DataOnSPP[detector][TOFshot]), 0.])
+            
+        mean_freq = fit_resultsWM['best fit'][0]*1e-6 + f_iniTHz
+        mean_freq_err = fit_resultsWM['error'][0]
+        print("fit mean frequency = %.10g THz +- %.2g MHz"%\
+               (mean_freq, mean_freq_err))
+    else:
+        mean_freq = 0
+        mean_freq_err = 0
+        FittedGatedTOFWM = 0
+        print("Probe/V0 not in WM for this file")
+    
+    return mean_setpoint, mean_setpoint_err, FittedGatedTOFSP,\
+        mean_freq, mean_freq_err, FittedGatedTOFWM
+
+def FitGatedTOFperGate(Scan, dataON, timeON, dataOFF, timeOFF,\
+                       gatesStart, gatesEnd, gateC, BkgStart, BkgEnd,\
+                       HasWM, distance, display=True, plot=True, file=""):
+    Settings = GetScanSettings(Scan)
+    ScanParams = GetScanParameterArray(Scan)
+    slowing_time = Settings["slowing time"]/1000
+    f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
+    if int(f_iniTHz) == 542:
+        #TCL_WM_cali = TCL_WM_Calibration(Data, plot=True)
+        HasWM = True
+    else:
+        HasWM = False
+        print("Wrong fibre in WM."  + file)
+    
+    v_exp = ExpectedVelocity(distance, gateC)
+    
+    FitResultsOn = []
+    FitResultsOff = []
+    FittedGatedTOFs = []
+    
+    FitResultsOnWM = []
+    FitResultsOffWM = []
+    FittedGatedTOFsWM = []
+    
+    for i in range(0, len(gatesStart)):
+        OnMeanCounts, OnStderrCounts, OnTimeWindow =\
+            GetGatedAvgCounts(Scan,dataON,timeON,gatesStart[i],gatesEnd[i])
+    
+        OnBkgMeanCounts, OnBkgStderrCounts, OnBkgTimeWindow =\
+            GetGatedAvgCounts(Scan,dataON,timeON,BkgStart,BkgEnd)
+        OnBkgSub = OnMeanCounts - OnBkgMeanCounts * OnTimeWindow/OnBkgTimeWindow
+    
+        OffMeanCounts, OffStderrCounts, OffTimeWindow =\
+            GetGatedAvgCounts(Scan,dataOFF,timeOFF,gatesStart[i],gatesEnd[i])
+    
+        OffBkgMeanCounts, OffBkgStderrCounts, OffBkgTimeWindow =\
+            GetGatedAvgCounts(Scan,dataOFF,timeOFF,BkgStart,BkgEnd)
+        OffBkgSub = OffMeanCounts - OffBkgMeanCounts * OffTimeWindow/OffBkgTimeWindow
+        
+        #print("A quick look with Gaussian fit:")
+        if HasWM:
+            GatedOnOFFTOF = PlotGatedAvgCountsOnOffWM(Scan,dataON,dataOFF,\
+                     timeON,timeOFF,gatesStart[i],gatesEnd[i],BkgStart,BkgEnd,error=False,\
+                         display=False,\
+        extraTitle="of slowing duration %g ms, \n with expected mean velocity %.4g m/s"%\
+            (slowing_time, v_exp[i]) + " file" + file)
+            peakOff = f_relMHz[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
+            peakOn = f_relMHz[np.where(OnBkgSub == np.max(OnBkgSub))[0][0]]
+                
+            FittedGatedTOFWM, fit_resultsOffWM = tools.FitGaussian(GatedOnOFFTOF, f_relMHz,\
+                                OffBkgSub, p0=[peakOff, 20., 3., 0.],\
+                                    plot=plot, Toprint=False, display=display)
+            FittedGatedTOF2WM, fit_resultsOnWM = tools.FitGaussian(FittedGatedTOFWM, f_relMHz,\
+                                OnBkgSub, p0=[peakOn, 20., 3., 0.],\
+                                    plot=plot, Toprint=False, display=display)
+            vFOff = f_iniTHz+fit_resultsOffWM["best fit"][0]/1e6
+            vFOfferr = fit_resultsOffWM["error"][0]
+            vFOn = f_iniTHz+fit_resultsOnWM["best fit"][0]/1e6
+            vFOnerr = fit_resultsOnWM["error"][0]
+            vFdiff = (vFOn - vFOff) * 1e6
+            vFdifferr = np.sqrt(vFOnerr**2 + vFOfferr**2)
+            print("Slowed frequency = %.10g THz +- %.2g MHz"%(vFOn,vFOnerr))
+            print("Unslowed frequency = %.10g THz +- %.2g MHz"%(vFOff,vFOfferr))
+            print("Change in frequncy (On-Off) = %.3g MHz +- %.2g MHz"%(vFdiff, vFdifferr))
+            
+            FitResultsOnWM.append(fit_resultsOnWM)
+            FitResultsOffWM.append(fit_resultsOffWM)
+            FittedGatedTOFsWM.append(FittedGatedTOF2WM)
+            
+            peakOffSP = ScanParams[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
+            peakOnSP = ScanParams[np.where(OnBkgSub == np.max(OnBkgSub))[0][0]]
+            
+            GatedOnOFFTOF = PlotGatedAvgCountsOnOff(Scan,dataON,dataOFF,\
+                     timeON,timeOFF,gatesStart[i],gatesEnd[i],BkgStart,BkgEnd,error=False,\
+                         display=False,\
+                         extraTitle="of slowing duration %g ms, \n with expected\
+                             Off-shot mean velocity %.4g m/s"%\
+                             (slowing_time, v_exp[i]))
+            FittedGatedTOF, fit_resultsOff = tools.FitGaussian(GatedOnOFFTOF, ScanParams,\
+                            OffBkgSub, p0=[peakOffSP, 0.3, 0.3, 0.],\
+                                plot=plot, Toprint=False, display=display)
+            FittedGatedTOF2, fit_resultsOn = tools.FitGaussian(FittedGatedTOF, ScanParams,\
+                            OnBkgSub, p0=[peakOnSP, 0.3, 0.3, 0.],\
+                                plot=plot, Toprint=False, display=display)
+            vFOff = fit_resultsOff["best fit"][0]
+            vFOfferr = fit_resultsOff["error"][0]
+            vFOn = fit_resultsOn["best fit"][0]
+            vFOnerr = fit_resultsOn["error"][0]
+            vFdiff = vFOn - vFOff
+            vFdifferr = np.sqrt(vFOnerr**2 + vFOfferr**2)
+            print("Slowed frequency setpoint = %.3g V +- %.2g V"%(vFOn,vFOnerr))
+            print("Unslowed frequency setpoint = %.3g V +- %.2g V"%(vFOff,vFOfferr))
+            print("Change in frequncy setpoint (On-Off) = %.3g V +- %.2g V"%(vFdiff, vFdifferr))
+        
+            FitResultsOn.append(fit_resultsOn)
+            FitResultsOff.append(fit_resultsOff)
+            FittedGatedTOFs.append(FittedGatedTOF2)    
+        
+        else:
+            peakOffSP = ScanParams[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
+            peakOnSP = ScanParams[np.where(OnBkgSub == np.max(OnBkgSub))[0][0]]
+            
+            GatedOnOFFTOF = PlotGatedAvgCountsOnOff(Scan,dataON,dataOFF,\
+                     timeON,timeOFF,gatesStart[i],gatesEnd[i],BkgStart,BkgEnd,error=False,\
+                         display=False,\
+                         extraTitle="of slowing duration %g ms, \n with expected\
+                             Off-shot mean velocity %.4g m/s"%\
+                             (slowing_time, v_exp[i]))
+            FittedGatedTOF, fit_resultsOff = tools.FitGaussian(GatedOnOFFTOF, ScanParams,\
+                            OffBkgSub, p0=[peakOffSP, 0.3, 0.3, 0.],\
+                                plot=plot, Toprint=False, display=display)
+            FittedGatedTOF2, fit_resultsOn = tools.FitGaussian(FittedGatedTOF, ScanParams,\
+                            OnBkgSub, p0=[peakOnSP, 0.3, 0.3, 0.],\
+                                plot=plot, Toprint=False, display=display)
+            vFOff = fit_resultsOff["best fit"][0]
+            vFOfferr = fit_resultsOff["error"][0]
+            vFOn = fit_resultsOn["best fit"][0]
+            vFOnerr = fit_resultsOn["error"][0]
+            vFdiff = vFOn - vFOff
+            vFdifferr = np.sqrt(vFOnerr**2 + vFOfferr**2)
+            print("Slowed frequency setpoint = %.3g V +- %.2g V"%(vFOn,vFOnerr))
+            print("Unslowed frequency setpoint = %.3g V +- %.2g V"%(vFOff,vFOfferr))
+            print("Change in frequncy setpoint (On-Off) = %.3g V +- %.2g V"%(vFdiff, vFdifferr))
+        
+            FitResultsOn.append(fit_resultsOn)
+            FitResultsOff.append(fit_resultsOff)
+            FittedGatedTOFs.append(FittedGatedTOF2)
+            
+            FitResultsOnWM.append(0)
+            FitResultsOffWM.append(0)
+            FittedGatedTOFsWM.append(0)
+        
+        if display:
+            plt.show(FittedGatedTOF2)
+        
+    return FitResultsOn, FitResultsOff, FittedGatedTOFs, \
+        FitResultsOnWM, FitResultsOffWM, FittedGatedTOFsWM
+
+def Slowing(Scan, fileLabel, SigStart, SigEnd, BkgStart, BkgEnd,\
+            gatesStart, gatesEnd, gateC, gateLength, distance,\
+            RestSP, RestSPerr, v_exp, wavelength, RefExist,\
+            RefTCLconv, RefTCLconverr,\
+            showTOF=False, TOFshot=20, detector=0, showFitTOF=False, \
+                plotFitTOF=False, showVelocity=True):
+    
+    TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = GetTOFsSPP(Scan)
+    
+    Settings = GetScanSettings(Scan)
+    #ScanParams = GetScanParameterArray(Scan)
+    slowing_time = Settings["slowing time"]/1000
+    print("Slowing duration is " + str(slowing_time) + " ms")
+    
+    f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
+    if int(f_iniTHz) == 542:
+        TCL_WM_cali = TCL_WM_Calibration(Scan, plot=False)
+        HasWM = True
+        TCLconv = TCL_WM_cali['best fit'][0]
+        TCLconverr = TCL_WM_cali['error'][0]
+        print("TCL calibration = %.4g +- %.2g MHz"%(TCLconv, TCLconverr))
+    else:
+        HasWM = False
+        print("Wrong fibre in WM for file " + fileLabel)
+    
+    BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
+    BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+    
+    BkgOn = np.average(DataOnSPP[detector][0][BkgStartIndex:BkgEndIndex])
+    BkgOff = np.average(DataOffSPP[detector][0][BkgStartIndex:BkgEndIndex])
+
+    if showTOF:
+        plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[detector][TOFshot],\
+                                            axis=1)-BkgOn, label="On")
+        plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[detector][TOFshot],\
+                                             axis=1)-BkgOff, label="Off")
+        plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
+                   ymin=np.min(DataOnSPP[detector][TOFshot])-BkgOn, \
+                   ymax=np.max(DataOffSPP[detector][TOFshot])-BkgOff,\
+                       linestyles="dashed", colors="black")
+        plt.title("TOF of the 20th scan point, averaged for all shots,\n \
+                  background subtracted")
+        plt.xlabel("time (ms)")
+        plt.ylabel("PMT signal (V)")
+        plt.ylim(-0.3, np.max(DataOnSPP[detector][TOFshot])+0.5)
+        plt.legend()
+        plt.show()
+    
+    FitResultsOn, FitResultsOff, FittedGatedTOFs,\
+        FitResultsOnWM, FitResultsOffWM, FittedGatedTOFsWM = FitGatedTOFperGate(Scan,\
+                                                DataOnSPP[detector], TimeOnSPP,\
+                                                DataOffSPP[detector], TimeOffSPP,\
+                           gatesStart, gatesEnd, gateC, BkgStart, BkgEnd,\
+                           HasWM, distance, display=showFitTOF, plot=plotFitTOF,\
+                               file=fileLabel)
+    
+    #Use setpoint to calculate velocities for now to be consistent.
+    if RefExist:
+        if HasWM:
+            velocityFig, meanVOn, meanVOnerr, meanVOff, meanVOfferr = \
+                VelocityOnOff(FitResultsOn, FitResultsOff, RestSP, RestSPerr, v_exp,\
+                    TCLconv, TCLconverr, wavelength, slowing_time, gateC, gateLength,\
+                        file=fileLabel, display=showVelocity)
+        else:
+            velocityFig, meanVOn, meanVOnerr, meanVOff, meanVOfferr = \
+                VelocityOnOff(FitResultsOn, FitResultsOff, RestSP, RestSPerr, v_exp,\
+                    RefTCLconv, RefTCLconverr, wavelength, slowing_time, gateC, gateLength,\
+                        file=fileLabel, display=showVelocity)
+            #Use probe scan's TCL conversion if fiber is wrong in WM
+        
+        return velocityFig, meanVOn, meanVOnerr, meanVOff, meanVOfferr, \
+            FittedGatedTOFs, FittedGatedTOFsWM, slowing_time
+    
+    else:
+        return 0, 0, 0, 0, 0, FittedGatedTOFs, FittedGatedTOFsWM, slowing_time
 
 #%% Functions for Blocks
 def ReadBlockInZippedXML(Filename):

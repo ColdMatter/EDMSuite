@@ -10,6 +10,7 @@ To analyse basic LIF measurements. Typically no On-Off shots (only On)
 #%% Import libraries
 import sys
 import os
+import re
 
 OneDriveFolder = os.environ['onedrive']
 sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
@@ -27,39 +28,88 @@ tools.set_plots()
 
 #%% Load data
 datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month=datadrive+"\\June2025\\"
-date=month+"\\25\\"
+month="August2025"
+date="11"
+subfolder = ""
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = date
+drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
 print(drive)
 
-pattern="*_ProbeSetpointScan.zip"
+pattern="*Duration*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
+#%%
+if len(files) > 0:
+    print("%g matching files found. Loading"%len(files))
+    Data = {}
+    fileLabels = []
+    Lasers = []
+    for i in range(0, len(files)):
+        fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
+        Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-1])[0]
+        Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+        print("loaded file " + files[i])
+        fileLabels.append(fileLabel)
+        Lasers.append(Laser)
 
-Data = EDM.ReadAverageScanInZippedXML(files[0])
+else:
+    print("No matching files.")
 
-#% Print out all params
-Settings = EDM.GetScanSettings(Data)
-ScanParams = EDM.GetScanParameterArray(Data)
-print(Settings)
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 10
-SigEnd = 40
+SigStart = 26
+SigEnd = 27
 BkgStart = 60
 BkgEnd = 70
 
 showTOF = False
 shot_for_TOF = 20
 
-BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
-BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+showPlots = True
 
-f_iniTHz, f_relMHz = EDM.GetScanFreqArrayMHz(Data)
+#%% Gated TOFs
+Ons = {}
+Offs = {}
+Ratios = {}
+Figs = {}
+Fits = {}
+
+for i in range(0, len(files)):
+    Scan = Data[fileLabels[i]]
+    
+    #% Print out all params
+    Settings = EDM.GetScanSettings(Scan)
+    ScanParams = EDM.GetScanParameterArray(Scan)
+    print(Settings)
+    
+    BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
+    BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+    
+    TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Scan)
+    
+    OnBkgSub, OffBkgSub = EDM.GatedAvgCountsOnOff(Scan,\
+                            DataOnSPP,DataOffSPP,TimeOnSPP,TimeOffSPP,\
+                    SigStart,SigEnd,BkgStart,BkgEnd)
+    
+    Ratio = OnBkgSub/OffBkgSub
+    
+    Ons[fileLabels[i]] = OnBkgSub
+    Offs[fileLabels[i]] = OffBkgSub
+    Ratios[fileLabels[i]] = Ratio
+    
+    
+    
+    fig, fit_results = tools.Fitexp_decay(0, ScanParams, Ratio,\
+                        p0=[1., 1000., 0.], xstep=Settings["end"]*1e-3, \
+                plot=True, display=True, Toprint=False)
+    
+    Figs[fileLabels[i]] = fig
+    Fits[fileLabels[i]] = fit_results
+    
+
 
 #%% Get TOFs, averaged per point
 TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Data)

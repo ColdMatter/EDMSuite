@@ -67,6 +67,26 @@ def loadCSV(name, path='', skiprow = 0, deli = '', dtype=float):
                        dtype=dtype)
     return data
 
+def MovingAverage(window_size, data):
+    Data_series = pd.Series(data)
+   
+    # Get the window of series
+    # of observations of specified window size
+    windows = Data_series.rolling(window_size)
+ 
+    # Create a series of moving
+    # averages of each window
+    moving_averages = windows.mean()
+
+    # Convert pandas series back to list
+    moving_averages_list = moving_averages.tolist()
+
+    # Remove null entries from the list
+    final_list = moving_averages_list[window_size - 1:]
+    
+    return np.array(final_list)
+
+
 # Functions to fit
 def Line(x, a, b):
     return a*x + b
@@ -81,6 +101,7 @@ def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True):
     plt.plot(xspan, Line(xspan, *fit))
     if display:
         plt.show()
+    plt.close()
     
     err = np.sqrt(np.diag(cov))
     fit_results = {"Variables":["slope", "shift"],
@@ -94,22 +115,37 @@ def Gaussian(x, mean, std, amp, shift):
     fac = -(x - mean)**2 / (2*std**2)
     return amp * np.exp(fac) + shift
 
-def FitGaussian(Figure, xdata, ydata, p0, xstep=0.01, display=True):
+def FitGaussian(Figure, xdata, ydata, p0, xstep=0.01, \
+                plot=True, display=True, Toprint=True,\
+                    xlabel='', ylabel='', title=''):
     fit, cov = curve_fit(Gaussian, xdata, ydata, p0=p0)
-
-    newFig = copy.deepcopy(plt.figure(Figure)) 
-    #This ensures the original figure is not altered
-
-    xspan = np.arange(np.min(xdata), np.max(xdata), step=xstep)
-    plt.plot(xspan, Gaussian(xspan, *fit))
-    if display:
-        plt.show()
+    
+    if plot:
+        if Figure == 0:
+            newFig = plt.figure()
+            plt.plot(xdata, ydata, '.')
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+            plt.title(title)
+        else:
+            newFig = copy.deepcopy(plt.figure(Figure)) 
+            #This ensures the original figure is not altered
+    
+        xspan = np.arange(np.min(xdata), np.max(xdata), step=xstep)
+        plt.plot(xspan, Gaussian(xspan, *fit))
+        if display:
+            plt.show()
+        plt.close()
+        
+    else:
+        newFig = 0
     
     err = np.sqrt(np.diag(cov))
     fit_results = {"Variables":["mean", "std", "amplitude", "shift"],
                    "best fit":fit, "error":err}
     
-    print(fit_results)
+    if Toprint:
+        print(fit_results)
     
     return newFig, fit_results
 
@@ -138,4 +174,38 @@ def lorentzian(w, A, w0, dw, shift):    #Y3 lasers coding sheet 1
     return A * (2 / np.pi / dw) * dw**2 / (dw**2 + 4 * (w - w0)**2) + shift
 
 def exp_decay(x, A, B, C):
-    return A * (np.exp(x * B) - 1) + C
+    return A * (np.exp(x / B) - 1) + C
+
+def Fitexp_decay(Figure, xdata, ydata, p0, xstep=0.01, \
+                plot=True, display=True, Toprint=True,\
+                    xlabel='', ylabel='', title=''):
+    fit, cov = curve_fit(exp_decay, xdata, ydata, p0=p0)
+    
+    if plot:
+        if Figure == 0:
+            newFig = plt.figure()
+            plt.plot(xdata, ydata, '.')
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+            plt.title(title)
+        else:
+            newFig = copy.deepcopy(plt.figure(Figure)) 
+            #This ensures the original figure is not altered
+    
+        xspan = np.arange(np.min(xdata), np.max(xdata), step=xstep)
+        plt.plot(xspan, exp_decay(xspan, *fit))
+        if display:
+            plt.show()
+        plt.close()
+        
+    else:
+        newFig = 0
+    
+    err = np.sqrt(np.diag(cov))
+    fit_results = {"Variables":["amplitude", "lifetime", "shift"],
+                   "best fit":fit, "error":err}
+    
+    if Toprint:
+        print(fit_results)
+    
+    return newFig, fit_results
