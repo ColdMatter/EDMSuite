@@ -179,7 +179,7 @@ for i in range(0, len(files)):
     DiffTOFerrs[fileLabels[i]] = differr
 
 #%% Combine plot
-compare = ["004", "005", "006"]
+compare = ["004", "008", "009", "010"]
 comb = plt.figure()
 for i in compare:
     plt.plot(TimeOn*1000, AvgTOFOns[i], label=i+"On")
@@ -204,7 +204,7 @@ plt.show()
 plt.close()
 
 #%% Difference
-compare = ["004", "005", "006"]
+compare = ["004", "008", "009", "010"]
 for i in compare:
     diff = AvgTOFOns[i]-AvgTOFOffs[i]
     plt.plot(TimeOn*1000, diff, label=i+"On-Off")
@@ -225,6 +225,8 @@ plt.show()
 plt.close()
 
 #%% with moving average
+compare = ["004", "008", "009", "010"]
+#compare = ["004", "008", "009", "010", "011", "012", "013", "014", "015", "016"]
 MA = 100
 for i in compare:
     diffMA = tools.MovingAverage(MA, DiffTOFs[i])
