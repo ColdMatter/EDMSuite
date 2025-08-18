@@ -504,6 +504,94 @@ def TCL_WM_Calibration(Scan, step=0.01, plot=False):
     
     return fit_results
 
+def ResonanceFreq(Scan, SigStart, SigEnd, BkgStart, BkgEnd,\
+                  showTOF=False, showPlot=True, fileLabel="", location="",\
+                      shot_for_TOF=0, freqTHz=542):
+    #This is Basic LIF analysis in a function
+    Settings = GetScanSettings(Scan)
+    ScanParams = GetScanParameterArray(Scan)
+    print(Settings)
+
+    BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
+    BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+
+    f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
+    
+    if int(f_iniTHz) == 542:
+        TCL_WM_cali = TCL_WM_Calibration(Scan, plot=False)
+        HasWM = True
+        TCLconv = TCL_WM_cali['best fit'][0]
+        TCLconverr = TCL_WM_cali['error'][0]
+        print("TCL calibration = %.4g +- %.2g MHz"%(TCLconv, TCLconverr))
+    else:
+        HasWM = False
+        print("Wrong fibre in WM.")
+    
+    TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = GetTOFsSPP(Scan)
+
+#% Bkg-sub TOF
+    BkgOn = np.average(DataOnSPP[0][0][BkgStartIndex:BkgEndIndex])
+    #BkgOff = np.average(DataOffSPP[0][0][BkgStartIndex:BkgEndIndex]
+    
+    if showTOF:
+        plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[0][shot_for_TOF], axis=1)\
+                 -BkgOn, label="On")
+        #plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][shot_for_TOF], axis=1)\
+        #         -BkgOff, label="Off")
+        plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
+                   ymin=np.min(DataOnSPP[0][shot_for_TOF])-BkgOn, \
+                   ymax=np.max(DataOnSPP[0][shot_for_TOF])-BkgOn,\
+                       linestyles="dashed", colors="black")
+        plt.title("TOF of scan point %g, averaged for all shots,\n \
+                  background subtracted "%shot_for_TOF + fileLabel + location)
+        plt.xlabel("time (ms)")
+        plt.ylabel("PMT signal (V)")
+        plt.ylim(np.min(DataOnSPP[0][shot_for_TOF])-BkgOn-0.3, \
+                 np.max(DataOnSPP[0][shot_for_TOF])-BkgOn+0.3)
+        plt.legend()
+        plt.show()
+    
+    MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,DataOnSPP[0],\
+                                                        TimeOnSPP,SigStart,SigEnd)
+    
+    BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = GetGatedAvgCounts(Scan,\
+                                            DataOnSPP[0],TimeOnSPP,BkgStart,BkgEnd)
+    BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
+    
+    #% Plot gated TOF
+    GatedTOF = PlotGatedAvgCounts(Scan,DataOnSPP[0],TimeOnSPP,SigStart,\
+                                 SigEnd,BkgStart,BkgEnd, display=showPlot, \
+                                     extraTitle=fileLabel+location)
+    #% Fitting
+    peakOn = ScanParams[np.where(BkgSub == np.max(BkgSub))[0][0]]
+    FittedGatedTOF, fit_results = tools.FitGaussian(GatedTOF, ScanParams,\
+                                    BkgSub, p0=[peakOn, 0.5, 20., 10.], Toprint=False)
+    if HasWM:
+        peakOn = f_relMHz[np.where(BkgSub == np.max(BkgSub))[0][0]]
+        FittedGatedTOFWM, fit_resultsWM = tools.FitGaussian(0, f_relMHz, \
+                                        BkgSub, p0=[peakOn, 10., 20., 1.],
+                        xlabel="Relative frequency (MHz) from %.8g THz"%f_iniTHz,\
+                        ylabel="Gated LIF (ms.V)", \
+                        title="Gated TOF over " + Settings["param"] + " with " +\
+                            str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+                            str(SigStart) + "ms to " + str(SigEnd) + "ms gate, file " +\
+                                fileLabel+location)
+        
+        print("Resonance frequency of gate %g ms to %g ms is: %.9g THz +- %.2g MHz"%\
+              (SigStart, SigEnd, fit_resultsWM['best fit'][0]*1e-6+f_iniTHz, \
+               fit_resultsWM['error'][0]))
+        print("Corresponding setpoint is: %.3g +- %.2g V"%\
+              (fit_results['best fit'][0], fit_results['error'][0]))
+            
+    else: 
+        FittedGatedTOFWM = 0
+        fit_resultsWM = 0
+        print("Resonance frequency of gate %g ms to %g ms is at setpoint %.3g +- %.2g V"%\
+              (SigStart, SigEnd, fit_results['best fit'][0], fit_results['error'][0]))
+    
+    return FittedGatedTOF, fit_results, FittedGatedTOFWM, fit_resultsWM, HasWM
+    
+
 def GetSignalwithBackgroundSubtraction(Data,Time,StartSig,StopSig,StartBg,StopBg):
     [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
     [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,StartSig,StopSig)

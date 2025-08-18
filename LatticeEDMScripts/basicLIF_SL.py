@@ -10,6 +10,7 @@ To analyse basic LIF measurements. Typically no On-Off shots (only On)
 #%% Import libraries
 import sys
 import os
+import re
 
 OneDriveFolder = os.environ['onedrive']
 sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
@@ -27,34 +28,52 @@ tools.set_plots()
 
 #%% Load data
 datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month=datadrive+"\\June2025\\"
-date=month+"\\25\\"
+month=datadrive+"\\August2025\\"
+date=month+"\\17\\"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = date
 print(drive)
 
-pattern="*_ProbeSetpointScan.zip"
+pattern="*ProbeSetpointScan*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 
+if len(files) > 0:
+    print("%g matching files found. Loading"%len(files))
+    Data = {}
+    fileLabels = []
+    locations = []
+    for i in range(0, len(files)):
+        location = re.split(r'[.]', re.split(r'[_]',\
+                                    re.split(r'[\\]', files[i])[-1])[-1])[0]
+        fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
+        Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+        print("loaded file " + files[i])
+        fileLabels.append(fileLabel)
+        locations.append(location)
+
+else:
+    print("No matching files.")
+
+#%% Analysis settings
+"""Can also read from scan settings (optional, for later)"""
+SigStart = 25
+SigEnd = 27
+BkgStart = 60
+BkgEnd = 70
+
+showTOF = False
+shot_for_TOF = 20
+
+#%%
 Data = EDM.ReadAverageScanInZippedXML(files[0])
 
 #% Print out all params
 Settings = EDM.GetScanSettings(Data)
 ScanParams = EDM.GetScanParameterArray(Data)
 print(Settings)
-
-#%% Analysis settings
-"""Can also read from scan settings (optional, for later)"""
-SigStart = 10
-SigEnd = 40
-BkgStart = 60
-BkgEnd = 70
-
-showTOF = False
-shot_for_TOF = 20
 
 BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
 BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
@@ -114,7 +133,7 @@ GatedTOF = EDM.PlotGatedAvgCounts(Data,DataOnSPP[0],TimeOnSPP,SigStart,\
 #% Fitting
 
 FittedGatedTOF, fit_results = tools.FitGaussian(GatedTOF, ScanParams,\
-                                BkgSub, p0=[np.mean(ScanParams), 5., 20., 10.])
+                                BkgSub, p0=[np.mean(ScanParams), 0.5, 20., 10.])
     
 #%% TCL-WM calibration
 if Settings["param"] == 'setpoint':
