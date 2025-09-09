@@ -124,6 +124,7 @@ namespace csAcq4
             //PushIdle.Enabled = isAcquiring;
             //PushBufRelease.Enabled = isAcquired; 
             PushClose.Enabled = isInitialized || isAcquired;
+            LocalBlockBtn.Enabled = isInitialized || isAcquired;
             //PushUninit.Enabled = isInitialized; rhys remove 14/02
 
             //PushProperties.Enabled = (isInitialized || isAcquired);
@@ -961,8 +962,6 @@ namespace csAcq4
             }
         }
 
-
-
         // Event handler for Sensor Temperature Query
         private void QuerySensorTemperatureButton_Click(object sender, EventArgs e)
         {
@@ -1453,6 +1452,11 @@ namespace csAcq4
 
             MyShowStatusOK("Camera is closed.");
             MyFormStatus_Initialized();         // change dialog FormStatus to Initialized
+        }
+
+        private async void LocalBlock_Click(object sender, EventArgs e)
+        {
+            await controller.LocalBlock();
         }
 
         private void EditLutMax_TextChanged(object sender, EventArgs e)

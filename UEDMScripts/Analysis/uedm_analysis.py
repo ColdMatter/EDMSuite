@@ -33,3 +33,9 @@ print("")
 
 def run(i):
 	execfile(scriptsToLoad[i-1], globals())
+
+def main():
+    pass
+
+if __name__=="__main__":
+        main()
