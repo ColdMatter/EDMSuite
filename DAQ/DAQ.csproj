@@ -28,7 +28,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
@@ -133,7 +133,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <FileAlignment>4096</FileAlignment>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Optimize>false</Optimize>
@@ -640,7 +640,6 @@
     <Compile Include="DTCLCavityConfig.cs" />
     <Compile Include="DTCLConfig.cs" />
     <Compile Include="Eurotherm3504Instrument.cs" />
-    <Compile Include="InfluxDBDataLogger.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="M2LaserInterface.cs" />
     <Compile Include="RigolDG811.cs" />
@@ -651,6 +650,7 @@
     <Compile Include="PeakFinder.cs" />
     <Compile Include="AlicatFlowController.cs" />
     <Compile Include="TCPConnection.cs" />
+    <Compile Include="TwinleafCSB.cs" />
     <Compile Include="WavemeterLockConfig.cs" />
     <Compile Include="WMLServerFileSystem.cs" />
     <Compile Include="AlFFileSystem.cs" />
@@ -895,6 +895,7 @@
     </Content>
     <Content Include="Newport.XPS.CommandInterface.dll" />
     <Content Include="Wolfram.NETLink.dll" />
+    <EmbeddedResource Include="licenses.licx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">

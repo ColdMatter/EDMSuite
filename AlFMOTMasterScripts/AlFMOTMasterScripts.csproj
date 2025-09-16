@@ -36,10 +36,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicBeamOnOff.cs" />
+    <Compile Include="Chirp.cs" />
+    <Compile Include="BasicYAGFireOnOff.cs" />
+    <Compile Include="BasicYAGFire MOT_PMT_ON_OFF.cs" />
     <Compile Include="DispenserLoadingOnOff.cs" />
     <Compile Include="DispenserLoading_Expansion.cs" />
     <Compile Include="DispenserLoading_Delayed.cs" />
+    <Compile Include="PushBeam.cs" />
+    <Compile Include="PushBeamOnOff.cs" />
     <Compile Include="EmptyPatternOnOff.cs" />
     <Compile Include="OpenVECSEL2Shutter.cs" />
     <Compile Include="DispenserLoading.cs" />

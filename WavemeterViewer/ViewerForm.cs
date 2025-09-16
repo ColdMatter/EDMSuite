@@ -54,9 +54,6 @@ namespace WavemeterViewer
 
             for (int n = 0; n < 8; n++)
             {
-<<<<<<< HEAD
-                s[n] = controller.displayFrequency(n + 1);
-=======
                 if (displayFrequency)
                 {
                     s[n] = controller.displayFrequency(n + 1);
@@ -66,7 +63,6 @@ namespace WavemeterViewer
                     s[n] = controller.displayWavelength(n + 1);
                 }
                 
->>>>>>> c42f6cbe2bff64af1407db9f913dee1644e9a804
             }
 
             //Shows the wavelength of each channel

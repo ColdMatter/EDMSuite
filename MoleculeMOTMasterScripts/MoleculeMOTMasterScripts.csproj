@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoleculeMOTMasterScripts</RootNamespace>
     <AssemblyName>MoleculeMOTMasterScripts</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -221,90 +221,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AMOTBasicMagtrapTest.cs" />
-    <Compile Include="BFieldCalibration.cs" />
-    <Compile Include="BlueMOT.cs" />
-    <Compile Include="BlueMOTAfterBlueMolasses.cs" />
-    <Compile Include="ChirpTest.cs" />
-    <Compile Include="F2MF2Levitation.cs" />
-    <Compile Include="FreeSpaceImagingTest.cs" />
-    <Compile Include="MagTrapCompress.cs" />
-    <Compile Include="DetuningTemperature.cs" />
-    <Compile Include="DualSpeciesMagTrap.cs" />
-    <Compile Include="DualSpeciesMagTrapTemp.cs" />
-    <Compile Include="ImageSlowingBeam.cs" />
-    <Compile Include="MagneticTrapNumber.cs" />
-    <Compile Include="MagTrapTemp.cs" />
-    <Compile Include="MicrowaveMagneticTrapLifetimeN0Short.cs" />
-    <Compile Include="MicrowaveMagneticTrapLifetimeN1.cs" />
-    <Compile Include="MicrowavePulseExperimental.cs" />
-    <Compile Include="MicrowavePulseN2.cs" />
-    <Compile Include="MicrowavePulseMagneticTrapN2.cs" />
-    <Compile Include="MicrowaveSpectroscopy.cs" />
-    <Compile Include="MicrowaveSpectroscopySingleFreq.cs" />
-    <Compile Include="MicrowaveSpectroscopySingleFreqOnly.cs" />
-    <Compile Include="MinimalCameraTest.cs" />
-    <Compile Include="MolassesLoadMagTrapNumber.cs" />
-    <Compile Include="MolassesLoadMagTrapNumberXL.cs" />
-    <Compile Include="MOTBasicBField.cs" />
-    <Compile Include="MOTBasicExperimental2.cs" />
-    <Compile Include="MOTBlueMolasses.cs" />
-    <Compile Include="MOTBlueMolassesNumber.cs" />
-    <Compile Include="MOTBlueMolassesRamp.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MOTBlueMolassesRedMolasses.cs" />
-    <Compile Include="MOTBlueMolassesShimSwitchNumber.cs" />
-    <Compile Include="MOTBlueMolassesShimSwitchRamp.cs" />
-    <Compile Include="MOTBlueMolassesShimSwitchShort.cs" />
-    <Compile Include="MOTFreqScan.cs" />
-    <Compile Include="MOTLifetime.cs" />
-    <Compile Include="MOTMagTrapLifetime.cs" />
-    <Compile Include="MOTOscillation.cs" />
-    <Compile Include="MOTOscillationExperimental.cs" />
-    <Compile Include="MOTOverlap.cs" />
-    <Compile Include="MOTRampBField.cs" />
-    <Compile Include="MOTRampIntensity.cs" />
-    <Compile Include="MOTRampIntensityB.cs" />
-    <Compile Include="MOTRampIntensityNumber.cs" />
-    <Compile Include="MOTTemperature.cs" />
-    <Compile Include="OverlapMagTrap.cs" />
-    <Compile Include="PMTtest.cs" />
-    <Compile Include="PokeNoRecapture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RabiFlopsFreeSpace.cs" />
-    <Compile Include="RamseyBFieldN1.cs" />
-    <Compile Include="RamseyBFieldN2.cs" />
-    <Compile Include="RamseyFreeSpaceN2.cs" />
-    <Compile Include="RamseyFreeSpaceN2SingleFreq.cs" />
-    <Compile Include="RamseyFreeSpaceN2SingleFreqOnly.cs" />
-    <Compile Include="RamseyInterTrapN2.cs" />
-    <Compile Include="RamseySpectroscopyFreeSpace.cs" />
-    <Compile Include="RamseySpectroscopyFreeSpaceNoRecapture.cs" />
-    <Compile Include="RamseySpectroscopySpinEchoFreeSpace.cs" />
-    <Compile Include="RamseySpectroscopyTrap.cs" />
-    <Compile Include="RamseySpinEchoFreeSpaceN2.cs" />
-    <Compile Include="RamseySpinEchoTrapN2.cs" />
-    <Compile Include="RamseySpinEchoTrapOnWaitN2.cs" />
-    <Compile Include="RamseyTrapN2.cs" />
-    <Compile Include="RAP.cs" />
-    <Compile Include="RAPScanMicrowaves.cs" />
-    <Compile Include="RbMOTLoadingRate.cs" />
-    <Compile Include="RbMOTTemp.cs" />
-    <Compile Include="ScatteringRate.cs" />
-    <Compile Include="SFMTest.cs" />
-    <Compile Include="ShutterTest.cs" />
-    <Compile Include="SingleFrequencyMolasses.cs" />
-    <Compile Include="SingleFrequencyMolassesLevitate.cs" />
-    <Compile Include="SingleFrequencyMolassesMWLevitate.cs" />
-    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotation.cs" />
-    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwice.cs" />
-    <Compile Include="SingleFrequencyMolassesPhaseSpaceRotationTwiceNumber.cs" />
-    <Compile Include="SingleFrequencyMolassesTest.cs" />
-    <Compile Include="SpinEcho.cs" />
-    <Compile Include="SpinEchoFreeSpaceN2SingleFreqOnly.cs" />
-    <Compile Include="stateSpectroscopy.cs" />
-    <Compile Include="test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">
@@ -314,6 +231,10 @@
     <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
       <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
       <Name>MOTMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj">
+      <Project>{67cbabe4-303c-4034-99a0-25d7dd2e5d2d}</Project>
+      <Name>NeanderthalDDSController</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

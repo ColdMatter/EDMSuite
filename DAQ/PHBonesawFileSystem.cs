@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DAQ.Environment
 {
@@ -6,7 +7,7 @@ namespace DAQ.Environment
     {
         public PHBonesawFileSystem()
         {
-            Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\OneDrive - Imperial College London\\datasync\\mot_master_data\\");
+            Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\OneDrive - Imperial College London\\cafmot\\datasync\\mot_master_data\\");
             Paths.Add("scriptListPath", "C:\\ControlPrograms\\EDMSuite\\MoleculeMOTMasterScripts");
             Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
             Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaF\\");
@@ -20,6 +21,10 @@ namespace DAQ.Environment
             Paths.Add("transferCavityData", "E:\\TCL_DataLog\\");
             Paths.Add("wavemeterLockData", "E:\\WML_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
+
+            List<string> MMAssemblies = new List<string> { };
+            MMAssemblies.Add(@"C:\ControlPrograms\EDMSuite\NeanderthalDDSController\bin\Debug\net461\NeanderthalDDSController.exe");
+            Paths.Add("AdditionalMOTMasterAssemblies", MMAssemblies);
 
             SortDataByDate = false;
         }

@@ -253,6 +253,7 @@ namespace ScanMaster.GUI
             this.xAxis1});
             this.analog1Graph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
+            this.analog1Graph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.analog1Graph_PlotDataChanged);
             // 
             // analog1Plot
             // 
@@ -261,13 +262,20 @@ namespace ScanMaster.GUI
             this.analog1Plot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.analog1Plot.LineStyle = NationalInstruments.UI.LineStyle.None;
             this.analog1Plot.PointColor = System.Drawing.Color.Red;
-            this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidDiamond;
+            this.analog1Plot.PointStyle = NationalInstruments.UI.PointStyle.SolidCircle;
+            this.analog1Plot.ToolTipXFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
+            this.analog1Plot.ToolTipYFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G3");
             this.analog1Plot.XAxis = this.xAxis1;
             this.analog1Plot.YAxis = this.yAxis1;
             // 
             // xAxis1
             // 
             this.xAxis1.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
+            // yAxis1
+            // 
+            this.yAxis1.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("G3");
+            this.yAxis1.MajorDivisions.LabelFormat = new NationalInstruments.UI.FormatString(NationalInstruments.UI.FormatStringMode.Numeric, "G9");
             // 
             // analog2Graph
             // 
@@ -296,6 +304,10 @@ namespace ScanMaster.GUI
             // xAxis2
             // 
             this.xAxis2.Mode = NationalInstruments.UI.AxisMode.Fixed;
+            // 
+            // yAxis2
+            // 
+            this.yAxis2.EditRangeNumericFormatMode = NationalInstruments.UI.NumericFormatMode.CreateGenericMode("G9");
             // 
             // pmtGraph
             // 
@@ -410,6 +422,7 @@ namespace ScanMaster.GUI
             this.xAxis5});
             this.differenceGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.differenceYAxis});
+            this.differenceGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.differenceGraph_PlotDataChanged);
             // 
             // differencePlot
             // 
@@ -421,7 +434,7 @@ namespace ScanMaster.GUI
             // 
             // differenceAvgPlot
             // 
-            this.differenceAvgPlot.LineColor = System.Drawing.Color.Red;
+            this.differenceAvgPlot.LineColor = System.Drawing.Color.Magenta;
             this.differenceAvgPlot.LineColorPrecedence = NationalInstruments.UI.ColorPrecedence.UserDefinedColor;
             this.differenceAvgPlot.XAxis = this.xAxis5;
             this.differenceAvgPlot.YAxis = this.differenceYAxis;
@@ -1479,6 +1492,16 @@ namespace ScanMaster.GUI
         }
 
         private void pmtGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void analog1Graph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
+        {
+
+        }
+
+        private void differenceGraph_PlotDataChanged(object sender, XYPlotDataChangedEventArgs e)
         {
 
         }

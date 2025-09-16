@@ -36,7 +36,8 @@ namespace DAQ
             catch (SocketException e)
             {
                 ConnectionInterrupted?.Invoke();
-                client.Close();
+                if (client != null)
+                    client.Close();
             }
             finally
             {
@@ -75,7 +76,7 @@ namespace DAQ
             }
             catch (System.IO.IOException)
             {
-
+                
             }
             finally
             {
@@ -102,6 +103,7 @@ namespace DAQ
             }
             try
             {
+                stream.WriteTimeout = 1000;
                 stream.Write(data, offset, size);
             }
             catch (System.IO.IOException e)

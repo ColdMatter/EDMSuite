@@ -15,7 +15,9 @@ namespace MOTMaster
         {
             return new AnalogStaticBuilder();
         }
-        public Dictionary<String,Object> Parameters;
+        public Dictionary<String, Object> Parameters;
+
+        public abstract Dictionary<string, List<List<double>>> GetDDSPattern();
 
         public Dictionary<string, List<bool>> switchConfiguration = new Dictionary<string, List<bool>> { };
 
@@ -25,6 +27,7 @@ namespace MOTMaster
             s.DigitalPattern = GetDigitalPattern();
             s.AnalogPattern = GetAnalogPattern();
             s.AnalogStatic = GetAnalogStatic();
+            s.DDSPattern = GetDDSPattern();
             return s;
         }
 

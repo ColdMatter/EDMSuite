@@ -1,4 +1,6 @@
-﻿namespace UEDMHardwareControl
+﻿using System.Windows.Forms;
+
+namespace UEDMHardwareControl
 {
     partial class ControlWindow
     {
@@ -45,11 +47,11 @@
             System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -159,6 +161,17 @@
             this.Show_DeviceKey = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPagePumping = new System.Windows.Forms.TabPage();
+            this.groupBoxMWSwitch = new System.Windows.Forms.GroupBox();
+            this.labelF0 = new System.Windows.Forms.Label();
+            this.labelF1 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ledChBDetB = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChADetB = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChBDetA = new NationalInstruments.UI.WindowsForms.Led();
+            this.ledChADetA = new NationalInstruments.UI.WindowsForms.Led();
+            this.labelMWSwitchState = new System.Windows.Forms.Label();
+            this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
             this.labelStirapRFAmp = new System.Windows.Forms.Label();
             this.labelStirapRFFreq = new System.Windows.Forms.Label();
@@ -280,6 +293,20 @@
             this.labelRF = new System.Windows.Forms.Label();
             this.tbRFFrequencyMonitor = new System.Windows.Forms.TextBox();
             this.tabPageBfield = new System.Windows.Forms.TabPage();
+            this.groupBoxbUSB = new System.Windows.Forms.GroupBox();
+            this.UsbBBoxCheck = new System.Windows.Forms.CheckBox();
+            this.tbUsbBBoxCmd = new System.Windows.Forms.TextBox();
+            this.UsbBBoxCmdBtn = new System.Windows.Forms.Button();
+            this.UsbBboxCmdlb = new System.Windows.Forms.Label();
+            this.UsbSmallBTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbSmallB = new System.Windows.Forms.Label();
+            this.UsbBigBTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbBigB = new System.Windows.Forms.Label();
+            this.UsbBiasTextBox = new System.Windows.Forms.TextBox();
+            this.labelUsbBiasB = new System.Windows.Forms.Label();
+            this.USBbBoxTextBox = new System.Windows.Forms.TextBox();
+            this.USBbBoxUpdateButton = new System.Windows.Forms.Button();
+            this.labelUSBbBoxCurrent = new System.Windows.Forms.Label();
             this.groupBoxBManualState = new System.Windows.Forms.GroupBox();
             this.bManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBoxManualBflip = new System.Windows.Forms.GroupBox();
@@ -390,6 +417,7 @@
             this.cMinusTextBox = new System.Windows.Forms.TextBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.pollVCheckBox = new System.Windows.Forms.CheckBox();
             this.tbiMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.changePollPeriodButton = new System.Windows.Forms.Button();
             this.rescaleIMonitorChartButton = new System.Windows.Forms.Button();
@@ -515,6 +543,15 @@
             this.tbpressureMonitorLogPeriod = new System.Windows.Forms.TextBox();
             this.tabPageFlowControllers = new System.Windows.Forms.TabPage();
             this.gBTargetStepper = new System.Windows.Forms.GroupBox();
+            this.lbTargetStepperInfo = new System.Windows.Forms.Label();
+            this.TargetLengthTimeButton = new System.Windows.Forms.Button();
+            this.lbTargetStepTime = new System.Windows.Forms.Label();
+            this.TargetLengthTimeTextBox = new System.Windows.Forms.TextBox();
+            this.TargetStepDirectionCBox = new System.Windows.Forms.CheckBox();
+            this.TargetHomeButton = new System.Windows.Forms.Button();
+            this.TargetTriggerButton = new System.Windows.Forms.Button();
+            this.TargetExtButton = new System.Windows.Forms.Button();
+            this.TargetManualButton = new System.Windows.Forms.Button();
             this.TargetStepButton = new System.Windows.Forms.Button();
             this.lbTargetStep = new System.Windows.Forms.Label();
             this.TargetNumStepsTextBox = new System.Windows.Forms.TextBox();
@@ -706,9 +743,36 @@
             this.chart6 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.BeatFreqMonitor = new System.Windows.Forms.TextBox();
             this.UpdateBeatFreq = new System.Windows.Forms.Button();
-            this.TargetManualButton = new System.Windows.Forms.Button();
-            this.TargetExtButton = new System.Windows.Forms.Button();
-            this.TargetTriggerButton = new System.Windows.Forms.Button();
+            this.tabCCDCamera = new System.Windows.Forms.TabPage();
+            this.btnSetCCDTriggerMode = new System.Windows.Forms.Button();
+            this.comboBoxCCDTriggerMode = new System.Windows.Forms.ComboBox();
+            this.tbCCDBExposure = new System.Windows.Forms.TextBox();
+            this.tbCCDBGain = new System.Windows.Forms.TextBox();
+            this.tbCCDAExposure = new System.Windows.Forms.TextBox();
+            this.tbCCDAGain = new System.Windows.Forms.TextBox();
+            this.labelFrameCCDA = new System.Windows.Forms.Label();
+            this.labelFrameCCDB = new System.Windows.Forms.Label();
+            this.labelGainCCDA = new System.Windows.Forms.Label();
+            this.labelGainCCDB = new System.Windows.Forms.Label();
+            this.labelExposureTimeCCDA = new System.Windows.Forms.Label();
+            this.labelExposureTimeCCDB = new System.Windows.Forms.Label();
+            this.labelTemperatureCCDA = new System.Windows.Forms.Label();
+            this.labelTemperatureCCDB = new System.Windows.Forms.Label();
+            this.tbCCDAFrameCount = new System.Windows.Forms.TextBox();
+            this.btCCDQueryFrameCount = new System.Windows.Forms.Button();
+            this.btCCDQueryExposure = new System.Windows.Forms.Button();
+            this.btCCDQueryGain = new System.Windows.Forms.Button();
+            this.btCCDQueryTemp = new System.Windows.Forms.Button();
+            this.lblCCDA = new System.Windows.Forms.Label();
+            this.lblCCDB = new System.Windows.Forms.Label();
+            this.btCCDUpdateFrameCount = new System.Windows.Forms.Button();
+            this.btCCDUpdateExposureTime = new System.Windows.Forms.Button();
+            this.btCCDUpdateGain = new System.Windows.Forms.Button();
+            this.labelTCPCCD = new System.Windows.Forms.Label();
+            this.checkboxTCPCCD = new System.Windows.Forms.CheckBox();
+            this.btinfoCCDExposure = new System.Windows.Forms.Button();
+            this.tbCCDShotCount = new System.Windows.Forms.TextBox();
+            this.labelCCDShotCount = new System.Windows.Forms.Label();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -717,6 +781,11 @@
             this.groupBoxStatus.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
+            this.groupBoxMWSwitch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).BeginInit();
             this.groupBoxStirapRF.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
@@ -726,6 +795,7 @@
             this.groupBoxMWCHB.SuspendLayout();
             this.groupBoxRF.SuspendLayout();
             this.tabPageBfield.SuspendLayout();
+            this.groupBoxbUSB.SuspendLayout();
             this.groupBoxBManualState.SuspendLayout();
             this.groupBoxManualBflip.SuspendLayout();
             this.groupBoxbCurrentMon.SuspendLayout();
@@ -780,6 +850,7 @@
             this.tabControl.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
+            this.tabCCDCamera.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -1680,6 +1751,7 @@
             // tabPagePumping
             // 
             this.tabPagePumping.BackColor = System.Drawing.Color.DarkGray;
+            this.tabPagePumping.Controls.Add(this.groupBoxMWSwitch);
             this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
@@ -1690,6 +1762,113 @@
             this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
+            // 
+            // groupBoxMWSwitch
+            // 
+            this.groupBoxMWSwitch.Controls.Add(this.labelF0);
+            this.groupBoxMWSwitch.Controls.Add(this.labelF1);
+            this.groupBoxMWSwitch.Controls.Add(this.label33);
+            this.groupBoxMWSwitch.Controls.Add(this.label1);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetB);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChBDetA);
+            this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
+            this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
+            this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
+            this.groupBoxMWSwitch.Location = new System.Drawing.Point(3, 384);
+            this.groupBoxMWSwitch.Name = "groupBoxMWSwitch";
+            this.groupBoxMWSwitch.Size = new System.Drawing.Size(253, 113);
+            this.groupBoxMWSwitch.TabIndex = 51;
+            this.groupBoxMWSwitch.TabStop = false;
+            this.groupBoxMWSwitch.Text = "MW Switch";
+            // 
+            // labelF0
+            // 
+            this.labelF0.AutoSize = true;
+            this.labelF0.Location = new System.Drawing.Point(213, 12);
+            this.labelF0.Name = "labelF0";
+            this.labelF0.Size = new System.Drawing.Size(19, 13);
+            this.labelF0.TabIndex = 9;
+            this.labelF0.Text = "F0";
+            // 
+            // labelF1
+            // 
+            this.labelF1.AutoSize = true;
+            this.labelF1.Location = new System.Drawing.Point(191, 12);
+            this.labelF1.Name = "labelF1";
+            this.labelF1.Size = new System.Drawing.Size(19, 13);
+            this.labelF1.TabIndex = 8;
+            this.labelF1.Text = "F1";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(130, 60);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(58, 13);
+            this.label33.TabIndex = 7;
+            this.label33.Text = "Detector B";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(130, 34);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Detector A";
+            // 
+            // ledChBDetB
+            // 
+            this.ledChBDetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChBDetB.Location = new System.Drawing.Point(216, 56);
+            this.ledChBDetB.Name = "ledChBDetB";
+            this.ledChBDetB.Size = new System.Drawing.Size(16, 20);
+            this.ledChBDetB.TabIndex = 5;
+            // 
+            // ledChADetB
+            // 
+            this.ledChADetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChADetB.Location = new System.Drawing.Point(194, 56);
+            this.ledChADetB.Name = "ledChADetB";
+            this.ledChADetB.Size = new System.Drawing.Size(16, 20);
+            this.ledChADetB.TabIndex = 4;
+            // 
+            // ledChBDetA
+            // 
+            this.ledChBDetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChBDetA.Location = new System.Drawing.Point(216, 32);
+            this.ledChBDetA.Name = "ledChBDetA";
+            this.ledChBDetA.Size = new System.Drawing.Size(16, 20);
+            this.ledChBDetA.TabIndex = 3;
+            // 
+            // ledChADetA
+            // 
+            this.ledChADetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.ledChADetA.Location = new System.Drawing.Point(194, 32);
+            this.ledChADetA.Name = "ledChADetA";
+            this.ledChADetA.Size = new System.Drawing.Size(16, 20);
+            this.ledChADetA.TabIndex = 2;
+            // 
+            // labelMWSwitchState
+            // 
+            this.labelMWSwitchState.AutoSize = true;
+            this.labelMWSwitchState.Location = new System.Drawing.Point(13, 93);
+            this.labelMWSwitchState.Name = "labelMWSwitchState";
+            this.labelMWSwitchState.Size = new System.Drawing.Size(201, 13);
+            this.labelMWSwitchState.TabIndex = 1;
+            this.labelMWSwitchState.Text = "(Unchecked => Det A -> F1, Det B -> F0)";
+            // 
+            // cBMWSwitchState
+            // 
+            this.cBMWSwitchState.AutoSize = true;
+            this.cBMWSwitchState.Location = new System.Drawing.Point(9, 24);
+            this.cBMWSwitchState.Name = "cBMWSwitchState";
+            this.cBMWSwitchState.Size = new System.Drawing.Size(109, 17);
+            this.cBMWSwitchState.TabIndex = 0;
+            this.cBMWSwitchState.Text = "MW Switch State";
+            this.cBMWSwitchState.UseVisualStyleBackColor = true;
+            this.cBMWSwitchState.CheckedChanged += new System.EventHandler(this.cBMWSwitchState_CheckedChanged);
             // 
             // groupBoxStirapRF
             // 
@@ -1892,7 +2071,7 @@
             this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
-            this.groupBoxMWCHAdetection.Text = "Channel A";
+            this.groupBoxMWCHAdetection.Text = "Channel A - Nominally F1";
             // 
             // cbCHATrigger
             // 
@@ -2142,7 +2321,7 @@
             this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
-            this.groupBoxMWCHBdetection.Text = "Channel B";
+            this.groupBoxMWCHBdetection.Text = "Channel B - Nominally F0";
             // 
             // cbCHBTrigger
             // 
@@ -3064,6 +3243,7 @@
             // tabPageBfield
             // 
             this.tabPageBfield.BackColor = System.Drawing.Color.Silver;
+            this.tabPageBfield.Controls.Add(this.groupBoxbUSB);
             this.tabPageBfield.Controls.Add(this.groupBoxBManualState);
             this.tabPageBfield.Controls.Add(this.groupBoxManualBflip);
             this.tabPageBfield.Controls.Add(this.groupBoxbCurrentMon);
@@ -3078,6 +3258,135 @@
             this.tabPageBfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageBfield.TabIndex = 8;
             this.tabPageBfield.Text = "B-field";
+            // 
+            // groupBoxbUSB
+            // 
+            this.groupBoxbUSB.Controls.Add(this.UsbBBoxCheck);
+            this.groupBoxbUSB.Controls.Add(this.tbUsbBBoxCmd);
+            this.groupBoxbUSB.Controls.Add(this.UsbBBoxCmdBtn);
+            this.groupBoxbUSB.Controls.Add(this.UsbBboxCmdlb);
+            this.groupBoxbUSB.Controls.Add(this.UsbSmallBTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbSmallB);
+            this.groupBoxbUSB.Controls.Add(this.UsbBigBTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbBigB);
+            this.groupBoxbUSB.Controls.Add(this.UsbBiasTextBox);
+            this.groupBoxbUSB.Controls.Add(this.labelUsbBiasB);
+            this.groupBoxbUSB.Controls.Add(this.USBbBoxTextBox);
+            this.groupBoxbUSB.Controls.Add(this.USBbBoxUpdateButton);
+            this.groupBoxbUSB.Controls.Add(this.labelUSBbBoxCurrent);
+            this.groupBoxbUSB.Location = new System.Drawing.Point(625, 13);
+            this.groupBoxbUSB.Name = "groupBoxbUSB";
+            this.groupBoxbUSB.Size = new System.Drawing.Size(296, 190);
+            this.groupBoxbUSB.TabIndex = 101;
+            this.groupBoxbUSB.TabStop = false;
+            this.groupBoxbUSB.Text = "USB B box";
+            // 
+            // UsbBBoxCheck
+            // 
+            this.UsbBBoxCheck.Location = new System.Drawing.Point(193, 79);
+            this.UsbBBoxCheck.Name = "UsbBBoxCheck";
+            this.UsbBBoxCheck.Size = new System.Drawing.Size(87, 46);
+            this.UsbBBoxCheck.TabIndex = 55;
+            this.UsbBBoxCheck.Text = "Use USB B box?";
+            this.UsbBBoxCheck.CheckedChanged += new System.EventHandler(this.UsbBBoxCheck_CheckedChanged);
+            // 
+            // tbUsbBBoxCmd
+            // 
+            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(58, 142);
+            this.tbUsbBBoxCmd.Name = "tbUsbBBoxCmd";
+            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(121, 20);
+            this.tbUsbBBoxCmd.TabIndex = 52;
+            this.tbUsbBBoxCmd.Text = "0";
+            // 
+            // UsbBBoxCmdBtn
+            // 
+            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(185, 142);
+            this.UsbBBoxCmdBtn.Name = "UsbBBoxCmdBtn";
+            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(75, 23);
+            this.UsbBBoxCmdBtn.TabIndex = 54;
+            this.UsbBBoxCmdBtn.Text = "Send";
+            this.UsbBBoxCmdBtn.Click += new System.EventHandler(this.UsbBBoxCmdBtn_Click);
+            // 
+            // UsbBboxCmdlb
+            // 
+            this.UsbBboxCmdlb.Location = new System.Drawing.Point(55, 127);
+            this.UsbBboxCmdlb.Name = "UsbBboxCmdlb";
+            this.UsbBboxCmdlb.Size = new System.Drawing.Size(85, 21);
+            this.UsbBboxCmdlb.TabIndex = 53;
+            this.UsbBboxCmdlb.Text = "Send Command";
+            // 
+            // UsbSmallBTextBox
+            // 
+            this.UsbSmallBTextBox.Location = new System.Drawing.Point(115, 92);
+            this.UsbSmallBTextBox.Name = "UsbSmallBTextBox";
+            this.UsbSmallBTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbSmallBTextBox.TabIndex = 51;
+            this.UsbSmallBTextBox.Text = "0";
+            // 
+            // labelUsbSmallB
+            // 
+            this.labelUsbSmallB.Location = new System.Drawing.Point(55, 95);
+            this.labelUsbSmallB.Name = "labelUsbSmallB";
+            this.labelUsbSmallB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbSmallB.TabIndex = 50;
+            this.labelUsbSmallB.Text = "dB (uA)";
+            // 
+            // UsbBigBTextBox
+            // 
+            this.UsbBigBTextBox.Location = new System.Drawing.Point(115, 69);
+            this.UsbBigBTextBox.Name = "UsbBigBTextBox";
+            this.UsbBigBTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbBigBTextBox.TabIndex = 49;
+            this.UsbBigBTextBox.Text = "0";
+            // 
+            // labelUsbBigB
+            // 
+            this.labelUsbBigB.Location = new System.Drawing.Point(55, 72);
+            this.labelUsbBigB.Name = "labelUsbBigB";
+            this.labelUsbBigB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbBigB.TabIndex = 48;
+            this.labelUsbBigB.Text = "DB (uA)";
+            // 
+            // UsbBiasTextBox
+            // 
+            this.UsbBiasTextBox.Location = new System.Drawing.Point(115, 46);
+            this.UsbBiasTextBox.Name = "UsbBiasTextBox";
+            this.UsbBiasTextBox.Size = new System.Drawing.Size(64, 20);
+            this.UsbBiasTextBox.TabIndex = 47;
+            this.UsbBiasTextBox.Text = "0";
+            // 
+            // labelUsbBiasB
+            // 
+            this.labelUsbBiasB.Location = new System.Drawing.Point(55, 49);
+            this.labelUsbBiasB.Name = "labelUsbBiasB";
+            this.labelUsbBiasB.Size = new System.Drawing.Size(54, 23);
+            this.labelUsbBiasB.TabIndex = 46;
+            this.labelUsbBiasB.Text = "Bias (uA)";
+            // 
+            // USBbBoxTextBox
+            // 
+            this.USBbBoxTextBox.Location = new System.Drawing.Point(115, 19);
+            this.USBbBoxTextBox.Name = "USBbBoxTextBox";
+            this.USBbBoxTextBox.Size = new System.Drawing.Size(64, 20);
+            this.USBbBoxTextBox.TabIndex = 45;
+            this.USBbBoxTextBox.Text = "0";
+            // 
+            // USBbBoxUpdateButton
+            // 
+            this.USBbBoxUpdateButton.Location = new System.Drawing.Point(193, 16);
+            this.USBbBoxUpdateButton.Name = "USBbBoxUpdateButton";
+            this.USBbBoxUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.USBbBoxUpdateButton.TabIndex = 40;
+            this.USBbBoxUpdateButton.Text = "Update";
+            this.USBbBoxUpdateButton.Click += new System.EventHandler(this.USBbBoxUpdateButton_Click);
+            // 
+            // labelUSBbBoxCurrent
+            // 
+            this.labelUSBbBoxCurrent.Location = new System.Drawing.Point(24, 22);
+            this.labelUSBbBoxCurrent.Name = "labelUSBbBoxCurrent";
+            this.labelUSBbBoxCurrent.Size = new System.Drawing.Size(85, 23);
+            this.labelUSBbBoxCurrent.TabIndex = 36;
+            this.labelUSBbBoxCurrent.Text = "Set Current (uA)";
             // 
             // groupBoxBManualState
             // 
@@ -3101,7 +3410,7 @@
             // 
             this.groupBoxManualBflip.Controls.Add(this.calFlipCheck);
             this.groupBoxManualBflip.Controls.Add(this.bFlipCheck);
-            this.groupBoxManualBflip.Location = new System.Drawing.Point(419, 140);
+            this.groupBoxManualBflip.Location = new System.Drawing.Point(419, 209);
             this.groupBoxManualBflip.Name = "groupBoxManualBflip";
             this.groupBoxManualBflip.Size = new System.Drawing.Size(233, 56);
             this.groupBoxManualBflip.TabIndex = 99;
@@ -4139,6 +4448,7 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.pollVCheckBox);
             this.groupBox7.Controls.Add(this.tbiMonitorPollPeriod);
             this.groupBox7.Controls.Add(this.changePollPeriodButton);
             this.groupBox7.Controls.Add(this.rescaleIMonitorChartButton);
@@ -4180,6 +4490,16 @@
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // pollVCheckBox
+            // 
+            this.pollVCheckBox.AutoSize = true;
+            this.pollVCheckBox.Location = new System.Drawing.Point(678, 88);
+            this.pollVCheckBox.Name = "pollVCheckBox";
+            this.pollVCheckBox.Size = new System.Drawing.Size(58, 17);
+            this.pollVCheckBox.TabIndex = 79;
+            this.pollVCheckBox.Text = "poll V?";
+            this.pollVCheckBox.UseVisualStyleBackColor = true;
             // 
             // tbiMonitorPollPeriod
             // 
@@ -4540,7 +4860,7 @@
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(40, 23);
             this.label18.TabIndex = 37;
-            this.label18.Text = "S (nA)";
+            this.label18.Text = "E (nA)";
             // 
             // label19
             // 
@@ -4548,7 +4868,7 @@
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(40, 23);
             this.label19.TabIndex = 36;
-            this.label19.Text = "N (nA)";
+            this.label19.Text = "W (nA)";
             // 
             // tabPageADIO
             // 
@@ -5592,6 +5912,12 @@
             // 
             // gBTargetStepper
             // 
+            this.gBTargetStepper.Controls.Add(this.lbTargetStepperInfo);
+            this.gBTargetStepper.Controls.Add(this.TargetLengthTimeButton);
+            this.gBTargetStepper.Controls.Add(this.lbTargetStepTime);
+            this.gBTargetStepper.Controls.Add(this.TargetLengthTimeTextBox);
+            this.gBTargetStepper.Controls.Add(this.TargetStepDirectionCBox);
+            this.gBTargetStepper.Controls.Add(this.TargetHomeButton);
             this.gBTargetStepper.Controls.Add(this.TargetTriggerButton);
             this.gBTargetStepper.Controls.Add(this.TargetExtButton);
             this.gBTargetStepper.Controls.Add(this.TargetManualButton);
@@ -5600,10 +5926,97 @@
             this.gBTargetStepper.Controls.Add(this.TargetNumStepsTextBox);
             this.gBTargetStepper.Location = new System.Drawing.Point(6, 355);
             this.gBTargetStepper.Name = "gBTargetStepper";
-            this.gBTargetStepper.Size = new System.Drawing.Size(683, 86);
+            this.gBTargetStepper.Size = new System.Drawing.Size(707, 318);
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
+            // 
+            // lbTargetStepperInfo
+            // 
+            this.lbTargetStepperInfo.AutoSize = true;
+            this.lbTargetStepperInfo.Location = new System.Drawing.Point(5, 89);
+            this.lbTargetStepperInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbTargetStepperInfo.Name = "lbTargetStepperInfo";
+            this.lbTargetStepperInfo.Size = new System.Drawing.Size(657, 221);
+            this.lbTargetStepperInfo.TabIndex = 31;
+            this.lbTargetStepperInfo.Text = resources.GetString("lbTargetStepperInfo.Text");
+            this.lbTargetStepperInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // TargetLengthTimeButton
+            // 
+            this.TargetLengthTimeButton.Location = new System.Drawing.Point(255, 51);
+            this.TargetLengthTimeButton.Name = "TargetLengthTimeButton";
+            this.TargetLengthTimeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetLengthTimeButton.TabIndex = 23;
+            this.TargetLengthTimeButton.Text = "Step!";
+            this.TargetLengthTimeButton.UseVisualStyleBackColor = true;
+            this.TargetLengthTimeButton.Click += new System.EventHandler(this.TargetLengthTimeButton_Click);
+            // 
+            // lbTargetStepTime
+            // 
+            this.lbTargetStepTime.AutoSize = true;
+            this.lbTargetStepTime.Location = new System.Drawing.Point(18, 56);
+            this.lbTargetStepTime.Name = "lbTargetStepTime";
+            this.lbTargetStepTime.Size = new System.Drawing.Size(96, 13);
+            this.lbTargetStepTime.TabIndex = 22;
+            this.lbTargetStepTime.Text = "Length of time (ms)";
+            // 
+            // TargetLengthTimeTextBox
+            // 
+            this.TargetLengthTimeTextBox.Location = new System.Drawing.Point(157, 53);
+            this.TargetLengthTimeTextBox.Name = "TargetLengthTimeTextBox";
+            this.TargetLengthTimeTextBox.Size = new System.Drawing.Size(66, 20);
+            this.TargetLengthTimeTextBox.TabIndex = 21;
+            this.TargetLengthTimeTextBox.Text = "1000";
+            // 
+            // TargetStepDirectionCBox
+            // 
+            this.TargetStepDirectionCBox.Location = new System.Drawing.Point(349, 51);
+            this.TargetStepDirectionCBox.Name = "TargetStepDirectionCBox";
+            this.TargetStepDirectionCBox.Size = new System.Drawing.Size(118, 24);
+            this.TargetStepDirectionCBox.TabIndex = 20;
+            this.TargetStepDirectionCBox.Text = "Direction C/AC?";
+            this.TargetStepDirectionCBox.CheckedChanged += new System.EventHandler(this.TargetStepDirectionCBox_CheckedChanged);
+            // 
+            // TargetHomeButton
+            // 
+            this.TargetHomeButton.Location = new System.Drawing.Point(617, 50);
+            this.TargetHomeButton.Name = "TargetHomeButton";
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
+            this.TargetHomeButton.TabIndex = 6;
+            this.TargetHomeButton.Text = "Reset Pos";
+            this.TargetHomeButton.UseVisualStyleBackColor = true;
+            this.TargetHomeButton.Click += new System.EventHandler(this.TargetHomeButton_Click);
+            // 
+            // TargetTriggerButton
+            // 
+            this.TargetTriggerButton.Location = new System.Drawing.Point(452, 21);
+            this.TargetTriggerButton.Name = "TargetTriggerButton";
+            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetTriggerButton.TabIndex = 5;
+            this.TargetTriggerButton.Text = "Triggered";
+            this.TargetTriggerButton.UseVisualStyleBackColor = true;
+            this.TargetTriggerButton.Click += new System.EventHandler(this.TargetTriggerButton_Click);
+            // 
+            // TargetExtButton
+            // 
+            this.TargetExtButton.Location = new System.Drawing.Point(534, 21);
+            this.TargetExtButton.Name = "TargetExtButton";
+            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetExtButton.TabIndex = 4;
+            this.TargetExtButton.Text = "External";
+            this.TargetExtButton.UseVisualStyleBackColor = true;
+            this.TargetExtButton.Click += new System.EventHandler(this.TargetExtButton_Click);
+            // 
+            // TargetManualButton
+            // 
+            this.TargetManualButton.Location = new System.Drawing.Point(616, 21);
+            this.TargetManualButton.Name = "TargetManualButton";
+            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
+            this.TargetManualButton.TabIndex = 3;
+            this.TargetManualButton.Text = "Manual";
+            this.TargetManualButton.UseVisualStyleBackColor = true;
+            this.TargetManualButton.Click += new System.EventHandler(this.TargetManualbutton_Click);
             // 
             // TargetStepButton
             // 
@@ -5630,7 +6043,7 @@
             this.TargetNumStepsTextBox.Name = "TargetNumStepsTextBox";
             this.TargetNumStepsTextBox.Size = new System.Drawing.Size(66, 20);
             this.TargetNumStepsTextBox.TabIndex = 0;
-            this.TargetNumStepsTextBox.Text = "10";
+            this.TargetNumStepsTextBox.Text = "1";
             // 
             // gbNeonFlowController
             // 
@@ -7682,6 +8095,7 @@
             this.tabControl.Controls.Add(this.tabPagePumping);
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabCCDCamera);
             this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -7906,35 +8320,287 @@
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
             // 
-            // TargetManualButton
+            // tabCCDCamera
             // 
-            this.TargetManualButton.Location = new System.Drawing.Point(590, 22);
-            this.TargetManualButton.Name = "TargetManualButton";
-            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetManualButton.TabIndex = 3;
-            this.TargetManualButton.Text = "Manual";
-            this.TargetManualButton.UseVisualStyleBackColor = true;
-            this.TargetManualButton.Click += new System.EventHandler(this.TargetManualbutton_Click);
+            this.tabCCDCamera.BackColor = System.Drawing.Color.DarkGray;
+            this.tabCCDCamera.Controls.Add(this.btnSetCCDTriggerMode);
+            this.tabCCDCamera.Controls.Add(this.comboBoxCCDTriggerMode);
+            this.tabCCDCamera.Controls.Add(this.tbCCDBExposure);
+            this.tabCCDCamera.Controls.Add(this.tbCCDBGain);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAExposure);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAGain);
+            this.tabCCDCamera.Controls.Add(this.labelFrameCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelFrameCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelGainCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelGainCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelExposureTimeCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelExposureTimeCCDB);
+            this.tabCCDCamera.Controls.Add(this.labelTemperatureCCDA);
+            this.tabCCDCamera.Controls.Add(this.labelTemperatureCCDB);
+            this.tabCCDCamera.Controls.Add(this.tbCCDAFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryExposure);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryGain);
+            this.tabCCDCamera.Controls.Add(this.btCCDQueryTemp);
+            this.tabCCDCamera.Controls.Add(this.lblCCDA);
+            this.tabCCDCamera.Controls.Add(this.lblCCDB);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateFrameCount);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateExposureTime);
+            this.tabCCDCamera.Controls.Add(this.btCCDUpdateGain);
+            this.tabCCDCamera.Controls.Add(this.labelTCPCCD);
+            this.tabCCDCamera.Controls.Add(this.checkboxTCPCCD);
+            this.tabCCDCamera.Controls.Add(this.btinfoCCDExposure);
+            this.tabCCDCamera.Controls.Add(this.tbCCDShotCount);
+            this.tabCCDCamera.Controls.Add(this.labelCCDShotCount);
+            this.tabCCDCamera.Location = new System.Drawing.Point(4, 22);
+            this.tabCCDCamera.Name = "tabCCDCamera";
+            this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCCDCamera.Size = new System.Drawing.Size(1033, 715);
+            this.tabCCDCamera.TabIndex = 11;
+            this.tabCCDCamera.Text = "CCD Camera";
             // 
-            // TargetExtButton
+            // btnSetCCDTriggerMode
             // 
-            this.TargetExtButton.Location = new System.Drawing.Point(508, 22);
-            this.TargetExtButton.Name = "TargetExtButton";
-            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetExtButton.TabIndex = 4;
-            this.TargetExtButton.Text = "External";
-            this.TargetExtButton.UseVisualStyleBackColor = true;
-            this.TargetExtButton.Click += new System.EventHandler(this.TargetExtButton_Click);
+            this.btnSetCCDTriggerMode.Location = new System.Drawing.Point(136, 192);
+            this.btnSetCCDTriggerMode.Name = "btnSetCCDTriggerMode";
+            this.btnSetCCDTriggerMode.Size = new System.Drawing.Size(100, 24);
+            this.btnSetCCDTriggerMode.TabIndex = 30;
+            this.btnSetCCDTriggerMode.Text = "Set Trigger";
+            this.btnSetCCDTriggerMode.UseVisualStyleBackColor = true;
+            this.btnSetCCDTriggerMode.Click += new System.EventHandler(this.btnSetCCDTriggerMode_Click);
             // 
-            // TargetTriggerButton
+            // comboBoxCCDTriggerMode
             // 
-            this.TargetTriggerButton.Location = new System.Drawing.Point(426, 22);
-            this.TargetTriggerButton.Name = "TargetTriggerButton";
-            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
-            this.TargetTriggerButton.TabIndex = 5;
-            this.TargetTriggerButton.Text = "Triggered";
-            this.TargetTriggerButton.UseVisualStyleBackColor = true;
-            this.TargetTriggerButton.Click += new System.EventHandler(this.TargetTriggerButton_Click);
+            this.comboBoxCCDTriggerMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCCDTriggerMode.FormattingEnabled = true;
+            this.comboBoxCCDTriggerMode.Items.AddRange(new object[] {
+            "0 - Internal Trigger",
+            "1 - External Burst Trigger",
+            "2 - External Edge Trigger"});
+            this.comboBoxCCDTriggerMode.Location = new System.Drawing.Point(256, 192);
+            this.comboBoxCCDTriggerMode.Name = "comboBoxCCDTriggerMode";
+            this.comboBoxCCDTriggerMode.Size = new System.Drawing.Size(200, 21);
+            this.comboBoxCCDTriggerMode.TabIndex = 28;
+            // 
+            // tbCCDBExposure
+            // 
+            this.tbCCDBExposure.Location = new System.Drawing.Point(403, 269);
+            this.tbCCDBExposure.Name = "tbCCDBExposure";
+            this.tbCCDBExposure.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDBExposure.TabIndex = 13;
+            // 
+            // tbCCDBGain
+            // 
+            this.tbCCDBGain.Location = new System.Drawing.Point(400, 137);
+            this.tbCCDBGain.Name = "tbCCDBGain";
+            this.tbCCDBGain.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDBGain.TabIndex = 7;
+            // 
+            // tbCCDAExposure
+            // 
+            this.tbCCDAExposure.Location = new System.Drawing.Point(256, 269);
+            this.tbCCDAExposure.Name = "tbCCDAExposure";
+            this.tbCCDAExposure.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDAExposure.TabIndex = 3;
+            // 
+            // tbCCDAGain
+            // 
+            this.tbCCDAGain.Location = new System.Drawing.Point(256, 136);
+            this.tbCCDAGain.Name = "tbCCDAGain";
+            this.tbCCDAGain.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDAGain.TabIndex = 1;
+            // 
+            // labelFrameCCDA
+            // 
+            this.labelFrameCCDA.Location = new System.Drawing.Point(256, 337);
+            this.labelFrameCCDA.Name = "labelFrameCCDA";
+            this.labelFrameCCDA.Size = new System.Drawing.Size(100, 20);
+            this.labelFrameCCDA.TabIndex = 19;
+            this.labelFrameCCDA.Text = "N/A";
+            // 
+            // labelFrameCCDB
+            // 
+            this.labelFrameCCDB.Location = new System.Drawing.Point(403, 334);
+            this.labelFrameCCDB.Name = "labelFrameCCDB";
+            this.labelFrameCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelFrameCCDB.TabIndex = 20;
+            this.labelFrameCCDB.Text = "N/A";
+            // 
+            // labelGainCCDA
+            // 
+            this.labelGainCCDA.Location = new System.Drawing.Point(256, 110);
+            this.labelGainCCDA.Name = "labelGainCCDA";
+            this.labelGainCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelGainCCDA.TabIndex = 21;
+            this.labelGainCCDA.Text = "N/A";
+            // 
+            // labelGainCCDB
+            // 
+            this.labelGainCCDB.Location = new System.Drawing.Point(403, 110);
+            this.labelGainCCDB.Name = "labelGainCCDB";
+            this.labelGainCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelGainCCDB.TabIndex = 22;
+            this.labelGainCCDB.Text = "N/A";
+            // 
+            // labelExposureTimeCCDA
+            // 
+            this.labelExposureTimeCCDA.Location = new System.Drawing.Point(256, 247);
+            this.labelExposureTimeCCDA.Name = "labelExposureTimeCCDA";
+            this.labelExposureTimeCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelExposureTimeCCDA.TabIndex = 23;
+            this.labelExposureTimeCCDA.Text = "N/A";
+            // 
+            // labelExposureTimeCCDB
+            // 
+            this.labelExposureTimeCCDB.Location = new System.Drawing.Point(400, 247);
+            this.labelExposureTimeCCDB.Name = "labelExposureTimeCCDB";
+            this.labelExposureTimeCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelExposureTimeCCDB.TabIndex = 24;
+            this.labelExposureTimeCCDB.Text = "N/A";
+            // 
+            // labelTemperatureCCDA
+            // 
+            this.labelTemperatureCCDA.Location = new System.Drawing.Point(256, 62);
+            this.labelTemperatureCCDA.Name = "labelTemperatureCCDA";
+            this.labelTemperatureCCDA.Size = new System.Drawing.Size(100, 23);
+            this.labelTemperatureCCDA.TabIndex = 26;
+            this.labelTemperatureCCDA.Text = "N/A";
+            // 
+            // labelTemperatureCCDB
+            // 
+            this.labelTemperatureCCDB.Location = new System.Drawing.Point(403, 62);
+            this.labelTemperatureCCDB.Name = "labelTemperatureCCDB";
+            this.labelTemperatureCCDB.Size = new System.Drawing.Size(100, 23);
+            this.labelTemperatureCCDB.TabIndex = 27;
+            this.labelTemperatureCCDB.Text = "N/A";
+            // 
+            // tbCCDAFrameCount
+            // 
+            this.tbCCDAFrameCount.Location = new System.Drawing.Point(256, 359);
+            this.tbCCDAFrameCount.Name = "tbCCDAFrameCount";
+            this.tbCCDAFrameCount.Size = new System.Drawing.Size(247, 20);
+            this.tbCCDAFrameCount.TabIndex = 31;
+            // 
+            // btCCDQueryFrameCount
+            // 
+            this.btCCDQueryFrameCount.Location = new System.Drawing.Point(136, 333);
+            this.btCCDQueryFrameCount.Name = "btCCDQueryFrameCount";
+            this.btCCDQueryFrameCount.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryFrameCount.TabIndex = 14;
+            this.btCCDQueryFrameCount.Text = "Query Frame Count";
+            this.btCCDQueryFrameCount.Click += new System.EventHandler(this.QueryFrameCount_Click);
+            // 
+            // btCCDQueryExposure
+            // 
+            this.btCCDQueryExposure.Location = new System.Drawing.Point(103, 245);
+            this.btCCDQueryExposure.Name = "btCCDQueryExposure";
+            this.btCCDQueryExposure.Size = new System.Drawing.Size(147, 20);
+            this.btCCDQueryExposure.TabIndex = 16;
+            this.btCCDQueryExposure.Text = "Query Exposure Time (ms)";
+            this.btCCDQueryExposure.Click += new System.EventHandler(this.QueryExposureTime_Click);
+            // 
+            // btCCDQueryGain
+            // 
+            this.btCCDQueryGain.Location = new System.Drawing.Point(136, 110);
+            this.btCCDQueryGain.Name = "btCCDQueryGain";
+            this.btCCDQueryGain.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryGain.TabIndex = 18;
+            this.btCCDQueryGain.Text = "Query Gain";
+            this.btCCDQueryGain.Click += new System.EventHandler(this.QueryGain_Click);
+            // 
+            // btCCDQueryTemp
+            // 
+            this.btCCDQueryTemp.Location = new System.Drawing.Point(136, 58);
+            this.btCCDQueryTemp.Name = "btCCDQueryTemp";
+            this.btCCDQueryTemp.Size = new System.Drawing.Size(100, 20);
+            this.btCCDQueryTemp.TabIndex = 17;
+            this.btCCDQueryTemp.Text = "Query Temp";
+            this.btCCDQueryTemp.Click += new System.EventHandler(this.QueryTemperature_Click);
+            // 
+            // lblCCDA
+            // 
+            this.lblCCDA.Location = new System.Drawing.Point(276, 6);
+            this.lblCCDA.Name = "lblCCDA";
+            this.lblCCDA.Size = new System.Drawing.Size(100, 20);
+            this.lblCCDA.TabIndex = 19;
+            this.lblCCDA.Text = "CCD A";
+            // 
+            // lblCCDB
+            // 
+            this.lblCCDB.Location = new System.Drawing.Point(430, 6);
+            this.lblCCDB.Name = "lblCCDB";
+            this.lblCCDB.Size = new System.Drawing.Size(100, 20);
+            this.lblCCDB.TabIndex = 20;
+            this.lblCCDB.Text = "CCD B";
+            // 
+            // btCCDUpdateFrameCount
+            // 
+            this.btCCDUpdateFrameCount.Location = new System.Drawing.Point(136, 359);
+            this.btCCDUpdateFrameCount.Name = "btCCDUpdateFrameCount";
+            this.btCCDUpdateFrameCount.Size = new System.Drawing.Size(100, 20);
+            this.btCCDUpdateFrameCount.TabIndex = 21;
+            this.btCCDUpdateFrameCount.Text = "Update Frame Count";
+            this.btCCDUpdateFrameCount.Click += new System.EventHandler(this.UpdateCCDFrameCount_Click);
+            // 
+            // btCCDUpdateExposureTime
+            // 
+            this.btCCDUpdateExposureTime.Location = new System.Drawing.Point(103, 271);
+            this.btCCDUpdateExposureTime.Name = "btCCDUpdateExposureTime";
+            this.btCCDUpdateExposureTime.Size = new System.Drawing.Size(147, 20);
+            this.btCCDUpdateExposureTime.TabIndex = 22;
+            this.btCCDUpdateExposureTime.Text = "Update Exposure Time (ms)";
+            this.btCCDUpdateExposureTime.Click += new System.EventHandler(this.UpdateCCDExposureButton_Click);
+            // 
+            // btCCDUpdateGain
+            // 
+            this.btCCDUpdateGain.Location = new System.Drawing.Point(136, 136);
+            this.btCCDUpdateGain.Name = "btCCDUpdateGain";
+            this.btCCDUpdateGain.Size = new System.Drawing.Size(100, 20);
+            this.btCCDUpdateGain.TabIndex = 29;
+            this.btCCDUpdateGain.Text = "Update Gain";
+            this.btCCDUpdateGain.Click += new System.EventHandler(this.UpdateCCDGainButton_Click);
+            // 
+            // labelTCPCCD
+            // 
+            this.labelTCPCCD.Location = new System.Drawing.Point(22, 11);
+            this.labelTCPCCD.Name = "labelTCPCCD";
+            this.labelTCPCCD.Size = new System.Drawing.Size(130, 20);
+            this.labelTCPCCD.TabIndex = 32;
+            this.labelTCPCCD.Text = "TCP connection to CCDs";
+            // 
+            // checkboxTCPCCD
+            // 
+            this.checkboxTCPCCD.Location = new System.Drawing.Point(158, 8);
+            this.checkboxTCPCCD.Name = "checkboxTCPCCD";
+            this.checkboxTCPCCD.Size = new System.Drawing.Size(17, 20);
+            this.checkboxTCPCCD.TabIndex = 31;
+            this.checkboxTCPCCD.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
+            // 
+            // btinfoCCDExposure
+            // 
+            this.btinfoCCDExposure.Location = new System.Drawing.Point(512, 267);
+            this.btinfoCCDExposure.Name = "btinfoCCDExposure";
+            this.btinfoCCDExposure.Size = new System.Drawing.Size(23, 24);
+            this.btinfoCCDExposure.TabIndex = 33;
+            this.btinfoCCDExposure.Text = "?";
+            this.btinfoCCDExposure.Click += new System.EventHandler(this.infoCCDExposure_Click);
+            // 
+            // tbCCDShotCount
+            // 
+            this.tbCCDShotCount.Location = new System.Drawing.Point(256, 400);
+            this.tbCCDShotCount.Name = "tbCCDShotCount";
+            this.tbCCDShotCount.ReadOnly = true;
+            this.tbCCDShotCount.Size = new System.Drawing.Size(100, 20);
+            this.tbCCDShotCount.TabIndex = 35;
+            this.tbCCDShotCount.Text = "N/A";
+            // 
+            // labelCCDShotCount
+            // 
+            this.labelCCDShotCount.Location = new System.Drawing.Point(104, 403);
+            this.labelCCDShotCount.Name = "labelCCDShotCount";
+            this.labelCCDShotCount.Size = new System.Drawing.Size(132, 23);
+            this.labelCCDShotCount.TabIndex = 34;
+            this.labelCCDShotCount.Text = "Shot Count (Read Only)";
             // 
             // ControlWindow
             // 
@@ -7970,6 +8636,12 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPagePumping.ResumeLayout(false);
+            this.groupBoxMWSwitch.ResumeLayout(false);
+            this.groupBoxMWSwitch.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).EndInit();
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
@@ -7988,6 +8660,8 @@
             this.groupBoxRF.PerformLayout();
             this.tabPageBfield.ResumeLayout(false);
             this.tabPageBfield.PerformLayout();
+            this.groupBoxbUSB.ResumeLayout(false);
+            this.groupBoxbUSB.PerformLayout();
             this.groupBoxBManualState.ResumeLayout(false);
             this.groupBoxManualBflip.ResumeLayout(false);
             this.groupBoxbCurrentMon.ResumeLayout(false);
@@ -8075,6 +8749,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
+            this.tabCCDCamera.ResumeLayout(false);
+            this.tabCCDCamera.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -8725,5 +9401,69 @@
         private System.Windows.Forms.Button TargetManualButton;
         private System.Windows.Forms.Button TargetExtButton;
         private System.Windows.Forms.Button TargetTriggerButton;
+        private System.Windows.Forms.GroupBox groupBoxMWSwitch;
+        private System.Windows.Forms.Label labelMWSwitchState;
+        private System.Windows.Forms.CheckBox cBMWSwitchState;
+        public NationalInstruments.UI.WindowsForms.Led ledChADetA;
+        private System.Windows.Forms.Label labelF0;
+        private System.Windows.Forms.Label labelF1;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label1;
+        public NationalInstruments.UI.WindowsForms.Led ledChBDetB;
+        public NationalInstruments.UI.WindowsForms.Led ledChADetB;
+        public NationalInstruments.UI.WindowsForms.Led ledChBDetA;
+        private System.Windows.Forms.GroupBox groupBoxbUSB;
+        public System.Windows.Forms.TextBox USBbBoxTextBox;
+        private System.Windows.Forms.Label labelUSBbBoxCurrent;
+        public System.Windows.Forms.TextBox UsbSmallBTextBox;
+        private System.Windows.Forms.Label labelUsbSmallB;
+        public System.Windows.Forms.TextBox UsbBigBTextBox;
+        private System.Windows.Forms.Label labelUsbBigB;
+        public System.Windows.Forms.TextBox UsbBiasTextBox;
+        private System.Windows.Forms.Label labelUsbBiasB;
+        public System.Windows.Forms.TextBox tbUsbBBoxCmd;
+        private System.Windows.Forms.Label UsbBboxCmdlb;
+        private System.Windows.Forms.Button TargetHomeButton;
+        public System.Windows.Forms.CheckBox UsbBBoxCheck;
+        public System.Windows.Forms.CheckBox pollVCheckBox;
+        public System.Windows.Forms.Button USBbBoxUpdateButton;
+        public System.Windows.Forms.Button UsbBBoxCmdBtn;
+        public System.Windows.Forms.CheckBox TargetStepDirectionCBox;
+        private System.Windows.Forms.Button TargetLengthTimeButton;
+        private System.Windows.Forms.Label lbTargetStepTime;
+        public System.Windows.Forms.TextBox TargetLengthTimeTextBox;
+        private System.Windows.Forms.Label lbTargetStepperInfo;
+
+        // shirley adds on 20/05/2025
+        private System.Windows.Forms.TabPage tabCCDCamera;
+        public System.Windows.Forms.TextBox tbCCDAGain;
+        public System.Windows.Forms.TextBox tbCCDAExposure;
+        public System.Windows.Forms.TextBox tbCCDBGain;
+        public System.Windows.Forms.TextBox tbCCDBExposure;
+        public System.Windows.Forms.Label labelFrameCCDA;
+        public System.Windows.Forms.Label labelFrameCCDB;
+        public System.Windows.Forms.Label labelGainCCDA;
+        public System.Windows.Forms.Label labelGainCCDB;
+        public System.Windows.Forms.Label labelExposureTimeCCDA;
+        public System.Windows.Forms.Label labelExposureTimeCCDB;
+        public System.Windows.Forms.Label labelTemperatureCCDA;
+        public System.Windows.Forms.Label labelTemperatureCCDB;
+        public System.Windows.Forms.TextBox tbCCDAFrameCount;
+        public System.Windows.Forms.Button btCCDQueryTemp;
+        public System.Windows.Forms.Button btCCDQueryGain;
+        public System.Windows.Forms.Button btCCDQueryExposure;
+        public System.Windows.Forms.Button btCCDQueryFrameCount;
+        private System.Windows.Forms.Label lblCCDA;
+        private System.Windows.Forms.Label lblCCDB;
+        public System.Windows.Forms.Button btCCDUpdateGain;
+        public System.Windows.Forms.Button btCCDUpdateExposureTime;
+        public System.Windows.Forms.Button btCCDUpdateFrameCount;
+        public System.Windows.Forms.Button btnSetCCDTriggerMode;
+        public System.Windows.Forms.ComboBox comboBoxCCDTriggerMode;
+        public System.Windows.Forms.CheckBox checkboxTCPCCD;
+        private System.Windows.Forms.Label labelTCPCCD;
+        public System.Windows.Forms.Button btinfoCCDExposure;
+        private System.Windows.Forms.Label labelCCDShotCount;
+        public System.Windows.Forms.TextBox tbCCDShotCount;
     }
 }

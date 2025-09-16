@@ -119,7 +119,7 @@ namespace AlFHardwareControl
                 {
                     data = data.Field(key, LastData[key]);
                 }
-                data = data.Timestamp(DateTime.UtcNow);
+                data = data.TimestampMS(DateTime.UtcNow);
 
             }
 

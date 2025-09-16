@@ -103,13 +103,11 @@ namespace DAQ
 
             try
             {
-                Task<HttpResponseMessage> t = client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
-                t.Wait();
                 client.PostAsync(url + "/api/v2/write?org=" + org + "&bucket=" + bucket + "&precision=" + prec, content);
             }
             catch (Exception e) when (e is ArgumentNullException || e is HttpRequestException)
             {
-
+                Console.WriteLine("Failed to post to influxDB with exception: " + e.Message);
             }
         }
     }

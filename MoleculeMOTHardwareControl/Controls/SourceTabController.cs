@@ -84,12 +84,13 @@ namespace MoleculeMOTHardwareControl.Controls
 
         private int PlotChannel = 0;
         private int flowTimeoutCount = 15;
-        private double hardTempLimInK = 300.0;
+        private double hardTempLimInK = 310.0;
         private double hardTempLimInC = 27.0;
-        private double softTempLimInK = 293.0;
+        private double softTempLimInK = 300.0;
         private double softTempLimInC = 20.0;
 
         Stopwatch cycleHoldTimer = new Stopwatch();
+        Stopwatch dataLogTimer = new Stopwatch();
 
         CmdLib8742 cmdLib;
         DeviceIOLib diolib;
@@ -200,6 +201,9 @@ namespace MoleculeMOTHardwareControl.Controls
             //Initialize Analog Outputs to 0V 
             SetAnalogOutput(0, 0.0);
             SetAnalogOutput(1, 0.0);
+
+            //Start timer for data logging
+            dataLogTimer.Start();
         }
 
         private void set_Time_Axis()
@@ -471,7 +475,7 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (IsCyling)
                 {
-                    checkCycleStatus(sourceTemp3);
+                    checkCycleStatus(sourceTemp2);
                     /*double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
                     if (!finishedHeating && sourceTemp2 > cycleLimit)
                     {
@@ -486,16 +490,16 @@ namespace MoleculeMOTHardwareControl.Controls
                 {
 
                     double cycleLimit = castView.GetCycleLimit() + 273.0; //Cycle temperature in K
-                    if (sourceTemp3 < cycleLimit && !maxTempReached)
+                    if (sourceTemp2 < cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(true);
                     }
-                    else if (sourceTemp3 > cycleLimit && !maxTempReached)
+                    else if (sourceTemp2 > cycleLimit && !maxTempReached)
                     {
                         SetHeaterState(false);
                         maxTempReached = true;
                     }
-                    else if (sourceTemp3 < cycleLimit - 5 && maxTempReached)
+                    else if (sourceTemp2 < cycleLimit - 5 && maxTempReached)
                     {
                         SetHeaterState(true);
                         maxTempReached = false;
@@ -509,11 +513,11 @@ namespace MoleculeMOTHardwareControl.Controls
 
                     double cycleLimit = castView.GetCycleLimit40K() + 273.0; //Cycle temperature in K
                     //double cycleLimit = castView.GetCycleLimit40K();
-                    if (sourceTemp3 < cycleLimit && !maxTempReached40K)
+                    if (source40KTemp2 < cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(true);
                     }
-                    else if (sourceTemp3 > cycleLimit && !maxTempReached40K)
+                    else if (source40KTemp2 > cycleLimit && !maxTempReached40K)
                     {
                         SetHeaterState40K(false);
                         maxTempReached40K = true;
@@ -555,6 +559,8 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 SetHeaterStateMaster(isHeaterOn || isHeaterOn40K);
 
+                cryoHeaterCheck();
+
                 castView.UpdateCurrentSourceTemperature2(sourceTemp2.ToString("0.##") + " K");
                 castView.UpdateCurrentSourceTemperature3(sourceTemp3.ToString("0.##") + " K");
                 castView.UpdateCurrentSourceTemperature40K2(source40KTemp2.ToString("0.##") + " K");
@@ -592,30 +598,34 @@ namespace MoleculeMOTHardwareControl.Controls
 
                 if (castView.LogStatus())
                 {
-                    DateTime dt = DateTime.Now;
-                    String filename = logfilePath + "" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-                    
-                    if (!System.IO.File.Exists(filename))
+                    if (dataLogTimer.ElapsedMilliseconds > 1000)
                     {
-                        //string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
-                        string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t " +
-                            "Source_Temperature(in C) \t Source_Temperature_1(in K) \t Source_Temperature_2(in K) \t " +
-                            "SF6_Temperature(in degree C) \t " +
-                            "40K_Temperature(in degree C) \t 40K_Temperature(in degree K)";
-                        using (System.IO.StreamWriter file =
-                        new System.IO.StreamWriter(filename, false))
-                            file.WriteLine(header);
-                    }
+                        DateTime dt = DateTime.Now;
+                        String filename = logfilePath + "" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
 
-                    using (System.IO.StreamWriter file =
-                        new System.IO.StreamWriter(filename, true))
-                    {
-                        //file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40KTemp.ToString());
-                        file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString() + "\t" +
-                            sourceTemp.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sourceTemp3.ToString() + "\t" +
-                            sf6Temp.ToString() + "\t" +
-                            source40KTemp.ToString() + "\t" + source40KTemp2.ToString());
-                        file.Flush();
+                        if (!System.IO.File.Exists(filename))
+                        {
+                            //string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t Source_Temperature(in K) \t SF6_Temperature(in degree C) \t 40K_Temperature(in degree C)";
+                            string header = "Time \t Source_Pressure \t MOT_Chamber_Pressure \t " +
+                                "Source_Temperature(in C) \t Source_Temperature_1(in K) \t Source_Temperature_2(in K) \t " +
+                                "SF6_Temperature(in degree C) \t " +
+                                "40K_Temperature(in degree C) \t 40K_Temperature(in degree K)";
+                            using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, false))
+                                file.WriteLine(header);
+                        }
+
+                        using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(filename, true))
+                        {
+                            //file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString()  + "\t" + sourceTemp2.ToString() + "\t" + sf6Temp.ToString() + "\t" + source40KTemp.ToString());
+                            file.WriteLine(dt.TimeOfDay.ToString() + "\t" + sourcePressure.ToString() + "\t" + MOTPressure.ToString() + "\t" +
+                                sourceTemp.ToString() + "\t" + sourceTemp2.ToString() + "\t" + sourceTemp3.ToString() + "\t" +
+                                sf6Temp.ToString() + "\t" +
+                                source40KTemp.ToString() + "\t" + source40KTemp2.ToString());
+                            file.Flush();
+                        }
+                        dataLogTimer.Restart();
                     }
                 }
 
@@ -765,6 +775,19 @@ namespace MoleculeMOTHardwareControl.Controls
                 this.stopPanic();
             }
 
+        }
+
+        /// <summary>
+        /// Check if cryo and heaters are on at the same time.
+        /// If so, switch them all off.
+        /// </summary>
+        public void cryoHeaterCheck()
+        {
+            if (isCryoOn && isHeaterOn || isCryoOn&&isHeaterOn40K)
+            {
+                stopHeating();
+                SetCryoState(false);
+            }
         }
 
         /// <summary>
