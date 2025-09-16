@@ -20,6 +20,7 @@ namespace WavemeterViewer
             InitializeComponent();
             controller = _controller;
             hostName = _hostName;
+            updateDisplayUnits();
         }
 
         private void ViewerForm_Load(object sender, EventArgs e)
@@ -32,6 +33,20 @@ namespace WavemeterViewer
             updatePannel();
         }
 
+        private bool displayFrequency;
+
+        private void updateDisplayUnits()
+        {
+            if (displayFreqRadioButton.Checked)
+            {
+                displayFrequency = true;
+            }
+            else
+            {
+                displayFrequency = false;
+            }
+        }
+
         public void updatePannel()
         {
             string[] s = new string[8];
@@ -39,7 +54,19 @@ namespace WavemeterViewer
 
             for (int n = 0; n < 8; n++)
             {
-                s[n] = controller.displayWavelength(n + 1);
+<<<<<<< HEAD
+                s[n] = controller.displayFrequency(n + 1);
+=======
+                if (displayFrequency)
+                {
+                    s[n] = controller.displayFrequency(n + 1);
+                }
+                else
+                {
+                    s[n] = controller.displayWavelength(n + 1);
+                }
+                
+>>>>>>> c42f6cbe2bff64af1407db9f913dee1644e9a804
             }
 
             //Shows the wavelength of each channel
@@ -75,6 +102,16 @@ namespace WavemeterViewer
             
             controller.removeWavemeterViewer(Environment.MachineName);
             Application.Exit();
+        }
+
+        private void displayWavRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            updateDisplayUnits();
+        }
+
+        private void displayFreqRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            updateDisplayUnits();
         }
     }
 }

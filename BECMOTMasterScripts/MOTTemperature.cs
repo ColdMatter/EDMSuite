@@ -17,72 +17,87 @@ public class Patterns : MOTMasterScript
     {
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 50000;
+        Parameters["BackgroundImageTime"] = 25000; // half the pattern length
         Parameters["TCLBlockStart"] = 10000;
         Parameters["FlashToQ"] = 16;
         Parameters["QSwitchPulseDuration"] = 10;
 
-        // Fundamental slowing calibration parameters
-        double slowingMHzPerVolt = -1350.0;             // Azurlight BX laser 1V --> -1350 MHz
-        Parameters["SlowingChirpMHzSpan"] = 360.0;      // 564.582580 THz is the resonance with -110 MHz AOM
-
         // Slowing parameters
-        Parameters["BXAOMPreBunchingStartTime"] = 0;
-        Parameters["BXAOMPreBunchingDuration"] = 0;
-        Parameters["BXAOMFreeFlightDuration"] = 400;
+        Parameters["BXAOMFreeFlightDuration"] = 500;
         Parameters["BXAOMPostBunchingDuration"] = 100;
-        Parameters["BXAOMChirpDuration"] = 600;
+        Parameters["BXAOMChirpDuration"] = 500;
         Parameters["BXChirpStartValue"] = 0.0;
-        Parameters["BXChirpEndValue"] = (double)Parameters["SlowingChirpMHzSpan"] / slowingMHzPerVolt;
-        Parameters["BXShutterONStartTime"] = -3000;
-        Parameters["BXShutterONDuration"] = 2000;
+        Parameters["SlowingMHzPerVolt"] = -1350.0;             // Azurlight BX laser 1V --> -1350 MHz
+        Parameters["SlowingChirpMHzSpan"] = 360.0;             // 564.582580 THz is the resonance with -100 MHz AOM
 
         // cooling and trapping parameters
-        Parameters["MOTLoadingDuration"] = 2000;
-        Parameters["MOTRetainingDuration"] = 2000;
-        Parameters["MolassesDuration"] = 100;
-        Parameters["V00MOTLoadingFreq"] = 4.0;
-        Parameters["V00MOTRetainingFreq"] = 4.0;
-        Parameters["V00MolassesFreq"] = 4.0;
-        Parameters["V00MOTLoadingAmplitude"] = 0.31;
-        Parameters["V00MOTRetainingAmplitude"] = 0.31;
-        Parameters["V00MolassesAmplitude"] = 0.31;
-        Parameters["V00AOMFinalDelay"] = 1000;
+        Parameters["V00AOMONStartTime"] = 0;
+        Parameters["MOTLoadingDuration"] = 3000;
+        Parameters["MOTRetainingRampDuration"] = 500;
+        Parameters["MOTRetainingDuration"] = 200;
+        Parameters["MOTCompressionRampDuration"] = 1;
+        Parameters["MOTCompressionDuration"] = 300;
+        Parameters["V00AOMONDuration"] = 30000;
+
+        Parameters["V00R0AOMVCOFreqMOTLoading"] = 3.1;
+        Parameters["V00R0AOMVCOFreqMOTRetaining"] = 3.1;
+        Parameters["V00R0AOMVCOFreqMOTCompression"] = 3.1;
+        Parameters["V00R0AOMVCOFreqImaging"] = 3.1;
+        Parameters["V00R0AOMVCOAmpMOTLoading"] = 0.30;
+        Parameters["V00R0AOMVCOAmpMOTRetaining"] = 0.43;
+        Parameters["V00R0AOMVCOAmpMOTCompression"] = 0.43;
+        Parameters["V00R0AOMVCOAmpImaging"] = 0.32;
+        Parameters["V00R1plusAOMAmpMOTLoading"] = 0.72;
+        Parameters["V00R1plusAOMAmpMOTRetaining"] = 0.65;
+        Parameters["V00R1plusAOMAmpMOTCompression"] = 0.65;
+        Parameters["V00R1plusAOMAmpImaging"] = 0.72;
+        Parameters["V00R0EOMVCOAmpMOTLoading"] = -1.1;
 
         // B Field
+        Parameters["SlowingCoilFieldValue"] = 5.0;
         Parameters["MOTCoilsStartTime"] = 0;
-        Parameters["MOTLoadingMagFieldValue"] = 6.5;            // 6.5 V should be 1 A
-        Parameters["MOTRetainingMagFieldValue"] = 6.5;
+        Parameters["MOTCoilsStopTime"] = 10000;
+        Parameters["MOTLoadingFieldValue"] = 3.0;
+        Parameters["MOTCompressionFieldValue"] = 6.0;
         Parameters["MOTCoilsOffValue"] = 0.0;
 
+        // Shim Coils
+        Parameters["XShimCoilsOnValue"] = 0.0;
+        Parameters["XShimCoilsOffValue"] = 0.0;
+        Parameters["YShimCoilsOnValue"] = 0.0;
+        Parameters["YShimCoilsOffValue"] = 0.0;
+        Parameters["ZShimCoilsOnValue"] = 0.0;
+        Parameters["ZShimCoilsOffValue"] = 0.0;
+
         // Camera trigger properties
-        Parameters["CameraTriggerDelay"] = 10;
+        Parameters["CameraTriggerStartDelay"] = 1;
         Parameters["CameraTriggerDuration"] = 100;
+        Parameters["CameraExposureDelay"] = 78; // a constant of nature for Normal CCD
 
         // Switching control for iterative operations.
         // values higher than 5.0 leads to active state.
         Parameters["yagONorOFF"] = 10.0;
         Parameters["slowingONorOFF"] = 10.0;
+
     }
 
     public override PatternBuilder32 GetDigitalPattern()
     {
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
-        int slowingAOMStart = (int)Parameters["BXAOMPreBunchingStartTime"] + (int)Parameters["BXAOMPreBunchingDuration"] + (int)Parameters["BXAOMFreeFlightDuration"];
+        int slowingAOMStart = (int)Parameters["BXAOMFreeFlightDuration"];
         int slowingChirpStart = slowingAOMStart + (int)Parameters["BXAOMPostBunchingDuration"];
         int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
 
-        int motRetaingStart = (int)Parameters["MOTLoadingDuration"];
-        int molassesStart = motRetaingStart + (int)Parameters["MOTRetainingDuration"];
-        int molassesEnd = molassesStart + (int)Parameters["MolassesDuration"];
-        int cameraTrigger = molassesEnd + (int)Parameters["CameraTriggerDelay"];
-        int coolingAOMoff = cameraTrigger + (int)Parameters["CameraTriggerDuration"] + (int)Parameters["V00AOMFinalDelay"];
+        int motLoadingStop = (int)Parameters["MOTLoadingDuration"];
+        int motRetainingStop = motLoadingStop + (int)Parameters["MOTRetainingRampDuration"] + (int)Parameters["MOTRetainingDuration"];
+        int motCompressionStop = motRetainingStop + (int)Parameters["MOTCompressionRampDuration"] + (int)Parameters["MOTCompressionDuration"];
 
         p.Pulse(patternStartBeforeQ, 0, 10, "analogPatternTrigger");
         p.Pulse(
             patternStartBeforeQ,
             0,
-            slowingChirpStop + 1000 + 1000 + 20000,
+            25000,
             "blockTCL"
         );
 
@@ -100,56 +115,96 @@ public class Patterns : MOTMasterScript
 
         p.Pulse(
             patternStartBeforeQ,
-            0,
-            molassesEnd,
-            "coolingAOM"
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00R0AOM"
         );
 
         p.Pulse(
             patternStartBeforeQ,
-            cameraTrigger,
-            coolingAOMoff,
-            "coolingAOM"
+            (int)Parameters["V00AOMONStartTime"],
+            motCompressionStop,
+            "V00R1plusAOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            motCompressionStop + (int)Parameters["CameraTriggerStartDelay"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00R0AOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            motCompressionStop + (int)Parameters["CameraTriggerStartDelay"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00R1plusAOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00R0AOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"],
+            (int)Parameters["CameraTriggerDuration"],
+            "V00R1plusAOM"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["V00AOMONStartTime"] - 50,
+            (int)Parameters["V00AOMONDuration"],
+            "V00R0EOM"
         );
 
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
-            if ((int)Parameters["BXAOMPreBunchingDuration"] > 0)
-            {
-                p.Pulse(
-                    patternStartBeforeQ,
-                    (int)Parameters["BXAOMPreBunchingStartTime"],
-                    (int)Parameters["BXAOMPreBunchingDuration"],
-                    "slowingAOM"
-                );
-            }
 
             p.Pulse(
                 patternStartBeforeQ,
                 slowingAOMStart,
                 slowingChirpStop - slowingAOMStart,
-                "slowingAOM"
+                "BXAOM"
             );
 
             p.Pulse(
                 patternStartBeforeQ,
-                (int)Parameters["BXAOMPreBunchingStartTime"],
-                slowingChirpStop - (int)Parameters["BXAOMPreBunchingStartTime"],
-                "BXFiberEOM"
+                10,
+                10000,
+                "BXSidebands"
             );
 
             p.Pulse(
                 patternStartBeforeQ,
                 0,
                 slowingChirpStop,
-                "slowingRepumpAOM"
+                "RepumpAOM"
+            );
+
+            p.Pulse(
+                patternStartBeforeQ,
+                0,
+                slowingChirpStop,
+                "RepumpBroadening"
             );
 
         }
 
         p.Pulse(
             patternStartBeforeQ,
-            cameraTrigger,
+            motCompressionStop + (int)Parameters["CameraTriggerStartDelay"] - (int)Parameters["CameraExposureDelay"],
+            (int)Parameters["CameraTriggerDuration"],
+            "cameraTrigger"
+        );
+
+        p.Pulse(
+            patternStartBeforeQ,
+            (int)Parameters["BackgroundImageTime"] - (int)Parameters["CameraExposureDelay"],
             (int)Parameters["CameraTriggerDuration"],
             "cameraTrigger"
         );
@@ -160,32 +215,35 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("slowingChirp");
-        p.AddChannel("VCOFreqOutput");
-        p.AddChannel("VCOAmplitudeOutput");
+        p.AddChannel("BXChirp");
+        p.AddChannel("SlowingBField");
+        p.AddChannel("V00R0AOMVCOFreq");
+        p.AddChannel("V00R0AOMVCOAmp");
+        p.AddChannel("V00R1plusAOMAmp");
+        p.AddChannel("V00R0EOMVCOAmp");
         p.AddChannel("motCoils");
+        p.AddChannel("ShimCoilX");
+        p.AddChannel("ShimCoilY");
+        p.AddChannel("ShimCoilZ");
 
-        int slowingChirpStart = (int)Parameters["BXAOMPreBunchingStartTime"] + (int)Parameters["BXAOMPreBunchingDuration"] + (int)Parameters["BXAOMFreeFlightDuration"] + (int)Parameters["BXAOMPostBunchingDuration"];
+        int slowingChirpStart = (int)Parameters["BXAOMFreeFlightDuration"] + (int)Parameters["BXAOMPostBunchingDuration"];
         int slowingChirpStop = slowingChirpStart + (int)Parameters["BXAOMChirpDuration"];
 
-        int motRetaingStart = (int)Parameters["MOTLoadingDuration"];
-        int molassesStart = motRetaingStart + (int)Parameters["MOTRetainingDuration"];
-        int molassesEnd = molassesStart + (int)Parameters["MolassesDuration"];
-        int cameraTrigger = molassesEnd + (int)Parameters["CameraTriggerDelay"];
-        int coolingAOMoff = cameraTrigger + (int)Parameters["CameraTriggerDuration"] + (int)Parameters["V00AOMFinalDelay"];
-
+        int motLoadingStop = (int)Parameters["MOTLoadingDuration"];
+        int motRetainingStop = motLoadingStop + (int)Parameters["MOTRetainingRampDuration"] + (int)Parameters["MOTRetainingDuration"];
+        int motCompressionStop = motRetainingStop + (int)Parameters["MOTCompressionRampDuration"] + (int)Parameters["MOTCompressionDuration"];
 
         if ((double)Parameters["slowingONorOFF"] > 5.0)
         {
 
             p.AddLinearRamp(
-                "slowingChirp",
+                "BXChirp",
                 slowingChirpStart,
                 slowingChirpStop - slowingChirpStart,
-                (double)Parameters["BXChirpEndValue"]
+                (double)Parameters["SlowingChirpMHzSpan"] / (double)Parameters["SlowingMHzPerVolt"]
             );
             p.AddLinearRamp(
-                "slowingChirp",
+                "BXChirp",
                 slowingChirpStop + 1000,
                 1000,
                 (double)Parameters["BXChirpStartValue"]
@@ -195,59 +253,132 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue(
             "motCoils",
             (int)Parameters["MOTCoilsStartTime"],
-            (double)Parameters["MOTLoadingMagFieldValue"]
+            (double)Parameters["MOTLoadingFieldValue"]
         );
-        p.AddAnalogValue(
+
+        p.AddLinearRamp(
             "motCoils",
-            motRetaingStart,
-            (double)Parameters["MOTRetainingMagFieldValue"]
-        );
-        p.AddAnalogValue(
-            "motCoils",
-            molassesStart,
-            (double)Parameters["MOTCoilsOffValue"]
+            motRetainingStop,
+            (int)Parameters["MOTCompressionRampDuration"],
+            (double)Parameters["MOTCompressionFieldValue"]
         );
 
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
+           "motCoils",
+           motCompressionStop,
+           (double)Parameters["MOTCoilsOffValue"]
+        );
+
+
+        p.AddAnalogValue(
+            "V00R0AOMVCOFreq",
             0,
-            (double)Parameters["V00MOTLoadingAmplitude"]
+            (double)Parameters["V00R0AOMVCOFreqMOTLoading"]
         );
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            motRetaingStart,
-            (double)Parameters["V00MOTRetainingAmplitude"]
+            "V00R0AOMVCOAmp",
+            0,
+            (double)Parameters["V00R0AOMVCOAmpMOTLoading"]
         );
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            molassesStart,
-            (double)Parameters["V00MolassesAmplitude"]
+           "V00R1plusAOMAmp",
+           0,
+           (double)Parameters["V00R1plusAOMAmpMOTLoading"]
+       );
+        p.AddAnalogValue(
+            "V00R0EOMVCOAmp",
+            0,
+            (double)Parameters["V00R0EOMVCOAmpMOTLoading"]
         );
         p.AddAnalogValue(
-            "VCOAmplitudeOutput",
-            cameraTrigger,
-            (double)Parameters["V00MOTLoadingAmplitude"]
+            "V00R0AOMVCOFreq",
+            motLoadingStop,
+            (double)Parameters["V00R0AOMVCOFreqMOTRetaining"]
+        );
+        p.AddLinearRamp(
+            "V00R0AOMVCOAmp",
+            motLoadingStop,
+            (int)Parameters["MOTRetainingRampDuration"],
+            (double)Parameters["V00R0AOMVCOAmpMOTRetaining"]
+        );
+        p.AddLinearRamp(
+            "V00R1plusAOMAmp",
+            motLoadingStop,
+            (int)Parameters["MOTRetainingRampDuration"],
+            (double)Parameters["V00R1plusAOMAmpMOTRetaining"]
+        );
+        p.AddAnalogValue(
+            "V00R0AOMVCOFreq",
+            motRetainingStop,
+            (double)Parameters["V00R0AOMVCOFreqMOTCompression"]
+        );
+        p.AddAnalogValue(
+            "V00R0AOMVCOAmp",
+            motRetainingStop,
+            (double)Parameters["V00R0AOMVCOAmpMOTCompression"]
+        );
+        p.AddAnalogValue(
+            "V00R1plusAOMAmp",
+            motRetainingStop,
+            (double)Parameters["V00R1plusAOMAmpMOTCompression"]
+        );
+        p.AddAnalogValue(
+            "V00R0AOMVCOFreq",
+            motCompressionStop,
+            (double)Parameters["V00R0AOMVCOFreqImaging"]
+        );
+        p.AddAnalogValue(
+            "V00R0AOMVCOAmp",
+            motCompressionStop,
+            (double)Parameters["V00R0AOMVCOAmpImaging"]
+        );
+        p.AddAnalogValue(
+           "V00R1plusAOMAmp",
+           motCompressionStop,
+           (double)Parameters["V00R1plusAOMAmpImaging"]
+       );
+
+        p.AddAnalogValue(
+            "ShimCoilX",
+            0,
+            (double)Parameters["XShimCoilsOnValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilY",
+            0,
+            (double)Parameters["YShimCoilsOnValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilZ",
+            0,
+            (double)Parameters["ZShimCoilsOnValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilX",
+            (int)Parameters["MOTCoilsStopTime"],
+            (double)Parameters["XShimCoilsOffValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilY",
+            (int)Parameters["MOTCoilsStopTime"],
+            (double)Parameters["YShimCoilsOffValue"]
+        );
+        p.AddAnalogValue(
+            "ShimCoilZ",
+            (int)Parameters["MOTCoilsStopTime"],
+            (double)Parameters["ZShimCoilsOffValue"]
         );
 
         p.AddAnalogValue(
-            "VCOFreqOutput",
+            "SlowingBField",
             0,
-            (double)Parameters["V00MOTLoadingFreq"]
+            (double)Parameters["SlowingCoilFieldValue"]
         );
+
         p.AddAnalogValue(
-            "VCOFreqOutput",
-            motRetaingStart,
-            (double)Parameters["V00MOTRetainingFreq"]
-        );
-        p.AddAnalogValue(
-            "VCOFreqOutput",
-            molassesStart,
-            (double)Parameters["V00MolassesFreq"]
-        );
-        p.AddAnalogValue(
-            "VCOFreqOutput",
-            cameraTrigger,
-            (double)Parameters["V00MOTLoadingFreq"]
+            "SlowingBField",
+            slowingChirpStop + 400,
+            0.0
         );
 
         return p;

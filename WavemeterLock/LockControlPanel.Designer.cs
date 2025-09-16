@@ -39,6 +39,9 @@ namespace WavemeterLock
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.stepDown = new System.Windows.Forms.Button();
             this.stepUp = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
@@ -63,19 +66,14 @@ namespace WavemeterLock
             this.label3 = new System.Windows.Forms.Label();
             this.displayWL = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.lockLED = new NationalInstruments.UI.WindowsForms.Led();
             this.lockChannelNum = new System.Windows.Forms.Label();
-            this.errorScatterGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
-            this.errorPlot = new NationalInstruments.UI.ScatterPlot();
-            this.xAxis1 = new NationalInstruments.UI.XAxis();
-            this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.scaleDown = new System.Windows.Forms.Button();
             this.scaleUp = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.controlPanel = new System.Windows.Forms.GroupBox();
+            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
             this.RMSValue = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.LEDBlockIndicator = new NationalInstruments.UI.WindowsForms.Led();
             this.label12 = new System.Windows.Forms.Label();
             this.setAsReading = new System.Windows.Forms.Button();
             this.offset = new System.Windows.Forms.TextBox();
@@ -85,13 +83,13 @@ namespace WavemeterLock
             this.groupBoxErrorPlot = new System.Windows.Forms.GroupBox();
             this.groupBoxLaserInfo = new System.Windows.Forms.GroupBox();
             this.labelOutOfRange = new System.Windows.Forms.Label();
-            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.lockLED)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
+            this.LEDBlockIndicator = new System.Windows.Forms.Panel();
+            this.lockLED = new System.Windows.Forms.Panel();
+            this.errorScatterGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.controlPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).BeginInit();
             this.groupBoxErrorPlot.SuspendLayout();
             this.groupBoxLaserInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // stepDown
@@ -320,15 +318,6 @@ namespace WavemeterLock
             this.label1.TabIndex = 35;
             this.label1.Text = "Lock Channel Number";
             // 
-            // lockLED
-            // 
-            this.lockLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.lockLED.Location = new System.Drawing.Point(319, 18);
-            this.lockLED.Name = "lockLED";
-            this.lockLED.OffColor = System.Drawing.Color.Crimson;
-            this.lockLED.Size = new System.Drawing.Size(23, 23);
-            this.lockLED.TabIndex = 67;
-            // 
             // lockChannelNum
             // 
             this.lockChannelNum.AutoSize = true;
@@ -337,33 +326,6 @@ namespace WavemeterLock
             this.lockChannelNum.Size = new System.Drawing.Size(32, 13);
             this.lockChannelNum.TabIndex = 68;
             this.lockChannelNum.Text = "xxxxx";
-            // 
-            // errorScatterGraph
-            // 
-            this.errorScatterGraph.Location = new System.Drawing.Point(12, 19);
-            this.errorScatterGraph.Name = "errorScatterGraph";
-            this.errorScatterGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
-            this.errorPlot});
-            this.errorScatterGraph.Size = new System.Drawing.Size(659, 249);
-            this.errorScatterGraph.TabIndex = 69;
-            this.errorScatterGraph.UseColorGenerator = true;
-            this.errorScatterGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
-            this.xAxis1});
-            this.errorScatterGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
-            this.yAxis1});
-            this.errorScatterGraph.PlotDataChanged += new NationalInstruments.UI.XYPlotDataChangedEventHandler(this.errorScatterGraph_PlotDataChanged);
-            // 
-            // errorPlot
-            // 
-            this.errorPlot.HistoryCapacity = 2000;
-            this.errorPlot.XAxis = this.xAxis1;
-            this.errorPlot.YAxis = this.yAxis1;
-            // 
-            // xAxis1
-            // 
-            this.xAxis1.AutoSpacing = false;
-            this.xAxis1.Mode = NationalInstruments.UI.AxisMode.StripChart;
-            this.xAxis1.Range = new NationalInstruments.UI.Range(0D, 1000000D);
             // 
             // scaleDown
             // 
@@ -396,10 +358,11 @@ namespace WavemeterLock
             // 
             // controlPanel
             // 
+            this.controlPanel.Controls.Add(this.lockLED);
+            this.controlPanel.Controls.Add(this.LEDBlockIndicator);
             this.controlPanel.Controls.Add(this.checkBoxLogData);
             this.controlPanel.Controls.Add(this.RMSValue);
             this.controlPanel.Controls.Add(this.label13);
-            this.controlPanel.Controls.Add(this.LEDBlockIndicator);
             this.controlPanel.Controls.Add(this.label12);
             this.controlPanel.Controls.Add(this.setAsReading);
             this.controlPanel.Controls.Add(this.offset);
@@ -410,7 +373,6 @@ namespace WavemeterLock
             this.controlPanel.Controls.Add(this.PGainSet);
             this.controlPanel.Controls.Add(this.label6);
             this.controlPanel.Controls.Add(this.scaleDown);
-            this.controlPanel.Controls.Add(this.lockLED);
             this.controlPanel.Controls.Add(this.scaleUp);
             this.controlPanel.Controls.Add(this.lockMsg);
             this.controlPanel.Location = new System.Drawing.Point(251, 9);
@@ -420,6 +382,17 @@ namespace WavemeterLock
             this.controlPanel.TabStop = false;
             this.controlPanel.Text = "Control Panel";
             this.controlPanel.Enter += new System.EventHandler(this.controlPanel_Enter);
+            // 
+            // checkBoxLogData
+            // 
+            this.checkBoxLogData.AutoSize = true;
+            this.checkBoxLogData.Location = new System.Drawing.Point(284, 103);
+            this.checkBoxLogData.Name = "checkBoxLogData";
+            this.checkBoxLogData.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxLogData.TabIndex = 75;
+            this.checkBoxLogData.Text = "Log Data";
+            this.checkBoxLogData.UseVisualStyleBackColor = true;
+            this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
             // 
             // RMSValue
             // 
@@ -439,16 +412,6 @@ namespace WavemeterLock
             this.label13.TabIndex = 80;
             this.label13.Text = "RMS (MHz):";
             this.label13.Click += new System.EventHandler(this.label13_Click);
-            // 
-            // LEDBlockIndicator
-            // 
-            this.LEDBlockIndicator.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.LEDBlockIndicator.Location = new System.Drawing.Point(257, 156);
-            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
-            this.LEDBlockIndicator.OffColor = System.Drawing.Color.Lime;
-            this.LEDBlockIndicator.OnColor = System.Drawing.Color.Crimson;
-            this.LEDBlockIndicator.Size = new System.Drawing.Size(23, 23);
-            this.LEDBlockIndicator.TabIndex = 79;
             // 
             // label12
             // 
@@ -548,16 +511,66 @@ namespace WavemeterLock
             this.labelOutOfRange.TabIndex = 75;
             this.labelOutOfRange.Text = "Out of Range!";
             // 
-            // checkBoxLogData
+            // LEDBlockIndicator
             // 
-            this.checkBoxLogData.AutoSize = true;
-            this.checkBoxLogData.Location = new System.Drawing.Point(284, 103);
-            this.checkBoxLogData.Name = "checkBoxLogData";
-            this.checkBoxLogData.Size = new System.Drawing.Size(70, 17);
-            this.checkBoxLogData.TabIndex = 75;
-            this.checkBoxLogData.Text = "Log Data";
-            this.checkBoxLogData.UseVisualStyleBackColor = true;
-            this.checkBoxLogData.CheckStateChanged += new System.EventHandler(this.logData_check);
+            this.LEDBlockIndicator.BackColor = System.Drawing.Color.Red;
+            this.LEDBlockIndicator.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LEDBlockIndicator.Location = new System.Drawing.Point(258, 164);
+            this.LEDBlockIndicator.Name = "LEDBlockIndicator";
+            this.LEDBlockIndicator.Size = new System.Drawing.Size(10, 10);
+            this.LEDBlockIndicator.TabIndex = 75;
+            // 
+            // lockLED
+            // 
+            this.lockLED.BackColor = System.Drawing.Color.Red;
+            this.lockLED.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lockLED.Location = new System.Drawing.Point(324, 26);
+            this.lockLED.Name = "lockLED";
+            this.lockLED.Size = new System.Drawing.Size(10, 10);
+            this.lockLED.TabIndex = 27;
+            // 
+            // errorScatterGraph
+            // 
+            this.errorScatterGraph.BackColor = System.Drawing.Color.Black;
+            this.errorScatterGraph.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea1.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.Title = "Time (s)";
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.Title = "Frequency error (MHz)";
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.InterlacedColor = System.Drawing.Color.Black;
+            chartArea1.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea1.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.Name = "ChartArea1";
+            this.errorScatterGraph.ChartAreas.Add(chartArea1);
+            legend1.Enabled = false;
+            legend1.Name = "Legend1";
+            this.errorScatterGraph.Legends.Add(legend1);
+            this.errorScatterGraph.Location = new System.Drawing.Point(6, 19);
+            this.errorScatterGraph.Name = "errorScatterGraph";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            series1.YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Double;
+            this.errorScatterGraph.Series.Add(series1);
+            this.errorScatterGraph.Size = new System.Drawing.Size(659, 254);
+            this.errorScatterGraph.TabIndex = 0;
+            this.errorScatterGraph.Text = "chart1";
             // 
             // LockControlPanel
             // 
@@ -580,14 +593,12 @@ namespace WavemeterLock
             this.Name = "LockControlPanel";
             this.Size = new System.Drawing.Size(723, 522);
             this.Load += new System.EventHandler(this.LockControlPanel_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.lockLED)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
             this.controlPanel.ResumeLayout(false);
             this.controlPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LEDBlockIndicator)).EndInit();
             this.groupBoxErrorPlot.ResumeLayout(false);
             this.groupBoxLaserInfo.ResumeLayout(false);
             this.groupBoxLaserInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorScatterGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -618,12 +629,7 @@ namespace WavemeterLock
         private Label label3;
         private Label displayWL;
         private Label label1;
-        private NationalInstruments.UI.WindowsForms.Led lockLED;
         private Label lockChannelNum;
-        private NationalInstruments.UI.WindowsForms.ScatterGraph errorScatterGraph;
-        private NationalInstruments.UI.ScatterPlot errorPlot;
-        private NationalInstruments.UI.XAxis xAxis1;
-        private NationalInstruments.UI.YAxis yAxis1;
         private Button scaleDown;
         private Button scaleUp;
         private Label label6;
@@ -637,9 +643,11 @@ namespace WavemeterLock
         private Button setAsReading;
         private Label labelOutOfRange;
         private Label label12;
-        private NationalInstruments.UI.WindowsForms.Led LEDBlockIndicator;
         private Label label13;
         private Label RMSValue;
         private CheckBox checkBoxLogData;
+        private Panel lockLED;
+        private Panel LEDBlockIndicator;
+        private System.Windows.Forms.DataVisualization.Charting.Chart errorScatterGraph;
     }
 }

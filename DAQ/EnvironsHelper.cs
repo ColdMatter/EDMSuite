@@ -200,13 +200,15 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                case "IC-CZC202DMH1":
+                case "IC-CZC535759M":
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
                     serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1234;
+                    viewerServerComputerName = "PH-BONESAW";
+                    viewerServerTCPChannel = 1800;
                     //ExperimentType = "edm";
                     break;
 
