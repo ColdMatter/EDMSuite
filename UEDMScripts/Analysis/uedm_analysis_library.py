@@ -16,6 +16,7 @@ import glob
 from matplotlib.pyplot import cm
 from scipy.special import erfcinv
 import datetime
+import zipfile
 
 repo = git.Repo(os.path.dirname(os.path.abspath(__file__)), search_parent_directories=True)
 RootFolder = repo.working_tree_dir
@@ -42,6 +43,41 @@ def ReadAverageScanInZippedXML(Filename):
     Scan = ss.DeserializeScanFromZippedXML(Filename,"average.xml")
     # TODO: Adjust for zip-files with multiple passes
     return Scan
+
+def ProcessAllScansInZippedXML(Filename):
+    ss = Data.Scans.ScanSerializer()
+    with zipfile.ZipFile(Filename, 'r') as ZipFile:
+        FileList = ZipFile.namelist()
+        FileIndi = [FileList.index(l) for l in FileList if l.startswith('scan')]
+    index = 0
+    for i in FileIndi:
+        ScanName = FileList[i]
+        Scan = ss.DeserializeScanFromZippedXML(Filename,ScanName)
+        if index == 0:
+            TimeOn, DataOn, TimeOff, DataOff, ScanParameters, TimestampsOn, TimestampsOff = \
+                ProcessScan(Scan)
+        else:
+            _, DataOnTemp, _, DataOffTemp, ScanParametersTemp, TimestampsOnTemp, TimestampsOffTemp = \
+                ProcessScan(Scan)
+            DataOn = np.concatenate([DataOn, DataOnTemp], axis=1)
+            if DataOff:
+                DataOff = np.concatenate([DataOff, DataOffTemp], axis=1)
+                TimestampsOff = np.concatenate([TimestampsOff, TimestampsOffTemp], axis=0)
+            ScanParameters = np.concatenate([ScanParameters, ScanParametersTemp], axis=0)
+            TimestampsOn = np.concatenate([TimestampsOn, TimestampsOnTemp], axis=0)
+        index = index + 1
+    return TimeOn, DataOn, TimeOff, DataOff, ScanParameters, TimestampsOn, TimestampsOff
+    
+
+def ProcessScan(Scan):
+    """Processes a scan object and returns the TOFs, the scan parameters and the 
+    timestamps of the shots."""
+    TimeOn, DataOn, TimeOff, DataOff = GetTOFs(Scan)
+    ScanParameter = GetScanParameterArray(Scan)
+    ShotsPerPoint = Scan.GetSetting("out","shotsPerPoint")
+    ScanParameters = np.repeat(ScanParameter, ShotsPerPoint, axis=0)
+    TimestampsOn, TimestampsOff = GetShotTimestamps(Scan)
+    return TimeOn, DataOn, TimeOff, DataOff, ScanParameters, TimestampsOn, TimestampsOff
 
 def GetTOFs(Scan):
     """Returns the TOFs of a scan. The datasets are On/Off shots and for each 
@@ -141,12 +177,25 @@ def GetTOFSampleRate(Scan):
     return Scan.GetSetting("shot","sampleRate")
 
 def GetShotTimestamps(Scan):
-    NrShots = len(Scan.Points)
-    TimeStamps = np.full((NrShots),np.nan)
-    for i in range(NrShots):
-        T = Scan.Points[i].OnShots[0].TimeStamp
-        TimeStamps[i] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
-    return TimeStamps
+    NrPoints = len(Scan.Points)
+    NrOnShotsPerPoint = len(Scan.Points[0].OnShots)
+    NrOnShots = NrPoints*NrOnShotsPerPoint
+    NrOffShotsPerPoint = len(Scan.Points[0].OffShots)
+    NrOffShots = NrPoints*NrOffShotsPerPoint
+    TimeStampsOn = np.full((NrOnShots),np.nan)
+    TimeStampsOff = np.full((NrOffShots),np.nan)
+    IndexOn = 0
+    IndexOff = 0
+    for i in range(NrPoints):
+        for j in range(NrOnShotsPerPoint):
+            T = Scan.Points[i].OnShots[j].TimeStamp
+            TimeStampsOn[IndexOn] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
+            IndexOn = IndexOn + 1
+        for j in range(NrOffShotsPerPoint):
+            T = Scan.Points[i].OffShots[j].TimeStamp
+            TimeStampsOff[IndexOff] = datetime.datetime.strptime(T.ToString("dd/MM/yyyy HH:mm:ss.ffffff+00:00"), '%d/%m/%Y %H:%M:%S.%f%z').timestamp()
+            IndexOff = IndexOff + 1 
+    return TimeStampsOn, TimeStampsOff
 
 
 #%% Functions for the TOF
@@ -163,6 +212,20 @@ def GetSignalwithBackgroundSubtraction(Data,Time,StartSig,StopSig,StartBg,StopBg
     BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
     Signal = SignalAndBg - BackgroundScaled
     return [Signal, BackgroundScaled]
+
+def GetBinnedSignal(Data,Time,BinDuration,StartSig,StopSig,StartBg,StopBg):
+    [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
+    NrBins = int(np.floor((StopSig-StartSig)/BinDuration))
+    BinStarts = StartSig + np.arange(NrBins)*BinDuration
+    BinStops = BinStarts + BinDuration
+    Signal = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
+    for i in range(NrBins):
+        Start = BinStarts[i]
+        Stop = BinStops[i]
+        [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,Start,Stop)
+        BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
+        Signal[i,:,:] = SignalAndBg - BackgroundScaled
+    return [Signal, BackgroundScaled,BinStarts, BinStops]
 
 def DownsampleTOF(Data, Time, NrSamples):
     NrRows = int(len(Data)/NrSamples)
@@ -508,3 +571,40 @@ def MovingAverage(data,N):
             ma[ind] = np.mean(datacut[~np.isnan(datacut)])
     return ma
 
+
+def WeightedMean(x, xerr):
+    """
+    Calculates the weighted mean of x with 1sigma errors xerr.
+
+    Parameters
+    ----------
+    x : array of floats
+        The values to be averaged.
+    xerr : array of floats
+        The uncertainties of the values to be averaged.
+
+    Returns
+    -------
+    avgx : float
+        The weighted average.
+    avgerr : float
+        The uncertainty of the weighted average, not increased if the reduced 
+        chi squared value is larger than 1 .
+    RChi2 : float
+        The reduced chi squared value of the weighted mean.
+
+    """
+    Indi = np.isnan(x) | np.isnan(xerr)
+    x = x[~Indi]
+    xerr = xerr[~Indi]
+    if len(x) ==1:
+        avgx = x
+        avgerr = xerr
+        RChi2 = 1
+    else:
+        weight = 1/xerr**2
+        avgx = sum(weight*x)/sum(weight)
+        avgerr = np.sqrt(1/sum(weight))
+        RChi2 = 1/(len(x)-1)*sum((x-avgx)**2 * weight)
+    
+    return avgx, avgerr, RChi2
