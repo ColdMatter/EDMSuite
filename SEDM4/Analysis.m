@@ -77,7 +77,7 @@ detADistance = 1.5;(*m*)
 detBDistance = 1.715;(*m*)
 
 (*measured values*)
-\[Alpha]s={"\[Alpha]RF1F"->-6*48 10^-12(*Hz^-2*),"\[Alpha]RF2F"->-6*35 10^-12(*Hz^-2*),"\[Alpha]RF1A"->-1.056(*dimensionless*),"\[Alpha]RF2A"->-0.342(*dimensionless*),"\[Alpha]LF1"->-0.8 10^-3(*MHz^-2*)};
+\[Alpha]s={"\[Alpha]RF1F"->-6*48 10^-12(*Hz^-2*),"\[Alpha]RF2F"->-6*35 10^-12(*Hz^-2*),"\[Alpha]RF1A"->-1.056(*dimensionless*),"\[Alpha]RF2A"->-0.342(*dimensionless*),"\[Alpha]LF1"->-0.8*10^-3(*MHz^-2*)};
 
 
 (* ::Input::Initialization:: *)
