@@ -2474,7 +2474,7 @@ namespace csAcq4
         {
             if (!isCsvInitialized)
             {
-                csvFilePath = GetNextCsvFileName(saveDirectory, "CCDB_ShotDuration", ".csv");
+                csvFilePath = GetNextCsvFileName(saveDirectory, "CCDA_ShotDuration", ".csv");
                 using (StreamWriter writer = new StreamWriter(csvFilePath, false)) // Overwrite if exists, create new
                 {
                     writer.WriteLine("Snap Index, Shot Duration (ms)"); // CSV Header

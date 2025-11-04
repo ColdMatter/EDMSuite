@@ -28,8 +28,6 @@ using System.CodeDom.Compiler;
 
 using NationalInstruments;
 using NationalInstruments.DAQmx;
-using NationalInstruments.UI;
-using NationalInstruments.UI.WindowsForms;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster
