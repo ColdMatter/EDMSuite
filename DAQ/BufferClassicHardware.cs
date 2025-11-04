@@ -71,16 +71,17 @@ namespace DAQ.HAL
 
             // add things to the info
             // the analog triggers
-            Info.Add("analogTrigger0", daqBoard + "/PFI0");
-            Info.Add("analogTrigger1", daqBoard + "/PFI1");
-            Info.Add("analogTrigger2", daqBoard + "/PFI2");
-            Info.Add("pfiTrigger3", daqBoard + "/PFI3"); //rhys add 08/07
+            Info.Add("analogTrigger0", daqBoard + "/PFI0");//DETECTOR ON SHOT
+            Info.Add("analogTrigger1", daqBoard + "/PFI1");//DETECTOR OFF SHOT
+            Info.Add("analogTrigger2", daqBoard + "/PFI2");//CCD COUNTER CHANNEL INPUT TRIG (17/10/25 - not needed as we sync CCDs with PFI0 and PFI1)
+            Info.Add("pfiTrigger3", daqBoard + "/PFI3"); //ON SHOT SYNC TRIGGER - rhys add 10/25
+            Info.Add("pfiTrigger4", daqBoard + "/PFI4"); //OFF SHOT SYNC TRIGGER - rhys add 10/25
             Info.Add("phaseLockControlMethod", "usb");
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line1"); //rhys add 20/07
-            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
+            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0"); //rhys add 20/07
+            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19); //labelled as PFI12 - this is the counter channel for PXIe 6363
 
             // Scanmaster config
@@ -104,29 +105,29 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("CCDA", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
             //AddAnalogInputChannel("cellTemperatureMonitor", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 60 used to be "cavityshort"
             AddAnalogInputChannel("miniFlux1", daqBoard + "/ai9", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("bartington_Y", daqBoard + "/ai11", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("bartington_Y", daqBoard + "/ai11", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
-            AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery", magBoard + "/ai2", AITerminalConfiguration.Differential); 
-            AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHQ_Y", magBoard + "/ai3", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHR_Y", magBoard + "/ai4", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHS_Y", magBoard + "/ai5", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHT_Y", magBoard + "/ai6", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinFV_Y", magBoard + "/ai7", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHM_Z", magBoard + "/ai16", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("bartington_Z_nearRelay", magBoard + "/ai17", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("quSpinHO_Z", magBoard + "/ai17", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHP_Z", magBoard + "/ai18", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHQ_Z", magBoard + "/ai19", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHR_Z", magBoard + "/ai20", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHS_Z", magBoard + "/ai21", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinHT_Z", magBoard + "/ai22", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("quSpinFV_Z", magBoard + "/ai23", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHQ_Y", magBoard + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHR_Y", magBoard + "/ai4", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHS_Y", magBoard + "/ai5", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinHT_Y", magBoard + "/ai5", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFV_Y", magBoard + "/ai7", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHM_Z", magBoard + "/ai16", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("bartington_Z_nearRelay", magBoard + "/ai17", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinHO_Z", magBoard + "/ai3", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHP_Z", magBoard + "/ai18", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHQ_Z", magBoard + "/ai19", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHR_Z", magBoard + "/ai20", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinHS_Z", magBoard + "/ai21", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("quSpinHT_Z", magBoard + "/ai7", AITerminalConfiguration.Differential);
+            //AddAnalogInputChannel("quSpinFV_Z", magBoard + "/ai23", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bartington_X", daqBoard + "/ai22", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("bartington_Y", magBoard + "/ai30", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("coilCurrent_after", magBoard + "/ai31", AITerminalConfiguration.Rse);
