@@ -60,7 +60,7 @@ def ProcessAllScansInZippedXML(Filename):
             _, DataOnTemp, _, DataOffTemp, ScanParametersTemp, TimestampsOnTemp, TimestampsOffTemp = \
                 ProcessScan(Scan)
             DataOn = np.concatenate([DataOn, DataOnTemp], axis=1)
-            if DataOff:
+            if np.size(DataOff)!=0:
                 DataOff = np.concatenate([DataOff, DataOffTemp], axis=1)
                 TimestampsOff = np.concatenate([TimestampsOff, TimestampsOffTemp], axis=0)
             ScanParameters = np.concatenate([ScanParameters, ScanParametersTemp], axis=0)
@@ -293,6 +293,15 @@ def DownsampleTOF(Data, Time, NrSamples):
     DownsampledData = np.sum(DownsampledDataRect, axis=1)
     DownsampledTime = Time[int(NrSamples/2)::NrSamples]
     return DownsampledTime, DownsampledData
+
+def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
+    # Assumption is that the background is flat over time
+    Indi = (Time*1000>StartBg) & (Time*1000 <StopBg)
+    Background = Data[Indi]
+    Median = np.median(Background)
+    Sigma = ScaledMAD(Background)
+    MADs = np.abs(Background-Median) / Sigma
+    return np.max(MADs)
 
 
 #%% Functions for Blocks
