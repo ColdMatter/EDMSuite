@@ -233,6 +233,7 @@ namespace UEDMHardwareControl
             this.btQueryMWSynthTemperature = new System.Windows.Forms.Button();
             this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxMWCHA = new System.Windows.Forms.GroupBox();
+            this.cbCHARFTrigger = new System.Windows.Forms.CheckBox();
             this.btCHAPLLPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHAPAPowerOnInfo = new System.Windows.Forms.Button();
             this.btCHAFRMuteInfo = new System.Windows.Forms.Button();
@@ -359,6 +360,10 @@ namespace UEDMHardwareControl
             this.DegaussFreqTextBox = new System.Windows.Forms.TextBox();
             this.StartDegauss = new System.Windows.Forms.Button();
             this.tabPageEfield = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.updateFeedthroughTempButton = new System.Windows.Forms.Button();
+            this.tbFeedthroughTemp = new System.Windows.Forms.TextBox();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.eManualStateCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
@@ -769,7 +774,8 @@ namespace UEDMHardwareControl
             this.btCCDUpdateExposureTime = new System.Windows.Forms.Button();
             this.btCCDUpdateGain = new System.Windows.Forms.Button();
             this.labelTCPCCD = new System.Windows.Forms.Label();
-            this.checkboxTCPCCD = new System.Windows.Forms.CheckBox();
+            this.checkboxTCPCCDA = new System.Windows.Forms.CheckBox();
+            this.checkboxTCPCCDB = new System.Windows.Forms.CheckBox();
             this.btinfoCCDExposure = new System.Windows.Forms.Button();
             this.tbCCDShotCount = new System.Windows.Forms.TextBox();
             this.labelCCDShotCount = new System.Windows.Forms.Label();
@@ -803,6 +809,7 @@ namespace UEDMHardwareControl
             this.groupBoxBScan.SuspendLayout();
             this.groupBoxDegauss.SuspendLayout();
             this.tabPageEfield.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox6.SuspendLayout();
@@ -2563,6 +2570,7 @@ namespace UEDMHardwareControl
             // groupBoxMWCHA
             // 
             this.groupBoxMWCHA.BackColor = System.Drawing.Color.Transparent;
+            this.groupBoxMWCHA.Controls.Add(this.cbCHARFTrigger);
             this.groupBoxMWCHA.Controls.Add(this.btCHAPLLPowerOnInfo);
             this.groupBoxMWCHA.Controls.Add(this.btCHAPAPowerOnInfo);
             this.groupBoxMWCHA.Controls.Add(this.btCHAFRMuteInfo);
@@ -2594,6 +2602,17 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHA.TabStop = false;
             this.groupBoxMWCHA.Text = "Channel A";
             this.groupBoxMWCHA.Enter += new System.EventHandler(this.groupBoxMWCHA_Enter);
+            // 
+            // cbCHARFTrigger
+            // 
+            this.cbCHARFTrigger.AutoSize = true;
+            this.cbCHARFTrigger.Location = new System.Drawing.Point(463, 19);
+            this.cbCHARFTrigger.Name = "cbCHARFTrigger";
+            this.cbCHARFTrigger.Size = new System.Drawing.Size(92, 17);
+            this.cbCHARFTrigger.TabIndex = 58;
+            this.cbCHARFTrigger.Text = "Trigger Armed";
+            this.cbCHARFTrigger.UseVisualStyleBackColor = true;
+            this.cbCHARFTrigger.CheckedChanged += new System.EventHandler(this.cbCHARFTrigger_CheckedChanged);
             // 
             // btCHAPLLPowerOnInfo
             // 
@@ -2871,7 +2890,7 @@ namespace UEDMHardwareControl
             // cbCHBRFTrigger
             // 
             this.cbCHBRFTrigger.AutoSize = true;
-            this.cbCHBRFTrigger.Location = new System.Drawing.Point(463, 17);
+            this.cbCHBRFTrigger.Location = new System.Drawing.Point(462, 17);
             this.cbCHBRFTrigger.Name = "cbCHBRFTrigger";
             this.cbCHBRFTrigger.Size = new System.Drawing.Size(92, 17);
             this.cbCHBRFTrigger.TabIndex = 57;
@@ -3892,6 +3911,7 @@ namespace UEDMHardwareControl
             // tabPageEfield
             // 
             this.tabPageEfield.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageEfield.Controls.Add(this.groupBox8);
             this.tabPageEfield.Controls.Add(this.groupBox21);
             this.tabPageEfield.Controls.Add(this.groupBox13);
             this.tabPageEfield.Controls.Add(this.groupBox6);
@@ -3903,6 +3923,46 @@ namespace UEDMHardwareControl
             this.tabPageEfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label34);
+            this.groupBox8.Controls.Add(this.updateFeedthroughTempButton);
+            this.groupBox8.Controls.Add(this.tbFeedthroughTemp);
+            this.groupBox8.Location = new System.Drawing.Point(626, 228);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(200, 64);
+            this.groupBox8.TabIndex = 45;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Feedthrough Temp";
+            // 
+            // label34
+            // 
+            this.label34.Location = new System.Drawing.Point(78, 27);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(25, 23);
+            this.label34.TabIndex = 45;
+            this.label34.Text = "°C";
+            // 
+            // updateFeedthroughTempButton
+            // 
+            this.updateFeedthroughTempButton.Location = new System.Drawing.Point(109, 24);
+            this.updateFeedthroughTempButton.Name = "updateFeedthroughTempButton";
+            this.updateFeedthroughTempButton.Size = new System.Drawing.Size(75, 23);
+            this.updateFeedthroughTempButton.TabIndex = 44;
+            this.updateFeedthroughTempButton.Text = "Update";
+            this.updateFeedthroughTempButton.Click += new System.EventHandler(this.updateFeedthroughTempButton_Click);
+            // 
+            // tbFeedthroughTemp
+            // 
+            this.tbFeedthroughTemp.BackColor = System.Drawing.Color.Black;
+            this.tbFeedthroughTemp.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbFeedthroughTemp.Location = new System.Drawing.Point(13, 26);
+            this.tbFeedthroughTemp.Name = "tbFeedthroughTemp";
+            this.tbFeedthroughTemp.ReadOnly = true;
+            this.tbFeedthroughTemp.Size = new System.Drawing.Size(59, 20);
+            this.tbFeedthroughTemp.TabIndex = 43;
+            this.tbFeedthroughTemp.Text = "0";
             // 
             // groupBox21
             // 
@@ -4059,7 +4119,7 @@ namespace UEDMHardwareControl
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(80, 23);
             this.label14.TabIndex = 37;
-            this.label14.Text = "C minus (V)";
+            this.label14.Text = "C minus (kV)";
             // 
             // label15
             // 
@@ -4067,7 +4127,7 @@ namespace UEDMHardwareControl
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(80, 23);
             this.label15.TabIndex = 36;
-            this.label15.Text = "C plus (V)";
+            this.label15.Text = "C plus (kV)";
             // 
             // cMinusVMonitorTextBox
             // 
@@ -4387,7 +4447,7 @@ namespace UEDMHardwareControl
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(80, 23);
             this.label10.TabIndex = 39;
-            this.label10.Text = "C minus off (V)";
+            this.label10.Text = "C minus off (kV)";
             // 
             // label11
             // 
@@ -4395,7 +4455,7 @@ namespace UEDMHardwareControl
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(80, 23);
             this.label11.TabIndex = 38;
-            this.label11.Text = "C plus off (V)";
+            this.label11.Text = "C plus off (kV)";
             // 
             // label9
             // 
@@ -4403,7 +4463,7 @@ namespace UEDMHardwareControl
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(80, 23);
             this.label9.TabIndex = 1;
-            this.label9.Text = "C minus (V)";
+            this.label9.Text = "C minus (kV)";
             // 
             // label5
             // 
@@ -4411,7 +4471,7 @@ namespace UEDMHardwareControl
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(80, 23);
             this.label5.TabIndex = 0;
-            this.label5.Text = "C plus (V)";
+            this.label5.Text = "C plus (kV)";
             // 
             // cPlusOffTextBox
             // 
@@ -8348,7 +8408,8 @@ namespace UEDMHardwareControl
             this.tabCCDCamera.Controls.Add(this.btCCDUpdateExposureTime);
             this.tabCCDCamera.Controls.Add(this.btCCDUpdateGain);
             this.tabCCDCamera.Controls.Add(this.labelTCPCCD);
-            this.tabCCDCamera.Controls.Add(this.checkboxTCPCCD);
+            this.tabCCDCamera.Controls.Add(this.checkboxTCPCCDA);
+            this.tabCCDCamera.Controls.Add(this.checkboxTCPCCDB);
             this.tabCCDCamera.Controls.Add(this.btinfoCCDExposure);
             this.tabCCDCamera.Controls.Add(this.tbCCDShotCount);
             this.tabCCDCamera.Controls.Add(this.labelCCDShotCount);
@@ -8562,19 +8623,30 @@ namespace UEDMHardwareControl
             // 
             // labelTCPCCD
             // 
-            this.labelTCPCCD.Location = new System.Drawing.Point(22, 11);
+            this.labelTCPCCD.Location = new System.Drawing.Point(148, 31);
             this.labelTCPCCD.Name = "labelTCPCCD";
-            this.labelTCPCCD.Size = new System.Drawing.Size(130, 20);
-            this.labelTCPCCD.TabIndex = 32;
-            this.labelTCPCCD.Text = "TCP connection to CCDs";
+            this.labelTCPCCD.Size = new System.Drawing.Size(88, 20);
+            this.labelTCPCCD.TabIndex = 36;
+            this.labelTCPCCD.Text = "TCP connection";
             // 
-            // checkboxTCPCCD
+            // checkboxTCPCCDA
             // 
-            this.checkboxTCPCCD.Location = new System.Drawing.Point(158, 8);
-            this.checkboxTCPCCD.Name = "checkboxTCPCCD";
-            this.checkboxTCPCCD.Size = new System.Drawing.Size(17, 20);
-            this.checkboxTCPCCD.TabIndex = 31;
-            this.checkboxTCPCCD.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
+            this.checkboxTCPCCDA.Location = new System.Drawing.Point(259, 29);
+            this.checkboxTCPCCDA.Name = "checkboxTCPCCDA";
+            this.checkboxTCPCCDA.Size = new System.Drawing.Size(80, 20);
+            this.checkboxTCPCCDA.TabIndex = 31;
+            this.checkboxTCPCCDA.UseVisualStyleBackColor = true;
+            this.checkboxTCPCCDA.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
+            // 
+            // checkboxTCPCCDB
+            // 
+            this.checkboxTCPCCDB.Location = new System.Drawing.Point(403, 29);
+            this.checkboxTCPCCDB.Name = "checkboxTCPCCDB";
+            this.checkboxTCPCCDB.Size = new System.Drawing.Size(80, 20);
+            this.checkboxTCPCCDB.TabIndex = 32;
+            this.checkboxTCPCCDB.UseVisualStyleBackColor = true;
+            this.checkboxTCPCCDB.CheckedChanged += new System.EventHandler(this.checkboxTCPCCDB_CheckedChanged);
+            this.checkboxTCPCCDB.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
             // 
             // btinfoCCDExposure
             // 
@@ -8673,6 +8745,8 @@ namespace UEDMHardwareControl
             this.groupBoxDegauss.ResumeLayout(false);
             this.groupBoxDegauss.PerformLayout();
             this.tabPageEfield.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
@@ -9378,6 +9452,7 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.TextBox tbStirapRFFreqMon;
         public System.Windows.Forms.CheckBox cbCHATrigger;
         public System.Windows.Forms.CheckBox cbCHBRFTrigger;
+        public System.Windows.Forms.CheckBox cbCHARFTrigger;
         public System.Windows.Forms.CheckBox cbStirapRFOn;
         private System.Windows.Forms.Label labelStirapRFAmp;
         private System.Windows.Forms.Label labelStirapRFFreq;
@@ -9460,10 +9535,15 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.Button btCCDUpdateFrameCount;
         public System.Windows.Forms.Button btnSetCCDTriggerMode;
         public System.Windows.Forms.ComboBox comboBoxCCDTriggerMode;
-        public System.Windows.Forms.CheckBox checkboxTCPCCD;
+        public System.Windows.Forms.CheckBox checkboxTCPCCDA;
+        public System.Windows.Forms.CheckBox checkboxTCPCCDB;
         private System.Windows.Forms.Label labelTCPCCD;
         public System.Windows.Forms.Button btinfoCCDExposure;
         private System.Windows.Forms.Label labelCCDShotCount;
         public System.Windows.Forms.TextBox tbCCDShotCount;
+        private GroupBox groupBox8;
+        private Label label34;
+        private Button updateFeedthroughTempButton;
+        public TextBox tbFeedthroughTemp;
     }
 }

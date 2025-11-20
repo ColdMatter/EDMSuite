@@ -421,6 +421,15 @@ namespace DAQ.Environment
                     emccdTCPChannel = 1107;
                     break;
 
+                case "ic-czc5347lb5":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = false;
+                    serverComputerName = "ic-czc5347lb5";
+                    serverTCPChannel = 1984;
+                    emccdTCPChannel = 2104;
+                    break;
+
                 default:
                     Hardware = new EDMHardware();
                     FileSystem = new FileSystem();

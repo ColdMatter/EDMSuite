@@ -1,0 +1,144 @@
+# This loop monitors the leakage current and saves in a csv for a 
+# ramp up of the potential up to a given value
+
+from DAQ.Environment import *
+from uedmfuncs import *
+
+def shieldingPoint(amplitude,frequency,waittime,time):
+
+	wavGen = Environs.Hardware.Instruments["rigolWavGen"]
+	wavGen.Connect()
+	wavGen.Enabled = False
+	wavGen.SquareWave = False
+	wavGen.Amplitude = amplitude
+	wavGen.Offset = 0.0
+	wavGen.Frequency = (0.000001*frequency)
+
+	System.Threading.Thread.CurrentThread.Join(waittime*1000)
+
+	wavGen.Enabled = True
+
+	System.Threading.Thread.CurrentThread.Join(time*1000)
+
+	wavGen.Enabled= False
+
+def FrequencyScan(start,stop,step,amp=1,waiting=5,holding=60):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	# Logging started
+	loggingcheck=input("Have you started logging? (y/n)\n")
+	if loggingcheck!="y":
+		print("Start the logging first")
+		return
+
+
+	print("waiting for initialisation")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = np.arange(float(start), float(stop+step), float(step))
+	for i in r:
+		print("External B fields at " + str(i) + " Hz")
+		shieldingPoint(amplitude=amp,frequency=i,waittime=waiting,time=holding)
+		print("waiting for " +  str(holding) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(waiting*100)
+
+def FrequencyListScan(freqlist,amp=1,waiting=5,holding=60):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	# Logging started
+	loggingcheck=input("Have you started logging? (y/n)\n")
+	if loggingcheck!="y":
+		print("Start the logging first")
+		return
+
+	holdinglist=[]
+
+	if type(holding) != list:
+		for item in freqlist:
+			holdinglist.append(holding)
+	else:
+		holdinglist = holding
+
+
+	print("waiting for initialisation")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = freqlist
+	for index,i in enumerate(r):
+		print("External B fields at " + str(i) + " Hz")
+		shieldingPoint(amplitude=amp,frequency=float(i),waittime=waiting,time=holdinglist[index])
+		print("waiting for " +  str(holdinglist[index]) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(waiting*100)
+
+def AmplitudeScan(start,stop,step,freq=1,waiting=5,holding=60):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	# Logging started
+	loggingcheck=input("Have you started logging? (y/n)\n")
+	if loggingcheck!="y":
+		print("Start the logging first")
+		return
+
+
+	print("waiting for initialisation")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = np.arange(float(start), float(stop+step), float(step))
+	for i in r:
+		print("External B fields at " + str(i) + " V")
+		shieldingPoint(amplitude=i,frequency=freq,waittime=waiting,time=holding)
+		print("waiting for " +  str(holding) + " seconds")
+		System.Threading.Thread.CurrentThread.Join(waiting*100)
+
+def FrequencyListAndAmplitudeListScan(freqlist,amplist,waiting=5,holding=60):
+	'''
+	RampStart is how to run the leakage test file
+	'''
+	# Logging started
+	loggingcheck=input("Have you started logging? (y/n)\n")
+	if loggingcheck!="y":
+		print("Start the logging first")
+		return
+
+	holdinglist=[]
+
+	if type(holding) != list:
+		for item in freqlist:
+			holdinglist.append(holding)
+	else:
+		holdinglist = holding
+
+
+	print("waiting for initialisation")
+	System.Threading.Thread.CurrentThread.Join(1000)
+
+	r = freqlist
+	for amp in amplist:
+		print("Amplitude " + str(amp) + " V")
+		
+		for index,i in enumerate(r):
+			print("External B fields at " + str(i) + " Hz")
+			shieldingPoint(amplitude=float(amp),frequency=float(i),waittime=waiting,time=holdinglist[index])
+			print("waiting for " +  str(holdinglist[index]) + " seconds")
+			System.Threading.Thread.CurrentThread.Join(waiting*100)
+
+
+def main():
+	print("Shielding Factor measurements, run either an amplitude scan or a frequency scan while measuring the inputs on signal express")
+	freqlistZ = [0.1,0.5,1,2,5,10,40,80]
+	amplistZ = [0.1,0.2,0.5,1,2,5,10,20]
+	freqlistY = [0.1,0.5,1,2,5,10,40,80]
+	amplistY = [0.01,0.02,0.05,0.1,0.5,1,2]
+	freqlistX = [0.1,0.5,1,2,5,10,40,80]
+	amplistX = [0.5,1,2,5,10,20,40]
+	freqlist = [2]
+	amplist = [0.01,0.02]
+	FrequencyListAndAmplitudeListScan(freqlistZ,amplistZ,2,60)
+
+if __name__=="__main__":
+	main()
+	pass
+

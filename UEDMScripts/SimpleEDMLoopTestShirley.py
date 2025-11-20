@@ -102,9 +102,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState): #used to have,
 	##lf1Wave.Name = "LF1"
 	##mwWave = bc.GetModulationByName("MW").Waveform
 	##mwWave.Name = "MW"
-	# ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
-	# bc.GetModulationByName("B").Waveform = ws["B"]
-	# bc.GetModulationByName("DB").Waveform = ws["DB"]
+	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
+	bc.GetModulationByName("B").Waveform = ws["B"]
+	bc.GetModulationByName("DB").Waveform = ws["DB"]
 
 	# change the inversions of the static codes E
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
@@ -203,17 +203,17 @@ def EDMGo():
 		print("Using cluster " + suggestedClusterName)
 	checkPhaseLock()
 	eState = hc.EManualState
-	eCurrentState = hc.EFieldPolarity
-	cPlusV = 3*(hc.CPlusVoltage)
-	cMinusV = 3*(hc.CMinusVoltage)
-	print("E-state: " + str(eState))
+	#eCurrentState = hc.EFieldPolarity
+	#cPlusV = 3*(hc.CPlusVoltage)
+	#cMinusV = 3*(hc.CMinusVoltage)
+	# print("E-state: " + str(eState))
 	bState = hc.BManualState
-	print("B-state: " + str(bState))
+	# print("B-state: " + str(bState))
 	mwState = True#hc.MWManualState
-	print("mw-state: " + str(mwState))
+	# print("mw-state: " + str(mwState))
 
-	# this is to make sure the B current monitor is in a sensible state
-	hc.UpdateBCurrentMonitor()
+	# # this is to make sure the B current monitor is in a sensible state
+	# hc.UpdateBCurrentMonitor()
 
 	# randomise Ramsey phase
 	# scramblerV = 0.97156 * r.NextDouble()
@@ -221,28 +221,28 @@ def EDMGo():
 	# print("scrambler voltage set to " + str(scramblerV))
 
 	# calibrate leakage monitors
-	print("calibrating leakage monitors..")
-	print("Is E-field off yet?")
-	hc.FieldsOff()
-	hc.PollVMonitor()
-	if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
-		print("Waiting")
-		System.Threading.Thread.CurrentThread.Join(60000)
-	else:
-		print("E-Field Off")
-	# hc.EnableBleed( True )
+	# print("calibrating leakage monitors..")
+	# print("Is E-field off yet?")
+	# hc.FieldsOff()
+	# hc.PollVMonitor()
+	# if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
+	# 	print("Waiting")
+	# 	System.Threading.Thread.CurrentThread.Join(60000)
+	# else:
+	# 	print("E-Field Off")
+	# # hc.EnableBleed( True )
+	# # System.Threading.Thread.CurrentThread.Join(5000)
+	# hc.CalibrateIMonitors()
+	# # hc.EnableBleed( False )
+	# # System.Threading.Thread.CurrentThread.Join(500)
+	# hc.SetCPlusVoltage(cPlusV)
+	# hc.SetCMinusVoltage(cMinusV)
+	# print("E Params refreshed")
 	# System.Threading.Thread.CurrentThread.Join(5000)
-	hc.CalibrateIMonitors()
-	# hc.EnableBleed( False )
-	# System.Threading.Thread.CurrentThread.Join(500)
-	hc.SetCPlusVoltage(cPlusV)
-	hc.SetCMinusVoltage(cMinusV)
-	print("E Params refreshed")
-	System.Threading.Thread.CurrentThread.Join(5000)
-	print("E-field on")
-	hc.EnableEField(True)
-	System.Threading.Thread.CurrentThread.Join(20000)
-	print("leakage monitors calibrated")
+	# print("E-field on")
+	# hc.EnableEField(True)
+	# System.Threading.Thread.CurrentThread.Join(20000)
+	# print("leakage monitors calibrated")
 
 	bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
 
@@ -255,7 +255,7 @@ def EDMGo():
 	Emini2List=[]
 	Emini3List=[]
 	while blockIndex < maxBlockIndex:
-		
+		hc.SyncCCDBlockName(cluster, blockIndex)
 		print("Acquiring block " + str(blockIndex) + " ...")
 		# save the block config and load into blockhead
 		print("Saving temp config.")
@@ -264,14 +264,14 @@ def EDMGo():
 		saveBlockConfig(tempConfigFile, bc)
 		System.Threading.Thread.CurrentThread.Join(500)
 		print("Loading temp config.")
-		hc.EnableGreenSynth( False )
+		# hc.EnableGreenSynth( False )
 		bh.LoadConfig(tempConfigFile)
 		# take the block and save it
 		# print("Running Target Stepper ...")
 		#fl.StopFieldLock()
 		# bh.StartTargetStepperAndWait()
 		# print("Target Stepper finished")
-		hc.EnableGreenSynth( True )
+		# hc.EnableGreenSynth( True )
 		# if bh.TargetHealthy == False:
 		# 	print("Unable to find acceptable spot")
 		# 	print("Stopping Cluster")
@@ -317,7 +317,7 @@ def EDMGo():
 		# checkYAGAndFix()
 		blockIndex = blockIndex + 1
 		
-		updateLocks(bState, mwState)
+		# updateLocks(bState, mwState)
 		# updateLocksNL(bState, mwState)
 		# randomise Ramsey phase
 		# scramblerV = 0.97156 * r.NextDouble()
@@ -366,30 +366,30 @@ def EDMGo():
 		#	for i in range(3):
 		#		hc.StepTarget(2)
 		#		System.Threading.Thread.CurrentThread.Join(500)
-		if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
-			print("Recalibrating leakage monitors.")
-			# calibrate leakage monitors
+		# if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
+		# 	print("Recalibrating leakage monitors.")
+		# 	# calibrate leakage monitors
 
-			eCurrentState = hc.EFieldPolarity
-			cPlusV = 3*(hc.CPlusVoltage)
-			cMinusV = 3*(hc.CMinusVoltage)
+		# 	eCurrentState = hc.EFieldPolarity
+		# 	cPlusV = 3*(hc.CPlusVoltage)
+		# 	cMinusV = 3*(hc.CMinusVoltage)
 
-			print("E-field off")
-			hc.FieldsOff()
+		# 	print("E-field off")
+		# 	hc.FieldsOff()
 
-			System.Threading.Thread.CurrentThread.Join(60000)
-			hc.CalibrateIMonitors()
-			# hc.EnableBleed( False )
-			# System.Threading.Thread.CurrentThread.Join(500)
-			print("E-field on")
-			hc.EnableEField(True)
-			# hc.SetCPlusVoltage(cPlusV)
-			# hc.SetCMinusVoltage(cMinusV)
-			# hc.SwitchEAndWait(eCurrentState)
-			# print("E Switch Finished")
-			System.Threading.Thread.CurrentThread.Join(20000)
+		# 	System.Threading.Thread.CurrentThread.Join(60000)
+		# 	hc.CalibrateIMonitors()
+		# 	# hc.EnableBleed( False )
+		# 	# System.Threading.Thread.CurrentThread.Join(500)
+		# 	print("E-field on")
+		# 	hc.EnableEField(True)
+		# 	# hc.SetCPlusVoltage(cPlusV)
+		# 	# hc.SetCMinusVoltage(cMinusV)
+		# 	# hc.SwitchEAndWait(eCurrentState)
+		# 	# print("E Switch Finished")
+		# 	System.Threading.Thread.CurrentThread.Join(20000)
 
-			print("leakage monitors calibrated")
+		# 	print("leakage monitors calibrated")
 
 		# if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
 		# 	print("Recalibrating leakage monitors.")

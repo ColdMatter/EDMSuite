@@ -132,10 +132,12 @@ kReZeroLeakageMonitorsPeriod = 10
 #r = Random()
 
 def QuSpinGo():
-	# Setup E field voltages
+	# Setup E field voltages + timings
     eFieldVoltagesInput = input("E-field voltages in kV: ")
     eFieldVoltages = eFieldVoltagesInput.split(",")
-    
+
+    eFieldInput = input("E-field switch delay time in seconds: ")
+    eFieldSwitchTimes = eFieldInput.split(",")
     # Setup file
     f = None
     fileSystem = Environs.FileSystem
@@ -183,21 +185,21 @@ def QuSpinGo():
         print("E-Field Off")
     # hc.EnableBleed( True )
     # System.Threading.Thread.CurrentThread.Join(5000)
-    hc.CalibrateIMonitors()
+    # hc.CalibrateIMonitors()
     # hc.EnableBleed( False )
     # System.Threading.Thread.CurrentThread.Join(500)
     hc.SetCPlusVoltage(cPlusV)
     hc.SetCMinusVoltage(cMinusV)
-    print("E Params refreshed")
-    System.Threading.Thread.CurrentThread.Join(5000)
+    # print("E Params refreshed")
+    # System.Threading.Thread.CurrentThread.Join(5000)
     print("E-field on")
     hc.EnableEField(True)
     System.Threading.Thread.CurrentThread.Join(10000)
     # hc.EnableEField( True )
     # hc.EnableGreenSynth( True )
-    print("leakage monitors calibrated")
+    # print("leakage monitors calibrated")
 
-    bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
+    # bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
 
     # loop and take data
     blockIndex = 0
@@ -208,67 +210,73 @@ def QuSpinGo():
     Emini2List=[]
     Emini3List=[]
     while blockIndex < maxBlockIndex:
-        for i in eFieldVoltages:
-            eCurrentState = hc.EFieldPolarity
-            hc.SetCPlusVoltage(float(i))
-            hc.SetCMinusVoltage(float(i))
-            hc.SwitchEAndWait(eCurrentState)
-            if (float(i)==0.0):
-                System.Threading.Thread.CurrentThread.Join(20000)
-            else:
-                System.Threading.Thread.CurrentThread.Join(5000)
-            # Make new block config with correct E Field
-            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
-
-            print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
-            # save the block config and load into blockhead
-            print("Saving temp config.")
-            bc.Settings["clusterIndex"] = System.Int32(blockIndex)
-            tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
-            saveBlockConfig(tempConfigFile, bc)
-            System.Threading.Thread.CurrentThread.Join(500)
-            print("Loading temp config.")
-            bh.LoadConfig(tempConfigFile)
-            # take the block and save it
-            print("Running magnetic field data acquisition ...")
-            bh.StartMagDataAcquisitionAndWait()
-            print("Done.")
-            blockPath = '%(p)s%(c)s_%(i)s_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
-            bh.SaveBlock(blockPath)
-            print("Saved block "+ str(blockIndex) + ".")
-            # give mma a chance to analyse the block
-            # print("Notifying Mathematica and waiting ...")
-            writeLatestBlockNotificationFile(cluster, blockIndex)
-            System.Threading.Thread.CurrentThread.Join(5000)
-            print("Done.")
-            # increment and loop
-            File.Delete(tempConfigFile)
-            
-            blockIndex = blockIndex + 1
-
-            if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
-                print("Recalibrating leakage monitors.")
-                # calibrate leakage monitors
-
+        for j in eFieldSwitchTimes:
+            for i in eFieldVoltages:
                 eCurrentState = hc.EFieldPolarity
-                cPlusV = 3*(hc.CPlusVoltage)
-                cMinusV = 3*(hc.CMinusVoltage)
-
-                print("E-field off")
-                hc.FieldsOff()
-
-                System.Threading.Thread.CurrentThread.Join(60000)
-                hc.CalibrateIMonitors()
-                # hc.EnableBleed( False )
-                # System.Threading.Thread.CurrentThread.Join(500)
-                print("E-field on")
-                hc.SetCPlusVoltage(cPlusV)
-                hc.SetCMinusVoltage(cMinusV)
+                hc.SetCPlusVoltage(float(i))
+                hc.SetCMinusVoltage(float(i))
+                hc.ERampUpDelay = float(j)
+                System.Threading.Thread.CurrentThread.Join(1000)
                 hc.SwitchEAndWait(eCurrentState)
-                print("E Switch Finished")
-                System.Threading.Thread.CurrentThread.Join(10000)
 
-                print("leakage monitors calibrated")
+                if (float(i)==0.0):
+                    System.Threading.Thread.CurrentThread.Join(20000)
+                else:
+                    System.Threading.Thread.CurrentThread.Join(5000)
+                # Make new block config with correct E Field
+                bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
+
+                print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
+
+                # save the block config and load into blockhead
+                print("Saving temp config.")
+                bc.Settings["clusterIndex"] = System.Int32(blockIndex)
+                tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
+                saveBlockConfig(tempConfigFile, bc)
+                System.Threading.Thread.CurrentThread.Join(500)
+                print("Loading temp config.")
+                bh.LoadConfig(tempConfigFile)
+
+                # take the block and save it
+                print("Running magnetic field data acquisition ...")
+                bh.StartMagDataAcquisitionAndWait()
+                print("Done.")
+                blockPath = '%(p)s%(c)s_%(i)s_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
+                bh.SaveBlock(blockPath)
+                print("Saved block "+ str(blockIndex) + ".")
+                
+                writeLatestBlockNotificationFile(cluster, blockIndex)
+                System.Threading.Thread.CurrentThread.Join(5000)
+                print("Done.")
+
+                # increment and loop
+                File.Delete(tempConfigFile)
+                
+                blockIndex = blockIndex + 1
+
+                # if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
+                #     print("Recalibrating leakage monitors.")
+                #     # calibrate leakage monitors
+
+                #     eCurrentState = hc.EFieldPolarity
+                #     cPlusV = 3*(hc.CPlusVoltage)
+                #     cMinusV = 3*(hc.CMinusVoltage)
+
+                #     print("E-field off")
+                #     hc.FieldsOff()
+
+                #     System.Threading.Thread.CurrentThread.Join(60000)
+                #     hc.CalibrateIMonitors()
+                #     # hc.EnableBleed( False )
+                #     # System.Threading.Thread.CurrentThread.Join(500)
+                #     print("E-field on")
+                #     hc.SetCPlusVoltage(cPlusV)
+                #     hc.SetCMinusVoltage(cMinusV)
+                #     hc.SwitchEAndWait(eCurrentState)
+                #     print("E Switch Finished")
+                #     System.Threading.Thread.CurrentThread.Join(10000)
+
+                #     print("leakage monitors calibrated")
 
     bh.StopPattern()
 

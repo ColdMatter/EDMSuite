@@ -43,11 +43,12 @@ def checkPhaseLock():
 def printWaveformCode(bc, name):
 	print(name + ": " + str(list(bc.GetModulationByName(name).Waveform.Code)) + " -- " + str(bc.GetModulationByName(name).Waveform.Inverted))
 
-def measureParametersAndMakeBC(cluster, eState, bState, mwState):
+def measureParametersAndMakeBC(cluster, eState, bState, mwState, flashlamp):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	# hc.UpdateBCurrentMonitor()
+	sm.AdjustProfileParameter("pg", "flashlampPulseInterval", flashlamp, False)
+	hc.UpdateBCurrentMonitor()
 	hc.PollVMonitor()
 	bh.StartPattern()
 
@@ -61,7 +62,6 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
-	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
 	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
     
 	bc.Settings["cluster"] = str(cluster)
@@ -133,9 +133,9 @@ kReZeroLeakageMonitorsPeriod = 10
 
 def QuSpinGo():
 	# Setup E field voltages
-    eFieldVoltagesInput = input("E-field voltages in kV: ")
-    eFieldVoltages = eFieldVoltagesInput.split(",")
-    
+    eFieldInput = input("E-field switch delay time in seconds: ")
+    #eFieldVoltages = eFieldVoltagesInput.split(",")
+    eFieldSwitchTimes = eFieldInput.split(",")
     # Setup file
     f = None
     fileSystem = Environs.FileSystem
@@ -197,7 +197,7 @@ def QuSpinGo():
     # hc.EnableGreenSynth( True )
     print("leakage monitors calibrated")
 
-    bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
+    bc = measureParametersAndMakeBC(cluster, eState, bState, mwState, "200000")#, rfState, mwState, scramblerV)
 
     # loop and take data
     blockIndex = 0
@@ -208,17 +208,17 @@ def QuSpinGo():
     Emini2List=[]
     Emini3List=[]
     while blockIndex < maxBlockIndex:
-        for i in eFieldVoltages:
+        for i in eFieldSwitchTimes:
             eCurrentState = hc.EFieldPolarity
-            hc.SetCPlusVoltage(float(i))
-            hc.SetCMinusVoltage(float(i))
+            # hc.SetCPlusVoltage(float(i))
+            # hc.SetCMinusVoltage(float(i))
+            hc.ERampUpDelay = float(i)
+            flashlamp = str(int(200000 + float(i)*1000000))
+            System.Threading.Thread.CurrentThread.Join(1000)
             hc.SwitchEAndWait(eCurrentState)
-            if (float(i)==0.0):
-                System.Threading.Thread.CurrentThread.Join(20000)
-            else:
-                System.Threading.Thread.CurrentThread.Join(5000)
+
             # Make new block config with correct E Field
-            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
+            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState, flashlamp)#rfState, mwState, scramblerV)
 
             print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
             # save the block config and load into blockhead

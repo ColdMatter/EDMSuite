@@ -58,7 +58,7 @@ namespace ScanMaster.Acquire
 			}
 		}
 
-
+		public bool acquiring = false;
 		private void Acquire() 
 		{
             try 
@@ -93,7 +93,7 @@ namespace ScanMaster.Acquire
 					{
 						// calculate the new scan parameter and move the scan along
 						config.outputPlugin.ScanParameter = NextScanParameter(pointNumber, scanNumber);
-
+						acquiring = true;
 						// check for a change in the pg parameters
 						lock (this)
 						{

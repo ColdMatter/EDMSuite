@@ -3,8 +3,10 @@
 import pythonnet
 import clr
 import sys
+import os
 from System.IO import Path
 
+EDMSuiteFolder = os.environ["EDMSuite"]
 
 # Load some system assemblies that we'll need
 
@@ -12,15 +14,17 @@ clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
 
+
+
 # Import the edm control software assemblies into IronPython
-clr.AddReference(Path.GetFullPath("..\\DAQ\\bin\\x64\\ultracoldEDM\\DAQ"))
-clr.AddReference(Path.GetFullPath("..\\SharedCode\\bin\\x64\\ultracoldEDM\\SharedCode"))
-clr.AddReference(Path.GetFullPath("..\\UEDMHardwareControl\\bin\\x64\\ultracoldEDM\\UEDMHardwareControl"))
-clr.AddReference(Path.GetFullPath("..\\EDMBlockHead\\bin\\x64\\ultracoldEDM\\EDMBlockHead.exe"))
-clr.AddReference(Path.GetFullPath("..\\EDMPhaseLock\\bin\\x64\\ultracoldEDM\\EDMPhaseLock.exe"))
-clr.AddReference(Path.GetFullPath("..\\EDMFieldLock\\bin\\x64\\ultracoldEDM\\EDMFieldLock.exe"))
-clr.AddReference(Path.GetFullPath("..\\ScanMaster\\bin\\x64\\ultracoldEDM\\ScanMaster"))
-clr.AddReference(Path.GetFullPath("..\\TransferCavityLock2012\\bin\\x64\\ultracoldEDM\\TransferCavityLock.exe"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"DAQ\\bin\\x64\\ultracoldEDM\\DAQ"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"SharedCode\\bin\\x64\\ultracoldEDM\\SharedCode"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"UEDMHardwareControl\\bin\\x64\\ultracoldEDM\\UEDMHardwareControl"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"EDMBlockHead\\bin\\x64\\ultracoldEDM\\EDMBlockHead.exe"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"EDMPhaseLock\\bin\\x64\\ultracoldEDM\\EDMPhaseLock.exe"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"EDMFieldLock\\bin\\x64\\ultracoldEDM\\EDMFieldLock.exe"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"ScanMaster\\bin\\x64\\ultracoldEDM\\ScanMaster"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"TransferCavityLock2012\\bin\\x64\\ultracoldEDM\\TransferCavityLock.exe"))
 
 # create connections to the control programs
 import System
@@ -35,6 +39,7 @@ sm = System.Activator.GetObject(ScanMaster.Controller, 'tcp://localhost:1191/con
 bh = System.Activator.GetObject(EDMBlockHead.Controller, 'tcp://localhost:1181/controller.rem')
 hc = System.Activator.GetObject(UEDMHardwareControl.UEDMController, 'tcp://localhost:1172/UEDMController.rem')
 tcl = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://localhost:1190/controller.rem')
+tclLattice = System.Activator.GetObject(TransferCavityLock2012.Controller, 'tcp://155.198.194.212:1190/controller.rem')
 pl = System.Activator.GetObject(EDMPhaseLock.MainForm, 'tcp://localhost:1175/controller.rem')
 fl = System.Activator.GetObject(EDMFieldLock.MainForm, 'tcp://localhost:1176/controller.rem')
 
@@ -71,7 +76,7 @@ Available scripts:''')
 
 # script shortcuts
 import nt
-pp = Path.GetFullPath("..\\UEDMScripts")
+pp = Path.GetFullPath(EDMSuiteFolder+"UEDMScripts")
 files = nt.listdir(pp)
 scriptsToLoad = [e for e in files if e.endswith(".py") and e != "uedm_init.py" and e != "winforms.py" and e != "uedmfuncs.py" and e != "winforms.py" and e != "uedm_init_pythonnet.py"]
 for i in range(len(scriptsToLoad)):
