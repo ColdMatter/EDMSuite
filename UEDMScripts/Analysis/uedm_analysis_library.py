@@ -18,6 +18,8 @@ from scipy.special import erfcinv
 from scipy.signal import find_peaks
 import datetime
 import zipfile
+from PIL import Image
+
 
 # Set the EDMSuite folder using an environmental variable in the computer
 EDMSuiteFolder = os.environ["EDMSuite"]
@@ -33,7 +35,7 @@ clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs, assumes you are executing this function from within
 # the EDMSuite Git repository
-clr.AddReference(Path.GetFullPath(EDMSuiteFolder+"SEDM4\Libraries\SharedCode.dll"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder + r"\SEDM4\Libraries\SharedCode.dll"))
 import System
 import Data
 
@@ -53,7 +55,6 @@ def GetScanParameterArray(Scan):
 def ReadAverageScanInZippedXML(Filename):
     ss = Data.Scans.ScanSerializer()
     Scan = ss.DeserializeScanFromZippedXML(Filename,"average.xml")
-    # TODO: Adjust for zip-files with multiple passes
     return Scan
 
 def ProcessAllScansInZippedXML(Filename):
@@ -314,6 +315,21 @@ def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
     Sigma = ScaledMAD(Background)
     MADs = np.abs(Background-Median) / Sigma
     return np.max(MADs)
+
+
+#%% Functions for CCD images
+
+def read_tiff(path):
+    """
+    path - Path to the multipage-tiff file.
+    Returns an array
+    """
+    img = Image.open(path)
+    images = []
+    for i in range(img.n_frames):
+        img.seek(i)
+        images.append(np.array(img))
+    return np.array(images)
 
 
 #%% Functions for Blocks
@@ -688,3 +704,6 @@ def WeightedMean(x, xerr):
         RChi2 = 1/(len(x)-1)*sum((x-avgx)**2 * weight)
     
     return avgx, avgerr, RChi2
+
+def Gauss(x, a, mu, sigma):
+    return a*np.exp(-(x-mu)**2/(2*sigma**2))
