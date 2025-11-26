@@ -1631,6 +1631,12 @@ namespace UEDMHardwareControl
             controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
         }
 
+        //Shirley adds on 08/09/2025 to add the trigger armed checkbox for OPMW windfreak channel A
+        private void cbCHARFTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPumpingMWTrigger(0, cbCHARFTrigger.Checked);
+        }
+
         private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
         {
             controller.EnableGreenSynth(cbStirapRFOn.Checked);
@@ -1745,7 +1751,7 @@ namespace UEDMHardwareControl
 
         private void QueryTemperature_Click(object sender, EventArgs e)
         {
-            controller.QueryTemperature();
+            controller.QueryCCDTemperature();
         }
 
         private void QueryGain_Click(object sender, EventArgs e)
@@ -1776,68 +1782,245 @@ namespace UEDMHardwareControl
             }
         }
 
+        //private void UpdateCCDExposureButton_Click(object sender, EventArgs e)
+        //{
+        //    if (double.TryParse(tbCCDAExposure.Text, out double exposureTimeMs))
+        //    {
+        //        controller.SetCCDExposureTime(exposureTimeMs);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Invalid exposure time input for CCD A. Please enter a number in milliseconds.");
+        //    }
+        //}
+
         private void UpdateCCDExposureButton_Click(object sender, EventArgs e)
         {
-            if (double.TryParse(tbCCDAExposure.Text, out double exposureTimeMs))
+            double exposureA = -1;
+            double exposureB = -1;
+
+            // Case 1: CCD A connected => user input CCD A, CCD B auto calculated
+            if (checkboxTCPCCDA.Checked)
             {
-                controller.SetCCDExposureTime(exposureTimeMs);
+                if (double.TryParse(tbCCDAExposure.Text, out double expA))
+                {
+                    exposureA = expA;
+                    // CCD B exposure depends on CCD A formula
+                    exposureB = (1.11 * expA + 0.000033 * 1000.0);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid exposure time input for CCD A. Please enter a number in milliseconds.");
+                    return;
+                }
             }
-            else
+            // Case 2: Only CCD B connected => user input CCD B directly
+            else if (checkboxTCPCCDB.Checked)
             {
-                MessageBox.Show("Invalid exposure time input for CCD A. Please enter a number in milliseconds.");
+                if (double.TryParse(tbCCDBExposure.Text, out double expB))
+                {
+                    exposureB = expB;
+                }
+                else
+                {
+                    MessageBox.Show("Invalid exposure time input for CCD B. Please enter a number in milliseconds.");
+                    return;
+                }
             }
+
+            // Update controller
+            controller.SetCCDExposureTime(exposureA, exposureB);
         }
 
+
+        //private void UpdateCCDFrameCount_Click(object sender, EventArgs e)
+        //{
+        //    if(int.TryParse(tbCCDAFrameCount.Text, out int frameCount))
+        //    {
+        //        controller.SetCCDFrameCount(frameCount);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Invalid frame count value entered. Please enter same value for both CCDs.");
+        //    }
+        //}
 
         private void UpdateCCDFrameCount_Click(object sender, EventArgs e)
         {
-            if(int.TryParse(tbCCDAFrameCount.Text, out int frameCount))
+            int frameCount = 20; // default
+
+            if (int.TryParse(tbCCDAFrameCount.Text, out int parsedCount))
             {
-                controller.SetCCDFrameCount(frameCount);
+                frameCount = parsedCount;
             }
             else
             {
-                MessageBox.Show("Invalid frame count value entered. Please enter same value for both CCDs.");
+                MessageBox.Show("Invalid frame count. Using default value 20 for both CCDs.");
             }
+
+            // Apply to both CCDs
+            controller.SetCCDFrameCount(frameCount, frameCount);
         }
+
 
         private void btnSetCCDTriggerMode_Click(object sender, EventArgs e)
         {
             controller.SetCCDTriggerModeRemote();
         }
 
+        //private void SetupTCPtoCCDs_Click(object sender, EventArgs e)
+        //{
+        //    if (checkboxTCPCCD.Checked)
+        //    {
+        //        try
+        //        {
+        //            controller.InitialiseTCPforCCD();
+        //            ToggleCCDControls(true);
+        //            MessageBox.Show("CCD TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}, please check if the cameras are opened and the CCD controller programs are built on wavemeter and gobelin computers.", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            checkboxTCPCCD.Checked = false;
+        //            ToggleCCDControls(false);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            controller.DisconnectTCPforCCD();
+        //            ToggleCCDControls(false);
+        //            MessageBox.Show("CCD TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Failed to disconnect CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //}
+
+        //private void SetupTCPtoCCDs_Click(object sender, EventArgs e)
+        //{
+        //    CheckBox clicked = sender as CheckBox;
+
+        //    try
+        //    {
+        //        if (clicked == checkboxTCPCCDA)
+        //        {
+        //            if (checkboxTCPCCDA.Checked)
+        //            {
+        //                controller.InitialiseTCPforCCDA();
+
+        //                // Check readiness AFTER connection
+        //                bool readyA;
+
+        //                // Query readiness of CCD A
+        //                controller.IsCCDReady(out readyA, out _);
+        //                if (!readyA)
+        //                {
+        //                    throw new Exception("CCD A is not ready for connection. Ensure it is powered on and initialised in program.");
+        //                }
+
+        //                ToggleCCDControls(true);
+        //                MessageBox.Show("CCD A TCP connection established and initialisation verified.",
+        //                                "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            }
+        //            else
+        //            {
+        //                controller.DisconnectCCDA();
+        //                ToggleCCDControls(false);
+        //                MessageBox.Show("CCD A TCP connection closed.",
+        //                                "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            }
+        //        }
+        //        else if (clicked == checkboxTCPCCDB)
+        //        {
+        //            if (checkboxTCPCCDB.Checked)
+        //            {
+        //                controller.InitialiseTCPforCCDB();
+
+        //                // Check readiness AFTER connection
+        //                bool readyB;
+
+        //                // Query readiness of both CCD B
+        //                controller.IsCCDReady(out _, out readyB);
+
+        //                if (!readyB)
+        //                {
+        //                    throw new Exception("CCD B is not ready for connection. Ensure it is powered on and initialised in program.");
+        //                }
+
+        //                ToggleCCDControls(true);
+        //                MessageBox.Show("CCD B TCP connection established and initialisation verified.",
+        //                                "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            }
+        //            else
+        //            {
+        //                controller.DisconnectCCDB();
+        //                ToggleCCDControls(false);
+        //                MessageBox.Show("CCD B TCP connection closed.",
+        //                                "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Failed to toggle TCP connection:\n{ex.Message}",
+        //                        "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        //        // Roll back checkbox if something failed
+        //        if (clicked == checkboxTCPCCDA) checkboxTCPCCDA.Checked = controller.ccdA != null;
+        //        if (clicked == checkboxTCPCCDB) checkboxTCPCCDB.Checked = controller.ccdB != null;
+        //    }
+        //}
+
         private void SetupTCPtoCCDs_Click(object sender, EventArgs e)
         {
-            if (checkboxTCPCCD.Checked)
+            CheckBox clicked = sender as CheckBox;
+
+            try
             {
-                try
+                if (clicked == checkboxTCPCCDA)
                 {
-                    controller.InitialiseTCPforCCD();
-                    ToggleCCDControls(true);
-                    MessageBox.Show("CCD TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (checkboxTCPCCDA.Checked)
+                    {
+                        controller.InitialiseTCPforCCDA();
+                        ToggleCCDControls(true);
+                        MessageBox.Show("CCD A TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        controller.DisconnectCCDA();
+                        ToggleCCDControls(false);
+                        MessageBox.Show("CCD A TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
-                catch (Exception ex)
+                else if (clicked == checkboxTCPCCDB)
                 {
-                    MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}, please check if the cameras are opened and the CCD controller programs are built on wavemeter and gobelin computers.", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    checkboxTCPCCD.Checked = false;
-                    ToggleCCDControls(false);
+                    if (checkboxTCPCCDB.Checked)
+                    {
+                        controller.InitialiseTCPforCCDB();
+                        ToggleCCDControls(true);
+                        MessageBox.Show("CCD B TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        controller.DisconnectCCDB();
+                        ToggleCCDControls(false);
+                        MessageBox.Show("CCD B TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    controller.DisconnectTCPforCCD();
-                    ToggleCCDControls(false);
-                    MessageBox.Show("CCD TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to disconnect CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show($"Failed to toggle TCP connection:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Reset checkbox to reflect actual state
+                if (clicked == checkboxTCPCCDA) checkboxTCPCCDA.Checked = controller.ccdA != null;
+                if (clicked == checkboxTCPCCDB) checkboxTCPCCDB.Checked = controller.ccdB != null;
             }
         }
-
 
 
         private void infoCCDExposure_Click(object sender, EventArgs e)
@@ -1892,7 +2075,14 @@ namespace UEDMHardwareControl
             labelCCDShotCount.Enabled = enabled;
         }
 
+        private void updateFeedthroughTempButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdateFeedthroughTempUI();
+        }
 
+        private void checkboxTCPCCDB_CheckedChanged(object sender, EventArgs e)
+        {
 
+        }
     }
 }

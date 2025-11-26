@@ -211,13 +211,15 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                case "IC-CZC202DMH1":
+                case "IC-CZC535759M":
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
                     serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1234;
+                    viewerServerComputerName = "PH-BONESAW";
+                    viewerServerTCPChannel = 1800;
                     //ExperimentType = "edm";
                     break;
 
@@ -417,6 +419,15 @@ namespace DAQ.Environment
                     serverTCPChannel = 1997;
                     wavemeterLockTCPChannel = 2345;
                     emccdTCPChannel = 1107;
+                    break;
+
+                case "ic-czc5347lb5":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = false;
+                    serverComputerName = "ic-czc5347lb5";
+                    serverTCPChannel = 1984;
+                    emccdTCPChannel = 2104;
                     break;
 
                 default:

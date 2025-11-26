@@ -47,7 +47,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	hc.UpdateBCurrentMonitor()
+	# hc.UpdateBCurrentMonitor()
 	hc.PollVMonitor()
 	bh.StartPattern()
 
@@ -61,7 +61,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
@@ -211,9 +212,11 @@ def QuSpinGo():
             eCurrentState = hc.EFieldPolarity
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            System.Threading.Thread.CurrentThread.Join(1000)
             hc.SwitchEAndWait(eCurrentState)
-
+            if (float(i)==0.0):
+                System.Threading.Thread.CurrentThread.Join(20000)
+            else:
+                System.Threading.Thread.CurrentThread.Join(5000)
             # Make new block config with correct E Field
             bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
 

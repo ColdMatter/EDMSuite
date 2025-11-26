@@ -1,6 +1,7 @@
 import sys
 import numpy as np 
 from scipy.optimize import curve_fit 
+from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 from Data.Scans import *
 from DAQ.Environment import *
@@ -9,8 +10,8 @@ import time, os, fnmatch
 from uedm_init_pythonnet import *
 
 #Generic functions for fits
-def gaussian(x, a, x0, sigma, c): 
-    return (a*np.exp(-(x-x0)**2/(2*sigma**2))+c) 
+def gaussian(x, a, mu, sigma, c): 
+    return (a*np.exp(-(x-mu)**2/(2*sigma**2))+c) 
 
 def doublegaussian(x, a1, center1, sigma1, a2, center2, sigma2, offset):
     return (a1*np.exp(-(x-center1)**2/(2*sigma1**2))+a2*np.exp(-(x-center2)**2/(2*sigma2**2))+offset) 
@@ -104,7 +105,8 @@ def getNextFile():
 def fitGaussian(voltage,signal):
     first_try = [max(signal)-min(signal), voltage[np.argmax(signal)], (max(voltage)-min(voltage))/5, ((max(signal)-min(signal))/5)+min(signal)]
     popt, pcov = curve_fit(gaussian, voltage, signal, p0=first_try)
-    return [popt,pcov]
+    perr=np.sqrt(np.diag(pcov))
+    return [popt,perr]
 
 def fitDoubleGaussian(voltage,signal):
     first_try = [max(signal)-min(signal), voltage[np.argmax(signal)], (max(voltage)-min(voltage))/5, (max(signal)-min(signal))/2, voltage[np.argmax(signal)]-0.1, (max(voltage)-min(voltage))/5, ((max(signal)-min(signal))/5)+min(signal)]
