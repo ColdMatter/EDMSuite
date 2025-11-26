@@ -2,7 +2,16 @@
 """
 Created on Wed Aug  6 14:15:48 2025
 
-To analyse basic LIF measurements. Typically no On-Off shots (only On)
+TOF collector analysis, with slowing ON-OFF shots (or B-field up/down)
+For 4-shot patterns.
+Assuming 2 detectors -- PMT & Photodiode (PD)
+- Data saved as 4 "detectors". Each have their own ON-OFF shots
+- Detector 1: PMT, YAG ON
+- Detector 2: PMT, YAG OFF
+- Detector 3: PD, YAG ON
+- Detector 4: PD, YAG OFF
+Single-file analysis
+
 
 @author: sl5119
 """
@@ -26,32 +35,51 @@ import tools as tools
 
 tools.set_plots()
 
-#%% Load data
-datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month="August 2024"
-date="15"
-subfolder = ""
-#blockdrive=datadrive+"\\BlockData\\"
+#%% Load data (interactive)
+file = EDM.get_scan()[0] #getting a list of [file_path, file_name, file_date]
+print("Selected: ", file[1], " in ", file[2])
+#%
+files = [file[0]]  #Just so it still works with the old code
+fileLabels = []
+Data = {}
 
-drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
-print(drive)
+fileLabel = file[1][0:3]
+Data[fileLabel] = EDM.ReadAverageScanInZippedXML(file[0])
+print("loaded file " + file[1])
+fileLabels.append(fileLabel)
 
-pattern="013*.zip"
-files = glob.glob(f'{drive}{pattern}', recursive=True)
-print("Matching files: ", [os.path.basename(f) for f in files])
-#%%
-if len(files) > 0:
-    print("%g matching files found. Loading"%len(files))
-    Data = {}
-    fileLabels = []
-    for i in range(0, len(files)):
-        fileLabel = re.split(r'[\\]', files[i])[-1][0:3]
-        Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-        print("loaded file " + files[i])
-        fileLabels.append(fileLabel)
+print(fileLabel)
 
-else:
-    print("No matching files.")
+#%% Load data (old)
+# =============================================================================
+# datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+# month="August 2024"
+# date="15"
+# subfolder = ""
+# #blockdrive=datadrive+"\\BlockData\\"
+# 
+# drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
+# print(drive)
+# 
+# pattern="013*.zip"
+# files = glob.glob(f'{drive}{pattern}', recursive=True)
+# print("Matching files: ", [os.path.basename(f) for f in files])
+# =============================================================================
+#%
+# =============================================================================
+# if len(files) > 0:
+#     print("%g matching files found. Loading"%len(files))
+#     Data = {}
+#     fileLabels = []
+#     for i in range(0, len(files)):
+#         fileLabel = re.split(r'[\\]', files[i])[-1][0:3]
+#         Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+#         print("loaded file " + files[i])
+#         fileLabels.append(fileLabel)
+# 
+# else:
+#     print("No matching files.")
+# =============================================================================
 
 #% Just to check scan settings
 #Scan = Data[fileLabels[0]]
@@ -62,13 +90,187 @@ else:
 #print(Settings)
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 15
-SigEnd = 25
-BkgStart = 37
-BkgEnd = 40
+SigStart = 40
+SigEnd = 60
+
+#Use YAG-OFF shots for background subtraction
+
+#BkgStart = 37
+#BkgEnd = 40
 
 showTOF = True
 showDiff = True
+
+#%% Grouping data
+Scan = Data[fileLabels[0]]
+
+#% Print out all params
+Settings = EDM.GetScanSettings(Scan)
+ScanParams = EDM.GetScanParameterArray(Scan)
+print("for file " + fileLabels[0])
+print(Settings)
+
+#%%
+TimeOn, DataOn, TimeOff, DataOff = EDM.GetTOFs(Scan)
+
+#%% For checking
+point = 1
+
+OnTOFbyShot = []
+OffTOFbyShot = []
+
+for i in range(0, len(DataOn)):
+    OnTOFbyShot.append(DataOn[i][point])
+    OffTOFbyShot.append(DataOff[i][point])
+
+title = "TOF at point %g for shot #"%point
+
+for i in range(0, len(OnTOFbyShot)):
+    plt.plot(TimeOn*1000, OnTOFbyShot[i], label='On')
+    plt.plot(TimeOff*1000, OffTOFbyShot[i], label='Off')
+    plt.title(title + str(i))
+    plt.xlabel("time (ms)")
+    plt.ylabel("Signal (V)")
+    plt.legend()
+    plt.show()
+    
+#%% Grouping by ON/OFF and detector
+PMTOnYAGOns = DataOn[0]
+PMTOnYAGOffs = DataOn[1]
+
+PMTOffYAGOns = DataOff[0]
+PMTOffYAGOffs = DataOff[1]
+
+PDOnYAGOns = DataOn[2]
+PDOnYAGOffs = DataOn[3]
+
+PDOffYAGOns = DataOff[2]
+PDOffYAGOffs = DataOff[3]
+
+#%% check -- passed
+
+# =============================================================================
+# plt.plot(TimeOn*1000, PMTOnYAGOns[point], label='On')
+# plt.plot(TimeOff*1000, PMTOffYAGOns[point], label='Off')
+# plt.title(title + str(1) + "\n YAG ON, PMT")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PMTOnYAGOffs[point], label='On')
+# plt.plot(TimeOff*1000, PMTOffYAGOffs[point], label='Off')
+# plt.title(title + str(2) + "\n YAG OFF, PMT")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PDOnYAGOns[point], label='On')
+# plt.plot(TimeOff*1000, PDOffYAGOns[point], label='Off')
+# plt.title(title + str(3) + "\n YAG ON, PD")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PDOnYAGOffs[point], label='On')
+# plt.plot(TimeOff*1000, PDOffYAGOffs[point], label='Off')
+# plt.title(title + str(4) + "\n YAG OFF, PD")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# =============================================================================
+
+#%% YAG On-Off subtractions
+PPS = Settings['pointsPerScan']
+
+PMTOns = PMTOnYAGOns - PMTOnYAGOffs
+PMTOffs = PMTOffYAGOns - PMTOffYAGOffs
+PDOns = PDOnYAGOns - PDOnYAGOffs
+PDOffs = PDOffYAGOns - PDOffYAGOffs
+
+#%% check 2 -- passed
+# =============================================================================
+# plt.plot(TimeOn*1000, PMTOnYAGOns[point]-PMTOnYAGOffs[point], label='On')
+# plt.plot(TimeOff*1000, PMTOffYAGOns[point]-PMTOffYAGOffs[point], label='Off')
+# plt.title(title + "\n YAG ON-OFF, PMT")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PDOnYAGOns[point]-PDOnYAGOffs[point], label='On')
+# plt.plot(TimeOff*1000, PDOffYAGOns[point]-PDOffYAGOffs[point], label='Off')
+# plt.title(title + "\n YAG ON-OFF, PD")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PMTOns[point], label='On')
+# plt.plot(TimeOff*1000, PMTOffs[point], label='Off')
+# plt.title(title + "\n YAG ON-OFF, PMT")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# plt.plot(TimeOn*1000, PDOns[point], label='On')
+# plt.plot(TimeOff*1000, PDOffs[point], label='Off')
+# plt.title(title + "\n YAG ON-OFF, PD")
+# plt.xlabel("time (ms)")
+# plt.ylabel("Signal (V)")
+# plt.legend()
+# plt.show()
+# 
+# =============================================================================
+
+#%% Get correlation
+'''
+Molecule signal will mess up correlation. Need to filter them out.
+
+Use data >40ms.
+
+Need to assume correlation hasn't changed between YAG ON-OFF, because
+we can't use YAG ON shots in case we have a MOT, which will give us 
+a molecule signal at >40ms
+'''
+
+PMTOnYAGOffLates = []
+PMTOffYAGOffLates = []
+PDOnYAGOffLates = []
+PDOffYAGOffLates = []
+
+TimeLate = 40 #in ms
+TimeLateInd = int(TimeLate * (Settings["sampleRate"]/1000))
+
+for i in range(0, PPS):
+    PMTOnYAGOffLates.append(PMTOnYAGOffs[i][TimeLateInd::])
+    PMTOffYAGOffLates.append(PMTOffYAGOffs[i][TimeLateInd::])
+    PDOnYAGOffLates.append(PDOnYAGOffs[i][TimeLateInd::])
+    PDOffYAGOffLates.append(PDOffYAGOffs[i][TimeLateInd::])
+
+
+COns = []
+COffs = []
+
+for i in range(0, PPS):
+    COns.append(np.corrcoef(PMTOnYAGOffLates[i], PDOnYAGOffLates[i])[0][1])
+    COffs.append(np.corrcoef(PMTOffYAGOffLates[i], PDOffYAGOffLates[i])[0][1])
+
+#%%
+pspan = np.arange(0, PPS, 1)
+plt.plot(pspan, COns, label='B-field +')
+plt.plot(pspan, COffs, label='B-field -')
+plt.xlabel('Point #')
+plt.ylabel('Correlation factor')
+plt.title('YAG OFF correlation, >40ms')
+plt.legend()
+plt.show()
+
 
 #%% Get averaged TOFs over all shots
 Figs = {}
@@ -89,8 +291,8 @@ for i in range(0, len(files)):
     print("for file " + fileLabels[i])
     print(Settings)
     
-    BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
-    BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
+    #BkgStartIndex = int(BkgStart * (Settings["sampleRate"]/1000))
+    #BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
     
     TimeOn, DataOn, TimeOff, DataOff = EDM.GetTOFs(Scan)
     

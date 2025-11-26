@@ -2,7 +2,7 @@
 """
 Created on Wed Aug  6 14:15:48 2025
 
-To analyse basic LIF measurements. Typically no On-Off shots (only On)
+To analyse setpoint scan measurements. Typically with On-Off shots (only On)
 
 @author: sl5119
 """
@@ -20,6 +20,7 @@ import numpy as np
 
 import glob
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
 
 import tools as tools
@@ -31,14 +32,14 @@ colors = prop_cycle.by_key()['color']
 
 #%% Load data
 datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month=datadrive+"\\August 2024\\"
-date=month+"\\13\\"
+month=datadrive+"\\October2025\\"
+date=month+"\\23\\"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = date
 print(drive)
 
-pattern="003*.zip"
+pattern="002*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
@@ -62,10 +63,10 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 15
-SigEnd = 25
-BkgStart = 35
-BkgEnd = 40
+SigStart = 25
+SigEnd = 27
+BkgStart = 60
+BkgEnd = 70
 
 showTOF = True
 shot_for_TOF = 17
@@ -133,61 +134,74 @@ if showTOF:
     plt.show()
 
 #%% Get gated TOF against scanned param with bkg sub
-MeanCounts, StderrCounts, TimeWindow = EDM.GetGatedAvgCounts(Data,DataOnSPP[0],\
-                                                    TimeOnSPP,SigStart,SigEnd)
+OnBkgSub, OffBkgSub = EDM.GatedAvgCountsOnOff(Data,DataOnSPP[0],DataOffSPP[0],\
+                                              TimeOnSPP,TimeOffSPP,\
+                SigStart,SigEnd,BkgStart,BkgEnd)
 
-BkgMeanCounts, BkgStderrCounts, BkgTimeWindow = EDM.GetGatedAvgCounts(Data,\
-                                        DataOnSPP[0],TimeOnSPP,BkgStart,BkgEnd)
-BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
-
-#% Plot gated TOF
-GatedTOF = EDM.PlotGatedAvgCounts(Data,DataOnSPP[0],TimeOnSPP,SigStart,\
-                                  SigEnd,BkgStart,BkgEnd)
-#% Fitting
-
-FittedGatedTOF, fit_results = tools.FitGaussian(GatedTOF, ScanParams,\
-                                BkgSub, p0=[np.mean(ScanParams), 0.5, 20., 10.])
-
-if HasWM:
-    peakOn = f_relMHz[np.where(BkgSub == np.max(BkgSub))[0][0]]
-    FittedGatedTOFWM, fit_resultsWM = tools.FitGaussian(0, f_relMHz, \
-                                    BkgSub, p0=[peakOn, 10., 1., 1.],
-                    xlabel="Relative frequency (MHz) from %.8g THz"%f_iniTHz,\
-                    ylabel="Gated LIF (ms.V)", \
-                    title="Gated TOF over " + Settings["param"] + " with " +\
-                        str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
-                        str(SigStart) + "ms to " + str(SigEnd) + "ms gate, file " +\
-                            fileLabel+location, Toprint=True, plot=True,\
-      bounds=([-np.inf, 0, -np.inf, -np.inf], [np.inf, 100., np.inf, np.inf]))
-#%% To velocity axis
-wavelength = 552
-angle = 60
-
-FerrEsti = np.ones(len(f_relMHz))*TCLconverr
-
-v, err = EDM.VelocityfromFreq(f_relMHz, FerrEsti, \
-                          542.8091807917087-56.05068161*1e-6, 0.64214063, \
-                         f_iniTHz, wavelength, angle)
-    
-peakOn = v[np.where(BkgSub == np.max(BkgSub))[0][0]]
-
-from scipy.optimize import curve_fit
-fitv, covv = curve_fit(tools.SkewedGaussian, v, BkgSub, p0=[peakOn, 30., 10., 1., 1.])
-errv = np.sqrt(np.diag(covv))
-vspan = np.arange(0., 250., 1.)
-
-plt.plot(v, BkgSub, '.', label='Downstream')
-plt.plot(vspan, tools.SkewedGaussian(vspan, *fitv))
-
-plt.xlabel("Velocity (m/s)")
-plt.ylabel("Gated LIF (ms.V)")
-plt.title("Gated TOF over " + Settings["param"] + " with " +\
+title="Gated TOF over " + Settings["param"] + " with " +\
     str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
-    str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
-plt.xlim(0, 250)
+    str(SigStart) + "ms to " + str(SigEnd) + "ms gate, file " +\
+        fileLabel
+    
+plt.plot(ScanParams, OnBkgSub, '.', label='On')
+plt.plot(ScanParams, OffBkgSub, '.', label='Off')
+plt.xlabel('Setpoint (V)')
+plt.ylabel("Gated LIF (ms.V)")
+plt.title(title)
+plt.legend()
+plt.show()    
+
+#%% Fitting
+peakOn = ScanParams[np.where(OnBkgSub == np.min(OnBkgSub))[0][0]]
+fitOn, covOn = curve_fit(tools.SkewedGaussian, ScanParams, OnBkgSub, p0=[peakOn, 1., -1., 0.5, 1.])
+errOn = np.sqrt(np.diag(covOn))
+print("Central ON setpoint = %.4g +- %.3g V"%(fitOn[0], errOn[0]) +\
+      "\n with FWHM = %.4g +- %.3g V"%(fitOn[1]*2*np.sqrt(2*np.log(2)),\
+                                         errOn[1]*2*np.sqrt(2*np.log(2))))
+
+peakOff = ScanParams[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
+fitOff, covOff = curve_fit(tools.SkewedGaussian, ScanParams, OffBkgSub, p0=[peakOff, 1., -1., 0.5, 1.])
+errOff = np.sqrt(np.diag(covOff))
+print("Central OFF setpoint = %.4g +- %.3g V"%(fitOff[0], errOff[0]) +\
+      "\n with FWHM = %.4g +- %.3g V"%(fitOff[1]*2*np.sqrt(2*np.log(2)),\
+                                         errOff[1]*2*np.sqrt(2*np.log(2))))
+
+vspan = np.arange(np.min(ScanParams), np.max(ScanParams), step = 0.01)
+
+plt.plot(ScanParams, OnBkgSub, '.', label='On', color=colors[0])
+plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOn), color=colors[0])
+plt.plot(ScanParams, OffBkgSub, '.', label='Off', color=colors[1])
+plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOff), color=colors[1])
+plt.xlabel('Setpoint (V)')
+plt.ylabel("Gated TOF (ms.V)")
+plt.title(title)
 plt.legend()
 plt.show()
 
+if HasWM:
+    peakOn = f_relMHz[np.where(OnBkgSub == np.max(OnBkgSub))[0][0]]
+    peakOff = f_relMHz[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
+    
+    
+#%% Ratio
+Ratio = OnBkgSub/OffBkgSub
 
-print("Peak velocity: %g +- %g m/s"%(fitv[0], errv[0]))
-print("FWHM: %g +- %g m/s"%(fitv[1]*2*np.sqrt(2*np.log(2)), errv[1]*2*np.sqrt(2*np.log(2))))
+peakR = f_relMHz[np.where(Ratio == np.min(Ratio))[0][0]]
+
+fitR, covR = curve_fit(tools.Gaussian, f_relMHz, Ratio, p0=[peakR, 30., -0.5, 1.])
+errR = np.sqrt(np.diag(covR))
+
+fspan = np.arange(np.min(f_relMHz), np.max(f_relMHz), step = 1.)
+
+plt.plot(f_relMHz, Ratio, '.', label='On/Off', color=colors[0])
+plt.plot(fspan, tools.Gaussian(fspan, *fitR))
+#plt.plot(ScanParams, OffBkgSub, '.', label='Off', color=colors[1])
+#plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOff), color=colors[1])
+plt.xlabel("Relative frequency (MHz) to %g THz"%f_iniTHz)
+plt.ylabel("Ratio")
+plt.title(title)
+plt.legend()
+plt.show()       
+
+print("Gaussian fit params [mean, std, amp, shift]: ", fitR)
+print("Errors of fit [mean, std, amp, shift]: ", errR)
