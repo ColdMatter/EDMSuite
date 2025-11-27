@@ -248,19 +248,20 @@ def GetShotTimestamps(Scan):
 
 #%% Functions for the TOF
 def BgSubTOF(Data,Time,StartBg,StopBg):
-    Indi= (Time*1000>StartBg) & (Time*1000 < StopBg)
+    Indi= (Time*1000>=StartBg) & (Time*1000 < StopBg)
     BgMean=np.mean(Data[Indi,:,:,:],axis=0)
     return (Data-BgMean)
 
 def GetCounts(Data,Time,Start,Stop):
-    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    Indi = (Time*1000>=Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
     Counts = np.sum(Data[Indi,:,:], axis=0)
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
-    return Counts, TimeWindow
+    TimeWindowPoints = np.sum(Indi)
+    return Counts, TimeWindowPoints
 
 def GetCountsSPP(Data,Time,Start,Stop):
-    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    Indi = (Time*1000>=Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
     RawCounts = np.sum(Data[Indi,:,:,:], axis=0)
     
@@ -287,7 +288,7 @@ def GetSignalwithBackgroundSubtractionSPP(Data,Time,StartSig,StopSig,StartBg,Sto
 
 def GetBinnedSignal(Data,Time,BinDuration,StartSig,StopSig,StartBg,StopBg):
     [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
-    NrBins = int(np.floor((StopSig-StartSig)/BinDuration))
+    NrBins = int(np.round((StopSig-StartSig)/BinDuration))
     BinStarts = StartSig + np.arange(NrBins)*BinDuration
     BinStops = BinStarts + BinDuration
     Signal = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
@@ -309,7 +310,7 @@ def DownsampleTOF(Data, Time, NrSamples):
 
 def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
     # Assumption is that the background is flat over time
-    Indi = (Time*1000>StartBg) & (Time*1000 <StopBg)
+    Indi = (Time*1000>=StartBg) & (Time*1000 <StopBg)
     Background = Data[Indi]
     Median = np.median(Background)
     Sigma = ScaledMAD(Background)
