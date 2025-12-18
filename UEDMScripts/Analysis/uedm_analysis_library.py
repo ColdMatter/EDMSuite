@@ -287,18 +287,20 @@ def GetSignalwithBackgroundSubtractionSPP(Data,Time,StartSig,StopSig,StartBg,Sto
     return [MeanSignal, StderrSignal, BackgroundScaled]
 
 def GetBinnedSignal(Data,Time,BinDuration,StartSig,StopSig,StartBg,StopBg):
-    [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
+    [BackgroundTot, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
     NrBins = int(np.round((StopSig-StartSig)/BinDuration))
     BinStarts = StartSig + np.arange(NrBins)*BinDuration
     BinStops = BinStarts + BinDuration
     Signal = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
+    Background = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
     for i in range(NrBins):
         Start = BinStarts[i]
         Stop = BinStops[i]
         [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,Start,Stop)
-        BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
+        BackgroundScaled = BackgroundTot*SignalTimeWindow/BgTimeWindow
+        Background[i,:,:] = BackgroundScaled
         Signal[i,:,:] = SignalAndBg - BackgroundScaled
-    return [Signal, BackgroundScaled,BinStarts, BinStops]
+    return [Signal, Background, BinStarts, BinStops]
 
 def DownsampleTOF(Data, Time, NrSamples):
     NrRows = int(len(Data)/NrSamples)
@@ -320,17 +322,128 @@ def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
 
 #%% Functions for CCD images
 
-def read_tiff(path):
+def ReadTiff(File):
     """
     path - Path to the multipage-tiff file.
     Returns an array
     """
-    img = Image.open(path)
+    img = Image.open(File)
     images = []
     for i in range(img.n_frames):
         img.seek(i)
         images.append(np.array(img))
     return np.array(images)
+
+def ProcessCCDimages(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings, AveragingIntervals):
+
+    # Read in and reshape the CCD images according to the meta data in the PMT file
+    _, _, _, DataOff, Setpoint, _, _ = ProcessAllScansInZippedXML(FilePMT)
+    Scan = ReadAverageScanInZippedXML(FilePMT)
+    NrPoints = len(Setpoint)
+    ShotNr = range(NrPoints)
+    ThereAreOffShots = not (np.shape(DataOff)[0]==0)
+    if ThereAreOffShots:
+        OnOff = 2
+    else:    
+        OnOff = 1
+    GainA = Scan.GetSetting("shot","ccd1Gain")
+    CCDAsettings['Gain'] = GainA
+    GainB = Scan.GetSetting("shot","ccd2Gain")
+    CCDBsettings['Gain'] = GainB
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    CCDimages = ReadTiff(FileCCDA)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        AOff = Shots[1::OnOff,:,:,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotons(AOn[j,i,:,:], CCDAsettings)
+    for i in range(np.shape(AOff)[1]):
+        for j in range(np.shape(AOff)[0]):
+            AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
+    
+    # Process CCD B
+    print("Processing CCD B images...")
+    CCDimages = ReadTiff(FileCCDB)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        BOff = Shots[1::OnOff,:,:,:]
+    else:
+        BOff = np.array([])
+    
+    NrIntervals = np.shape(AveragingIntervals)[0]
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotons(BOn[j,i,:,:], CCDBsettings)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOff)[0]):
+            BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
+    
+    FramesAOn = np.full((NrFramesPerShot,NrIntervals,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+    FramesBOn = np.full((NrFramesPerShot,NrIntervals,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(NrIntervals):
+            Indi = (ShotNr>=AveragingIntervals[j,0]) & (ShotNr< AveragingIntervals[j,1])
+            FrameA = RemoveCCDoffsetCounts(np.mean(AOn[Indi,i,:,:], axis=0), CCDAsettings)
+            FrameB = RemoveCCDoffsetCounts(np.mean(BOn[Indi,i,:,:], axis=0), CCDBsettings)
+            FramesAOn[i,j,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+            FramesBOn[i,j,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+
+    if ThereAreOffShots:
+        FramesAOff = np.full((NrFramesPerShot,NrIntervals,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+        FramesBOff = np.full((NrFramesPerShot,NrIntervals,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+        for i in range(NrFramesPerShot):
+            for j in range(NrIntervals):
+                Indi = (ShotNr>=AveragingIntervals[j,0]) & (ShotNr< AveragingIntervals[j,1])
+                FrameA = RemoveCCDoffsetCounts(np.mean(AOff[Indi,i,:,:], axis=0), CCDAsettings)
+                FrameB = RemoveCCDoffsetCounts(np.mean(BOff[Indi,i,:,:], axis=0), CCDBsettings)
+                FramesAOff[i,j,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+                FramesBOff[i,j,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+    else:
+        FramesAOff = np.array([])
+        FramesBOff = np.array([])
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons, FramesAOn, FramesAOff, FramesBOn, FramesBOff
+
+
+def RemoveCCDoffsetCounts(FrameRaw, CCDsettings):
+    Frame = FrameRaw - CCDsettings["Offset"]
+    return Frame
+
+def GetCCDphotons(FrameRaw, CCDsettings):
+    # Calculate the counts in a CCD frame by summing over all pixels
+    Frame = RemoveCCDoffsetCounts(FrameRaw, CCDsettings)
+    Counts = np.sum(Frame)
+    Photons = ConvertCountsToPhotons(Counts, CCDsettings)
+    return Photons
+
+def ConvertCountsToPhotons(Counts, CCDsettings):
+    QE = CCDsettings['QuantumEfficiency']
+    AnaDigi = CCDsettings['AnalogToDigi']
+    TFilter = CCDsettings['FilterTransmission']
+    Tlens = CCDsettings['LensTransmission']
+    EMGainSlope = CCDsettings['EMGainSlope']
+    Gain = CCDsettings['Gain']
+    Photons = Counts/(TFilter*Tlens*AnaDigi*QE*EMGainSlope*Gain)
+    return Photons
+
 
 
 #%% Functions for Blocks
