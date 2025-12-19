@@ -108,6 +108,7 @@ for i in range(0, len(files)):
     fileLabels.append(fileLabel)
     
 #%% Get peak velocities
+'''This is the old way with rolling gates'''
 PeakVOn = {}
 PeakVOnerr = {}
 PeakVOff = {}
