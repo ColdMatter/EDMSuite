@@ -80,8 +80,8 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0"); //rhys add 20/07
-            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
+            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line0"); //rhys add 20/07
+            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19); //labelled as PFI12 - this is the counter channel for PXIe 6363
 
             // Scanmaster config
@@ -151,6 +151,8 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("HCoolingMonitor", UEDMHardwareControllerBoard + "/ai22", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("VCoolingMonitor", UEDMHardwareControllerBoard + "/ai23", AITerminalConfiguration.Rse);
 
             //map the analog output channels for the "UEDMHardwareControllerBoard" card
             AddAnalogOutputChannel("cPlusPlate", UEDMHardwareControllerBoard + "/ao0");

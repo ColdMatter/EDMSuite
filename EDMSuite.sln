@@ -330,6 +330,7 @@ Global
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.ActiveCfg = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|Mixed Platforms.Build.0 = BufferClassic|Any CPU
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
+		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x64.Build.0 = ultracoldEDM|x64
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.ultracoldEDM|x86.Build.0 = ultracoldEDM|x86
 		{373F31F0-A7B3-4EDA-BFAC-8F9E948F6D40}.Wavemeter|Any CPU.ActiveCfg = ZeemanSisyphus|Any CPU
@@ -1075,7 +1076,6 @@ Global
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.ActiveCfg = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|Mixed Platforms.Build.0 = ultracoldEDM|Any CPU
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x64.ActiveCfg = ultracoldEDM|x64
-		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x64.Build.0 = ultracoldEDM|x64
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x86.ActiveCfg = ultracoldEDM|x86
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.ultracoldEDM|x86.Build.0 = ultracoldEDM|x86
 		{DE347012-B8E0-4A43-A37F-5F30D0F3CBE1}.Wavemeter|Any CPU.ActiveCfg = Wavemeter|Any CPU

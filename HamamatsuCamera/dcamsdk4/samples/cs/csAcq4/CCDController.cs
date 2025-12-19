@@ -1538,6 +1538,97 @@ namespace csAcq4
             }
         }
 
+        //shirely adds on 17/11 to implement the retake logic for edge mode
+        public void SnapforRemote()
+        {
+            if (mydcam == null)
+            {
+                MyShowStatus("Internal Error: mydcam is null");
+                Console.WriteLine("Error: mydcam is null");
+                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+                return;                         // internal error
+            }
+            window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+
+            string text = "";
+
+            if (window.IsMyFormStatus_Initialized())
+            {
+                // if FormStatus is Opened, DCAM buffer is not allocated.
+                // So call dcambuf_alloc() to prepare capturing.
+
+                text = string.Format("dcambuf_alloc({0})", numSnaps);
+
+                // allocate numSnaps frames to the buffer
+                if (!mydcam.buf_alloc(numSnaps))
+                {
+                    // allocation was failed
+                    Console.WriteLine("Failed to allocate buffer");
+                    MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+                    //window.MyFormStatus_Initialized(); // Reset form status to initialized
+                    return;                     // Fail: dcambuf_alloc()
+                }
+
+                // Success: dcambuf_alloc()
+                update_lut(false);
+            }
+
+            // start acquisition
+            m_cap_stopping = false;
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing {numSnaps} frame
+
+            // shirley adds on 17/11 to implement the retake logic for edge mode
+            bool CCDShotSuccessful = false;
+            while (!CCDShotSuccessful)
+            {
+                if (!mydcam.cap_start(this))
+                {
+                    // acquisition was failed and frame buffer is also released.
+                    MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+
+                    while (GetShotStatus() == 0)
+                    {
+                        //Console.WriteLine("Waiting for shot confirmation");
+                        Thread.Sleep(1);
+                    }
+
+                    if (GetShotStatus() == 2)
+                    {
+                        // Store frames of this snap
+                        mydcam.buf_release();           // release unnecessary buffer in DCAM
+                        window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
+                        CCDShotSuccessful = true;
+                        shotStatus = 0; //reset the shot status
+                        Console.WriteLine("shot was successful");
+                    }
+                    else if (GetShotStatus() == 1)
+                    {
+                        // If shot was unsuccessful, we can either retry or handle it accordingly
+                        Console.WriteLine("shot was unsuccessful: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+                    else
+                    {
+                        Console.WriteLine("shot status unknown: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+
+                    return;                         // Fail: dcamcap_start()
+                }
+            }
+
+
+            // Success: dcamcap_start()
+            // acquisition has started
+
+            Console.WriteLine("Capture started successfully."); // Log message to indicate successful start
+            MyShowStatusOK($"Camera starts capturing {numSnaps} frames...");
+
+            // Start async capture task
+            snapCancelTokenSource = new CancellationTokenSource();
+            Task.Run(() => OnThreadCapture(snapCancelTokenSource.Token));
+
+        }
 
         public void Snap()
         {
@@ -3006,7 +3097,7 @@ namespace csAcq4
         {
             
             //Task.Run sets up the function to be run Asynchronously 
-            Task.Run(()=>Snap());
+            Task.Run(()=> SnapforRemote());
         }
 
         public void RemoteBufRelease()

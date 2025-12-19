@@ -141,6 +141,8 @@ namespace UEDMHardwareControl
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
         Task feedthroughTempInputTask;
+        Task HcoolingInputTask;
+        Task VcoolingInputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -356,6 +358,8 @@ namespace UEDMHardwareControl
 
             feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
 
+            HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
+            VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
             // make the control window
             window = new ControlWindow();
             window.controller = this;
@@ -8245,6 +8249,29 @@ namespace UEDMHardwareControl
 
         #endregion
 
+        #region Cooling Monitoring
+        //tab to monitor all the powers of the cooling
+        //public double HcoolingMonitorVoltage
+        //{
+         //   get
+         //   {
+        //        return HcoolingMonitorVoltage;
+        //    }
+        //}
+        private double HcoolingMonitorVoltage;
+        private double VcoolingMonitorVoltage;
+        public void show_HcoolingVoltage()
+        {
+            HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask);
+            window.SetTextBox(window.HcoolingMonitorTextBox, HcoolingMonitorVoltage.ToString());
+        }
+
+        public void show_VcoolingVoltage()
+        {
+            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask);
+            window.SetTextBox(window.VcoolingMonitorTextBox, VcoolingMonitorVoltage.ToString());
+        }
+        #endregion
         #region Hardware Control Methods - safe for remote
         public void Switch(string channel, bool state)
         {
