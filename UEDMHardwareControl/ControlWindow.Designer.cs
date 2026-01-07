@@ -361,24 +361,24 @@ namespace UEDMHardwareControl
             this.StartDegauss = new System.Windows.Forms.Button();
             this.tabPageEfield = new System.Windows.Forms.TabPage();
             this.groupBoxBehlkeStatus = new System.Windows.Forms.GroupBox();
+            this.indicatorF = new NationalInstruments.UI.WindowsForms.Led();
+            this.indicatorC = new NationalInstruments.UI.WindowsForms.Led();
+            this.indicatorA = new NationalInstruments.UI.WindowsForms.Led();
             this.label40 = new System.Windows.Forms.Label();
             this.eastPlusLabel = new System.Windows.Forms.Label();
             this.indicatorB = new NationalInstruments.UI.WindowsForms.Led();
             this.indicatorE = new NationalInstruments.UI.WindowsForms.Led();
             this.ePolarityBehlkeInverted = new NationalInstruments.UI.WindowsForms.Led();
             this.ePolarityBehlke = new NationalInstruments.UI.WindowsForms.Led();
-            this.indicatorC = new NationalInstruments.UI.WindowsForms.Led();
             this.indicatorD = new NationalInstruments.UI.WindowsForms.Led();
-            this.indicatorF = new NationalInstruments.UI.WindowsForms.Led();
-            this.indicatorA = new NationalInstruments.UI.WindowsForms.Led();
             this.initialiseBehlkesButton = new System.Windows.Forms.Button();
             this.groupBoxBehlkeSwitch = new System.Windows.Forms.GroupBox();
-            this.settleTimeLabel = new System.Windows.Forms.Label();
-            this.switchTimeLabel = new System.Windows.Forms.Label();
-            this.bleedTimeLabel = new System.Windows.Forms.Label();
             this.settleTimeTextBox = new System.Windows.Forms.TextBox();
             this.switchTimeTextBox = new System.Windows.Forms.TextBox();
             this.bleedTimeTextBox = new System.Windows.Forms.TextBox();
+            this.settleTimeLabel = new System.Windows.Forms.Label();
+            this.switchTimeLabel = new System.Windows.Forms.Label();
+            this.bleedTimeLabel = new System.Windows.Forms.Label();
             this.switchEBehlkeButton = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label34 = new System.Windows.Forms.Label();
@@ -403,8 +403,8 @@ namespace UEDMHardwareControl
             this.label15 = new System.Windows.Forms.Label();
             this.cMinusVMonitorTextBox = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.labelRampingLED = new System.Windows.Forms.Label();
             this.eConnectCheck = new System.Windows.Forms.CheckBox();
+            this.labelRampingLED = new System.Windows.Forms.Label();
             this.switchingLED = new NationalInstruments.UI.WindowsForms.Led();
             this.eDisableSwitching = new System.Windows.Forms.CheckBox();
             this.rampLED = new NationalInstruments.UI.WindowsForms.Led();
@@ -839,14 +839,14 @@ namespace UEDMHardwareControl
             this.groupBoxDegauss.SuspendLayout();
             this.tabPageEfield.SuspendLayout();
             this.groupBoxBehlkeStatus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorF)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorC)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorE)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ePolarityBehlkeInverted)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ePolarityBehlke)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorC)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorD)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorF)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorA)).BeginInit();
             this.groupBoxBehlkeSwitch.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox21.SuspendLayout();
@@ -3990,6 +3990,33 @@ namespace UEDMHardwareControl
             this.groupBoxBehlkeStatus.TabStop = false;
             this.groupBoxBehlkeStatus.Text = "Behlke Status";
             // 
+            // indicatorF
+            // 
+            this.indicatorF.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.indicatorF.Location = new System.Drawing.Point(57, 73);
+            this.indicatorF.Name = "indicatorF";
+            this.indicatorF.OffColor = System.Drawing.Color.Crimson;
+            this.indicatorF.Size = new System.Drawing.Size(21, 22);
+            this.indicatorF.TabIndex = 55;
+            // 
+            // indicatorC
+            // 
+            this.indicatorC.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.indicatorC.Location = new System.Drawing.Point(57, 90);
+            this.indicatorC.Name = "indicatorC";
+            this.indicatorC.OffColor = System.Drawing.Color.Crimson;
+            this.indicatorC.Size = new System.Drawing.Size(21, 22);
+            this.indicatorC.TabIndex = 55;
+            // 
+            // indicatorA
+            // 
+            this.indicatorA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.indicatorA.Location = new System.Drawing.Point(57, 56);
+            this.indicatorA.Name = "indicatorA";
+            this.indicatorA.OffColor = System.Drawing.Color.Crimson;
+            this.indicatorA.Size = new System.Drawing.Size(21, 22);
+            this.indicatorA.TabIndex = 55;
+            // 
             // label40
             // 
             this.label40.AutoSize = true;
@@ -4046,15 +4073,6 @@ namespace UEDMHardwareControl
             this.ePolarityBehlke.Size = new System.Drawing.Size(21, 22);
             this.ePolarityBehlke.TabIndex = 55;
             // 
-            // indicatorC
-            // 
-            this.indicatorC.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorC.Location = new System.Drawing.Point(57, 90);
-            this.indicatorC.Name = "indicatorC";
-            this.indicatorC.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorC.Size = new System.Drawing.Size(21, 22);
-            this.indicatorC.TabIndex = 55;
-            // 
             // indicatorD
             // 
             this.indicatorD.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
@@ -4063,24 +4081,6 @@ namespace UEDMHardwareControl
             this.indicatorD.OffColor = System.Drawing.Color.Crimson;
             this.indicatorD.Size = new System.Drawing.Size(21, 22);
             this.indicatorD.TabIndex = 55;
-            // 
-            // indicatorF
-            // 
-            this.indicatorF.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorF.Location = new System.Drawing.Point(57, 73);
-            this.indicatorF.Name = "indicatorF";
-            this.indicatorF.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorF.Size = new System.Drawing.Size(21, 22);
-            this.indicatorF.TabIndex = 55;
-            // 
-            // indicatorA
-            // 
-            this.indicatorA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorA.Location = new System.Drawing.Point(57, 56);
-            this.indicatorA.Name = "indicatorA";
-            this.indicatorA.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorA.Size = new System.Drawing.Size(21, 22);
-            this.indicatorA.TabIndex = 55;
             // 
             // initialiseBehlkesButton
             // 
@@ -4111,6 +4111,34 @@ namespace UEDMHardwareControl
             this.groupBoxBehlkeSwitch.TabStop = false;
             this.groupBoxBehlkeSwitch.Text = "Behlke Switch";
             // 
+            // settleTimeTextBox
+            // 
+            this.settleTimeTextBox.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.settleTimeTextBox.Location = new System.Drawing.Point(91, 102);
+            this.settleTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.settleTimeTextBox.Name = "settleTimeTextBox";
+            this.settleTimeTextBox.Size = new System.Drawing.Size(53, 20);
+            this.settleTimeTextBox.TabIndex = 1;
+            this.settleTimeTextBox.Text = "200";
+            // 
+            // switchTimeTextBox
+            // 
+            this.switchTimeTextBox.Location = new System.Drawing.Point(91, 78);
+            this.switchTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.switchTimeTextBox.Name = "switchTimeTextBox";
+            this.switchTimeTextBox.Size = new System.Drawing.Size(53, 20);
+            this.switchTimeTextBox.TabIndex = 1;
+            this.switchTimeTextBox.Text = "200";
+            // 
+            // bleedTimeTextBox
+            // 
+            this.bleedTimeTextBox.Location = new System.Drawing.Point(91, 54);
+            this.bleedTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.bleedTimeTextBox.Name = "bleedTimeTextBox";
+            this.bleedTimeTextBox.Size = new System.Drawing.Size(53, 20);
+            this.bleedTimeTextBox.TabIndex = 1;
+            this.bleedTimeTextBox.Text = "200";
+            // 
             // settleTimeLabel
             // 
             this.settleTimeLabel.AutoSize = true;
@@ -4140,34 +4168,6 @@ namespace UEDMHardwareControl
             this.bleedTimeLabel.Size = new System.Drawing.Size(78, 13);
             this.bleedTimeLabel.TabIndex = 2;
             this.bleedTimeLabel.Text = "Bleed time (ms)";
-            // 
-            // settleTimeTextBox
-            // 
-            this.settleTimeTextBox.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.settleTimeTextBox.Location = new System.Drawing.Point(91, 102);
-            this.settleTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.settleTimeTextBox.Name = "settleTimeTextBox";
-            this.settleTimeTextBox.Size = new System.Drawing.Size(53, 20);
-            this.settleTimeTextBox.TabIndex = 1;
-            this.settleTimeTextBox.Text = "200";
-            // 
-            // switchTimeTextBox
-            // 
-            this.switchTimeTextBox.Location = new System.Drawing.Point(91, 78);
-            this.switchTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.switchTimeTextBox.Name = "switchTimeTextBox";
-            this.switchTimeTextBox.Size = new System.Drawing.Size(53, 20);
-            this.switchTimeTextBox.TabIndex = 1;
-            this.switchTimeTextBox.Text = "200";
-            // 
-            // bleedTimeTextBox
-            // 
-            this.bleedTimeTextBox.Location = new System.Drawing.Point(91, 54);
-            this.bleedTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.bleedTimeTextBox.Name = "bleedTimeTextBox";
-            this.bleedTimeTextBox.Size = new System.Drawing.Size(53, 20);
-            this.bleedTimeTextBox.TabIndex = 1;
-            this.bleedTimeTextBox.Text = "200";
             // 
             // switchEBehlkeButton
             // 
@@ -4432,6 +4432,15 @@ namespace UEDMHardwareControl
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Switch";
             // 
+            // eConnectCheck
+            // 
+            this.eConnectCheck.Location = new System.Drawing.Point(166, 41);
+            this.eConnectCheck.Name = "eConnectCheck";
+            this.eConnectCheck.Size = new System.Drawing.Size(123, 23);
+            this.eConnectCheck.TabIndex = 56;
+            this.eConnectCheck.Text = "Disconnect supplies";
+            this.eConnectCheck.CheckedChanged += new System.EventHandler(this.eConnectCheck_CheckedChanged);
+            // 
             // labelRampingLED
             // 
             this.labelRampingLED.AutoSize = true;
@@ -4441,15 +4450,6 @@ namespace UEDMHardwareControl
             this.labelRampingLED.Size = new System.Drawing.Size(49, 13);
             this.labelRampingLED.TabIndex = 58;
             this.labelRampingLED.Text = "Ramping";
-            // 
-            // eConnectCheck
-            // 
-            this.eConnectCheck.Location = new System.Drawing.Point(166, 41);
-            this.eConnectCheck.Name = "eConnectCheck";
-            this.eConnectCheck.Size = new System.Drawing.Size(123, 23);
-            this.eConnectCheck.TabIndex = 56;
-            this.eConnectCheck.Text = "Disconnect supplies";
-            this.eConnectCheck.CheckedChanged += new System.EventHandler(this.eConnectCheck_CheckedChanged);
             // 
             // switchingLED
             // 
@@ -9093,14 +9093,14 @@ namespace UEDMHardwareControl
             this.tabPageEfield.ResumeLayout(false);
             this.groupBoxBehlkeStatus.ResumeLayout(false);
             this.groupBoxBehlkeStatus.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorF)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorC)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.indicatorA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorE)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ePolarityBehlkeInverted)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ePolarityBehlke)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorC)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.indicatorD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorF)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.indicatorA)).EndInit();
             this.groupBoxBehlkeSwitch.ResumeLayout(false);
             this.groupBoxBehlkeSwitch.PerformLayout();
             this.groupBox8.ResumeLayout(false);
@@ -9922,10 +9922,8 @@ namespace UEDMHardwareControl
         private Label settleTimeLabel;
         private Label switchTimeLabel;
         private Label bleedTimeLabel;
-        private Button switchEBehlkeButton;
         private Label label40;
         private Label eastPlusLabel;
-        private Button initialiseBehlkesButton;
         public NationalInstruments.UI.WindowsForms.Led indicatorB;
         public NationalInstruments.UI.WindowsForms.Led indicatorE;
         public NationalInstruments.UI.WindowsForms.Led indicatorC;
@@ -9937,5 +9935,7 @@ namespace UEDMHardwareControl
         public TextBox bleedTimeTextBox;
         public NationalInstruments.UI.WindowsForms.Led ePolarityBehlkeInverted;
         public NationalInstruments.UI.WindowsForms.Led ePolarityBehlke;
+        public Button switchEBehlkeButton;
+        public Button initialiseBehlkesButton;
     }
 }

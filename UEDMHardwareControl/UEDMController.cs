@@ -4683,6 +4683,74 @@ namespace UEDMHardwareControl
             }
         }
 
+        public bool IndicatorBehlkeA
+        {
+            get
+            {
+                return window.indicatorA.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorA, value);
+            }
+        }
+
+        public bool IndicatorBehlkeB
+        {
+            get
+            {
+                return window.indicatorB.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorB, value);
+            }
+        }
+        public bool IndicatorBehlkeC
+        {
+            get
+            {
+                return window.indicatorC.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorC, value);
+            }
+        }
+        public bool IndicatorBehlkeD
+        {
+            get
+            {
+                return window.indicatorD.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorD, value);
+            }
+        }
+        public bool IndicatorBehlkeE
+        {
+            get
+            {
+                return window.indicatorE.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorE, value);
+            }
+        }
+        public bool IndicatorBehlkeF
+        {
+            get
+            {
+                return window.indicatorF.Value;
+            }
+            set
+            {
+                window.SetLED(window.indicatorF, value);
+            }
+        }
+
         public void ConnectEField(bool enabled)
         {
             window.SetCheckBoxCheckedStatus(window.eConnectCheck, !enabled);
@@ -4970,77 +5038,6 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void InitialiseBehlkes()
-        {
-            SetDigitalLine("behlkeB", false);
-            SetDigitalLine("behlkeC", true);
-            window.SetLED(window.indicatorB, false);
-            window.SetLED(window.indicatorC, true);
-            Thread.Sleep((int)BehlkeBleedTime);
-            
-            SetDigitalLine("behlkeE", false);
-            SetDigitalLine("behlkeF", true);
-            window.SetLED(window.indicatorE, false);
-            window.SetLED(window.indicatorF, true);
-            Thread.Sleep((int)BehlkeSwitchTime);
-            
-            SetDigitalLine("behlkeD", false);
-            SetDigitalLine("behlkeA", true);
-            window.SetLED(window.indicatorD, false);
-            window.SetLED(window.indicatorA, true);
-            Thread.Sleep((int)BehlkeSettleTime);
-
-            EFieldPolarityBehlke = true;
-        }
-
-        public void SwitchEfieldBehlkes()
-        {
-            if (EFieldPolarityBehlke)
-            {
-                SetDigitalLine("behlkeA", false);
-                SetDigitalLine("behlkeD", true);
-                window.SetLED(window.indicatorA, false);
-                window.SetLED(window.indicatorD, true);
-                Thread.Sleep((int)BehlkeBleedTime);
-
-                SetDigitalLine("behlkeF", false);
-                SetDigitalLine("behlkeE", true);
-                window.SetLED(window.indicatorF, false);
-                window.SetLED(window.indicatorE, true);
-                Thread.Sleep((int)BehlkeSwitchTime);
-
-                SetDigitalLine("behlkeC", false);
-                SetDigitalLine("behlkeB", true);
-                window.SetLED(window.indicatorC, false);
-                window.SetLED(window.indicatorB, true);
-                Thread.Sleep((int)BehlkeSettleTime);
-
-                EFieldPolarityBehlke = false;
-            }
-            else
-            {
-                SetDigitalLine("behlkeB", false);
-                SetDigitalLine("behlkeC", true);
-                window.SetLED(window.indicatorB, false);
-                window.SetLED(window.indicatorC, true);
-                Thread.Sleep((int)BehlkeBleedTime);
-
-                SetDigitalLine("behlkeE", false);
-                SetDigitalLine("behlkeF", true);
-                window.SetLED(window.indicatorE, false);
-                window.SetLED(window.indicatorF, true);
-                Thread.Sleep((int)BehlkeSwitchTime);
-
-                SetDigitalLine("behlkeD", false);
-                SetDigitalLine("behlkeA", true);
-                window.SetLED(window.indicatorD, false);
-                window.SetLED(window.indicatorA, true);
-                Thread.Sleep((int)BehlkeSettleTime);
-
-                EFieldPolarityBehlke = true;
-            } 
-        }
-
         public void FieldsOff()
         {
             if (EFieldEnabled)
@@ -5093,7 +5090,6 @@ namespace UEDMHardwareControl
             SwitchEAndWait(!EFieldPolarity);
         }
 
-
         private bool newEPolarity;
         private object switchingLock = new object();
         private Thread switchThread;
@@ -5115,6 +5111,130 @@ namespace UEDMHardwareControl
                 window.EnableControl(window.eBleedCheck, false);
                 switchThread.Start();
             }
+        }
+
+        public void SwitchEBehlkeAndWait(bool state)
+        {
+            SwitchEBehlke(state);
+            switchThread.Join();
+        }
+
+        public void SwitchEBehlkeAndWait()
+        {
+            SwitchEBehlkeAndWait(!EFieldPolarityBehlke);
+        }
+
+        private object switchingLockBehlke = new object();
+        public void SwitchEBehlke(bool state)
+        {
+            lock (switchingLockBehlke)
+            {
+                newEPolarity = state;
+                switchThread = new Thread(new ThreadStart(SwitchEfieldBehlkes));
+                window.EnableControl(window.switchEBehlkeButton, false);
+                window.EnableControl(window.initialiseBehlkesButton, false);
+                switchThread.Start();
+            }
+        }
+
+        public void InitialiseBehlkes()
+        {
+            lock (switchingLockBehlke)
+            {
+                window.EnableControl(window.switchEBehlkeButton, false);
+                window.EnableControl(window.initialiseBehlkesButton, false);
+
+                SetDigitalLine("behlkeB", false);
+                SetDigitalLine("behlkeC", true);
+                IndicatorBehlkeB = false;
+                IndicatorBehlkeC = true;
+                Thread.Sleep((int)BehlkeBleedTime);
+
+                SetDigitalLine("behlkeE", false);
+                SetDigitalLine("behlkeF", true);
+                IndicatorBehlkeE = false;
+                IndicatorBehlkeF = true;
+                Thread.Sleep((int)BehlkeSwitchTime);
+
+                SetDigitalLine("behlkeD", false);
+                SetDigitalLine("behlkeA", true);
+                IndicatorBehlkeD = false;
+                IndicatorBehlkeA = true;
+                Thread.Sleep((int)BehlkeSettleTime);
+
+                EFieldPolarityBehlke = true;
+            }
+
+            ESwitchBehlkeDone();
+
+        }
+
+        public void SwitchEfieldBehlkes()
+        {
+            SwitchEfieldBehlkes(!EFieldPolarityBehlke);
+        }
+
+        public void SwitchEfieldBehlkes(bool newPolarity)
+        {
+            lock (switchingLockBehlke)
+            {
+                if (newPolarity)
+                {
+                    SetDigitalLine("behlkeB", false);
+                    SetDigitalLine("behlkeC", true);
+                    IndicatorBehlkeB = false;
+                    IndicatorBehlkeC = true;
+
+                    Thread.Sleep((int)BehlkeBleedTime);
+
+                    SetDigitalLine("behlkeE", false);
+                    SetDigitalLine("behlkeF", true);
+                    IndicatorBehlkeE = false;
+                    IndicatorBehlkeF = true;
+                    Thread.Sleep((int)BehlkeSwitchTime);
+
+                    SetDigitalLine("behlkeD", false);
+                    SetDigitalLine("behlkeA", true);
+                    IndicatorBehlkeD = false;
+                    IndicatorBehlkeA = true;
+                    Thread.Sleep((int)BehlkeSettleTime);
+
+                    EFieldPolarityBehlke = true;  
+                }
+                else
+                {
+                    SetDigitalLine("behlkeA", false);
+                    SetDigitalLine("behlkeD", true);
+                    IndicatorBehlkeA = false;
+                    IndicatorBehlkeD = true;
+                    Thread.Sleep((int)BehlkeBleedTime);
+
+                    SetDigitalLine("behlkeF", false);
+                    SetDigitalLine("behlkeE", true);
+                    IndicatorBehlkeF = false;
+                    IndicatorBehlkeE = true;
+                    Thread.Sleep((int)BehlkeSwitchTime);
+
+                    SetDigitalLine("behlkeC", false);
+                    SetDigitalLine("behlkeB", true);
+                    IndicatorBehlkeC = false;
+                    IndicatorBehlkeB = true;
+                    Thread.Sleep((int)BehlkeSettleTime);
+
+                    EFieldPolarityBehlke = false;
+                }
+            }
+
+            ESwitchBehlkeDone();
+        }
+
+        private void ESwitchBehlkeDone()
+        {
+            window.EnableControl(window.switchEBehlkeButton, true);
+            window.EnableControl(window.initialiseBehlkesButton, true);
+            UpdateStatus("E-switch - switching to state: " + EFieldPolarityBehlke + 
+                "; West current: " + lastWestCurrent.ToString("F3") + 
+                "; East current: " + lastEastCurrent.ToString("F3") + " .");
         }
 
         double kPositiveChargeMin = 2;
@@ -8415,7 +8535,8 @@ namespace UEDMHardwareControl
             switch (channel)
             {
                 case "eChan":
-                    SwitchEAndWait(state);
+                    //SwitchEAndWait(state);
+                    SwitchEBehlkeAndWait(state);
                     break;
                 case "bSwitch":
                     SwitchBAndWait(state);
