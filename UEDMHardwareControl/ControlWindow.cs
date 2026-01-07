@@ -2090,5 +2090,15 @@ namespace UEDMHardwareControl
             controller.show_VcoolingVoltage();
         }
 
+        private void initialiseBehlkesButton_Click(object sender, EventArgs e)
+        {
+            // Here controller.function to set the Behlke digital lines
+            controller.InitialiseBehlkes();
+        }
+
+        private void switchEBehlkeButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchEfieldBehlkes();
+        }
     }
 }

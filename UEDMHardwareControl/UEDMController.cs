@@ -333,6 +333,12 @@ namespace UEDMHardwareControl
             CreateDigitalTask("Port01");
             CreateDigitalTask("Port02");
             CreateDigitalTask("Port03");
+            CreateDigitalTask("behlkeA");
+            CreateDigitalTask("behlkeB");
+            CreateDigitalTask("behlkeC");
+            CreateDigitalTask("behlkeD");
+            CreateDigitalTask("behlkeE");
+            CreateDigitalTask("behlkeF");
             // digitial input tasks
 
             // initialise the current leakage monitors
@@ -4664,6 +4670,19 @@ namespace UEDMHardwareControl
             }
         }
 
+        public bool EFieldPolarityBehlke
+        {
+            get
+            {
+                return window.ePolarityBehlke.Value;
+            }
+            set
+            {
+                window.SetLED(window.ePolarityBehlke, value);
+                window.SetLED(window.ePolarityBehlkeInverted, !value);
+            }
+        }
+
         public void ConnectEField(bool enabled)
         {
             window.SetCheckBoxCheckedStatus(window.eConnectCheck, !enabled);
@@ -4895,6 +4914,53 @@ namespace UEDMHardwareControl
         {
             window.SetTextBox(window.eRampUpDelayTextBox, time.ToString());
         }
+        public double BehlkeBleedTime
+        {
+            get
+            {
+                return Double.Parse(window.bleedTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.bleedTimeTextBox, value.ToString());
+            }
+        }
+        public void SetBehlkeBleedTime(Double time)
+        {
+            window.SetTextBox(window.bleedTimeTextBox, time.ToString());
+        }
+
+        public double BehlkeSwitchTime
+        {
+            get
+            {
+                return Double.Parse(window.switchTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.switchTimeTextBox, value.ToString());
+            }
+        }
+        public void SetBehlkeSwitchTime(Double time)
+        {
+            window.SetTextBox(window.switchTimeTextBox, time.ToString());
+        }
+
+        public double BehlkeSettleTime
+        {
+            get
+            {
+                return Double.Parse(window.settleTimeTextBox.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.settleTimeTextBox, value.ToString());
+            }
+        }
+        public void SetBehlkeSettleTime(Double time)
+        {
+            window.SetTextBox(window.settleTimeTextBox, time.ToString());
+        }
 
         public bool EManualState
         {
@@ -4902,6 +4968,77 @@ namespace UEDMHardwareControl
             {
                 return window.eManualStateCheckBox.Checked;
             }
+        }
+
+        public void InitialiseBehlkes()
+        {
+            SetDigitalLine("behlkeB", false);
+            SetDigitalLine("behlkeC", true);
+            window.SetLED(window.indicatorB, false);
+            window.SetLED(window.indicatorC, true);
+            Thread.Sleep((int)BehlkeBleedTime);
+            
+            SetDigitalLine("behlkeE", false);
+            SetDigitalLine("behlkeF", true);
+            window.SetLED(window.indicatorE, false);
+            window.SetLED(window.indicatorF, true);
+            Thread.Sleep((int)BehlkeSwitchTime);
+            
+            SetDigitalLine("behlkeD", false);
+            SetDigitalLine("behlkeA", true);
+            window.SetLED(window.indicatorD, false);
+            window.SetLED(window.indicatorA, true);
+            Thread.Sleep((int)BehlkeSettleTime);
+
+            EFieldPolarityBehlke = true;
+        }
+
+        public void SwitchEfieldBehlkes()
+        {
+            if (EFieldPolarityBehlke)
+            {
+                SetDigitalLine("behlkeA", false);
+                SetDigitalLine("behlkeD", true);
+                window.SetLED(window.indicatorA, false);
+                window.SetLED(window.indicatorD, true);
+                Thread.Sleep((int)BehlkeBleedTime);
+
+                SetDigitalLine("behlkeF", false);
+                SetDigitalLine("behlkeE", true);
+                window.SetLED(window.indicatorF, false);
+                window.SetLED(window.indicatorE, true);
+                Thread.Sleep((int)BehlkeSwitchTime);
+
+                SetDigitalLine("behlkeC", false);
+                SetDigitalLine("behlkeB", true);
+                window.SetLED(window.indicatorC, false);
+                window.SetLED(window.indicatorB, true);
+                Thread.Sleep((int)BehlkeSettleTime);
+
+                EFieldPolarityBehlke = false;
+            }
+            else
+            {
+                SetDigitalLine("behlkeB", false);
+                SetDigitalLine("behlkeC", true);
+                window.SetLED(window.indicatorB, false);
+                window.SetLED(window.indicatorC, true);
+                Thread.Sleep((int)BehlkeBleedTime);
+
+                SetDigitalLine("behlkeE", false);
+                SetDigitalLine("behlkeF", true);
+                window.SetLED(window.indicatorE, false);
+                window.SetLED(window.indicatorF, true);
+                Thread.Sleep((int)BehlkeSwitchTime);
+
+                SetDigitalLine("behlkeD", false);
+                SetDigitalLine("behlkeA", true);
+                window.SetLED(window.indicatorD, false);
+                window.SetLED(window.indicatorA, true);
+                Thread.Sleep((int)BehlkeSettleTime);
+
+                EFieldPolarityBehlke = true;
+            } 
         }
 
         public void FieldsOff()

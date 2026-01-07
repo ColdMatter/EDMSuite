@@ -24,6 +24,7 @@ namespace DAQ.HAL
             Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
             Boards.Add("usbTherm", "/Dev7");
+            Boards.Add("behlke", "/BehlkeControl"); // this is to control the Behlke switch state
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -34,6 +35,7 @@ namespace DAQ.HAL
             string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbTherm = (string)Boards["usbTherm"];
+            string behlke = (string)Boards["behlke"];
 
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -181,6 +183,14 @@ namespace DAQ.HAL
 
             //UsbThermocouple channels
             AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
+
+            // map the digital channels of the Behlkle control board
+            AddDigitalOutputChannel("behlkeA", behlke, 0, 0);
+            AddDigitalOutputChannel("behlkeB", behlke, 0, 1);
+            AddDigitalOutputChannel("behlkeC", behlke, 0, 2);
+            AddDigitalOutputChannel("behlkeD", behlke, 0, 3);
+            AddDigitalOutputChannel("behlkeE", behlke, 0, 4);
+            AddDigitalOutputChannel("behlkeF", behlke, 0, 5);
 
             //Magnetic feedback channels
             AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);
