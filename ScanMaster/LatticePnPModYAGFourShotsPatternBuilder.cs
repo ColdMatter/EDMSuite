@@ -22,7 +22,8 @@ namespace ScanMaster.Acquire.Patterns
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
 			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
 			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0,
-			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay, int v3delaytime, int repumpDuration, int repumpDelay, int commonDelayStartpoint, int v0chirpTriggerDelay, int v0chirpTriggerDuration) 
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay, 
+			int v3delaytime, int repumpDuration, int repumpDelay, int commonDelayStartpoint, int v0chirpTriggerDelay, int v0chirpTriggerDuration) 
 		{
 			int padEnd = padStart;
 			int time;

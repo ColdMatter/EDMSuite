@@ -14,7 +14,7 @@ using System.Runtime.Remoting.Lifetime;
 using System.Threading;
 using System.Windows.Forms;
 using NationalInstruments;
-using NationalInstruments.DAQmx;
+///using NationalInstruments.DAQmx;
 //using NationalInstruments.VisaNS;
 using System.Linq;
 using System.IO.Ports;
@@ -63,16 +63,36 @@ namespace LatticeHardwareControl
 
         #region Setup
         //Alicat Flow Control
-        AlicatFlowController Alicat = new AlicatFlowController("ASRL15::INSTR");
+        AlicatFlowController Alicat = new AlicatFlowController("ASRL14::INSTR");
         AnapicoSynth anapico = (AnapicoSynth)Environs.Hardware.Instruments["anapicoSYN420"];
-        double AnapicoCWFrequencyCH1 = 14500000000; // in Hz
-        double AnapicoCWFrequencyCH2 = 14500000000; // in Hz
-        double AnapicoPowerCH1 = 20.0;                // in dBm
-        double AnapicoPowerCH2 = 20.0;                // in dBm
+        double AnapicoCWFrequencyCH1 = 14465087000; // in Hz
+        double AnapicoCWFrequencyCH2 = 14456087000; // in Hz
+        double AnapicoPowerCH1 = 23.0;                // in dBm
+        double AnapicoPowerCH2 = 23.0;                // in dBm
         double AnapicoFMDeviationCH1 = 10000000;    // in Hz
         double AnapicoFMDeviationCH2 = 10000000;    // in Hz
         string AnapicoCurrentList;
+
+        WindfreakSynthHD windfreak1 = (WindfreakSynthHD)Environs.Hardware.Instruments["LatticeWindfreak1"];
+        long WindfreakFrequencyCH1 = 100000; // in Hz
+        long WindfreakFrequencyCH2 = 100000; // in Hz
+        double WindfreakPowerCH1 = 0; // in dBm
+        double WindfreakPowerCH2 = 0; // in dBm
+        double WindfreakFMCH1 = 0; // in Hz
+        double WindfreakFMCH2 = 0; // in Hz
+
+
+        WindfreakSynthHD windfreak2 = (WindfreakSynthHD)Environs.Hardware.Instruments["LatticeWindfreak2"];
+        long Windfreak2FrequencyCH1 = 100000; // in Hz
+        long Windfreak2FrequencyCH2 = 100000; // in Hz
+        double Windfreak2PowerCH1 = 0; // in dBm
+        double Windfreak2PowerCH2 = 0; // in dBm
+        double Windfreak2FMCH1 = 0; // in Hz
+        double Windfreak2FMCH2 = 0; // in Hz
+
+
         #endregion
+
 
         #region Alicat
         public void AlicatFlowSet(string ControllerAddress, string flowrate)
@@ -107,7 +127,7 @@ namespace LatticeHardwareControl
 
         public void UpdatePressureMonitor()
         {
-            // For Leybold Display 2 (Source & Downstream):
+            // For Leybold Display 2 (Source & Downstream
             LeyboldPTR225PressureGauge sourcePressureMonitor = new LeyboldPTR225PressureGauge("PressureGaugeSource", "pressureGaugeS");
             LeyboldPTR225PressureGauge downstreamPressureMonitor = new LeyboldPTR225PressureGauge("PressureGaugeDownstream", "Pressure_Downstream");
 
@@ -224,7 +244,14 @@ namespace LatticeHardwareControl
             // Setup pressure and temperature monitoring thread
             PTMonitorPollThread = new Thread(() =>
             {
-                PTMonitorPollWorker();
+                try
+                {
+                    PTMonitorPollWorker();
+                }
+                catch
+                {
+
+                }
             });
             PTMonitorPollThread.IsBackground = true; // When the application is closed, this thread will also immediately stop. This is lazy coding, but it works and shouldn't cause any problems. This means it is a background thread of the main (UI) thread, so it will end with the main thread.
                                                      //PTMonitorPollThread.Priority = ThreadPriority.AboveNormal;
@@ -557,6 +584,186 @@ namespace LatticeHardwareControl
             anapico.Disconnect();
         }
         #endregion
+
+
+        #region Windfreak1
+
+
+        public void UpdateWindfreakFrequencyCH1()
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(0);
+            windfreak1.SetFrequency(WindfreakFrequencyCH1);
+            windfreak1.Disconnect();
+        }
+
+        public void UpdateWindfreakFrequencyCH2()
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(1);
+            windfreak1.SetFrequency(WindfreakFrequencyCH2);
+            windfreak1.Disconnect();
+        }
+
+        public void UpdateWindfreakPowerCH1()
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(0);
+            windfreak1.SetPower(WindfreakPowerCH1);
+            windfreak1.Disconnect();
+        }
+
+        public void UpdateWindfreakPowerCH2()
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(1);
+            windfreak1.SetPower(WindfreakPowerCH2);
+            windfreak1.Disconnect();
+        }
+
+        public void SetWindfreak1FrequencyCH1(long freq) { WindfreakFrequencyCH1 = freq; }
+        public void SetWindfreak1FrequencyCH2(long freq) { WindfreakFrequencyCH2 = freq; }
+        public void SetWindfreak1PowerCH1(double power) { WindfreakPowerCH1 = power; }
+        public void SetWindfreak1PowerCH2(double power) { WindfreakPowerCH2 = power; }
+        public void SetWindfreak1FMDeviationCH1(double dev) { WindfreakFMCH1 = dev; }
+        public void SetWindfreak1FMDeviationCH2(double dev) { WindfreakFMCH2 = dev; }
+
+        public void EnableWindfreak1CH1(bool enable)
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(0);
+            if (enable)
+            {
+                windfreak1.SetFrequency(WindfreakFrequencyCH1);
+                windfreak1.SetPower(WindfreakPowerCH1);
+                windfreak1.SetRFMute(false);
+                windfreak1.SetPLLPowerOn(true);
+                windfreak1.SetPAPowerOn(true);
+            }
+            else
+            {
+                windfreak1.SetRFMute(true);
+                windfreak1.SetPLLPowerOn(false);
+                windfreak1.SetPAPowerOn(false);
+            }
+            windfreak1.Disconnect();
+        }
+
+
+
+        public void EnableWindfreak1CH2(bool enable)
+        {
+            windfreak1.Connect();
+            windfreak1.SetChannel(1);
+            if (enable)
+            {
+                windfreak1.SetFrequency(WindfreakFrequencyCH2);
+                windfreak1.SetPower(WindfreakPowerCH2);
+                windfreak1.SetRFMute(false);
+                windfreak1.SetPLLPowerOn(true);
+                windfreak1.SetPAPowerOn(true);
+            }
+            else
+            {
+                windfreak1.SetRFMute(true);
+                windfreak1.SetPLLPowerOn(false);
+                windfreak1.SetPAPowerOn(false);
+            }
+            windfreak1.Disconnect();
+        }
+
+
+
+        #endregion
+
+
+        #region Windfreak2
+
+
+        public void UpdateWindfreak2FrequencyCH1()
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(0);
+            windfreak2.SetFrequency(Windfreak2FrequencyCH1);
+            windfreak2.Disconnect();
+        }
+
+        public void UpdateWindfreak2FrequencyCH2()
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(1);
+            windfreak2.SetFrequency(Windfreak2FrequencyCH2);
+            windfreak2.Disconnect();
+        }
+
+        public void UpdateWindfreak2PowerCH1()
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(0);
+            windfreak2.SetPower(Windfreak2PowerCH1);
+            windfreak2.Disconnect();
+        }
+
+        public void UpdateWindfreak2PowerCH2()
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(1);
+            windfreak2.SetPower(Windfreak2PowerCH2);
+            windfreak2.Disconnect();
+        }
+
+        public void SetWindfreak2FrequencyCH1(long freq) { Windfreak2FrequencyCH1 = freq; }
+        public void SetWindfreak2FrequencyCH2(long freq) { Windfreak2FrequencyCH2 = freq; }
+        public void SetWindfreak2PowerCH1(double power) { Windfreak2PowerCH1 = power; }
+        public void SetWindfreak2PowerCH2(double power) { Windfreak2PowerCH2 = power; }
+        public void SetWindfreak2FMDeviationCH1(double dev) { Windfreak2FMCH1 = dev; }
+        public void SetWindfreak2FMDeviationCH2(double dev) { Windfreak2FMCH2 = dev; }
+
+        public void EnableWindfreak2CH1(bool enable)
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(0);
+            if (enable)
+            {
+                windfreak2.SetFrequency(Windfreak2FrequencyCH1);
+                windfreak2.SetPower(Windfreak2PowerCH1);
+                windfreak2.SetRFMute(false);
+                windfreak2.SetPLLPowerOn(true);
+                windfreak2.SetPAPowerOn(true);
+            }
+            else
+            {
+                windfreak2.SetRFMute(true);
+                windfreak2.SetPLLPowerOn(false);
+                windfreak2.SetPAPowerOn(false);
+            }
+            windfreak2.Disconnect();
+        }
+
+        public void EnableWindfreak2CH2(bool enable)
+        {
+            windfreak2.Connect();
+            windfreak2.SetChannel(1);
+            if (enable)
+            {
+                windfreak2.SetFrequency(Windfreak2FrequencyCH2);
+                windfreak2.SetPower(Windfreak2PowerCH2);
+                windfreak2.SetRFMute(false);
+                windfreak2.SetPLLPowerOn(true);
+                windfreak2.SetPAPowerOn(true);
+            }
+            else
+            {
+                windfreak2.SetRFMute(true);
+                windfreak2.SetPLLPowerOn(false);
+                windfreak2.SetPAPowerOn(false);
+            }
+            windfreak2.Disconnect();
+        }
+
+        #endregion
+
+
     }
 
 }

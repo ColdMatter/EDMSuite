@@ -638,7 +638,10 @@
     <Compile Include="CaFBECFileSystem.cs" />
     <Compile Include="CaFBECHardware.cs" />
     <Compile Include="CryoRS232.cs" />
+    <Compile Include="exponentialFitter.cs" />
+    <Compile Include="exponentialPeakFitter.cs" />
     <Compile Include="InfluxDBDataLogger.cs" />
+    <Compile Include="PXIEDMHardware.cs" />
     <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
     <Compile Include="DAQMxWavemeterLockBlockHelper.cs" />
@@ -765,7 +768,6 @@
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
     <Compile Include="PixieFileSystem.cs" />
-    <Compile Include="PXIEDMHardware.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="RequiemFileSystem.cs" />
     <Compile Include="RFPower.cs" />
     <Compile Include="RS232Instrument.cs" />

@@ -42,18 +42,18 @@ namespace ScanMaster.Acquire.Plugins
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
 			settings["shutterPulseLength"] = 2000;
-			settings["shutteroffDelay"] = 0;
-			settings["shutter1offdelay"] = 0;
+			//settings["shutteroffDelay"] = 0;
+			//settings["shutter1offdelay"] = 0;
 			settings["shutterslowdelay"] = 21800;
 			settings["DurationV0"] = 4000;
-			settings["steve1delay"] = 0;
-			settings["DurationV2"] = 0;
-			settings["DurationV1"] = 0;
+			//settings["steve1delay"] = 0;
+			//settings["DurationV2"] = 0;
+			//settings["DurationV1"] = 0;
 			settings["v3delaytime"] = 0;
 			settings["repumpDelay"] = 9600;
 			settings["repumpDuration"] = 4000;
-			settings["shutterV1delay"] = 0;
-			settings["shutterV2delay"] = 0;
+			//settings["shutterV1delay"] = 0;
+			//settings["shutterV2delay"] = 0;
 			settings["vacShutterDelay"] = 0;
 			settings["vacShutterDuration"] = 1000;
 			settings["v0chirpTriggerDelay"] = 10000;
@@ -61,6 +61,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["cameraTriggerDelay"] = 30000;
 			settings["cameraBackgroundDelay"] = 70000;
 			settings["offShotSlowingDuration"] = 10;
+			settings["v2OffDupoint"] = 0;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -86,16 +87,16 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
 				(int)settings["switchLineDuration"],
-				(int)settings["shutteroffDelay"],
+				//(int)settings["shutteroffDelay"],
 				(int)settings["shutterslowdelay"],
 				(int)settings["DurationV0"],
-				(int)settings["steve1delay"],
-				(int)settings["shutterV2delay"],
-				(int)settings["DurationV2"],
-				(int)settings["DurationV1"],
+				//(int)settings["steve1delay"],
+				//(int)settings["shutterV2delay"],
+				//(int)settings["DurationV2"],
+				//(int)settings["DurationV1"],
 				(bool)config.switchPlugin.Settings["switchActive"],
 				(int)settings["switchLineDelay"],
-				(int)settings["shutter1offdelay"],
+				//(int)settings["shutter1offdelay"],
 				(int)settings["v3delaytime"],
 				(int)settings["repumpDuration"],
 				(int)settings["repumpDelay"],
@@ -105,7 +106,8 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["v0chirpTriggerDuration"],
 				(int)settings["cameraTriggerDelay"],
 				(int)settings["cameraBackgroundDelay"],
-				(int)settings["offShotSlowingDuration"]);
+				(int)settings["offShotSlowingDuration"],
+				(int)settings["v2OffDupoint"]);
 			/*
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);

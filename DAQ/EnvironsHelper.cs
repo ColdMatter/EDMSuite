@@ -211,7 +211,7 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                #if EDM
+               
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
@@ -221,7 +221,7 @@ namespace DAQ.Environment
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
-#endif
+
 
                 //PC running TCL for EDM
                 case "GREMLIN":

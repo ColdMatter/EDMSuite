@@ -102,7 +102,10 @@ namespace ScanMaster.Acquire.Plugin
 			patternPlugins.Add("Lattice LIF pattern", typeof(LatticePatternPlugin));
 			patternPlugins.Add("Lattice Pump Probe Pattern", typeof(LatticePumpProbePatternPlugin));
 			patternPlugins.Add("Lattice PnP Modulated YAG Pattern", typeof(LatticePnPModYAGPatternPlugin));
-			patternPlugins.Add("Lattice PnP Modulated YAG Pattern Four Shots", typeof(LatticePnPModYAGFourShotsPatternPlugin));
+			patternPlugins.Add("Lattice PnP Modulated YAG Pattern Four Shots (Old)", typeof(LatticePnPModYAGFourShotsPatternPlugin));
+			patternPlugins.Add("Robust Lattice PnP Modulated YAG Pattern Four Shots", typeof(LatticeFourShotPatternPlugin));
+			patternPlugins.Add("Lattice Modulated B-Field Slowing pattern", typeof(LatticeBFieldModPatternPlugin));
+			patternPlugins.Add("Lattice 4Shot Modulated B-Field Slowing pattern", typeof(LatticeBFieldFourShotPatternPlugin));
 			// yagPlugins
 			yagPlugins.Add("No YAG", typeof(NullYAGPlugin));
 			yagPlugins.Add("YAG on", typeof(DefaultYAGPlugin));
@@ -116,6 +119,8 @@ namespace ScanMaster.Acquire.Plugin
 			shotGathererPlugins.Add("PMT CCD Modulated Analog gatherer", typeof(CCDModulatedAnalogShotGathererPlugin));
 			shotGathererPlugins.Add("Buffered event counting gatherer", typeof(BufferedEventCountingShotGathererPlugin));
             shotGathererPlugins.Add("Image grabbing analog gatherer", typeof(ImageGrabbingAnalogShotGathererPlugin));
+			shotGathererPlugins.Add("Modulated four shot analog gatherer", typeof(ModulatedFourAnalogShotGathererPlugin));
+			
 
 			// analog input plugins
 			analogInputPlugins.Add("No analog input", typeof(NullAnalogInputPlugin));

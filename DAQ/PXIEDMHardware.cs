@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
 
+
 namespace DAQ.HAL
 {
     /// <summary>
@@ -401,7 +402,7 @@ namespace DAQ.HAL
             */
 
 
-            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao2", 0, 3);
             AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
             AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
             AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
@@ -419,7 +420,7 @@ namespace DAQ.HAL
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 4);
             //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
             //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);

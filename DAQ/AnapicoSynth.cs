@@ -164,15 +164,21 @@ namespace DAQ.HAL
 
             set
             {
+                string list = "";
                 if (!Environs.Debug)
                 {
     
                     Write(":SOUR:SEL 2\n");
                     Write(":SOUR:POW:MODE CW\n");
-                    Write(":SOUR:POW:ALC:STAT OFF\n");                    // Disables Automatic Leveling Control (ALC)
-                    //Write(":SOUR:POW:ALC:BAND:AUTO ON\n");               // Sets the bandwidth of the ALC to automatic
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();// read the current power for debugging purpose, Guanchen 19Aug2025
+
+                    Write(":SOUR:POW:ALC:STAT ON\n");                    // Disables Automatic Leveling Control (ALC)
+                    Write(":SOUR:POW:ALC:BAND:AUTO ON\n");               // Sets the bandwidth of the ALC to automatic
                     Write(":SOUR:POW:LEV:IMM:AMPL " + value + "\n");     // In units of dBm
-                    
+                    Write("SOUR:SEL 2\n");
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();// read the new power for debugging purpose, Guanchen 19Aug2025
 
                 }
             }

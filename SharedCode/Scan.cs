@@ -162,7 +162,26 @@ namespace Data.Scans
 			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
 			return temp;
 		}
+		//define a new function to do yg on-yg off
 
+		public double[] TOFOnIntegralArrayYgOnMinusOff(double signalStartTime, double signalEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArrayYgOn = GetTOFOnIntegralArray(0, signalStartTime, signalEndTime);
+			double[] signalArrayYgOff = GetTOFOnIntegralArray(1, signalStartTime, signalEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArrayYgOn[i] - signalArrayYgOff[i];
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
+		public double[] TOFOffIntegralArrayYgOnMinusOff(double signalStartTime, double signalEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArrayYgOn = GetTOFOffIntegralArray(0, signalStartTime, signalEndTime);
+			double[] signalArrayYgOff = GetTOFOffIntegralArray(1, signalStartTime, signalEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArrayYgOn[i] - signalArrayYgOff[i];
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
 
 		public double[] GetMeanOnArray(int index)
         {
