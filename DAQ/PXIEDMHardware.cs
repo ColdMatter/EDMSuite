@@ -205,6 +205,15 @@ namespace DAQ.HAL
             // The last number in AddAnalogInputChannel is an optional calibration which turns VuS and MHz 
             AddAnalogInputChannel("topProbe", analogIn + "/ai0", AITerminalConfiguration.Differential, 0.1);
             AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
+            AddAnalogInputChannel("pmt2", analogInNew + "/ai4", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
+
+            //Counter Channels
+
+            AddCounterChannel("pmtCounter", analogInNew + "/ctr0");  // channel used for photon counting PFI8 is source, PFI9 is gate 
+            AddCounterChannel("sample clock", analogInNew + "/ctr1"); // channel used for photon counting Pin40 is output 
+
+            /*
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
@@ -420,7 +429,7 @@ namespace DAQ.HAL
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 4);
+            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 6);
             //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
             //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
