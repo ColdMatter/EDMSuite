@@ -24,10 +24,20 @@ def frange(start, stop=None, step=None):
 		yield temp
 		count += 1
 
+<<<<<<< HEAD
+def mapAOMLoop(start, end, step, numScans):
+	# setup
+	fileSystem = Environs.FileSystem
+	file = \
+		fileSystem.GetDataDirectory(\
+					fileSystem.Paths["scanMasterDataPath"])\
+		+ fileSystem.GenerateNextDataFileName()
+=======
 def mapAOMLoop(start, end, step, numScans, savingfolder = "C:\\Users\\UEDM\\OneDrive - Imperial College London\\UltracoldEDM\\Data\\ScriptData\\"):
 	# setup
 	fileSystem = savingfolder
 	file = fileSystem + "scan"
+>>>>>>> 4b8c910f6d93d93a61290473bb73a11e76a3312c
 	print("Saving as " + file + "_*.zip")
 	print("")
 
@@ -37,25 +47,37 @@ def mapAOMLoop(start, end, step, numScans, savingfolder = "C:\\Users\\UEDM\\OneD
 		print "AOM freq -> " + str(i) + " MHz"
 
 		# tclProbe.SetLaserSetpoint("ProbeCavity", "TopticaSHGPZT", i)
+<<<<<<< HEAD
+=======
 		#Let's try and change the Stirap RF frequency
 		hc.SetGreenSynthFrequency(float(i))
+>>>>>>> 4b8c910f6d93d93a61290473bb73a11e76a3312c
 
 		
 		System.Threading.Thread.Sleep(300)
 		sm.AdjustProfileParameter("out", "externalParameters",str(i), False)
 		sm.AcquireAndWait(numScans)
+<<<<<<< HEAD
+		scanPath = file + "_" + str(count) + ".zip"
+=======
 		if len(str(count)) == 2:
 			filecount = str(count)
 		else:
 			filecount = "0"+str(count)
 
 		scanPath = file + "_" + filecount + ".zip"
+>>>>>>> 4b8c910f6d93d93a61290473bb73a11e76a3312c
 		sm.SaveAverageData(scanPath)
 
 		count += 1
 
 	
 def run_script():
+<<<<<<< HEAD
+	print "Use mapAOMLoop(start, end, step, numScans)"
+	print "Make sure we are in 'STIRAP MWF1F0 Switch Scan' profile"
+=======
 	print "Use mapAOMLoop(start, end, step, numScans, savingfolder)"
 	print "Make sure we are in a'STIRAP MWF1F0 Plus Switch' profile"
+>>>>>>> 4b8c910f6d93d93a61290473bb73a11e76a3312c
 

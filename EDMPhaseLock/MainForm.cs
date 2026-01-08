@@ -37,6 +37,7 @@ namespace EDMPhaseLock
 		private NationalInstruments.UI.XAxis xAxis3;
 		private NationalInstruments.UI.YAxis yAxis3;
         private System.Windows.Forms.MenuItem menuItem6;
+        private System.Windows.Forms.DataVisualization.Charting.Chart deviationChart;
         private IContainer components;
 
 		public MainForm()
@@ -77,6 +78,9 @@ namespace EDMPhaseLock
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.deviationGraph = new NationalInstruments.UI.WindowsForms.WaveformGraph();
             this.waveformPlot1 = new NationalInstruments.UI.WaveformPlot();
@@ -97,9 +101,11 @@ namespace EDMPhaseLock
             this.waveformPlot3 = new NationalInstruments.UI.WaveformPlot();
             this.xAxis3 = new NationalInstruments.UI.XAxis();
             this.yAxis3 = new NationalInstruments.UI.YAxis();
+            this.deviationChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.outputGraph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviationChart)).BeginInit();
             this.SuspendLayout();
             // 
             // deviationGraph
@@ -232,10 +238,30 @@ namespace EDMPhaseLock
             // 
             this.yAxis3.Range = new NationalInstruments.UI.Range(-5D, 5D);
             // 
+            // deviationChart
+            // 
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.Name = "ChartArea1";
+            this.deviationChart.ChartAreas.Add(chartArea1);
+            this.deviationChart.Location = new System.Drawing.Point(726, 8);
+            this.deviationChart.Name = "deviationChart";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series1.Name = "Series1";
+            this.deviationChart.Series.Add(series1);
+            this.deviationChart.Size = new System.Drawing.Size(147, 176);
+            this.deviationChart.TabIndex = 3;
+            this.deviationChart.Text = "chart1";
+            title1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            title1.Name = "deviationTitle";
+            title1.Text = "Deviation from target frequency (Hz, reference-clock based)";
+            this.deviationChart.Titles.Add(title1);
+            // 
             // MainForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(736, 561);
+            this.ClientSize = new System.Drawing.Size(727, 554);
+            this.Controls.Add(this.deviationChart);
             this.Controls.Add(this.phaseGraph);
             this.Controls.Add(this.outputGraph);
             this.Controls.Add(this.deviationGraph);
@@ -247,6 +273,7 @@ namespace EDMPhaseLock
             ((System.ComponentModel.ISupportInitialize)(this.deviationGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.outputGraph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.phaseGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.deviationChart)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -264,6 +291,7 @@ namespace EDMPhaseLock
 
 		private void ClearGUI()
 		{
+			deviationChart.Series[0].Points.Clear();
 			deviationGraph.ClearData();
 			outputGraph.ClearData();
 			phaseGraph.ClearData();
@@ -274,6 +302,7 @@ namespace EDMPhaseLock
 
 		private void UpdateGUI()
 		{
+
 			deviationGraph.Plots[0].PlotYAppend(
 				(double[])deviationPlotData.ToArray(Type.GetType("System.Double")));
 			deviationPlotData.Clear();
@@ -385,8 +414,8 @@ namespace EDMPhaseLock
         const double VCO_HIGH = 5;             // upper input range of the VCO
         const double VCO_LOW = 0;               // lower input range of the VCO
 
-		const double USB_AMP = 5;               // The output Vpp for the usb synth
-		const double USB_OFFS = 2.5;			// The output voltage should be offset to be between 0 and 5
+		const double USB_AMP = 3.3;               // The output Vpp for the usb synth
+		const double USB_OFFS = 1.65;			// The output voltage should be offset to be between 0 and 5
 
 		private void StartAcquisition()
 		{
@@ -412,6 +441,7 @@ namespace EDMPhaseLock
             {
 				wavGen = (RigolDG811)Environs.Hardware.Instruments["rigolWavGen"];
 				wavGen.Connect();
+				wavGen.SquareWave = false;
 				wavGen.Amplitude = USB_AMP;
 				wavGen.Offset = USB_OFFS;
 				wavGen.Enabled = true;
@@ -479,6 +509,8 @@ namespace EDMPhaseLock
 				1000
 				);
 
+			//counterTask.Stream.Timeout = -1;
+
 			counterReader = new CounterSingleChannelReader(counterTask.Stream);
 			counterReader.SynchronizeCallbacks = true;
 
@@ -536,7 +568,27 @@ namespace EDMPhaseLock
 	
 			if (!Environs.Debug)
 			{
-				data = counterReader.EndReadMultiSampleInt32(result);
+				Console.WriteLine("Taking data");
+                //try
+                //{
+					data = counterReader.EndReadMultiSampleInt32(result);
+                //}
+                //           catch (Exception e)
+                //           {
+                //Console.Write("Exception: " + e.Message);
+                //               Random r = new Random();
+                //               data = new Int32[SAMPLE_MULTI_READ];
+                //               for (int i = 0; i < SAMPLE_MULTI_READ; i++)
+                //               {
+                //                   data[i] = fakeCounterValue;
+
+                //                   fakeCounterValue += (Int32)((oscillatorFrequency / SAMPLE_CLOCK_RATE) *
+                //                       (1 + (FAKE_DATA_SPREAD * (r.NextDouble() - 0.5)) +
+                //                       (FAKE_DATA_MOD *
+                //                                   Math.Sin(((sampleCounter * SAMPLE_MULTI_READ) + i) / FAKE_DATA_PERIOD))));
+                //               }
+            //}
+            Console.WriteLine("Got data");
 			}
 			else
 			{
@@ -552,7 +604,7 @@ namespace EDMPhaseLock
 									Math.Sin( ((sampleCounter * SAMPLE_MULTI_READ) + i) / FAKE_DATA_PERIOD) )));
 				}
 			}
-			
+			//Console.WriteLine("Start new Async");
 			// start the counter reading again right away
 			if (!Environs.Debug && running)
 				counterReader.BeginReadMultiSampleInt32(
@@ -560,17 +612,18 @@ namespace EDMPhaseLock
 					new AsyncCallback(CounterCallBack),
 					null
 					);
-
+			//Console.WriteLine("Finish new async");
 			// deal with the data
 			StoreData(data);
-
+			//Console.WriteLine("Stored Data");
 			if (lockOscillator && (sampleCounter % LOCK_UPDATE_EVERY == 0)) UpdateLock();
-
+			//Console.WriteLine("Updated Lock");
 			// update the gui ?
 			if (sampleCounter % GUI_UPDATE_EVERY == 0)
 			{
 				UpdateGUI();
 			}
+			//Console.WriteLine("Updated GUI");
 			sampleCounter++;
 		}
 
@@ -663,6 +716,7 @@ namespace EDMPhaseLock
 				phaseErrorInDegrees = (double)phasePlotData[phasePlotData.Count - 1];
 				oscillatorPlotData.Add(oscillatorFrequency / 1000);
 				lockPhaseData.Clear();
+				//Console.WriteLine("UpdatedLock");
 			}
 		}
 
@@ -679,6 +733,7 @@ namespace EDMPhaseLock
 			if (cm == ControlMethod.usb)
 			{
 				wavGen.Enabled = false;
+				wavGen.SquareWave = false;
 				wavGen.Disconnect();
 			}
 		}
@@ -706,6 +761,35 @@ namespace EDMPhaseLock
 				{
 					return phaseErrorInDegrees;
 				}
+			}
+		}
+
+		public void Lock()
+        {
+			if (!running)
+			{
+				lockOscillator = true;
+				running = true;
+				StartAcquisition();
+			}
+		}
+
+		public void Monitor()
+		{
+			if (!running)
+			{
+				lockOscillator = false;
+				running = true;
+				StartAcquisition();
+			}
+		}
+
+		public void Stop()
+        {
+			if (running)
+			{
+				StopAcquisition();
+				running = false;
 			}
 		}
 

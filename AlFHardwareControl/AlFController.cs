@@ -56,6 +56,11 @@ namespace AlFHardwareControl
             return dict;
         }
 
+        public override Object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         public void Start()
         {
 

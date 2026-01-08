@@ -1,0 +1,1373 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Property for Flat Panel Sensor</title>
+    <style type="text/css">
+            body {
+                font-family: sans-serif;
+            }
+            .arg-name {
+              font-style: italic;
+            }
+            .arg-decl {
+              text-indent: 5ex;
+            }
+            .arg-help {
+              text-indent: 2ex;
+            }
+            .fileinformation {
+                text-align: right;
+                color: #808080;
+            }
+            .chapter {
+                font-size: 200%;
+                line-height: 2em;
+                text-align: center;
+                border:	1px solid gray;
+                background-color: #C0FFC0;
+            }
+            .section {
+                font-size: 175%;
+                font-family: serif;
+                font-style: italic;
+            }
+            .title {
+                font-size: 125%;
+                color: #008080;
+            }
+            .fname {
+                font-family: serif;
+                font-style: italic;
+                font-size: 200%;
+                font-weight: bold;
+            }
+            .formula {
+                font-size: 150%;
+                line-height: 2em;
+                text-align: center;
+                font-family: serif;
+                font-style: italic;
+            }
+            .proplist {
+                font-family: sans-serif;
+            }
+            .prop_groupname {
+                font-size: 150%;
+                line-height: 2em;
+            }
+            .prop_id {
+                background-color: #FFFFC0;
+            }
+            .prop_indent {
+                background-color: #C0C0C0;
+            }
+            .pname
+            {
+                font-family: serif;
+                font-style: italic;
+                font-size: 150%;
+                font-weight: bold;
+            }
+            .psection
+            {
+                font-size: 130%;
+                font-family: serif;
+                font-style: italic;
+            }
+            .chaptercontent
+            {
+                font-size: 125%;
+            }
+            table {
+              text-indent: 0;
+            }
+            a.go-top   { text-decoration:none;}
+            a.go-top:link { color: #000080; }
+            a.go-top:hover { color: #808080; }
+            a.go-top:visited { color: #000080; }
+			txtind1 {
+         	 text-indent: 1em;
+          	}
+          	txtindhalf {
+          	text-indent: 50%;
+          	}
+        </style>
+  </head>
+  <body>
+    <div>
+      <div class="fileinformation">
+		<div>v24.9.6861</div>
+	</div>
+    </div>
+    <div><a class="go-top" href="#Chapter_appendix_detail"></a></div>
+    <hr>
+    <div id="Chapter_readfirst_detail">
+      <div class="chapter">Read before using</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				<div>
+					This document and the software sample codes are internal documents of Hamamatsu Photonics K.K.(it is described as the following HPK) and are disclosed upon request in order to enable the user to create a host software using DCAM-API.
+				</div>
+				<div>
+					This document and the software sample codes are disclosed only for the purpose described above, and do not constitute a license, transfer, or any other entitlement for the owner.
+				</div>
+				<div>
+					All of risk and result of using software depending on this document remains with the user.
+				</div>
+				<div>
+					This document may include technical inaccuracies or typographical errors.					HPK does not guarantee any damage arising from such errors or this document.
+				</div>
+				<div>
+					HPK makes no commitment to update or keep current the information contained in this document.
+				</div>
+				<div>
+					All brand and product names are trademarks or registered trademarks of their respective owners.					HPK has copyright of this document with all rights reserved.
+				</div>
+				<div>
+					No part of this documentation may be reproduced, transmitted, transcribed, stored in a retrieval system, or translated into any language or computer language, in any form, or by any means, in any means, electronic, mechanical, magnetic, optical, chemical, manual or otherwise, without the prior written permission of HPK.
+				</div>
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <p><a class="go-top" href="#Chapter_readfirst_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_overview_detail">
+      <div class="chapter">Overview</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				<div>
+					This document explains support parameter at Flat Panel Sensor and how to control them by DCAM Properties. 					This document requires knowledge of basic concept of DCAM-API and SDK. 					If you need description about them, please reffer other documents.
+				</div>
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <p><a class="go-top" href="#Chapter_overview_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Scan Mode</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <div class="proplist">
+              <table width="100%" border="1">
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Fine Mode (1x1 Mode)</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__AREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__1					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Fast Mode (2x2 Mode)</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__AREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__2					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">4x4 Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__AREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__4					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Panoramic Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__PANORAMIC					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__1					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE_PANORAMICSTARTV</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info.</td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Rectangular binning Panoramic Mode (Rtbin Panoramic Mode)</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__PANORAMIC					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__1_2					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE_PANORAMICSTARTV</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info.</td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Partial Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__PARTIALAREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__2					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">1x2 Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__AREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__1_2					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">2x4 Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SENSORMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SENSORMODE__AREA					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_BINNING</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_BINNING__2_4					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+		</table>
+            </div>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Trigger Mode</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <div class="proplist">
+              <table width="100%" border="1">
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Internal Trigger Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_TRIGGERSOURCE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_TRIGGERSOURCE__INTERNAL					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_EXPOSURETIME</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">REAL</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>Exposuretime(sec)</td>
+                  <td colspan="2">Value range is described by each datasheet.</td>
+                </tr>
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">External Trigger Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_TRIGGERSOURCE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_TRIGGERSOURCE__EXTERNAL					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+			
+		</table>
+            </div>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Flexible Partial Mode</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <div class="proplist">
+              <table width="100%" border="1">
+			
+				Flexible Partial Mode(FPM) is implemented in some cameras. The model name of cameras implemented this function is described by the chapter of Camera Info.				DCAM has SUBARRAYMODE in standard and FPM is what used the function.				Therefore, how to set FPM is the same as SUBARRAYMODE.				Specifically, the cameras which support FPM work as FPM, the cameras which don't support FPM work as SUBARRAYMODE by setting SUBARRAYMODE. 				Detail how to use SUBARRAYMODE is described by "property_reference.html".				The difference between FPM and SUBARRAYMODE is at what point the image is cropped.				The camera selects the area in FPM when the camera readout a charge.				DCAM crops selected area in SUBARRAYMODE after DCAM receives image data from camera. 				For the reason, the max limit of framerate in FPM is changed depending on VSIZE but is not changed in SUBARRAYMODE.				The formula of framerate is described by each datasheet.
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Flexible Partial Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SUBARRAYMODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SUBARRAYMODE__OFF (default)							</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_SUBARRAYMODE__ON					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SUBARRAYHSIZE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info. When 1x1 or 1x2 mode is applied, set multiple of 8. When 2x2 or 2x4 or 4x4 mode is applied, set multiple of 16.</td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SUBARRAYVSIZE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info. When 1x1 or 1x2 mode is applied, set multiple of 2. When 2x2 or 2x4 or 4x4 mode is applied, set multiple of 4.</td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SUBARRAYHPOS</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info. When 1x1 or 1x2 or 4x4 mode is applied, set multiple of 8. When 2x2 or 2x4 mode is applied, set multiple of 16.</td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_SUBARRAYVPOS</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">Value range is described by the chapter of Camera Info. When 1x1 or 1x2 mode is applied, set multiple of 2. When 2x2 or 2x4 mode is applied, set multiple of 4. When 4x4 mode is applied, set multiple of 16.</td>
+                </tr>
+			
+		</table>
+            </div>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Selectable Gain Mode</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <div class="proplist">
+              <table width="100%" border="1">
+			
+				C14406DK-81, C14408DK-50, and C14409DK-52 have "Selectable Gain Mode".				The Gain can be set with DCAM_IDPROP_CONTRASTGAIN.				In principle, each Gain is set to High=0, Middle=1 and Low=2. The default is High Gain mode. The detail is described by each datasheet.
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Selectable Gain Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_CONTRASTGAIN</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>0 to 2</td>
+                  <td colspan="2">High Gain = 0(Default), Middle Gain = 1, Low Gain = 2</td>
+                </tr>
+			
+		</table>
+            </div>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Device Buffer Mode</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <div class="proplist">
+              <table width="100%" border="1">
+			
+				Device Buffer Mode is implemented in some cameras.				This function is initially unable.				When it is enabled, the image is stored to buffer memory inside camera and it retransmits from the memory when frames are missed during the process.				Retransmission during capturing is not supported.				You have to set DCAMCAP_START_SNAP as the argument of dcamcap_start() because this function is only available in SNAP mode and is not available in SEQUENCE mode.				If SNAPSHOT is selected, frames are retransmitted after DCAMWAIT_CAPEVENT_CYCLEEND is issued.				If SNAPSHOTEX is selected, even before DCAMWAIT_CAPEVENT_CYCLEEND is issued (when capture stops before the specified number of frames have been acquired), frames missed up to dcamcap_stop() are retransmitted.				Use SNAPSHOTEX unless there is a specific reason because SNAPSHOT is just retained for compatibility.				The number of stored frames is limited.				Therefore, the value of frame count set as argument of dcambuf_alloc() needs to be under the value of DCAM_IDPROP_DEVICEBUFFER_FRAMECOUNTMAX,				or when using the dcambuf_attach() function, it must be less than or equal to the "buffercount" value specified in the DCAMBUF_ATTACH structure.				The value of FRAMECOUNTMAX depends on active photosensitive size of each camera.				The detail is described by the chapter of Camera Info. Device Buffer Mode is also described by "property_reference.html".
+			
+			
+				<tr>
+                  <td colspan="4">
+                    <div class="prop_groupname">Device Buffer Mode</div>
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_DEVICEBUFFER_MODE</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/W</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">MODE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_DEVICEBUFFER_MODE_THRU (disable:defalt)					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_DEVICEBUFFER_MODE_SNAPSHOT (enable)					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>DCAMPROP_DEVICEBUFFER_MODE_SNAPSHOTEX (enable)					</td>
+                  <td colspan="2">
+                  </td>
+                </tr>
+				<tr>
+                  <td colspan="2">
+                    <div class="prop_id">DCAM_IDPROP_DEVICEBUFFER_FRAMECOUNTMAX</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">R/O</div>
+                  </td>
+                  <td>
+                    <div class="prop_id">LONG</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="5%" class="prop_indent"></td>
+                  <td>n</td>
+                  <td colspan="2">The value of each camera is described by the chapter of Camera Info.</td>
+                </tr>
+			
+		</table>
+            </div>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_properties_detail">
+      <div class="chapter">Primary Buffer</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				<div>
+					This function can set the ring buffer size allocated to the interface driver of PC.					To increase the size may reduce the occurrence of lost frames.					When specifying with PRIMARYBUFFER_TOTALBYTES, the value is in Bytes, and when specifying with PRIMARYBUFFER_TOTALBYTES_MB, the value is in MBytes.					Use PRIMARYBUFFER_TOTALBYTES_MB unless there is a specific reason because PRIMARYBUFFER_TOTALBYTES is just retained for compatibility.					If PRIMARYBUFFER_TOTALBYTES(_MB) is unspecified or set to 0, the default value (buffer for 100 frames) is reserved.					Do not allocate more than necessary besause Primary Buffer uses memory on PC. It may affect the performance of PC.
+				</div>
+				<table width="100%" border="1" align="center">
+					<tr>
+						<td rowspan="2">Product</td>
+						<td colspan="2">DCAM_IDPROP_PRIMARYBUFFER_TOTALBYTES</td>
+						<td colspan="2">DCAM_IDPROP_PRIMARYBUFFER_TOTALBYTES_MB</td>
+					</tr>
+					<tr>
+						<td>R/W</td>
+						<td>LONG</td>
+						<td>R/W</td>
+						<td>LONG</td>
+					</tr>
+					<tr>
+						<td>C10500D-43</td>
+						<td colspan="2" rowspan="9">0 to 2000000000</td>
+						<td colspan="2" rowspan="9">0 to (2000 or 50% of PC memory(MB))</td>
+					</tr>
+					<tr>
+						<td>C10502D-43</td>
+					</tr>
+					<tr>
+						<td>C10900D-40</td>
+					</tr>
+					<tr>
+						<td>C10901D-40</td>
+					</tr>
+					<tr>
+						<td>C12902D-40</td>
+					</tr>
+					<tr>
+						<td>C12903D-40</td>
+					</tr>
+					<tr>
+						<td>C14400DK-41</td>
+					</tr>
+					<tr>
+						<td>C14401DK-41</td>
+					</tr>
+					<tr>
+						<td>C14406DK-81</td>
+					</tr>
+					<tr>
+						<td>C10500D-70</td>
+						<td colspan="2" rowspan="9">0 to (8191 × Value of DCAM_IDPROP_IMAGE_FRAMEBYTES) *Up to 2000000000	</td>
+						<td colspan="2" rowspan="9">0 to (8191 × Value of DCAM_IDPROP_IMAGE_FRAMEBYTES/1000000)</td>
+					</tr>
+					<tr>
+						<td>C12504D-56</td>
+					</tr>
+					<tr>
+						<td>C10502D-70</td>
+					</tr>
+					<tr>
+						<td>C12505D-56</td>
+					</tr>
+					<tr>
+						<td>C14400DK-51</td>
+					</tr>
+					<tr>
+						<td>C14400DK-52</td>
+					</tr>
+					<tr>
+						<td>C14408DK-50</td>
+					</tr>
+					<tr>
+						<td>C14409DK-52</td>
+					</tr>
+					<tr>
+						<td>C16401SK-51</td>
+					</tr>
+				</table>
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <p><a class="go-top" href="#Chapter_properties_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div id="Chapter_fpscamerainfo_detail">
+      <div class="chapter">Camera Info</div>
+      <p></p>
+      <table width="100%">
+        <tr>
+          <td width="1%"></td>
+          <td>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				<table width="100%" border="1" align="center">
+					Camera wihtout Flexible Partial Mode
+					<tr>
+						<td>
+
+						</td>
+						<td colspan="5">Scan mode ( A:available N/A:not available )</td>
+						<td rowspan="2">PANORAMICSTARTV value range</td>
+					</tr>
+					<tr>
+						<td>Product</td>
+						<td>Fine(1x1)</td>
+						<td>Fast(2x2)</td>
+						<td>Panoramic</td>
+						<td>Rtbin Panoramic</td>
+						<td>Partial</td>
+					</tr>
+					<tr>
+						<td>C10500D-43</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10500D-70</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C12504D-56</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10502D-43</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10502D-70</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10505D-56</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10900D-40</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>A</td>
+						<td>0 to 1160</td>
+					</tr>
+					<tr>
+						<td>C10901D-40</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C12902D-40</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>0 to 938</td>
+					</tr>
+					<tr>
+						<td>C12903D-40</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>0 to 1152</td>
+					</tr>
+					<tr>
+						<td>C14408DK-50</td>
+						<td>A</td>
+						<td>A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+				</table>
+				<p></p>
+				Camera with Flexible Partial Mode
+				<table width="100%" border="1" align="center">
+					<tr>
+						<td rowspan="2">
+
+						</td>
+						<td colspan="4">1x1 Mode</td>
+						<td colspan="4">2x2 Mode</td>
+						<td colspan="4">4x4 Mode</td>
+						<td colspan="4">1x2 Mode</td>
+						<td colspan="4">2x4 Mode</td>
+					</tr>
+					<tr>
+						<td colspan="2">Horizontal</td>
+						<td colspan="2">Vertical</td>
+						<td colspan="2">Horizontal</td>
+						<td colspan="2">Vertical</td>
+						<td colspan="2">Horizontal</td>
+						<td colspan="2">Vertical</td>
+						<td colspan="2">Horizontal</td>
+						<td colspan="2">Vertical</td>
+						<td colspan="2">Horizontal</td>
+						<td colspan="2">Vertical</td>
+					</tr>
+					<tr>
+						<td>Product</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+						<td>Size</td>
+						<td>Position</td>
+					</tr>
+					<tr>
+						<td>C14400DK-41/51/52</td>
+						<td>8 to 1328</td>
+						<td>0 to 1320</td>
+						<td>1 to 1308</td>
+						<td>0 to 1307</td>
+						<td>16 to 1328</td>
+						<td>0 to 1312</td>
+						<td>2 to 1308</td>
+						<td>0 to 1306</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>8 to 1328</td>
+						<td>0 to 1320</td>
+						<td>2 to 1308</td>
+						<td>0 to 1306</td>
+						<td>16 to 1328</td>
+						<td>0 to 1312</td>
+						<td>4 to 1308</td>
+						<td>0 to 1304</td>
+					</tr>
+					<tr>
+						<td>C14401DK-41</td>
+						<td>8 to 2192</td>
+						<td>0 to 2184</td>
+						<td>1 to 1776</td>
+						<td>0 to 1775</td>
+						<td>16 to 2192</td>
+						<td>0 to 2176</td>
+						<td>2 to 1776</td>
+						<td>0 to 1774</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>8 to 2192</td>
+						<td>0 to 2184</td>
+						<td>2 to 1776</td>
+						<td>0 to 1774</td>
+						<td>16 to 2192</td>
+						<td>0 to 2176</td>
+						<td>4 to 1776</td>
+						<td>0 to 1772</td>
+					</tr>
+					<tr>
+						<td>C14406DK-81</td>
+						<td>4 to 3072</td>
+						<td>0 to 3068</td>
+						<td>1 to 3072</td>
+						<td>0 to 3068</td>
+						<td>8 to 3072</td>
+						<td>0 to 3064</td>
+						<td>2 to 3072</td>
+						<td>0 to 3064</td>
+						<td>16 to 3072</td>
+						<td>0 to 3056</td>
+						<td>8 to 3072</td>
+						<td>0 to 3056</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C14409DK-52</td>
+						<td>8 to 2000</td>
+						<td>0 to 1992</td>
+						<td>1 to 1392</td>
+						<td>0 to 1391</td>
+						<td>16 to 2000</td>
+						<td>0 to 1984</td>
+						<td>2 to 1392</td>
+						<td>0 to 1390</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>8 to 2000</td>
+						<td>0 to 1992</td>
+						<td>2 to 1392</td>
+						<td>0 to 1390</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C16401SK-51</td>
+						<td>8 to 1272</td>
+						<td>0 to 1264</td>
+						<td>1 to 1104</td>
+						<td>0 to 1103</td>
+						<td>16 to 1272</td>
+						<td>0 to 1256</td>
+						<td>2 to 1104</td>
+						<td>0 to 1102</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+				</table>
+				<p></p>
+				
+    <img src="data:image/png;base64,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" />
+  
+				<div>
+					Notes:
+				</div>
+				<div>
+					The setting value is not changed if scan mode is changed.					For example, you should set to HSIZE:800, VSIZE:640 when trying to achieve H:400, V:320 in 2x2 mode.					The total value of POS and SIZE must not exceed the number of active photosensitive pixels of the camera.
+				</div>
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <hr>
+            <div class="section">
+            </div>
+            <table width="96%">
+              <tr>
+                <td width="1%"></td>
+                <td>
+				FRAMECOUNTMAX value of cameras with Device Buffer Mode
+				<table width="100%" border="1" align="center">
+					<tr>
+						<td rowspan="2">Product</td>
+						<td colspan="4">Binning mode</td>
+					</tr>
+					<tr>
+						<td>1x1</td>
+						<td>2x2</td>
+						<td>1x2</td>
+						<td>2x4</td>
+					</tr>
+					<tr>
+						<td>C10500D-70</td>
+						<td>2925</td>
+						<td>N/A</td>
+						<td>5851</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C12504D-56</td>
+						<td>4208</td>
+						<td>N/A</td>
+						<td>8407</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C10502D-70</td>
+						<td>1940</td>
+						<td>N/A</td>
+						<td>3878</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C12505D-56</td>
+						<td>2792</td>
+						<td>N/A</td>
+						<td>5585</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C14400DK-51＊</td>
+						<td>149 to 15863</td>
+						<td>598 to 15863</td>
+						<td>299 to 15863</td>
+						<td>1196 to 15863</td>
+					</tr>
+					<tr>
+						<td>C14400DK-52＊</td>
+						<td>304 to 32247</td>
+						<td>1216 to 32247</td>
+						<td>608 to 32247</td>
+						<td>2433 to 32247</td>
+					</tr>
+					<tr>
+						<td>C14408DK-50</td>
+						<td>33 to 15863</td>
+						<td>135 to 15863</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C14409DK-52＊</td>
+						<td>189 to 32247</td>
+						<td>792 to 32247</td>
+						<td>379 to 32247</td>
+						<td>N/A</td>
+					</tr>
+					<tr>
+						<td>C16401SK-51＊</td>
+						<td>185 to 15863</td>
+						<td>740 to 15863</td>
+						<td>N/A</td>
+						<td>N/A</td>
+					</tr>
+				</table>
+								＊When the image size is reduced, the number of frames stored in buffer memory increases.
+			</td>
+              </tr>
+            </table>
+            <p></p>
+            <p><a class="go-top" href="#Chapter_fpscamerainfo_detail">Go to top of this chapter</a></p>
+          </td>
+          <td width="2%"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

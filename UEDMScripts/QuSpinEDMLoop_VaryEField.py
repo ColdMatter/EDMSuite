@@ -1,4 +1,4 @@
-# Import a whole load of stuff
+## Import a whole load of stuff
 from System.IO import *
 from System.Drawing import *
 from System.Runtime.Remoting import *
@@ -60,8 +60,10 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
-	bc = loadBlockConfig(settingsPath + "default.xml")
-
+	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
+	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
+    
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
 	bc.Settings["bState"] = bState
@@ -210,8 +212,13 @@ def QuSpinGo():
             eCurrentState = hc.EFieldPolarity
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            System.Threading.Thread.CurrentThread.Join(1000)
             hc.SwitchEAndWait(eCurrentState)
+            if (float(i)==0.0):
+                System.Threading.Thread.CurrentThread.Join(20000)
+            else:
+                System.Threading.Thread.CurrentThread.Join(5000)
+            # Make new block config with correct E Field
+            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
 
             print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
             # save the block config and load into blockhead
@@ -238,8 +245,6 @@ def QuSpinGo():
             File.Delete(tempConfigFile)
             
             blockIndex = blockIndex + 1
-
-            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
 
             if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
                 print("Recalibrating leakage monitors.")

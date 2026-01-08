@@ -53,6 +53,7 @@ namespace DAQ.HAL
                 readPressureTask.Start();
                 double voltage = pressureReader.ReadSingleSample();
                 readPressureTask.Stop();
+                readPressureTask.Control(TaskAction.Unreserve);
 
                 //convert the read voltage to a pressure
                 lastPressure = Math.Pow(10, ((voltage - GAUGE_OFFSET) / GAUGE_FACTOR) + GAUGE_CONSTANT);
