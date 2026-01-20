@@ -631,6 +631,7 @@
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -782,7 +783,6 @@
     <Compile Include="Lesker903Gauge.cs" />
     <Compile Include="PHCDSLapFileSystem.cs" />
     <Compile Include="PixieFileSystem.cs" />
-    <Compile Include="PXIEDMHardware.cs" Condition=" '$(Configuration)' == 'EDM' " />
     <Compile Include="RequiemFileSystem.cs" />
     <Compile Include="RFPower.cs" />
     <Compile Include="RS232Instrument.cs" />

@@ -421,7 +421,7 @@ namespace DAQ.HAL
             analogBoards.Add("AO", aoBoard);
             //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
-            Info.Add("AOPatternTrigger", aoBoard + '/PFI4');//"/PFI4"
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI4");//"/PFI4"
             //Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
