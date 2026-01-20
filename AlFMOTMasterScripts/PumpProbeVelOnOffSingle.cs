@@ -17,12 +17,15 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 50000;
         Parameters["Void"] = 0;
-        Parameters["CameraDelay"] = 0;
-        Parameters["YAGSwitch"] = true;
-
+        Parameters["CameraDelay"] = 1500;
+        Parameters["PumpDelay"] = 533;
+        Parameters["PumpDelaySwitch"] = 0;
+        Parameters["PumpWidth"] = 10;
+        Parameters["PumpSwitch"] = true;
         switchConfiguration = new Dictionary<string, List<object>>
             {
-                {"YAGSwitch", new List<object>{true, false}}
+                {"PumpDelaySwitch", new List<object>{0, 0}},
+                {"PumpSwitch", new List<object>{true, false}}
             };
     }
 
@@ -39,33 +42,32 @@ public class Patterns : MOTMasterScript
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
-        p.AddEdge("q",10000+0,true);
-        p.AddEdge("q",10000+100,false);
+        p.AddEdge("q",14,true);
+        p.AddEdge("q",100,false);
 
-        if ((bool)Parameters["YAGSwitch"])
-        {
-            p.AddEdge("flash", 10000-14, true);
-            p.AddEdge("flash", 10000+100, false);
-        }
+        p.AddEdge("flash", 0, true);
+        p.AddEdge("flash", 100, false);
 
-        p.AddEdge("detector", 10000 + cameraDelay, true);
-        p.AddEdge("detector", 10000 + cameraDelay + 10, false);
-
-        p.AddEdge("VECSEL2_Shutter", 0, true);
-        p.AddEdge("VECSEL2_Shutter", 1, false);
-        p.AddEdge("VECSEL2_Shutter", 20000, true);
-
-        p.AddEdge("He_Shutter", 0, true);
-        p.AddEdge("He_Shutter", 20000, false);
+        p.AddEdge("detector", cameraDelay, true);
+        p.AddEdge("detector", cameraDelay + 10, false);
 
         return p;
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
+        int pumpDelay = Convert.ToInt32(Parameters["PumpDelay"]) + Convert.ToInt32(Parameters["PumpDelaySwitch"]);
+        int pumpWidth = Convert.ToInt32(Parameters["PumpWidth"]);
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
         p.AddChannel("AOM1_VCA");
-        p.AddAnalogValue("AOM1_VCA", 0, 0);
+        if (pumpDelay!=0 || !(bool)Parameters["PumpSwitch"])
+            p.AddAnalogValue("AOM1_VCA", 0, 0);
+
+        if (!(bool)Parameters["PumpSwitch"])
+            return p;
+
+        p.AddAnalogValue("AOM1_VCA", pumpDelay, 10);
+        p.AddAnalogValue("AOM1_VCA", pumpDelay+pumpWidth, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

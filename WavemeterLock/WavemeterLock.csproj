@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>WavemeterLock</RootNamespace>
     <AssemblyName>WavemeterLock</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -168,7 +168,7 @@
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=24.0.45.49417, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx.Fakes">
@@ -241,16 +241,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DAQ\DAQ.csproj">
-      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
-      <Name>DAQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WaveMeterExample\WavemeterLockServer.csproj">
-      <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
-      <Name>WavemeterLockServer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
@@ -275,6 +265,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="WavemeterLock2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaveMeterExample\WavemeterLockServer.csproj">
+      <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
+      <Name>WavemeterLockServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

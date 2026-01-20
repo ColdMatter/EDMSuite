@@ -20,10 +20,10 @@ public class Patterns : MOTMasterScript
         Parameters["Switch"] = true;
         Parameters["Switch2"] = true;
 
-        switchConfiguration = new Dictionary<string, List<bool>>
+        switchConfiguration = new Dictionary<string, List<object>>
             {
-                {"Switch", new List<bool>{true, false, false, true}},
-                {"Switch2", new List<bool>{false, false, true, true } }
+                {"Switch", new List<object>{true, false, false, true}},
+                {"Switch2", new List<object>{false, false, true, true } }
             };
     }
 
@@ -52,9 +52,9 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("VECSEL3_AOM_VCA");
-        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
-        //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
+        p.AddChannel("VECSEL2_CHIRP");
+        //p.AddAnalogValue("AOM1_VCA", 0, 0);
+        p.AddAnalogValue("VECSEL2_CHIRP", 0, 0);
 
         return p;
    }

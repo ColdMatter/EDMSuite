@@ -15,14 +15,20 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 100000;
         Parameters["Void"] = 0;
-        Parameters["CameraDelay"] = 0;
-        Parameters["YAGSwitch"] = true;
+        Parameters["CameraDelay"] = 100;
+        //1V -> ~200 MHz Vecsel 1
+        //2V -> ~400 MHz Vecsel 1
+        Parameters["v1_amp"] = -2.5;
+        Parameters["v1_offset"] = 2.5;
+        Parameters["ChirpLength"] = 1000;
+        Parameters["v1_hold_time"] = 1000;
+        Parameters["Switch"] = true;
 
         switchConfiguration = new Dictionary<string, List<object>>
             {
-                {"YAGSwitch", new List<object>{true, false}}
+                {"Switch", new List<object>{true, false}}
             };
     }
 
@@ -38,35 +44,33 @@ public class Patterns : MOTMasterScript
         //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
-        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
-        p.AddEdge("q",10000+0,true);
-        p.AddEdge("q",10000+100,false);
+        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false)
 
-        if ((bool)Parameters["YAGSwitch"])
-        {
-            p.AddEdge("flash", 10000-14, true);
-            p.AddEdge("flash", 10000+100, false);
-        }
+        p.AddEdge("q",0,true);
+        p.AddEdge("q",100,false);
 
-        p.AddEdge("detector", 10000 + cameraDelay, true);
-        p.AddEdge("detector", 10000 + cameraDelay + 10, false);
+        //p.AddEdge("flash", 0, true);
+        //p.AddEdge("flash", 100, false);
 
-        p.AddEdge("VECSEL2_Shutter", 0, true);
-        p.AddEdge("VECSEL2_Shutter", 1, false);
-        p.AddEdge("VECSEL2_Shutter", 20000, true);
-
-        p.AddEdge("He_Shutter", 0, true);
-        p.AddEdge("He_Shutter", 20000, false);
+        p.AddEdge("detector", cameraDelay, true);
+        p.AddEdge("detector", cameraDelay + 10, false);
 
         return p;
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
+        int chirpLen = Convert.ToInt32(Parameters["ChirpLength"]);
+        int holdTime = Convert.ToInt32(Parameters["v1_hold_time"]);
+
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
         p.AddChannel("AOM1_VCA");
-        p.AddAnalogValue("AOM1_VCA", 0, 0);
-        //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
+        p.AddChannel("VECSEL1_CHIRP");
+
+        p.AddAnalogValue("VECSEL1_CHIRP", 0, (double)Parameters["v1_offset"]);
+        if (!(bool)Parameters["Switch"]) return p;
+        p.AddLinearRamp("VECSEL1_CHIRP", 1, chirpLen, (double)Parameters["v1_offset"] + Convert.ToDouble(Parameters["v1_amp"]));
+        p.AddLinearRamp("VECSEL1_CHIRP", chirpLen + 2 + holdTime, chirpLen, (double)Parameters["v1_offset"]);
 
         return p;
    }

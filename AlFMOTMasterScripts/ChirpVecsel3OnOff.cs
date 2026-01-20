@@ -21,11 +21,19 @@ public class Patterns : MOTMasterScript
         Parameters["v1_amp"] = 0.0;
         //1V -> 300 MHz Vecsel 2
         //0.67V - > 600 MHz UV chirp
-        Parameters["v0_amp"] = 0.6;
+        //1V -> 800 MHz VECSEL3
+        //0.5V/10ms -> ~80 MHz/ms 
+        Parameters["v0_amp"] = 0.5;
         Parameters["v1_offset"] = 0.0;
-        Parameters["v0_offset"] = 4.0;
-        Parameters["ChirpLength"] = 500;
+        Parameters["v0_offset"] = 0.0;
+        Parameters["ChirpLength"] = 1000;
         Parameters["v1_hold_time"] = 1000;
+        Parameters["Switch"] = true;
+
+        switchConfiguration = new Dictionary<string, List<object>>
+            {
+                {"Switch", new List<object>{true, false}}
+            };
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -61,8 +69,8 @@ public class Patterns : MOTMasterScript
 
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
         p.AddChannel("AOM1_VCA");
-        p.AddChannel("VECSEL2_CHIRP");
-        p.AddAnalogValue("AOM1_VCA", 0, 0);
+        p.AddChannel("VECSEL3_CHIRP");
+        //p.AddAnalogValue("AOM1_VCA", 0, 0);
 
         // Start at : 323.449929 THz (-200 m/s from (3/2, 2))
         // End at   : 323.450201 THz (+2.5 Gamma from (3/2, 2), roughly resonant on F1=5/2)
@@ -73,9 +81,10 @@ public class Patterns : MOTMasterScript
 
         // Start at : 329.390497 THz (-200 m/s from (3/2, 2))
         // End at   : 329.390662 THz (-50  m/s from (3/2, 2))
-        p.AddAnalogValue("VECSEL2_CHIRP", 0, (double)Parameters["v0_offset"]);
-        p.AddLinearRamp("VECSEL2_CHIRP", 1, chirpLen, (double)Parameters["v0_offset"] + (double)Parameters["v0_amp"]);
-        p.AddLinearRamp("VECSEL2_CHIRP", chirpLen + 2, chirpLen, (double)Parameters["v0_offset"]);
+        p.AddAnalogValue("VECSEL3_CHIRP", 0, (double)Parameters["v0_offset"]);
+        if (!(bool)Parameters["Switch"]) return p;
+        p.AddLinearRamp("VECSEL3_CHIRP", 1, chirpLen, (double)Parameters["v0_offset"] + Convert.ToDouble(Parameters["v0_amp"]));
+        p.AddLinearRamp("VECSEL3_CHIRP", chirpLen + 2, chirpLen, (double)Parameters["v0_offset"]);
 
         return p;
    }

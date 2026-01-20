@@ -77,7 +77,7 @@ namespace DAQ.HAL
 
         public override void Disconnect()
         {
-            if (!Environs.Debug) serial.Dispose();
+            if (!Environs.Debug && serial != null) serial.Dispose();
             connected = false;
         }
 

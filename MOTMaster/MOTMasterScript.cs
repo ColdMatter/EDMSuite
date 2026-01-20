@@ -17,7 +17,7 @@ namespace MOTMaster
         }
         public Dictionary<String,Object> Parameters;
 
-        public Dictionary<string, List<bool>> switchConfiguration = new Dictionary<string, List<bool>> { };
+        public Dictionary<string, List<object>> switchConfiguration = new Dictionary<string, List<object>> { };
 
         public MOTMasterSequence GetSequence()
         {

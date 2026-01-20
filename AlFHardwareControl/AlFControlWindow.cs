@@ -156,6 +156,7 @@ namespace AlFHardwareControl
             {
                 return this.CryoStatus.Text;
             });
+
             #endregion
 
             #region Tasks

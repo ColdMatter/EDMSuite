@@ -357,9 +357,14 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public Dictionary<string,List<bool>> GetSwitchConfiguration()
+        public Dictionary<string,List<object>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
+        }
+
+        public Dictionary<string, object> GetParameters()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).Parameters;
         }
 
         public void Run()
