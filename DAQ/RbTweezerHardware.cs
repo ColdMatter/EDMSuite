@@ -1,35 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using System.Collections;
-using System.Runtime.Remoting;
+
+using NationalInstruments;
 using NationalInstruments.DAQmx;
 using DAQ.WavemeterLock;
 using DAQ.Pattern;
-using System.Collections.Generic;
-using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
+using DAQ.TransferCavityLock2012;
 
 namespace DAQ.HAL
 {
-    /// <summary>
-    /// This is the specific hardware that the edm machine has. This class conforms
-    /// to the Hardware interface.
-    /// </summary>
-    public class PXIEDMHardware : DAQ.HAL.Hardware
+    public class RbTweezerHardware : DAQ.HAL.Hardware
     {
-        public override void ConnectApplications()
-        {
-            //RemotingHelper.ConnectEDMHardwareControl();
-            //RemotingHelper.ConnectPhaseLock();
-            //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
-            // Type t = Type.GetType("MarshalByRefObject"); 
-            // ask the remoting system for access to TCL2012
-            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-            //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
-        }
 
-
-        public PXIEDMHardware()
+        public RbTweezerHardware()
         {
+
 
             // add the boards
 
@@ -154,18 +145,47 @@ namespace DAQ.HAL
             // these channel are usually software switched - they are on the AO board
             //AddAnalogOutputChannel("steppingBBias", aoBoard + "/ao8", -10, 10);
 
+            // AddDigitalInputChannel("tRbD1LockBlock", pgBoard, 0, 5);
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // DIGITAL OUTPUT CHANNELS - PXISlot5
             AddDigitalOutputChannel("aoTrigger", pgBoard, 3, 6);
             AddDigitalOutputChannel("tCoolSwitch", pgBoard, 0, 0);
             AddDigitalOutputChannel("tRepSwitch", pgBoard, 0, 1);
+            AddDigitalOutputChannel("tTransportTTL", pgBoard, 0, 2);
+            AddDigitalOutputChannel("tD1AOMSwitch", pgBoard, 0, 3);
+            AddDigitalOutputChannel("tVerticalShutter", pgBoard, 0, 4);
             AddDigitalOutputChannel("tMOTCamTrig", pgBoard, 3, 0);
-            AddDigitalOutputChannel("tMOTccTrig", pgBoard, 3, 1);
-            AddDigitalOutputChannel("tRbFluo", pgBoard, 3, 2);
+            AddDigitalOutputChannel("tMicrowaveSwitch", pgBoard, 3, 1);
             AddDigitalOutputChannel("tHamCamTrig", pgBoard, 3, 3);
+            AddDigitalOutputChannel("tTweezerModSwitch", pgBoard, 3, 4); // '0' - modulated, '1' - unmodulated
+            AddDigitalOutputChannel("tTweezerSwitch", pgBoard, 3, 5); // '1' - off, '0' - on
 
+            
+            // ANALOG OUTPUT CHANNELS - PXISlot4
+            AddAnalogOutputChannel("tMOTcc", aoBoard + "/ao0", 0, 1.81);
+            AddAnalogOutputChannel("tRbRepVCO", aoBoard + "/ao1", 0, 5);
+            AddAnalogOutputChannel("tRbCoolVCO", aoBoard + "/ao3", 0, 5);
+            AddAnalogOutputChannel("tShimXcc", aoBoard + "/ao2", -10.0, 10.0);
+            AddAnalogOutputChannel("tShimYcc", aoBoard + "/ao4", -10.0, 10.0);
+            AddAnalogOutputChannel("tShimZcc", aoBoard + "/ao6", -10.0, 10.0);
+            AddAnalogOutputChannel("tTweezerModVCF", aoBoard + "/ao7", -10.0, 10.0);
+            AddAnalogOutputChannel("tRbD1VCO", aoBoard + "/ao10", 0, 10);
+            AddAnalogOutputChannel("tRbD1VVA", aoBoard + "/ao11", 0, 10);
+            AddAnalogOutputChannel("tMOTccSwitch", aoBoard + "/ao12", 0, 10);
+            AddAnalogOutputChannel("tD1SidebandControl", aoBoard + "/ao13", 0, 0.6);
+            AddAnalogOutputChannel("tRbD1Lock", aoBoard + "/ao29");
+            AddAnalogOutputChannel("tRbD2CoolVVA", aoBoard + "/ao8", 0, 5.0);
+            AddAnalogOutputChannel("tRbD2RepVVA", aoBoard + "/ao9", 0, 5.0);
+            AddAnalogOutputChannel("tRbD2RepOffset", aoBoard + "/ao14", 0, 5.0);
+            AddAnalogOutputChannel("tRbD2CoolOffset", aoBoard + "/ao15", 0, 5.0);
+            AddAnalogOutputChannel("tTweezerVCO", aoBoard + "/ao16", 0, 10.0);
+            AddAnalogOutputChannel("tTweezerVCA", aoBoard + "/ao17", 0, 10.0);
+            AddAnalogOutputChannel("tMagneticTrapcc", aoBoard + "/ao18", 0, 10.0);
+            AddAnalogOutputChannel("tMicrowaveModVCF", aoBoard + "/ao19", -5.0, 5.0);
 
-            AddAnalogOutputChannel("tMOTcc", aoBoard + "/ao11", 0, 0.5);
-            AddAnalogOutputChannel("tRbRepVCO", aoBoard + "/ao10", 0, 5);
-            AddAnalogOutputChannel("tRbCoolVCO", aoBoard + "/ao9", 0, 5);
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //AddAnalogOutputChannel("tCoolVCO", aoBoard + "/ao12", 0, 0.5);
             //AddAnalogOutputChannel("tRepVCO", aoBoard + "/ao13", 0, 0.5);
@@ -437,20 +457,38 @@ namespace DAQ.HAL
             analogBoards.Add("AO", aoBoard);
             //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
-            Info.Add("AOPatternTrigger", aoBoard + '/PFI4');//"/PFI4"
-            //Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
+            //Info.Add("AOPatternTrigger", aoBoard + "/PFI4");//"/PFI4"
+            Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
+            Info.Add("PGTriggerLine", pgBoard + "/PFI5");//"/PFI4"
+            Info.Add("AOPatternBuffer", true);
+
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            //wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            wmlConfig.AddSlaveLaser("RbD1", "tRbD1Lock", 7);
+            //wmlConfig.AddLockBlock("RbD1", "tRbD1LockBlock");
+            wmlConfig.AddLaserConfiguration("RbD1", 377.105206, 50, 500);
+
             //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
             //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
             //wmlConfig.AddLaserConfiguration("TestLaser2", 575.560, -100, 0);
+
             Info.Add("Default", wmlConfig);
+
+
+        }
+
+        public override void ConnectApplications()
+        {
+            // ask the remoting system for access to TCL2012
+            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            // System.Runtime.Remoting.RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1190/controller.rem");
         }
 
     }
+
 }

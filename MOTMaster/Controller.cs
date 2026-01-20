@@ -134,8 +134,8 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
-            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1172/controller.rem");
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //    "tcp://localhost:1172/controller.rem");
 
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
@@ -458,11 +458,11 @@ namespace MOTMaster
                             else
                             {
                                 Dictionary<String, Object> report = null;
-                                if (config.ReporterUsed)
+                                /*if (config.ReporterUsed)
                                 {
                                     report = GetExperimentReport();
                                 }
-
+                                */
                                 save(sequence, script, scriptPath, report);
 
                             }
@@ -516,6 +516,7 @@ namespace MOTMaster
         {
             initializeHardware(sequence);
             run(sequence);
+            while (pgMaster.TaskRunning && status == RunningState.running) ;
             releaseHardware();
         }
 

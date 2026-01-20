@@ -23,6 +23,13 @@ namespace DAQ.HAL
         private Task counterTask;
         string clock_line;
         private bool taskRunning;
+        public bool TaskRunning
+        {
+            get
+            {
+                return taskRunning;
+            }
+        }
 
 		public DAQMxPatternGenerator(String device)
 		{
@@ -33,7 +40,7 @@ namespace DAQ.HAL
 		public void OutputPattern(UInt32[] pattern)
 		{
             //writer.WriteMultiSamplePort(false, pattern);
-            //taskRunning = true;
+            taskRunning = true;
             //pgTask.Start();
 			//SleepOnePattern();
             
@@ -43,7 +50,7 @@ namespace DAQ.HAL
         public void OutputPattern(UInt32[] pattern, bool sleep)
         {
             //writer.WriteMultiSamplePort(false, pattern);
-            //taskRunning = true;
+            taskRunning = true;
             //pgTask.Start();
             
             writer.WriteMultiSamplePort(false, pattern);
@@ -230,11 +237,17 @@ namespace DAQ.HAL
 
             /**** Write configuration to board ****/
 
+			pgTask.Control(TaskAction.Verify);
 			pgTask.Control(TaskAction.Commit);
-			writer = new DigitalSingleChannelWriter(pgTask.Stream);
+            writer = new DigitalSingleChannelWriter(pgTask.Stream);
             pgTask.Done += new TaskDoneEventHandler(pgTask_Done);
 		}
 		
+        private void debug(object sender, TaskDoneEventArgs e)
+        {
+            Console.WriteLine("a");
+        }
+
 		public void StopPattern()
 		{
             if (pgTask != null)

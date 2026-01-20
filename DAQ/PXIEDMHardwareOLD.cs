@@ -16,32 +16,28 @@ namespace DAQ.HAL
     /// </summary>
     public class PXIEDMHardware : DAQ.HAL.Hardware
     {
-        public override void ConnectApplications()
-        {
-            //RemotingHelper.ConnectEDMHardwareControl();
-            //RemotingHelper.ConnectPhaseLock();
-            //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
-            // Type t = Type.GetType("MarshalByRefObject"); 
-            // ask the remoting system for access to TCL2012
-            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-            //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
-        }
-
+       public override void ConnectApplications()
+       {
+           //RemotingHelper.ConnectEDMHardwareControl();
+           //RemotingHelper.ConnectPhaseLock();
+           //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
+          // Type t = Type.GetType("MarshalByRefObject"); 
+                  // ask the remoting system for access to TCL2012
+          // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+         //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
+       }
+ 
 
         public PXIEDMHardware()
         {
 
             // add the boards
-
-            Boards.Add("pg", "/PXI1Slot5");   // need it
-            Boards.Add("aoBoard", "/PXI1Slot4"); //PXI6723
             //Boards.Add("daq", "/PXI1Slot18");
-            //Boards.Add("doBoard", "/PXI1Slot11");
-            //Boards.Add("analogIn2", "/PXI1Slot17");
+            Boards.Add("pg", "/PXI1Slot10");   // need it
             //Boards.Add("doBoard", "/PXI1Slot11");
             //Boards.Add("analogIn2", "/PXI1Slot17");
             //Boards.Add("counter", "/PXI1Slot16");
-            //Boards.Add("counter", "/PXI1Slot16");
+            Boards.Add("aoBoard", "/PXI1Slot2"); //PXI6723
             //Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
             //Boards.Add("analogIn", "/PXI1Slot15");
             //Boards.Add("usbDAQ2", "/Dev4");
@@ -85,9 +81,10 @@ namespace DAQ.HAL
             //Info.Add("pumpAOMFreqMon", new bool[] { false, true }); // IN 2
             //Info.Add("FLModulationFreqMon", new bool[] { true, false }); // IN 3
 
-            //Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
-            //Info.Add("AOPatternTrigger", aoBoard + "/PFI6"); 
-            //Info.Add("AOClockLine", aoBoard + "/PFI5");
+            Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
+
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI6"); 
+            Info.Add("AOClockLine", aoBoard + "/PFI5");
 
             // YAG laser
             //yag = new BrilliantLaser("ASRL13::INSTR");
@@ -145,32 +142,15 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("pumprfSwitch", pgBoard, 3, 4);
 
             */
-            //AddDigitalOutputChannel("Test01", pgBoard, 0, 0);
-            // AddDigitalOutputChannel("cameraTrigger", pgBoard, 3, 5);
+            AddDigitalOutputChannel("aoTrigger", pgBoard, 0, 0);
+            AddDigitalOutputChannel("cameraTrigger", pgBoard, 3, 4);
 
             // rf awg test
             //AddDigitalOutputChannel("rfAWGTestTrigger", doBoard, 0, 1);
 
             // these channel are usually software switched - they are on the AO board
-            //AddAnalogOutputChannel("steppingBBias", aoBoard + "/ao8", -10, 10);
+            AddAnalogOutputChannel("steppingBBias", aoBoard + "/ao8", -10, 10);
 
-            AddDigitalOutputChannel("aoTrigger", pgBoard, 3, 6);
-            AddDigitalOutputChannel("tCoolSwitch", pgBoard, 0, 0);
-            AddDigitalOutputChannel("tRepSwitch", pgBoard, 0, 1);
-            AddDigitalOutputChannel("tMOTCamTrig", pgBoard, 3, 0);
-            AddDigitalOutputChannel("tMOTccTrig", pgBoard, 3, 1);
-            AddDigitalOutputChannel("tRbFluo", pgBoard, 3, 2);
-            AddDigitalOutputChannel("tHamCamTrig", pgBoard, 3, 3);
-
-
-            AddAnalogOutputChannel("tMOTcc", aoBoard + "/ao11", 0, 0.5);
-            AddAnalogOutputChannel("tRbRepVCO", aoBoard + "/ao10", 0, 5);
-            AddAnalogOutputChannel("tRbCoolVCO", aoBoard + "/ao9", 0, 5);
-
-            //AddAnalogOutputChannel("tCoolVCO", aoBoard + "/ao12", 0, 0.5);
-            //AddAnalogOutputChannel("tRepVCO", aoBoard + "/ao13", 0, 0.5);
-            //AddAnalogOutputChannel("tCoolVVA", aoBoard + "/ao14", 0, 0.5);
-            //AddAnalogOutputChannel("tRepVVA", aoBoard + "/ao15", 0, 0.5);
             /*
             AddDigitalOutputChannel("notB", aoBoard, 0, 1);
 
@@ -421,24 +401,19 @@ namespace DAQ.HAL
             */
 
 
-            // AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
-            // AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
-
-            // AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0); 
+            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
+            AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
+            AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
 
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            //Info.Add("PatternGeneratorBoard", pgBoard);
-            Info.Add("Element", "Tweezer");
-
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", aoBoard);
             //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
-            Info.Add("AOPatternTrigger", aoBoard + '/PFI4');//"/PFI4"
-            //Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
