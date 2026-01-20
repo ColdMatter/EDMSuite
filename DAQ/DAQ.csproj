@@ -641,6 +641,7 @@
     <Compile Include="exponentialFitter.cs" />
     <Compile Include="exponentialPeakFitter.cs" />
     <Compile Include="InfluxDBDataLogger.cs" />
+    <Compile Include="PfeifferPressureGauge.cs" />
     <Compile Include="PXIEDMHardware.cs" />
     <Compile Include="StepperMotorController.cs" />
     <Compile Include="DAQMxPatternGenerator.cs" />
