@@ -11,3 +11,15 @@ iamjoe.sh
 *.pyc
 *.pdb
 */.vscode
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/dcamapi4.cs
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/dcamapi.lib
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/app.config
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/AssemblyInfo.cs
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Resources.Designer.cs
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Resources.resx
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Settings.Designer.cs
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Properties/Settings.settings
+/HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/Program.cs
+/packages/BitMiracle.LibTiff.NET.2.4.660
+/BECMOTMasterScripts/app.config
+/MoleculeMOTMasterScripts/app.config

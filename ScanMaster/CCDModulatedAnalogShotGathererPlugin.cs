@@ -44,18 +44,24 @@ namespace ScanMaster.Acquire.Plugins
         private double[,] latestData;
 
 
+		//Rhys Try
+
 		protected override void InitialiseBaseSettings()
 		{
 			settings["gateStartTime"] = 600;
 			settings["gateLength"] = 12000;
-			settings["ccdEnableStartTime"] = 600;
-			settings["ccdEnableLength"] = 10000;
+			settings["ccdEnableStartTimeInMs"] = 0;
+			settings["ccdEnableLengthInMs"] = 10;
 			settings["clockPeriod"] = 1;
 			settings["sampleRate"] = 100000;
-			settings["channel"] = "detectorA,detectorB";
+			settings["channel"] = "pmt";//lattice only have one channel to aquire on/off shot at the moment, so Guanchen changed the detectorA,detectorB to pmt on 07Nov2024
 			settings["cameraChannel"] = "cameraEnabler";
 			settings["inputRangeLow"] = -1.0;
 			settings["inputRangeHigh"] = 10.0;
+			settings["TOFgateSelectionStartInMs"] = 25;
+			settings["TOFgateSelectionEndInMs"] = 28;
+			settings["TOFgateBgStartInMs"] = 35;
+			settings["TOFgateBgEndInMs"] = 40;
 		}
 
 		protected override void InitialiseSettings()
@@ -97,11 +103,11 @@ namespace ScanMaster.Acquire.Plugins
 				counterTask1.COChannels.CreatePulseChannelTicks(
 					pulseChannel.PhysicalChannel,
 					pulseChannel.Name,
-					"20MHzTimebase",
+					"100kHzTimebase",
 					COPulseIdleState.Low,
-					0,
+					100 * (int)settings["ccdEnableStartTimeInMs"],//the delay in ms, the multiplier needs to be changed for a different timebase. E.g. 100 should be used for 100 kHz
 					100,
-					(20000000/(int)settings["sampleRate"]) * (int)settings["ccdEnableLength"]
+					100*(int)settings["ccdEnableLengthInMs"]//the duration in ms
 					);
 				
 				//counterTask1.COChannels[0].PulseTerminal = "/DAQ_PXIe_6363/PFI12";
@@ -134,12 +140,16 @@ namespace ScanMaster.Acquire.Plugins
 				// trigger off PFI1 (with the standard routing, that's the same as trig2)
 				inputTask2.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
 					(string)Environs.Hardware.GetInfo("analogTrigger1"),
-					DigitalEdgeStartTriggerEdge.Rising);				
+					DigitalEdgeStartTriggerEdge.Rising);	
+				
 				// trigger off PFI2 (with the standard routing, that's the same as trig1)
+				//counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+				//	(string)Environs.Hardware.GetInfo("analogTrigger2"),
+				//	DigitalEdgeStartTriggerEdge.Rising);
+				//Adapt the above counter channel task code for the lattice machine
 				counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
 					(string)Environs.Hardware.GetInfo("analogTrigger2"),
 					DigitalEdgeStartTriggerEdge.Rising);
-
 
 				inputTask1.Control(TaskAction.Verify);
 				inputTask2.Control(TaskAction.Verify);

@@ -29,7 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>C:\Users\UEDM\EDMSuitePrograms\</PublishUrl>
     <Install>true</Install>
@@ -574,9 +574,6 @@
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.ModularInstruments.Common, Version=24.0.45.2, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Visa, Version=24.0.0.49398, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
@@ -619,6 +616,8 @@
     <Compile Include="AcquisitorPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AnapicoCH2PowerOutputPlugin.cs" />
+    <Compile Include="AnapicoCH2FrequencyOutputPlugin.cs" />
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
@@ -640,14 +639,29 @@
     <Compile Include="FourShutterPatternPluginEdit.cs" />
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="DMMInputPlugin.cs" />
-    <Compile Include="UEDMHardwareControllerOutputPlugin.cs" />
+    <Compile Include="LatticeBFieldFourShotPatternBuilder.cs" />
+    <Compile Include="LatticeBFieldFourShotPatternPlugin.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
+    <Compile Include="LatticePnPModYAGFourShotsPatternBuilder.cs" />
+    <Compile Include="LatticePnPModYAGFourShotsPatternPlugin.cs" />
+    <Compile Include="LatticeFourShotPatternBuilder.cs" />
+    <Compile Include="LatticePnPModYAGPatternBuilder.cs" />
     <Compile Include="CCDModulatedAnalogShotGathererPlugin.cs" />
+    <Compile Include="LatticeFourShotPatternPlugin.cs" />
+    <Compile Include="LatticeBFieldModPatternBuilder.cs" />
     <Compile Include="LatticePumpProbePatternBuilder.cs" />
+    <Compile Include="LatticePnPModYAGPatternPlugin.cs" />
+    <Compile Include="LatticeBFieldModPatternPlugin.cs" />
     <Compile Include="LatticePumpProbePatternPlugin.cs" />
+    <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModulatedFourAnalogShotGathererPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
+    <Compile Include="AnapicoCH1FrequencyOutputPlugin.cs" />
+    <Compile Include="AnapicoCH1PowerOutputPlugin.cs" />
     <Compile Include="NshotsPatternBuilderCCD.cs" />
     <Compile Include="NshotsPatternPluginCCD.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
@@ -777,9 +791,6 @@
     </Compile>
     <Compile Include="GuidePatternBuilder.cs" />
     <Compile Include="GuidePatternPlugin.cs" />
-    <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="NotInTheLeastBitBrilliantYAGPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -960,7 +971,7 @@
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="licenses.licx" />
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1079,7 +1090,6 @@
     <Folder Include="bin\x86\ultracoldEDM\" />
     <Folder Include="bin\x86\ZeemanSisyphus\" />
     <Folder Include="bin\ZeemanSisyphus\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

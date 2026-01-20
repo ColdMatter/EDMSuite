@@ -48,14 +48,14 @@ namespace WavemeterLock
 
             if (controller.WMLState == Controller.ControllerState.RUNNING)
             {
-                wmlLED.Value = true;
+                toggleLED(wmlLED, true);
                 masterBttn.Text = "Stop WML";
 
             }
 
             else
             {
-                wmlLED.Value = false;
+                toggleLED(wmlLED, false);
                 masterBttn.Text = "Start WML";
             }
 
@@ -247,31 +247,43 @@ namespace WavemeterLock
             switch (n)
             {
                 case 1:
-                    led1.Value = val;
+                    toggleLED(led1, val);
                     break;
                 case 2:
-                    led2.Value = val;
+                    toggleLED(led2, val);
                     break;
                 case 3:
-                    led3.Value = val;
+                    toggleLED(led3, val);
                     break;
                 case 4:
-                    led4.Value = val;
+                    toggleLED(led4, val);
                     break;
                 case 5:
-                    led5.Value = val;
+                    toggleLED(led5, val);
                     break;
                 case 6:
-                    led6.Value = val;
+                    toggleLED(led6, val);
                     break;
                 case 7:
-                    led7.Value = val;
+                    toggleLED(led7, val);
                     break;
                 case 8:
-                    led8.Value = val;
+                    toggleLED(led8, val);
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void toggleLED(Panel led, bool state)
+        {
+            if (state)
+            {
+                led.BackColor = Color.Green;
+            }
+            else
+            {
+                led.BackColor = Color.Red;
             }
         }
 

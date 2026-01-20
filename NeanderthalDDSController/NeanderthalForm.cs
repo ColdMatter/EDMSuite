@@ -2,6 +2,8 @@ using System.Windows.Forms;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace NeanderthalDDSController
 {
@@ -13,9 +15,11 @@ namespace NeanderthalDDSController
 
         public Controller controller;
 
-        public NeanderthalForm()
+        public NeanderthalForm(Controller ctrl)
         {
             InitializeComponent();
+            controller = ctrl;
+            controller.parameterUpdated += () => { updatePatternList(); };
         }
 
 
@@ -24,8 +28,6 @@ namespace NeanderthalDDSController
         {
 
         }
-        private Button button_add;
-        private Button button_delete;
 
 
         private void Form_Load(object sender, EventArgs e)
@@ -126,7 +128,6 @@ namespace NeanderthalDDSController
 
             controller.addParToPatternList(eventName, timeDelay, freqs, amps, freq_slopes, amp_slpoes);
 
-            updatePatternList();
             updatePatternIndicator();
         }
 
@@ -198,7 +199,6 @@ namespace NeanderthalDDSController
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            updatePatternList();
         }
 
         private void button_start_pattern_clicked(object sender, EventArgs e)
@@ -238,6 +238,8 @@ namespace NeanderthalDDSController
             updatePatternList();
             lablePatternName.Text = filename;
         }
+
+       
 
 
 
@@ -335,6 +337,8 @@ namespace NeanderthalDDSController
             }
         }
 
+        
+
         #region FormatTsar
         private void TextBox_Amp_TextChanged(object sender, EventArgs e)
         {
@@ -381,6 +385,21 @@ namespace NeanderthalDDSController
         private void Menu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
+        }
+
+        private void NeanderthalForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NeanderthalForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            controller.closeCard();
+        }
+
+        private void testButton_Click(object sender, EventArgs e)
+        {
+            controller.testDDS();
         }
     }
 }

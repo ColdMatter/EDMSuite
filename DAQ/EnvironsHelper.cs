@@ -76,6 +76,13 @@ namespace DAQ.Environment
         /// </summary>
         public int wavemeterLockTCPChannel;
 
+
+        public int emccdTCPChannel;
+
+        /// <summary>
+        ///  TCP channel for Hamamatsu camera.
+        /// This is the channel shared between wavemeter lock and other programmes.
+        /// Add this to the computer config on which you run the Hamamatsu camera.
         /// <summary>
         /// Experiment type is for code that needs to know what experiment it's running on.
         /// </summary>
@@ -109,7 +116,10 @@ namespace DAQ.Environment
                 case "PH-NI-LAB":
                     Hardware = new GobelinHardware();
                     FileSystem = new FileSystem();
-                    Debug = true;
+                    Debug = false;
+                    serverComputerName = "PH-NI-LAB";
+                    serverTCPChannel = 1984;
+                    emccdTCPChannel = 2406;
                     //ExperimentType = "edm";
                     break;
 
@@ -174,7 +184,7 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
-#if CaF || ZS
+
                 case "PH-BONESAW":
                     Hardware = new MoleculeMOTHardware();
                     FileSystem = new PHBonesawFileSystem();
@@ -184,7 +194,7 @@ namespace DAQ.Environment
                     Info.Add("SwitchSequenceCode", "SwitchSequenceV1`");
                     Debug = false;
                     break;
-#endif
+
 
                 case "CLAM":
                     Hardware = new SympatheticHardware();
@@ -201,17 +211,19 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                case "IC-CZC202DMH1":
+                case "IC-CZC535759M":
                     Hardware = new CaFBECHardware();
                     FileSystem = new CaFBECFileSystem();
                     Debug = false;
                     serverComputerName = "IC-CZC136CFDJ";
                     serverTCPChannel = 1984;
                     wavemeterLockTCPChannel = 1234;
+                    viewerServerComputerName = "PH-BONESAW";
+                    viewerServerTCPChannel = 1800;
                     //ExperimentType = "edm";
                     break;
 
-                #if EDM
+               
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
@@ -221,7 +233,7 @@ namespace DAQ.Environment
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
-#endif
+
 
                 //PC running TCL for EDM
                 case "GREMLIN":
@@ -406,6 +418,25 @@ namespace DAQ.Environment
                     serverComputerName = "ULTRACOLDEDM";
                     serverTCPChannel = 1997;
                     wavemeterLockTCPChannel = 2345;
+                    emccdTCPChannel = 1107;
+                    break;
+
+                case "ic-czc5347lb5":
+                    Hardware = new GobelinHardware();
+                    FileSystem = new FileSystem();
+                    Debug = false;
+                    serverComputerName = "ic-czc5347lb5";
+                    serverTCPChannel = 1984;
+                    emccdTCPChannel = 2104;
+                    break;
+
+                case "IC-CZC221CCHS":
+                    Hardware = new RbTweezerHardware();
+                    FileSystem = new RbTweezerFileSystem();
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 2146;
+                    Debug = false;
                     break;
 
                 default:

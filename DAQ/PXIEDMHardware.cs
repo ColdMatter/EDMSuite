@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
 
+
 namespace DAQ.HAL
 {
     /// <summary>
@@ -401,7 +402,10 @@ namespace DAQ.HAL
             */
 
 
-            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            // AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            // AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
+
+            AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao2", 0, 3);
             AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
             AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
             AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0);
@@ -409,17 +413,22 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
+            //Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("Element", "Tweezer");
+
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", aoBoard);
             //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
+            Info.Add("AOPatternTrigger", aoBoard + '/PFI4');//"/PFI4"
+            //Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1);
+            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 4);
             //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
             //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);

@@ -36,7 +36,9 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpEthernet.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NpSerial.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe.config
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.xml
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NeanderthalDDSController.exe
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpcmDrv64.NET.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NeanderthalDDSController.pdb
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NeanderthalDDSController.exe.config

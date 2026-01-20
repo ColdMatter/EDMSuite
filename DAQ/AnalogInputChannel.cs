@@ -13,6 +13,7 @@ namespace DAQ.HAL
 		
 		private AITerminalConfiguration terminalConfig;
         private Double calibration;
+		private AIThermocoupleType aIThermocoupleType;
 		public bool invert { get; }
 
 		public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig) 
@@ -43,6 +44,15 @@ namespace DAQ.HAL
 			this.invert = false;
 		}
 
+		public AnalogInputChannel(String name, String physicalChannel, AITerminalConfiguration terminalConfig, AIThermocoupleType aIThermocoupleType)
+		{
+			this.name = name;
+			this.physicalChannel = physicalChannel;
+			this.terminalConfig = terminalConfig;
+			this.aIThermocoupleType = aIThermocoupleType;
+			this.invert = false;
+		}
+
 		public string Device
         {
             get { return '/' + physicalChannel.Split('/')[1]; }
@@ -59,6 +69,11 @@ namespace DAQ.HAL
             get { return calibration; }
         }
 
+		public AIThermocoupleType AIThermocoupleType
+		{
+			get { return aIThermocoupleType; }
+		}
+
 
 		public void AddToTask( Task task, double inputRangeLow, double inputRangeHigh )
 		{
@@ -71,5 +86,17 @@ namespace DAQ.HAL
 				AIVoltageUnits.Volts
 				);
 		}
+
+		public void AddToTask ( Task task, double inputRangeLow, double inputRangeHigh, AIThermocoupleType aIThermocoupleType )
+        {
+			AIChannel aichannel = task.AIChannels.CreateThermocoupleChannel(
+				physicalChannel,
+				name,
+				inputRangeLow,
+				inputRangeHigh,
+				aIThermocoupleType,
+				AITemperatureUnits.DegreesC
+				);
+        }
 	}
 }

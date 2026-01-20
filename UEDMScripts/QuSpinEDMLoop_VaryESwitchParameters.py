@@ -61,7 +61,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	# load a default BlockConfig and customise it appropriately
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
@@ -182,19 +182,19 @@ def QuSpinGo():
         print("E-Field Off")
     # hc.EnableBleed( True )
     # System.Threading.Thread.CurrentThread.Join(5000)
-    hc.CalibrateIMonitors()
+    # hc.CalibrateIMonitors()
     # hc.EnableBleed( False )
     # System.Threading.Thread.CurrentThread.Join(500)
     hc.SetCPlusVoltage(cPlusV)
     hc.SetCMinusVoltage(cMinusV)
-    print("E Params refreshed")
-    System.Threading.Thread.CurrentThread.Join(5000)
+    # print("E Params refreshed")
+    # System.Threading.Thread.CurrentThread.Join(5000)
     print("E-field on")
     hc.EnableEField(True)
     System.Threading.Thread.CurrentThread.Join(10000)
     # hc.EnableEField( True )
     # hc.EnableGreenSynth( True )
-    print("leakage monitors calibrated")
+    # print("leakage monitors calibrated")
 
     bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
 

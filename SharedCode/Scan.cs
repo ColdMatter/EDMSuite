@@ -124,7 +124,66 @@ namespace Data.Scans
 			return temp;
 		}
 
-        public double[] GetMeanOnArray(int index)
+		public double[] GetBgSubtractedDifferenceIntegralArray(int index, double signalStartTime, double signalEndTime, double bgStartTime, double bgEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] on = GetBackgroundSubstractedTOFOnIntegralArray(index, signalStartTime, signalEndTime, bgStartTime, bgEndTime);
+			double[] off = GetBackgroundSubstractedTOFOffIntegralArray(index, signalStartTime, signalEndTime, bgStartTime, bgEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = on[i] - off[i];
+			return temp;
+		}
+
+		public double[] GetBgSubtractedRatioIntegralArray(int index, double signalStartTime, double signalEndTime, double bgStartTime, double bgEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] on = GetBackgroundSubstractedTOFOnIntegralArray(index, signalStartTime, signalEndTime, bgStartTime, bgEndTime);
+			double[] off = GetBackgroundSubstractedTOFOffIntegralArray(index, signalStartTime, signalEndTime, bgStartTime, bgEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = on[i] / off[i];
+			return temp;
+		}
+
+		//define a new function to do background substraction
+		public double[] GetBackgroundSubstractedTOFOnIntegralArray(int index, double signalStartTime, double signalEndTime, double bgStartTime, double bgEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArray = GetTOFOnIntegralArray(index, signalStartTime, signalEndTime);
+			double[] backgroundArray = GetTOFOnIntegralArray(index, bgStartTime, bgEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArray[i] - backgroundArray[i]*(signalEndTime- signalStartTime)/(bgEndTime- bgStartTime);
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
+
+		public double[] GetBackgroundSubstractedTOFOffIntegralArray(int index, double signalStartTime, double signalEndTime, double bgStartTime, double bgEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArray = GetTOFOffIntegralArray(index, signalStartTime, signalEndTime);
+			double[] backgroundArray = GetTOFOffIntegralArray(index, bgStartTime, bgEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArray[i] - backgroundArray[i] * (signalEndTime - signalStartTime) / (bgEndTime - bgStartTime);
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
+		//define a new function to do yg on-yg off
+
+		public double[] TOFOnIntegralArrayYgOnMinusOff(double signalStartTime, double signalEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArrayYgOn = GetTOFOnIntegralArray(0, signalStartTime, signalEndTime);
+			double[] signalArrayYgOff = GetTOFOnIntegralArray(1, signalStartTime, signalEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArrayYgOn[i] - signalArrayYgOff[i];
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
+		public double[] TOFOffIntegralArrayYgOnMinusOff(double signalStartTime, double signalEndTime)
+		{
+			double[] temp = new double[points.Count];
+			double[] signalArrayYgOn = GetTOFOffIntegralArray(0, signalStartTime, signalEndTime);
+			double[] signalArrayYgOff = GetTOFOffIntegralArray(1, signalStartTime, signalEndTime);
+			for (int i = 0; i < points.Count; i++) temp[i] = signalArrayYgOn[i] - signalArrayYgOff[i];
+			//for each background term, we multiply a complicated correction factor in case bgEndTime- bgStartTime is not the same as the signalEndTime- signalStartTime
+			return temp;
+		}
+
+		public double[] GetMeanOnArray(int index)
         {
             double[] temp = new double[points.Count];
             for (int i = 0; i < points.Count; i++) temp[i] =
