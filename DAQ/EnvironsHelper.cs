@@ -430,6 +430,15 @@ namespace DAQ.Environment
                     emccdTCPChannel = 2104;
                     break;
 
+                case "IC-CZC221CCHS":
+                    Hardware = new RbTweezerHardware();
+                    FileSystem = new RbTweezerFileSystem();
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 2146;
+                    Debug = false;
+                    break;
+
                 default:
                     Hardware = new EDMHardware();
                     FileSystem = new FileSystem();
