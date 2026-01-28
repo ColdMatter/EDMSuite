@@ -132,7 +132,7 @@ namespace AlFHardwareControl
 
             }
 
-            integralView.DataSource = this._dvIntegrals;
+            integralView.DataSource = mmdata[0].Stats;
             //integralView.Dock = DockStyle.Fill;
             integralView.AutoGenerateColumns = true;
             integralView.AutoSizeRowsMode =
@@ -254,6 +254,7 @@ namespace AlFHardwareControl
                 CtrTask.Start();
             if (AI)
                 DAQTask.Start();
+
             dataAcquired.Set();
         }
 
@@ -929,40 +930,6 @@ namespace AlFHardwareControl
 
         private int dataTabsSelectedIndex;
 
-        private class IntegralEntry
-        {
-            public IntegralEntry(double val)
-            {
-                Value = val;
-            }
-            public double Value { get; set; }
-        }
-
-        private List<double> _integrals = new List<double> { };
-        private List<IntegralEntry> _dvIntegrals = new List<IntegralEntry> {};
-        public List<double> Integrals
-        {
-            get
-            {
-                return _integrals;
-            }
-            set
-            {
-                _integrals = value;
-                if (_dvIntegrals.Count != switchStates)
-                    _dvIntegrals = Enumerable.Range(0, switchStates).Select(i => new IntegralEntry(0)).ToList();       
-                if (value.Count == switchStates)
-                    _dvIntegrals = value.Select(i => new IntegralEntry(i)).ToList();
-                else
-                {
-                    for (int i = 0; i < value.Count; ++i)
-                        _dvIntegrals[i] = new IntegralEntry(value[i]);
-                }
-                integralView.DataSource = _dvIntegrals;
-                integralView.Refresh();
-            }
-        }
-
         public void ReDrawScanResults() 
         {
             foreach (NationalInstruments.UI.ScatterPlot plot in scanGraph.Plots)
@@ -990,6 +957,7 @@ namespace AlFHardwareControl
         {
             dataTabsSelectedIndex = DataTabs.SelectedIndex;
             ReDrawScanResults();
+            integralView.DataSource = mmdata[dataTabsSelectedIndex].Stats;
         }
 
         public void DictionaryViewClosing()

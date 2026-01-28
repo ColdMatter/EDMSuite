@@ -119,7 +119,7 @@ namespace AlFHardwareControl
         {
             if (xData == null || mmstuff.AIData.Count == 0) return;
             List<double[]> data = NormaliseData();
-            mmstuff.Integrals = IntegrateData(true);
+            UpdateStats(true);
             this.Invoke((Action)(() =>
             {
                 while (mmstuff.SwitchStates * 2 < dataGraph.Plots.Count)
@@ -172,13 +172,13 @@ namespace AlFHardwareControl
 
         }
 
-        public List<double> IntegrateData(bool gate)
+        public void UpdateStats(bool gate)
         {
             List<double[]> normedData = new List<double[]> { };
             List<double[]> normaliser;
             lock (mmstuff)
             {
-                if (!sourceEnabled) return new List<double>{ };
+                if (!sourceEnabled) return;
                 normaliser = mmstuff.AIData[normSourceName];
                 for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
                 {
@@ -194,10 +194,25 @@ namespace AlFHardwareControl
                     }
                 }
             }
-            List<double> result = Enumerable.Range(0, normedData.Count).Select(
+            List<double> integrals = Enumerable.Range(0, normedData.Count).Select(
                     i => Enumerable.Range(0, normedData[0].Length).Select(
                     j => normedData[i][j]).Sum()).ToList();
-            return result;
+
+            List<double> means = Enumerable.Range(0, normedData.Count).Select(
+                    i => Enumerable.Range(0, normedData[0].Length).Select(
+                    j => normedData[i][j]).Average()).ToList();
+
+            if (mmstuff.SwitchStates < stats.Count)
+                stats.Clear();
+
+            for(int i = 0; i < integrals.Count(); ++i)
+            {
+                if (stats.Count > i)
+                    stats[i] = new StatEntry(integrals[i], means[i]);
+                else
+                    stats.Add(new StatEntry(integrals[i], means[i]));
+            }
+
         }
 
         public List<double[]> NormaliseData(Dictionary<string, List<double[]>> rawData, bool gate)
@@ -365,7 +380,30 @@ namespace AlFHardwareControl
 
             UpdateScan();
             mmstuff.ReDrawScanResults();
-            mmstuff.Integrals = IntegrateData(true);
+            UpdateStats(true);
+        }
+
+        public class StatEntry
+        {
+            public StatEntry(double integral, double mean)
+            {
+                Integral = integral;
+                Mean = mean;
+            }
+            public double Integral { get; set; }
+            public double Mean { get; set; }
+
+        }
+
+        private BindingList<StatEntry> stats = new BindingList<StatEntry> { };
+        public BindingList<StatEntry> Stats
+        {
+            get
+            {
+                return stats;
+            }
         }
     }
+
+
 }
