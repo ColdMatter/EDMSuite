@@ -33,6 +33,7 @@ namespace DAQ.HAL
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", (string)Boards["analog"]);
+            Info.Add("AOPatternBuffer", (bool)true);
             //Info.Add("AOPatternTrigger", Boards["pg"] + "/PFI15");
             Info.Add("AOPatternTrigger", Boards["pg"] + "/do/StartTrigger");
             //Info.Add("AOPatternTrigger", (string)Boards["analog"] + "/PFI0");

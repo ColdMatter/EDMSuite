@@ -32,6 +32,7 @@ namespace AlFHardwareControl
             this.Conn_status = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.M2_Control_Group = new System.Windows.Forms.GroupBox();
+            this.attempt_connection = new System.Windows.Forms.CheckBox();
             this.CurrFreq = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -51,7 +52,6 @@ namespace AlFHardwareControl
             this.LinesSelector = new System.Windows.Forms.ComboBox();
             this.lockCheckBox = new System.Windows.Forms.CheckBox();
             this.VelSet = new AlFHardwareControl.ParamSet();
-            this.attempt_connection = new System.Windows.Forms.CheckBox();
             this.M2_Control_Group.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -100,6 +100,17 @@ namespace AlFHardwareControl
             this.M2_Control_Group.TabIndex = 4;
             this.M2_Control_Group.TabStop = false;
             this.M2_Control_Group.Text = "M2 Laser Control";
+            // 
+            // attempt_connection
+            // 
+            this.attempt_connection.AutoSize = true;
+            this.attempt_connection.Location = new System.Drawing.Point(7, 381);
+            this.attempt_connection.Name = "attempt_connection";
+            this.attempt_connection.Size = new System.Drawing.Size(119, 17);
+            this.attempt_connection.TabIndex = 21;
+            this.attempt_connection.Text = "Attempt Connection";
+            this.attempt_connection.UseVisualStyleBackColor = true;
+            this.attempt_connection.CheckedChanged += new System.EventHandler(this.attempt_connection_CheckedChanged);
             // 
             // CurrFreq
             // 
@@ -276,19 +287,6 @@ namespace AlFHardwareControl
             this.VelSet.Size = new System.Drawing.Size(203, 27);
             this.VelSet.TabIndex = 5;
             this.VelSet.OnSetClick += new System.EventHandler(this.VelSet_OnSetClick);
-            // 
-            // attempt_connection
-            // 
-            this.attempt_connection.AutoSize = true;
-            this.attempt_connection.Checked = true;
-            this.attempt_connection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.attempt_connection.Location = new System.Drawing.Point(7, 381);
-            this.attempt_connection.Name = "attempt_connection";
-            this.attempt_connection.Size = new System.Drawing.Size(119, 17);
-            this.attempt_connection.TabIndex = 21;
-            this.attempt_connection.Text = "Attempt Connection";
-            this.attempt_connection.UseVisualStyleBackColor = true;
-            this.attempt_connection.CheckedChanged += new System.EventHandler(this.attempt_connection_CheckedChanged);
             // 
             // MSquaredLaserView
             // 

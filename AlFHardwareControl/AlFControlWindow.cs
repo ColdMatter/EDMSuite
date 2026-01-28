@@ -387,10 +387,12 @@ namespace AlFHardwareControl
                 string tempB = this.TempB.Text.Trim(new char[] { 'K', ' ', '+' });
                 string tempC = this.TempC.Text.Trim(new char[] { 'K', ' ', '+' });
                 string tempD = this.TempD.Text.Trim(new char[] { 'K', ' ', '+' });
+                string tempD2 = controller.tempD2.Trim(new char[] { 'K', ' ', '+' });
                 grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelA.Text].Points.AddXY(localDate, tempA); });
                 grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelB.Text].Points.AddXY(localDate, tempB); });
                 grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelC.Text].Points.AddXY(localDate, tempC); });
                 grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[this.LabelD.Text].Points.AddXY(localDate, tempD); });
+                grapher.UpdateRenderedObject<Chart>(grapher.DataGraph, (Chart obj) => { obj.Series[controller.nameD2].Points.AddXY(localDate, tempD2); });
 
 
             });
@@ -398,6 +400,7 @@ namespace AlFHardwareControl
             tempGrapher.DataGraph.Series.Add(this.LabelB.Text).ChartType = SeriesChartType.Line;
             tempGrapher.DataGraph.Series.Add(this.LabelC.Text).ChartType = SeriesChartType.Line;
             tempGrapher.DataGraph.Series.Add(this.LabelD.Text).ChartType = SeriesChartType.Line;
+            tempGrapher.DataGraph.Series.Add(controller.nameD2).ChartType = SeriesChartType.Line;
 
             foreach (Series series in tempGrapher.DataGraph.Series)
             {
