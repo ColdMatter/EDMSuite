@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 using NationalInstruments.DAQmx;
 
@@ -85,8 +86,8 @@ namespace ScanMaster.Acquire.Plugins
         private string nameCCD1;
         private string nameCCD2;
         //private string computerCCD1 = "ULTRACOLDEDM"; 
-        private string computerCCD1 = "PH-NI-LAB";
-        private string computerCCD2 = "ic-czc5347lb5";
+        private string computerCCD1 = "PH-NI-LAB"; // CCD A PC (Gobelin)
+        private string computerCCD2 = "ic-czc5347lb5"; // CCD B PC
         private int CCDsnaps;
 
         // add ccd function
@@ -116,6 +117,28 @@ namespace ScanMaster.Acquire.Plugins
             settings["inputRangeLow"] = -1.0;
             settings["inputRangeHigh"] = 10.0;
         }
+
+        // Shirley adds on 20/01/2026 to serialise the CCD parameter and save the xml file
+        [Serializable]
+        public class CCDSettings
+        {
+            public DateTime TimeStamp = DateTime.Now;
+            public int GateStartTime;
+            public int GateLength;
+            public int CCDEnableStartTime;
+            public int CCDEnableLength;
+            public int CCDTriggerMode;
+            public int CCDNBurstFrames;
+            public int CCDNShots;
+            public int pointsPerScan;
+            public int shotsPerPoint;
+            public double CCDAExposureTime;
+            public double CCDBExposureTime;
+            public int CCDAGain;
+            public int CCDBGain;
+            public int SampleRate;
+        }
+
         protected override void InitialiseSettings()
         {
         }
@@ -126,7 +149,7 @@ namespace ScanMaster.Acquire.Plugins
 
             if ((bool)settings["cameraEnabled"])
             {
-                //Set Up TCP CCD1 - ULTRACOLD-EMCCD
+                //Set Up TCP CCD A - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD1).AddressList)
@@ -141,7 +164,7 @@ namespace ScanMaster.Acquire.Plugins
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
-                //Set Up TCP CCD2 - gobelin ("PH-NI-LAB")
+                //Set Up TCP CCD B - "ic-czc5347lb5"
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
@@ -315,6 +338,8 @@ namespace ScanMaster.Acquire.Plugins
                 }
 
             }
+
+
 
             // configure the analog input
             inputTask1 = new NationalInstruments.DAQmx.Task("analog gatherer 1 -" /*+ (string)settings["channel"]*/);
@@ -522,6 +547,24 @@ namespace ScanMaster.Acquire.Plugins
             catch { /* ignore DAQmx errors during forced stop */ }
         }
 
+        // Shirley adds on 21/01/2026. This is to resolve the base path difference between the Gobelin pc and the Centaur pc
+        private string RemapCCDPathtoScanMaster(string ccdFullPath)
+        {
+            const string dataAnchor = @"\Data\";
+
+            int anchorIndex = ccdFullPath.IndexOf(dataAnchor, StringComparison.OrdinalIgnoreCase);
+            if (anchorIndex < 0)
+                throw new InvalidOperationException("CCD path does not contain \\Data\\ anchor.");
+
+            // this preserves everything before \Data\
+            string relativePath = ccdFullPath.Substring(anchorIndex + dataAnchor.Length);
+
+            // scanmaster local data root
+            string DataRoot = Environs.FileSystem.Paths["CCDxmlDataPath"].ToString();
+
+            return Path.Combine(DataRoot, relativePath);
+        }
+
         public override void AcquisitionFinished()
         {
 
@@ -567,6 +610,99 @@ namespace ScanMaster.Acquire.Plugins
 
             int shotsPerPoint = (int)config.outputPlugin.Settings["shotsPerPoint"];
             int pointsPerScan = (int)config.outputPlugin.Settings["pointsPerScan"];
+
+            // Shirley adds the following part for serialising the CCD parameters into xml file on 20/01/2026
+            if ((bool)settings["cameraEnabled"])
+            {
+                try
+                {
+                    int shots = (int)config.outputPlugin.Settings["shotsPerPoint"]; 
+                    int points = (int)config.outputPlugin.Settings["pointsPerScan"];
+                    CCDSettings logData = new CCDSettings
+                    {
+                        TimeStamp = DateTime.Now,
+                        GateStartTime = (int)settings["gateStartTime"],
+                        GateLength = (int)settings["gateLength"],
+                        CCDEnableStartTime = (int)settings["ccdEnableStartTime"],
+                        CCDEnableLength = (int)settings["ccdEnableLength"],
+                        CCDTriggerMode = (int)settings["ccdTriggerMode"],
+                        CCDNBurstFrames = (int)settings["ccdNBurstFrames"],
+                        shotsPerPoint = shots,
+                        pointsPerScan = points,
+                        CCDNShots = this.CCDsnaps,
+                        CCDAExposureTime = (double)settings["ccdAExposureTime"],
+                        CCDBExposureTime = (double)settings["ccdBExposureTime"],
+                        CCDAGain = (int)settings["ccd1Gain"],
+                        CCDBGain = (int)settings["ccd2Gain"],
+                        SampleRate = (int)settings["sampleRate"]
+                    };
+
+                    // set up saving directory
+                    string ccdSavePath = ccd2controller.GetSaveFullPath();
+                    int ccdFileIndex = ccd2controller.GetSyncFileName();
+
+                    if (string.IsNullOrEmpty(ccdSavePath) || ccdFileIndex < 0)
+                    {
+                        throw new InvalidOperationException("CCD save state is not available from CCD A (gobelin) PC.");
+                    }
+
+                    string smTiffPath = RemapCCDPathtoScanMaster(ccdSavePath);
+
+                    string logDirectory = Path.GetDirectoryName(smTiffPath);
+
+                    if (!Directory.Exists(logDirectory))
+                    {
+                        Directory.CreateDirectory(logDirectory);
+                    }
+
+                    string xmlFileName = $"CCD_Config_{ccdFileIndex:D5}.xml";
+                    string fullPath = Path.Combine(logDirectory, xmlFileName);
+
+
+                    //// set up saving directory
+                    //string basePath = Environs.FileSystem.Paths["CCDxmlDataPath"].ToString();
+
+                    //// date-based folders
+                    //DateTime now = DateTime.Now;
+                    //string yearFolder = now.Year.ToString();
+                    //string monthFolder = now.ToString("yyyy-MM");
+                    //string dayFolder = now.ToString("yyyyMMdd");
+
+                    //string logDirectory = Path.Combine(basePath, yearFolder, monthFolder, dayFolder);
+                    //if (!Directory.Exists(logDirectory))
+                    //{
+                    //    Directory.CreateDirectory(logDirectory);
+                    //}
+
+                    //// define next available file index
+                    //int index = 1;
+                    //string fileName;
+                    //string fullPath;
+
+                    //do
+                    //{
+                    //    fileName = $"CCD_Config_{index:D2}.xml";
+                    //    fullPath = Path.Combine(logDirectory, fileName);
+                    //    index++;
+                    //}
+                    //while (File.Exists(fullPath));
+
+                    // serialise the parameters
+                    XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
+                    using (FileStream file = File.Create(fullPath))
+                    {
+                        writer.Serialize(file, logData);
+                    }
+
+                    Console.WriteLine("CCD Configuration file logged to: " + fullPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not save CCD settings xml:" + ex.Message);
+                }
+            }
+
+
             //bool SwitchStatus = (bool)config.switchPlugin.Settings["switchActive"];
 
 
