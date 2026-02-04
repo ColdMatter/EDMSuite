@@ -821,3 +821,43 @@ def WeightedMean(x, xerr):
 
 def Gauss(x, a, mu, sigma):
     return a*np.exp(-(x-mu)**2/(2*sigma**2))
+
+def GaussianWithOffset(x, A, x0, sigma, y0):
+        return A * np.exp(-0.5 * ((x - x0) / sigma) ** 2) + y0
+
+def GaussianWithOffsetDerivative(x, A, x0, sigma, y0):
+        return -A * (x - x0) / (sigma ** 2) * np.exp(-0.5 * ((x - x0) / sigma) ** 2)
+
+def StraightLine(x, Slope, Intercept):
+    return Slope*x + Intercept
+
+def StraightLineThroughOrigin(x, Slope):
+    return Slope*x
+
+def ShotNoiseAsymmetry(PhotonF1, PhotonF0):
+    sF1= np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return Asy, sAsy
+
+def ShotNoiseFromAsymmetry(Asymmetry, NphotonTotal):
+    PhotonF1 = NphotonTotal * (1 - Asymmetry) / 2
+    PhotonF0 = NphotonTotal * (1 + Asymmetry) / 2
+    sF1= np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return sAsy
+
+def ShotNoiseAsymmetryWithCorrelation(PhotonF1, PhotonF0, corr):
+    sF1= np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2 + 2*corr*sF0*sF1*PhotonF0*PhotonF1)
+    
+    return Asy, sAsy
+
