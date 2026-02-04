@@ -6,8 +6,6 @@ using System.Threading;
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using Data;
-using NewFocus.PicomotorApp;
-using Newport.DeviceIOLib;
 using System.Collections.Generic;
 
 namespace AlFHardwareControl
@@ -83,6 +81,7 @@ namespace AlFHardwareControl
         public string nameB;
         public string nameC;
         public string nameD;
+        public string nameD2;
 
 
         public void UpdateLakeshoreNames()
@@ -93,6 +92,7 @@ namespace AlFHardwareControl
                 nameB = lakeshore.GetChannelName("B");
                 nameC = lakeshore.GetChannelName("C");
                 nameD = lakeshore.GetChannelName("D");
+                nameD2 = lakeshore.GetChannelName("D2");
             }
 
         }
@@ -105,6 +105,7 @@ namespace AlFHardwareControl
             UpdateThread.Start();
         }
 
+        public string tempD2 = "0";
         private void UpdateLakeshoreTemperature()
         {
             DateTime localDate = DateTime.Now;
@@ -112,12 +113,14 @@ namespace AlFHardwareControl
             string tempB;
             string tempC;
             string tempD;
+
             lock (lakeshore)
             {
                 tempA = lakeshore.GetTemperature(1, "K").Trim(new char[] { '\n', '\r' });
                 tempB = lakeshore.GetTemperature(2, "K").Trim(new char[] { '\n', '\r' });
                 tempC = lakeshore.GetTemperature(3, "K").Trim(new char[] { '\n', '\r' });
                 tempD = lakeshore.GetTemperature(4, "K").Trim(new char[] { '\n', '\r' });
+                tempD2 = lakeshore.GetTemperature(5, "K").Trim(new char[] { '\n', '\r' });
             }
             window.SetTextField(window.TempA, tempA + " K");
             window.SetTextField(window.TempB, tempB + " K");

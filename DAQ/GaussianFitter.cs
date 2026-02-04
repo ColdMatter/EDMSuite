@@ -38,10 +38,10 @@ namespace DAQ.Analyze
         {
             get
             {
-                return "n: " + lastFittedParameters[0].ToString("G3") +
-                    " q: " + lastFittedParameters[1].ToString("G3") +
-                    " c: " + lastFittedParameters[2].ToString("G6") +
-                    " w: " + lastFittedParameters[3].ToString("G3");
+                return "bg: " + lastFittedParameters[0].ToString("G3") +
+                    " Ampl.: " + lastFittedParameters[1].ToString("G3") +
+                    " centre: " + lastFittedParameters[2].ToString("G3") +
+                    " FWHM: " + lastFittedParameters[3].ToString("G3");
             }
         }
 

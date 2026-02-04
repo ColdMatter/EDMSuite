@@ -18,11 +18,13 @@ public class Patterns : MOTMasterScript
         Parameters["PatternLength"] = 100000;
         Parameters["Void"] = 0;
         Parameters["CameraDelay"] = 100;
-        Parameters["v1_amp"] = 4.0;
-        Parameters["v0_amp"] = 0.0;
-        Parameters["v1_offset"] = 4.0;
-        Parameters["v0_offset"] = 0.0;
-        Parameters["ChirpLength"] = 1000;
+        Parameters["v1_amp"] = 0.0;
+        //1V -> 300 MHz Vecsel 2
+        //0.67V - > 600 MHz UV chirp
+        Parameters["v0_amp"] = 0.6;
+        Parameters["v1_offset"] = 0.0;
+        Parameters["v0_offset"] = 4.0;
+        Parameters["ChirpLength"] = 500;
         Parameters["v1_hold_time"] = 1000;
     }
 
@@ -38,7 +40,8 @@ public class Patterns : MOTMasterScript
         //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
-        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
+        //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false)
+
         p.AddEdge("q",14,true);
         p.AddEdge("q",100,false);
 
@@ -57,9 +60,9 @@ public class Patterns : MOTMasterScript
         int holdTime = Convert.ToInt32(Parameters["v1_hold_time"]);
 
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("VECSEL3_AOM_VCA");
+        p.AddChannel("AOM1_VCA");
         p.AddChannel("VECSEL2_CHIRP");
-        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
+        p.AddAnalogValue("AOM1_VCA", 0, 0);
 
         // Start at : 323.449929 THz (-200 m/s from (3/2, 2))
         // End at   : 323.450201 THz (+2.5 Gamma from (3/2, 2), roughly resonant on F1=5/2)

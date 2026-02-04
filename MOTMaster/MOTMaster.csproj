@@ -141,6 +141,9 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
+    <DefineConstants>
+    </DefineConstants>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2023\</OutputPath>
@@ -417,12 +420,31 @@
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
+    <OutputPath>bin\RbTweezer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
+    <OutputPath>bin\x64\RbTweezer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x86'">
+    <OutputPath>bin\x86\RbTweezer\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=25.5.45.49440, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.DAQmx, Version=24.0.45.49417, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -464,10 +486,19 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
+    <Compile Include="PreviewWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewWindow.Designer.cs">
+      <DependentUpon>PreviewWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewWindow.resx">
+      <DependentUpon>PreviewWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -524,17 +555,13 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj">
-      <Project>{67cbabe4-303c-4034-99a0-25d7dd2e5d2d}</Project>
+    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj" Condition="$(DefineConstants.Contains('DDS'))">
+      <Project>{0afc0329-ad96-4729-92ae-0fb96d573d05}</Project>
       <Name>NeanderthalDDSController</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WavemeterLock\WavemeterLock.csproj">
-      <Project>{e091da4c-f52b-47e3-9670-a36c4f16ecf7}</Project>
-      <Name>WavemeterLock</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

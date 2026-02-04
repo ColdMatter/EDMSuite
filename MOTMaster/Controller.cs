@@ -52,7 +52,9 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
+#if DDS
         private NeanderthalDDSController.Controller DDSCtrl;
+#endif //DDS
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -78,9 +80,9 @@ namespace MOTMaster
 
         MMDataIOHelper ioHelper;
 
-        #endregion
+#endregion
 
-        #region Initialisation
+#region Initialisation
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -134,13 +136,14 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
-            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1172/controller.rem");
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //    "tcp://localhost:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
+#if DDS
             DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
             DDSCtrl.testDDS();
-
+#endif //DDS
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -150,9 +153,9 @@ namespace MOTMaster
 
         }
 
-        #endregion
+#endregion
 
-        #region Hardware control methods
+#region Hardware control methods
 
 
         private void run(MOTMasterSequence sequence)
@@ -265,9 +268,9 @@ namespace MOTMaster
             releaseHardware();
         }
 
-        #endregion
+#endregion
 
-        #region Housekeeping on UI
+#region Housekeeping on UI
 
         /// - MOTMaster looks in a folder ("scriptListPath") for all classes. 
         ///  Then displays the list in a combo box.
@@ -289,9 +292,9 @@ namespace MOTMaster
             controllerWindow.FillScriptComboBox(s);
         }
 
-        #endregion
+#endregion
 
-        #region RUN RUN RUN (public & remotable stuff)
+#region RUN RUN RUN (public & remotable stuff)
 
         /// <summary>
         /// This is the guts of MOTMaster.
@@ -360,9 +363,14 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public Dictionary<string, List<bool>> GetSwitchConfiguration()
+        public Dictionary<string,List<object>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
+        }
+
+        public Dictionary<string, object> GetParameters()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).Parameters;
         }
 
         public void Run()
@@ -419,7 +427,7 @@ namespace MOTMaster
                     //    // The dictionary entry has one Key: "MOT"
                     //    {
                     //        "MOT", 
-        
+
                     //        // The Value for the key is a new List of Lists
                     //        new List<List<double>>
                     //        {
@@ -447,7 +455,7 @@ namespace MOTMaster
                     //DDSCtrl.setBreakFlag(false);
                     //DDSCtrl.startRepetitivePattern();
 
-
+#if DDS
                     // --- Add the new logic for handling the DDS pattern ---
                     if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
                     {
@@ -460,7 +468,8 @@ namespace MOTMaster
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
                     }
-                    */
+
+#endif //DDS
                     //try
                     //{
                     //if (config.CameraUsed) prepareCameraControl();
@@ -549,9 +558,9 @@ namespace MOTMaster
             }
         }
 
-        #endregion
+#endregion
 
-        #region private stuff
+#region private stuff
 
         private string constructSaveDirectory()
         {
@@ -604,9 +613,9 @@ namespace MOTMaster
             sequence.AnalogStatic.BuildPattern();
         }
 
-        #endregion
+#endregion
 
-        #region Compiler & Loading DLLs
+#region Compiler & Loading DLLs
 
         /// <summary>
         ///   /// - Once the user has selected a particular implementation of MOTMasterScript, 
@@ -680,14 +689,14 @@ namespace MOTMaster
             return sequence;
         }
 
-        #endregion
+#endregion
 
         public int GetIterations()
         {
             return controllerWindow.GetIterations();
         }
 
-        #region CameraControl
+#region CameraControl
 
         /// <summary>
         /// - Camera control is run through the hardware controller. All MOTMaster knows 
@@ -753,9 +762,9 @@ namespace MOTMaster
                 throw new DataNotArrivedFromHardwareControllerException();
             }
         }
-        #endregion
+#endregion
 
-        #region Getting an Experiment Report
+#region Getting an Experiment Report
         /// <summary>
         /// This is the mechanism for saving experimental parameters which MM doesn't control, but that the hardware controller can monitor
         /// (e.g. oven temperature, vacuum chamber pressure etc).
@@ -767,9 +776,9 @@ namespace MOTMaster
         }
 
 
-        #endregion
+#endregion
 
-        #region Translation stage
+#region Translation stage
         private void armTranslationStageForTimedMotion(MOTMasterScript script)
         {
             tstage.TSConnect();
@@ -791,9 +800,9 @@ namespace MOTMaster
             Thread.Sleep(50);
             tstage.TSDisconnect();
         }
-        #endregion
+#endregion
         /*
-        #region NeanderthalDDSController
+#region NeanderthalDDSController
 
         public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4, 
             double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
@@ -835,9 +844,9 @@ namespace MOTMaster
             DDSCtrl.closeCard();
         }
 
-        #endregion
+#endregion
         */
-        #region Re-Running a script (intended for reloading old scripts)
+#region Re-Running a script (intended for reloading old scripts)
 
         /// <summary>
         /// This section is meant to be for the situation when you want to re-run exactly the same pattern
@@ -877,7 +886,7 @@ namespace MOTMaster
             SetReplicaRunBool(false);
             ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
-        #endregion
+#endregion
     }
 }
 
