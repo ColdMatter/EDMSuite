@@ -857,7 +857,7 @@ def ShotNoiseAsymmetryWithCorrelation(PhotonF1, PhotonF0, corr):
     sF0 = np.sqrt(PhotonF0) 
 
     Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
-    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2 + 2*corr*sF0*sF1*PhotonF0*PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2 - 2*corr*sF0*sF1*PhotonF0*PhotonF1)
     
     return Asy, sAsy
 
