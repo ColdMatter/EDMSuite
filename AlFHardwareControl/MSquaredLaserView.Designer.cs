@@ -32,6 +32,9 @@ namespace AlFHardwareControl
             this.Conn_status = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.M2_Control_Group = new System.Windows.Forms.GroupBox();
+            this.attempt_connection = new System.Windows.Forms.CheckBox();
+            this.CurrFreq = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.updateLineData = new System.Windows.Forms.Button();
             this.lineName = new System.Windows.Forms.TextBox();
@@ -40,6 +43,7 @@ namespace AlFHardwareControl
             this.label5 = new System.Windows.Forms.Label();
             this.error = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.offset = new AlFHardwareControl.ParamSet();
             this.setpoint = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -47,9 +51,6 @@ namespace AlFHardwareControl
             this.AddLine = new System.Windows.Forms.Button();
             this.LinesSelector = new System.Windows.Forms.ComboBox();
             this.lockCheckBox = new System.Windows.Forms.CheckBox();
-            this.CurrFreq = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.offset = new AlFHardwareControl.ParamSet();
             this.VelSet = new AlFHardwareControl.ParamSet();
             this.M2_Control_Group.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -76,6 +77,7 @@ namespace AlFHardwareControl
             // 
             // M2_Control_Group
             // 
+            this.M2_Control_Group.Controls.Add(this.attempt_connection);
             this.M2_Control_Group.Controls.Add(this.CurrFreq);
             this.M2_Control_Group.Controls.Add(this.label7);
             this.M2_Control_Group.Controls.Add(this.groupBox1);
@@ -98,6 +100,34 @@ namespace AlFHardwareControl
             this.M2_Control_Group.TabIndex = 4;
             this.M2_Control_Group.TabStop = false;
             this.M2_Control_Group.Text = "M2 Laser Control";
+            // 
+            // attempt_connection
+            // 
+            this.attempt_connection.AutoSize = true;
+            this.attempt_connection.Location = new System.Drawing.Point(7, 381);
+            this.attempt_connection.Name = "attempt_connection";
+            this.attempt_connection.Size = new System.Drawing.Size(119, 17);
+            this.attempt_connection.TabIndex = 21;
+            this.attempt_connection.Text = "Attempt Connection";
+            this.attempt_connection.UseVisualStyleBackColor = true;
+            this.attempt_connection.CheckedChanged += new System.EventHandler(this.attempt_connection_CheckedChanged);
+            // 
+            // CurrFreq
+            // 
+            this.CurrFreq.Enabled = false;
+            this.CurrFreq.Location = new System.Drawing.Point(72, 72);
+            this.CurrFreq.Name = "CurrFreq";
+            this.CurrFreq.Size = new System.Drawing.Size(133, 20);
+            this.CurrFreq.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 75);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "PV [THz]";
             // 
             // groupBox1
             // 
@@ -174,6 +204,15 @@ namespace AlFHardwareControl
             this.label4.TabIndex = 16;
             this.label4.Text = "Error [MHz]";
             // 
+            // offset
+            // 
+            this.offset.Label = "Offset";
+            this.offset.Location = new System.Drawing.Point(6, 124);
+            this.offset.Name = "offset";
+            this.offset.Size = new System.Drawing.Size(203, 27);
+            this.offset.TabIndex = 15;
+            this.offset.OnSetClick += new System.EventHandler(this.offset_OnSetClick);
+            // 
             // setpoint
             // 
             this.setpoint.Enabled = false;
@@ -240,32 +279,6 @@ namespace AlFHardwareControl
             this.lockCheckBox.UseVisualStyleBackColor = true;
             this.lockCheckBox.CheckedChanged += new System.EventHandler(this.lockCheckBox_CheckedChanged);
             // 
-            // CurrFreq
-            // 
-            this.CurrFreq.Enabled = false;
-            this.CurrFreq.Location = new System.Drawing.Point(72, 72);
-            this.CurrFreq.Name = "CurrFreq";
-            this.CurrFreq.Size = new System.Drawing.Size(133, 20);
-            this.CurrFreq.TabIndex = 20;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 75);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 13);
-            this.label7.TabIndex = 19;
-            this.label7.Text = "PV [THz]";
-            // 
-            // offset
-            // 
-            this.offset.Label = "Offset";
-            this.offset.Location = new System.Drawing.Point(6, 124);
-            this.offset.Name = "offset";
-            this.offset.Size = new System.Drawing.Size(203, 27);
-            this.offset.TabIndex = 15;
-            this.offset.OnSetClick += new System.EventHandler(this.offset_OnSetClick);
-            // 
             // VelSet
             // 
             this.VelSet.Label = "Velocity";
@@ -315,5 +328,6 @@ namespace AlFHardwareControl
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox CurrFreq;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox attempt_connection;
     }
 }

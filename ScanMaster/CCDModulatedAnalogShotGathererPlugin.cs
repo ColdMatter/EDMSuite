@@ -526,11 +526,9 @@ namespace ScanMaster.Acquire.Plugins
             TaskCompleteWriterOffShot = new DigitalSingleChannelWriter(TaskCompleteTaskOffShot.Stream);
         }
 
-
-        public override void ScanStarting()
-
-        {
-        }
+		public override void ScanStarting()
+		{
+		}
 
         public override void ScanFinished()
         {

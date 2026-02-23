@@ -223,7 +223,7 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                #if EDM
+               
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
@@ -233,7 +233,7 @@ namespace DAQ.Environment
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
-#endif
+
 
                 //PC running TCL for EDM
                 case "GREMLIN":
@@ -428,6 +428,15 @@ namespace DAQ.Environment
                     serverComputerName = "ic-czc5347lb5";
                     serverTCPChannel = 1984;
                     emccdTCPChannel = 2104;
+                    break;
+
+                case "IC-CZC221CCHS":
+                    Hardware = new RbTweezerHardware();
+                    FileSystem = new RbTweezerFileSystem();
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 2146;
+                    Debug = false;
                     break;
 
                 default:

@@ -7,6 +7,9 @@ using Data;
 using Data.Scans;
 using ScanMaster.Acquire.Plugin;
 
+
+
+
 namespace ScanMaster.Acquire
 
 {
@@ -28,6 +31,7 @@ namespace ScanMaster.Acquire
 		public object AcquisitorMonitorLock = new Object();
 
 		private AcquisitorConfiguration config;
+		
 		public AcquisitorConfiguration Configuration
 		{
 			set { config = value; }
@@ -88,7 +92,8 @@ namespace ScanMaster.Acquire
 					config.yagPlugin.ScanStarting();
 					config.analogPlugin.ScanStarting();
                     config.gpibPlugin.ScanStarting();
-
+					//update GUI pass number
+					
 					for (int pointNumber = 0 ; pointNumber < (int)config.outputPlugin.Settings["pointsPerScan"] ; pointNumber++)
 					{
 						// calculate the new scan parameter and move the scan along
@@ -111,7 +116,7 @@ namespace ScanMaster.Acquire
 
                         ScanPoint sp = new ScanPoint();
                         sp.ScanParameter = config.outputPlugin.ScanParameter;
-
+						
                         for (int shotNum = 0; shotNum < (int)(config.outputPlugin.Settings["shotsPerPoint"]); shotNum++)
                         {
                             // Set the switch state
@@ -179,7 +184,7 @@ namespace ScanMaster.Acquire
                 }
 
             }
-            catch (Exception e)
+             catch (Exception e)
             {
                 // last chance exception handler - this stops a rogue exception in the
                 // acquire loop from killing the whole program

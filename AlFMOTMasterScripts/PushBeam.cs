@@ -52,16 +52,16 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("VECSEL3_AOM_VCA");
+        p.AddChannel("AOM1_VCA");
 
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
         int setupTime = Convert.ToInt32(Parameters["SetupTime"]);
         int onTime = Convert.ToInt32(Parameters["VECSEL3_VCA_OnTime"]);
 
-        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
-        p.AddAnalogValue("VECSEL3_AOM_VCA", setupTime - onTime, (double)Parameters["VECSEL3_VCA_out"]);
+        p.AddAnalogValue("AOM1_VCA", 0, 0);
+        p.AddAnalogValue("AOM1_VCA", setupTime - onTime, (double)Parameters["VECSEL3_VCA_out"]);
 
-        p.AddAnalogValue("VECSEL3_AOM_VCA", setupTime, 0);
+        p.AddAnalogValue("AOM1_VCA", setupTime, 0);
 
         return p;
    }

@@ -47,6 +47,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
             this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
+            this.preview_button = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -141,7 +142,7 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -157,7 +158,7 @@
             // newPatternToolStripMenuItem
             // 
             this.newPatternToolStripMenuItem.Name = "newPatternToolStripMenuItem";
-            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.newPatternToolStripMenuItem.Text = "Select script";
             this.newPatternToolStripMenuItem.Click += new System.EventHandler(this.newPatternToolStripMenuItem_Click);
             // 
@@ -165,7 +166,7 @@
             // 
             this.ReplicateScriptToolStripMenuItem.Name = "ReplicateScriptToolStripMenuItem";
             this.ReplicateScriptToolStripMenuItem.ShowShortcutKeys = false;
-            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.ReplicateScriptToolStripMenuItem.Text = "Replicate saved run";
             this.ReplicateScriptToolStripMenuItem.Click += new System.EventHandler(this.ReplicateScriptToolStripMenuItem_Click);
             // 
@@ -227,11 +228,22 @@
             this.triggeredCheckBox.UseVisualStyleBackColor = true;
             this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // preview_button
+            // 
+            this.preview_button.Location = new System.Drawing.Point(447, 82);
+            this.preview_button.Name = "preview_button";
+            this.preview_button.Size = new System.Drawing.Size(136, 25);
+            this.preview_button.TabIndex = 18;
+            this.preview_button.Text = "Preview";
+            this.preview_button.UseVisualStyleBackColor = true;
+            this.preview_button.Click += new System.EventHandler(this.preview_button_Click);
+            // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
+            this.Controls.Add(this.preview_button);
             this.Controls.Add(this.triggeredCheckBox);
             this.Controls.Add(this.runUntilStopCheckBox);
             this.Controls.Add(this.label2);
@@ -278,6 +290,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox runUntilStopCheckBox;
         private System.Windows.Forms.CheckBox triggeredCheckBox;
+        private System.Windows.Forms.Button preview_button;
     }
 }
 

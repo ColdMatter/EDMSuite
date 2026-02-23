@@ -20,14 +20,14 @@ namespace ScanMaster.Acquire.Patterns
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
 	
 		public int ShotSequence( int startTime, int numberOfShots, int padShots, int flashlampPulseInterval,
-			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger, int CameraTrigger, int BgTrigger,int shutterPulseLength) 
+			int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger, int CameraTrigger, int BgTrigger, int cameraTriggerDelay, int shutterPulseLength) 
 		{
 			int time = startTime;
 			for (int i = 0 ; i < numberOfShots ; i++ ) 
 			{
-				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger , "detector");
-				Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);
-				Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);
+				Shot( time, valvePulseLength, valveToQ, flashToQ, delayToDetectorTrigger , "detector", cameraTriggerDelay);
+				//Pulse(time, CameraTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber); Horacio: Breaks patter so commented for now
+				//Pulse(time, BgTrigger, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["camerashutter"]).BitNumber);
 
 				time += flashlampPulseInterval;
 				for (int p = 0 ; p < padShots ; p++)
@@ -46,7 +46,7 @@ namespace ScanMaster.Acquire.Patterns
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 		}
 
-		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger, string detectorTriggerSource)  
+		public int Shot( int startTime, int valvePulseLength, int valveToQ, int flashToQ, int delayToDetectorTrigger, string detectorTriggerSource, int cameraTriggerDelay)  
 		{
 			int time = 0;
 			int tempTime = 0;
@@ -67,8 +67,11 @@ namespace ScanMaster.Acquire.Patterns
 			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
 			if (tempTime > time) time = tempTime;
+			tempTime = Pulse(startTime, cameraTriggerDelay + valveToQ, DETECTOR_TRIGGER_LENGTH,
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
 
-		
+
 			return time;
 		}
 	
