@@ -1461,11 +1461,6 @@ namespace UEDMHardwareControl
             controller.FieldsOff();
         }
 
-        private void switchEButton_Click(object sender, EventArgs e)
-        {
-            controller.SwitchE();
-        }
-
         private void changePollPeriodButton_Click(object sender, EventArgs e)
         {
             controller.UpdateIMonitorPollPeriodUsingUIValue();
@@ -1680,21 +1675,6 @@ namespace UEDMHardwareControl
         private void TargetStepButton_Click(object sender, EventArgs e)
         {
             controller.StepTarget();
-        }
-
-        private void eConnectCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetEConnect(eConnectCheck.Checked);
-        }
-
-        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetEPolarity(ePolarityCheck.Checked);
-        }
-
-        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetBleed(eBleedCheck.Checked);
         }
 
         private void TargetManualbutton_Click(object sender, EventArgs e)
@@ -2080,39 +2060,30 @@ namespace UEDMHardwareControl
             controller.UpdateFeedthroughTempUI();
         }
 
-        private void checkboxTCPCCDB_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox9_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void HCoolinfTextBox(object sender, EventArgs e)
-        {
-
-        }
-
         private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
         {
             controller.show_HcoolingVoltage();
         }
 
-        private void tabPage3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox9_Enter_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
         {
             controller.show_VcoolingVoltage();
+        }
+
+        private void initialiseBehlkesButton_Click(object sender, EventArgs e)
+        {
+            // Here controller.function to set the Behlke digital lines
+            controller.InitialiseBehlkes();
+        }
+
+        private void switchEBehlkeButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchEfieldBehlkes();
+        }
+
+        private void behlkeOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableBehlkes(behlkeOnCheck.Checked);
         }
     }
 }

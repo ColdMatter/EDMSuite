@@ -101,13 +101,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
-	bc.Settings["eRampDownTime"] = hc.ERampDownTime
-	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
-	bc.Settings["eBleedTime"] = hc.EBleedTime
-	bc.Settings["eSwitchTime"] = hc.ESwitchTime
-	bc.Settings["eRampUpTime"] = hc.ERampUpTime
-	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
-	bc.Settings["eOvershootFactor"] = hc.EOvershootFactor
+	bc.Settings["BehlkeBleedTime"] = hc.BehlkeBleedTime
+	bc.Settings["BehlkeSwitchTime"] = hc.BehlkeSwitchTime
+	bc.Settings["BehlkeSettleTime"] = hc.BehlkeSettleTime
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
@@ -153,7 +149,7 @@ def QuSpinGo():
         print("Using cluster " + suggestedClusterName)
     checkPhaseLock()
     eState = hc.EManualState
-    eCurrentState = hc.EFieldPolarity
+    eCurrentState = hc.EFieldPolarityBehlke
     cPlusV = 3*(hc.CPlusVoltage)
     cMinusV = 3*(hc.CMinusVoltage)
     print("E-state: " + str(eState))
@@ -209,10 +205,10 @@ def QuSpinGo():
     Emini3List=[]
     while blockIndex < maxBlockIndex:
         for i in eFieldVoltages:
-            eCurrentState = hc.EFieldPolarity
+            eCurrentState = hc.EFieldPolarityBehlke
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            hc.SwitchEAndWait(eCurrentState)
+            hc.SwitchEBehlkeAndWait(eCurrentState)
             if (float(i)==0.0):
                 System.Threading.Thread.CurrentThread.Join(20000)
             else:
@@ -250,7 +246,7 @@ def QuSpinGo():
                 print("Recalibrating leakage monitors.")
                 # calibrate leakage monitors
 
-                eCurrentState = hc.EFieldPolarity
+                eCurrentState = hc.EFieldPolarityBehlke
                 cPlusV = 3*(hc.CPlusVoltage)
                 cMinusV = 3*(hc.CMinusVoltage)
 
@@ -264,7 +260,7 @@ def QuSpinGo():
                 print("E-field on")
                 hc.SetCPlusVoltage(cPlusV)
                 hc.SetCMinusVoltage(cMinusV)
-                hc.SwitchEAndWait(eCurrentState)
+                hc.SwitchEBehlkeAndWait(eCurrentState)
                 print("E Switch Finished")
                 System.Threading.Thread.CurrentThread.Join(10000)
 

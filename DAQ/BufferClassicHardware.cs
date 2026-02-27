@@ -21,7 +21,7 @@ namespace DAQ.HAL
             Boards.Add("UEDMHardwareController", "/UEDM_Hardware_Controller_PXI_6229");
             Boards.Add("counter", "/COUNTER_PXI_6602");
             Boards.Add("mag", "/MAG_PXI_6229");
-            Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
+            //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
             Boards.Add("usbTherm", "/Dev7");
             string daqBoard = (string)Boards["daq"];
@@ -31,10 +31,10 @@ namespace DAQ.HAL
             string UEDMHardwareControllerBoard = (string)Boards["UEDMHardwareController"];
             string counterBoard = (string)Boards["counter"];
             string magBoard = (string)Boards["mag"];
-            string usbDAQ1 = (string)Boards["usbDAQ1"];
+            //string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbTherm = (string)Boards["usbTherm"];
-
+            
             //machine information
             Info.Add("sourceToDetect", 3.5);
             Info.Add("moleculeMass", 193.0);
@@ -109,8 +109,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
+            AddAnalogInputChannel("bartington_X", magBoard + "/ai16", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Y", magBoard + "/ai18", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Z", magBoard + "/ai20", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery", magBoard + "/ai2", AITerminalConfiguration.Differential); 
             //AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
@@ -128,8 +130,6 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("quSpinHS_Z", magBoard + "/ai21", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHT_Z", magBoard + "/ai7", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinFV_Z", magBoard + "/ai23", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("bartington_X", daqBoard + "/ai22", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai30", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("coilCurrent_after", magBoard + "/ai31", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("coilCurrent_before", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
 
@@ -167,20 +167,22 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
-            AddDigitalOutputChannel("ePol", UEDMHardwareControllerBoard, 0, 1);
-            AddDigitalOutputChannel("notEPol", UEDMHardwareControllerBoard, 0, 3);
-            AddDigitalOutputChannel("eBleed", UEDMHardwareControllerBoard, 0, 2);
-            AddDigitalOutputChannel("eConnect", usbDAQ2, 0, 5);
             AddDigitalOutputChannel("bSwitch", usbDAQ2, 0, 0);
             AddDigitalOutputChannel("notB", usbDAQ2, 0, 1);
             AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
             AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
-            AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
-            AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
+            //AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
+            //AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
 
             //UsbThermocouple channels
             AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
+
+            // map the digital channels of the Behlkle control board
+            AddDigitalOutputChannel("behlkeOn", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("behlkeB", usbDAQ2, 0, 5);
+            AddDigitalOutputChannel("behlkeD", usbDAQ2, 0, 6);
+            AddDigitalOutputChannel("behlkeE", UEDMHardwareControllerBoard, 0, 3);
 
             //Magnetic feedback channels
             AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);

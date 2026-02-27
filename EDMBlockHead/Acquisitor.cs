@@ -1416,14 +1416,32 @@ namespace EDMBlockHead.Acquire
 
             Console.WriteLine((magInputs.GateLength).ToString());
 
-            //ScannedAnalogInput mag = new ScannedAnalogInput();
-            //mag.ReductionMode = DataReductionMode.Average;
-            //mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
-            //mag.AverageEvery = 20;
-            //mag.LowLimit = -10;
-            //mag.HighLimit = 10;
-            //mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
-            //magInputs.Channels.Add(mag);
+            ScannedAnalogInput barX = new ScannedAnalogInput();
+            barX.ReductionMode = DataReductionMode.Average;
+            barX.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_X"];
+            barX.AverageEvery = 20;
+            barX.LowLimit = -10;
+            barX.HighLimit = 10;
+            barX.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(barX);
+
+            ScannedAnalogInput barY = new ScannedAnalogInput();
+            barY.ReductionMode = DataReductionMode.Average;
+            barY.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
+            barY.AverageEvery = 20;
+            barY.LowLimit = -10;
+            barY.HighLimit = 10;
+            barY.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(barY);
+
+            ScannedAnalogInput barZ = new ScannedAnalogInput();
+            barZ.ReductionMode = DataReductionMode.Average;
+            barZ.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Z"];
+            barZ.AverageEvery = 20;
+            barZ.LowLimit = -10;
+            barZ.HighLimit = 10;
+            barZ.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            magInputs.Channels.Add(barZ);
 
             //Console.WriteLine("Added Bartington _Y");
 

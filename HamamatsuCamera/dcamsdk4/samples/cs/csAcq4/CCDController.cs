@@ -1988,6 +1988,99 @@ namespace csAcq4
             return filePath;
         }
 
+        // Shirley adds on 21/02/2026 for syncing the file name and save directory for the ccd xml file on scanmaster
+        private string SyncSaveFullPath = "";
+        private int SyncFileName = -1;
+
+        public string GetSaveFullPath()
+        {
+            return SyncSaveFullPath;
+        }
+
+        public int GetSyncFileName()
+        {
+            return SyncFileName;
+        }
+
+
+        private string GetNextFileNameSM(string directory, string extension, int selectedCamera)
+        {
+            int counter = 1;
+            string cameraSuffix = (selectedCamera == 0) ? "CCDA" : "CCDB";
+            string filePath;
+
+            do
+            {
+                filePath = Path.Combine(directory, $"{cameraSuffix}_{counter:D5}{extension}");
+                counter++;
+            } while (File.Exists(filePath)); // Ensure we don't overwrite existing files
+
+            // shirley adds on 21/01/2026 for xml file name syncing. 
+            SyncFileName = counter - 1;
+
+            return filePath;
+        }
+
+        // shirley editing on 19/01/2026 for ScanMaster burst mode saving
+        // Updated version that can now calculate the total counts per frame and automatically save as a csv file along with the MTIF file.
+        // It perform the calculation after the entire acquisition so doenst slow things down.
+        private void SaveAllDataSM(List<List<ushort[]>> imageData)
+        {
+            var saveTimer = Stopwatch.StartNew();
+
+            // Save CSV file
+            // File.WriteAllLines(csvFilePath, countData);
+            // Console.WriteLine("Successfully saved count data.");
+
+            string tiffPath = GetNextFileNameSM(saveDirectory, ".tif", SelectedCamera);
+
+            // shirley adds on 21/01/2026
+            SyncSaveFullPath = tiffPath;
+
+            // Create a CSV path by changing the extension of the tiffPath
+            string csvPath = Path.ChangeExtension(tiffPath, ".csv");
+            //string tiffPath = currentFileName;
+            SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(csvPath))
+                {
+                    // Write CSV Header
+                    writer.WriteLine("Snap Index, Frame Index, Total Counts/frame");
+
+                    for (int snapIndex = 0; snapIndex < imageData.Count; snapIndex++)
+                    {
+                        for (int frameIndex = 0; frameIndex < imageData[snapIndex].Count; frameIndex++)
+                        {
+                            ushort[] framePixels = imageData[snapIndex][frameIndex];
+
+                            long frameSum = 0;
+                            if (framePixels != null)
+                            {
+                                for (int i = 0; i < framePixels.Length; i++)
+                                {
+                                    frameSum += framePixels[i];
+                                }
+                            }
+                            // write row: snap index, frame index (0-19), total Counts each frame    
+                            writer.WriteLine($"{snapIndex},{frameIndex},{frameSum}");
+
+                        }
+                    }
+
+                }
+                Console.WriteLine("Successfully saved count data to: {Path.GetFileName(csvPath)}.");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving count data to CSV: {ex.Message}");
+            }
+            saveTimer.Stop();
+            Console.WriteLine($"Total saving time: {saveTimer.Elapsed}");
+        }
+
 
         // Default save directory
         public string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
