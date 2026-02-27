@@ -39,7 +39,7 @@ namespace EDMBlockHead.Acquire.Channels
 				currentState = value;
 				try
 				{
-					hardwareController.SwitchEAndWait(value);
+					hardwareController.SwitchEBehlkeAndWait(value);
                     if (rfToModify == RFSwitchToModify.rf1)
                     {
                         AnalogModulation rfMod = (AnalogModulation)(Controller.GetController().Config.GetModulationByName("RF1F"));
