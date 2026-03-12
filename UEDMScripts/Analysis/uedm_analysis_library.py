@@ -369,10 +369,11 @@ def ProcessCCDimages(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings, Av
     for i in range(np.shape(AOn)[1]):
         for j in range(np.shape(AOn)[0]):
             AOnPhotons[i,j] = GetCCDphotons(AOn[j,i,:,:], CCDAsettings)
-    for i in range(np.shape(AOff)[1]):
-        for j in range(np.shape(AOff)[0]):
-            AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
-    
+    if ThereAreOffShots:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
+        
     # Process CCD B
     print("Processing CCD B images...")
     CCDimages = ReadTiff(FileCCDB)
@@ -392,9 +393,10 @@ def ProcessCCDimages(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings, Av
     for i in range(NrFramesPerShot):
         for j in range(np.shape(BOn)[0]):
             BOnPhotons[i,j] = GetCCDphotons(BOn[j,i,:,:], CCDBsettings)
-    for i in range(NrFramesPerShot):
-        for j in range(np.shape(BOff)[0]):
-            BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
+    if ThereAreOffShots:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
     
     FramesAOn = np.full((NrFramesPerShot,NrIntervals,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
     FramesBOn = np.full((NrFramesPerShot,NrIntervals,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
@@ -740,7 +742,10 @@ def GetBSwitchState(Block):
     return SwitchState
 
 def GetSettleTime(Block):
-    SettleTime = Block.Config.Settings["eRampUpDelay"]
+    try:
+        SettleTime = Block.Config.Settings["BehlkeSettleTime"]
+    except:
+        SettleTime = Block.Config.Settings["eRampUpDelay"]
     return SettleTime
     
 
