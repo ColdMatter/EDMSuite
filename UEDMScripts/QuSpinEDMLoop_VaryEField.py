@@ -123,8 +123,8 @@ def windowValue(value, minValue, maxValue):
 		else:
 			return maxValue
 
-kTargetRotationPeriod = 10
-kReZeroLeakageMonitorsPeriod = 10
+kTargetRotationPeriod = 100
+kReZeroLeakageMonitorsPeriod = 100
 #r = Random()
 
 def QuSpinGo():
@@ -184,6 +184,7 @@ def QuSpinGo():
     # System.Threading.Thread.CurrentThread.Join(500)
     hc.SetCPlusVoltage(cPlusV)
     hc.SetCMinusVoltage(cMinusV)
+    hc.UpdateVoltages()
     print("E Params refreshed")
     System.Threading.Thread.CurrentThread.Join(5000)
     print("E-field on")
@@ -208,6 +209,7 @@ def QuSpinGo():
             eCurrentState = hc.EFieldPolarityBehlke
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
+            hc.UpdateVoltages()
             hc.SwitchEBehlkeAndWait(eCurrentState)
             if (float(i)==0.0):
                 System.Threading.Thread.CurrentThread.Join(20000)
@@ -229,7 +231,7 @@ def QuSpinGo():
             print("Running magnetic field data acquisition ...")
             bh.StartMagDataAcquisitionAndWait()
             print("Done.")
-            blockPath = '%(p)s%(c)s_%(i)s_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
+            blockPath = '%(p)s%(c)s_%(i)04d_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
             bh.SaveBlock(blockPath)
             print("Saved block "+ str(blockIndex) + ".")
             # give mma a chance to analyse the block
@@ -260,6 +262,7 @@ def QuSpinGo():
                 print("E-field on")
                 hc.SetCPlusVoltage(cPlusV)
                 hc.SetCMinusVoltage(cMinusV)
+                hc.UpdateVoltages()
                 hc.SwitchEBehlkeAndWait(eCurrentState)
                 print("E Switch Finished")
                 System.Threading.Thread.CurrentThread.Join(10000)

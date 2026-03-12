@@ -4894,7 +4894,7 @@ namespace UEDMHardwareControl
 
         public void SwitchEBehlkeAndWait(bool state)
         {
-            SwitchEBehlke(state);
+            SwitchEfieldBehlkes(state);
             switchThread.Join();
         }
 
@@ -4904,17 +4904,7 @@ namespace UEDMHardwareControl
         }
 
         private object switchingLockBehlke = new object();
-        public void SwitchEBehlke(bool state)
-        {
-            lock (switchingLockBehlke)
-            {
-                newEPolarity = state;
-                switchThread = new Thread(new ThreadStart(SwitchEfieldBehlkes));
-                window.EnableControl(window.switchEBehlkeButton, false);
-                window.EnableControl(window.initialiseBehlkesButton, false);
-                switchThread.Start();
-            }
-        }
+        
 
         public void InitialiseBehlkes()
         {
@@ -4950,11 +4940,41 @@ namespace UEDMHardwareControl
             SwitchEfieldBehlkes(!EFieldPolarityBehlke);
         }
 
-        public void SwitchEfieldBehlkes(bool newPolarity)
+        public void SwitchEfieldBehlkes(bool state)
         {
             lock (switchingLockBehlke)
             {
-                if (newPolarity)
+                newEPolarity = state;
+                if (ESwitchingEnabled)
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEfieldBehlkesWorker));
+                }
+                else
+                {
+                    switchThread = new Thread(new ThreadStart(SwitchEWorkerDummy));
+                }
+                window.EnableControl(window.switchEBehlkeButton, false);
+                window.EnableControl(window.initialiseBehlkesButton, false);
+                switchThread.Start();
+            }
+        }
+
+        public void SwitchEfieldBehlkesWorker()
+        {
+            lock (switchingLockBehlke)
+            {
+                // raise flag for switching E-field
+                SwitchingEfields = true;
+                window.SetLED(window.switchingLED, true);
+
+                if (!EFieldEnabled)
+                {
+                    EFieldEnabled = true;
+                    Thread.Sleep((int)(100));
+                }
+                // Overshoot could go here
+
+                if (newEPolarity)
                 {
                     SetDigitalLine("behlkeB", true);
                     IndicatorBehlkeB = false;
@@ -4993,6 +5013,7 @@ namespace UEDMHardwareControl
 
                     EFieldPolarityBehlke = false;
                 }
+                window.SetLED(window.switchingLED, false);
             }
 
             ESwitchBehlkeDone();
@@ -5000,6 +5021,7 @@ namespace UEDMHardwareControl
 
         private void ESwitchBehlkeDone()
         {
+            SwitchingEfields = false;
             window.EnableControl(window.switchEBehlkeButton, true);
             window.EnableControl(window.initialiseBehlkesButton, true);
             UpdateStatus("E-switch - switching to state: " + EFieldPolarityBehlke + 
@@ -8137,13 +8159,13 @@ namespace UEDMHardwareControl
         private double VcoolingMonitorVoltage;
         public void show_HcoolingVoltage()
         {
-            HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask);
+            HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask,1000,50);
             window.SetTextBox(window.HcoolingMonitorTextBox, HcoolingMonitorVoltage.ToString());
         }
 
         public void show_VcoolingVoltage()
         {
-            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask);
+            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask,1000,50);
             window.SetTextBox(window.VcoolingMonitorTextBox, VcoolingMonitorVoltage.ToString());
         }
         #endregion
