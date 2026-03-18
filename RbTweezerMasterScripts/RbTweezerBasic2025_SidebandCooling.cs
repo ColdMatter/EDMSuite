@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 80000;
+        Parameters["PatternLength"] = 90000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -30,34 +30,32 @@ public class Patterns : MOTMasterScript
         // Shim Coils Default
         Parameters["tShimXccValue"] = 7.5; // 8.8; //8.8; //  0.0
         Parameters["tShimYccValue"] = -2.5; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.3; // 0.3; //0.3; // -0.85
+        Parameters["tShimZccValue"] = -0.4; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 9.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.32; // 0.3 // 0.52
+        Parameters["tMolassesShimZccValue"] = 0.48; // 0.3 // 0.52
 
         // Bias Field Quantisation Axis
-        Parameters["tBiasShimXccValue"] = 9.0;
-        Parameters["tBiasShimYccValue"] = 3.29;
-        Parameters["tBiasShimZccValue"] = 0.32;
+        Parameters["tBiasShimZccValue"] = 0.96;
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 4.2; //Cool at 2.4 - 2.6
+        Parameters["tMOTCool"] = 4.0; //Cool at 2.4 - 2.6
         Parameters["tMOTRep"] = 3.0;
         Parameters["tMOTCoolVVA"] = 2.0; // between 0 and 1 V
         Parameters["tMOTRepVVA"] = 2.0;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 0.5; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCool"] = 0.0; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRep"] = 3.0; // 3.0
-        Parameters["tImgCoolVVA"] = 0.50;
+        Parameters["tImgCoolVVA"] = 0.567;
         Parameters["tImgRepVVA"] = 1.2;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.5;
-        Parameters["tMolRep"] = 3.0;
+        Parameters["tMolCool"] = 0.15;
+        Parameters["tMolRep"] = 0.0;
         Parameters["tMolCoolVVA"] = 0.61;
         Parameters["tMolRepVVA"] = 2.0;
 
@@ -82,27 +80,40 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 30000;
+        Parameters["tRbRedMOTDuration"] = 50000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 5000;
+        Parameters["tRbRedMolassesDuration"] = 10000;
         Parameters["TOF1"] = 1;
         // Image 1
         Parameters["tBiasShimRampDuration"] = 1; // should be less than TOF2
         Parameters["TOF2"] = 5000;
         Parameters["PumpPulseDuration"] = 50;
         Parameters["RePumpPulseDuration"] = 50;
-        Parameters["MicrowavePulseDuration"] = 4000;
+        Parameters["MicrowavePulseDuration"] = 1000;
         Parameters["TOF3"] = 1000;
         Parameters["PushPulseDuration"] = 100;
         Parameters["TOF4"] = 5000;
         // Image 2
         Parameters["tMOTExposure"] = 200;
-        Parameters["tTweezerExposure"] = 10000;
+        Parameters["tTweezerExposure"] = 2000;
+
+        // Sideband Cooling
+        Parameters["NCoolCycles"] = 0;
+        Parameters["MicrowavePulseDurationCooling"] = 5000;
+        Parameters["CoolingPumpDuration"] = 50;
+        Parameters["tPumpVVACooling"] = 10.0;
+        Parameters["tPumpRepVVACooling"] = 2.0;
+
+        //Parameters["PatternLength"] = 19000 + (int)Parameters["NCoolCycles"]*(int)Parameters["MicrowavePulseDurationCooling"] + (int)Parameters["CoolingPumpDuration"];
+
 
     }
     // Digital Pattern
     public override PatternBuilder32 GetDigitalPattern()
     {
+        int CycleDuration = (int)Parameters["MicrowavePulseDurationCooling"] + (int)Parameters["CoolingPumpDuration"];
+        int TotalCoolingTime = CycleDuration * (int)Parameters["NCoolCycles"];
+
         int RedMOTStart = (int)Parameters["tRbMOTStart"];
         int RedMolDelayStart = RedMOTStart + (int)Parameters["tRbRedMOTDuration"];
         int RedMolassesStart = RedMolDelayStart + (int)Parameters["tMolassesDelay"];
@@ -110,12 +121,14 @@ public class Patterns : MOTMasterScript
         int Img1Start = TOF1Start + (int)Parameters["TOF1"];
         int TOF2Start = Img1Start + (int)Parameters["tTweezerExposure"];
         int PumpPulseStart = TOF2Start + (int)Parameters["TOF2"];
-        int MicrowavePulseStart = PumpPulseStart + (int)Parameters["PumpPulseDuration"];
+        int SidebandCoolingStart = PumpPulseStart + (int)Parameters["PumpPulseDuration"];
+        int MicrowavePulseStart = SidebandCoolingStart + TotalCoolingTime;
         int TOF3Start = MicrowavePulseStart + (int)Parameters["MicrowavePulseDuration"];
         int PushPulseStart = TOF3Start + (int)Parameters["TOF3"];
         int TOF4Start = PushPulseStart + (int)Parameters["PushPulseDuration"];
         int Img2Start = TOF4Start + (int)Parameters["TOF4"];
         int End = (int)Parameters["PatternLength"] - 100;
+        int NCoolCycles = (int)Parameters["NCoolCycles"];
 
         PatternBuilder32 p = new PatternBuilder32();
 
@@ -148,11 +161,24 @@ public class Patterns : MOTMasterScript
 
         // Optical Pump Pulse
         p.AddEdge("tD1AOMSwitch", PumpPulseStart, false);
-        p.AddEdge("tD1AOMSwitch", MicrowavePulseStart, true);
+        p.AddEdge("tD1AOMSwitch", SidebandCoolingStart-1, true);
         p.Pulse(PumpPulseStart, 0, (int)Parameters["PumpPulseDuration"], "tRepSwitch");
 
+        // Sideband Cooling
+        // 1. microwave pulse to drive red sideband.
+        // 2. after mw pulse, simulataneous pump (tD1AOMSwitch) and repump (tRepSwitch) pulse to pump back to F=1. 
+        // 3. repeat N times
+
+        for (int i = 0; i < NCoolCycles; i++)
+        {
+            p.Pulse(SidebandCoolingStart + i * CycleDuration, 0, (int)Parameters["MicrowavePulseDurationCooling"], "tMicrowaveSwitch"); // Microwave pulse on
+            p.AddEdge("tD1AOMSwitch", SidebandCoolingStart + i * CycleDuration + (int)Parameters["MicrowavePulseDurationCooling"], false);
+            p.AddEdge("tD1AOMSwitch", SidebandCoolingStart + i * CycleDuration + (int)Parameters["MicrowavePulseDurationCooling"] + (int)Parameters["CoolingPumpDuration"], true);
+            p.Pulse(SidebandCoolingStart + i * CycleDuration + (int)Parameters["MicrowavePulseDurationCooling"], 0, (int)Parameters["CoolingPumpDuration"], "tRepSwitch"); // Repump pulse on
+        }
+
         // Microwave Pulse
-        p.Pulse(MicrowavePulseStart, 0, (int)Parameters["MicrowavePulseDuration"], "tMicrowaveSwitch");
+        p.Pulse(MicrowavePulseStart, 0, (int)Parameters["MicrowavePulseDuration"], "tMicrowaveSwitch"); // Microwave pulse on
 
         // Push Pulse
         p.Pulse(PushPulseStart, 0, (int)Parameters["PushPulseDuration"], "tCoolSwitch"); // Red Molasses Coolng Pulse
@@ -179,6 +205,10 @@ public class Patterns : MOTMasterScript
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
+
+        int CycleDuration = (int)Parameters["MicrowavePulseDurationCooling"] + (int)Parameters["CoolingPumpDuration"];
+        int TotalCoolingTime = CycleDuration * (int)Parameters["NCoolCycles"];
+
         int RedMOTStart = (int)Parameters["tRbMOTStart"];
         int RedMolDelayStart = RedMOTStart + (int)Parameters["tRbRedMOTDuration"];
         int RedMolassesStart = RedMolDelayStart + (int)Parameters["tMolassesDelay"];
@@ -186,7 +216,8 @@ public class Patterns : MOTMasterScript
         int Img1Start = TOF1Start + (int)Parameters["TOF1"];
         int TOF2Start = Img1Start + (int)Parameters["tTweezerExposure"];
         int PumpPulseStart = TOF2Start + (int)Parameters["TOF2"];
-        int MicrowavePulseStart = PumpPulseStart + (int)Parameters["PumpPulseDuration"];
+        int SidebandCoolingStart = PumpPulseStart + (int)Parameters["PumpPulseDuration"];
+        int MicrowavePulseStart = SidebandCoolingStart + TotalCoolingTime;
         int TOF3Start = MicrowavePulseStart + (int)Parameters["MicrowavePulseDuration"];
         int PushPulseStart = TOF3Start + (int)Parameters["TOF3"];
         int TOF4Start = PushPulseStart + (int)Parameters["PushPulseDuration"];
@@ -234,10 +265,6 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tShimYcc", RedMolDelayStart, (double)Parameters["tMolassesShimYccValue"]); // Molasses shim coils Y
         p.AddAnalogValue("tShimZcc", RedMolDelayStart, (double)Parameters["tMolassesShimZccValue"]); // Molasses shim coils Z
 
-        p.AddLinearRamp("tShimXcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimXccValue"]); // Ramp up bias mag field
-        p.AddLinearRamp("tShimXcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimXccValue"]); // Ramp down bias mag field
-        p.AddLinearRamp("tShimYcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimYccValue"]); // Ramp up bias mag field
-        p.AddLinearRamp("tShimYcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimYccValue"]); // Ramp down bias mag field
         p.AddLinearRamp("tShimZcc", TOF2Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tBiasShimZccValue"]); // Ramp up bias mag field
         p.AddLinearRamp("tShimZcc", TOF4Start, (int)Parameters["tBiasShimRampDuration"], (double)Parameters["tMolassesShimZccValue"]); // Ramp down bias mag field
 
@@ -266,9 +293,16 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tRbD1VVA", RedMOTStart, (double)Parameters["tPumpVVA"]);
 
         // Microwave Pulse
-        p.AddAnalogValue("tMicrowaveModVCF", RedMOTStart, (double)Parameters["tMicrowaveVCF1"]);
-        //p.AddLinearRamp("tMicrowaveModVCF", MicrowavePulseStart, (int)Parameters["MicrowavePulseDuration"], (double)Parameters["tMicrowaveVCF2"]);
+        // p.AddAnalogValue("tMicrowaveModVCF", RedMOTStart, (double)Parameters["tMicrowaveVCF1"]);
+        // //p.AddLinearRamp("tMicrowaveModVCF", MicrowavePulseStart, (int)Parameters["MicrowavePulseDuration"], (double)Parameters["tMicrowaveVCF2"]);
 
+        // Sideband Cooling
+        // don't need to loop in analog pattern, just set the microwave VCF and (re)pump VVA to the correct values during the cooling cycles. The timing of the pulses is controlled by the digital pattern.
+        p.AddAnalogValue("tRbD2RepVVA", SidebandCoolingStart, (double)Parameters["tPumpRepVVACooling"]);
+        p.AddAnalogValue("tRbD1VVA", SidebandCoolingStart, (double)Parameters["tPumpVVACooling"]);
+
+        // Microwave Pulse
+        // don't need to do anything here because it's controlled via usb
 
         // Push Pulses
         p.AddAnalogValue("tRbCoolVCO", TOF2Start, (double)Parameters["tPushVCO"]);

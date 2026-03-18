@@ -17,7 +17,10 @@ namespace MOTMaster
         }
         public Dictionary<String, Object> Parameters;
 
-        public abstract Dictionary<string, List<List<double>>> GetDDSPattern();
+        public virtual Dictionary<string, List<List<double>>> GetDDSPattern()
+        {
+            return new Dictionary<string, List<List<double>>>{ };
+        }
 
         public Dictionary<string, List<bool>> switchConfiguration = new Dictionary<string, List<bool>> { };
 

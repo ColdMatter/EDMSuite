@@ -32,14 +32,6 @@ namespace DAQ.HAL
             }
         }
 
-        public bool TaskRunning
-        {
-            get
-            {
-                return taskRunning;
-            }
-        }
-
 		public DAQMxPatternGenerator(String device)
 		{
 			this.device = device;

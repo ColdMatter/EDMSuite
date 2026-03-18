@@ -173,7 +173,7 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("tTweezerModVCF", aoBoard + "/ao7", -10.0, 10.0);
             AddAnalogOutputChannel("tRbD1VCO", aoBoard + "/ao10", 0, 10);
             AddAnalogOutputChannel("tRbD1VVA", aoBoard + "/ao11", 0, 10);
-            AddAnalogOutputChannel("tMOTccSwitch", aoBoard + "/ao12", 0, 10);
+            //AddAnalogOutputChannel("tMOTccSwitch", aoBoard + "/ao12", 0, 10);
             AddAnalogOutputChannel("tD1SidebandControl", aoBoard + "/ao13", 0, 0.6);
             AddAnalogOutputChannel("tRbD1Lock", aoBoard + "/ao29");
             AddAnalogOutputChannel("tRbD2CoolVVA", aoBoard + "/ao8", 0, 5.0);

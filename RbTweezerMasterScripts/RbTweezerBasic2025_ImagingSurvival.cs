@@ -14,9 +14,10 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 150000;
+        Parameters["PatternLength"] = 60000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
+        Parameters["threshold"] = 0.0;
 
         // Offset Lock
         Parameters["tRbOffsetVoltageRep"] = 1.675; // 1.8 V
@@ -31,12 +32,12 @@ public class Patterns : MOTMasterScript
         // Shim Coils Default
         Parameters["tShimXccValue"] = 7.5; // 8.8; //8.8; //  0.0
         Parameters["tShimYccValue"] = -2.5; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.4; // 0.3; //0.3; // -0.85
+        Parameters["tShimZccValue"] = -0.3; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
-        Parameters["tMolassesShimXccValue"] = 9.0; // 8.8 // 10.0
+        Parameters["tMolassesShimXccValue"] = 10.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.48; // 0.3 // 0.52
+        Parameters["tMolassesShimZccValue"] = 0.35; // 0.3 // 0.52
 
         // Shim Coils Blue MOT
         Parameters["tBlueMOTShimXccValue"] = 0.0; //0.0; // 8.0
@@ -51,16 +52,16 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTRepVVA"] = 2.0;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 3.0; // 3.6 - 4.0, resonance is 4.0
-        Parameters["tImgRep"] = 3.0; // 3.0
-        Parameters["tImgCoolVVA"] = 0.5;
-        Parameters["tImgRepVVA"] = 1.2;
+        Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgRep"] = 0.028; // 3.0
+        Parameters["tImgCoolVVA"] = 0.405;
+        Parameters["tImgRepVVA"] = 1.050;
 
         // Molasses Cooling and Repump VCO & VVA
         Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 0.0;
-        Parameters["tMolCoolVVA"] = 1.2;
-        Parameters["tMolRepVVA"] = 2.0;
+        Parameters["tMolRep"] = 3.331;
+        Parameters["tMolCoolVVA"] = 0.460;
+        Parameters["tMolRepVVA"] = 0.386;
 
         // Blue MOT Cooling and Repump VCO and VVA
         Parameters["tBlueMotVCO"] = 3.0; // 5.0 for blue MOT
@@ -84,13 +85,13 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 100000;
+        Parameters["tRbRedMOTDuration"] = 30000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 4000;
-        Parameters["tImgTOF"] = 100;
-        Parameters["tMOTExposure"] = 200;
-        Parameters["tTweezerExposure"] = 5000;
-        Parameters["tTweezerImg2Delay"] = 1000; // 20000
+        Parameters["tRbRedMolassesDuration"] = 5000;
+        Parameters["tImgTOF"] = 1000;
+        Parameters["tMOTExposure"] = 1;
+        Parameters["tTweezerExposure"] = 10000;
+        Parameters["tTweezerImg2Delay"] = 1200; // 20000
 
     }
     // Digital Pattern
@@ -124,7 +125,7 @@ public class Patterns : MOTMasterScript
 
         // Tweezer
         p.AddEdge("tTweezerModSwitch", RedMOTStart, true); // Turn OFF tweezer modulation 
-        p.AddEdge("tTweezerSwitch", RedMolassesStart - (int)Parameters["tDropTime"], true); // Turn OFF tweezer to drop atoms before true loading
+        p.AddEdge("tTweezerSwitch", RedMolassesStart - (int)Parameters["tMolassesDelay"], true); // Turn OFF tweezer to drop atoms before true loading
         p.AddEdge("tTweezerSwitch", RedMolassesStart, false); // Turn ON tweezer switch at start of molasses loading
 
         //p.AddEdge("tTweezerSwitch", Img2TOFStart, true); // Turn OFF tweezer switch after imaging to drop atoms
@@ -220,11 +221,25 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tRbD2RepVVA", RedMolDelayStart, (double)Parameters["tMolRepVVA"]);
 
         // Imaging 
-        p.AddAnalogValue("tRbCoolVCO", ImgTOFStart, (double)Parameters["tImgCool"]);
-        //p.AddLinearRamp("tRbCoolVCO", ImgTOFStart, (int)Parameters["tTweezerExposure"], 2.0);
-        p.AddAnalogValue("tRbRepVCO", ImgTOFStart, (double)Parameters["tImgRep"]);
-        p.AddAnalogValue("tRbD2CoolVVA", ImgTOFStart, (double)Parameters["tImgCoolVVA"]);
-        p.AddAnalogValue("tRbD2RepVVA", ImgTOFStart, (double)Parameters["tImgRepVVA"]);
+        p.AddAnalogValue("tRbCoolVCO", ImgTOFStart, 0.0);
+        p.AddAnalogValue("tRbRepVCO", ImgTOFStart, 0.0);
+        p.AddAnalogValue("tRbD2CoolVVA", ImgTOFStart, 0.0);
+        p.AddAnalogValue("tRbD2RepVVA", ImgTOFStart, 0.0);
+
+        p.AddAnalogValue("tRbCoolVCO", ImgStart, (double)Parameters["tImgCool"]);
+        p.AddAnalogValue("tRbRepVCO", ImgStart, (double)Parameters["tImgRep"]);
+        p.AddAnalogValue("tRbD2CoolVVA", ImgStart, (double)Parameters["tImgCoolVVA"]);
+        p.AddAnalogValue("tRbD2RepVVA", ImgStart, (double)Parameters["tImgRepVVA"]);
+
+        p.AddAnalogValue("tRbCoolVCO", Img2TOFStart, 0.0);
+        p.AddAnalogValue("tRbRepVCO", Img2TOFStart, 0.0);
+        p.AddAnalogValue("tRbD2CoolVVA", Img2TOFStart, 0.0);
+        p.AddAnalogValue("tRbD2RepVVA", Img2TOFStart, 0.0);
+
+        p.AddAnalogValue("tRbCoolVCO", Img2Start, (double)Parameters["tImgCool"]);
+        p.AddAnalogValue("tRbRepVCO", Img2Start, (double)Parameters["tImgRep"]);
+        p.AddAnalogValue("tRbD2CoolVVA", Img2Start, (double)Parameters["tImgCoolVVA"]);
+        p.AddAnalogValue("tRbD2RepVVA", Img2Start, (double)Parameters["tImgRepVVA"]);
 
         // Tweezer
         p.AddAnalogValue("tTweezerVCO", RedMOTStart, (double)Parameters["tTweezerSetVCO"]);

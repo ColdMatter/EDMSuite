@@ -52,7 +52,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
-        private NeanderthalDDSController.Controller DDSCtrl;
+        //private NeanderthalDDSController.Controller DDSCtrl;
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -138,8 +138,8 @@ namespace MOTMaster
             //    "tcp://localhost:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
-            DDSCtrl.testDDS();
+            //DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
+            //DDSCtrl.testDDS();
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -400,6 +400,10 @@ namespace MOTMaster
             }
         }
 
+        public Dictionary<String, Object> GetParameters(string path) { MOTMasterScript script = prepareScript(path, null);
+            return script.Parameters;
+        }
+
 
         public void Go(Dictionary<String, Object> dict)
         {
@@ -448,7 +452,7 @@ namespace MOTMaster
                     //DDSCtrl.startRepetitivePattern();
 
 
-                    // --- Add the new logic for handling the DDS pattern ---
+                    /*// --- Add the new logic for handling the DDS pattern ---
                     if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
                     {
                         // Set break flag to safely clear the old pattern

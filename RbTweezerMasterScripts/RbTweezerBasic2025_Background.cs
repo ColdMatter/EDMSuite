@@ -14,34 +14,28 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 60000;
+        Parameters["PatternLength"] = 26000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
         // Offset Lock
         Parameters["tRbOffsetVoltageRep"] = 1.675; // 1.8 V
-        Parameters["tRbOffsetVoltageCool"] = 3.3; // 3.2 V
+        Parameters["tRbOffsetVoltageCool"] = 3.3; //3.2 V
 
         // MOT coils
         Parameters["tMOTccValue"] = 0.48; //0.48
-        Parameters["tBlueMOTccValue"] = 0.0; // 1.8 for blue MOT
         Parameters["tcMOTccValue"] = 0.48;
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 9.83; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -2.71; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.04; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 9.878; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -2.375; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = -0.0378; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 10.0; // 8.8 // 10.0
         Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
         Parameters["tMolassesShimZccValue"] = 0.35; // 0.3 // 0.52
-
-        // Shim Coils Blue MOT
-        Parameters["tBlueMOTShimXccValue"] = 0.0; //0.0; // 8.0
-        Parameters["tBlueMOTShimYccValue"] = 0.0; //2.5; // -5.0
-        Parameters["tBlueMOTShimZccValue"] = 0.0; //-1.0; // -7.0
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
@@ -62,20 +56,6 @@ public class Patterns : MOTMasterScript
         Parameters["tMolCoolVVA"] = 0.454;
         Parameters["tMolRepVVA"] = 1.396;
 
-        // Blue MOT Cooling and Repump VCO and VVA
-        Parameters["tBlueMotVCO"] = 3.0; // 5.0 for blue MOT
-        Parameters["tBlueMotVCORamp"] = 3.0; // 5.0 for blue MOT
-        Parameters["tBlueMotVVA"] = 10.0; //  3.5;// 6.5 for blue MOT
-        Parameters["tBlueMotVVARamp"] = 10.0; //  3.5;// 6.5 for blue MOT
-        Parameters["tD1SidebandBlueMOT"] = 0.24; // 0.24 for blue MOT 
-
-        // Blue Molasses Cooling and Repump VCO and VVA
-        Parameters["tBlueMolassesVCOCool"] = 3.0; // 3.0
-        Parameters["tBlueMolassesVCOCoolRamp"] = 3.0; // 6.0
-        Parameters["tBlueMolassesVVA"] = 10.0; //  3.5; // 10.0
-        Parameters["tBlueMolassesVVARamp"] = 10.0; //  3.5; // 4.0, 10.0
-        Parameters["tD1SidebandBlueMolasses"] = 0.5;
-
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
         Parameters["tTweezerLoadVCO"] = 9.0; // 
@@ -84,16 +64,13 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 20000;
+        Parameters["tRbRedMOTDuration"] = 10000;
         Parameters["tMolassesDelay"] = 1;
         Parameters["tRbRedMolassesDuration"] = 5000;
-        Parameters["tRbBlueMOTDuration"] = 1;
-        Parameters["tRbBlueMolassesDuration"] = 1;
         Parameters["tImgTOF"] = 1;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
-        Parameters["tTweezerBackgroundDelay"] = 10000; // 20000
-
+        Parameters["tTweezerBackgroundDelay"] = 1; // 20000
     }
     // Digital Pattern
     public override PatternBuilder32 GetDigitalPattern()
@@ -103,8 +80,6 @@ public class Patterns : MOTMasterScript
         int RedMolassesStart = RedMolDelayStart + (int)Parameters["tMolassesDelay"];
         int ImgTOFStart = RedMolassesStart + (int)Parameters["tRbRedMolassesDuration"];
         int ImgStart = ImgTOFStart + (int)Parameters["tImgTOF"];
-        int BgTOFStart = ImgStart + (int)Parameters["tTweezerExposure"];
-        int BgStart = BgTOFStart + (int)Parameters["tTweezerBackgroundDelay"];
         int End = (int)Parameters["PatternLength"] - 100;
 
         PatternBuilder32 p = new PatternBuilder32();
@@ -127,24 +102,17 @@ public class Patterns : MOTMasterScript
         // Tweezer
         p.AddEdge("tTweezerModSwitch", RedMOTStart, true); // Turn OFF tweezer modulation 
         p.AddEdge("tTweezerSwitch", RedMolassesStart - (int)Parameters["tDropTime"], true); // Turn OFF tweezer to drop atoms before true loading
-        p.AddEdge("tTweezerSwitch", RedMolassesStart, false); // Turn ON tweezer switch at start of molasses loading
-        p.AddEdge("tTweezerSwitch", BgTOFStart, true); // Turn OFF tweezer switch after imaging to drop atoms
-        p.AddEdge("tTweezerSwitch", BgStart, false); // Turn ON tweezer switch after background delay to img background
+        p.AddEdge("tTweezerSwitch", End, false); // Turn ON tweezer switch at start of molasses loading
 
-        // Imaging
         p.Pulse(ImgStart, 0, (int)Parameters["tTweezerExposure"], "tCoolSwitch"); // Red MOT cooling imaging pulse - CHANGE EXPOSURE DEPENDING ON WHAT IS BEING IMAGED
         p.Pulse(ImgStart, 0, (int)Parameters["tTweezerExposure"], "tRepSwitch"); // Red MOT repump imaging pulse - CHANGE EXPOSURE DEPENDING ON WHAT IS BEING IMAGED
-        p.Pulse(BgStart, 0, (int)Parameters["tTweezerExposure"], "tCoolSwitch"); // Red MOT cooling background imaging pulse
-        p.Pulse(BgStart, 0, (int)Parameters["tTweezerExposure"], "tRepSwitch"); // Red MOT repump background imaging pulse
 
         p.Pulse(RedMolDelayStart - (int)Parameters["tMOTExposure"], 0, 100, "tMOTCamTrig"); // Trigger MOT camera
         p.Pulse(ImgStart, 0, (int)Parameters["tTweezerExposure"], "tHamCamTrig"); // Trigger tweezer camera for image
-        p.Pulse(BgStart, 0, (int)Parameters["tTweezerExposure"], "tHamCamTrig"); // Trigger tweezer camera for background
 
         // END
         p.AddEdge("tCoolSwitch", End, true);
         p.AddEdge("tRepSwitch", End, true);
-        //p.AddEdge("tTweezerSwitch", End, true);
         p.AddEdge("tD1AOMSwitch", End, false); // Turn on D1 light
 
         return p;
@@ -159,8 +127,6 @@ public class Patterns : MOTMasterScript
         int RedMolassesStart = RedMolDelayStart + (int)Parameters["tMolassesDelay"];
         int ImgTOFStart = RedMolassesStart + (int)Parameters["tRbRedMolassesDuration"];
         int ImgStart = ImgTOFStart + (int)Parameters["tImgTOF"];
-        int BgTOFStart = ImgStart + (int)Parameters["tTweezerExposure"];
-        int BgStart = BgTOFStart + (int)Parameters["tTweezerBackgroundDelay"];
         int End = (int)Parameters["PatternLength"] - 100;
 
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
@@ -230,11 +196,6 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("tTweezerVCO", RedMOTStart, (double)Parameters["tTweezerSetVCO"]);
         p.AddAnalogValue("tTweezerVCO", RedMolassesStart, (double)Parameters["tTweezerLoadVCO"]);
         p.AddAnalogValue("tTweezerVCO", ImgTOFStart, (double)Parameters["tTweezerImgVCO"]); // Shift tweezer power to imaging power for consistent AC Stark shift
-
-        // D1 Light
-        p.AddAnalogValue("tRbD1VCO", RedMOTStart, (double)Parameters["tBlueMolassesVCOCool"]); // D1 AOM VCO Cooling
-        p.AddAnalogValue("tRbD1VVA", RedMOTStart, (double)Parameters["tBlueMolassesVVA"]);// D1 AOM VVA
-        p.AddAnalogValue("tD1SidebandControl", RedMOTStart, (double)Parameters["tD1SidebandBlueMolasses"]);
 
         // D2 Light End
         p.AddAnalogValue("tRbCoolVCO", End, (double)Parameters["tMOTCool"]);
