@@ -38,10 +38,14 @@
   <ItemGroup>
     <Compile Include="MOTBasicMultiTrigger.cs" />
     <Compile Include="MOTBasicMultiTriggerOLD.cs" />
+    <Compile Include="RbTweezerBasic2025_Background.cs" />
     <Compile Include="RbTweezerBasic2025_CleanUpPulseTest.cs" />
     <Compile Include="RbTweezerBasic2025_Density.cs" />
     <Compile Include="RbTweezerBasic2025_BackgroundSubtracted.cs" />
     <Compile Include="RbTweezerBasic2025_DropRecapture.cs" />
+    <Compile Include="RbTweezerBasic2025_MicrowaveSidebandCooling.cs" />
+    <Compile Include="RbTweezerBasic2025_MicrowaveSpectroscopy1 - Copy.cs" />
+    <Compile Include="RbTweezerBasic2025_SidebandCooling.cs" />
     <Compile Include="RbTweezerBasic2025_MicrowaveSpectroscopy1.cs" />
     <Compile Include="RbTweezerBasic2025_MicrowaveSpectroscopy.cs" />
     <Compile Include="RbTweezerBasic2025_StatePreparation.cs" />
