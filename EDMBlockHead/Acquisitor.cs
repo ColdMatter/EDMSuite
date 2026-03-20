@@ -113,8 +113,18 @@ namespace EDMBlockHead.Acquire
             acquireThread.Start();
         }
 
-		// calling this method stops acquisition as soon as possible (usually after the current shot)
-		public void Stop() 
+        public void StartMagDataDummyAcquisition(BlockConfig config)
+        {
+            this.config = config;
+            acquireThread = new Thread(new ThreadStart(this.AcquireMagDataDummy));
+            acquireThread.Name = "BlockHead Acquisitor";
+            acquireThread.Priority = ThreadPriority.Highest;
+            backendState = AcquisitorState.running;
+            acquireThread.Start();
+        }
+
+        // calling this method stops acquisition as soon as possible (usually after the current shot)
+        public void Stop() 
 		{
 			lock(this)
 			{
@@ -1119,34 +1129,121 @@ namespace EDMBlockHead.Acquire
 
         }
 
-		private void MapChannels()
+        public void AcquireMagDataDummy()
+        {
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
+
+            scanMaster = ScanMaster.Controller.GetController();
+            phaseLock = new EDMPhaseLock.MainForm();
+            //hardwareController = new EDMHardwareControl.Controller();     // new hardware controller
+            hardwareController = new UEDMHardwareControl.UEDMController();
+
+            // map modulations to physical channels
+            MapChannels();
+
+
+            Block b = new Block();
+            b.Config = config;
+            b.SetTimeStamp();
+
+
+            try
+            {
+                // get things going
+                MagDummyAcquisitionStarting();
+
+                // enter the main loop
+                for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
+                {
+                    // set the switch states and impose the appropriate wait times
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+                    ThrowSwitches(point);
+
+                    stopwatch.Stop();
+                    Console.WriteLine("Time to switch = " + stopwatch.ElapsedMilliseconds + " ms");
+                    // take a point
+                    Shot s;
+                    EDMPoint p;
+                    // just stuff a made up shot in
+                    //Thread.Sleep(10);
+                    s = DataFaker.GetFakeShot(1900, 50, 10, 3, 3);
+                    ((TOF)s.TOFs[0]).Calibration = 1;
+                    p = new EDMPoint();
+                    p.Shot = s;
+                    //Thread.Sleep(20);
+
+                    double[] spd;
+                    spd = new double[7];
+                    spd[0] = 1;
+                    spd[1] = 2;
+                    spd[2] = 3;
+                    p.SinglePointData.Add("WestCurrent", spd[1]);// hardwareController.WestCurrent);
+                    p.SinglePointData.Add("EastCurrent", spd[2]);// hardwareController.EastCurrent);
+                    b.Points.Add(p);
+
+                    // update the front end
+                    Controller.GetController().GotDummyPoint(point, p);
+
+
+                    if (CheckIfStopping())
+                    {
+                        MagDummyAcquisitionStopping();
+                        Monitor.Pulse(MonitorLockObject);
+                        Monitor.Exit(MonitorLockObject);
+                        return;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // about the best that can be done at this stage
+                MagDummyAcquisitionStopping();
+                Monitor.Pulse(MonitorLockObject);
+                Monitor.Exit(MonitorLockObject);
+                throw e;
+            }
+
+            MagDummyAcquisitionStopping();
+
+            // hand the new block back to the controller
+            Controller.GetController().MagDataAcquisitionFinished(b);
+
+            // signal anybody waiting on the lock that we're done
+            Monitor.Pulse(MonitorLockObject);
+            Monitor.Exit(MonitorLockObject);
+
+        }
+
+        private void MapChannels()
 		{
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
 
-            TTLSwitchedChannel bChan = new TTLSwitchedChannel();
-            bChan.Channel = "bSwitch";
-            bChan.Invert = false;
-            bChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(bChan);
+            //TTLSwitchedChannel bChan = new TTLSwitchedChannel();
+            //bChan.Channel = "bSwitch";
+            //bChan.Invert = false;
+            //bChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(bChan);
 
-            TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
-            notBChan.Channel = "notB";
-            notBChan.Invert = true;
-            notBChan.Modulation = config.GetModulationByName("B");
-            switchedChannels.Add(notBChan);
+            //TTLSwitchedChannel notBChan = new TTLSwitchedChannel();
+            //notBChan.Channel = "notB";
+            //notBChan.Invert = true;
+            //notBChan.Modulation = config.GetModulationByName("B");
+            //switchedChannels.Add(notBChan);
 
-            TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
-            dbChan.Channel = "dB";
-            dbChan.Invert = false;
-            dbChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(dbChan);
+            //TTLSwitchedChannel dbChan = new TTLSwitchedChannel();
+            //dbChan.Channel = "dB";
+            //dbChan.Invert = false;
+            //dbChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(dbChan);
 
-            TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
-            notDBChan.Channel = "notDB";
-            notDBChan.Invert = true;
-            notDBChan.Modulation = config.GetModulationByName("DB");
-            switchedChannels.Add(notDBChan);
+            //TTLSwitchedChannel notDBChan = new TTLSwitchedChannel();
+            //notDBChan.Channel = "notDB";
+            //notDBChan.Invert = true;
+            //notDBChan.Modulation = config.GetModulationByName("DB");
+            //switchedChannels.Add(notDBChan);
 
             //TTLSwitchedChannel piChan = new TTLSwitchedChannel();
             //piChan.Channel = "piFlipEnable";
@@ -1207,17 +1304,17 @@ namespace EDMBlockHead.Acquire
             //rf2FChannel.Modulation = config.GetModulationByName("RF2F");
             //switchedChannels.Add(rf2FChannel);
 
-            //HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
-            //bChan.Channel = "bSwitch";
-            //bChan.Invert = false;
-            //bChan.Modulation = config.GetModulationByName("B");
-            //switchedChannels.Add(bChan);
+            HardwareControllerSwitchChannel bChan = new HardwareControllerSwitchChannel();
+            bChan.Channel = "bSwitch";
+            bChan.Invert = false;
+            bChan.Modulation = config.GetModulationByName("B");
+            switchedChannels.Add(bChan);
 
-            //HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
-            //dbChan.Channel = "dB";
-            //dbChan.Invert = false;
-            //dbChan.Modulation = config.GetModulationByName("DB");
-            //switchedChannels.Add(dbChan);
+            HardwareControllerSwitchChannel dbChan = new HardwareControllerSwitchChannel();
+            dbChan.Channel = "dB";
+            dbChan.Invert = false;
+            dbChan.Modulation = config.GetModulationByName("DB");
+            switchedChannels.Add(dbChan);
 
             HardwareControllerSwitchChannel eChan = new HardwareControllerSwitchChannel();
             eChan.Channel = "eChan";
@@ -1896,9 +1993,19 @@ namespace EDMBlockHead.Acquire
             //hardwareController.UpdateIMonitorAsync();
         }
 
-		// If you want to store any information in the BlockConfig this is the place to do it.
-		// This function is called at the start of every block.
-		private void StuffConfig()
+        // configure hardware for magnetic field data taking
+        private void MagDummyAcquisitionStarting()
+        {
+            // iterate through the channels and ready them
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionStarting();
+
+            // copy running parameters into the BlockConfig
+            StuffConfig();
+        }
+
+        // If you want to store any information in the BlockConfig this is the place to do it.
+        // This function is called at the start of every block.
+        private void StuffConfig()
 		{
 			// dump all of the pg settings into the config - never know when they'll come in
 			// handy !
@@ -1986,6 +2093,11 @@ namespace EDMBlockHead.Acquire
             foreach (SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
             inputTask.Dispose();
             singlePointInputTask.Dispose();
+        }
+
+        private void MagDummyAcquisitionStopping()
+        {
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
         }
 
         private bool CheckIfStopping() 

@@ -313,6 +313,18 @@ namespace EDMBlockHead
             }
         }
 
+        public void StartMagDataDummyAcquisition()
+        {
+            if (appState != AppState.running)
+            {
+                Status = "Acquiring ...";
+                acquisitor.StartMagDataDummyAcquisition(config);
+                appState = AppState.running;
+                mainWindow.AppendToTextArea("Starting acquisition of magnetic field data ...");
+                mainWindow.ClearLeakageMeasurements();
+            }
+        }
+
 
         public void StopAcquisition()
         {
@@ -365,6 +377,14 @@ namespace EDMBlockHead
         {
             Monitor.Enter(acquisitor.MonitorLockObject);
             StartMagDataAcquisition();
+            Monitor.Wait(acquisitor.MonitorLockObject);
+            Monitor.Exit(acquisitor.MonitorLockObject);
+        }
+
+        public void StartMagDataDummyAcquisitionAndWait()
+        {
+            Monitor.Enter(acquisitor.MonitorLockObject);
+            StartMagDataDummyAcquisition();
             Monitor.Wait(acquisitor.MonitorLockObject);
             Monitor.Exit(acquisitor.MonitorLockObject);
         }
@@ -490,6 +510,16 @@ namespace EDMBlockHead
                 // update the leakage graphs
                 mainWindow.AppendLeakageMeasurement(new double[]{westLeakages[0]}, new double[]{eastLeakages[0]});
                 leakageIndex = 0;
+            }
+        }
+
+        public void GotDummyPoint(int point, EDMPoint p)
+        {
+            
+            if ((point % UPDATE_EVERY) == 0)
+            {
+                Shot data = p.Shot;
+                mainWindow.TankLevel = point;
             }
         }
 
