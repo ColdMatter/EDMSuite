@@ -439,6 +439,14 @@ namespace DAQ.Environment
                     Debug = false;
                     break;
 
+                case "WS8ServerHuxley":
+                    Hardware = new EDMHardware();
+                    FileSystem = new FileSystem();
+                    serverTCPChannel = 2001;
+                    Debug = true;
+                    //ExperimentType = "edm";
+                    break;
+
                 default:
                     Hardware = new EDMHardware();
                     FileSystem = new FileSystem();
