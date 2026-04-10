@@ -140,7 +140,7 @@ namespace UEDMHardwareControl
         Task DegaussCoil1OutputTask;
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
-        Task feedthroughTempInputTask;
+        //Task feedthroughTempInputTask;
         Task HcoolingInputTask;
         Task VcoolingInputTask;
 
@@ -357,7 +357,7 @@ namespace UEDMHardwareControl
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
-            feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
+            //feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
 
             HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
             VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
@@ -737,6 +737,10 @@ namespace UEDMHardwareControl
             public double calStep;
             public double bStep;
             public double usbBias;
+            public double calibrationVoltageH;
+            public double calibrationPowerH;
+            public double calibrationVoltageV;
+            public double calibrationPowerV;
             //public double dcfm;
             //public double rf1AttC;
             //public double rf1AttS;
@@ -815,6 +819,10 @@ namespace UEDMHardwareControl
             dataStore.steppingBias = SteppingBiasVoltage;
             dataStore.frequency = GreenSynthOnFrequency;
             dataStore.amplitude = GreenSynthOnAmplitude;
+            dataStore.calibrationPowerH = CalibPowerH;
+            dataStore.calibrationVoltageH = CalibVoltageH;
+            dataStore.calibrationPowerV = CalibPowerV;
+            dataStore.calibrationVoltageV = CalibVoltageV;
             //dataStore.dcfm = GreenSynthDCFM;
             dataStore.bStep = UsbFlipStepCurrent;
             dataStore.calStep = UsbCalStepCurrent;
@@ -904,6 +912,10 @@ namespace UEDMHardwareControl
                 BehlkeBleedTime = dataStore.bleedTime;
                 BehlkeSwitchTime = dataStore.switchTime; 
                 BehlkeSettleTime = dataStore.settleTime;
+                CalibVoltageH = dataStore.calibrationVoltageH;
+                CalibVoltageV = dataStore.calibrationVoltageV;
+                CalibPowerH = dataStore.calibrationPowerH;
+                CalibPowerV = dataStore.calibrationPowerV;
                 //SetSteppingBBiasVoltage(dataStore.steppingBias);
                 GreenSynthOnFrequency = dataStore.frequency;
                 GreenSynthOnAmplitude = dataStore.amplitude;
@@ -5465,8 +5477,8 @@ namespace UEDMHardwareControl
 
         public void PollFeedthroughTemp()
         {
-            double feedthroughThermocoupleScale = 1; //This converts the reading from the thermocouple to a correct temperature
-            feedthroughTemp = feedthroughThermocoupleScale * ReadAnalogInput(feedthroughTempInputTask);
+            //double feedthroughThermocoupleScale = 1; //This converts the reading from the thermocouple to a correct temperature
+            //feedthroughTemp = feedthroughThermocoupleScale * ReadAnalogInput(feedthroughTempInputTask);
         }
 
         public void UpdateFeedthroughTempUI()
@@ -8157,16 +8169,68 @@ namespace UEDMHardwareControl
         //}
         private double HcoolingMonitorVoltage;
         private double VcoolingMonitorVoltage;
+
+        public double CalibVoltageH
+        {
+            get
+            {
+                return Double.Parse(window.calibrationVoltageH.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.calibrationVoltageH, value.ToString());
+            }
+        }
+
+        public double CalibPowerH
+        {
+            get
+            {
+                return Double.Parse(window.calibrationPowerH.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.calibrationPowerH, value.ToString());
+            }
+        }
+        public double CalibVoltageV
+        {
+            get
+            {
+                return Double.Parse(window.calibrationVoltageV.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.calibrationVoltageV, value.ToString());
+            }
+        }
+
+        public double CalibPowerV
+        {
+            get
+            {
+                return Double.Parse(window.calibrationPowerV.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.calibrationPowerV, value.ToString());
+            }
+        }
         public void show_HcoolingVoltage()
         {
+
+            double calib_factorH = CalibPowerH / CalibVoltageH;
             HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask,1000,50);
             window.SetTextBox(window.HcoolingMonitorTextBox, HcoolingMonitorVoltage.ToString());
+            window.SetTextBox(window.HcoolingPowerBox, (HcoolingMonitorVoltage * calib_factorH).ToString());
         }
 
         public void show_VcoolingVoltage()
         {
-            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask,1000,50);
+            double calib_factorV = CalibPowerV / CalibVoltageV;
+            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask, 1000, 50);
             window.SetTextBox(window.VcoolingMonitorTextBox, VcoolingMonitorVoltage.ToString());
+            window.SetTextBox(window.VcoolingPowerBox, (VcoolingMonitorVoltage * calib_factorV).ToString());
         }
         #endregion
         #region Hardware Control Methods - safe for remote

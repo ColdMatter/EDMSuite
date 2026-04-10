@@ -47,7 +47,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	fileSystem = Environs.FileSystem
 	print("Measuring parameters ...")
 	bh.StopPattern()
-	# hc.UpdateBCurrentMonitor()
+	hc.UpdateBCurrentMonitor()
 	hc.PollVMonitor()
 	bh.StartPattern()
 
@@ -62,7 +62,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
 	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast_Bslow.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
@@ -86,11 +86,11 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	
 	# generate the waveform codes
 	print("Generating waveform codes ...")
-	eWave = bc.GetModulationByName("E").Waveform
-	eWave.Name = str("E")
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
-	bc.GetModulationByName("B").Waveform = ws["B"]
-	bc.GetModulationByName("DB").Waveform = ws["DB"]
+	#eWave = bc.GetModulationByName("E").Waveform
+	#eWave.Name = str("E")
+	#ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
+	#bc.GetModulationByName("B").Waveform = ws["B"]
+	#bc.GetModulationByName("DB").Waveform = ws["DB"]
 	
 	# change the inversions of the static codes E
 	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
@@ -128,10 +128,12 @@ kReZeroLeakageMonitorsPeriod = 100
 #r = Random()
 
 def QuSpinGo():
-	# Setup E field voltages
+	# Setup E field voltages + timings
     eFieldVoltagesInput = input("E-field voltages in kV: ")
     eFieldVoltages = eFieldVoltagesInput.split(",")
-    
+
+    eFieldInput = input("E-field switch delay time in milliseconds: ")
+    eFieldSwitchTimes = eFieldInput.split(",")
     # Setup file
     f = None
     fileSystem = Environs.FileSystem
@@ -160,7 +162,7 @@ def QuSpinGo():
     mwState = True #hc.MWManualState
     print("mw-state: " + str(mwState))
     # this is to make sure the B current monitor is in a sensible state
-    # hc.UpdateBCurrentMonitor()
+    hc.UpdateBCurrentMonitor()
 
     # randomise Ramsey phase 
     # scramblerV = 0.97156 * r.NextDouble()
@@ -205,70 +207,74 @@ def QuSpinGo():
     Emini2List=[]
     Emini3List=[]
     while blockIndex < maxBlockIndex:
-        for i in eFieldVoltages:
-            eCurrentState = hc.EFieldPolarityBehlke
-            hc.SetCPlusVoltage(float(i))
-            hc.SetCMinusVoltage(float(i))
-            hc.UpdateVoltages()
-            hc.SwitchEBehlkeAndWait(eCurrentState)
-            if (float(i)==0.0):
-                System.Threading.Thread.CurrentThread.Join(20000)
-            else:
-                System.Threading.Thread.CurrentThread.Join(5000)
-            # Make new block config with correct E Field
-            bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
-
-            print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
-            # save the block config and load into blockhead
-            print("Saving temp config.")
-            bc.Settings["clusterIndex"] = System.Int32(blockIndex)
-            tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
-            saveBlockConfig(tempConfigFile, bc)
-            System.Threading.Thread.CurrentThread.Join(500)
-            print("Loading temp config.")
-            bh.LoadConfig(tempConfigFile)
-			
-            # take the block and save it
-            print("Running magnetic field data acquisition ...")
-            bh.StartMagDataAcquisitionAndWait()
-            print("Done.")
-            blockPath = '%(p)s%(c)s_%(i)04d_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
-            bh.SaveBlock(blockPath)
-            print("Saved block "+ str(blockIndex) + ".")
-            # give mma a chance to analyse the block
-            # print("Notifying Mathematica and waiting ...")
-            writeLatestBlockNotificationFile(cluster, blockIndex)
-            System.Threading.Thread.CurrentThread.Join(5000)
-            print("Done.")
-            # increment and loop
-            File.Delete(tempConfigFile)
-            
-            blockIndex = blockIndex + 1
-
-            if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
-                print("Recalibrating leakage monitors.")
-                # calibrate leakage monitors
-
+        for j in eFieldSwitchTimes:
+            for i in eFieldVoltages:
                 eCurrentState = hc.EFieldPolarityBehlke
-                cPlusV = 3*(hc.CPlusVoltage)
-                cMinusV = 3*(hc.CMinusVoltage)
-
-                print("E-field off")
-                hc.FieldsOff()
-
-                System.Threading.Thread.CurrentThread.Join(60000)
-                hc.CalibrateIMonitors()
-                # hc.EnableBleed( False )
-                # System.Threading.Thread.CurrentThread.Join(500)
-                print("E-field on")
-                hc.SetCPlusVoltage(cPlusV)
-                hc.SetCMinusVoltage(cMinusV)
+                hc.SetCPlusVoltage(float(i))
+                hc.SetCMinusVoltage(float(i))
                 hc.UpdateVoltages()
+                hc.BehlkeSettleTime = float(j)
+                System.Threading.Thread.CurrentThread.Join(1000)
                 hc.SwitchEBehlkeAndWait(eCurrentState)
-                print("E Switch Finished")
-                System.Threading.Thread.CurrentThread.Join(10000)
 
-                print("leakage monitors calibrated")
+                if (float(i)==0.0):
+                    System.Threading.Thread.CurrentThread.Join(20000)
+                else:
+                    System.Threading.Thread.CurrentThread.Join(5000)
+                # Make new block config with correct E Field
+                bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#rfState, mwState, scramblerV)
+
+                print("Acquiring MAGNETIC FIELD block " + str(blockIndex) + " ...")
+
+                # save the block config and load into blockhead
+                print("Saving temp config.")
+                bc.Settings["clusterIndex"] = System.Int32(blockIndex)
+                tempConfigFile =str('%(p)stemp%(c)s_%(i)s.xml' % {'p': settingsPath, 'c': cluster, 'i': blockIndex})
+                saveBlockConfig(tempConfigFile, bc)
+                System.Threading.Thread.CurrentThread.Join(500)
+                print("Loading temp config.")
+                bh.LoadConfig(tempConfigFile)
+
+                # take the block and save it
+                print("Running magnetic field data acquisition ...")
+                bh.StartMagDataAcquisitionAndWait()
+                print("Done.")
+                blockPath = '%(p)s%(c)s_%(i)04d_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
+                bh.SaveBlock(blockPath)
+                print("Saved block "+ str(blockIndex) + ".")
+                
+                writeLatestBlockNotificationFile(cluster, blockIndex)
+                System.Threading.Thread.CurrentThread.Join(5000)
+                print("Done.")
+
+                # increment and loop
+                File.Delete(tempConfigFile)
+                
+                blockIndex = blockIndex + 1
+
+                # if ((blockIndex % kReZeroLeakageMonitorsPeriod) == 0):
+                #     print("Recalibrating leakage monitors.")
+                #     # calibrate leakage monitors
+
+                #     eCurrentState = hc.EFieldPolarity
+                #     cPlusV = 3*(hc.CPlusVoltage)
+                #     cMinusV = 3*(hc.CMinusVoltage)
+
+                #     print("E-field off")
+                #     hc.FieldsOff()
+
+                #     System.Threading.Thread.CurrentThread.Join(60000)
+                #     hc.CalibrateIMonitors()
+                #     # hc.EnableBleed( False )
+                #     # System.Threading.Thread.CurrentThread.Join(500)
+                #     print("E-field on")
+                #     hc.SetCPlusVoltage(cPlusV)
+                #     hc.SetCMinusVoltage(cMinusV)
+                #     hc.SwitchEAndWait(eCurrentState)
+                #     print("E Switch Finished")
+                #     System.Threading.Thread.CurrentThread.Join(10000)
+
+                #     print("leakage monitors calibrated")
 
     bh.StopPattern()
 

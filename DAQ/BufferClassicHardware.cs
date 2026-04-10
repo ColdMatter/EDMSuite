@@ -23,7 +23,7 @@ namespace DAQ.HAL
             Boards.Add("mag", "/MAG_PXI_6229");
             //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
-            Boards.Add("usbTherm", "/Dev7");
+            //Boards.Add("usbTherm", "/Dev7");
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -33,7 +33,7 @@ namespace DAQ.HAL
             string magBoard = (string)Boards["mag"];
             //string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
-            string usbTherm = (string)Boards["usbTherm"];
+            //string usbTherm = (string)Boards["usbTherm"];
             
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -176,7 +176,7 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
 
             //UsbThermocouple channels
-            AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
+            //AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
 
             // map the digital channels of the Behlkle control board
             AddDigitalOutputChannel("behlkeOn", usbDAQ2, 0, 4);
@@ -251,7 +251,7 @@ namespace DAQ.HAL
             Instruments.Add("rigolWavGen", new RigolDG811("USB0::0x1AB1::0x0643::DG8A250800641::INSTR"));
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("targetStepperControl", new StepperMotorController("ASRL4::INSTR"));
-            Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL13::INSTR"));
+            Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL5::INSTR"));
 
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
