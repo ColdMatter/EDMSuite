@@ -124,6 +124,12 @@ namespace MOTMaster
            
         }
 
+        public bool TriggeredCheckBoxState
+        {
+            get { return triggeredCheckBox.Checked; }
+            set { triggeredCheckBox.Checked = value; }
+        }
+
         private void selectScriptButton_Click(object sender, EventArgs e)
         {
             controller.SetScriptPath(getScriptPath());

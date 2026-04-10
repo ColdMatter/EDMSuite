@@ -363,6 +363,12 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
+        public void SetTriggered(System.Boolean value)
+        {
+            triggered = value;
+            controllerWindow.TriggeredCheckBoxState = value;
+        }
+
         public Dictionary<string,List<object>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
