@@ -39,10 +39,10 @@ public class Patterns : MOTMasterScript
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.7847; //Cool at 2.4 - 2.6
-        Parameters["tMOTRep"] = 3.8129;
-        Parameters["tMOTCoolVVA"] = 1.0000; // between 0 and 1 V
-        Parameters["tMOTRepVVA"] = 4.000;
+        Parameters["tMOTCool"] = 3.7001; //Cool at 2.4 - 2.6
+        Parameters["tMOTRep"] = 3.8599;
+        Parameters["tMOTCoolVVA"] = 1.8286; // between 0 and 1 V
+        Parameters["tMOTRepVVA"] = 2.9010;
 
         // Imaging Cooling and Repump VCO & VVA
         Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
@@ -51,10 +51,10 @@ public class Patterns : MOTMasterScript
         Parameters["tImgRepVVA"] = 1.050;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.0000;
-        Parameters["tMolRep"] = 1.3035;
-        Parameters["tMolCoolVVA"] = 0.4456;
-        Parameters["tMolRepVVA"] = 0.4000;
+        Parameters["tMolCool"] = 0.2718;
+        Parameters["tMolRep"] = 1.8552;
+        Parameters["tMolCoolVVA"] = 0.4382;
+        Parameters["tMolRepVVA"] = 1.9732;
 
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
@@ -70,7 +70,7 @@ public class Patterns : MOTMasterScript
         Parameters["tImgTOF"] = 1;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
-        Parameters["tDropDuration"] = 1000;
+        Parameters["tDropDuration"] = 1;
         Parameters["tTweezerImg2Delay"] = 900; // 20000
 
     }

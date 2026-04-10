@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 26000;
+        Parameters["PatternLength"] = 31000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -39,10 +39,10 @@ public class Patterns : MOTMasterScript
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.5351; //Cool at 2.4 - 2.6
-        Parameters["tMOTRep"] = 3.5264;
-        Parameters["tMOTCoolVVA"] = 1.9189; // between 0 and 1 V
-        Parameters["tMOTRepVVA"] = 3.0;
+        Parameters["tMOTCool"] = 3.7001; //Cool at 2.4 - 2.6
+        Parameters["tMOTRep"] = 3.8599;
+        Parameters["tMOTCoolVVA"] = 1.8286; // between 0 and 1 V
+        Parameters["tMOTRepVVA"] = 2.9010;
 
         // Imaging Cooling and Repump VCO & VVA
         Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
@@ -52,9 +52,9 @@ public class Patterns : MOTMasterScript
 
         // Molasses Cooling and Repump VCO & VVA
         Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 1.388;
-        Parameters["tMolCoolVVA"] = 0.454;
-        Parameters["tMolRepVVA"] = 1.396;
+        Parameters["tMolRep"] = 0.79;
+        Parameters["tMolCoolVVA"] = 0.45;
+        Parameters["tMolRepVVA"] = 0.6;
 
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
