@@ -446,7 +446,7 @@ namespace DAQ.HAL
 
             // AddDigitalInputChannel("WavemeterLockBlockTest", pgBoard, 2, 0); 
 
-            MMConfig mmConfig = new MMConfig(false, false, true, false);
+            MMConfig mmConfig = new MMConfig(false, false, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
             //Info.Add("PatternGeneratorBoard", pgBoard);
