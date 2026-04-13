@@ -78,7 +78,7 @@ namespace MOTMaster
         TranslationStageControllable tstage = null;
         ExperimentReportable experimentReporter = null;
 
-        MMDataIOHelper ioHelper;
+        public MMDataIOHelper ioHelper;
 
 #endregion
 
@@ -562,6 +562,14 @@ namespace MOTMaster
                 }
                 status = RunningState.stopped;
             }
+        }
+
+        public void saveSequenceInfo(string dir)
+        {
+            MOTMasterScript script = prepareScript(scriptPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            Dictionary <string, object> report = null;
+            ioHelper.StoreRun(dir, controllerWindow.GetSaveBatchNumber(), scriptPath, hardwareClassPath, sequence, script.Parameters, report, externalFilesPath, config.ExternalFilePattern);
         }
 
 #endregion
