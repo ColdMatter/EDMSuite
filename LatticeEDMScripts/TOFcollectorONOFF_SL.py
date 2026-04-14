@@ -28,15 +28,15 @@ tools.set_plots()
 
 #%% Load data
 datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month="August2025"
-date="13"
+month="August 2024"
+date="15"
 subfolder = ""
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
 print(drive)
 
-pattern="*TOF*.zip"
+pattern="013*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 #%%
@@ -53,12 +53,19 @@ if len(files) > 0:
 else:
     print("No matching files.")
 
+#% Just to check scan settings
+#Scan = Data[fileLabels[0]]
+
+#% Print out all params
+#Settings = EDM.GetScanSettings(Scan)
+#ScanParams = EDM.GetScanParameterArray(Scan)
+#print(Settings)
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 35
-SigEnd = 50
-BkgStart = 60
-BkgEnd = 80
+SigStart = 15
+SigEnd = 25
+BkgStart = 37
+BkgEnd = 40
 
 showTOF = True
 showDiff = True
@@ -130,19 +137,19 @@ for i in range(0, len(files)):
     plt.fill_between(TimeOff*1000, AvgTOFOff+AvgTOFOfferr, AvgTOFOff-AvgTOFOfferr, \
                      alpha=0.3)
     plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
-               ymin=np.min(AvgTOFOff), \
-               ymax=np.max(AvgTOFOff),\
+               ymin=np.min(AvgTOFOn), \
+               ymax=np.max(AvgTOFOn),\
                    linestyles="dashed", colors="black")
     plt.vlines([10],\
-               ymin=np.min(AvgTOFOff), \
-               ymax=np.max(AvgTOFOff),\
+               ymin=np.min(AvgTOFOn), \
+               ymax=np.max(AvgTOFOn),\
                    linestyles="dashed", colors="red")
     plt.title("Averaged TOF over %g shots, bkg sub, file "%\
               (Settings["pointsPerScan"] * Settings["shotsPerPoint"]) + fileLabels[i])
     plt.xlabel("time (ms)")
     plt.ylabel("PMT signal (V)")
     #plt.ylim(np.min(AvgTOFOff)-0.01, np.max(AvgTOFOff)+0.01)
-    plt.ylim(-0.01, 0.05)
+    #plt.ylim(-0.1, 0.5)
     plt.legend()
     if showTOF:
         plt.show()
@@ -161,7 +168,7 @@ for i in range(0, len(files)):
     plt.xlabel("time (ms)")
     plt.ylabel("PMT signal (V)")
     #plt.xlim(65, 80)
-    plt.ylim(-0.01, 0.03)
+    #plt.ylim(-0.1, 0.5)
     #plt.ylim(np.min(AvgTOFOffs[i])-0.01, np.max(AvgTOFOffs[i])+0.01)
     #plt.legend(loc="upper right", bbox_to_anchor=(1.3, 1.05))
     if showDiff:
@@ -177,6 +184,34 @@ for i in range(0, len(files)):
     AvgTOFOfferrs[fileLabels[i]] = AvgTOFOfferr
     DiffTOFs[fileLabels[i]] = diff
     DiffTOFerrs[fileLabels[i]] = differr
+
+#%%
+plt.plot(TimeOn*1000, np.average(DataOn[0], axis=0),\
+         label="On")
+#plt.fill_between(TimeOn*1000, AvgTOFOn+AvgTOFOnerr, AvgTOFOn-AvgTOFOnerr, \
+#                 alpha=0.3)
+plt.plot(TimeOff*1000, np.average(DataOff[0], axis=0),\
+         label="Off")
+#plt.fill_between(TimeOff*1000, AvgTOFOff+AvgTOFOfferr, AvgTOFOff-AvgTOFOfferr, \
+#                 alpha=0.3)
+plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
+           ymin=-0.1, \
+           ymax=0.5,\
+               linestyles="dashed", colors="black")
+#plt.vlines([10],\
+#           ymin=np.min(AvgTOFOn), \
+#           ymax=np.max(AvgTOFOn),\
+#               linestyles="dashed", colors="red")
+plt.title("Averaged TOF over %g shots, file "%\
+          (Settings["pointsPerScan"] * Settings["shotsPerPoint"]) + fileLabels[i])
+plt.xlabel("time (ms)")
+plt.ylabel("PMT signal (V)")
+#plt.ylim(np.min(AvgTOFOff)-0.01, np.max(AvgTOFOff)+0.01)
+plt.ylim(0, 1.)
+plt.legend()
+if showTOF:
+    plt.show()
+plt.close()
 
 #%% Combine plot
 compare = ["004", "008", "009", "010"]
@@ -204,7 +239,7 @@ plt.show()
 plt.close()
 
 #%% Difference
-compare = ["004", "008", "009", "010"]
+compare = ["007", "008"]
 for i in compare:
     diff = AvgTOFOns[i]-AvgTOFOffs[i]
     plt.plot(TimeOn*1000, diff, label=i+"On-Off")
@@ -218,14 +253,14 @@ plt.title("Averaged TOF over %g shots, bkg sub, \n on "%\
 plt.xlabel("time (ms)")
 plt.ylabel("PMT signal (V)")
 plt.xlim(25, 80)
-plt.ylim(-0.001, 0.01)
+plt.ylim(-0.05, 0.1)
 #plt.ylim(np.min(AvgTOFOffs[i])-0.01, np.max(AvgTOFOffs[i])+0.01)
 plt.legend(loc="upper right", bbox_to_anchor=(1.3, 1.05))
 plt.show()
 plt.close()
 
 #%% with moving average
-compare = ["004", "008", "009", "010"]
+compare = ["007", "008"]
 #compare = ["004", "008", "009", "010", "011", "012", "013", "014", "015", "016"]
 MA = 100
 for i in compare:
@@ -240,7 +275,7 @@ plt.title("Averaged TOF over %g shots, bkg sub, \n on "%\
 plt.xlabel("time (ms)")
 plt.ylabel("PMT signal (V)")
 plt.xlim(25, 80)
-plt.ylim(-0.001, 0.01)
+plt.ylim(-0.05, 0.1)
 #plt.ylim(np.min(AvgTOFOffs[i])-0.01, np.max(AvgTOFOffs[i])+0.01)
 plt.legend(loc="upper right", bbox_to_anchor=(1.3, 1.05))
 plt.show()

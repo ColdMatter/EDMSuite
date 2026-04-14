@@ -414,8 +414,8 @@ namespace EDMPhaseLock
         const double VCO_HIGH = 5;             // upper input range of the VCO
         const double VCO_LOW = 0;               // lower input range of the VCO
 
-		const double USB_AMP = 5;               // The output Vpp for the usb synth
-		const double USB_OFFS = 2.5;			// The output voltage should be offset to be between 0 and 5
+		const double USB_AMP = 3.3;               // The output Vpp for the usb synth
+		const double USB_OFFS = 1.65;			// The output voltage should be offset to be between 0 and 5
 
 		private void StartAcquisition()
 		{

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace WavemeterLock
 {
@@ -17,7 +18,8 @@ namespace WavemeterLock
         public string analogChannel;
         private int channelNumber = 0;
         public Controller controller;
-        public double scale = 10;
+        public double scale = 8;
+        public double maxpoints = 20000;
         public bool lockBlocked = false;
 
         public LockControlPanel(string name, string AnalogChannel, int wavemeterChannel, Controller controller)
@@ -37,8 +39,10 @@ namespace WavemeterLock
 
         private void LockControlPanel_Load(object sender, EventArgs e)
         {
-            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
-            errorPlot.LineColor = controller.selectColor(controller.colorParameter);
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Minimum = 0; });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Maximum = scale; });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.LabelStyle.Format = "0"; });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.Series[0].Color = controller.selectColor(controller.colorParameter); });
             controller.colorParameter++;
             SetPoint.Text = Convert.ToString(controller.lasers[name].setFrequency);
             labelOutOfRange.Visible = false;
@@ -77,7 +81,7 @@ namespace WavemeterLock
             if (!controller.returnLaserState(name))//Not locked
             {
                 lockButton.Text = "Lock";
-                lockLED.Value = false;
+                toggleLED(lockLED, false);
                 SetPoint.Enabled = true;
                 setAsReading.Enabled = true;
                 offsetSet.Enabled = true;
@@ -85,7 +89,7 @@ namespace WavemeterLock
             else //Locked
             {
                 lockButton.Text = "Unlock";
-                lockLED.Value = true;
+                toggleLED(lockLED, true);
                 SetPoint.Enabled = false;
                 setAsReading.Enabled = false;
                 offsetSet.Enabled = false;
@@ -97,7 +101,7 @@ namespace WavemeterLock
         public void updateLockBlockStatus(bool status)
         {
             lockBlocked = status;
-            LEDBlockIndicator.Value = status;
+            toggleLED(LEDBlockIndicator, status);
         }
 
         public void SetTextField(Control box, string text)
@@ -111,6 +115,19 @@ namespace WavemeterLock
         {
             box.Text = text;
         }
+
+        private void toggleLED(Panel led, bool state)
+        {
+            if (state)
+            {
+                led.BackColor = Color.Green;
+            }
+            else
+            {
+                led.BackColor = Color.Red;
+            }
+        }
+
         #region Events
 
         private void lockButton_Click(object sender, EventArgs e)
@@ -123,7 +140,7 @@ namespace WavemeterLock
                 if (SetPoint != null && !string.IsNullOrWhiteSpace(SetPoint.Text))
                 {
                     lockMsg.Text = "Lock On";
-                    lockLED.Value = true;
+                    toggleLED(lockLED, true);
                     controller.indicateRemoteConnection(channelNumber, true);
                     controller.lasers[name].setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
@@ -137,7 +154,7 @@ namespace WavemeterLock
             else
             {
                 lockMsg.Text = "Lock Off";
-                lockLED.Value = false;
+                toggleLED(lockLED, false);
                 controller.indicateRemoteConnection(channelNumber, false);
                 controller.DisengageLock(name);
             }
@@ -177,7 +194,8 @@ namespace WavemeterLock
 
         private void resetGraph_Click(object sender, EventArgs e)
         {
-            UIHelper.ClearGraph(errorScatterGraph);
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.Series[0].Points.Clear(); });
+            //UIHelper.ClearGraph(errorScatterGraph);
             controller.timeList[name] = 0;
             controller.lasers[name].sumedNoise = 0.0;
             controller.lasers[name].loopCount = 0;
@@ -196,14 +214,18 @@ namespace WavemeterLock
 
         private void scaleUp_click(object sender, EventArgs e)
         {
-            scale *= 0.25;
-            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
+            if (scale > 1) scale *= 0.25;
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Minimum = Math.Max(obj.Series[0].Points.Last().XValue - scale, scale); });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Maximum = Math.Max(obj.Series[0].Points.Last().XValue, scale); });
+            //errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
         }
 
         private void scaleDown_click(object sender, EventArgs e)
         {
-            scale *= 4;
-            errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
+            if (scale < 1000) scale *= 4;
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Minimum = Math.Max(obj.Series[0].Points.Last().XValue - scale, scale); });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Maximum = Math.Max(obj.Series[0].Points.Last().XValue, scale); });
+            //errorPlot.XAxis.Range = new NationalInstruments.UI.Range(0, scale);
             
         }
 
@@ -218,15 +240,21 @@ namespace WavemeterLock
         #region Error signal Plot
         public void AppendToErrorGraph(double lockCount, double error)//In MHz
         {
-            UIHelper.appendPointToScatterGraph(errorScatterGraph, errorPlot, lockCount, error);
+
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.Series[0].Points.AddXY(lockCount, error); });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { if(obj.Series[0].Points.Count > maxpoints) obj.Series[0].Points.RemoveAt(0); });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Minimum = Math.Max(lockCount - scale, 0); });
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Maximum = Math.Max(lockCount, scale); });
+            //UIHelper.appendPointToScatterGraph(errorScatterGraph, errorPlot, lockCount, error);
         }
 
         public void ClearErrorGraph()
         {
-            UIHelper.ClearGraph(errorScatterGraph);
+            UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.Series[0].Points.Clear(); }); 
+            //UIHelper.ClearGraph(errorScatterGraph);
         }
             #endregion
-            private void errorScatterGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
+        private void errorScatterGraph_PlotDataChanged(object sender, NationalInstruments.UI.XYPlotDataChangedEventArgs e)
         {
         }
 
@@ -248,6 +276,18 @@ namespace WavemeterLock
         private void label13_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void UpdateRenderedObject<T>(T obj, Action<T> updateFunc) where T : Control
+        {
+            obj.Invoke(new UpdateObjectDelegate<T>(UpdateObject), new object[] { obj, updateFunc });
+        }
+
+        private delegate void UpdateObjectDelegate<T>(T obj, Action<T> updateFunc) where T : Control;
+
+        private void UpdateObject<T>(T obj, Action<T> updateFunc) where T : Control
+        {
+            updateFunc(obj);
         }
     }
 }

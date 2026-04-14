@@ -113,8 +113,18 @@ namespace EDMBlockHead.Acquire
             acquireThread.Start();
         }
 
-		// calling this method stops acquisition as soon as possible (usually after the current shot)
-		public void Stop() 
+        public void StartMagDataDummyAcquisition(BlockConfig config)
+        {
+            this.config = config;
+            acquireThread = new Thread(new ThreadStart(this.AcquireMagDataDummy));
+            acquireThread.Name = "BlockHead Acquisitor";
+            acquireThread.Priority = ThreadPriority.Highest;
+            backendState = AcquisitorState.running;
+            acquireThread.Start();
+        }
+
+        // calling this method stops acquisition as soon as possible (usually after the current shot)
+        public void Stop() 
 		{
 			lock(this)
 			{
@@ -158,12 +168,12 @@ namespace EDMBlockHead.Acquire
 
                 // get things going, where the input task and counter task for CCD are configured
                 AcquisitionStarting();
-                
+
                 // shirley adds on 14/07 to implement the handshake between CCD ready for next block and blockhead
-                // while (!hardwareController.IsCCDAReady())
-                // {
-                //     Thread.Sleep(1);
-                // }
+                while (!hardwareController.IsCCDReady())
+                {
+                    Thread.Sleep(1);
+                }
                 hardwareController.StartBurstAcquisition();
                 Console.WriteLine("CCD Burst Acquisition Start!");
 
@@ -562,7 +572,7 @@ namespace EDMBlockHead.Acquire
                 //        //double midValue = ccdinputData[midpoint];
                 //        //bool isAboveThreshold = midValue > 2.7;
                 //        //Console.WriteLine($"Midpoint value at index {midpoint}: {midValue:F3}");
-                //        //Console.WriteLine($"Is above 2.7Â V? {isAboveThreshold}");
+                //        //Console.WriteLine($"Is above 2.7 V? {isAboveThreshold}");
 
                 //        // Rhys - digital method 1. Read out the CCD status during the PMT shot. We pick a point mid way through the gateLength
 
@@ -1000,12 +1010,11 @@ namespace EDMBlockHead.Acquire
                         // input task (it will wait for a trigger)
                         var stopwatchAI = System.Diagnostics.Stopwatch.StartNew();
                         inputTask.Start();
-                        
+
                         // get the raw data
                         double[,] analogData = inputReader.ReadMultiSample(magInputs.GateLength);
+                        Console.WriteLine("After ReadMultSample");
                         inputTask.Stop();
-                        stopwatchAI.Stop();
-                        Console.WriteLine("Time to collect data = " + stopwatchAI.ElapsedMilliseconds + " ms");
 
 
                         // extract the data for each scanned channel and put it in a TOF
@@ -1085,7 +1094,7 @@ namespace EDMBlockHead.Acquire
                     if (CheckIfStopping())
                     {
                         // release hardware
-                        AcquisitionStopping();
+                        MagAcquisitionStopping();
                         // signal anybody waiting on the lock that we're done
                         Monitor.Pulse(MonitorLockObject);
                         Monitor.Exit(MonitorLockObject);
@@ -1098,7 +1107,7 @@ namespace EDMBlockHead.Acquire
                 // try and stop the experiment gracefully
                 try
                 {
-                    AcquisitionStopping();
+                    MagAcquisitionStopping();
                 }
                 catch (Exception) { }				// about the best that can be done at this stage
                 Monitor.Pulse(MonitorLockObject);
@@ -1106,7 +1115,7 @@ namespace EDMBlockHead.Acquire
                 throw e;
             }
 
-            AcquisitionStopping();
+            MagAcquisitionStopping();
 
             // hand the new block back to the controller
             Controller.GetController().MagDataAcquisitionFinished(b);
@@ -1117,7 +1126,94 @@ namespace EDMBlockHead.Acquire
 
         }
 
-		private void MapChannels()
+        public void AcquireMagDataDummy()
+        {
+            // lock onto something that the front end can see
+            Monitor.Enter(MonitorLockObject);
+
+            scanMaster = ScanMaster.Controller.GetController();
+            phaseLock = new EDMPhaseLock.MainForm();
+            //hardwareController = new EDMHardwareControl.Controller();     // new hardware controller
+            hardwareController = new UEDMHardwareControl.UEDMController();
+
+            // map modulations to physical channels
+            MapChannels();
+
+
+            Block b = new Block();
+            b.Config = config;
+            b.SetTimeStamp();
+
+
+            try
+            {
+                // get things going
+                MagDummyAcquisitionStarting();
+
+                // enter the main loop
+                for (int point = 0; point < (int)config.Settings["numberOfPoints"]; point++)
+                {
+                    // set the switch states and impose the appropriate wait times
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+                    ThrowSwitches(point);
+
+                    stopwatch.Stop();
+                    Console.WriteLine("Time to switch = " + stopwatch.ElapsedMilliseconds + " ms");
+                    // take a point
+                    Shot s;
+                    EDMPoint p;
+                    // just stuff a made up shot in
+                    //Thread.Sleep(10);
+                    s = DataFaker.GetFakeShot(1900, 50, 10, 3, 3);
+                    ((TOF)s.TOFs[0]).Calibration = 1;
+                    p = new EDMPoint();
+                    p.Shot = s;
+                    //Thread.Sleep(20);
+
+                    double[] spd;
+                    spd = new double[7];
+                    spd[0] = 1;
+                    spd[1] = 2;
+                    spd[2] = 3;
+                    p.SinglePointData.Add("WestCurrent", spd[1]);// hardwareController.WestCurrent);
+                    p.SinglePointData.Add("EastCurrent", spd[2]);// hardwareController.EastCurrent);
+                    b.Points.Add(p);
+
+                    // update the front end
+                    Controller.GetController().GotDummyPoint(point, p);
+
+
+                    if (CheckIfStopping())
+                    {
+                        MagDummyAcquisitionStopping();
+                        Monitor.Pulse(MonitorLockObject);
+                        Monitor.Exit(MonitorLockObject);
+                        return;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // about the best that can be done at this stage
+                MagDummyAcquisitionStopping();
+                Monitor.Pulse(MonitorLockObject);
+                Monitor.Exit(MonitorLockObject);
+                throw e;
+            }
+
+            MagDummyAcquisitionStopping();
+
+            // hand the new block back to the controller
+            Controller.GetController().MagDataAcquisitionFinished(b);
+
+            // signal anybody waiting on the lock that we're done
+            Monitor.Pulse(MonitorLockObject);
+            Monitor.Exit(MonitorLockObject);
+
+        }
+
+        private void MapChannels()
 		{
 			switchedChannels = new ArrayList();
             hardwareController = new UEDMHardwareControl.UEDMController();        //new hardware controller EDMHardwareControl.Controller();
@@ -1410,20 +1506,9 @@ namespace EDMBlockHead.Acquire
             magInputs = new ScannedAnalogInputCollection();
             magInputs.RawSampleRate = 10000;
             magInputs.GateStartTime = (int)scanMaster.GetShotSetting("gateStartTime");
-            magInputs.GateLength = (int)(((int)scanMaster.GetPGSetting("flashlampPulseInterval")-50000)/(1000000/magInputs.RawSampleRate));//Changed from 1200 to scanMaster related to get as much data per shot //usually this is 280, I changed this to take more mag data per block (10 June 2021)
+            magInputs.GateLength = 1200;//usually this is 280, I changed this to take more mag data per block (10 June 2021)
 
-            Console.WriteLine((magInputs.GateLength).ToString());
-
-            ScannedAnalogInput mag = new ScannedAnalogInput();
-            mag.ReductionMode = DataReductionMode.Average;
-            mag.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Y"];
-            mag.AverageEvery = 20;
-            mag.LowLimit = -10;
-            mag.HighLimit = 10;
-            mag.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
-            magInputs.Channels.Add(mag);
-
-            Console.WriteLine("Added Bartington _Y");
+            //Console.WriteLine("Added Bartington _Y");
 
             ScannedAnalogInput fvy = new ScannedAnalogInput();
             fvy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Y"];
@@ -1447,82 +1532,82 @@ namespace EDMBlockHead.Acquire
             hty.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             magInputs.Channels.Add(hty);
 
-            ScannedAnalogInput hsy = new ScannedAnalogInput();
-            hsy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHS_Y"];
-            hsy.ReductionMode = quspinReductionMode;
-            hsy.ChopStart = quspinChopStart;
-            hsy.ChopLength = quspinChopLength;
-            hsy.AverageEvery = quspinAverageEvery;
-            hsy.LowLimit = quspinLowerLim;
-            hsy.HighLimit = quspinUpperLim;
-            hsy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hsy);
+            //ScannedAnalogInput hsy = new ScannedAnalogInput();
+            //hsy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHS_Y"];
+            //hsy.ReductionMode = quspinReductionMode;
+            //hsy.ChopStart = quspinChopStart;
+            //hsy.ChopLength = quspinChopLength;
+            //hsy.AverageEvery = quspinAverageEvery;
+            //hsy.LowLimit = quspinLowerLim;
+            //hsy.HighLimit = quspinUpperLim;
+            //hsy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hsy);
 
-            ScannedAnalogInput hry = new ScannedAnalogInput();
-            hry.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHR_Y"];
-            hry.ReductionMode = quspinReductionMode;
-            hry.ChopStart = quspinChopStart;
-            hry.ChopLength = quspinChopLength;
-            hry.AverageEvery = quspinAverageEvery;
-            hry.LowLimit = quspinLowerLim;
-            hry.HighLimit = quspinUpperLim;
-            hry.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hry);
+            //ScannedAnalogInput hry = new ScannedAnalogInput();
+            //hry.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHR_Y"];
+            //hry.ReductionMode = quspinReductionMode;
+            //hry.ChopStart = quspinChopStart;
+            //hry.ChopLength = quspinChopLength;
+            //hry.AverageEvery = quspinAverageEvery;
+            //hry.LowLimit = quspinLowerLim;
+            //hry.HighLimit = quspinUpperLim;
+            //hry.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hry);
 
-            ScannedAnalogInput hqy = new ScannedAnalogInput();
-            hqy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHQ_Y"];
-            hqy.ReductionMode = quspinReductionMode;
-            hqy.ChopStart = quspinChopStart;
-            hqy.ChopLength = quspinChopLength;
-            hqy.AverageEvery = quspinAverageEvery;
-            hqy.LowLimit = quspinLowerLim;
-            hqy.HighLimit = quspinUpperLim;
-            hqy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hqy);
+            //ScannedAnalogInput hqy = new ScannedAnalogInput();
+            //hqy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHQ_Y"];
+            //hqy.ReductionMode = quspinReductionMode;
+            //hqy.ChopStart = quspinChopStart;
+            //hqy.ChopLength = quspinChopLength;
+            //hqy.AverageEvery = quspinAverageEvery;
+            //hqy.LowLimit = quspinLowerLim;
+            //hqy.HighLimit = quspinUpperLim;
+            //hqy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hqy);
 
-            ScannedAnalogInput hpy = new ScannedAnalogInput();
-            hpy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHP_Y"];
-            hpy.ReductionMode = quspinReductionMode;
-            hpy.ChopStart = quspinChopStart;
-            hpy.ChopLength = quspinChopLength;
-            hpy.AverageEvery = quspinAverageEvery;
-            hpy.LowLimit = quspinLowerLim;
-            hpy.HighLimit = quspinUpperLim;
-            hpy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hpy);
+            //ScannedAnalogInput hpy = new ScannedAnalogInput();
+            //hpy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHP_Y"];
+            //hpy.ReductionMode = quspinReductionMode;
+            //hpy.ChopStart = quspinChopStart;
+            //hpy.ChopLength = quspinChopLength;
+            //hpy.AverageEvery = quspinAverageEvery;
+            //hpy.LowLimit = quspinLowerLim;
+            //hpy.HighLimit = quspinUpperLim;
+            //hpy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hpy);
 
-            //ScannedAnalogInput hoy = new ScannedAnalogInput();
-            //hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
-            //hoy.ReductionMode = quspinReductionMode;
-            //hoy.ChopStart = quspinChopStart;
-            //hoy.ChopLength = quspinChopLength;
-            //hoy.AverageEvery = quspinAverageEvery;
-            //hoy.LowLimit = quspinLowerLim;
-            //hoy.HighLimit = quspinUpperLim;
-            //hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            //magInputs.Channels.Add(hoy);
+            ScannedAnalogInput hoy = new ScannedAnalogInput();
+            hoy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHO_Y"];
+            hoy.ReductionMode = quspinReductionMode;
+            hoy.ChopStart = quspinChopStart;
+            hoy.ChopLength = quspinChopLength;
+            hoy.AverageEvery = quspinAverageEvery;
+            hoy.LowLimit = quspinLowerLim;
+            hoy.HighLimit = quspinUpperLim;
+            hoy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            magInputs.Channels.Add(hoy);
 
-            ScannedAnalogInput hmy = new ScannedAnalogInput();
-            hmy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Y"];
-            hmy.ReductionMode = quspinReductionMode;
-            hmy.ChopStart = quspinChopStart;
-            hmy.ChopLength = quspinChopLength;
-            hmy.AverageEvery = quspinAverageEvery;
-            hmy.LowLimit = quspinLowerLim;
-            hmy.HighLimit = quspinUpperLim;
-            hmy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hmy);
+            //ScannedAnalogInput hmy = new ScannedAnalogInput();
+            //hmy.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Y"];
+            //hmy.ReductionMode = quspinReductionMode;
+            //hmy.ChopStart = quspinChopStart;
+            //hmy.ChopLength = quspinChopLength;
+            //hmy.AverageEvery = quspinAverageEvery;
+            //hmy.LowLimit = quspinLowerLim;
+            //hmy.HighLimit = quspinUpperLim;
+            //hmy.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hmy);
 
-            ScannedAnalogInput fvz = new ScannedAnalogInput();
-            fvz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Z"];
-            fvz.ReductionMode = quspinReductionMode;
-            fvz.ChopStart = quspinChopStart;
-            fvz.ChopLength = quspinChopLength;
-            fvz.AverageEvery = quspinAverageEvery;
-            fvz.LowLimit = quspinLowerLim;
-            fvz.HighLimit = quspinUpperLim;
-            fvz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(fvz);
+            //ScannedAnalogInput fvz = new ScannedAnalogInput();
+            //fvz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinFV_Z"];
+            //fvz.ReductionMode = quspinReductionMode;
+            //fvz.ChopStart = quspinChopStart;
+            //fvz.ChopLength = quspinChopLength;
+            //fvz.AverageEvery = quspinAverageEvery;
+            //fvz.LowLimit = quspinLowerLim;
+            //fvz.HighLimit = quspinUpperLim;
+            //fvz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(fvz);
 
             ScannedAnalogInput htz = new ScannedAnalogInput();
             htz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHT_Z"];
@@ -1535,49 +1620,58 @@ namespace EDMBlockHead.Acquire
             htz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             magInputs.Channels.Add(htz);
 
-            ScannedAnalogInput hsz = new ScannedAnalogInput();
-            hsz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHS_Z"];
-            hsz.ReductionMode = quspinReductionMode;
-            hsz.ChopStart = quspinChopStart;
-            hsz.ChopLength = quspinChopLength;
-            hsz.AverageEvery = quspinAverageEvery;
-            hsz.LowLimit = quspinLowerLim;
-            hsz.HighLimit = quspinUpperLim;
-            hsz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hsz);
+            //ScannedAnalogInput hsz = new ScannedAnalogInput();
+            //hsz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHS_Z"];
+            //hsz.ReductionMode = quspinReductionMode;
+            //hsz.ChopStart = quspinChopStart;
+            //hsz.ChopLength = quspinChopLength;
+            //hsz.AverageEvery = quspinAverageEvery;
+            //hsz.LowLimit = quspinLowerLim;
+            //hsz.HighLimit = quspinUpperLim;
+            //hsz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hsz);
 
-            ScannedAnalogInput hrz = new ScannedAnalogInput();
-            hrz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHR_Z"];
-            hrz.ReductionMode = quspinReductionMode;
-            hrz.ChopStart = quspinChopStart;
-            hrz.ChopLength = quspinChopLength;
-            hrz.AverageEvery = quspinAverageEvery;
-            hrz.LowLimit = quspinLowerLim;
-            hrz.HighLimit = quspinUpperLim;
-            hrz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hrz);
+            //ScannedAnalogInput hrz = new ScannedAnalogInput();
+            //hrz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHR_Z"];
+            //hrz.ReductionMode = quspinReductionMode;
+            //hrz.ChopStart = quspinChopStart;
+            //hrz.ChopLength = quspinChopLength;
+            //hrz.AverageEvery = quspinAverageEvery;
+            //hrz.LowLimit = quspinLowerLim;
+            //hrz.HighLimit = quspinUpperLim;
+            //hrz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hrz);
 
-            ScannedAnalogInput hqz = new ScannedAnalogInput();
-            hqz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHQ_Z"];
-            hqz.ReductionMode = quspinReductionMode;
-            hqz.ChopStart = quspinChopStart;
-            hqz.ChopLength = quspinChopLength;
-            hqz.AverageEvery = quspinAverageEvery;
-            hqz.LowLimit = quspinLowerLim;
-            hqz.HighLimit = quspinUpperLim;
-            hqz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hqz);
+            //ScannedAnalogInput hqz = new ScannedAnalogInput();
+            //hqz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHQ_Z"];
+            //hqz.ReductionMode = quspinReductionMode;
+            //hqz.ChopStart = quspinChopStart;
+            //hqz.ChopLength = quspinChopLength;
+            //hqz.AverageEvery = quspinAverageEvery;
+            //hqz.LowLimit = quspinLowerLim;
+            //hqz.HighLimit = quspinUpperLim;
+            //hqz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hqz);
 
-            ScannedAnalogInput hpz = new ScannedAnalogInput();
-            hpz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHP_Z"];
-            hpz.ReductionMode = quspinReductionMode;
-            hpz.ChopStart = quspinChopStart;
-            hpz.ChopLength = quspinChopLength;
-            hpz.AverageEvery = quspinAverageEvery;
-            hpz.LowLimit = quspinLowerLim;
-            hpz.HighLimit = quspinUpperLim;
-            hpz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hpz);
+            //ScannedAnalogInput hpz = new ScannedAnalogInput();
+            //hpz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHP_Z"];
+            //hpz.ReductionMode = quspinReductionMode;
+            //hpz.ChopStart = quspinChopStart;
+            //hpz.ChopLength = quspinChopLength;
+            //hpz.AverageEvery = quspinAverageEvery;
+            //hpz.LowLimit = quspinLowerLim;
+            //hpz.HighLimit = quspinUpperLim;
+            //hpz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hpz);
+
+            //ScannedAnalogInput magRelay = new ScannedAnalogInput();
+            //magRelay.ReductionMode = DataReductionMode.Average;
+            //magRelay.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bartington_Z_nearRelay"];
+            //magRelay.AverageEvery = 20;
+            //magRelay.LowLimit = -10;
+            //magRelay.HighLimit = 10;
+            //magRelay.Calibration = 1.0e-5; // bartington calibration is 1V = 10uT
+            //magInputs.Channels.Add(magRelay);
 
             ScannedAnalogInput magRelay = new ScannedAnalogInput();
             magRelay.ReductionMode = DataReductionMode.Average;
@@ -1599,16 +1693,16 @@ namespace EDMBlockHead.Acquire
             //hoz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
             //magInputs.Channels.Add(hoz);
 
-            ScannedAnalogInput hmz = new ScannedAnalogInput();
-            hmz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Z"];
-            hmz.ReductionMode = quspinReductionMode;
-            hmz.ChopStart = quspinChopStart;
-            hmz.ChopLength = quspinChopLength;
-            hmz.AverageEvery = quspinAverageEvery;
-            hmz.LowLimit = quspinLowerLim;
-            hmz.HighLimit = quspinUpperLim;
-            hmz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
-            magInputs.Channels.Add(hmz);
+            //ScannedAnalogInput hmz = new ScannedAnalogInput();
+            //hmz.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["quSpinHM_Z"];
+            //hmz.ReductionMode = quspinReductionMode;
+            //hmz.ChopStart = quspinChopStart;
+            //hmz.ChopLength = quspinChopLength;
+            //hmz.AverageEvery = quspinAverageEvery;
+            //hmz.LowLimit = quspinLowerLim;
+            //hmz.HighLimit = quspinUpperLim;
+            //hmz.Calibration = quspinCalibration; // analog output calibration is 2.7 V/nT
+            //magInputs.Channels.Add(hmz);
 
             //ScannedAnalogInput battery = new ScannedAnalogInput();
             //battery.Channel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["battery"];
@@ -1876,9 +1970,19 @@ namespace EDMBlockHead.Acquire
             //hardwareController.UpdateIMonitorAsync();
         }
 
-		// If you want to store any information in the BlockConfig this is the place to do it.
-		// This function is called at the start of every block.
-		private void StuffConfig()
+        // configure hardware for magnetic field data taking
+        private void MagDummyAcquisitionStarting()
+        {
+            // iterate through the channels and ready them
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionStarting();
+
+            // copy running parameters into the BlockConfig
+            StuffConfig();
+        }
+
+        // If you want to store any information in the BlockConfig this is the place to do it.
+        // This function is called at the start of every block.
+        private void StuffConfig()
 		{
 			// dump all of the pg settings into the config - never know when they'll come in
 			// handy !
@@ -1953,14 +2057,16 @@ namespace EDMBlockHead.Acquire
 		{
 			foreach( SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
 			inputTask.Dispose();
-            counterTaskCCD.Dispose();
-            CCDAcquireStatusTask.Dispose();
-            CCDReadyStatusTask.Dispose(); 
-            TaskCompleteTask.Dispose();
+            counterTaskCCD.Dispose();   
             singlePointInputTask.Dispose();
         }
 
-		private bool CheckIfStopping() 
+        private void MagDummyAcquisitionStopping()
+        {
+            foreach (SwitchedChannel s in switchedChannels) s.AcquisitionFinishing();
+        }
+
+        private bool CheckIfStopping() 
 		{
 			lock(this) 
 			{

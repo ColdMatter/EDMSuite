@@ -445,12 +445,12 @@ namespace EDMFieldLock
 
 		// constants
 		const double FIELD_PER_VOLT_INPUT = 10000;        // in units of nT/V
-		const int SAMPLE_CLOCK_RATE = 200;
-		const int SAMPLE_MULTI_READ = 25;               // this is how many samples to read at a time, sets a limit on bandwidth - lower for more bandwidth but higher computer load
+		const int SAMPLE_CLOCK_RATE = 500;
+		const int SAMPLE_MULTI_READ = 250;               // this is how many samples to read at a time, sets a limit on bandwidth - lower for more bandwidth but higher computer load
 		const int GUI_UPDATE_EVERY = 1;                 // if you multiply this by SAMPLE_MULTI_READ and divide by SAMPLE_CLOCK_RATE you get the GUI update interval in seconds
 		const int LOCK_UPDATE_EVERY = 1;                // this is how often the lock is updated in terms of SAMPLE_MULTI_READs (same idea as GUI update interval above)
-		const double OUTPUT_LIMIT_LO = 0;               // (V). this sets the output limit.
-		const double OUTPUT_LIMIT_HI = 5;               // (V). this sets the output limit.
+		const double OUTPUT_LIMIT_LO = 1.5;               // (V). this sets the output limit.
+		const double OUTPUT_LIMIT_HI = 3.5;               // (V). this sets the output limit.
 		const double OUTPUT_ZERO = 2.5;                 // (V). this sets the zero output level.
 		const double INPUT_LOW = -10;                   // lower limit to Bartington input
 		const double INPUT_HIGH = 10;                   // upper limit to Bartington input
@@ -506,16 +506,16 @@ namespace EDMFieldLock
 			{
 				analogInputTask = new Task("field lock analog input");
 				AnalogInputChannel inputChannel = (AnalogInputChannel)Environs.Hardware.AnalogInputChannels["bFieldFeedbackInput"];
-				CounterChannel clockChannel = ((CounterChannel)Environs.Hardware.CounterChannels["bFieldFeedbackClock"]);
+				//CounterChannel clockChannel = ((CounterChannel)Environs.Hardware.CounterChannels["bFieldFeedbackClock"]);
 				inputChannel.AddToTask(analogInputTask, INPUT_LOW, INPUT_HIGH);
 				analogReader = new AnalogSingleChannelReader(analogInputTask.Stream)
 				{
 					SynchronizeCallbacks = true
 				};
 				analogInputTask.Timing.ConfigureSampleClock(
-					clockChannel.PhysicalChannel,
+					"",//clockChannel.PhysicalChannel
 					SAMPLE_CLOCK_RATE,
-					SampleClockActiveEdge.Falling,
+					SampleClockActiveEdge.Rising,//SampleClockActiveEdge.Falling
 					SampleQuantityMode.ContinuousSamples
 					);
 			}

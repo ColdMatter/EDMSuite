@@ -28,11 +28,12 @@ namespace DAQ.HAL
             Info.Add("PGTriggerLine", Boards["pg"] + "/PFI0");
             Info.Add("analogTrigger0", (string)Boards["pg"] + "/PFI0");
             Info.Add("ScanMasterConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\ScanProfils.xml");
-            Info.Add("MacroConfig", "C:\\Users\\alfultra\\OneDrive - Imperial College London\\Desktop\\Data\\Macros.xml");
+            Info.Add("MacroConfig", "C:\\Data\\Macros.xml");
 
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", (string)Boards["analog"]);
+            Info.Add("AOPatternBuffer", (bool)true);
             //Info.Add("AOPatternTrigger", Boards["pg"] + "/PFI15");
             Info.Add("AOPatternTrigger", Boards["pg"] + "/do/StartTrigger");
             //Info.Add("AOPatternTrigger", (string)Boards["analog"] + "/PFI0");
@@ -48,57 +49,73 @@ namespace DAQ.HAL
             AddAnalogInputChannel("UV_I", (string)Boards["pg"] + "/ai2", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("UV_Circ_Pow", (string)Boards["pg"] + "/ai3", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("Spec_PMT", (string)Boards["pg"] + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("V1_Blue_Circ_Pow", (string)Boards["pg"] + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("V1_UV_Circ_Pow", (string)Boards["pg"] + "/ai6", AITerminalConfiguration.Rse);
 
             // Output signals
             AddAnalogOutputChannel("tclOut", (string)Boards["daq"] + "/ao0", -10, 10);
-            AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
+            AddAnalogOutputChannel("HeFlow", (string)Boards["daq"] + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("tclCavityLengthVoltage", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("testOut", (string)Boards["daq"] + "/ao1", -10, 10);
             //AddAnalogOutputChannel("WMLOut", (string)Boards["pg"] + "/ao1", 0, 10);
             AddAnalogOutputChannel("VECSEL1_PZO", (string)Boards["daq"]+"/ao1", 0, 10);
             AddAnalogOutputChannel("VECSEL2_PZO", (string)Boards["pg"]+"/ao1", 0, 10);
             AddAnalogOutputChannel("VECSEL3_PZO", (string)Boards["pg"]+"/ao0", 0, 10);
             //AddAnalogOutputChannel("DTCLRampOut", (string)Boards["pg"]+"/ao0", 0, 10);
-            AddAnalogOutputChannel("VECSEL3_AOM_VCA", (string)Boards["analog"]+"/ao0",0,10);
-            AddAnalogOutputChannel("VECSEL1_CHIRP", (string)Boards["analog"]+"/ao1",0,6);
-            AddAnalogOutputChannel("VECSEL2_CHIRP", (string)Boards["analog"]+"/ao2",0,6);
+            AddAnalogOutputChannel("AOM1_VCA", (string)Boards["analog"]+"/ao0",0,10);
+            AddAnalogOutputChannel("AOM2_VCA", (string)Boards["analog"] + "/ao3", 0, 10);
+            AddAnalogOutputChannel("VECSEL1_CHIRP", (string)Boards["analog"]+"/ao1",0,10);
+            AddAnalogOutputChannel("VECSEL2_CHIRP", (string)Boards["analog"]+"/ao2",0,10);
+            AddAnalogOutputChannel("VECSEL3_CHIRP", (string)Boards["analog"] + "/ao4", 0, 10);
 
-            // map the digital channels of the "pg" card
+
+            // Add Digital Output Channels
             AddDigitalOutputChannel("flash", (string)Boards["pg"], 0, 0);
             AddDigitalOutputChannel("q", (string)Boards["pg"], 0, 1);// Loop back to PFI0
             AddDigitalOutputChannel("valve", (string)Boards["pg"], 0, 2);
             AddDigitalOutputChannel("detector", (string)Boards["pg"], 0, 3);
             AddDigitalOutputChannel("VECSEL2_Shutter", (string)Boards["pg"], 0, 4);
+            AddDigitalOutputChannel("He_Shutter", (string)Boards["pg"], 0, 5);
+            AddDigitalOutputChannel("VECSEL1_Block", (string)Boards["pg"], 0, 6); // Wired to /PXI1Slot4/PFI6
+            AddDigitalOutputChannel("VECSEL3_Block", (string)Boards["pg"], 0, 7); // Wired to /PXI1Slot4/PFI7
             //AddDigitalOutputChannel("discharge", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("valve2", (string)Boards["pg"], 0, 5);
             //AddDigitalOutputChannel("ttlSwitch", (string)Boards["pg"], 0, 4);
             //AddDigitalOutputChannel("detectorprime", (string)Boards["pg"], 0, 5);
+            AddDigitalOutputChannel("VECSEL3_Shutter", (string)Boards["pg"], 1, 1);
+
+            // Add Digital Input Channels
+            AddDigitalInputChannel("VECSEL1_Block_Flag", (string)Boards["daq"], 1, 6);
+            AddDigitalInputChannel("VECSEL3_Block_Flag", (string)Boards["daq"], 1, 7);
 
 
             // Misc channels
-            AddCounterChannel("RbReferenceLaser", "/PXI1Slot5/PFI1");
-            AddCounterChannel("MBRLaser", "/PXI1Slot5/PFI15");
-            AddCounterChannel("10MHzRefClock", "/PXI1Slot5/10MHzRefClock");
-            AddCounterChannel("20MHzTimebase", "/PXI1Slot5/20MHzTimebase");
-            AddCounterChannel("SyncCounter", "/PXI1Slot5/ctr1");
-            AddCounterChannel("RbCounter", "/PXI1Slot5/ctr2");
-            AddCounterChannel("MBRCounter", "/PXI1Slot5/ctr3");
-            AddCounterChannel("ResetOut", "/PXI1Slot5/PFI2");
+            //AddCounterChannel("RbReferenceLaser", "/PXI1Slot5/PFI1");
+            //AddCounterChannel("MBRLaser", "/PXI1Slot5/PFI15");
+            //AddCounterChannel("10MHzRefClock", "/PXI1Slot5/10MHzRefClock");
+            //AddCounterChannel("20MHzTimebase", "/PXI1Slot5/20MHzTimebase");
+            //AddCounterChannel("SyncCounter", "/PXI1Slot5/ctr1");
+            //AddCounterChannel("RbCounter", "/PXI1Slot5/ctr2");
+            //AddCounterChannel("MBRCounter", "/PXI1Slot5/ctr3");
+            //AddCounterChannel("ResetOut", "/PXI1Slot5/PFI2");
             AddCounterChannel("PMT_Edges", "/PXI1Slot5/ctr3");
             AddCounterChannel("sample clock", "/PXI1Slot5/ctr2");
 
             // MOT Master config
 
             MMConfig mmConfig = new MMConfig(false, false, true, false);
-            mmConfig.ExternalFilePattern = "*.tif";
+            mmConfig.ExternalFilePattern = "*.dng";
             Info.Add("MotMasterConfiguration", mmConfig);
             Info.Add("AdditionalPatternGeneratorBoards", new Dictionary<string, string>());
 
             // Analog inputs for MOTMasterStuff
             List<string> MMAI = new List<string>();
             MMAI.Add("PMT");
-            MMAI.Add("UV_Circ_Pow");
-            MMAI.Add("UV_I");
             MMAI.Add("Spec_PMT");
+            MMAI.Add("UV_Circ_Pow");
+            MMAI.Add("V1_Blue_Circ_Pow");
+            MMAI.Add("V1_UV_Circ_Pow");
+            MMAI.Add("UV_I");
             Info.Add("MMAnalogInputs", MMAI);
             Info.Add("MMAITrigger", (string)Boards["pg"] + "/PFI0");
 
@@ -112,7 +129,7 @@ namespace DAQ.HAL
             // Shutters
             // Name of shutter, Name of shutter channel, invert
             List<Tuple<string, string, bool>> shutters = new List<Tuple<string, string, bool>>();
-            shutters.Add(new Tuple<string, string, bool>("VECSEL2", "VECSEL2_Shutter", true ));
+            shutters.Add(new Tuple<string, string, bool>("VECSEL2", "VECSEL2_Shutter", false ));
             Info.Add("Shutters", shutters);
 
             //WavemeterLockConfig
@@ -142,13 +159,16 @@ namespace DAQ.HAL
 
             wmlConfig.AddSlaveLaser("VECSEL1", "VECSEL1_PZO", 5);
             wmlConfig.AddLaserConfiguration("VECSEL1", 323.449904, -2000, -1600);
+            wmlConfig.AddLockBlock("VECSEL1", "VECSEL1_Block_Flag");
             wmlConfig.AddSlaveLaser("VECSEL2", "VECSEL2_PZO", 6);
             //wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -2000,-1600); //329.3907327752221`
-            wmlConfig.AddLaserConfiguration("VECSEL2", 327.466211, -1000, -800);
+            wmlConfig.AddLaserConfiguration("VECSEL2", 329.390872, -1000, -800);
             wmlConfig.AddSlaveLaser("VECSEL3", "VECSEL3_PZO", 7);
+            wmlConfig.AddLockBlock("VECSEL3", "VECSEL3_Block_Flag");
             wmlConfig.AddLaserConfiguration("VECSEL3", 654.932482, -1000, -800);
             wmlConfig.AddSlaveLaser("MBR", "tclOut", 5);
             wmlConfig.AddLaserConfiguration("MBR", 384.234493, 500, 2000);
+
             Info.Add("Default", wmlConfig);
             Info.Add("TCLDefault", tclConfigMBR);
             Info.Add("DefaultCavity", tclConfigMBR);

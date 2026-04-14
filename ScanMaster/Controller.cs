@@ -211,7 +211,8 @@ namespace ScanMaster
             saveFileDialog1.Title = "Save scan data";
             saveFileDialog1.InitialDirectory = Environs.FileSystem.GetDataDirectory(
                                                 (String)Environs.FileSystem.Paths["scanMasterDataPath"]);
-            saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+			//saveFileDialog1.FileName = Environs.FileSystem.GenerateNextDataFileName();
+			saveFileDialog1.FileName = "Scan_01";
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (saveFileDialog1.FileName != "")

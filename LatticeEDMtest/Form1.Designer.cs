@@ -29,8 +29,15 @@ namespace LatticeHardwareControl
         /// </summary>
         public void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cryoStatus = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label33 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.richTextBox_output = new System.Windows.Forms.RichTextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -59,50 +66,6 @@ namespace LatticeHardwareControl
             this.buttonStopPMonitor = new System.Windows.Forms.Button();
             this.buttonStartPMonitor = new System.Windows.Forms.Button();
             this.textBoxSourcePressure = new System.Windows.Forms.TextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.Flow_Controllers = new System.Windows.Forms.TabPage();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button_Get_Serial_Ports = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBox_COM_flow_control = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.button_Flow_controller_disconnect = new System.Windows.Forms.Button();
-            this.button_Flow_controller_connect = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_Clear_All = new System.Windows.Forms.Button();
-            this.button_Set_All = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.button_stop_flow_SF6 = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.button_set_flow_SF6 = new System.Windows.Forms.Button();
-            this.button_stop_flow_He = new System.Windows.Forms.Button();
-            this.button_set_flow_He = new System.Windows.Forms.Button();
-            this.YAG_Control = new System.Windows.Forms.TabPage();
-            this.Refresh = new System.Windows.Forms.TabPage();
-            this.ScanMaster = new System.Windows.Forms.TabPage();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.V1_freq_calc = new System.Windows.Forms.TextBox();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.Dop_calc_button = new System.Windows.Forms.Button();
-            this.label22 = new System.Windows.Forms.Label();
-            this.YbF_velocity = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.V0_freq_set = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label32 = new System.Windows.Forms.Label();
             this.textBox_freq_4f = new System.Windows.Forms.TextBox();
@@ -118,22 +81,161 @@ namespace LatticeHardwareControl
             this.button_Freq_stop = new System.Windows.Forms.Button();
             this.button_Freq_start = new System.Windows.Forms.Button();
             this.textBox_freq_V1 = new System.Windows.Forms.TextBox();
+            this.Anapico = new System.Windows.Forms.TabPage();
+            this.anaPicoLED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label38 = new System.Windows.Forms.Label();
+            this.PulseMode_disable_button = new System.Windows.Forms.Button();
+            this.PulseMode_enable_button = new System.Windows.Forms.Button();
+            this.label37 = new System.Windows.Forms.Label();
+            this.AnapicoSetPowerCH2Textbox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetPowerCH1Textbox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFMDevCH2TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFMDevCH1TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFreqCH2TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetFreqCH1TextBox = new System.Windows.Forms.TextBox();
+            this.AnapicoSetPowerCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetPowerCH1Button = new System.Windows.Forms.Button();
+            this.label36 = new System.Windows.Forms.Label();
+            this.AnapicoSetFMDevCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFMDevCH1Button = new System.Windows.Forms.Button();
+            this.CH2FMDisableButton = new System.Windows.Forms.Button();
+            this.CH2FMEnableButton = new System.Windows.Forms.Button();
+            this.CH1FMDisableButton = new System.Windows.Forms.Button();
+            this.CH1FMEnableButton = new System.Windows.Forms.Button();
+            this.label35 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.anapicoDisableButton = new System.Windows.Forms.Button();
+            this.anapicoEnableButton = new System.Windows.Forms.Button();
+            this.AnapicoSetFreqCH2Button = new System.Windows.Forms.Button();
+            this.AnapicoSetFreqCH1Button = new System.Windows.Forms.Button();
+            this.Tools = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.V1_freq_calc = new System.Windows.Forms.TextBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.Dop_calc_button = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.YbF_velocity = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.V0_freq_set = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.ScanMaster = new System.Windows.Forms.TabPage();
+            this.Refresh = new System.Windows.Forms.TabPage();
+            this.YAG_Control = new System.Windows.Forms.TabPage();
+            this.Pressure_Plot = new System.Windows.Forms.TabPage();
+            this.Flow_Controllers = new System.Windows.Forms.TabPage();
+            this.textBox14 = new System.Windows.Forms.TextBox();
+            this.textBox13 = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_Get_Serial_Ports = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox_COM_flow_control = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.button_Flow_controller_disconnect = new System.Windows.Forms.Button();
+            this.button_Flow_controller_connect = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonSetSF6 = new System.Windows.Forms.Button();
+            this.buttonSetHe = new System.Windows.Forms.Button();
+            this.button_Clear_All = new System.Windows.Forms.Button();
+            this.button_Set_All = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxSF6Flow = new System.Windows.Forms.TextBox();
+            this.button_Off_flow_SF6 = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxHeFlow = new System.Windows.Forms.TextBox();
+            this.button_On_flow_SF6 = new System.Windows.Forms.Button();
+            this.button_Off_flow_He = new System.Windows.Forms.Button();
+            this.button_On_flow_He = new System.Windows.Forms.Button();
+            this.Yodelling = new System.Windows.Forms.TabControl();
+            this.Windfreak = new System.Windows.Forms.TabPage();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.windFreak2CH2LED = new NationalInstruments.UI.WindowsForms.Led();
+            this.windFreak2CH1LED = new NationalInstruments.UI.WindowsForms.Led();
+            this.windFreak1CH2LED = new NationalInstruments.UI.WindowsForms.Led();
+            this.windFreak1CH1LED = new NationalInstruments.UI.WindowsForms.Led();
+            this.label45 = new System.Windows.Forms.Label();
+            this.Windfreak2DisableCH2Button = new System.Windows.Forms.Button();
+            this.Windfreak2EnableCH2Button = new System.Windows.Forms.Button();
+            this.label46 = new System.Windows.Forms.Label();
+            this.Windfreak2DisableCH1Button = new System.Windows.Forms.Button();
+            this.Windfreak2EnableCH1Button = new System.Windows.Forms.Button();
+            this.label47 = new System.Windows.Forms.Label();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
+            this.Windfreak2CH2SetPowerButton = new System.Windows.Forms.Button();
+            this.Windfreak2CH1SetPowerButton = new System.Windows.Forms.Button();
+            this.Windfreak2CH2SetFrequencyButton = new System.Windows.Forms.Button();
+            this.Windfreak2CH1SetFrequencyButton = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.Windfreak2CH2PowerTextbox = new System.Windows.Forms.TextBox();
+            this.Windfreak2CH1PowerTextbox = new System.Windows.Forms.TextBox();
+            this.Windfreak2CH2FrequencyTextbox = new System.Windows.Forms.TextBox();
+            this.Windfreak2CH1FrequencyTextbox = new System.Windows.Forms.TextBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.Windfreak1DisableCH2Button = new System.Windows.Forms.Button();
+            this.Windfreak1EnableCH2Button = new System.Windows.Forms.Button();
+            this.label43 = new System.Windows.Forms.Label();
+            this.Windfreak1DisableCH1Button = new System.Windows.Forms.Button();
+            this.Windfreak1EnableCH1Button = new System.Windows.Forms.Button();
+            this.label42 = new System.Windows.Forms.Label();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.WindfreakCH2FMTextbox = new System.Windows.Forms.TextBox();
+            this.WindfreakCH1FMTextbox = new System.Windows.Forms.TextBox();
+            this.WindfreakCH2PowerTextbox = new System.Windows.Forms.TextBox();
+            this.WindfreakCH1PowerTextbox = new System.Windows.Forms.TextBox();
+            this.WindfreakCH2FrequencyTextbox = new System.Windows.Forms.TextBox();
+            this.WindfreakCH1FrequencyTextbox = new System.Windows.Forms.TextBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
+            this.networkVariableDataSource1 = new NationalInstruments.NetworkVariable.WindowsForms.NetworkVariableDataSource(this.components);
             this.panel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.Anapico.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.anaPicoLED)).BeginInit();
+            this.Tools.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.Flow_Controllers.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.groupBox8.SuspendLayout();
+            this.Yodelling.SuspendLayout();
+            this.Windfreak.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak2CH2LED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak2CH1LED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak1CH2LED)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak1CH1LED)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.networkVariableDataSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBox7);
             this.panel1.Controls.Add(this.groupBox5);
             this.panel1.Controls.Add(this.groupBox4);
@@ -142,23 +244,86 @@ namespace LatticeHardwareControl
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(271, 597);
             this.panel1.TabIndex = 0;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.cryoStatus);
+            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.label33);
+            this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.groupBox2.Location = new System.Drawing.Point(15, 424);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(256, 73);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Cryo Control";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter_1);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(72, 18);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(42, 14);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Status";
+            // 
+            // cryoStatus
+            // 
+            this.cryoStatus.Location = new System.Drawing.Point(120, 15);
+            this.cryoStatus.Name = "cryoStatus";
+            this.cryoStatus.ReadOnly = true;
+            this.cryoStatus.Size = new System.Drawing.Size(75, 20);
+            this.cryoStatus.TabIndex = 13;
+            this.cryoStatus.TextChanged += new System.EventHandler(this.cryoStatus_TextChanged);
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button2.Location = new System.Drawing.Point(120, 42);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 12;
+            this.button2.Text = "Disengage";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button1.Location = new System.Drawing.Point(39, 42);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Engage";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(6, 34);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(0, 14);
+            this.label33.TabIndex = 10;
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.richTextBox_output);
             this.groupBox7.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox7.Location = new System.Drawing.Point(12, 484);
+            this.groupBox7.Location = new System.Drawing.Point(15, 503);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(256, 100);
+            this.groupBox7.Size = new System.Drawing.Size(253, 81);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Output Dialog";
             // 
             // richTextBox_output
             // 
-            this.richTextBox_output.Location = new System.Drawing.Point(9, 19);
+            this.richTextBox_output.Location = new System.Drawing.Point(6, 19);
             this.richTextBox_output.Name = "richTextBox_output";
-            this.richTextBox_output.Size = new System.Drawing.Size(241, 75);
+            this.richTextBox_output.Size = new System.Drawing.Size(241, 56);
             this.richTextBox_output.TabIndex = 0;
             this.richTextBox_output.Text = "";
             // 
@@ -177,7 +342,7 @@ namespace LatticeHardwareControl
             this.groupBox5.Controls.Add(this.button_Temp_start);
             this.groupBox5.Controls.Add(this.textbox_Temp_4K);
             this.groupBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox5.Location = new System.Drawing.Point(12, 256);
+            this.groupBox5.Location = new System.Drawing.Point(15, 202);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(256, 216);
             this.groupBox5.TabIndex = 13;
@@ -186,7 +351,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_SF6
             // 
-            this.textbox_Temp_SF6.Location = new System.Drawing.Point(123, 132);
+            this.textbox_Temp_SF6.Location = new System.Drawing.Point(100, 138);
             this.textbox_Temp_SF6.Name = "textbox_Temp_SF6";
             this.textbox_Temp_SF6.ReadOnly = true;
             this.textbox_Temp_SF6.Size = new System.Drawing.Size(127, 20);
@@ -195,16 +360,16 @@ namespace LatticeHardwareControl
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 138);
+            this.label12.Location = new System.Drawing.Point(62, 141);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(71, 14);
+            this.label12.Size = new System.Drawing.Size(29, 14);
             this.label12.TabIndex = 11;
-            this.label12.Text = "SF6: (~220K)";
+            this.label12.Text = "SF6:";
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(6, 34);
+            this.label13.Location = new System.Drawing.Point(62, 40);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(29, 14);
             this.label13.TabIndex = 10;
@@ -212,7 +377,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_50K
             // 
-            this.textbox_Temp_50K.Location = new System.Drawing.Point(123, 28);
+            this.textbox_Temp_50K.Location = new System.Drawing.Point(100, 34);
             this.textbox_Temp_50K.Name = "textbox_Temp_50K";
             this.textbox_Temp_50K.ReadOnly = true;
             this.textbox_Temp_50K.Size = new System.Drawing.Size(127, 20);
@@ -220,7 +385,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_Cell
             // 
-            this.textbox_Temp_Cell.Location = new System.Drawing.Point(123, 106);
+            this.textbox_Temp_Cell.Location = new System.Drawing.Point(100, 112);
             this.textbox_Temp_Cell.Name = "textbox_Temp_Cell";
             this.textbox_Temp_Cell.ReadOnly = true;
             this.textbox_Temp_Cell.Size = new System.Drawing.Size(127, 20);
@@ -230,7 +395,7 @@ namespace LatticeHardwareControl
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 112);
+            this.label14.Location = new System.Drawing.Point(60, 115);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(31, 14);
             this.label14.TabIndex = 7;
@@ -238,7 +403,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_1K
             // 
-            this.textbox_Temp_1K.Location = new System.Drawing.Point(123, 80);
+            this.textbox_Temp_1K.Location = new System.Drawing.Point(100, 86);
             this.textbox_Temp_1K.Name = "textbox_Temp_1K";
             this.textbox_Temp_1K.ReadOnly = true;
             this.textbox_Temp_1K.Size = new System.Drawing.Size(127, 20);
@@ -247,7 +412,7 @@ namespace LatticeHardwareControl
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 86);
+            this.label15.Location = new System.Drawing.Point(68, 89);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(23, 14);
             this.label15.TabIndex = 5;
@@ -256,7 +421,7 @@ namespace LatticeHardwareControl
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 60);
+            this.label16.Location = new System.Drawing.Point(68, 63);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(23, 14);
             this.label16.TabIndex = 4;
@@ -265,7 +430,7 @@ namespace LatticeHardwareControl
             // button_Temp_stop
             // 
             this.button_Temp_stop.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Temp_stop.Location = new System.Drawing.Point(90, 183);
+            this.button_Temp_stop.Location = new System.Drawing.Point(120, 178);
             this.button_Temp_stop.Name = "button_Temp_stop";
             this.button_Temp_stop.Size = new System.Drawing.Size(75, 23);
             this.button_Temp_stop.TabIndex = 3;
@@ -275,7 +440,7 @@ namespace LatticeHardwareControl
             // button_Temp_start
             // 
             this.button_Temp_start.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Temp_start.Location = new System.Drawing.Point(9, 183);
+            this.button_Temp_start.Location = new System.Drawing.Point(39, 178);
             this.button_Temp_start.Name = "button_Temp_start";
             this.button_Temp_start.Size = new System.Drawing.Size(75, 23);
             this.button_Temp_start.TabIndex = 2;
@@ -284,7 +449,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_Temp_4K
             // 
-            this.textbox_Temp_4K.Location = new System.Drawing.Point(123, 54);
+            this.textbox_Temp_4K.Location = new System.Drawing.Point(100, 60);
             this.textbox_Temp_4K.Name = "textbox_Temp_4K";
             this.textbox_Temp_4K.ReadOnly = true;
             this.textbox_Temp_4K.Size = new System.Drawing.Size(127, 20);
@@ -305,16 +470,16 @@ namespace LatticeHardwareControl
             this.groupBox4.Controls.Add(this.buttonStartPMonitor);
             this.groupBox4.Controls.Add(this.textBoxSourcePressure);
             this.groupBox4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox4.Location = new System.Drawing.Point(12, 9);
+            this.groupBox4.Location = new System.Drawing.Point(12, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(256, 241);
+            this.groupBox4.Size = new System.Drawing.Size(259, 184);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Pressure Monitor";
             // 
             // textbox_P_MOT
             // 
-            this.textbox_P_MOT.Location = new System.Drawing.Point(123, 167);
+            this.textbox_P_MOT.Location = new System.Drawing.Point(103, 121);
             this.textbox_P_MOT.Name = "textbox_P_MOT";
             this.textbox_P_MOT.ReadOnly = true;
             this.textbox_P_MOT.Size = new System.Drawing.Size(127, 20);
@@ -323,7 +488,7 @@ namespace LatticeHardwareControl
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 173);
+            this.label4.Location = new System.Drawing.Point(63, 124);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 14);
             this.label4.TabIndex = 11;
@@ -333,7 +498,7 @@ namespace LatticeHardwareControl
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 34);
+            this.label3.Location = new System.Drawing.Point(55, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 14);
             this.label3.TabIndex = 10;
@@ -342,15 +507,16 @@ namespace LatticeHardwareControl
             // 
             // textbox_P_dump
             // 
-            this.textbox_P_dump.Location = new System.Drawing.Point(123, 34);
+            this.textbox_P_dump.Location = new System.Drawing.Point(103, 17);
             this.textbox_P_dump.Name = "textbox_P_dump";
             this.textbox_P_dump.ReadOnly = true;
             this.textbox_P_dump.Size = new System.Drawing.Size(127, 20);
             this.textbox_P_dump.TabIndex = 9;
+            this.textbox_P_dump.TextChanged += new System.EventHandler(this.textbox_P_dump_TextChanged);
             // 
             // textBoxDownstreamPressure
             // 
-            this.textBoxDownstreamPressure.Location = new System.Drawing.Point(123, 141);
+            this.textBoxDownstreamPressure.Location = new System.Drawing.Point(103, 95);
             this.textBoxDownstreamPressure.Name = "textBoxDownstreamPressure";
             this.textBoxDownstreamPressure.ReadOnly = true;
             this.textBoxDownstreamPressure.Size = new System.Drawing.Size(127, 20);
@@ -360,7 +526,7 @@ namespace LatticeHardwareControl
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 147);
+            this.label2.Location = new System.Drawing.Point(16, 98);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(81, 14);
             this.label2.TabIndex = 7;
@@ -368,7 +534,7 @@ namespace LatticeHardwareControl
             // 
             // textbox_P_source_scroll
             // 
-            this.textbox_P_source_scroll.Location = new System.Drawing.Point(123, 89);
+            this.textbox_P_source_scroll.Location = new System.Drawing.Point(103, 43);
             this.textbox_P_source_scroll.Name = "textbox_P_source_scroll";
             this.textbox_P_source_scroll.ReadOnly = true;
             this.textbox_P_source_scroll.Size = new System.Drawing.Size(127, 20);
@@ -378,7 +544,7 @@ namespace LatticeHardwareControl
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 95);
+            this.label1.Location = new System.Drawing.Point(14, 46);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 14);
             this.label1.TabIndex = 5;
@@ -388,7 +554,7 @@ namespace LatticeHardwareControl
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 121);
+            this.label8.Location = new System.Drawing.Point(48, 72);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(49, 14);
             this.label8.TabIndex = 4;
@@ -396,8 +562,9 @@ namespace LatticeHardwareControl
             // 
             // buttonStopPMonitor
             // 
+            this.buttonStopPMonitor.Enabled = false;
             this.buttonStopPMonitor.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonStopPMonitor.Location = new System.Drawing.Point(90, 208);
+            this.buttonStopPMonitor.Location = new System.Drawing.Point(123, 147);
             this.buttonStopPMonitor.Name = "buttonStopPMonitor";
             this.buttonStopPMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonStopPMonitor.TabIndex = 3;
@@ -408,7 +575,7 @@ namespace LatticeHardwareControl
             // buttonStartPMonitor
             // 
             this.buttonStartPMonitor.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.buttonStartPMonitor.Location = new System.Drawing.Point(9, 208);
+            this.buttonStartPMonitor.Location = new System.Drawing.Point(42, 147);
             this.buttonStartPMonitor.Name = "buttonStartPMonitor";
             this.buttonStartPMonitor.Size = new System.Drawing.Size(75, 23);
             this.buttonStartPMonitor.TabIndex = 2;
@@ -418,476 +585,12 @@ namespace LatticeHardwareControl
             // 
             // textBoxSourcePressure
             // 
-            this.textBoxSourcePressure.Location = new System.Drawing.Point(123, 115);
+            this.textBoxSourcePressure.Location = new System.Drawing.Point(103, 69);
             this.textBoxSourcePressure.Name = "textBoxSourcePressure";
             this.textBoxSourcePressure.ReadOnly = true;
             this.textBoxSourcePressure.Size = new System.Drawing.Size(127, 20);
             this.textBoxSourcePressure.TabIndex = 1;
             this.textBoxSourcePressure.TextChanged += new System.EventHandler(this.textBoxSourcePressure_TextChanged);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.Flow_Controllers);
-            this.tabControl1.Controls.Add(this.YAG_Control);
-            this.tabControl1.Controls.Add(this.Refresh);
-            this.tabControl1.Controls.Add(this.ScanMaster);
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabControl1.Location = new System.Drawing.Point(277, 9);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(690, 575);
-            this.tabControl1.TabIndex = 1;
-            // 
-            // Flow_Controllers
-            // 
-            this.Flow_Controllers.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Flow_Controllers.Controls.Add(this.textBox14);
-            this.Flow_Controllers.Controls.Add(this.textBox13);
-            this.Flow_Controllers.Controls.Add(this.groupBox3);
-            this.Flow_Controllers.Controls.Add(this.groupBox2);
-            this.Flow_Controllers.Controls.Add(this.groupBox1);
-            this.Flow_Controllers.Location = new System.Drawing.Point(4, 21);
-            this.Flow_Controllers.Name = "Flow_Controllers";
-            this.Flow_Controllers.Padding = new System.Windows.Forms.Padding(3);
-            this.Flow_Controllers.Size = new System.Drawing.Size(682, 550);
-            this.Flow_Controllers.TabIndex = 0;
-            this.Flow_Controllers.Text = "Flow Controllers";
-            this.Flow_Controllers.Click += new System.EventHandler(this.Flow_Controllers_Click);
-            // 
-            // textBox14
-            // 
-            this.textBox14.Location = new System.Drawing.Point(370, 270);
-            this.textBox14.Multiline = true;
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(288, 251);
-            this.textBox14.TabIndex = 16;
-            this.textBox14.Text = "Turn-off sequence: \r\n\r\n1. Shut gas connections to chamber.\r\n2. Flow controls set " +
-    "to \"0\".\r\n3. Close He valves and bottle.";
-            // 
-            // textBox13
-            // 
-            this.textBox13.Location = new System.Drawing.Point(21, 270);
-            this.textBox13.Multiline = true;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(288, 251);
-            this.textBox13.TabIndex = 15;
-            this.textBox13.Text = resources.GetString("textBox13.Text");
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.button_Get_Serial_Ports);
-            this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Controls.Add(this.textBox_COM_flow_control);
-            this.groupBox3.Controls.Add(this.label11);
-            this.groupBox3.Controls.Add(this.button_Flow_controller_disconnect);
-            this.groupBox3.Controls.Add(this.button_Flow_controller_connect);
-            this.groupBox3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox3.Location = new System.Drawing.Point(376, 13);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(288, 108);
-            this.groupBox3.TabIndex = 14;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Device communication";
-            // 
-            // button_Get_Serial_Ports
-            // 
-            this.button_Get_Serial_Ports.Location = new System.Drawing.Point(195, 55);
-            this.button_Get_Serial_Ports.Name = "button_Get_Serial_Ports";
-            this.button_Get_Serial_Ports.Size = new System.Drawing.Size(87, 23);
-            this.button_Get_Serial_Ports.TabIndex = 11;
-            this.button_Get_Serial_Ports.Text = "Show ports";
-            this.button_Get_Serial_Ports.UseVisualStyleBackColor = true;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 34);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(60, 12);
-            this.label9.TabIndex = 10;
-            this.label9.Text = "COM port:";
-            // 
-            // textBox_COM_flow_control
-            // 
-            this.textBox_COM_flow_control.Location = new System.Drawing.Point(155, 28);
-            this.textBox_COM_flow_control.Name = "textBox_COM_flow_control";
-            this.textBox_COM_flow_control.ReadOnly = true;
-            this.textBox_COM_flow_control.Size = new System.Drawing.Size(127, 20);
-            this.textBox_COM_flow_control.TabIndex = 9;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 56);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(66, 12);
-            this.label11.TabIndex = 4;
-            this.label11.Text = "(Default: 9)";
-            this.label11.Click += new System.EventHandler(this.label11_Click);
-            // 
-            // button_Flow_controller_disconnect
-            // 
-            this.button_Flow_controller_disconnect.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Flow_controller_disconnect.Location = new System.Drawing.Point(195, 80);
-            this.button_Flow_controller_disconnect.Name = "button_Flow_controller_disconnect";
-            this.button_Flow_controller_disconnect.Size = new System.Drawing.Size(87, 23);
-            this.button_Flow_controller_disconnect.TabIndex = 3;
-            this.button_Flow_controller_disconnect.Text = "Disconnect";
-            this.button_Flow_controller_disconnect.UseVisualStyleBackColor = true;
-            // 
-            // button_Flow_controller_connect
-            // 
-            this.button_Flow_controller_connect.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Flow_controller_connect.Location = new System.Drawing.Point(8, 80);
-            this.button_Flow_controller_connect.Name = "button_Flow_controller_connect";
-            this.button_Flow_controller_connect.Size = new System.Drawing.Size(75, 23);
-            this.button_Flow_controller_connect.TabIndex = 2;
-            this.button_Flow_controller_connect.Text = "Connect";
-            this.button_Flow_controller_connect.UseVisualStyleBackColor = true;
-            this.button_Flow_controller_connect.Click += new System.EventHandler(this.button_Flow_controller_connect_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox2.Location = new System.Drawing.Point(21, 146);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(288, 108);
-            this.groupBox2.TabIndex = 14;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "SF6 Flow Control";
-            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 56);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(97, 12);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "(Default: 0.0100)";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.button_Clear_All);
-            this.groupBox1.Controls.Add(this.button_Set_All);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.textBox5);
-            this.groupBox1.Controls.Add(this.button_stop_flow_SF6);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.textBox6);
-            this.groupBox1.Controls.Add(this.button_set_flow_SF6);
-            this.groupBox1.Controls.Add(this.button_stop_flow_He);
-            this.groupBox1.Controls.Add(this.button_set_flow_He);
-            this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.groupBox1.Location = new System.Drawing.Point(21, 13);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(288, 127);
-            this.groupBox1.TabIndex = 13;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Flow Control";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
-            // 
-            // button_Clear_All
-            // 
-            this.button_Clear_All.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Clear_All.Location = new System.Drawing.Point(160, 87);
-            this.button_Clear_All.Name = "button_Clear_All";
-            this.button_Clear_All.Size = new System.Drawing.Size(75, 23);
-            this.button_Clear_All.TabIndex = 12;
-            this.button_Clear_All.Text = "Clear All";
-            this.button_Clear_All.UseVisualStyleBackColor = true;
-            this.button_Clear_All.Click += new System.EventHandler(this.button_Clear_All_Click);
-            // 
-            // button_Set_All
-            // 
-            this.button_Set_All.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_Set_All.Location = new System.Drawing.Point(79, 87);
-            this.button_Set_All.Name = "button_Set_All";
-            this.button_Set_All.Size = new System.Drawing.Size(75, 23);
-            this.button_Set_All.TabIndex = 11;
-            this.button_Set_All.Text = "Set All";
-            this.button_Set_All.UseVisualStyleBackColor = true;
-            this.button_Set_All.Click += new System.EventHandler(this.button_Set_All_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(181, 13);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(101, 12);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Flow rate (sccm):";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 36);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(20, 12);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "He";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(200, 57);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(59, 20);
-            this.textBox5.TabIndex = 9;
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
-            // 
-            // button_stop_flow_SF6
-            // 
-            this.button_stop_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_SF6.Location = new System.Drawing.Point(119, 55);
-            this.button_stop_flow_SF6.Name = "button_stop_flow_SF6";
-            this.button_stop_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_SF6.TabIndex = 3;
-            this.button_stop_flow_SF6.Text = "Clear";
-            this.button_stop_flow_SF6.UseVisualStyleBackColor = true;
-            this.button_stop_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 62);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(26, 12);
-            this.label10.TabIndex = 4;
-            this.label10.Text = "SF6";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(200, 31);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(59, 20);
-            this.textBox6.TabIndex = 9;
-            this.textBox6.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
-            // 
-            // button_set_flow_SF6
-            // 
-            this.button_set_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_SF6.Location = new System.Drawing.Point(38, 56);
-            this.button_set_flow_SF6.Name = "button_set_flow_SF6";
-            this.button_set_flow_SF6.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_SF6.TabIndex = 2;
-            this.button_set_flow_SF6.Text = "Set";
-            this.button_set_flow_SF6.UseVisualStyleBackColor = true;
-            this.button_set_flow_SF6.Click += new System.EventHandler(this.button_set_flow_SF6_Click);
-            // 
-            // button_stop_flow_He
-            // 
-            this.button_stop_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_stop_flow_He.Location = new System.Drawing.Point(119, 29);
-            this.button_stop_flow_He.Name = "button_stop_flow_He";
-            this.button_stop_flow_He.Size = new System.Drawing.Size(75, 23);
-            this.button_stop_flow_He.TabIndex = 3;
-            this.button_stop_flow_He.Text = "Clear";
-            this.button_stop_flow_He.UseVisualStyleBackColor = true;
-            this.button_stop_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
-            // 
-            // button_set_flow_He
-            // 
-            this.button_set_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button_set_flow_He.Location = new System.Drawing.Point(38, 29);
-            this.button_set_flow_He.Name = "button_set_flow_He";
-            this.button_set_flow_He.Size = new System.Drawing.Size(75, 23);
-            this.button_set_flow_He.TabIndex = 2;
-            this.button_set_flow_He.Text = "Set";
-            this.button_set_flow_He.UseVisualStyleBackColor = true;
-            this.button_set_flow_He.Click += new System.EventHandler(this.button_set_flow_He_Click);
-            // 
-            // YAG_Control
-            // 
-            this.YAG_Control.Location = new System.Drawing.Point(4, 21);
-            this.YAG_Control.Name = "YAG_Control";
-            this.YAG_Control.Padding = new System.Windows.Forms.Padding(3);
-            this.YAG_Control.Size = new System.Drawing.Size(682, 550);
-            this.YAG_Control.TabIndex = 1;
-            this.YAG_Control.Text = "YAG Control";
-            this.YAG_Control.UseVisualStyleBackColor = true;
-            // 
-            // Refresh
-            // 
-            this.Refresh.Location = new System.Drawing.Point(4, 21);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Padding = new System.Windows.Forms.Padding(3);
-            this.Refresh.Size = new System.Drawing.Size(682, 550);
-            this.Refresh.TabIndex = 2;
-            this.Refresh.Text = "Refresh";
-            this.Refresh.UseVisualStyleBackColor = true;
-            // 
-            // ScanMaster
-            // 
-            this.ScanMaster.AccessibleName = "";
-            this.ScanMaster.Location = new System.Drawing.Point(4, 21);
-            this.ScanMaster.Name = "ScanMaster";
-            this.ScanMaster.Padding = new System.Windows.Forms.Padding(3);
-            this.ScanMaster.Size = new System.Drawing.Size(682, 550);
-            this.ScanMaster.TabIndex = 3;
-            this.ScanMaster.Text = "ScanMaster";
-            this.ScanMaster.UseVisualStyleBackColor = true;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.groupBox6);
-            this.tabPage1.Location = new System.Drawing.Point(4, 21);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(682, 550);
-            this.tabPage1.TabIndex = 4;
-            this.tabPage1.Text = "Tools";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.label25);
-            this.groupBox6.Controls.Add(this.V1_freq_calc);
-            this.groupBox6.Controls.Add(this.label26);
-            this.groupBox6.Controls.Add(this.label24);
-            this.groupBox6.Controls.Add(this.label23);
-            this.groupBox6.Controls.Add(this.Dop_calc_button);
-            this.groupBox6.Controls.Add(this.label22);
-            this.groupBox6.Controls.Add(this.YbF_velocity);
-            this.groupBox6.Controls.Add(this.label21);
-            this.groupBox6.Controls.Add(this.label20);
-            this.groupBox6.Controls.Add(this.V0_freq_set);
-            this.groupBox6.Controls.Add(this.label19);
-            this.groupBox6.Controls.Add(this.label18);
-            this.groupBox6.Controls.Add(this.label17);
-            this.groupBox6.Location = new System.Drawing.Point(6, 14);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(670, 152);
-            this.groupBox6.TabIndex = 0;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Doppler shift calculator";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(601, 65);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(26, 12);
-            this.label25.TabIndex = 13;
-            this.label25.Text = "THz";
-            // 
-            // V1_freq_calc
-            // 
-            this.V1_freq_calc.Location = new System.Drawing.Point(438, 62);
-            this.V1_freq_calc.Name = "V1_freq_calc";
-            this.V1_freq_calc.Size = new System.Drawing.Size(157, 20);
-            this.V1_freq_calc.TabIndex = 12;
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(353, 65);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(80, 12);
-            this.label26.TabIndex = 11;
-            this.label26.Text = "V1 predicted:";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(353, 42);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(235, 12);
-            this.label24.TabIndex = 10;
-            this.label24.Text = "V1 v-sensitive: 527.754810 (Dec 11 2023)";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(353, 20);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(269, 12);
-            this.label23.TabIndex = 9;
-            this.label23.Text = "V1 v-insensitive: 527.754963 THz (Dec 11 2023)\r\n";
-            // 
-            // Dop_calc_button
-            // 
-            this.Dop_calc_button.Location = new System.Drawing.Point(11, 112);
-            this.Dop_calc_button.Name = "Dop_calc_button";
-            this.Dop_calc_button.Size = new System.Drawing.Size(75, 23);
-            this.Dop_calc_button.TabIndex = 8;
-            this.Dop_calc_button.Text = "Calculate";
-            this.Dop_calc_button.UseVisualStyleBackColor = true;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(601, 117);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(24, 12);
-            this.label22.TabIndex = 7;
-            this.label22.Text = "m/s";
-            // 
-            // YbF_velocity
-            // 
-            this.YbF_velocity.Location = new System.Drawing.Point(495, 112);
-            this.YbF_velocity.Name = "YbF_velocity";
-            this.YbF_velocity.Size = new System.Drawing.Size(100, 20);
-            this.YbF_velocity.TabIndex = 6;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(353, 117);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(136, 12);
-            this.label21.TabIndex = 5;
-            this.label21.Text = "Molecule velocity class:";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(256, 65);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(26, 12);
-            this.label20.TabIndex = 4;
-            this.label20.Text = "THz";
-            // 
-            // V0_freq_set
-            // 
-            this.V0_freq_set.Location = new System.Drawing.Point(93, 62);
-            this.V0_freq_set.Name = "V0_freq_set";
-            this.V0_freq_set.Size = new System.Drawing.Size(157, 20);
-            this.V0_freq_set.TabIndex = 3;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(26, 65);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(61, 12);
-            this.label19.TabIndex = 2;
-            this.label19.Text = "V0 actual:";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(26, 42);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(242, 12);
-            this.label18.TabIndex = 1;
-            this.label18.Text = "V0 v-sensitive: 542.8088265 (Dec 11 2023)";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(26, 20);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(276, 12);
-            this.label17.TabIndex = 0;
-            this.label17.Text = "V0 v-insensitive: 542.8089676 THz (Dec 11 2023)\r\n";
             // 
             // groupBox8
             // 
@@ -1035,38 +738,1408 @@ namespace LatticeHardwareControl
             this.textBox_freq_V1.Size = new System.Drawing.Size(127, 20);
             this.textBox_freq_V1.TabIndex = 1;
             // 
+            // Anapico
+            // 
+            this.Anapico.Controls.Add(this.anaPicoLED);
+            this.Anapico.Controls.Add(this.label38);
+            this.Anapico.Controls.Add(this.PulseMode_disable_button);
+            this.Anapico.Controls.Add(this.PulseMode_enable_button);
+            this.Anapico.Controls.Add(this.label37);
+            this.Anapico.Controls.Add(this.AnapicoSetPowerCH2Textbox);
+            this.Anapico.Controls.Add(this.AnapicoSetPowerCH1Textbox);
+            this.Anapico.Controls.Add(this.AnapicoSetFMDevCH2TextBox);
+            this.Anapico.Controls.Add(this.AnapicoSetFMDevCH1TextBox);
+            this.Anapico.Controls.Add(this.AnapicoSetFreqCH2TextBox);
+            this.Anapico.Controls.Add(this.AnapicoSetFreqCH1TextBox);
+            this.Anapico.Controls.Add(this.AnapicoSetPowerCH2Button);
+            this.Anapico.Controls.Add(this.AnapicoSetPowerCH1Button);
+            this.Anapico.Controls.Add(this.label36);
+            this.Anapico.Controls.Add(this.AnapicoSetFMDevCH2Button);
+            this.Anapico.Controls.Add(this.AnapicoSetFMDevCH1Button);
+            this.Anapico.Controls.Add(this.CH2FMDisableButton);
+            this.Anapico.Controls.Add(this.CH2FMEnableButton);
+            this.Anapico.Controls.Add(this.CH1FMDisableButton);
+            this.Anapico.Controls.Add(this.CH1FMEnableButton);
+            this.Anapico.Controls.Add(this.label35);
+            this.Anapico.Controls.Add(this.label34);
+            this.Anapico.Controls.Add(this.anapicoDisableButton);
+            this.Anapico.Controls.Add(this.anapicoEnableButton);
+            this.Anapico.Controls.Add(this.AnapicoSetFreqCH2Button);
+            this.Anapico.Controls.Add(this.AnapicoSetFreqCH1Button);
+            this.Anapico.Location = new System.Drawing.Point(4, 21);
+            this.Anapico.Name = "Anapico";
+            this.Anapico.Padding = new System.Windows.Forms.Padding(3);
+            this.Anapico.Size = new System.Drawing.Size(682, 550);
+            this.Anapico.TabIndex = 6;
+            this.Anapico.Text = "AnaPico";
+            this.Anapico.UseVisualStyleBackColor = true;
+            // 
+            // anaPicoLED
+            // 
+            this.anaPicoLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.anaPicoLED.Location = new System.Drawing.Point(123, 100);
+            this.anaPicoLED.Name = "anaPicoLED";
+            this.anaPicoLED.Size = new System.Drawing.Size(40, 40);
+            this.anaPicoLED.TabIndex = 28;
+            this.anaPicoLED.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.led1_StateChanged);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label38.Location = new System.Drawing.Point(255, 350);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(169, 18);
+            this.label38.TabIndex = 27;
+            this.label38.Text = "External Pulse Mode";
+            this.label38.Click += new System.EventHandler(this.label38_Click);
+            // 
+            // PulseMode_disable_button
+            // 
+            this.PulseMode_disable_button.Location = new System.Drawing.Point(377, 382);
+            this.PulseMode_disable_button.Name = "PulseMode_disable_button";
+            this.PulseMode_disable_button.Size = new System.Drawing.Size(75, 23);
+            this.PulseMode_disable_button.TabIndex = 26;
+            this.PulseMode_disable_button.Text = "Disable";
+            this.PulseMode_disable_button.UseVisualStyleBackColor = true;
+            this.PulseMode_disable_button.Click += new System.EventHandler(this.PulseMode_disable_button_Click);
+            // 
+            // PulseMode_enable_button
+            // 
+            this.PulseMode_enable_button.Location = new System.Drawing.Point(258, 382);
+            this.PulseMode_enable_button.Name = "PulseMode_enable_button";
+            this.PulseMode_enable_button.Size = new System.Drawing.Size(75, 23);
+            this.PulseMode_enable_button.TabIndex = 25;
+            this.PulseMode_enable_button.Text = "Enable";
+            this.PulseMode_enable_button.UseVisualStyleBackColor = true;
+            this.PulseMode_enable_button.Click += new System.EventHandler(this.PulseMode_enable_button_Click);
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label37.Location = new System.Drawing.Point(218, 449);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(216, 18);
+            this.label37.TabIndex = 24;
+            this.label37.Text = "Set powers (doesn\'t work)";
+            this.label37.Click += new System.EventHandler(this.label37_Click);
+            // 
+            // AnapicoSetPowerCH2Textbox
+            // 
+            this.AnapicoSetPowerCH2Textbox.Location = new System.Drawing.Point(222, 521);
+            this.AnapicoSetPowerCH2Textbox.Name = "AnapicoSetPowerCH2Textbox";
+            this.AnapicoSetPowerCH2Textbox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetPowerCH2Textbox.TabIndex = 23;
+            this.AnapicoSetPowerCH2Textbox.Text = "20.0";
+            this.AnapicoSetPowerCH2Textbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetPowerCH2Textbox.TextChanged += new System.EventHandler(this.AnapicoSetPowerCH2Textbox_TextChanged);
+            // 
+            // AnapicoSetPowerCH1Textbox
+            // 
+            this.AnapicoSetPowerCH1Textbox.Location = new System.Drawing.Point(222, 484);
+            this.AnapicoSetPowerCH1Textbox.Name = "AnapicoSetPowerCH1Textbox";
+            this.AnapicoSetPowerCH1Textbox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetPowerCH1Textbox.TabIndex = 22;
+            this.AnapicoSetPowerCH1Textbox.Text = "20.0";
+            this.AnapicoSetPowerCH1Textbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetPowerCH1Textbox.TextChanged += new System.EventHandler(this.AnapicoSetPowerCH1Textbox_TextChanged);
+            // 
+            // AnapicoSetFMDevCH2TextBox
+            // 
+            this.AnapicoSetFMDevCH2TextBox.Location = new System.Drawing.Point(35, 280);
+            this.AnapicoSetFMDevCH2TextBox.Name = "AnapicoSetFMDevCH2TextBox";
+            this.AnapicoSetFMDevCH2TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFMDevCH2TextBox.TabIndex = 16;
+            this.AnapicoSetFMDevCH2TextBox.Text = "18000000";
+            this.AnapicoSetFMDevCH2TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // AnapicoSetFMDevCH1TextBox
+            // 
+            this.AnapicoSetFMDevCH1TextBox.Location = new System.Drawing.Point(35, 237);
+            this.AnapicoSetFMDevCH1TextBox.Name = "AnapicoSetFMDevCH1TextBox";
+            this.AnapicoSetFMDevCH1TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFMDevCH1TextBox.TabIndex = 15;
+            this.AnapicoSetFMDevCH1TextBox.Text = "28000000";
+            this.AnapicoSetFMDevCH1TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetFMDevCH1TextBox.TextChanged += new System.EventHandler(this.AnapicoSetFMDevCH1TextBox_TextChanged);
+            // 
+            // AnapicoSetFreqCH2TextBox
+            // 
+            this.AnapicoSetFreqCH2TextBox.Location = new System.Drawing.Point(386, 113);
+            this.AnapicoSetFreqCH2TextBox.Name = "AnapicoSetFreqCH2TextBox";
+            this.AnapicoSetFreqCH2TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFreqCH2TextBox.TabIndex = 4;
+            this.AnapicoSetFreqCH2TextBox.Text = "14318000000";
+            this.AnapicoSetFreqCH2TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // AnapicoSetFreqCH1TextBox
+            // 
+            this.AnapicoSetFreqCH1TextBox.Location = new System.Drawing.Point(386, 71);
+            this.AnapicoSetFreqCH1TextBox.Name = "AnapicoSetFreqCH1TextBox";
+            this.AnapicoSetFreqCH1TextBox.Size = new System.Drawing.Size(100, 20);
+            this.AnapicoSetFreqCH1TextBox.TabIndex = 3;
+            this.AnapicoSetFreqCH1TextBox.Text = "14245400000";
+            this.AnapicoSetFreqCH1TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnapicoSetFreqCH1TextBox.TextChanged += new System.EventHandler(this.AnapicoSetFreqCH1TextBox_TextChanged);
+            // 
+            // AnapicoSetPowerCH2Button
+            // 
+            this.AnapicoSetPowerCH2Button.Location = new System.Drawing.Point(339, 519);
+            this.AnapicoSetPowerCH2Button.Name = "AnapicoSetPowerCH2Button";
+            this.AnapicoSetPowerCH2Button.Size = new System.Drawing.Size(140, 23);
+            this.AnapicoSetPowerCH2Button.TabIndex = 21;
+            this.AnapicoSetPowerCH2Button.Text = "Set CH2 Power (dBm)";
+            this.AnapicoSetPowerCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetPowerCH2Button.Click += new System.EventHandler(this.AnapicoSetPowerCH2Button_Click);
+            // 
+            // AnapicoSetPowerCH1Button
+            // 
+            this.AnapicoSetPowerCH1Button.Location = new System.Drawing.Point(339, 482);
+            this.AnapicoSetPowerCH1Button.Name = "AnapicoSetPowerCH1Button";
+            this.AnapicoSetPowerCH1Button.Size = new System.Drawing.Size(140, 23);
+            this.AnapicoSetPowerCH1Button.TabIndex = 20;
+            this.AnapicoSetPowerCH1Button.Text = "Set CH1 Power (dBm)";
+            this.AnapicoSetPowerCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetPowerCH1Button.Click += new System.EventHandler(this.AnapicoSetPowerCH1Button_Click);
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label36.Location = new System.Drawing.Point(32, 202);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(329, 18);
+            this.label36.TabIndex = 19;
+            this.label36.Text = "Set FM Deviation (sideband frequencies)";
+            // 
+            // AnapicoSetFMDevCH2Button
+            // 
+            this.AnapicoSetFMDevCH2Button.Location = new System.Drawing.Point(151, 278);
+            this.AnapicoSetFMDevCH2Button.Name = "AnapicoSetFMDevCH2Button";
+            this.AnapicoSetFMDevCH2Button.Size = new System.Drawing.Size(172, 23);
+            this.AnapicoSetFMDevCH2Button.TabIndex = 18;
+            this.AnapicoSetFMDevCH2Button.Text = "Set CH2 FM Deviation (Hz)";
+            this.AnapicoSetFMDevCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFMDevCH2Button.Click += new System.EventHandler(this.AnapicoSetFMDevCH2Button_Click);
+            // 
+            // AnapicoSetFMDevCH1Button
+            // 
+            this.AnapicoSetFMDevCH1Button.Location = new System.Drawing.Point(151, 235);
+            this.AnapicoSetFMDevCH1Button.Name = "AnapicoSetFMDevCH1Button";
+            this.AnapicoSetFMDevCH1Button.Size = new System.Drawing.Size(172, 23);
+            this.AnapicoSetFMDevCH1Button.TabIndex = 17;
+            this.AnapicoSetFMDevCH1Button.Text = "Set CH1 FM Deviation (Hz)";
+            this.AnapicoSetFMDevCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFMDevCH1Button.Click += new System.EventHandler(this.AnapicoSetFMDevCH1Button_Click);
+            // 
+            // CH2FMDisableButton
+            // 
+            this.CH2FMDisableButton.Location = new System.Drawing.Point(502, 278);
+            this.CH2FMDisableButton.Name = "CH2FMDisableButton";
+            this.CH2FMDisableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH2FMDisableButton.TabIndex = 14;
+            this.CH2FMDisableButton.Text = "CH2 FM Disable";
+            this.CH2FMDisableButton.UseVisualStyleBackColor = true;
+            this.CH2FMDisableButton.Click += new System.EventHandler(this.CH2FMDisableButton_Click);
+            // 
+            // CH2FMEnableButton
+            // 
+            this.CH2FMEnableButton.Location = new System.Drawing.Point(374, 278);
+            this.CH2FMEnableButton.Name = "CH2FMEnableButton";
+            this.CH2FMEnableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH2FMEnableButton.TabIndex = 13;
+            this.CH2FMEnableButton.Text = "CH2 FM Enable";
+            this.CH2FMEnableButton.UseVisualStyleBackColor = true;
+            this.CH2FMEnableButton.Click += new System.EventHandler(this.CH2FMEnableButton_Click);
+            // 
+            // CH1FMDisableButton
+            // 
+            this.CH1FMDisableButton.Location = new System.Drawing.Point(502, 235);
+            this.CH1FMDisableButton.Name = "CH1FMDisableButton";
+            this.CH1FMDisableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH1FMDisableButton.TabIndex = 12;
+            this.CH1FMDisableButton.Text = "CH1 FM Disable";
+            this.CH1FMDisableButton.UseVisualStyleBackColor = true;
+            this.CH1FMDisableButton.Click += new System.EventHandler(this.CH1FMDisableButton_Click);
+            // 
+            // CH1FMEnableButton
+            // 
+            this.CH1FMEnableButton.Location = new System.Drawing.Point(374, 235);
+            this.CH1FMEnableButton.Name = "CH1FMEnableButton";
+            this.CH1FMEnableButton.Size = new System.Drawing.Size(102, 23);
+            this.CH1FMEnableButton.TabIndex = 11;
+            this.CH1FMEnableButton.Text = "CH1 FM Enable";
+            this.CH1FMEnableButton.UseVisualStyleBackColor = true;
+            this.CH1FMEnableButton.Click += new System.EventHandler(this.CH1FMEnableButton_Click);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label35.Location = new System.Drawing.Point(421, 36);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(165, 18);
+            this.label35.TabIndex = 10;
+            this.label35.Text = "Set CW frequencies";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.Location = new System.Drawing.Point(43, 36);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(197, 18);
+            this.label34.TabIndex = 9;
+            this.label34.Text = "AnaPico Enable/Disable";
+            // 
+            // anapicoDisableButton
+            // 
+            this.anapicoDisableButton.Location = new System.Drawing.Point(165, 65);
+            this.anapicoDisableButton.Name = "anapicoDisableButton";
+            this.anapicoDisableButton.Size = new System.Drawing.Size(75, 23);
+            this.anapicoDisableButton.TabIndex = 8;
+            this.anapicoDisableButton.Text = "Disable";
+            this.anapicoDisableButton.UseVisualStyleBackColor = true;
+            this.anapicoDisableButton.Click += new System.EventHandler(this.anapicoDisableButton_Click);
+            // 
+            // anapicoEnableButton
+            // 
+            this.anapicoEnableButton.Location = new System.Drawing.Point(46, 65);
+            this.anapicoEnableButton.Name = "anapicoEnableButton";
+            this.anapicoEnableButton.Size = new System.Drawing.Size(75, 23);
+            this.anapicoEnableButton.TabIndex = 7;
+            this.anapicoEnableButton.Text = "Enable";
+            this.anapicoEnableButton.UseVisualStyleBackColor = true;
+            this.anapicoEnableButton.Click += new System.EventHandler(this.anapicoEnableButton_Click);
+            // 
+            // AnapicoSetFreqCH2Button
+            // 
+            this.AnapicoSetFreqCH2Button.Location = new System.Drawing.Point(502, 110);
+            this.AnapicoSetFreqCH2Button.Name = "AnapicoSetFreqCH2Button";
+            this.AnapicoSetFreqCH2Button.Size = new System.Drawing.Size(130, 23);
+            this.AnapicoSetFreqCH2Button.TabIndex = 6;
+            this.AnapicoSetFreqCH2Button.Text = "Set CH2 Freq (Hz)";
+            this.AnapicoSetFreqCH2Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFreqCH2Button.Click += new System.EventHandler(this.AnapicoSetFreqCH2Button_Click);
+            // 
+            // AnapicoSetFreqCH1Button
+            // 
+            this.AnapicoSetFreqCH1Button.Location = new System.Drawing.Point(502, 67);
+            this.AnapicoSetFreqCH1Button.Name = "AnapicoSetFreqCH1Button";
+            this.AnapicoSetFreqCH1Button.Size = new System.Drawing.Size(130, 23);
+            this.AnapicoSetFreqCH1Button.TabIndex = 5;
+            this.AnapicoSetFreqCH1Button.Text = "Set CH1 Freq (Hz)";
+            this.AnapicoSetFreqCH1Button.UseVisualStyleBackColor = true;
+            this.AnapicoSetFreqCH1Button.Click += new System.EventHandler(this.AnapicoSetFreqCH1Button_Click);
+            // 
+            // Tools
+            // 
+            this.Tools.Controls.Add(this.groupBox6);
+            this.Tools.Location = new System.Drawing.Point(4, 21);
+            this.Tools.Name = "Tools";
+            this.Tools.Padding = new System.Windows.Forms.Padding(3);
+            this.Tools.Size = new System.Drawing.Size(682, 550);
+            this.Tools.TabIndex = 4;
+            this.Tools.Text = "Tools";
+            this.Tools.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label25);
+            this.groupBox6.Controls.Add(this.V1_freq_calc);
+            this.groupBox6.Controls.Add(this.label26);
+            this.groupBox6.Controls.Add(this.label24);
+            this.groupBox6.Controls.Add(this.label23);
+            this.groupBox6.Controls.Add(this.Dop_calc_button);
+            this.groupBox6.Controls.Add(this.label22);
+            this.groupBox6.Controls.Add(this.YbF_velocity);
+            this.groupBox6.Controls.Add(this.label21);
+            this.groupBox6.Controls.Add(this.label20);
+            this.groupBox6.Controls.Add(this.V0_freq_set);
+            this.groupBox6.Controls.Add(this.label19);
+            this.groupBox6.Controls.Add(this.label18);
+            this.groupBox6.Controls.Add(this.label17);
+            this.groupBox6.Location = new System.Drawing.Point(6, 14);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(670, 152);
+            this.groupBox6.TabIndex = 0;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Doppler shift calculator";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(601, 65);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(26, 12);
+            this.label25.TabIndex = 13;
+            this.label25.Text = "THz";
+            // 
+            // V1_freq_calc
+            // 
+            this.V1_freq_calc.Location = new System.Drawing.Point(438, 62);
+            this.V1_freq_calc.Name = "V1_freq_calc";
+            this.V1_freq_calc.Size = new System.Drawing.Size(157, 20);
+            this.V1_freq_calc.TabIndex = 12;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(353, 65);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(80, 12);
+            this.label26.TabIndex = 11;
+            this.label26.Text = "V1 predicted:";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(353, 42);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(235, 12);
+            this.label24.TabIndex = 10;
+            this.label24.Text = "V1 v-sensitive: 527.754810 (Dec 11 2023)";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(353, 20);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(269, 12);
+            this.label23.TabIndex = 9;
+            this.label23.Text = "V1 v-insensitive: 527.754963 THz (Dec 11 2023)\r\n";
+            // 
+            // Dop_calc_button
+            // 
+            this.Dop_calc_button.Location = new System.Drawing.Point(11, 112);
+            this.Dop_calc_button.Name = "Dop_calc_button";
+            this.Dop_calc_button.Size = new System.Drawing.Size(75, 23);
+            this.Dop_calc_button.TabIndex = 8;
+            this.Dop_calc_button.Text = "Calculate";
+            this.Dop_calc_button.UseVisualStyleBackColor = true;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(601, 117);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(24, 12);
+            this.label22.TabIndex = 7;
+            this.label22.Text = "m/s";
+            // 
+            // YbF_velocity
+            // 
+            this.YbF_velocity.Location = new System.Drawing.Point(495, 112);
+            this.YbF_velocity.Name = "YbF_velocity";
+            this.YbF_velocity.Size = new System.Drawing.Size(100, 20);
+            this.YbF_velocity.TabIndex = 6;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(353, 117);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(136, 12);
+            this.label21.TabIndex = 5;
+            this.label21.Text = "Molecule velocity class:";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(256, 65);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(26, 12);
+            this.label20.TabIndex = 4;
+            this.label20.Text = "THz";
+            // 
+            // V0_freq_set
+            // 
+            this.V0_freq_set.Location = new System.Drawing.Point(93, 62);
+            this.V0_freq_set.Name = "V0_freq_set";
+            this.V0_freq_set.Size = new System.Drawing.Size(157, 20);
+            this.V0_freq_set.TabIndex = 3;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(26, 65);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(61, 12);
+            this.label19.TabIndex = 2;
+            this.label19.Text = "V0 actual:";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(26, 42);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(242, 12);
+            this.label18.TabIndex = 1;
+            this.label18.Text = "V0 v-sensitive: 542.8088265 (Dec 11 2023)";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(26, 20);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(276, 12);
+            this.label17.TabIndex = 0;
+            this.label17.Text = "V0 v-insensitive: 542.8089676 THz (Dec 11 2023)\r\n";
+            // 
+            // ScanMaster
+            // 
+            this.ScanMaster.AccessibleName = "";
+            this.ScanMaster.Location = new System.Drawing.Point(4, 21);
+            this.ScanMaster.Name = "ScanMaster";
+            this.ScanMaster.Padding = new System.Windows.Forms.Padding(3);
+            this.ScanMaster.Size = new System.Drawing.Size(682, 550);
+            this.ScanMaster.TabIndex = 3;
+            this.ScanMaster.Text = "ScanMaster";
+            this.ScanMaster.UseVisualStyleBackColor = true;
+            // 
+            // Refresh
+            // 
+            this.Refresh.Location = new System.Drawing.Point(4, 21);
+            this.Refresh.Name = "Refresh";
+            this.Refresh.Padding = new System.Windows.Forms.Padding(3);
+            this.Refresh.Size = new System.Drawing.Size(682, 550);
+            this.Refresh.TabIndex = 2;
+            this.Refresh.Text = "Refresh";
+            this.Refresh.UseVisualStyleBackColor = true;
+            // 
+            // YAG_Control
+            // 
+            this.YAG_Control.Location = new System.Drawing.Point(4, 21);
+            this.YAG_Control.Name = "YAG_Control";
+            this.YAG_Control.Padding = new System.Windows.Forms.Padding(3);
+            this.YAG_Control.Size = new System.Drawing.Size(682, 550);
+            this.YAG_Control.TabIndex = 1;
+            this.YAG_Control.Text = "YAG Control";
+            this.YAG_Control.UseVisualStyleBackColor = true;
+            // 
+            // Pressure_Plot
+            // 
+            this.Pressure_Plot.Location = new System.Drawing.Point(4, 21);
+            this.Pressure_Plot.Name = "Pressure_Plot";
+            this.Pressure_Plot.Padding = new System.Windows.Forms.Padding(3);
+            this.Pressure_Plot.Size = new System.Drawing.Size(682, 550);
+            this.Pressure_Plot.TabIndex = 5;
+            this.Pressure_Plot.Text = "Pressure Plot";
+            this.Pressure_Plot.UseVisualStyleBackColor = true;
+            // 
+            // Flow_Controllers
+            // 
+            this.Flow_Controllers.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Flow_Controllers.Controls.Add(this.textBox14);
+            this.Flow_Controllers.Controls.Add(this.textBox13);
+            this.Flow_Controllers.Controls.Add(this.groupBox3);
+            this.Flow_Controllers.Controls.Add(this.groupBox1);
+            this.Flow_Controllers.Location = new System.Drawing.Point(4, 21);
+            this.Flow_Controllers.Name = "Flow_Controllers";
+            this.Flow_Controllers.Padding = new System.Windows.Forms.Padding(3);
+            this.Flow_Controllers.Size = new System.Drawing.Size(682, 550);
+            this.Flow_Controllers.TabIndex = 0;
+            this.Flow_Controllers.Text = "Flow Controllers";
+            this.Flow_Controllers.Click += new System.EventHandler(this.Flow_Controllers_Click);
+            // 
+            // textBox14
+            // 
+            this.textBox14.Location = new System.Drawing.Point(370, 270);
+            this.textBox14.Multiline = true;
+            this.textBox14.Name = "textBox14";
+            this.textBox14.Size = new System.Drawing.Size(288, 251);
+            this.textBox14.TabIndex = 16;
+            this.textBox14.Text = "Turn-off sequence: \r\n\r\n1. Shut gas connections to chamber.\r\n2. Flow controls set " +
+    "to \"0\".\r\n3. Close He valves and bottle.";
+            // 
+            // textBox13
+            // 
+            this.textBox13.Location = new System.Drawing.Point(21, 270);
+            this.textBox13.Multiline = true;
+            this.textBox13.Name = "textBox13";
+            this.textBox13.Size = new System.Drawing.Size(288, 251);
+            this.textBox13.TabIndex = 15;
+            this.textBox13.Text = resources.GetString("textBox13.Text");
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.button_Get_Serial_Ports);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.textBox_COM_flow_control);
+            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.button_Flow_controller_disconnect);
+            this.groupBox3.Controls.Add(this.button_Flow_controller_connect);
+            this.groupBox3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.groupBox3.Location = new System.Drawing.Point(376, 13);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(288, 108);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Device communication";
+            // 
+            // button_Get_Serial_Ports
+            // 
+            this.button_Get_Serial_Ports.Location = new System.Drawing.Point(195, 55);
+            this.button_Get_Serial_Ports.Name = "button_Get_Serial_Ports";
+            this.button_Get_Serial_Ports.Size = new System.Drawing.Size(87, 23);
+            this.button_Get_Serial_Ports.TabIndex = 11;
+            this.button_Get_Serial_Ports.Text = "Show ports";
+            this.button_Get_Serial_Ports.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 34);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(60, 12);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "COM port:";
+            // 
+            // textBox_COM_flow_control
+            // 
+            this.textBox_COM_flow_control.Location = new System.Drawing.Point(155, 28);
+            this.textBox_COM_flow_control.Name = "textBox_COM_flow_control";
+            this.textBox_COM_flow_control.ReadOnly = true;
+            this.textBox_COM_flow_control.Size = new System.Drawing.Size(127, 20);
+            this.textBox_COM_flow_control.TabIndex = 9;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 56);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(66, 12);
+            this.label11.TabIndex = 4;
+            this.label11.Text = "(Default: 9)";
+            this.label11.Click += new System.EventHandler(this.label11_Click);
+            // 
+            // button_Flow_controller_disconnect
+            // 
+            this.button_Flow_controller_disconnect.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Flow_controller_disconnect.Location = new System.Drawing.Point(195, 80);
+            this.button_Flow_controller_disconnect.Name = "button_Flow_controller_disconnect";
+            this.button_Flow_controller_disconnect.Size = new System.Drawing.Size(87, 23);
+            this.button_Flow_controller_disconnect.TabIndex = 3;
+            this.button_Flow_controller_disconnect.Text = "Disconnect";
+            this.button_Flow_controller_disconnect.UseVisualStyleBackColor = true;
+            // 
+            // button_Flow_controller_connect
+            // 
+            this.button_Flow_controller_connect.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Flow_controller_connect.Location = new System.Drawing.Point(8, 80);
+            this.button_Flow_controller_connect.Name = "button_Flow_controller_connect";
+            this.button_Flow_controller_connect.Size = new System.Drawing.Size(75, 23);
+            this.button_Flow_controller_connect.TabIndex = 2;
+            this.button_Flow_controller_connect.Text = "Connect";
+            this.button_Flow_controller_connect.UseVisualStyleBackColor = true;
+            this.button_Flow_controller_connect.Click += new System.EventHandler(this.button_Flow_controller_connect_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.buttonSetSF6);
+            this.groupBox1.Controls.Add(this.buttonSetHe);
+            this.groupBox1.Controls.Add(this.button_Clear_All);
+            this.groupBox1.Controls.Add(this.button_Set_All);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.textBoxSF6Flow);
+            this.groupBox1.Controls.Add(this.button_Off_flow_SF6);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.textBoxHeFlow);
+            this.groupBox1.Controls.Add(this.button_On_flow_SF6);
+            this.groupBox1.Controls.Add(this.button_Off_flow_He);
+            this.groupBox1.Controls.Add(this.button_On_flow_He);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.groupBox1.Location = new System.Drawing.Point(21, 13);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(288, 127);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Flow Control";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // buttonSetSF6
+            // 
+            this.buttonSetSF6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonSetSF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonSetSF6.Location = new System.Drawing.Point(233, 57);
+            this.buttonSetSF6.Name = "buttonSetSF6";
+            this.buttonSetSF6.Size = new System.Drawing.Size(46, 23);
+            this.buttonSetSF6.TabIndex = 14;
+            this.buttonSetSF6.Text = "Set";
+            this.buttonSetSF6.UseVisualStyleBackColor = false;
+            this.buttonSetSF6.Click += new System.EventHandler(this.buttonSetSF6_Click);
+            // 
+            // buttonSetHe
+            // 
+            this.buttonSetHe.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonSetHe.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.buttonSetHe.Location = new System.Drawing.Point(233, 28);
+            this.buttonSetHe.Name = "buttonSetHe";
+            this.buttonSetHe.Size = new System.Drawing.Size(46, 23);
+            this.buttonSetHe.TabIndex = 13;
+            this.buttonSetHe.Text = "Set";
+            this.buttonSetHe.UseVisualStyleBackColor = false;
+            this.buttonSetHe.Click += new System.EventHandler(this.buttonSetHe_Click);
+            // 
+            // button_Clear_All
+            // 
+            this.button_Clear_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Clear_All.Location = new System.Drawing.Point(149, 87);
+            this.button_Clear_All.Name = "button_Clear_All";
+            this.button_Clear_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Clear_All.TabIndex = 12;
+            this.button_Clear_All.Text = "All Off";
+            this.button_Clear_All.UseVisualStyleBackColor = true;
+            this.button_Clear_All.Click += new System.EventHandler(this.button_Clear_All_Click);
+            // 
+            // button_Set_All
+            // 
+            this.button_Set_All.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Set_All.Location = new System.Drawing.Point(63, 87);
+            this.button_Set_All.Name = "button_Set_All";
+            this.button_Set_All.Size = new System.Drawing.Size(75, 23);
+            this.button_Set_All.TabIndex = 11;
+            this.button_Set_All.Text = "All On";
+            this.button_Set_All.UseVisualStyleBackColor = true;
+            this.button_Set_All.Click += new System.EventHandler(this.button_Set_All_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(147, 8);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(101, 12);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Flow rate (sccm):";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 36);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(20, 12);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "He";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // textBoxSF6Flow
+            // 
+            this.textBoxSF6Flow.Location = new System.Drawing.Point(168, 59);
+            this.textBoxSF6Flow.Name = "textBoxSF6Flow";
+            this.textBoxSF6Flow.Size = new System.Drawing.Size(59, 20);
+            this.textBoxSF6Flow.TabIndex = 9;
+            this.textBoxSF6Flow.Text = "0.05";
+            this.textBoxSF6Flow.TextChanged += new System.EventHandler(this.textBoxSF6Flow_TextChanged);
+            // 
+            // button_Off_flow_SF6
+            // 
+            this.button_Off_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Off_flow_SF6.Location = new System.Drawing.Point(103, 57);
+            this.button_Off_flow_SF6.Name = "button_Off_flow_SF6";
+            this.button_Off_flow_SF6.Size = new System.Drawing.Size(59, 23);
+            this.button_Off_flow_SF6.TabIndex = 3;
+            this.button_Off_flow_SF6.Text = "Off";
+            this.button_Off_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_Off_flow_SF6.Click += new System.EventHandler(this.button_stop_flow_SF6_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 62);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(26, 12);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "SF6";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // textBoxHeFlow
+            // 
+            this.textBoxHeFlow.BackColor = System.Drawing.SystemColors.Window;
+            this.textBoxHeFlow.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxHeFlow.Location = new System.Drawing.Point(168, 29);
+            this.textBoxHeFlow.Name = "textBoxHeFlow";
+            this.textBoxHeFlow.Size = new System.Drawing.Size(59, 20);
+            this.textBoxHeFlow.TabIndex = 9;
+            this.textBoxHeFlow.Text = "2.0";
+            this.textBoxHeFlow.TextChanged += new System.EventHandler(this.textBoxHeFlow_TextChanged);
+            // 
+            // button_On_flow_SF6
+            // 
+            this.button_On_flow_SF6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_On_flow_SF6.Location = new System.Drawing.Point(38, 56);
+            this.button_On_flow_SF6.Name = "button_On_flow_SF6";
+            this.button_On_flow_SF6.Size = new System.Drawing.Size(59, 23);
+            this.button_On_flow_SF6.TabIndex = 2;
+            this.button_On_flow_SF6.Text = "On";
+            this.button_On_flow_SF6.UseVisualStyleBackColor = true;
+            this.button_On_flow_SF6.Click += new System.EventHandler(this.button_On_flow_SF6_Click);
+            // 
+            // button_Off_flow_He
+            // 
+            this.button_Off_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_Off_flow_He.Location = new System.Drawing.Point(103, 28);
+            this.button_Off_flow_He.Name = "button_Off_flow_He";
+            this.button_Off_flow_He.Size = new System.Drawing.Size(59, 23);
+            this.button_Off_flow_He.TabIndex = 3;
+            this.button_Off_flow_He.Text = "Off";
+            this.button_Off_flow_He.UseVisualStyleBackColor = true;
+            this.button_Off_flow_He.Click += new System.EventHandler(this.button_stop_flow_He_Click);
+            // 
+            // button_On_flow_He
+            // 
+            this.button_On_flow_He.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.button_On_flow_He.Location = new System.Drawing.Point(38, 29);
+            this.button_On_flow_He.Name = "button_On_flow_He";
+            this.button_On_flow_He.Size = new System.Drawing.Size(59, 23);
+            this.button_On_flow_He.TabIndex = 2;
+            this.button_On_flow_He.Text = "On";
+            this.button_On_flow_He.UseVisualStyleBackColor = true;
+            this.button_On_flow_He.Click += new System.EventHandler(this.button_On_flow_He_Click);
+            // 
+            // Yodelling
+            // 
+            this.Yodelling.Controls.Add(this.Flow_Controllers);
+            this.Yodelling.Controls.Add(this.Anapico);
+            this.Yodelling.Controls.Add(this.Windfreak);
+            this.Yodelling.Controls.Add(this.YAG_Control);
+            this.Yodelling.Controls.Add(this.Refresh);
+            this.Yodelling.Controls.Add(this.ScanMaster);
+            this.Yodelling.Controls.Add(this.Pressure_Plot);
+            this.Yodelling.Controls.Add(this.Tools);
+            this.Yodelling.Controls.Add(this.tabPage5);
+            this.Yodelling.Font = new System.Drawing.Font("Arial Rounded MT Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Yodelling.Location = new System.Drawing.Point(277, 9);
+            this.Yodelling.Name = "Yodelling";
+            this.Yodelling.SelectedIndex = 0;
+            this.Yodelling.Size = new System.Drawing.Size(690, 575);
+            this.Yodelling.TabIndex = 1;
+            // 
+            // Windfreak
+            // 
+            this.Windfreak.Controls.Add(this.textBox6);
+            this.Windfreak.Controls.Add(this.textBox5);
+            this.Windfreak.Controls.Add(this.textBox4);
+            this.Windfreak.Controls.Add(this.textBox3);
+            this.Windfreak.Controls.Add(this.windFreak2CH2LED);
+            this.Windfreak.Controls.Add(this.windFreak2CH1LED);
+            this.Windfreak.Controls.Add(this.windFreak1CH2LED);
+            this.Windfreak.Controls.Add(this.windFreak1CH1LED);
+            this.Windfreak.Controls.Add(this.label45);
+            this.Windfreak.Controls.Add(this.Windfreak2DisableCH2Button);
+            this.Windfreak.Controls.Add(this.Windfreak2EnableCH2Button);
+            this.Windfreak.Controls.Add(this.label46);
+            this.Windfreak.Controls.Add(this.Windfreak2DisableCH1Button);
+            this.Windfreak.Controls.Add(this.Windfreak2EnableCH1Button);
+            this.Windfreak.Controls.Add(this.label47);
+            this.Windfreak.Controls.Add(this.button13);
+            this.Windfreak.Controls.Add(this.button14);
+            this.Windfreak.Controls.Add(this.Windfreak2CH2SetPowerButton);
+            this.Windfreak.Controls.Add(this.Windfreak2CH1SetPowerButton);
+            this.Windfreak.Controls.Add(this.Windfreak2CH2SetFrequencyButton);
+            this.Windfreak.Controls.Add(this.Windfreak2CH1SetFrequencyButton);
+            this.Windfreak.Controls.Add(this.textBox1);
+            this.Windfreak.Controls.Add(this.textBox2);
+            this.Windfreak.Controls.Add(this.Windfreak2CH2PowerTextbox);
+            this.Windfreak.Controls.Add(this.Windfreak2CH1PowerTextbox);
+            this.Windfreak.Controls.Add(this.Windfreak2CH2FrequencyTextbox);
+            this.Windfreak.Controls.Add(this.Windfreak2CH1FrequencyTextbox);
+            this.Windfreak.Controls.Add(this.label48);
+            this.Windfreak.Controls.Add(this.label49);
+            this.Windfreak.Controls.Add(this.label50);
+            this.Windfreak.Controls.Add(this.label44);
+            this.Windfreak.Controls.Add(this.Windfreak1DisableCH2Button);
+            this.Windfreak.Controls.Add(this.Windfreak1EnableCH2Button);
+            this.Windfreak.Controls.Add(this.label43);
+            this.Windfreak.Controls.Add(this.Windfreak1DisableCH1Button);
+            this.Windfreak.Controls.Add(this.Windfreak1EnableCH1Button);
+            this.Windfreak.Controls.Add(this.label42);
+            this.Windfreak.Controls.Add(this.button8);
+            this.Windfreak.Controls.Add(this.button7);
+            this.Windfreak.Controls.Add(this.button6);
+            this.Windfreak.Controls.Add(this.button5);
+            this.Windfreak.Controls.Add(this.button4);
+            this.Windfreak.Controls.Add(this.button3);
+            this.Windfreak.Controls.Add(this.WindfreakCH2FMTextbox);
+            this.Windfreak.Controls.Add(this.WindfreakCH1FMTextbox);
+            this.Windfreak.Controls.Add(this.WindfreakCH2PowerTextbox);
+            this.Windfreak.Controls.Add(this.WindfreakCH1PowerTextbox);
+            this.Windfreak.Controls.Add(this.WindfreakCH2FrequencyTextbox);
+            this.Windfreak.Controls.Add(this.WindfreakCH1FrequencyTextbox);
+            this.Windfreak.Controls.Add(this.label40);
+            this.Windfreak.Controls.Add(this.label39);
+            this.Windfreak.Controls.Add(this.label41);
+            this.Windfreak.Location = new System.Drawing.Point(4, 21);
+            this.Windfreak.Name = "Windfreak";
+            this.Windfreak.Padding = new System.Windows.Forms.Padding(3);
+            this.Windfreak.Size = new System.Drawing.Size(682, 550);
+            this.Windfreak.TabIndex = 7;
+            this.Windfreak.Text = "Windfreak";
+            this.Windfreak.UseVisualStyleBackColor = true;
+            this.Windfreak.Click += new System.EventHandler(this.tabPage4_Click);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(347, 107);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(69, 20);
+            this.textBox6.TabIndex = 75;
+            this.textBox6.Text = "V1-P(2)";
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(345, 58);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(69, 20);
+            this.textBox5.TabIndex = 74;
+            this.textBox5.Text = "V0-P(3)";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(18, 109);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(69, 20);
+            this.textBox4.TabIndex = 73;
+            this.textBox4.Text = "V2V3_N2";
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(8, 58);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(100, 20);
+            this.textBox3.TabIndex = 72;
+            this.textBox3.Text = "MW-RF sideband";
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            // 
+            // windFreak2CH2LED
+            // 
+            this.windFreak2CH2LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.windFreak2CH2LED.Location = new System.Drawing.Point(613, 87);
+            this.windFreak2CH2LED.Name = "windFreak2CH2LED";
+            this.windFreak2CH2LED.Size = new System.Drawing.Size(40, 40);
+            this.windFreak2CH2LED.TabIndex = 71;
+            // 
+            // windFreak2CH1LED
+            // 
+            this.windFreak2CH1LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.windFreak2CH1LED.Location = new System.Drawing.Point(613, 38);
+            this.windFreak2CH1LED.Name = "windFreak2CH1LED";
+            this.windFreak2CH1LED.Size = new System.Drawing.Size(40, 40);
+            this.windFreak2CH1LED.TabIndex = 70;
+            // 
+            // windFreak1CH2LED
+            // 
+            this.windFreak1CH2LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.windFreak1CH2LED.Location = new System.Drawing.Point(282, 87);
+            this.windFreak1CH2LED.Name = "windFreak1CH2LED";
+            this.windFreak1CH2LED.Size = new System.Drawing.Size(40, 40);
+            this.windFreak1CH2LED.TabIndex = 69;
+            // 
+            // windFreak1CH1LED
+            // 
+            this.windFreak1CH1LED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.windFreak1CH1LED.Location = new System.Drawing.Point(282, 38);
+            this.windFreak1CH1LED.Name = "windFreak1CH1LED";
+            this.windFreak1CH1LED.Size = new System.Drawing.Size(40, 40);
+            this.windFreak1CH1LED.TabIndex = 68;
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Font = new System.Drawing.Font("Arial Rounded MT Bold", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label45.Location = new System.Drawing.Point(341, 87);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(101, 21);
+            this.label45.TabIndex = 67;
+            this.label45.Text = "Channel B";
+            // 
+            // Windfreak2DisableCH2Button
+            // 
+            this.Windfreak2DisableCH2Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak2DisableCH2Button.Location = new System.Drawing.Point(534, 95);
+            this.Windfreak2DisableCH2Button.Name = "Windfreak2DisableCH2Button";
+            this.Windfreak2DisableCH2Button.Size = new System.Drawing.Size(64, 25);
+            this.Windfreak2DisableCH2Button.TabIndex = 66;
+            this.Windfreak2DisableCH2Button.Text = "Disable";
+            this.Windfreak2DisableCH2Button.UseVisualStyleBackColor = true;
+            this.Windfreak2DisableCH2Button.Click += new System.EventHandler(this.Windfreak2DisableCH2Button_Click);
+            // 
+            // Windfreak2EnableCH2Button
+            // 
+            this.Windfreak2EnableCH2Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak2EnableCH2Button.Location = new System.Drawing.Point(446, 95);
+            this.Windfreak2EnableCH2Button.Name = "Windfreak2EnableCH2Button";
+            this.Windfreak2EnableCH2Button.Size = new System.Drawing.Size(64, 25);
+            this.Windfreak2EnableCH2Button.TabIndex = 65;
+            this.Windfreak2EnableCH2Button.Text = "Enable";
+            this.Windfreak2EnableCH2Button.UseVisualStyleBackColor = true;
+            this.Windfreak2EnableCH2Button.Click += new System.EventHandler(this.Windfreak2EnableCH2Button_Click);
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Font = new System.Drawing.Font("Arial Rounded MT Bold", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label46.Location = new System.Drawing.Point(341, 38);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(101, 21);
+            this.label46.TabIndex = 64;
+            this.label46.Text = "Channel A";
+            // 
+            // Windfreak2DisableCH1Button
+            // 
+            this.Windfreak2DisableCH1Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak2DisableCH1Button.Location = new System.Drawing.Point(534, 46);
+            this.Windfreak2DisableCH1Button.Name = "Windfreak2DisableCH1Button";
+            this.Windfreak2DisableCH1Button.Size = new System.Drawing.Size(64, 25);
+            this.Windfreak2DisableCH1Button.TabIndex = 63;
+            this.Windfreak2DisableCH1Button.Text = "Disable";
+            this.Windfreak2DisableCH1Button.UseVisualStyleBackColor = true;
+            this.Windfreak2DisableCH1Button.Click += new System.EventHandler(this.Windfreak2DisableCH1Button_Click);
+            // 
+            // Windfreak2EnableCH1Button
+            // 
+            this.Windfreak2EnableCH1Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak2EnableCH1Button.Location = new System.Drawing.Point(446, 46);
+            this.Windfreak2EnableCH1Button.Name = "Windfreak2EnableCH1Button";
+            this.Windfreak2EnableCH1Button.Size = new System.Drawing.Size(64, 25);
+            this.Windfreak2EnableCH1Button.TabIndex = 62;
+            this.Windfreak2EnableCH1Button.Text = "Enable";
+            this.Windfreak2EnableCH1Button.UseVisualStyleBackColor = true;
+            this.Windfreak2EnableCH1Button.Click += new System.EventHandler(this.Windfreak2EnableCH1Button_Click);
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Font = new System.Drawing.Font("Arial Rounded MT Bold", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label47.Location = new System.Drawing.Point(389, 7);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(209, 26);
+            this.label47.TabIndex = 61;
+            this.label47.Text = "LatticeWindfreak2";
+            this.label47.Click += new System.EventHandler(this.label47_Click);
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(478, 509);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(175, 23);
+            this.button13.TabIndex = 60;
+            this.button13.Text = "Set CH2 FM (Hz)";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(478, 478);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(175, 23);
+            this.button14.TabIndex = 59;
+            this.button14.Text = "Set CH1 FM (Hz)";
+            this.button14.UseVisualStyleBackColor = true;
+            // 
+            // Windfreak2CH2SetPowerButton
+            // 
+            this.Windfreak2CH2SetPowerButton.Location = new System.Drawing.Point(478, 366);
+            this.Windfreak2CH2SetPowerButton.Name = "Windfreak2CH2SetPowerButton";
+            this.Windfreak2CH2SetPowerButton.Size = new System.Drawing.Size(175, 23);
+            this.Windfreak2CH2SetPowerButton.TabIndex = 58;
+            this.Windfreak2CH2SetPowerButton.Text = "Set CH2 Power (dBm)";
+            this.Windfreak2CH2SetPowerButton.UseVisualStyleBackColor = true;
+            this.Windfreak2CH2SetPowerButton.Click += new System.EventHandler(this.Windfreak2CH2SetPowerButton_Click);
+            // 
+            // Windfreak2CH1SetPowerButton
+            // 
+            this.Windfreak2CH1SetPowerButton.Location = new System.Drawing.Point(478, 337);
+            this.Windfreak2CH1SetPowerButton.Name = "Windfreak2CH1SetPowerButton";
+            this.Windfreak2CH1SetPowerButton.Size = new System.Drawing.Size(175, 23);
+            this.Windfreak2CH1SetPowerButton.TabIndex = 57;
+            this.Windfreak2CH1SetPowerButton.Text = "Set CH1 Power (dBm)";
+            this.Windfreak2CH1SetPowerButton.UseVisualStyleBackColor = true;
+            this.Windfreak2CH1SetPowerButton.Click += new System.EventHandler(this.Windfreak2CH1SetPowerButton_Click);
+            // 
+            // Windfreak2CH2SetFrequencyButton
+            // 
+            this.Windfreak2CH2SetFrequencyButton.Location = new System.Drawing.Point(478, 219);
+            this.Windfreak2CH2SetFrequencyButton.Name = "Windfreak2CH2SetFrequencyButton";
+            this.Windfreak2CH2SetFrequencyButton.Size = new System.Drawing.Size(175, 23);
+            this.Windfreak2CH2SetFrequencyButton.TabIndex = 56;
+            this.Windfreak2CH2SetFrequencyButton.Text = "Set CH2 Frequency (Hz)";
+            this.Windfreak2CH2SetFrequencyButton.UseVisualStyleBackColor = true;
+            this.Windfreak2CH2SetFrequencyButton.Click += new System.EventHandler(this.Windfreak2CH2SetFrequencyButton_Click);
+            // 
+            // Windfreak2CH1SetFrequencyButton
+            // 
+            this.Windfreak2CH1SetFrequencyButton.Location = new System.Drawing.Point(478, 187);
+            this.Windfreak2CH1SetFrequencyButton.Name = "Windfreak2CH1SetFrequencyButton";
+            this.Windfreak2CH1SetFrequencyButton.Size = new System.Drawing.Size(175, 23);
+            this.Windfreak2CH1SetFrequencyButton.TabIndex = 55;
+            this.Windfreak2CH1SetFrequencyButton.Text = "Set CH1 Frequency (Hz)";
+            this.Windfreak2CH1SetFrequencyButton.UseVisualStyleBackColor = true;
+            this.Windfreak2CH1SetFrequencyButton.Click += new System.EventHandler(this.Windfreak2CH1SetFrequencyButton_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(348, 509);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 54;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(348, 478);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 53;
+            // 
+            // Windfreak2CH2PowerTextbox
+            // 
+            this.Windfreak2CH2PowerTextbox.Location = new System.Drawing.Point(348, 366);
+            this.Windfreak2CH2PowerTextbox.Name = "Windfreak2CH2PowerTextbox";
+            this.Windfreak2CH2PowerTextbox.Size = new System.Drawing.Size(100, 20);
+            this.Windfreak2CH2PowerTextbox.TabIndex = 52;
+            this.Windfreak2CH2PowerTextbox.Text = "18.0";
+            this.Windfreak2CH2PowerTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // Windfreak2CH1PowerTextbox
+            // 
+            this.Windfreak2CH1PowerTextbox.Location = new System.Drawing.Point(348, 337);
+            this.Windfreak2CH1PowerTextbox.Name = "Windfreak2CH1PowerTextbox";
+            this.Windfreak2CH1PowerTextbox.Size = new System.Drawing.Size(100, 20);
+            this.Windfreak2CH1PowerTextbox.TabIndex = 51;
+            this.Windfreak2CH1PowerTextbox.Text = "16.0";
+            this.Windfreak2CH1PowerTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // Windfreak2CH2FrequencyTextbox
+            // 
+            this.Windfreak2CH2FrequencyTextbox.Location = new System.Drawing.Point(345, 219);
+            this.Windfreak2CH2FrequencyTextbox.Name = "Windfreak2CH2FrequencyTextbox";
+            this.Windfreak2CH2FrequencyTextbox.Size = new System.Drawing.Size(100, 20);
+            this.Windfreak2CH2FrequencyTextbox.TabIndex = 50;
+            this.Windfreak2CH2FrequencyTextbox.Text = "760000000";
+            this.Windfreak2CH2FrequencyTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // Windfreak2CH1FrequencyTextbox
+            // 
+            this.Windfreak2CH1FrequencyTextbox.Location = new System.Drawing.Point(345, 187);
+            this.Windfreak2CH1FrequencyTextbox.Name = "Windfreak2CH1FrequencyTextbox";
+            this.Windfreak2CH1FrequencyTextbox.Size = new System.Drawing.Size(100, 20);
+            this.Windfreak2CH1FrequencyTextbox.TabIndex = 49;
+            this.Windfreak2CH1FrequencyTextbox.Text = "1160000000";
+            this.Windfreak2CH1FrequencyTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Windfreak2CH1FrequencyTextbox.TextChanged += new System.EventHandler(this.Windfreak2CH1FrequencyTextbox_TextChanged);
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label48.Location = new System.Drawing.Point(345, 442);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(277, 18);
+            this.label48.TabIndex = 48;
+            this.label48.Text = "Set FM deviation (not working yet)";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label49.Location = new System.Drawing.Point(345, 299);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(261, 18);
+            this.label49.TabIndex = 47;
+            this.label49.Text = "Set powers (make sure FLOAT!)";
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label50.Location = new System.Drawing.Point(342, 152);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(134, 18);
+            this.label50.TabIndex = 46;
+            this.label50.Text = "Set frequencies";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Font = new System.Drawing.Font("Arial Rounded MT Bold", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label44.Location = new System.Drawing.Point(10, 88);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(101, 21);
+            this.label44.TabIndex = 45;
+            this.label44.Text = "Channel B";
+            // 
+            // Windfreak1DisableCH2Button
+            // 
+            this.Windfreak1DisableCH2Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak1DisableCH2Button.Location = new System.Drawing.Point(202, 95);
+            this.Windfreak1DisableCH2Button.Name = "Windfreak1DisableCH2Button";
+            this.Windfreak1DisableCH2Button.Size = new System.Drawing.Size(65, 25);
+            this.Windfreak1DisableCH2Button.TabIndex = 44;
+            this.Windfreak1DisableCH2Button.Text = "Disable";
+            this.Windfreak1DisableCH2Button.UseVisualStyleBackColor = true;
+            this.Windfreak1DisableCH2Button.Click += new System.EventHandler(this.DisableWindfreak1CH2_button);
+            // 
+            // Windfreak1EnableCH2Button
+            // 
+            this.Windfreak1EnableCH2Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak1EnableCH2Button.Location = new System.Drawing.Point(115, 95);
+            this.Windfreak1EnableCH2Button.Name = "Windfreak1EnableCH2Button";
+            this.Windfreak1EnableCH2Button.Size = new System.Drawing.Size(65, 25);
+            this.Windfreak1EnableCH2Button.TabIndex = 43;
+            this.Windfreak1EnableCH2Button.Text = "Enable";
+            this.Windfreak1EnableCH2Button.UseVisualStyleBackColor = true;
+            this.Windfreak1EnableCH2Button.Click += new System.EventHandler(this.EnableWindfreak1CH2_button);
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Font = new System.Drawing.Font("Arial Rounded MT Bold", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label43.Location = new System.Drawing.Point(10, 38);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(101, 21);
+            this.label43.TabIndex = 42;
+            this.label43.Text = "Channel A";
+            // 
+            // Windfreak1DisableCH1Button
+            // 
+            this.Windfreak1DisableCH1Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak1DisableCH1Button.Location = new System.Drawing.Point(201, 46);
+            this.Windfreak1DisableCH1Button.Name = "Windfreak1DisableCH1Button";
+            this.Windfreak1DisableCH1Button.Size = new System.Drawing.Size(65, 25);
+            this.Windfreak1DisableCH1Button.TabIndex = 41;
+            this.Windfreak1DisableCH1Button.Text = "Disable";
+            this.Windfreak1DisableCH1Button.UseVisualStyleBackColor = true;
+            this.Windfreak1DisableCH1Button.Click += new System.EventHandler(this.DisableWindfreak1CH1_button);
+            // 
+            // Windfreak1EnableCH1Button
+            // 
+            this.Windfreak1EnableCH1Button.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Windfreak1EnableCH1Button.Location = new System.Drawing.Point(115, 46);
+            this.Windfreak1EnableCH1Button.Name = "Windfreak1EnableCH1Button";
+            this.Windfreak1EnableCH1Button.Size = new System.Drawing.Size(65, 25);
+            this.Windfreak1EnableCH1Button.TabIndex = 40;
+            this.Windfreak1EnableCH1Button.Text = "Enable";
+            this.Windfreak1EnableCH1Button.UseVisualStyleBackColor = true;
+            this.Windfreak1EnableCH1Button.Click += new System.EventHandler(this.EnableWindfreak1CH1_button);
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Font = new System.Drawing.Font("Arial Rounded MT Bold", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label42.Location = new System.Drawing.Point(58, 7);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(209, 26);
+            this.label42.TabIndex = 39;
+            this.label42.Text = "LatticeWindfreak1";
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(147, 509);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(175, 23);
+            this.button8.TabIndex = 38;
+            this.button8.Text = "Set CH2 FM (Hz)";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(147, 478);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(175, 23);
+            this.button7.TabIndex = 37;
+            this.button7.Text = "Set CH1 FM (Hz)";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(147, 366);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(175, 23);
+            this.button6.TabIndex = 36;
+            this.button6.Text = "Set CH2 Power (dBm)";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.windfreak1SetCH2Power);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(147, 337);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(175, 23);
+            this.button5.TabIndex = 35;
+            this.button5.Text = "Set CH1 Power (dBm)";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.windfreak1SetCH1Power);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(147, 219);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(175, 23);
+            this.button4.TabIndex = 34;
+            this.button4.Text = "Set CH2 Frequency (Hz)";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.windfreak1SetCH2Frequency);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(147, 187);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(175, 23);
+            this.button3.TabIndex = 33;
+            this.button3.Text = "Set CH1 Frequency (Hz)";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.windfreak1SetCH1Frequency);
+            // 
+            // WindfreakCH2FMTextbox
+            // 
+            this.WindfreakCH2FMTextbox.Location = new System.Drawing.Point(17, 509);
+            this.WindfreakCH2FMTextbox.Name = "WindfreakCH2FMTextbox";
+            this.WindfreakCH2FMTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH2FMTextbox.TabIndex = 32;
+            // 
+            // WindfreakCH1FMTextbox
+            // 
+            this.WindfreakCH1FMTextbox.Location = new System.Drawing.Point(17, 478);
+            this.WindfreakCH1FMTextbox.Name = "WindfreakCH1FMTextbox";
+            this.WindfreakCH1FMTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH1FMTextbox.TabIndex = 31;
+            // 
+            // WindfreakCH2PowerTextbox
+            // 
+            this.WindfreakCH2PowerTextbox.Location = new System.Drawing.Point(17, 366);
+            this.WindfreakCH2PowerTextbox.Name = "WindfreakCH2PowerTextbox";
+            this.WindfreakCH2PowerTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH2PowerTextbox.TabIndex = 30;
+            this.WindfreakCH2PowerTextbox.Text = "-20.0";
+            this.WindfreakCH2PowerTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // WindfreakCH1PowerTextbox
+            // 
+            this.WindfreakCH1PowerTextbox.Location = new System.Drawing.Point(17, 337);
+            this.WindfreakCH1PowerTextbox.Name = "WindfreakCH1PowerTextbox";
+            this.WindfreakCH1PowerTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH1PowerTextbox.TabIndex = 29;
+            this.WindfreakCH1PowerTextbox.Text = "20.0";
+            this.WindfreakCH1PowerTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // WindfreakCH2FrequencyTextbox
+            // 
+            this.WindfreakCH2FrequencyTextbox.Location = new System.Drawing.Point(14, 219);
+            this.WindfreakCH2FrequencyTextbox.Name = "WindfreakCH2FrequencyTextbox";
+            this.WindfreakCH2FrequencyTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH2FrequencyTextbox.TabIndex = 28;
+            this.WindfreakCH2FrequencyTextbox.Text = "44560000";
+            this.WindfreakCH2FrequencyTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // WindfreakCH1FrequencyTextbox
+            // 
+            this.WindfreakCH1FrequencyTextbox.Location = new System.Drawing.Point(14, 187);
+            this.WindfreakCH1FrequencyTextbox.Name = "WindfreakCH1FrequencyTextbox";
+            this.WindfreakCH1FrequencyTextbox.Size = new System.Drawing.Size(100, 20);
+            this.WindfreakCH1FrequencyTextbox.TabIndex = 27;
+            this.WindfreakCH1FrequencyTextbox.Text = "48000000";
+            this.WindfreakCH1FrequencyTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label40.Location = new System.Drawing.Point(14, 442);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(277, 18);
+            this.label40.TabIndex = 26;
+            this.label40.Text = "Set FM deviation (not working yet)";
+            this.label40.Click += new System.EventHandler(this.label40_Click);
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label39.Location = new System.Drawing.Point(14, 299);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(261, 18);
+            this.label39.TabIndex = 25;
+            this.label39.Text = "Set powers (make sure FLOAT!)";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label41.Location = new System.Drawing.Point(11, 152);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(134, 18);
+            this.label41.TabIndex = 11;
+            this.label41.Text = "Set frequencies";
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.axWindowsMediaPlayer1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 21);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(682, 550);
+            this.tabPage5.TabIndex = 8;
+            this.tabPage5.Text = "Yodelling Generator";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // axWindowsMediaPlayer1
+            // 
+            this.axWindowsMediaPlayer1.Enabled = true;
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(6, 6);
+            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
+            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
+            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(670, 538);
+            this.axWindowsMediaPlayer1.TabIndex = 0;
+            this.axWindowsMediaPlayer1.Enter += new System.EventHandler(this.axWindowsMediaPlayer1_Enter);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(58)))), ((int)(((byte)(54)))));
             this.ClientSize = new System.Drawing.Size(1237, 597);
             this.Controls.Add(this.groupBox8);
-            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.Yodelling);
             this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Lattice EDM Controller";
             this.panel1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.Anapico.ResumeLayout(false);
+            this.Anapico.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.anaPicoLED)).EndInit();
+            this.Tools.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.Flow_Controllers.ResumeLayout(false);
             this.Flow_Controllers.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
+            this.Yodelling.ResumeLayout(false);
+            this.Windfreak.ResumeLayout(false);
+            this.Windfreak.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak2CH2LED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak2CH1LED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak1CH2LED)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.windFreak1CH1LED)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.networkVariableDataSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1074,9 +2147,6 @@ namespace LatticeHardwareControl
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage Flow_Controllers;
-        private System.Windows.Forms.TabPage Refresh;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button buttonStopPMonitor;
         private System.Windows.Forms.Button buttonStartPMonitor;
@@ -1090,26 +2160,6 @@ namespace LatticeHardwareControl
         public System.Windows.Forms.TextBox textbox_P_dump;
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.TextBox textbox_P_MOT;
-        private System.Windows.Forms.TabPage ScanMaster;
-        public System.Windows.Forms.TabPage YAG_Control;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label9;
-        public System.Windows.Forms.TextBox textBox_COM_flow_control;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button button_Flow_controller_disconnect;
-        private System.Windows.Forms.Button button_Flow_controller_connect;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label5;
-        public System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button_stop_flow_SF6;
-        private System.Windows.Forms.Button button_set_flow_SF6;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label6;
-        public System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button button_stop_flow_He;
-        private System.Windows.Forms.Button button_set_flow_He;
         private System.Windows.Forms.GroupBox groupBox5;
         public System.Windows.Forms.TextBox textbox_Temp_SF6;
         private System.Windows.Forms.Label label12;
@@ -1123,24 +2173,6 @@ namespace LatticeHardwareControl
         private System.Windows.Forms.Button button_Temp_stop;
         private System.Windows.Forms.Button button_Temp_start;
         public System.Windows.Forms.TextBox textbox_Temp_4K;
-        private System.Windows.Forms.TextBox textBox14;
-        private System.Windows.Forms.TextBox textBox13;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TextBox V0_freq_set;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox V1_freq_calc;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Button Dop_calc_button;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.TextBox YbF_velocity;
-        private System.Windows.Forms.Label label21;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label label32;
@@ -1158,9 +2190,140 @@ namespace LatticeHardwareControl
         private System.Windows.Forms.Button button_Freq_start;
         public System.Windows.Forms.TextBox textBox_freq_V1;
         private System.Windows.Forms.RichTextBox richTextBox_output;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label7;
+        public System.Windows.Forms.TextBox cryoStatus;
+        private System.Windows.Forms.TabPage Anapico;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Button PulseMode_disable_button;
+        private System.Windows.Forms.Button PulseMode_enable_button;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox AnapicoSetPowerCH2Textbox;
+        private System.Windows.Forms.TextBox AnapicoSetPowerCH1Textbox;
+        private System.Windows.Forms.TextBox AnapicoSetFMDevCH2TextBox;
+        private System.Windows.Forms.TextBox AnapicoSetFMDevCH1TextBox;
+        private System.Windows.Forms.TextBox AnapicoSetFreqCH2TextBox;
+        private System.Windows.Forms.TextBox AnapicoSetFreqCH1TextBox;
+        private System.Windows.Forms.Button AnapicoSetPowerCH2Button;
+        private System.Windows.Forms.Button AnapicoSetPowerCH1Button;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.Button AnapicoSetFMDevCH2Button;
+        private System.Windows.Forms.Button AnapicoSetFMDevCH1Button;
+        private System.Windows.Forms.Button CH2FMDisableButton;
+        private System.Windows.Forms.Button CH2FMEnableButton;
+        private System.Windows.Forms.Button CH1FMDisableButton;
+        private System.Windows.Forms.Button CH1FMEnableButton;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Button anapicoDisableButton;
+        private System.Windows.Forms.Button anapicoEnableButton;
+        private System.Windows.Forms.Button AnapicoSetFreqCH2Button;
+        private System.Windows.Forms.Button AnapicoSetFreqCH1Button;
+        private System.Windows.Forms.TabPage Tools;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TextBox V1_freq_calc;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button Dop_calc_button;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TextBox YbF_velocity;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox V0_freq_set;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TabPage ScanMaster;
+        private System.Windows.Forms.TabPage Refresh;
+        public System.Windows.Forms.TabPage YAG_Control;
+        private System.Windows.Forms.TabPage Pressure_Plot;
+        private System.Windows.Forms.TabPage Flow_Controllers;
+        private System.Windows.Forms.TextBox textBox14;
+        private System.Windows.Forms.TextBox textBox13;
+        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button button_Get_Serial_Ports;
+        private System.Windows.Forms.Label label9;
+        public System.Windows.Forms.TextBox textBox_COM_flow_control;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button button_Flow_controller_disconnect;
+        private System.Windows.Forms.Button button_Flow_controller_connect;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button buttonSetSF6;
+        private System.Windows.Forms.Button buttonSetHe;
         private System.Windows.Forms.Button button_Clear_All;
         private System.Windows.Forms.Button button_Set_All;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        public System.Windows.Forms.TextBox textBoxSF6Flow;
+        private System.Windows.Forms.Button button_Off_flow_SF6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox textBoxHeFlow;
+        private System.Windows.Forms.Button button_On_flow_SF6;
+        private System.Windows.Forms.Button button_Off_flow_He;
+        private System.Windows.Forms.Button button_On_flow_He;
+        private System.Windows.Forms.TabControl Yodelling;
+        private System.Windows.Forms.TabPage Windfreak;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.TextBox WindfreakCH2FMTextbox;
+        private System.Windows.Forms.TextBox WindfreakCH1FMTextbox;
+        private System.Windows.Forms.TextBox WindfreakCH2PowerTextbox;
+        private System.Windows.Forms.TextBox WindfreakCH1PowerTextbox;
+        private System.Windows.Forms.TextBox WindfreakCH2FrequencyTextbox;
+        private System.Windows.Forms.TextBox WindfreakCH1FrequencyTextbox;
+        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.Button Windfreak1DisableCH1Button;
+        private System.Windows.Forms.Button Windfreak1EnableCH1Button;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.Button Windfreak1DisableCH2Button;
+        private System.Windows.Forms.Button Windfreak1EnableCH2Button;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.Button Windfreak2DisableCH2Button;
+        private System.Windows.Forms.Button Windfreak2EnableCH2Button;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Button Windfreak2DisableCH1Button;
+        private System.Windows.Forms.Button Windfreak2EnableCH1Button;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button Windfreak2CH2SetPowerButton;
+        private System.Windows.Forms.Button Windfreak2CH1SetPowerButton;
+        private System.Windows.Forms.Button Windfreak2CH2SetFrequencyButton;
+        private System.Windows.Forms.Button Windfreak2CH1SetFrequencyButton;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox Windfreak2CH2PowerTextbox;
+        private System.Windows.Forms.TextBox Windfreak2CH1PowerTextbox;
+        private System.Windows.Forms.TextBox Windfreak2CH2FrequencyTextbox;
+        private System.Windows.Forms.TextBox Windfreak2CH1FrequencyTextbox;
+        private System.Windows.Forms.Label label48;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.Label label50;
+        private NationalInstruments.NetworkVariable.WindowsForms.NetworkVariableDataSource networkVariableDataSource1;
+        private System.Windows.Forms.TabPage tabPage5;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
+        private NationalInstruments.UI.WindowsForms.Led anaPicoLED;
+        private NationalInstruments.UI.WindowsForms.Led windFreak2CH2LED;
+        private NationalInstruments.UI.WindowsForms.Led windFreak2CH1LED;
+        private NationalInstruments.UI.WindowsForms.Led windFreak1CH2LED;
+        private NationalInstruments.UI.WindowsForms.Led windFreak1CH1LED;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }
 

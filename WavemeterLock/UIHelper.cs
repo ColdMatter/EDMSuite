@@ -6,9 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using NationalInstruments.UI.WindowsForms;
-using NationalInstruments.UI;
-
 //This UIHelper is copied from Transfer Cavity Lock
 namespace WavemeterLock
 {
@@ -33,26 +30,6 @@ namespace WavemeterLock
         {
             box.Text = text;
         }
-
-        public static void SetLEDState(Led led, bool val)
-        {
-            led.Invoke(new SetLedStateDelegate(SetLedStateHelper), new object[] { led, val });
-        }
-        private delegate void SetLedStateDelegate(Led led, bool val);
-        private static void SetLedStateHelper(Led led, bool val)
-        {
-            led.Value = val;
-        }
-
-        public static void SetLEDColor(Led led, Color color)
-        {
-            led.Invoke(new SetLedColorDelegate(SetLedColorHelper), new object[] { led, color });
-        }
-        private delegate void SetLedColorDelegate(Led led, Color color);
-        private static void SetLedColorHelper(Led led, Color color)
-        {
-            led.OnColor = color;
-        }
                                             
         public static void EnableControl(Control control, bool enabled)
         {
@@ -64,28 +41,28 @@ namespace WavemeterLock
             control.Enabled = enabled;
         }
 
-        private delegate void ScatterGraphPlotDelegate(ScatterPlot plot, double[] x, double[] y);
-        private static void ScatterGraphPlotHelper(ScatterPlot plot, double[] x, double[] y)
-        {
-            plot.ClearData();
-            plot.PlotXY(x, y);
-        }
-        public static void ScatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
-        {
-            graph.Invoke(new UIHelper.ScatterGraphPlotDelegate(ScatterGraphPlotHelper), new object[] { plot, x, y });
-        }
+        //private delegate void ScatterGraphPlotDelegate(ScatterPlot plot, double[] x, double[] y);
+        //private static void ScatterGraphPlotHelper(ScatterPlot plot, double[] x, double[] y)
+        //{
+        //    plot.ClearData();
+        //    plot.PlotXY(x, y);
+        //}
+        //public static void ScatterGraphPlot(ScatterGraph graph, ScatterPlot plot, double[] x, double[] y)
+        //{
+        //    graph.Invoke(new UIHelper.ScatterGraphPlotDelegate(ScatterGraphPlotHelper), new object[] { plot, x, y });
+        //}
 
 
-        private delegate void PlotXYDelegate(double[] x, double[] y);
-        public static void appendPointToScatterGraph(Graph graph, ScatterPlot plot, double x, double y)
-        {
-            graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
-        }
+        //private delegate void PlotXYDelegate(double[] x, double[] y);
+        //public static void appendPointToScatterGraph(Graph graph, ScatterPlot plot, double x, double y)
+        //{
+        //    graph.Invoke(new PlotXYDelegate(plot.PlotXYAppend), new Object[] { new double[] { x }, new double[] { y } });
+        //}
 
-        private delegate void ClearDataDelegate();
-        public static void ClearGraph(Graph graph)
-        {
-            graph.Invoke(new ClearDataDelegate(graph.ClearData));
-        }
+        //private delegate void ClearDataDelegate();
+        //public static void ClearGraph(Graph graph)
+        //{
+        //    graph.Invoke(new ClearDataDelegate(graph.ClearData));
+        //}
     }
 }

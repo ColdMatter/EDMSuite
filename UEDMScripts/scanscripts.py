@@ -38,7 +38,8 @@ def v1scan():
     # Set the V0 setpoint and take old v1 setpoint
     v0Setpoint = tcl.GetLaserSetpoint("VISCavity", "v0laser")
     probeSetpoint = tcl.GetLaserSetpoint("VISCavity", "probelaser")
-    tcl.SetLaserSetpoint("VISCavity","v0laser",probeSetpoint)
+    newSetV0 = probeSetpoint - 6*VOLT_PER_GAMMA
+    tcl.SetLaserSetpoint("VISCavity","v0laser",newSetV0)
     currentSetpoint = tcl.GetLaserSetpoint("VISCavity", "v1laser")
 
     # Scan around rough setpoint

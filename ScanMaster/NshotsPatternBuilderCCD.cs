@@ -59,10 +59,10 @@ namespace ScanMaster.Acquire.Patterns
                     Shot(time, flashToQ, flashlampPulseLength, delayToDetectorTrigger, delayToDetectorTriggerCCD, "detector", "ccdtrigger");
 
                     // The CCDs triggers
-                    Pulse(time, ccd1Start1, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
-                    Pulse(time, ccd1Start2, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
-                    Pulse(time, ccd2Start1, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
-                    Pulse(time, ccd2Start2, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
+                    Pulse(time, ccd1Start1 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
+                    Pulse(time, ccd1Start2 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
+                    Pulse(time, ccd2Start1 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
+                    Pulse(time, ccd2Start2 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
                 }
 
 
@@ -70,10 +70,10 @@ namespace ScanMaster.Acquire.Patterns
                 if (ShotIndex % 2 == 1)
                 {
                     // The CCDs triggers
-                    Pulse(time, ccd1Start1, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
-                    Pulse(time, ccd1Start2, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
-                    Pulse(time, ccd2Start1, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
-                    Pulse(time, ccd2Start2, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
+                    Pulse(time, ccd1Start1 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
+                    Pulse(time, ccd1Start2 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd1"]).BitNumber);
+                    Pulse(time, ccd2Start1 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
+                    Pulse(time, ccd2Start2 + flashToQ, CCD_TRIGGER_LENGTH, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["ccd2"]).BitNumber);
 
                     // now with the switch line low, if modulation is true (otherwise another with line high)
                     if (modulation)

@@ -110,6 +110,17 @@ namespace DAQ.HAL
 			analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig, invert));
 		}
 
+		protected void AddAnalogInputThermocoupleChannel(
+			String name,
+			String physicalChannel,
+			AITerminalConfiguration terminalConfig,
+			//AIThermocoupleCjcSource CjcSource,
+			AIThermocoupleType thermocoupleType
+			)
+        {
+			analogInputChannels.Add(name, new AnalogInputChannel(name, physicalChannel, terminalConfig, thermocoupleType));
+        }
+
 		protected void AddAnalogOutputChannel(String name, String physicalChannel)
 		{
 			analogOutputChannels.Add(name, new AnalogOutputChannel(name, physicalChannel));

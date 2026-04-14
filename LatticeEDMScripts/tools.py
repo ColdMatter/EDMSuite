@@ -11,6 +11,7 @@ The grand tool kit
 # common packages
 import numpy as np
 from scipy.optimize import curve_fit
+import scipy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
@@ -86,12 +87,15 @@ def MovingAverage(window_size, data):
     
     return np.array(final_list)
 
+def flattenList(xss):
+    return [x for xs in xss for x in xs]
+
 
 # Functions to fit
 def Line(x, a, b):
     return a*x + b
 
-def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True):
+def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True, Toprint=True):
     fit, cov = curve_fit(Line, xdata, ydata, p0=p0)
     
     newFig = copy.deepcopy(plt.figure(Figure)) 
@@ -107,7 +111,8 @@ def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True):
     fit_results = {"Variables":["slope", "shift"],
                    "best fit":fit, "error":err}
     
-    print(fit_results)
+    if Toprint:
+        print(fit_results)
     
     return newFig, fit_results
 
@@ -117,8 +122,9 @@ def Gaussian(x, mean, std, amp, shift):
 
 def FitGaussian(Figure, xdata, ydata, p0, xstep=0.01, \
                 plot=True, display=True, Toprint=True,\
-                    xlabel='', ylabel='', title=''):
-    fit, cov = curve_fit(Gaussian, xdata, ydata, p0=p0)
+                    xlabel='', ylabel='', title='',\
+    bounds=([-np.inf, -np.inf, -np.inf, -np.inf], [np.inf, np.inf, np.inf, np.inf])):
+    fit, cov = curve_fit(Gaussian, xdata, ydata, p0=p0, bounds=bounds)
     
     if plot:
         if Figure == 0:
@@ -163,6 +169,11 @@ def Gaussian_norm(x, mean, std):
     amp = 1 / (std * np.sqrt(2 * np.pi))
     return amp * np.exp(fac)
 
+def SkewedGaussian(x, mean, std, amp, shift, gamma):
+    skewness = 1 + sp.special.erf(gamma * (x-mean) / (np.sqrt(2) * std))
+    exponent = -(x-mean)**2 / (2 * std**2)
+    return amp * skewness * np.exp(exponent) + shift
+
 def lorentzian_norm(w, w0, dw):    #Y3 lasers coding sheet 1
     """ Implement a unit-area lorentzian function sampled on w. """
     # centre frequency, FWHM
@@ -174,17 +185,23 @@ def lorentzian(w, A, w0, dw, shift):    #Y3 lasers coding sheet 1
     return A * (2 / np.pi / dw) * dw**2 / (dw**2 + 4 * (w - w0)**2) + shift
 
 def exp_decay(x, A, B, C):
-    return A * (np.exp(x / B) - 1) + C
+    return A * np.exp(-x / B)  + C
+
+def exp_decay2(x, B, C):
+    return np.exp(-x / B)  + C
 
 def Fitexp_decay(Figure, xdata, ydata, p0, xstep=0.01, \
                 plot=True, display=True, Toprint=True,\
-                    xlabel='', ylabel='', title=''):
+                    xlabel='', ylabel='', title='',\
+                plotErr=False, errY=[]):
     fit, cov = curve_fit(exp_decay, xdata, ydata, p0=p0)
     
     if plot:
         if Figure == 0:
             newFig = plt.figure()
             plt.plot(xdata, ydata, '.')
+            if plotErr:
+                plt.fill_between(xdata, ydata+errY, ydata-errY, alpha=0.3)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
             plt.title(title)
@@ -194,6 +211,46 @@ def Fitexp_decay(Figure, xdata, ydata, p0, xstep=0.01, \
     
         xspan = np.arange(np.min(xdata), np.max(xdata), step=xstep)
         plt.plot(xspan, exp_decay(xspan, *fit))
+        if display:
+            plt.show()
+        plt.close()
+        
+    else:
+        newFig = 0
+    
+    err = np.sqrt(np.diag(cov))
+    fit_results = {"Variables":["amplitude", "lifetime", "shift"],
+                   "best fit":fit, "error":err}
+    
+    if Toprint:
+        print(fit_results)
+    
+    return newFig, fit_results
+
+def inverse_exp_decay(x, A, B, C):
+    return A * (1 - np.exp(-x / B))  + C
+
+def Fitinverse_exp_decay(Figure, xdata, ydata, p0, xstep=0.01, \
+                plot=True, display=True, Toprint=True,\
+                    xlabel='', ylabel='', title='',\
+                plotErr=False, errY=[]):
+    fit, cov = curve_fit(inverse_exp_decay, xdata, ydata, p0=p0)
+    
+    if plot:
+        if Figure == 0:
+            newFig = plt.figure()
+            plt.plot(xdata, ydata, '.')
+            if plotErr:
+                plt.fill_between(xdata, ydata+errY, ydata-errY, alpha=0.3)
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+            plt.title(title)
+        else:
+            newFig = copy.deepcopy(plt.figure(Figure)) 
+            #This ensures the original figure is not altered
+    
+        xspan = np.arange(np.min(xdata), np.max(xdata), step=xstep)
+        plt.plot(xspan, inverse_exp_decay(xspan, *fit))
         if display:
             plt.show()
         plt.close()

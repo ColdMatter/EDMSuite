@@ -13,6 +13,7 @@ namespace EDMBlockHead.Acquire.Input
 		public int RawSampleRate;
 		public int GateStartTime;
 		public int GateLength;
+		public int CCDEnableLength;
 
 		public ArrayList Channels = new ArrayList();
 	}

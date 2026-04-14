@@ -31,27 +31,37 @@ namespace ScanMaster.Acquire.Plugins
 			settings["ttlSwitchPort"] = 0;
 			settings["ttlSwitchLine"] = 0;
 			settings["sequenceLength"] = 2;
-			settings["switchLineDuration"] = 500000;
+			settings["switchLineDuration"] = 0;
 			settings["switchLineDelay"] = 0;
-			settings["padStart"] = 11800;
+			settings["padStart"] = 0;
 			settings["padShots"] = 0;
+			settings["valveToQ"] = 570;
 			settings["flashlampPulseLength"] = 100;
 			settings["shutterPulseLength"] = 1000;
 			settings["flashlampPulseInterval"] = 500000;
 			settings["valvePulseLength"] = 350;
 			settings["flashToQ"] = 140;
 			settings["shutterPulseLength"] = 2000;
-			settings["shutteroffDelay"] = 450000;
-			settings["shutter1offdelay"] = 450000;
-			settings["shutterslowdelay"] = 10000;
-			settings["DurationV0"] = 6000;
-			settings["steve1delay"] = 0;
-			settings["shutterV2delay"] = 0;
-			settings["DurationV2"] = 5000;
-			settings["DurationV1"] = 40000;
-			settings["v3delaytime"] = 14000;
-			settings["repumpDelay"] = 5000;
-			settings["repumpDuration"] = 10000;
+			//settings["shutteroffDelay"] = 0;
+			//settings["shutter1offdelay"] = 0;
+			settings["shutterslowdelay"] = 21800;
+			settings["DurationV0"] = 4000;
+			//settings["steve1delay"] = 0;
+			//settings["DurationV2"] = 0;
+			//settings["DurationV1"] = 0;
+			settings["v3delaytime"] = 0;
+			settings["repumpDelay"] = 9600;
+			settings["repumpDuration"] = 4000;
+			//settings["shutterV1delay"] = 0;
+			//settings["shutterV2delay"] = 0;
+			settings["vacShutterDelay"] = 0;
+			settings["vacShutterDuration"] = 1000;
+			settings["v0chirpTriggerDelay"] = 10000;
+			settings["v0chirpTriggerDuration"] = 5000;//10Sept2024, modified to access the chirpTriggerDuration, which is the duration by which the TCL is blocked. N.B. The actual chirp duration is set by Moku:Go GUI. (search liquid instrument on the desktop)
+			settings["cameraTriggerDelay"] = 30000;
+			settings["cameraBackgroundDelay"] = 70000;
+			settings["offShotSlowingDuration"] = 10;
+			settings["v2OffDupoint"] = 0;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -77,19 +87,27 @@ namespace ScanMaster.Acquire.Plugins
 				(int)settings["ttlSwitchPort"],
 				(int)settings["ttlSwitchLine"],
 				(int)settings["switchLineDuration"],
-				(int)settings["shutteroffDelay"],
+				//(int)settings["shutteroffDelay"],
 				(int)settings["shutterslowdelay"],
 				(int)settings["DurationV0"],
-				(int)settings["shutterV1delay"],
-				(int)settings["shutterV2delay"],
-				(int)settings["DurationV2"],
-				(int)settings["DurationV1"],
+				//(int)settings["steve1delay"],
+				//(int)settings["shutterV2delay"],
+				//(int)settings["DurationV2"],
+				//(int)settings["DurationV1"],
 				(bool)config.switchPlugin.Settings["switchActive"],
 				(int)settings["switchLineDelay"],
-				(int)settings["shutter1offdelay"],
+				//(int)settings["shutter1offdelay"],
 				(int)settings["v3delaytime"],
 				(int)settings["repumpDuration"],
-				(int)settings["repumpDelay"]);
+				(int)settings["repumpDelay"],
+				(int)settings["vacShutterDelay"],
+				(int)settings["vacShutterDuration"],
+				(int)settings["v0chirpTriggerDelay"],
+				(int)settings["v0chirpTriggerDuration"],
+				(int)settings["cameraTriggerDelay"],
+				(int)settings["cameraBackgroundDelay"],
+				(int)settings["offShotSlowingDuration"],
+				(int)settings["v2OffDupoint"]);
 			/*
 			scanPatternBuilder.BuildPattern(2 * ((int)settings["padShots"] + 1) * (int)settings["sequenceLength"]
 				* (int)settings["flashlampPulseInterval"]);

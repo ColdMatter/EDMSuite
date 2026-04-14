@@ -1538,6 +1538,97 @@ namespace csAcq4
             }
         }
 
+        //shirely adds on 17/11 to implement the retake logic for edge mode
+        public void SnapforRemote()
+        {
+            if (mydcam == null)
+            {
+                MyShowStatus("Internal Error: mydcam is null");
+                Console.WriteLine("Error: mydcam is null");
+                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+                return;                         // internal error
+            }
+            window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+
+            string text = "";
+
+            if (window.IsMyFormStatus_Initialized())
+            {
+                // if FormStatus is Opened, DCAM buffer is not allocated.
+                // So call dcambuf_alloc() to prepare capturing.
+
+                text = string.Format("dcambuf_alloc({0})", numSnaps);
+
+                // allocate numSnaps frames to the buffer
+                if (!mydcam.buf_alloc(numSnaps))
+                {
+                    // allocation was failed
+                    Console.WriteLine("Failed to allocate buffer");
+                    MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+                    //window.MyFormStatus_Initialized(); // Reset form status to initialized
+                    return;                     // Fail: dcambuf_alloc()
+                }
+
+                // Success: dcambuf_alloc()
+                update_lut(false);
+            }
+
+            // start acquisition
+            m_cap_stopping = false;
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing {numSnaps} frame
+
+            // shirley adds on 17/11 to implement the retake logic for edge mode
+            bool CCDShotSuccessful = false;
+            while (!CCDShotSuccessful)
+            {
+                if (!mydcam.cap_start(this))
+                {
+                    // acquisition was failed and frame buffer is also released.
+                    MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+
+                    while (GetShotStatus() == 0)
+                    {
+                        //Console.WriteLine("Waiting for shot confirmation");
+                        Thread.Sleep(1);
+                    }
+
+                    if (GetShotStatus() == 2)
+                    {
+                        // Store frames of this snap
+                        mydcam.buf_release();           // release unnecessary buffer in DCAM
+                        window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
+                        CCDShotSuccessful = true;
+                        shotStatus = 0; //reset the shot status
+                        Console.WriteLine("shot was successful");
+                    }
+                    else if (GetShotStatus() == 1)
+                    {
+                        // If shot was unsuccessful, we can either retry or handle it accordingly
+                        Console.WriteLine("shot was unsuccessful: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+                    else
+                    {
+                        Console.WriteLine("shot status unknown: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+
+                    return;                         // Fail: dcamcap_start()
+                }
+            }
+
+
+            // Success: dcamcap_start()
+            // acquisition has started
+
+            Console.WriteLine("Capture started successfully."); // Log message to indicate successful start
+            MyShowStatusOK($"Camera starts capturing {numSnaps} frames...");
+
+            // Start async capture task
+            snapCancelTokenSource = new CancellationTokenSource();
+            Task.Run(() => OnThreadCapture(snapCancelTokenSource.Token));
+
+        }
 
         public void Snap()
         {
@@ -1897,6 +1988,99 @@ namespace csAcq4
             return filePath;
         }
 
+        // Shirley adds on 21/02/2026 for syncing the file name and save directory for the ccd xml file on scanmaster
+        private string SyncSaveFullPath = "";
+        private int SyncFileName = -1;
+
+        public string GetSaveFullPath()
+        {
+            return SyncSaveFullPath;
+        }
+
+        public int GetSyncFileName()
+        {
+            return SyncFileName;
+        }
+
+
+        private string GetNextFileNameSM(string directory, string extension, int selectedCamera)
+        {
+            int counter = 1;
+            string cameraSuffix = (selectedCamera == 0) ? "CCDA" : "CCDB";
+            string filePath;
+
+            do
+            {
+                filePath = Path.Combine(directory, $"{cameraSuffix}_{counter:D5}{extension}");
+                counter++;
+            } while (File.Exists(filePath)); // Ensure we don't overwrite existing files
+
+            // shirley adds on 21/01/2026 for xml file name syncing. 
+            SyncFileName = counter - 1;
+
+            return filePath;
+        }
+
+        // shirley editing on 19/01/2026 for ScanMaster burst mode saving
+        // Updated version that can now calculate the total counts per frame and automatically save as a csv file along with the MTIF file.
+        // It perform the calculation after the entire acquisition so doenst slow things down.
+        private void SaveAllDataSM(List<List<ushort[]>> imageData)
+        {
+            var saveTimer = Stopwatch.StartNew();
+
+            // Save CSV file
+            // File.WriteAllLines(csvFilePath, countData);
+            // Console.WriteLine("Successfully saved count data.");
+
+            string tiffPath = GetNextFileNameSM(saveDirectory, ".tif", SelectedCamera);
+
+            // shirley adds on 21/01/2026
+            SyncSaveFullPath = tiffPath;
+
+            // Create a CSV path by changing the extension of the tiffPath
+            string csvPath = Path.ChangeExtension(tiffPath, ".csv");
+            //string tiffPath = currentFileName;
+            SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(csvPath))
+                {
+                    // Write CSV Header
+                    writer.WriteLine("Snap Index, Frame Index, Total Counts/frame");
+
+                    for (int snapIndex = 0; snapIndex < imageData.Count; snapIndex++)
+                    {
+                        for (int frameIndex = 0; frameIndex < imageData[snapIndex].Count; frameIndex++)
+                        {
+                            ushort[] framePixels = imageData[snapIndex][frameIndex];
+
+                            long frameSum = 0;
+                            if (framePixels != null)
+                            {
+                                for (int i = 0; i < framePixels.Length; i++)
+                                {
+                                    frameSum += framePixels[i];
+                                }
+                            }
+                            // write row: snap index, frame index (0-19), total Counts each frame    
+                            writer.WriteLine($"{snapIndex},{frameIndex},{frameSum}");
+
+                        }
+                    }
+
+                }
+                Console.WriteLine("Successfully saved count data to: {Path.GetFileName(csvPath)}.");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving count data to CSV: {ex.Message}");
+            }
+            saveTimer.Stop();
+            Console.WriteLine($"Total saving time: {saveTimer.Elapsed}");
+        }
+
 
         // Default save directory
         public string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
@@ -1934,6 +2118,270 @@ namespace csAcq4
         }
 
 
+        //public void ContinuousSnapAndSave(CancellationToken token)
+        //{
+        //    if (mydcam == null)
+        //    {
+        //        MyShowStatus("Internal Error: mydcam is null");
+        //        return;
+        //    }
+
+        //    // shirley adds on 14/07
+        //    ccdReadyForNextBlock = false;
+
+        //    MyDcamProp frameIntervalProp = new MyDcamProp(mydcam, DCAMIDPROP.INTERNAL_FRAMEINTERVAL);
+        //    double frameInterval = 0;
+        //    if (frameIntervalProp.getvalue(ref frameInterval))
+        //    {
+        //        Console.WriteLine($"Checked: Current frame interval is {frameInterval * 1000} ms."); // This is exposure time + dead time of 0.298 ms.
+        //    }
+
+        //    // Define the property for outputtrigger kind for later use
+        //    MyDcamProp outputTriggerKind = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_KIND);
+
+        //    int totalframeCount = m_nFrameCount * (numSnaps);
+        //    // Allocate buffer once for multiple snaps
+        //    if (!mydcam.buf_alloc(totalframeCount))
+        //    {
+        //        MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+        //        Console.WriteLine("Failed to allocate buffer!");
+        //        return;
+        //    }
+
+        //    // Prepare directories
+        //    Directory.CreateDirectory(saveDirectory);
+        //    InitializeCsvFile();
+
+        //    // Prepare data structures
+        //    // List<string> countData = new List<string> { "Snap Index,Frame Index,No. Counts" };  // CSV header
+        //    List<List<ushort[]>> imageData = new List<List<ushort[]>>();  // Empty array for storing all frame buffers
+
+        //    // shirley adds on 23/06 to store the time durations for each shot
+        //    List<double> shotDurations = new List<double>();
+
+        //    var Timer = new Stopwatch();
+        //    Timer.Start();
+
+        //    //Task.Run(() => OnThreadCapture(token));
+
+        //    for (int snapIndex = 0; snapIndex < numSnaps; snapIndex++)
+        //    {
+        //        // Check if stop acquisition has been triggered
+        //        if (token.IsCancellationRequested)
+        //        {
+        //            Console.WriteLine($"Burst capture is aborted at the {snapIndex}th shot and saved.");
+        //            //mydcam.cap_stop(); // Stop the burst acquisition immediately
+        //            break;
+        //        }
+
+        //        Console.WriteLine($"Starting Snap {snapIndex + 1}/{numSnaps}...");
+        //        List<ushort[]> snapFrames = new List<ushort[]>();  // Buffer for this snap
+        //        BurstTriggerRearm();
+
+        //        // shirley adds on 08/07 to configure the output trigger to be low when the camera starts to acquire data (busy)
+        //        //MyDcamProp outputTriggerKind = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_KIND);
+        //        //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+        //        //{
+        //        //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //        //    continue; 
+        //        //}
+        //        //Console.WriteLine("Output trigger set to low for acquiring data...");
+
+        //        // Start acquisition for current snap
+        //        m_cap_stopping = false;
+
+        //        //trigger ready - TTL HIGH
+        //        if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.TRIGGERREADY))
+        //        {
+        //            MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //            continue;
+        //        }
+        //        Console.WriteLine("Output trigger set to Trigger Ready, ready to receive next trigger...");
+        //        //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
+        //        //{
+        //        //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //        //    continue;
+        //        //}
+        //        //Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
+        //        mydcam.m_capmode = DCAMCAP_START.SNAP;
+
+        //        if (!mydcam.cap_start(this))
+        //        {
+        //            MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+        //            continue;
+        //        }
+
+        //        var timer1 = new Stopwatch();
+        //        timer1.Start();
+
+        //        // shirley adds on 12/06 to limit the maximum number of allowed frame failed wait error
+        //        int errorCount = 0;
+        //        const int Max_error = 1; //rhys - should this be set to 1? what is the benefit of having it set to 2?
+
+        //        using (mydcamwait = new MyDcamWait(ref mydcam))
+        //        {
+
+        //            for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
+        //            {
+        //                // Check if stop acquisition has been triggered
+        //                if (token.IsCancellationRequested)
+        //                {
+        //                    Console.WriteLine($"Burst capture is aborted at the {frameIndex}th frame of the {snapIndex}th shot and saved.");
+        //                    mydcam.cap_stop();
+        //                    break;
+        //                }
+        //                //var timer = new Stopwatch();
+        //                //timer.Start();
+
+        //                DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+        //                DCAMWAIT eventhappened = DCAMWAIT.NONE;
+
+        //                int timeoutMs = 15000; // in ms //added by rhys 10/07
+        //                mydcamwait.SetTimeout(timeoutMs); //added by rhys 10/07
+
+        //                Stopwatch waitTimer = Stopwatch.StartNew(); //added by rhys 10/07
+
+        //                //rhys
+        //                //do we want to wait for every single frame within the burst or only the first frame
+        //                //i.e. for frameIndex == 0
+        //                // do we just assume the following frames will follow. i suppose there is a dead time we need to allow for
+        //                // maybe it's safer to keep the wait in for all frames. It doesn't hurt right?
+
+        //                if (!mydcamwait.start(eventmask, ref eventhappened))
+        //                {
+        //                    waitTimer.Stop(); //added by rhys 10/07
+        //                    Console.WriteLine($"Frame {frameIndex + 1} Wait failed after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
+        //                    errorCount++;
+        //                    if (errorCount >= Max_error)
+        //                    {
+        //                        Console.WriteLine($"Too many wait failures in Snap {snapIndex + 1}, skipping remaining frames... Sorry I can't wait anymore :( ");
+        //                        break;
+        //                    }
+        //                    //TTL LOW
+        //                    //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+        //                    //{
+        //                    //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //                    //}
+        //                    //else
+        //                    //{
+        //                    //    Console.WriteLine("Output trigger set to low for acquiring data...");
+        //                    //}
+
+        //                    continue;
+        //                }
+
+        //                waitTimer.Stop(); //added by rhys 10/07
+        //                Console.WriteLine($"Frame {frameIndex + 1} ready after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
+
+        //                //if (frameIndex == 0) 
+        //                //{
+        //                //    //TTL LOW
+        //                //    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+        //                //    {
+        //                //        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //                //    }
+        //                //    else
+        //                //    {
+        //                //        Console.WriteLine("Output trigger set to low for acquiring data...");
+        //                //    }
+
+        //                //}
+
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
+
+        //                {
+        //                    // Lock frame to access pixel data
+        //                    m_image.set_iFrame(frameIndex);
+        //                    if (!mydcam.buf_lockframe(ref m_image.bufframe))
+        //                    {
+        //                        Console.WriteLine($"Failed to lock frame {frameIndex}");
+        //                        continue;
+        //                    }
+
+        //                    // Store image data
+        //                    ushort[] framePixels = GetPixelData(m_image.bufframe);
+        //                    snapFrames.Add(framePixels);
+
+        //                    //timer.Stop();
+        //                    //Console.WriteLine($"Time taken for taking one frame with 20ms delay: {timer.Elapsed}");
+        //                    // Compute total pixel sum (frame co                                                                                                                                                                                                                                                        unt)
+        //                    //long frameCount = framePixels.Sum(v => (long)v);
+        //                    //countData.Add($"{snapIndex},{frameIndex},{frameCount}");
+
+        //                    //Console.WriteLine($"Snap {snapIndex}, Frame {frameIndex}: Total Count = {frameCount}");
+        //                }
+
+        //                if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
+        //                {
+        //                    Console.WriteLine("Capture stopped.");
+        //                    break;
+        //                }
+        //            }
+
+        //        }
+
+        //        //TTL LOW
+        //        if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+        //        {
+        //            MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("Output trigger set to low for acquiring data...");
+        //        }
+
+        //        // Store frames of this snap
+        //        imageData.Add(snapFrames);
+
+        //        timer1.Stop();
+        //        double shotTimeMs = timer1.Elapsed.TotalMilliseconds;
+        //        shotDurations.Add(shotTimeMs);
+
+        //        Console.WriteLine($"Total time taken for one burst shot: {timer1.ElapsedMilliseconds}");
+
+        //        // Append duration to CSV
+        //        using (StreamWriter writer = new StreamWriter(csvFilePath, true))
+        //        {
+        //            writer.WriteLine($"{snapIndex},{shotTimeMs:F3}");
+        //        }
+
+        //        mydcam.cap_stop();
+
+        //    }
+        //    Timer.Stop();
+        //    Console.WriteLine($"Total time taken: {Timer.Elapsed}");
+
+        //    // Save images and counts after collection
+        //    //Thread.Sleep(1000); // Shirley adds on 05/06 to ensure the file is fully written before proceeding
+        //    SaveAllData(imageData);
+        //    Console.WriteLine($"Successfully saved all snaps data as a MTIF to disk.");
+
+        //    //Thread.Sleep(2000);
+        //    // Release buffer after all snaps are completed
+        //    mydcam.buf_release();
+        //    Console.WriteLine("Buffer released.");
+
+        //    // shirley adds on 14/07. Set ready flag after block is fully completed
+        //    ccdReadyForNextBlock = true;
+        //    Console.WriteLine("CCD is now ready for next block.");
+        //    //Thread.Sleep(2000);
+        //}
+
+
+        //Rhys Add fo CCD shot retake 01/08
+        
+        private int shotStatus;
+        //private volatile int shotStatus; //maybe try this??
+        public void SetShotStatus(int state)
+        {
+            shotStatus = state;
+        }
+
+        public int GetShotStatus()
+        {
+            return shotStatus;
+        }
+
         public void ContinuousSnapAndSave(CancellationToken token)
         {
             if (mydcam == null)
@@ -1944,6 +2392,7 @@ namespace csAcq4
 
             // shirley adds on 14/07
             ccdReadyForNextBlock = false;
+            shotStatus = 0; //rhys add 03/08
 
             MyDcamProp frameIntervalProp = new MyDcamProp(mydcam, DCAMIDPROP.INTERNAL_FRAMEINTERVAL);
             double frameInterval = 0;
@@ -1970,7 +2419,7 @@ namespace csAcq4
 
             // Prepare data structures
             // List<string> countData = new List<string> { "Snap Index,Frame Index,No. Counts" };  // CSV header
-            List<List<ushort[]>> imageData = new List<List<ushort[]>>();  // Empty array for storing all frame buffers
+            List<List<ushort[]>> imageData = new List<List<ushort[]>>();  // Empty array for storing all shots (i.e. 20 frame x 256 shot)
 
             // shirley adds on 23/06 to store the time durations for each shot
             List<double> shotDurations = new List<double>();
@@ -1990,180 +2439,202 @@ namespace csAcq4
                     break;
                 }
 
-                Console.WriteLine($"Starting Snap {snapIndex + 1}/{numSnaps}...");
-                List<ushort[]> snapFrames = new List<ushort[]>();  // Buffer for this snap
-                BurstTriggerRearm();
-
-                // shirley adds on 08/07 to configure the output trigger to be low when the camera starts to acquire data (busy)
-                //MyDcamProp outputTriggerKind = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_KIND);
-                //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                //{
-                //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                //    continue; 
-                //}
-                //Console.WriteLine("Output trigger set to low for acquiring data...");
-
-                // Start acquisition for current snap
-                m_cap_stopping = false;
-
-                //trigger ready - TTL HIGH
-                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.TRIGGERREADY))
+                bool CCDShotSuccessful = false;
+                while (!CCDShotSuccessful)
                 {
-                    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                    continue;
-                }
-                Console.WriteLine("Output trigger set to Trigger Ready, ready to receive next trigger...");
-                //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
-                //{
-                //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                //    continue;
-                //}
-                //Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
-                mydcam.m_capmode = DCAMCAP_START.SNAP;
+                    Console.WriteLine($"Starting Snap {snapIndex + 1}/{numSnaps}...");
+                    List<ushort[]> snapFrames = new List<ushort[]>();  // Create an empty array for snap
+                    BurstTriggerRearm();
 
-                if (!mydcam.cap_start(this))
-                {
-                    MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
-                    continue;
-                }
+                    // shirley adds on 08/07 to configure the output trigger to be low when the camera starts to acquire data (busy)
+                    //MyDcamProp outputTriggerKind = new MyDcamProp(mydcam, DCAMIDPROP.OUTPUTTRIGGER_KIND);
+                    //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                    //{
+                    //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                    //    continue; 
+                    //}
+                    //Console.WriteLine("Output trigger set to low for acquiring data...");
 
-                var timer1 = new Stopwatch();
-                timer1.Start();
+                    // Start acquisition for current snap
+                    m_cap_stopping = false;
 
-                // shirley adds on 12/06 to limit the maximum number of allowed frame failed wait error
-                int errorCount = 0;
-                const int Max_error = 1; //rhys - should this be set to 1? what is the benefit of having it set to 2?
-
-                using (mydcamwait = new MyDcamWait(ref mydcam))
-                {
-
-                    for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
+                    //trigger ready - TTL HIGH
+                    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.TRIGGERREADY))
                     {
-                        // Check if stop acquisition has been triggered
-                        if (token.IsCancellationRequested)
+                        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                        continue;
+                    }
+                    Console.WriteLine("Output trigger set to Trigger Ready, ready to receive next trigger...");
+                    //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.HIGH))
+                    //{
+                    //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                    //    continue;
+                    //}
+                    //Console.WriteLine("Output trigger set to high, ready to receive next trigger...");
+                    mydcam.m_capmode = DCAMCAP_START.SNAP;
+
+                    if (!mydcam.cap_start(this))
+                    {
+                        MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+                        continue;
+                    }
+
+                    var timer1 = new Stopwatch();
+                    timer1.Start();
+
+                    // shirley adds on 12/06 to limit the maximum number of allowed frame failed wait error
+                    int errorCount = 0;
+                    const int Max_error = 1; //rhys - should this be set to 1? what is the benefit of having it set to 2?
+
+                    using (mydcamwait = new MyDcamWait(ref mydcam))
+                    {
+
+                        for (int frameIndex = 0; frameIndex < m_nFrameCount; frameIndex++)
                         {
-                            Console.WriteLine($"Burst capture is aborted at the {frameIndex}th frame of the {snapIndex}th shot and saved.");
-                            mydcam.cap_stop();
-                            break;
-                        }
-                        //var timer = new Stopwatch();
-                        //timer.Start();
-
-                        DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
-                        DCAMWAIT eventhappened = DCAMWAIT.NONE;
-
-                        int timeoutMs = 15000; // in ms //added by rhys 10/07
-                        mydcamwait.SetTimeout(timeoutMs); //added by rhys 10/07
-
-                        Stopwatch waitTimer = Stopwatch.StartNew(); //added by rhys 10/07
-
-                        //rhys
-                        //do we want to wait for every single frame within the burst or only the first frame
-                        //i.e. for frameIndex == 0
-                        // do we just assume the following frames will follow. i suppose there is a dead time we need to allow for
-                        // maybe it's safer to keep the wait in for all frames. It doesn't hurt right?
-
-                        if (!mydcamwait.start(eventmask, ref eventhappened))
-                        {
-                            waitTimer.Stop(); //added by rhys 10/07
-                            Console.WriteLine($"Frame {frameIndex + 1} Wait failed after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
-                            errorCount++;
-                            if (errorCount >= Max_error)
+                            // Check if stop acquisition has been triggered
+                            if (token.IsCancellationRequested)
                             {
-                                Console.WriteLine($"Too many wait failures in Snap {snapIndex + 1}, skipping remaining frames... Sorry I can't wait anymore :( ");
+                                Console.WriteLine($"Burst capture is aborted at the {frameIndex}th frame of the {snapIndex}th shot and saved.");
+                                mydcam.cap_stop();
                                 break;
                             }
-                            //TTL LOW
-                            //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                            //{
-                            //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                            //}
-                            //else
-                            //{
-                            //    Console.WriteLine("Output trigger set to low for acquiring data...");
-                            //}
+                            //var timer = new Stopwatch();
+                            //timer.Start();
 
-                            continue;
-                        }
+                            DCAMWAIT eventmask = DCAMWAIT.CAPEVENT.FRAMEREADY | DCAMWAIT.CAPEVENT.STOPPED;
+                            DCAMWAIT eventhappened = DCAMWAIT.NONE;
 
-                        waitTimer.Stop(); //added by rhys 10/07
-                        Console.WriteLine($"Frame {frameIndex + 1} ready after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
+                            int timeoutMs = 15000; // in ms //added by rhys 10/07
+                            mydcamwait.SetTimeout(timeoutMs); //added by rhys 10/07
 
-                        //if (frameIndex == 0) 
-                        //{
-                        //    //TTL LOW
-                        //    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                        //    {
-                        //        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                        //    }
-                        //    else
-                        //    {
-                        //        Console.WriteLine("Output trigger set to low for acquiring data...");
-                        //    }
+                            Stopwatch waitTimer = Stopwatch.StartNew(); //added by rhys 10/07
 
-                        //}
+                            //rhys
+                            //do we want to wait for every single frame within the burst or only the first frame
+                            //i.e. for frameIndex == 0
+                            // do we just assume the following frames will follow. i suppose there is a dead time we need to allow for
+                            // maybe it's safer to keep the wait in for all frames. It doesn't hurt right?
 
-                        if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
-
-                        {
-                            // Lock frame to access pixel data
-                            m_image.set_iFrame(frameIndex);
-                            if (!mydcam.buf_lockframe(ref m_image.bufframe))
+                            if (!mydcamwait.start(eventmask, ref eventhappened))
                             {
-                                Console.WriteLine($"Failed to lock frame {frameIndex}");
+                                waitTimer.Stop(); //added by rhys 10/07
+                                Console.WriteLine($"Frame {frameIndex + 1} Wait failed after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
+                                errorCount++;
+                                if (errorCount >= Max_error)
+                                {
+                                    Console.WriteLine($"Too many wait failures in Snap {snapIndex + 1}, skipping remaining frames... Sorry I can't wait anymore :( ");
+                                    break;
+                                }
+                                //TTL LOW
+                                //if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                                //{
+                                //    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                                //}
+                                //else
+                                //{
+                                //    Console.WriteLine("Output trigger set to low for acquiring data...");
+                                //}
+
                                 continue;
                             }
 
-                            // Store image data
-                            ushort[] framePixels = GetPixelData(m_image.bufframe);
-                            snapFrames.Add(framePixels);
+                            waitTimer.Stop(); //added by rhys 10/07
+                            Console.WriteLine($"Frame {frameIndex + 1} ready after {waitTimer.ElapsedMilliseconds} ms"); //added by rhys 10/07
 
-                            //timer.Stop();
-                            //Console.WriteLine($"Time taken for taking one frame with 20ms delay: {timer.Elapsed}");
-                            // Compute total pixel sum (frame co                                                                                                                                                                                                                                                        unt)
-                            //long frameCount = framePixels.Sum(v => (long)v);
-                            //countData.Add($"{snapIndex},{frameIndex},{frameCount}");
+                            //if (frameIndex == 0) 
+                            //{
+                            //    //TTL LOW
+                            //    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                            //    {
+                            //        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                            //    }
+                            //    else
+                            //    {
+                            //        Console.WriteLine("Output trigger set to low for acquiring data...");
+                            //    }
 
-                            //Console.WriteLine($"Snap {snapIndex}, Frame {frameIndex}: Total Count = {frameCount}");
+                            //}
+
+                            if ((eventhappened & DCAMWAIT.CAPEVENT.FRAMEREADY) != 0)
+
+                            {
+                                // Lock frame to access pixel data
+                                m_image.set_iFrame(frameIndex);
+                                if (!mydcam.buf_lockframe(ref m_image.bufframe))
+                                {
+                                    Console.WriteLine($"Failed to lock frame {frameIndex}");
+                                    continue;
+                                }
+
+                                // Store image data
+                                ushort[] framePixels = GetPixelData(m_image.bufframe);
+                                snapFrames.Add(framePixels);
+
+                                //timer.Stop();
+                                //Console.WriteLine($"Time taken for taking one frame with 20ms delay: {timer.Elapsed}");
+                                // Compute total pixel sum (frame co                                                                                                                                                                                                                                                        unt)
+                                //long frameCount = framePixels.Sum(v => (long)v);
+                                //countData.Add($"{snapIndex},{frameIndex},{frameCount}");
+
+                                //Console.WriteLine($"Snap {snapIndex}, Frame {frameIndex}: Total Count = {frameCount}");
+                            }
+
+                            if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
+                            {
+                                Console.WriteLine("Capture stopped.");
+                                break;
+                            }
                         }
 
-                        if ((eventhappened & DCAMWAIT.CAPEVENT.STOPPED) != 0)
-                        {
-                            Console.WriteLine("Capture stopped.");
-                            break;
-                        }
                     }
 
+                    //TTL LOW
+                    if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
+                    {
+                        MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Output trigger set to low for acquiring data...");
+                    }
+
+                    while (GetShotStatus() == 0)
+                    {
+                        Console.WriteLine("Waiting for shot confirmation");
+                        Thread.Sleep(1);
+                    }
+
+                    if (GetShotStatus() == 2)
+                    {
+                        // Store frames of this snap
+                        imageData.Add(snapFrames);
+                        CCDShotSuccessful = true;
+                        shotStatus = 0; //reset the shot status
+                        Console.WriteLine("shot was successful");
+                    }
+                    else
+                    {
+                        Console.WriteLine("shot was unsuccessful: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+
+                    timer1.Stop();
+                    double shotTimeMs = timer1.Elapsed.TotalMilliseconds;
+                    shotDurations.Add(shotTimeMs);
+
+                    Console.WriteLine($"Total time taken for one burst shot: {timer1.ElapsedMilliseconds}");
+
+                    // Append duration to CSV
+                    //using (StreamWriter writer = new StreamWriter(csvFilePath, true))
+                    //{
+                    //    writer.WriteLine($"{snapIndex},{shotTimeMs:F3}");
+                    //}
+
+                    mydcam.cap_stop();
                 }
-
-                //TTL LOW
-                if (!outputTriggerKind.setvalue(DCAMPROP.OUTPUTTRIGGER_KIND.LOW))
-                {
-                    MyShowStatusNG("Failed to set output trigger kind", outputTriggerKind.m_lasterr);
-                }
-                else
-                {
-                    Console.WriteLine("Output trigger set to low for acquiring data...");
-                }
-
-                // Store frames of this snap
-                imageData.Add(snapFrames);
-
-                timer1.Stop();
-                double shotTimeMs = timer1.Elapsed.TotalMilliseconds;
-                shotDurations.Add(shotTimeMs);
-
-                Console.WriteLine($"Total time taken for one burst shot: {timer1.ElapsedMilliseconds}");
-
-                // Append duration to CSV
-                using (StreamWriter writer = new StreamWriter(csvFilePath, true))
-                {
-                    writer.WriteLine($"{snapIndex},{shotTimeMs:F3}");
-                }
-
-                mydcam.cap_stop();
 
             }
+
             Timer.Stop();
             Console.WriteLine($"Total time taken: {Timer.Elapsed}");
 
@@ -2719,7 +3190,7 @@ namespace csAcq4
         {
             
             //Task.Run sets up the function to be run Asynchronously 
-            Task.Run(()=>Snap());
+            Task.Run(()=> SnapforRemote());
         }
 
         public void RemoteBufRelease()

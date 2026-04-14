@@ -25,7 +25,11 @@ namespace ScanMaster.Acquire.Plugin
 	XmlInclude(typeof(DTCLOutputPlugin)),
 	XmlInclude(typeof(MOTMasterScan)),
 	XmlInclude(typeof(ManualOutputPlugin)),
-	XmlInclude(typeof(MSquaredOutputPlugin))
+	XmlInclude(typeof(MSquaredOutputPlugin)),
+	XmlInclude(typeof(AnapicoCH1FrequencyOutputPlugin)),
+	XmlInclude(typeof(AnapicoCH2FrequencyOutputPlugin)),
+	XmlInclude(typeof(AnapicoCH1PowerOutputPlugin)),
+	XmlInclude(typeof(AnapicoCH2PowerOutputPlugin))
 #if DECELERATOR
     ,XmlInclude(typeof(DecelerationHardwareAnalogOutputPlugin))
 #endif

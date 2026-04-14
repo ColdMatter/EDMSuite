@@ -17,12 +17,12 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         Parameters["PatternLength"] = 50000;
         Parameters["Void"] = 0;
-        Parameters["CameraDelay"] = 2000;
+        Parameters["CameraDelay"] = 0;
         Parameters["YAGSwitch"] = true;
 
-        switchConfiguration = new Dictionary<string, List<bool>>
+        switchConfiguration = new Dictionary<string, List<object>>
             {
-                {"YAGSwitch", new List<bool>{true, false}}
+                {"YAGSwitch", new List<object>{true, false}}
             };
     }
 
@@ -39,17 +39,24 @@ public class Patterns : MOTMasterScript
 
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOnStart"] + (int)Parameters["slowingAOMOffStart"] - 1650, true);
         //p.AddEdge("bXSlowingShutter", patternStartBeforeQ + (int)Parameters["slowingAOMOffStart"] + (int)Parameters["slowingAOMOffDuration"], false);
-        p.AddEdge("q",14,true);
-        p.AddEdge("q",100,false);
+        p.AddEdge("q",10000+0,true);
+        p.AddEdge("q",10000+100,false);
 
         if ((bool)Parameters["YAGSwitch"])
         {
-            p.AddEdge("flash", 0, true);
-            p.AddEdge("flash", 100, false);
+            p.AddEdge("flash", 10000-14, true);
+            p.AddEdge("flash", 10000+100, false);
         }
 
-        p.AddEdge("detector", cameraDelay, true);
-        p.AddEdge("detector", cameraDelay + 10, false);
+        p.AddEdge("detector", 10000 + cameraDelay, true);
+        p.AddEdge("detector", 10000 + cameraDelay + 10, false);
+
+        p.AddEdge("VECSEL2_Shutter", 0, true);
+        p.AddEdge("VECSEL2_Shutter", 1, false);
+        p.AddEdge("VECSEL2_Shutter", 20000, true);
+
+        p.AddEdge("He_Shutter", 0, true);
+        p.AddEdge("He_Shutter", 20000, false);
 
         return p;
     }
@@ -57,8 +64,8 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("VECSEL3_AOM_VCA");
-        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
+        p.AddChannel("AOM1_VCA");
+        p.AddAnalogValue("AOM1_VCA", 0, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

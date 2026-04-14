@@ -29,20 +29,20 @@ tools.set_plots()
 
 #%% Load data
 datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month="August2025"
-date="12"
+month="September2025"
+date="29"
 subfolder = ""
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
 print(drive)
 
-pattern="*Duration_*.zip"
+pattern="*015*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%%
-Data = EDM.ReadAverageScanInZippedXML(files[-1])
+Data = EDM.ReadAverageScanInZippedXML(files[0])
 
 #% Print out all params
 Settings = EDM.GetScanSettings(Data)
@@ -51,8 +51,8 @@ print(Settings)
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 40
-SigEnd = 50
+SigStart = 25
+SigEnd = 27
 BkgStart = 70
 BkgEnd = 80
 
@@ -92,7 +92,7 @@ plt.title("Gated TOF over " +\
    str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
    str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
 #plt.xlim(0, 9800)
-plt.ylim(0, 1.5)
+plt.ylim(0, 1)
 plt.show()
 
 
@@ -104,7 +104,40 @@ fig, fit_results = tools.Fitexp_decay(0, ScanParams, Ratio,\
 #Figs[fileLabels[i]] = fig
 #Fits[fileLabels[i]] = fit_results
 
-#%% See TOF at certain V0 duration range
+#%% for off-dupoint
+fig, fit_results = tools.Fitinverse_exp_decay(0, ScanParams, Ratio,\
+                    p0=[0.3, 500., 0.4], xstep=Settings["end"]*1e-3, \
+            plot=True, display=True, Toprint=True, \
+                title = "V3 pump-in", xlabel='V3 duration (μs)',\
+                    ylabel='Population remaining in X, v=0, N=1')
+
+#%
+a = fit_results['best fit'][0]
+b = 1 - fit_results['best fit'][2]
+
+da = fit_results['error'][0]
+db = fit_results['error'][2]
+
+err = np.sqrt((da/b)**2 + (db * a/b**2)**2)
+
+print(a/b)
+print(err)
+
+#%% 
+a = np.array([0.292, 0.236, 0.365, 0.220, 0.434, 0.328, 0.225, 0.424])
+da = np.array([0.026, 0.039, 0.048, 0.022, 0.097, 0.015, 0.036, 0.331])
+
+bg = np.array([0.10, 0.15, 0.29, 0.17, 0.41, 0.35, 0.13, 0.15])
+dbg = np.array([0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.01, 0.02])
+
+print(a)
+print(1-bg-a)
+
+bRa = (1-a-bg)/a
+print(bRa)
+
+dbRa = np.sqrt((da*(1-bg)/a**2)**2 + (dbg/a)**2)
+print(dbRa)
 
 #%% Get TOFs, averaged per point
 TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Data)
@@ -126,11 +159,9 @@ if showTOF:
     plt.show()
 
 #%% Bkg-sub TOF
-BkgOn = np.average(DataOnSPP[0][0][BkgStartIndex:BkgEndIndex])
-BkgOff = np.average(DataOffSPP[0][0][BkgStartIndex:BkgEndIndex])
-
-shot_for_TOF = 2
-
+shot_for_TOF = 6
+BkgOn = np.average(DataOnSPP[0][shot_for_TOF][BkgStartIndex:BkgEndIndex])
+BkgOff = np.average(DataOffSPP[0][shot_for_TOF][BkgStartIndex:BkgEndIndex])
 if showTOF:
     plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[0][shot_for_TOF], axis=1)\
              -BkgOn, label="On")
@@ -150,7 +181,7 @@ if showTOF:
     plt.show()
 
 #% Moving average
-window_size = 10
+window_size = 100
 
 final_list_On = tools.MovingAverage(window_size, \
                             np.average(DataOnSPP[0][shot_for_TOF], axis=1))
@@ -174,11 +205,49 @@ if showTOF:
               (shot_for_TOF, ScanParams[shot_for_TOF], window_size))
     plt.xlabel("time (ms)")
     plt.ylabel("PMT signal (V)")
-    plt.ylim(-0.025, 0.1)
+    plt.xlim(20, 80)
+    plt.ylim(-0.05, 0.5)
     plt.legend()
     plt.show()
 
+#%% Difference
+TOFshots = [25, 27, 31]
+window_size = 100
+for i in TOFshots:
+    BkgOn = np.average(DataOnSPP[0][i][BkgStartIndex:BkgEndIndex])
+    BkgOff = np.average(DataOffSPP[0][i][BkgStartIndex:BkgEndIndex])
+    final_list_On = tools.MovingAverage(window_size, \
+                                np.average(DataOnSPP[0][i], axis=1))
+    final_list_Off = tools.MovingAverage(window_size, \
+                                np.average(DataOffSPP[0][i], axis=1))
+    final_list_diff = (final_list_On-BkgOn) - (final_list_Off-BkgOff)
+    final_MAtimeOnlist = tools.MovingAverage(window_size,TimeOnSPP*1000)
+    final_MAtimeOfflist = tools.MovingAverage(window_size,TimeOffSPP*1000)
+
+    plt.plot(final_MAtimeOnlist, final_list_diff,\
+             label='duration = %g us'%ScanParams[i])
+    #plt.plot(final_MAtimeOfflist, final_list_Off\
+     #        -BkgOff, label="Off")
+plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
+           ymin=np.min(DataOnSPP[0][i])-BkgOn, \
+           ymax=np.max(DataOnSPP[0][i])-BkgOn,\
+               linestyles="dashed", colors="black")
+plt.hlines(0, xmin=25, xmax=80, color='red', linestyles='dashed')
+plt.title("TOF differences, averaged for all shots \
+          \n background subtracted, moving average of %g"%\
+          window_size)
+plt.xlabel("time (ms)")
+plt.ylabel("PMT signal (V)")
+plt.xlim(28, 50)
+plt.ylim(-0.04, 0.08)
+plt.legend()
+plt.show()
+    
+
 #%% Get gated TOF against scanned param with bkg sub
+SigStart = 31
+SigEnd = 44
+
 OnBkgSub, OffBkgSub = EDM.GatedAvgCountsOnOff(Data,\
                         DataOnSPP[0],DataOffSPP[0],TimeOnSPP,TimeOffSPP,\
                 SigStart,SigEnd,BkgStart,BkgEnd)
@@ -189,7 +258,14 @@ GatedTOF = EDM.PlotGatedAvgCountsOnOff(Data,DataOnSPP[0],DataOffSPP[0],\
                 SigStart,SigEnd,BkgStart,BkgEnd,error=False, display=True,\
                     extraTitle=" ")
 
-#%% Plot ratio
+#%% Plot Difference
+plt.plot(ScanParams, OnBkgSub-OffBkgSub, '.')
+plt.xlabel("V0 slowing duration (us)")
+plt.ylabel("Gated LIF (ms.V)")
+plt.title("Gated TOF difference, over " +\
+          str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+              str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
+plt.show()
     
 #%% Fitting
 

@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{16032469-539A-499C-AE91-9C85137EC911}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RbTweezerMasterScripts</RootNamespace>
+    <AssemblyName>RbTweezerMasterScripts</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MOTBasicMultiTrigger.cs" />
+    <Compile Include="MOTBasicMultiTriggerOLD.cs" />
+    <Compile Include="RbTweezerBasic2025_CleanUpPulseTest.cs" />
+    <Compile Include="RbTweezerBasic2025_Density.cs" />
+    <Compile Include="RbTweezerBasic2025_BackgroundSubtracted.cs" />
+    <Compile Include="RbTweezerBasic2025_DropRecapture.cs" />
+    <Compile Include="RbTweezerBasic2025_MicrowaveSpectroscopy1.cs" />
+    <Compile Include="RbTweezerBasic2025_MicrowaveSpectroscopy.cs" />
+    <Compile Include="RbTweezerBasic2025_StatePreparation.cs" />
+    <Compile Include="RbTweezerBasic2025_HyperfineSelection.cs" />
+    <Compile Include="RbTweezerBasic2025_TrapFreqSurvivalMeasurement.cs" />
+    <Compile Include="RbTweezerBasic2025_ImagingSurvival.cs" />
+    <Compile Include="RbTweezerBasic2025_ExternalMagTrapTest.cs" />
+    <Compile Include="RbTweezerBasic2025_MOTMagTrapTest.cs" />
+    <Compile Include="RbTweezerBasic2025_TransportTest.cs" />
+    <Compile Include="RbTweezerBasic2025_BlueLoading_SpectroscopyMeasurement.cs" />
+    <Compile Include="RbTweezerBasic2025_BlueLoading_TrapFrequencyMeasurement.cs" />
+    <Compile Include="RbTweezerBasic2025_BlueMOT.cs" />
+    <Compile Include="RbTweezerBasic2025_Blue.cs" />
+    <Compile Include="RbTweezerBasic2025_RedLoadingTrapFrequencyMeasurement.cs" />
+    <Compile Include="RbTweezerBasic2025_RedLoading.cs" />
+    <Compile Include="RbTweezerBasic2025_RampDown.cs" />
+    <Compile Include="RbTweezerBasic2025_redMOTandMolassesMeasurements.cs" />
+    <Compile Include="RbTweezerBasic2025.cs" />
+    <Compile Include="RbTweezerBlueMolasses.cs" />
+    <Compile Include="RbTweezerBlueMolassesCMOTVVA.cs" />
+    <Compile Include="RbTweezerBlueMolassesShutter.cs" />
+    <Compile Include="RbTweezerBlueMOT.cs" />
+    <Compile Include="RbTweezerMolasses.cs" />
+    <Compile Include="RbTweezerMolassesShutter.cs" />
+    <Compile Include="RbTweezerMolassesShutter_KnockOut.cs" />
+    <Compile Include="RbTweezerMolassesShutter_LifetimeMeasurement.cs" />
+    <Compile Include="RbTweezerMolassesShutter_TempMeasurement.cs" />
+    <Compile Include="RbTweezerMolassesShutter_TrapFrequencyMeasurement.cs" />
+    <Compile Include="RbTweezerMolasses_RampDown.cs" />
+    <Compile Include="RbTweezerMOT.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAQ\DAQ.csproj">
+      <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
+      <Name>DAQ</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MOTMaster\MOTMaster.csproj">
+      <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
+      <Name>MOTMaster</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
