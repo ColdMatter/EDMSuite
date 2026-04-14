@@ -140,6 +140,7 @@ namespace UEDMHardwareControl
         Task DegaussCoil1OutputTask;
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
+        Task feedthroughTempInputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -180,6 +181,22 @@ namespace UEDMHardwareControl
                     task,
                     0,
                     10
+                );
+                task.Control(TaskAction.Verify);
+            }
+            return task;
+        }
+
+        private Task CreateAnalogInputThermocoupleTask(string channel, double inputRangeLow, double inputRangeHigh)
+        {
+            Task task = new Task("EDMHCThermIn" + channel);
+            if (!Environs.Debug)
+            {
+                ((AnalogInputChannel)Environs.Hardware.AnalogInputChannels[channel]).AddToTask(
+                    task,
+                    inputRangeLow,
+                    inputRangeHigh,
+                    AIThermocoupleType.K
                 );
                 task.Control(TaskAction.Verify);
             }
@@ -337,6 +354,8 @@ namespace UEDMHardwareControl
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
+            feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
+
             // make the control window
             window = new ControlWindow();
             window.controller = this;
@@ -396,27 +415,47 @@ namespace UEDMHardwareControl
             SetComboBox(window.comboBoxRFSetpointUnit, "MHz");
             SetComboBox(window.comboBoxRFIncrementUnit, "kHz");
             // Set checkboxes
-            QueryRFMute(0);
-            QueryRFMute(1);
-            QueryPAPowerOn(0);
-            QueryPAPowerOn(1);
-            QueryPLLPowerOn(0);
-            QueryPLLPowerOn(1);
-            QueryRFMuteDetection(0);
-            QueryRFMuteDetection(1);
-            QueryPAPowerOnDetection(0);
-            QueryPAPowerOnDetection(1);
-            QueryPLLPowerOnDetection(0);
-            QueryPLLPowerOnDetection(1);
+            try {
+                Console.WriteLine("Checking Windfreak");
+                QueryRFMute(0);
+                QueryRFMute(1);
+                QueryPAPowerOn(0);
+                QueryPAPowerOn(1);
+                QueryPLLPowerOn(0);
+                QueryPLLPowerOn(1);
+                QueryRFMuteDetection(0);
+                QueryRFMuteDetection(1);
+                QueryPAPowerOnDetection(0);
+                QueryPAPowerOnDetection(1);
+                QueryPLLPowerOnDetection(0);
+                QueryPLLPowerOnDetection(1);
+            } 
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to query OPMWs with error:" + e.Message);
+                string message = "OPMW Windfreak Exception: The OPMWs could not connect on start. \n\nClick OK to continue.";
+                string caption = "OPMW Windfreak Exception";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+            }
             // Set textboxes
-            QueryMWPower(0);
-            QueryMWPower(1);
-            QueryMWFrequency(0);
-            QueryMWFrequency(1);
-            QueryMWPowerDetection(0);
-            QueryMWPowerDetection(1);
-            QueryMWFrequencyDetection(0);
-            QueryMWFrequencyDetection(1);
+            try
+            {
+                QueryMWPower(0);
+                QueryMWPower(1);
+                QueryMWFrequency(0);
+                QueryMWFrequency(1);
+                QueryMWPowerDetection(0);
+                QueryMWPowerDetection(1);
+                QueryMWFrequencyDetection(0);
+                QueryMWFrequencyDetection(1);
+            } 
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to query DETMWs with error:" + e.Message);
+                string message = "DETMW Windfreak Exception: The DETMWs could not connect on start. \n\nClick OK to continue.";
+                string caption = "DETMW Windfreak Exception";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+            }
             //USB Box enabled?
             UsbBBoxEnabler();
 
@@ -431,15 +470,23 @@ namespace UEDMHardwareControl
             window.tbCCDAFrameCount.Text = "20";
             window.comboBoxCCDTriggerMode.SelectedIndex = 1; // Burst mode
 
-            // Apply to hardware only if TCPs are already connected
-            if (window.checkboxTCPCCD.Checked)
+            // Apply to hardware only if TCP to individual CCD is already connected.
+            // Shirley adds on 25/08. When input = -1, the condition in the corresponding function would fail, such that the parameters to each CCD is set separately. 
+            if (window.checkboxTCPCCDA.Checked && ccdA != null)
             {
-                SetCCDGain(100, 100);
-                SetCCDExposureTime(4.32);
-                SetCCDFrameCount(20);
+                SetCCDGain(100, -1);
+                SetCCDExposureTime(4.32, -1);
+                SetCCDFrameCount(20, -1);
 
             }
 
+            if (window.checkboxTCPCCDB.Checked && ccdB != null)
+            {
+                SetCCDGain(-1, 100);
+                SetCCDExposureTime(-1, 1.11 * 4.32 + 0.000033 * 1000);
+                SetCCDFrameCount(-1, 20);
+
+            }
         }
 
         #endregion
@@ -452,7 +499,8 @@ namespace UEDMHardwareControl
             StopFreqMonitorPoll();
 
             // Disconnect the two CCD TCP connections 
-            DisconnectTCPforCCD();
+            DisconnectCCDA();
+            DisconnectCCDB();
 
             StoreParameters();
 
@@ -3536,6 +3584,7 @@ namespace UEDMHardwareControl
             targetStepDirection = !initDir;
             PulseStepperTTL();
             targetStepDirection = initDir;
+            SetTargetStepperExt();
         }
 
         public void ResetTargetStepperPosition()
@@ -4943,7 +4992,7 @@ namespace UEDMHardwareControl
 
                 // disconnect supplies from plates - impose 100ms wait time
                 ESuppliesConnected = false;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
 
                 if (!EFieldEnabled)
                 {
@@ -4966,7 +5015,7 @@ namespace UEDMHardwareControl
 
                 // connect supplies to plates
                 ESuppliesConnected = true;
-                Thread.Sleep(100);
+                Thread.Sleep(10);
 
                 // overshoot delay
                 Thread.Sleep((int)(1000 * EOvershootHold));
@@ -5218,6 +5267,7 @@ namespace UEDMHardwareControl
         private double lastEastCurrent;
         private double lastWestFrequency;
         private double lastEastFrequency;
+        private double feedthroughTemp; //In degrees Celsius
         private Queue<double> nCurrentSamples = new Queue<double>();
         private Queue<double> sCurrentSamples = new Queue<double>();
         private int movingAverageSampleLength = 10;
@@ -5499,6 +5549,26 @@ namespace UEDMHardwareControl
             }
             window.EnableControl(window.startIMonitorPollButton, true);
             window.EnableControl(window.stopIMonitorPollButton, false);
+        }
+
+        public double FeedthroughTemp
+        {
+            get
+            {
+                return feedthroughTemp;
+            }
+        }
+
+        public void PollFeedthroughTemp()
+        {
+            double feedthroughThermocoupleScale = 1; //This converts the reading from the thermocouple to a correct temperature
+            feedthroughTemp = feedthroughThermocoupleScale * ReadAnalogInput(feedthroughTempInputTask);
+        }
+
+        public void UpdateFeedthroughTempUI()
+        {
+            PollFeedthroughTemp();
+            window.SetTextBox(window.tbFeedthroughTemp, FeedthroughTemp.ToString("F2"));
         }
 
         #endregion
@@ -7495,14 +7565,62 @@ namespace UEDMHardwareControl
         // Shirley adds on 20/05/2025
 
         // Set up the TCP connection for remotely controlling CCDs
-        public void InitialiseTCPforCCD()
-        {
-            // --- CCD TCP Connection Setup --- //
-            string nameCCDA = null;
-            string nameCCDB = null;
+        //public void InitialiseTCPforCCD()
+        //{
+        //    // --- CCD TCP Connection Setup --- //
+        //    string nameCCDA = null;
+        //    string nameCCDB = null;
 
-            string computerCCDA = "ULTRACOLDEDM";
-            string computerCCDB = "PH-NI-LAB";
+        //    string computerCCDA = "PH-NI-LAB"; //Gobelin PC
+        //    string computerCCDB = "ULTRACOLDEDM"; //Wavemeter PC
+
+        //    // Resolve CCD A IP
+        //    IPHostEntry hostInfoCCDA = Dns.GetHostEntry(computerCCDA);
+        //    foreach (var addr in hostInfoCCDA.AddressList)
+        //    {
+        //        if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        //        {
+        //            nameCCDA = addr.ToString();
+        //            break;
+        //        }
+        //    }
+        //    Console.WriteLine($"CCD A IP: {nameCCDA}");
+
+        //    EnvironsHelper eHelperCCDA = new EnvironsHelper(computerCCDA);
+        //    int portCCDA = eHelperCCDA.emccdTCPChannel;
+        //    Console.WriteLine($"CCD A Port: {portCCDA}");
+
+        //    ccdA = (csAcq4.CCDController)Activator.GetObject(
+        //        typeof(csAcq4.CCDController),
+        //        $"tcp://{nameCCDA}:{portCCDA}/controller.rem"
+        //    );
+
+        //    // Resolve CCD B IP
+        //    IPHostEntry hostInfoCCDB = Dns.GetHostEntry(computerCCDB);
+        //    foreach (var addr in hostInfoCCDB.AddressList)
+        //    {
+        //        if (addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+        //        {
+        //            nameCCDB = addr.ToString();
+        //            break;
+        //        }
+        //    }
+        //    Console.WriteLine($"CCD B IP: {nameCCDB}");
+
+        //    EnvironsHelper eHelperCCDB = new EnvironsHelper(computerCCDB);
+        //    int portCCDB = eHelperCCDB.emccdTCPChannel;
+        //    Console.WriteLine($"CCD B Port: {portCCDB}");
+
+        //    ccdB = (csAcq4.CCDController)Activator.GetObject(
+        //        typeof(csAcq4.CCDController),
+        //        $"tcp://{nameCCDB}:{portCCDB}/controller.rem"
+        //    );
+        //}
+
+        public void InitialiseTCPforCCDA()
+        {
+            string nameCCDA = null;
+            string computerCCDA = "PH-NI-LAB"; // Gobelin PC
 
             // Resolve CCD A IP
             IPHostEntry hostInfoCCDA = Dns.GetHostEntry(computerCCDA);
@@ -7524,6 +7642,12 @@ namespace UEDMHardwareControl
                 typeof(csAcq4.CCDController),
                 $"tcp://{nameCCDA}:{portCCDA}/controller.rem"
             );
+        }
+
+        public void InitialiseTCPforCCDB()
+        {
+            string nameCCDB = null;
+            string computerCCDB = "ULTRACOLDEDM"; // Wavemeter PC
 
             // Resolve CCD B IP
             IPHostEntry hostInfoCCDB = Dns.GetHostEntry(computerCCDB);
@@ -7547,60 +7671,110 @@ namespace UEDMHardwareControl
             );
         }
 
-        public void DisconnectTCPforCCD()
+
+        //public void DisconnectTCPforCCD()
+        //{
+        //    if (ccdA != null && !RemotingServices.IsTransparentProxy(ccdA))
+        //    {
+        //        RemotingServices.Disconnect(ccdA);
+        //        Console.WriteLine("Disconnected CCD A");
+        //    }
+
+        //    if (ccdB != null && !RemotingServices.IsTransparentProxy(ccdB))
+        //    {
+        //        RemotingServices.Disconnect(ccdB);
+        //        Console.WriteLine("Disconnected CCD B");
+        //    }
+        //}
+
+        public void DisconnectCCDA()
         {
-            if (ccdA != null && RemotingServices.IsTransparentProxy(ccdA))
+            if (ccdA != null && !RemotingServices.IsTransparentProxy(ccdA))
             {
                 RemotingServices.Disconnect(ccdA);
+                ccdA = null;
                 Console.WriteLine("Disconnected CCD A");
             }
+        }
 
-            if (ccdB != null && RemotingServices.IsTransparentProxy(ccdB))
+        public void DisconnectCCDB()
+        {
+            if (ccdB != null && !RemotingServices.IsTransparentProxy(ccdB))
             {
                 RemotingServices.Disconnect(ccdB);
+                ccdB = null;
                 Console.WriteLine("Disconnected CCD B");
             }
         }
 
-
-        public void QueryTemperature()
+        public void QueryCCDTemperature()
         {
-            double tempA = ccdA.GetSensorTemperature();
-            double tempB = ccdB.GetSensorTemperature();
+            double tempA = (ccdA != null) ? ccdA.GetSensorTemperature() : double.NaN;
+            double tempB = (ccdB != null) ? ccdB.GetSensorTemperature() : double.NaN;
 
-            string textA = tempA >= 0 ? $"{tempA:F2} degree" : "Error";
-            string textB = tempB >= 0 ? $"{tempB:F2} degree" : "Error";
+            string textA = !double.IsNaN(tempA) ? $"{tempA:F2} °C" : "N/A";
+            string textB = !double.IsNaN(tempB) ? $"{tempB:F2} °C" : "N/A";
 
-            if (window.labelTemperatureCCDA.InvokeRequired)
+            if (ccdA != null && window.labelTemperatureCCDA.InvokeRequired)
             {
                 window.labelTemperatureCCDA.Invoke(new Action(() =>
-                    window.labelTemperatureCCDA.Text = $"{textA}"));
+                    window.labelTemperatureCCDA.Text = textA));
             }
             else
             {
-                window.labelTemperatureCCDA.Text = $"{textA}";
+                window.labelTemperatureCCDA.Text = textA;
             }
 
-            if (window.labelTemperatureCCDB.InvokeRequired)
+            if (ccdB != null && window.labelTemperatureCCDB.InvokeRequired)
             {
                 window.labelTemperatureCCDB.Invoke(new Action(() =>
-                    window.labelTemperatureCCDB.Text = $"{textB}"));
+                    window.labelTemperatureCCDB.Text = textB));
             }
             else
             {
-                window.labelTemperatureCCDB.Text = $"{textB}";
+                window.labelTemperatureCCDB.Text = textB;
             }
         }
 
+
+        //public void QueryTemperature()
+        //{
+        //    double tempA = ccdA.GetSensorTemperature();
+        //    double tempB = ccdB.GetSensorTemperature();
+
+        //    string textA = tempA >= 0 ? $"{tempA:F2} degree" : "Error";
+        //    string textB = tempB >= 0 ? $"{tempB:F2} degree" : "Error";
+
+        //    if (ccdA != null && window.labelTemperatureCCDA.InvokeRequired)
+        //    {
+        //        window.labelTemperatureCCDA.Invoke(new Action(() =>
+        //            window.labelTemperatureCCDA.Text = $"{textA}"));
+        //    }
+        //    else
+        //    {
+        //        window.labelTemperatureCCDA.Text = $"{textA}";
+        //    }
+
+        //    if (ccdB != null && window.labelTemperatureCCDB.InvokeRequired)
+        //    {
+        //        window.labelTemperatureCCDB.Invoke(new Action(() =>
+        //            window.labelTemperatureCCDB.Text = $"{textB}"));
+        //    }
+        //    else
+        //    {
+        //        window.labelTemperatureCCDB.Text = $"{textB}";
+        //    }
+        //}
+
         public void QueryExposureTime()
         {
-            double expA = ccdA.GetExposureTime();
-            double expB = ccdB.GetExposureTime();
+            double expA = (ccdA != null) ? ccdA.GetExposureTime() : double.NaN;
+            double expB = (ccdB != null) ? ccdB.GetExposureTime() : double.NaN;
 
-            string textA = expA >= 0 ? $"{expA * 1000:F2} ms" : "Error";
-            string textB = expB >= 0 ? $"{expB * 1000:F2} ms" : "Error";
+            string textA = !double.IsNaN(expA) ? $"{expA * 1000:F2} ms" : "N/A";
+            string textB = !double.IsNaN(expB) ? $"{expB * 1000:F2} ms" : "N/A";
 
-            if (window.labelExposureTimeCCDA.InvokeRequired)
+            if (ccdA != null && window.labelExposureTimeCCDA.InvokeRequired)
             {
                 window.labelExposureTimeCCDA.Invoke(new Action(() =>
                     window.labelExposureTimeCCDA.Text = $"{textA}"));
@@ -7610,7 +7784,7 @@ namespace UEDMHardwareControl
                 window.labelExposureTimeCCDA.Text = $"{textA}";
             }
 
-            if (window.labelExposureTimeCCDB.InvokeRequired)
+            if (ccdB != null && window.labelExposureTimeCCDB.InvokeRequired)
             {
                 window.labelExposureTimeCCDB.Invoke(new Action(() =>
                     window.labelExposureTimeCCDB.Text = $"{textB}"));
@@ -7621,40 +7795,61 @@ namespace UEDMHardwareControl
             }
         }
 
-        public void SetCCDExposureTime(double exposureTimeMs)
-        {
-            // Convert ms to s for internal use
-            double exposureTimeSecA = exposureTimeMs / 1000.0;
-            double exposureTimeSecB = (1.11 * exposureTimeMs + 0.000033 * 1000.0) / 1000.0;
-            // t_ex,2 = 1.11*t_ex,1 + 0.11*t_d
+        //public void SetCCDExposureTime(double exposureTimeMs)
+        //{
+        //    // Convert ms to s for internal use
+        //    double exposureTimeSecA = exposureTimeMs / 1000.0;
+        //    double exposureTimeSecB = (1.11 * exposureTimeMs + 0.000033 * 1000.0) / 1000.0;
+        //    // t_ex,2 = 1.11*t_ex,1 + 0.11*t_d
 
-            ccdA.UpdateExposureTime(exposureTimeSecA);
-            ccdB.UpdateExposureTime(exposureTimeSecB);
+        //    if (ccdA != null)
+        //    {
+        //        ccdA.UpdateExposureTime(exposureTimeSecA);
+        //    }
+
+        //    if (ccdB != null)
+        //    {
+        //        ccdB.UpdateExposureTime(exposureTimeSecB);
+        //    }
+            
+
+        //    // Show updated values back in ms
+        //    window.SetTextBox(window.tbCCDAExposure, exposureTimeMs.ToString("F3"));
+        //    window.SetTextBox(window.tbCCDBExposure, (exposureTimeSecB * 1000.0).ToString("F3"));
+        //}
+
+
+        public void SetCCDExposureTime(double exposureA, double exposureB)
+        {
+            if (exposureA >= 0 && ccdA != null)
+            {
+                double secA = exposureA / 1000.0;
+                ccdA.UpdateExposureTime(secA);
+                Console.WriteLine($"CCD A exposure set to {exposureA} ms");
+            }
+
+            if (exposureB >= 0 && ccdB != null)
+            {
+                double secB = (1.11 * exposureB + 0.000033 * 1000.0) / 1000.0;
+                ccdB.UpdateExposureTime(secB);
+                Console.WriteLine($"CCD B exposure set to {exposureB} ms");
+            }
 
             // Show updated values back in ms
-            window.SetTextBox(window.tbCCDAExposure, exposureTimeMs.ToString("F3"));
-            window.SetTextBox(window.tbCCDBExposure, (exposureTimeSecB * 1000.0).ToString("F3"));
+            window.SetTextBox(window.tbCCDAExposure, exposureA.ToString("F3"));
+            window.SetTextBox(window.tbCCDBExposure, exposureB.ToString("F3"));
         }
 
-
-        public void SetCCDExposureTime(double exposureTimeA, double exposureTimeB)
-        {
-            ccdA.UpdateExposureTime(exposureTimeA);
-            ccdB.UpdateExposureTime(exposureTimeB);
-
-            window.SetTextBox(window.tbCCDAExposure, exposureTimeA.ToString("F5"));
-            window.SetTextBox(window.tbCCDBExposure, exposureTimeB.ToString("F5"));
-        }
 
         public void QueryCCDGain()
         {
-            double gainA = ccdA.GetGainValue();
-            double gainB = ccdB.GetGainValue();
+            double gainA = (ccdA != null) ? ccdA.GetGainValue() : double.NaN;
+            double gainB = (ccdB != null) ? ccdB.GetGainValue() : double.NaN;
 
-            string textA = gainA >= 0 ? $"{gainA:F1}" : "Error";
-            string textB = gainB >= 0 ? $"{gainB:F1}" : "Error";
+            string textA = !double.IsNaN(gainA) ? $"{gainA:F0}" : "N/A";
+            string textB = !double.IsNaN(gainB) ? $"{gainB:F0}" : "N/A";
 
-            if (window.labelGainCCDA.InvokeRequired)
+            if (ccdA != null && window.labelGainCCDA.InvokeRequired)
             {
                 window.labelGainCCDA.Invoke(new Action(() =>
                     window.labelGainCCDA.Text = $"{textA}"));
@@ -7664,7 +7859,7 @@ namespace UEDMHardwareControl
                 window.labelGainCCDA.Text = $"{textA}";
             }
 
-            if (window.labelGainCCDB.InvokeRequired)
+            if (ccdB != null && window.labelGainCCDB.InvokeRequired)
             {
                 window.labelGainCCDB.Invoke(new Action(() =>
                     window.labelGainCCDB.Text = $"{textB}"));
@@ -7677,19 +7872,32 @@ namespace UEDMHardwareControl
 
         public void SetCCDGain(double gainA, double gainB)
         {
-            ccdA.UpdateCCDGain(gainA);
-            ccdB.UpdateCCDGain(gainB);
+            if (gainA >= 0 && ccdA != null)
+            {
+                ccdA.UpdateCCDGain(gainA);
+            }
+            if (gainB >= 0 && ccdB != null)
+            {
+                ccdB.UpdateCCDGain(gainB);
+            }
 
-            window.SetTextBox(window.tbCCDAGain, gainA.ToString("F5"));
-            window.SetTextBox(window.tbCCDBGain, gainB.ToString("F5"));
+            window.SetTextBox(window.tbCCDAGain, gainA.ToString("F0"));
+            window.SetTextBox(window.tbCCDBGain, gainB.ToString("F0"));
         }
 
         public void SetCCDTriggerModeRemote()
         {
             int triggerMode = window.comboBoxCCDTriggerMode.SelectedIndex; // Get selected index from ComboBox
+            
+            if (ccdA != null)
+            {
+                ccdA.ApplySelectedTriggerSource(triggerMode);
+            }
 
-            ccdA.ApplySelectedTriggerSource(triggerMode);
-            ccdB.ApplySelectedTriggerSource(triggerMode);
+            if (ccdB != null)
+            {
+                ccdB.ApplySelectedTriggerSource(triggerMode);
+            }
 
             string modeLabel;
             switch (triggerMode)
@@ -7721,13 +7929,13 @@ namespace UEDMHardwareControl
 
         public void QueryFrameCount()
         {
-            int countA = ccdA.GetFrameCountforHardwareController();
-            int countB = ccdB.GetFrameCountforHardwareController();
+            int countA = (ccdA != null) ? ccdA.GetFrameCountforHardwareController() : -1;
+            int countB = (ccdB != null) ? ccdB.GetFrameCountforHardwareController() : -1;
 
-            string textA = countA >= 0 ? countA.ToString() : "Error";
-            string textB = countB >= 0 ? countB.ToString() : "Error";
+            string textA = countA >= 0 ? countA.ToString() : "N/A";
+            string textB = countB >= 0 ? countB.ToString() : "N/A";
 
-            if (window.labelFrameCCDA.InvokeRequired)
+            if (ccdA != null && window.labelFrameCCDA.InvokeRequired)
             {
                 window.labelFrameCCDA.Invoke(new Action(() =>
                     window.labelFrameCCDA.Text = $"{textA}"));
@@ -7737,7 +7945,7 @@ namespace UEDMHardwareControl
                 window.labelFrameCCDA.Text = $"{textA}";
             }
 
-            if (window.labelFrameCCDB.InvokeRequired)
+            if (ccdB != null && window.labelFrameCCDB.InvokeRequired)
             {
                 window.labelFrameCCDB.Invoke(new Action(() =>
                     window.labelFrameCCDB.Text = $"{textB}"));
@@ -7749,20 +7957,34 @@ namespace UEDMHardwareControl
         }
 
         // this sets the number of frames taken in one burst shot, default to be 20
-        public void SetCCDFrameCount(int frameCount)
+        public void SetCCDFrameCount(int frameCountA, int frameCountB)
         {
-            ccdA.UpdateFrameCount(frameCount);
-            ccdB.UpdateFrameCount(frameCount);
+            if (frameCountA >= 0 && ccdA != null)
+            {
+                ccdA.UpdateFrameCount(frameCountA);
+            }
+            if (frameCountB >= 0 && ccdB != null)
+            {
+                ccdB.UpdateFrameCount(frameCountB);
+            }
+                
 
-            window.SetTextBox(window.tbCCDAFrameCount, frameCount.ToString("F0"));
+            window.SetTextBox(window.tbCCDAFrameCount, frameCountA.ToString("F0"));
         }
 
         // From the acquisitor of blockhead, this sets the number of shots taken in one acquisition.
         // this should be equal to the total number of shots in one block
         public void SetCCDShotCount(int shotCount)
         {
-            ccdA.UpdateNumSnaps(shotCount);
-            ccdB.UpdateNumSnaps(shotCount);
+            if (ccdA != null)
+            {
+                ccdA.UpdateNumSnaps(shotCount);
+            }
+            if (ccdB != null)
+            {
+                ccdB.UpdateNumSnaps(shotCount);
+            }
+                
 
             if (window.tbCCDShotCount.InvokeRequired)
             {
@@ -7775,41 +7997,227 @@ namespace UEDMHardwareControl
             }
         }
 
+        // public void SyncCCDBlockName(string cluster, int blockIndex)
+        // {
+        //     string nameMeassgae = $"{cluster}_{blockIndex:D5}";
+
+        //     while (!IsCCDAReady())
+        //     {
+        //         Thread.Sleep(1);
+        //     }
+        //     try
+        //     {
+        //         ccdA.SendBlockName(nameMeassgae);
+        //         Console.WriteLine($"Hardware controller is syncing CCDA block name: {nameMeassgae}");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"Failed to sync block name to CCDA: {ex.Message}");
+        //     }
+        //     while (!IsCCDBReady())
+        //     {
+        //         Thread.Sleep(1);
+        //     }
+        //     try
+        //     {
+        //         ccdB.SendBlockName(nameMeassgae);
+        //         Console.WriteLine($"Hardware controller is syncing CCDB block name: {nameMeassgae}");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"Failed to sync block name to CCDB: {ex.Message}");
+        //     }
+        // }
+
+        // shirley adds on 14/07 to implement the handshake between CCD ready for next block and Blockhead ready to start next burst
+
+        //public void QueryCCDReady()
+        //{
+        //    bool readyA = ccdA.IsCCDReadyForNextBlock();
+        //    //bool readyB = ccdB.IsCCDReadyForNextBlock();
+
+        //    string textA = readyA ? "Ready" : "Not Ready";
+        //    //string textB = readyB ? "Ready" : "Not Ready";
+        //}
+
+        // public bool IsCCDAReady()
+        // {
+        //     //return ccdA.IsCCDReadyForNextBlock();
+        //     return ccdA.IsCCDReadyForNextBlock();
+        // }
+
+        // public bool IsCCDBReady()
+        // {
+        //     //return ccdA.IsCCDReadyForNextBlock();
+        //     return ccdA.IsCCDReadyForNextBlock() && ccdB.IsCCDReadyForNextBlock();
+        // }
+
+        // public (bool readyA, bool readyB) IsCCDReady()
+        // {
+        //     bool readyA = false;
+        //     bool readyB = false;
+
+        //     try
+        //     {
+        //         if (ccdA != null) readyA = ccdA.IsCCDReadyForNextBlock();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"CCD A readiness check failed: {ex.Message}");
+        //     }
+
+        //     try
+        //     {
+        //         if (ccdB != null) readyB = ccdB.IsCCDReadyForNextBlock();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"CCD B readiness check failed: {ex.Message}");
+        //     }
+
+        //     return (readyA, readyB);
+        // }
+
+        public (bool readyA, bool readyB) IsCCDReady()
+        {
+            bool readyA = (ccdA != null) && ccdA.IsCCDReadyForNextBlock();
+            bool readyB = (ccdB != null) && ccdB.IsCCDReadyForNextBlock();
+            return (readyA, readyB);
+        }
 
 
-        // --- Run/Stop Burst or Snap Acquisition---
+            // shirley adds on 14/07 to sync the names with blockhead data
+        public void SyncCCDBlockName(string cluster, int blockIndex)
+        {
+            string nameMessage = $"{cluster}_{blockIndex:D5}";
+
+            try
+            {
+                // Query readiness of both CCDs
+                (bool readyA, bool readyB) = IsCCDReady();
+
+                // CCD A
+                if (ccdA != null)
+                {
+                    while (!readyA)
+                    {
+                        Thread.Sleep(1);
+                        (readyA, _) = IsCCDReady(); // re-check
+                    }
+                    try
+                    {
+                        ccdA.SendBlockName(nameMessage);
+                        Console.WriteLine($"Hardware controller is syncing CCDA block name: {nameMessage}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to sync block name to CCDA: {ex.Message}");
+                    }
+                }
+
+                // CCD B
+                if (ccdB != null)
+                {
+                    while (!readyB)
+                    {
+                        Thread.Sleep(1);
+                        (_, readyB) = IsCCDReady(); // re-check
+                    }
+                    try
+                    {
+                        ccdB.SendBlockName(nameMessage);
+                        Console.WriteLine($"Hardware controller is syncing CCDB block name: {nameMessage}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to sync block name to CCDB: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error in SyncCCDBlockName: {ex.Message}");
+            }
+        }
+
+        //rhys 01/08 - set the ccd shot status 
+        public void UpdateCCDShotState(int state)
+        {
+            ccdA.SetShotStatus(state);
+            ccdB.SetShotStatus(state);
+
+        }
 
         // CCD External Burst Mode 
         public void StartBurstAcquisition()
         {
-            System.Threading.Tasks.Task.Run(() =>
+            // Always wait until all TCP-connected CCDs are ready
+            (bool readyA, bool readyB) = IsCCDReady();
+            while ((ccdA != null && !readyA) || (ccdB != null && !readyB))
             {
-                try
-                {
-                    ccdA.StartBurstAcquisition();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("CCD A burst acquisition error", ex);
-                }
-            });
+                Thread.Sleep(1);
+                (readyA, readyB) = IsCCDReady(); //re-check
+            }
 
-            System.Threading.Tasks.Task.Run(() =>
+            if (readyA && !readyB)
             {
-                try
+                System.Threading.Tasks.Task.Run(() =>
                 {
-                    ccdB.StartBurstAcquisition();
-                }
-                catch (Exception ex)
+                    try
+                    {
+                        ccdA.StartBurstAcquisition();
+                        Console.WriteLine("CCD A started burst acquisition.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CCD A burst acquisition error", ex);
+                    }
+                });
+            }
+
+            else if (!readyA && readyB)
+            {
+                System.Threading.Tasks.Task.Run(() =>
                 {
-                    Console.WriteLine("CCD B burst acquisition error", ex);
-                }
-            });
+                    try
+                    {
+                        ccdB.StartBurstAcquisition();
+                        Console.WriteLine("CCD B started burst acquisition.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CCD B burst acquisition error", ex);
+                    }
+                });
+            }
+
+            else if (readyA && readyB)
+            {
+                System.Threading.Tasks.Task.Run(() =>
+                {
+                    try
+                    {
+                        ccdA.StartBurstAcquisition();
+                        ccdB.StartBurstAcquisition();
+                        Console.WriteLine("CCD A and CCD B started burst acquisition.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CCD burst acquisition error", ex);
+                    }
+                });
+            }
+
+            else
+            {
+                Console.WriteLine("Neither CCD is ready for burst acquisition. Skipping...");
+            }
+                    
         }
 
         // NOTE: this method should only be called when ABORTING the current acquisition.
         // otherwise, the burst mode will stop and save all files automatically itself when the scan finishes.
-        public void StopBurstAcquisition()
+        public void StopCCDBurst()
         {
             ccdA.StopBurstAcquisition();
             ccdB.StopBurstAcquisition();

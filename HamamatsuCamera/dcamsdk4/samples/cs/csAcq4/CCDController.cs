@@ -1930,7 +1930,7 @@ namespace csAcq4
 
         public bool IsCCDReadyForNextBlock()
         {
-            return ccdReadyForNextBlock;
+            return ccdReadyForNextBlock; // set true after init, false during block, true again after SaveAllData
         }
 
 

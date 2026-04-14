@@ -1808,35 +1808,72 @@ namespace UEDMHardwareControl
 
         private void SetupTCPtoCCDs_Click(object sender, EventArgs e)
         {
-            if (checkboxTCPCCD.Checked)
+            CheckBox clicked = sender as CheckBox;
+
+            try
             {
-                try
+                if (clicked == checkboxTCPCCDA)
                 {
-                    controller.InitialiseTCPforCCD();
-                    ToggleCCDControls(true);
-                    MessageBox.Show("CCD TCP connection established.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (checkboxTCPCCDA.Checked)
+                    {
+                        controller.InitialiseTCPforCCDA();
+
+                        // Check readiness AFTER connection
+                        (bool readyA, _) = controller.IsCCDReady();
+                        if (!readyA)
+                        {
+                            throw new Exception("CCD A is not ready for connection. Ensure it is powered on and initialised in program.");
+                        }
+
+                        ToggleCCDControls(true);
+                        MessageBox.Show("CCD A TCP connection established and initialisation verified.",
+                                        "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        controller.DisconnectCCDA();
+                        ToggleCCDControls(false);
+                        MessageBox.Show("CCD A TCP connection closed.",
+                                        "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
-                catch (Exception ex)
+                else if (clicked == checkboxTCPCCDB)
                 {
-                    MessageBox.Show($"Failed to connect to CCDs:\n{ex.Message}, please check if the cameras are opened and the CCD controller programs are built on wavemeter and gobelin computers.", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    checkboxTCPCCD.Checked = false;
-                    ToggleCCDControls(false);
+                    if (checkboxTCPCCDB.Checked)
+                    {
+                        controller.InitialiseTCPforCCDB();
+
+                        // Check readiness AFTER connection
+                        (_, bool readyB) = controller.IsCCDReady();
+                        if (!readyB)
+                        {
+                            throw new Exception("CCD B is not ready for connection. Ensure it is powered on and initialised in program.");
+                        }
+
+                        ToggleCCDControls(true);
+                        MessageBox.Show("CCD B TCP connection established and initialisation verified.",
+                                        "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        controller.DisconnectCCDB();
+                        ToggleCCDControls(false);
+                        MessageBox.Show("CCD B TCP connection closed.",
+                                        "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    controller.DisconnectTCPforCCD();
-                    ToggleCCDControls(false);
-                    MessageBox.Show("CCD TCP connection closed.", "TCP Status", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to disconnect CCDs:\n{ex.Message}", "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show($"Failed to toggle TCP connection:\n{ex.Message}",
+                                "TCP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Roll back checkbox if something failed
+                if (clicked == checkboxTCPCCDA) checkboxTCPCCDA.Checked = controller.ccdA != null;
+                if (clicked == checkboxTCPCCDB) checkboxTCPCCDB.Checked = controller.ccdB != null;
             }
         }
+
 
 
 
