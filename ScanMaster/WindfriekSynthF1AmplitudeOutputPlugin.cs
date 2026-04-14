@@ -24,24 +24,49 @@ namespace ScanMaster.Acquire.Plugins
 
 		protected override void InitialiseSettings()
 		{
-			settings["synth"] = "WindfreakDetection";
-			settings["channel"] = 0;				// 0 is channel A and 1 is channel B
+			settings["synth"] = "WindfreakDetection"; // WindfreakDetection (two channel synth) or WindfreakDetectionB (mini synth)
+			settings["channel"] = 1;				// 0 is channel A and 1 is channel B of windfreak synth detection, default = channel B
 			settings["scanOnFrequency"] = 14458087000; //Hz
-			settings["offAmplitude"] = -30.0;		// dBm
+			settings["offAmplitude"] = 5;		// dBm
 			settings["offFrequency"] = 14458087000;	// Hz
 		}
 
 		public override void AcquisitionStarting()
 		{
-			synth = (WindfreakSynthHD)Environs.Hardware.Instruments[(string)settings["synth"]];
-			synth.Connect();
-			synth.SetChannel((int)settings["channel"]);
-			//synth.SetPower((double)settings["scanOnAmplitude"]);
-			synth.SetFrequency((long)settings["scanOnFrequency"]);
-			synth.SetRFMute(false);
-			synth.SetPLLPowerOn(true);
-			synth.SetPAPowerOn(true);
-		}
+			//synth = (WindfreakSynthHD)Environs.Hardware.Instruments["synth"];
+			//synth.Connect();
+			//synth.SetChannel((int)settings["channel"]);
+			//synth.SetFrequency((long)settings["scanOnFrequency"]);
+			//synth.SetRFMute(false);
+			//synth.SetPLLPowerOn(true);
+			//synth.SetPAPowerOn(true);
+
+            string scanDevice = (string)settings["synth"];
+
+            synth = (WindfreakSynthHD)Environs.Hardware.Instruments[scanDevice];
+            synth.Connect();
+
+            if (scanDevice == "WindfreakDetection")
+            {
+                synth.SetChannel((int)settings["channel"]);
+                synth.SetFrequency((long)settings["scanOnFrequency"]);
+                synth.SetRFMute(false);
+                synth.SetPLLPowerOn(true);
+                synth.SetPAPowerOn(true);
+            }
+            else if (scanDevice == "WindfreakDetectionB")
+            {
+                synth.SetFrequency((long)settings["scanOnFrequency"]);
+                synth.SetRFMute(false);
+                synth.SetPLLPowerOn(true);
+                synth.SetPAPowerOn(true);
+            }
+            else
+            {
+                throw new Exception("Invalid scan device setting, please check if the Windfreak synth is on and connected.");
+            }
+
+        }
 
 		public override void ScanStarting()
 		{
@@ -53,12 +78,15 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionFinished()
 		{
+			string scanDevice = (string)settings["synth"];
+
 			synth.SetPower((double)settings["offAmplitude"]);
 			synth.SetFrequency((long)settings["offFrequency"]);
 			synth.SetRFMute(true);
 			synth.SetPLLPowerOn(false);
 			synth.SetPAPowerOn(false);
 			synth.Disconnect();
+
 		}
 
 		[XmlIgnore]
@@ -68,6 +96,12 @@ namespace ScanMaster.Acquire.Plugins
 			{
 				scanParameter = value;
 				synth.SetPower((double)ScanParameter);
+
+				//if (synth != null)
+				//{
+				//	synth.SetFrequency((long)ScanParameter);
+				//}
+
 			}
 			get { return scanParameter; }
 		}

@@ -18,6 +18,7 @@ namespace DAQ.Environment
             Paths.Add("transferCavityData", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Data\\TCL\\");
             Paths.Add("HardwareControllerDataPath", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Data\\HardwareController\\");
             Paths.Add("edmDataPath", "C:\\Users\\UEDM\\Imperial College London\\Team ultracold - PH - Documents\\Data\\BlockData\\");
+            Paths.Add("wavemeterLockData", "C:\\Users\\UEDM\\Documents\\EDM Suite Files\\Examples\\");
 
             // Shirley adds on 20/01/2026 for CCD_config.xml data saving automation
             Paths.Add("CCDxmlDataPath", "C:\\Users\\UEDM\\Imperial College London\\Team ultracold - PH - Documents\\Data\\");

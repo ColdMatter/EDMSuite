@@ -140,13 +140,13 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                /*case "Centaur":
+                case "Centaur":
                     Hardware = new CentaurEDMHardware();
                     FileSystem = new CentaurEDMFileSystem();
                     Debug = false;
                     //ExperimentType = "edm";
                     break;
-                */
+
                 case "PH-NFITCH-2":
                     Hardware = new ZeemanSisyphusHardware();
                     FileSystem = new PHNFITCH2FileSystem();
@@ -344,11 +344,11 @@ namespace DAQ.Environment
                 case "CENTAUR":
                     Hardware = new BufferClassicHardware();
                     FileSystem = new CENTAURFileSystem();
-                    Debug = true;
-                    //viewerServerComputerName = "WS8ServerHuxley";
-                    serverComputerName = "WS8ServerHuxley";
-                     //viewerServerTCPChannel = 2001;
-                     serverTCPChannel = 2001;
+                    Debug = false;
+                    //viewerServerComputerName = "WS8SERVERHUXLEY";
+                    serverComputerName = "WS8SERVERHUXLEY";
+                    //viewerServerTCPChannel = 2001;
+                    serverTCPChannel = 2001;
                     wavemeterLockTCPChannel = 1919;
                     break;
 
