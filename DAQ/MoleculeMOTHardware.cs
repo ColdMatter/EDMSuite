@@ -18,10 +18,10 @@ namespace DAQ.HAL
     /// to the Hardware inteSidebandImAmp1ce.
     /// </summary>
     public class MoleculeMOTHardware : DAQ.HAL.Hardware
-	{
+    {
 
-		public MoleculeMOTHardware()
-		{
+        public MoleculeMOTHardware()
+        {
 
             //Boards
             string digitalPatternBoardName = "digitalPattern";
@@ -57,11 +57,11 @@ namespace DAQ.HAL
             string digitalPatternBoardAddress2 = "/PXI1Slot4";//PXI-6535
             Boards.Add(digitalPatternBoardName2, digitalPatternBoardAddress2);
 
-            
+
             string analogPatternBoardName2 = "analogPattern2";
             string analogPatternBoardAddress2 = "/PXI1Slot7";//PXI-6738
             Boards.Add(analogPatternBoardName2, analogPatternBoardAddress2);
-            
+
 
             // Channel Declarations
 
@@ -77,7 +77,7 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("v00Lock", tclBoard1Address + "/ao0", 0, 10);//Reused for Rb D1 Cooling Wavemeter Lock 14/03/23
             AddAnalogOutputChannel("v10Lock", usbBoard2Address + "/ao1", 0, 5);
-            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2"); 
+            AddAnalogOutputChannel("bXLock", tclBoard3Address + "/ao2");
             //AddAnalogOutputChannel("rbD1Frequency", tclBoard1Address + "/ao0"); //Reused Channel 14/03/23
 
             AddAnalogOutputChannel("cavityLockHamish", tclBoard3Address + "/ao3");
@@ -94,8 +94,6 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("bXBeastLock", usbBoard1Address + "/ao1", 0, 5);
             AddAnalogOutputChannel("TCoolSidebandVCO", analogPatternBoardAddress2 + "/ao3"); //Reused for Rb Repump Wavemeter Lock 20/03/23
             //AddAnalogOutputChannel("rbRepumpFrequency", tclBoard1Address + "/ao1"); //Reused Channel 20/03/23
-
-
             // Digital Pattern
             AddDigitalOutputChannel("flashLamp", digitalPatternBoardAddress, 0, 0);
             AddDigitalOutputChannel("qSwitch", digitalPatternBoardAddress, 0, 1);
@@ -110,6 +108,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("aoPatternTrigger", digitalPatternBoardAddress, 1, 0);
             AddDigitalOutputChannel("v00MOTShutter", digitalPatternBoardAddress, 1, 1);
             AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress, 1, 2);
+            AddDigitalOutputChannel("v1Shutter", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("bXLockBlock", digitalPatternBoardAddress, 1, 3);
             AddDigitalOutputChannel("v00LockBlock", digitalPatternBoardAddress, 2, 1);
             AddDigitalOutputChannel("topCoilDirection", digitalPatternBoardAddress, 1, 4);
@@ -146,7 +145,7 @@ namespace DAQ.HAL
 
             //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
             AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
-            
+
             AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
             AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
             AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress, 3, 4);
@@ -174,13 +173,12 @@ namespace DAQ.HAL
             //AddAnalogOutputChannel("triggerDelay", analogPatternBoardAddress + "/ao15");
             AddAnalogOutputChannel("xShimCoilCurrent", analogPatternBoardAddress + "/ao17");
             AddAnalogOutputChannel("yShimCoilCurrent", analogPatternBoardAddress + "/ao16");
-            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress + "/ao21"); 
+            AddAnalogOutputChannel("zShimCoilCurrent", analogPatternBoardAddress +  "/ao21");
             AddAnalogOutputChannel("slowingCoilsCurrent", analogPatternBoardAddress + "/ao18");
             AddAnalogOutputChannel("v00Chirp", analogPatternBoardAddress + "/ao22");
             AddAnalogOutputChannel("topCoilShunt", analogPatternBoardAddress + "/ao26");
             AddAnalogOutputChannel("lightSwitch", analogPatternBoardAddress + "/ao19");
 
-            AddAnalogOutputChannel("BXAttenuation", analogPatternBoardAddress2 + "/ao1");
             AddAnalogOutputChannel("SlowingRepumpAttenuation", analogPatternBoardAddress2 + "/ao5");
 
 
@@ -190,13 +188,15 @@ namespace DAQ.HAL
 
 
             // New Rb
-            AddAnalogOutputChannel("rb3DCoolingFrequency", analogPatternBoardAddress + "/ao1");
+
             AddAnalogOutputChannel("rbD1VCO", analogPatternBoardAddress + "/ao3");
             //AddAnalogOutputChannel("rbRepumpFrequency", analogPatternBoardAddress + "/ao3");
-            AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
-            AddAnalogOutputChannel("rb3DCoolingAttenuation", analogPatternBoardAddress + "/ao0");
-            AddAnalogOutputChannel("v0AOMSidebandAmp", analogPatternBoardAddress + "/ao2");
-
+            //AddAnalogOutputChannel("rbAbsImagingFrequency", analogPatternBoardAddress + "/ao4");
+            AddAnalogOutputChannel("ODT90att", analogPatternBoardAddress + "/ao4");
+            AddAnalogOutputChannel("BXAOM2att", analogPatternBoardAddress + "/ao0");
+            AddAnalogOutputChannel("BXAOM1att", analogPatternBoardAddress + "/ao1");
+            //AddAnalogOutputChannel("v0AOMSidebandAmp", analogPatternBoardAddress + "/ao2");
+            AddAnalogOutputChannel("ODT70att", analogPatternBoardAddress + "/ao2");
             //AddAnalogOutputChannel("rbRepumpAttenuation", analogPatternBoardAddress + "/ao5"); //Highjacked for D1 attenuation 21/03/2023
             AddAnalogOutputChannel("rbD1CoolingAttenuation", analogPatternBoardAddress + "/ao5");
             AddAnalogOutputChannel("rbOffsetLock", analogPatternBoardAddress + "/ao15");
@@ -246,15 +246,13 @@ namespace DAQ.HAL
             Info.Add("PowerMonitorPD", tclBoard2Address + "/ai9");
             Info.Add("ToFTrigger", tclBoard2Address + "/PFI1");
             Info.Add("flowConversionSF6", 0.2); //Flow Conversions for flow monitor in sccm per Volt. 0.2 sccm per V for Alicat
-            Info.Add("flowConversionHe", 1.0); 
+            Info.Add("flowConversionHe", 1.0);
             AddAnalogOutputChannel("hardwareControlAO0", tclBoard2Address + "/ao0");
             AddAnalogOutputChannel("hardwareControlAO1", tclBoard2Address + "/ao1");
 
             //Cavity combiner
-            AddAnalogOutputChannel("Rf1Freq", analogPatternBoardAddress2 + "/ao0");
-            AddAnalogOutputChannel("Rf2Freq", analogPatternBoardAddress2 + "/ao2");
-            AddAnalogOutputChannel("Rf3Freq", analogPatternBoardAddress2 + "/ao4");
-            AddAnalogOutputChannel("Rf4Freq", analogPatternBoardAddress2 + "/ao6");
+            //AddAnalogOutputChannel("DipoleRetroX", analogPatternBoardAddress2 + "/ao4");
+            //AddAnalogOutputChannel("DipoleRetroX", analogPatternBoardAddress2 + "/ao6");
             AddAnalogOutputChannel("FeedforwardS", analogPatternBoardAddress2 + "/ao8");
             AddAnalogOutputChannel("FeedforwardF", analogPatternBoardAddress2 + "/ao10");
 
@@ -265,13 +263,14 @@ namespace DAQ.HAL
 
 
             AddAnalogOutputChannel("BXFreq", analogPatternBoardAddress2 + "/ao9");
+            AddAnalogOutputChannel("BXAttenuation", analogPatternBoardAddress2 + "/ao1");
 
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             //wmlConfig.AddSlaveLaser("RbD1Cooling", "rbD1Frequency", 7);//Laser name, analog channel, wavemeter channel
             //wmlConfig.AddLaserConfiguration("RbD1Cooling", 377.105206, -100, -1000);
             //wmlConfig.AddSlaveLaser("RbRepump", "rbRepumpFrequency", 5);
-            
+
             wmlConfig.AddSlaveLaser("v0", "v00Lock", 1);
             wmlConfig.AddLaserConfiguration("v0", 494.432395, 500, 1500);
 
@@ -287,8 +286,8 @@ namespace DAQ.HAL
             wmlConfig.AddSlaveLaser("BX", "bXLock", 5);
             wmlConfig.AddLaserConfiguration("BX", 564.582406, 500, 500);
             //Use TC for sowing Mar 5th 2024
-            wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
-            //wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
+            //wmlConfig.AddLockBlock("BX", "bXLockBlockFlag");
+            wmlConfig.AddLockBlock("TCool", "bXLockBlockFlag");
 
             wmlConfig.AddSlaveLaser("TCool", "bXBeastLock", 6);
             wmlConfig.AddLaserConfiguration("TCool", 564.582240, 50, 500);
@@ -389,7 +388,7 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
-            
+
             Info.Add("PGType", "dedicated");
             Info.Add("Element", "CaF");
 
@@ -409,12 +408,12 @@ namespace DAQ.HAL
             
             */
 
-            
+
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", analogPatternBoardAddress);
             analogBoards.Add("SecondAO", analogPatternBoardAddress2);
             Info.Add("AnalogBoards", analogBoards);
-            
+
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
@@ -440,18 +439,19 @@ namespace DAQ.HAL
             Instruments.Add("windfreak", new WindfreakSynth("ASRL8::INSTR"));
             Instruments.Add("gigatronics 1", new Gigatronics7100Synth("GPIB0::19::INSTR"));
             Instruments.Add("gigatronics 2", new Gigatronics7100Synth("GPIB0::6::INSTR"));
+            Instruments.Add("hp synth", new HP8656BSynth("GPIB0::18::INSTR"));
 
 
             // Calibrations
             //AddCalibration("freqToVoltage", new PolynomialCalibration(new double[] { -9.7727, 0.16604, -0.0000272 }, 70, 130)); //this is a quadratic fit to the manufacturer's data for a POS-150
             //AddCalibration("motAOMAmp", new PolynomialCalibration(new double[] {6.2871, -0.5907, -0.0706, -0.0088, -0.0004}, -12, 4)); // this is a polynomial fit (up to quartic) to measured behaviour
-            
-		}
 
-        
-       public override void ConnectApplications()
+        }
+
+
+        public override void ConnectApplications()
         {
 
         }
-	}
+    }
 }

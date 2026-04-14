@@ -200,7 +200,6 @@ namespace NeanderthalDDSController
             }
 
         }
-
         private void button_start_pattern_clicked(object sender, EventArgs e)
         {
             controller.startRepetitivePattern();
@@ -400,6 +399,16 @@ namespace NeanderthalDDSController
         private void testButton_Click(object sender, EventArgs e)
         {
             controller.testDDS();
+        }
+
+        private void patternGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
