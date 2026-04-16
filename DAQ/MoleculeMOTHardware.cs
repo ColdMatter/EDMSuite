@@ -140,7 +140,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
             AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
-            AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
+            //AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
+            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
 
             //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);

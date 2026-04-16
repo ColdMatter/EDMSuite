@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 50000;
+        Parameters["PatternLength"] = 40000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 4000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -159,7 +159,7 @@ public class Patterns : MOTMasterScript
 
         // END OF PATTERN //
 
-        Parameters["MOTCoilsSwitchOff"] = 35000;
+        Parameters["MOTCoilsSwitchOff"] = 25000;
 
     }
 
@@ -278,14 +278,17 @@ public class Patterns : MOTMasterScript
         //p.Pulse(0, image, (int)Parameters["TempTriggerDuration"], "cameraTrigger"); //camera trigger for temperature
 
         // recap imaging
-        /*
+
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(0, ODTLoadStart - 200, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");//camera trigger for recap
-        p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
-        */
+        //p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+
+        
         //check temperature imaging
         p.Pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "opticalPumpingAOM")
+
+        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"]+5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
         // SLOWING //
 
         // preset load
@@ -386,7 +389,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]); // switch off for molasses
-        //p.AddAnalogValue("MOTCoilsCurrent", Recap, (double)Parameters["MOTCoilsCurrentValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", Recap, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
 
         return p;
