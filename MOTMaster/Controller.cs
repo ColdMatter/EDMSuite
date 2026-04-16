@@ -565,6 +565,8 @@ namespace MOTMaster
         }
 
         public void saveSequenceInfo(string dir)
+            // like save, but callable outside of Go() with a custom path.
+            // Intended use case is to give external libraries such as pycaf access to saving pattern info
         {
             MOTMasterScript script = prepareScript(scriptPath, null);
             MOTMasterSequence sequence = getSequenceFromScript(script);
