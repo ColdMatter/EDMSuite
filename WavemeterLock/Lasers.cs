@@ -26,7 +26,7 @@ namespace WavemeterLock
         private DAQMxWavemeterLockLaserControlHelper laser;
         public double sumedNoise = 0.0;
         public double RMSNoise = 0.0;
-        public int loopCount = 0;
+        public long loopCount = 0;
 
         public bool isBlocked = false;
         public bool logData = false;
