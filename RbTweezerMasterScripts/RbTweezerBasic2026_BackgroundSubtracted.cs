@@ -45,7 +45,7 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTRepVVA"] = 2.9010;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 1.0; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRep"] = 0.028; // 3.0
         Parameters["tImgCoolVVA"] = 0.405;
         Parameters["tImgRepVVA"] = 1.050;
