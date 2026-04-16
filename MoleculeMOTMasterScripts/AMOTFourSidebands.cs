@@ -26,7 +26,7 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
-        Parameters["Frame0TriggerDuration"] = 1000;
+        Parameters["Frame0TriggerDuration"] = 1500;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
         Parameters["waitbeforeimage"] = 1;
@@ -79,7 +79,7 @@ public class Patterns : MOTMasterScript
         // Shim fields
         Parameters["xShimLoadCurrent"] = -2.21;
         Parameters["yShimLoadCurrent"] = -2.13;
-        Parameters["zShimLoadCurrent"] = -0.17;
+        Parameters["zShimLoadCurrent"] = 0.41;
 
 
         // v0 Light Switch
@@ -147,13 +147,13 @@ public class Patterns : MOTMasterScript
 
         Parameters["MOTFreqDDS1"] = 114.07; //+ F = 1- 
         Parameters["MOTFreqDDS2"] = 156.17; //- F = 0
-        Parameters["MOTFreqDDS3"] = 188.00; //- F = 2
+        Parameters["MOTFreqDDS3"] = 188.04; //- F = 2
         Parameters["MOTFreqDDS4"] = 175.44; //+ F = 1+
 
-        Parameters["MOTAmpDDS1"] = 1.0;
-        Parameters["MOTAmpDDS2"] = 1.0;
-        Parameters["MOTAmpDDS3"] = 1.0;
-        Parameters["MOTAmpDDS4"] = 1.0;
+        Parameters["MOTAmpDDS1"] = 0.25;
+        Parameters["MOTAmpDDS2"] = 0.6;
+        Parameters["MOTAmpDDS3"] = 0.35;
+        Parameters["MOTAmpDDS4"] = 0.1;
 
         Parameters["RampEndAmpDDS1"] = 0.3;
         Parameters["RampEndAmpDDS2"] = 0.2;
@@ -169,26 +169,7 @@ public class Patterns : MOTMasterScript
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
     {
-        Dictionary<string, List<List<double>>> p = new Dictionary<string, List<List<double>>>();
-
-        addDDSPattern(p, "MOT", 0,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-
-        addDDSPattern(p, "RampStart", 5000,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"],
-            0.0, 0.0, 0.0, 0.0, (double)Parameters["RampAmplitudeDDS1"], (double)Parameters["RampAmplitudeDDS2"], (double)Parameters["RampAmplitudeDDS3"], (double)Parameters["RampAmplitudeDDS4"]);
-
-        addDDSPattern(p, "RampEnd", 5200,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
-
-        addDDSPattern(p, "SequenceEnd", (int)Parameters["MOTCoilsSwitchOff"],
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-
-        return p;
+        return null;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -248,9 +229,17 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
+        // BX Shutter
+        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200, (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "QCLShutter");
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+                                                                                                                                   //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+
+
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"] + i * 3000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        //}
 
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");

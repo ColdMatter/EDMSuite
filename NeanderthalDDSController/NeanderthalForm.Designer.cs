@@ -560,6 +560,7 @@ namespace NeanderthalDDSController
             this.menuStrip1.Size = new System.Drawing.Size(1048, 24);
             this.menuStrip1.TabIndex = 37;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // menuToolStripMenuItem
             // 
@@ -573,14 +574,14 @@ namespace NeanderthalDDSController
             // toolStripSavePattern
             // 
             this.toolStripSavePattern.Name = "toolStripSavePattern";
-            this.toolStripSavePattern.Size = new System.Drawing.Size(180, 22);
+            this.toolStripSavePattern.Size = new System.Drawing.Size(141, 22);
             this.toolStripSavePattern.Text = "Save Pattern";
             this.toolStripSavePattern.Click += new System.EventHandler(this.save_pattern_clicked);
             // 
             // toolStripLoadPattern
             // 
             this.toolStripLoadPattern.Name = "toolStripLoadPattern";
-            this.toolStripLoadPattern.Size = new System.Drawing.Size(180, 22);
+            this.toolStripLoadPattern.Size = new System.Drawing.Size(141, 22);
             this.toolStripLoadPattern.Text = "Load Pattern";
             this.toolStripLoadPattern.Click += new System.EventHandler(this.load_pattern_clicked);
             // 

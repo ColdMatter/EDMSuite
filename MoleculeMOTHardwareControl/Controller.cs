@@ -26,8 +26,9 @@ namespace MoleculeMOTHardwareControl
             { "General Hardware", new SourceTabController() },
             //{ "Gigatronics Synthesizer 1", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 1"]) },
             { "Gigatronics Synthesizer 2", new GigatronicsTabController((Gigatronics7100Synth)Environs.Hardware.Instruments["gigatronics 2"]) },
-            { "XPS Track", new TrackController() }
-            
+            //{ "XPS Track", new TrackController() },
+            //{ "HP Synth", new HPSynthTabController((HP8656BSynth)Environs.Hardware.Instruments["hp synth"]) }
+
         };
 
         // Without this method, any remote connections to this object will time out after

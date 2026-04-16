@@ -23,3 +23,4 @@ iamjoe.sh
 /packages/BitMiracle.LibTiff.NET.2.4.660
 /BECMOTMasterScripts/app.config
 /MoleculeMOTMasterScripts/app.config
+*.dll

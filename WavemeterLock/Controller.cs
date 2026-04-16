@@ -72,6 +72,7 @@ namespace WavemeterLock
             }
             //This throws a security exception
             //wavemeterContrller.measurementAcquired += () => { updateLockMaster(); };
+            ui.Log("TCP channel initialised: server=" + computer + " (" + name + "), port=" + hostTCPChannel.ToString());
         }
 
         public string acquireWavelength(int channelNum) //Display wavelength
@@ -198,9 +199,9 @@ namespace WavemeterLock
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            initializeTCPChannel();
             ui = new LockForm();
             ui.controller = this;
+            initializeTCPChannel();
             initializeLasers();
             Application.Run(ui);
         }
@@ -237,9 +238,12 @@ namespace WavemeterLock
             foreach (KeyValuePair<string, string> entry in config.slaveLasers)
             {
                 string laser = entry.Key;
-                Laser slave = new Laser(laser, entry.Value, helper[laser]);
+                Laser slave = new Laser(laser, entry.Value, helper[laser])
+                {
+                    OnLog = ui.Log,
+                    WLMChannel = config.channelNumbers[laser]
+                };
                 lasers.Add(laser, slave);
-                slave.WLMChannel = config.channelNumbers[laser];
                 wmChannels.Add(laser, slave.WLMChannel);
             }
 
@@ -282,6 +286,25 @@ namespace WavemeterLock
                 ui.enable_LED(n);
             }
 
+            //Restore last output voltages if available
+            string voltageLogPath = System.IO.Path.Combine(logfilePath, "last_voltage_log.txt");
+            if (System.IO.File.Exists(voltageLogPath))
+            {
+                foreach (string line in System.IO.File.ReadLines(voltageLogPath))
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("Timestamp"))
+                        continue;
+                    string[] parts = line.Split('\t');
+                    if (parts.Length < 3)
+                        continue;
+                    string laserName = parts[1];
+                    if (lasers.ContainsKey(laserName) && double.TryParse(parts[2], out double voltage))
+                    {
+                        lasers[laserName].CurrentVoltage = voltage;
+                        ui.Log("Restored voltage for " + laserName + ": " + voltage.ToString("F4") + " V");
+                    }
+                }
+            }
 
         }
 
@@ -532,9 +555,8 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                //msgThread.Start();
+                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
                             }
                             else
                             {
@@ -563,9 +585,8 @@ namespace WavemeterLock
                             {
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
-                                //Thread msgThread = new Thread(errorMsg);
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                //msgThread.Start();
+                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
                             }
                             else
                             {
@@ -579,7 +600,7 @@ namespace WavemeterLock
 
                     if (lasers[slave].logData)
                     {
-                        logSlaveDate(slave);
+                        logSlaveData(slave);
                     }
                 }
 
@@ -622,24 +643,10 @@ namespace WavemeterLock
             lasers[laser].isBlocked = blockHelper[laser].isBlocked;
         }
 
-        public void errorMsg()
-        {
-            MessageBox.Show("You messed up! Laser " + faultyLaser + " lock disengaged due to wavemeter reading error or large frequency jump.");
-        }
-
         public void connectionError(Exception e)
         {
             MessageBox.Show($"Connection failed: {e.Message}");
-            if (Application.MessageLoop)
-            {
-                // WinForms app
-                Application.Exit();
-            }
-            else
-            {
-                // Console app
-                Environment.Exit(1);
-            }
+            Environment.Exit(1);
         }
 
         public void updateLaserRMSNoise(Laser laser)
@@ -653,7 +660,7 @@ namespace WavemeterLock
 
         }
 
-        public void logSlaveDate(string slave)
+        public void logSlaveData(string slave)
         {
             DateTime dt = DateTime.Now;
             String filename = logfilePath + slave + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
@@ -676,59 +683,113 @@ namespace WavemeterLock
             }
         }
 
-        public void logSetPoints(bool isManual)
+        public void logSetPoints()
         {
-            string date = DateTime.Now.ToString("yyyy-MM-dd");
-            string dt = DateTime.Now.TimeOfDay.ToString();
-            string note;
+            string defaultDirectory = System.IO.Path.Combine(logfilePath, "LaserSetPoints");
+            System.IO.Directory.CreateDirectory(defaultDirectory);
 
-            if (isManual)
-                note = "Manual log";
-            else
-                note = "Auto log";
+            string defaultFileName = "WavemeterLockLog_" + DateTime.Now.ToString("yyyy_MM_dd") + ".txt";
+            string fullPath = System.IO.Path.Combine(defaultDirectory, defaultFileName);
 
-            foreach(string slave in lasers.Keys)
+            WriteSetPointsLog(fullPath, "Auto log");
+        }
+
+        public void logSetPoints(string fullPath, string note = "Manual log")
+        {
+            if (string.IsNullOrWhiteSpace(fullPath))
+                return;
+
+            string directory = System.IO.Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrWhiteSpace(directory))
             {
-                String filename = logfilePath + "LaserSetPoints\\" +  slave + "_LaserSetpoints" + ".txt";
+                System.IO.Directory.CreateDirectory(directory);
+            }
 
-                if (!System.IO.File.Exists(filename))
+            WriteSetPointsLog(fullPath, note);
+        }
+
+        private void WriteSetPointsLog(string filename, string note)
+        {
+            bool fileExists = System.IO.File.Exists(filename);
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename, true))
+            {
+                if (!fileExists)
                 {
-                    string header = "Time \t" + "Set Frequency (THz) \t" + "PGain \t"  + "IGain (THz) \t" + "Offset(V) \t" + "Note";
-                    using (System.IO.StreamWriter file =
-                    new System.IO.StreamWriter(filename, false))
-                        file.WriteLine(header);
+                    string header = "Time\tLaser\tSet Frequency (THz)\tCurrent Frequency (THz)\tFrequency Error (MHz)\tPGain\tIGain\tOffset(V)\tLock Status\tLock Block Status\tNote";
+                    file.WriteLine(header);
                 }
 
-                string content = date + " " + dt + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].PGain + "\t" + lasers[slave].IGain 
-                    + "\t" + lasers[slave].offsetVoltage + "\t" + note + "\t";
-                
-
-                using (System.IO.StreamWriter file =
-                    new System.IO.StreamWriter(filename, true))
+                foreach (string slave in lasers.Keys)
                 {
+                    double frequencyErrorMHz = lasers[slave].FrequencyError * 1000000.0;
+
+                    string content =
+                        timestamp + "\t" +
+                        slave + "\t" +
+                        lasers[slave].setFrequency + "\t" +
+                        lasers[slave].currentFrequency + "\t" +
+                        frequencyErrorMHz + "\t" +
+                        lasers[slave].PGain + "\t" +
+                        lasers[slave].IGain + "\t" +
+                        lasers[slave].offsetVoltage + "\t" +
+                        lasers[slave].lState.ToString() + "\t" +
+                        lasers[slave].isBlocked.ToString() + "\t" +
+                        note;
+
                     file.WriteLine(content);
-                    file.Flush();
+                }
+
+                file.Flush();
+            }
+        }
+
+        public void loadSetPoints(string fullPath)
+        {
+            if (string.IsNullOrWhiteSpace(fullPath))
+                return;
+
+            ReadSetPointsLog(fullPath);
+        }
+
+        private void ReadSetPointsLog(string filename)
+        {
+            if (!System.IO.File.Exists(filename))
+                return;
+
+            Dictionary<string, List<string>> latestLaserEntries = new Dictionary<string, List<string>>();
+
+            foreach (string line in System.IO.File.ReadLines(filename))
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                if (line.StartsWith("Time\t"))
+                    continue;
+
+                List<string> resultList = line.Split('\t').ToList();
+
+                if (resultList.Count < 11)
+                    continue;
+
+                string slave = resultList[1];
+
+                if (lasers.ContainsKey(slave))
+                {
+                    latestLaserEntries[slave] = resultList;
                 }
             }
 
-        }
-
-        public void loadSetPoints()
-        {
-            foreach (string slave in lasers.Keys)
+            foreach (string slave in latestLaserEntries.Keys)
             {
-                String filename = logfilePath + "LaserSetPoints\\" + slave + "_LaserSetpoints" + ".txt";
-                if (System.IO.File.Exists(filename))
-                {
-                    string log = System.IO.File.ReadLines(filename).Last();
-                    Console.WriteLine(log);
+                List<string> resultList = latestLaserEntries[slave];
 
-                    List<string> resultList = log.Split('\t').ToList();
-                    lasers[slave].setFrequency = Convert.ToDouble(resultList[1]);
-                    lasers[slave].PGain = Convert.ToDouble(resultList[2]);
-                    setIGain(slave, Convert.ToDouble(resultList[3]));
-                    lasers[slave].offsetVoltage = Convert.ToDouble(resultList[4]);
-                }
+                lasers[slave].setFrequency = Convert.ToDouble(resultList[2]);
+                lasers[slave].currentFrequency = Convert.ToDouble(resultList[3]);
+                lasers[slave].PGain = Convert.ToDouble(resultList[5]);
+                setIGain(slave, Convert.ToDouble(resultList[6]));
+                lasers[slave].offsetVoltage = Convert.ToDouble(resultList[7]);
             }
 
             foreach (LockControlPanel panel in panelList.Values)

@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -196,6 +197,19 @@ namespace WavemeterLock
                 controller.DisengageLock(laser.Name);
             }
 
+            string logPath = System.IO.Path.Combine(
+                (string)DAQ.Environment.Environs.FileSystem.Paths["wavemeterLockData"],
+                "last_voltage_log.txt");
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, false))
+            {
+                file.WriteLine("Timestamp\tLaser\tVoltage(V)");
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                foreach (Laser laser in controller.lasers.Values)
+                {
+                    file.WriteLine(timestamp + "\t" + laser.Name + "\t" + laser.CurrentVoltage);
+                }
+            }
+
             controller.removeWavemeterLock();
             Application.Exit();
         }
@@ -275,6 +289,25 @@ namespace WavemeterLock
             }
         }
 
+        public void Log(string message)
+        {
+            string entry = DateTime.Now.ToString("HH:mm:ss") + "  " + message + Environment.NewLine;
+            if (logTerminal.InvokeRequired)
+            {
+                logTerminal.Invoke(new Action(() => AppendLog(entry)));
+            }
+            else
+            {
+                AppendLog(entry);
+            }
+        }
+
+        private void AppendLog(string entry)
+        {
+            logTerminal.AppendText(entry);
+            logTerminal.ScrollToCaret();
+        }
+
         private void toggleLED(Panel led, bool state)
         {
             if (state)
@@ -289,12 +322,63 @@ namespace WavemeterLock
 
         private void saveSetPointsButton_Click(object sender, EventArgs e)
         {
-            controller.logSetPoints(true);
+            Thread dialogThread = new Thread(() =>
+            {
+                string defaultDirectory = System.IO.Path.Combine(
+                    (string)DAQ.Environment.Environs.FileSystem.Paths["wavemeterLockData"],
+                    "LaserSetPoints");
+
+                System.IO.Directory.CreateDirectory(defaultDirectory);
+
+                string defaultFileName = "WavemeterLockLog_" + DateTime.Now.ToString("yyyy_MM_dd") + ".txt";
+
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.InitialDirectory = defaultDirectory;
+                    saveFileDialog.FileName = defaultFileName;
+                    saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                    saveFileDialog.Title = "Save wavemeter lock log";
+                    saveFileDialog.AddExtension = true;
+                    saveFileDialog.DefaultExt = "txt";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        controller.logSetPoints(saveFileDialog.FileName, "Manual log");
+                    }
+                }
+            });
+
+            dialogThread.SetApartmentState(ApartmentState.STA);
+            dialogThread.IsBackground = true;
+            dialogThread.Start();
         }
 
         private void loadSetPointsButton_Click(object sender, EventArgs e)
         {
-            controller.loadSetPoints();
+            Thread dialogThread = new Thread(() =>
+            {
+                string defaultDirectory = System.IO.Path.Combine(
+                    (string)DAQ.Environment.Environs.FileSystem.Paths["wavemeterLockData"],
+                    "LaserSetPoints");
+
+                System.IO.Directory.CreateDirectory(defaultDirectory);
+
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.InitialDirectory = defaultDirectory;
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+                    openFileDialog.Title = "Load wavemeter lock log";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        controller.loadSetPoints(openFileDialog.FileName);
+                    }
+                }
+            });
+
+            dialogThread.SetApartmentState(ApartmentState.STA);
+            dialogThread.IsBackground = true;
+            dialogThread.Start();
         }
     }
 }
