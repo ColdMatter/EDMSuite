@@ -534,6 +534,33 @@ namespace WavemeterLock
             }
         }
 
+        private string WlmDisengageReason(string laserName, double measuredFreq)
+        {
+            switch ((int)measuredFreq)
+            {
+                case  0: return laserName + " lock disengaged: no WLM value yet (ErrNoValue)";
+                case -1: return laserName + " lock disengaged: no signal (ErrNoSignal)";
+                case -2: return laserName + " lock disengaged: bad signal (ErrBadSignal)";
+                case -3: return laserName + " lock disengaged: signal too low / underexposed (ErrLowSignal)";
+                case -4: return laserName + " lock disengaged: signal too high / overexposed (ErrBigSignal)";
+                case -5: return laserName + " lock disengaged: wavemeter not connected (ErrWlmMissing)";
+                case -6: return laserName + " lock disengaged: channel not available (ErrNotAvailable)";
+                case -8: return laserName + " lock disengaged: no pulse (ErrNoPulse)";
+                case -10: return laserName + " lock disengaged: channel not available (ErrChannelNotAvailable)";
+                case -13: return laserName + " lock disengaged: WLM division by zero (ErrDiv0)";
+                case -14: return laserName + " lock disengaged: WLM out of range (ErrOutOfRange)";
+                case -15: return laserName + " lock disengaged: unit not available (ErrUnitNotAvailable)";
+                case -26: return laserName + " lock disengaged: TCP error (ErrTCPErr)";
+                default:
+                    if (measuredFreq <= 0)
+                        return laserName + " lock disengaged: unknown WLM error code " + ((int)measuredFreq).ToString();
+                    double errorMHz = 1e6 * (measuredFreq - lasers[laserName].setFrequency);
+                    return laserName + " lock disengaged: frequency jump " + errorMHz.ToString("F2") +
+                           " MHz (measured " + measuredFreq.ToString("F6") +
+                           " THz, set " + lasers[laserName].setFrequency.ToString("F6") + " THz)";
+            }
+        }
+
         private void updateLockMaster()
         {
             if (WMLState != ControllerState.STOPPED)
@@ -557,7 +584,7 @@ namespace WavemeterLock
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                                ui.Log(WlmDisengageReason(slave, lasers[slave].currentFrequency));
                             }
                             else
                             {
@@ -587,7 +614,7 @@ namespace WavemeterLock
                                 faultyLaser = slave;
                                 lasers[slave].DisengageLock();
                                 indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log("Laser " + slave + " lock disengaged due to wavemeter reading error or large frequency jump.");
+                                ui.Log(WlmDisengageReason(slave, lasers[slave].currentFrequency));
                             }
                             else
                             {
