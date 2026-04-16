@@ -24,3 +24,4 @@ iamjoe.sh
 /BECMOTMasterScripts/app.config
 /MoleculeMOTMasterScripts/app.config
 *.dll
+*.csproj

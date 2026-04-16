@@ -301,6 +301,7 @@ namespace WavemeterLock
                     if (lasers.ContainsKey(laserName) && double.TryParse(parts[2], out double voltage))
                     {
                         lasers[laserName].CurrentVoltage = voltage;
+                        lasers[laserName].offsetVoltage = voltage;
                         ui.Log("Restored voltage for " + laserName + ": " + voltage.ToString("F4") + " V");
                     }
                 }
