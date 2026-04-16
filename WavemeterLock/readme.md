@@ -138,16 +138,12 @@ Currently constructed plugins:
    ```
  The measurement acquired event was raised only when channel 1 gets a new reading. And the build-in callback process in general didn't work as they stated in the manual, or I made some mistakes.
 
-## Update Roadmap
-The goal for future updates:
-- Add autocalibration function
-- Add lock update rate on the server pannel
-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Update Log
 
+* [v 2.0.0] April 16th 2026: Added a terminal for recording status. When restarting the WML, all laser output voltage are at the preivious value.
 * [v 1.2.0] November 11th 2023: Fixed the lock block issue by putting read block flag channel on another thread. Added log data function for individual lasers. Added save and load setpoints function.
 * [v 1.1.2] August 25th 2023: Added RMS noise pannel.
 * [v 1.1.1] August 23rd 2023: Added an array of LEDs at front pannel to indicate laser lock status, added lock all button so you can click less. Removed the pop up window saying "you messed up" when the laser unlocks.
