@@ -25,3 +25,4 @@ iamjoe.sh
 /MoleculeMOTMasterScripts/app.config
 *.dll
 *.csproj
+*.cache
