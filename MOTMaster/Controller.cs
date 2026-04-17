@@ -27,7 +27,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 
 using NationalInstruments;
-using NationalInstruments.DAQmx;
+//using NationalInstruments.DAQmx; TW: I have commented this out becaus e it's stopping the moleculemot system building and it doesn't seem to be used. Uncomment if it breaks your system
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster
