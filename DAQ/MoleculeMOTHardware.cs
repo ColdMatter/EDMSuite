@@ -414,6 +414,8 @@ namespace DAQ.HAL
             analogBoards.Add("AO", analogPatternBoardAddress);
             analogBoards.Add("SecondAO", analogPatternBoardAddress2);
             Info.Add("AnalogBoards", analogBoards);
+            Info.Add("AOPatternBuffer", true);
+            Info.Add("SecondAOPatternBuffer", true);
 
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
