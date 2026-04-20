@@ -240,7 +240,10 @@ namespace WavemeterLock
         #region Error signal Plot
         public void AppendToErrorGraph(double lockCount, double error)//In MHz
         {
-
+            if (double.IsInfinity(error) || Math.Abs(error) > 1e4)
+            {
+                return; // Skip WLM error codes and non-finite values to prevent chart overflow
+            }
             UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.Series[0].Points.AddXY(lockCount, error); });
             UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { if(obj.Series[0].Points.Count > maxpoints) obj.Series[0].Points.RemoveAt(0); });
             UpdateRenderedObject<Chart>(errorScatterGraph, (Chart obj) => { obj.ChartAreas[0].AxisX.Minimum = Math.Max(lockCount - scale, 0); });

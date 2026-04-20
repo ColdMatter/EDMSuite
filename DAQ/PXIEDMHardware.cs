@@ -477,6 +477,9 @@ namespace DAQ.HAL
             */
 
 
+            // AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao9", -10, 10);
+            // AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
+
             AddAnalogOutputChannel("WavemeterLockTest1", aoBoard + "/ao2", 0, 3);
             AddAnalogOutputChannel("WavemeterLockTest2", aoBoard + "/ao10", -10, 10);
             AddAnalogOutputChannel("testChannel", aoBoard + "/ao11", -10, 10);
@@ -485,11 +488,16 @@ namespace DAQ.HAL
             MMConfig mmConfig = new MMConfig(false, false, true, false);
             mmConfig.ExternalFilePattern = "*.tif";
             Info.Add("MotMasterConfiguration", mmConfig);
+            //Info.Add("PatternGeneratorBoard", pgBoard);
+            Info.Add("Element", "Tweezer");
+
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
             analogBoards.Add("AO", aoBoard);
             //Info.Add("StaticAnalogBoards", analogBoards);
             Info.Add("AnalogBoards", analogBoards);
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI4");//"/PFI4"
+            //Info.Add("AOPatternTrigger", pgBoard + "/do/StartTrigger");//"/PFI4"
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);

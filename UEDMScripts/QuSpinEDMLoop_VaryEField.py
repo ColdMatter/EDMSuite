@@ -101,13 +101,9 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	
 	# store e-switch info in block config
 	print("Storing E switch parameters ...")
-	bc.Settings["eRampDownTime"] = hc.ERampDownTime
-	bc.Settings["eRampDownDelay"] = hc.ERampDownDelay
-	bc.Settings["eBleedTime"] = hc.EBleedTime
-	bc.Settings["eSwitchTime"] = hc.ESwitchTime
-	bc.Settings["eRampUpTime"] = hc.ERampUpTime
-	bc.Settings["eRampUpDelay"] = hc.ERampUpDelay
-	bc.Settings["eOvershootFactor"] = hc.EOvershootFactor
+	bc.Settings["BehlkeBleedTime"] = hc.BehlkeBleedTime
+	bc.Settings["BehlkeSwitchTime"] = hc.BehlkeSwitchTime
+	bc.Settings["BehlkeSettleTime"] = hc.BehlkeSettleTime
 	# store the E switch asymmetry in the block
 	bc.Settings["E0PlusBoost"] = hc.E0PlusBoost
 	# number of times to step the target looking for a good target spot, step size is 2 (coded in Acquisitor)
@@ -127,8 +123,8 @@ def windowValue(value, minValue, maxValue):
 		else:
 			return maxValue
 
-kTargetRotationPeriod = 10
-kReZeroLeakageMonitorsPeriod = 10
+kTargetRotationPeriod = 100
+kReZeroLeakageMonitorsPeriod = 100
 #r = Random()
 
 def QuSpinGo():
@@ -153,7 +149,7 @@ def QuSpinGo():
         print("Using cluster " + suggestedClusterName)
     checkPhaseLock()
     eState = hc.EManualState
-    eCurrentState = hc.EFieldPolarity
+    eCurrentState = hc.EFieldPolarityBehlke
     cPlusV = 3*(hc.CPlusVoltage)
     cMinusV = 3*(hc.CMinusVoltage)
     print("E-state: " + str(eState))
@@ -188,6 +184,7 @@ def QuSpinGo():
     # System.Threading.Thread.CurrentThread.Join(500)
     hc.SetCPlusVoltage(cPlusV)
     hc.SetCMinusVoltage(cMinusV)
+    hc.UpdateVoltages()
     print("E Params refreshed")
     System.Threading.Thread.CurrentThread.Join(5000)
     print("E-field on")
@@ -197,7 +194,7 @@ def QuSpinGo():
     # hc.EnableGreenSynth( True )
     print("leakage monitors calibrated")
 
-    bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
+    # bc = measureParametersAndMakeBC(cluster, eState, bState, mwState)#, rfState, mwState, scramblerV)
 
     # loop and take data
     blockIndex = 0
@@ -209,10 +206,11 @@ def QuSpinGo():
     Emini3List=[]
     while blockIndex < maxBlockIndex:
         for i in eFieldVoltages:
-            eCurrentState = hc.EFieldPolarity
+            eCurrentState = hc.EFieldPolarityBehlke
             hc.SetCPlusVoltage(float(i))
             hc.SetCMinusVoltage(float(i))
-            hc.SwitchEAndWait(eCurrentState)
+            hc.UpdateVoltages()
+            hc.SwitchEBehlkeAndWait(eCurrentState)
             if (float(i)==0.0):
                 System.Threading.Thread.CurrentThread.Join(20000)
             else:
@@ -229,11 +227,12 @@ def QuSpinGo():
             System.Threading.Thread.CurrentThread.Join(500)
             print("Loading temp config.")
             bh.LoadConfig(tempConfigFile)
+			
             # take the block and save it
             print("Running magnetic field data acquisition ...")
             bh.StartMagDataAcquisitionAndWait()
             print("Done.")
-            blockPath = '%(p)s%(c)s_%(i)s_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
+            blockPath = '%(p)s%(c)s_%(i)04d_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}
             bh.SaveBlock(blockPath)
             print("Saved block "+ str(blockIndex) + ".")
             # give mma a chance to analyse the block
@@ -250,7 +249,7 @@ def QuSpinGo():
                 print("Recalibrating leakage monitors.")
                 # calibrate leakage monitors
 
-                eCurrentState = hc.EFieldPolarity
+                eCurrentState = hc.EFieldPolarityBehlke
                 cPlusV = 3*(hc.CPlusVoltage)
                 cMinusV = 3*(hc.CMinusVoltage)
 
@@ -264,7 +263,8 @@ def QuSpinGo():
                 print("E-field on")
                 hc.SetCPlusVoltage(cPlusV)
                 hc.SetCMinusVoltage(cMinusV)
-                hc.SwitchEAndWait(eCurrentState)
+                hc.UpdateVoltages()
+                hc.SwitchEBehlkeAndWait(eCurrentState)
                 print("E Switch Finished")
                 System.Threading.Thread.CurrentThread.Join(10000)
 

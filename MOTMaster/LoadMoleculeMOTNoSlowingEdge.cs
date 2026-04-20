@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAQ.Analog;
 using DAQ.Pattern;
-using DAQ.Analog;
-using DAQ;
+using System;
+using System.Collections.Generic;
 
 namespace MOTMaster.SnippetLibrary
 {

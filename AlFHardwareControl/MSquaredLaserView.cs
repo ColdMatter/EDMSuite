@@ -132,6 +132,8 @@ namespace AlFHardwareControl
         private double current_reading = 327;
         public void UpdateStatus()
         {
+            if (!attempt_connection.Checked)
+                return;
             laser.IssueCommand("poll_wave_m", new Dictionary<string, object> { });
         }
 
@@ -169,7 +171,7 @@ namespace AlFHardwareControl
             {
                 Conn_status.Text = remote_lock_state.Item2;
                 Conn_status.BackColor = remote_lock_state.Item1;
-                this.M2_Control_Group.Enabled = !(Conn_status.BackColor == Color.Salmon);
+                //this.M2_Control_Group.Enabled = !(Conn_status.BackColor == Color.Salmon);
                 locked = lock_status;
                 if (lock_status != lockCheckBox.Checked)
                     lockCheckBox.Checked = lock_status;
@@ -196,13 +198,18 @@ namespace AlFHardwareControl
             {
                 Conn_status.Text = status ? "LINK UP" : "DISCONNECTED";
                 Conn_status.BackColor = status ? Color.NavajoWhite : Color.Salmon;
-                this.M2_Control_Group.Enabled = false;
+                //this.M2_Control_Group.Enabled = false;
             }));
         }
 
         private bool locked = false;
         private void lockCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            if (!attempt_connection.Checked)
+            {
+                lockCheckBox.Checked = false;
+                return;
+            }
             if (locked != lockCheckBox.Checked)
                 laser.IssueCommand("lock_wave_m", new Dictionary<string, object>
                 {
@@ -220,6 +227,8 @@ namespace AlFHardwareControl
             {
                 setpoint.Text = SP.ToString();
             }));
+            if (!attempt_connection.Checked)
+                return;
             if (!FallbackActive)
                 laser.IssueCommand("set_wave_m", new Dictionary<string, object>
                 {
@@ -337,6 +346,18 @@ namespace AlFHardwareControl
             //            if (lineData.Count != 0)
             //                LinesSelector.SelectedIndex = 0;
             //            RecalculateSP();
+        }
+
+        private void attempt_connection_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!attempt_connection.Checked)
+            {
+                this.Invoke((Action)(() =>
+                {
+                    Conn_status.Text = "DISABLED";
+                    Conn_status.BackColor = Color.Salmon;
+                }));
+            }
         }
     }
 }

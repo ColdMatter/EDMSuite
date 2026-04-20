@@ -30,6 +30,8 @@ namespace AlFHardwareControl
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.show_last_data = new System.Windows.Forms.CheckBox();
+            this.show_average = new System.Windows.Forms.CheckBox();
             this.sourceEnable = new System.Windows.Forms.CheckBox();
             this.RejectVal = new System.Windows.Forms.TextBox();
             this.RejectCondPicker = new System.Windows.Forms.ComboBox();
@@ -43,12 +45,18 @@ namespace AlFHardwareControl
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
             this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
+            this.dataPlotXlow = new NationalInstruments.UI.XYCursor();
+            this.dataPlotXhigh = new NationalInstruments.UI.XYCursor();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPlotXlow)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPlotXhigh)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.show_last_data);
+            this.groupBox1.Controls.Add(this.show_average);
             this.groupBox1.Controls.Add(this.sourceEnable);
             this.groupBox1.Controls.Add(this.RejectVal);
             this.groupBox1.Controls.Add(this.RejectCondPicker);
@@ -63,6 +71,32 @@ namespace AlFHardwareControl
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
+            // 
+            // show_last_data
+            // 
+            this.show_last_data.AutoSize = true;
+            this.show_last_data.Checked = true;
+            this.show_last_data.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.show_last_data.Location = new System.Drawing.Point(404, 66);
+            this.show_last_data.Name = "show_last_data";
+            this.show_last_data.Size = new System.Drawing.Size(102, 17);
+            this.show_last_data.TabIndex = 9;
+            this.show_last_data.Text = "Show Last Data";
+            this.show_last_data.UseVisualStyleBackColor = true;
+            this.show_last_data.CheckedChanged += new System.EventHandler(this.show_last_data_CheckedChanged);
+            // 
+            // show_average
+            // 
+            this.show_average.AutoSize = true;
+            this.show_average.Checked = true;
+            this.show_average.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.show_average.Location = new System.Drawing.Point(273, 67);
+            this.show_average.Name = "show_average";
+            this.show_average.Size = new System.Drawing.Size(124, 17);
+            this.show_average.TabIndex = 8;
+            this.show_average.Text = "Show Scan Average";
+            this.show_average.UseVisualStyleBackColor = true;
+            this.show_average.CheckedChanged += new System.EventHandler(this.show_average_CheckedChanged);
             // 
             // sourceEnable
             // 
@@ -145,6 +179,9 @@ namespace AlFHardwareControl
             // 
             // dataGraph
             // 
+            this.dataGraph.Cursors.AddRange(new NationalInstruments.UI.XYCursor[] {
+            this.dataPlotXlow,
+            this.dataPlotXhigh});
             this.dataGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
             | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
             | NationalInstruments.UI.GraphInteractionModes.PanX) 
@@ -187,6 +224,28 @@ namespace AlFHardwareControl
             this.scatterPlot4.XAxis = this.xAxis1;
             this.scatterPlot4.YAxis = this.yAxis1;
             // 
+            // dataPlotXlow
+            // 
+            this.dataPlotXlow.Color = System.Drawing.Color.Cyan;
+            this.dataPlotXlow.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.dataPlotXlow.LabelDisplay = NationalInstruments.UI.XYCursorLabelDisplay.ShowX;
+            this.dataPlotXlow.Plot = this.scatterPlot3;
+            this.dataPlotXlow.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.dataPlotXlow.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
+            this.dataPlotXlow.XPosition = 0D;
+            this.dataPlotXlow.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.dataPlotLimitsAfterMove);
+            // 
+            // dataPlotXhigh
+            // 
+            this.dataPlotXhigh.Color = System.Drawing.Color.Crimson;
+            this.dataPlotXhigh.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.dataPlotXhigh.LabelDisplay = NationalInstruments.UI.XYCursorLabelDisplay.ShowX;
+            this.dataPlotXhigh.Plot = this.scatterPlot3;
+            this.dataPlotXhigh.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.dataPlotXhigh.SnapMode = NationalInstruments.UI.CursorSnapMode.Floating;
+            this.dataPlotXhigh.XPosition = 10D;
+            this.dataPlotXhigh.AfterMove += new NationalInstruments.UI.AfterMoveXYCursorEventHandler(this.dataPlotLimitsAfterMove);
+            // 
             // MOTMasterData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -198,6 +257,8 @@ namespace AlFHardwareControl
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPlotXlow)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataPlotXhigh)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -217,5 +278,9 @@ namespace AlFHardwareControl
         public System.Windows.Forms.CheckBox sourceEnable;
         private NationalInstruments.UI.ScatterPlot scatterPlot3;
         private NationalInstruments.UI.ScatterPlot scatterPlot4;
+        private System.Windows.Forms.CheckBox show_average;
+        private System.Windows.Forms.CheckBox show_last_data;
+        private NationalInstruments.UI.XYCursor dataPlotXlow;
+        private NationalInstruments.UI.XYCursor dataPlotXhigh;
     }
 }
