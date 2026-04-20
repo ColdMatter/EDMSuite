@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using DAQ.TransferCavityLock2012;
 using DAQ.Remoting;
 
-
 namespace DAQ.HAL
 {
     /// <summary>
@@ -17,17 +16,17 @@ namespace DAQ.HAL
     /// </summary>
     public class PXIEDMHardware : DAQ.HAL.Hardware
     {
-       public override void ConnectApplications()
-       {
-           //RemotingHelper.ConnectEDMHardwareControl();
-           //RemotingHelper.ConnectPhaseLock();
-           //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
-          // Type t = Type.GetType("MarshalByRefObject"); 
-                  // ask the remoting system for access to TCL2012
-          // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
-         //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
-       }
- 
+        public override void ConnectApplications()
+        {
+            //RemotingHelper.ConnectEDMHardwareControl();
+            //RemotingHelper.ConnectPhaseLock();
+            //Type t = Type.GetType("EDMHardwareControl.Controller, EDMHardwareControl");
+            // Type t = Type.GetType("MarshalByRefObject"); 
+            // ask the remoting system for access to TCL2012
+            // Type t = Type.GetType("TransferCavityLock2012.Controller, TransferCavityLock");
+            //RemotingConfiguration.RegisterWellKnownClientType(t, "tcp://localhost:1172/controller.rem");
+        }
+
 
         public PXIEDMHardware()
         {
@@ -36,11 +35,12 @@ namespace DAQ.HAL
             //Boards.Add("daq", "/PXI1Slot18");
             Boards.Add("pg", "/PXI1Slot10");   // need it
             //Boards.Add("doBoard", "/PXI1Slot11");
-            //Boards.Add("analogIn2", "/PXI1Slot17");
+            Boards.Add("analogInNew", "/PXI1Slot17"); //Changed from PXISlot14 to 17
             //Boards.Add("counter", "/PXI1Slot16");
             Boards.Add("aoBoard", "/PXI1Slot2"); //PXI6723
             //Boards.Add("usbDAQ1", "/Dev6");         // this is for the magnetic field feedback
-            //Boards.Add("analogIn", "/PXI1Slot15");
+            Boards.Add("analogIn", "/PXI1Slot15");
+            Boards.Add("tclBoard", "/PXI1Slot14"); //For UROP TCL
             //Boards.Add("usbDAQ2", "/Dev4");
             //Boards.Add("usbDAQ3", "/Dev1");
             //Boards.Add("usbDAQ4", "/Dev3");
@@ -48,13 +48,15 @@ namespace DAQ.HAL
             //Boards.Add("tclBoardPump", "/PXI1Slot17");
             //Boards.Add("tclBoardProbe", "/PXI1Slot9");
             //string rfAWG = (string)Boards["rfAWG"];
+            string tclBoard = (string)Boards["tclBoard"];
             string pgBoard = (string)Boards["pg"];
             //string daqBoard = (string)Boards["daq"];
             //string analogIn2 = (string)Boards["analogIn2"];
             //string counterBoard = (string)Boards["counter"];
             string aoBoard = (string)Boards["aoBoard"];
             //string usbDAQ1 = (string)Boards["usbDAQ1"];
-            //string analogIn = (string)Boards["analogIn"];
+            string analogIn = (string)Boards["analogIn"];
+            string analogInNew = (string)Boards["analogInNew"];
             //string usbDAQ2 = (string)Boards["usbDAQ2"];
             //string usbDAQ3 = (string)Boards["usbDAQ3"];
             //string usbDAQ4 = (string)Boards["usbDAQ4"];
@@ -65,7 +67,10 @@ namespace DAQ.HAL
             // add things to the info
             // the analog triggers
             //Info.Add("analogTrigger0", (string)Boards["analogIn"] + "/PFI0");
-            //Info.Add("analogTrigger1", (string)Boards["analogIn"] + "/PFI1");
+            Info.Add("analogTrigger0", (string)Boards["analogInNew"] + "/PFI4");
+            Info.Add("analogTrigger1", (string)Boards["analogInNew"] + "/PFI0");
+            Info.Add("analogTrigger3", (string)Boards["analogInNew"] + "/PFI1");
+            Info.Add("analogTrigger4", (string)Boards["analogInNew"] + "/PFI2");
 
             //Info.Add("sourceToDetect", 1.3);
             //Info.Add("moleculeMass", 193.0);
@@ -84,8 +89,22 @@ namespace DAQ.HAL
 
             Info.Add("PGTriggerLine", pgBoard + "/PFI5"); //Mapped to PFI7 on 6533 connector
 
-            Info.Add("AOPatternTrigger", aoBoard + "/PFI6"); 
+            Info.Add("AOPatternTrigger", aoBoard + "/PFI6");
             Info.Add("AOClockLine", aoBoard + "/PFI5");
+
+            ///TCL Channels
+            AddAnalogInputChannel("diodeLaserCavityRampVoltage", tclBoard + "/ai0", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("diodeLaserCavityMaster", tclBoard + "/ai1", AITerminalConfiguration.Differential);//this is the 780nm photodiode (reference signal)
+            AddAnalogInputChannel("diodeLaserSlaveSignal", tclBoard + "/ai2", AITerminalConfiguration.Differential);//slave PD signal
+
+            //Lasers locked to cavity
+
+
+            AddAnalogOutputChannel("laserDiodeCavityLengthVoltage", tclBoard + "/ao0", 0, 5);  //this is the voltage that stabilises the length of the cavity
+            AddAnalogOutputChannel("diodeLaser", tclBoard + "/ao1", 0, 3); //Slave Lock
+
+
+
 
             // YAG laser
             //yag = new BrilliantLaser("ASRL13::INSTR");
@@ -112,12 +131,24 @@ namespace DAQ.HAL
             // these channels are generally switched by the pattern generator
             // they're all in the lower half of the pg
 
-            /*
+
             AddDigitalOutputChannel("valve", pgBoard, 0, 0);
             AddDigitalOutputChannel("flash", pgBoard, 0, 1);
             AddDigitalOutputChannel("q", pgBoard, 0, 2);
             AddDigitalOutputChannel("detector", pgBoard, 0, 3);
-            AddDigitalOutputChannel("detectorprime", pgBoard, 1, 2); // this trigger is for switch scanning
+            AddDigitalOutputChannel("detectorprime", pgBoard, 1, 0); // this trigger is for switch scanning
+            AddDigitalOutputChannel("detectoralpha", pgBoard, 1, 1); //following tow are for four shot patterns
+            AddDigitalOutputChannel("detectorbeta", pgBoard, 1, 2);
+
+
+            //Shutter Triggers:
+            AddDigitalOutputChannel("v0Shutter1", pgBoard, 0, 4);
+            AddDigitalOutputChannel("v0Shutter2", pgBoard, 0, 5);
+            AddDigitalOutputChannel("4fShutter1", pgBoard, 0, 6);
+            AddDigitalOutputChannel("4fShutter2", pgBoard, 0, 7);
+
+
+            /*
             // see ModulatedAnalogShotGatherer.cs
             // for details.
             AddDigitalOutputChannel("rfSwitch", pgBoard, 0, 4);
@@ -200,10 +231,11 @@ namespace DAQ.HAL
             AddAnalogInputChannel("piMonitor", daqBoard + "/ai10", AITerminalConfiguration.Nrse);
             //AddAnalogInputChannel("diodeLaserRefCavity", daqBoard + "/ai13", AITerminalConfiguration.Nrse);
             // Don't use ai10, cross talk with other channels on this line
-
+            */
             // high quality analog inputs (will be) on the S-series analog in board
             // The last number in AddAnalogInputChannel is an optional calibration which turns VuS and MHz 
-            AddAnalogInputChannel("topProbe", analogIn + "/ai0", AITerminalConfiguration.Differential, 0.1);
+            //AddAnalogInputChannel("topProbe", analogIn + "/ai7", AITerminalConfiguration.Differential, 0.1);
+            AddAnalogInputChannel("topProbe", analogInNew + "/ai0", AITerminalConfiguration.Differential, 0.1);
             AddAnalogInputChannel("bottomProbe", analogIn + "/ai1", AITerminalConfiguration.Differential, 0.02);
             AddAnalogInputChannel("pmt2", analogInNew + "/ai4", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
@@ -215,7 +247,6 @@ namespace DAQ.HAL
 
             /*
             AddAnalogInputChannel("magnetometer", analogIn + "/ai2", AITerminalConfiguration.Differential);
-            AddAnalogInputChannel("gnd", analogIn + "/ai3", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("battery", analogIn + "/ai4", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("piMonitor", analogIn + "/ai5", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("bFieldCurrentMonitor", analogIn + "/ai6", AITerminalConfiguration.Differential);
@@ -331,6 +362,41 @@ namespace DAQ.HAL
             // Length stabilisation for pump cavity
             //AddAnalogOutputChannel("PumpCavityLengthVoltage", tclBoardPump + "/ao1", -10, 10); //tick
 
+            ///TCL Configuration for UROP Laser 770nm DL - 100
+            TCLConfig tclConfigDiodeLaser = new TCLConfig("DiodeLaser");
+            tclConfigDiodeLaser.Trigger = tclBoard + "/PFI0"; // Trigger from Ramp
+            tclConfigDiodeLaser.BaseRamp = "diodeLaserCavityRampVoltage";
+            tclConfigDiodeLaser.TCPChannel = 1190;
+            tclConfigDiodeLaser.DefaultScanPoints = 1100;
+            tclConfigDiodeLaser.PointsToConsiderEitherSideOfPeakInFWHMs = 12;
+            tclConfigDiodeLaser.AnalogSampleRate = 245000 * 1 / 8;//reduce number 12/3/21 by factr 10
+            tclConfigDiodeLaser.MaximumNLMFSteps = 20;
+            tclConfigDiodeLaser.TriggerOnRisingEdge = true;
+
+            string diodeLaser = "diodeLaserCavity";
+            tclConfigDiodeLaser.AddCavity(diodeLaser);
+            tclConfigDiodeLaser.Cavities[diodeLaser].AddSlaveLaser("diodeLaser", "diodeLaserSlaveSignal");
+
+            tclConfigDiodeLaser.Cavities[diodeLaser].MasterLaser = "diodeLaserCavityMaster";
+            tclConfigDiodeLaser.Cavities[diodeLaser].RampOffset = "laserDiodeCavityLengthVoltage";
+            tclConfigDiodeLaser.Cavities[diodeLaser].AddDefaultGain("Master", -0.04);
+            tclConfigDiodeLaser.Cavities[diodeLaser].AddDefaultGain("diodeLaser", 1.00);
+            tclConfigDiodeLaser.Cavities[diodeLaser].AddFSRCalibration("diodeLaser", 3.84);
+
+            Info.Add("TCLConfigDiodeLaser", tclConfigDiodeLaser);
+            Info.Add("DefaultCavity", tclConfigDiodeLaser);
+            Info.Add("TCLConfig", tclConfigDiodeLaser);
+            Info.Add("tclConfigDiodeLaser", tclConfigDiodeLaser);
+
+
+
+
+
+
+
+
+
+
             //TCL configuration for pump cavity
             //TCLConfig tcl1 = new TCLConfig("Pump Cavity");
             //tcl1.AddLaser("MenloPZT", "Pumpp1");
@@ -429,7 +495,9 @@ namespace DAQ.HAL
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 6);
+            //wmlConfig.AddSlaveLaser("TestLaser1", "WavemeterLockTest1", 1); 18/02/26 Horacio changed to use different board
+            wmlConfig.AddSlaveLaser("TestLaser1", "diodeLaser", 6);
+            
             //wmlConfig.AddLaserConfiguration("TestLaser1", 377.100, -100, 0);
             //wmlConfig.AddLockBlock("TestLaser1", "WavemeterLockBlockTefst");
             //wmlConfig.AddSlaveLaser("TestLaser2", "WavemeterLockTest2", 7);
