@@ -696,7 +696,8 @@ namespace WavemeterLock
             if (!System.IO.File.Exists(filename))
             {
                 string header = "Time \t Set_Frequency(THz) \t Current_Frequency(THz) \t " +
-                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t ";
+                   "Frequency_Error(MHz) \t Lock_Status \t Lock_Block_Status \t "+
+                   "Current Voltage \t";
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(filename, false))
                     file.WriteLine(header);
@@ -706,7 +707,9 @@ namespace WavemeterLock
                 new System.IO.StreamWriter(filename, true))
             {
                 file.WriteLine(dt.TimeOfDay.ToString() + "\t" + lasers[slave].setFrequency + "\t" + lasers[slave].currentFrequency + "\t" +
-                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString());
+                    lasers[slave].FrequencyError * 1000000.0 + "\t" + lasers[slave].lState.ToString() + "\t" + lasers[slave].isBlocked.ToString()+"\t"+
+                    lasers[slave].CurrentVoltage
+                    );
                 file.Flush();
             }
         }

@@ -66,6 +66,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["TOFgateSelectionEndInMs"] = 28;
 			settings["TOFgateBgStartInMs"] = 35;
 			settings["TOFgateBgEndInMs"] = 40;
+			settings["CamEnable"] = false;
 		}
 
 		public override void AcquisitionStarting()
@@ -77,7 +78,21 @@ namespace ScanMaster.Acquire.Plugins
 			inputTask3 = new Task("analog gatherer 3 -" /*+ (string)settings["channel"]*/);
 			inputTask4 = new Task("analog gatherer 4 -" /*+ (string)settings["channel"]*/);
 
-			counterTask1 = new Task("CCD enable Task Counter");
+			if ((bool)settings["CamEnable"])
+			{
+				counterTask1 = new Task("CCD enable Task Counter");
+				string camChannel = (string)settings["cameraChannel"];
+				CounterChannel pulseChannel = ((CounterChannel)Environs.Hardware.CounterChannels[camChannel]);
+				counterTask1.COChannels.CreatePulseChannelTicks(
+					pulseChannel.PhysicalChannel,
+					pulseChannel.Name,
+					"100kHzTimebase",
+					COPulseIdleState.Low,
+					100 * (int)settings["ccdEnableStartTimeInMs"],//the delay in ms, the multiplier needs to be changed for a different timebase. E.g. 100 should be used for 100 kHz
+					100,
+					100 * (int)settings["ccdEnableLengthInMs"]//the duration in ms
+					);
+			}
 
 			// new analog channel, range -10 to 10 volts
 			if (!Environs.Debug)
@@ -85,7 +100,7 @@ namespace ScanMaster.Acquire.Plugins
 				
                 string channelList = (string)settings["channel"];// Add channels to this list
                 string[] channels = channelList.Split(new char[] { ',' });
-				string camChannel = (string)settings["cameraChannel"];
+				
 
 				foreach (string channel in channels)
                 {
@@ -111,17 +126,9 @@ namespace ScanMaster.Acquire.Plugins
 						);
                 }
 
-				CounterChannel pulseChannel = ((CounterChannel)Environs.Hardware.CounterChannels[camChannel]);
+					
 
-				counterTask1.COChannels.CreatePulseChannelTicks(
-					pulseChannel.PhysicalChannel,
-					pulseChannel.Name,
-					"100kHzTimebase",
-					COPulseIdleState.Low,
-					100 * (int)settings["ccdEnableStartTimeInMs"],//the delay in ms, the multiplier needs to be changed for a different timebase. E.g. 100 should be used for 100 kHz
-					100,
-					100 * (int)settings["ccdEnableLengthInMs"]//the duration in ms
-					);
+
 
 				// internal clock, finite acquisition
 				inputTask1.Timing.ConfigureSampleClock(
@@ -152,7 +159,8 @@ namespace ScanMaster.Acquire.Plugins
 					SampleQuantityMode.FiniteSamples,
 					(int)settings["gateLength"]);
 
-				counterTask1.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
+				if ((bool)settings["CamEnable"])
+					counterTask1.Timing.ConfigureImplicit(SampleQuantityMode.FiniteSamples, 1);
 
 				// trigger off PFI0 (with the standard routing, that's the same as trig1)
 				inputTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
@@ -169,21 +177,25 @@ namespace ScanMaster.Acquire.Plugins
 					(string)Environs.Hardware.GetInfo("analogTrigger4"),
 					DigitalEdgeStartTriggerEdge.Rising);
 
-				counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
+				if ((bool)settings["CamEnable"])
+				{
+					counterTask1.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
 					(string)Environs.Hardware.GetInfo("analogTrigger2"),
 					DigitalEdgeStartTriggerEdge.Rising);
-
+				}
 				inputTask1.Control(TaskAction.Verify);
 				inputTask2.Control(TaskAction.Verify);
 				inputTask3.Control(TaskAction.Verify);
 				inputTask4.Control(TaskAction.Verify);
-				counterTask1.Control(TaskAction.Verify);
+				if ((bool)settings["CamEnable"])
+					counterTask1.Control(TaskAction.Verify);
 			}
             reader1 = new AnalogMultiChannelReader(inputTask1.Stream);
 			reader2 = new AnalogMultiChannelReader(inputTask2.Stream);
 			reader3 = new AnalogMultiChannelReader(inputTask3.Stream);
 			reader4 = new AnalogMultiChannelReader(inputTask4.Stream);
-			counter1 = new CounterSingleChannelWriter(counterTask1.Stream);
+			if ((bool)settings["CamEnable"])
+				counter1 = new CounterSingleChannelWriter(counterTask1.Stream);
 		}
 
 		public override void ScanStarting()
@@ -201,7 +213,8 @@ namespace ScanMaster.Acquire.Plugins
 			inputTask2.Dispose();
 			inputTask3.Dispose();
 			inputTask4.Dispose();
-			counterTask1.Dispose();
+			if ((bool)settings["CamEnable"])
+				counterTask1.Dispose();
 		}
 
 		public override void ArmAndWait()
@@ -212,31 +225,38 @@ namespace ScanMaster.Acquire.Plugins
 				{
 					if (config.switchPlugin.State == true)
 					{
-						counterTask1.Start();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Start();
 						inputTask1.Start(); //"analogTrigger0" Slow On YAG On
 						latestData = reader1.ReadMultiSample((int)settings["gateLength"]);
 						inputTask1.Stop();
-						counterTask1.Stop();
-
-						counterTask1.Start();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Stop();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Start();
 						inputTask3.Start();//"analogTrigger3" Slow On YAG Off
 						latestData2 = reader3.ReadMultiSample((int)settings["gateLength"]);
 						inputTask3.Stop();
-						counterTask1.Stop();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Stop();
 					}
 					else
 					{
-						counterTask1.Start();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Start();
 						inputTask2.Start(); //"analogTrigger1" Slow Off YAG on
 						latestData = reader2.ReadMultiSample((int)settings["gateLength"]);
 						inputTask2.Stop();
-						counterTask1.Stop();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Stop();
 
-						counterTask1.Start();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Start();
 						inputTask4.Start();//"analogTrigger4" Slow Off YAG off
 						latestData2 = reader4.ReadMultiSample((int)settings["gateLength"]);
 						inputTask4.Stop();
-						counterTask1.Stop();
+						if ((bool)settings["CamEnable"])
+							counterTask1.Stop();
 					}
 				}
 			}

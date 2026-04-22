@@ -55,7 +55,9 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(LatticePnPModYAGFourShotsPatternPlugin)),
 	 XmlInclude(typeof(LatticeFourShotPatternPlugin)),
 	 XmlInclude(typeof(LatticeBFieldModPatternPlugin)),
-	 XmlInclude(typeof(LatticeBFieldFourShotPatternPlugin))]
+	 XmlInclude(typeof(LatticeBFieldFourShotPatternPlugin)),
+	 XmlInclude(typeof(ClassicFourShotPatternPlugin)),
+	 XmlInclude(typeof(ClassicBasicBeamPatternPlugin))]
 	
 
 

@@ -292,5 +292,10 @@ namespace WavemeterLock
         {
             updateFunc(obj);
         }
+
+        private void checkBoxLogData_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
