@@ -166,7 +166,6 @@ namespace MOTMaster
         {
             foreach (string address in analogs.Keys)
             {
-                Console.WriteLine("running analog");
                 if (sequence.AnalogPattern.Boards.ContainsKey(address))
                 {
                     analogs[address].OutputPatternAndWait(sequence.AnalogPattern.Boards[address].Pattern);
@@ -185,7 +184,6 @@ namespace MOTMaster
 
             foreach (string address in pgs.Keys)
             {
-                Console.WriteLine("running digital");
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
                     pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
@@ -195,7 +193,6 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
-            Console.WriteLine("Initialising hardware");
             if (triggered == true)
             {
                 pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
@@ -250,7 +247,6 @@ namespace MOTMaster
 
         private void releaseHardware()
         {
-            Console.WriteLine("releasing hardware");
             pgMaster.StopPattern();
             foreach (DAQMxPatternGenerator pg in pgs.Values)
             {
@@ -501,8 +497,6 @@ namespace MOTMaster
                     }
                     else
                     {
-                        Console.WriteLine("I am about to run the pattern");
-                        Console.WriteLine(sequence);
                         for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                         {
                             if (!config.Debug) runPattern(sequence);
