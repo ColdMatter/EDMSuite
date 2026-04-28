@@ -136,12 +136,16 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
+             //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+              //"tcp://172.22.116.195:1172/controller.rem");
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-               "tcp://localhost:1172/controller.rem");
+            "tcp://127.0.0.1:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
 #if DDS
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
+            //DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://172.22.116.195:1818/controller.rem");
+            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://127.0.0.1:1818/controller.rem");
+
             DDSCtrl.testDDS();
 #endif //DDS
             ioHelper = new MMDataIOHelper(motMasterDataPath,

@@ -420,6 +420,7 @@ namespace DAQ.HAL
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            Info.Add("PGExportClock", true);
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
