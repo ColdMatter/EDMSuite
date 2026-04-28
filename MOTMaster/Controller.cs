@@ -136,12 +136,16 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
+             //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+              //"tcp://172.22.116.195:1172/controller.rem");
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-               "tcp://localhost:1172/controller.rem");
+            "tcp://127.0.0.1:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
 #if DDS
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
+            //DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://172.22.116.195:1818/controller.rem");
+            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://127.0.0.1:1818/controller.rem");
+
             DDSCtrl.testDDS();
 #endif //DDS
             ioHelper = new MMDataIOHelper(motMasterDataPath,
@@ -162,6 +166,7 @@ namespace MOTMaster
         {
             foreach (string address in analogs.Keys)
             {
+                Console.WriteLine("running analog");
                 if (sequence.AnalogPattern.Boards.ContainsKey(address))
                 {
                     analogs[address].OutputPatternAndWait(sequence.AnalogPattern.Boards[address].Pattern);
@@ -180,6 +185,7 @@ namespace MOTMaster
 
             foreach (string address in pgs.Keys)
             {
+                Console.WriteLine("running digital");
                 if (sequence.DigitalPattern.Boards.ContainsKey(address))
                     pgs[address].OutputPattern(sequence.DigitalPattern.Boards[address].Pattern, false);
             }
@@ -189,6 +195,7 @@ namespace MOTMaster
 
         private void initializeHardware(MOTMasterSequence sequence)
         {
+            Console.WriteLine("Initialising hardware");
             if (triggered == true)
             {
                 pgMaster.Configure(config.DigitalPatternClockFrequency, false, true, true, sequence.DigitalPattern.Boards[pgMasterName].Pattern.Length, true, true);
@@ -243,6 +250,7 @@ namespace MOTMaster
 
         private void releaseHardware()
         {
+            Console.WriteLine("releasing hardware");
             pgMaster.StopPattern();
             foreach (DAQMxPatternGenerator pg in pgs.Values)
             {
@@ -493,6 +501,8 @@ namespace MOTMaster
                     }
                     else
                     {
+                        Console.WriteLine("I am about to run the pattern");
+                        Console.WriteLine(sequence);
                         for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                         {
                             if (!config.Debug) runPattern(sequence);
