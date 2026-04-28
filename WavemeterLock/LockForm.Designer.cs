@@ -57,17 +57,20 @@ namespace WavemeterLock
             this.led6 = new System.Windows.Forms.Panel();
             this.led7 = new System.Windows.Forms.Panel();
             this.led8 = new System.Windows.Forms.Panel();
+            this.logTerminal = new System.Windows.Forms.RichTextBox();
+            this.groupBoxLog = new System.Windows.Forms.GroupBox();
             this.groupBoxLockRate.SuspendLayout();
+            this.groupBoxLog.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
+            //
             // lockTab
-            // 
-            this.lockTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            //
+            this.lockTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
             this.lockTab.Location = new System.Drawing.Point(-3, 70);
             this.lockTab.Name = "lockTab";
             this.lockTab.SelectedIndex = 0;
@@ -218,12 +221,38 @@ namespace WavemeterLock
             this.led8.Name = "led8";
             this.led8.Size = new System.Drawing.Size(10, 10);
             this.led8.TabIndex = 26;
-            // 
+            //
+            // logTerminal
+            //
+            this.logTerminal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.logTerminal.BackColor = System.Drawing.Color.Black;
+            this.logTerminal.Font = new System.Drawing.Font("Consolas", 8.25F);
+            this.logTerminal.ForeColor = System.Drawing.Color.LimeGreen;
+            this.logTerminal.Location = new System.Drawing.Point(6, 19);
+            this.logTerminal.Name = "logTerminal";
+            this.logTerminal.ReadOnly = true;
+            this.logTerminal.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.logTerminal.Size = new System.Drawing.Size(714, 120);
+            this.logTerminal.TabIndex = 0;
+            this.logTerminal.Text = "";
+            //
+            // groupBoxLog
+            //
+            this.groupBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLog.Controls.Add(this.logTerminal);
+            this.groupBoxLog.Location = new System.Drawing.Point(3, 572);
+            this.groupBoxLog.Name = "groupBoxLog";
+            this.groupBoxLog.Size = new System.Drawing.Size(726, 148);
+            this.groupBoxLog.TabIndex = 27;
+            this.groupBoxLog.TabStop = false;
+            this.groupBoxLog.Text = "Log";
+            //
             // LockForm
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 568);
+            this.ClientSize = new System.Drawing.Size(732, 728);
+            this.Controls.Add(this.groupBoxLog);
             this.Controls.Add(this.led8);
             this.Controls.Add(this.led7);
             this.Controls.Add(this.led6);
@@ -246,6 +275,7 @@ namespace WavemeterLock
             this.Load += new System.EventHandler(this.LockForm_Load);
             this.groupBoxLockRate.ResumeLayout(false);
             this.groupBoxLockRate.PerformLayout();
+            this.groupBoxLog.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -269,6 +299,8 @@ namespace WavemeterLock
         private Panel led6;
         private Panel led7;
         private Panel led8;
+        private System.Windows.Forms.GroupBox groupBoxLog;
+        private System.Windows.Forms.RichTextBox logTerminal;
     }
 }
 

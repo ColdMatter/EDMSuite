@@ -8257,6 +8257,11 @@ namespace UEDMHardwareControl
             string nameCCDB = null;
             string computerCCDB = "PH-NI-LAB"; // Gobelin PC
 
+        public void InitialiseTCPforCCDB()
+        {
+            string nameCCDB = null;
+            string computerCCDB = "ULTRACOLDEDM"; // Wavemeter PC
+
             // Resolve CCD B IP
             IPHostEntry hostInfoCCDB = Dns.GetHostEntry(computerCCDB);
             foreach (var addr in hostInfoCCDB.AddressList)

@@ -228,7 +228,7 @@ namespace DAQ.Environment
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
-                    serverComputerName = "IC-CZC136CFDJ";
+                    serverComputerName = "IC-CZC136CFDJ"; // "IC-CZC222C0F4";// 
                     wavemeterLockTCPChannel = 1012;
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";

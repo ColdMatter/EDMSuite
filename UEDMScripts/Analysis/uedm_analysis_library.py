@@ -81,6 +81,12 @@ def ProcessAllScansInZippedXML(Filename):
         index = index + 1
     return TimeOn, DataOn, TimeOff, DataOff, ScanParameters, TimestampsOn, TimestampsOff
     
+def GetAnalogData(Scan):
+    PointsPerScan=len(Scan.Points)
+    Analogs=np.zeros((PointsPerScan))
+    for i in range(PointsPerScan):
+        Analogs[i]=np.array(Scan.Points[i].Analogs[0])
+    return Analogs
 
 def ProcessScan(Scan):
     """Processes a scan object and returns the TOFs, the scan parameters and the 

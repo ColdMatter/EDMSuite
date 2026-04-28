@@ -161,10 +161,15 @@ namespace ScanMaster.Acquire.Plugins
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                         nameCCD1 = addr.ToString();
+                        
+
 
                     Console.WriteLine(nameCCD1);
+                    
                 }
+                
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
+                
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));

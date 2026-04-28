@@ -627,6 +627,9 @@
     <Compile Include="AnapicoCH2PowerOutputPlugin.cs" />
     <Compile Include="AnapicoCH2FrequencyOutputPlugin.cs" />
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
+    <Compile Include="BufferedEventCountingTwoShotGathererPlugin.cs" />
+    <Compile Include="ClassicBasicBeamPatternBuilder.cs" />
+    <Compile Include="ClassicBasicBeamPatternPlugin.cs" />
     <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />
     <Compile Include="BasicBeamTwoYAGPatternPlugin.cs" />
     <Compile Include="DTCLOutputPlugin.cs" />
@@ -648,7 +651,9 @@
     <Compile Include="FourShutterPatternPluginFindV1.cs" />
     <Compile Include="DMMInputPlugin.cs" />
     <Compile Include="LatticeBFieldFourShotPatternBuilder.cs" />
+    <Compile Include="ClassicFourShotPatternPlugin.cs" />
     <Compile Include="LatticeBFieldFourShotPatternPlugin.cs" />
+    <Compile Include="ClassicFourShotPatternBuilder.cs" />
     <Compile Include="LatticePatternBuilder.cs" />
     <Compile Include="LatticePatternPlugin.cs" />
     <Compile Include="LatticePnPModYAGFourShotsPatternBuilder.cs" />
@@ -665,6 +670,7 @@
     <Compile Include="ModulatedAnalogShotGathererPlugin.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ModulatedFourHybridShotGathererPlugin.cs" />
     <Compile Include="ModulatedFourAnalogShotGathererPlugin.cs" />
     <Compile Include="MOTMasterScan.cs" />
     <Compile Include="MSquaredOutputPlugin.cs" />
@@ -979,7 +985,7 @@
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="licenses.licx" />
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1098,6 +1104,7 @@
     <Folder Include="bin\x86\ultracoldEDM\" />
     <Folder Include="bin\x86\ZeemanSisyphus\" />
     <Folder Include="bin\ZeemanSisyphus\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
