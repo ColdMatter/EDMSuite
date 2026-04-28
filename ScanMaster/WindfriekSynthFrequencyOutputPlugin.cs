@@ -56,7 +56,7 @@ namespace ScanMaster.Acquire.Plugins
             }
             else if (scanDevice == "WindfreakDetectionB")
             {
-                synth.SetPower((double)settings["scanOnAmplitude"]);
+                synth.SetPowerUEDM((double)settings["scanOnAmplitude"]);
                 synth.SetRFMute(false);
                 synth.SetPLLPowerOn(true);
                 synth.SetPAPowerOn(true);
@@ -79,7 +79,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			string scanDevice = (string)settings["synth"];
 
-			synth.SetPower((double)settings["offAmplitude"]); 
+			synth.SetPowerUEDM((double)settings["offAmplitude"]); 
 			synth.SetFrequency((long)settings["offFrequency"]);
 			synth.SetRFMute(true);
 			synth.SetPLLPowerOn(false);

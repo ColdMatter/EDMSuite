@@ -7375,7 +7375,7 @@ namespace UEDMHardwareControl
             }
 
             // Set the power
-            microwaveSynthDetection.SetPower(Power);
+            microwaveSynthDetection.SetPowerUEDM(Power);
 
             // Update UI monitor
             UpdateMWPowerMonitorDetection(channel, Power);
@@ -7908,7 +7908,7 @@ namespace UEDMHardwareControl
             MWPowerDetectionB = Power;
 
             // Set the power
-            microwaveSynthDetectionB.SetPower(Power);
+            microwaveSynthDetectionB.SetPowerUEDM(Power);
 
             // Update UI monitor
             UpdateMWPowerMonitorDetectionB(Power);

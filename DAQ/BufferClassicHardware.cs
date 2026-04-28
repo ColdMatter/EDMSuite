@@ -248,7 +248,7 @@ namespace DAQ.HAL
             Instruments.Add("WindfreakDetectionB", new WindfreakSynthHD("ASRL10::INSTR"));
 
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL24::INSTR"));
-            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL11::INSTR"));
+            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL22::INSTR"));
             Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::12::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::5::INSTR"));
@@ -324,8 +324,8 @@ namespace DAQ.HAL
 
             //Wavemeter lock config
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
-            wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 2);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809112, 5, 1); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809127, 300, 160); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
 

@@ -79,7 +79,7 @@ namespace ScanMaster.Acquire.Plugins
 		{
 			string scanDevice = (string)settings["synth"];
 
-			synth.SetPower((double)settings["offAmplitude"]);
+			synth.SetPowerUEDM((double)settings["offAmplitude"]);
 			synth.SetFrequency((long)settings["offFrequency"]);
 			synth.SetRFMute(true);
 			synth.SetPLLPowerOn(false);
@@ -93,7 +93,7 @@ namespace ScanMaster.Acquire.Plugins
 			set
 			{
 				scanParameter = value;
-				synth.SetPower((double)ScanParameter);
+				synth.SetPowerUEDM((double)ScanParameter);
 				//if (synth != null)
     //            {
 				//	synth.SetPower((double)ScanParameter);
