@@ -534,30 +534,50 @@ namespace WavemeterLock
             }
         }
 
-        private string WlmDisengageReason(string laserName, double measuredFreq)
+        private const int MaxGlitches = 3;
+
+        private string WlmFaultDescription(string laserName, double measuredFreq)
         {
             switch ((int)measuredFreq)
             {
-                case  0: return laserName + " lock disengaged: no WLM value yet (ErrNoValue)";
-                case -1: return laserName + " lock disengaged: no signal (ErrNoSignal)";
-                case -2: return laserName + " lock disengaged: bad signal (ErrBadSignal)";
-                case -3: return laserName + " lock disengaged: signal too low / underexposed (ErrLowSignal)";
-                case -4: return laserName + " lock disengaged: signal too high / overexposed (ErrBigSignal)";
-                case -5: return laserName + " lock disengaged: wavemeter not connected (ErrWlmMissing)";
-                case -6: return laserName + " lock disengaged: channel not available (ErrNotAvailable)";
-                case -8: return laserName + " lock disengaged: no pulse (ErrNoPulse)";
-                case -10: return laserName + " lock disengaged: channel not available (ErrChannelNotAvailable)";
-                case -13: return laserName + " lock disengaged: WLM division by zero (ErrDiv0)";
-                case -14: return laserName + " lock disengaged: WLM out of range (ErrOutOfRange)";
-                case -15: return laserName + " lock disengaged: unit not available (ErrUnitNotAvailable)";
-                case -26: return laserName + " lock disengaged: TCP error (ErrTCPErr)";
+                case  0: return "no WLM value yet (ErrNoValue)";
+                case -1: return "no signal (ErrNoSignal)";
+                case -2: return "bad signal (ErrBadSignal)";
+                case -3: return "signal too low / underexposed (ErrLowSignal)";
+                case -4: return "signal too high / overexposed (ErrBigSignal)";
+                case -5: return "wavemeter not connected (ErrWlmMissing)";
+                case -6: return "channel not available (ErrNotAvailable)";
+                case -8: return "no pulse (ErrNoPulse)";
+                case -10: return "channel not available (ErrChannelNotAvailable)";
+                case -13: return "WLM division by zero (ErrDiv0)";
+                case -14: return "WLM out of range (ErrOutOfRange)";
+                case -15: return "unit not available (ErrUnitNotAvailable)";
+                case -26: return "TCP error (ErrTCPErr)";
                 default:
                     if (measuredFreq <= 0)
-                        return laserName + " lock disengaged: unknown WLM error code " + ((int)measuredFreq).ToString();
+                        return "unknown WLM error code " + ((int)measuredFreq).ToString();
                     double errorMHz = 1e6 * (measuredFreq - lasers[laserName].setFrequency);
-                    return laserName + " lock disengaged: frequency jump " + errorMHz.ToString("F2") +
+                    return "frequency jump " + errorMHz.ToString("F2") +
                            " MHz (measured " + measuredFreq.ToString("F6") +
                            " THz, set " + lasers[laserName].setFrequency.ToString("F6") + " THz)";
+            }
+        }
+
+        private void HandleLockFault(string slave)
+        {
+            lasers[slave].glitchCount++;
+            string description = WlmFaultDescription(slave, lasers[slave].currentFrequency);
+            if (lasers[slave].glitchCount > MaxGlitches)
+            {
+                faultyLaser = slave;
+                lasers[slave].glitchCount = 0;
+                lasers[slave].DisengageLock();
+                indicateRemoteConnection(lasers[slave].WLMChannel, false);
+                ui.Log(slave + " lock disengaged after " + MaxGlitches + " glitches: " + description);
+            }
+            else
+            {
+                ui.Log(slave + " glitch " + lasers[slave].glitchCount + "/" + MaxGlitches + ": " + description);
             }
         }
 
@@ -581,13 +601,11 @@ namespace WavemeterLock
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
                             {
-                                faultyLaser = slave;
-                                lasers[slave].DisengageLock();
-                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log(WlmDisengageReason(slave, lasers[slave].currentFrequency));
+                                HandleLockFault(slave);
                             }
                             else
                             {
+                                lasers[slave].glitchCount = 0;
                                 lasers[slave].UpdateLock();
                             }
                         }
@@ -611,13 +629,11 @@ namespace WavemeterLock
                             if (Math.Abs(getFrequency(lasers[slave].WLMChannel) - lasers[slave].setFrequency) > freqTolerance)//In the case of over/underexpose or big mode-hop, disengage lock
 
                             {
-                                faultyLaser = slave;
-                                lasers[slave].DisengageLock();
-                                indicateRemoteConnection(lasers[slave].WLMChannel, false);
-                                ui.Log(WlmDisengageReason(slave, lasers[slave].currentFrequency));
+                                HandleLockFault(slave);
                             }
                             else
                             {
+                                lasers[slave].glitchCount = 0;
                                 lasers[slave].UpdateLock();
                             }
                         }

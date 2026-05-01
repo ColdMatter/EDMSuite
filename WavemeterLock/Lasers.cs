@@ -31,6 +31,7 @@ namespace WavemeterLock
         public bool isBlocked = false;
         public bool logData = false;
         public Action<string> OnLog;
+        public int glitchCount = 0;
         public enum LaserState
         {
             FREE, LOCKED, OUTOFRANGE
