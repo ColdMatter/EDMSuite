@@ -106,6 +106,20 @@ namespace DAQ.HAL
             Disconnect();
         }
 
+        // this is for UltracoldEDM only as the Windfreak mini synth has a smaller power resolution which can be messed up by ScanMaster scan
+        public void SetPowerUEDM(double power) // power in dBm
+        {
+            double roundedPower = Math.Round(power, 2);
+            string powerString = roundedPower.ToString("0.00"); // always 2 dp
+
+            string cmdstr = powerString; // already guaranteed to have decimal places
+
+            Connect(SerialTerminationMethod.TerminationCharacter);
+            string cmd = CommandTypes.SetPower + cmdstr;
+            Write(cmd, true);
+            Disconnect();
+        }
+
         // Channel
         public int QueryChannel()
         {

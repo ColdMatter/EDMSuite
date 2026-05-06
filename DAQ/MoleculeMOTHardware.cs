@@ -140,7 +140,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
             AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
-            AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
+            //AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
+            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
 
             //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
@@ -413,10 +414,13 @@ namespace DAQ.HAL
             analogBoards.Add("AO", analogPatternBoardAddress);
             analogBoards.Add("SecondAO", analogPatternBoardAddress2);
             Info.Add("AnalogBoards", analogBoards);
+            Info.Add("AOPatternBuffer", true);
+            Info.Add("SecondAOPatternBuffer", true);
 
             Info.Add("PatternGeneratorBoard", digitalPatternBoardAddress2);
             Info.Add("PGClockLine", digitalPatternBoardAddress2 + "/PFI4");
             Info.Add("PGTriggerLine", digitalPatternBoardAddress2 + "/PFI3");
+            Info.Add("PGExportClock", true);
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);

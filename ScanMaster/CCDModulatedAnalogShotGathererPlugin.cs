@@ -20,6 +20,7 @@ using DAQ.FakeData;
 using DAQ.HAL;
 using Data;
 using ScanMaster.Acquire.Plugin;
+//using csAcq4;
 
 namespace ScanMaster.Acquire.Plugins
 {
@@ -119,6 +120,10 @@ namespace ScanMaster.Acquire.Plugins
             settings["cameraChannel"] = "cameraEnabler";
             settings["inputRangeLow"] = -1.0;
             settings["inputRangeHigh"] = 10.0;
+            settings["TOFgateSelectionStartInMs"] = 15;
+            settings["TOFgateSelectionEndInMs"] = 45;
+            settings["TOFgateBgStartInMs"] = 50;
+            settings["TOFgateBgEndInMs"] = 90;
         }
 
         // Shirley adds on 20/01/2026 to serialise the CCD parameter and save the xml file

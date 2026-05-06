@@ -1160,6 +1160,8 @@ namespace EDMBlockHead.Acquire
 
                     stopwatch.Stop();
                     Console.WriteLine("Time to switch = " + stopwatch.ElapsedMilliseconds + " ms");
+                    Thread.Sleep(200);
+
                     // take a point
                     Shot s;
                     EDMPoint p;
