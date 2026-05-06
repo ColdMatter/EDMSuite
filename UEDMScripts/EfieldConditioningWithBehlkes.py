@@ -36,7 +36,7 @@ def RampAndSwitch(waitTime, startV, stepsize, maxV, NumberOfSwitches):
 
 def main():
 	print("RampAndSwitch(waitTime in ms, startV in kV, stepsize in kV, maxV in kV, NumberOfSwitches)")
-	RampAndSwitch(1000,18.0,1.0,18.1,200)
+	RampAndSwitch(30000,16.0,1.0,19.1,10)
 	pass
 
 if __name__=="__main__":
