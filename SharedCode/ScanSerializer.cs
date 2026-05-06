@@ -28,13 +28,29 @@ namespace Data.Scans
             runningZipStream.SetLevel(5);
         }
 
-        public void AppendToZip(Scan scan, String name)
+		public void AppendToZip(Scan scan, String name)
+		{
+			lock (this)
+			{
+				ZipEntry entry = new ZipEntry(name);
+				runningZipStream.PutNextEntry(entry);
+				xmls.Serialize(runningZipStream, scan);
+			}
+		}
+
+		public void AppendFileToZip(string filePath, string entryName)
         {
-            lock (this)
+            if (runningZipStream == null)
+                throw new InvalidOperationException("Zip not initialized. Call PrepareZip first.");
+
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                ZipEntry entry = new ZipEntry(name);
+                ZipEntry entry = new ZipEntry(entryName);
                 runningZipStream.PutNextEntry(entry);
-                xmls.Serialize(runningZipStream, scan);
+
+                fileStream.CopyTo(runningZipStream);
+
+                runningZipStream.CloseEntry();
             }
         }
 

@@ -1,22 +1,24 @@
+using DAQ.Environment;
+using DAQ.HAL;
+using Data;
+using Data.Scans;
+using ScanMaster.Acquire;
+using ScanMaster.Acquire.Plugin;
+using ScanMaster.Acquire.Plugins;
+using ScanMaster.Acquire.Test;
+using ScanMaster.Analyze;
+using ScanMaster.GUI;
 using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Lifetime;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using System.Text;
-
-using DAQ.Environment;
-using DAQ.HAL;
-using Data;
-using Data.Scans;
-using ScanMaster.GUI;
-using ScanMaster.Acquire;
-using ScanMaster.Acquire.Test;
-using ScanMaster.Acquire.Plugin;
-using ScanMaster.Analyze;
+using System.Xml.Serialization;
+//using static ScanMaster.Acquire.Plugins.CCDModulatedAnalogShotGathererPlugin;
 
 
 
@@ -462,7 +464,9 @@ namespace ScanMaster
             return profileManager.CurrentProfile.AcquisitorConfig.outputPlugin.Settings[key];
         }
 
+
         // Saves the scan data to the specified file
+        // Shirley changes on 06/05/2026: added code to save the CCDConfig.xml into the zip file if it exists in the settings of the current profile
         public void SaveData(string filename)
         {
             System.IO.FileStream fs = new FileStream(filename, FileMode.Create);
@@ -474,6 +478,33 @@ namespace ScanMaster
                 serializer.AppendToZip(sc, "scan_" + k.ToString() + ".xml");
             }
             serializer.AppendToZip(DataStore.AverageScan, "average.xml");
+
+            // Shirley adds on 06/05/2026
+            try
+            {
+                string ccdXml = GetShotSetting("ccdConfigXML") as string;
+
+                if (!string.IsNullOrEmpty(ccdXml))
+                {
+                    // create temp file
+                    string tempXmlPath = Path.Combine(Path.GetTempPath(), "CCDConfig.xml");
+                    File.WriteAllText(tempXmlPath, ccdXml);
+                    // add to zip
+                    serializer.AppendFileToZip(tempXmlPath, "CCDConfig.xml");
+                    // cleanup
+                    File.Delete(tempXmlPath);
+                    Console.WriteLine("CCDConfig.xml added to zip.");
+                }
+                else
+                {
+                    Console.WriteLine("No CCDConfig found in settings.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to add CCDConfig.xml: " + ex.Message);
+            }
+
             serializer.CloseZip();
             fs.Close();
             Console.WriteLine(((int)(DataStore.AverageScan.GetSetting("out", "pointsPerScan"))).ToString());
