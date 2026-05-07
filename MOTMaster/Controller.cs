@@ -468,7 +468,7 @@ namespace MOTMaster
 
                         // Assign the newly loaded pattern to the DDS controller instance
                         DDSCtrl.patternList = sequence.DDSPattern;
-
+                        DDSCtrl.InvokeParameterUpdatedSafely();  // update the DDS controller IU
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
                     }

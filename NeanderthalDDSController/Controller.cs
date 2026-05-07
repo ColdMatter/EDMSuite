@@ -551,7 +551,7 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_WRITE_TO_CARD);
         }
 
-        private void InvokeParameterUpdatedSafely()
+        public void InvokeParameterUpdatedSafely()
         {
             if (parameterUpdated == null)
                 return;
