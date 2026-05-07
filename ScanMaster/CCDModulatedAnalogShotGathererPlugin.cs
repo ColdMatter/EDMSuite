@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 //using System.Threading.Tasks;
 using System.Collections;
@@ -98,6 +98,9 @@ namespace ScanMaster.Acquire.Plugins
         private csAcq4.CCDController ccd2controller;
 
 
+        // Shirley adds on 06/05/2026 
+        public CCDSettings LatestCCDSettings { get; private set; }
+
         protected override void InitialiseBaseSettings()
         {
             settings["gateStartTime"] = 60; //pmt gate start
@@ -142,6 +145,16 @@ namespace ScanMaster.Acquire.Plugins
             public int CCDAGain;
             public int CCDBGain;
             public int SampleRate;
+        }
+
+        private string SerializeCCDSettingsToString(CCDSettings data)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
+            using (StringWriter sw = new StringWriter())
+            {
+                serializer.Serialize(sw, data);
+                return sw.ToString();
+            }
         }
 
         protected override void InitialiseSettings()
@@ -579,7 +592,7 @@ namespace ScanMaster.Acquire.Plugins
             //rhys add 24/11
             // ---- Signal all ArmAndWait loops to exit ----
             cancelRequested = true;
-            Console.WriteLine("Acquisition stop requested � signalling cancellation.");
+            Console.WriteLine("Acquisition stop requested — signalling cancellation.");
             // ---- SAFELY STOP all DAQmx tasks BEFORE disposing ----
             SafeStop(inputTask1);
             SafeStop(inputTask2);
@@ -645,6 +658,9 @@ namespace ScanMaster.Acquire.Plugins
                         SampleRate = (int)settings["sampleRate"]
                     };
 
+                    LatestCCDSettings = logData; // store the latest settings in a property for potential use elsewhere in ScanMaster
+                    settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
+
                     // set up saving directory
                     string ccdSavePath = ccd2controller.GetSaveFullPath();
                     int ccdFileIndex = ccd2controller.GetSyncFileName();
@@ -666,47 +682,35 @@ namespace ScanMaster.Acquire.Plugins
                     string xmlFileName = $"CCD_Config_{ccdFileIndex:D5}.xml";
                     string fullPath = Path.Combine(logDirectory, xmlFileName);
 
+                    // Shirley adds on 06/05/2026
+                    // Use same directory as CCD files
+                    string scanDirectory = logDirectory;
 
-                    //// set up saving directory
-                    //string basePath = Environs.FileSystem.Paths["CCDxmlDataPath"].ToString();
+                    if (!Directory.Exists(scanDirectory))
+                        Directory.CreateDirectory(scanDirectory);
 
-                    //// date-based folders
-                    //DateTime now = DateTime.Now;
-                    //string yearFolder = now.Year.ToString();
-                    //string monthFolder = now.ToString("yyyy-MM");
-                    //string dayFolder = now.ToString("yyyyMMdd");
+                    // Match CCD index → Scan index
+                    string scanFileName = $"Scan_{ccdFileIndex:D5}.zip";
+                    string fullScanPath = Path.Combine(scanDirectory, scanFileName);
 
-                    //string logDirectory = Path.Combine(basePath, yearFolder, monthFolder, dayFolder);
-                    //if (!Directory.Exists(logDirectory))
-                    //{
-                    //    Directory.CreateDirectory(logDirectory);
-                    //}
+                    // Call ScanMaster save routine
+                    Controller controller = Controller.GetController(); 
+                    controller.SaveData(fullScanPath);
 
-                    //// define next available file index
-                    //int index = 1;
-                    //string fileName;
-                    //string fullPath;
-
-                    //do
-                    //{
-                    //    fileName = $"CCD_Config_{index:D2}.xml";
-                    //    fullPath = Path.Combine(logDirectory, fileName);
-                    //    index++;
-                    //}
-                    //while (File.Exists(fullPath));
+                    Console.WriteLine("Scan data auto-saved to: " + fullScanPath);
 
                     // serialise the parameters
-                    XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
-                    using (FileStream file = File.Create(fullPath))
-                    {
-                        writer.Serialize(file, logData);
-                    }
+                    //XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
+                    //using (FileStream file = File.Create(fullPath))
+                    //{
+                    //    writer.Serialize(file, logData);
+                    //}
 
-                    Console.WriteLine("CCD Configuration file logged to: " + fullPath);
+                    //Console.WriteLine("CCD Configuration file logged to: " + fullPath);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Could not save CCD settings xml:" + ex.Message);
+                    Console.WriteLine("Could not save CCD xml scan data:" + ex.Message);
                 }
             }
 
