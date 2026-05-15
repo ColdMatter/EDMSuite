@@ -340,16 +340,16 @@ namespace DAQ.Environment
                     // FileSystem = new SSWARBFileSystem();
                     Debug = true;
                     break;
-
+                //THIS IS THE ACTUAL ULTRACOLD EDM CENTAUR
                 case "CENTAUR":
                     Hardware = new BufferClassicHardware();
                     FileSystem = new CENTAURFileSystem();
                     Debug = false;
-                    viewerServerComputerName = "ULTRACOLDEDM";
-                    serverComputerName = "ULTRACOLDEDM";
-                    viewerServerTCPChannel = 1997;
-                    serverTCPChannel = 1997;
-                    wavemeterLockTCPChannel = 2345;
+                    //viewerServerComputerName = "WS8SERVERHUXLEY";
+                    serverComputerName = "WS8SERVERHUXLEY";
+                    //viewerServerTCPChannel = 2001;
+                    serverTCPChannel = 2001;
+                    wavemeterLockTCPChannel = 1919;
                     break;
 
                 case "PH-RHENDRIC-02":

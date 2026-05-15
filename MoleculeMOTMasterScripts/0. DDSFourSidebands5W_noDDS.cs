@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 6000;
+        Parameters["Frame0Trigger"] = 4000;
         Parameters["Frame1Trigger"] = 5500;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
@@ -242,7 +242,6 @@ public class Patterns : MOTMasterScript
         };
 
         p.Add(name, patternEvent);
-
     }
 
     public override PatternBuilder32 GetDigitalPattern()
@@ -250,6 +249,8 @@ public class Patterns : MOTMasterScript
         PatternBuilder32 p = new PatternBuilder32();
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
+
+        p.AddEdge("opticalPumpingAOM", 0, true);
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.

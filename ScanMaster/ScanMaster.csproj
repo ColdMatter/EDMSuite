@@ -29,7 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>C:\Users\UEDM\EDMSuitePrograms\</PublishUrl>
     <Install>true</Install>
@@ -542,6 +542,10 @@
       <Project>{5e693c98-6205-4be6-a9d2-3ca4484c41a6}</Project>
       <Name>DigitalTransferCavityLock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HamamatsuCamera\dcamsdk4\samples\cs\csAcq4\Hamamatsu EMCCD Camera.csproj">
+      <Project>{7443f26b-16b4-4191-b841-cf864abdd579}</Project>
+      <Name>Hamamatsu EMCCD Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
@@ -568,15 +572,19 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.DAQmx, Version=24.6.45.49171, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.DAQmx.ComponentModel, Version=19.6.0.49152, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.Visa, Version=24.5.0.49303, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -668,6 +676,7 @@
     <Compile Include="MSquaredOutputPlugin.cs" />
     <Compile Include="AnapicoCH1FrequencyOutputPlugin.cs" />
     <Compile Include="AnapicoCH1PowerOutputPlugin.cs" />
+    <Compile Include="MultipleWavemeterInputPlugin.cs" />
     <Compile Include="NshotsPatternBuilderCCD.cs" />
     <Compile Include="NshotsPatternPluginCCD.cs" />
     <Compile Include="TwoShutterSlowingPatternBuilder.cs" />
@@ -977,7 +986,7 @@
       <DependentUpon>ControllerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="licenses.licx" />
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="TweakViewerWindow.resx">
       <DependentUpon>TweakViewerWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1096,7 +1105,6 @@
     <Folder Include="bin\x86\ultracoldEDM\" />
     <Folder Include="bin\x86\ZeemanSisyphus\" />
     <Folder Include="bin\ZeemanSisyphus\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

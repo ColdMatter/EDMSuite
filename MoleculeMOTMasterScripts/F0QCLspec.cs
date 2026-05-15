@@ -206,7 +206,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -285,10 +285,10 @@ public class Patterns : MOTMasterScript
 
         
         //check temperature imaging
-        p.Pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-        p.pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "opticalPumpingAOM")
+        //p.Pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        // p.Pulse(0, Recap, (int)Parameters["PatternLength"]/2, "opticalPumpingAOM");
 
-        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"]+5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
+        // p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"]+5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
         // SLOWING //
 
         // preset load

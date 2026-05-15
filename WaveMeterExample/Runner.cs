@@ -25,6 +25,7 @@ namespace WavemeterLockServer
             int channelNumber = eHelper.serverTCPChannel;
             Controller controller = new Controller();
 
+
             
 
             // publish the controller to the remoting system
