@@ -88,6 +88,10 @@ def GetAnalogData(Scan):
         Analogs[i]=np.array(Scan.Points[i].Analogs[0])
     return Analogs
 
+def GetMultipleAnalogData(Scan):
+    return np.array([point.Analogs for point in Scan.Points])
+    # Returns shape (PointsPerScan, NumChannels)
+
 def ProcessScan(Scan):
     """Processes a scan object and returns the TOFs, the scan parameters and the 
     timestamps of the shots."""

@@ -242,7 +242,6 @@ public class Patterns : MOTMasterScript
         };
 
         p.Add(name, patternEvent);
-
     }
 
     public override PatternBuilder32 GetDigitalPattern()
