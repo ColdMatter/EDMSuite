@@ -6183,7 +6183,7 @@ namespace UEDMHardwareControl
         //    else MessageBox.Show("Unable to parse string. Ensure that a double has been written, with no additional non-numeric characters.", "", MessageBoxButtons.OK);
         //}
 
-        //public void UpdateStriapRFFrequency(int Frequency)
+        //public void iapRFFrequency(int Frequency)
         //{
         //    StirapRFFrequency = Frequency;
         //    double displayFrequency = (double)Frequency / Math.Pow(10, 6); // displaying in MHz
@@ -7109,6 +7109,30 @@ namespace UEDMHardwareControl
             }
         }
 
+        public double StirapRFfrequencyTrueValue
+        {
+            get
+            {
+                return Double.Parse(window.tbStirapRFfreqTrueValue.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.tbStirapRFfreqTrueValue, value.ToString());
+            }
+        }
+
+        public double StirapRFfrequencyFalseValue
+        {
+            get
+            {
+                return Double.Parse(window.tbStirapRFfreqFalseValue.Text);
+            }
+            set
+            {
+                window.SetTextBox(window.tbStirapRFfreqFalseValue, value.ToString());
+            }
+        }
+
         public void SetGreenSynthFrequency(double value)
         {
             try
@@ -7120,7 +7144,7 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
             greenSynth.Frequency = value;
-            window.SetTextBox(window.tbStirapRFFrequency, String.Format("{0:F3}", value));
+            window.SetTextBox(window.tbStirapRFFrequency, String.Format("{0:F5}", value));
             try
             {
                 greenSynth.Disconnect();
@@ -7169,6 +7193,18 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
 
+        }
+
+        public void SwitchStirapAOMfrequency(bool state)
+        { 
+            if (state)
+            {
+                SetGreenSynthFrequency(StirapRFfrequencyTrueValue);
+            }
+            else
+            {
+                SetGreenSynthFrequency(StirapRFfrequencyFalseValue);
+            }
         }
 
         public void SetGreenSynthAmp(double amp)
@@ -8948,6 +8984,9 @@ namespace UEDMHardwareControl
                 case "mwChan":
                     //SwitchMwAndWait(state);
                     break;
+                case "StirapAOM":
+                    SwitchStirapAOMfrequency(state);
+                    break;
             }
         }
 
@@ -8967,6 +9006,8 @@ namespace UEDMHardwareControl
                 case "bSwitch":
                     break;
                 case "dB":
+                    break;
+                case "StirapAOM":
                     break;
             }
         }

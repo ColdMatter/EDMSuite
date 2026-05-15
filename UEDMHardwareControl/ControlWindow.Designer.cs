@@ -30,45 +30,45 @@ namespace UEDMHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea13 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend13 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series45 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series46 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea14 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend14 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series47 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series48 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series49 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series50 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series51 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series52 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series53 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series54 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series55 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series56 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title9 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series23 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series24 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series25 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series26 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series27 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series28 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series29 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series30 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series31 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series32 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series33 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series34 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea15 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend15 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series57 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title10 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea16 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend16 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series58 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series59 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series60 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title11 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea17 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend17 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series61 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series62 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series63 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series64 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series65 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title12 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea18 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend18 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series66 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series35 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series36 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series37 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series38 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series39 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series40 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series41 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series42 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series43 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title8 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series44 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -182,6 +182,10 @@ namespace UEDMHardwareControl
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.tbStirapRFfreqFalseValue = new System.Windows.Forms.TextBox();
+            this.tbStirapRFfreqTrueValue = new System.Windows.Forms.TextBox();
             this.labelStirapRFAmp = new System.Windows.Forms.Label();
             this.labelStirapRFFreq = new System.Windows.Forms.Label();
             this.cbStirapRFOn = new System.Windows.Forms.CheckBox();
@@ -904,11 +908,9 @@ namespace UEDMHardwareControl
             this.gbTempMonitors.Controls.Add(this.labelTS2);
             this.gbTempMonitors.Controls.Add(this.labelTCell);
             this.gbTempMonitors.Controls.Add(this.tbTCell);
-            this.gbTempMonitors.Location = new System.Drawing.Point(16, 43);
-            this.gbTempMonitors.Margin = new System.Windows.Forms.Padding(4);
+            this.gbTempMonitors.Location = new System.Drawing.Point(12, 35);
             this.gbTempMonitors.Name = "gbTempMonitors";
-            this.gbTempMonitors.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTempMonitors.Size = new System.Drawing.Size(272, 201);
+            this.gbTempMonitors.Size = new System.Drawing.Size(204, 163);
             this.gbTempMonitors.TabIndex = 0;
             this.gbTempMonitors.TabStop = false;
             this.gbTempMonitors.Text = "Temperature Monitors";
@@ -916,10 +918,9 @@ namespace UEDMHardwareControl
             // labelTS1
             // 
             this.labelTS1.AutoSize = true;
-            this.labelTS1.Location = new System.Drawing.Point(69, 97);
-            this.labelTS1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTS1.Location = new System.Drawing.Point(52, 79);
             this.labelTS1.Name = "labelTS1";
-            this.labelTS1.Size = new System.Drawing.Size(29, 17);
+            this.labelTS1.Size = new System.Drawing.Size(23, 13);
             this.labelTS1.TabIndex = 9;
             this.labelTS1.Text = "S1:";
             // 
@@ -927,31 +928,28 @@ namespace UEDMHardwareControl
             // 
             this.tbTS1.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS1.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS1.Location = new System.Drawing.Point(108, 95);
-            this.tbTS1.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTS1.Location = new System.Drawing.Point(81, 77);
             this.tbTS1.Name = "tbTS1";
             this.tbTS1.ReadOnly = true;
-            this.tbTS1.Size = new System.Drawing.Size(132, 22);
+            this.tbTS1.Size = new System.Drawing.Size(100, 20);
             this.tbTS1.TabIndex = 8;
             // 
             // tbTSF6
             // 
             this.tbTSF6.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTSF6.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTSF6.Location = new System.Drawing.Point(108, 159);
-            this.tbTSF6.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTSF6.Location = new System.Drawing.Point(81, 129);
             this.tbTSF6.Name = "tbTSF6";
             this.tbTSF6.ReadOnly = true;
-            this.tbTSF6.Size = new System.Drawing.Size(132, 22);
+            this.tbTSF6.Size = new System.Drawing.Size(100, 20);
             this.tbTSF6.TabIndex = 7;
             // 
             // labelTSF6
             // 
             this.labelTSF6.AutoSize = true;
-            this.labelTSF6.Location = new System.Drawing.Point(61, 161);
-            this.labelTSF6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTSF6.Location = new System.Drawing.Point(46, 131);
             this.labelTSF6.Name = "labelTSF6";
-            this.labelTSF6.Size = new System.Drawing.Size(37, 17);
+            this.labelTSF6.Size = new System.Drawing.Size(29, 13);
             this.labelTSF6.TabIndex = 6;
             this.labelTSF6.Text = "SF6:";
             // 
@@ -959,20 +957,18 @@ namespace UEDMHardwareControl
             // 
             this.tbTNeon.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTNeon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTNeon.Location = new System.Drawing.Point(108, 127);
-            this.tbTNeon.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTNeon.Location = new System.Drawing.Point(81, 103);
             this.tbTNeon.Name = "tbTNeon";
             this.tbTNeon.ReadOnly = true;
-            this.tbTNeon.Size = new System.Drawing.Size(132, 22);
+            this.tbTNeon.Size = new System.Drawing.Size(100, 20);
             this.tbTNeon.TabIndex = 5;
             // 
             // labelTNeon
             // 
             this.labelTNeon.AutoSize = true;
-            this.labelTNeon.Location = new System.Drawing.Point(52, 129);
-            this.labelTNeon.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTNeon.Location = new System.Drawing.Point(39, 105);
             this.labelTNeon.Name = "labelTNeon";
-            this.labelTNeon.Size = new System.Drawing.Size(46, 17);
+            this.labelTNeon.Size = new System.Drawing.Size(36, 13);
             this.labelTNeon.TabIndex = 4;
             this.labelTNeon.Text = "Neon:";
             // 
@@ -980,30 +976,27 @@ namespace UEDMHardwareControl
             // 
             this.tbTS2.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS2.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS2.Location = new System.Drawing.Point(108, 63);
-            this.tbTS2.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTS2.Location = new System.Drawing.Point(81, 51);
             this.tbTS2.Name = "tbTS2";
             this.tbTS2.ReadOnly = true;
-            this.tbTS2.Size = new System.Drawing.Size(132, 22);
+            this.tbTS2.Size = new System.Drawing.Size(100, 20);
             this.tbTS2.TabIndex = 3;
             // 
             // labelTS2
             // 
             this.labelTS2.AutoSize = true;
-            this.labelTS2.Location = new System.Drawing.Point(69, 65);
-            this.labelTS2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTS2.Location = new System.Drawing.Point(52, 53);
             this.labelTS2.Name = "labelTS2";
-            this.labelTS2.Size = new System.Drawing.Size(29, 17);
+            this.labelTS2.Size = new System.Drawing.Size(23, 13);
             this.labelTS2.TabIndex = 2;
             this.labelTS2.Text = "S2:";
             // 
             // labelTCell
             // 
             this.labelTCell.AutoSize = true;
-            this.labelTCell.Location = new System.Drawing.Point(64, 33);
-            this.labelTCell.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTCell.Location = new System.Drawing.Point(48, 27);
             this.labelTCell.Name = "labelTCell";
-            this.labelTCell.Size = new System.Drawing.Size(35, 17);
+            this.labelTCell.Size = new System.Drawing.Size(27, 13);
             this.labelTCell.TabIndex = 1;
             this.labelTCell.Text = "Cell:";
             // 
@@ -1011,20 +1004,18 @@ namespace UEDMHardwareControl
             // 
             this.tbTCell.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTCell.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTCell.Location = new System.Drawing.Point(108, 31);
-            this.tbTCell.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTCell.Location = new System.Drawing.Point(81, 25);
             this.tbTCell.Name = "tbTCell";
             this.tbTCell.ReadOnly = true;
-            this.tbTCell.Size = new System.Drawing.Size(132, 22);
+            this.tbTCell.Size = new System.Drawing.Size(100, 20);
             this.tbTCell.TabIndex = 0;
             // 
             // labelPBeamline
             // 
             this.labelPBeamline.AutoSize = true;
-            this.labelPBeamline.Location = new System.Drawing.Point(29, 60);
-            this.labelPBeamline.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPBeamline.Location = new System.Drawing.Point(22, 49);
             this.labelPBeamline.Name = "labelPBeamline";
-            this.labelPBeamline.Size = new System.Drawing.Size(70, 17);
+            this.labelPBeamline.Size = new System.Drawing.Size(53, 13);
             this.labelPBeamline.TabIndex = 2;
             this.labelPBeamline.Text = "Beamline:";
             // 
@@ -1032,11 +1023,10 @@ namespace UEDMHardwareControl
             // 
             this.tbPBeamline.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPBeamline.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPBeamline.Location = new System.Drawing.Point(108, 57);
-            this.tbPBeamline.Margin = new System.Windows.Forms.Padding(4);
+            this.tbPBeamline.Location = new System.Drawing.Point(81, 46);
             this.tbPBeamline.Name = "tbPBeamline";
             this.tbPBeamline.ReadOnly = true;
-            this.tbPBeamline.Size = new System.Drawing.Size(132, 22);
+            this.tbPBeamline.Size = new System.Drawing.Size(100, 20);
             this.tbPBeamline.TabIndex = 3;
             // 
             // groupBox1
@@ -1047,11 +1037,9 @@ namespace UEDMHardwareControl
             this.groupBox1.Controls.Add(this.labelPBeamline);
             this.groupBox1.Controls.Add(this.labelPSource);
             this.groupBox1.Controls.Add(this.tbPSource);
-            this.groupBox1.Location = new System.Drawing.Point(16, 251);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(12, 204);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(272, 132);
+            this.groupBox1.Size = new System.Drawing.Size(204, 107);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pressure Monitors";
@@ -1060,30 +1048,27 @@ namespace UEDMHardwareControl
             // 
             this.tbPDetection.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPDetection.Location = new System.Drawing.Point(108, 92);
-            this.tbPDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbPDetection.Location = new System.Drawing.Point(81, 75);
             this.tbPDetection.Name = "tbPDetection";
             this.tbPDetection.ReadOnly = true;
-            this.tbPDetection.Size = new System.Drawing.Size(132, 22);
+            this.tbPDetection.Size = new System.Drawing.Size(100, 20);
             this.tbPDetection.TabIndex = 5;
             // 
             // labelPDetection
             // 
             this.labelPDetection.AutoSize = true;
-            this.labelPDetection.Location = new System.Drawing.Point(29, 96);
-            this.labelPDetection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPDetection.Location = new System.Drawing.Point(22, 78);
             this.labelPDetection.Name = "labelPDetection";
-            this.labelPDetection.Size = new System.Drawing.Size(72, 17);
+            this.labelPDetection.Size = new System.Drawing.Size(56, 13);
             this.labelPDetection.TabIndex = 4;
             this.labelPDetection.Text = "Detection:";
             // 
             // labelPSource
             // 
             this.labelPSource.AutoSize = true;
-            this.labelPSource.Location = new System.Drawing.Point(41, 27);
-            this.labelPSource.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPSource.Location = new System.Drawing.Point(31, 22);
             this.labelPSource.Name = "labelPSource";
-            this.labelPSource.Size = new System.Drawing.Size(57, 17);
+            this.labelPSource.Size = new System.Drawing.Size(44, 13);
             this.labelPSource.TabIndex = 1;
             this.labelPSource.Text = "Source:";
             // 
@@ -1091,11 +1076,10 @@ namespace UEDMHardwareControl
             // 
             this.tbPSource.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPSource.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPSource.Location = new System.Drawing.Point(108, 23);
-            this.tbPSource.Margin = new System.Windows.Forms.Padding(4);
+            this.tbPSource.Location = new System.Drawing.Point(81, 19);
             this.tbPSource.Name = "tbPSource";
             this.tbPSource.ReadOnly = true;
-            this.tbPSource.Size = new System.Drawing.Size(132, 22);
+            this.tbPSource.Size = new System.Drawing.Size(100, 20);
             this.tbPSource.TabIndex = 0;
             // 
             // menuStrip1
@@ -1106,8 +1090,8 @@ namespace UEDMHardwareControl
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1715, 26);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(1286, 24);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1118,7 +1102,7 @@ namespace UEDMHardwareControl
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
@@ -1126,13 +1110,13 @@ namespace UEDMHardwareControl
             this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.parametersToolStripMenuItem});
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(125, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.openToolStripMenuItem.Text = "Load";
             // 
             // parametersToolStripMenuItem
             // 
             this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
-            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.parametersToolStripMenuItem.Text = "Parameters";
             this.parametersToolStripMenuItem.Click += new System.EventHandler(this.parametersToolStripMenuItem_Click);
             // 
@@ -1143,7 +1127,7 @@ namespace UEDMHardwareControl
             this.dataToolStripMenuItem,
             this.parametersToolStripMenuItem1});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(125, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // plotsToolStripMenuItem
@@ -1152,7 +1136,7 @@ namespace UEDMHardwareControl
             this.pressureAndTemperaturePlotsToolStripMenuItem,
             this.neonFlowPlotToolStripMenuItem});
             this.plotsToolStripMenuItem.Name = "plotsToolStripMenuItem";
-            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
+            this.plotsToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.plotsToolStripMenuItem.Text = "Plots";
             // 
             // pressureAndTemperaturePlotsToolStripMenuItem
@@ -1162,7 +1146,7 @@ namespace UEDMHardwareControl
             this.temperatureToolStripMenuItem,
             this.pressueAndTemperatureImageToolStripMenuItem});
             this.pressureAndTemperaturePlotsToolStripMenuItem.Name = "pressureAndTemperaturePlotsToolStripMenuItem";
-            this.pressureAndTemperaturePlotsToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.pressureAndTemperaturePlotsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.pressureAndTemperaturePlotsToolStripMenuItem.Text = "Pressure and temperature plots";
             // 
             // pressureToolStripMenuItem
@@ -1170,13 +1154,13 @@ namespace UEDMHardwareControl
             this.pressureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemPlotPressureChart});
             this.pressureToolStripMenuItem.Name = "pressureToolStripMenuItem";
-            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.pressureToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.pressureToolStripMenuItem.Text = "Pressure";
             // 
             // ToolStripMenuItemPlotPressureChart
             // 
             this.ToolStripMenuItemPlotPressureChart.Name = "ToolStripMenuItemPlotPressureChart";
-            this.ToolStripMenuItemPlotPressureChart.Size = new System.Drawing.Size(164, 26);
+            this.ToolStripMenuItemPlotPressureChart.Size = new System.Drawing.Size(131, 22);
             this.ToolStripMenuItemPlotPressureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotPressureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotPressureChart_Click);
             // 
@@ -1185,20 +1169,20 @@ namespace UEDMHardwareControl
             this.temperatureToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemPlotTemperatureChart});
             this.temperatureToolStripMenuItem.Name = "temperatureToolStripMenuItem";
-            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.temperatureToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.temperatureToolStripMenuItem.Text = "Temperature";
             // 
             // ToolStripMenuItemPlotTemperatureChart
             // 
             this.ToolStripMenuItemPlotTemperatureChart.Name = "ToolStripMenuItemPlotTemperatureChart";
-            this.ToolStripMenuItemPlotTemperatureChart.Size = new System.Drawing.Size(164, 26);
+            this.ToolStripMenuItemPlotTemperatureChart.Size = new System.Drawing.Size(131, 22);
             this.ToolStripMenuItemPlotTemperatureChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotTemperatureChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotTemperatureChart_Click);
             // 
             // pressueAndTemperatureImageToolStripMenuItem
             // 
             this.pressueAndTemperatureImageToolStripMenuItem.Name = "pressueAndTemperatureImageToolStripMenuItem";
-            this.pressueAndTemperatureImageToolStripMenuItem.Size = new System.Drawing.Size(302, 26);
+            this.pressueAndTemperatureImageToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.pressueAndTemperatureImageToolStripMenuItem.Text = "Pressue and temperature Image";
             this.pressueAndTemperatureImageToolStripMenuItem.Click += new System.EventHandler(this.pressueAndTemperatureImageToolStripMenuItem_Click);
             // 
@@ -1207,7 +1191,7 @@ namespace UEDMHardwareControl
             this.neonFlowPlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.neonToolStripMenuItem});
             this.neonFlowPlotToolStripMenuItem.Name = "neonFlowPlotToolStripMenuItem";
-            this.neonFlowPlotToolStripMenuItem.Size = new System.Drawing.Size(298, 26);
+            this.neonFlowPlotToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.neonFlowPlotToolStripMenuItem.Text = "Gas flow plots";
             // 
             // neonToolStripMenuItem
@@ -1216,20 +1200,20 @@ namespace UEDMHardwareControl
             this.ToolStripMenuItemPlotNeonFlowChart,
             this.ToolStripMenuItemSaveNeonFlowDataCSV});
             this.neonToolStripMenuItem.Name = "neonToolStripMenuItem";
-            this.neonToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.neonToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.neonToolStripMenuItem.Text = "Neon";
             // 
             // ToolStripMenuItemPlotNeonFlowChart
             // 
             this.ToolStripMenuItemPlotNeonFlowChart.Name = "ToolStripMenuItemPlotNeonFlowChart";
-            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(194, 26);
+            this.ToolStripMenuItemPlotNeonFlowChart.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemPlotNeonFlowChart.Text = "Plot Image";
             this.ToolStripMenuItemPlotNeonFlowChart.Click += new System.EventHandler(this.ToolStripMenuItemPlotNeonFlowChart_Click);
             // 
             // ToolStripMenuItemSaveNeonFlowDataCSV
             // 
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Name = "ToolStripMenuItemSaveNeonFlowDataCSV";
-            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(194, 26);
+            this.ToolStripMenuItemSaveNeonFlowDataCSV.Size = new System.Drawing.Size(154, 22);
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Text = "Plot Data (CSV)";
             this.ToolStripMenuItemSaveNeonFlowDataCSV.Click += new System.EventHandler(this.ToolStripMenuItemSaveNeonFlowDataCSV_Click);
             // 
@@ -1238,27 +1222,27 @@ namespace UEDMHardwareControl
             this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pressureAndTemperatureDataToolStripMenuItem});
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(165, 26);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.dataToolStripMenuItem.Text = "Data";
             // 
             // pressureAndTemperatureDataToolStripMenuItem
             // 
             this.pressureAndTemperatureDataToolStripMenuItem.Name = "pressureAndTemperatureDataToolStripMenuItem";
-            this.pressureAndTemperatureDataToolStripMenuItem.Size = new System.Drawing.Size(295, 26);
+            this.pressureAndTemperatureDataToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.pressureAndTemperatureDataToolStripMenuItem.Text = "Pressure and temperature data";
             this.pressureAndTemperatureDataToolStripMenuItem.Click += new System.EventHandler(this.pressureAndTemperatureDataToolStripMenuItem_Click);
             // 
             // parametersToolStripMenuItem1
             // 
             this.parametersToolStripMenuItem1.Name = "parametersToolStripMenuItem1";
-            this.parametersToolStripMenuItem1.Size = new System.Drawing.Size(165, 26);
+            this.parametersToolStripMenuItem1.Size = new System.Drawing.Size(133, 22);
             this.parametersToolStripMenuItem1.Text = "Parameters";
             this.parametersToolStripMenuItem1.Click += new System.EventHandler(this.parametersToolStripMenuItem1_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(125, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1267,7 +1251,7 @@ namespace UEDMHardwareControl
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // statusToolStripMenuItem
@@ -1275,13 +1259,13 @@ namespace UEDMHardwareControl
             this.statusToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearStatusToolStripMenuItem});
             this.statusToolStripMenuItem.Name = "statusToolStripMenuItem";
-            this.statusToolStripMenuItem.Size = new System.Drawing.Size(132, 26);
+            this.statusToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.statusToolStripMenuItem.Text = "Status";
             // 
             // clearStatusToolStripMenuItem
             // 
             this.clearStatusToolStripMenuItem.Name = "clearStatusToolStripMenuItem";
-            this.clearStatusToolStripMenuItem.Size = new System.Drawing.Size(168, 26);
+            this.clearStatusToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.clearStatusToolStripMenuItem.Text = "Clear status";
             this.clearStatusToolStripMenuItem.Click += new System.EventHandler(this.clearStatusToolStripMenuItem_Click);
             // 
@@ -1290,11 +1274,9 @@ namespace UEDMHardwareControl
             this.gbCryoControl.Controls.Add(this.cbTurnCryoOn);
             this.gbCryoControl.Controls.Add(this.labelCryoState);
             this.gbCryoControl.Controls.Add(this.tbCryoState);
-            this.gbCryoControl.Location = new System.Drawing.Point(16, 626);
-            this.gbCryoControl.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCryoControl.Location = new System.Drawing.Point(12, 509);
             this.gbCryoControl.Name = "gbCryoControl";
-            this.gbCryoControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCryoControl.Size = new System.Drawing.Size(272, 90);
+            this.gbCryoControl.Size = new System.Drawing.Size(204, 73);
             this.gbCryoControl.TabIndex = 19;
             this.gbCryoControl.TabStop = false;
             this.gbCryoControl.Text = "Cryo Cooler Control";
@@ -1302,10 +1284,9 @@ namespace UEDMHardwareControl
             // cbTurnCryoOn
             // 
             this.cbTurnCryoOn.AutoSize = true;
-            this.cbTurnCryoOn.Location = new System.Drawing.Point(12, 58);
-            this.cbTurnCryoOn.Margin = new System.Windows.Forms.Padding(4);
+            this.cbTurnCryoOn.Location = new System.Drawing.Point(9, 47);
             this.cbTurnCryoOn.Name = "cbTurnCryoOn";
-            this.cbTurnCryoOn.Size = new System.Drawing.Size(116, 21);
+            this.cbTurnCryoOn.Size = new System.Drawing.Size(89, 17);
             this.cbTurnCryoOn.TabIndex = 3;
             this.cbTurnCryoOn.Text = "Turn Cryo On";
             this.cbTurnCryoOn.UseVisualStyleBackColor = true;
@@ -1314,10 +1295,9 @@ namespace UEDMHardwareControl
             // labelCryoState
             // 
             this.labelCryoState.AutoSize = true;
-            this.labelCryoState.Location = new System.Drawing.Point(8, 25);
-            this.labelCryoState.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCryoState.Location = new System.Drawing.Point(6, 20);
             this.labelCryoState.Name = "labelCryoState";
-            this.labelCryoState.Size = new System.Drawing.Size(78, 17);
+            this.labelCryoState.Size = new System.Drawing.Size(59, 13);
             this.labelCryoState.TabIndex = 1;
             this.labelCryoState.Text = "Cryo State:";
             // 
@@ -1325,11 +1305,10 @@ namespace UEDMHardwareControl
             // 
             this.tbCryoState.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbCryoState.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbCryoState.Location = new System.Drawing.Point(95, 21);
-            this.tbCryoState.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCryoState.Location = new System.Drawing.Point(71, 17);
             this.tbCryoState.Name = "tbCryoState";
             this.tbCryoState.ReadOnly = true;
-            this.tbCryoState.Size = new System.Drawing.Size(132, 22);
+            this.tbCryoState.Size = new System.Drawing.Size(100, 20);
             this.tbCryoState.TabIndex = 0;
             this.tbCryoState.Text = "UNKNOWN";
             // 
@@ -1343,11 +1322,9 @@ namespace UEDMHardwareControl
             this.gbTemperatureandPressureMonitoringControl.Controls.Add(this.tbTandPPollPeriod);
             this.gbTemperatureandPressureMonitoringControl.Controls.Add(this.btStopTandPMonitoring);
             this.gbTemperatureandPressureMonitoringControl.Controls.Add(this.btStartTandPMonitoring);
-            this.gbTemperatureandPressureMonitoringControl.Location = new System.Drawing.Point(16, 414);
-            this.gbTemperatureandPressureMonitoringControl.Margin = new System.Windows.Forms.Padding(4);
+            this.gbTemperatureandPressureMonitoringControl.Location = new System.Drawing.Point(12, 336);
             this.gbTemperatureandPressureMonitoringControl.Name = "gbTemperatureandPressureMonitoringControl";
-            this.gbTemperatureandPressureMonitoringControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(272, 204);
+            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(204, 166);
             this.gbTemperatureandPressureMonitoringControl.TabIndex = 20;
             this.gbTemperatureandPressureMonitoringControl.TabStop = false;
             this.gbTemperatureandPressureMonitoringControl.Text = "Temperature and Pressure Monitoring";
@@ -1356,19 +1333,18 @@ namespace UEDMHardwareControl
             // 
             this.tbTandPPollPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbTandPPollPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(141, 65);
-            this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(106, 53);
+            this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbTandPPollPeriodMonitor.Name = "tbTandPPollPeriodMonitor";
             this.tbTandPPollPeriodMonitor.ReadOnly = true;
-            this.tbTandPPollPeriodMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbTandPPollPeriodMonitor.Size = new System.Drawing.Size(75, 20);
             this.tbTandPPollPeriodMonitor.TabIndex = 35;
             // 
             // btSaveAllPTDataToCSV
             // 
-            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(140, 143);
-            this.btSaveAllPTDataToCSV.Margin = new System.Windows.Forms.Padding(4);
+            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(105, 116);
             this.btSaveAllPTDataToCSV.Name = "btSaveAllPTDataToCSV";
-            this.btSaveAllPTDataToCSV.Size = new System.Drawing.Size(100, 47);
+            this.btSaveAllPTDataToCSV.Size = new System.Drawing.Size(75, 38);
             this.btSaveAllPTDataToCSV.TabIndex = 23;
             this.btSaveAllPTDataToCSV.Text = "Save data\r\nto CSV";
             this.btSaveAllPTDataToCSV.UseVisualStyleBackColor = true;
@@ -1376,10 +1352,9 @@ namespace UEDMHardwareControl
             // 
             // btResetPTCSVData
             // 
-            this.btResetPTCSVData.Location = new System.Drawing.Point(23, 143);
-            this.btResetPTCSVData.Margin = new System.Windows.Forms.Padding(4);
+            this.btResetPTCSVData.Location = new System.Drawing.Point(17, 116);
             this.btResetPTCSVData.Name = "btResetPTCSVData";
-            this.btResetPTCSVData.Size = new System.Drawing.Size(100, 47);
+            this.btResetPTCSVData.Size = new System.Drawing.Size(75, 38);
             this.btResetPTCSVData.TabIndex = 23;
             this.btResetPTCSVData.Text = "Clear all\r\nsave data";
             this.btResetPTCSVData.UseVisualStyleBackColor = true;
@@ -1387,10 +1362,9 @@ namespace UEDMHardwareControl
             // 
             // btUpdatePTPollPeriod
             // 
-            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(23, 98);
-            this.btUpdatePTPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(17, 80);
             this.btUpdatePTPollPeriod.Name = "btUpdatePTPollPeriod";
-            this.btUpdatePTPollPeriod.Size = new System.Drawing.Size(100, 28);
+            this.btUpdatePTPollPeriod.Size = new System.Drawing.Size(75, 23);
             this.btUpdatePTPollPeriod.TabIndex = 21;
             this.btUpdatePTPollPeriod.Text = "Update";
             this.btUpdatePTPollPeriod.UseVisualStyleBackColor = true;
@@ -1399,19 +1373,17 @@ namespace UEDMHardwareControl
             // labelTandPPollPeriod
             // 
             this.labelTandPPollPeriod.AutoSize = true;
-            this.labelTandPPollPeriod.Location = new System.Drawing.Point(27, 65);
-            this.labelTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTandPPollPeriod.Location = new System.Drawing.Point(20, 53);
             this.labelTandPPollPeriod.Name = "labelTandPPollPeriod";
-            this.labelTandPPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelTandPPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelTandPPollPeriod.TabIndex = 20;
             this.labelTandPPollPeriod.Text = "Poll period (ms):";
             // 
             // tbTandPPollPeriod
             // 
-            this.tbTandPPollPeriod.Location = new System.Drawing.Point(140, 101);
-            this.tbTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTandPPollPeriod.Location = new System.Drawing.Point(105, 82);
             this.tbTandPPollPeriod.Name = "tbTandPPollPeriod";
-            this.tbTandPPollPeriod.Size = new System.Drawing.Size(100, 22);
+            this.tbTandPPollPeriod.Size = new System.Drawing.Size(76, 20);
             this.tbTandPPollPeriod.TabIndex = 13;
             this.tbTandPPollPeriod.Text = "1000";
             this.tbTandPPollPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTandPPollPeriod_KeyDown);
@@ -1419,10 +1391,9 @@ namespace UEDMHardwareControl
             // btStopTandPMonitoring
             // 
             this.btStopTandPMonitoring.Enabled = false;
-            this.btStopTandPMonitoring.Location = new System.Drawing.Point(141, 27);
-            this.btStopTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
+            this.btStopTandPMonitoring.Location = new System.Drawing.Point(106, 22);
             this.btStopTandPMonitoring.Name = "btStopTandPMonitoring";
-            this.btStopTandPMonitoring.Size = new System.Drawing.Size(99, 28);
+            this.btStopTandPMonitoring.Size = new System.Drawing.Size(74, 23);
             this.btStopTandPMonitoring.TabIndex = 1;
             this.btStopTandPMonitoring.Text = "Stop";
             this.btStopTandPMonitoring.UseVisualStyleBackColor = true;
@@ -1430,10 +1401,9 @@ namespace UEDMHardwareControl
             // 
             // btStartTandPMonitoring
             // 
-            this.btStartTandPMonitoring.Location = new System.Drawing.Point(23, 27);
-            this.btStartTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartTandPMonitoring.Location = new System.Drawing.Point(17, 22);
             this.btStartTandPMonitoring.Name = "btStartTandPMonitoring";
-            this.btStartTandPMonitoring.Size = new System.Drawing.Size(100, 28);
+            this.btStartTandPMonitoring.Size = new System.Drawing.Size(75, 23);
             this.btStartTandPMonitoring.TabIndex = 0;
             this.btStartTandPMonitoring.Text = "Start";
             this.btStartTandPMonitoring.UseVisualStyleBackColor = true;
@@ -1463,11 +1433,9 @@ namespace UEDMHardwareControl
             // groupBoxStatus
             // 
             this.groupBoxStatus.Controls.Add(this.tbStatus);
-            this.groupBoxStatus.Location = new System.Drawing.Point(16, 724);
-            this.groupBoxStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxStatus.Location = new System.Drawing.Point(12, 588);
             this.groupBoxStatus.Name = "groupBoxStatus";
-            this.groupBoxStatus.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxStatus.Size = new System.Drawing.Size(272, 207);
+            this.groupBoxStatus.Size = new System.Drawing.Size(204, 168);
             this.groupBoxStatus.TabIndex = 24;
             this.groupBoxStatus.TabStop = false;
             this.groupBoxStatus.Text = "Status";
@@ -1476,13 +1444,12 @@ namespace UEDMHardwareControl
             // 
             this.tbStatus.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbStatus.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbStatus.Location = new System.Drawing.Point(8, 23);
-            this.tbStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStatus.Location = new System.Drawing.Point(6, 19);
             this.tbStatus.Multiline = true;
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.ReadOnly = true;
             this.tbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbStatus.Size = new System.Drawing.Size(255, 176);
+            this.tbStatus.Size = new System.Drawing.Size(192, 144);
             this.tbStatus.TabIndex = 6;
             // 
             // tabPage1
@@ -1519,20 +1486,18 @@ namespace UEDMHardwareControl
             this.tabPage1.Controls.Add(this.btn_FindDevice);
             this.tabPage1.Controls.Add(this.Show_DeviceKey);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1033, 715);
             this.tabPage1.TabIndex = 9;
             this.tabPage1.Text = "Serial Ports";
             // 
             // btn_Motor4Forward
             // 
-            this.btn_Motor4Forward.Location = new System.Drawing.Point(387, 332);
-            this.btn_Motor4Forward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor4Forward.Location = new System.Drawing.Point(290, 270);
             this.btn_Motor4Forward.Name = "btn_Motor4Forward";
-            this.btn_Motor4Forward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor4Forward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor4Forward.TabIndex = 30;
             this.btn_Motor4Forward.Text = "Forward";
             this.btn_Motor4Forward.UseVisualStyleBackColor = true;
@@ -1540,10 +1505,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor4Backward
             // 
-            this.btn_Motor4Backward.Location = new System.Drawing.Point(507, 332);
-            this.btn_Motor4Backward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor4Backward.Location = new System.Drawing.Point(380, 270);
             this.btn_Motor4Backward.Name = "btn_Motor4Backward";
-            this.btn_Motor4Backward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor4Backward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor4Backward.TabIndex = 29;
             this.btn_Motor4Backward.Text = "Backward";
             this.btn_Motor4Backward.UseVisualStyleBackColor = true;
@@ -1551,10 +1515,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor3Backward
             // 
-            this.btn_Motor3Backward.Location = new System.Drawing.Point(200, 332);
-            this.btn_Motor3Backward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor3Backward.Location = new System.Drawing.Point(150, 270);
             this.btn_Motor3Backward.Name = "btn_Motor3Backward";
-            this.btn_Motor3Backward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor3Backward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor3Backward.TabIndex = 28;
             this.btn_Motor3Backward.Text = "Backward";
             this.btn_Motor3Backward.UseVisualStyleBackColor = true;
@@ -1562,10 +1525,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor3Forward
             // 
-            this.btn_Motor3Forward.Location = new System.Drawing.Point(80, 332);
-            this.btn_Motor3Forward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor3Forward.Location = new System.Drawing.Point(60, 270);
             this.btn_Motor3Forward.Name = "btn_Motor3Forward";
-            this.btn_Motor3Forward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor3Forward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor3Forward.TabIndex = 27;
             this.btn_Motor3Forward.Text = "Forward";
             this.btn_Motor3Forward.UseVisualStyleBackColor = true;
@@ -1573,47 +1535,42 @@ namespace UEDMHardwareControl
             // 
             // lbl_Motor4location
             // 
-            this.lbl_Motor4location.Location = new System.Drawing.Point(507, 295);
-            this.lbl_Motor4location.Margin = new System.Windows.Forms.Padding(4);
+            this.lbl_Motor4location.Location = new System.Drawing.Point(380, 240);
             this.lbl_Motor4location.Name = "lbl_Motor4location";
-            this.lbl_Motor4location.Size = new System.Drawing.Size(105, 22);
+            this.lbl_Motor4location.Size = new System.Drawing.Size(80, 20);
             this.lbl_Motor4location.TabIndex = 26;
             this.lbl_Motor4location.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // input_Stepsize4
             // 
-            this.input_Stepsize4.Location = new System.Drawing.Point(507, 258);
-            this.input_Stepsize4.Margin = new System.Windows.Forms.Padding(4);
+            this.input_Stepsize4.Location = new System.Drawing.Point(380, 210);
             this.input_Stepsize4.Name = "input_Stepsize4";
-            this.input_Stepsize4.Size = new System.Drawing.Size(105, 22);
+            this.input_Stepsize4.Size = new System.Drawing.Size(80, 20);
             this.input_Stepsize4.TabIndex = 25;
             this.input_Stepsize4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lbl_Motor3location
             // 
-            this.lbl_Motor3location.Location = new System.Drawing.Point(200, 295);
-            this.lbl_Motor3location.Margin = new System.Windows.Forms.Padding(4);
+            this.lbl_Motor3location.Location = new System.Drawing.Point(150, 240);
             this.lbl_Motor3location.Name = "lbl_Motor3location";
-            this.lbl_Motor3location.Size = new System.Drawing.Size(105, 22);
+            this.lbl_Motor3location.Size = new System.Drawing.Size(80, 20);
             this.lbl_Motor3location.TabIndex = 24;
             this.lbl_Motor3location.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // input_Stepsize3
             // 
-            this.input_Stepsize3.Location = new System.Drawing.Point(200, 258);
-            this.input_Stepsize3.Margin = new System.Windows.Forms.Padding(4);
+            this.input_Stepsize3.Location = new System.Drawing.Point(150, 210);
             this.input_Stepsize3.Name = "input_Stepsize3";
-            this.input_Stepsize3.Size = new System.Drawing.Size(105, 22);
+            this.input_Stepsize3.Size = new System.Drawing.Size(80, 20);
             this.input_Stepsize3.TabIndex = 23;
             this.input_Stepsize3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label27
             // 
             this.label27.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label27.Location = new System.Drawing.Point(333, 258);
-            this.label27.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label27.Location = new System.Drawing.Point(250, 210);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(40, 25);
+            this.label27.Size = new System.Drawing.Size(30, 20);
             this.label27.TabIndex = 22;
             this.label27.Text = "M4";
             this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1621,10 +1578,9 @@ namespace UEDMHardwareControl
             // label26
             // 
             this.label26.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label26.Location = new System.Drawing.Point(387, 295);
-            this.label26.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label26.Location = new System.Drawing.Point(290, 240);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(106, 24);
+            this.label26.Size = new System.Drawing.Size(80, 20);
             this.label26.TabIndex = 21;
             this.label26.Text = "Location:";
             this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1632,10 +1588,9 @@ namespace UEDMHardwareControl
             // label25
             // 
             this.label25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label25.Location = new System.Drawing.Point(387, 258);
-            this.label25.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label25.Location = new System.Drawing.Point(290, 210);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(106, 24);
+            this.label25.Size = new System.Drawing.Size(80, 20);
             this.label25.TabIndex = 20;
             this.label25.Text = "Stepsize:";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1643,10 +1598,9 @@ namespace UEDMHardwareControl
             // label24
             // 
             this.label24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label24.Location = new System.Drawing.Point(80, 295);
-            this.label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label24.Location = new System.Drawing.Point(60, 240);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(106, 24);
+            this.label24.Size = new System.Drawing.Size(80, 20);
             this.label24.TabIndex = 19;
             this.label24.Text = "Location:";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1654,10 +1608,9 @@ namespace UEDMHardwareControl
             // label23
             // 
             this.label23.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label23.Location = new System.Drawing.Point(80, 258);
-            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label23.Location = new System.Drawing.Point(60, 210);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(106, 24);
+            this.label23.Size = new System.Drawing.Size(80, 20);
             this.label23.TabIndex = 18;
             this.label23.Text = "Stepsize:";
             this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1665,20 +1618,18 @@ namespace UEDMHardwareControl
             // label22
             // 
             this.label22.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label22.Location = new System.Drawing.Point(27, 258);
-            this.label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label22.Location = new System.Drawing.Point(20, 210);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(40, 25);
+            this.label22.Size = new System.Drawing.Size(30, 20);
             this.label22.TabIndex = 17;
             this.label22.Text = "M3";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btn_Motor2Backward
             // 
-            this.btn_Motor2Backward.Location = new System.Drawing.Point(507, 222);
-            this.btn_Motor2Backward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor2Backward.Location = new System.Drawing.Point(380, 180);
             this.btn_Motor2Backward.Name = "btn_Motor2Backward";
-            this.btn_Motor2Backward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor2Backward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor2Backward.TabIndex = 16;
             this.btn_Motor2Backward.Text = "Backward";
             this.btn_Motor2Backward.UseVisualStyleBackColor = true;
@@ -1686,10 +1637,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor2Forward
             // 
-            this.btn_Motor2Forward.Location = new System.Drawing.Point(387, 222);
-            this.btn_Motor2Forward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor2Forward.Location = new System.Drawing.Point(290, 180);
             this.btn_Motor2Forward.Name = "btn_Motor2Forward";
-            this.btn_Motor2Forward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor2Forward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor2Forward.TabIndex = 15;
             this.btn_Motor2Forward.Text = "Forward";
             this.btn_Motor2Forward.UseVisualStyleBackColor = true;
@@ -1698,39 +1648,35 @@ namespace UEDMHardwareControl
             // label21
             // 
             this.label21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label21.Location = new System.Drawing.Point(387, 185);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label21.Location = new System.Drawing.Point(290, 150);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(106, 24);
+            this.label21.Size = new System.Drawing.Size(80, 20);
             this.label21.TabIndex = 14;
             this.label21.Text = "Location:";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl_Motor2location
             // 
-            this.lbl_Motor2location.Location = new System.Drawing.Point(507, 185);
-            this.lbl_Motor2location.Margin = new System.Windows.Forms.Padding(4);
+            this.lbl_Motor2location.Location = new System.Drawing.Point(380, 150);
             this.lbl_Motor2location.Name = "lbl_Motor2location";
-            this.lbl_Motor2location.Size = new System.Drawing.Size(105, 22);
+            this.lbl_Motor2location.Size = new System.Drawing.Size(80, 20);
             this.lbl_Motor2location.TabIndex = 13;
             this.lbl_Motor2location.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // input_Stepsize2
             // 
-            this.input_Stepsize2.Location = new System.Drawing.Point(507, 148);
-            this.input_Stepsize2.Margin = new System.Windows.Forms.Padding(4);
+            this.input_Stepsize2.Location = new System.Drawing.Point(380, 120);
             this.input_Stepsize2.Name = "input_Stepsize2";
-            this.input_Stepsize2.Size = new System.Drawing.Size(105, 22);
+            this.input_Stepsize2.Size = new System.Drawing.Size(80, 20);
             this.input_Stepsize2.TabIndex = 12;
             this.input_Stepsize2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label20
             // 
             this.label20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label20.Location = new System.Drawing.Point(387, 148);
-            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label20.Location = new System.Drawing.Point(290, 120);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(106, 24);
+            this.label20.Size = new System.Drawing.Size(80, 20);
             this.label20.TabIndex = 11;
             this.label20.Text = "Stepsize:";
             this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1738,10 +1684,9 @@ namespace UEDMHardwareControl
             // label8
             // 
             this.label8.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label8.Location = new System.Drawing.Point(333, 148);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(250, 120);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(40, 25);
+            this.label8.Size = new System.Drawing.Size(30, 20);
             this.label8.TabIndex = 10;
             this.label8.Text = "M2";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1749,10 +1694,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor1Backward
             // 
-            this.btn_Motor1Backward.Location = new System.Drawing.Point(200, 222);
-            this.btn_Motor1Backward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor1Backward.Location = new System.Drawing.Point(150, 180);
             this.btn_Motor1Backward.Name = "btn_Motor1Backward";
-            this.btn_Motor1Backward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor1Backward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor1Backward.TabIndex = 9;
             this.btn_Motor1Backward.Text = "Backward";
             this.btn_Motor1Backward.UseVisualStyleBackColor = true;
@@ -1760,10 +1704,9 @@ namespace UEDMHardwareControl
             // 
             // btn_Motor1Forward
             // 
-            this.btn_Motor1Forward.Location = new System.Drawing.Point(80, 222);
-            this.btn_Motor1Forward.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Motor1Forward.Location = new System.Drawing.Point(60, 180);
             this.btn_Motor1Forward.Name = "btn_Motor1Forward";
-            this.btn_Motor1Forward.Size = new System.Drawing.Size(107, 25);
+            this.btn_Motor1Forward.Size = new System.Drawing.Size(80, 20);
             this.btn_Motor1Forward.TabIndex = 8;
             this.btn_Motor1Forward.Text = "Forward";
             this.btn_Motor1Forward.UseVisualStyleBackColor = true;
@@ -1771,10 +1714,9 @@ namespace UEDMHardwareControl
             // 
             // input_Stepsize1
             // 
-            this.input_Stepsize1.Location = new System.Drawing.Point(200, 148);
-            this.input_Stepsize1.Margin = new System.Windows.Forms.Padding(4);
+            this.input_Stepsize1.Location = new System.Drawing.Point(150, 120);
             this.input_Stepsize1.Name = "input_Stepsize1";
-            this.input_Stepsize1.Size = new System.Drawing.Size(105, 22);
+            this.input_Stepsize1.Size = new System.Drawing.Size(80, 20);
             this.input_Stepsize1.TabIndex = 7;
             this.input_Stepsize1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1782,20 +1724,18 @@ namespace UEDMHardwareControl
             // 
             this.lbl_Motor1location.BackColor = System.Drawing.Color.White;
             this.lbl_Motor1location.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lbl_Motor1location.Location = new System.Drawing.Point(200, 185);
-            this.lbl_Motor1location.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbl_Motor1location.Location = new System.Drawing.Point(150, 150);
             this.lbl_Motor1location.Name = "lbl_Motor1location";
-            this.lbl_Motor1location.Size = new System.Drawing.Size(107, 25);
+            this.lbl_Motor1location.Size = new System.Drawing.Size(80, 20);
             this.lbl_Motor1location.TabIndex = 6;
             this.lbl_Motor1location.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label7
             // 
             this.label7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label7.Location = new System.Drawing.Point(80, 185);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Location = new System.Drawing.Point(60, 150);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(106, 24);
+            this.label7.Size = new System.Drawing.Size(80, 20);
             this.label7.TabIndex = 5;
             this.label7.Text = "Location:";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1803,10 +1743,9 @@ namespace UEDMHardwareControl
             // label6
             // 
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Location = new System.Drawing.Point(80, 148);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(60, 120);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(106, 24);
+            this.label6.Size = new System.Drawing.Size(80, 20);
             this.label6.TabIndex = 4;
             this.label6.Text = "Stepsize:";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1814,20 +1753,18 @@ namespace UEDMHardwareControl
             // label4
             // 
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label4.Location = new System.Drawing.Point(27, 148);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(20, 120);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(40, 25);
+            this.label4.Size = new System.Drawing.Size(30, 20);
             this.label4.TabIndex = 3;
             this.label4.Text = "M1";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btn_FindDevice
             // 
-            this.btn_FindDevice.Location = new System.Drawing.Point(147, 86);
-            this.btn_FindDevice.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_FindDevice.Location = new System.Drawing.Point(110, 70);
             this.btn_FindDevice.Name = "btn_FindDevice";
-            this.btn_FindDevice.Size = new System.Drawing.Size(133, 25);
+            this.btn_FindDevice.Size = new System.Drawing.Size(100, 20);
             this.btn_FindDevice.TabIndex = 2;
             this.btn_FindDevice.Text = "Find Device";
             this.btn_FindDevice.UseVisualStyleBackColor = true;
@@ -1837,10 +1774,9 @@ namespace UEDMHardwareControl
             // 
             this.Show_DeviceKey.BackColor = System.Drawing.Color.White;
             this.Show_DeviceKey.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Show_DeviceKey.Location = new System.Drawing.Point(147, 49);
-            this.Show_DeviceKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Show_DeviceKey.Location = new System.Drawing.Point(110, 40);
             this.Show_DeviceKey.Name = "Show_DeviceKey";
-            this.Show_DeviceKey.Size = new System.Drawing.Size(133, 25);
+            this.Show_DeviceKey.Size = new System.Drawing.Size(100, 20);
             this.Show_DeviceKey.TabIndex = 1;
             this.Show_DeviceKey.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -1848,10 +1784,9 @@ namespace UEDMHardwareControl
             // 
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(27, 49);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(20, 40);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 25);
+            this.label2.Size = new System.Drawing.Size(80, 20);
             this.label2.TabIndex = 0;
             this.label2.Text = "Device ID:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1873,19 +1808,18 @@ namespace UEDMHardwareControl
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
             this.tabPagePumping.Controls.Add(this.groupBoxRF);
-            this.tabPagePumping.Location = new System.Drawing.Point(4, 25);
-            this.tabPagePumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPagePumping.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePumping.Margin = new System.Windows.Forms.Padding(2);
             this.tabPagePumping.Name = "tabPagePumping";
-            this.tabPagePumping.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePumping.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
             // 
             // btQueryMWSynthTemperatureDetection
             // 
-            this.btQueryMWSynthTemperatureDetection.Location = new System.Drawing.Point(1193, 289);
-            this.btQueryMWSynthTemperatureDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWSynthTemperatureDetection.Location = new System.Drawing.Point(895, 235);
             this.btQueryMWSynthTemperatureDetection.Name = "btQueryMWSynthTemperatureDetection";
-            this.btQueryMWSynthTemperatureDetection.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperatureDetection.Size = new System.Drawing.Size(43, 23);
             this.btQueryMWSynthTemperatureDetection.TabIndex = 52;
             this.btQueryMWSynthTemperatureDetection.Text = "Query";
             this.btQueryMWSynthTemperatureDetection.UseVisualStyleBackColor = true;
@@ -1895,19 +1829,18 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(1258, 292);
-            this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(944, 237);
+            this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWSynthTemperatureMonitorDetection.Name = "tbMWSynthTemperatureMonitorDetection";
             this.tbMWSynthTemperatureMonitorDetection.ReadOnly = true;
-            this.tbMWSynthTemperatureMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitorDetection.Size = new System.Drawing.Size(75, 20);
             this.tbMWSynthTemperatureMonitorDetection.TabIndex = 51;
             // 
             // btQueryMWSynthTemperature
             // 
-            this.btQueryMWSynthTemperature.Location = new System.Drawing.Point(1195, 37);
-            this.btQueryMWSynthTemperature.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWSynthTemperature.Location = new System.Drawing.Point(896, 30);
             this.btQueryMWSynthTemperature.Name = "btQueryMWSynthTemperature";
-            this.btQueryMWSynthTemperature.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperature.Size = new System.Drawing.Size(43, 23);
             this.btQueryMWSynthTemperature.TabIndex = 52;
             this.btQueryMWSynthTemperature.Text = "Query";
             this.btQueryMWSynthTemperature.UseVisualStyleBackColor = true;
@@ -1916,10 +1849,9 @@ namespace UEDMHardwareControl
             // labelDetectSynthTemp
             // 
             this.labelDetectSynthTemp.AutoSize = true;
-            this.labelDetectSynthTemp.Location = new System.Drawing.Point(1193, 268);
-            this.labelDetectSynthTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectSynthTemp.Location = new System.Drawing.Point(895, 218);
             this.labelDetectSynthTemp.Name = "labelDetectSynthTemp";
-            this.labelDetectSynthTemp.Size = new System.Drawing.Size(158, 17);
+            this.labelDetectSynthTemp.Size = new System.Drawing.Size(116, 13);
             this.labelDetectSynthTemp.TabIndex = 50;
             this.labelDetectSynthTemp.Text = "Synth temperature (°C):";
             // 
@@ -1927,18 +1859,19 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(1258, 40);
-            this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(944, 32);
+            this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWSynthTemperatureMonitor.Name = "tbMWSynthTemperatureMonitor";
             this.tbMWSynthTemperatureMonitor.ReadOnly = true;
-            this.tbMWSynthTemperatureMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitor.Size = new System.Drawing.Size(75, 20);
             this.tbMWSynthTemperatureMonitor.TabIndex = 51;
             // 
             // btQueryMWSynthTemperatureDetectionB
             // 
-            this.btQueryMWSynthTemperatureDetectionB.Location = new System.Drawing.Point(1191, 640);
+            this.btQueryMWSynthTemperatureDetectionB.Location = new System.Drawing.Point(893, 520);
+            this.btQueryMWSynthTemperatureDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btQueryMWSynthTemperatureDetectionB.Name = "btQueryMWSynthTemperatureDetectionB";
-            this.btQueryMWSynthTemperatureDetectionB.Size = new System.Drawing.Size(57, 28);
+            this.btQueryMWSynthTemperatureDetectionB.Size = new System.Drawing.Size(43, 23);
             this.btQueryMWSynthTemperatureDetectionB.TabIndex = 120;
             this.btQueryMWSynthTemperatureDetectionB.Text = "Query";
             this.btQueryMWSynthTemperatureDetectionB.UseVisualStyleBackColor = true;
@@ -1948,21 +1881,22 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitorDetectionB.Location = new System.Drawing.Point(1258, 643);
+            this.tbMWSynthTemperatureMonitorDetectionB.Location = new System.Drawing.Point(944, 522);
+            this.tbMWSynthTemperatureMonitorDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWSynthTemperatureMonitorDetectionB.Name = "tbMWSynthTemperatureMonitorDetectionB";
             this.tbMWSynthTemperatureMonitorDetectionB.ReadOnly = true;
-            this.tbMWSynthTemperatureMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWSynthTemperatureMonitorDetectionB.Size = new System.Drawing.Size(75, 20);
             this.tbMWSynthTemperatureMonitorDetectionB.TabIndex = 121;
             // 
             // labelDetectSynthTempB
             // 
             this.labelDetectSynthTempB.AutoSize = true;
-            this.labelDetectSynthTempB.Location = new System.Drawing.Point(1192, 620);
+            this.labelDetectSynthTempB.Location = new System.Drawing.Point(894, 504);
+            this.labelDetectSynthTempB.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelDetectSynthTempB.Name = "labelDetectSynthTempB";
-            this.labelDetectSynthTempB.Size = new System.Drawing.Size(154, 17);
+            this.labelDetectSynthTempB.Size = new System.Drawing.Size(113, 13);
             this.labelDetectSynthTempB.TabIndex = 122;
             this.labelDetectSynthTempB.Text = "Synth temperature (°C)";
-            this.labelDetectSynthTempB.Click += new System.EventHandler(this.labelDetectSynthTempB_Click);
             // 
             // groupBoxMWSwitch
             // 
@@ -1976,11 +1910,9 @@ namespace UEDMHardwareControl
             this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
             this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
             this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
-            this.groupBoxMWSwitch.Location = new System.Drawing.Point(4, 473);
-            this.groupBoxMWSwitch.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxMWSwitch.Location = new System.Drawing.Point(3, 431);
             this.groupBoxMWSwitch.Name = "groupBoxMWSwitch";
-            this.groupBoxMWSwitch.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxMWSwitch.Size = new System.Drawing.Size(337, 139);
+            this.groupBoxMWSwitch.Size = new System.Drawing.Size(253, 113);
             this.groupBoxMWSwitch.TabIndex = 51;
             this.groupBoxMWSwitch.TabStop = false;
             this.groupBoxMWSwitch.Text = "MW Switch";
@@ -1988,96 +1920,86 @@ namespace UEDMHardwareControl
             // labelF0
             // 
             this.labelF0.AutoSize = true;
-            this.labelF0.Location = new System.Drawing.Point(284, 15);
-            this.labelF0.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelF0.Location = new System.Drawing.Point(213, 12);
             this.labelF0.Name = "labelF0";
-            this.labelF0.Size = new System.Drawing.Size(24, 17);
+            this.labelF0.Size = new System.Drawing.Size(19, 13);
             this.labelF0.TabIndex = 9;
             this.labelF0.Text = "F0";
             // 
             // labelF1
             // 
             this.labelF1.AutoSize = true;
-            this.labelF1.Location = new System.Drawing.Point(255, 15);
-            this.labelF1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelF1.Location = new System.Drawing.Point(191, 12);
             this.labelF1.Name = "labelF1";
-            this.labelF1.Size = new System.Drawing.Size(24, 17);
+            this.labelF1.Size = new System.Drawing.Size(19, 13);
             this.labelF1.TabIndex = 8;
             this.labelF1.Text = "F1";
             // 
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(173, 74);
-            this.label33.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label33.Location = new System.Drawing.Point(130, 60);
             this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(75, 17);
+            this.label33.Size = new System.Drawing.Size(58, 13);
             this.label33.TabIndex = 7;
             this.label33.Text = "Detector B";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(173, 42);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(130, 34);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 17);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "Detector A";
             // 
             // ledChBDetB
             // 
             this.ledChBDetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChBDetB.Location = new System.Drawing.Point(288, 69);
-            this.ledChBDetB.Margin = new System.Windows.Forms.Padding(4);
+            this.ledChBDetB.Location = new System.Drawing.Point(216, 56);
             this.ledChBDetB.Name = "ledChBDetB";
-            this.ledChBDetB.Size = new System.Drawing.Size(21, 25);
+            this.ledChBDetB.Size = new System.Drawing.Size(16, 20);
             this.ledChBDetB.TabIndex = 5;
             // 
             // ledChADetB
             // 
             this.ledChADetB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChADetB.Location = new System.Drawing.Point(259, 69);
-            this.ledChADetB.Margin = new System.Windows.Forms.Padding(4);
+            this.ledChADetB.Location = new System.Drawing.Point(194, 56);
             this.ledChADetB.Name = "ledChADetB";
-            this.ledChADetB.Size = new System.Drawing.Size(21, 25);
+            this.ledChADetB.Size = new System.Drawing.Size(16, 20);
             this.ledChADetB.TabIndex = 4;
             // 
             // ledChBDetA
             // 
             this.ledChBDetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChBDetA.Location = new System.Drawing.Point(288, 39);
-            this.ledChBDetA.Margin = new System.Windows.Forms.Padding(4);
+            this.ledChBDetA.Location = new System.Drawing.Point(216, 32);
             this.ledChBDetA.Name = "ledChBDetA";
-            this.ledChBDetA.Size = new System.Drawing.Size(21, 25);
+            this.ledChBDetA.Size = new System.Drawing.Size(16, 20);
             this.ledChBDetA.TabIndex = 3;
             // 
             // ledChADetA
             // 
             this.ledChADetA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ledChADetA.Location = new System.Drawing.Point(259, 39);
-            this.ledChADetA.Margin = new System.Windows.Forms.Padding(4);
+            this.ledChADetA.Location = new System.Drawing.Point(194, 32);
             this.ledChADetA.Name = "ledChADetA";
-            this.ledChADetA.Size = new System.Drawing.Size(21, 25);
+            this.ledChADetA.Size = new System.Drawing.Size(16, 20);
             this.ledChADetA.TabIndex = 2;
             // 
             // labelMWSwitchState
             // 
             this.labelMWSwitchState.AutoSize = true;
-            this.labelMWSwitchState.Location = new System.Drawing.Point(17, 114);
-            this.labelMWSwitchState.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMWSwitchState.Location = new System.Drawing.Point(13, 93);
             this.labelMWSwitchState.Name = "labelMWSwitchState";
-            this.labelMWSwitchState.Size = new System.Drawing.Size(265, 17);
+            this.labelMWSwitchState.Size = new System.Drawing.Size(201, 13);
             this.labelMWSwitchState.TabIndex = 1;
             this.labelMWSwitchState.Text = "(Unchecked => Det A -> F1, Det B -> F0)";
             // 
             // cBMWSwitchState
             // 
             this.cBMWSwitchState.AutoSize = true;
-            this.cBMWSwitchState.Location = new System.Drawing.Point(12, 30);
-            this.cBMWSwitchState.Margin = new System.Windows.Forms.Padding(4);
+            this.cBMWSwitchState.Location = new System.Drawing.Point(9, 24);
             this.cBMWSwitchState.Name = "cBMWSwitchState";
-            this.cBMWSwitchState.Size = new System.Drawing.Size(135, 21);
+            this.cBMWSwitchState.Size = new System.Drawing.Size(109, 17);
             this.cBMWSwitchState.TabIndex = 0;
             this.cBMWSwitchState.Text = "MW Switch State";
             this.cBMWSwitchState.UseVisualStyleBackColor = true;
@@ -2086,14 +2008,19 @@ namespace UEDMHardwareControl
             // labelOPSynthTemp
             // 
             this.labelOPSynthTemp.AutoSize = true;
-            this.labelOPSynthTemp.Location = new System.Drawing.Point(1192, 16);
+            this.labelOPSynthTemp.Location = new System.Drawing.Point(894, 13);
+            this.labelOPSynthTemp.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelOPSynthTemp.Name = "labelOPSynthTemp";
-            this.labelOPSynthTemp.Size = new System.Drawing.Size(158, 17);
+            this.labelOPSynthTemp.Size = new System.Drawing.Size(116, 13);
             this.labelOPSynthTemp.TabIndex = 50;
             this.labelOPSynthTemp.Text = "Synth temperature (°C):";
             // 
             // groupBoxStirapRF
             // 
+            this.groupBoxStirapRF.Controls.Add(this.label48);
+            this.groupBoxStirapRF.Controls.Add(this.label47);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqFalseValue);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqTrueValue);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmp);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFFreq);
             this.groupBoxStirapRF.Controls.Add(this.cbStirapRFOn);
@@ -2105,42 +2032,73 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFrequency);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRF);
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFreqMon);
-            this.groupBoxStirapRF.Location = new System.Drawing.Point(3, 234);
-            this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxStirapRF.Location = new System.Drawing.Point(2, 190);
+            this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxStirapRF.Name = "groupBoxStirapRF";
-            this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxStirapRF.Size = new System.Drawing.Size(339, 231);
+            this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxStirapRF.Size = new System.Drawing.Size(254, 236);
             this.groupBoxStirapRF.TabIndex = 50;
             this.groupBoxStirapRF.TabStop = false;
             this.groupBoxStirapRF.Text = "Stirap RF";
             // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(131, 176);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(95, 13);
+            this.label48.TabIndex = 64;
+            this.label48.Text = "False value (MHz):";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(17, 176);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(92, 13);
+            this.label47.TabIndex = 63;
+            this.label47.Text = "True value (MHz):";
+            // 
+            // tbStirapRFfreqFalseValue
+            // 
+            this.tbStirapRFfreqFalseValue.Location = new System.Drawing.Point(134, 194);
+            this.tbStirapRFfreqFalseValue.Name = "tbStirapRFfreqFalseValue";
+            this.tbStirapRFfreqFalseValue.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFfreqFalseValue.TabIndex = 62;
+            this.tbStirapRFfreqFalseValue.Text = "175.02";
+            // 
+            // tbStirapRFfreqTrueValue
+            // 
+            this.tbStirapRFfreqTrueValue.Location = new System.Drawing.Point(20, 194);
+            this.tbStirapRFfreqTrueValue.Name = "tbStirapRFfreqTrueValue";
+            this.tbStirapRFfreqTrueValue.Size = new System.Drawing.Size(76, 20);
+            this.tbStirapRFfreqTrueValue.TabIndex = 61;
+            this.tbStirapRFfreqTrueValue.Text = "175.01";
+            // 
             // labelStirapRFAmp
             // 
             this.labelStirapRFAmp.AutoSize = true;
-            this.labelStirapRFAmp.Location = new System.Drawing.Point(23, 129);
-            this.labelStirapRFAmp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStirapRFAmp.Location = new System.Drawing.Point(17, 105);
             this.labelStirapRFAmp.Name = "labelStirapRFAmp";
-            this.labelStirapRFAmp.Size = new System.Drawing.Size(103, 17);
+            this.labelStirapRFAmp.Size = new System.Drawing.Size(77, 13);
             this.labelStirapRFAmp.TabIndex = 60;
             this.labelStirapRFAmp.Text = "RF amp (dBm):";
             // 
             // labelStirapRFFreq
             // 
             this.labelStirapRFFreq.AutoSize = true;
-            this.labelStirapRFFreq.Location = new System.Drawing.Point(23, 97);
-            this.labelStirapRFFreq.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStirapRFFreq.Location = new System.Drawing.Point(17, 79);
             this.labelStirapRFFreq.Name = "labelStirapRFFreq";
-            this.labelStirapRFFreq.Size = new System.Drawing.Size(101, 17);
+            this.labelStirapRFFreq.Size = new System.Drawing.Size(76, 13);
             this.labelStirapRFFreq.TabIndex = 59;
             this.labelStirapRFFreq.Text = "RF freq (MHz):";
             // 
             // cbStirapRFOn
             // 
             this.cbStirapRFOn.AutoSize = true;
-            this.cbStirapRFOn.Location = new System.Drawing.Point(156, 180);
-            this.cbStirapRFOn.Margin = new System.Windows.Forms.Padding(4);
+            this.cbStirapRFOn.Location = new System.Drawing.Point(117, 146);
             this.cbStirapRFOn.Name = "cbStirapRFOn";
-            this.cbStirapRFOn.Size = new System.Drawing.Size(112, 21);
+            this.cbStirapRFOn.Size = new System.Drawing.Size(87, 17);
             this.cbStirapRFOn.TabIndex = 58;
             this.cbStirapRFOn.Text = "Stirap RF On";
             this.cbStirapRFOn.UseVisualStyleBackColor = true;
@@ -2148,10 +2106,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryStirapRFFrequency
             // 
-            this.btQueryStirapRFFrequency.Location = new System.Drawing.Point(24, 63);
-            this.btQueryStirapRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryStirapRFFrequency.Location = new System.Drawing.Point(18, 51);
             this.btQueryStirapRFFrequency.Name = "btQueryStirapRFFrequency";
-            this.btQueryStirapRFFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btQueryStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btQueryStirapRFFrequency.TabIndex = 55;
             this.btQueryStirapRFFrequency.Text = "Query";
             this.btQueryStirapRFFrequency.UseVisualStyleBackColor = true;
@@ -2166,10 +2123,10 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxStirapRFIncrementUnit.Location = new System.Drawing.Point(237, 126);
-            this.comboBoxStirapRFIncrementUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxStirapRFIncrementUnit.Location = new System.Drawing.Point(178, 102);
+            this.comboBoxStirapRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxStirapRFIncrementUnit.Name = "comboBoxStirapRFIncrementUnit";
-            this.comboBoxStirapRFIncrementUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxStirapRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxStirapRFIncrementUnit.TabIndex = 42;
             // 
             // comboBoxStirapRFSetpointUnit
@@ -2180,26 +2137,24 @@ namespace UEDMHardwareControl
             this.comboBoxStirapRFSetpointUnit.FormattingEnabled = true;
             this.comboBoxStirapRFSetpointUnit.Items.AddRange(new object[] {
             "MHz"});
-            this.comboBoxStirapRFSetpointUnit.Location = new System.Drawing.Point(237, 94);
-            this.comboBoxStirapRFSetpointUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxStirapRFSetpointUnit.Location = new System.Drawing.Point(178, 76);
+            this.comboBoxStirapRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxStirapRFSetpointUnit.Name = "comboBoxStirapRFSetpointUnit";
-            this.comboBoxStirapRFSetpointUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxStirapRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxStirapRFSetpointUnit.TabIndex = 41;
             // 
             // tbStirapRFAmplitude
             // 
-            this.tbStirapRFAmplitude.Location = new System.Drawing.Point(131, 126);
-            this.tbStirapRFAmplitude.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFAmplitude.Location = new System.Drawing.Point(98, 102);
             this.tbStirapRFAmplitude.Name = "tbStirapRFAmplitude";
-            this.tbStirapRFAmplitude.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFAmplitude.Size = new System.Drawing.Size(76, 20);
             this.tbStirapRFAmplitude.TabIndex = 38;
             // 
             // btUpdateStirapRFFrequency
             // 
-            this.btUpdateStirapRFFrequency.Location = new System.Drawing.Point(23, 172);
-            this.btUpdateStirapRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateStirapRFFrequency.Location = new System.Drawing.Point(17, 140);
             this.btUpdateStirapRFFrequency.Name = "btUpdateStirapRFFrequency";
-            this.btUpdateStirapRFFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateStirapRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btUpdateStirapRFFrequency.TabIndex = 36;
             this.btUpdateStirapRFFrequency.Text = "Update";
             this.btUpdateStirapRFFrequency.UseVisualStyleBackColor = true;
@@ -2207,20 +2162,18 @@ namespace UEDMHardwareControl
             // 
             // tbStirapRFFrequency
             // 
-            this.tbStirapRFFrequency.Location = new System.Drawing.Point(131, 94);
-            this.tbStirapRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFFrequency.Location = new System.Drawing.Point(98, 76);
             this.tbStirapRFFrequency.Name = "tbStirapRFFrequency";
-            this.tbStirapRFFrequency.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFFrequency.Size = new System.Drawing.Size(76, 20);
             this.tbStirapRFFrequency.TabIndex = 36;
             this.tbStirapRFFrequency.Text = "32";
             // 
             // labelStirapRF
             // 
             this.labelStirapRF.AutoSize = true;
-            this.labelStirapRF.Location = new System.Drawing.Point(21, 42);
-            this.labelStirapRF.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStirapRF.Location = new System.Drawing.Point(16, 34);
             this.labelStirapRF.Name = "labelStirapRF";
-            this.labelStirapRF.Size = new System.Drawing.Size(139, 17);
+            this.labelStirapRF.Size = new System.Drawing.Size(105, 13);
             this.labelStirapRF.TabIndex = 36;
             this.labelStirapRF.Text = "RF frequency (MHz):";
             // 
@@ -2228,11 +2181,11 @@ namespace UEDMHardwareControl
             // 
             this.tbStirapRFFreqMon.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbStirapRFFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbStirapRFFreqMon.Location = new System.Drawing.Point(131, 66);
-            this.tbStirapRFFreqMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbStirapRFFreqMon.Location = new System.Drawing.Point(98, 54);
+            this.tbStirapRFFreqMon.Margin = new System.Windows.Forms.Padding(2);
             this.tbStirapRFFreqMon.Name = "tbStirapRFFreqMon";
             this.tbStirapRFFreqMon.ReadOnly = true;
-            this.tbStirapRFFreqMon.Size = new System.Drawing.Size(99, 22);
+            this.tbStirapRFFreqMon.Size = new System.Drawing.Size(75, 20);
             this.tbStirapRFFreqMon.TabIndex = 36;
             // 
             // groupBoxWindfreakDetection
@@ -2241,11 +2194,11 @@ namespace UEDMHardwareControl
             this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWCHBdetection);
             this.groupBoxWindfreakDetection.Controls.Add(this.groupBoxMWDetectionB);
             this.groupBoxWindfreakDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxWindfreakDetection.Location = new System.Drawing.Point(347, 250);
-            this.groupBoxWindfreakDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxWindfreakDetection.Location = new System.Drawing.Point(260, 203);
+            this.groupBoxWindfreakDetection.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxWindfreakDetection.Name = "groupBoxWindfreakDetection";
-            this.groupBoxWindfreakDetection.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxWindfreakDetection.Size = new System.Drawing.Size(844, 608);
+            this.groupBoxWindfreakDetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxWindfreakDetection.Size = new System.Drawing.Size(633, 494);
             this.groupBoxWindfreakDetection.TabIndex = 49;
             this.groupBoxWindfreakDetection.TabStop = false;
             this.groupBoxWindfreakDetection.Text = "Windfreak for Detection";
@@ -2273,11 +2226,11 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAFrequencySetpointDetection);
             this.groupBoxMWCHAdetection.Controls.Add(this.labelDetectMicrowavesChAFreq);
             this.groupBoxMWCHAdetection.Controls.Add(this.tbMWCHAFrequencyMonitorDetection);
-            this.groupBoxMWCHAdetection.Location = new System.Drawing.Point(0, 21);
-            this.groupBoxMWCHAdetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxMWCHAdetection.Location = new System.Drawing.Point(0, 17);
+            this.groupBoxMWCHAdetection.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHAdetection.Name = "groupBoxMWCHAdetection";
-            this.groupBoxMWCHAdetection.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(839, 162);
+            this.groupBoxMWCHAdetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHAdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHAdetection.TabIndex = 39;
             this.groupBoxMWCHAdetection.TabStop = false;
             this.groupBoxMWCHAdetection.Text = "Channel A (NOT IN USE)";
@@ -2285,10 +2238,9 @@ namespace UEDMHardwareControl
             // cbCHATrigger
             // 
             this.cbCHATrigger.AutoSize = true;
-            this.cbCHATrigger.Location = new System.Drawing.Point(616, 23);
-            this.cbCHATrigger.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHATrigger.Location = new System.Drawing.Point(462, 19);
             this.cbCHATrigger.Name = "cbCHATrigger";
-            this.cbCHATrigger.Size = new System.Drawing.Size(121, 21);
+            this.cbCHATrigger.Size = new System.Drawing.Size(92, 17);
             this.cbCHATrigger.TabIndex = 52;
             this.cbCHATrigger.Text = "Trigger Armed";
             this.cbCHATrigger.UseVisualStyleBackColor = true;
@@ -2297,10 +2249,9 @@ namespace UEDMHardwareControl
             // cbCHAPAPoweredOnDetection
             // 
             this.cbCHAPAPoweredOnDetection.AutoSize = true;
-            this.cbCHAPAPoweredOnDetection.Location = new System.Drawing.Point(617, 91);
-            this.cbCHAPAPoweredOnDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHAPAPoweredOnDetection.Location = new System.Drawing.Point(463, 74);
             this.cbCHAPAPoweredOnDetection.Name = "cbCHAPAPoweredOnDetection";
-            this.cbCHAPAPoweredOnDetection.Size = new System.Drawing.Size(126, 21);
+            this.cbCHAPAPoweredOnDetection.Size = new System.Drawing.Size(99, 17);
             this.cbCHAPAPoweredOnDetection.TabIndex = 51;
             this.cbCHAPAPoweredOnDetection.Text = "PA powered on";
             this.cbCHAPAPoweredOnDetection.UseVisualStyleBackColor = true;
@@ -2309,10 +2260,9 @@ namespace UEDMHardwareControl
             // cbCHAPLLPoweredOnDetection
             // 
             this.cbCHAPLLPoweredOnDetection.AutoSize = true;
-            this.cbCHAPLLPoweredOnDetection.Location = new System.Drawing.Point(617, 127);
-            this.cbCHAPLLPoweredOnDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHAPLLPoweredOnDetection.Location = new System.Drawing.Point(463, 103);
             this.cbCHAPLLPoweredOnDetection.Name = "cbCHAPLLPoweredOnDetection";
-            this.cbCHAPLLPoweredOnDetection.Size = new System.Drawing.Size(133, 21);
+            this.cbCHAPLLPoweredOnDetection.Size = new System.Drawing.Size(104, 17);
             this.cbCHAPLLPoweredOnDetection.TabIndex = 50;
             this.cbCHAPLLPoweredOnDetection.Text = "PLL powered on";
             this.cbCHAPLLPoweredOnDetection.UseVisualStyleBackColor = true;
@@ -2321,10 +2271,9 @@ namespace UEDMHardwareControl
             // cbCHARFMutedDetection
             // 
             this.cbCHARFMutedDetection.AutoSize = true;
-            this.cbCHARFMutedDetection.Location = new System.Drawing.Point(617, 58);
-            this.cbCHARFMutedDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHARFMutedDetection.Location = new System.Drawing.Point(463, 47);
             this.cbCHARFMutedDetection.Name = "cbCHARFMutedDetection";
-            this.cbCHARFMutedDetection.Size = new System.Drawing.Size(91, 21);
+            this.cbCHARFMutedDetection.Size = new System.Drawing.Size(72, 17);
             this.cbCHARFMutedDetection.TabIndex = 49;
             this.cbCHARFMutedDetection.Text = "RF muted";
             this.cbCHARFMutedDetection.UseVisualStyleBackColor = true;
@@ -2332,10 +2281,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHAPowerDetection
             // 
-            this.btQueryMWCHAPowerDetection.Location = new System.Drawing.Point(361, 50);
-            this.btQueryMWCHAPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHAPowerDetection.Location = new System.Drawing.Point(271, 41);
             this.btQueryMWCHAPowerDetection.Name = "btQueryMWCHAPowerDetection";
-            this.btQueryMWCHAPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHAPowerDetection.TabIndex = 48;
             this.btQueryMWCHAPowerDetection.Text = "Query";
             this.btQueryMWCHAPowerDetection.UseVisualStyleBackColor = true;
@@ -2343,10 +2291,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHAFrequencyDetection
             // 
-            this.btQueryMWCHAFrequencyDetection.Location = new System.Drawing.Point(49, 50);
-            this.btQueryMWCHAFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHAFrequencyDetection.Location = new System.Drawing.Point(37, 41);
             this.btQueryMWCHAFrequencyDetection.Name = "btQueryMWCHAFrequencyDetection";
-            this.btQueryMWCHAFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHAFrequencyDetection.TabIndex = 47;
             this.btQueryMWCHAFrequencyDetection.Text = "Query";
             this.btQueryMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2354,10 +2301,9 @@ namespace UEDMHardwareControl
             // 
             // btIncrementMWCHAPowerDetection
             // 
-            this.btIncrementMWCHAPowerDetection.Location = new System.Drawing.Point(361, 121);
-            this.btIncrementMWCHAPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHAPowerDetection.Location = new System.Drawing.Point(271, 98);
             this.btIncrementMWCHAPowerDetection.Name = "btIncrementMWCHAPowerDetection";
-            this.btIncrementMWCHAPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHAPowerDetection.TabIndex = 45;
             this.btIncrementMWCHAPowerDetection.Text = "Increment";
             this.btIncrementMWCHAPowerDetection.UseVisualStyleBackColor = true;
@@ -2365,18 +2311,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAPowerIncrementDetection
             // 
-            this.tbMWCHAPowerIncrementDetection.Location = new System.Drawing.Point(468, 123);
-            this.tbMWCHAPowerIncrementDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAPowerIncrementDetection.Location = new System.Drawing.Point(351, 100);
             this.tbMWCHAPowerIncrementDetection.Name = "tbMWCHAPowerIncrementDetection";
-            this.tbMWCHAPowerIncrementDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAPowerIncrementDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerIncrementDetection.TabIndex = 46;
             // 
             // btUpdateMWCHAPowerDetection
             // 
-            this.btUpdateMWCHAPowerDetection.Location = new System.Drawing.Point(361, 84);
-            this.btUpdateMWCHAPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHAPowerDetection.Location = new System.Drawing.Point(271, 68);
             this.btUpdateMWCHAPowerDetection.Name = "btUpdateMWCHAPowerDetection";
-            this.btUpdateMWCHAPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHAPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHAPowerDetection.TabIndex = 41;
             this.btUpdateMWCHAPowerDetection.Text = "Update";
             this.btUpdateMWCHAPowerDetection.UseVisualStyleBackColor = true;
@@ -2384,20 +2328,18 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAPowerSetpointDetection
             // 
-            this.tbMWCHAPowerSetpointDetection.Location = new System.Drawing.Point(468, 87);
-            this.tbMWCHAPowerSetpointDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAPowerSetpointDetection.Location = new System.Drawing.Point(351, 71);
             this.tbMWCHAPowerSetpointDetection.Name = "tbMWCHAPowerSetpointDetection";
-            this.tbMWCHAPowerSetpointDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAPowerSetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerSetpointDetection.TabIndex = 42;
             this.tbMWCHAPowerSetpointDetection.Text = "-10";
             // 
             // labelDetectMicrowavesChAPower
             // 
             this.labelDetectMicrowavesChAPower.AutoSize = true;
-            this.labelDetectMicrowavesChAPower.Location = new System.Drawing.Point(357, 30);
-            this.labelDetectMicrowavesChAPower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectMicrowavesChAPower.Location = new System.Drawing.Point(268, 24);
             this.labelDetectMicrowavesChAPower.Name = "labelDetectMicrowavesChAPower";
-            this.labelDetectMicrowavesChAPower.Size = new System.Drawing.Size(120, 17);
+            this.labelDetectMicrowavesChAPower.Size = new System.Drawing.Size(92, 13);
             this.labelDetectMicrowavesChAPower.TabIndex = 43;
             this.labelDetectMicrowavesChAPower.Text = "MW power (dBm):";
             // 
@@ -2405,11 +2347,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHAPowerMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAPowerMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHAPowerMonitorDetection.Location = new System.Drawing.Point(468, 54);
-            this.tbMWCHAPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHAPowerMonitorDetection.Location = new System.Drawing.Point(351, 44);
+            this.tbMWCHAPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAPowerMonitorDetection.Name = "tbMWCHAPowerMonitorDetection";
             this.tbMWCHAPowerMonitorDetection.ReadOnly = true;
-            this.tbMWCHAPowerMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHAPowerMonitorDetection.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAPowerMonitorDetection.TabIndex = 44;
             // 
             // comboBoxMWCHASetpointUnitDetection
@@ -2423,10 +2365,10 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHASetpointUnitDetection.Location = new System.Drawing.Point(261, 87);
-            this.comboBoxMWCHASetpointUnitDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHASetpointUnitDetection.Location = new System.Drawing.Point(196, 71);
+            this.comboBoxMWCHASetpointUnitDetection.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHASetpointUnitDetection.Name = "comboBoxMWCHASetpointUnitDetection";
-            this.comboBoxMWCHASetpointUnitDetection.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHASetpointUnitDetection.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHASetpointUnitDetection.TabIndex = 40;
             // 
             // comboBoxMWCHAIncrementUnitDetection
@@ -2440,18 +2382,17 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHAIncrementUnitDetection.Location = new System.Drawing.Point(261, 123);
-            this.comboBoxMWCHAIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHAIncrementUnitDetection.Location = new System.Drawing.Point(196, 100);
+            this.comboBoxMWCHAIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHAIncrementUnitDetection.Name = "comboBoxMWCHAIncrementUnitDetection";
-            this.comboBoxMWCHAIncrementUnitDetection.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHAIncrementUnitDetection.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHAIncrementUnitDetection.TabIndex = 39;
             // 
             // btIncrementMWCHAFrequencyDetection
             // 
-            this.btIncrementMWCHAFrequencyDetection.Location = new System.Drawing.Point(49, 121);
-            this.btIncrementMWCHAFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHAFrequencyDetection.Location = new System.Drawing.Point(37, 98);
             this.btIncrementMWCHAFrequencyDetection.Name = "btIncrementMWCHAFrequencyDetection";
-            this.btIncrementMWCHAFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHAFrequencyDetection.TabIndex = 37;
             this.btIncrementMWCHAFrequencyDetection.Text = "Increment";
             this.btIncrementMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2459,18 +2400,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAFrequencyIncrementDetection
             // 
-            this.tbMWCHAFrequencyIncrementDetection.Location = new System.Drawing.Point(155, 123);
-            this.tbMWCHAFrequencyIncrementDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAFrequencyIncrementDetection.Location = new System.Drawing.Point(116, 100);
             this.tbMWCHAFrequencyIncrementDetection.Name = "tbMWCHAFrequencyIncrementDetection";
-            this.tbMWCHAFrequencyIncrementDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAFrequencyIncrementDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencyIncrementDetection.TabIndex = 38;
             // 
             // btUpdateMWCHAFrequencyDetection
             // 
-            this.btUpdateMWCHAFrequencyDetection.Location = new System.Drawing.Point(48, 84);
-            this.btUpdateMWCHAFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHAFrequencyDetection.Location = new System.Drawing.Point(36, 68);
             this.btUpdateMWCHAFrequencyDetection.Name = "btUpdateMWCHAFrequencyDetection";
-            this.btUpdateMWCHAFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHAFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHAFrequencyDetection.TabIndex = 36;
             this.btUpdateMWCHAFrequencyDetection.Text = "Update";
             this.btUpdateMWCHAFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2478,20 +2417,18 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAFrequencySetpointDetection
             // 
-            this.tbMWCHAFrequencySetpointDetection.Location = new System.Drawing.Point(155, 87);
-            this.tbMWCHAFrequencySetpointDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAFrequencySetpointDetection.Location = new System.Drawing.Point(116, 71);
             this.tbMWCHAFrequencySetpointDetection.Name = "tbMWCHAFrequencySetpointDetection";
-            this.tbMWCHAFrequencySetpointDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpointDetection.TabIndex = 36;
             this.tbMWCHAFrequencySetpointDetection.Text = "14.458087";
             // 
             // labelDetectMicrowavesChAFreq
             // 
             this.labelDetectMicrowavesChAFreq.AutoSize = true;
-            this.labelDetectMicrowavesChAFreq.Location = new System.Drawing.Point(45, 30);
-            this.labelDetectMicrowavesChAFreq.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectMicrowavesChAFreq.Location = new System.Drawing.Point(34, 24);
             this.labelDetectMicrowavesChAFreq.Name = "labelDetectMicrowavesChAFreq";
-            this.labelDetectMicrowavesChAFreq.Size = new System.Drawing.Size(145, 17);
+            this.labelDetectMicrowavesChAFreq.Size = new System.Drawing.Size(110, 13);
             this.labelDetectMicrowavesChAFreq.TabIndex = 36;
             this.labelDetectMicrowavesChAFreq.Text = "MW frequency (GHz):";
             // 
@@ -2499,11 +2436,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHAFrequencyMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAFrequencyMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHAFrequencyMonitorDetection.Location = new System.Drawing.Point(156, 54);
-            this.tbMWCHAFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHAFrequencyMonitorDetection.Location = new System.Drawing.Point(117, 44);
+            this.tbMWCHAFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAFrequencyMonitorDetection.Name = "tbMWCHAFrequencyMonitorDetection";
             this.tbMWCHAFrequencyMonitorDetection.ReadOnly = true;
-            this.tbMWCHAFrequencyMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHAFrequencyMonitorDetection.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAFrequencyMonitorDetection.TabIndex = 36;
             // 
             // groupBoxMWCHBdetection
@@ -2528,23 +2465,21 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHBdetection.Controls.Add(this.btUpdateMWCHBFrequencyDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBFrequencySetpointDetection);
             this.groupBoxMWCHBdetection.Controls.Add(this.tbMWCHBFrequencyMonitorDetection);
-            this.groupBoxMWCHBdetection.Location = new System.Drawing.Point(-1, 190);
-            this.groupBoxMWCHBdetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxMWCHBdetection.Location = new System.Drawing.Point(-1, 154);
+            this.groupBoxMWCHBdetection.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHBdetection.Name = "groupBoxMWCHBdetection";
-            this.groupBoxMWCHBdetection.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(839, 162);
+            this.groupBoxMWCHBdetection.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHBdetection.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
             this.groupBoxMWCHBdetection.Text = "Channel B - Det A";
-            this.groupBoxMWCHBdetection.Enter += new System.EventHandler(this.groupBoxMWCHBdetection_Enter);
             // 
             // cbCHBTrigger
             // 
             this.cbCHBTrigger.AutoSize = true;
-            this.cbCHBTrigger.Location = new System.Drawing.Point(617, 22);
-            this.cbCHBTrigger.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHBTrigger.Location = new System.Drawing.Point(463, 18);
             this.cbCHBTrigger.Name = "cbCHBTrigger";
-            this.cbCHBTrigger.Size = new System.Drawing.Size(121, 21);
+            this.cbCHBTrigger.Size = new System.Drawing.Size(92, 17);
             this.cbCHBTrigger.TabIndex = 53;
             this.cbCHBTrigger.Text = "Trigger Armed";
             this.cbCHBTrigger.UseVisualStyleBackColor = true;
@@ -2553,10 +2488,9 @@ namespace UEDMHardwareControl
             // cbCHBPLLPoweredOnDetection
             // 
             this.cbCHBPLLPoweredOnDetection.AutoSize = true;
-            this.cbCHBPLLPoweredOnDetection.Location = new System.Drawing.Point(617, 127);
-            this.cbCHBPLLPoweredOnDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHBPLLPoweredOnDetection.Location = new System.Drawing.Point(463, 103);
             this.cbCHBPLLPoweredOnDetection.Name = "cbCHBPLLPoweredOnDetection";
-            this.cbCHBPLLPoweredOnDetection.Size = new System.Drawing.Size(133, 21);
+            this.cbCHBPLLPoweredOnDetection.Size = new System.Drawing.Size(104, 17);
             this.cbCHBPLLPoweredOnDetection.TabIndex = 52;
             this.cbCHBPLLPoweredOnDetection.Text = "PLL powered on";
             this.cbCHBPLLPoweredOnDetection.UseVisualStyleBackColor = true;
@@ -2565,10 +2499,9 @@ namespace UEDMHardwareControl
             // cbCHBPAPoweredOnDetection
             // 
             this.cbCHBPAPoweredOnDetection.AutoSize = true;
-            this.cbCHBPAPoweredOnDetection.Location = new System.Drawing.Point(617, 91);
-            this.cbCHBPAPoweredOnDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHBPAPoweredOnDetection.Location = new System.Drawing.Point(463, 74);
             this.cbCHBPAPoweredOnDetection.Name = "cbCHBPAPoweredOnDetection";
-            this.cbCHBPAPoweredOnDetection.Size = new System.Drawing.Size(126, 21);
+            this.cbCHBPAPoweredOnDetection.Size = new System.Drawing.Size(99, 17);
             this.cbCHBPAPoweredOnDetection.TabIndex = 51;
             this.cbCHBPAPoweredOnDetection.Text = "PA powered on";
             this.cbCHBPAPoweredOnDetection.UseVisualStyleBackColor = true;
@@ -2577,10 +2510,9 @@ namespace UEDMHardwareControl
             // cbCHBRFMutedDetection
             // 
             this.cbCHBRFMutedDetection.AutoSize = true;
-            this.cbCHBRFMutedDetection.Location = new System.Drawing.Point(617, 55);
-            this.cbCHBRFMutedDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHBRFMutedDetection.Location = new System.Drawing.Point(463, 45);
             this.cbCHBRFMutedDetection.Name = "cbCHBRFMutedDetection";
-            this.cbCHBRFMutedDetection.Size = new System.Drawing.Size(91, 21);
+            this.cbCHBRFMutedDetection.Size = new System.Drawing.Size(72, 17);
             this.cbCHBRFMutedDetection.TabIndex = 50;
             this.cbCHBRFMutedDetection.Text = "RF muted";
             this.cbCHBRFMutedDetection.UseVisualStyleBackColor = true;
@@ -2588,10 +2520,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHBPowerDetection
             // 
-            this.btQueryMWCHBPowerDetection.Location = new System.Drawing.Point(361, 50);
-            this.btQueryMWCHBPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHBPowerDetection.Location = new System.Drawing.Point(271, 41);
             this.btQueryMWCHBPowerDetection.Name = "btQueryMWCHBPowerDetection";
-            this.btQueryMWCHBPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHBPowerDetection.TabIndex = 49;
             this.btQueryMWCHBPowerDetection.Text = "Query";
             this.btQueryMWCHBPowerDetection.UseVisualStyleBackColor = true;
@@ -2599,10 +2530,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHBFrequencyDetection
             // 
-            this.btQueryMWCHBFrequencyDetection.Location = new System.Drawing.Point(49, 50);
-            this.btQueryMWCHBFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 41);
             this.btQueryMWCHBFrequencyDetection.Name = "btQueryMWCHBFrequencyDetection";
-            this.btQueryMWCHBFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHBFrequencyDetection.TabIndex = 49;
             this.btQueryMWCHBFrequencyDetection.Text = "Query";
             this.btQueryMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2610,10 +2540,9 @@ namespace UEDMHardwareControl
             // 
             // btIncrementMWCHBPowerDetection
             // 
-            this.btIncrementMWCHBPowerDetection.Location = new System.Drawing.Point(361, 122);
-            this.btIncrementMWCHBPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHBPowerDetection.Location = new System.Drawing.Point(271, 99);
             this.btIncrementMWCHBPowerDetection.Name = "btIncrementMWCHBPowerDetection";
-            this.btIncrementMWCHBPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHBPowerDetection.TabIndex = 45;
             this.btIncrementMWCHBPowerDetection.Text = "Increment";
             this.btIncrementMWCHBPowerDetection.UseVisualStyleBackColor = true;
@@ -2621,18 +2550,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHBPowerIncrementDetection
             // 
-            this.tbMWCHBPowerIncrementDetection.Location = new System.Drawing.Point(467, 126);
-            this.tbMWCHBPowerIncrementDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHBPowerIncrementDetection.Location = new System.Drawing.Point(350, 102);
             this.tbMWCHBPowerIncrementDetection.Name = "tbMWCHBPowerIncrementDetection";
-            this.tbMWCHBPowerIncrementDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHBPowerIncrementDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBPowerIncrementDetection.TabIndex = 46;
             // 
             // btUpdateMWCHBPowerDetection
             // 
-            this.btUpdateMWCHBPowerDetection.Location = new System.Drawing.Point(361, 86);
-            this.btUpdateMWCHBPowerDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHBPowerDetection.Location = new System.Drawing.Point(271, 70);
             this.btUpdateMWCHBPowerDetection.Name = "btUpdateMWCHBPowerDetection";
-            this.btUpdateMWCHBPowerDetection.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHBPowerDetection.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHBPowerDetection.TabIndex = 41;
             this.btUpdateMWCHBPowerDetection.Text = "Update";
             this.btUpdateMWCHBPowerDetection.UseVisualStyleBackColor = true;
@@ -2640,20 +2567,18 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHBPowerSetpointDetection
             // 
-            this.tbMWCHBPowerSetpointDetection.Location = new System.Drawing.Point(468, 89);
-            this.tbMWCHBPowerSetpointDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHBPowerSetpointDetection.Location = new System.Drawing.Point(351, 72);
             this.tbMWCHBPowerSetpointDetection.Name = "tbMWCHBPowerSetpointDetection";
-            this.tbMWCHBPowerSetpointDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHBPowerSetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBPowerSetpointDetection.TabIndex = 42;
             this.tbMWCHBPowerSetpointDetection.Text = "-10";
             // 
             // labelDetectMicrowavesChBPower
             // 
             this.labelDetectMicrowavesChBPower.AutoSize = true;
-            this.labelDetectMicrowavesChBPower.Location = new System.Drawing.Point(357, 30);
-            this.labelDetectMicrowavesChBPower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectMicrowavesChBPower.Location = new System.Drawing.Point(268, 24);
             this.labelDetectMicrowavesChBPower.Name = "labelDetectMicrowavesChBPower";
-            this.labelDetectMicrowavesChBPower.Size = new System.Drawing.Size(120, 17);
+            this.labelDetectMicrowavesChBPower.Size = new System.Drawing.Size(92, 13);
             this.labelDetectMicrowavesChBPower.TabIndex = 43;
             this.labelDetectMicrowavesChBPower.Text = "MW power (dBm):";
             // 
@@ -2661,11 +2586,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHBPowerMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHBPowerMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHBPowerMonitorDetection.Location = new System.Drawing.Point(468, 53);
-            this.tbMWCHBPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHBPowerMonitorDetection.Location = new System.Drawing.Point(351, 43);
+            this.tbMWCHBPowerMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHBPowerMonitorDetection.Name = "tbMWCHBPowerMonitorDetection";
             this.tbMWCHBPowerMonitorDetection.ReadOnly = true;
-            this.tbMWCHBPowerMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHBPowerMonitorDetection.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHBPowerMonitorDetection.TabIndex = 44;
             // 
             // comboBoxMWCHBSetpointUnitDetection
@@ -2679,10 +2604,10 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHBSetpointUnitDetection.Location = new System.Drawing.Point(264, 89);
-            this.comboBoxMWCHBSetpointUnitDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHBSetpointUnitDetection.Location = new System.Drawing.Point(198, 72);
+            this.comboBoxMWCHBSetpointUnitDetection.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHBSetpointUnitDetection.Name = "comboBoxMWCHBSetpointUnitDetection";
-            this.comboBoxMWCHBSetpointUnitDetection.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHBSetpointUnitDetection.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHBSetpointUnitDetection.TabIndex = 40;
             // 
             // comboBoxMWCHBIncrementUnitDetection
@@ -2696,18 +2621,17 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHBIncrementUnitDetection.Location = new System.Drawing.Point(264, 126);
-            this.comboBoxMWCHBIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHBIncrementUnitDetection.Location = new System.Drawing.Point(198, 102);
+            this.comboBoxMWCHBIncrementUnitDetection.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHBIncrementUnitDetection.Name = "comboBoxMWCHBIncrementUnitDetection";
-            this.comboBoxMWCHBIncrementUnitDetection.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHBIncrementUnitDetection.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHBIncrementUnitDetection.TabIndex = 39;
             // 
             // btIncrementMWCHBFrequencyDetection
             // 
-            this.btIncrementMWCHBFrequencyDetection.Location = new System.Drawing.Point(49, 122);
-            this.btIncrementMWCHBFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 99);
             this.btIncrementMWCHBFrequencyDetection.Name = "btIncrementMWCHBFrequencyDetection";
-            this.btIncrementMWCHBFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHBFrequencyDetection.TabIndex = 37;
             this.btIncrementMWCHBFrequencyDetection.Text = "Increment";
             this.btIncrementMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2715,18 +2639,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHBFrequencyIncrementDetection
             // 
-            this.tbMWCHBFrequencyIncrementDetection.Location = new System.Drawing.Point(157, 126);
-            this.tbMWCHBFrequencyIncrementDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHBFrequencyIncrementDetection.Location = new System.Drawing.Point(118, 102);
             this.tbMWCHBFrequencyIncrementDetection.Name = "tbMWCHBFrequencyIncrementDetection";
-            this.tbMWCHBFrequencyIncrementDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHBFrequencyIncrementDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencyIncrementDetection.TabIndex = 38;
             // 
             // btUpdateMWCHBFrequencyDetection
             // 
-            this.btUpdateMWCHBFrequencyDetection.Location = new System.Drawing.Point(49, 86);
-            this.btUpdateMWCHBFrequencyDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHBFrequencyDetection.Location = new System.Drawing.Point(37, 70);
             this.btUpdateMWCHBFrequencyDetection.Name = "btUpdateMWCHBFrequencyDetection";
-            this.btUpdateMWCHBFrequencyDetection.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHBFrequencyDetection.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHBFrequencyDetection.TabIndex = 36;
             this.btUpdateMWCHBFrequencyDetection.Text = "Update";
             this.btUpdateMWCHBFrequencyDetection.UseVisualStyleBackColor = true;
@@ -2734,10 +2656,9 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHBFrequencySetpointDetection
             // 
-            this.tbMWCHBFrequencySetpointDetection.Location = new System.Drawing.Point(157, 89);
-            this.tbMWCHBFrequencySetpointDetection.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHBFrequencySetpointDetection.Location = new System.Drawing.Point(118, 72);
             this.tbMWCHBFrequencySetpointDetection.Name = "tbMWCHBFrequencySetpointDetection";
-            this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHBFrequencySetpointDetection.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHBFrequencySetpointDetection.TabIndex = 36;
             this.tbMWCHBFrequencySetpointDetection.Text = "14.458087";
             // 
@@ -2745,11 +2666,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHBFrequencyMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHBFrequencyMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHBFrequencyMonitorDetection.Location = new System.Drawing.Point(156, 53);
-            this.tbMWCHBFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHBFrequencyMonitorDetection.Location = new System.Drawing.Point(117, 43);
+            this.tbMWCHBFrequencyMonitorDetection.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHBFrequencyMonitorDetection.Name = "tbMWCHBFrequencyMonitorDetection";
             this.tbMWCHBFrequencyMonitorDetection.ReadOnly = true;
-            this.tbMWCHBFrequencyMonitorDetection.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHBFrequencyMonitorDetection.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHBFrequencyMonitorDetection.TabIndex = 36;
             // 
             // groupBoxMWDetectionB
@@ -2774,30 +2695,33 @@ namespace UEDMHardwareControl
             this.groupBoxMWDetectionB.Controls.Add(this.btUpdateMWFrequencyDetectionB);
             this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencySetpointDetectionB);
             this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencyMonitorDetectionB);
-            this.groupBoxMWDetectionB.Location = new System.Drawing.Point(-1, 360);
+            this.groupBoxMWDetectionB.Location = new System.Drawing.Point(-1, 292);
+            this.groupBoxMWDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWDetectionB.Name = "groupBoxMWDetectionB";
-            this.groupBoxMWDetectionB.Size = new System.Drawing.Size(839, 162);
+            this.groupBoxMWDetectionB.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWDetectionB.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWDetectionB.TabIndex = 60;
             this.groupBoxMWDetectionB.TabStop = false;
             this.groupBoxMWDetectionB.Text = "Mini Synth: Det B";
-            this.groupBoxMWDetectionB.Enter += new System.EventHandler(this.groupBoxMWDetectionB_Enter_1);
             // 
             // cbTriggerDetectionB
             // 
             this.cbTriggerDetectionB.AutoSize = true;
             this.cbTriggerDetectionB.Enabled = false;
-            this.cbTriggerDetectionB.Location = new System.Drawing.Point(617, 22);
+            this.cbTriggerDetectionB.Location = new System.Drawing.Point(463, 18);
+            this.cbTriggerDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.cbTriggerDetectionB.Name = "cbTriggerDetectionB";
-            this.cbTriggerDetectionB.Size = new System.Drawing.Size(113, 21);
+            this.cbTriggerDetectionB.Size = new System.Drawing.Size(88, 17);
             this.cbTriggerDetectionB.TabIndex = 0;
             this.cbTriggerDetectionB.Text = "Trigger (N/A)";
             // 
             // cbPLLPoweredOnDetectionB
             // 
             this.cbPLLPoweredOnDetectionB.AutoSize = true;
-            this.cbPLLPoweredOnDetectionB.Location = new System.Drawing.Point(617, 127);
+            this.cbPLLPoweredOnDetectionB.Location = new System.Drawing.Point(463, 103);
+            this.cbPLLPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.cbPLLPoweredOnDetectionB.Name = "cbPLLPoweredOnDetectionB";
-            this.cbPLLPoweredOnDetectionB.Size = new System.Drawing.Size(133, 21);
+            this.cbPLLPoweredOnDetectionB.Size = new System.Drawing.Size(104, 17);
             this.cbPLLPoweredOnDetectionB.TabIndex = 1;
             this.cbPLLPoweredOnDetectionB.Text = "PLL powered on";
             this.cbPLLPoweredOnDetectionB.CheckedChanged += new System.EventHandler(this.cbPLLPoweredOnDetectionB_CheckedChanged);
@@ -2805,9 +2729,10 @@ namespace UEDMHardwareControl
             // cbPAPoweredOnDetectionB
             // 
             this.cbPAPoweredOnDetectionB.AutoSize = true;
-            this.cbPAPoweredOnDetectionB.Location = new System.Drawing.Point(617, 91);
+            this.cbPAPoweredOnDetectionB.Location = new System.Drawing.Point(463, 74);
+            this.cbPAPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.cbPAPoweredOnDetectionB.Name = "cbPAPoweredOnDetectionB";
-            this.cbPAPoweredOnDetectionB.Size = new System.Drawing.Size(126, 21);
+            this.cbPAPoweredOnDetectionB.Size = new System.Drawing.Size(99, 17);
             this.cbPAPoweredOnDetectionB.TabIndex = 2;
             this.cbPAPoweredOnDetectionB.Text = "PA powered on";
             this.cbPAPoweredOnDetectionB.CheckedChanged += new System.EventHandler(this.cbPAPoweredOnDetectionB_CheckedChanged);
@@ -2815,70 +2740,78 @@ namespace UEDMHardwareControl
             // cbRFMutedDetectionB
             // 
             this.cbRFMutedDetectionB.AutoSize = true;
-            this.cbRFMutedDetectionB.Location = new System.Drawing.Point(617, 55);
+            this.cbRFMutedDetectionB.Location = new System.Drawing.Point(463, 45);
+            this.cbRFMutedDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.cbRFMutedDetectionB.Name = "cbRFMutedDetectionB";
-            this.cbRFMutedDetectionB.Size = new System.Drawing.Size(91, 21);
+            this.cbRFMutedDetectionB.Size = new System.Drawing.Size(72, 17);
             this.cbRFMutedDetectionB.TabIndex = 3;
             this.cbRFMutedDetectionB.Text = "RF muted";
             this.cbRFMutedDetectionB.CheckedChanged += new System.EventHandler(this.cbRFMutedDetectionB_CheckedChanged);
             // 
             // btQueryMWPowerDetectionB
             // 
-            this.btQueryMWPowerDetectionB.Location = new System.Drawing.Point(361, 50);
+            this.btQueryMWPowerDetectionB.Location = new System.Drawing.Point(271, 41);
+            this.btQueryMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btQueryMWPowerDetectionB.Name = "btQueryMWPowerDetectionB";
-            this.btQueryMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWPowerDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWPowerDetectionB.TabIndex = 4;
             this.btQueryMWPowerDetectionB.Text = "Query";
             this.btQueryMWPowerDetectionB.Click += new System.EventHandler(this.btQueryMWPowerDetectionB_Click);
             // 
             // btQueryMWFrequencyDetectionB
             // 
-            this.btQueryMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 50);
+            this.btQueryMWFrequencyDetectionB.Location = new System.Drawing.Point(37, 41);
+            this.btQueryMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btQueryMWFrequencyDetectionB.Name = "btQueryMWFrequencyDetectionB";
-            this.btQueryMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWFrequencyDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWFrequencyDetectionB.TabIndex = 5;
             this.btQueryMWFrequencyDetectionB.Text = "Query";
             this.btQueryMWFrequencyDetectionB.Click += new System.EventHandler(this.btQueryMWFrequencyDetectionB_Click);
             // 
             // btIncrementMWPowerDetectionB
             // 
-            this.btIncrementMWPowerDetectionB.Location = new System.Drawing.Point(361, 122);
+            this.btIncrementMWPowerDetectionB.Location = new System.Drawing.Point(271, 99);
+            this.btIncrementMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btIncrementMWPowerDetectionB.Name = "btIncrementMWPowerDetectionB";
-            this.btIncrementMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWPowerDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWPowerDetectionB.TabIndex = 6;
             this.btIncrementMWPowerDetectionB.Text = "Increment";
             this.btIncrementMWPowerDetectionB.Click += new System.EventHandler(this.btIncrementMWPowerDetectionB_Click);
             // 
             // tbMWPowerIncrementDetectionB
             // 
-            this.tbMWPowerIncrementDetectionB.Location = new System.Drawing.Point(467, 126);
+            this.tbMWPowerIncrementDetectionB.Location = new System.Drawing.Point(350, 102);
+            this.tbMWPowerIncrementDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWPowerIncrementDetectionB.Name = "tbMWPowerIncrementDetectionB";
-            this.tbMWPowerIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWPowerIncrementDetectionB.Size = new System.Drawing.Size(76, 19);
             this.tbMWPowerIncrementDetectionB.TabIndex = 7;
             // 
             // btUpdateMWPowerDetectionB
             // 
-            this.btUpdateMWPowerDetectionB.Location = new System.Drawing.Point(361, 86);
+            this.btUpdateMWPowerDetectionB.Location = new System.Drawing.Point(271, 70);
+            this.btUpdateMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btUpdateMWPowerDetectionB.Name = "btUpdateMWPowerDetectionB";
-            this.btUpdateMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWPowerDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWPowerDetectionB.TabIndex = 8;
             this.btUpdateMWPowerDetectionB.Text = "Update";
             this.btUpdateMWPowerDetectionB.Click += new System.EventHandler(this.btUpdateMWPowerDetectionB_Click);
             // 
             // tbMWPowerSetpointDetectionB
             // 
-            this.tbMWPowerSetpointDetectionB.Location = new System.Drawing.Point(468, 89);
+            this.tbMWPowerSetpointDetectionB.Location = new System.Drawing.Point(351, 72);
+            this.tbMWPowerSetpointDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWPowerSetpointDetectionB.Name = "tbMWPowerSetpointDetectionB";
-            this.tbMWPowerSetpointDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWPowerSetpointDetectionB.Size = new System.Drawing.Size(76, 19);
             this.tbMWPowerSetpointDetectionB.TabIndex = 9;
             this.tbMWPowerSetpointDetectionB.Text = "-10";
             // 
             // labelDetectMicrowavesPowerDetectionB
             // 
             this.labelDetectMicrowavesPowerDetectionB.AutoSize = true;
-            this.labelDetectMicrowavesPowerDetectionB.Location = new System.Drawing.Point(357, 30);
+            this.labelDetectMicrowavesPowerDetectionB.Location = new System.Drawing.Point(268, 24);
+            this.labelDetectMicrowavesPowerDetectionB.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelDetectMicrowavesPowerDetectionB.Name = "labelDetectMicrowavesPowerDetectionB";
-            this.labelDetectMicrowavesPowerDetectionB.Size = new System.Drawing.Size(120, 17);
+            this.labelDetectMicrowavesPowerDetectionB.Size = new System.Drawing.Size(92, 13);
             this.labelDetectMicrowavesPowerDetectionB.TabIndex = 10;
             this.labelDetectMicrowavesPowerDetectionB.Text = "MW power (dBm):";
             // 
@@ -2886,10 +2819,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWPowerMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWPowerMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWPowerMonitorDetectionB.Location = new System.Drawing.Point(468, 53);
+            this.tbMWPowerMonitorDetectionB.Location = new System.Drawing.Point(351, 43);
+            this.tbMWPowerMonitorDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWPowerMonitorDetectionB.Name = "tbMWPowerMonitorDetectionB";
             this.tbMWPowerMonitorDetectionB.ReadOnly = true;
-            this.tbMWPowerMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWPowerMonitorDetectionB.Size = new System.Drawing.Size(75, 19);
             this.tbMWPowerMonitorDetectionB.TabIndex = 11;
             // 
             // comboBoxMWSetpointUnitDetectionB
@@ -2900,11 +2834,11 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWSetpointUnitDetectionB.Location = new System.Drawing.Point(264, 89);
+            this.comboBoxMWSetpointUnitDetectionB.Location = new System.Drawing.Point(198, 72);
+            this.comboBoxMWSetpointUnitDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWSetpointUnitDetectionB.Name = "comboBoxMWSetpointUnitDetectionB";
-            this.comboBoxMWSetpointUnitDetectionB.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWSetpointUnitDetectionB.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWSetpointUnitDetectionB.TabIndex = 12;
-            this.comboBoxMWSetpointUnitDetectionB.SelectedIndex = 0;
             // 
             // comboBoxMWIncrementUnitDetectionB
             // 
@@ -2914,41 +2848,46 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWIncrementUnitDetectionB.Location = new System.Drawing.Point(264, 126);
+            this.comboBoxMWIncrementUnitDetectionB.Location = new System.Drawing.Point(198, 102);
+            this.comboBoxMWIncrementUnitDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWIncrementUnitDetectionB.Name = "comboBoxMWIncrementUnitDetectionB";
-            this.comboBoxMWIncrementUnitDetectionB.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWIncrementUnitDetectionB.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWIncrementUnitDetectionB.TabIndex = 13;
             // 
             // btIncrementMWFrequencyDetectionB
             // 
-            this.btIncrementMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 122);
+            this.btIncrementMWFrequencyDetectionB.Location = new System.Drawing.Point(37, 99);
+            this.btIncrementMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btIncrementMWFrequencyDetectionB.Name = "btIncrementMWFrequencyDetectionB";
-            this.btIncrementMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWFrequencyDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWFrequencyDetectionB.TabIndex = 14;
             this.btIncrementMWFrequencyDetectionB.Text = "Increment";
             this.btIncrementMWFrequencyDetectionB.Click += new System.EventHandler(this.btIncrementMWFrequencyDetectionB_Click);
             // 
             // tbMWFrequencyIncrementDetectionB
             // 
-            this.tbMWFrequencyIncrementDetectionB.Location = new System.Drawing.Point(157, 126);
+            this.tbMWFrequencyIncrementDetectionB.Location = new System.Drawing.Point(118, 102);
+            this.tbMWFrequencyIncrementDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWFrequencyIncrementDetectionB.Name = "tbMWFrequencyIncrementDetectionB";
-            this.tbMWFrequencyIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWFrequencyIncrementDetectionB.Size = new System.Drawing.Size(76, 19);
             this.tbMWFrequencyIncrementDetectionB.TabIndex = 15;
             // 
             // btUpdateMWFrequencyDetectionB
             // 
-            this.btUpdateMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 86);
+            this.btUpdateMWFrequencyDetectionB.Location = new System.Drawing.Point(37, 70);
+            this.btUpdateMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.btUpdateMWFrequencyDetectionB.Name = "btUpdateMWFrequencyDetectionB";
-            this.btUpdateMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWFrequencyDetectionB.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWFrequencyDetectionB.TabIndex = 16;
             this.btUpdateMWFrequencyDetectionB.Text = "Update";
             this.btUpdateMWFrequencyDetectionB.Click += new System.EventHandler(this.btUpdateMWFrequencyDetectionB_Click);
             // 
             // tbMWFrequencySetpointDetectionB
             // 
-            this.tbMWFrequencySetpointDetectionB.Location = new System.Drawing.Point(157, 89);
+            this.tbMWFrequencySetpointDetectionB.Location = new System.Drawing.Point(118, 72);
+            this.tbMWFrequencySetpointDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWFrequencySetpointDetectionB.Name = "tbMWFrequencySetpointDetectionB";
-            this.tbMWFrequencySetpointDetectionB.Size = new System.Drawing.Size(100, 22);
+            this.tbMWFrequencySetpointDetectionB.Size = new System.Drawing.Size(76, 19);
             this.tbMWFrequencySetpointDetectionB.TabIndex = 17;
             this.tbMWFrequencySetpointDetectionB.Text = "14.467242";
             // 
@@ -2956,21 +2895,22 @@ namespace UEDMHardwareControl
             // 
             this.tbMWFrequencyMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWFrequencyMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWFrequencyMonitorDetectionB.Location = new System.Drawing.Point(156, 53);
+            this.tbMWFrequencyMonitorDetectionB.Location = new System.Drawing.Point(117, 43);
+            this.tbMWFrequencyMonitorDetectionB.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWFrequencyMonitorDetectionB.Name = "tbMWFrequencyMonitorDetectionB";
             this.tbMWFrequencyMonitorDetectionB.ReadOnly = true;
-            this.tbMWFrequencyMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
+            this.tbMWFrequencyMonitorDetectionB.Size = new System.Drawing.Size(75, 19);
             this.tbMWFrequencyMonitorDetectionB.TabIndex = 18;
             // 
             // groupBoxWindfreaksynthhd
             // 
             this.groupBoxWindfreaksynthhd.Controls.Add(this.groupBoxMWCHA);
             this.groupBoxWindfreaksynthhd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxWindfreaksynthhd.Location = new System.Drawing.Point(347, 2);
-            this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxWindfreaksynthhd.Location = new System.Drawing.Point(260, 2);
+            this.groupBoxWindfreaksynthhd.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxWindfreaksynthhd.Name = "groupBoxWindfreaksynthhd";
-            this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(844, 192);
+            this.groupBoxWindfreaksynthhd.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxWindfreaksynthhd.Size = new System.Drawing.Size(633, 156);
             this.groupBoxWindfreaksynthhd.TabIndex = 48;
             this.groupBoxWindfreaksynthhd.TabStop = false;
             this.groupBoxWindfreaksynthhd.Text = "Windfreak for Optical Pumping";
@@ -3002,11 +2942,11 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHA.Controls.Add(this.tbMWCHAFrequencySetpoint);
             this.groupBoxMWCHA.Controls.Add(this.labelMicrowavesChannelAFrequency);
             this.groupBoxMWCHA.Controls.Add(this.tbMWCHAFrequencyMonitor);
-            this.groupBoxMWCHA.Location = new System.Drawing.Point(0, 21);
-            this.groupBoxMWCHA.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxMWCHA.Location = new System.Drawing.Point(0, 17);
+            this.groupBoxMWCHA.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxMWCHA.Name = "groupBoxMWCHA";
-            this.groupBoxMWCHA.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxMWCHA.Size = new System.Drawing.Size(839, 162);
+            this.groupBoxMWCHA.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxMWCHA.Size = new System.Drawing.Size(629, 132);
             this.groupBoxMWCHA.TabIndex = 39;
             this.groupBoxMWCHA.TabStop = false;
             this.groupBoxMWCHA.Text = "Channel A";
@@ -3015,10 +2955,9 @@ namespace UEDMHardwareControl
             // cbCHARFTrigger
             // 
             this.cbCHARFTrigger.AutoSize = true;
-            this.cbCHARFTrigger.Location = new System.Drawing.Point(617, 23);
-            this.cbCHARFTrigger.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHARFTrigger.Location = new System.Drawing.Point(463, 19);
             this.cbCHARFTrigger.Name = "cbCHARFTrigger";
-            this.cbCHARFTrigger.Size = new System.Drawing.Size(121, 21);
+            this.cbCHARFTrigger.Size = new System.Drawing.Size(92, 17);
             this.cbCHARFTrigger.TabIndex = 58;
             this.cbCHARFTrigger.Text = "Trigger Armed";
             this.cbCHARFTrigger.UseVisualStyleBackColor = true;
@@ -3026,10 +2965,9 @@ namespace UEDMHardwareControl
             // 
             // btCHAPLLPowerOnInfo
             // 
-            this.btCHAPLLPowerOnInfo.Location = new System.Drawing.Point(757, 122);
-            this.btCHAPLLPowerOnInfo.Margin = new System.Windows.Forms.Padding(4);
+            this.btCHAPLLPowerOnInfo.Location = new System.Drawing.Point(568, 99);
             this.btCHAPLLPowerOnInfo.Name = "btCHAPLLPowerOnInfo";
-            this.btCHAPLLPowerOnInfo.Size = new System.Drawing.Size(31, 28);
+            this.btCHAPLLPowerOnInfo.Size = new System.Drawing.Size(23, 23);
             this.btCHAPLLPowerOnInfo.TabIndex = 54;
             this.btCHAPLLPowerOnInfo.Text = "?";
             this.btCHAPLLPowerOnInfo.UseVisualStyleBackColor = true;
@@ -3037,10 +2975,9 @@ namespace UEDMHardwareControl
             // 
             // btCHAPAPowerOnInfo
             // 
-            this.btCHAPAPowerOnInfo.Location = new System.Drawing.Point(757, 86);
-            this.btCHAPAPowerOnInfo.Margin = new System.Windows.Forms.Padding(4);
+            this.btCHAPAPowerOnInfo.Location = new System.Drawing.Point(568, 70);
             this.btCHAPAPowerOnInfo.Name = "btCHAPAPowerOnInfo";
-            this.btCHAPAPowerOnInfo.Size = new System.Drawing.Size(31, 28);
+            this.btCHAPAPowerOnInfo.Size = new System.Drawing.Size(23, 23);
             this.btCHAPAPowerOnInfo.TabIndex = 53;
             this.btCHAPAPowerOnInfo.Text = "?";
             this.btCHAPAPowerOnInfo.UseVisualStyleBackColor = true;
@@ -3048,10 +2985,9 @@ namespace UEDMHardwareControl
             // 
             // btCHAFRMuteInfo
             // 
-            this.btCHAFRMuteInfo.Location = new System.Drawing.Point(719, 53);
-            this.btCHAFRMuteInfo.Margin = new System.Windows.Forms.Padding(4);
+            this.btCHAFRMuteInfo.Location = new System.Drawing.Point(539, 43);
             this.btCHAFRMuteInfo.Name = "btCHAFRMuteInfo";
-            this.btCHAFRMuteInfo.Size = new System.Drawing.Size(31, 28);
+            this.btCHAFRMuteInfo.Size = new System.Drawing.Size(23, 23);
             this.btCHAFRMuteInfo.TabIndex = 52;
             this.btCHAFRMuteInfo.Text = "?";
             this.btCHAFRMuteInfo.UseVisualStyleBackColor = true;
@@ -3060,10 +2996,9 @@ namespace UEDMHardwareControl
             // cbCHAPAPoweredOn
             // 
             this.cbCHAPAPoweredOn.AutoSize = true;
-            this.cbCHAPAPoweredOn.Location = new System.Drawing.Point(617, 91);
-            this.cbCHAPAPoweredOn.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHAPAPoweredOn.Location = new System.Drawing.Point(463, 74);
             this.cbCHAPAPoweredOn.Name = "cbCHAPAPoweredOn";
-            this.cbCHAPAPoweredOn.Size = new System.Drawing.Size(126, 21);
+            this.cbCHAPAPoweredOn.Size = new System.Drawing.Size(99, 17);
             this.cbCHAPAPoweredOn.TabIndex = 51;
             this.cbCHAPAPoweredOn.Text = "PA powered on";
             this.cbCHAPAPoweredOn.UseVisualStyleBackColor = true;
@@ -3072,10 +3007,9 @@ namespace UEDMHardwareControl
             // cbCHAPLLPoweredOn
             // 
             this.cbCHAPLLPoweredOn.AutoSize = true;
-            this.cbCHAPLLPoweredOn.Location = new System.Drawing.Point(617, 127);
-            this.cbCHAPLLPoweredOn.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHAPLLPoweredOn.Location = new System.Drawing.Point(463, 103);
             this.cbCHAPLLPoweredOn.Name = "cbCHAPLLPoweredOn";
-            this.cbCHAPLLPoweredOn.Size = new System.Drawing.Size(133, 21);
+            this.cbCHAPLLPoweredOn.Size = new System.Drawing.Size(104, 17);
             this.cbCHAPLLPoweredOn.TabIndex = 50;
             this.cbCHAPLLPoweredOn.Text = "PLL powered on";
             this.cbCHAPLLPoweredOn.UseVisualStyleBackColor = true;
@@ -3084,10 +3018,9 @@ namespace UEDMHardwareControl
             // cbCHARFMuted
             // 
             this.cbCHARFMuted.AutoSize = true;
-            this.cbCHARFMuted.Location = new System.Drawing.Point(617, 58);
-            this.cbCHARFMuted.Margin = new System.Windows.Forms.Padding(4);
+            this.cbCHARFMuted.Location = new System.Drawing.Point(463, 47);
             this.cbCHARFMuted.Name = "cbCHARFMuted";
-            this.cbCHARFMuted.Size = new System.Drawing.Size(91, 21);
+            this.cbCHARFMuted.Size = new System.Drawing.Size(72, 17);
             this.cbCHARFMuted.TabIndex = 49;
             this.cbCHARFMuted.Text = "RF muted";
             this.cbCHARFMuted.UseVisualStyleBackColor = true;
@@ -3095,10 +3028,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHAPower
             // 
-            this.btQueryMWCHAPower.Location = new System.Drawing.Point(361, 50);
-            this.btQueryMWCHAPower.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHAPower.Location = new System.Drawing.Point(271, 41);
             this.btQueryMWCHAPower.Name = "btQueryMWCHAPower";
-            this.btQueryMWCHAPower.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHAPower.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHAPower.TabIndex = 48;
             this.btQueryMWCHAPower.Text = "Query";
             this.btQueryMWCHAPower.UseVisualStyleBackColor = true;
@@ -3106,10 +3038,9 @@ namespace UEDMHardwareControl
             // 
             // btQueryMWCHAFrequency
             // 
-            this.btQueryMWCHAFrequency.Location = new System.Drawing.Point(49, 50);
-            this.btQueryMWCHAFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryMWCHAFrequency.Location = new System.Drawing.Point(37, 41);
             this.btQueryMWCHAFrequency.Name = "btQueryMWCHAFrequency";
-            this.btQueryMWCHAFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btQueryMWCHAFrequency.Size = new System.Drawing.Size(75, 23);
             this.btQueryMWCHAFrequency.TabIndex = 47;
             this.btQueryMWCHAFrequency.Text = "Query";
             this.btQueryMWCHAFrequency.UseVisualStyleBackColor = true;
@@ -3117,10 +3048,9 @@ namespace UEDMHardwareControl
             // 
             // btIncrementMWCHAPower
             // 
-            this.btIncrementMWCHAPower.Location = new System.Drawing.Point(361, 121);
-            this.btIncrementMWCHAPower.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHAPower.Location = new System.Drawing.Point(271, 98);
             this.btIncrementMWCHAPower.Name = "btIncrementMWCHAPower";
-            this.btIncrementMWCHAPower.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHAPower.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHAPower.TabIndex = 45;
             this.btIncrementMWCHAPower.Text = "Increment";
             this.btIncrementMWCHAPower.UseVisualStyleBackColor = true;
@@ -3128,18 +3058,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAPowerIncrement
             // 
-            this.tbMWCHAPowerIncrement.Location = new System.Drawing.Point(468, 123);
-            this.tbMWCHAPowerIncrement.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAPowerIncrement.Location = new System.Drawing.Point(351, 100);
             this.tbMWCHAPowerIncrement.Name = "tbMWCHAPowerIncrement";
-            this.tbMWCHAPowerIncrement.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAPowerIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerIncrement.TabIndex = 46;
             // 
             // btUpdateMWCHAPower
             // 
-            this.btUpdateMWCHAPower.Location = new System.Drawing.Point(361, 84);
-            this.btUpdateMWCHAPower.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHAPower.Location = new System.Drawing.Point(271, 68);
             this.btUpdateMWCHAPower.Name = "btUpdateMWCHAPower";
-            this.btUpdateMWCHAPower.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHAPower.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHAPower.TabIndex = 41;
             this.btUpdateMWCHAPower.Text = "Update";
             this.btUpdateMWCHAPower.UseVisualStyleBackColor = true;
@@ -3147,20 +3075,18 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAPowerSetpoint
             // 
-            this.tbMWCHAPowerSetpoint.Location = new System.Drawing.Point(468, 87);
-            this.tbMWCHAPowerSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAPowerSetpoint.Location = new System.Drawing.Point(351, 71);
             this.tbMWCHAPowerSetpoint.Name = "tbMWCHAPowerSetpoint";
-            this.tbMWCHAPowerSetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAPowerSetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAPowerSetpoint.TabIndex = 42;
             this.tbMWCHAPowerSetpoint.Text = "-10";
             // 
             // labelMicrowavesChannelAPower
             // 
             this.labelMicrowavesChannelAPower.AutoSize = true;
-            this.labelMicrowavesChannelAPower.Location = new System.Drawing.Point(357, 30);
-            this.labelMicrowavesChannelAPower.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMicrowavesChannelAPower.Location = new System.Drawing.Point(268, 24);
             this.labelMicrowavesChannelAPower.Name = "labelMicrowavesChannelAPower";
-            this.labelMicrowavesChannelAPower.Size = new System.Drawing.Size(120, 17);
+            this.labelMicrowavesChannelAPower.Size = new System.Drawing.Size(92, 13);
             this.labelMicrowavesChannelAPower.TabIndex = 43;
             this.labelMicrowavesChannelAPower.Text = "MW power (dBm):";
             // 
@@ -3168,11 +3094,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHAPowerMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAPowerMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHAPowerMonitor.Location = new System.Drawing.Point(468, 54);
-            this.tbMWCHAPowerMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHAPowerMonitor.Location = new System.Drawing.Point(351, 44);
+            this.tbMWCHAPowerMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAPowerMonitor.Name = "tbMWCHAPowerMonitor";
             this.tbMWCHAPowerMonitor.ReadOnly = true;
-            this.tbMWCHAPowerMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHAPowerMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAPowerMonitor.TabIndex = 44;
             // 
             // comboBoxMWCHASetpointUnit
@@ -3186,10 +3112,10 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHASetpointUnit.Location = new System.Drawing.Point(261, 87);
-            this.comboBoxMWCHASetpointUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHASetpointUnit.Location = new System.Drawing.Point(196, 71);
+            this.comboBoxMWCHASetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHASetpointUnit.Name = "comboBoxMWCHASetpointUnit";
-            this.comboBoxMWCHASetpointUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHASetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHASetpointUnit.TabIndex = 40;
             // 
             // comboBoxMWCHAIncrementUnit
@@ -3203,18 +3129,17 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxMWCHAIncrementUnit.Location = new System.Drawing.Point(261, 123);
-            this.comboBoxMWCHAIncrementUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxMWCHAIncrementUnit.Location = new System.Drawing.Point(196, 100);
+            this.comboBoxMWCHAIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxMWCHAIncrementUnit.Name = "comboBoxMWCHAIncrementUnit";
-            this.comboBoxMWCHAIncrementUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxMWCHAIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxMWCHAIncrementUnit.TabIndex = 39;
             // 
             // btIncrementMWCHAFrequency
             // 
-            this.btIncrementMWCHAFrequency.Location = new System.Drawing.Point(49, 121);
-            this.btIncrementMWCHAFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementMWCHAFrequency.Location = new System.Drawing.Point(37, 98);
             this.btIncrementMWCHAFrequency.Name = "btIncrementMWCHAFrequency";
-            this.btIncrementMWCHAFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementMWCHAFrequency.Size = new System.Drawing.Size(75, 23);
             this.btIncrementMWCHAFrequency.TabIndex = 37;
             this.btIncrementMWCHAFrequency.Text = "Increment";
             this.btIncrementMWCHAFrequency.UseVisualStyleBackColor = true;
@@ -3222,18 +3147,16 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAFrequencyIncrement
             // 
-            this.tbMWCHAFrequencyIncrement.Location = new System.Drawing.Point(155, 123);
-            this.tbMWCHAFrequencyIncrement.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAFrequencyIncrement.Location = new System.Drawing.Point(116, 100);
             this.tbMWCHAFrequencyIncrement.Name = "tbMWCHAFrequencyIncrement";
-            this.tbMWCHAFrequencyIncrement.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAFrequencyIncrement.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateMWCHAFrequency
             // 
-            this.btUpdateMWCHAFrequency.Location = new System.Drawing.Point(48, 84);
-            this.btUpdateMWCHAFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateMWCHAFrequency.Location = new System.Drawing.Point(36, 68);
             this.btUpdateMWCHAFrequency.Name = "btUpdateMWCHAFrequency";
-            this.btUpdateMWCHAFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateMWCHAFrequency.Size = new System.Drawing.Size(75, 23);
             this.btUpdateMWCHAFrequency.TabIndex = 36;
             this.btUpdateMWCHAFrequency.Text = "Update";
             this.btUpdateMWCHAFrequency.UseVisualStyleBackColor = true;
@@ -3241,20 +3164,18 @@ namespace UEDMHardwareControl
             // 
             // tbMWCHAFrequencySetpoint
             // 
-            this.tbMWCHAFrequencySetpoint.Location = new System.Drawing.Point(155, 87);
-            this.tbMWCHAFrequencySetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMWCHAFrequencySetpoint.Location = new System.Drawing.Point(116, 71);
             this.tbMWCHAFrequencySetpoint.Name = "tbMWCHAFrequencySetpoint";
-            this.tbMWCHAFrequencySetpoint.Size = new System.Drawing.Size(100, 22);
+            this.tbMWCHAFrequencySetpoint.Size = new System.Drawing.Size(76, 19);
             this.tbMWCHAFrequencySetpoint.TabIndex = 36;
             this.tbMWCHAFrequencySetpoint.Text = "14.4754";
             // 
             // labelMicrowavesChannelAFrequency
             // 
             this.labelMicrowavesChannelAFrequency.AutoSize = true;
-            this.labelMicrowavesChannelAFrequency.Location = new System.Drawing.Point(45, 30);
-            this.labelMicrowavesChannelAFrequency.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMicrowavesChannelAFrequency.Location = new System.Drawing.Point(34, 24);
             this.labelMicrowavesChannelAFrequency.Name = "labelMicrowavesChannelAFrequency";
-            this.labelMicrowavesChannelAFrequency.Size = new System.Drawing.Size(145, 17);
+            this.labelMicrowavesChannelAFrequency.Size = new System.Drawing.Size(110, 13);
             this.labelMicrowavesChannelAFrequency.TabIndex = 36;
             this.labelMicrowavesChannelAFrequency.Text = "MW frequency (GHz):";
             // 
@@ -3262,11 +3183,11 @@ namespace UEDMHardwareControl
             // 
             this.tbMWCHAFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWCHAFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWCHAFrequencyMonitor.Location = new System.Drawing.Point(156, 54);
-            this.tbMWCHAFrequencyMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbMWCHAFrequencyMonitor.Location = new System.Drawing.Point(117, 44);
+            this.tbMWCHAFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbMWCHAFrequencyMonitor.Name = "tbMWCHAFrequencyMonitor";
             this.tbMWCHAFrequencyMonitor.ReadOnly = true;
-            this.tbMWCHAFrequencyMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbMWCHAFrequencyMonitor.Size = new System.Drawing.Size(75, 19);
             this.tbMWCHAFrequencyMonitor.TabIndex = 36;
             // 
             // groupBoxRF
@@ -3282,11 +3203,11 @@ namespace UEDMHardwareControl
             this.groupBoxRF.Controls.Add(this.tbRFFrequency);
             this.groupBoxRF.Controls.Add(this.labelRF);
             this.groupBoxRF.Controls.Add(this.tbRFFrequencyMonitor);
-            this.groupBoxRF.Location = new System.Drawing.Point(3, 2);
-            this.groupBoxRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxRF.Location = new System.Drawing.Point(2, 2);
+            this.groupBoxRF.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxRF.Name = "groupBoxRF";
-            this.groupBoxRF.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxRF.Size = new System.Drawing.Size(339, 231);
+            this.groupBoxRF.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxRF.Size = new System.Drawing.Size(254, 188);
             this.groupBoxRF.TabIndex = 0;
             this.groupBoxRF.TabStop = false;
             this.groupBoxRF.Text = "Radio Frequency";
@@ -3294,28 +3215,25 @@ namespace UEDMHardwareControl
             // labelRFStatus
             // 
             this.labelRFStatus.AutoSize = true;
-            this.labelRFStatus.Location = new System.Drawing.Point(69, 162);
-            this.labelRFStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRFStatus.Location = new System.Drawing.Point(52, 132);
             this.labelRFStatus.Name = "labelRFStatus";
-            this.labelRFStatus.Size = new System.Drawing.Size(52, 17);
+            this.labelRFStatus.Size = new System.Drawing.Size(40, 13);
             this.labelRFStatus.TabIndex = 56;
             this.labelRFStatus.Text = "Status:";
             // 
             // tbRFStatus
             // 
-            this.tbRFStatus.Location = new System.Drawing.Point(131, 159);
-            this.tbRFStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRFStatus.Location = new System.Drawing.Point(98, 129);
             this.tbRFStatus.Multiline = true;
             this.tbRFStatus.Name = "tbRFStatus";
-            this.tbRFStatus.Size = new System.Drawing.Size(176, 66);
+            this.tbRFStatus.Size = new System.Drawing.Size(133, 54);
             this.tbRFStatus.TabIndex = 49;
             // 
             // btQueryRFFrequency
             // 
-            this.btQueryRFFrequency.Location = new System.Drawing.Point(24, 63);
-            this.btQueryRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryRFFrequency.Location = new System.Drawing.Point(18, 51);
             this.btQueryRFFrequency.Name = "btQueryRFFrequency";
-            this.btQueryRFFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btQueryRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btQueryRFFrequency.TabIndex = 55;
             this.btQueryRFFrequency.Text = "Query";
             this.btQueryRFFrequency.UseVisualStyleBackColor = true;
@@ -3331,10 +3249,10 @@ namespace UEDMHardwareControl
             "MHz",
             "kHz",
             "Hz"});
-            this.comboBoxRFIncrementUnit.Location = new System.Drawing.Point(237, 126);
-            this.comboBoxRFIncrementUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxRFIncrementUnit.Location = new System.Drawing.Point(178, 102);
+            this.comboBoxRFIncrementUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFIncrementUnit.Name = "comboBoxRFIncrementUnit";
-            this.comboBoxRFIncrementUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxRFIncrementUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxRFIncrementUnit.TabIndex = 42;
             // 
             // comboBoxRFSetpointUnit
@@ -3345,18 +3263,17 @@ namespace UEDMHardwareControl
             this.comboBoxRFSetpointUnit.FormattingEnabled = true;
             this.comboBoxRFSetpointUnit.Items.AddRange(new object[] {
             "MHz"});
-            this.comboBoxRFSetpointUnit.Location = new System.Drawing.Point(237, 94);
-            this.comboBoxRFSetpointUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxRFSetpointUnit.Location = new System.Drawing.Point(178, 76);
+            this.comboBoxRFSetpointUnit.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxRFSetpointUnit.Name = "comboBoxRFSetpointUnit";
-            this.comboBoxRFSetpointUnit.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxRFSetpointUnit.Size = new System.Drawing.Size(53, 21);
             this.comboBoxRFSetpointUnit.TabIndex = 41;
             // 
             // btIncrementRFFrequency
             // 
-            this.btIncrementRFFrequency.Location = new System.Drawing.Point(23, 122);
-            this.btIncrementRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btIncrementRFFrequency.Location = new System.Drawing.Point(17, 99);
             this.btIncrementRFFrequency.Name = "btIncrementRFFrequency";
-            this.btIncrementRFFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btIncrementRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btIncrementRFFrequency.TabIndex = 37;
             this.btIncrementRFFrequency.Text = "Increment";
             this.btIncrementRFFrequency.UseVisualStyleBackColor = true;
@@ -3364,18 +3281,16 @@ namespace UEDMHardwareControl
             // 
             // tbRFFrequencyIncrement
             // 
-            this.tbRFFrequencyIncrement.Location = new System.Drawing.Point(131, 126);
-            this.tbRFFrequencyIncrement.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRFFrequencyIncrement.Location = new System.Drawing.Point(98, 102);
             this.tbRFFrequencyIncrement.Name = "tbRFFrequencyIncrement";
-            this.tbRFFrequencyIncrement.Size = new System.Drawing.Size(100, 22);
+            this.tbRFFrequencyIncrement.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequencyIncrement.TabIndex = 38;
             // 
             // btUpdateRFFrequency
             // 
-            this.btUpdateRFFrequency.Location = new System.Drawing.Point(23, 92);
-            this.btUpdateRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateRFFrequency.Location = new System.Drawing.Point(17, 75);
             this.btUpdateRFFrequency.Name = "btUpdateRFFrequency";
-            this.btUpdateRFFrequency.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateRFFrequency.Size = new System.Drawing.Size(75, 23);
             this.btUpdateRFFrequency.TabIndex = 36;
             this.btUpdateRFFrequency.Text = "Update";
             this.btUpdateRFFrequency.UseVisualStyleBackColor = true;
@@ -3383,20 +3298,18 @@ namespace UEDMHardwareControl
             // 
             // tbRFFrequency
             // 
-            this.tbRFFrequency.Location = new System.Drawing.Point(131, 94);
-            this.tbRFFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRFFrequency.Location = new System.Drawing.Point(98, 76);
             this.tbRFFrequency.Name = "tbRFFrequency";
-            this.tbRFFrequency.Size = new System.Drawing.Size(100, 22);
+            this.tbRFFrequency.Size = new System.Drawing.Size(76, 20);
             this.tbRFFrequency.TabIndex = 36;
             this.tbRFFrequency.Text = "32";
             // 
             // labelRF
             // 
             this.labelRF.AutoSize = true;
-            this.labelRF.Location = new System.Drawing.Point(21, 42);
-            this.labelRF.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRF.Location = new System.Drawing.Point(16, 34);
             this.labelRF.Name = "labelRF";
-            this.labelRF.Size = new System.Drawing.Size(139, 17);
+            this.labelRF.Size = new System.Drawing.Size(105, 13);
             this.labelRF.TabIndex = 36;
             this.labelRF.Text = "RF frequency (MHz):";
             // 
@@ -3404,11 +3317,11 @@ namespace UEDMHardwareControl
             // 
             this.tbRFFrequencyMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRFFrequencyMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRFFrequencyMonitor.Location = new System.Drawing.Point(131, 66);
-            this.tbRFFrequencyMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbRFFrequencyMonitor.Location = new System.Drawing.Point(98, 54);
+            this.tbRFFrequencyMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRFFrequencyMonitor.Name = "tbRFFrequencyMonitor";
             this.tbRFFrequencyMonitor.ReadOnly = true;
-            this.tbRFFrequencyMonitor.Size = new System.Drawing.Size(99, 22);
+            this.tbRFFrequencyMonitor.Size = new System.Drawing.Size(75, 20);
             this.tbRFFrequencyMonitor.TabIndex = 36;
             // 
             // tabPageBfield
@@ -3423,11 +3336,10 @@ namespace UEDMHardwareControl
             this.tabPageBfield.Controls.Add(this.groupBoxBScan);
             this.tabPageBfield.Controls.Add(this.groupBoxDegauss);
             this.tabPageBfield.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tabPageBfield.Location = new System.Drawing.Point(4, 25);
-            this.tabPageBfield.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageBfield.Location = new System.Drawing.Point(4, 22);
             this.tabPageBfield.Name = "tabPageBfield";
-            this.tabPageBfield.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageBfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageBfield.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageBfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageBfield.TabIndex = 8;
             this.tabPageBfield.Text = "B-field";
             // 
@@ -3446,153 +3358,135 @@ namespace UEDMHardwareControl
             this.groupBoxbUSB.Controls.Add(this.USBbBoxTextBox);
             this.groupBoxbUSB.Controls.Add(this.USBbBoxUpdateButton);
             this.groupBoxbUSB.Controls.Add(this.labelUSBbBoxCurrent);
-            this.groupBoxbUSB.Location = new System.Drawing.Point(833, 16);
-            this.groupBoxbUSB.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxbUSB.Location = new System.Drawing.Point(625, 13);
             this.groupBoxbUSB.Name = "groupBoxbUSB";
-            this.groupBoxbUSB.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxbUSB.Size = new System.Drawing.Size(395, 234);
+            this.groupBoxbUSB.Size = new System.Drawing.Size(296, 190);
             this.groupBoxbUSB.TabIndex = 101;
             this.groupBoxbUSB.TabStop = false;
             this.groupBoxbUSB.Text = "USB B box";
             // 
             // UsbBBoxCheck
             // 
-            this.UsbBBoxCheck.Location = new System.Drawing.Point(257, 97);
-            this.UsbBBoxCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.UsbBBoxCheck.Location = new System.Drawing.Point(193, 79);
             this.UsbBBoxCheck.Name = "UsbBBoxCheck";
-            this.UsbBBoxCheck.Size = new System.Drawing.Size(116, 57);
+            this.UsbBBoxCheck.Size = new System.Drawing.Size(87, 46);
             this.UsbBBoxCheck.TabIndex = 55;
             this.UsbBBoxCheck.Text = "Use USB B box?";
             this.UsbBBoxCheck.CheckedChanged += new System.EventHandler(this.UsbBBoxCheck_CheckedChanged);
             // 
             // tbUsbBBoxCmd
             // 
-            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(77, 175);
-            this.tbUsbBBoxCmd.Margin = new System.Windows.Forms.Padding(4);
+            this.tbUsbBBoxCmd.Location = new System.Drawing.Point(58, 142);
             this.tbUsbBBoxCmd.Name = "tbUsbBBoxCmd";
-            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(160, 22);
+            this.tbUsbBBoxCmd.Size = new System.Drawing.Size(121, 20);
             this.tbUsbBBoxCmd.TabIndex = 52;
             this.tbUsbBBoxCmd.Text = "0";
             // 
             // UsbBBoxCmdBtn
             // 
-            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(247, 175);
-            this.UsbBBoxCmdBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.UsbBBoxCmdBtn.Location = new System.Drawing.Point(185, 142);
             this.UsbBBoxCmdBtn.Name = "UsbBBoxCmdBtn";
-            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(100, 28);
+            this.UsbBBoxCmdBtn.Size = new System.Drawing.Size(75, 23);
             this.UsbBBoxCmdBtn.TabIndex = 54;
             this.UsbBBoxCmdBtn.Text = "Send";
             this.UsbBBoxCmdBtn.Click += new System.EventHandler(this.UsbBBoxCmdBtn_Click);
             // 
             // UsbBboxCmdlb
             // 
-            this.UsbBboxCmdlb.Location = new System.Drawing.Point(73, 156);
-            this.UsbBboxCmdlb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UsbBboxCmdlb.Location = new System.Drawing.Point(55, 127);
             this.UsbBboxCmdlb.Name = "UsbBboxCmdlb";
-            this.UsbBboxCmdlb.Size = new System.Drawing.Size(113, 26);
+            this.UsbBboxCmdlb.Size = new System.Drawing.Size(85, 21);
             this.UsbBboxCmdlb.TabIndex = 53;
             this.UsbBboxCmdlb.Text = "Send Command";
             // 
             // UsbSmallBTextBox
             // 
-            this.UsbSmallBTextBox.Location = new System.Drawing.Point(153, 113);
-            this.UsbSmallBTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.UsbSmallBTextBox.Location = new System.Drawing.Point(115, 92);
             this.UsbSmallBTextBox.Name = "UsbSmallBTextBox";
-            this.UsbSmallBTextBox.Size = new System.Drawing.Size(84, 22);
+            this.UsbSmallBTextBox.Size = new System.Drawing.Size(64, 20);
             this.UsbSmallBTextBox.TabIndex = 51;
             this.UsbSmallBTextBox.Text = "0";
             // 
             // labelUsbSmallB
             // 
-            this.labelUsbSmallB.Location = new System.Drawing.Point(73, 117);
-            this.labelUsbSmallB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelUsbSmallB.Location = new System.Drawing.Point(55, 95);
             this.labelUsbSmallB.Name = "labelUsbSmallB";
-            this.labelUsbSmallB.Size = new System.Drawing.Size(72, 28);
+            this.labelUsbSmallB.Size = new System.Drawing.Size(54, 23);
             this.labelUsbSmallB.TabIndex = 50;
             this.labelUsbSmallB.Text = "dB (uA)";
             // 
             // UsbBigBTextBox
             // 
-            this.UsbBigBTextBox.Location = new System.Drawing.Point(153, 85);
-            this.UsbBigBTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.UsbBigBTextBox.Location = new System.Drawing.Point(115, 69);
             this.UsbBigBTextBox.Name = "UsbBigBTextBox";
-            this.UsbBigBTextBox.Size = new System.Drawing.Size(84, 22);
+            this.UsbBigBTextBox.Size = new System.Drawing.Size(64, 20);
             this.UsbBigBTextBox.TabIndex = 49;
             this.UsbBigBTextBox.Text = "0";
             // 
             // labelUsbBigB
             // 
-            this.labelUsbBigB.Location = new System.Drawing.Point(73, 89);
-            this.labelUsbBigB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelUsbBigB.Location = new System.Drawing.Point(55, 72);
             this.labelUsbBigB.Name = "labelUsbBigB";
-            this.labelUsbBigB.Size = new System.Drawing.Size(72, 28);
+            this.labelUsbBigB.Size = new System.Drawing.Size(54, 23);
             this.labelUsbBigB.TabIndex = 48;
             this.labelUsbBigB.Text = "DB (uA)";
             // 
             // UsbBiasTextBox
             // 
-            this.UsbBiasTextBox.Location = new System.Drawing.Point(153, 57);
-            this.UsbBiasTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.UsbBiasTextBox.Location = new System.Drawing.Point(115, 46);
             this.UsbBiasTextBox.Name = "UsbBiasTextBox";
-            this.UsbBiasTextBox.Size = new System.Drawing.Size(84, 22);
+            this.UsbBiasTextBox.Size = new System.Drawing.Size(64, 20);
             this.UsbBiasTextBox.TabIndex = 47;
             this.UsbBiasTextBox.Text = "0";
             // 
             // labelUsbBiasB
             // 
-            this.labelUsbBiasB.Location = new System.Drawing.Point(73, 60);
-            this.labelUsbBiasB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelUsbBiasB.Location = new System.Drawing.Point(55, 49);
             this.labelUsbBiasB.Name = "labelUsbBiasB";
-            this.labelUsbBiasB.Size = new System.Drawing.Size(72, 28);
+            this.labelUsbBiasB.Size = new System.Drawing.Size(54, 23);
             this.labelUsbBiasB.TabIndex = 46;
             this.labelUsbBiasB.Text = "Bias (uA)";
             // 
             // USBbBoxTextBox
             // 
-            this.USBbBoxTextBox.Location = new System.Drawing.Point(153, 23);
-            this.USBbBoxTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.USBbBoxTextBox.Location = new System.Drawing.Point(115, 19);
             this.USBbBoxTextBox.Name = "USBbBoxTextBox";
-            this.USBbBoxTextBox.Size = new System.Drawing.Size(84, 22);
+            this.USBbBoxTextBox.Size = new System.Drawing.Size(64, 20);
             this.USBbBoxTextBox.TabIndex = 45;
             this.USBbBoxTextBox.Text = "0";
             // 
             // USBbBoxUpdateButton
             // 
-            this.USBbBoxUpdateButton.Location = new System.Drawing.Point(257, 20);
-            this.USBbBoxUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.USBbBoxUpdateButton.Location = new System.Drawing.Point(193, 16);
             this.USBbBoxUpdateButton.Name = "USBbBoxUpdateButton";
-            this.USBbBoxUpdateButton.Size = new System.Drawing.Size(100, 28);
+            this.USBbBoxUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.USBbBoxUpdateButton.TabIndex = 40;
             this.USBbBoxUpdateButton.Text = "Update";
             this.USBbBoxUpdateButton.Click += new System.EventHandler(this.USBbBoxUpdateButton_Click);
             // 
             // labelUSBbBoxCurrent
             // 
-            this.labelUSBbBoxCurrent.Location = new System.Drawing.Point(32, 27);
-            this.labelUSBbBoxCurrent.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelUSBbBoxCurrent.Location = new System.Drawing.Point(24, 22);
             this.labelUSBbBoxCurrent.Name = "labelUSBbBoxCurrent";
-            this.labelUSBbBoxCurrent.Size = new System.Drawing.Size(113, 28);
+            this.labelUSBbBoxCurrent.Size = new System.Drawing.Size(85, 23);
             this.labelUSBbBoxCurrent.TabIndex = 36;
             this.labelUSBbBoxCurrent.Text = "Set Current (uA)";
             // 
             // groupBoxBManualState
             // 
             this.groupBoxBManualState.Controls.Add(this.bManualStateCheckBox);
-            this.groupBoxBManualState.Location = new System.Drawing.Point(559, 334);
-            this.groupBoxBManualState.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxBManualState.Location = new System.Drawing.Point(419, 271);
             this.groupBoxBManualState.Name = "groupBoxBManualState";
-            this.groupBoxBManualState.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxBManualState.Size = new System.Drawing.Size(311, 75);
+            this.groupBoxBManualState.Size = new System.Drawing.Size(233, 61);
             this.groupBoxBManualState.TabIndex = 100;
             this.groupBoxBManualState.TabStop = false;
             this.groupBoxBManualState.Text = "Manual state";
             // 
             // bManualStateCheckBox
             // 
-            this.bManualStateCheckBox.Location = new System.Drawing.Point(8, 28);
-            this.bManualStateCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
             this.bManualStateCheckBox.Name = "bManualStateCheckBox";
-            this.bManualStateCheckBox.Size = new System.Drawing.Size(295, 30);
+            this.bManualStateCheckBox.Size = new System.Drawing.Size(221, 24);
             this.bManualStateCheckBox.TabIndex = 53;
             this.bManualStateCheckBox.Text = "State (Checked is Red=>+Iz)";
             // 
@@ -3600,31 +3494,27 @@ namespace UEDMHardwareControl
             // 
             this.groupBoxManualBflip.Controls.Add(this.calFlipCheck);
             this.groupBoxManualBflip.Controls.Add(this.bFlipCheck);
-            this.groupBoxManualBflip.Location = new System.Drawing.Point(559, 257);
-            this.groupBoxManualBflip.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxManualBflip.Location = new System.Drawing.Point(419, 209);
             this.groupBoxManualBflip.Name = "groupBoxManualBflip";
-            this.groupBoxManualBflip.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxManualBflip.Size = new System.Drawing.Size(311, 69);
+            this.groupBoxManualBflip.Size = new System.Drawing.Size(233, 56);
             this.groupBoxManualBflip.TabIndex = 99;
             this.groupBoxManualBflip.TabStop = false;
             this.groupBoxManualBflip.Text = "Manual B-flip";
             // 
             // calFlipCheck
             // 
-            this.calFlipCheck.Location = new System.Drawing.Point(203, 30);
-            this.calFlipCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.calFlipCheck.Location = new System.Drawing.Point(152, 24);
             this.calFlipCheck.Name = "calFlipCheck";
-            this.calFlipCheck.Size = new System.Drawing.Size(53, 30);
+            this.calFlipCheck.Size = new System.Drawing.Size(40, 24);
             this.calFlipCheck.TabIndex = 1;
             this.calFlipCheck.Text = "dB";
             this.calFlipCheck.CheckedChanged += new System.EventHandler(this.calFlipCheck_CheckedChanged);
             // 
             // bFlipCheck
             // 
-            this.bFlipCheck.Location = new System.Drawing.Point(21, 30);
-            this.bFlipCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.bFlipCheck.Location = new System.Drawing.Point(16, 24);
             this.bFlipCheck.Name = "bFlipCheck";
-            this.bFlipCheck.Size = new System.Drawing.Size(81, 30);
+            this.bFlipCheck.Size = new System.Drawing.Size(61, 24);
             this.bFlipCheck.TabIndex = 0;
             this.bFlipCheck.Text = "DB";
             this.bFlipCheck.CheckedChanged += new System.EventHandler(this.bFlipCheck_CheckedChanged);
@@ -3646,11 +3536,9 @@ namespace UEDMHardwareControl
             this.groupBoxbCurrentMon.Controls.Add(this.labelbCurrentMon3);
             this.groupBoxbCurrentMon.Controls.Add(this.labelbCurrentMon2);
             this.groupBoxbCurrentMon.Controls.Add(this.labelbCurrentMon1);
-            this.groupBoxbCurrentMon.Location = new System.Drawing.Point(28, 172);
-            this.groupBoxbCurrentMon.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxbCurrentMon.Location = new System.Drawing.Point(21, 140);
             this.groupBoxbCurrentMon.Name = "groupBoxbCurrentMon";
-            this.groupBoxbCurrentMon.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxbCurrentMon.Size = new System.Drawing.Size(501, 236);
+            this.groupBoxbCurrentMon.Size = new System.Drawing.Size(376, 192);
             this.groupBoxbCurrentMon.TabIndex = 98;
             this.groupBoxbCurrentMon.TabStop = false;
             this.groupBoxbCurrentMon.Text = "Current monitor";
@@ -3659,11 +3547,10 @@ namespace UEDMHardwareControl
             // 
             this.bCurrentCalStepTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentCalStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(384, 69);
-            this.bCurrentCalStepTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrentCalStepTextBox.Location = new System.Drawing.Point(288, 56);
             this.bCurrentCalStepTextBox.Name = "bCurrentCalStepTextBox";
             this.bCurrentCalStepTextBox.ReadOnly = true;
-            this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrentCalStepTextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrentCalStepTextBox.TabIndex = 53;
             this.bCurrentCalStepTextBox.Text = "0";
             // 
@@ -3671,11 +3558,10 @@ namespace UEDMHardwareControl
             // 
             this.bCurrentFlipStepTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentFlipStepTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(384, 108);
-            this.bCurrentFlipStepTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrentFlipStepTextBox.Location = new System.Drawing.Point(288, 88);
             this.bCurrentFlipStepTextBox.Name = "bCurrentFlipStepTextBox";
             this.bCurrentFlipStepTextBox.ReadOnly = true;
-            this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrentFlipStepTextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrentFlipStepTextBox.TabIndex = 51;
             this.bCurrentFlipStepTextBox.Text = "0";
             // 
@@ -3683,38 +3569,34 @@ namespace UEDMHardwareControl
             // 
             this.bCurrentBiasTextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrentBiasTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrentBiasTextBox.Location = new System.Drawing.Point(384, 30);
-            this.bCurrentBiasTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrentBiasTextBox.Location = new System.Drawing.Point(288, 24);
             this.bCurrentBiasTextBox.Name = "bCurrentBiasTextBox";
             this.bCurrentBiasTextBox.ReadOnly = true;
-            this.bCurrentBiasTextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrentBiasTextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrentBiasTextBox.TabIndex = 50;
             this.bCurrentBiasTextBox.Text = "0";
             // 
             // labelbCurrentMon7
             // 
-            this.labelbCurrentMon7.Location = new System.Drawing.Point(267, 108);
-            this.labelbCurrentMon7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon7.Location = new System.Drawing.Point(200, 88);
             this.labelbCurrentMon7.Name = "labelbCurrentMon7";
-            this.labelbCurrentMon7.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon7.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon7.TabIndex = 48;
             this.labelbCurrentMon7.Text = "DB (uA)";
             // 
             // labelbCurrentMon6
             // 
-            this.labelbCurrentMon6.Location = new System.Drawing.Point(267, 69);
-            this.labelbCurrentMon6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon6.Location = new System.Drawing.Point(200, 56);
             this.labelbCurrentMon6.Name = "labelbCurrentMon6";
-            this.labelbCurrentMon6.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon6.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon6.TabIndex = 47;
             this.labelbCurrentMon6.Text = "dB (uA)";
             // 
             // labelbCurrentMon5
             // 
-            this.labelbCurrentMon5.Location = new System.Drawing.Point(267, 30);
-            this.labelbCurrentMon5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon5.Location = new System.Drawing.Point(200, 24);
             this.labelbCurrentMon5.Name = "labelbCurrentMon5";
-            this.labelbCurrentMon5.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon5.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon5.TabIndex = 46;
             this.labelbCurrentMon5.Text = "Bias (uA)";
             // 
@@ -3722,11 +3604,10 @@ namespace UEDMHardwareControl
             // 
             this.bCurrent01TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent01TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent01TextBox.Location = new System.Drawing.Point(139, 69);
-            this.bCurrent01TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrent01TextBox.Location = new System.Drawing.Point(104, 56);
             this.bCurrent01TextBox.Name = "bCurrent01TextBox";
             this.bCurrent01TextBox.ReadOnly = true;
-            this.bCurrent01TextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrent01TextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrent01TextBox.TabIndex = 45;
             this.bCurrent01TextBox.Text = "0";
             // 
@@ -3734,11 +3615,10 @@ namespace UEDMHardwareControl
             // 
             this.bCurrent11TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent11TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent11TextBox.Location = new System.Drawing.Point(139, 148);
-            this.bCurrent11TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrent11TextBox.Location = new System.Drawing.Point(104, 120);
             this.bCurrent11TextBox.Name = "bCurrent11TextBox";
             this.bCurrent11TextBox.ReadOnly = true;
-            this.bCurrent11TextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrent11TextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrent11TextBox.TabIndex = 44;
             this.bCurrent11TextBox.Text = "0";
             // 
@@ -3746,11 +3626,10 @@ namespace UEDMHardwareControl
             // 
             this.bCurrent10TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent10TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent10TextBox.Location = new System.Drawing.Point(139, 108);
-            this.bCurrent10TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrent10TextBox.Location = new System.Drawing.Point(104, 88);
             this.bCurrent10TextBox.Name = "bCurrent10TextBox";
             this.bCurrent10TextBox.ReadOnly = true;
-            this.bCurrent10TextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrent10TextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrent10TextBox.TabIndex = 43;
             this.bCurrent10TextBox.Text = "0";
             // 
@@ -3758,67 +3637,60 @@ namespace UEDMHardwareControl
             // 
             this.bCurrent00TextBox.BackColor = System.Drawing.Color.Black;
             this.bCurrent00TextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.bCurrent00TextBox.Location = new System.Drawing.Point(139, 30);
-            this.bCurrent00TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.bCurrent00TextBox.Location = new System.Drawing.Point(104, 24);
             this.bCurrent00TextBox.Name = "bCurrent00TextBox";
             this.bCurrent00TextBox.ReadOnly = true;
-            this.bCurrent00TextBox.Size = new System.Drawing.Size(84, 22);
+            this.bCurrent00TextBox.Size = new System.Drawing.Size(64, 20);
             this.bCurrent00TextBox.TabIndex = 42;
             this.bCurrent00TextBox.Text = "0";
             // 
             // updateBCurrentMonitorButton
             // 
-            this.updateBCurrentMonitorButton.Location = new System.Drawing.Point(203, 187);
-            this.updateBCurrentMonitorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateBCurrentMonitorButton.Location = new System.Drawing.Point(152, 152);
             this.updateBCurrentMonitorButton.Name = "updateBCurrentMonitorButton";
-            this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(100, 28);
+            this.updateBCurrentMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updateBCurrentMonitorButton.TabIndex = 40;
             this.updateBCurrentMonitorButton.Text = "Update";
             this.updateBCurrentMonitorButton.Click += new System.EventHandler(this.updateBCurrentMonitorButton_Click);
             // 
             // labelbCurrentMon4
             // 
-            this.labelbCurrentMon4.Location = new System.Drawing.Point(21, 148);
-            this.labelbCurrentMon4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon4.Location = new System.Drawing.Point(16, 120);
             this.labelbCurrentMon4.Name = "labelbCurrentMon4";
-            this.labelbCurrentMon4.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon4.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon4.TabIndex = 39;
             this.labelbCurrentMon4.Text = "DB1 dB1 (uA)";
             // 
             // labelbCurrentMon3
             // 
-            this.labelbCurrentMon3.Location = new System.Drawing.Point(21, 108);
-            this.labelbCurrentMon3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon3.Location = new System.Drawing.Point(16, 88);
             this.labelbCurrentMon3.Name = "labelbCurrentMon3";
-            this.labelbCurrentMon3.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon3.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon3.TabIndex = 38;
             this.labelbCurrentMon3.Text = "DB1 dB0 (uA)";
             // 
             // labelbCurrentMon2
             // 
-            this.labelbCurrentMon2.Location = new System.Drawing.Point(21, 69);
-            this.labelbCurrentMon2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon2.Location = new System.Drawing.Point(16, 56);
             this.labelbCurrentMon2.Name = "labelbCurrentMon2";
-            this.labelbCurrentMon2.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon2.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon2.TabIndex = 37;
             this.labelbCurrentMon2.Text = "DB0 dB1 (uA)";
             // 
             // labelbCurrentMon1
             // 
-            this.labelbCurrentMon1.Location = new System.Drawing.Point(21, 30);
-            this.labelbCurrentMon1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbCurrentMon1.Location = new System.Drawing.Point(16, 24);
             this.labelbCurrentMon1.Name = "labelbCurrentMon1";
-            this.labelbCurrentMon1.Size = new System.Drawing.Size(107, 28);
+            this.labelbCurrentMon1.Size = new System.Drawing.Size(80, 23);
             this.labelbCurrentMon1.TabIndex = 36;
             this.labelbCurrentMon1.Text = "DB0 dB0 (uA)";
             // 
             // labelBfield1
             // 
             this.labelBfield1.AutoSize = true;
-            this.labelBfield1.Location = new System.Drawing.Point(92, 145);
-            this.labelBfield1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelBfield1.Location = new System.Drawing.Point(69, 118);
             this.labelBfield1.Name = "labelBfield1";
-            this.labelBfield1.Size = new System.Drawing.Size(612, 17);
+            this.labelBfield1.Size = new System.Drawing.Size(463, 13);
             this.labelBfield1.TabIndex = 97;
             this.labelBfield1.Text = "Applied B is 17nT/mA. The dB value should be about 82uA and the DB should be abou" +
     "t 650 uA.";
@@ -3829,49 +3701,43 @@ namespace UEDMHardwareControl
             this.groupBoxbStep.Controls.Add(this.steppingBBoxBiasTextBox);
             this.groupBoxbStep.Controls.Add(this.SteppingBBoxBiasUpdateButton);
             this.groupBoxbStep.Controls.Add(this.labelbStep1);
-            this.groupBoxbStep.Location = new System.Drawing.Point(431, 16);
-            this.groupBoxbStep.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxbStep.Location = new System.Drawing.Point(323, 13);
             this.groupBoxbStep.Name = "groupBoxbStep";
-            this.groupBoxbStep.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxbStep.Size = new System.Drawing.Size(395, 118);
+            this.groupBoxbStep.Size = new System.Drawing.Size(296, 96);
             this.groupBoxbStep.TabIndex = 96;
             this.groupBoxbStep.TabStop = false;
             this.groupBoxbStep.Text = "Stepping B box bias";
             // 
             // automaticBiasCalcButton
             // 
-            this.automaticBiasCalcButton.Location = new System.Drawing.Point(128, 69);
-            this.automaticBiasCalcButton.Margin = new System.Windows.Forms.Padding(4);
+            this.automaticBiasCalcButton.Location = new System.Drawing.Point(96, 56);
             this.automaticBiasCalcButton.Name = "automaticBiasCalcButton";
-            this.automaticBiasCalcButton.Size = new System.Drawing.Size(217, 28);
+            this.automaticBiasCalcButton.Size = new System.Drawing.Size(163, 23);
             this.automaticBiasCalcButton.TabIndex = 46;
             this.automaticBiasCalcButton.Text = "Set to measured Bias";
             // 
             // steppingBBoxBiasTextBox
             // 
-            this.steppingBBoxBiasTextBox.Location = new System.Drawing.Point(128, 30);
-            this.steppingBBoxBiasTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.steppingBBoxBiasTextBox.Location = new System.Drawing.Point(96, 24);
             this.steppingBBoxBiasTextBox.Name = "steppingBBoxBiasTextBox";
-            this.steppingBBoxBiasTextBox.Size = new System.Drawing.Size(84, 22);
+            this.steppingBBoxBiasTextBox.Size = new System.Drawing.Size(64, 20);
             this.steppingBBoxBiasTextBox.TabIndex = 45;
             this.steppingBBoxBiasTextBox.Text = "0";
             // 
             // SteppingBBoxBiasUpdateButton
             // 
-            this.SteppingBBoxBiasUpdateButton.Location = new System.Drawing.Point(245, 30);
-            this.SteppingBBoxBiasUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SteppingBBoxBiasUpdateButton.Location = new System.Drawing.Point(184, 24);
             this.SteppingBBoxBiasUpdateButton.Name = "SteppingBBoxBiasUpdateButton";
-            this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(100, 28);
+            this.SteppingBBoxBiasUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.SteppingBBoxBiasUpdateButton.TabIndex = 40;
             this.SteppingBBoxBiasUpdateButton.Text = "Update";
             this.SteppingBBoxBiasUpdateButton.Click += new System.EventHandler(this.SteppingBBoxBiasUpdateButton_Click);
             // 
             // labelbStep1
             // 
-            this.labelbStep1.Location = new System.Drawing.Point(21, 30);
-            this.labelbStep1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbStep1.Location = new System.Drawing.Point(16, 24);
             this.labelbStep1.Name = "labelbStep1";
-            this.labelbStep1.Size = new System.Drawing.Size(107, 28);
+            this.labelbStep1.Size = new System.Drawing.Size(80, 23);
             this.labelbStep1.TabIndex = 36;
             this.labelbStep1.Text = "Voltage (V)";
             // 
@@ -3882,60 +3748,53 @@ namespace UEDMHardwareControl
             this.groupBoxBScan.Controls.Add(this.scanningBZeroButton);
             this.groupBoxBScan.Controls.Add(this.scanningBUpdateButton);
             this.groupBoxBScan.Controls.Add(this.labelbScan1);
-            this.groupBoxBScan.Location = new System.Drawing.Point(28, 16);
-            this.groupBoxBScan.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxBScan.Location = new System.Drawing.Point(21, 13);
             this.groupBoxBScan.Name = "groupBoxBScan";
-            this.groupBoxBScan.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxBScan.Size = new System.Drawing.Size(395, 118);
+            this.groupBoxBScan.Size = new System.Drawing.Size(296, 96);
             this.groupBoxBScan.TabIndex = 95;
             this.groupBoxBScan.TabStop = false;
             this.groupBoxBScan.Text = "Scanning B box";
             // 
             // scanningBVoltageBox
             // 
-            this.scanningBVoltageBox.Location = new System.Drawing.Point(128, 30);
-            this.scanningBVoltageBox.Margin = new System.Windows.Forms.Padding(4);
+            this.scanningBVoltageBox.Location = new System.Drawing.Point(96, 24);
             this.scanningBVoltageBox.Name = "scanningBVoltageBox";
-            this.scanningBVoltageBox.Size = new System.Drawing.Size(84, 22);
+            this.scanningBVoltageBox.Size = new System.Drawing.Size(64, 20);
             this.scanningBVoltageBox.TabIndex = 45;
             this.scanningBVoltageBox.Text = "0";
             // 
             // scanningBFSButton
             // 
-            this.scanningBFSButton.Location = new System.Drawing.Point(245, 69);
-            this.scanningBFSButton.Margin = new System.Windows.Forms.Padding(4);
+            this.scanningBFSButton.Location = new System.Drawing.Point(184, 56);
             this.scanningBFSButton.Name = "scanningBFSButton";
-            this.scanningBFSButton.Size = new System.Drawing.Size(100, 28);
+            this.scanningBFSButton.Size = new System.Drawing.Size(75, 23);
             this.scanningBFSButton.TabIndex = 44;
             this.scanningBFSButton.Text = "Max";
             this.scanningBFSButton.Click += new System.EventHandler(this.scanningBFSButton_Click);
             // 
             // scanningBZeroButton
             // 
-            this.scanningBZeroButton.Location = new System.Drawing.Point(113, 69);
-            this.scanningBZeroButton.Margin = new System.Windows.Forms.Padding(4);
+            this.scanningBZeroButton.Location = new System.Drawing.Point(85, 56);
             this.scanningBZeroButton.Name = "scanningBZeroButton";
-            this.scanningBZeroButton.Size = new System.Drawing.Size(100, 28);
+            this.scanningBZeroButton.Size = new System.Drawing.Size(75, 23);
             this.scanningBZeroButton.TabIndex = 43;
             this.scanningBZeroButton.Text = "Zero";
             this.scanningBZeroButton.Click += new System.EventHandler(this.scanningBZeroButton_Click);
             // 
             // scanningBUpdateButton
             // 
-            this.scanningBUpdateButton.Location = new System.Drawing.Point(245, 30);
-            this.scanningBUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.scanningBUpdateButton.Location = new System.Drawing.Point(184, 24);
             this.scanningBUpdateButton.Name = "scanningBUpdateButton";
-            this.scanningBUpdateButton.Size = new System.Drawing.Size(100, 28);
+            this.scanningBUpdateButton.Size = new System.Drawing.Size(75, 23);
             this.scanningBUpdateButton.TabIndex = 40;
             this.scanningBUpdateButton.Text = "Update";
             this.scanningBUpdateButton.Click += new System.EventHandler(this.scanningBUpdateButton_Click);
             // 
             // labelbScan1
             // 
-            this.labelbScan1.Location = new System.Drawing.Point(21, 30);
-            this.labelbScan1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelbScan1.Location = new System.Drawing.Point(16, 24);
             this.labelbScan1.Name = "labelbScan1";
-            this.labelbScan1.Size = new System.Drawing.Size(107, 28);
+            this.labelbScan1.Size = new System.Drawing.Size(80, 23);
             this.labelbScan1.TabIndex = 36;
             this.labelbScan1.Text = "Voltage (V)";
             // 
@@ -3959,11 +3818,9 @@ namespace UEDMHardwareControl
             this.groupBoxDegauss.Controls.Add(this.DegaussFreqTextBox);
             this.groupBoxDegauss.Controls.Add(this.StartDegauss);
             this.groupBoxDegauss.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBoxDegauss.Location = new System.Drawing.Point(28, 418);
-            this.groupBoxDegauss.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxDegauss.Location = new System.Drawing.Point(21, 340);
             this.groupBoxDegauss.Name = "groupBoxDegauss";
-            this.groupBoxDegauss.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxDegauss.Size = new System.Drawing.Size(439, 204);
+            this.groupBoxDegauss.Size = new System.Drawing.Size(329, 166);
             this.groupBoxDegauss.TabIndex = 50;
             this.groupBoxDegauss.TabStop = false;
             this.groupBoxDegauss.Text = "Degaussing Coils";
@@ -3971,69 +3828,62 @@ namespace UEDMHardwareControl
             // labelSineOffset
             // 
             this.labelSineOffset.AutoSize = true;
-            this.labelSineOffset.Location = new System.Drawing.Point(29, 129);
-            this.labelSineOffset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelSineOffset.Location = new System.Drawing.Point(22, 105);
             this.labelSineOffset.Name = "labelSineOffset";
-            this.labelSineOffset.Size = new System.Drawing.Size(103, 17);
+            this.labelSineOffset.Size = new System.Drawing.Size(77, 13);
             this.labelSineOffset.TabIndex = 98;
             this.labelSineOffset.Text = "DC Offset (mV)";
             // 
             // labelDegaussExpTimeConst
             // 
             this.labelDegaussExpTimeConst.AutoSize = true;
-            this.labelDegaussExpTimeConst.Location = new System.Drawing.Point(29, 97);
-            this.labelDegaussExpTimeConst.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDegaussExpTimeConst.Location = new System.Drawing.Point(22, 79);
             this.labelDegaussExpTimeConst.Name = "labelDegaussExpTimeConst";
-            this.labelDegaussExpTimeConst.Size = new System.Drawing.Size(100, 17);
+            this.labelDegaussExpTimeConst.Size = new System.Drawing.Size(74, 13);
             this.labelDegaussExpTimeConst.TabIndex = 98;
             this.labelDegaussExpTimeConst.Text = "Time Const (s)";
             // 
             // labelDegaussingOngoing
             // 
             this.labelDegaussingOngoing.AutoSize = true;
-            this.labelDegaussingOngoing.Location = new System.Drawing.Point(295, 169);
-            this.labelDegaussingOngoing.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDegaussingOngoing.Location = new System.Drawing.Point(221, 137);
             this.labelDegaussingOngoing.Name = "labelDegaussingOngoing";
-            this.labelDegaussingOngoing.Size = new System.Drawing.Size(122, 17);
+            this.labelDegaussingOngoing.Size = new System.Drawing.Size(92, 13);
             this.labelDegaussingOngoing.TabIndex = 94;
             this.labelDegaussingOngoing.Text = "Degauss Ongoing";
             // 
             // labelDegaussAmp
             // 
             this.labelDegaussAmp.AutoSize = true;
-            this.labelDegaussAmp.Location = new System.Drawing.Point(29, 65);
-            this.labelDegaussAmp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDegaussAmp.Location = new System.Drawing.Point(22, 53);
             this.labelDegaussAmp.Name = "labelDegaussAmp";
-            this.labelDegaussAmp.Size = new System.Drawing.Size(93, 17);
+            this.labelDegaussAmp.Size = new System.Drawing.Size(69, 13);
             this.labelDegaussAmp.TabIndex = 98;
             this.labelDegaussAmp.Text = "Amplitude (V)";
             // 
             // labelDegaussFreq
             // 
             this.labelDegaussFreq.AutoSize = true;
-            this.labelDegaussFreq.Location = new System.Drawing.Point(29, 33);
-            this.labelDegaussFreq.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDegaussFreq.Location = new System.Drawing.Point(22, 27);
             this.labelDegaussFreq.Name = "labelDegaussFreq";
-            this.labelDegaussFreq.Size = new System.Drawing.Size(106, 17);
+            this.labelDegaussFreq.Size = new System.Drawing.Size(79, 13);
             this.labelDegaussFreq.TabIndex = 97;
             this.labelDegaussFreq.Text = "Frequency (Hz)";
             // 
             // SineOffsetTextBox
             // 
-            this.SineOffsetTextBox.Location = new System.Drawing.Point(144, 126);
-            this.SineOffsetTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SineOffsetTextBox.Location = new System.Drawing.Point(108, 102);
             this.SineOffsetTextBox.Name = "SineOffsetTextBox";
-            this.SineOffsetTextBox.Size = new System.Drawing.Size(53, 23);
+            this.SineOffsetTextBox.Size = new System.Drawing.Size(41, 20);
             this.SineOffsetTextBox.TabIndex = 96;
             this.SineOffsetTextBox.Text = "11";
             // 
             // DegaussingEnvelopeLabel1
             // 
             this.DegaussingEnvelopeLabel1.AutoSize = true;
-            this.DegaussingEnvelopeLabel1.Location = new System.Drawing.Point(237, 52);
-            this.DegaussingEnvelopeLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DegaussingEnvelopeLabel1.Location = new System.Drawing.Point(178, 42);
             this.DegaussingEnvelopeLabel1.Name = "DegaussingEnvelopeLabel1";
-            this.DegaussingEnvelopeLabel1.Size = new System.Drawing.Size(126, 17);
+            this.DegaussingEnvelopeLabel1.Size = new System.Drawing.Size(93, 13);
             this.DegaussingEnvelopeLabel1.TabIndex = 95;
             this.DegaussingEnvelopeLabel1.Text = "1. Linear Ramp (s)";
             // 
@@ -4041,93 +3891,83 @@ namespace UEDMHardwareControl
             // 
             this.labelDegaussEnvelopeTimings.AutoSize = true;
             this.labelDegaussEnvelopeTimings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDegaussEnvelopeTimings.Location = new System.Drawing.Point(273, 20);
-            this.labelDegaussEnvelopeTimings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDegaussEnvelopeTimings.Location = new System.Drawing.Point(205, 16);
             this.labelDegaussEnvelopeTimings.Name = "labelDegaussEnvelopeTimings";
-            this.labelDegaussEnvelopeTimings.Size = new System.Drawing.Size(120, 17);
+            this.labelDegaussEnvelopeTimings.Size = new System.Drawing.Size(91, 13);
             this.labelDegaussEnvelopeTimings.TabIndex = 94;
             this.labelDegaussEnvelopeTimings.Text = "Envelope Timings";
             // 
             // DegaussingEnvelopeLabel3
             // 
             this.DegaussingEnvelopeLabel3.AutoSize = true;
-            this.DegaussingEnvelopeLabel3.Location = new System.Drawing.Point(237, 114);
-            this.DegaussingEnvelopeLabel3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DegaussingEnvelopeLabel3.Location = new System.Drawing.Point(178, 93);
             this.DegaussingEnvelopeLabel3.Name = "DegaussingEnvelopeLabel3";
-            this.DegaussingEnvelopeLabel3.Size = new System.Drawing.Size(112, 17);
+            this.DegaussingEnvelopeLabel3.Size = new System.Drawing.Size(85, 13);
             this.DegaussingEnvelopeLabel3.TabIndex = 91;
             this.DegaussingEnvelopeLabel3.Text = "3. Exp Decay (s)";
             // 
             // DegaussingEnvelopeLabel2
             // 
             this.DegaussingEnvelopeLabel2.AutoSize = true;
-            this.DegaussingEnvelopeLabel2.Location = new System.Drawing.Point(237, 82);
-            this.DegaussingEnvelopeLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DegaussingEnvelopeLabel2.Location = new System.Drawing.Point(178, 67);
             this.DegaussingEnvelopeLabel2.Name = "DegaussingEnvelopeLabel2";
-            this.DegaussingEnvelopeLabel2.Size = new System.Drawing.Size(101, 17);
+            this.DegaussingEnvelopeLabel2.Size = new System.Drawing.Size(75, 13);
             this.DegaussingEnvelopeLabel2.TabIndex = 90;
             this.DegaussingEnvelopeLabel2.Text = "2. Constant (s)";
             // 
             // ExpDegaussTextBox
             // 
-            this.ExpDegaussTextBox.Location = new System.Drawing.Point(369, 111);
-            this.ExpDegaussTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ExpDegaussTextBox.Location = new System.Drawing.Point(277, 90);
             this.ExpDegaussTextBox.Name = "ExpDegaussTextBox";
-            this.ExpDegaussTextBox.Size = new System.Drawing.Size(61, 23);
+            this.ExpDegaussTextBox.Size = new System.Drawing.Size(47, 20);
             this.ExpDegaussTextBox.TabIndex = 88;
             this.ExpDegaussTextBox.Text = "2";
             // 
             // ConstDegaussTextBox
             // 
-            this.ConstDegaussTextBox.Location = new System.Drawing.Point(369, 79);
-            this.ConstDegaussTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ConstDegaussTextBox.Location = new System.Drawing.Point(277, 64);
             this.ConstDegaussTextBox.Name = "ConstDegaussTextBox";
-            this.ConstDegaussTextBox.Size = new System.Drawing.Size(61, 23);
+            this.ConstDegaussTextBox.Size = new System.Drawing.Size(47, 20);
             this.ConstDegaussTextBox.TabIndex = 87;
             this.ConstDegaussTextBox.Text = "1";
             // 
             // LinearDegaussTextBox
             // 
-            this.LinearDegaussTextBox.Location = new System.Drawing.Point(369, 47);
-            this.LinearDegaussTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.LinearDegaussTextBox.Location = new System.Drawing.Point(277, 38);
             this.LinearDegaussTextBox.Name = "LinearDegaussTextBox";
-            this.LinearDegaussTextBox.Size = new System.Drawing.Size(61, 23);
+            this.LinearDegaussTextBox.Size = new System.Drawing.Size(47, 20);
             this.LinearDegaussTextBox.TabIndex = 86;
             this.LinearDegaussTextBox.Text = "1";
             // 
             // ExpTimeConstantTextBox
             // 
-            this.ExpTimeConstantTextBox.Location = new System.Drawing.Point(144, 94);
-            this.ExpTimeConstantTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ExpTimeConstantTextBox.Location = new System.Drawing.Point(108, 76);
             this.ExpTimeConstantTextBox.Name = "ExpTimeConstantTextBox";
-            this.ExpTimeConstantTextBox.Size = new System.Drawing.Size(53, 23);
+            this.ExpTimeConstantTextBox.Size = new System.Drawing.Size(41, 20);
             this.ExpTimeConstantTextBox.TabIndex = 85;
             this.ExpTimeConstantTextBox.Text = "1";
             // 
             // DegaussAmpTextBox
             // 
-            this.DegaussAmpTextBox.Location = new System.Drawing.Point(144, 62);
-            this.DegaussAmpTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.DegaussAmpTextBox.Location = new System.Drawing.Point(108, 50);
             this.DegaussAmpTextBox.Name = "DegaussAmpTextBox";
-            this.DegaussAmpTextBox.Size = new System.Drawing.Size(53, 23);
+            this.DegaussAmpTextBox.Size = new System.Drawing.Size(41, 20);
             this.DegaussAmpTextBox.TabIndex = 80;
             this.DegaussAmpTextBox.Text = "8";
             // 
             // DegaussFreqTextBox
             // 
-            this.DegaussFreqTextBox.Location = new System.Drawing.Point(144, 30);
-            this.DegaussFreqTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.DegaussFreqTextBox.Location = new System.Drawing.Point(108, 24);
             this.DegaussFreqTextBox.Name = "DegaussFreqTextBox";
-            this.DegaussFreqTextBox.Size = new System.Drawing.Size(53, 23);
+            this.DegaussFreqTextBox.Size = new System.Drawing.Size(41, 20);
             this.DegaussFreqTextBox.TabIndex = 81;
             this.DegaussFreqTextBox.Text = "5";
             // 
             // StartDegauss
             // 
-            this.StartDegauss.Location = new System.Drawing.Point(12, 158);
-            this.StartDegauss.Margin = new System.Windows.Forms.Padding(4);
+            this.StartDegauss.Location = new System.Drawing.Point(9, 128);
             this.StartDegauss.Name = "StartDegauss";
-            this.StartDegauss.Size = new System.Drawing.Size(187, 27);
+            this.StartDegauss.Size = new System.Drawing.Size(140, 22);
             this.StartDegauss.TabIndex = 79;
             this.StartDegauss.Text = "Degauss Start";
             this.StartDegauss.UseVisualStyleBackColor = true;
@@ -4144,10 +3984,9 @@ namespace UEDMHardwareControl
             this.tabPageEfield.Controls.Add(this.groupBox6);
             this.tabPageEfield.Controls.Add(this.groupBox5);
             this.tabPageEfield.Controls.Add(this.groupBox7);
-            this.tabPageEfield.Location = new System.Drawing.Point(4, 25);
-            this.tabPageEfield.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageEfield.Location = new System.Drawing.Point(4, 22);
             this.tabPageEfield.Name = "tabPageEfield";
-            this.tabPageEfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageEfield.Size = new System.Drawing.Size(1033, 715);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
             // 
@@ -4165,11 +4004,11 @@ namespace UEDMHardwareControl
             this.groupBoxBehlkeStatus.Controls.Add(this.ePolarityBehlke);
             this.groupBoxBehlkeStatus.Controls.Add(this.indicatorD);
             this.groupBoxBehlkeStatus.Controls.Add(this.initialiseBehlkesButton);
-            this.groupBoxBehlkeStatus.Location = new System.Drawing.Point(711, 21);
-            this.groupBoxBehlkeStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxBehlkeStatus.Location = new System.Drawing.Point(533, 17);
+            this.groupBoxBehlkeStatus.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxBehlkeStatus.Name = "groupBoxBehlkeStatus";
-            this.groupBoxBehlkeStatus.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxBehlkeStatus.Size = new System.Drawing.Size(208, 255);
+            this.groupBoxBehlkeStatus.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxBehlkeStatus.Size = new System.Drawing.Size(156, 207);
             this.groupBoxBehlkeStatus.TabIndex = 47;
             this.groupBoxBehlkeStatus.TabStop = false;
             this.groupBoxBehlkeStatus.Text = "Behlke Status";
@@ -4177,10 +4016,9 @@ namespace UEDMHardwareControl
             // behlkeOnCheck
             // 
             this.behlkeOnCheck.AutoSize = true;
-            this.behlkeOnCheck.Location = new System.Drawing.Point(32, 31);
-            this.behlkeOnCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.behlkeOnCheck.Location = new System.Drawing.Point(24, 25);
             this.behlkeOnCheck.Name = "behlkeOnCheck";
-            this.behlkeOnCheck.Size = new System.Drawing.Size(135, 21);
+            this.behlkeOnCheck.Size = new System.Drawing.Size(105, 17);
             this.behlkeOnCheck.TabIndex = 56;
             this.behlkeOnCheck.Text = "Behlkes enabled";
             this.behlkeOnCheck.UseVisualStyleBackColor = true;
@@ -4189,107 +4027,101 @@ namespace UEDMHardwareControl
             // indicatorF
             // 
             this.indicatorF.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorF.Location = new System.Drawing.Point(76, 118);
-            this.indicatorF.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorF.Location = new System.Drawing.Point(57, 96);
             this.indicatorF.Name = "indicatorF";
             this.indicatorF.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorF.Size = new System.Drawing.Size(28, 27);
+            this.indicatorF.Size = new System.Drawing.Size(21, 22);
             this.indicatorF.TabIndex = 55;
             // 
             // indicatorC
             // 
             this.indicatorC.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorC.Location = new System.Drawing.Point(76, 139);
-            this.indicatorC.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorC.Location = new System.Drawing.Point(57, 113);
             this.indicatorC.Name = "indicatorC";
             this.indicatorC.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorC.Size = new System.Drawing.Size(28, 27);
+            this.indicatorC.Size = new System.Drawing.Size(21, 22);
             this.indicatorC.TabIndex = 55;
             // 
             // indicatorA
             // 
             this.indicatorA.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorA.Location = new System.Drawing.Point(76, 97);
-            this.indicatorA.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorA.Location = new System.Drawing.Point(57, 79);
             this.indicatorA.Name = "indicatorA";
             this.indicatorA.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorA.Size = new System.Drawing.Size(28, 27);
+            this.indicatorA.Size = new System.Drawing.Size(21, 22);
             this.indicatorA.TabIndex = 55;
             // 
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(135, 105);
+            this.label40.Location = new System.Drawing.Point(101, 85);
+            this.label40.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(52, 102);
+            this.label40.Size = new System.Drawing.Size(41, 78);
             this.label40.TabIndex = 2;
             this.label40.Text = "D\r\nE\r\nB\r\n\r\nEast -\r\nWest +";
             // 
             // eastPlusLabel
             // 
             this.eastPlusLabel.AutoSize = true;
-            this.eastPlusLabel.Location = new System.Drawing.Point(28, 105);
+            this.eastPlusLabel.Location = new System.Drawing.Point(21, 85);
+            this.eastPlusLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.eastPlusLabel.Name = "eastPlusLabel";
-            this.eastPlusLabel.Size = new System.Drawing.Size(49, 102);
+            this.eastPlusLabel.Size = new System.Drawing.Size(38, 78);
             this.eastPlusLabel.TabIndex = 2;
             this.eastPlusLabel.Text = "      A\r\n      F \r\n      C\r\n\r\nEast +\r\nWest -";
             // 
             // indicatorB
             // 
             this.indicatorB.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorB.Location = new System.Drawing.Point(100, 139);
-            this.indicatorB.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorB.Location = new System.Drawing.Point(75, 113);
             this.indicatorB.Name = "indicatorB";
             this.indicatorB.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorB.Size = new System.Drawing.Size(28, 27);
+            this.indicatorB.Size = new System.Drawing.Size(21, 22);
             this.indicatorB.TabIndex = 55;
             // 
             // indicatorE
             // 
             this.indicatorE.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorE.Location = new System.Drawing.Point(100, 118);
-            this.indicatorE.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorE.Location = new System.Drawing.Point(75, 96);
             this.indicatorE.Name = "indicatorE";
             this.indicatorE.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorE.Size = new System.Drawing.Size(28, 27);
+            this.indicatorE.Size = new System.Drawing.Size(21, 22);
             this.indicatorE.TabIndex = 55;
             // 
             // ePolarityBehlkeInverted
             // 
             this.ePolarityBehlkeInverted.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ePolarityBehlkeInverted.Location = new System.Drawing.Point(139, 207);
-            this.ePolarityBehlkeInverted.Margin = new System.Windows.Forms.Padding(4);
+            this.ePolarityBehlkeInverted.Location = new System.Drawing.Point(104, 168);
             this.ePolarityBehlkeInverted.Name = "ePolarityBehlkeInverted";
             this.ePolarityBehlkeInverted.OffColor = System.Drawing.Color.Crimson;
-            this.ePolarityBehlkeInverted.Size = new System.Drawing.Size(28, 27);
+            this.ePolarityBehlkeInverted.Size = new System.Drawing.Size(21, 22);
             this.ePolarityBehlkeInverted.TabIndex = 55;
             // 
             // ePolarityBehlke
             // 
             this.ePolarityBehlke.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.ePolarityBehlke.Location = new System.Drawing.Point(35, 207);
-            this.ePolarityBehlke.Margin = new System.Windows.Forms.Padding(4);
+            this.ePolarityBehlke.Location = new System.Drawing.Point(26, 168);
             this.ePolarityBehlke.Name = "ePolarityBehlke";
             this.ePolarityBehlke.OffColor = System.Drawing.Color.Crimson;
-            this.ePolarityBehlke.Size = new System.Drawing.Size(28, 27);
+            this.ePolarityBehlke.Size = new System.Drawing.Size(21, 22);
             this.ePolarityBehlke.TabIndex = 55;
             // 
             // indicatorD
             // 
             this.indicatorD.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.indicatorD.Location = new System.Drawing.Point(100, 97);
-            this.indicatorD.Margin = new System.Windows.Forms.Padding(4);
+            this.indicatorD.Location = new System.Drawing.Point(75, 79);
             this.indicatorD.Name = "indicatorD";
             this.indicatorD.OffColor = System.Drawing.Color.Crimson;
-            this.indicatorD.Size = new System.Drawing.Size(28, 27);
+            this.indicatorD.Size = new System.Drawing.Size(21, 22);
             this.indicatorD.TabIndex = 55;
             // 
             // initialiseBehlkesButton
             // 
-            this.initialiseBehlkesButton.Location = new System.Drawing.Point(28, 65);
-            this.initialiseBehlkesButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.initialiseBehlkesButton.Location = new System.Drawing.Point(21, 53);
+            this.initialiseBehlkesButton.Margin = new System.Windows.Forms.Padding(2);
             this.initialiseBehlkesButton.Name = "initialiseBehlkesButton";
-            this.initialiseBehlkesButton.Size = new System.Drawing.Size(157, 26);
+            this.initialiseBehlkesButton.Size = new System.Drawing.Size(118, 21);
             this.initialiseBehlkesButton.TabIndex = 0;
             this.initialiseBehlkesButton.Text = "Initialise Behlkes";
             this.initialiseBehlkesButton.UseVisualStyleBackColor = true;
@@ -4307,11 +4139,11 @@ namespace UEDMHardwareControl
             this.groupBoxBehlkeSwitch.Controls.Add(this.switchTimeLabel);
             this.groupBoxBehlkeSwitch.Controls.Add(this.bleedTimeLabel);
             this.groupBoxBehlkeSwitch.Controls.Add(this.switchEBehlkeButton);
-            this.groupBoxBehlkeSwitch.Location = new System.Drawing.Point(459, 21);
-            this.groupBoxBehlkeSwitch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxBehlkeSwitch.Location = new System.Drawing.Point(344, 17);
+            this.groupBoxBehlkeSwitch.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxBehlkeSwitch.Name = "groupBoxBehlkeSwitch";
-            this.groupBoxBehlkeSwitch.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxBehlkeSwitch.Size = new System.Drawing.Size(228, 255);
+            this.groupBoxBehlkeSwitch.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxBehlkeSwitch.Size = new System.Drawing.Size(171, 207);
             this.groupBoxBehlkeSwitch.TabIndex = 46;
             this.groupBoxBehlkeSwitch.TabStop = false;
             this.groupBoxBehlkeSwitch.Text = "Behlke Switch";
@@ -4319,93 +4151,95 @@ namespace UEDMHardwareControl
             // switchingLED
             // 
             this.switchingLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.switchingLED.Location = new System.Drawing.Point(15, 161);
-            this.switchingLED.Margin = new System.Windows.Forms.Padding(4);
+            this.switchingLED.Location = new System.Drawing.Point(11, 131);
             this.switchingLED.Name = "switchingLED";
             this.switchingLED.OffColor = System.Drawing.Color.Maroon;
             this.switchingLED.OnColor = System.Drawing.Color.Red;
-            this.switchingLED.Size = new System.Drawing.Size(28, 27);
+            this.switchingLED.Size = new System.Drawing.Size(21, 22);
             this.switchingLED.TabIndex = 54;
             // 
             // eDisableSwitching
             // 
-            this.eDisableSwitching.Location = new System.Drawing.Point(20, 186);
-            this.eDisableSwitching.Margin = new System.Windows.Forms.Padding(4);
+            this.eDisableSwitching.Location = new System.Drawing.Point(15, 151);
             this.eDisableSwitching.Name = "eDisableSwitching";
-            this.eDisableSwitching.Size = new System.Drawing.Size(147, 41);
+            this.eDisableSwitching.Size = new System.Drawing.Size(110, 33);
             this.eDisableSwitching.TabIndex = 53;
             this.eDisableSwitching.Text = "Disable switching";
             // 
             // settleTimeTextBox
             // 
             this.settleTimeTextBox.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.settleTimeTextBox.Location = new System.Drawing.Point(131, 126);
-            this.settleTimeTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.settleTimeTextBox.Location = new System.Drawing.Point(98, 102);
+            this.settleTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.settleTimeTextBox.Name = "settleTimeTextBox";
-            this.settleTimeTextBox.Size = new System.Drawing.Size(69, 22);
+            this.settleTimeTextBox.Size = new System.Drawing.Size(53, 20);
             this.settleTimeTextBox.TabIndex = 1;
             this.settleTimeTextBox.Text = "200";
             // 
             // switchTimeTextBox
             // 
-            this.switchTimeTextBox.Location = new System.Drawing.Point(131, 96);
-            this.switchTimeTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.switchTimeTextBox.Location = new System.Drawing.Point(98, 78);
+            this.switchTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.switchTimeTextBox.Name = "switchTimeTextBox";
-            this.switchTimeTextBox.Size = new System.Drawing.Size(69, 22);
+            this.switchTimeTextBox.Size = new System.Drawing.Size(53, 20);
             this.switchTimeTextBox.TabIndex = 1;
             this.switchTimeTextBox.Text = "200";
             // 
             // bleedTimeTextBox
             // 
-            this.bleedTimeTextBox.Location = new System.Drawing.Point(131, 66);
-            this.bleedTimeTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bleedTimeTextBox.Location = new System.Drawing.Point(98, 54);
+            this.bleedTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.bleedTimeTextBox.Name = "bleedTimeTextBox";
-            this.bleedTimeTextBox.Size = new System.Drawing.Size(69, 22);
+            this.bleedTimeTextBox.Size = new System.Drawing.Size(53, 20);
             this.bleedTimeTextBox.TabIndex = 1;
             this.bleedTimeTextBox.Text = "200";
             // 
             // labelSwitchingLED
             // 
             this.labelSwitchingLED.AutoSize = true;
-            this.labelSwitchingLED.Location = new System.Drawing.Point(45, 166);
+            this.labelSwitchingLED.Location = new System.Drawing.Point(34, 135);
+            this.labelSwitchingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelSwitchingLED.Name = "labelSwitchingLED";
-            this.labelSwitchingLED.Size = new System.Drawing.Size(67, 17);
+            this.labelSwitchingLED.Size = new System.Drawing.Size(53, 13);
             this.labelSwitchingLED.TabIndex = 48;
             this.labelSwitchingLED.Text = "Switching";
             // 
             // settleTimeLabel
             // 
             this.settleTimeLabel.AutoSize = true;
-            this.settleTimeLabel.Location = new System.Drawing.Point(11, 128);
+            this.settleTimeLabel.Location = new System.Drawing.Point(8, 104);
+            this.settleTimeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.settleTimeLabel.Name = "settleTimeLabel";
-            this.settleTimeLabel.Size = new System.Drawing.Size(106, 17);
+            this.settleTimeLabel.Size = new System.Drawing.Size(78, 13);
             this.settleTimeLabel.TabIndex = 2;
             this.settleTimeLabel.Text = "Settle time (ms)";
             // 
             // switchTimeLabel
             // 
             this.switchTimeLabel.AutoSize = true;
-            this.switchTimeLabel.Location = new System.Drawing.Point(11, 98);
+            this.switchTimeLabel.Location = new System.Drawing.Point(8, 80);
+            this.switchTimeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.switchTimeLabel.Name = "switchTimeLabel";
-            this.switchTimeLabel.Size = new System.Drawing.Size(110, 17);
+            this.switchTimeLabel.Size = new System.Drawing.Size(83, 13);
             this.switchTimeLabel.TabIndex = 2;
             this.switchTimeLabel.Text = "Switch time (ms)";
             // 
             // bleedTimeLabel
             // 
             this.bleedTimeLabel.AutoSize = true;
-            this.bleedTimeLabel.Location = new System.Drawing.Point(11, 69);
+            this.bleedTimeLabel.Location = new System.Drawing.Point(8, 56);
+            this.bleedTimeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.bleedTimeLabel.Name = "bleedTimeLabel";
-            this.bleedTimeLabel.Size = new System.Drawing.Size(106, 17);
+            this.bleedTimeLabel.Size = new System.Drawing.Size(78, 13);
             this.bleedTimeLabel.TabIndex = 2;
             this.bleedTimeLabel.Text = "Bleed time (ms)";
             // 
             // switchEBehlkeButton
             // 
-            this.switchEBehlkeButton.Location = new System.Drawing.Point(13, 30);
-            this.switchEBehlkeButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.switchEBehlkeButton.Location = new System.Drawing.Point(10, 24);
+            this.switchEBehlkeButton.Margin = new System.Windows.Forms.Padding(2);
             this.switchEBehlkeButton.Name = "switchEBehlkeButton";
-            this.switchEBehlkeButton.Size = new System.Drawing.Size(187, 26);
+            this.switchEBehlkeButton.Size = new System.Drawing.Size(140, 21);
             this.switchEBehlkeButton.TabIndex = 0;
             this.switchEBehlkeButton.Text = "Switch E field";
             this.switchEBehlkeButton.UseVisualStyleBackColor = true;
@@ -4416,30 +4250,26 @@ namespace UEDMHardwareControl
             this.groupBox8.Controls.Add(this.label34);
             this.groupBox8.Controls.Add(this.updateFeedthroughTempButton);
             this.groupBox8.Controls.Add(this.tbFeedthroughTemp);
-            this.groupBox8.Location = new System.Drawing.Point(835, 281);
-            this.groupBox8.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox8.Location = new System.Drawing.Point(626, 228);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox8.Size = new System.Drawing.Size(267, 79);
+            this.groupBox8.Size = new System.Drawing.Size(200, 64);
             this.groupBox8.TabIndex = 45;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Feedthrough Temp";
             // 
             // label34
             // 
-            this.label34.Location = new System.Drawing.Point(104, 33);
-            this.label34.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label34.Location = new System.Drawing.Point(78, 27);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(33, 28);
+            this.label34.Size = new System.Drawing.Size(25, 23);
             this.label34.TabIndex = 45;
             this.label34.Text = "°C";
             // 
             // updateFeedthroughTempButton
             // 
-            this.updateFeedthroughTempButton.Location = new System.Drawing.Point(145, 30);
-            this.updateFeedthroughTempButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateFeedthroughTempButton.Location = new System.Drawing.Point(109, 24);
             this.updateFeedthroughTempButton.Name = "updateFeedthroughTempButton";
-            this.updateFeedthroughTempButton.Size = new System.Drawing.Size(100, 28);
+            this.updateFeedthroughTempButton.Size = new System.Drawing.Size(75, 23);
             this.updateFeedthroughTempButton.TabIndex = 44;
             this.updateFeedthroughTempButton.Text = "Update";
             this.updateFeedthroughTempButton.Click += new System.EventHandler(this.updateFeedthroughTempButton_Click);
@@ -4448,32 +4278,28 @@ namespace UEDMHardwareControl
             // 
             this.tbFeedthroughTemp.BackColor = System.Drawing.Color.Black;
             this.tbFeedthroughTemp.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbFeedthroughTemp.Location = new System.Drawing.Point(17, 32);
-            this.tbFeedthroughTemp.Margin = new System.Windows.Forms.Padding(4);
+            this.tbFeedthroughTemp.Location = new System.Drawing.Point(13, 26);
             this.tbFeedthroughTemp.Name = "tbFeedthroughTemp";
             this.tbFeedthroughTemp.ReadOnly = true;
-            this.tbFeedthroughTemp.Size = new System.Drawing.Size(77, 22);
+            this.tbFeedthroughTemp.Size = new System.Drawing.Size(59, 20);
             this.tbFeedthroughTemp.TabIndex = 43;
             this.tbFeedthroughTemp.Text = "0";
             // 
             // groupBox21
             // 
             this.groupBox21.Controls.Add(this.eManualStateCheckBox);
-            this.groupBox21.Location = new System.Drawing.Point(23, 284);
-            this.groupBox21.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox21.Location = new System.Drawing.Point(17, 231);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox21.Size = new System.Drawing.Size(245, 75);
+            this.groupBox21.Size = new System.Drawing.Size(184, 61);
             this.groupBox21.TabIndex = 27;
             this.groupBox21.TabStop = false;
             this.groupBox21.Text = "Manual state";
             // 
             // eManualStateCheckBox
             // 
-            this.eManualStateCheckBox.Location = new System.Drawing.Point(8, 28);
-            this.eManualStateCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eManualStateCheckBox.Location = new System.Drawing.Point(6, 23);
             this.eManualStateCheckBox.Name = "eManualStateCheckBox";
-            this.eManualStateCheckBox.Size = new System.Drawing.Size(223, 30);
+            this.eManualStateCheckBox.Size = new System.Drawing.Size(167, 24);
             this.eManualStateCheckBox.TabIndex = 53;
             this.eManualStateCheckBox.Text = "State (Checked is 0=>W+)";
             // 
@@ -4484,57 +4310,50 @@ namespace UEDMHardwareControl
             this.groupBox13.Controls.Add(this.label38);
             this.groupBox13.Controls.Add(this.zeroPlusOneMinusBoostTextBox);
             this.groupBox13.Controls.Add(this.zeroPlusBoostTextBox);
-            this.groupBox13.Location = new System.Drawing.Point(1109, 218);
-            this.groupBox13.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox13.Location = new System.Drawing.Point(832, 177);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox13.Size = new System.Drawing.Size(245, 142);
+            this.groupBox13.Size = new System.Drawing.Size(184, 115);
             this.groupBox13.TabIndex = 41;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Supply asymmetry";
             // 
             // eFieldAsymmetryCheckBox
             // 
-            this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(25, 23);
-            this.eFieldAsymmetryCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eFieldAsymmetryCheckBox.Location = new System.Drawing.Point(19, 19);
             this.eFieldAsymmetryCheckBox.Name = "eFieldAsymmetryCheckBox";
-            this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(96, 30);
+            this.eFieldAsymmetryCheckBox.Size = new System.Drawing.Size(72, 24);
             this.eFieldAsymmetryCheckBox.TabIndex = 38;
             this.eFieldAsymmetryCheckBox.Text = "Enable";
             // 
             // label37
             // 
-            this.label37.Location = new System.Drawing.Point(8, 102);
-            this.label37.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label37.Location = new System.Drawing.Point(6, 83);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(112, 28);
+            this.label37.Size = new System.Drawing.Size(84, 23);
             this.label37.TabIndex = 37;
             this.label37.Text = "0+1- boost (V)";
             // 
             // label38
             // 
-            this.label38.Location = new System.Drawing.Point(8, 63);
-            this.label38.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label38.Location = new System.Drawing.Point(6, 51);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(119, 28);
+            this.label38.Size = new System.Drawing.Size(89, 23);
             this.label38.TabIndex = 36;
             this.label38.Text = "0+ boost (V)";
             // 
             // zeroPlusOneMinusBoostTextBox
             // 
-            this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(135, 97);
-            this.zeroPlusOneMinusBoostTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.zeroPlusOneMinusBoostTextBox.Location = new System.Drawing.Point(101, 79);
             this.zeroPlusOneMinusBoostTextBox.Name = "zeroPlusOneMinusBoostTextBox";
-            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(84, 22);
+            this.zeroPlusOneMinusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusOneMinusBoostTextBox.TabIndex = 1;
             this.zeroPlusOneMinusBoostTextBox.Text = "0";
             // 
             // zeroPlusBoostTextBox
             // 
-            this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(136, 63);
-            this.zeroPlusBoostTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.zeroPlusBoostTextBox.Location = new System.Drawing.Point(102, 51);
             this.zeroPlusBoostTextBox.Name = "zeroPlusBoostTextBox";
-            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(84, 22);
+            this.zeroPlusBoostTextBox.Size = new System.Drawing.Size(64, 20);
             this.zeroPlusBoostTextBox.TabIndex = 0;
             this.zeroPlusBoostTextBox.Text = "0";
             // 
@@ -4550,11 +4369,9 @@ namespace UEDMHardwareControl
             this.groupBox6.Controls.Add(this.label15);
             this.groupBox6.Controls.Add(this.cMinusVMonitorTextBox);
             this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(1109, 21);
-            this.groupBox6.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox6.Location = new System.Drawing.Point(832, 17);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox6.Size = new System.Drawing.Size(245, 188);
+            this.groupBox6.Size = new System.Drawing.Size(184, 153);
             this.groupBox6.TabIndex = 24;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Voltage monitors";
@@ -4563,11 +4380,10 @@ namespace UEDMHardwareControl
             // 
             this.gMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.gMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(139, 117);
-            this.gMinusVMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.gMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 95);
             this.gMinusVMonitorTextBox.Name = "gMinusVMonitorTextBox";
             this.gMinusVMonitorTextBox.ReadOnly = true;
-            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(84, 23);
+            this.gMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.gMinusVMonitorTextBox.TabIndex = 43;
             this.gMinusVMonitorTextBox.Text = "0";
             // 
@@ -4575,11 +4391,10 @@ namespace UEDMHardwareControl
             // 
             this.cPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.cPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(139, 30);
-            this.cPlusVMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 24);
             this.cPlusVMonitorTextBox.Name = "cPlusVMonitorTextBox";
             this.cPlusVMonitorTextBox.ReadOnly = true;
-            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(84, 23);
+            this.cPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusVMonitorTextBox.TabIndex = 42;
             this.cPlusVMonitorTextBox.Text = "0";
             // 
@@ -4587,57 +4402,51 @@ namespace UEDMHardwareControl
             // 
             this.gPlusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.gPlusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(139, 87);
-            this.gPlusVMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.gPlusVMonitorTextBox.Location = new System.Drawing.Point(104, 71);
             this.gPlusVMonitorTextBox.Name = "gPlusVMonitorTextBox";
             this.gPlusVMonitorTextBox.ReadOnly = true;
-            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(84, 23);
+            this.gPlusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.gPlusVMonitorTextBox.TabIndex = 41;
             this.gPlusVMonitorTextBox.Text = "0";
             // 
             // updateVMonitorButton
             // 
-            this.updateVMonitorButton.Location = new System.Drawing.Point(75, 149);
-            this.updateVMonitorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateVMonitorButton.Location = new System.Drawing.Point(56, 121);
             this.updateVMonitorButton.Name = "updateVMonitorButton";
-            this.updateVMonitorButton.Size = new System.Drawing.Size(100, 28);
+            this.updateVMonitorButton.Size = new System.Drawing.Size(75, 23);
             this.updateVMonitorButton.TabIndex = 40;
             this.updateVMonitorButton.Text = "Update";
             this.updateVMonitorButton.Click += new System.EventHandler(this.updateVMonitorButton_Click);
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(21, 117);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(16, 95);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(107, 28);
+            this.label12.Size = new System.Drawing.Size(80, 23);
             this.label12.TabIndex = 39;
             this.label12.Text = "G minus (V)";
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(21, 87);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(16, 71);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(107, 28);
+            this.label13.Size = new System.Drawing.Size(80, 23);
             this.label13.TabIndex = 38;
             this.label13.Text = "G plus (V)";
             // 
             // label14
             // 
-            this.label14.Location = new System.Drawing.Point(21, 59);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Location = new System.Drawing.Point(16, 48);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(107, 28);
+            this.label14.Size = new System.Drawing.Size(80, 23);
             this.label14.TabIndex = 37;
             this.label14.Text = "C minus (kV)";
             // 
             // label15
             // 
-            this.label15.Location = new System.Drawing.Point(21, 30);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Location = new System.Drawing.Point(16, 24);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(107, 28);
+            this.label15.Size = new System.Drawing.Size(80, 23);
             this.label15.TabIndex = 36;
             this.label15.Text = "C plus (kV)";
             // 
@@ -4645,11 +4454,10 @@ namespace UEDMHardwareControl
             // 
             this.cMinusVMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.cMinusVMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(139, 59);
-            this.cMinusVMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cMinusVMonitorTextBox.Location = new System.Drawing.Point(104, 48);
             this.cMinusVMonitorTextBox.Name = "cMinusVMonitorTextBox";
             this.cMinusVMonitorTextBox.ReadOnly = true;
-            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(84, 23);
+            this.cMinusVMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusVMonitorTextBox.TabIndex = 33;
             this.cMinusVMonitorTextBox.Text = "0";
             // 
@@ -4669,143 +4477,129 @@ namespace UEDMHardwareControl
             this.groupBox5.Controls.Add(this.cMinusTextBox);
             this.groupBox5.Controls.Add(this.eOnCheck);
             this.groupBox5.Controls.Add(this.cPlusTextBox);
-            this.groupBox5.Location = new System.Drawing.Point(23, 20);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox5.Location = new System.Drawing.Point(17, 16);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox5.Size = new System.Drawing.Size(411, 256);
+            this.groupBox5.Size = new System.Drawing.Size(308, 208);
             this.groupBox5.TabIndex = 23;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Supplies";
             // 
             // label176
             // 
-            this.label176.Location = new System.Drawing.Point(8, 219);
-            this.label176.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label176.MaximumSize = new System.Drawing.Size(267, 246);
+            this.label176.Location = new System.Drawing.Point(6, 178);
+            this.label176.MaximumSize = new System.Drawing.Size(200, 200);
             this.label176.Name = "label176";
-            this.label176.Size = new System.Drawing.Size(203, 37);
+            this.label176.Size = new System.Drawing.Size(152, 30);
             this.label176.TabIndex = 45;
             this.label176.Text = "Note: Bertan +ve supplies require +/- 3kV/V";
             // 
             // labelRampingLED
             // 
             this.labelRampingLED.AutoSize = true;
-            this.labelRampingLED.Location = new System.Drawing.Point(316, 143);
+            this.labelRampingLED.Location = new System.Drawing.Point(237, 116);
+            this.labelRampingLED.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelRampingLED.Name = "labelRampingLED";
-            this.labelRampingLED.Size = new System.Drawing.Size(64, 17);
+            this.labelRampingLED.Size = new System.Drawing.Size(49, 13);
             this.labelRampingLED.TabIndex = 58;
             this.labelRampingLED.Text = "Ramping";
             // 
             // updateFieldButton
             // 
-            this.updateFieldButton.Location = new System.Drawing.Point(23, 177);
-            this.updateFieldButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateFieldButton.Location = new System.Drawing.Point(17, 144);
             this.updateFieldButton.Name = "updateFieldButton";
-            this.updateFieldButton.Size = new System.Drawing.Size(200, 28);
+            this.updateFieldButton.Size = new System.Drawing.Size(150, 23);
             this.updateFieldButton.TabIndex = 40;
             this.updateFieldButton.Text = "Update";
             this.updateFieldButton.Click += new System.EventHandler(this.updateFieldButton_Click);
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(19, 139);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Location = new System.Drawing.Point(14, 113);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(117, 28);
+            this.label10.Size = new System.Drawing.Size(88, 23);
             this.label10.TabIndex = 39;
             this.label10.Text = "C minus off (kV)";
             // 
             // label11
             // 
-            this.label11.Location = new System.Drawing.Point(19, 105);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Location = new System.Drawing.Point(14, 85);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(107, 28);
+            this.label11.Size = new System.Drawing.Size(80, 23);
             this.label11.TabIndex = 38;
             this.label11.Text = "C plus off (kV)";
             // 
             // rampLED
             // 
             this.rampLED.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
-            this.rampLED.Location = new System.Drawing.Point(285, 139);
-            this.rampLED.Margin = new System.Windows.Forms.Padding(4);
+            this.rampLED.Location = new System.Drawing.Point(214, 113);
             this.rampLED.Name = "rampLED";
-            this.rampLED.Size = new System.Drawing.Size(28, 27);
+            this.rampLED.Size = new System.Drawing.Size(21, 22);
             this.rampLED.TabIndex = 55;
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(19, 68);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Location = new System.Drawing.Point(14, 55);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(107, 28);
+            this.label9.Size = new System.Drawing.Size(80, 23);
             this.label9.TabIndex = 1;
             this.label9.Text = "C minus (kV)";
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(19, 32);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(14, 26);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 28);
+            this.label5.Size = new System.Drawing.Size(80, 23);
             this.label5.TabIndex = 0;
             this.label5.Text = "C plus (kV)";
             // 
             // fieldsOffButton
             // 
-            this.fieldsOffButton.Location = new System.Drawing.Point(261, 60);
-            this.fieldsOffButton.Margin = new System.Windows.Forms.Padding(4);
+            this.fieldsOffButton.Location = new System.Drawing.Point(196, 49);
             this.fieldsOffButton.Name = "fieldsOffButton";
-            this.fieldsOffButton.Size = new System.Drawing.Size(128, 28);
+            this.fieldsOffButton.Size = new System.Drawing.Size(96, 23);
             this.fieldsOffButton.TabIndex = 23;
             this.fieldsOffButton.Text = "Zero E fields";
             this.fieldsOffButton.Click += new System.EventHandler(this.fieldsOffButton_Click);
             // 
             // cPlusOffTextBox
             // 
-            this.cPlusOffTextBox.Location = new System.Drawing.Point(139, 102);
-            this.cPlusOffTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cPlusOffTextBox.Location = new System.Drawing.Point(104, 83);
             this.cPlusOffTextBox.Name = "cPlusOffTextBox";
-            this.cPlusOffTextBox.Size = new System.Drawing.Size(84, 22);
+            this.cPlusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusOffTextBox.TabIndex = 2;
             this.cPlusOffTextBox.Text = "0";
             this.cPlusOffTextBox.TextChanged += new System.EventHandler(this.cPlusOffTextBox_TextChanged);
             // 
             // cMinusOffTextBox
             // 
-            this.cMinusOffTextBox.Location = new System.Drawing.Point(139, 137);
-            this.cMinusOffTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cMinusOffTextBox.Location = new System.Drawing.Point(104, 111);
             this.cMinusOffTextBox.Name = "cMinusOffTextBox";
-            this.cMinusOffTextBox.Size = new System.Drawing.Size(84, 22);
+            this.cMinusOffTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusOffTextBox.TabIndex = 3;
             this.cMinusOffTextBox.Text = "0";
             // 
             // cMinusTextBox
             // 
-            this.cMinusTextBox.Location = new System.Drawing.Point(139, 65);
-            this.cMinusTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cMinusTextBox.Location = new System.Drawing.Point(104, 53);
             this.cMinusTextBox.Name = "cMinusTextBox";
-            this.cMinusTextBox.Size = new System.Drawing.Size(84, 22);
+            this.cMinusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cMinusTextBox.TabIndex = 1;
             this.cMinusTextBox.Text = "0";
             // 
             // eOnCheck
             // 
-            this.eOnCheck.Location = new System.Drawing.Point(265, 26);
-            this.eOnCheck.Margin = new System.Windows.Forms.Padding(4);
+            this.eOnCheck.Location = new System.Drawing.Point(199, 21);
             this.eOnCheck.Name = "eOnCheck";
-            this.eOnCheck.Size = new System.Drawing.Size(96, 30);
+            this.eOnCheck.Size = new System.Drawing.Size(72, 24);
             this.eOnCheck.TabIndex = 19;
             this.eOnCheck.Text = "Field on";
             this.eOnCheck.CheckedChanged += new System.EventHandler(this.eOnCheck_CheckedChanged);
             // 
             // cPlusTextBox
             // 
-            this.cPlusTextBox.Location = new System.Drawing.Point(139, 30);
-            this.cPlusTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.cPlusTextBox.Location = new System.Drawing.Point(104, 24);
             this.cPlusTextBox.Name = "cPlusTextBox";
-            this.cPlusTextBox.Size = new System.Drawing.Size(84, 22);
+            this.cPlusTextBox.Size = new System.Drawing.Size(64, 20);
             this.cPlusTextBox.TabIndex = 0;
             this.cPlusTextBox.Text = "0";
             // 
@@ -4847,11 +4641,9 @@ namespace UEDMHardwareControl
             this.groupBox7.Controls.Add(this.updateIMonitorButton);
             this.groupBox7.Controls.Add(this.label18);
             this.groupBox7.Controls.Add(this.label19);
-            this.groupBox7.Location = new System.Drawing.Point(23, 367);
-            this.groupBox7.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox7.Location = new System.Drawing.Point(17, 298);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox7.Size = new System.Drawing.Size(1332, 481);
+            this.groupBox7.Size = new System.Drawing.Size(999, 391);
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
@@ -4859,10 +4651,9 @@ namespace UEDMHardwareControl
             // pollVCheckBox
             // 
             this.pollVCheckBox.AutoSize = true;
-            this.pollVCheckBox.Location = new System.Drawing.Point(904, 108);
-            this.pollVCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.pollVCheckBox.Location = new System.Drawing.Point(678, 88);
             this.pollVCheckBox.Name = "pollVCheckBox";
-            this.pollVCheckBox.Size = new System.Drawing.Size(73, 21);
+            this.pollVCheckBox.Size = new System.Drawing.Size(58, 17);
             this.pollVCheckBox.TabIndex = 79;
             this.pollVCheckBox.Text = "poll V?";
             this.pollVCheckBox.UseVisualStyleBackColor = true;
@@ -4871,20 +4662,18 @@ namespace UEDMHardwareControl
             // 
             this.tbiMonitorPollPeriod.BackColor = System.Drawing.Color.Black;
             this.tbiMonitorPollPeriod.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbiMonitorPollPeriod.Location = new System.Drawing.Point(1221, 18);
-            this.tbiMonitorPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbiMonitorPollPeriod.Location = new System.Drawing.Point(916, 15);
             this.tbiMonitorPollPeriod.Name = "tbiMonitorPollPeriod";
             this.tbiMonitorPollPeriod.ReadOnly = true;
-            this.tbiMonitorPollPeriod.Size = new System.Drawing.Size(84, 22);
+            this.tbiMonitorPollPeriod.Size = new System.Drawing.Size(64, 20);
             this.tbiMonitorPollPeriod.TabIndex = 44;
             this.tbiMonitorPollPeriod.Text = "0";
             // 
             // changePollPeriodButton
             // 
-            this.changePollPeriodButton.Location = new System.Drawing.Point(1099, 47);
-            this.changePollPeriodButton.Margin = new System.Windows.Forms.Padding(4);
+            this.changePollPeriodButton.Location = new System.Drawing.Point(824, 38);
             this.changePollPeriodButton.Name = "changePollPeriodButton";
-            this.changePollPeriodButton.Size = new System.Drawing.Size(100, 28);
+            this.changePollPeriodButton.Size = new System.Drawing.Size(75, 23);
             this.changePollPeriodButton.TabIndex = 78;
             this.changePollPeriodButton.Text = "Update";
             this.changePollPeriodButton.UseVisualStyleBackColor = true;
@@ -4892,10 +4681,9 @@ namespace UEDMHardwareControl
             // 
             // rescaleIMonitorChartButton
             // 
-            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(673, 101);
-            this.rescaleIMonitorChartButton.Margin = new System.Windows.Forms.Padding(4);
+            this.rescaleIMonitorChartButton.Location = new System.Drawing.Point(505, 82);
             this.rescaleIMonitorChartButton.Name = "rescaleIMonitorChartButton";
-            this.rescaleIMonitorChartButton.Size = new System.Drawing.Size(101, 26);
+            this.rescaleIMonitorChartButton.Size = new System.Drawing.Size(76, 21);
             this.rescaleIMonitorChartButton.TabIndex = 77;
             this.rescaleIMonitorChartButton.Text = "Rescale";
             this.rescaleIMonitorChartButton.UseVisualStyleBackColor = true;
@@ -4904,79 +4692,76 @@ namespace UEDMHardwareControl
             // chart5
             // 
             this.chart5.BackColor = System.Drawing.Color.Black;
-            chartArea13.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
-            chartArea13.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.Title = "Time";
-            chartArea13.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.Title = "Current (nA)";
-            chartArea13.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.BackColor = System.Drawing.Color.Black;
-            chartArea13.BackImageTransparentColor = System.Drawing.Color.White;
-            chartArea13.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea13.BorderColor = System.Drawing.Color.White;
-            chartArea13.Name = "ChartArea1";
-            this.chart5.ChartAreas.Add(chartArea13);
-            legend13.Alignment = System.Drawing.StringAlignment.Center;
-            legend13.BackColor = System.Drawing.Color.Black;
-            legend13.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend13.ForeColor = System.Drawing.Color.White;
-            legend13.IsEquallySpacedItems = true;
-            legend13.Name = "Legend1";
-            legend13.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
-            this.chart5.Legends.Add(legend13);
-            this.chart5.Location = new System.Drawing.Point(12, 140);
-            this.chart5.Margin = new System.Windows.Forms.Padding(4);
+            chartArea7.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea7.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX.Title = "Time";
+            chartArea7.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY.Title = "Current (nA)";
+            chartArea7.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea7.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea7.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea7.BackColor = System.Drawing.Color.Black;
+            chartArea7.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea7.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea7.BorderColor = System.Drawing.Color.White;
+            chartArea7.Name = "ChartArea1";
+            this.chart5.ChartAreas.Add(chartArea7);
+            legend7.Alignment = System.Drawing.StringAlignment.Center;
+            legend7.BackColor = System.Drawing.Color.Black;
+            legend7.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend7.ForeColor = System.Drawing.Color.White;
+            legend7.IsEquallySpacedItems = true;
+            legend7.Name = "Legend1";
+            legend7.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart5.Legends.Add(legend7);
+            this.chart5.Location = new System.Drawing.Point(9, 114);
             this.chart5.Name = "chart5";
-            series45.ChartArea = "ChartArea1";
-            series45.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series45.Legend = "Legend1";
-            series45.Name = "Leakage Current East";
-            series45.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series46.ChartArea = "ChartArea1";
-            series46.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series46.Legend = "Legend1";
-            series46.Name = "Leakage Current West";
-            series46.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart5.Series.Add(series45);
-            this.chart5.Series.Add(series46);
-            this.chart5.Size = new System.Drawing.Size(1297, 321);
+            series23.ChartArea = "ChartArea1";
+            series23.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series23.Legend = "Legend1";
+            series23.Name = "Leakage Current East";
+            series23.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series24.ChartArea = "ChartArea1";
+            series24.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series24.Legend = "Legend1";
+            series24.Name = "Leakage Current West";
+            series24.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart5.Series.Add(series23);
+            this.chart5.Series.Add(series24);
+            this.chart5.Size = new System.Drawing.Size(973, 261);
             this.chart5.TabIndex = 76;
             this.chart5.Text = "chart5";
             // 
             // logCurrentDataCheckBox
             // 
             this.logCurrentDataCheckBox.AutoSize = true;
-            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(1003, 108);
-            this.logCurrentDataCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.logCurrentDataCheckBox.Location = new System.Drawing.Point(752, 88);
             this.logCurrentDataCheckBox.Name = "logCurrentDataCheckBox";
-            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(86, 21);
+            this.logCurrentDataCheckBox.Size = new System.Drawing.Size(68, 17);
             this.logCurrentDataCheckBox.TabIndex = 75;
             this.logCurrentDataCheckBox.Text = "Log data";
             this.logCurrentDataCheckBox.UseVisualStyleBackColor = true;
             // 
             // clearIMonitorButton
             // 
-            this.clearIMonitorButton.Location = new System.Drawing.Point(157, 94);
-            this.clearIMonitorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.clearIMonitorButton.Location = new System.Drawing.Point(118, 76);
             this.clearIMonitorButton.Name = "clearIMonitorButton";
-            this.clearIMonitorButton.Size = new System.Drawing.Size(52, 28);
+            this.clearIMonitorButton.Size = new System.Drawing.Size(39, 23);
             this.clearIMonitorButton.TabIndex = 74;
             this.clearIMonitorButton.Text = "Clear";
             this.clearIMonitorButton.UseVisualStyleBackColor = true;
@@ -4986,29 +4771,26 @@ namespace UEDMHardwareControl
             // 
             this.eastIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
             this.eastIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.eastIMonitorErrorTextBox.Location = new System.Drawing.Point(124, 58);
-            this.eastIMonitorErrorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eastIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 47);
             this.eastIMonitorErrorTextBox.Name = "eastIMonitorErrorTextBox";
             this.eastIMonitorErrorTextBox.ReadOnly = true;
-            this.eastIMonitorErrorTextBox.Size = new System.Drawing.Size(49, 22);
+            this.eastIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
             this.eastIMonitorErrorTextBox.TabIndex = 73;
             this.eastIMonitorErrorTextBox.Text = "0";
             // 
             // label131
             // 
-            this.label131.Location = new System.Drawing.Point(107, 62);
-            this.label131.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label131.Location = new System.Drawing.Point(80, 50);
             this.label131.Name = "label131";
-            this.label131.Size = new System.Drawing.Size(16, 28);
+            this.label131.Size = new System.Drawing.Size(12, 23);
             this.label131.TabIndex = 72;
             this.label131.Text = "±";
             // 
             // label130
             // 
-            this.label130.Location = new System.Drawing.Point(107, 30);
-            this.label130.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label130.Location = new System.Drawing.Point(80, 24);
             this.label130.Name = "label130";
-            this.label130.Size = new System.Drawing.Size(16, 28);
+            this.label130.Size = new System.Drawing.Size(12, 23);
             this.label130.TabIndex = 71;
             this.label130.Text = "±";
             // 
@@ -5016,29 +4798,26 @@ namespace UEDMHardwareControl
             // 
             this.westIMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
             this.westIMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.westIMonitorErrorTextBox.Location = new System.Drawing.Point(124, 26);
-            this.westIMonitorErrorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.westIMonitorErrorTextBox.Location = new System.Drawing.Point(93, 21);
             this.westIMonitorErrorTextBox.Name = "westIMonitorErrorTextBox";
             this.westIMonitorErrorTextBox.ReadOnly = true;
-            this.westIMonitorErrorTextBox.Size = new System.Drawing.Size(49, 22);
+            this.westIMonitorErrorTextBox.Size = new System.Drawing.Size(38, 20);
             this.westIMonitorErrorTextBox.TabIndex = 70;
             this.westIMonitorErrorTextBox.Text = "0";
             // 
             // label35
             // 
-            this.label35.Location = new System.Drawing.Point(217, 90);
-            this.label35.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label35.Location = new System.Drawing.Point(163, 73);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(107, 38);
+            this.label35.Size = new System.Drawing.Size(80, 31);
             this.label35.TabIndex = 51;
             this.label35.Text = "Measurement Length (S)";
             // 
             // zeroIMonitorButton
             // 
-            this.zeroIMonitorButton.Location = new System.Drawing.Point(91, 94);
-            this.zeroIMonitorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.zeroIMonitorButton.Location = new System.Drawing.Point(68, 76);
             this.zeroIMonitorButton.Name = "zeroIMonitorButton";
-            this.zeroIMonitorButton.Size = new System.Drawing.Size(59, 28);
+            this.zeroIMonitorButton.Size = new System.Drawing.Size(44, 23);
             this.zeroIMonitorButton.TabIndex = 46;
             this.zeroIMonitorButton.Text = "Zero";
             this.zeroIMonitorButton.UseVisualStyleBackColor = true;
@@ -5046,28 +4825,25 @@ namespace UEDMHardwareControl
             // 
             // label129
             // 
-            this.label129.Location = new System.Drawing.Point(179, 66);
-            this.label129.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label129.Location = new System.Drawing.Point(134, 54);
             this.label129.Name = "label129";
-            this.label129.Size = new System.Drawing.Size(63, 28);
+            this.label129.Size = new System.Drawing.Size(47, 23);
             this.label129.TabIndex = 69;
             this.label129.Text = "samples";
             // 
             // currentMonitorSampleLengthTextBox
             // 
-            this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(183, 38);
-            this.currentMonitorSampleLengthTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.currentMonitorSampleLengthTextBox.Location = new System.Drawing.Point(137, 31);
             this.currentMonitorSampleLengthTextBox.Name = "currentMonitorSampleLengthTextBox";
-            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(47, 22);
+            this.currentMonitorSampleLengthTextBox.Size = new System.Drawing.Size(36, 20);
             this.currentMonitorSampleLengthTextBox.TabIndex = 67;
             this.currentMonitorSampleLengthTextBox.Text = "20";
             // 
             // label128
             // 
-            this.label128.Location = new System.Drawing.Point(179, 20);
-            this.label128.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label128.Location = new System.Drawing.Point(134, 16);
             this.label128.Name = "label128";
-            this.label128.Size = new System.Drawing.Size(63, 28);
+            this.label128.Size = new System.Drawing.Size(47, 23);
             this.label128.TabIndex = 68;
             this.label128.Text = "Average";
             // 
@@ -5075,11 +4851,10 @@ namespace UEDMHardwareControl
             // 
             this.eastOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.eastOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.eastOffsetIMonitorTextBox.Location = new System.Drawing.Point(325, 58);
-            this.eastOffsetIMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eastOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 47);
             this.eastOffsetIMonitorTextBox.Name = "eastOffsetIMonitorTextBox";
             this.eastOffsetIMonitorTextBox.ReadOnly = true;
-            this.eastOffsetIMonitorTextBox.Size = new System.Drawing.Size(84, 22);
+            this.eastOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.eastOffsetIMonitorTextBox.TabIndex = 47;
             this.eastOffsetIMonitorTextBox.Text = "0";
             // 
@@ -5087,77 +4862,69 @@ namespace UEDMHardwareControl
             // 
             this.westOffsetIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.westOffsetIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.westOffsetIMonitorTextBox.Location = new System.Drawing.Point(325, 26);
-            this.westOffsetIMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.westOffsetIMonitorTextBox.Location = new System.Drawing.Point(244, 21);
             this.westOffsetIMonitorTextBox.Name = "westOffsetIMonitorTextBox";
             this.westOffsetIMonitorTextBox.ReadOnly = true;
-            this.westOffsetIMonitorTextBox.Size = new System.Drawing.Size(84, 22);
+            this.westOffsetIMonitorTextBox.Size = new System.Drawing.Size(64, 20);
             this.westOffsetIMonitorTextBox.TabIndex = 49;
             this.westOffsetIMonitorTextBox.Text = "0";
             // 
             // label85
             // 
             this.label85.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label85.Location = new System.Drawing.Point(423, 50);
-            this.label85.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label85.Location = new System.Drawing.Point(317, 41);
             this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(109, 34);
+            this.label85.Size = new System.Drawing.Size(82, 28);
             this.label85.TabIndex = 66;
             this.label85.Text = "East monitor (Hz/nA)";
             // 
             // label84
             // 
             this.label84.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label84.Location = new System.Drawing.Point(423, 16);
-            this.label84.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label84.Location = new System.Drawing.Point(317, 13);
             this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(109, 34);
+            this.label84.Size = new System.Drawing.Size(82, 28);
             this.label84.TabIndex = 65;
             this.label84.Text = "West monitor (Hz/nA)";
             // 
             // eastSlopeTextBox
             // 
-            this.eastSlopeTextBox.Location = new System.Drawing.Point(540, 47);
-            this.eastSlopeTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eastSlopeTextBox.Location = new System.Drawing.Point(405, 38);
             this.eastSlopeTextBox.Name = "eastSlopeTextBox";
-            this.eastSlopeTextBox.Size = new System.Drawing.Size(85, 22);
+            this.eastSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.eastSlopeTextBox.TabIndex = 64;
             this.eastSlopeTextBox.Text = "2000";
             // 
             // westSlopeTextBox
             // 
-            this.westSlopeTextBox.Location = new System.Drawing.Point(540, 18);
-            this.westSlopeTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.westSlopeTextBox.Location = new System.Drawing.Point(405, 15);
             this.westSlopeTextBox.Name = "westSlopeTextBox";
-            this.westSlopeTextBox.Size = new System.Drawing.Size(85, 22);
+            this.westSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.westSlopeTextBox.TabIndex = 63;
             this.westSlopeTextBox.Text = "2000";
             // 
             // leakageMonitorSlopeTextBox
             // 
-            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(540, 103);
-            this.leakageMonitorSlopeTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.leakageMonitorSlopeTextBox.Location = new System.Drawing.Point(405, 84);
             this.leakageMonitorSlopeTextBox.Name = "leakageMonitorSlopeTextBox";
-            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(85, 22);
+            this.leakageMonitorSlopeTextBox.Size = new System.Drawing.Size(65, 20);
             this.leakageMonitorSlopeTextBox.TabIndex = 2;
             this.leakageMonitorSlopeTextBox.Text = "0.200";
             // 
             // label64
             // 
-            this.label64.Location = new System.Drawing.Point(423, 84);
-            this.label64.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label64.Location = new System.Drawing.Point(317, 68);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(199, 53);
+            this.label64.Size = new System.Drawing.Size(149, 43);
             this.label64.TabIndex = 58;
             this.label64.Text = "Frequency to Current (kHz/I)\r\n 0.2 kHz/nA hi\r\n~2 kHz/uA lo";
             // 
             // stopIMonitorPollButton
             // 
             this.stopIMonitorPollButton.Enabled = false;
-            this.stopIMonitorPollButton.Location = new System.Drawing.Point(1204, 103);
-            this.stopIMonitorPollButton.Margin = new System.Windows.Forms.Padding(4);
+            this.stopIMonitorPollButton.Location = new System.Drawing.Point(903, 84);
             this.stopIMonitorPollButton.Name = "stopIMonitorPollButton";
-            this.stopIMonitorPollButton.Size = new System.Drawing.Size(100, 28);
+            this.stopIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopIMonitorPollButton.TabIndex = 55;
             this.stopIMonitorPollButton.Text = "Stop poll";
             this.stopIMonitorPollButton.UseVisualStyleBackColor = true;
@@ -5165,28 +4932,25 @@ namespace UEDMHardwareControl
             // 
             // label63
             // 
-            this.label63.Location = new System.Drawing.Point(1095, 18);
-            this.label63.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label63.Location = new System.Drawing.Point(821, 15);
             this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(139, 37);
+            this.label63.Size = new System.Drawing.Size(104, 30);
             this.label63.TabIndex = 56;
             this.label63.Text = "Poll period (ms)";
             // 
             // iMonitorPollPeriodInput
             // 
-            this.iMonitorPollPeriodInput.Location = new System.Drawing.Point(1221, 50);
-            this.iMonitorPollPeriodInput.Margin = new System.Windows.Forms.Padding(4);
+            this.iMonitorPollPeriodInput.Location = new System.Drawing.Point(916, 41);
             this.iMonitorPollPeriodInput.Name = "iMonitorPollPeriodInput";
-            this.iMonitorPollPeriodInput.Size = new System.Drawing.Size(84, 22);
+            this.iMonitorPollPeriodInput.Size = new System.Drawing.Size(64, 20);
             this.iMonitorPollPeriodInput.TabIndex = 0;
             this.iMonitorPollPeriodInput.Text = "100";
             // 
             // startIMonitorPollButton
             // 
-            this.startIMonitorPollButton.Location = new System.Drawing.Point(1095, 103);
-            this.startIMonitorPollButton.Margin = new System.Windows.Forms.Padding(4);
+            this.startIMonitorPollButton.Location = new System.Drawing.Point(821, 84);
             this.startIMonitorPollButton.Name = "startIMonitorPollButton";
-            this.startIMonitorPollButton.Size = new System.Drawing.Size(100, 28);
+            this.startIMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startIMonitorPollButton.TabIndex = 53;
             this.startIMonitorPollButton.Text = "Start poll";
             this.startIMonitorPollButton.UseVisualStyleBackColor = true;
@@ -5194,28 +4958,25 @@ namespace UEDMHardwareControl
             // 
             // IMonitorMeasurementLengthTextBox
             // 
-            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(325, 94);
-            this.IMonitorMeasurementLengthTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.IMonitorMeasurementLengthTextBox.Location = new System.Drawing.Point(244, 76);
             this.IMonitorMeasurementLengthTextBox.Name = "IMonitorMeasurementLengthTextBox";
-            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(84, 22);
+            this.IMonitorMeasurementLengthTextBox.Size = new System.Drawing.Size(64, 20);
             this.IMonitorMeasurementLengthTextBox.TabIndex = 1;
             this.IMonitorMeasurementLengthTextBox.Text = "0.01";
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(239, 30);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label17.Location = new System.Drawing.Point(179, 24);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(96, 28);
+            this.label17.Size = new System.Drawing.Size(72, 23);
             this.label17.TabIndex = 50;
             this.label17.Text = "W offset (Hz)";
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(241, 62);
-            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label16.Location = new System.Drawing.Point(181, 50);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(99, 28);
+            this.label16.Size = new System.Drawing.Size(74, 23);
             this.label16.TabIndex = 48;
             this.label16.Text = "E offset (Hz)";
             // 
@@ -5223,11 +4984,10 @@ namespace UEDMHardwareControl
             // 
             this.eastIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.eastIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.eastIMonitorTextBox.Location = new System.Drawing.Point(56, 58);
-            this.eastIMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.eastIMonitorTextBox.Location = new System.Drawing.Point(42, 47);
             this.eastIMonitorTextBox.Name = "eastIMonitorTextBox";
             this.eastIMonitorTextBox.ReadOnly = true;
-            this.eastIMonitorTextBox.Size = new System.Drawing.Size(51, 22);
+            this.eastIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
             this.eastIMonitorTextBox.TabIndex = 45;
             this.eastIMonitorTextBox.Text = "0";
             // 
@@ -5235,39 +4995,35 @@ namespace UEDMHardwareControl
             // 
             this.westIMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.westIMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.westIMonitorTextBox.Location = new System.Drawing.Point(56, 26);
-            this.westIMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.westIMonitorTextBox.Location = new System.Drawing.Point(42, 21);
             this.westIMonitorTextBox.Name = "westIMonitorTextBox";
             this.westIMonitorTextBox.ReadOnly = true;
-            this.westIMonitorTextBox.Size = new System.Drawing.Size(51, 22);
+            this.westIMonitorTextBox.Size = new System.Drawing.Size(39, 20);
             this.westIMonitorTextBox.TabIndex = 42;
             this.westIMonitorTextBox.Text = "0";
             // 
             // updateIMonitorButton
             // 
-            this.updateIMonitorButton.Location = new System.Drawing.Point(12, 94);
-            this.updateIMonitorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateIMonitorButton.Location = new System.Drawing.Point(9, 76);
             this.updateIMonitorButton.Name = "updateIMonitorButton";
-            this.updateIMonitorButton.Size = new System.Drawing.Size(71, 28);
+            this.updateIMonitorButton.Size = new System.Drawing.Size(53, 23);
             this.updateIMonitorButton.TabIndex = 40;
             this.updateIMonitorButton.Text = "Update";
             this.updateIMonitorButton.Click += new System.EventHandler(this.updateIMonitorButton_Click);
             // 
             // label18
             // 
-            this.label18.Location = new System.Drawing.Point(8, 62);
-            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label18.Location = new System.Drawing.Point(6, 50);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(53, 28);
+            this.label18.Size = new System.Drawing.Size(40, 23);
             this.label18.TabIndex = 37;
             this.label18.Text = "E (nA)";
             // 
             // label19
             // 
-            this.label19.Location = new System.Drawing.Point(8, 30);
-            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label19.Location = new System.Drawing.Point(6, 24);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(53, 28);
+            this.label19.Size = new System.Drawing.Size(40, 23);
             this.label19.TabIndex = 36;
             this.label19.Text = "W (nA)";
             // 
@@ -5276,10 +5032,9 @@ namespace UEDMHardwareControl
             this.tabPageADIO.BackColor = System.Drawing.Color.DarkGray;
             this.tabPageADIO.Controls.Add(this.gbAnalogueInputs);
             this.tabPageADIO.Controls.Add(this.gbDigitalOutputs);
-            this.tabPageADIO.Location = new System.Drawing.Point(4, 25);
-            this.tabPageADIO.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageADIO.Location = new System.Drawing.Point(4, 22);
             this.tabPageADIO.Name = "tabPageADIO";
-            this.tabPageADIO.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageADIO.Size = new System.Drawing.Size(1033, 715);
             this.tabPageADIO.TabIndex = 5;
             this.tabPageADIO.Text = "Analogue/Digital IO";
             // 
@@ -5294,21 +5049,18 @@ namespace UEDMHardwareControl
             this.gbAnalogueInputs.Controls.Add(this.tbAnalogueMonitoringPollPeriod);
             this.gbAnalogueInputs.Controls.Add(this.labelAnalogueMonitoringPollPeriod);
             this.gbAnalogueInputs.Controls.Add(this.chart4);
-            this.gbAnalogueInputs.Location = new System.Drawing.Point(192, 4);
-            this.gbAnalogueInputs.Margin = new System.Windows.Forms.Padding(4);
+            this.gbAnalogueInputs.Location = new System.Drawing.Point(144, 3);
             this.gbAnalogueInputs.Name = "gbAnalogueInputs";
-            this.gbAnalogueInputs.Padding = new System.Windows.Forms.Padding(4);
-            this.gbAnalogueInputs.Size = new System.Drawing.Size(1168, 854);
+            this.gbAnalogueInputs.Size = new System.Drawing.Size(876, 694);
             this.gbAnalogueInputs.TabIndex = 1;
             this.gbAnalogueInputs.TabStop = false;
             this.gbAnalogueInputs.Text = "Analogue inputs";
             // 
             // btSaveAICSVData
             // 
-            this.btSaveAICSVData.Location = new System.Drawing.Point(269, 694);
-            this.btSaveAICSVData.Margin = new System.Windows.Forms.Padding(4);
+            this.btSaveAICSVData.Location = new System.Drawing.Point(202, 564);
             this.btSaveAICSVData.Name = "btSaveAICSVData";
-            this.btSaveAICSVData.Size = new System.Drawing.Size(113, 28);
+            this.btSaveAICSVData.Size = new System.Drawing.Size(85, 23);
             this.btSaveAICSVData.TabIndex = 34;
             this.btSaveAICSVData.Text = "Save data";
             this.btSaveAICSVData.UseVisualStyleBackColor = true;
@@ -5355,11 +5107,9 @@ namespace UEDMHardwareControl
             this.gbAnalogueInputsPlotOptions.Controls.Add(this.btClearAllAnalogueInputData);
             this.gbAnalogueInputsPlotOptions.Controls.Add(this.cbPlotAnalogueInputAI12);
             this.gbAnalogueInputsPlotOptions.Controls.Add(this.cbPlotAnalogueInputAI14);
-            this.gbAnalogueInputsPlotOptions.Location = new System.Drawing.Point(399, 550);
-            this.gbAnalogueInputsPlotOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.gbAnalogueInputsPlotOptions.Location = new System.Drawing.Point(299, 447);
             this.gbAnalogueInputsPlotOptions.Name = "gbAnalogueInputsPlotOptions";
-            this.gbAnalogueInputsPlotOptions.Padding = new System.Windows.Forms.Padding(4);
-            this.gbAnalogueInputsPlotOptions.Size = new System.Drawing.Size(761, 297);
+            this.gbAnalogueInputsPlotOptions.Size = new System.Drawing.Size(571, 241);
             this.gbAnalogueInputsPlotOptions.TabIndex = 33;
             this.gbAnalogueInputsPlotOptions.TabStop = false;
             this.gbAnalogueInputsPlotOptions.Text = "Plot Options";
@@ -5367,56 +5117,50 @@ namespace UEDMHardwareControl
             // labelAIConversionStatus
             // 
             this.labelAIConversionStatus.AutoSize = true;
-            this.labelAIConversionStatus.Location = new System.Drawing.Point(588, 15);
-            this.labelAIConversionStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAIConversionStatus.Location = new System.Drawing.Point(441, 12);
             this.labelAIConversionStatus.Name = "labelAIConversionStatus";
-            this.labelAIConversionStatus.Size = new System.Drawing.Size(52, 17);
+            this.labelAIConversionStatus.Size = new System.Drawing.Size(40, 13);
             this.labelAIConversionStatus.TabIndex = 39;
             this.labelAIConversionStatus.Text = "Status:";
             // 
             // tbAIConversionStatus
             // 
-            this.tbAIConversionStatus.Location = new System.Drawing.Point(588, 33);
-            this.tbAIConversionStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAIConversionStatus.Location = new System.Drawing.Point(441, 27);
             this.tbAIConversionStatus.Multiline = true;
             this.tbAIConversionStatus.Name = "tbAIConversionStatus";
             this.tbAIConversionStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbAIConversionStatus.Size = new System.Drawing.Size(164, 137);
+            this.tbAIConversionStatus.Size = new System.Drawing.Size(124, 112);
             this.tbAIConversionStatus.TabIndex = 38;
             // 
             // tbAI12Units
             // 
-            this.tbAI12Units.Location = new System.Drawing.Point(528, 63);
-            this.tbAI12Units.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAI12Units.Location = new System.Drawing.Point(396, 51);
             this.tbAI12Units.Name = "tbAI12Units";
-            this.tbAI12Units.Size = new System.Drawing.Size(51, 22);
+            this.tbAI12Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI12Units.TabIndex = 37;
             this.tbAI12Units.Text = "(V)";
             // 
             // tbAI13Units
             // 
-            this.tbAI13Units.Location = new System.Drawing.Point(528, 91);
-            this.tbAI13Units.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAI13Units.Location = new System.Drawing.Point(396, 74);
             this.tbAI13Units.Name = "tbAI13Units";
-            this.tbAI13Units.Size = new System.Drawing.Size(51, 22);
+            this.tbAI13Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI13Units.TabIndex = 36;
             this.tbAI13Units.Text = "(V)";
             // 
             // tbAI14Units
             // 
-            this.tbAI14Units.Location = new System.Drawing.Point(528, 119);
-            this.tbAI14Units.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAI14Units.Location = new System.Drawing.Point(396, 97);
             this.tbAI14Units.Name = "tbAI14Units";
-            this.tbAI14Units.Size = new System.Drawing.Size(51, 22);
+            this.tbAI14Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI14Units.TabIndex = 35;
             this.tbAI14Units.Text = "(V)";
             // 
             // tbAI15Units
             // 
-            this.tbAI15Units.Location = new System.Drawing.Point(528, 148);
-            this.tbAI15Units.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAI15Units.Location = new System.Drawing.Point(396, 120);
             this.tbAI15Units.Name = "tbAI15Units";
-            this.tbAI15Units.Size = new System.Drawing.Size(51, 22);
+            this.tbAI15Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI15Units.TabIndex = 34;
             this.tbAI15Units.Text = "(V)";
             // 
@@ -5426,10 +5170,9 @@ namespace UEDMHardwareControl
             this.comboBoxAI13Conversion.Items.AddRange(new object[] {
             "None",
             "Ohm Meter"});
-            this.comboBoxAI13Conversion.Location = new System.Drawing.Point(389, 91);
-            this.comboBoxAI13Conversion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAI13Conversion.Location = new System.Drawing.Point(292, 74);
             this.comboBoxAI13Conversion.Name = "comboBoxAI13Conversion";
-            this.comboBoxAI13Conversion.Size = new System.Drawing.Size(129, 24);
+            this.comboBoxAI13Conversion.Size = new System.Drawing.Size(98, 21);
             this.comboBoxAI13Conversion.TabIndex = 33;
             this.comboBoxAI13Conversion.Text = "None";
             this.comboBoxAI13Conversion.SelectedIndexChanged += new System.EventHandler(this.comboBoxAI13Conversion_SelectedIndexChanged);
@@ -5440,10 +5183,9 @@ namespace UEDMHardwareControl
             this.comboBoxAI14Conversion.Items.AddRange(new object[] {
             "None",
             "Ohm Meter"});
-            this.comboBoxAI14Conversion.Location = new System.Drawing.Point(389, 119);
-            this.comboBoxAI14Conversion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAI14Conversion.Location = new System.Drawing.Point(292, 97);
             this.comboBoxAI14Conversion.Name = "comboBoxAI14Conversion";
-            this.comboBoxAI14Conversion.Size = new System.Drawing.Size(129, 24);
+            this.comboBoxAI14Conversion.Size = new System.Drawing.Size(98, 21);
             this.comboBoxAI14Conversion.TabIndex = 32;
             this.comboBoxAI14Conversion.Text = "None";
             this.comboBoxAI14Conversion.SelectedIndexChanged += new System.EventHandler(this.comboBoxAI14Conversion_SelectedIndexChanged);
@@ -5454,10 +5196,9 @@ namespace UEDMHardwareControl
             this.comboBoxAI15Conversion.Items.AddRange(new object[] {
             "None",
             "Ohm Meter"});
-            this.comboBoxAI15Conversion.Location = new System.Drawing.Point(389, 148);
-            this.comboBoxAI15Conversion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAI15Conversion.Location = new System.Drawing.Point(292, 120);
             this.comboBoxAI15Conversion.Name = "comboBoxAI15Conversion";
-            this.comboBoxAI15Conversion.Size = new System.Drawing.Size(129, 24);
+            this.comboBoxAI15Conversion.Size = new System.Drawing.Size(98, 21);
             this.comboBoxAI15Conversion.TabIndex = 31;
             this.comboBoxAI15Conversion.Text = "None";
             this.comboBoxAI15Conversion.SelectedIndexChanged += new System.EventHandler(this.comboBoxAI15Conversion_SelectedIndexChanged);
@@ -5468,20 +5209,18 @@ namespace UEDMHardwareControl
             this.comboBoxAI12Conversion.Items.AddRange(new object[] {
             "None",
             "Ohm Meter"});
-            this.comboBoxAI12Conversion.Location = new System.Drawing.Point(389, 63);
-            this.comboBoxAI12Conversion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAI12Conversion.Location = new System.Drawing.Point(292, 51);
             this.comboBoxAI12Conversion.Name = "comboBoxAI12Conversion";
-            this.comboBoxAI12Conversion.Size = new System.Drawing.Size(129, 24);
+            this.comboBoxAI12Conversion.Size = new System.Drawing.Size(98, 21);
             this.comboBoxAI12Conversion.TabIndex = 30;
             this.comboBoxAI12Conversion.Text = "None";
             this.comboBoxAI12Conversion.SelectedIndexChanged += new System.EventHandler(this.comboBoxAI12Conversion_SelectedIndexChanged);
             // 
             // tbAI11Units
             // 
-            this.tbAI11Units.Location = new System.Drawing.Point(528, 33);
-            this.tbAI11Units.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAI11Units.Location = new System.Drawing.Point(396, 27);
             this.tbAI11Units.Name = "tbAI11Units";
-            this.tbAI11Units.Size = new System.Drawing.Size(51, 22);
+            this.tbAI11Units.Size = new System.Drawing.Size(39, 20);
             this.tbAI11Units.TabIndex = 29;
             this.tbAI11Units.Text = "(V)";
             // 
@@ -5491,10 +5230,9 @@ namespace UEDMHardwareControl
             this.comboBoxAI11Conversion.Items.AddRange(new object[] {
             "None",
             "Ohm Meter"});
-            this.comboBoxAI11Conversion.Location = new System.Drawing.Point(389, 33);
-            this.comboBoxAI11Conversion.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAI11Conversion.Location = new System.Drawing.Point(292, 27);
             this.comboBoxAI11Conversion.Name = "comboBoxAI11Conversion";
-            this.comboBoxAI11Conversion.Size = new System.Drawing.Size(129, 24);
+            this.comboBoxAI11Conversion.Size = new System.Drawing.Size(98, 21);
             this.comboBoxAI11Conversion.TabIndex = 28;
             this.comboBoxAI11Conversion.Text = "None";
             this.comboBoxAI11Conversion.SelectedIndexChanged += new System.EventHandler(this.comboBoxAI11Conversion_SelectedIndexChanged);
@@ -5502,69 +5240,61 @@ namespace UEDMHardwareControl
             // labelAIConversions
             // 
             this.labelAIConversions.AutoSize = true;
-            this.labelAIConversions.Location = new System.Drawing.Point(391, 15);
-            this.labelAIConversions.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAIConversions.Location = new System.Drawing.Point(293, 12);
             this.labelAIConversions.Name = "labelAIConversions";
-            this.labelAIConversions.Size = new System.Drawing.Size(90, 17);
+            this.labelAIConversions.Size = new System.Drawing.Size(68, 13);
             this.labelAIConversions.TabIndex = 27;
             this.labelAIConversions.Text = "Conversions:";
             // 
             // labelAIMonitors
             // 
             this.labelAIMonitors.AutoSize = true;
-            this.labelAIMonitors.Location = new System.Drawing.Point(259, 16);
-            this.labelAIMonitors.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAIMonitors.Location = new System.Drawing.Point(194, 13);
             this.labelAIMonitors.Name = "labelAIMonitors";
-            this.labelAIMonitors.Size = new System.Drawing.Size(66, 17);
+            this.labelAIMonitors.Size = new System.Drawing.Size(50, 13);
             this.labelAIMonitors.TabIndex = 26;
             this.labelAIMonitors.Text = "Monitors:";
             // 
             // tbMonitorAI13
             // 
-            this.tbMonitorAI13.Location = new System.Drawing.Point(260, 92);
-            this.tbMonitorAI13.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMonitorAI13.Location = new System.Drawing.Point(195, 75);
             this.tbMonitorAI13.Name = "tbMonitorAI13";
-            this.tbMonitorAI13.Size = new System.Drawing.Size(111, 22);
+            this.tbMonitorAI13.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI13.TabIndex = 25;
             // 
             // tbMonitorAI15
             // 
-            this.tbMonitorAI15.Location = new System.Drawing.Point(260, 149);
-            this.tbMonitorAI15.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMonitorAI15.Location = new System.Drawing.Point(195, 121);
             this.tbMonitorAI15.Name = "tbMonitorAI15";
-            this.tbMonitorAI15.Size = new System.Drawing.Size(111, 22);
+            this.tbMonitorAI15.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI15.TabIndex = 24;
             // 
             // tbMonitorAI14
             // 
-            this.tbMonitorAI14.Location = new System.Drawing.Point(260, 121);
-            this.tbMonitorAI14.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMonitorAI14.Location = new System.Drawing.Point(195, 98);
             this.tbMonitorAI14.Name = "tbMonitorAI14";
-            this.tbMonitorAI14.Size = new System.Drawing.Size(111, 22);
+            this.tbMonitorAI14.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI14.TabIndex = 23;
             // 
             // tbMonitorAI12
             // 
-            this.tbMonitorAI12.Location = new System.Drawing.Point(260, 64);
-            this.tbMonitorAI12.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMonitorAI12.Location = new System.Drawing.Point(195, 52);
             this.tbMonitorAI12.Name = "tbMonitorAI12";
-            this.tbMonitorAI12.Size = new System.Drawing.Size(111, 22);
+            this.tbMonitorAI12.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI12.TabIndex = 22;
             // 
             // tbMonitorAI11
             // 
-            this.tbMonitorAI11.Location = new System.Drawing.Point(260, 36);
-            this.tbMonitorAI11.Margin = new System.Windows.Forms.Padding(4);
+            this.tbMonitorAI11.Location = new System.Drawing.Point(195, 29);
             this.tbMonitorAI11.Name = "tbMonitorAI11";
-            this.tbMonitorAI11.Size = new System.Drawing.Size(111, 22);
+            this.tbMonitorAI11.Size = new System.Drawing.Size(84, 20);
             this.tbMonitorAI11.TabIndex = 21;
             // 
             // btUpdateAnalogueInputsChartRollingAxisPeriod
             // 
-            this.btUpdateAnalogueInputsChartRollingAxisPeriod.Location = new System.Drawing.Point(629, 255);
-            this.btUpdateAnalogueInputsChartRollingAxisPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateAnalogueInputsChartRollingAxisPeriod.Location = new System.Drawing.Point(472, 207);
             this.btUpdateAnalogueInputsChartRollingAxisPeriod.Name = "btUpdateAnalogueInputsChartRollingAxisPeriod";
-            this.btUpdateAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(112, 28);
+            this.btUpdateAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(84, 23);
             this.btUpdateAnalogueInputsChartRollingAxisPeriod.TabIndex = 20;
             this.btUpdateAnalogueInputsChartRollingAxisPeriod.Text = "Update";
             this.btUpdateAnalogueInputsChartRollingAxisPeriod.UseVisualStyleBackColor = true;
@@ -5573,20 +5303,18 @@ namespace UEDMHardwareControl
             // labelAnalogueInputChartRollingAxisPeriod
             // 
             this.labelAnalogueInputChartRollingAxisPeriod.AutoSize = true;
-            this.labelAnalogueInputChartRollingAxisPeriod.Location = new System.Drawing.Point(385, 261);
-            this.labelAnalogueInputChartRollingAxisPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAnalogueInputChartRollingAxisPeriod.Location = new System.Drawing.Point(289, 212);
             this.labelAnalogueInputChartRollingAxisPeriod.Name = "labelAnalogueInputChartRollingAxisPeriod";
-            this.labelAnalogueInputChartRollingAxisPeriod.Size = new System.Drawing.Size(131, 17);
+            this.labelAnalogueInputChartRollingAxisPeriod.Size = new System.Drawing.Size(96, 13);
             this.labelAnalogueInputChartRollingAxisPeriod.TabIndex = 19;
             this.labelAnalogueInputChartRollingAxisPeriod.Text = "Rolling period (ms):";
             // 
             // cbPlotAnalogueInputAI15
             // 
             this.cbPlotAnalogueInputAI15.AutoSize = true;
-            this.cbPlotAnalogueInputAI15.Location = new System.Drawing.Point(156, 151);
-            this.cbPlotAnalogueInputAI15.Margin = new System.Windows.Forms.Padding(4);
+            this.cbPlotAnalogueInputAI15.Location = new System.Drawing.Point(117, 123);
             this.cbPlotAnalogueInputAI15.Name = "cbPlotAnalogueInputAI15";
-            this.cbPlotAnalogueInputAI15.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI15.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI15.TabIndex = 15;
             this.cbPlotAnalogueInputAI15.Text = "AI15";
             this.cbPlotAnalogueInputAI15.UseVisualStyleBackColor = true;
@@ -5594,10 +5322,9 @@ namespace UEDMHardwareControl
             // 
             // btClearAI15SeriesData
             // 
-            this.btClearAI15SeriesData.Location = new System.Drawing.Point(152, 257);
-            this.btClearAI15SeriesData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAI15SeriesData.Location = new System.Drawing.Point(114, 209);
             this.btClearAI15SeriesData.Name = "btClearAI15SeriesData";
-            this.btClearAI15SeriesData.Size = new System.Drawing.Size(100, 28);
+            this.btClearAI15SeriesData.Size = new System.Drawing.Size(75, 23);
             this.btClearAI15SeriesData.TabIndex = 14;
             this.btClearAI15SeriesData.Text = "AI15";
             this.btClearAI15SeriesData.UseVisualStyleBackColor = true;
@@ -5605,28 +5332,25 @@ namespace UEDMHardwareControl
             // 
             // tbAnalogueInputsChartRollingAxisPeriod
             // 
-            this.tbAnalogueInputsChartRollingAxisPeriod.Location = new System.Drawing.Point(521, 257);
-            this.tbAnalogueInputsChartRollingAxisPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAnalogueInputsChartRollingAxisPeriod.Location = new System.Drawing.Point(391, 209);
             this.tbAnalogueInputsChartRollingAxisPeriod.Name = "tbAnalogueInputsChartRollingAxisPeriod";
-            this.tbAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(99, 22);
+            this.tbAnalogueInputsChartRollingAxisPeriod.Size = new System.Drawing.Size(75, 20);
             this.tbAnalogueInputsChartRollingAxisPeriod.TabIndex = 18;
             // 
             // labelClearAnalogueInputData
             // 
             this.labelClearAnalogueInputData.AutoSize = true;
-            this.labelClearAnalogueInputData.Location = new System.Drawing.Point(40, 192);
-            this.labelClearAnalogueInputData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelClearAnalogueInputData.Location = new System.Drawing.Point(30, 156);
             this.labelClearAnalogueInputData.Name = "labelClearAnalogueInputData";
-            this.labelClearAnalogueInputData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearAnalogueInputData.Size = new System.Drawing.Size(78, 13);
             this.labelClearAnalogueInputData.TabIndex = 13;
             this.labelClearAnalogueInputData.Text = "Clear plot data:";
             // 
             // btClearAI13SeriesData
             // 
-            this.btClearAI13SeriesData.Location = new System.Drawing.Point(152, 223);
-            this.btClearAI13SeriesData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAI13SeriesData.Location = new System.Drawing.Point(114, 181);
             this.btClearAI13SeriesData.Name = "btClearAI13SeriesData";
-            this.btClearAI13SeriesData.Size = new System.Drawing.Size(100, 28);
+            this.btClearAI13SeriesData.Size = new System.Drawing.Size(75, 23);
             this.btClearAI13SeriesData.TabIndex = 12;
             this.btClearAI13SeriesData.Text = "AI13";
             this.btClearAI13SeriesData.UseVisualStyleBackColor = true;
@@ -5635,10 +5359,9 @@ namespace UEDMHardwareControl
             // cbEnableAnalogueInputsChartRollingTimeAxis
             // 
             this.cbEnableAnalogueInputsChartRollingTimeAxis.AutoSize = true;
-            this.cbEnableAnalogueInputsChartRollingTimeAxis.Location = new System.Drawing.Point(521, 225);
-            this.cbEnableAnalogueInputsChartRollingTimeAxis.Margin = new System.Windows.Forms.Padding(4);
+            this.cbEnableAnalogueInputsChartRollingTimeAxis.Location = new System.Drawing.Point(391, 183);
             this.cbEnableAnalogueInputsChartRollingTimeAxis.Name = "cbEnableAnalogueInputsChartRollingTimeAxis";
-            this.cbEnableAnalogueInputsChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnableAnalogueInputsChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnableAnalogueInputsChartRollingTimeAxis.TabIndex = 17;
             this.cbEnableAnalogueInputsChartRollingTimeAxis.Text = "Enable";
             this.cbEnableAnalogueInputsChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -5650,10 +5373,9 @@ namespace UEDMHardwareControl
             this.comboBoxAnalogueInputsChartScaleY.Items.AddRange(new object[] {
             "Linear",
             "Log"});
-            this.comboBoxAnalogueInputsChartScaleY.Location = new System.Drawing.Point(517, 188);
-            this.comboBoxAnalogueInputsChartScaleY.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxAnalogueInputsChartScaleY.Location = new System.Drawing.Point(388, 153);
             this.comboBoxAnalogueInputsChartScaleY.Name = "comboBoxAnalogueInputsChartScaleY";
-            this.comboBoxAnalogueInputsChartScaleY.Size = new System.Drawing.Size(103, 24);
+            this.comboBoxAnalogueInputsChartScaleY.Size = new System.Drawing.Size(78, 21);
             this.comboBoxAnalogueInputsChartScaleY.TabIndex = 1;
             this.comboBoxAnalogueInputsChartScaleY.Text = "Linear";
             this.comboBoxAnalogueInputsChartScaleY.SelectedIndexChanged += new System.EventHandler(this.comboBoxAnalogueInputsChartScaleY_SelectedIndexChanged);
@@ -5661,19 +5383,17 @@ namespace UEDMHardwareControl
             // labelAnalogueInputsChartScale
             // 
             this.labelAnalogueInputsChartScale.AutoSize = true;
-            this.labelAnalogueInputsChartScale.Location = new System.Drawing.Point(435, 192);
-            this.labelAnalogueInputsChartScale.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAnalogueInputsChartScale.Location = new System.Drawing.Point(326, 156);
             this.labelAnalogueInputsChartScale.Name = "labelAnalogueInputsChartScale";
-            this.labelAnalogueInputsChartScale.Size = new System.Drawing.Size(73, 17);
+            this.labelAnalogueInputsChartScale.Size = new System.Drawing.Size(56, 13);
             this.labelAnalogueInputsChartScale.TabIndex = 0;
             this.labelAnalogueInputsChartScale.Text = "Plot scale:";
             // 
             // btClearAI14SeriesData
             // 
-            this.btClearAI14SeriesData.Location = new System.Drawing.Point(260, 223);
-            this.btClearAI14SeriesData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAI14SeriesData.Location = new System.Drawing.Point(195, 181);
             this.btClearAI14SeriesData.Name = "btClearAI14SeriesData";
-            this.btClearAI14SeriesData.Size = new System.Drawing.Size(112, 28);
+            this.btClearAI14SeriesData.Size = new System.Drawing.Size(84, 23);
             this.btClearAI14SeriesData.TabIndex = 11;
             this.btClearAI14SeriesData.Text = "AI14";
             this.btClearAI14SeriesData.UseVisualStyleBackColor = true;
@@ -5682,10 +5402,9 @@ namespace UEDMHardwareControl
             // cbPlotAnalogueInputAI11
             // 
             this.cbPlotAnalogueInputAI11.AutoSize = true;
-            this.cbPlotAnalogueInputAI11.Location = new System.Drawing.Point(156, 38);
-            this.cbPlotAnalogueInputAI11.Margin = new System.Windows.Forms.Padding(4);
+            this.cbPlotAnalogueInputAI11.Location = new System.Drawing.Point(117, 31);
             this.cbPlotAnalogueInputAI11.Name = "cbPlotAnalogueInputAI11";
-            this.cbPlotAnalogueInputAI11.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI11.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI11.TabIndex = 4;
             this.cbPlotAnalogueInputAI11.Text = "AI11";
             this.cbPlotAnalogueInputAI11.UseVisualStyleBackColor = true;
@@ -5694,19 +5413,17 @@ namespace UEDMHardwareControl
             // labelEnableAnalogueInputChartRollingAxis
             // 
             this.labelEnableAnalogueInputChartRollingAxis.AutoSize = true;
-            this.labelEnableAnalogueInputChartRollingAxis.Location = new System.Drawing.Point(396, 228);
-            this.labelEnableAnalogueInputChartRollingAxis.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelEnableAnalogueInputChartRollingAxis.Location = new System.Drawing.Point(297, 185);
             this.labelEnableAnalogueInputChartRollingAxis.Name = "labelEnableAnalogueInputChartRollingAxis";
-            this.labelEnableAnalogueInputChartRollingAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelEnableAnalogueInputChartRollingAxis.Size = new System.Drawing.Size(85, 13);
             this.labelEnableAnalogueInputChartRollingAxis.TabIndex = 16;
             this.labelEnableAnalogueInputChartRollingAxis.Text = "Rolling time axis:";
             // 
             // btClearAI12SeriesData
             // 
-            this.btClearAI12SeriesData.Location = new System.Drawing.Point(260, 186);
-            this.btClearAI12SeriesData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAI12SeriesData.Location = new System.Drawing.Point(195, 151);
             this.btClearAI12SeriesData.Name = "btClearAI12SeriesData";
-            this.btClearAI12SeriesData.Size = new System.Drawing.Size(112, 28);
+            this.btClearAI12SeriesData.Size = new System.Drawing.Size(84, 23);
             this.btClearAI12SeriesData.TabIndex = 10;
             this.btClearAI12SeriesData.Text = "AI12";
             this.btClearAI12SeriesData.UseVisualStyleBackColor = true;
@@ -5715,19 +5432,17 @@ namespace UEDMHardwareControl
             // labelSelectAnalogueInputsToPlot
             // 
             this.labelSelectAnalogueInputsToPlot.AutoSize = true;
-            this.labelSelectAnalogueInputsToPlot.Location = new System.Drawing.Point(20, 39);
-            this.labelSelectAnalogueInputsToPlot.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelSelectAnalogueInputsToPlot.Location = new System.Drawing.Point(15, 32);
             this.labelSelectAnalogueInputsToPlot.Name = "labelSelectAnalogueInputsToPlot";
-            this.labelSelectAnalogueInputsToPlot.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectAnalogueInputsToPlot.Size = new System.Drawing.Size(96, 13);
             this.labelSelectAnalogueInputsToPlot.TabIndex = 3;
             this.labelSelectAnalogueInputsToPlot.Text = "Select data to plot:";
             // 
             // btClearAI11SeriesData
             // 
-            this.btClearAI11SeriesData.Location = new System.Drawing.Point(152, 186);
-            this.btClearAI11SeriesData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAI11SeriesData.Location = new System.Drawing.Point(114, 151);
             this.btClearAI11SeriesData.Name = "btClearAI11SeriesData";
-            this.btClearAI11SeriesData.Size = new System.Drawing.Size(100, 28);
+            this.btClearAI11SeriesData.Size = new System.Drawing.Size(75, 23);
             this.btClearAI11SeriesData.TabIndex = 9;
             this.btClearAI11SeriesData.Text = "AI11";
             this.btClearAI11SeriesData.UseVisualStyleBackColor = true;
@@ -5736,10 +5451,9 @@ namespace UEDMHardwareControl
             // cbPlotAnalogueInputAI13
             // 
             this.cbPlotAnalogueInputAI13.AutoSize = true;
-            this.cbPlotAnalogueInputAI13.Location = new System.Drawing.Point(156, 95);
-            this.cbPlotAnalogueInputAI13.Margin = new System.Windows.Forms.Padding(4);
+            this.cbPlotAnalogueInputAI13.Location = new System.Drawing.Point(117, 77);
             this.cbPlotAnalogueInputAI13.Name = "cbPlotAnalogueInputAI13";
-            this.cbPlotAnalogueInputAI13.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI13.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI13.TabIndex = 5;
             this.cbPlotAnalogueInputAI13.Text = "AI13";
             this.cbPlotAnalogueInputAI13.UseVisualStyleBackColor = true;
@@ -5748,10 +5462,9 @@ namespace UEDMHardwareControl
             // btClearAllAnalogueInputData
             // 
             this.btClearAllAnalogueInputData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btClearAllAnalogueInputData.Location = new System.Drawing.Point(260, 257);
-            this.btClearAllAnalogueInputData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAllAnalogueInputData.Location = new System.Drawing.Point(195, 209);
             this.btClearAllAnalogueInputData.Name = "btClearAllAnalogueInputData";
-            this.btClearAllAnalogueInputData.Size = new System.Drawing.Size(112, 28);
+            this.btClearAllAnalogueInputData.Size = new System.Drawing.Size(84, 23);
             this.btClearAllAnalogueInputData.TabIndex = 8;
             this.btClearAllAnalogueInputData.Text = "Clear all";
             this.btClearAllAnalogueInputData.UseVisualStyleBackColor = true;
@@ -5760,10 +5473,9 @@ namespace UEDMHardwareControl
             // cbPlotAnalogueInputAI12
             // 
             this.cbPlotAnalogueInputAI12.AutoSize = true;
-            this.cbPlotAnalogueInputAI12.Location = new System.Drawing.Point(156, 65);
-            this.cbPlotAnalogueInputAI12.Margin = new System.Windows.Forms.Padding(4);
+            this.cbPlotAnalogueInputAI12.Location = new System.Drawing.Point(117, 53);
             this.cbPlotAnalogueInputAI12.Name = "cbPlotAnalogueInputAI12";
-            this.cbPlotAnalogueInputAI12.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI12.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI12.TabIndex = 6;
             this.cbPlotAnalogueInputAI12.Text = "AI12";
             this.cbPlotAnalogueInputAI12.UseVisualStyleBackColor = true;
@@ -5772,10 +5484,9 @@ namespace UEDMHardwareControl
             // cbPlotAnalogueInputAI14
             // 
             this.cbPlotAnalogueInputAI14.AutoSize = true;
-            this.cbPlotAnalogueInputAI14.Location = new System.Drawing.Point(156, 123);
-            this.cbPlotAnalogueInputAI14.Margin = new System.Windows.Forms.Padding(4);
+            this.cbPlotAnalogueInputAI14.Location = new System.Drawing.Point(117, 100);
             this.cbPlotAnalogueInputAI14.Name = "cbPlotAnalogueInputAI14";
-            this.cbPlotAnalogueInputAI14.Size = new System.Drawing.Size(58, 21);
+            this.cbPlotAnalogueInputAI14.Size = new System.Drawing.Size(48, 17);
             this.cbPlotAnalogueInputAI14.TabIndex = 7;
             this.cbPlotAnalogueInputAI14.Text = "AI14";
             this.cbPlotAnalogueInputAI14.UseVisualStyleBackColor = true;
@@ -5783,10 +5494,9 @@ namespace UEDMHardwareControl
             // 
             // btUpdateAnalogueMonitoringPollPeriod
             // 
-            this.btUpdateAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(269, 633);
-            this.btUpdateAnalogueMonitoringPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(202, 514);
             this.btUpdateAnalogueMonitoringPollPeriod.Name = "btUpdateAnalogueMonitoringPollPeriod";
-            this.btUpdateAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(113, 28);
+            this.btUpdateAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(85, 23);
             this.btUpdateAnalogueMonitoringPollPeriod.TabIndex = 32;
             this.btUpdateAnalogueMonitoringPollPeriod.Text = "Update";
             this.btUpdateAnalogueMonitoringPollPeriod.UseVisualStyleBackColor = true;
@@ -5794,10 +5504,9 @@ namespace UEDMHardwareControl
             // 
             // btStartMonitoringAnalogueInputs
             // 
-            this.btStartMonitoringAnalogueInputs.Location = new System.Drawing.Point(269, 561);
-            this.btStartMonitoringAnalogueInputs.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartMonitoringAnalogueInputs.Location = new System.Drawing.Point(202, 456);
             this.btStartMonitoringAnalogueInputs.Name = "btStartMonitoringAnalogueInputs";
-            this.btStartMonitoringAnalogueInputs.Size = new System.Drawing.Size(113, 28);
+            this.btStartMonitoringAnalogueInputs.Size = new System.Drawing.Size(85, 23);
             this.btStartMonitoringAnalogueInputs.TabIndex = 27;
             this.btStartMonitoringAnalogueInputs.Text = "Start";
             this.btStartMonitoringAnalogueInputs.UseVisualStyleBackColor = true;
@@ -5806,20 +5515,18 @@ namespace UEDMHardwareControl
             // labelMonitorAnalogueInputs
             // 
             this.labelMonitorAnalogueInputs.AutoSize = true;
-            this.labelMonitorAnalogueInputs.Location = new System.Drawing.Point(97, 567);
-            this.labelMonitorAnalogueInputs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMonitorAnalogueInputs.Location = new System.Drawing.Point(73, 461);
             this.labelMonitorAnalogueInputs.Name = "labelMonitorAnalogueInputs";
-            this.labelMonitorAnalogueInputs.Size = new System.Drawing.Size(164, 17);
+            this.labelMonitorAnalogueInputs.Size = new System.Drawing.Size(123, 13);
             this.labelMonitorAnalogueInputs.TabIndex = 29;
             this.labelMonitorAnalogueInputs.Text = "Monitor analogue inputs:";
             // 
             // btStopMonitoringAnalogueInputs
             // 
             this.btStopMonitoringAnalogueInputs.Enabled = false;
-            this.btStopMonitoringAnalogueInputs.Location = new System.Drawing.Point(269, 597);
-            this.btStopMonitoringAnalogueInputs.Margin = new System.Windows.Forms.Padding(4);
+            this.btStopMonitoringAnalogueInputs.Location = new System.Drawing.Point(202, 485);
             this.btStopMonitoringAnalogueInputs.Name = "btStopMonitoringAnalogueInputs";
-            this.btStopMonitoringAnalogueInputs.Size = new System.Drawing.Size(113, 28);
+            this.btStopMonitoringAnalogueInputs.Size = new System.Drawing.Size(85, 23);
             this.btStopMonitoringAnalogueInputs.TabIndex = 28;
             this.btStopMonitoringAnalogueInputs.Text = "Stop";
             this.btStopMonitoringAnalogueInputs.UseVisualStyleBackColor = true;
@@ -5827,141 +5534,136 @@ namespace UEDMHardwareControl
             // 
             // tbAnalogueMonitoringPollPeriod
             // 
-            this.tbAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(128, 635);
-            this.tbAnalogueMonitoringPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(96, 516);
             this.tbAnalogueMonitoringPollPeriod.Name = "tbAnalogueMonitoringPollPeriod";
-            this.tbAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(132, 22);
+            this.tbAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(100, 20);
             this.tbAnalogueMonitoringPollPeriod.TabIndex = 31;
             this.tbAnalogueMonitoringPollPeriod.Text = "1000";
             // 
             // labelAnalogueMonitoringPollPeriod
             // 
             this.labelAnalogueMonitoringPollPeriod.AutoSize = true;
-            this.labelAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(12, 639);
-            this.labelAnalogueMonitoringPollPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAnalogueMonitoringPollPeriod.Location = new System.Drawing.Point(9, 519);
             this.labelAnalogueMonitoringPollPeriod.Name = "labelAnalogueMonitoringPollPeriod";
-            this.labelAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelAnalogueMonitoringPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelAnalogueMonitoringPollPeriod.TabIndex = 30;
             this.labelAnalogueMonitoringPollPeriod.Text = "Poll period (ms):";
             // 
             // chart4
             // 
             this.chart4.BackColor = System.Drawing.Color.Black;
-            chartArea14.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea14.AxisX.IsStartedFromZero = false;
-            chartArea14.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea14.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea14.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisX.MajorGrid.Enabled = false;
-            chartArea14.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisX.Title = "Time";
-            chartArea14.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea14.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea14.AxisY.IsStartedFromZero = false;
-            chartArea14.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea14.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisY.MajorGrid.Enabled = false;
-            chartArea14.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisY.Title = "Value (See units indicators)";
-            chartArea14.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea14.BackColor = System.Drawing.Color.Black;
-            chartArea14.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea14.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea14.BorderColor = System.Drawing.Color.White;
-            chartArea14.Name = "ChartAreaAnalogueInputsChart";
-            this.chart4.ChartAreas.Add(chartArea14);
-            legend14.BackColor = System.Drawing.Color.Black;
-            legend14.Enabled = false;
-            legend14.ForeColor = System.Drawing.Color.White;
-            legend14.Name = "LegendAnalogueInputs";
-            this.chart4.Legends.Add(legend14);
-            this.chart4.Location = new System.Drawing.Point(8, 26);
-            this.chart4.Margin = new System.Windows.Forms.Padding(4);
+            chartArea8.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea8.AxisX.IsStartedFromZero = false;
+            chartArea8.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea8.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea8.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisX.MajorGrid.Enabled = false;
+            chartArea8.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisX.Title = "Time";
+            chartArea8.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea8.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea8.AxisY.IsStartedFromZero = false;
+            chartArea8.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea8.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisY.MajorGrid.Enabled = false;
+            chartArea8.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea8.AxisY.Title = "Value (See units indicators)";
+            chartArea8.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea8.BackColor = System.Drawing.Color.Black;
+            chartArea8.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea8.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea8.BorderColor = System.Drawing.Color.White;
+            chartArea8.Name = "ChartAreaAnalogueInputsChart";
+            this.chart4.ChartAreas.Add(chartArea8);
+            legend8.BackColor = System.Drawing.Color.Black;
+            legend8.Enabled = false;
+            legend8.ForeColor = System.Drawing.Color.White;
+            legend8.Name = "LegendAnalogueInputs";
+            this.chart4.Legends.Add(legend8);
+            this.chart4.Location = new System.Drawing.Point(6, 21);
             this.chart4.Name = "chart4";
-            series47.ChartArea = "ChartAreaAnalogueInputsChart";
-            series47.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series47.Enabled = false;
-            series47.Legend = "LegendAnalogueInputs";
-            series47.Name = "AI11";
-            series47.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series48.ChartArea = "ChartAreaAnalogueInputsChart";
-            series48.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series48.Enabled = false;
-            series48.Legend = "LegendAnalogueInputs";
-            series48.Name = "AI12";
-            series48.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series49.ChartArea = "ChartAreaAnalogueInputsChart";
-            series49.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series49.Enabled = false;
-            series49.Legend = "LegendAnalogueInputs";
-            series49.Name = "AI13";
-            series49.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series50.ChartArea = "ChartAreaAnalogueInputsChart";
-            series50.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series50.Enabled = false;
-            series50.Legend = "LegendAnalogueInputs";
-            series50.Name = "AI14";
-            series50.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series51.ChartArea = "ChartAreaAnalogueInputsChart";
-            series51.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series51.Enabled = false;
-            series51.Legend = "LegendAnalogueInputs";
-            series51.Name = "AI15";
-            series51.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series52.ChartArea = "ChartAreaAnalogueInputsChart";
-            series52.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series52.Enabled = false;
-            series52.Legend = "LegendAnalogueInputs";
-            series52.Name = "AI11 Converted";
-            series52.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series53.ChartArea = "ChartAreaAnalogueInputsChart";
-            series53.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series53.Enabled = false;
-            series53.Legend = "LegendAnalogueInputs";
-            series53.Name = "AI12 Converted";
-            series54.ChartArea = "ChartAreaAnalogueInputsChart";
-            series54.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series54.Enabled = false;
-            series54.Legend = "LegendAnalogueInputs";
-            series54.Name = "AI13 Converted";
-            series55.ChartArea = "ChartAreaAnalogueInputsChart";
-            series55.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series55.Enabled = false;
-            series55.Legend = "LegendAnalogueInputs";
-            series55.Name = "AI14 Converted";
-            series56.ChartArea = "ChartAreaAnalogueInputsChart";
-            series56.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series56.Enabled = false;
-            series56.Legend = "LegendAnalogueInputs";
-            series56.Name = "AI15 Converted";
-            this.chart4.Series.Add(series47);
-            this.chart4.Series.Add(series48);
-            this.chart4.Series.Add(series49);
-            this.chart4.Series.Add(series50);
-            this.chart4.Series.Add(series51);
-            this.chart4.Series.Add(series52);
-            this.chart4.Series.Add(series53);
-            this.chart4.Series.Add(series54);
-            this.chart4.Series.Add(series55);
-            this.chart4.Series.Add(series56);
-            this.chart4.Size = new System.Drawing.Size(1152, 517);
+            series25.ChartArea = "ChartAreaAnalogueInputsChart";
+            series25.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series25.Enabled = false;
+            series25.Legend = "LegendAnalogueInputs";
+            series25.Name = "AI11";
+            series25.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series26.ChartArea = "ChartAreaAnalogueInputsChart";
+            series26.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series26.Enabled = false;
+            series26.Legend = "LegendAnalogueInputs";
+            series26.Name = "AI12";
+            series26.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series27.ChartArea = "ChartAreaAnalogueInputsChart";
+            series27.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series27.Enabled = false;
+            series27.Legend = "LegendAnalogueInputs";
+            series27.Name = "AI13";
+            series27.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series28.ChartArea = "ChartAreaAnalogueInputsChart";
+            series28.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series28.Enabled = false;
+            series28.Legend = "LegendAnalogueInputs";
+            series28.Name = "AI14";
+            series28.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series29.ChartArea = "ChartAreaAnalogueInputsChart";
+            series29.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series29.Enabled = false;
+            series29.Legend = "LegendAnalogueInputs";
+            series29.Name = "AI15";
+            series29.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series30.ChartArea = "ChartAreaAnalogueInputsChart";
+            series30.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series30.Enabled = false;
+            series30.Legend = "LegendAnalogueInputs";
+            series30.Name = "AI11 Converted";
+            series30.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series31.ChartArea = "ChartAreaAnalogueInputsChart";
+            series31.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series31.Enabled = false;
+            series31.Legend = "LegendAnalogueInputs";
+            series31.Name = "AI12 Converted";
+            series32.ChartArea = "ChartAreaAnalogueInputsChart";
+            series32.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series32.Enabled = false;
+            series32.Legend = "LegendAnalogueInputs";
+            series32.Name = "AI13 Converted";
+            series33.ChartArea = "ChartAreaAnalogueInputsChart";
+            series33.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series33.Enabled = false;
+            series33.Legend = "LegendAnalogueInputs";
+            series33.Name = "AI14 Converted";
+            series34.ChartArea = "ChartAreaAnalogueInputsChart";
+            series34.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series34.Enabled = false;
+            series34.Legend = "LegendAnalogueInputs";
+            series34.Name = "AI15 Converted";
+            this.chart4.Series.Add(series25);
+            this.chart4.Series.Add(series26);
+            this.chart4.Series.Add(series27);
+            this.chart4.Series.Add(series28);
+            this.chart4.Series.Add(series29);
+            this.chart4.Series.Add(series30);
+            this.chart4.Series.Add(series31);
+            this.chart4.Series.Add(series32);
+            this.chart4.Series.Add(series33);
+            this.chart4.Series.Add(series34);
+            this.chart4.Size = new System.Drawing.Size(864, 420);
             this.chart4.TabIndex = 20;
             this.chart4.Text = "chartAnalogueInputs";
-            title9.BackColor = System.Drawing.Color.Black;
-            title9.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title9.ForeColor = System.Drawing.Color.White;
-            title9.Name = "chartTitleAnalogueInputs";
-            title9.Text = "Analogue Inputs";
-            this.chart4.Titles.Add(title9);
+            title5.BackColor = System.Drawing.Color.Black;
+            title5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title5.ForeColor = System.Drawing.Color.White;
+            title5.Name = "chartTitleAnalogueInputs";
+            title5.Text = "Analogue Inputs";
+            this.chart4.Titles.Add(title5);
             // 
             // gbDigitalOutputs
             // 
             this.gbDigitalOutputs.Controls.Add(this.gbDigitalOutputsPort0);
-            this.gbDigitalOutputs.Location = new System.Drawing.Point(4, 4);
-            this.gbDigitalOutputs.Margin = new System.Windows.Forms.Padding(4);
+            this.gbDigitalOutputs.Location = new System.Drawing.Point(3, 3);
             this.gbDigitalOutputs.Name = "gbDigitalOutputs";
-            this.gbDigitalOutputs.Padding = new System.Windows.Forms.Padding(4);
-            this.gbDigitalOutputs.Size = new System.Drawing.Size(180, 854);
+            this.gbDigitalOutputs.Size = new System.Drawing.Size(135, 694);
             this.gbDigitalOutputs.TabIndex = 0;
             this.gbDigitalOutputs.TabStop = false;
             this.gbDigitalOutputs.Text = "Digital outputs";
@@ -5976,11 +5678,9 @@ namespace UEDMHardwareControl
             this.gbDigitalOutputsPort0.Controls.Add(this.labelDigitalOutputP02);
             this.gbDigitalOutputsPort0.Controls.Add(this.labelDigitalOutputP01);
             this.gbDigitalOutputsPort0.Controls.Add(this.labelDigitalOutputP00);
-            this.gbDigitalOutputsPort0.Location = new System.Drawing.Point(8, 23);
-            this.gbDigitalOutputsPort0.Margin = new System.Windows.Forms.Padding(4);
+            this.gbDigitalOutputsPort0.Location = new System.Drawing.Point(6, 19);
             this.gbDigitalOutputsPort0.Name = "gbDigitalOutputsPort0";
-            this.gbDigitalOutputsPort0.Padding = new System.Windows.Forms.Padding(4);
-            this.gbDigitalOutputsPort0.Size = new System.Drawing.Size(164, 156);
+            this.gbDigitalOutputsPort0.Size = new System.Drawing.Size(123, 127);
             this.gbDigitalOutputsPort0.TabIndex = 1;
             this.gbDigitalOutputsPort0.TabStop = false;
             this.gbDigitalOutputsPort0.Text = "Port 0";
@@ -5988,10 +5688,9 @@ namespace UEDMHardwareControl
             // cbDigitalOutputP03
             // 
             this.cbDigitalOutputP03.AutoSize = true;
-            this.cbDigitalOutputP03.Location = new System.Drawing.Point(63, 122);
-            this.cbDigitalOutputP03.Margin = new System.Windows.Forms.Padding(4);
+            this.cbDigitalOutputP03.Location = new System.Drawing.Point(47, 99);
             this.cbDigitalOutputP03.Name = "cbDigitalOutputP03";
-            this.cbDigitalOutputP03.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP03.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP03.TabIndex = 8;
             this.cbDigitalOutputP03.Text = "Enable";
             this.cbDigitalOutputP03.UseVisualStyleBackColor = true;
@@ -6000,10 +5699,9 @@ namespace UEDMHardwareControl
             // cbDigitalOutputP01
             // 
             this.cbDigitalOutputP01.AutoSize = true;
-            this.cbDigitalOutputP01.Location = new System.Drawing.Point(63, 58);
-            this.cbDigitalOutputP01.Margin = new System.Windows.Forms.Padding(4);
+            this.cbDigitalOutputP01.Location = new System.Drawing.Point(47, 47);
             this.cbDigitalOutputP01.Name = "cbDigitalOutputP01";
-            this.cbDigitalOutputP01.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP01.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP01.TabIndex = 7;
             this.cbDigitalOutputP01.Text = "Enable";
             this.cbDigitalOutputP01.UseVisualStyleBackColor = true;
@@ -6012,10 +5710,9 @@ namespace UEDMHardwareControl
             // cbDigitalOutputP02
             // 
             this.cbDigitalOutputP02.AutoSize = true;
-            this.cbDigitalOutputP02.Location = new System.Drawing.Point(63, 90);
-            this.cbDigitalOutputP02.Margin = new System.Windows.Forms.Padding(4);
+            this.cbDigitalOutputP02.Location = new System.Drawing.Point(47, 73);
             this.cbDigitalOutputP02.Name = "cbDigitalOutputP02";
-            this.cbDigitalOutputP02.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP02.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP02.TabIndex = 6;
             this.cbDigitalOutputP02.Text = "Enable";
             this.cbDigitalOutputP02.UseVisualStyleBackColor = true;
@@ -6024,10 +5721,9 @@ namespace UEDMHardwareControl
             // cbDigitalOutputP00
             // 
             this.cbDigitalOutputP00.AutoSize = true;
-            this.cbDigitalOutputP00.Location = new System.Drawing.Point(63, 26);
-            this.cbDigitalOutputP00.Margin = new System.Windows.Forms.Padding(4);
+            this.cbDigitalOutputP00.Location = new System.Drawing.Point(47, 21);
             this.cbDigitalOutputP00.Name = "cbDigitalOutputP00";
-            this.cbDigitalOutputP00.Size = new System.Drawing.Size(74, 21);
+            this.cbDigitalOutputP00.Size = new System.Drawing.Size(59, 17);
             this.cbDigitalOutputP00.TabIndex = 5;
             this.cbDigitalOutputP00.Text = "Enable";
             this.cbDigitalOutputP00.UseVisualStyleBackColor = true;
@@ -6036,40 +5732,36 @@ namespace UEDMHardwareControl
             // labelDigitalOutputP03
             // 
             this.labelDigitalOutputP03.AutoSize = true;
-            this.labelDigitalOutputP03.Location = new System.Drawing.Point(8, 123);
-            this.labelDigitalOutputP03.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDigitalOutputP03.Location = new System.Drawing.Point(6, 100);
             this.labelDigitalOutputP03.Name = "labelDigitalOutputP03";
-            this.labelDigitalOutputP03.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP03.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP03.TabIndex = 4;
             this.labelDigitalOutputP03.Text = "P0, 3:";
             // 
             // labelDigitalOutputP02
             // 
             this.labelDigitalOutputP02.AutoSize = true;
-            this.labelDigitalOutputP02.Location = new System.Drawing.Point(8, 91);
-            this.labelDigitalOutputP02.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDigitalOutputP02.Location = new System.Drawing.Point(6, 74);
             this.labelDigitalOutputP02.Name = "labelDigitalOutputP02";
-            this.labelDigitalOutputP02.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP02.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP02.TabIndex = 2;
             this.labelDigitalOutputP02.Text = "P0, 2:";
             // 
             // labelDigitalOutputP01
             // 
             this.labelDigitalOutputP01.AutoSize = true;
-            this.labelDigitalOutputP01.Location = new System.Drawing.Point(8, 59);
-            this.labelDigitalOutputP01.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDigitalOutputP01.Location = new System.Drawing.Point(6, 48);
             this.labelDigitalOutputP01.Name = "labelDigitalOutputP01";
-            this.labelDigitalOutputP01.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP01.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP01.TabIndex = 1;
             this.labelDigitalOutputP01.Text = "P0, 1:";
             // 
             // labelDigitalOutputP00
             // 
             this.labelDigitalOutputP00.AutoSize = true;
-            this.labelDigitalOutputP00.Location = new System.Drawing.Point(8, 27);
-            this.labelDigitalOutputP00.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDigitalOutputP00.Location = new System.Drawing.Point(6, 22);
             this.labelDigitalOutputP00.Name = "labelDigitalOutputP00";
-            this.labelDigitalOutputP00.Size = new System.Drawing.Size(45, 17);
+            this.labelDigitalOutputP00.Size = new System.Drawing.Size(35, 13);
             this.labelDigitalOutputP00.TabIndex = 0;
             this.labelDigitalOutputP00.Text = "P0, 0:";
             // 
@@ -6079,11 +5771,10 @@ namespace UEDMHardwareControl
             this.tabPageLakeShore.Controls.Add(this.gbAutotune);
             this.tabPageLakeShore.Controls.Add(this.gbLakeShore336PIDLoops);
             this.tabPageLakeShore.Controls.Add(this.groupBox3);
-            this.tabPageLakeShore.Location = new System.Drawing.Point(4, 25);
-            this.tabPageLakeShore.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageLakeShore.Location = new System.Drawing.Point(4, 22);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
-            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageLakeShore.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageLakeShore.Size = new System.Drawing.Size(1033, 715);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
             // 
@@ -6096,21 +5787,18 @@ namespace UEDMHardwareControl
             this.gbAutotune.Controls.Add(this.labelAutotuneModes);
             this.gbAutotune.Controls.Add(this.btAutotuneLakeShore336Output);
             this.gbAutotune.Controls.Add(this.comboBoxLakeShore336AutotuneModes);
-            this.gbAutotune.Location = new System.Drawing.Point(8, 145);
-            this.gbAutotune.Margin = new System.Windows.Forms.Padding(4);
+            this.gbAutotune.Location = new System.Drawing.Point(6, 118);
             this.gbAutotune.Name = "gbAutotune";
-            this.gbAutotune.Padding = new System.Windows.Forms.Padding(4);
-            this.gbAutotune.Size = new System.Drawing.Size(1365, 138);
+            this.gbAutotune.Size = new System.Drawing.Size(1024, 112);
             this.gbAutotune.TabIndex = 20;
             this.gbAutotune.TabStop = false;
             this.gbAutotune.Text = "Autotune";
             // 
             // btQueryAutotuneError
             // 
-            this.btQueryAutotuneError.Location = new System.Drawing.Point(596, 37);
-            this.btQueryAutotuneError.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryAutotuneError.Location = new System.Drawing.Point(447, 30);
             this.btQueryAutotuneError.Name = "btQueryAutotuneError";
-            this.btQueryAutotuneError.Size = new System.Drawing.Size(209, 28);
+            this.btQueryAutotuneError.Size = new System.Drawing.Size(157, 23);
             this.btQueryAutotuneError.TabIndex = 20;
             this.btQueryAutotuneError.Text = "Query Autotune Status:";
             this.btQueryAutotuneError.UseVisualStyleBackColor = true;
@@ -6118,20 +5806,18 @@ namespace UEDMHardwareControl
             // 
             // rtbAutotuneStatus
             // 
-            this.rtbAutotuneStatus.Location = new System.Drawing.Point(813, 37);
-            this.rtbAutotuneStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.rtbAutotuneStatus.Location = new System.Drawing.Point(610, 30);
             this.rtbAutotuneStatus.Name = "rtbAutotuneStatus";
-            this.rtbAutotuneStatus.Size = new System.Drawing.Size(527, 84);
+            this.rtbAutotuneStatus.Size = new System.Drawing.Size(396, 69);
             this.rtbAutotuneStatus.TabIndex = 19;
             this.rtbAutotuneStatus.Text = "";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(169, 20);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(127, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 17);
+            this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "Output:";
             // 
@@ -6144,29 +5830,26 @@ namespace UEDMHardwareControl
             "2",
             "3",
             "4"});
-            this.comboBoxLakeShore336OutputsAutotune.Location = new System.Drawing.Point(168, 39);
-            this.comboBoxLakeShore336OutputsAutotune.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxLakeShore336OutputsAutotune.Location = new System.Drawing.Point(126, 32);
             this.comboBoxLakeShore336OutputsAutotune.Name = "comboBoxLakeShore336OutputsAutotune";
-            this.comboBoxLakeShore336OutputsAutotune.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxLakeShore336OutputsAutotune.Size = new System.Drawing.Size(121, 21);
             this.comboBoxLakeShore336OutputsAutotune.TabIndex = 13;
             this.comboBoxLakeShore336OutputsAutotune.SelectedIndexChanged += new System.EventHandler(this.comboBoxLakeShore336OutputsAutotune_SelectedIndexChanged);
             // 
             // labelAutotuneModes
             // 
             this.labelAutotuneModes.AutoSize = true;
-            this.labelAutotuneModes.Location = new System.Drawing.Point(339, 20);
-            this.labelAutotuneModes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAutotuneModes.Location = new System.Drawing.Point(254, 16);
             this.labelAutotuneModes.Name = "labelAutotuneModes";
-            this.labelAutotuneModes.Size = new System.Drawing.Size(115, 17);
+            this.labelAutotuneModes.Size = new System.Drawing.Size(88, 13);
             this.labelAutotuneModes.TabIndex = 17;
             this.labelAutotuneModes.Text = "Autotune Modes:";
             // 
             // btAutotuneLakeShore336Output
             // 
-            this.btAutotuneLakeShore336Output.Location = new System.Drawing.Point(16, 37);
-            this.btAutotuneLakeShore336Output.Margin = new System.Windows.Forms.Padding(4);
+            this.btAutotuneLakeShore336Output.Location = new System.Drawing.Point(12, 30);
             this.btAutotuneLakeShore336Output.Name = "btAutotuneLakeShore336Output";
-            this.btAutotuneLakeShore336Output.Size = new System.Drawing.Size(144, 28);
+            this.btAutotuneLakeShore336Output.Size = new System.Drawing.Size(108, 23);
             this.btAutotuneLakeShore336Output.TabIndex = 14;
             this.btAutotuneLakeShore336Output.Text = "Autotune:";
             this.btAutotuneLakeShore336Output.UseVisualStyleBackColor = true;
@@ -6180,10 +5863,9 @@ namespace UEDMHardwareControl
             "P",
             "P and I",
             "P, I and D"});
-            this.comboBoxLakeShore336AutotuneModes.Location = new System.Drawing.Point(337, 39);
-            this.comboBoxLakeShore336AutotuneModes.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxLakeShore336AutotuneModes.Location = new System.Drawing.Point(253, 32);
             this.comboBoxLakeShore336AutotuneModes.Name = "comboBoxLakeShore336AutotuneModes";
-            this.comboBoxLakeShore336AutotuneModes.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxLakeShore336AutotuneModes.Size = new System.Drawing.Size(121, 21);
             this.comboBoxLakeShore336AutotuneModes.TabIndex = 16;
             this.comboBoxLakeShore336AutotuneModes.SelectedIndexChanged += new System.EventHandler(this.comboBoxLakeShore336AutotuneModes_SelectedIndexChanged);
             // 
@@ -6203,11 +5885,9 @@ namespace UEDMHardwareControl
             this.gbLakeShore336PIDLoops.Controls.Add(this.labelLakeShore336PValue);
             this.gbLakeShore336PIDLoops.Controls.Add(this.btQueryLakeShore336PIDvalues);
             this.gbLakeShore336PIDLoops.Controls.Add(this.comboBoxLakeShore336OutputsQuery);
-            this.gbLakeShore336PIDLoops.Location = new System.Drawing.Point(8, 15);
-            this.gbLakeShore336PIDLoops.Margin = new System.Windows.Forms.Padding(4);
+            this.gbLakeShore336PIDLoops.Location = new System.Drawing.Point(6, 12);
             this.gbLakeShore336PIDLoops.Name = "gbLakeShore336PIDLoops";
-            this.gbLakeShore336PIDLoops.Padding = new System.Windows.Forms.Padding(4);
-            this.gbLakeShore336PIDLoops.Size = new System.Drawing.Size(1361, 121);
+            this.gbLakeShore336PIDLoops.Size = new System.Drawing.Size(1021, 98);
             this.gbLakeShore336PIDLoops.TabIndex = 19;
             this.gbLakeShore336PIDLoops.TabStop = false;
             this.gbLakeShore336PIDLoops.Text = "PID Loops";
@@ -6215,43 +5895,38 @@ namespace UEDMHardwareControl
             // labelPIDLoopsOutputs
             // 
             this.labelPIDLoopsOutputs.AutoSize = true;
-            this.labelPIDLoopsOutputs.Location = new System.Drawing.Point(169, 16);
-            this.labelPIDLoopsOutputs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPIDLoopsOutputs.Location = new System.Drawing.Point(127, 13);
             this.labelPIDLoopsOutputs.Name = "labelPIDLoopsOutputs";
-            this.labelPIDLoopsOutputs.Size = new System.Drawing.Size(55, 17);
+            this.labelPIDLoopsOutputs.Size = new System.Drawing.Size(42, 13);
             this.labelPIDLoopsOutputs.TabIndex = 15;
             this.labelPIDLoopsOutputs.Text = "Output:";
             // 
             // tbLakeShore336PIDDValueInput
             // 
-            this.tbLakeShore336PIDDValueInput.Location = new System.Drawing.Point(647, 70);
-            this.tbLakeShore336PIDDValueInput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDDValueInput.Location = new System.Drawing.Point(485, 57);
             this.tbLakeShore336PIDDValueInput.Name = "tbLakeShore336PIDDValueInput";
-            this.tbLakeShore336PIDDValueInput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDDValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDDValueInput.TabIndex = 12;
             // 
             // tbLakeShore336PIDIValueInput
             // 
-            this.tbLakeShore336PIDIValueInput.Location = new System.Drawing.Point(505, 70);
-            this.tbLakeShore336PIDIValueInput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDIValueInput.Location = new System.Drawing.Point(379, 57);
             this.tbLakeShore336PIDIValueInput.Name = "tbLakeShore336PIDIValueInput";
-            this.tbLakeShore336PIDIValueInput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDIValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDIValueInput.TabIndex = 11;
             // 
             // tbLakeShore336PIDPValueInput
             // 
-            this.tbLakeShore336PIDPValueInput.Location = new System.Drawing.Point(364, 70);
-            this.tbLakeShore336PIDPValueInput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDPValueInput.Location = new System.Drawing.Point(273, 57);
             this.tbLakeShore336PIDPValueInput.Name = "tbLakeShore336PIDPValueInput";
-            this.tbLakeShore336PIDPValueInput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDPValueInput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDPValueInput.TabIndex = 10;
             // 
             // btSetLakeShore336PIDvalues
             // 
-            this.btSetLakeShore336PIDvalues.Location = new System.Drawing.Point(16, 65);
-            this.btSetLakeShore336PIDvalues.Margin = new System.Windows.Forms.Padding(4);
+            this.btSetLakeShore336PIDvalues.Location = new System.Drawing.Point(12, 53);
             this.btSetLakeShore336PIDvalues.Name = "btSetLakeShore336PIDvalues";
-            this.btSetLakeShore336PIDvalues.Size = new System.Drawing.Size(144, 28);
+            this.btSetLakeShore336PIDvalues.Size = new System.Drawing.Size(108, 23);
             this.btSetLakeShore336PIDvalues.TabIndex = 9;
             this.btSetLakeShore336PIDvalues.Text = "Set PID values:";
             this.btSetLakeShore336PIDvalues.UseVisualStyleBackColor = true;
@@ -6264,72 +5939,64 @@ namespace UEDMHardwareControl
             this.comboBoxLakeShore336OutputsSet.Items.AddRange(new object[] {
             "1",
             "2"});
-            this.comboBoxLakeShore336OutputsSet.Location = new System.Drawing.Point(168, 69);
-            this.comboBoxLakeShore336OutputsSet.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxLakeShore336OutputsSet.Location = new System.Drawing.Point(126, 56);
             this.comboBoxLakeShore336OutputsSet.Name = "comboBoxLakeShore336OutputsSet";
-            this.comboBoxLakeShore336OutputsSet.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxLakeShore336OutputsSet.Size = new System.Drawing.Size(121, 21);
             this.comboBoxLakeShore336OutputsSet.TabIndex = 8;
             // 
             // tbLakeShore336PIDDValueOutput
             // 
-            this.tbLakeShore336PIDDValueOutput.Location = new System.Drawing.Point(647, 36);
-            this.tbLakeShore336PIDDValueOutput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDDValueOutput.Location = new System.Drawing.Point(485, 29);
             this.tbLakeShore336PIDDValueOutput.Name = "tbLakeShore336PIDDValueOutput";
-            this.tbLakeShore336PIDDValueOutput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDDValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDDValueOutput.TabIndex = 7;
             // 
             // tbLakeShore336PIDIValueOutput
             // 
-            this.tbLakeShore336PIDIValueOutput.Location = new System.Drawing.Point(505, 36);
-            this.tbLakeShore336PIDIValueOutput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDIValueOutput.Location = new System.Drawing.Point(379, 29);
             this.tbLakeShore336PIDIValueOutput.Name = "tbLakeShore336PIDIValueOutput";
-            this.tbLakeShore336PIDIValueOutput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDIValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDIValueOutput.TabIndex = 6;
             // 
             // labelLakeShore336DValue
             // 
             this.labelLakeShore336DValue.AutoSize = true;
-            this.labelLakeShore336DValue.Location = new System.Drawing.Point(643, 16);
-            this.labelLakeShore336DValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelLakeShore336DValue.Location = new System.Drawing.Point(482, 13);
             this.labelLakeShore336DValue.Name = "labelLakeShore336DValue";
-            this.labelLakeShore336DValue.Size = new System.Drawing.Size(97, 17);
+            this.labelLakeShore336DValue.Size = new System.Drawing.Size(72, 13);
             this.labelLakeShore336DValue.TabIndex = 5;
             this.labelLakeShore336DValue.Text = "Derivative (%)";
             // 
             // labelLakeShore336IValue
             // 
             this.labelLakeShore336IValue.AutoSize = true;
-            this.labelLakeShore336IValue.Location = new System.Drawing.Point(501, 16);
-            this.labelLakeShore336IValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelLakeShore336IValue.Location = new System.Drawing.Point(376, 13);
             this.labelLakeShore336IValue.Name = "labelLakeShore336IValue";
-            this.labelLakeShore336IValue.Size = new System.Drawing.Size(59, 17);
+            this.labelLakeShore336IValue.Size = new System.Drawing.Size(45, 13);
             this.labelLakeShore336IValue.TabIndex = 4;
             this.labelLakeShore336IValue.Text = "Integral:";
             // 
             // tbLakeShore336PIDPValueOutput
             // 
-            this.tbLakeShore336PIDPValueOutput.Location = new System.Drawing.Point(364, 36);
-            this.tbLakeShore336PIDPValueOutput.Margin = new System.Windows.Forms.Padding(4);
+            this.tbLakeShore336PIDPValueOutput.Location = new System.Drawing.Point(273, 29);
             this.tbLakeShore336PIDPValueOutput.Name = "tbLakeShore336PIDPValueOutput";
-            this.tbLakeShore336PIDPValueOutput.Size = new System.Drawing.Size(132, 22);
+            this.tbLakeShore336PIDPValueOutput.Size = new System.Drawing.Size(100, 20);
             this.tbLakeShore336PIDPValueOutput.TabIndex = 3;
             // 
             // labelLakeShore336PValue
             // 
             this.labelLakeShore336PValue.AutoSize = true;
-            this.labelLakeShore336PValue.Location = new System.Drawing.Point(360, 16);
-            this.labelLakeShore336PValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelLakeShore336PValue.Location = new System.Drawing.Point(270, 13);
             this.labelLakeShore336PValue.Name = "labelLakeShore336PValue";
-            this.labelLakeShore336PValue.Size = new System.Drawing.Size(89, 17);
+            this.labelLakeShore336PValue.Size = new System.Drawing.Size(66, 13);
             this.labelLakeShore336PValue.TabIndex = 2;
             this.labelLakeShore336PValue.Text = "Proportional:";
             // 
             // btQueryLakeShore336PIDvalues
             // 
-            this.btQueryLakeShore336PIDvalues.Location = new System.Drawing.Point(16, 33);
-            this.btQueryLakeShore336PIDvalues.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryLakeShore336PIDvalues.Location = new System.Drawing.Point(12, 27);
             this.btQueryLakeShore336PIDvalues.Name = "btQueryLakeShore336PIDvalues";
-            this.btQueryLakeShore336PIDvalues.Size = new System.Drawing.Size(144, 28);
+            this.btQueryLakeShore336PIDvalues.Size = new System.Drawing.Size(108, 23);
             this.btQueryLakeShore336PIDvalues.TabIndex = 1;
             this.btQueryLakeShore336PIDvalues.Text = "Query PID values:";
             this.btQueryLakeShore336PIDvalues.UseVisualStyleBackColor = true;
@@ -6342,10 +6009,9 @@ namespace UEDMHardwareControl
             this.comboBoxLakeShore336OutputsQuery.Items.AddRange(new object[] {
             "1",
             "2"});
-            this.comboBoxLakeShore336OutputsQuery.Location = new System.Drawing.Point(168, 36);
-            this.comboBoxLakeShore336OutputsQuery.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxLakeShore336OutputsQuery.Location = new System.Drawing.Point(126, 29);
             this.comboBoxLakeShore336OutputsQuery.Name = "comboBoxLakeShore336OutputsQuery";
-            this.comboBoxLakeShore336OutputsQuery.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxLakeShore336OutputsQuery.Size = new System.Drawing.Size(121, 21);
             this.comboBoxLakeShore336OutputsQuery.TabIndex = 0;
             // 
             // groupBox3
@@ -6354,11 +6020,9 @@ namespace UEDMHardwareControl
             this.groupBox3.Controls.Add(this.labelPressureLogPeriod);
             this.groupBox3.Controls.Add(this.tbpressureMonitorLogPeriod);
             this.groupBox3.Enabled = false;
-            this.groupBox3.Location = new System.Drawing.Point(1015, 575);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox3.Location = new System.Drawing.Point(761, 467);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox3.Size = new System.Drawing.Size(300, 167);
+            this.groupBox3.Size = new System.Drawing.Size(225, 136);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "do not use";
@@ -6366,10 +6030,9 @@ namespace UEDMHardwareControl
             // cbLogPressureData
             // 
             this.cbLogPressureData.AutoSize = true;
-            this.cbLogPressureData.Location = new System.Drawing.Point(51, 91);
-            this.cbLogPressureData.Margin = new System.Windows.Forms.Padding(4);
+            this.cbLogPressureData.Location = new System.Drawing.Point(38, 74);
             this.cbLogPressureData.Name = "cbLogPressureData";
-            this.cbLogPressureData.Size = new System.Drawing.Size(149, 21);
+            this.cbLogPressureData.Size = new System.Drawing.Size(114, 17);
             this.cbLogPressureData.TabIndex = 17;
             this.cbLogPressureData.Text = "Log Pressure Data";
             this.cbLogPressureData.UseVisualStyleBackColor = true;
@@ -6378,19 +6041,17 @@ namespace UEDMHardwareControl
             // labelPressureLogPeriod
             // 
             this.labelPressureLogPeriod.AutoSize = true;
-            this.labelPressureLogPeriod.Location = new System.Drawing.Point(47, 59);
-            this.labelPressureLogPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPressureLogPeriod.Location = new System.Drawing.Point(35, 48);
             this.labelPressureLogPeriod.Name = "labelPressureLogPeriod";
-            this.labelPressureLogPeriod.Size = new System.Drawing.Size(102, 17);
+            this.labelPressureLogPeriod.Size = new System.Drawing.Size(75, 13);
             this.labelPressureLogPeriod.TabIndex = 16;
             this.labelPressureLogPeriod.Text = "Log Period (s):";
             // 
             // tbpressureMonitorLogPeriod
             // 
-            this.tbpressureMonitorLogPeriod.Location = new System.Drawing.Point(155, 55);
-            this.tbpressureMonitorLogPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbpressureMonitorLogPeriod.Location = new System.Drawing.Point(116, 45);
             this.tbpressureMonitorLogPeriod.Name = "tbpressureMonitorLogPeriod";
-            this.tbpressureMonitorLogPeriod.Size = new System.Drawing.Size(84, 22);
+            this.tbpressureMonitorLogPeriod.Size = new System.Drawing.Size(64, 20);
             this.tbpressureMonitorLogPeriod.TabIndex = 15;
             this.tbpressureMonitorLogPeriod.Text = "60";
             // 
@@ -6399,11 +6060,10 @@ namespace UEDMHardwareControl
             this.tabPageFlowControllers.BackColor = System.Drawing.Color.DarkGray;
             this.tabPageFlowControllers.Controls.Add(this.gBTargetStepper);
             this.tabPageFlowControllers.Controls.Add(this.gbNeonFlowController);
-            this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 25);
-            this.tabPageFlowControllers.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageFlowControllers.Location = new System.Drawing.Point(4, 22);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
-            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageFlowControllers.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageFlowControllers.Size = new System.Drawing.Size(1033, 715);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
             // 
@@ -6421,11 +6081,9 @@ namespace UEDMHardwareControl
             this.gBTargetStepper.Controls.Add(this.TargetStepButton);
             this.gBTargetStepper.Controls.Add(this.lbTargetStep);
             this.gBTargetStepper.Controls.Add(this.TargetNumStepsTextBox);
-            this.gBTargetStepper.Location = new System.Drawing.Point(8, 437);
-            this.gBTargetStepper.Margin = new System.Windows.Forms.Padding(4);
+            this.gBTargetStepper.Location = new System.Drawing.Point(6, 355);
             this.gBTargetStepper.Name = "gBTargetStepper";
-            this.gBTargetStepper.Padding = new System.Windows.Forms.Padding(4);
-            this.gBTargetStepper.Size = new System.Drawing.Size(943, 391);
+            this.gBTargetStepper.Size = new System.Drawing.Size(707, 318);
             this.gBTargetStepper.TabIndex = 48;
             this.gBTargetStepper.TabStop = false;
             this.gBTargetStepper.Text = "Target stepper";
@@ -6433,19 +6091,19 @@ namespace UEDMHardwareControl
             // lbTargetStepperInfo
             // 
             this.lbTargetStepperInfo.AutoSize = true;
-            this.lbTargetStepperInfo.Location = new System.Drawing.Point(7, 110);
+            this.lbTargetStepperInfo.Location = new System.Drawing.Point(5, 89);
+            this.lbTargetStepperInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbTargetStepperInfo.Name = "lbTargetStepperInfo";
-            this.lbTargetStepperInfo.Size = new System.Drawing.Size(880, 289);
+            this.lbTargetStepperInfo.Size = new System.Drawing.Size(657, 221);
             this.lbTargetStepperInfo.TabIndex = 31;
             this.lbTargetStepperInfo.Text = resources.GetString("lbTargetStepperInfo.Text");
             this.lbTargetStepperInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // TargetLengthTimeButton
             // 
-            this.TargetLengthTimeButton.Location = new System.Drawing.Point(340, 63);
-            this.TargetLengthTimeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetLengthTimeButton.Location = new System.Drawing.Point(255, 51);
             this.TargetLengthTimeButton.Name = "TargetLengthTimeButton";
-            this.TargetLengthTimeButton.Size = new System.Drawing.Size(100, 28);
+            this.TargetLengthTimeButton.Size = new System.Drawing.Size(75, 23);
             this.TargetLengthTimeButton.TabIndex = 23;
             this.TargetLengthTimeButton.Text = "Step!";
             this.TargetLengthTimeButton.UseVisualStyleBackColor = true;
@@ -6454,38 +6112,34 @@ namespace UEDMHardwareControl
             // lbTargetStepTime
             // 
             this.lbTargetStepTime.AutoSize = true;
-            this.lbTargetStepTime.Location = new System.Drawing.Point(24, 69);
-            this.lbTargetStepTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbTargetStepTime.Location = new System.Drawing.Point(18, 56);
             this.lbTargetStepTime.Name = "lbTargetStepTime";
-            this.lbTargetStepTime.Size = new System.Drawing.Size(130, 17);
+            this.lbTargetStepTime.Size = new System.Drawing.Size(96, 13);
             this.lbTargetStepTime.TabIndex = 22;
             this.lbTargetStepTime.Text = "Length of time (ms)";
             // 
             // TargetLengthTimeTextBox
             // 
-            this.TargetLengthTimeTextBox.Location = new System.Drawing.Point(209, 65);
-            this.TargetLengthTimeTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetLengthTimeTextBox.Location = new System.Drawing.Point(157, 53);
             this.TargetLengthTimeTextBox.Name = "TargetLengthTimeTextBox";
-            this.TargetLengthTimeTextBox.Size = new System.Drawing.Size(87, 22);
+            this.TargetLengthTimeTextBox.Size = new System.Drawing.Size(66, 20);
             this.TargetLengthTimeTextBox.TabIndex = 21;
             this.TargetLengthTimeTextBox.Text = "1000";
             // 
             // TargetStepDirectionCBox
             // 
-            this.TargetStepDirectionCBox.Location = new System.Drawing.Point(465, 63);
-            this.TargetStepDirectionCBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetStepDirectionCBox.Location = new System.Drawing.Point(349, 51);
             this.TargetStepDirectionCBox.Name = "TargetStepDirectionCBox";
-            this.TargetStepDirectionCBox.Size = new System.Drawing.Size(157, 30);
+            this.TargetStepDirectionCBox.Size = new System.Drawing.Size(118, 24);
             this.TargetStepDirectionCBox.TabIndex = 20;
             this.TargetStepDirectionCBox.Text = "Direction C/AC?";
             this.TargetStepDirectionCBox.CheckedChanged += new System.EventHandler(this.TargetStepDirectionCBox_CheckedChanged);
             // 
             // TargetHomeButton
             // 
-            this.TargetHomeButton.Location = new System.Drawing.Point(823, 62);
-            this.TargetHomeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetHomeButton.Location = new System.Drawing.Point(617, 50);
             this.TargetHomeButton.Name = "TargetHomeButton";
-            this.TargetHomeButton.Size = new System.Drawing.Size(100, 28);
+            this.TargetHomeButton.Size = new System.Drawing.Size(75, 23);
             this.TargetHomeButton.TabIndex = 6;
             this.TargetHomeButton.Text = "Reset Pos";
             this.TargetHomeButton.UseVisualStyleBackColor = true;
@@ -6493,10 +6147,9 @@ namespace UEDMHardwareControl
             // 
             // TargetTriggerButton
             // 
-            this.TargetTriggerButton.Location = new System.Drawing.Point(603, 26);
-            this.TargetTriggerButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetTriggerButton.Location = new System.Drawing.Point(452, 21);
             this.TargetTriggerButton.Name = "TargetTriggerButton";
-            this.TargetTriggerButton.Size = new System.Drawing.Size(101, 28);
+            this.TargetTriggerButton.Size = new System.Drawing.Size(76, 23);
             this.TargetTriggerButton.TabIndex = 5;
             this.TargetTriggerButton.Text = "Triggered";
             this.TargetTriggerButton.UseVisualStyleBackColor = true;
@@ -6504,10 +6157,9 @@ namespace UEDMHardwareControl
             // 
             // TargetExtButton
             // 
-            this.TargetExtButton.Location = new System.Drawing.Point(712, 26);
-            this.TargetExtButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetExtButton.Location = new System.Drawing.Point(534, 21);
             this.TargetExtButton.Name = "TargetExtButton";
-            this.TargetExtButton.Size = new System.Drawing.Size(101, 28);
+            this.TargetExtButton.Size = new System.Drawing.Size(76, 23);
             this.TargetExtButton.TabIndex = 4;
             this.TargetExtButton.Text = "External";
             this.TargetExtButton.UseVisualStyleBackColor = true;
@@ -6515,10 +6167,9 @@ namespace UEDMHardwareControl
             // 
             // TargetManualButton
             // 
-            this.TargetManualButton.Location = new System.Drawing.Point(821, 26);
-            this.TargetManualButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetManualButton.Location = new System.Drawing.Point(616, 21);
             this.TargetManualButton.Name = "TargetManualButton";
-            this.TargetManualButton.Size = new System.Drawing.Size(101, 28);
+            this.TargetManualButton.Size = new System.Drawing.Size(76, 23);
             this.TargetManualButton.TabIndex = 3;
             this.TargetManualButton.Text = "Manual";
             this.TargetManualButton.UseVisualStyleBackColor = true;
@@ -6526,10 +6177,9 @@ namespace UEDMHardwareControl
             // 
             // TargetStepButton
             // 
-            this.TargetStepButton.Location = new System.Drawing.Point(341, 25);
-            this.TargetStepButton.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetStepButton.Location = new System.Drawing.Point(256, 20);
             this.TargetStepButton.Name = "TargetStepButton";
-            this.TargetStepButton.Size = new System.Drawing.Size(100, 28);
+            this.TargetStepButton.Size = new System.Drawing.Size(75, 23);
             this.TargetStepButton.TabIndex = 2;
             this.TargetStepButton.Text = "Step!";
             this.TargetStepButton.UseVisualStyleBackColor = true;
@@ -6538,19 +6188,17 @@ namespace UEDMHardwareControl
             // lbTargetStep
             // 
             this.lbTargetStep.AutoSize = true;
-            this.lbTargetStep.Location = new System.Drawing.Point(25, 31);
-            this.lbTargetStep.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbTargetStep.Location = new System.Drawing.Point(19, 25);
             this.lbTargetStep.Name = "lbTargetStep";
-            this.lbTargetStep.Size = new System.Drawing.Size(119, 17);
+            this.lbTargetStep.Size = new System.Drawing.Size(89, 13);
             this.lbTargetStep.TabIndex = 1;
             this.lbTargetStep.Text = "Number of pulses";
             // 
             // TargetNumStepsTextBox
             // 
-            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(211, 27);
-            this.TargetNumStepsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TargetNumStepsTextBox.Location = new System.Drawing.Point(158, 22);
             this.TargetNumStepsTextBox.Name = "TargetNumStepsTextBox";
-            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(87, 22);
+            this.TargetNumStepsTextBox.Size = new System.Drawing.Size(66, 20);
             this.TargetNumStepsTextBox.TabIndex = 0;
             this.TargetNumStepsTextBox.Text = "1";
             // 
@@ -6581,11 +6229,9 @@ namespace UEDMHardwareControl
             this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowMonitorSP);
             this.gbNeonFlowController.Controls.Add(this.labelHeliumFlowActPollPeriod);
             this.gbNeonFlowController.Controls.Add(this.tbHeliumFlowActual);
-            this.gbNeonFlowController.Location = new System.Drawing.Point(8, 7);
-            this.gbNeonFlowController.Margin = new System.Windows.Forms.Padding(4);
+            this.gbNeonFlowController.Location = new System.Drawing.Point(6, 6);
             this.gbNeonFlowController.Name = "gbNeonFlowController";
-            this.gbNeonFlowController.Padding = new System.Windows.Forms.Padding(4);
-            this.gbNeonFlowController.Size = new System.Drawing.Size(1361, 422);
+            this.gbNeonFlowController.Size = new System.Drawing.Size(1021, 343);
             this.gbNeonFlowController.TabIndex = 0;
             this.gbNeonFlowController.TabStop = false;
             this.gbNeonFlowController.Text = "Neon flow controller";
@@ -6593,10 +6239,9 @@ namespace UEDMHardwareControl
             // cbSF6Valve
             // 
             this.cbSF6Valve.AutoSize = true;
-            this.cbSF6Valve.Location = new System.Drawing.Point(1231, 250);
-            this.cbSF6Valve.Margin = new System.Windows.Forms.Padding(4);
+            this.cbSF6Valve.Location = new System.Drawing.Point(923, 203);
             this.cbSF6Valve.Name = "cbSF6Valve";
-            this.cbSF6Valve.Size = new System.Drawing.Size(101, 21);
+            this.cbSF6Valve.Size = new System.Drawing.Size(80, 17);
             this.cbSF6Valve.TabIndex = 46;
             this.cbSF6Valve.Text = "Use Alicat?";
             this.cbSF6Valve.UseVisualStyleBackColor = true;
@@ -6605,10 +6250,9 @@ namespace UEDMHardwareControl
             // cbHeFlowValveOnOff
             // 
             this.cbHeFlowValveOnOff.AutoSize = true;
-            this.cbHeFlowValveOnOff.Location = new System.Drawing.Point(1229, 113);
-            this.cbHeFlowValveOnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.cbHeFlowValveOnOff.Location = new System.Drawing.Point(922, 92);
             this.cbHeFlowValveOnOff.Name = "cbHeFlowValveOnOff";
-            this.cbHeFlowValveOnOff.Size = new System.Drawing.Size(111, 21);
+            this.cbHeFlowValveOnOff.Size = new System.Drawing.Size(89, 17);
             this.cbHeFlowValveOnOff.TabIndex = 36;
             this.cbHeFlowValveOnOff.Text = "Valve On/Off";
             this.cbHeFlowValveOnOff.UseVisualStyleBackColor = true;
@@ -6617,10 +6261,9 @@ namespace UEDMHardwareControl
             // btSetNewSF6FlowSetpoint
             // 
             this.btSetNewSF6FlowSetpoint.Enabled = false;
-            this.btSetNewSF6FlowSetpoint.Location = new System.Drawing.Point(1231, 305);
-            this.btSetNewSF6FlowSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.btSetNewSF6FlowSetpoint.Location = new System.Drawing.Point(923, 248);
             this.btSetNewSF6FlowSetpoint.Name = "btSetNewSF6FlowSetpoint";
-            this.btSetNewSF6FlowSetpoint.Size = new System.Drawing.Size(113, 28);
+            this.btSetNewSF6FlowSetpoint.Size = new System.Drawing.Size(85, 23);
             this.btSetNewSF6FlowSetpoint.TabIndex = 45;
             this.btSetNewSF6FlowSetpoint.Text = "Set setpoint";
             this.btSetNewSF6FlowSetpoint.UseVisualStyleBackColor = true;
@@ -6629,20 +6272,18 @@ namespace UEDMHardwareControl
             // lbNewFlowStptSF6
             // 
             this.lbNewFlowStptSF6.AutoSize = true;
-            this.lbNewFlowStptSF6.Location = new System.Drawing.Point(997, 311);
-            this.lbNewFlowStptSF6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbNewFlowStptSF6.Location = new System.Drawing.Point(748, 253);
             this.lbNewFlowStptSF6.Name = "lbNewFlowStptSF6";
-            this.lbNewFlowStptSF6.Size = new System.Drawing.Size(93, 17);
+            this.lbNewFlowStptSF6.Size = new System.Drawing.Size(72, 13);
             this.lbNewFlowStptSF6.TabIndex = 44;
             this.lbNewFlowStptSF6.Text = "New setpoint:";
             // 
             // cbHeliumFlowRemoteMode
             // 
             this.cbHeliumFlowRemoteMode.AutoSize = true;
-            this.cbHeliumFlowRemoteMode.Location = new System.Drawing.Point(1229, 143);
-            this.cbHeliumFlowRemoteMode.Margin = new System.Windows.Forms.Padding(4);
+            this.cbHeliumFlowRemoteMode.Location = new System.Drawing.Point(922, 116);
             this.cbHeliumFlowRemoteMode.Name = "cbHeliumFlowRemoteMode";
-            this.cbHeliumFlowRemoteMode.Size = new System.Drawing.Size(118, 21);
+            this.cbHeliumFlowRemoteMode.Size = new System.Drawing.Size(93, 17);
             this.cbHeliumFlowRemoteMode.TabIndex = 35;
             this.cbHeliumFlowRemoteMode.Text = "Remote Mode";
             this.cbHeliumFlowRemoteMode.UseVisualStyleBackColor = true;
@@ -6651,19 +6292,17 @@ namespace UEDMHardwareControl
             // tbNewSF6FlowSetpoint
             // 
             this.tbNewSF6FlowSetpoint.Enabled = false;
-            this.tbNewSF6FlowSetpoint.Location = new System.Drawing.Point(1099, 308);
-            this.tbNewSF6FlowSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNewSF6FlowSetpoint.Location = new System.Drawing.Point(824, 250);
             this.tbNewSF6FlowSetpoint.Name = "tbNewSF6FlowSetpoint";
-            this.tbNewSF6FlowSetpoint.Size = new System.Drawing.Size(112, 22);
+            this.tbNewSF6FlowSetpoint.Size = new System.Drawing.Size(85, 20);
             this.tbNewSF6FlowSetpoint.TabIndex = 43;
             // 
             // btSetNewHeliumFlowSetpoint
             // 
             this.btSetNewHeliumFlowSetpoint.Enabled = false;
-            this.btSetNewHeliumFlowSetpoint.Location = new System.Drawing.Point(1231, 198);
-            this.btSetNewHeliumFlowSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.btSetNewHeliumFlowSetpoint.Location = new System.Drawing.Point(923, 161);
             this.btSetNewHeliumFlowSetpoint.Name = "btSetNewHeliumFlowSetpoint";
-            this.btSetNewHeliumFlowSetpoint.Size = new System.Drawing.Size(113, 28);
+            this.btSetNewHeliumFlowSetpoint.Size = new System.Drawing.Size(85, 23);
             this.btSetNewHeliumFlowSetpoint.TabIndex = 34;
             this.btSetNewHeliumFlowSetpoint.Text = "Set setpoint";
             this.btSetNewHeliumFlowSetpoint.UseVisualStyleBackColor = true;
@@ -6673,101 +6312,95 @@ namespace UEDMHardwareControl
             // 
             this.tbSF6FlowSetpoint.BackColor = System.Drawing.Color.Black;
             this.tbSF6FlowSetpoint.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbSF6FlowSetpoint.Location = new System.Drawing.Point(1099, 278);
-            this.tbSF6FlowSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbSF6FlowSetpoint.Location = new System.Drawing.Point(824, 226);
             this.tbSF6FlowSetpoint.Name = "tbSF6FlowSetpoint";
             this.tbSF6FlowSetpoint.ReadOnly = true;
-            this.tbSF6FlowSetpoint.Size = new System.Drawing.Size(112, 22);
+            this.tbSF6FlowSetpoint.Size = new System.Drawing.Size(85, 20);
             this.tbSF6FlowSetpoint.TabIndex = 42;
             // 
             // labelHeliumFlowNewSetpoint
             // 
             this.labelHeliumFlowNewSetpoint.AutoSize = true;
-            this.labelHeliumFlowNewSetpoint.Location = new System.Drawing.Point(995, 204);
-            this.labelHeliumFlowNewSetpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeliumFlowNewSetpoint.Location = new System.Drawing.Point(746, 166);
             this.labelHeliumFlowNewSetpoint.Name = "labelHeliumFlowNewSetpoint";
-            this.labelHeliumFlowNewSetpoint.Size = new System.Drawing.Size(93, 17);
+            this.labelHeliumFlowNewSetpoint.Size = new System.Drawing.Size(72, 13);
             this.labelHeliumFlowNewSetpoint.TabIndex = 33;
             this.labelHeliumFlowNewSetpoint.Text = "New setpoint:";
             // 
             // lbSF6Flow
             // 
             this.lbSF6Flow.AutoSize = true;
-            this.lbSF6Flow.Location = new System.Drawing.Point(995, 251);
-            this.lbSF6Flow.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbSF6Flow.Location = new System.Drawing.Point(746, 204);
             this.lbSF6Flow.Name = "lbSF6Flow";
-            this.lbSF6Flow.Size = new System.Drawing.Size(95, 17);
+            this.lbSF6Flow.Size = new System.Drawing.Size(72, 13);
             this.lbSF6Flow.TabIndex = 37;
             this.lbSF6Flow.Text = "SF6 flow (FL):";
             // 
             // chart3
             // 
             this.chart3.BackColor = System.Drawing.Color.Black;
-            chartArea15.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea15.AxisX.IsStartedFromZero = false;
-            chartArea15.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea15.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea15.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisX.MajorGrid.Enabled = false;
-            chartArea15.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisX.Title = "Time";
-            chartArea15.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea15.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea15.AxisY.IsStartedFromZero = false;
-            chartArea15.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea15.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisY.MajorGrid.Enabled = false;
-            chartArea15.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisY.Title = "Neon Flow (SCCM)";
-            chartArea15.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea15.BackColor = System.Drawing.Color.Black;
-            chartArea15.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea15.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea15.BorderColor = System.Drawing.Color.White;
-            chartArea15.Name = "ChartAreaNeonFlowChart";
-            this.chart3.ChartAreas.Add(chartArea15);
-            legend15.BackColor = System.Drawing.Color.Black;
-            legend15.Enabled = false;
-            legend15.ForeColor = System.Drawing.Color.White;
-            legend15.Name = "LegendNeonFlowChart";
-            this.chart3.Legends.Add(legend15);
-            this.chart3.Location = new System.Drawing.Point(8, 16);
-            this.chart3.Margin = new System.Windows.Forms.Padding(4);
+            chartArea9.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea9.AxisX.IsStartedFromZero = false;
+            chartArea9.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea9.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea9.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisX.MajorGrid.Enabled = false;
+            chartArea9.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisX.Title = "Time";
+            chartArea9.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea9.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea9.AxisY.IsStartedFromZero = false;
+            chartArea9.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea9.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisY.MajorGrid.Enabled = false;
+            chartArea9.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea9.AxisY.Title = "Neon Flow (SCCM)";
+            chartArea9.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea9.BackColor = System.Drawing.Color.Black;
+            chartArea9.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea9.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea9.BorderColor = System.Drawing.Color.White;
+            chartArea9.Name = "ChartAreaNeonFlowChart";
+            this.chart3.ChartAreas.Add(chartArea9);
+            legend9.BackColor = System.Drawing.Color.Black;
+            legend9.Enabled = false;
+            legend9.ForeColor = System.Drawing.Color.White;
+            legend9.Name = "LegendNeonFlowChart";
+            this.chart3.Legends.Add(legend9);
+            this.chart3.Location = new System.Drawing.Point(6, 13);
             this.chart3.Name = "chart3";
-            series57.ChartArea = "ChartAreaNeonFlowChart";
-            series57.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series57.IsVisibleInLegend = false;
-            series57.Legend = "LegendNeonFlowChart";
-            series57.Name = "Neon Flow";
-            series57.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart3.Series.Add(series57);
-            this.chart3.Size = new System.Drawing.Size(935, 399);
+            series35.ChartArea = "ChartAreaNeonFlowChart";
+            series35.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series35.IsVisibleInLegend = false;
+            series35.Legend = "LegendNeonFlowChart";
+            series35.Name = "Neon Flow";
+            series35.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart3.Series.Add(series35);
+            this.chart3.Size = new System.Drawing.Size(701, 324);
             this.chart3.TabIndex = 19;
             this.chart3.Text = "chartHeliumFlow";
-            title10.BackColor = System.Drawing.Color.Black;
-            title10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title10.ForeColor = System.Drawing.Color.White;
-            title10.Name = "chartTitleHeliumFlow";
-            title10.Text = "Helium Flow (FL)";
-            this.chart3.Titles.Add(title10);
+            title6.BackColor = System.Drawing.Color.Black;
+            title6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title6.ForeColor = System.Drawing.Color.White;
+            title6.Name = "chartTitleHeliumFlow";
+            title6.Text = "Helium Flow (FL)";
+            this.chart3.Titles.Add(title6);
             // 
             // lbActFlowSetpointSF6
             // 
             this.lbActFlowSetpointSF6.AutoSize = true;
-            this.lbActFlowSetpointSF6.Location = new System.Drawing.Point(992, 282);
-            this.lbActFlowSetpointSF6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbActFlowSetpointSF6.Location = new System.Drawing.Point(744, 229);
             this.lbActFlowSetpointSF6.Name = "lbActFlowSetpointSF6";
-            this.lbActFlowSetpointSF6.Size = new System.Drawing.Size(97, 17);
+            this.lbActFlowSetpointSF6.Size = new System.Drawing.Size(74, 13);
             this.lbActFlowSetpointSF6.TabIndex = 41;
             this.lbActFlowSetpointSF6.Text = "SF6 flow (SP):";
             // 
             // tbNewHeliumFlowSetPoint
             // 
             this.tbNewHeliumFlowSetPoint.Enabled = false;
-            this.tbNewHeliumFlowSetPoint.Location = new System.Drawing.Point(1099, 201);
-            this.tbNewHeliumFlowSetPoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNewHeliumFlowSetPoint.Location = new System.Drawing.Point(824, 163);
             this.tbNewHeliumFlowSetPoint.Name = "tbNewHeliumFlowSetPoint";
-            this.tbNewHeliumFlowSetPoint.Size = new System.Drawing.Size(112, 22);
+            this.tbNewHeliumFlowSetPoint.Size = new System.Drawing.Size(85, 20);
             this.tbNewHeliumFlowSetPoint.TabIndex = 32;
             this.tbNewHeliumFlowSetPoint.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbNewNeonFlowSetPoint_KeyDown);
             // 
@@ -6775,19 +6408,17 @@ namespace UEDMHardwareControl
             // 
             this.tbSF6FlowActual.BackColor = System.Drawing.Color.Black;
             this.tbSF6FlowActual.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbSF6FlowActual.Location = new System.Drawing.Point(1099, 246);
-            this.tbSF6FlowActual.Margin = new System.Windows.Forms.Padding(4);
+            this.tbSF6FlowActual.Location = new System.Drawing.Point(824, 200);
             this.tbSF6FlowActual.Name = "tbSF6FlowActual";
             this.tbSF6FlowActual.ReadOnly = true;
-            this.tbSF6FlowActual.Size = new System.Drawing.Size(112, 22);
+            this.tbSF6FlowActual.Size = new System.Drawing.Size(85, 20);
             this.tbSF6FlowActual.TabIndex = 38;
             // 
             // btStartHeliumFlowActMonitor
             // 
-            this.btStartHeliumFlowActMonitor.Location = new System.Drawing.Point(1099, 26);
-            this.btStartHeliumFlowActMonitor.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartHeliumFlowActMonitor.Location = new System.Drawing.Point(824, 21);
             this.btStartHeliumFlowActMonitor.Name = "btStartHeliumFlowActMonitor";
-            this.btStartHeliumFlowActMonitor.Size = new System.Drawing.Size(113, 28);
+            this.btStartHeliumFlowActMonitor.Size = new System.Drawing.Size(85, 23);
             this.btStartHeliumFlowActMonitor.TabIndex = 20;
             this.btStartHeliumFlowActMonitor.Text = "Start";
             this.btStartHeliumFlowActMonitor.UseVisualStyleBackColor = true;
@@ -6796,19 +6427,17 @@ namespace UEDMHardwareControl
             // labelMonitorActualHeliumFlow
             // 
             this.labelMonitorActualHeliumFlow.AutoSize = true;
-            this.labelMonitorActualHeliumFlow.Location = new System.Drawing.Point(995, 32);
-            this.labelMonitorActualHeliumFlow.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMonitorActualHeliumFlow.Location = new System.Drawing.Point(746, 26);
             this.labelMonitorActualHeliumFlow.Name = "labelMonitorActualHeliumFlow";
-            this.labelMonitorActualHeliumFlow.Size = new System.Drawing.Size(87, 17);
+            this.labelMonitorActualHeliumFlow.Size = new System.Drawing.Size(67, 13);
             this.labelMonitorActualHeliumFlow.TabIndex = 22;
             this.labelMonitorActualHeliumFlow.Text = "Monitor flow:";
             // 
             // btClearNeonFlowActPlotData
             // 
-            this.btClearNeonFlowActPlotData.Location = new System.Drawing.Point(1240, 385);
-            this.btClearNeonFlowActPlotData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearNeonFlowActPlotData.Location = new System.Drawing.Point(930, 313);
             this.btClearNeonFlowActPlotData.Name = "btClearNeonFlowActPlotData";
-            this.btClearNeonFlowActPlotData.Size = new System.Drawing.Size(113, 28);
+            this.btClearNeonFlowActPlotData.Size = new System.Drawing.Size(85, 23);
             this.btClearNeonFlowActPlotData.TabIndex = 29;
             this.btClearNeonFlowActPlotData.Text = "Clear";
             this.btClearNeonFlowActPlotData.UseVisualStyleBackColor = true;
@@ -6817,10 +6446,9 @@ namespace UEDMHardwareControl
             // labelClearNeonFlowActData
             // 
             this.labelClearNeonFlowActData.AutoSize = true;
-            this.labelClearNeonFlowActData.Location = new System.Drawing.Point(1128, 393);
-            this.labelClearNeonFlowActData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelClearNeonFlowActData.Location = new System.Drawing.Point(846, 319);
             this.labelClearNeonFlowActData.Name = "labelClearNeonFlowActData";
-            this.labelClearNeonFlowActData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearNeonFlowActData.Size = new System.Drawing.Size(78, 13);
             this.labelClearNeonFlowActData.TabIndex = 28;
             this.labelClearNeonFlowActData.Text = "Clear plot data:";
             // 
@@ -6828,20 +6456,18 @@ namespace UEDMHardwareControl
             // 
             this.tbHeliumFlowSetpoint.BackColor = System.Drawing.Color.Black;
             this.tbHeliumFlowSetpoint.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbHeliumFlowSetpoint.Location = new System.Drawing.Point(1099, 170);
-            this.tbHeliumFlowSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHeliumFlowSetpoint.Location = new System.Drawing.Point(824, 138);
             this.tbHeliumFlowSetpoint.Name = "tbHeliumFlowSetpoint";
             this.tbHeliumFlowSetpoint.ReadOnly = true;
-            this.tbHeliumFlowSetpoint.Size = new System.Drawing.Size(112, 22);
+            this.tbHeliumFlowSetpoint.Size = new System.Drawing.Size(85, 20);
             this.tbHeliumFlowSetpoint.TabIndex = 31;
             // 
             // btStopHeliumFlowActMonitor
             // 
             this.btStopHeliumFlowActMonitor.Enabled = false;
-            this.btStopHeliumFlowActMonitor.Location = new System.Drawing.Point(1099, 60);
-            this.btStopHeliumFlowActMonitor.Margin = new System.Windows.Forms.Padding(4);
+            this.btStopHeliumFlowActMonitor.Location = new System.Drawing.Point(824, 49);
             this.btStopHeliumFlowActMonitor.Name = "btStopHeliumFlowActMonitor";
-            this.btStopHeliumFlowActMonitor.Size = new System.Drawing.Size(113, 28);
+            this.btStopHeliumFlowActMonitor.Size = new System.Drawing.Size(85, 23);
             this.btStopHeliumFlowActMonitor.TabIndex = 21;
             this.btStopHeliumFlowActMonitor.Text = "Stop";
             this.btStopHeliumFlowActMonitor.UseVisualStyleBackColor = true;
@@ -6850,39 +6476,35 @@ namespace UEDMHardwareControl
             // labelHeliumFlowMonitorFL
             // 
             this.labelHeliumFlowMonitorFL.AutoSize = true;
-            this.labelHeliumFlowMonitorFL.Location = new System.Drawing.Point(985, 143);
-            this.labelHeliumFlowMonitorFL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeliumFlowMonitorFL.Location = new System.Drawing.Point(739, 116);
             this.labelHeliumFlowMonitorFL.Name = "labelHeliumFlowMonitorFL";
-            this.labelHeliumFlowMonitorFL.Size = new System.Drawing.Size(113, 17);
+            this.labelHeliumFlowMonitorFL.Size = new System.Drawing.Size(85, 13);
             this.labelHeliumFlowMonitorFL.TabIndex = 23;
             this.labelHeliumFlowMonitorFL.Text = "Helium flow (FL):";
             // 
             // tbNeonFlowActPollPeriod
             // 
-            this.tbNeonFlowActPollPeriod.Location = new System.Drawing.Point(1099, 106);
-            this.tbNeonFlowActPollPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNeonFlowActPollPeriod.Location = new System.Drawing.Point(824, 86);
             this.tbNeonFlowActPollPeriod.Name = "tbNeonFlowActPollPeriod";
-            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(112, 22);
+            this.tbNeonFlowActPollPeriod.Size = new System.Drawing.Size(85, 20);
             this.tbNeonFlowActPollPeriod.TabIndex = 26;
             this.tbNeonFlowActPollPeriod.Text = "1000";
             // 
             // labelHeliumFlowMonitorSP
             // 
             this.labelHeliumFlowMonitorSP.AutoSize = true;
-            this.labelHeliumFlowMonitorSP.Location = new System.Drawing.Point(983, 175);
-            this.labelHeliumFlowMonitorSP.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeliumFlowMonitorSP.Location = new System.Drawing.Point(737, 142);
             this.labelHeliumFlowMonitorSP.Name = "labelHeliumFlowMonitorSP";
-            this.labelHeliumFlowMonitorSP.Size = new System.Drawing.Size(115, 17);
+            this.labelHeliumFlowMonitorSP.Size = new System.Drawing.Size(87, 13);
             this.labelHeliumFlowMonitorSP.TabIndex = 30;
             this.labelHeliumFlowMonitorSP.Text = "Helium flow (SP):";
             // 
             // labelHeliumFlowActPollPeriod
             // 
             this.labelHeliumFlowActPollPeriod.AutoSize = true;
-            this.labelHeliumFlowActPollPeriod.Location = new System.Drawing.Point(983, 111);
-            this.labelHeliumFlowActPollPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeliumFlowActPollPeriod.Location = new System.Drawing.Point(737, 90);
             this.labelHeliumFlowActPollPeriod.Name = "labelHeliumFlowActPollPeriod";
-            this.labelHeliumFlowActPollPeriod.Size = new System.Drawing.Size(111, 17);
+            this.labelHeliumFlowActPollPeriod.Size = new System.Drawing.Size(81, 13);
             this.labelHeliumFlowActPollPeriod.TabIndex = 25;
             this.labelHeliumFlowActPollPeriod.Text = "Poll period (ms):";
             // 
@@ -6890,11 +6512,10 @@ namespace UEDMHardwareControl
             // 
             this.tbHeliumFlowActual.BackColor = System.Drawing.Color.Black;
             this.tbHeliumFlowActual.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbHeliumFlowActual.Location = new System.Drawing.Point(1099, 138);
-            this.tbHeliumFlowActual.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHeliumFlowActual.Location = new System.Drawing.Point(824, 112);
             this.tbHeliumFlowActual.Name = "tbHeliumFlowActual";
             this.tbHeliumFlowActual.ReadOnly = true;
-            this.tbHeliumFlowActual.Size = new System.Drawing.Size(112, 22);
+            this.tbHeliumFlowActual.Size = new System.Drawing.Size(85, 20);
             this.tbHeliumFlowActual.TabIndex = 24;
             // 
             // tabPageHeatersControl
@@ -6904,21 +6525,20 @@ namespace UEDMHardwareControl
             this.tabPageHeatersControl.Controls.Add(this.groupBoxHeaterControlTimed);
             this.tabPageHeatersControl.Controls.Add(this.gbCryoStage2HeaterControl);
             this.tabPageHeatersControl.Controls.Add(this.gbCryoStage1HeaterControl);
-            this.tabPageHeatersControl.Location = new System.Drawing.Point(4, 25);
-            this.tabPageHeatersControl.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageHeatersControl.Location = new System.Drawing.Point(4, 22);
             this.tabPageHeatersControl.Name = "tabPageHeatersControl";
-            this.tabPageHeatersControl.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageHeatersControl.Size = new System.Drawing.Size(1033, 715);
             this.tabPageHeatersControl.TabIndex = 4;
             this.tabPageHeatersControl.Text = "Heaters Control";
             // 
             // groupBoxHeaterControlSettings
             // 
             this.groupBoxHeaterControlSettings.Controls.Add(this.checkBoxMonitorPressureWhenHeating);
-            this.groupBoxHeaterControlSettings.Location = new System.Drawing.Point(569, 175);
-            this.groupBoxHeaterControlSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBoxHeaterControlSettings.Location = new System.Drawing.Point(427, 142);
+            this.groupBoxHeaterControlSettings.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.groupBoxHeaterControlSettings.Name = "groupBoxHeaterControlSettings";
-            this.groupBoxHeaterControlSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBoxHeaterControlSettings.Size = new System.Drawing.Size(792, 159);
+            this.groupBoxHeaterControlSettings.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.groupBoxHeaterControlSettings.Size = new System.Drawing.Size(594, 129);
             this.groupBoxHeaterControlSettings.TabIndex = 19;
             this.groupBoxHeaterControlSettings.TabStop = false;
             this.groupBoxHeaterControlSettings.Text = "Settings";
@@ -6928,10 +6548,9 @@ namespace UEDMHardwareControl
             this.checkBoxMonitorPressureWhenHeating.AutoSize = true;
             this.checkBoxMonitorPressureWhenHeating.Checked = true;
             this.checkBoxMonitorPressureWhenHeating.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMonitorPressureWhenHeating.Location = new System.Drawing.Point(33, 44);
-            this.checkBoxMonitorPressureWhenHeating.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxMonitorPressureWhenHeating.Location = new System.Drawing.Point(25, 36);
             this.checkBoxMonitorPressureWhenHeating.Name = "checkBoxMonitorPressureWhenHeating";
-            this.checkBoxMonitorPressureWhenHeating.Size = new System.Drawing.Size(225, 21);
+            this.checkBoxMonitorPressureWhenHeating.Size = new System.Drawing.Size(171, 17);
             this.checkBoxMonitorPressureWhenHeating.TabIndex = 6;
             this.checkBoxMonitorPressureWhenHeating.Text = "Monitor pressure when heating";
             this.checkBoxMonitorPressureWhenHeating.UseVisualStyleBackColor = true;
@@ -6947,11 +6566,11 @@ namespace UEDMHardwareControl
             this.groupBoxHeaterControlTimed.Controls.Add(this.labelTurnHeatersOffAt);
             this.groupBoxHeaterControlTimed.Controls.Add(this.dateTimePickerHeatersTurnOff);
             this.groupBoxHeaterControlTimed.Controls.Add(this.labelHowLongUntilHeatersTurnOff);
-            this.groupBoxHeaterControlTimed.Location = new System.Drawing.Point(569, 7);
-            this.groupBoxHeaterControlTimed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBoxHeaterControlTimed.Location = new System.Drawing.Point(427, 6);
+            this.groupBoxHeaterControlTimed.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.groupBoxHeaterControlTimed.Name = "groupBoxHeaterControlTimed";
-            this.groupBoxHeaterControlTimed.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBoxHeaterControlTimed.Size = new System.Drawing.Size(792, 159);
+            this.groupBoxHeaterControlTimed.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.groupBoxHeaterControlTimed.Size = new System.Drawing.Size(594, 129);
             this.groupBoxHeaterControlTimed.TabIndex = 18;
             this.groupBoxHeaterControlTimed.TabStop = false;
             this.groupBoxHeaterControlTimed.Text = "Heater timer";
@@ -6959,29 +6578,26 @@ namespace UEDMHardwareControl
             // labelHeaterControlStatus
             // 
             this.labelHeaterControlStatus.AutoSize = true;
-            this.labelHeaterControlStatus.Location = new System.Drawing.Point(311, 25);
-            this.labelHeaterControlStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeaterControlStatus.Location = new System.Drawing.Point(233, 20);
             this.labelHeaterControlStatus.Name = "labelHeaterControlStatus";
-            this.labelHeaterControlStatus.Size = new System.Drawing.Size(52, 17);
+            this.labelHeaterControlStatus.Size = new System.Drawing.Size(40, 13);
             this.labelHeaterControlStatus.TabIndex = 16;
             this.labelHeaterControlStatus.Text = "Status:";
             // 
             // tbHeaterControlStatus
             // 
-            this.tbHeaterControlStatus.Location = new System.Drawing.Point(369, 22);
-            this.tbHeaterControlStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHeaterControlStatus.Location = new System.Drawing.Point(277, 18);
             this.tbHeaterControlStatus.Multiline = true;
             this.tbHeaterControlStatus.Name = "tbHeaterControlStatus";
-            this.tbHeaterControlStatus.Size = new System.Drawing.Size(415, 125);
+            this.tbHeaterControlStatus.Size = new System.Drawing.Size(312, 102);
             this.tbHeaterControlStatus.TabIndex = 17;
             // 
             // btHeatersTurnOffWaitCancel
             // 
             this.btHeatersTurnOffWaitCancel.Enabled = false;
-            this.btHeatersTurnOffWaitCancel.Location = new System.Drawing.Point(172, 119);
-            this.btHeatersTurnOffWaitCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btHeatersTurnOffWaitCancel.Location = new System.Drawing.Point(129, 97);
             this.btHeatersTurnOffWaitCancel.Name = "btHeatersTurnOffWaitCancel";
-            this.btHeatersTurnOffWaitCancel.Size = new System.Drawing.Size(100, 28);
+            this.btHeatersTurnOffWaitCancel.Size = new System.Drawing.Size(75, 23);
             this.btHeatersTurnOffWaitCancel.TabIndex = 15;
             this.btHeatersTurnOffWaitCancel.Text = "Cancel";
             this.btHeatersTurnOffWaitCancel.UseVisualStyleBackColor = true;
@@ -6990,10 +6606,9 @@ namespace UEDMHardwareControl
             // btHeatersTurnOffWaitStart
             // 
             this.btHeatersTurnOffWaitStart.Enabled = false;
-            this.btHeatersTurnOffWaitStart.Location = new System.Drawing.Point(45, 119);
-            this.btHeatersTurnOffWaitStart.Margin = new System.Windows.Forms.Padding(4);
+            this.btHeatersTurnOffWaitStart.Location = new System.Drawing.Point(34, 97);
             this.btHeatersTurnOffWaitStart.Name = "btHeatersTurnOffWaitStart";
-            this.btHeatersTurnOffWaitStart.Size = new System.Drawing.Size(100, 28);
+            this.btHeatersTurnOffWaitStart.Size = new System.Drawing.Size(75, 23);
             this.btHeatersTurnOffWaitStart.TabIndex = 14;
             this.btHeatersTurnOffWaitStart.Text = "Start";
             this.btHeatersTurnOffWaitStart.UseVisualStyleBackColor = true;
@@ -7001,39 +6616,35 @@ namespace UEDMHardwareControl
             // 
             // tbHowLongUntilHeatersTurnOff
             // 
-            this.tbHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(159, 65);
-            this.tbHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(119, 53);
             this.tbHowLongUntilHeatersTurnOff.Name = "tbHowLongUntilHeatersTurnOff";
-            this.tbHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(128, 22);
+            this.tbHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbHowLongUntilHeatersTurnOff.TabIndex = 11;
             // 
             // labelTurnHeatersOffAt
             // 
             this.labelTurnHeatersOffAt.AutoSize = true;
-            this.labelTurnHeatersOffAt.Location = new System.Drawing.Point(21, 33);
-            this.labelTurnHeatersOffAt.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTurnHeatersOffAt.Location = new System.Drawing.Point(16, 27);
             this.labelTurnHeatersOffAt.Name = "labelTurnHeatersOffAt";
-            this.labelTurnHeatersOffAt.Size = new System.Drawing.Size(130, 17);
+            this.labelTurnHeatersOffAt.Size = new System.Drawing.Size(97, 13);
             this.labelTurnHeatersOffAt.TabIndex = 12;
             this.labelTurnHeatersOffAt.Text = "Turn heaters off at:";
             // 
             // dateTimePickerHeatersTurnOff
             // 
             this.dateTimePickerHeatersTurnOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerHeatersTurnOff.Location = new System.Drawing.Point(159, 31);
-            this.dateTimePickerHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerHeatersTurnOff.Location = new System.Drawing.Point(119, 25);
             this.dateTimePickerHeatersTurnOff.Name = "dateTimePickerHeatersTurnOff";
-            this.dateTimePickerHeatersTurnOff.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerHeatersTurnOff.TabIndex = 10;
             this.dateTimePickerHeatersTurnOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             // 
             // labelHowLongUntilHeatersTurnOff
             // 
             this.labelHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(41, 63);
-            this.labelHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(31, 51);
             this.labelHowLongUntilHeatersTurnOff.Name = "labelHowLongUntilHeatersTurnOff";
-            this.labelHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelHowLongUntilHeatersTurnOff.TabIndex = 13;
             this.labelHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -7045,11 +6656,9 @@ namespace UEDMHardwareControl
             this.gbCryoStage2HeaterControl.Controls.Add(this.labelHeaterSetpointStage2);
             this.gbCryoStage2HeaterControl.Controls.Add(this.tbHeaterTempSetpointStage2);
             this.gbCryoStage2HeaterControl.Controls.Add(this.checkBoxEnableHeatersS2);
-            this.gbCryoStage2HeaterControl.Location = new System.Drawing.Point(4, 7);
-            this.gbCryoStage2HeaterControl.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCryoStage2HeaterControl.Location = new System.Drawing.Point(3, 6);
             this.gbCryoStage2HeaterControl.Name = "gbCryoStage2HeaterControl";
-            this.gbCryoStage2HeaterControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCryoStage2HeaterControl.Size = new System.Drawing.Size(559, 159);
+            this.gbCryoStage2HeaterControl.Size = new System.Drawing.Size(419, 129);
             this.gbCryoStage2HeaterControl.TabIndex = 8;
             this.gbCryoStage2HeaterControl.TabStop = false;
             this.gbCryoStage2HeaterControl.Text = "Cryo Stage 2";
@@ -7057,10 +6666,9 @@ namespace UEDMHardwareControl
             // btUpdateHeaterControlStage2
             // 
             this.btUpdateHeaterControlStage2.Enabled = false;
-            this.btUpdateHeaterControlStage2.Location = new System.Drawing.Point(217, 69);
-            this.btUpdateHeaterControlStage2.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateHeaterControlStage2.Location = new System.Drawing.Point(163, 56);
             this.btUpdateHeaterControlStage2.Name = "btUpdateHeaterControlStage2";
-            this.btUpdateHeaterControlStage2.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateHeaterControlStage2.Size = new System.Drawing.Size(75, 23);
             this.btUpdateHeaterControlStage2.TabIndex = 5;
             this.btUpdateHeaterControlStage2.Text = "Update";
             this.btUpdateHeaterControlStage2.UseVisualStyleBackColor = true;
@@ -7069,10 +6677,9 @@ namespace UEDMHardwareControl
             // btStopHeaterControlStage2
             // 
             this.btStopHeaterControlStage2.Enabled = false;
-            this.btStopHeaterControlStage2.Location = new System.Drawing.Point(357, 69);
-            this.btStopHeaterControlStage2.Margin = new System.Windows.Forms.Padding(4);
+            this.btStopHeaterControlStage2.Location = new System.Drawing.Point(268, 56);
             this.btStopHeaterControlStage2.Name = "btStopHeaterControlStage2";
-            this.btStopHeaterControlStage2.Size = new System.Drawing.Size(100, 28);
+            this.btStopHeaterControlStage2.Size = new System.Drawing.Size(75, 23);
             this.btStopHeaterControlStage2.TabIndex = 4;
             this.btStopHeaterControlStage2.Text = "Stop";
             this.btStopHeaterControlStage2.UseVisualStyleBackColor = true;
@@ -7081,10 +6688,9 @@ namespace UEDMHardwareControl
             // btStartHeaterControlStage2
             // 
             this.btStartHeaterControlStage2.Enabled = false;
-            this.btStartHeaterControlStage2.Location = new System.Drawing.Point(357, 33);
-            this.btStartHeaterControlStage2.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartHeaterControlStage2.Location = new System.Drawing.Point(268, 27);
             this.btStartHeaterControlStage2.Name = "btStartHeaterControlStage2";
-            this.btStartHeaterControlStage2.Size = new System.Drawing.Size(100, 28);
+            this.btStartHeaterControlStage2.Size = new System.Drawing.Size(75, 23);
             this.btStartHeaterControlStage2.TabIndex = 3;
             this.btStartHeaterControlStage2.Text = "Start";
             this.btStartHeaterControlStage2.UseVisualStyleBackColor = true;
@@ -7093,29 +6699,26 @@ namespace UEDMHardwareControl
             // labelHeaterSetpointStage2
             // 
             this.labelHeaterSetpointStage2.AutoSize = true;
-            this.labelHeaterSetpointStage2.Location = new System.Drawing.Point(24, 41);
-            this.labelHeaterSetpointStage2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeaterSetpointStage2.Location = new System.Drawing.Point(18, 33);
             this.labelHeaterSetpointStage2.Name = "labelHeaterSetpointStage2";
-            this.labelHeaterSetpointStage2.Size = new System.Drawing.Size(173, 17);
+            this.labelHeaterSetpointStage2.Size = new System.Drawing.Size(128, 13);
             this.labelHeaterSetpointStage2.TabIndex = 2;
             this.labelHeaterSetpointStage2.Text = "Temperature Setpoint (K):";
             // 
             // tbHeaterTempSetpointStage2
             // 
-            this.tbHeaterTempSetpointStage2.Location = new System.Drawing.Point(203, 37);
-            this.tbHeaterTempSetpointStage2.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHeaterTempSetpointStage2.Location = new System.Drawing.Point(152, 30);
             this.tbHeaterTempSetpointStage2.Name = "tbHeaterTempSetpointStage2";
-            this.tbHeaterTempSetpointStage2.Size = new System.Drawing.Size(132, 22);
+            this.tbHeaterTempSetpointStage2.Size = new System.Drawing.Size(100, 20);
             this.tbHeaterTempSetpointStage2.TabIndex = 1;
             this.tbHeaterTempSetpointStage2.Text = "4.0";
             // 
             // checkBoxEnableHeatersS2
             // 
             this.checkBoxEnableHeatersS2.AutoSize = true;
-            this.checkBoxEnableHeatersS2.Location = new System.Drawing.Point(28, 119);
-            this.checkBoxEnableHeatersS2.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxEnableHeatersS2.Location = new System.Drawing.Point(21, 97);
             this.checkBoxEnableHeatersS2.Name = "checkBoxEnableHeatersS2";
-            this.checkBoxEnableHeatersS2.Size = new System.Drawing.Size(181, 21);
+            this.checkBoxEnableHeatersS2.Size = new System.Drawing.Size(139, 17);
             this.checkBoxEnableHeatersS2.TabIndex = 0;
             this.checkBoxEnableHeatersS2.Text = "Enable Stage 2 Heaters";
             this.checkBoxEnableHeatersS2.UseVisualStyleBackColor = true;
@@ -7129,11 +6732,9 @@ namespace UEDMHardwareControl
             this.gbCryoStage1HeaterControl.Controls.Add(this.btStartHeaterControlStage1);
             this.gbCryoStage1HeaterControl.Controls.Add(this.tbHeaterTempSetpointStage1);
             this.gbCryoStage1HeaterControl.Controls.Add(this.labelHeaterSetpointStage1);
-            this.gbCryoStage1HeaterControl.Location = new System.Drawing.Point(4, 175);
-            this.gbCryoStage1HeaterControl.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCryoStage1HeaterControl.Location = new System.Drawing.Point(3, 142);
             this.gbCryoStage1HeaterControl.Name = "gbCryoStage1HeaterControl";
-            this.gbCryoStage1HeaterControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCryoStage1HeaterControl.Size = new System.Drawing.Size(559, 159);
+            this.gbCryoStage1HeaterControl.Size = new System.Drawing.Size(419, 129);
             this.gbCryoStage1HeaterControl.TabIndex = 9;
             this.gbCryoStage1HeaterControl.TabStop = false;
             this.gbCryoStage1HeaterControl.Text = "Cryo Stage 1";
@@ -7141,10 +6742,9 @@ namespace UEDMHardwareControl
             // btUpdateHeaterControlStage1
             // 
             this.btUpdateHeaterControlStage1.Enabled = false;
-            this.btUpdateHeaterControlStage1.Location = new System.Drawing.Point(199, 69);
-            this.btUpdateHeaterControlStage1.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateHeaterControlStage1.Location = new System.Drawing.Point(149, 56);
             this.btUpdateHeaterControlStage1.Name = "btUpdateHeaterControlStage1";
-            this.btUpdateHeaterControlStage1.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateHeaterControlStage1.Size = new System.Drawing.Size(75, 23);
             this.btUpdateHeaterControlStage1.TabIndex = 12;
             this.btUpdateHeaterControlStage1.Text = "Update";
             this.btUpdateHeaterControlStage1.UseVisualStyleBackColor = true;
@@ -7153,10 +6753,9 @@ namespace UEDMHardwareControl
             // btStopHeaterControlStage1
             // 
             this.btStopHeaterControlStage1.Enabled = false;
-            this.btStopHeaterControlStage1.Location = new System.Drawing.Point(352, 70);
-            this.btStopHeaterControlStage1.Margin = new System.Windows.Forms.Padding(4);
+            this.btStopHeaterControlStage1.Location = new System.Drawing.Point(264, 57);
             this.btStopHeaterControlStage1.Name = "btStopHeaterControlStage1";
-            this.btStopHeaterControlStage1.Size = new System.Drawing.Size(100, 28);
+            this.btStopHeaterControlStage1.Size = new System.Drawing.Size(75, 23);
             this.btStopHeaterControlStage1.TabIndex = 11;
             this.btStopHeaterControlStage1.Text = "Stop";
             this.btStopHeaterControlStage1.UseVisualStyleBackColor = true;
@@ -7165,10 +6764,9 @@ namespace UEDMHardwareControl
             // checkBoxEnableHeatersS1
             // 
             this.checkBoxEnableHeatersS1.AutoSize = true;
-            this.checkBoxEnableHeatersS1.Location = new System.Drawing.Point(12, 119);
-            this.checkBoxEnableHeatersS1.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxEnableHeatersS1.Location = new System.Drawing.Point(9, 97);
             this.checkBoxEnableHeatersS1.Name = "checkBoxEnableHeatersS1";
-            this.checkBoxEnableHeatersS1.Size = new System.Drawing.Size(181, 21);
+            this.checkBoxEnableHeatersS1.Size = new System.Drawing.Size(139, 17);
             this.checkBoxEnableHeatersS1.TabIndex = 7;
             this.checkBoxEnableHeatersS1.Text = "Enable Stage 1 Heaters";
             this.checkBoxEnableHeatersS1.UseVisualStyleBackColor = true;
@@ -7177,10 +6775,9 @@ namespace UEDMHardwareControl
             // btStartHeaterControlStage1
             // 
             this.btStartHeaterControlStage1.Enabled = false;
-            this.btStartHeaterControlStage1.Location = new System.Drawing.Point(352, 33);
-            this.btStartHeaterControlStage1.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartHeaterControlStage1.Location = new System.Drawing.Point(264, 27);
             this.btStartHeaterControlStage1.Name = "btStartHeaterControlStage1";
-            this.btStartHeaterControlStage1.Size = new System.Drawing.Size(100, 28);
+            this.btStartHeaterControlStage1.Size = new System.Drawing.Size(75, 23);
             this.btStartHeaterControlStage1.TabIndex = 10;
             this.btStartHeaterControlStage1.Text = "Start";
             this.btStartHeaterControlStage1.UseVisualStyleBackColor = true;
@@ -7188,20 +6785,18 @@ namespace UEDMHardwareControl
             // 
             // tbHeaterTempSetpointStage1
             // 
-            this.tbHeaterTempSetpointStage1.Location = new System.Drawing.Point(187, 37);
-            this.tbHeaterTempSetpointStage1.Margin = new System.Windows.Forms.Padding(4);
+            this.tbHeaterTempSetpointStage1.Location = new System.Drawing.Point(140, 30);
             this.tbHeaterTempSetpointStage1.Name = "tbHeaterTempSetpointStage1";
-            this.tbHeaterTempSetpointStage1.Size = new System.Drawing.Size(132, 22);
+            this.tbHeaterTempSetpointStage1.Size = new System.Drawing.Size(100, 20);
             this.tbHeaterTempSetpointStage1.TabIndex = 9;
             this.tbHeaterTempSetpointStage1.Text = "30.0";
             // 
             // labelHeaterSetpointStage1
             // 
             this.labelHeaterSetpointStage1.AutoSize = true;
-            this.labelHeaterSetpointStage1.Location = new System.Drawing.Point(8, 41);
-            this.labelHeaterSetpointStage1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelHeaterSetpointStage1.Location = new System.Drawing.Point(6, 33);
             this.labelHeaterSetpointStage1.Name = "labelHeaterSetpointStage1";
-            this.labelHeaterSetpointStage1.Size = new System.Drawing.Size(173, 17);
+            this.labelHeaterSetpointStage1.Size = new System.Drawing.Size(128, 13);
             this.labelHeaterSetpointStage1.TabIndex = 8;
             this.labelHeaterSetpointStage1.Text = "Temperature Setpoint (K):";
             // 
@@ -7209,11 +6804,10 @@ namespace UEDMHardwareControl
             // 
             this.tabPageSourceModes.BackColor = System.Drawing.Color.DarkGray;
             this.tabPageSourceModes.Controls.Add(this.tabControl1);
-            this.tabPageSourceModes.Location = new System.Drawing.Point(4, 25);
-            this.tabPageSourceModes.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPageSourceModes.Location = new System.Drawing.Point(4, 22);
             this.tabPageSourceModes.Name = "tabPageSourceModes";
-            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageSourceModes.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSourceModes.Size = new System.Drawing.Size(1033, 715);
             this.tabPageSourceModes.TabIndex = 3;
             this.tabPageSourceModes.Text = "Source Modes";
             // 
@@ -7222,11 +6816,11 @@ namespace UEDMHardwareControl
             this.tabControl1.Controls.Add(this.tabPageRefreshMode);
             this.tabControl1.Controls.Add(this.tabPageWarmUpMode);
             this.tabControl1.Controls.Add(this.tabPageCoolDownMode);
-            this.tabControl1.Location = new System.Drawing.Point(3, 7);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.tabControl1.Location = new System.Drawing.Point(2, 6);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1373, 858);
+            this.tabControl1.Size = new System.Drawing.Size(1030, 697);
             this.tabControl1.TabIndex = 22;
             // 
             // tabPageRefreshMode
@@ -7242,20 +6836,19 @@ namespace UEDMHardwareControl
             this.tabPageRefreshMode.Controls.Add(this.btStartRefreshMode);
             this.tabPageRefreshMode.Controls.Add(this.tbRefreshModeStatus);
             this.tabPageRefreshMode.Controls.Add(this.labelRefreshModeStatus);
-            this.tabPageRefreshMode.Location = new System.Drawing.Point(4, 25);
-            this.tabPageRefreshMode.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.tabPageRefreshMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageRefreshMode.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabPageRefreshMode.Name = "tabPageRefreshMode";
-            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.tabPageRefreshMode.Size = new System.Drawing.Size(1365, 829);
+            this.tabPageRefreshMode.Padding = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.tabPageRefreshMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageRefreshMode.TabIndex = 0;
             this.tabPageRefreshMode.Text = "Refresh Mode";
             // 
             // btClearRefreshModeStatus
             // 
-            this.btClearRefreshModeStatus.Location = new System.Drawing.Point(67, 374);
-            this.btClearRefreshModeStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearRefreshModeStatus.Location = new System.Drawing.Point(50, 304);
             this.btClearRefreshModeStatus.Name = "btClearRefreshModeStatus";
-            this.btClearRefreshModeStatus.Size = new System.Drawing.Size(100, 28);
+            this.btClearRefreshModeStatus.Size = new System.Drawing.Size(75, 23);
             this.btClearRefreshModeStatus.TabIndex = 34;
             this.btClearRefreshModeStatus.Text = "Clear";
             this.btClearRefreshModeStatus.UseVisualStyleBackColor = true;
@@ -7264,27 +6857,28 @@ namespace UEDMHardwareControl
             // labelRefreshModeInfo
             // 
             this.labelRefreshModeInfo.AutoSize = true;
-            this.labelRefreshModeInfo.Location = new System.Drawing.Point(39, 16);
+            this.labelRefreshModeInfo.Location = new System.Drawing.Point(29, 13);
+            this.labelRefreshModeInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelRefreshModeInfo.Name = "labelRefreshModeInfo";
-            this.labelRefreshModeInfo.Size = new System.Drawing.Size(128, 17);
+            this.labelRefreshModeInfo.Size = new System.Drawing.Size(96, 13);
             this.labelRefreshModeInfo.TabIndex = 33;
             this.labelRefreshModeInfo.Text = "Refresh mode info:";
             // 
             // labelRefreshModeInfoText
             // 
             this.labelRefreshModeInfoText.AutoSize = true;
-            this.labelRefreshModeInfoText.Location = new System.Drawing.Point(172, 16);
+            this.labelRefreshModeInfoText.Location = new System.Drawing.Point(129, 13);
+            this.labelRefreshModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelRefreshModeInfoText.Name = "labelRefreshModeInfoText";
-            this.labelRefreshModeInfoText.Size = new System.Drawing.Size(1108, 170);
+            this.labelRefreshModeInfoText.Size = new System.Drawing.Size(822, 130);
             this.labelRefreshModeInfoText.TabIndex = 30;
             this.labelRefreshModeInfoText.Text = resources.GetString("labelRefreshModeInfoText.Text");
             // 
             // btRefreshModeOptions
             // 
-            this.btRefreshModeOptions.Location = new System.Drawing.Point(916, 305);
-            this.btRefreshModeOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.btRefreshModeOptions.Location = new System.Drawing.Point(687, 248);
             this.btRefreshModeOptions.Name = "btRefreshModeOptions";
-            this.btRefreshModeOptions.Size = new System.Drawing.Size(100, 28);
+            this.btRefreshModeOptions.Size = new System.Drawing.Size(75, 23);
             this.btRefreshModeOptions.TabIndex = 22;
             this.btRefreshModeOptions.Text = "Options";
             this.btRefreshModeOptions.UseVisualStyleBackColor = true;
@@ -7299,21 +6893,18 @@ namespace UEDMHardwareControl
             this.gbRefreshModeWarmUp.Controls.Add(this.tbRefreshModeHowLongUntilHeatersTurnOff);
             this.gbRefreshModeWarmUp.Controls.Add(this.labelRefreshModeTurnHeatersOff);
             this.gbRefreshModeWarmUp.Controls.Add(this.dateTimePickerRefreshModeTurnHeatersOff);
-            this.gbRefreshModeWarmUp.Location = new System.Drawing.Point(175, 188);
-            this.gbRefreshModeWarmUp.Margin = new System.Windows.Forms.Padding(4);
+            this.gbRefreshModeWarmUp.Location = new System.Drawing.Point(131, 153);
             this.gbRefreshModeWarmUp.Name = "gbRefreshModeWarmUp";
-            this.gbRefreshModeWarmUp.Padding = new System.Windows.Forms.Padding(4);
-            this.gbRefreshModeWarmUp.Size = new System.Drawing.Size(783, 96);
+            this.gbRefreshModeWarmUp.Size = new System.Drawing.Size(587, 78);
             this.gbRefreshModeWarmUp.TabIndex = 21;
             this.gbRefreshModeWarmUp.TabStop = false;
             this.gbRefreshModeWarmUp.Text = "Warm Up";
             // 
             // btRefreshModeTemperatureSetpointUpdate
             // 
-            this.btRefreshModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(591, 53);
-            this.btRefreshModeTemperatureSetpointUpdate.Margin = new System.Windows.Forms.Padding(4);
+            this.btRefreshModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(443, 43);
             this.btRefreshModeTemperatureSetpointUpdate.Name = "btRefreshModeTemperatureSetpointUpdate";
-            this.btRefreshModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(100, 28);
+            this.btRefreshModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(75, 23);
             this.btRefreshModeTemperatureSetpointUpdate.TabIndex = 22;
             this.btRefreshModeTemperatureSetpointUpdate.Text = "Update";
             this.btRefreshModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
@@ -7322,28 +6913,25 @@ namespace UEDMHardwareControl
             // labelRefreshModeTemperatureSetpoint
             // 
             this.labelRefreshModeTemperatureSetpoint.AutoSize = true;
-            this.labelRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(396, 25);
-            this.labelRefreshModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(297, 20);
             this.labelRefreshModeTemperatureSetpoint.Name = "labelRefreshModeTemperatureSetpoint";
-            this.labelRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(171, 17);
+            this.labelRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
             this.labelRefreshModeTemperatureSetpoint.TabIndex = 21;
             this.labelRefreshModeTemperatureSetpoint.Text = "Refresh Temperature (K):";
             // 
             // tbRefreshModeTemperatureSetpoint
             // 
-            this.tbRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(575, 22);
-            this.tbRefreshModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRefreshModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbRefreshModeTemperatureSetpoint.Name = "tbRefreshModeTemperatureSetpoint";
-            this.tbRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(132, 22);
+            this.tbRefreshModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbRefreshModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelRefreshModeHowLongUntilHeatersTurnOff
             // 
             this.labelRefreshModeHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(48, 47);
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Name = "labelRefreshModeHowLongUntilHeatersTurnOff";
-            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelRefreshModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -7351,30 +6939,27 @@ namespace UEDMHardwareControl
             // 
             this.tbRefreshModeHowLongUntilHeatersTurnOff.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbRefreshModeHowLongUntilHeatersTurnOff.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(164, 55);
-            this.tbRefreshModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRefreshModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbRefreshModeHowLongUntilHeatersTurnOff.Name = "tbRefreshModeHowLongUntilHeatersTurnOff";
             this.tbRefreshModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(128, 22);
+            this.tbRefreshModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbRefreshModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelRefreshModeTurnHeatersOff
             // 
             this.labelRefreshModeTurnHeatersOff.AutoSize = true;
-            this.labelRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(27, 25);
-            this.labelRefreshModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelRefreshModeTurnHeatersOff.Name = "labelRefreshModeTurnHeatersOff";
-            this.labelRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelRefreshModeTurnHeatersOff.TabIndex = 19;
             this.labelRefreshModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
             // dateTimePickerRefreshModeTurnHeatersOff
             // 
             this.dateTimePickerRefreshModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(164, 23);
-            this.dateTimePickerRefreshModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerRefreshModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerRefreshModeTurnHeatersOff.Name = "dateTimePickerRefreshModeTurnHeatersOff";
-            this.dateTimePickerRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerRefreshModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerRefreshModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerRefreshModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerRefreshModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerRefreshModeTurnHeatersOff_ValueChanged);
@@ -7382,10 +6967,9 @@ namespace UEDMHardwareControl
             // btCancelRefreshMode
             // 
             this.btCancelRefreshMode.Enabled = false;
-            this.btCancelRefreshMode.Location = new System.Drawing.Point(1191, 305);
-            this.btCancelRefreshMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btCancelRefreshMode.Location = new System.Drawing.Point(893, 248);
             this.btCancelRefreshMode.Name = "btCancelRefreshMode";
-            this.btCancelRefreshMode.Size = new System.Drawing.Size(100, 28);
+            this.btCancelRefreshMode.Size = new System.Drawing.Size(75, 23);
             this.btCancelRefreshMode.TabIndex = 14;
             this.btCancelRefreshMode.Text = "Cancel";
             this.btCancelRefreshMode.UseVisualStyleBackColor = true;
@@ -7397,11 +6981,9 @@ namespace UEDMHardwareControl
             this.gbRefreshModeCoolDown.Controls.Add(this.labelRefreshModeHowLongUntilCryoTurnsOn);
             this.gbRefreshModeCoolDown.Controls.Add(this.tbRefreshModeHowLongUntilCryoTurnsOn);
             this.gbRefreshModeCoolDown.Controls.Add(this.dateTimePickerRefreshModeTurnCryoOn);
-            this.gbRefreshModeCoolDown.Location = new System.Drawing.Point(967, 188);
-            this.gbRefreshModeCoolDown.Margin = new System.Windows.Forms.Padding(4);
+            this.gbRefreshModeCoolDown.Location = new System.Drawing.Point(725, 153);
             this.gbRefreshModeCoolDown.Name = "gbRefreshModeCoolDown";
-            this.gbRefreshModeCoolDown.Padding = new System.Windows.Forms.Padding(4);
-            this.gbRefreshModeCoolDown.Size = new System.Drawing.Size(324, 96);
+            this.gbRefreshModeCoolDown.Size = new System.Drawing.Size(243, 78);
             this.gbRefreshModeCoolDown.TabIndex = 20;
             this.gbRefreshModeCoolDown.TabStop = false;
             this.gbRefreshModeCoolDown.Text = "Cool down";
@@ -7409,20 +6991,18 @@ namespace UEDMHardwareControl
             // labelRefreshModeCryoTurnOnDateTime
             // 
             this.labelRefreshModeCryoTurnOnDateTime.AutoSize = true;
-            this.labelRefreshModeCryoTurnOnDateTime.Location = new System.Drawing.Point(48, 25);
-            this.labelRefreshModeCryoTurnOnDateTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
             this.labelRefreshModeCryoTurnOnDateTime.Name = "labelRefreshModeCryoTurnOnDateTime";
-            this.labelRefreshModeCryoTurnOnDateTime.Size = new System.Drawing.Size(109, 17);
+            this.labelRefreshModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
             this.labelRefreshModeCryoTurnOnDateTime.TabIndex = 11;
             this.labelRefreshModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
             // 
             // labelRefreshModeHowLongUntilCryoTurnsOn
             // 
             this.labelRefreshModeHowLongUntilCryoTurnsOn.AutoSize = true;
-            this.labelRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(55, 47);
-            this.labelRefreshModeHowLongUntilCryoTurnsOn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
             this.labelRefreshModeHowLongUntilCryoTurnsOn.Name = "labelRefreshModeHowLongUntilCryoTurnsOn";
-            this.labelRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(100, 34);
+            this.labelRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
             this.labelRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 11;
             this.labelRefreshModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
             // 
@@ -7430,20 +7010,18 @@ namespace UEDMHardwareControl
             // 
             this.tbRefreshModeHowLongUntilCryoTurnsOn.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbRefreshModeHowLongUntilCryoTurnsOn.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(165, 55);
-            this.tbRefreshModeHowLongUntilCryoTurnsOn.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
             this.tbRefreshModeHowLongUntilCryoTurnsOn.Name = "tbRefreshModeHowLongUntilCryoTurnsOn";
             this.tbRefreshModeHowLongUntilCryoTurnsOn.ReadOnly = true;
-            this.tbRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(128, 22);
+            this.tbRefreshModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
             this.tbRefreshModeHowLongUntilCryoTurnsOn.TabIndex = 16;
             // 
             // dateTimePickerRefreshModeTurnCryoOn
             // 
             this.dateTimePickerRefreshModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerRefreshModeTurnCryoOn.Location = new System.Drawing.Point(165, 23);
-            this.dateTimePickerRefreshModeTurnCryoOn.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerRefreshModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
             this.dateTimePickerRefreshModeTurnCryoOn.Name = "dateTimePickerRefreshModeTurnCryoOn";
-            this.dateTimePickerRefreshModeTurnCryoOn.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerRefreshModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerRefreshModeTurnCryoOn.TabIndex = 15;
             this.dateTimePickerRefreshModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerRefreshModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerStopHeatingAndTurnCryoOn_ValueChanged);
@@ -7451,10 +7029,9 @@ namespace UEDMHardwareControl
             // btStartRefreshMode
             // 
             this.btStartRefreshMode.Enabled = false;
-            this.btStartRefreshMode.Location = new System.Drawing.Point(1081, 305);
-            this.btStartRefreshMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartRefreshMode.Location = new System.Drawing.Point(811, 248);
             this.btStartRefreshMode.Name = "btStartRefreshMode";
-            this.btStartRefreshMode.Size = new System.Drawing.Size(100, 28);
+            this.btStartRefreshMode.Size = new System.Drawing.Size(75, 23);
             this.btStartRefreshMode.TabIndex = 13;
             this.btStartRefreshMode.Text = "Start";
             this.btStartRefreshMode.UseVisualStyleBackColor = true;
@@ -7462,21 +7039,19 @@ namespace UEDMHardwareControl
             // 
             // tbRefreshModeStatus
             // 
-            this.tbRefreshModeStatus.Location = new System.Drawing.Point(175, 342);
-            this.tbRefreshModeStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRefreshModeStatus.Location = new System.Drawing.Point(131, 278);
             this.tbRefreshModeStatus.Multiline = true;
             this.tbRefreshModeStatus.Name = "tbRefreshModeStatus";
             this.tbRefreshModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbRefreshModeStatus.Size = new System.Drawing.Size(1115, 472);
+            this.tbRefreshModeStatus.Size = new System.Drawing.Size(837, 384);
             this.tbRefreshModeStatus.TabIndex = 11;
             // 
             // labelRefreshModeStatus
             // 
             this.labelRefreshModeStatus.AutoSize = true;
-            this.labelRefreshModeStatus.Location = new System.Drawing.Point(23, 345);
-            this.labelRefreshModeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRefreshModeStatus.Location = new System.Drawing.Point(17, 280);
             this.labelRefreshModeStatus.Name = "labelRefreshModeStatus";
-            this.labelRefreshModeStatus.Size = new System.Drawing.Size(145, 17);
+            this.labelRefreshModeStatus.Size = new System.Drawing.Size(110, 13);
             this.labelRefreshModeStatus.TabIndex = 12;
             this.labelRefreshModeStatus.Text = "Refresh Mode Status:";
             // 
@@ -7492,20 +7067,20 @@ namespace UEDMHardwareControl
             this.tabPageWarmUpMode.Controls.Add(this.tbWarmUpModeStatus);
             this.tabPageWarmUpMode.Controls.Add(this.labelWarmUpModeStatus);
             this.tabPageWarmUpMode.Controls.Add(this.gbWarmUpModeWarmUp);
-            this.tabPageWarmUpMode.Location = new System.Drawing.Point(4, 25);
-            this.tabPageWarmUpMode.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.tabPageWarmUpMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageWarmUpMode.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabPageWarmUpMode.Name = "tabPageWarmUpMode";
-            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.tabPageWarmUpMode.Size = new System.Drawing.Size(1365, 829);
+            this.tabPageWarmUpMode.Padding = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.tabPageWarmUpMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageWarmUpMode.TabIndex = 1;
             this.tabPageWarmUpMode.Text = "Warm Up Mode";
             // 
             // btClearWarmUpModeStatus
             // 
-            this.btClearWarmUpModeStatus.Location = new System.Drawing.Point(68, 374);
-            this.btClearWarmUpModeStatus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btClearWarmUpModeStatus.Location = new System.Drawing.Point(51, 304);
+            this.btClearWarmUpModeStatus.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btClearWarmUpModeStatus.Name = "btClearWarmUpModeStatus";
-            this.btClearWarmUpModeStatus.Size = new System.Drawing.Size(100, 28);
+            this.btClearWarmUpModeStatus.Size = new System.Drawing.Size(75, 23);
             this.btClearWarmUpModeStatus.TabIndex = 33;
             this.btClearWarmUpModeStatus.Text = "Clear";
             this.btClearWarmUpModeStatus.UseVisualStyleBackColor = true;
@@ -7514,27 +7089,29 @@ namespace UEDMHardwareControl
             // labelWarmupModeInfo
             // 
             this.labelWarmupModeInfo.AutoSize = true;
-            this.labelWarmupModeInfo.Location = new System.Drawing.Point(32, 16);
+            this.labelWarmupModeInfo.Location = new System.Drawing.Point(24, 13);
+            this.labelWarmupModeInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarmupModeInfo.Name = "labelWarmupModeInfo";
-            this.labelWarmupModeInfo.Size = new System.Drawing.Size(135, 17);
+            this.labelWarmupModeInfo.Size = new System.Drawing.Size(102, 13);
             this.labelWarmupModeInfo.TabIndex = 32;
             this.labelWarmupModeInfo.Text = "Warm up mode info:";
             // 
             // labelWarmupModeInfoText
             // 
             this.labelWarmupModeInfoText.AutoSize = true;
-            this.labelWarmupModeInfoText.Location = new System.Drawing.Point(172, 16);
+            this.labelWarmupModeInfoText.Location = new System.Drawing.Point(129, 13);
+            this.labelWarmupModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelWarmupModeInfoText.Name = "labelWarmupModeInfoText";
-            this.labelWarmupModeInfoText.Size = new System.Drawing.Size(1112, 153);
+            this.labelWarmupModeInfoText.Size = new System.Drawing.Size(824, 117);
             this.labelWarmupModeInfoText.TabIndex = 31;
             this.labelWarmupModeInfoText.Text = resources.GetString("labelWarmupModeInfoText.Text");
             // 
             // ButtonWarmUpModeOptions
             // 
-            this.ButtonWarmUpModeOptions.Location = new System.Drawing.Point(921, 305);
-            this.ButtonWarmUpModeOptions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ButtonWarmUpModeOptions.Location = new System.Drawing.Point(691, 248);
+            this.ButtonWarmUpModeOptions.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ButtonWarmUpModeOptions.Name = "ButtonWarmUpModeOptions";
-            this.ButtonWarmUpModeOptions.Size = new System.Drawing.Size(100, 28);
+            this.ButtonWarmUpModeOptions.Size = new System.Drawing.Size(75, 23);
             this.ButtonWarmUpModeOptions.TabIndex = 27;
             this.ButtonWarmUpModeOptions.Text = "Options";
             this.ButtonWarmUpModeOptions.UseVisualStyleBackColor = true;
@@ -7543,10 +7120,9 @@ namespace UEDMHardwareControl
             // btCancelWarmUpMode
             // 
             this.btCancelWarmUpMode.Enabled = false;
-            this.btCancelWarmUpMode.Location = new System.Drawing.Point(1191, 305);
-            this.btCancelWarmUpMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btCancelWarmUpMode.Location = new System.Drawing.Point(893, 248);
             this.btCancelWarmUpMode.Name = "btCancelWarmUpMode";
-            this.btCancelWarmUpMode.Size = new System.Drawing.Size(100, 28);
+            this.btCancelWarmUpMode.Size = new System.Drawing.Size(75, 23);
             this.btCancelWarmUpMode.TabIndex = 26;
             this.btCancelWarmUpMode.Text = "Cancel";
             this.btCancelWarmUpMode.UseVisualStyleBackColor = true;
@@ -7555,10 +7131,9 @@ namespace UEDMHardwareControl
             // btStartWarmUpMode
             // 
             this.btStartWarmUpMode.Enabled = false;
-            this.btStartWarmUpMode.Location = new System.Drawing.Point(1081, 305);
-            this.btStartWarmUpMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartWarmUpMode.Location = new System.Drawing.Point(811, 248);
             this.btStartWarmUpMode.Name = "btStartWarmUpMode";
-            this.btStartWarmUpMode.Size = new System.Drawing.Size(100, 28);
+            this.btStartWarmUpMode.Size = new System.Drawing.Size(75, 23);
             this.btStartWarmUpMode.TabIndex = 25;
             this.btStartWarmUpMode.Text = "Start";
             this.btStartWarmUpMode.UseVisualStyleBackColor = true;
@@ -7566,21 +7141,19 @@ namespace UEDMHardwareControl
             // 
             // tbWarmUpModeStatus
             // 
-            this.tbWarmUpModeStatus.Location = new System.Drawing.Point(175, 342);
-            this.tbWarmUpModeStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbWarmUpModeStatus.Location = new System.Drawing.Point(131, 278);
             this.tbWarmUpModeStatus.Multiline = true;
             this.tbWarmUpModeStatus.Name = "tbWarmUpModeStatus";
             this.tbWarmUpModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbWarmUpModeStatus.Size = new System.Drawing.Size(1115, 472);
+            this.tbWarmUpModeStatus.Size = new System.Drawing.Size(837, 384);
             this.tbWarmUpModeStatus.TabIndex = 23;
             // 
             // labelWarmUpModeStatus
             // 
             this.labelWarmUpModeStatus.AutoSize = true;
-            this.labelWarmUpModeStatus.Location = new System.Drawing.Point(13, 345);
-            this.labelWarmUpModeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelWarmUpModeStatus.Location = new System.Drawing.Point(10, 280);
             this.labelWarmUpModeStatus.Name = "labelWarmUpModeStatus";
-            this.labelWarmUpModeStatus.Size = new System.Drawing.Size(154, 17);
+            this.labelWarmUpModeStatus.Size = new System.Drawing.Size(118, 13);
             this.labelWarmUpModeStatus.TabIndex = 24;
             this.labelWarmUpModeStatus.Text = "Warm Up Mode Status:";
             // 
@@ -7593,21 +7166,18 @@ namespace UEDMHardwareControl
             this.gbWarmUpModeWarmUp.Controls.Add(this.tbWarmUpModeHowLongUntilHeatersTurnOff);
             this.gbWarmUpModeWarmUp.Controls.Add(this.labelWarmUpModeTurnHeatersOff);
             this.gbWarmUpModeWarmUp.Controls.Add(this.dateTimePickerWarmUpModeTurnHeatersOff);
-            this.gbWarmUpModeWarmUp.Location = new System.Drawing.Point(175, 188);
-            this.gbWarmUpModeWarmUp.Margin = new System.Windows.Forms.Padding(4);
+            this.gbWarmUpModeWarmUp.Location = new System.Drawing.Point(131, 153);
             this.gbWarmUpModeWarmUp.Name = "gbWarmUpModeWarmUp";
-            this.gbWarmUpModeWarmUp.Padding = new System.Windows.Forms.Padding(4);
-            this.gbWarmUpModeWarmUp.Size = new System.Drawing.Size(783, 96);
+            this.gbWarmUpModeWarmUp.Size = new System.Drawing.Size(587, 78);
             this.gbWarmUpModeWarmUp.TabIndex = 22;
             this.gbWarmUpModeWarmUp.TabStop = false;
             this.gbWarmUpModeWarmUp.Text = "Warm Up";
             // 
             // btWarmUpModeTemperatureSetpointUpdate
             // 
-            this.btWarmUpModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(591, 53);
-            this.btWarmUpModeTemperatureSetpointUpdate.Margin = new System.Windows.Forms.Padding(4);
+            this.btWarmUpModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(443, 43);
             this.btWarmUpModeTemperatureSetpointUpdate.Name = "btWarmUpModeTemperatureSetpointUpdate";
-            this.btWarmUpModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(100, 28);
+            this.btWarmUpModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(75, 23);
             this.btWarmUpModeTemperatureSetpointUpdate.TabIndex = 22;
             this.btWarmUpModeTemperatureSetpointUpdate.Text = "Update";
             this.btWarmUpModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
@@ -7616,28 +7186,25 @@ namespace UEDMHardwareControl
             // labelWarmUpModeTemperatureSetpoint
             // 
             this.labelWarmUpModeTemperatureSetpoint.AutoSize = true;
-            this.labelWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(387, 25);
-            this.labelWarmUpModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(290, 20);
             this.labelWarmUpModeTemperatureSetpoint.Name = "labelWarmUpModeTemperatureSetpoint";
-            this.labelWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(180, 17);
+            this.labelWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(134, 13);
             this.labelWarmUpModeTemperatureSetpoint.TabIndex = 21;
             this.labelWarmUpModeTemperatureSetpoint.Text = "Warm Up Temperature (K):";
             // 
             // tbWarmUpModeTemperatureSetpoint
             // 
-            this.tbWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(575, 22);
-            this.tbWarmUpModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbWarmUpModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbWarmUpModeTemperatureSetpoint.Name = "tbWarmUpModeTemperatureSetpoint";
-            this.tbWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(132, 22);
+            this.tbWarmUpModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbWarmUpModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelWarmUpModeHowLongUntilHeatersTurnOff
             // 
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(48, 47);
-            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.Name = "labelWarmUpModeHowLongUntilHeatersTurnOff";
-            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelWarmUpModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -7645,30 +7212,27 @@ namespace UEDMHardwareControl
             // 
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(164, 55);
-            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.Name = "tbWarmUpModeHowLongUntilHeatersTurnOff";
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(128, 22);
+            this.tbWarmUpModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbWarmUpModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelWarmUpModeTurnHeatersOff
             // 
             this.labelWarmUpModeTurnHeatersOff.AutoSize = true;
-            this.labelWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(27, 25);
-            this.labelWarmUpModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelWarmUpModeTurnHeatersOff.Name = "labelWarmUpModeTurnHeatersOff";
-            this.labelWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelWarmUpModeTurnHeatersOff.TabIndex = 19;
             this.labelWarmUpModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
             // dateTimePickerWarmUpModeTurnHeatersOff
             // 
             this.dateTimePickerWarmUpModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(164, 23);
-            this.dateTimePickerWarmUpModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerWarmUpModeTurnHeatersOff.Name = "dateTimePickerWarmUpModeTurnHeatersOff";
-            this.dateTimePickerWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerWarmUpModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerWarmUpModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerWarmUpModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerWarmUpModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerWarmUpModeTurnHeatersOff_ValueChanged);
@@ -7686,19 +7250,19 @@ namespace UEDMHardwareControl
             this.tabPageCoolDownMode.Controls.Add(this.btStartCoolDownMode);
             this.tabPageCoolDownMode.Controls.Add(this.tbCoolDownModeStatus);
             this.tabPageCoolDownMode.Controls.Add(this.labelCoolDownModeStatus);
-            this.tabPageCoolDownMode.Location = new System.Drawing.Point(4, 25);
-            this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.tabPageCoolDownMode.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCoolDownMode.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.tabPageCoolDownMode.Name = "tabPageCoolDownMode";
-            this.tabPageCoolDownMode.Size = new System.Drawing.Size(1365, 829);
+            this.tabPageCoolDownMode.Size = new System.Drawing.Size(1022, 671);
             this.tabPageCoolDownMode.TabIndex = 2;
             this.tabPageCoolDownMode.Text = "Cool Down Mode";
             // 
             // btClearCoolDownModeStatus
             // 
-            this.btClearCoolDownModeStatus.Location = new System.Drawing.Point(68, 374);
-            this.btClearCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btClearCoolDownModeStatus.Location = new System.Drawing.Point(51, 304);
+            this.btClearCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btClearCoolDownModeStatus.Name = "btClearCoolDownModeStatus";
-            this.btClearCoolDownModeStatus.Size = new System.Drawing.Size(100, 28);
+            this.btClearCoolDownModeStatus.Size = new System.Drawing.Size(75, 23);
             this.btClearCoolDownModeStatus.TabIndex = 31;
             this.btClearCoolDownModeStatus.Text = "Clear";
             this.btClearCoolDownModeStatus.UseVisualStyleBackColor = true;
@@ -7707,28 +7271,30 @@ namespace UEDMHardwareControl
             // labelCooldownInfo
             // 
             this.labelCooldownInfo.AutoSize = true;
-            this.labelCooldownInfo.Location = new System.Drawing.Point(23, 16);
+            this.labelCooldownInfo.Location = new System.Drawing.Point(17, 13);
+            this.labelCooldownInfo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelCooldownInfo.Name = "labelCooldownInfo";
-            this.labelCooldownInfo.Size = new System.Drawing.Size(143, 17);
+            this.labelCooldownInfo.Size = new System.Drawing.Size(109, 13);
             this.labelCooldownInfo.TabIndex = 30;
             this.labelCooldownInfo.Text = "Cool down mode info:";
             // 
             // labelCooldownModeInfoText
             // 
             this.labelCooldownModeInfoText.AutoSize = true;
-            this.labelCooldownModeInfoText.Location = new System.Drawing.Point(172, 16);
+            this.labelCooldownModeInfoText.Location = new System.Drawing.Point(129, 13);
+            this.labelCooldownModeInfoText.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelCooldownModeInfoText.Name = "labelCooldownModeInfoText";
-            this.labelCooldownModeInfoText.Size = new System.Drawing.Size(1122, 136);
+            this.labelCooldownModeInfoText.Size = new System.Drawing.Size(833, 104);
             this.labelCooldownModeInfoText.TabIndex = 29;
             this.labelCooldownModeInfoText.Text = resources.GetString("labelCooldownModeInfoText.Text");
             this.labelCooldownModeInfoText.Click += new System.EventHandler(this.labelCooldownModeInfoText_Click);
             // 
             // ButtonCoolDownModeOptions
             // 
-            this.ButtonCoolDownModeOptions.Location = new System.Drawing.Point(916, 305);
-            this.ButtonCoolDownModeOptions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ButtonCoolDownModeOptions.Location = new System.Drawing.Point(687, 248);
+            this.ButtonCoolDownModeOptions.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ButtonCoolDownModeOptions.Name = "ButtonCoolDownModeOptions";
-            this.ButtonCoolDownModeOptions.Size = new System.Drawing.Size(100, 28);
+            this.ButtonCoolDownModeOptions.Size = new System.Drawing.Size(75, 23);
             this.ButtonCoolDownModeOptions.TabIndex = 28;
             this.ButtonCoolDownModeOptions.Text = "Options";
             this.ButtonCoolDownModeOptions.UseVisualStyleBackColor = true;
@@ -7743,21 +7309,18 @@ namespace UEDMHardwareControl
             this.gbCoolDownModeWarmUp.Controls.Add(this.tbCoolDownModeHowLongUntilHeatersTurnOff);
             this.gbCoolDownModeWarmUp.Controls.Add(this.labelCoolDownModeTurnHeatersOff);
             this.gbCoolDownModeWarmUp.Controls.Add(this.dateTimePickerCoolDownModeTurnHeatersOff);
-            this.gbCoolDownModeWarmUp.Location = new System.Drawing.Point(175, 188);
-            this.gbCoolDownModeWarmUp.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCoolDownModeWarmUp.Location = new System.Drawing.Point(131, 153);
             this.gbCoolDownModeWarmUp.Name = "gbCoolDownModeWarmUp";
-            this.gbCoolDownModeWarmUp.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCoolDownModeWarmUp.Size = new System.Drawing.Size(783, 96);
+            this.gbCoolDownModeWarmUp.Size = new System.Drawing.Size(587, 78);
             this.gbCoolDownModeWarmUp.TabIndex = 27;
             this.gbCoolDownModeWarmUp.TabStop = false;
             this.gbCoolDownModeWarmUp.Text = "Warm Up";
             // 
             // btCoolDownModeTemperatureSetpointUpdate
             // 
-            this.btCoolDownModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(591, 53);
-            this.btCoolDownModeTemperatureSetpointUpdate.Margin = new System.Windows.Forms.Padding(4);
+            this.btCoolDownModeTemperatureSetpointUpdate.Location = new System.Drawing.Point(443, 43);
             this.btCoolDownModeTemperatureSetpointUpdate.Name = "btCoolDownModeTemperatureSetpointUpdate";
-            this.btCoolDownModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(100, 28);
+            this.btCoolDownModeTemperatureSetpointUpdate.Size = new System.Drawing.Size(75, 23);
             this.btCoolDownModeTemperatureSetpointUpdate.TabIndex = 22;
             this.btCoolDownModeTemperatureSetpointUpdate.Text = "Update";
             this.btCoolDownModeTemperatureSetpointUpdate.UseVisualStyleBackColor = true;
@@ -7766,28 +7329,25 @@ namespace UEDMHardwareControl
             // labelCoolDownModeTemperatureSetpoint
             // 
             this.labelCoolDownModeTemperatureSetpoint.AutoSize = true;
-            this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(397, 25);
-            this.labelCoolDownModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(298, 20);
             this.labelCoolDownModeTemperatureSetpoint.Name = "labelCoolDownModeTemperatureSetpoint";
-            this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(170, 17);
+            this.labelCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(126, 13);
             this.labelCoolDownModeTemperatureSetpoint.TabIndex = 21;
             this.labelCoolDownModeTemperatureSetpoint.Text = "Heating Temperature (K):";
             // 
             // tbCoolDownModeTemperatureSetpoint
             // 
-            this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(575, 22);
-            this.tbCoolDownModeTemperatureSetpoint.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCoolDownModeTemperatureSetpoint.Location = new System.Drawing.Point(431, 18);
             this.tbCoolDownModeTemperatureSetpoint.Name = "tbCoolDownModeTemperatureSetpoint";
-            this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(132, 22);
+            this.tbCoolDownModeTemperatureSetpoint.Size = new System.Drawing.Size(100, 20);
             this.tbCoolDownModeTemperatureSetpoint.TabIndex = 20;
             // 
             // labelCoolDownModeHowLongUntilHeatersTurnOff
             // 
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.AutoSize = true;
-            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(48, 47);
-            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(36, 38);
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.Name = "labelCoolDownModeHowLongUntilHeatersTurnOff";
-            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(109, 34);
+            this.labelCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(81, 26);
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             this.labelCoolDownModeHowLongUntilHeatersTurnOff.Text = "How long until \r\nheaters turn off:";
             // 
@@ -7795,30 +7355,27 @@ namespace UEDMHardwareControl
             // 
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(164, 55);
-            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Location = new System.Drawing.Point(123, 45);
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.Name = "tbCoolDownModeHowLongUntilHeatersTurnOff";
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.ReadOnly = true;
-            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(128, 22);
+            this.tbCoolDownModeHowLongUntilHeatersTurnOff.Size = new System.Drawing.Size(97, 20);
             this.tbCoolDownModeHowLongUntilHeatersTurnOff.TabIndex = 17;
             // 
             // labelCoolDownModeTurnHeatersOff
             // 
             this.labelCoolDownModeTurnHeatersOff.AutoSize = true;
-            this.labelCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(27, 25);
-            this.labelCoolDownModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(20, 20);
             this.labelCoolDownModeTurnHeatersOff.Name = "labelCoolDownModeTurnHeatersOff";
-            this.labelCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(130, 17);
+            this.labelCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 13);
             this.labelCoolDownModeTurnHeatersOff.TabIndex = 19;
             this.labelCoolDownModeTurnHeatersOff.Text = "Turn heaters off at:";
             // 
             // dateTimePickerCoolDownModeTurnHeatersOff
             // 
             this.dateTimePickerCoolDownModeTurnHeatersOff.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(164, 23);
-            this.dateTimePickerCoolDownModeTurnHeatersOff.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Location = new System.Drawing.Point(123, 19);
             this.dateTimePickerCoolDownModeTurnHeatersOff.Name = "dateTimePickerCoolDownModeTurnHeatersOff";
-            this.dateTimePickerCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerCoolDownModeTurnHeatersOff.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerCoolDownModeTurnHeatersOff.TabIndex = 18;
             this.dateTimePickerCoolDownModeTurnHeatersOff.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerCoolDownModeTurnHeatersOff.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnHeatersOff_ValueChanged);
@@ -7826,10 +7383,9 @@ namespace UEDMHardwareControl
             // btCancelCoolDownMode
             // 
             this.btCancelCoolDownMode.Enabled = false;
-            this.btCancelCoolDownMode.Location = new System.Drawing.Point(1191, 305);
-            this.btCancelCoolDownMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btCancelCoolDownMode.Location = new System.Drawing.Point(893, 248);
             this.btCancelCoolDownMode.Name = "btCancelCoolDownMode";
-            this.btCancelCoolDownMode.Size = new System.Drawing.Size(100, 28);
+            this.btCancelCoolDownMode.Size = new System.Drawing.Size(75, 23);
             this.btCancelCoolDownMode.TabIndex = 25;
             this.btCancelCoolDownMode.Text = "Cancel";
             this.btCancelCoolDownMode.UseVisualStyleBackColor = true;
@@ -7841,11 +7397,9 @@ namespace UEDMHardwareControl
             this.gbCoolDownModeCoolDown.Controls.Add(this.labelCoolDownModeHowLongUntilCryoTurnsOn);
             this.gbCoolDownModeCoolDown.Controls.Add(this.tbCoolDownModeHowLongUntilCryoTurnsOn);
             this.gbCoolDownModeCoolDown.Controls.Add(this.dateTimePickerCoolDownModeTurnCryoOn);
-            this.gbCoolDownModeCoolDown.Location = new System.Drawing.Point(967, 188);
-            this.gbCoolDownModeCoolDown.Margin = new System.Windows.Forms.Padding(4);
+            this.gbCoolDownModeCoolDown.Location = new System.Drawing.Point(725, 153);
             this.gbCoolDownModeCoolDown.Name = "gbCoolDownModeCoolDown";
-            this.gbCoolDownModeCoolDown.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCoolDownModeCoolDown.Size = new System.Drawing.Size(324, 96);
+            this.gbCoolDownModeCoolDown.Size = new System.Drawing.Size(243, 78);
             this.gbCoolDownModeCoolDown.TabIndex = 26;
             this.gbCoolDownModeCoolDown.TabStop = false;
             this.gbCoolDownModeCoolDown.Text = "Cool down";
@@ -7853,20 +7407,18 @@ namespace UEDMHardwareControl
             // labelCoolDownModeCryoTurnOnDateTime
             // 
             this.labelCoolDownModeCryoTurnOnDateTime.AutoSize = true;
-            this.labelCoolDownModeCryoTurnOnDateTime.Location = new System.Drawing.Point(48, 25);
-            this.labelCoolDownModeCryoTurnOnDateTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeCryoTurnOnDateTime.Location = new System.Drawing.Point(36, 20);
             this.labelCoolDownModeCryoTurnOnDateTime.Name = "labelCoolDownModeCryoTurnOnDateTime";
-            this.labelCoolDownModeCryoTurnOnDateTime.Size = new System.Drawing.Size(109, 17);
+            this.labelCoolDownModeCryoTurnOnDateTime.Size = new System.Drawing.Size(82, 13);
             this.labelCoolDownModeCryoTurnOnDateTime.TabIndex = 11;
             this.labelCoolDownModeCryoTurnOnDateTime.Text = "Turn cryo on at:";
             // 
             // labelCoolDownModeHowLongUntilCryoTurnsOn
             // 
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.AutoSize = true;
-            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(55, 47);
-            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(41, 38);
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.Name = "labelCoolDownModeHowLongUntilCryoTurnsOn";
-            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(100, 34);
+            this.labelCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(77, 26);
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 11;
             this.labelCoolDownModeHowLongUntilCryoTurnsOn.Text = "How long until \r\ncryo turns on:";
             // 
@@ -7874,20 +7426,18 @@ namespace UEDMHardwareControl
             // 
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(165, 55);
-            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Location = new System.Drawing.Point(124, 45);
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.Name = "tbCoolDownModeHowLongUntilCryoTurnsOn";
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.ReadOnly = true;
-            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(128, 22);
+            this.tbCoolDownModeHowLongUntilCryoTurnsOn.Size = new System.Drawing.Size(97, 20);
             this.tbCoolDownModeHowLongUntilCryoTurnsOn.TabIndex = 16;
             // 
             // dateTimePickerCoolDownModeTurnCryoOn
             // 
             this.dateTimePickerCoolDownModeTurnCryoOn.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.dateTimePickerCoolDownModeTurnCryoOn.Location = new System.Drawing.Point(165, 23);
-            this.dateTimePickerCoolDownModeTurnCryoOn.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePickerCoolDownModeTurnCryoOn.Location = new System.Drawing.Point(124, 19);
             this.dateTimePickerCoolDownModeTurnCryoOn.Name = "dateTimePickerCoolDownModeTurnCryoOn";
-            this.dateTimePickerCoolDownModeTurnCryoOn.Size = new System.Drawing.Size(128, 22);
+            this.dateTimePickerCoolDownModeTurnCryoOn.Size = new System.Drawing.Size(97, 20);
             this.dateTimePickerCoolDownModeTurnCryoOn.TabIndex = 15;
             this.dateTimePickerCoolDownModeTurnCryoOn.Value = new System.DateTime(2019, 11, 5, 18, 37, 30, 0);
             this.dateTimePickerCoolDownModeTurnCryoOn.ValueChanged += new System.EventHandler(this.dateTimePickerCoolDownModeTurnCryoOn_ValueChanged);
@@ -7895,10 +7445,9 @@ namespace UEDMHardwareControl
             // btStartCoolDownMode
             // 
             this.btStartCoolDownMode.Enabled = false;
-            this.btStartCoolDownMode.Location = new System.Drawing.Point(1081, 305);
-            this.btStartCoolDownMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btStartCoolDownMode.Location = new System.Drawing.Point(811, 248);
             this.btStartCoolDownMode.Name = "btStartCoolDownMode";
-            this.btStartCoolDownMode.Size = new System.Drawing.Size(100, 28);
+            this.btStartCoolDownMode.Size = new System.Drawing.Size(75, 23);
             this.btStartCoolDownMode.TabIndex = 24;
             this.btStartCoolDownMode.Text = "Start";
             this.btStartCoolDownMode.UseVisualStyleBackColor = true;
@@ -7906,21 +7455,19 @@ namespace UEDMHardwareControl
             // 
             // tbCoolDownModeStatus
             // 
-            this.tbCoolDownModeStatus.Location = new System.Drawing.Point(175, 342);
-            this.tbCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCoolDownModeStatus.Location = new System.Drawing.Point(131, 278);
             this.tbCoolDownModeStatus.Multiline = true;
             this.tbCoolDownModeStatus.Name = "tbCoolDownModeStatus";
             this.tbCoolDownModeStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbCoolDownModeStatus.Size = new System.Drawing.Size(1115, 472);
+            this.tbCoolDownModeStatus.Size = new System.Drawing.Size(837, 384);
             this.tbCoolDownModeStatus.TabIndex = 22;
             // 
             // labelCoolDownModeStatus
             // 
             this.labelCoolDownModeStatus.AutoSize = true;
-            this.labelCoolDownModeStatus.Location = new System.Drawing.Point(4, 345);
-            this.labelCoolDownModeStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCoolDownModeStatus.Location = new System.Drawing.Point(3, 280);
             this.labelCoolDownModeStatus.Name = "labelCoolDownModeStatus";
-            this.labelCoolDownModeStatus.Size = new System.Drawing.Size(162, 17);
+            this.labelCoolDownModeStatus.Size = new System.Drawing.Size(125, 13);
             this.labelCoolDownModeStatus.TabIndex = 23;
             this.labelCoolDownModeStatus.Text = "Cool Down Mode Status:";
             // 
@@ -7931,11 +7478,10 @@ namespace UEDMHardwareControl
             this.tabPagePlotting.Controls.Add(this.groupBox2);
             this.tabPagePlotting.Controls.Add(this.chart1);
             this.tabPagePlotting.Controls.Add(this.chart2);
-            this.tabPagePlotting.Location = new System.Drawing.Point(4, 25);
-            this.tabPagePlotting.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPagePlotting.Location = new System.Drawing.Point(4, 22);
             this.tabPagePlotting.Name = "tabPagePlotting";
-            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPagePlotting.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePlotting.Size = new System.Drawing.Size(1033, 715);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and T";
             // 
@@ -7959,11 +7505,9 @@ namespace UEDMHardwareControl
             this.gbPlotOptions.Controls.Add(this.labelSelectPressureDataToPlotChart1);
             this.gbPlotOptions.Controls.Add(this.comboBoxPlot1ScaleY);
             this.gbPlotOptions.Controls.Add(this.labelPlot1ScaleY);
-            this.gbPlotOptions.Location = new System.Drawing.Point(980, 7);
-            this.gbPlotOptions.Margin = new System.Windows.Forms.Padding(4);
+            this.gbPlotOptions.Location = new System.Drawing.Point(735, 6);
             this.gbPlotOptions.Name = "gbPlotOptions";
-            this.gbPlotOptions.Padding = new System.Windows.Forms.Padding(4);
-            this.gbPlotOptions.Size = new System.Drawing.Size(388, 418);
+            this.gbPlotOptions.Size = new System.Drawing.Size(291, 340);
             this.gbPlotOptions.TabIndex = 21;
             this.gbPlotOptions.TabStop = false;
             this.gbPlotOptions.Text = "Plot Options";
@@ -7982,21 +7526,20 @@ namespace UEDMHardwareControl
             this.groupBoxGaugeCorrectionFactors.Controls.Add(this.labelSourceGaugeCorrectionFactor);
             this.groupBoxGaugeCorrectionFactors.Controls.Add(this.btGaugesCorrectionFactors);
             this.groupBoxGaugeCorrectionFactors.Controls.Add(this.tbSourceGaugeCorrectionFactor);
-            this.groupBoxGaugeCorrectionFactors.Location = new System.Drawing.Point(0, 260);
-            this.groupBoxGaugeCorrectionFactors.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxGaugeCorrectionFactors.Location = new System.Drawing.Point(0, 211);
+            this.groupBoxGaugeCorrectionFactors.Margin = new System.Windows.Forms.Padding(2);
             this.groupBoxGaugeCorrectionFactors.Name = "groupBoxGaugeCorrectionFactors";
-            this.groupBoxGaugeCorrectionFactors.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxGaugeCorrectionFactors.Size = new System.Drawing.Size(388, 158);
+            this.groupBoxGaugeCorrectionFactors.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxGaugeCorrectionFactors.Size = new System.Drawing.Size(291, 128);
             this.groupBoxGaugeCorrectionFactors.TabIndex = 38;
             this.groupBoxGaugeCorrectionFactors.TabStop = false;
             this.groupBoxGaugeCorrectionFactors.Text = "Gauge correction factors";
             // 
             // btResetGaugesCorrectionFactors
             // 
-            this.btResetGaugesCorrectionFactors.Location = new System.Drawing.Point(144, 117);
-            this.btResetGaugesCorrectionFactors.Margin = new System.Windows.Forms.Padding(4);
+            this.btResetGaugesCorrectionFactors.Location = new System.Drawing.Point(108, 95);
             this.btResetGaugesCorrectionFactors.Name = "btResetGaugesCorrectionFactors";
-            this.btResetGaugesCorrectionFactors.Size = new System.Drawing.Size(100, 28);
+            this.btResetGaugesCorrectionFactors.Size = new System.Drawing.Size(75, 23);
             this.btResetGaugesCorrectionFactors.TabIndex = 42;
             this.btResetGaugesCorrectionFactors.Text = "Reset";
             this.btResetGaugesCorrectionFactors.UseVisualStyleBackColor = true;
@@ -8006,51 +7549,49 @@ namespace UEDMHardwareControl
             // 
             this.tbDetectionGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbDetectionGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbDetectionGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(144, 89);
-            this.tbDetectionGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbDetectionGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(108, 72);
+            this.tbDetectionGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbDetectionGaugeCorrectionFactorMonitor.Name = "tbDetectionGaugeCorrectionFactorMonitor";
             this.tbDetectionGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbDetectionGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(103, 22);
+            this.tbDetectionGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbDetectionGaugeCorrectionFactorMonitor.TabIndex = 41;
             // 
             // tbBeamlineGaugeCorrectionFactorMonitor
             // 
             this.tbBeamlineGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbBeamlineGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbBeamlineGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(145, 58);
-            this.tbBeamlineGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbBeamlineGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(109, 47);
+            this.tbBeamlineGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbBeamlineGaugeCorrectionFactorMonitor.Name = "tbBeamlineGaugeCorrectionFactorMonitor";
             this.tbBeamlineGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbBeamlineGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(103, 22);
+            this.tbBeamlineGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbBeamlineGaugeCorrectionFactorMonitor.TabIndex = 40;
             // 
             // tbSourceGaugeCorrectionFactorMonitor
             // 
             this.tbSourceGaugeCorrectionFactorMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbSourceGaugeCorrectionFactorMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbSourceGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(145, 28);
-            this.tbSourceGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbSourceGaugeCorrectionFactorMonitor.Location = new System.Drawing.Point(109, 23);
+            this.tbSourceGaugeCorrectionFactorMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbSourceGaugeCorrectionFactorMonitor.Name = "tbSourceGaugeCorrectionFactorMonitor";
             this.tbSourceGaugeCorrectionFactorMonitor.ReadOnly = true;
-            this.tbSourceGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(103, 22);
+            this.tbSourceGaugeCorrectionFactorMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbSourceGaugeCorrectionFactorMonitor.TabIndex = 39;
             // 
             // labelDetectionGaugeCorrectionFactor
             // 
             this.labelDetectionGaugeCorrectionFactor.AutoSize = true;
-            this.labelDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(65, 89);
-            this.labelDetectionGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(49, 72);
             this.labelDetectionGaugeCorrectionFactor.Name = "labelDetectionGaugeCorrectionFactor";
-            this.labelDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(72, 17);
+            this.labelDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(56, 13);
             this.labelDetectionGaugeCorrectionFactor.TabIndex = 33;
             this.labelDetectionGaugeCorrectionFactor.Text = "Detection:";
             // 
             // tbDetectionGaugeCorrectionFactor
             // 
-            this.tbDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(253, 89);
-            this.tbDetectionGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4);
+            this.tbDetectionGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 72);
             this.tbDetectionGaugeCorrectionFactor.Name = "tbDetectionGaugeCorrectionFactor";
-            this.tbDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(99, 22);
+            this.tbDetectionGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbDetectionGaugeCorrectionFactor.TabIndex = 32;
             this.tbDetectionGaugeCorrectionFactor.Text = "1";
             this.tbDetectionGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbDetectionGaugeCorrectionFactor_KeyDown);
@@ -8058,19 +7599,17 @@ namespace UEDMHardwareControl
             // labelBeamlineGaugeCorrectionFactor
             // 
             this.labelBeamlineGaugeCorrectionFactor.AutoSize = true;
-            this.labelBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(68, 58);
-            this.labelBeamlineGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(51, 47);
             this.labelBeamlineGaugeCorrectionFactor.Name = "labelBeamlineGaugeCorrectionFactor";
-            this.labelBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(70, 17);
+            this.labelBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(53, 13);
             this.labelBeamlineGaugeCorrectionFactor.TabIndex = 30;
             this.labelBeamlineGaugeCorrectionFactor.Text = "Beamline:";
             // 
             // tbBeamlineGaugeCorrectionFactor
             // 
-            this.tbBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(253, 58);
-            this.tbBeamlineGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4);
+            this.tbBeamlineGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 47);
             this.tbBeamlineGaugeCorrectionFactor.Name = "tbBeamlineGaugeCorrectionFactor";
-            this.tbBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(99, 22);
+            this.tbBeamlineGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbBeamlineGaugeCorrectionFactor.TabIndex = 29;
             this.tbBeamlineGaugeCorrectionFactor.Text = "1";
             this.tbBeamlineGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbBeamlineGaugeCorrectionFactor_KeyDown);
@@ -8078,19 +7617,17 @@ namespace UEDMHardwareControl
             // labelSourceGaugeCorrectionFactor
             // 
             this.labelSourceGaugeCorrectionFactor.AutoSize = true;
-            this.labelSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(80, 28);
-            this.labelSourceGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(60, 23);
             this.labelSourceGaugeCorrectionFactor.Name = "labelSourceGaugeCorrectionFactor";
-            this.labelSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(57, 17);
+            this.labelSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(44, 13);
             this.labelSourceGaugeCorrectionFactor.TabIndex = 27;
             this.labelSourceGaugeCorrectionFactor.Text = "Source:";
             // 
             // btGaugesCorrectionFactors
             // 
-            this.btGaugesCorrectionFactors.Location = new System.Drawing.Point(252, 118);
-            this.btGaugesCorrectionFactors.Margin = new System.Windows.Forms.Padding(4);
+            this.btGaugesCorrectionFactors.Location = new System.Drawing.Point(189, 96);
             this.btGaugesCorrectionFactors.Name = "btGaugesCorrectionFactors";
-            this.btGaugesCorrectionFactors.Size = new System.Drawing.Size(100, 28);
+            this.btGaugesCorrectionFactors.Size = new System.Drawing.Size(75, 23);
             this.btGaugesCorrectionFactors.TabIndex = 28;
             this.btGaugesCorrectionFactors.Text = "Update";
             this.btGaugesCorrectionFactors.UseVisualStyleBackColor = true;
@@ -8098,10 +7635,9 @@ namespace UEDMHardwareControl
             // 
             // tbSourceGaugeCorrectionFactor
             // 
-            this.tbSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(253, 28);
-            this.tbSourceGaugeCorrectionFactor.Margin = new System.Windows.Forms.Padding(4);
+            this.tbSourceGaugeCorrectionFactor.Location = new System.Drawing.Point(190, 23);
             this.tbSourceGaugeCorrectionFactor.Name = "tbSourceGaugeCorrectionFactor";
-            this.tbSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(99, 22);
+            this.tbSourceGaugeCorrectionFactor.Size = new System.Drawing.Size(75, 20);
             this.tbSourceGaugeCorrectionFactor.TabIndex = 26;
             this.tbSourceGaugeCorrectionFactor.Text = "1";
             this.tbSourceGaugeCorrectionFactor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSourceGaugeCorrectionFactor_KeyDown);
@@ -8110,19 +7646,18 @@ namespace UEDMHardwareControl
             // 
             this.tbRollingPressureChartTimeAxisPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRollingPressureChartTimeAxisPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRollingPressureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(144, 197);
-            this.tbRollingPressureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbRollingPressureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(108, 160);
+            this.tbRollingPressureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRollingPressureChartTimeAxisPeriodMonitor.Name = "tbRollingPressureChartTimeAxisPeriodMonitor";
             this.tbRollingPressureChartTimeAxisPeriodMonitor.ReadOnly = true;
-            this.tbRollingPressureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(103, 22);
+            this.tbRollingPressureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbRollingPressureChartTimeAxisPeriodMonitor.TabIndex = 36;
             // 
             // btClearDetectionPressureData
             // 
-            this.btClearDetectionPressureData.Location = new System.Drawing.Point(145, 161);
-            this.btClearDetectionPressureData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearDetectionPressureData.Location = new System.Drawing.Point(109, 131);
             this.btClearDetectionPressureData.Name = "btClearDetectionPressureData";
-            this.btClearDetectionPressureData.Size = new System.Drawing.Size(100, 28);
+            this.btClearDetectionPressureData.Size = new System.Drawing.Size(75, 23);
             this.btClearDetectionPressureData.TabIndex = 34;
             this.btClearDetectionPressureData.Text = "Detection";
             this.btClearDetectionPressureData.UseVisualStyleBackColor = true;
@@ -8133,10 +7668,9 @@ namespace UEDMHardwareControl
             this.checkBoxDetectionPressurePlot.AutoSize = true;
             this.checkBoxDetectionPressurePlot.Checked = true;
             this.checkBoxDetectionPressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDetectionPressurePlot.Location = new System.Drawing.Point(145, 92);
-            this.checkBoxDetectionPressurePlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxDetectionPressurePlot.Location = new System.Drawing.Point(109, 75);
             this.checkBoxDetectionPressurePlot.Name = "checkBoxDetectionPressurePlot";
-            this.checkBoxDetectionPressurePlot.Size = new System.Drawing.Size(90, 21);
+            this.checkBoxDetectionPressurePlot.Size = new System.Drawing.Size(72, 17);
             this.checkBoxDetectionPressurePlot.TabIndex = 31;
             this.checkBoxDetectionPressurePlot.Text = "Detection";
             this.checkBoxDetectionPressurePlot.UseVisualStyleBackColor = true;
@@ -8145,38 +7679,34 @@ namespace UEDMHardwareControl
             // labelPressureRollingTimeAxisPeriod
             // 
             this.labelPressureRollingTimeAxisPeriod.AutoSize = true;
-            this.labelPressureRollingTimeAxisPeriod.Location = new System.Drawing.Point(17, 197);
-            this.labelPressureRollingTimeAxisPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPressureRollingTimeAxisPeriod.Location = new System.Drawing.Point(13, 160);
             this.labelPressureRollingTimeAxisPeriod.Name = "labelPressureRollingTimeAxisPeriod";
-            this.labelPressureRollingTimeAxisPeriod.Size = new System.Drawing.Size(120, 17);
+            this.labelPressureRollingTimeAxisPeriod.Size = new System.Drawing.Size(88, 13);
             this.labelPressureRollingTimeAxisPeriod.TabIndex = 24;
             this.labelPressureRollingTimeAxisPeriod.Text = "Rolling period (s):";
             // 
             // tbRollingPressureChartTimeAxisPeriod
             // 
-            this.tbRollingPressureChartTimeAxisPeriod.Location = new System.Drawing.Point(253, 197);
-            this.tbRollingPressureChartTimeAxisPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRollingPressureChartTimeAxisPeriod.Location = new System.Drawing.Point(190, 160);
             this.tbRollingPressureChartTimeAxisPeriod.Name = "tbRollingPressureChartTimeAxisPeriod";
-            this.tbRollingPressureChartTimeAxisPeriod.Size = new System.Drawing.Size(99, 22);
+            this.tbRollingPressureChartTimeAxisPeriod.Size = new System.Drawing.Size(75, 20);
             this.tbRollingPressureChartTimeAxisPeriod.TabIndex = 23;
             this.tbRollingPressureChartTimeAxisPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRollingPressureChartTimeAxisPeriod_KeyDown);
             // 
             // labelRollingPressurePlotTimeAxis
             // 
             this.labelRollingPressurePlotTimeAxis.AutoSize = true;
-            this.labelRollingPressurePlotTimeAxis.Location = new System.Drawing.Point(24, 233);
-            this.labelRollingPressurePlotTimeAxis.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRollingPressurePlotTimeAxis.Location = new System.Drawing.Point(18, 189);
             this.labelRollingPressurePlotTimeAxis.Name = "labelRollingPressurePlotTimeAxis";
-            this.labelRollingPressurePlotTimeAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelRollingPressurePlotTimeAxis.Size = new System.Drawing.Size(85, 13);
             this.labelRollingPressurePlotTimeAxis.TabIndex = 21;
             this.labelRollingPressurePlotTimeAxis.Text = "Rolling time axis:";
             // 
             // btRollingPressureChartTimeAxis
             // 
-            this.btRollingPressureChartTimeAxis.Location = new System.Drawing.Point(252, 226);
-            this.btRollingPressureChartTimeAxis.Margin = new System.Windows.Forms.Padding(4);
+            this.btRollingPressureChartTimeAxis.Location = new System.Drawing.Point(189, 184);
             this.btRollingPressureChartTimeAxis.Name = "btRollingPressureChartTimeAxis";
-            this.btRollingPressureChartTimeAxis.Size = new System.Drawing.Size(100, 28);
+            this.btRollingPressureChartTimeAxis.Size = new System.Drawing.Size(75, 23);
             this.btRollingPressureChartTimeAxis.TabIndex = 25;
             this.btRollingPressureChartTimeAxis.Text = "Update";
             this.btRollingPressureChartTimeAxis.UseVisualStyleBackColor = true;
@@ -8185,10 +7715,9 @@ namespace UEDMHardwareControl
             // btClearAllPressureData
             // 
             this.btClearAllPressureData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btClearAllPressureData.Location = new System.Drawing.Point(253, 161);
-            this.btClearAllPressureData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAllPressureData.Location = new System.Drawing.Point(190, 131);
             this.btClearAllPressureData.Name = "btClearAllPressureData";
-            this.btClearAllPressureData.Size = new System.Drawing.Size(100, 28);
+            this.btClearAllPressureData.Size = new System.Drawing.Size(75, 23);
             this.btClearAllPressureData.TabIndex = 19;
             this.btClearAllPressureData.Text = "Clear all";
             this.btClearAllPressureData.UseVisualStyleBackColor = true;
@@ -8197,10 +7726,9 @@ namespace UEDMHardwareControl
             // cbEnablePressureChartRollingTimeAxis
             // 
             this.cbEnablePressureChartRollingTimeAxis.AutoSize = true;
-            this.cbEnablePressureChartRollingTimeAxis.Location = new System.Drawing.Point(145, 233);
-            this.cbEnablePressureChartRollingTimeAxis.Margin = new System.Windows.Forms.Padding(4);
+            this.cbEnablePressureChartRollingTimeAxis.Location = new System.Drawing.Point(109, 189);
             this.cbEnablePressureChartRollingTimeAxis.Name = "cbEnablePressureChartRollingTimeAxis";
-            this.cbEnablePressureChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnablePressureChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnablePressureChartRollingTimeAxis.TabIndex = 22;
             this.cbEnablePressureChartRollingTimeAxis.Text = "Enable";
             this.cbEnablePressureChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -8208,10 +7736,9 @@ namespace UEDMHardwareControl
             // 
             // btClearBeamlinePressureData
             // 
-            this.btClearBeamlinePressureData.Location = new System.Drawing.Point(253, 128);
-            this.btClearBeamlinePressureData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearBeamlinePressureData.Location = new System.Drawing.Point(190, 104);
             this.btClearBeamlinePressureData.Name = "btClearBeamlinePressureData";
-            this.btClearBeamlinePressureData.Size = new System.Drawing.Size(100, 28);
+            this.btClearBeamlinePressureData.Size = new System.Drawing.Size(75, 23);
             this.btClearBeamlinePressureData.TabIndex = 18;
             this.btClearBeamlinePressureData.Text = "Beamline";
             this.btClearBeamlinePressureData.UseVisualStyleBackColor = true;
@@ -8219,10 +7746,9 @@ namespace UEDMHardwareControl
             // 
             // btClearSourcePressureData
             // 
-            this.btClearSourcePressureData.Location = new System.Drawing.Point(145, 128);
-            this.btClearSourcePressureData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearSourcePressureData.Location = new System.Drawing.Point(109, 104);
             this.btClearSourcePressureData.Name = "btClearSourcePressureData";
-            this.btClearSourcePressureData.Size = new System.Drawing.Size(100, 28);
+            this.btClearSourcePressureData.Size = new System.Drawing.Size(75, 23);
             this.btClearSourcePressureData.TabIndex = 17;
             this.btClearSourcePressureData.Text = "Source";
             this.btClearSourcePressureData.UseVisualStyleBackColor = true;
@@ -8231,20 +7757,18 @@ namespace UEDMHardwareControl
             // labelClearPressurePlotData
             // 
             this.labelClearPressurePlotData.AutoSize = true;
-            this.labelClearPressurePlotData.Location = new System.Drawing.Point(33, 134);
-            this.labelClearPressurePlotData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelClearPressurePlotData.Location = new System.Drawing.Point(25, 109);
             this.labelClearPressurePlotData.Name = "labelClearPressurePlotData";
-            this.labelClearPressurePlotData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearPressurePlotData.Size = new System.Drawing.Size(78, 13);
             this.labelClearPressurePlotData.TabIndex = 14;
             this.labelClearPressurePlotData.Text = "Clear plot data:";
             // 
             // checkBoxBeamlinePressurePlot
             // 
             this.checkBoxBeamlinePressurePlot.AutoSize = true;
-            this.checkBoxBeamlinePressurePlot.Location = new System.Drawing.Point(228, 62);
-            this.checkBoxBeamlinePressurePlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxBeamlinePressurePlot.Location = new System.Drawing.Point(171, 50);
             this.checkBoxBeamlinePressurePlot.Name = "checkBoxBeamlinePressurePlot";
-            this.checkBoxBeamlinePressurePlot.Size = new System.Drawing.Size(88, 21);
+            this.checkBoxBeamlinePressurePlot.Size = new System.Drawing.Size(69, 17);
             this.checkBoxBeamlinePressurePlot.TabIndex = 16;
             this.checkBoxBeamlinePressurePlot.Text = "Beamline";
             this.checkBoxBeamlinePressurePlot.UseVisualStyleBackColor = true;
@@ -8255,10 +7779,9 @@ namespace UEDMHardwareControl
             this.checkBoxSourcePressurePlot.AutoSize = true;
             this.checkBoxSourcePressurePlot.Checked = true;
             this.checkBoxSourcePressurePlot.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSourcePressurePlot.Location = new System.Drawing.Point(145, 63);
-            this.checkBoxSourcePressurePlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxSourcePressurePlot.Location = new System.Drawing.Point(109, 51);
             this.checkBoxSourcePressurePlot.Name = "checkBoxSourcePressurePlot";
-            this.checkBoxSourcePressurePlot.Size = new System.Drawing.Size(75, 21);
+            this.checkBoxSourcePressurePlot.Size = new System.Drawing.Size(60, 17);
             this.checkBoxSourcePressurePlot.TabIndex = 15;
             this.checkBoxSourcePressurePlot.Text = "Source";
             this.checkBoxSourcePressurePlot.UseVisualStyleBackColor = true;
@@ -8267,10 +7790,9 @@ namespace UEDMHardwareControl
             // labelSelectPressureDataToPlotChart1
             // 
             this.labelSelectPressureDataToPlotChart1.AutoSize = true;
-            this.labelSelectPressureDataToPlotChart1.Location = new System.Drawing.Point(9, 63);
-            this.labelSelectPressureDataToPlotChart1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelSelectPressureDataToPlotChart1.Location = new System.Drawing.Point(7, 51);
             this.labelSelectPressureDataToPlotChart1.Name = "labelSelectPressureDataToPlotChart1";
-            this.labelSelectPressureDataToPlotChart1.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectPressureDataToPlotChart1.Size = new System.Drawing.Size(96, 13);
             this.labelSelectPressureDataToPlotChart1.TabIndex = 14;
             this.labelSelectPressureDataToPlotChart1.Text = "Select data to plot:";
             // 
@@ -8280,10 +7802,9 @@ namespace UEDMHardwareControl
             this.comboBoxPlot1ScaleY.Items.AddRange(new object[] {
             "Linear",
             "Log"});
-            this.comboBoxPlot1ScaleY.Location = new System.Drawing.Point(141, 23);
-            this.comboBoxPlot1ScaleY.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxPlot1ScaleY.Location = new System.Drawing.Point(106, 19);
             this.comboBoxPlot1ScaleY.Name = "comboBoxPlot1ScaleY";
-            this.comboBoxPlot1ScaleY.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxPlot1ScaleY.Size = new System.Drawing.Size(121, 21);
             this.comboBoxPlot1ScaleY.TabIndex = 1;
             this.comboBoxPlot1ScaleY.Text = "Linear";
             this.comboBoxPlot1ScaleY.SelectedIndexChanged += new System.EventHandler(this.comboBoxPlot1ScaleY_SelectedIndexChanged);
@@ -8291,10 +7812,9 @@ namespace UEDMHardwareControl
             // labelPlot1ScaleY
             // 
             this.labelPlot1ScaleY.AutoSize = true;
-            this.labelPlot1ScaleY.Location = new System.Drawing.Point(59, 26);
-            this.labelPlot1ScaleY.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPlot1ScaleY.Location = new System.Drawing.Point(44, 21);
             this.labelPlot1ScaleY.Name = "labelPlot1ScaleY";
-            this.labelPlot1ScaleY.Size = new System.Drawing.Size(73, 17);
+            this.labelPlot1ScaleY.Size = new System.Drawing.Size(56, 13);
             this.labelPlot1ScaleY.TabIndex = 0;
             this.labelPlot1ScaleY.Text = "Plot scale:";
             // 
@@ -8321,11 +7841,9 @@ namespace UEDMHardwareControl
             this.groupBox2.Controls.Add(this.labelSelectTempDataToPlotChart2);
             this.groupBox2.Controls.Add(this.comboBoxPlot2ScaleY);
             this.groupBox2.Controls.Add(this.labelPlot2ScaleY);
-            this.groupBox2.Location = new System.Drawing.Point(980, 433);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Location = new System.Drawing.Point(735, 352);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox2.Size = new System.Drawing.Size(388, 423);
+            this.groupBox2.Size = new System.Drawing.Size(291, 344);
             this.groupBox2.TabIndex = 22;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Plot Options";
@@ -8334,19 +7852,18 @@ namespace UEDMHardwareControl
             // 
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(145, 330);
-            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Location = new System.Drawing.Point(109, 268);
+            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Name = "tbRollingTemperatureChartTimeAxisPeriodMonitor";
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.ReadOnly = true;
-            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(103, 22);
+            this.tbRollingTemperatureChartTimeAxisPeriodMonitor.Size = new System.Drawing.Size(78, 20);
             this.tbRollingTemperatureChartTimeAxisPeriodMonitor.TabIndex = 43;
             // 
             // btRollingTemperatureChartTimeAxis
             // 
-            this.btRollingTemperatureChartTimeAxis.Location = new System.Drawing.Point(253, 361);
-            this.btRollingTemperatureChartTimeAxis.Margin = new System.Windows.Forms.Padding(4);
+            this.btRollingTemperatureChartTimeAxis.Location = new System.Drawing.Point(190, 293);
             this.btRollingTemperatureChartTimeAxis.Name = "btRollingTemperatureChartTimeAxis";
-            this.btRollingTemperatureChartTimeAxis.Size = new System.Drawing.Size(112, 28);
+            this.btRollingTemperatureChartTimeAxis.Size = new System.Drawing.Size(84, 23);
             this.btRollingTemperatureChartTimeAxis.TabIndex = 20;
             this.btRollingTemperatureChartTimeAxis.Text = "Update";
             this.btRollingTemperatureChartTimeAxis.UseVisualStyleBackColor = true;
@@ -8355,30 +7872,27 @@ namespace UEDMHardwareControl
             // labelTemperatureRollingTimeAxisPeriod
             // 
             this.labelTemperatureRollingTimeAxisPeriod.AutoSize = true;
-            this.labelTemperatureRollingTimeAxisPeriod.Location = new System.Drawing.Point(24, 330);
-            this.labelTemperatureRollingTimeAxisPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTemperatureRollingTimeAxisPeriod.Location = new System.Drawing.Point(18, 268);
             this.labelTemperatureRollingTimeAxisPeriod.Name = "labelTemperatureRollingTimeAxisPeriod";
-            this.labelTemperatureRollingTimeAxisPeriod.Size = new System.Drawing.Size(120, 17);
+            this.labelTemperatureRollingTimeAxisPeriod.Size = new System.Drawing.Size(88, 13);
             this.labelTemperatureRollingTimeAxisPeriod.TabIndex = 19;
             this.labelTemperatureRollingTimeAxisPeriod.Text = "Rolling period (s):";
             this.labelTemperatureRollingTimeAxisPeriod.Click += new System.EventHandler(this.labelTemperatureRollingTimeAxisPeriod_Click);
             // 
             // tbRollingTemperatureChartTimeAxisPeriod
             // 
-            this.tbRollingTemperatureChartTimeAxisPeriod.Location = new System.Drawing.Point(253, 331);
-            this.tbRollingTemperatureChartTimeAxisPeriod.Margin = new System.Windows.Forms.Padding(4);
+            this.tbRollingTemperatureChartTimeAxisPeriod.Location = new System.Drawing.Point(190, 269);
             this.tbRollingTemperatureChartTimeAxisPeriod.Name = "tbRollingTemperatureChartTimeAxisPeriod";
-            this.tbRollingTemperatureChartTimeAxisPeriod.Size = new System.Drawing.Size(111, 22);
+            this.tbRollingTemperatureChartTimeAxisPeriod.Size = new System.Drawing.Size(84, 20);
             this.tbRollingTemperatureChartTimeAxisPeriod.TabIndex = 18;
             this.tbRollingTemperatureChartTimeAxisPeriod.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRollingTemperatureChartTimeAxisPeriod_KeyDown);
             // 
             // cbEnableTemperatureChartRollingTimeAxis
             // 
             this.cbEnableTemperatureChartRollingTimeAxis.AutoSize = true;
-            this.cbEnableTemperatureChartRollingTimeAxis.Location = new System.Drawing.Point(152, 366);
-            this.cbEnableTemperatureChartRollingTimeAxis.Margin = new System.Windows.Forms.Padding(4);
+            this.cbEnableTemperatureChartRollingTimeAxis.Location = new System.Drawing.Point(114, 297);
             this.cbEnableTemperatureChartRollingTimeAxis.Name = "cbEnableTemperatureChartRollingTimeAxis";
-            this.cbEnableTemperatureChartRollingTimeAxis.Size = new System.Drawing.Size(74, 21);
+            this.cbEnableTemperatureChartRollingTimeAxis.Size = new System.Drawing.Size(59, 17);
             this.cbEnableTemperatureChartRollingTimeAxis.TabIndex = 17;
             this.cbEnableTemperatureChartRollingTimeAxis.Text = "Enable";
             this.cbEnableTemperatureChartRollingTimeAxis.UseVisualStyleBackColor = true;
@@ -8387,20 +7901,18 @@ namespace UEDMHardwareControl
             // labelRollingTemperaturePlotTimeAxis
             // 
             this.labelRollingTemperaturePlotTimeAxis.AutoSize = true;
-            this.labelRollingTemperaturePlotTimeAxis.Location = new System.Drawing.Point(31, 366);
-            this.labelRollingTemperaturePlotTimeAxis.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelRollingTemperaturePlotTimeAxis.Location = new System.Drawing.Point(23, 297);
             this.labelRollingTemperaturePlotTimeAxis.Name = "labelRollingTemperaturePlotTimeAxis";
-            this.labelRollingTemperaturePlotTimeAxis.Size = new System.Drawing.Size(113, 17);
+            this.labelRollingTemperaturePlotTimeAxis.Size = new System.Drawing.Size(85, 13);
             this.labelRollingTemperaturePlotTimeAxis.TabIndex = 16;
             this.labelRollingTemperaturePlotTimeAxis.Text = "Rolling time axis:";
             // 
             // checkBoxNeonTempPlot
             // 
             this.checkBoxNeonTempPlot.AutoSize = true;
-            this.checkBoxNeonTempPlot.Location = new System.Drawing.Point(145, 181);
-            this.checkBoxNeonTempPlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxNeonTempPlot.Location = new System.Drawing.Point(109, 147);
             this.checkBoxNeonTempPlot.Name = "checkBoxNeonTempPlot";
-            this.checkBoxNeonTempPlot.Size = new System.Drawing.Size(95, 21);
+            this.checkBoxNeonTempPlot.Size = new System.Drawing.Size(75, 17);
             this.checkBoxNeonTempPlot.TabIndex = 15;
             this.checkBoxNeonTempPlot.Text = "Neon Line";
             this.checkBoxNeonTempPlot.UseVisualStyleBackColor = true;
@@ -8408,10 +7920,9 @@ namespace UEDMHardwareControl
             // 
             // btClearNeonTempData
             // 
-            this.btClearNeonTempData.Location = new System.Drawing.Point(145, 295);
-            this.btClearNeonTempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearNeonTempData.Location = new System.Drawing.Point(109, 240);
             this.btClearNeonTempData.Name = "btClearNeonTempData";
-            this.btClearNeonTempData.Size = new System.Drawing.Size(100, 28);
+            this.btClearNeonTempData.Size = new System.Drawing.Size(75, 23);
             this.btClearNeonTempData.TabIndex = 14;
             this.btClearNeonTempData.Text = "Neon Line";
             this.btClearNeonTempData.UseVisualStyleBackColor = true;
@@ -8420,19 +7931,17 @@ namespace UEDMHardwareControl
             // labelClearTemperaturePlotData
             // 
             this.labelClearTemperaturePlotData.AutoSize = true;
-            this.labelClearTemperaturePlotData.Location = new System.Drawing.Point(33, 230);
-            this.labelClearTemperaturePlotData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelClearTemperaturePlotData.Location = new System.Drawing.Point(25, 187);
             this.labelClearTemperaturePlotData.Name = "labelClearTemperaturePlotData";
-            this.labelClearTemperaturePlotData.Size = new System.Drawing.Size(104, 17);
+            this.labelClearTemperaturePlotData.Size = new System.Drawing.Size(78, 13);
             this.labelClearTemperaturePlotData.TabIndex = 13;
             this.labelClearTemperaturePlotData.Text = "Clear plot data:";
             // 
             // btClearSF6TempData
             // 
-            this.btClearSF6TempData.Location = new System.Drawing.Point(145, 260);
-            this.btClearSF6TempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearSF6TempData.Location = new System.Drawing.Point(109, 211);
             this.btClearSF6TempData.Name = "btClearSF6TempData";
-            this.btClearSF6TempData.Size = new System.Drawing.Size(100, 28);
+            this.btClearSF6TempData.Size = new System.Drawing.Size(75, 23);
             this.btClearSF6TempData.TabIndex = 12;
             this.btClearSF6TempData.Text = "SF6 Line";
             this.btClearSF6TempData.UseVisualStyleBackColor = true;
@@ -8440,10 +7949,9 @@ namespace UEDMHardwareControl
             // 
             // btClearS2TempData
             // 
-            this.btClearS2TempData.Location = new System.Drawing.Point(253, 260);
-            this.btClearS2TempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearS2TempData.Location = new System.Drawing.Point(190, 211);
             this.btClearS2TempData.Name = "btClearS2TempData";
-            this.btClearS2TempData.Size = new System.Drawing.Size(112, 28);
+            this.btClearS2TempData.Size = new System.Drawing.Size(84, 23);
             this.btClearS2TempData.TabIndex = 11;
             this.btClearS2TempData.Text = "Cryo Stage 2";
             this.btClearS2TempData.UseVisualStyleBackColor = true;
@@ -8451,10 +7959,9 @@ namespace UEDMHardwareControl
             // 
             // btClearS1TempData
             // 
-            this.btClearS1TempData.Location = new System.Drawing.Point(253, 224);
-            this.btClearS1TempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearS1TempData.Location = new System.Drawing.Point(190, 182);
             this.btClearS1TempData.Name = "btClearS1TempData";
-            this.btClearS1TempData.Size = new System.Drawing.Size(112, 28);
+            this.btClearS1TempData.Size = new System.Drawing.Size(84, 23);
             this.btClearS1TempData.TabIndex = 10;
             this.btClearS1TempData.Text = "Cryo Stage 1";
             this.btClearS1TempData.UseVisualStyleBackColor = true;
@@ -8462,10 +7969,9 @@ namespace UEDMHardwareControl
             // 
             // btClearCellTempData
             // 
-            this.btClearCellTempData.Location = new System.Drawing.Point(145, 224);
-            this.btClearCellTempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearCellTempData.Location = new System.Drawing.Point(109, 182);
             this.btClearCellTempData.Name = "btClearCellTempData";
-            this.btClearCellTempData.Size = new System.Drawing.Size(100, 28);
+            this.btClearCellTempData.Size = new System.Drawing.Size(75, 23);
             this.btClearCellTempData.TabIndex = 9;
             this.btClearCellTempData.Text = "Cell";
             this.btClearCellTempData.UseVisualStyleBackColor = true;
@@ -8474,10 +7980,9 @@ namespace UEDMHardwareControl
             // btClearAllTempData
             // 
             this.btClearAllTempData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btClearAllTempData.Location = new System.Drawing.Point(253, 295);
-            this.btClearAllTempData.Margin = new System.Windows.Forms.Padding(4);
+            this.btClearAllTempData.Location = new System.Drawing.Point(190, 240);
             this.btClearAllTempData.Name = "btClearAllTempData";
-            this.btClearAllTempData.Size = new System.Drawing.Size(112, 28);
+            this.btClearAllTempData.Size = new System.Drawing.Size(84, 23);
             this.btClearAllTempData.TabIndex = 8;
             this.btClearAllTempData.Text = "Clear all";
             this.btClearAllTempData.UseVisualStyleBackColor = true;
@@ -8486,10 +7991,9 @@ namespace UEDMHardwareControl
             // checkBoxSF6TempPlot
             // 
             this.checkBoxSF6TempPlot.AutoSize = true;
-            this.checkBoxSF6TempPlot.Location = new System.Drawing.Point(145, 153);
-            this.checkBoxSF6TempPlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxSF6TempPlot.Location = new System.Drawing.Point(109, 124);
             this.checkBoxSF6TempPlot.Name = "checkBoxSF6TempPlot";
-            this.checkBoxSF6TempPlot.Size = new System.Drawing.Size(86, 21);
+            this.checkBoxSF6TempPlot.Size = new System.Drawing.Size(68, 17);
             this.checkBoxSF6TempPlot.TabIndex = 7;
             this.checkBoxSF6TempPlot.Text = "SF6 Line";
             this.checkBoxSF6TempPlot.UseVisualStyleBackColor = true;
@@ -8498,10 +8002,9 @@ namespace UEDMHardwareControl
             // checkBoxS2TempPlot
             // 
             this.checkBoxS2TempPlot.AutoSize = true;
-            this.checkBoxS2TempPlot.Location = new System.Drawing.Point(145, 96);
-            this.checkBoxS2TempPlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxS2TempPlot.Location = new System.Drawing.Point(109, 78);
             this.checkBoxS2TempPlot.Name = "checkBoxS2TempPlot";
-            this.checkBoxS2TempPlot.Size = new System.Drawing.Size(112, 21);
+            this.checkBoxS2TempPlot.Size = new System.Drawing.Size(87, 17);
             this.checkBoxS2TempPlot.TabIndex = 6;
             this.checkBoxS2TempPlot.Text = "Cryo Stage 2";
             this.checkBoxS2TempPlot.UseVisualStyleBackColor = true;
@@ -8510,10 +8013,9 @@ namespace UEDMHardwareControl
             // checkBoxS1TempPlot
             // 
             this.checkBoxS1TempPlot.AutoSize = true;
-            this.checkBoxS1TempPlot.Location = new System.Drawing.Point(145, 124);
-            this.checkBoxS1TempPlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxS1TempPlot.Location = new System.Drawing.Point(109, 101);
             this.checkBoxS1TempPlot.Name = "checkBoxS1TempPlot";
-            this.checkBoxS1TempPlot.Size = new System.Drawing.Size(112, 21);
+            this.checkBoxS1TempPlot.Size = new System.Drawing.Size(87, 17);
             this.checkBoxS1TempPlot.TabIndex = 5;
             this.checkBoxS1TempPlot.Text = "Cryo Stage 1";
             this.checkBoxS1TempPlot.UseVisualStyleBackColor = true;
@@ -8524,10 +8026,9 @@ namespace UEDMHardwareControl
             this.checkBoxCellTempPlot.AutoSize = true;
             this.checkBoxCellTempPlot.Checked = true;
             this.checkBoxCellTempPlot.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCellTempPlot.Location = new System.Drawing.Point(145, 68);
-            this.checkBoxCellTempPlot.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxCellTempPlot.Location = new System.Drawing.Point(109, 55);
             this.checkBoxCellTempPlot.Name = "checkBoxCellTempPlot";
-            this.checkBoxCellTempPlot.Size = new System.Drawing.Size(53, 21);
+            this.checkBoxCellTempPlot.Size = new System.Drawing.Size(43, 17);
             this.checkBoxCellTempPlot.TabIndex = 4;
             this.checkBoxCellTempPlot.Text = "Cell";
             this.checkBoxCellTempPlot.UseVisualStyleBackColor = true;
@@ -8536,10 +8037,9 @@ namespace UEDMHardwareControl
             // labelSelectTempDataToPlotChart2
             // 
             this.labelSelectTempDataToPlotChart2.AutoSize = true;
-            this.labelSelectTempDataToPlotChart2.Location = new System.Drawing.Point(9, 69);
-            this.labelSelectTempDataToPlotChart2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelSelectTempDataToPlotChart2.Location = new System.Drawing.Point(7, 56);
             this.labelSelectTempDataToPlotChart2.Name = "labelSelectTempDataToPlotChart2";
-            this.labelSelectTempDataToPlotChart2.Size = new System.Drawing.Size(126, 17);
+            this.labelSelectTempDataToPlotChart2.Size = new System.Drawing.Size(96, 13);
             this.labelSelectTempDataToPlotChart2.TabIndex = 3;
             this.labelSelectTempDataToPlotChart2.Text = "Select data to plot:";
             // 
@@ -8549,10 +8049,9 @@ namespace UEDMHardwareControl
             this.comboBoxPlot2ScaleY.Items.AddRange(new object[] {
             "Linear",
             "Log"});
-            this.comboBoxPlot2ScaleY.Location = new System.Drawing.Point(141, 23);
-            this.comboBoxPlot2ScaleY.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxPlot2ScaleY.Location = new System.Drawing.Point(106, 19);
             this.comboBoxPlot2ScaleY.Name = "comboBoxPlot2ScaleY";
-            this.comboBoxPlot2ScaleY.Size = new System.Drawing.Size(160, 24);
+            this.comboBoxPlot2ScaleY.Size = new System.Drawing.Size(121, 21);
             this.comboBoxPlot2ScaleY.TabIndex = 1;
             this.comboBoxPlot2ScaleY.Text = "Linear";
             this.comboBoxPlot2ScaleY.SelectedIndexChanged += new System.EventHandler(this.comboBoxPlot2ScaleY_SelectedIndexChanged);
@@ -8560,91 +8059,89 @@ namespace UEDMHardwareControl
             // labelPlot2ScaleY
             // 
             this.labelPlot2ScaleY.AutoSize = true;
-            this.labelPlot2ScaleY.Location = new System.Drawing.Point(59, 27);
-            this.labelPlot2ScaleY.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelPlot2ScaleY.Location = new System.Drawing.Point(44, 22);
             this.labelPlot2ScaleY.Name = "labelPlot2ScaleY";
-            this.labelPlot2ScaleY.Size = new System.Drawing.Size(73, 17);
+            this.labelPlot2ScaleY.Size = new System.Drawing.Size(56, 13);
             this.labelPlot2ScaleY.TabIndex = 0;
             this.labelPlot2ScaleY.Text = "Plot scale:";
             // 
             // chart1
             // 
             this.chart1.BackColor = System.Drawing.Color.Black;
-            chartArea16.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea16.AxisX.IsStartedFromZero = false;
-            chartArea16.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea16.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea16.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.MinorGrid.Enabled = true;
-            chartArea16.AxisX.MinorTickMark.Enabled = true;
-            chartArea16.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.Title = "Time";
-            chartArea16.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea16.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea16.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
-            chartArea16.AxisY.IsStartedFromZero = false;
-            chartArea16.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea16.AxisY.LabelStyle.Format = "e1";
-            chartArea16.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea16.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.MinorGrid.Enabled = true;
-            chartArea16.AxisY.MinorTickMark.Enabled = true;
-            chartArea16.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.Title = "Pressure (mbar)";
-            chartArea16.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea16.BackColor = System.Drawing.Color.Black;
-            chartArea16.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea16.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea16.BorderColor = System.Drawing.Color.White;
-            chartArea16.CursorX.Interval = 100D;
-            chartArea16.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea16.CursorX.IsUserEnabled = true;
-            chartArea16.CursorX.IsUserSelectionEnabled = true;
-            chartArea16.CursorY.Interval = 1E-08D;
-            chartArea16.CursorY.IsUserEnabled = true;
-            chartArea16.CursorY.IsUserSelectionEnabled = true;
-            chartArea16.Name = "ChartAreaPressureChart";
-            this.chart1.ChartAreas.Add(chartArea16);
-            legend16.BackColor = System.Drawing.Color.Black;
-            legend16.ForeColor = System.Drawing.Color.White;
-            legend16.Name = "LegendPressureChart";
-            this.chart1.Legends.Add(legend16);
-            this.chart1.Location = new System.Drawing.Point(8, 7);
-            this.chart1.Margin = new System.Windows.Forms.Padding(4);
+            chartArea10.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea10.AxisX.IsStartedFromZero = false;
+            chartArea10.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea10.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea10.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisX.MinorGrid.Enabled = true;
+            chartArea10.AxisX.MinorTickMark.Enabled = true;
+            chartArea10.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisX.Title = "Time";
+            chartArea10.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea10.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea10.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+            chartArea10.AxisY.IsStartedFromZero = false;
+            chartArea10.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea10.AxisY.LabelStyle.Format = "e1";
+            chartArea10.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea10.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisY.MinorGrid.Enabled = true;
+            chartArea10.AxisY.MinorTickMark.Enabled = true;
+            chartArea10.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea10.AxisY.Title = "Pressure (mbar)";
+            chartArea10.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea10.BackColor = System.Drawing.Color.Black;
+            chartArea10.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea10.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea10.BorderColor = System.Drawing.Color.White;
+            chartArea10.CursorX.Interval = 100D;
+            chartArea10.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea10.CursorX.IsUserEnabled = true;
+            chartArea10.CursorX.IsUserSelectionEnabled = true;
+            chartArea10.CursorY.Interval = 1E-08D;
+            chartArea10.CursorY.IsUserEnabled = true;
+            chartArea10.CursorY.IsUserSelectionEnabled = true;
+            chartArea10.Name = "ChartAreaPressureChart";
+            this.chart1.ChartAreas.Add(chartArea10);
+            legend10.BackColor = System.Drawing.Color.Black;
+            legend10.ForeColor = System.Drawing.Color.White;
+            legend10.Name = "LegendPressureChart";
+            this.chart1.Legends.Add(legend10);
+            this.chart1.Location = new System.Drawing.Point(6, 6);
             this.chart1.Name = "chart1";
-            series58.BackSecondaryColor = System.Drawing.Color.White;
-            series58.BorderColor = System.Drawing.Color.White;
-            series58.ChartArea = "ChartAreaPressureChart";
-            series58.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series58.Color = System.Drawing.Color.White;
-            series58.CustomProperties = "EmptyPointValue=Zero";
-            series58.LabelBackColor = System.Drawing.Color.White;
-            series58.Legend = "LegendPressureChart";
-            series58.Name = "Source";
-            series58.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series59.ChartArea = "ChartAreaPressureChart";
-            series59.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series59.Enabled = false;
-            series59.Legend = "LegendPressureChart";
-            series59.Name = "Beamline";
-            series60.ChartArea = "ChartAreaPressureChart";
-            series60.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series60.Legend = "LegendPressureChart";
-            series60.Name = "Detection";
-            this.chart1.Series.Add(series58);
-            this.chart1.Series.Add(series59);
-            this.chart1.Series.Add(series60);
-            this.chart1.Size = new System.Drawing.Size(964, 423);
+            series36.BackSecondaryColor = System.Drawing.Color.White;
+            series36.BorderColor = System.Drawing.Color.White;
+            series36.ChartArea = "ChartAreaPressureChart";
+            series36.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series36.Color = System.Drawing.Color.White;
+            series36.CustomProperties = "EmptyPointValue=Zero";
+            series36.LabelBackColor = System.Drawing.Color.White;
+            series36.Legend = "LegendPressureChart";
+            series36.Name = "Source";
+            series36.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series37.ChartArea = "ChartAreaPressureChart";
+            series37.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series37.Enabled = false;
+            series37.Legend = "LegendPressureChart";
+            series37.Name = "Beamline";
+            series38.ChartArea = "ChartAreaPressureChart";
+            series38.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series38.Legend = "LegendPressureChart";
+            series38.Name = "Detection";
+            this.chart1.Series.Add(series36);
+            this.chart1.Series.Add(series37);
+            this.chart1.Series.Add(series38);
+            this.chart1.Size = new System.Drawing.Size(723, 344);
             this.chart1.TabIndex = 18;
             this.chart1.Text = "chartPressure";
-            title11.BackColor = System.Drawing.Color.Black;
-            title11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title11.ForeColor = System.Drawing.Color.White;
-            title11.Name = "chartTitleSourcePressure";
-            title11.Text = "Pressure";
-            this.chart1.Titles.Add(title11);
+            title7.BackColor = System.Drawing.Color.Black;
+            title7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title7.ForeColor = System.Drawing.Color.White;
+            title7.Name = "chartTitleSourcePressure";
+            title7.Text = "Pressure";
+            this.chart1.Titles.Add(title7);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             this.chart1.MouseEnter += new System.EventHandler(this.chart1_MouseEnter);
             this.chart1.MouseLeave += new System.EventHandler(this.chart1_MouseLeave);
@@ -8652,96 +8149,95 @@ namespace UEDMHardwareControl
             // chart2
             // 
             this.chart2.BackColor = System.Drawing.Color.Black;
-            chartArea17.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea17.AxisX.IsStartedFromZero = false;
-            chartArea17.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea17.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea17.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MajorGrid.Enabled = false;
-            chartArea17.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MinorTickMark.Enabled = true;
-            chartArea17.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.Title = "Time";
-            chartArea17.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea17.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea17.AxisY.IsStartedFromZero = false;
-            chartArea17.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea17.AxisY.LabelStyle.Format = "000.0";
-            chartArea17.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea17.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.MinorTickMark.Enabled = true;
-            chartArea17.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.Title = "Temperature (K)";
-            chartArea17.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea17.BackColor = System.Drawing.Color.Black;
-            chartArea17.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea17.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea17.BorderColor = System.Drawing.Color.White;
-            chartArea17.CursorX.Interval = 100D;
-            chartArea17.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea17.CursorX.IsUserEnabled = true;
-            chartArea17.CursorX.IsUserSelectionEnabled = true;
-            chartArea17.CursorY.Interval = 0.01D;
-            chartArea17.CursorY.IsUserEnabled = true;
-            chartArea17.CursorY.IsUserSelectionEnabled = true;
-            chartArea17.Name = "ChartArea2";
-            this.chart2.ChartAreas.Add(chartArea17);
-            legend17.BackColor = System.Drawing.Color.Black;
-            legend17.ForeColor = System.Drawing.Color.White;
-            legend17.Name = "LegendChart2";
-            this.chart2.Legends.Add(legend17);
-            this.chart2.Location = new System.Drawing.Point(8, 433);
-            this.chart2.Margin = new System.Windows.Forms.Padding(4);
+            chartArea11.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea11.AxisX.IsStartedFromZero = false;
+            chartArea11.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea11.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea11.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisX.MajorGrid.Enabled = false;
+            chartArea11.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisX.MinorTickMark.Enabled = true;
+            chartArea11.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisX.Title = "Time";
+            chartArea11.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea11.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea11.AxisY.IsStartedFromZero = false;
+            chartArea11.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea11.AxisY.LabelStyle.Format = "000.0";
+            chartArea11.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea11.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisY.MinorTickMark.Enabled = true;
+            chartArea11.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea11.AxisY.Title = "Temperature (K)";
+            chartArea11.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea11.BackColor = System.Drawing.Color.Black;
+            chartArea11.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea11.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea11.BorderColor = System.Drawing.Color.White;
+            chartArea11.CursorX.Interval = 100D;
+            chartArea11.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea11.CursorX.IsUserEnabled = true;
+            chartArea11.CursorX.IsUserSelectionEnabled = true;
+            chartArea11.CursorY.Interval = 0.01D;
+            chartArea11.CursorY.IsUserEnabled = true;
+            chartArea11.CursorY.IsUserSelectionEnabled = true;
+            chartArea11.Name = "ChartArea2";
+            this.chart2.ChartAreas.Add(chartArea11);
+            legend11.BackColor = System.Drawing.Color.Black;
+            legend11.ForeColor = System.Drawing.Color.White;
+            legend11.Name = "LegendChart2";
+            this.chart2.Legends.Add(legend11);
+            this.chart2.Location = new System.Drawing.Point(6, 352);
             this.chart2.Name = "chart2";
-            series61.BackSecondaryColor = System.Drawing.Color.White;
-            series61.BorderColor = System.Drawing.Color.White;
-            series61.ChartArea = "ChartArea2";
-            series61.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series61.Color = System.Drawing.Color.White;
-            series61.LabelBackColor = System.Drawing.Color.White;
-            series61.Legend = "LegendChart2";
-            series61.Name = "Cell";
-            series61.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series62.ChartArea = "ChartArea2";
-            series62.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series62.Enabled = false;
-            series62.Legend = "LegendChart2";
-            series62.Name = "S2";
-            series62.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series63.ChartArea = "ChartArea2";
-            series63.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series63.Enabled = false;
-            series63.Legend = "LegendChart2";
-            series63.Name = "S1";
-            series63.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series64.ChartArea = "ChartArea2";
-            series64.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series64.Enabled = false;
-            series64.Legend = "LegendChart2";
-            series64.Name = "SF6";
-            series64.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series65.ChartArea = "ChartArea2";
-            series65.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series65.Enabled = false;
-            series65.Legend = "LegendChart2";
-            series65.Name = "Neon";
-            series65.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart2.Series.Add(series61);
-            this.chart2.Series.Add(series62);
-            this.chart2.Series.Add(series63);
-            this.chart2.Series.Add(series64);
-            this.chart2.Series.Add(series65);
-            this.chart2.Size = new System.Drawing.Size(964, 423);
+            series39.BackSecondaryColor = System.Drawing.Color.White;
+            series39.BorderColor = System.Drawing.Color.White;
+            series39.ChartArea = "ChartArea2";
+            series39.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series39.Color = System.Drawing.Color.White;
+            series39.LabelBackColor = System.Drawing.Color.White;
+            series39.Legend = "LegendChart2";
+            series39.Name = "Cell";
+            series39.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series40.ChartArea = "ChartArea2";
+            series40.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series40.Enabled = false;
+            series40.Legend = "LegendChart2";
+            series40.Name = "S2";
+            series40.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series41.ChartArea = "ChartArea2";
+            series41.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series41.Enabled = false;
+            series41.Legend = "LegendChart2";
+            series41.Name = "S1";
+            series41.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series42.ChartArea = "ChartArea2";
+            series42.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series42.Enabled = false;
+            series42.Legend = "LegendChart2";
+            series42.Name = "SF6";
+            series42.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series43.ChartArea = "ChartArea2";
+            series43.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series43.Enabled = false;
+            series43.Legend = "LegendChart2";
+            series43.Name = "Neon";
+            series43.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart2.Series.Add(series39);
+            this.chart2.Series.Add(series40);
+            this.chart2.Series.Add(series41);
+            this.chart2.Series.Add(series42);
+            this.chart2.Series.Add(series43);
+            this.chart2.Size = new System.Drawing.Size(723, 344);
             this.chart2.TabIndex = 22;
             this.chart2.Text = "chart2";
-            title12.BackColor = System.Drawing.Color.Black;
-            title12.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title12.ForeColor = System.Drawing.Color.White;
-            title12.Name = "chartTitle2";
-            title12.Text = "Temperature";
-            this.chart2.Titles.Add(title12);
+            title8.BackColor = System.Drawing.Color.Black;
+            title8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title8.ForeColor = System.Drawing.Color.White;
+            title8.Name = "chartTitle2";
+            title8.Text = "Temperature";
+            this.chart2.Titles.Add(title8);
             // 
             // tabControl
             // 
@@ -8758,11 +8254,10 @@ namespace UEDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabCCDCamera);
             this.tabControl.Controls.Add(this.tabPage3);
-            this.tabControl.Location = new System.Drawing.Point(296, 33);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1388, 912);
+            this.tabControl.Size = new System.Drawing.Size(1041, 741);
             this.tabControl.TabIndex = 23;
             // 
             // tabPage2
@@ -8784,57 +8279,51 @@ namespace UEDMHardwareControl
             this.tabPage2.Controls.Add(this.chart6);
             this.tabPage2.Controls.Add(this.BeatFreqMonitor);
             this.tabPage2.Controls.Add(this.UpdateBeatFreq);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1033, 715);
             this.tabPage2.TabIndex = 10;
             this.tabPage2.Text = "Frequency Counter";
             // 
             // label32
             // 
             this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label32.Location = new System.Drawing.Point(29, 17);
-            this.label32.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label32.Location = new System.Drawing.Point(22, 14);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(273, 28);
+            this.label32.Size = new System.Drawing.Size(205, 23);
             this.label32.TabIndex = 90;
             this.label32.Text = "GPIB COUNTER CHANNEL";
             // 
             // label31
             // 
-            this.label31.Location = new System.Drawing.Point(51, 194);
-            this.label31.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label31.Location = new System.Drawing.Point(38, 158);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(199, 28);
+            this.label31.Size = new System.Drawing.Size(149, 23);
             this.label31.TabIndex = 89;
             this.label31.Text = "Rolling Average + RMS";
             // 
             // label30
             // 
-            this.label30.Location = new System.Drawing.Point(208, 159);
-            this.label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label30.Location = new System.Drawing.Point(156, 129);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(113, 28);
+            this.label30.Size = new System.Drawing.Size(85, 23);
             this.label30.TabIndex = 88;
             this.label30.Text = "Poll Period (ms)";
             // 
             // label29
             // 
-            this.label29.Location = new System.Drawing.Point(177, 127);
-            this.label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label29.Location = new System.Drawing.Point(133, 103);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(144, 28);
+            this.label29.Size = new System.Drawing.Size(108, 23);
             this.label29.TabIndex = 87;
             this.label29.Text = "Samples to Average";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(285, 251);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
+            this.button1.Location = new System.Drawing.Point(214, 204);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 28);
+            this.button1.Size = new System.Drawing.Size(80, 23);
             this.button1.TabIndex = 86;
             this.button1.Text = "Clear";
             this.button1.UseVisualStyleBackColor = true;
@@ -8842,10 +8331,9 @@ namespace UEDMHardwareControl
             // 
             // label28
             // 
-            this.label28.Location = new System.Drawing.Point(349, 194);
-            this.label28.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label28.Location = new System.Drawing.Point(262, 158);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(16, 28);
+            this.label28.Size = new System.Drawing.Size(12, 23);
             this.label28.TabIndex = 85;
             this.label28.Text = "±";
             // 
@@ -8853,11 +8341,10 @@ namespace UEDMHardwareControl
             // 
             this.FreqMonitorErrorTextBox.BackColor = System.Drawing.Color.Black;
             this.FreqMonitorErrorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.FreqMonitorErrorTextBox.Location = new System.Drawing.Point(369, 191);
-            this.FreqMonitorErrorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.FreqMonitorErrorTextBox.Location = new System.Drawing.Point(277, 155);
             this.FreqMonitorErrorTextBox.Name = "FreqMonitorErrorTextBox";
             this.FreqMonitorErrorTextBox.ReadOnly = true;
-            this.FreqMonitorErrorTextBox.Size = new System.Drawing.Size(104, 22);
+            this.FreqMonitorErrorTextBox.Size = new System.Drawing.Size(79, 20);
             this.FreqMonitorErrorTextBox.TabIndex = 84;
             this.FreqMonitorErrorTextBox.Text = "0";
             // 
@@ -8865,39 +8352,35 @@ namespace UEDMHardwareControl
             // 
             this.FreqMonitorTextBox.BackColor = System.Drawing.Color.Black;
             this.FreqMonitorTextBox.ForeColor = System.Drawing.Color.Chartreuse;
-            this.FreqMonitorTextBox.Location = new System.Drawing.Point(249, 191);
-            this.FreqMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.FreqMonitorTextBox.Location = new System.Drawing.Point(187, 155);
             this.FreqMonitorTextBox.Name = "FreqMonitorTextBox";
             this.FreqMonitorTextBox.ReadOnly = true;
-            this.FreqMonitorTextBox.Size = new System.Drawing.Size(96, 22);
+            this.FreqMonitorTextBox.Size = new System.Drawing.Size(73, 20);
             this.FreqMonitorTextBox.TabIndex = 83;
             this.FreqMonitorTextBox.Text = "0";
             // 
             // FreqMonitorSampleLengthTextBox
             // 
-            this.FreqMonitorSampleLengthTextBox.Location = new System.Drawing.Point(331, 123);
-            this.FreqMonitorSampleLengthTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.FreqMonitorSampleLengthTextBox.Location = new System.Drawing.Point(248, 100);
             this.FreqMonitorSampleLengthTextBox.Name = "FreqMonitorSampleLengthTextBox";
-            this.FreqMonitorSampleLengthTextBox.Size = new System.Drawing.Size(60, 22);
+            this.FreqMonitorSampleLengthTextBox.Size = new System.Drawing.Size(46, 20);
             this.FreqMonitorSampleLengthTextBox.TabIndex = 82;
             this.FreqMonitorSampleLengthTextBox.Text = "50";
             // 
             // FreqMonitorPollPeriodInput
             // 
-            this.FreqMonitorPollPeriodInput.Location = new System.Drawing.Point(331, 154);
-            this.FreqMonitorPollPeriodInput.Margin = new System.Windows.Forms.Padding(4);
+            this.FreqMonitorPollPeriodInput.Location = new System.Drawing.Point(248, 125);
             this.FreqMonitorPollPeriodInput.Name = "FreqMonitorPollPeriodInput";
-            this.FreqMonitorPollPeriodInput.Size = new System.Drawing.Size(60, 22);
+            this.FreqMonitorPollPeriodInput.Size = new System.Drawing.Size(46, 20);
             this.FreqMonitorPollPeriodInput.TabIndex = 81;
             this.FreqMonitorPollPeriodInput.Text = "1000";
             // 
             // stopFreqMonitorPollButton
             // 
             this.stopFreqMonitorPollButton.Enabled = false;
-            this.stopFreqMonitorPollButton.Location = new System.Drawing.Point(163, 251);
-            this.stopFreqMonitorPollButton.Margin = new System.Windows.Forms.Padding(4);
+            this.stopFreqMonitorPollButton.Location = new System.Drawing.Point(122, 204);
             this.stopFreqMonitorPollButton.Name = "stopFreqMonitorPollButton";
-            this.stopFreqMonitorPollButton.Size = new System.Drawing.Size(100, 28);
+            this.stopFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.stopFreqMonitorPollButton.TabIndex = 80;
             this.stopFreqMonitorPollButton.Text = "Stop poll";
             this.stopFreqMonitorPollButton.UseVisualStyleBackColor = true;
@@ -8905,10 +8388,9 @@ namespace UEDMHardwareControl
             // 
             // startFreqMonitorPollButton
             // 
-            this.startFreqMonitorPollButton.Location = new System.Drawing.Point(33, 251);
-            this.startFreqMonitorPollButton.Margin = new System.Windows.Forms.Padding(4);
+            this.startFreqMonitorPollButton.Location = new System.Drawing.Point(25, 204);
             this.startFreqMonitorPollButton.Name = "startFreqMonitorPollButton";
-            this.startFreqMonitorPollButton.Size = new System.Drawing.Size(100, 28);
+            this.startFreqMonitorPollButton.Size = new System.Drawing.Size(75, 23);
             this.startFreqMonitorPollButton.TabIndex = 79;
             this.startFreqMonitorPollButton.Text = "Start poll";
             this.startFreqMonitorPollButton.UseVisualStyleBackColor = true;
@@ -8917,10 +8399,9 @@ namespace UEDMHardwareControl
             // LogFreqDataCheckBox
             // 
             this.LogFreqDataCheckBox.AutoSize = true;
-            this.LogFreqDataCheckBox.Location = new System.Drawing.Point(421, 256);
-            this.LogFreqDataCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.LogFreqDataCheckBox.Location = new System.Drawing.Point(316, 208);
             this.LogFreqDataCheckBox.Name = "LogFreqDataCheckBox";
-            this.LogFreqDataCheckBox.Size = new System.Drawing.Size(86, 21);
+            this.LogFreqDataCheckBox.Size = new System.Drawing.Size(68, 17);
             this.LogFreqDataCheckBox.TabIndex = 78;
             this.LogFreqDataCheckBox.Text = "Log data";
             this.LogFreqDataCheckBox.UseVisualStyleBackColor = true;
@@ -8928,53 +8409,52 @@ namespace UEDMHardwareControl
             // chart6
             // 
             this.chart6.BackColor = System.Drawing.Color.Black;
-            chartArea18.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
-            chartArea18.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.Title = "Time";
-            chartArea18.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.Title = "Frequency";
-            chartArea18.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.BackColor = System.Drawing.Color.Black;
-            chartArea18.BackImageTransparentColor = System.Drawing.Color.White;
-            chartArea18.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea18.BorderColor = System.Drawing.Color.White;
-            chartArea18.Name = "ChartArea1";
-            this.chart6.ChartAreas.Add(chartArea18);
-            legend18.Alignment = System.Drawing.StringAlignment.Center;
-            legend18.BackColor = System.Drawing.Color.Black;
-            legend18.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend18.ForeColor = System.Drawing.Color.White;
-            legend18.IsEquallySpacedItems = true;
-            legend18.Name = "Legend1";
-            legend18.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
-            this.chart6.Legends.Add(legend18);
-            this.chart6.Location = new System.Drawing.Point(33, 283);
-            this.chart6.Margin = new System.Windows.Forms.Padding(4);
+            chartArea12.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea12.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea12.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX.Title = "Time";
+            chartArea12.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea12.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea12.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea12.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea12.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY.Title = "Frequency";
+            chartArea12.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea12.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea12.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea12.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea12.BackColor = System.Drawing.Color.Black;
+            chartArea12.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea12.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea12.BorderColor = System.Drawing.Color.White;
+            chartArea12.Name = "ChartArea1";
+            this.chart6.ChartAreas.Add(chartArea12);
+            legend12.Alignment = System.Drawing.StringAlignment.Center;
+            legend12.BackColor = System.Drawing.Color.Black;
+            legend12.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend12.ForeColor = System.Drawing.Color.White;
+            legend12.IsEquallySpacedItems = true;
+            legend12.Name = "Legend1";
+            legend12.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart6.Legends.Add(legend12);
+            this.chart6.Location = new System.Drawing.Point(25, 230);
             this.chart6.Name = "chart6";
-            series66.ChartArea = "ChartArea1";
-            series66.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series66.Legend = "Legend1";
-            series66.Name = "Beat Frequency";
-            series66.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart6.Series.Add(series66);
-            this.chart6.Size = new System.Drawing.Size(1297, 321);
+            series44.ChartArea = "ChartArea1";
+            series44.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series44.Legend = "Legend1";
+            series44.Name = "Beat Frequency";
+            series44.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart6.Series.Add(series44);
+            this.chart6.Size = new System.Drawing.Size(973, 261);
             this.chart6.TabIndex = 77;
             this.chart6.Text = "chart6";
             // 
@@ -8982,20 +8462,18 @@ namespace UEDMHardwareControl
             // 
             this.BeatFreqMonitor.BackColor = System.Drawing.Color.Black;
             this.BeatFreqMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.BeatFreqMonitor.Location = new System.Drawing.Point(263, 71);
-            this.BeatFreqMonitor.Margin = new System.Windows.Forms.Padding(4);
+            this.BeatFreqMonitor.Location = new System.Drawing.Point(197, 58);
             this.BeatFreqMonitor.Name = "BeatFreqMonitor";
             this.BeatFreqMonitor.ReadOnly = true;
-            this.BeatFreqMonitor.Size = new System.Drawing.Size(128, 22);
+            this.BeatFreqMonitor.Size = new System.Drawing.Size(97, 20);
             this.BeatFreqMonitor.TabIndex = 43;
             this.BeatFreqMonitor.Text = "0";
             // 
             // UpdateBeatFreq
             // 
-            this.UpdateBeatFreq.Location = new System.Drawing.Point(33, 68);
-            this.UpdateBeatFreq.Margin = new System.Windows.Forms.Padding(4);
+            this.UpdateBeatFreq.Location = new System.Drawing.Point(25, 55);
             this.UpdateBeatFreq.Name = "UpdateBeatFreq";
-            this.UpdateBeatFreq.Size = new System.Drawing.Size(207, 28);
+            this.UpdateBeatFreq.Size = new System.Drawing.Size(155, 23);
             this.UpdateBeatFreq.TabIndex = 41;
             this.UpdateBeatFreq.Text = "Update Beat Frequency";
             this.UpdateBeatFreq.Click += new System.EventHandler(this.UpdateBeatFreq_Click);
@@ -9033,20 +8511,18 @@ namespace UEDMHardwareControl
             this.tabCCDCamera.Controls.Add(this.btinfoCCDExposure);
             this.tabCCDCamera.Controls.Add(this.tbCCDShotCount);
             this.tabCCDCamera.Controls.Add(this.labelCCDShotCount);
-            this.tabCCDCamera.Location = new System.Drawing.Point(4, 25);
-            this.tabCCDCamera.Margin = new System.Windows.Forms.Padding(4);
+            this.tabCCDCamera.Location = new System.Drawing.Point(4, 22);
             this.tabCCDCamera.Name = "tabCCDCamera";
-            this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(4);
-            this.tabCCDCamera.Size = new System.Drawing.Size(1380, 883);
+            this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCCDCamera.Size = new System.Drawing.Size(1033, 715);
             this.tabCCDCamera.TabIndex = 11;
             this.tabCCDCamera.Text = "CCD Camera";
             // 
             // btnSetCCDTriggerMode
             // 
-            this.btnSetCCDTriggerMode.Location = new System.Drawing.Point(181, 236);
-            this.btnSetCCDTriggerMode.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSetCCDTriggerMode.Location = new System.Drawing.Point(136, 192);
             this.btnSetCCDTriggerMode.Name = "btnSetCCDTriggerMode";
-            this.btnSetCCDTriggerMode.Size = new System.Drawing.Size(133, 30);
+            this.btnSetCCDTriggerMode.Size = new System.Drawing.Size(100, 24);
             this.btnSetCCDTriggerMode.TabIndex = 30;
             this.btnSetCCDTriggerMode.Text = "Set Trigger";
             this.btnSetCCDTriggerMode.UseVisualStyleBackColor = true;
@@ -9060,267 +8536,238 @@ namespace UEDMHardwareControl
             "0 - Internal Trigger",
             "1 - External Burst Trigger",
             "2 - External Edge Trigger"});
-            this.comboBoxCCDTriggerMode.Location = new System.Drawing.Point(341, 236);
-            this.comboBoxCCDTriggerMode.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxCCDTriggerMode.Location = new System.Drawing.Point(256, 192);
             this.comboBoxCCDTriggerMode.Name = "comboBoxCCDTriggerMode";
-            this.comboBoxCCDTriggerMode.Size = new System.Drawing.Size(265, 24);
+            this.comboBoxCCDTriggerMode.Size = new System.Drawing.Size(200, 21);
             this.comboBoxCCDTriggerMode.TabIndex = 28;
             // 
             // tbCCDBExposure
             // 
-            this.tbCCDBExposure.Location = new System.Drawing.Point(537, 331);
-            this.tbCCDBExposure.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDBExposure.Location = new System.Drawing.Point(403, 269);
             this.tbCCDBExposure.Name = "tbCCDBExposure";
-            this.tbCCDBExposure.Size = new System.Drawing.Size(132, 22);
+            this.tbCCDBExposure.Size = new System.Drawing.Size(100, 20);
             this.tbCCDBExposure.TabIndex = 13;
             // 
             // tbCCDBGain
             // 
-            this.tbCCDBGain.Location = new System.Drawing.Point(533, 169);
-            this.tbCCDBGain.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDBGain.Location = new System.Drawing.Point(400, 137);
             this.tbCCDBGain.Name = "tbCCDBGain";
-            this.tbCCDBGain.Size = new System.Drawing.Size(132, 22);
+            this.tbCCDBGain.Size = new System.Drawing.Size(100, 20);
             this.tbCCDBGain.TabIndex = 7;
             // 
             // tbCCDAExposure
             // 
-            this.tbCCDAExposure.Location = new System.Drawing.Point(341, 331);
-            this.tbCCDAExposure.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDAExposure.Location = new System.Drawing.Point(256, 269);
             this.tbCCDAExposure.Name = "tbCCDAExposure";
-            this.tbCCDAExposure.Size = new System.Drawing.Size(132, 22);
+            this.tbCCDAExposure.Size = new System.Drawing.Size(100, 20);
             this.tbCCDAExposure.TabIndex = 3;
             // 
             // tbCCDAGain
             // 
-            this.tbCCDAGain.Location = new System.Drawing.Point(341, 167);
-            this.tbCCDAGain.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDAGain.Location = new System.Drawing.Point(256, 136);
             this.tbCCDAGain.Name = "tbCCDAGain";
-            this.tbCCDAGain.Size = new System.Drawing.Size(132, 22);
+            this.tbCCDAGain.Size = new System.Drawing.Size(100, 20);
             this.tbCCDAGain.TabIndex = 1;
             // 
             // labelFrameCCDA
             // 
-            this.labelFrameCCDA.Location = new System.Drawing.Point(341, 415);
-            this.labelFrameCCDA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelFrameCCDA.Location = new System.Drawing.Point(256, 337);
             this.labelFrameCCDA.Name = "labelFrameCCDA";
-            this.labelFrameCCDA.Size = new System.Drawing.Size(133, 25);
+            this.labelFrameCCDA.Size = new System.Drawing.Size(100, 20);
             this.labelFrameCCDA.TabIndex = 19;
             this.labelFrameCCDA.Text = "N/A";
             // 
             // labelFrameCCDB
             // 
-            this.labelFrameCCDB.Location = new System.Drawing.Point(537, 411);
-            this.labelFrameCCDB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelFrameCCDB.Location = new System.Drawing.Point(403, 334);
             this.labelFrameCCDB.Name = "labelFrameCCDB";
-            this.labelFrameCCDB.Size = new System.Drawing.Size(133, 28);
+            this.labelFrameCCDB.Size = new System.Drawing.Size(100, 23);
             this.labelFrameCCDB.TabIndex = 20;
             this.labelFrameCCDB.Text = "N/A";
             // 
             // labelGainCCDA
             // 
-            this.labelGainCCDA.Location = new System.Drawing.Point(341, 135);
-            this.labelGainCCDA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelGainCCDA.Location = new System.Drawing.Point(256, 110);
             this.labelGainCCDA.Name = "labelGainCCDA";
-            this.labelGainCCDA.Size = new System.Drawing.Size(133, 28);
+            this.labelGainCCDA.Size = new System.Drawing.Size(100, 23);
             this.labelGainCCDA.TabIndex = 21;
             this.labelGainCCDA.Text = "N/A";
             // 
             // labelGainCCDB
             // 
-            this.labelGainCCDB.Location = new System.Drawing.Point(537, 135);
-            this.labelGainCCDB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelGainCCDB.Location = new System.Drawing.Point(403, 110);
             this.labelGainCCDB.Name = "labelGainCCDB";
-            this.labelGainCCDB.Size = new System.Drawing.Size(133, 28);
+            this.labelGainCCDB.Size = new System.Drawing.Size(100, 23);
             this.labelGainCCDB.TabIndex = 22;
             this.labelGainCCDB.Text = "N/A";
             // 
             // labelExposureTimeCCDA
             // 
-            this.labelExposureTimeCCDA.Location = new System.Drawing.Point(341, 304);
-            this.labelExposureTimeCCDA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelExposureTimeCCDA.Location = new System.Drawing.Point(256, 247);
             this.labelExposureTimeCCDA.Name = "labelExposureTimeCCDA";
-            this.labelExposureTimeCCDA.Size = new System.Drawing.Size(133, 28);
+            this.labelExposureTimeCCDA.Size = new System.Drawing.Size(100, 23);
             this.labelExposureTimeCCDA.TabIndex = 23;
             this.labelExposureTimeCCDA.Text = "N/A";
             // 
             // labelExposureTimeCCDB
             // 
-            this.labelExposureTimeCCDB.Location = new System.Drawing.Point(533, 304);
-            this.labelExposureTimeCCDB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelExposureTimeCCDB.Location = new System.Drawing.Point(400, 247);
             this.labelExposureTimeCCDB.Name = "labelExposureTimeCCDB";
-            this.labelExposureTimeCCDB.Size = new System.Drawing.Size(133, 28);
+            this.labelExposureTimeCCDB.Size = new System.Drawing.Size(100, 23);
             this.labelExposureTimeCCDB.TabIndex = 24;
             this.labelExposureTimeCCDB.Text = "N/A";
             // 
             // labelTemperatureCCDA
             // 
-            this.labelTemperatureCCDA.Location = new System.Drawing.Point(341, 76);
-            this.labelTemperatureCCDA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTemperatureCCDA.Location = new System.Drawing.Point(256, 62);
             this.labelTemperatureCCDA.Name = "labelTemperatureCCDA";
-            this.labelTemperatureCCDA.Size = new System.Drawing.Size(133, 28);
+            this.labelTemperatureCCDA.Size = new System.Drawing.Size(100, 23);
             this.labelTemperatureCCDA.TabIndex = 26;
             this.labelTemperatureCCDA.Text = "N/A";
             // 
             // labelTemperatureCCDB
             // 
-            this.labelTemperatureCCDB.Location = new System.Drawing.Point(537, 76);
-            this.labelTemperatureCCDB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTemperatureCCDB.Location = new System.Drawing.Point(403, 62);
             this.labelTemperatureCCDB.Name = "labelTemperatureCCDB";
-            this.labelTemperatureCCDB.Size = new System.Drawing.Size(133, 28);
+            this.labelTemperatureCCDB.Size = new System.Drawing.Size(100, 23);
             this.labelTemperatureCCDB.TabIndex = 27;
             this.labelTemperatureCCDB.Text = "N/A";
             // 
             // tbCCDAFrameCount
             // 
-            this.tbCCDAFrameCount.Location = new System.Drawing.Point(341, 442);
-            this.tbCCDAFrameCount.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDAFrameCount.Location = new System.Drawing.Point(256, 359);
             this.tbCCDAFrameCount.Name = "tbCCDAFrameCount";
-            this.tbCCDAFrameCount.Size = new System.Drawing.Size(328, 22);
+            this.tbCCDAFrameCount.Size = new System.Drawing.Size(247, 20);
             this.tbCCDAFrameCount.TabIndex = 31;
             // 
             // btCCDQueryFrameCount
             // 
-            this.btCCDQueryFrameCount.Location = new System.Drawing.Point(181, 410);
-            this.btCCDQueryFrameCount.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDQueryFrameCount.Location = new System.Drawing.Point(136, 333);
             this.btCCDQueryFrameCount.Name = "btCCDQueryFrameCount";
-            this.btCCDQueryFrameCount.Size = new System.Drawing.Size(133, 25);
+            this.btCCDQueryFrameCount.Size = new System.Drawing.Size(100, 20);
             this.btCCDQueryFrameCount.TabIndex = 14;
             this.btCCDQueryFrameCount.Text = "Query Frame Count";
             this.btCCDQueryFrameCount.Click += new System.EventHandler(this.QueryFrameCount_Click);
             // 
             // btCCDQueryExposure
             // 
-            this.btCCDQueryExposure.Location = new System.Drawing.Point(137, 302);
-            this.btCCDQueryExposure.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDQueryExposure.Location = new System.Drawing.Point(103, 245);
             this.btCCDQueryExposure.Name = "btCCDQueryExposure";
-            this.btCCDQueryExposure.Size = new System.Drawing.Size(196, 25);
+            this.btCCDQueryExposure.Size = new System.Drawing.Size(147, 20);
             this.btCCDQueryExposure.TabIndex = 16;
             this.btCCDQueryExposure.Text = "Query Exposure Time (ms)";
             this.btCCDQueryExposure.Click += new System.EventHandler(this.QueryExposureTime_Click);
             // 
             // btCCDQueryGain
             // 
-            this.btCCDQueryGain.Location = new System.Drawing.Point(181, 135);
-            this.btCCDQueryGain.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDQueryGain.Location = new System.Drawing.Point(136, 110);
             this.btCCDQueryGain.Name = "btCCDQueryGain";
-            this.btCCDQueryGain.Size = new System.Drawing.Size(133, 25);
+            this.btCCDQueryGain.Size = new System.Drawing.Size(100, 20);
             this.btCCDQueryGain.TabIndex = 18;
             this.btCCDQueryGain.Text = "Query Gain";
             this.btCCDQueryGain.Click += new System.EventHandler(this.QueryGain_Click);
             // 
             // btCCDQueryTemp
             // 
-            this.btCCDQueryTemp.Location = new System.Drawing.Point(181, 71);
-            this.btCCDQueryTemp.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDQueryTemp.Location = new System.Drawing.Point(136, 58);
             this.btCCDQueryTemp.Name = "btCCDQueryTemp";
-            this.btCCDQueryTemp.Size = new System.Drawing.Size(133, 25);
+            this.btCCDQueryTemp.Size = new System.Drawing.Size(100, 20);
             this.btCCDQueryTemp.TabIndex = 17;
             this.btCCDQueryTemp.Text = "Query Temp";
             this.btCCDQueryTemp.Click += new System.EventHandler(this.QueryTemperature_Click);
             // 
             // lblCCDA
             // 
-            this.lblCCDA.Location = new System.Drawing.Point(368, 7);
-            this.lblCCDA.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCCDA.Location = new System.Drawing.Point(276, 6);
             this.lblCCDA.Name = "lblCCDA";
-            this.lblCCDA.Size = new System.Drawing.Size(133, 25);
+            this.lblCCDA.Size = new System.Drawing.Size(100, 20);
             this.lblCCDA.TabIndex = 19;
             this.lblCCDA.Text = "CCD A";
             // 
             // lblCCDB
             // 
-            this.lblCCDB.Location = new System.Drawing.Point(573, 7);
-            this.lblCCDB.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCCDB.Location = new System.Drawing.Point(430, 6);
             this.lblCCDB.Name = "lblCCDB";
-            this.lblCCDB.Size = new System.Drawing.Size(133, 25);
+            this.lblCCDB.Size = new System.Drawing.Size(100, 20);
             this.lblCCDB.TabIndex = 20;
             this.lblCCDB.Text = "CCD B";
             // 
             // btCCDUpdateFrameCount
             // 
-            this.btCCDUpdateFrameCount.Location = new System.Drawing.Point(181, 442);
-            this.btCCDUpdateFrameCount.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDUpdateFrameCount.Location = new System.Drawing.Point(136, 359);
             this.btCCDUpdateFrameCount.Name = "btCCDUpdateFrameCount";
-            this.btCCDUpdateFrameCount.Size = new System.Drawing.Size(133, 25);
+            this.btCCDUpdateFrameCount.Size = new System.Drawing.Size(100, 20);
             this.btCCDUpdateFrameCount.TabIndex = 21;
             this.btCCDUpdateFrameCount.Text = "Update Frame Count";
             this.btCCDUpdateFrameCount.Click += new System.EventHandler(this.UpdateCCDFrameCount_Click);
             // 
             // btCCDUpdateExposureTime
             // 
-            this.btCCDUpdateExposureTime.Location = new System.Drawing.Point(137, 334);
-            this.btCCDUpdateExposureTime.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDUpdateExposureTime.Location = new System.Drawing.Point(103, 271);
             this.btCCDUpdateExposureTime.Name = "btCCDUpdateExposureTime";
-            this.btCCDUpdateExposureTime.Size = new System.Drawing.Size(196, 25);
+            this.btCCDUpdateExposureTime.Size = new System.Drawing.Size(147, 20);
             this.btCCDUpdateExposureTime.TabIndex = 22;
             this.btCCDUpdateExposureTime.Text = "Update Exposure Time (ms)";
             this.btCCDUpdateExposureTime.Click += new System.EventHandler(this.UpdateCCDExposureButton_Click);
             // 
             // btCCDUpdateGain
             // 
-            this.btCCDUpdateGain.Location = new System.Drawing.Point(181, 167);
-            this.btCCDUpdateGain.Margin = new System.Windows.Forms.Padding(4);
+            this.btCCDUpdateGain.Location = new System.Drawing.Point(136, 136);
             this.btCCDUpdateGain.Name = "btCCDUpdateGain";
-            this.btCCDUpdateGain.Size = new System.Drawing.Size(133, 25);
+            this.btCCDUpdateGain.Size = new System.Drawing.Size(100, 20);
             this.btCCDUpdateGain.TabIndex = 29;
             this.btCCDUpdateGain.Text = "Update Gain";
             this.btCCDUpdateGain.Click += new System.EventHandler(this.UpdateCCDGainButton_Click);
             // 
             // labelTCPCCD
             // 
-            this.labelTCPCCD.Location = new System.Drawing.Point(197, 38);
-            this.labelTCPCCD.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelTCPCCD.Location = new System.Drawing.Point(148, 31);
             this.labelTCPCCD.Name = "labelTCPCCD";
-            this.labelTCPCCD.Size = new System.Drawing.Size(117, 25);
+            this.labelTCPCCD.Size = new System.Drawing.Size(88, 20);
             this.labelTCPCCD.TabIndex = 36;
             this.labelTCPCCD.Text = "TCP connection";
             // 
             // checkboxTCPCCDA
             // 
-            this.checkboxTCPCCDA.Location = new System.Drawing.Point(345, 36);
-            this.checkboxTCPCCDA.Margin = new System.Windows.Forms.Padding(4);
+            this.checkboxTCPCCDA.Location = new System.Drawing.Point(259, 29);
             this.checkboxTCPCCDA.Name = "checkboxTCPCCDA";
-            this.checkboxTCPCCDA.Size = new System.Drawing.Size(107, 25);
+            this.checkboxTCPCCDA.Size = new System.Drawing.Size(80, 20);
             this.checkboxTCPCCDA.TabIndex = 31;
             this.checkboxTCPCCDA.UseVisualStyleBackColor = true;
             this.checkboxTCPCCDA.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
             // 
             // checkboxTCPCCDB
             // 
-            this.checkboxTCPCCDB.Location = new System.Drawing.Point(537, 36);
-            this.checkboxTCPCCDB.Margin = new System.Windows.Forms.Padding(4);
+            this.checkboxTCPCCDB.Location = new System.Drawing.Point(403, 29);
             this.checkboxTCPCCDB.Name = "checkboxTCPCCDB";
-            this.checkboxTCPCCDB.Size = new System.Drawing.Size(107, 25);
+            this.checkboxTCPCCDB.Size = new System.Drawing.Size(80, 20);
             this.checkboxTCPCCDB.TabIndex = 32;
             this.checkboxTCPCCDB.UseVisualStyleBackColor = true;
             this.checkboxTCPCCDB.Click += new System.EventHandler(this.SetupTCPtoCCDs_Click);
             // 
             // btinfoCCDExposure
             // 
-            this.btinfoCCDExposure.Location = new System.Drawing.Point(683, 329);
-            this.btinfoCCDExposure.Margin = new System.Windows.Forms.Padding(4);
+            this.btinfoCCDExposure.Location = new System.Drawing.Point(512, 267);
             this.btinfoCCDExposure.Name = "btinfoCCDExposure";
-            this.btinfoCCDExposure.Size = new System.Drawing.Size(31, 30);
+            this.btinfoCCDExposure.Size = new System.Drawing.Size(23, 24);
             this.btinfoCCDExposure.TabIndex = 33;
             this.btinfoCCDExposure.Text = "?";
             this.btinfoCCDExposure.Click += new System.EventHandler(this.infoCCDExposure_Click);
             // 
             // tbCCDShotCount
             // 
-            this.tbCCDShotCount.Location = new System.Drawing.Point(341, 492);
-            this.tbCCDShotCount.Margin = new System.Windows.Forms.Padding(4);
+            this.tbCCDShotCount.Location = new System.Drawing.Point(256, 400);
             this.tbCCDShotCount.Name = "tbCCDShotCount";
             this.tbCCDShotCount.ReadOnly = true;
-            this.tbCCDShotCount.Size = new System.Drawing.Size(132, 22);
+            this.tbCCDShotCount.Size = new System.Drawing.Size(100, 20);
             this.tbCCDShotCount.TabIndex = 35;
             this.tbCCDShotCount.Text = "N/A";
             // 
             // labelCCDShotCount
             // 
-            this.labelCCDShotCount.Location = new System.Drawing.Point(139, 496);
-            this.labelCCDShotCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelCCDShotCount.Location = new System.Drawing.Point(104, 403);
             this.labelCCDShotCount.Name = "labelCCDShotCount";
-            this.labelCCDShotCount.Size = new System.Drawing.Size(176, 28);
+            this.labelCCDShotCount.Size = new System.Drawing.Size(132, 23);
             this.labelCCDShotCount.TabIndex = 34;
             this.labelCCDShotCount.Text = "Shot Count (Read Only)";
             // 
@@ -9329,11 +8776,10 @@ namespace UEDMHardwareControl
             this.tabPage3.BackColor = System.Drawing.SystemColors.ControlDark;
             this.tabPage3.Controls.Add(this.groupBox9);
             this.tabPage3.Controls.Add(this.HCoolingGroupBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1033, 715);
             this.tabPage3.TabIndex = 12;
             this.tabPage3.Text = "CoolingMonitoring";
             // 
@@ -9348,69 +8794,72 @@ namespace UEDMHardwareControl
             this.groupBox9.Controls.Add(this.VcoolingMonitorUpdateButton);
             this.groupBox9.Controls.Add(this.VcoolingMonitorTextBox);
             this.groupBox9.Controls.Add(this.label39);
-            this.groupBox9.Location = new System.Drawing.Point(683, 48);
-            this.groupBox9.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox9.Location = new System.Drawing.Point(512, 39);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox9.Size = new System.Drawing.Size(612, 178);
+            this.groupBox9.Size = new System.Drawing.Size(459, 145);
             this.groupBox9.TabIndex = 1;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Vertical cooling monitoring";
             // 
             // calibrationVoltageV
             // 
-            this.calibrationVoltageV.Location = new System.Drawing.Point(227, 145);
+            this.calibrationVoltageV.Location = new System.Drawing.Point(170, 118);
+            this.calibrationVoltageV.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationVoltageV.Name = "calibrationVoltageV";
-            this.calibrationVoltageV.Size = new System.Drawing.Size(113, 22);
+            this.calibrationVoltageV.Size = new System.Drawing.Size(86, 20);
             this.calibrationVoltageV.TabIndex = 56;
             // 
             // calibrationPowerV
             // 
-            this.calibrationPowerV.Location = new System.Drawing.Point(227, 111);
+            this.calibrationPowerV.Location = new System.Drawing.Point(170, 90);
+            this.calibrationPowerV.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationPowerV.Name = "calibrationPowerV";
-            this.calibrationPowerV.Size = new System.Drawing.Size(113, 22);
+            this.calibrationPowerV.Size = new System.Drawing.Size(86, 20);
             this.calibrationPowerV.TabIndex = 55;
             // 
             // VcoolingPowerBox
             // 
-            this.VcoolingPowerBox.Location = new System.Drawing.Point(337, 33);
+            this.VcoolingPowerBox.Location = new System.Drawing.Point(253, 27);
+            this.VcoolingPowerBox.Margin = new System.Windows.Forms.Padding(2);
             this.VcoolingPowerBox.Name = "VcoolingPowerBox";
-            this.VcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
+            this.VcoolingPowerBox.Size = new System.Drawing.Size(95, 20);
             this.VcoolingPowerBox.TabIndex = 54;
             // 
             // label46
             // 
             this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(246, 32);
+            this.label46.Location = new System.Drawing.Point(184, 26);
+            this.label46.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(85, 17);
+            this.label46.Size = new System.Drawing.Size(65, 13);
             this.label46.TabIndex = 53;
             this.label46.Text = "Power (mW)";
             // 
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(114, 145);
+            this.label44.Location = new System.Drawing.Point(86, 118);
+            this.label44.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(79, 17);
+            this.label44.Size = new System.Drawing.Size(59, 13);
             this.label44.TabIndex = 51;
             this.label44.Text = "Voltage (V)";
             // 
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(33, 114);
+            this.label42.Location = new System.Drawing.Point(25, 93);
+            this.label42.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(160, 17);
+            this.label42.Size = new System.Drawing.Size(120, 13);
             this.label42.TabIndex = 49;
             this.label42.Text = "Calibration: Power (mW)";
             // 
             // VcoolingMonitorUpdateButton
             // 
-            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(496, 24);
-            this.VcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(372, 20);
             this.VcoolingMonitorUpdateButton.Name = "VcoolingMonitorUpdateButton";
-            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 30);
+            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(81, 24);
             this.VcoolingMonitorUpdateButton.TabIndex = 47;
             this.VcoolingMonitorUpdateButton.Text = "update";
             this.VcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
@@ -9418,20 +8867,18 @@ namespace UEDMHardwareControl
             // 
             // VcoolingMonitorTextBox
             // 
-            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(117, 29);
-            this.VcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(88, 24);
             this.VcoolingMonitorTextBox.Name = "VcoolingMonitorTextBox";
             this.VcoolingMonitorTextBox.ReadOnly = true;
-            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
+            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(84, 20);
             this.VcoolingMonitorTextBox.TabIndex = 46;
             this.VcoolingMonitorTextBox.Text = "0";
             // 
             // label39
             // 
-            this.label39.Location = new System.Drawing.Point(33, 33);
-            this.label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label39.Location = new System.Drawing.Point(25, 27);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(107, 28);
+            this.label39.Size = new System.Drawing.Size(80, 23);
             this.label39.TabIndex = 37;
             this.label39.Text = "Voltage (V)";
             // 
@@ -9446,69 +8893,72 @@ namespace UEDMHardwareControl
             this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorUpdateButton);
             this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorTextBox);
             this.HCoolingGroupBox.Controls.Add(this.label36);
-            this.HCoolingGroupBox.Location = new System.Drawing.Point(93, 48);
-            this.HCoolingGroupBox.Margin = new System.Windows.Forms.Padding(4);
+            this.HCoolingGroupBox.Location = new System.Drawing.Point(70, 39);
             this.HCoolingGroupBox.Name = "HCoolingGroupBox";
-            this.HCoolingGroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.HCoolingGroupBox.Size = new System.Drawing.Size(582, 178);
+            this.HCoolingGroupBox.Size = new System.Drawing.Size(436, 145);
             this.HCoolingGroupBox.TabIndex = 0;
             this.HCoolingGroupBox.TabStop = false;
             this.HCoolingGroupBox.Text = "Horizontal cooling monitoring";
             // 
             // HcoolingPowerBox
             // 
-            this.HcoolingPowerBox.Location = new System.Drawing.Point(327, 30);
+            this.HcoolingPowerBox.Location = new System.Drawing.Point(245, 24);
+            this.HcoolingPowerBox.Margin = new System.Windows.Forms.Padding(2);
             this.HcoolingPowerBox.Name = "HcoolingPowerBox";
-            this.HcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
+            this.HcoolingPowerBox.Size = new System.Drawing.Size(95, 20);
             this.HcoolingPowerBox.TabIndex = 53;
             // 
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(236, 35);
+            this.label45.Location = new System.Drawing.Point(177, 28);
+            this.label45.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(85, 17);
+            this.label45.Size = new System.Drawing.Size(65, 13);
             this.label45.TabIndex = 52;
             this.label45.Text = "Power (mW)";
             // 
             // calibrationVoltageH
             // 
-            this.calibrationVoltageH.Location = new System.Drawing.Point(216, 142);
+            this.calibrationVoltageH.Location = new System.Drawing.Point(162, 115);
+            this.calibrationVoltageH.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationVoltageH.Name = "calibrationVoltageH";
-            this.calibrationVoltageH.Size = new System.Drawing.Size(113, 22);
+            this.calibrationVoltageH.Size = new System.Drawing.Size(86, 20);
             this.calibrationVoltageH.TabIndex = 51;
             // 
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(115, 145);
+            this.label43.Location = new System.Drawing.Point(86, 118);
+            this.label43.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(79, 17);
+            this.label43.Size = new System.Drawing.Size(59, 13);
             this.label43.TabIndex = 50;
             this.label43.Text = "Voltage (V)";
             // 
             // calibrationPowerH
             // 
-            this.calibrationPowerH.Location = new System.Drawing.Point(216, 108);
+            this.calibrationPowerH.Location = new System.Drawing.Point(162, 88);
+            this.calibrationPowerH.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationPowerH.Name = "calibrationPowerH";
-            this.calibrationPowerH.Size = new System.Drawing.Size(113, 22);
+            this.calibrationPowerH.Size = new System.Drawing.Size(86, 20);
             this.calibrationPowerH.TabIndex = 49;
             // 
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(34, 114);
+            this.label41.Location = new System.Drawing.Point(26, 93);
+            this.label41.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(160, 17);
+            this.label41.Size = new System.Drawing.Size(120, 13);
             this.label41.TabIndex = 48;
             this.label41.Text = "Calibration: Power (mW)";
             // 
             // HcoolingMonitorUpdateButton
             // 
-            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(466, 27);
-            this.HcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(350, 22);
             this.HcoolingMonitorUpdateButton.Name = "HcoolingMonitorUpdateButton";
-            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 28);
+            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(81, 23);
             this.HcoolingMonitorUpdateButton.TabIndex = 47;
             this.HcoolingMonitorUpdateButton.Text = "update";
             this.HcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
@@ -9516,29 +8966,27 @@ namespace UEDMHardwareControl
             // 
             // HcoolingMonitorTextBox
             // 
-            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(118, 33);
-            this.HcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(88, 27);
             this.HcoolingMonitorTextBox.Name = "HcoolingMonitorTextBox";
             this.HcoolingMonitorTextBox.ReadOnly = true;
-            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
+            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(84, 20);
             this.HcoolingMonitorTextBox.TabIndex = 46;
             this.HcoolingMonitorTextBox.Text = "0";
             // 
             // label36
             // 
-            this.label36.Location = new System.Drawing.Point(33, 33);
-            this.label36.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label36.Location = new System.Drawing.Point(25, 27);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(107, 28);
+            this.label36.Size = new System.Drawing.Size(80, 23);
             this.label36.TabIndex = 37;
             this.label36.Text = "Voltage (V)";
             // 
             // ControlWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1715, 949);
+            this.ClientSize = new System.Drawing.Size(1286, 771);
             this.Controls.Add(this.groupBoxStatus);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.gbTemperatureandPressureMonitoringControl);
@@ -9548,7 +8996,6 @@ namespace UEDMHardwareControl
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ControlWindow";
             this.Text = "Ultracold EDM Hardware Controller";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlWindow_FormClosing);
@@ -10445,5 +9892,9 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.Label labelDetectMicrowavesPowerDetectionB;
         private System.Windows.Forms.Button btQueryMWSynthTemperatureDetectionB;
         private System.Windows.Forms.Label labelDetectSynthTempB;
+        private Label label48;
+        private Label label47;
+        public TextBox tbStirapRFfreqFalseValue;
+        public TextBox tbStirapRFfreqTrueValue;
     }
 }

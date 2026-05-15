@@ -62,7 +62,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
 	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Fast.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Unit4.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState
@@ -75,6 +75,8 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	bc.Settings["greenDCFM"] = 0.0#hc.GreenSynthDCFM
 	bc.Settings["greenAmp"] = hc.GreenSynthOnAmplitude
 	bc.Settings["greenFreq"] = hc.GreenSynthOnFrequency
+	bc.Settings["StirapRFfreqTrue"] = hc.StirapRFfrequencyTrueValue
+	bc.Settings["StirapRFfreqFalse"] = hc.StirapRFfrequencyFalseValue
 	
 	bc.GetModulationByName("B").Centre = (hc.BiasCurrent)/1000
 	bc.GetModulationByName("B").Step = abs(hc.FlipStepCurrent)/1000
@@ -85,15 +87,15 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	bc.GetModulationByName("DB").PhysicalStep = abs(hc.CalStepCurrent)/1000
 	
 	# generate the waveform codes
-	print("Generating waveform codes ...")
-	eWave = bc.GetModulationByName("E").Waveform
-	eWave.Name = str("E")
-	ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
-	bc.GetModulationByName("B").Waveform = ws["B"]
-	bc.GetModulationByName("DB").Waveform = ws["DB"]
+	# print("Generating waveform codes ...")
+	# eWave = bc.GetModulationByName("E").Waveform
+	# eWave.Name = str("E")
+	# ws = WaveformSetGenerator.GenerateWaveforms( (eWave,), ("B","DB"))#,"PI","RF1A","RF2A","RF1F","RF2F","LF1") )
+	# bc.GetModulationByName("B").Waveform = ws["B"]
+	# bc.GetModulationByName("DB").Waveform = ws["DB"]
 	
 	# change the inversions of the static codes E
-	bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
+	# bc.GetModulationByName("E").Waveform.Inverted = WaveformSetGenerator.RandomBool()
 
 	printWaveformCode(bc, "E")
 	printWaveformCode(bc, "B")
@@ -167,16 +169,16 @@ def EDMGo():
     #hc.SetScramblerVoltage(scramblerV)
 
     # calibrate leakage monitors
-    print("calibrating leakage monitors..")
-    print("Is E-field off yet?")
+    # print("calibrating leakage monitors..")
+    # print("Is E-field off yet?")
     # hc.EnableGreenSynth( False )
-    hc.FieldsOff()
-    hc.PollVMonitor()
-    if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
-        print("Waiting")
-        System.Threading.Thread.CurrentThread.Join(60000)
-    else:
-        print("E-Field Off")
+    # hc.FieldsOff()
+    # hc.PollVMonitor()
+    # if(hc.CPlusMonitorVoltage * hc.CPlusMonitorScale)>100.0:
+    #     print("Waiting")
+    #     System.Threading.Thread.CurrentThread.Join(60000)
+    # else:
+    #     print("E-Field Off")
     # hc.EnableBleed( True )
     # System.Threading.Thread.CurrentThread.Join(5000)
     # hc.CalibrateIMonitors()
@@ -229,7 +231,7 @@ def EDMGo():
             bh.LoadConfig(tempConfigFile)
 			
             # take the block and save it
-            print("Running magnetic field data acquisition ...")
+            print("Running molecule data acquisition ...")
             bh.AcquireWithoutCCDsAndWait()
             print("Done.")
             blockPath = '%(p)s%(c)s_%(i)04d_%(v)s.zip' % {'p': dataPath, 'c': cluster, 'i': blockIndex, 'v': i}

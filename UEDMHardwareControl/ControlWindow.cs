@@ -1674,7 +1674,7 @@ namespace UEDMHardwareControl
 
         private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
         {
-            //
+            controller.EnableGreenSynth(true);
         }
 
         private void cbCHATrigger_CheckedChanged(object sender, EventArgs e)
@@ -2148,19 +2148,5 @@ namespace UEDMHardwareControl
             controller.EnableBehlkes(behlkeOnCheck.Checked);
         }
 
-        private void groupBoxMWCHBdetection_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBoxMWDetectionB_Enter_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelDetectSynthTempB_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
