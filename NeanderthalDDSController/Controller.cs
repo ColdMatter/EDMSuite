@@ -213,6 +213,12 @@ namespace NeanderthalDDSController
             long lValue;
             uint code;
 
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER); // source to timer
+            Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_TRG_TIMER, 1e-6); // timer 1us
+
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_EXEC_AT_TRG); // when external trigger comes, exec trigger source to timer trigger and trigger every 1us
+
+
             //initializeCard();
             addPatternToBuffer(patternList);
 
@@ -256,7 +262,7 @@ namespace NeanderthalDDSController
 
         public void initializeCard()
         {
-
+            // This sets up the card by performing full reset and clears firmware registers, also configures external trigger and sets cores.
 
             if (hDevice == IntPtr.Zero)
             {
@@ -273,10 +279,10 @@ namespace NeanderthalDDSController
             //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
             //Console.WriteLine(iValue);
 
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_RESET);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_M2CMD, Regs.M2CMD_CARD_RESET); // full hardware / software reset
 
             // reset first
-            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET);
+            Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_CMD, Regs.SPCM_DDS_CMD_RESET); // reset the firmware registers
 
             // Enable channels
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CHENABLE, Regs.CHANNEL0 | Regs.CHANNEL1 | Regs.CHANNEL2 | Regs.CHANNEL3);
@@ -293,7 +299,6 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER2, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_FILTER3, 0); // full bandwidth, no filter
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_CLOCKMODE, Regs.SPC_CM_INTPLL); // clock mode internal PLL
-            //Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_TIMER);
 
             // setup the external trigger input
             Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_TRIG_ORMASK, Regs.SPC_TMASK_EXT0);
@@ -311,11 +316,6 @@ namespace NeanderthalDDSController
             Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH1, Regs.SPCM_DDS_CORE47);
             Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH2, Regs.SPCM_DDS_CORE48);
             Drv.spcm_dwSetParam_i64(hDevice, Regs.SPC_DDS_CORES_ON_CH3, Regs.SPCM_DDS_CORE49);
-
-            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_M2STATUS, out iValue);
-            //Console.WriteLine(iValue);
-            //code = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out iValue);
-            //Console.WriteLine(iValue);
 
         }
 
