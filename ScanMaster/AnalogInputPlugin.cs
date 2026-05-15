@@ -15,6 +15,7 @@ namespace ScanMaster.Acquire.Plugin
     XmlInclude(typeof(DAQMxAnalogInputPlugin)),
     XmlInclude(typeof(NullAnalogInputPlugin)),
 	XmlInclude(typeof(WavemeterInputPlugin)),
+	XmlInclude(typeof(MultipleWavemeterInputPlugin)),
 #if DECELERATOR
     XmlInclude(typeof(DecelerationHardwareAnalogInputPlugin))
 #endif
@@ -41,9 +42,9 @@ namespace ScanMaster.Acquire.Plugin
 
 		protected override void InitialiseBaseSettings()
 		{
-//			settings["channelList"] =  "iodine,cavity";
-//			settings["inputRangeLow"] = -5;
-//			settings["inputRangeHigh"] = 5;
+			//settings["channelList"] = "cavitylong";
+			//settings["inputRangeLow"] = -10;
+			//settings["inputRangeHigh"] = 10;
 		}
 
 	}

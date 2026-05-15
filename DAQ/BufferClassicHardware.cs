@@ -6,6 +6,7 @@ using NationalInstruments;
 
 using DAQ.Pattern;
 using DAQ.TransferCavityLock2012;
+using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
@@ -243,15 +244,18 @@ namespace DAQ.HAL
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
             Instruments.Add("WindfreakOpticalPumping", new WindfreakSynthHD("ASRL6::INSTR"));
             Instruments.Add("WindfreakDetection", new WindfreakSynthHD("ASRL9::INSTR"));
+            // Shirley adds on 23/03/2026 for new Windfreak Synth HD Mini for det B MW
+            Instruments.Add("WindfreakDetectionB", new WindfreakSynthHD("ASRL10::INSTR"));
+
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL24::INSTR"));
-            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL11::INSTR"));
+            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL22::INSTR"));
             Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::12::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::5::INSTR"));
             Instruments.Add("rigolWavGen", new RigolDG811("USB0::0x1AB1::0x0643::DG8A250800641::INSTR"));
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("targetStepperControl", new StepperMotorController("ASRL4::INSTR"));
-            Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL5::INSTR"));
+            Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL13::INSTR"));
 
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
@@ -317,6 +321,13 @@ namespace DAQ.HAL
             //These need to be activated for the phase lock
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
             //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
+
+            //Wavemeter lock config
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809127, 300, 160); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            Info.Add("Default", wmlConfig);
+
 
         }
 

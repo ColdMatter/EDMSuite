@@ -1203,93 +1203,93 @@ namespace UEDMHardwareControl
 
         private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWFrequencyUsingUIInput(0);
+            controller.UpdateMWFrequencyUsingUIInput();
         }
 
         private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWFrequencyUsingUIInput(0);
+            controller.IncrementMWFrequencyUsingUIInput();
         }
 
         private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWPowerUsingUIInput(0);
+            controller.UpdateMWPowerUsingUIInput();
         }
 
         private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWPowerUsingUIInput(0);
+            controller.IncrementMWPowerUsingUIInput();
         }
 
-        private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.UpdateMWPowerUsingUIInput(1);
-        }
+        //private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.UpdateMWPowerUsingUIInput(1);
+        //}
 
-        private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.IncrementMWPowerUsingUIInput(1);
-        }
+        //private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.IncrementMWPowerUsingUIInput(1);
+        //}
 
-        private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.UpdateMWFrequencyUsingUIInput(1);
-        }
+        //private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.UpdateMWFrequencyUsingUIInput(1);
+        //}
 
-        private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.IncrementMWFrequencyUsingUIInput(1);
-        }
+        //private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.IncrementMWFrequencyUsingUIInput(1);
+        //}
 
         private void btQueryMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.QueryMWFrequency(0);
+            controller.QueryMWFrequency();
         }
 
         private void btQueryMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.QueryMWPower(0);
+            controller.QueryMWPower();
         }
 
-        private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.QueryMWFrequency(1);
-        }
+        //private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.QueryMWFrequency(1);
+        //}
 
-        private void btQueryMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.QueryMWPower(1);
-        }
+        //private void btQueryMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.QueryMWPower(1);
+        //}
 
         private void cbCHARFMuted_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetRFMute(0, cbCHARFMuted.Checked);
+            controller.SetRFMute(cbCHARFMuted.Checked);
         }
 
-        private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetRFMute(1, cbCHBRFMuted.Checked);
-        }
+        //private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetRFMute(1, cbCHBRFMuted.Checked);
+        //}
 
         private void cbCHAPAPoweredOn_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPAPower(0, cbCHAPAPoweredOn.Checked);
+            controller.SetPAPower(cbCHAPAPoweredOn.Checked);
         }
 
-        private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
-        }
+        //private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
+        //}
 
         private void cbCHAPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPLLPower(0, cbCHAPLLPoweredOn.Checked);
+            controller.SetPLLPower(cbCHAPLLPoweredOn.Checked);
         }
 
-        private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
-        }
+        //private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
+        //}
 
         private void btCHAFRMuteInfo_Click(object sender, EventArgs e)
         {
@@ -1450,6 +1450,67 @@ namespace UEDMHardwareControl
         {
             controller.UpdateMWSynthTemperatureDetection();
         }
+
+        // Shirley adds on 24/03/2026 for the Windfreak Synth HD Mini for Det B
+
+        private void groupBoxMWDetectionB_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        // Frequency
+        private void btUpdateMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetectionB();
+        }
+
+        private void btIncrementMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetectionB();
+        }
+
+        private void btQueryMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetectionB();
+        }
+
+        // Power
+        private void btUpdateMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetectionB();
+        }
+
+        private void btIncrementMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetectionB();
+        }
+
+        private void btQueryMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetectionB();
+        }
+
+        private void cbRFMutedDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetectionB(cbRFMutedDetectionB.Checked);
+        }
+
+        private void cbPAPoweredOnDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetectionB(cbPAPoweredOnDetectionB.Checked);
+        }
+
+        private void cbPLLPoweredOnDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetectionB(cbPLLPoweredOnDetectionB.Checked);
+        }
+
+        // Temperature
+        private void btQueryMWSynthTemperatureDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperatureDetectionB();
+        }
+
 
         private void eOnCheck_CheckedChanged(object sender, EventArgs e)
         {
@@ -1621,16 +1682,17 @@ namespace UEDMHardwareControl
             controller.SetDetectionMWTrigger(0, cbCHATrigger.Checked);
         }
 
-        private void cbCHBRFTrigger_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
-        }
+        //private void cbCHBRFTrigger_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
+        //}
 
         //Shirley adds on 08/09/2025 to add the trigger armed checkbox for OPMW windfreak channel A
         private void cbCHARFTrigger_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPumpingMWTrigger(0, cbCHARFTrigger.Checked);
+            controller.SetPumpingMWTrigger(cbCHARFTrigger.Checked);
         }
+
 
         private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
         {
@@ -2086,5 +2148,19 @@ namespace UEDMHardwareControl
             controller.EnableBehlkes(behlkeOnCheck.Checked);
         }
 
+        private void groupBoxMWCHBdetection_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxMWDetectionB_Enter_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelDetectSynthTempB_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

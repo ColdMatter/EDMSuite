@@ -27,7 +27,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 
 using NationalInstruments;
-using NationalInstruments.DAQmx;
+//using NationalInstruments.DAQmx; TW: I have commented this out becaus e it's stopping the moleculemot system building and it doesn't seem to be used. Uncomment if it breaks your system
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster
@@ -136,13 +136,14 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
-            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-            //    "tcp://localhost:1172/controller.rem");
+             //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+              //"tcp://172.22.116.195:1172/controller.rem");
+            if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            "tcp://127.0.0.1:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
 #if DDS
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
-            DDSCtrl.testDDS();
+            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://127.0.0.1:1818/controller.rem");
 #endif //DDS
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -464,7 +465,7 @@ namespace MOTMaster
 
                         // Assign the newly loaded pattern to the DDS controller instance
                         DDSCtrl.patternList = sequence.DDSPattern;
-
+                        DDSCtrl.InvokeParameterUpdatedSafely();  // update the DDS controller IU
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
                     }

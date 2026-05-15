@@ -26,16 +26,30 @@ namespace WavemeterLock
         private DAQMxWavemeterLockLaserControlHelper laser;
         public double sumedNoise = 0.0;
         public double RMSNoise = 0.0;
-        public int loopCount = 0;
+        public long loopCount = 0;
 
         public bool isBlocked = false;
         public bool logData = false;
+        public Action<string> OnLog;
+        public int glitchCount = 0;
         public enum LaserState
         {
             FREE, LOCKED, OUTOFRANGE
         };
 
-        public LaserState lState = LaserState.FREE;
+        private LaserState _lState = LaserState.FREE;
+        public LaserState lState
+        {
+            get => _lState;
+            set
+            {
+                if (_lState != value)
+                {
+                    OnLog?.Invoke(Name + " state: " + _lState + " -> " + value);
+                    _lState = value;
+                }
+            }
+        }
 
         public virtual double setFrequency { get; set; } //THz
         public double currentFrequency { get; set; } //THz
@@ -72,12 +86,14 @@ namespace WavemeterLock
                 {
                     currentVoltage = LowerVoltageLimit;
                     isOutOfRange = true;
+                    OnLog?.Invoke(Name + " lock disengaged: voltage " + value.ToString("F4") + " V below lower limit (" + LowerVoltageLimit.ToString("F4") + " V)");
                     DisengageLock();
                 }
                 else if (value > UpperVoltageLimit)
                 {
                     currentVoltage = UpperVoltageLimit;
                     isOutOfRange = true;
+                    OnLog?.Invoke(Name + " lock disengaged: voltage " + value.ToString("F4") + " V above upper limit (" + UpperVoltageLimit.ToString("F4") + " V)");
                     DisengageLock();
                 }
                 else
