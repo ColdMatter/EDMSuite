@@ -40,8 +40,8 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser
         
-        Parameters["SlowingChirpStartTime"] = 380;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1100;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160

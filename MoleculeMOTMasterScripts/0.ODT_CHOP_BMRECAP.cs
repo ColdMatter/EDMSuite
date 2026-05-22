@@ -228,7 +228,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["FreqCVB1recap"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["FreqCVB3recap"], (double)Parameters["FreqCVB4recap"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["LightoffDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -415,7 +415,7 @@ public class Patterns : MOTMasterScript
         //Dipole trap
 
         // dipole trap sequence
-        
+        /*
         p.AddAnalogValue("ODT70att", 0, 10.0);
         p.AddAnalogValue("ODT90att", 0, 0.0);
 
@@ -424,7 +424,7 @@ public class Patterns : MOTMasterScript
 
         p.AddAnalogValue("ODT70att", Recap, 10.0);
         p.AddAnalogValue("ODT90att", Recap, 0.0);
-        
+        */
         // config 1: Dipole trap off
 
         //p.AddAnalogValue("ODT70att", 0, 10.0);
@@ -437,8 +437,8 @@ public class Patterns : MOTMasterScript
 
 
         // config 3: Dipole trap on
-        //p.AddAnalogValue("ODT70att", 0, 0.0);
-        //p.AddAnalogValue("ODT90att", 0, 10.0);
+        p.AddAnalogValue("ODT70att", 0, 0.0);
+        p.AddAnalogValue("ODT90att", 0, 10.0);
 
 
         return p;
