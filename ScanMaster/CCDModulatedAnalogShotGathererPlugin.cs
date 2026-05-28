@@ -100,6 +100,15 @@ namespace ScanMaster.Acquire.Plugins
 
         // Shirley adds on 06/05/2026 
         public CCDSettings LatestCCDSettings { get; private set; }
+        private string SerializeCCDSettingsToString(CCDSettings data)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
+            using (StringWriter sw = new StringWriter())
+            {
+                serializer.Serialize(sw, data);
+                return sw.ToString();
+            }
+        }
 
         protected override void InitialiseBaseSettings()
         {
@@ -146,16 +155,7 @@ namespace ScanMaster.Acquire.Plugins
             public int CCDBGain;
             public int SampleRate;
         }
-
-        private string SerializeCCDSettingsToString(CCDSettings data)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
-            using (StringWriter sw = new StringWriter())
-            {
-                serializer.Serialize(sw, data);
-                return sw.ToString();
-            }
-        }
+        
 
         protected override void InitialiseSettings()
         {
@@ -658,6 +658,7 @@ namespace ScanMaster.Acquire.Plugins
                         SampleRate = (int)settings["sampleRate"]
                     };
 
+                    // Shirley adds on 06/05/2026
                     LatestCCDSettings = logData; // store the latest settings in a property for potential use elsewhere in ScanMaster
                     settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
 
@@ -682,7 +683,6 @@ namespace ScanMaster.Acquire.Plugins
                     string xmlFileName = $"CCD_Config_{ccdFileIndex:D5}.xml";
                     string fullPath = Path.Combine(logDirectory, xmlFileName);
 
-                    // Shirley adds on 06/05/2026
                     // Use same directory as CCD files
                     string scanDirectory = logDirectory;
 
