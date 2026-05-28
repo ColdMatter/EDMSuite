@@ -99,16 +99,7 @@ namespace ScanMaster.Acquire.Plugins
 
 
         // Shirley adds on 06/05/2026 
-        public CCDSettings LatestCCDSettings { get; private set; }
-        private string SerializeCCDSettingsToString(CCDSettings data)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
-            using (StringWriter sw = new StringWriter())
-            {
-                serializer.Serialize(sw, data);
-                return sw.ToString();
-            }
-        }
+        public CCDSettings LatestCCDSettings { get; set; }
 
         protected override void InitialiseBaseSettings()
         {
@@ -700,13 +691,13 @@ namespace ScanMaster.Acquire.Plugins
                     Console.WriteLine("Scan data auto-saved to: " + fullScanPath);
 
                     // serialise the parameters
-                    //XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
-                    //using (FileStream file = File.Create(fullPath))
-                    //{
-                    //    writer.Serialize(file, logData);
-                    //}
+                    XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
+                    using (FileStream file = File.Create(fullPath))
+                    {
+                        writer.Serialize(file, logData);
+                    }
 
-                    //Console.WriteLine("CCD Configuration file logged to: " + fullPath);
+                    Console.WriteLine("CCD Configuration file logged to: " + fullPath);
                 }
                 catch (Exception ex)
                 {

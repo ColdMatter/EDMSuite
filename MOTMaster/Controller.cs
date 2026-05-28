@@ -143,10 +143,7 @@ namespace MOTMaster
 
             // --- Initialize the DDS Controller instance ---
 #if DDS
-            //DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://172.22.116.195:1818/controller.rem");
             DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://127.0.0.1:1818/controller.rem");
-
-            DDSCtrl.testDDS();
 #endif //DDS
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -468,7 +465,7 @@ namespace MOTMaster
 
                         // Assign the newly loaded pattern to the DDS controller instance
                         DDSCtrl.patternList = sequence.DDSPattern;
-
+                        DDSCtrl.InvokeParameterUpdatedSafely();  // update the DDS controller IU
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
                     }

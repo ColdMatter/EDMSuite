@@ -88,6 +88,10 @@ def GetAnalogData(Scan):
         Analogs[i]=np.array(Scan.Points[i].Analogs[0])
     return Analogs
 
+def GetMultipleAnalogData(Scan):
+    return np.array([point.Analogs for point in Scan.Points])
+    # Returns shape (PointsPerScan, NumChannels)
+
 def ProcessScan(Scan):
     """Processes a scan object and returns the TOFs, the scan parameters and the 
     timestamps of the shots."""
@@ -693,17 +697,18 @@ def ExtractTOFsfromBlock(Block, TOFnumber):
         Data[PointNumber,:] = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
     return Data
 
-def GetTOFsFromBlock(Block, TOFnumber):
+def GetTOFsFromBlock(Block, TOFnumbers):
     """Returns the TOFs of a block. The datasets are On/Off shots and for each 
     detector (TOFs in one shot)"""
     SampleRate = Block.Config.Settings["clockFrequency"]
     NrShots = len(Block.Points)
     TOFlength = len(Block.Points[0].Shot.TOFs[0].Data)
     Time = np.array(Block.Points[0].Shot.TOFs[0].Times)/SampleRate
-    Data = np.empty((TOFlength, NrShots, 1))*np.nan
+    Data = np.empty((TOFlength, NrShots, len(TOFnumbers)))*np.nan
     for indPoint in range(NrShots):
-        DataTemp = np.array(Block.Points[indPoint].Shot.TOFs[TOFnumber].Data)
-        Data[:,indPoint,0] = DataTemp
+        for indTOF in range(len(TOFnumbers)):
+            DataTemp = np.array(Block.Points[indPoint].Shot.TOFs[TOFnumbers[indTOF]].Data)
+            Data[:,indPoint,indTOF] = DataTemp
     return Time, Data
 
 def GetShotTimestampsFromBlock(Block):
