@@ -116,7 +116,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("v0rfswitch2", digitalPatternBoardAddress, 2, 0);
             AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
-            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
+            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress2, 3, 2);
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
@@ -137,19 +137,19 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rbRepump", digitalPatternBoardAddress, 2, 6);
             AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
-            AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
+            AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress2, 3, 1);
             AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
             // Rb shutters
             //AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
             AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
+            AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress2, 3, 5);
 
-            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
-            AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
+            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress2, 3, 6);
+            AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress2, 3,6);
 
-            AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
-            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
-            AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress, 3, 4);
+            AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress2, 3, 7);
+            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress2, 3, 3);
+            AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress2, 3, 4);
             AddDigitalOutputChannel("rbD1CoolingSwitch", digitalPatternBoardAddress2, 1, 1);
 
 

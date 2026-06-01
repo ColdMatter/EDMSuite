@@ -250,7 +250,7 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
-        p.AddEdge("opticalPumpingAOM", 0, false);
+        p.AddEdge("opticalPumpingAOM", 0, true);
 
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
