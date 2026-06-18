@@ -25,6 +25,8 @@ namespace DAQ.HAL
             //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
             //Boards.Add("usbTherm", "/Dev7");
+            Boards.Add("PDusb6008", "PhotodiodeDevice"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
+
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -35,7 +37,8 @@ namespace DAQ.HAL
             //string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             //string usbTherm = (string)Boards["usbTherm"];
-            
+            string PDusb6008 = (string)Boards["PDusb6008"];
+
             //machine information
             Info.Add("sourceToDetect", 3.5);
             Info.Add("moleculeMass", 193.0);
@@ -239,6 +242,16 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21 ////Note on 29/07, this port is labelled as V2 laser
+
+            // Add the 8 channel analog input from the NI USB 6008 device for photodiode monitoring
+            AddAnalogInputChannel("PD1", PDusb6008 + "/ai0", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD2", PDusb6008 + "/ai1", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD3", PDusb6008 + "/ai2", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD4", PDusb6008 + "/ai3", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD5", PDusb6008 + "/ai4", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD6", PDusb6008 + "/ai5", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD7", PDusb6008 + "/ai6", AITerminalConfiguration.Rse);
+            AddAnalogInputChannel("PD8", PDusb6008 + "/ai7", AITerminalConfiguration.Rse);
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
