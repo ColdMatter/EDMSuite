@@ -24,7 +24,7 @@ namespace DAQ.HAL
             Boards.Add("mag", "/MAG_PXI_6229");
             //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
-            //Boards.Add("usbTherm", "/Dev7");
+            Boards.Add("usbTherm", "/FeedThroughTemp");
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -34,7 +34,7 @@ namespace DAQ.HAL
             string magBoard = (string)Boards["mag"];
             //string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
-            //string usbTherm = (string)Boards["usbTherm"];
+            string usbTherm = (string)Boards["usbTherm"];
             
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -177,7 +177,7 @@ namespace DAQ.HAL
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
 
             //UsbThermocouple channels
-            //AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
+            AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
 
             // map the digital channels of the Behlkle control board
             AddDigitalOutputChannel("behlkeOn", usbDAQ2, 0, 4);
@@ -325,7 +325,7 @@ namespace DAQ.HAL
             //Wavemeter lock config
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809127, 300, 160); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809124, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
 

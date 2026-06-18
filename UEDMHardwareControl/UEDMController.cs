@@ -144,7 +144,7 @@ namespace UEDMHardwareControl
         Task DegaussCoil1OutputTask;
         Task bBoxAnalogOutputTask;
         Task steppingBBiasAnalogOutputTask;
-        //Task feedthroughTempInputTask;
+        Task feedthroughTempInputTask;
         Task HcoolingInputTask;
         Task VcoolingInputTask;
 
@@ -361,7 +361,7 @@ namespace UEDMHardwareControl
             cPlusMonitorInputTask = CreateAnalogInputTask("cPlusMonitor");
             cMinusMonitorInputTask = CreateAnalogInputTask("cMinusMonitor");
 
-            //feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
+            feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
 
             HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
             VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
@@ -5347,7 +5347,7 @@ namespace UEDMHardwareControl
         public string csvDataLeakage = "";
         public void SetLeakageCSVHeaderLine()
         {
-            csvDataLeakage += "Date" + "," + "Time" + "," + "West Current" + "," + "West Frequency" + "," + "East Current" + "," + "East Frequency" + "," + "cPlusMonitorVoltage" + "," + "cMinusMonitorVoltage";
+            csvDataLeakage += "Date" + "," + "Time" + "," + "West Current" + "," + "West Frequency" + "," + "East Current" + "," + "East Frequency" + "," + "cPlusMonitorVoltage" + "," + "cMinusMonitorVoltage" + "," + "feedthrough T";
         }
         public void ClearLeakageFileSave()
         {
@@ -5453,6 +5453,10 @@ namespace UEDMHardwareControl
                     {
                         UpdateVMonitorUI();
                     }
+                    if (window.pollftTCheckBox.Checked)
+                    {
+                        UpdateFeedthroughTempUI();
+                    }
                 }
 
                 if (iMonitorFlag)
@@ -5468,8 +5472,8 @@ namespace UEDMHardwareControl
                     string fullPath = folder + fileName;
                     StreamWriter w;
                     w = new StreamWriter(leakageFileSave, true);
-                    csvDataLeakage = String.Format("{4,8:D}, {4,5:HH:mm:ss.fff}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}", // local time format was "8:T"
-                        lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage);
+                    csvDataLeakage = String.Format("{4,8:D}, {4,5:HH:mm:ss.fff}, {0,5:N2}, {1,7:0.00}, {2,5:N2}, {3,7:0.00}, {5,5:N3}, {6,5:N3}, {7,5:N3}", // local time format was "8:T"
+                        lastWestCurrent, lastWestFrequency, lastEastCurrent, lastEastFrequency, localDate, cPlusMonitorVoltage, cMinusMonitorVoltage, feedthroughTemp);
                     w.WriteLine(csvDataLeakage);
                     w.Close();
                 }
@@ -5488,8 +5492,8 @@ namespace UEDMHardwareControl
 
         public void PollFeedthroughTemp()
         {
-            //double feedthroughThermocoupleScale = 1; //This converts the reading from the thermocouple to a correct temperature
-            //feedthroughTemp = feedthroughThermocoupleScale * ReadAnalogInput(feedthroughTempInputTask);
+            double feedthroughThermocoupleScale = 1; //This converts the reading from the thermocouple to a correct temperature
+            feedthroughTemp = feedthroughThermocoupleScale * ReadAnalogInput(feedthroughTempInputTask);
         }
 
         public void UpdateFeedthroughTempUI()
