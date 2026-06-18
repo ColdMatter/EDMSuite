@@ -1,31 +1,34 @@
-﻿using DAQ.Environment;
+﻿using DAQ;
+using DAQ.Environment;
 using DAQ.HAL;
-using DAQ;
 using Data;
-using System;
-using System.Timers;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Runtime.Remoting;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Lifetime;
-using System.Threading;
-using System.Windows.Forms;
 using NationalInstruments;
 using NationalInstruments.DAQmx;
 using NationalInstruments.UI.WindowsForms;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.IO.Ports;
 //using NationalInstruments.VisaNS;
 using System.Linq;
-using System.IO.Ports;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Lifetime;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace UEDMHardwareControl
 {
@@ -74,6 +77,9 @@ namespace UEDMHardwareControl
 
         private static string[] AINames = { "AI11", "AI12", "AI13" };
         private static string[] AIChannelNames = { "AI11", "AI12", "AI13" };
+
+        // Photodiode (PD) AI channels for the laser power monitor, shirley adds on 17/06/26
+        private static string[] PDChannelNames = { "PD1", "PD2", "PD3", "PD4", "PD5","PD6", "PD7", "PD8"};
 
         // add ccd function
         [NonSerialized]
@@ -147,6 +153,16 @@ namespace UEDMHardwareControl
         Task feedthroughTempInputTask;
         Task HcoolingInputTask;
         Task VcoolingInputTask;
+
+        // Photodiode (PD) AI tasks for the laser power monitor, shirley adds on 17/06/26
+        Task PD1MonitorInputTask;
+        Task PD2MonitorInputTask;
+        Task PD3MonitorInputTask;
+        Task PD4MonitorInputTask;
+        Task PD5MonitorInputTask;
+        Task PD6MonitorInputTask;
+        Task PD7MonitorInputTask;
+        Task PD8MonitorInputTask;
 
 
         //Task cryoTriggerDigitalOutputTask;
@@ -352,9 +368,6 @@ namespace UEDMHardwareControl
             bBoxAnalogOutputTask = CreateAnalogOutputTask("BScan");
             steppingBBiasAnalogOutputTask = CreateAnalogOutputTask("steppingBBias");
 
-            // analog inputs
-            //probeMonitorInputTask = CreateAnalogInputTask("probePD", 0, 5);
-
             //set the degaussing channel to 0 V offset
             SetAnalogOutput(DegaussCoil1OutputTask, 0.011);
 
@@ -365,6 +378,18 @@ namespace UEDMHardwareControl
 
             HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
             VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
+
+            // analog input tasks for photodiode monitoring
+            // Wrap each line so if the DAQ or channel fails, the software continues loading safely. Shirley adds on 17/06/26
+            try { PD1MonitorInputTask = CreateAnalogInputTask("PD1", 0, 6); } catch { PD1MonitorInputTask = null; }
+            try { PD2MonitorInputTask = CreateAnalogInputTask("PD2", 0, 6); } catch { PD2MonitorInputTask = null; }
+            try { PD3MonitorInputTask = CreateAnalogInputTask("PD3", 0, 6); } catch { PD3MonitorInputTask = null; }
+            try { PD4MonitorInputTask = CreateAnalogInputTask("PD4", 0, 6); } catch { PD4MonitorInputTask = null; }
+            try { PD5MonitorInputTask = CreateAnalogInputTask("PD5", 0, 6); } catch { PD5MonitorInputTask = null; }
+            try { PD6MonitorInputTask = CreateAnalogInputTask("PD6", 0, 6); } catch { PD6MonitorInputTask = null; }
+            try { PD7MonitorInputTask = CreateAnalogInputTask("PD7", 0, 6); } catch { PD7MonitorInputTask = null; }
+            try { PD8MonitorInputTask = CreateAnalogInputTask("PD8", 0, 6); } catch { PD8MonitorInputTask = null; }
+
             // make the control window
             window = new ControlWindow();
             window.controller = this;
@@ -504,6 +529,8 @@ namespace UEDMHardwareControl
                 SetCCDFrameCount(-1, 20);
 
             }
+
+            window.PDSamplePeriodTextBox.Text = "200"; // Default photodiode monitor input sample period 200 ms
         }
 
         #endregion
@@ -8964,6 +8991,236 @@ namespace UEDMHardwareControl
             window.SetTextBox(window.VcoolingPowerBox, (VcoolingMonitorVoltage * calib_factorV).ToString());
         }
         #endregion
+
+
+        #region Photodiode Monitoring
+
+        // Shirley adds on 17/06/2026
+        public double PD1MonitorVoltage;
+        public double PD2MonitorVoltage;
+        public double PD3MonitorVoltage;
+        public double PD4MonitorVoltage;
+        public double PD5MonitorVoltage;
+        public double PD6MonitorVoltage;
+        public double PD7MonitorVoltage;
+        public double PD8MonitorVoltage;
+
+        private double[] pdVoltages = new double[8];
+        private double[] pdPowers = new double[8];
+
+        private ComboBox[] pdGainComboBoxes => new ComboBox[] {
+            window.PD1GainComboBox, window.PD2GainComboBox, window.PD3GainComboBox, window.PD4GainComboBox,
+            window.PD5GainComboBox, window.PD6GainComboBox, window.PD7GainComboBox, window.PD8GainComboBox
+        };
+
+        // Voltage = A * Input Power + B, where A is the slope and B is the intercept. To be determined by calibration.
+        private double[] gainA = { 1, 3.2, 1, 1};// slope
+        private double[] gainB = { 0, 0, 0, 0};// intercept
+
+        private double ConvertVoltageToPower(double voltage, int gainIndex)
+        {
+            if (gainIndex < 0 || gainIndex >= gainA.Length) gainIndex = 0;
+
+            double a = gainA[gainIndex];
+            double b = gainB[gainIndex];
+
+            if (Math.Abs(a) < 1e-9) return 0.0;
+
+            return (voltage - b) / a;
+        }
+
+        private double SafeReadPD(Task task)
+        {
+            if (task == null) return double.NaN;
+            try
+            {
+                return ReadAnalogInput(task);
+            }
+            catch
+            {
+                return double.NaN;
+            }
+        }
+
+
+        public void PollPDMonitor(int[] snapshotGainIndexes = null)
+        {
+            pdVoltages[0] = SafeReadPD(PD1MonitorInputTask);
+            pdVoltages[1] = SafeReadPD(PD2MonitorInputTask);
+            pdVoltages[2] = SafeReadPD(PD3MonitorInputTask);
+            pdVoltages[3] = SafeReadPD(PD4MonitorInputTask);
+            pdVoltages[4] = SafeReadPD(PD5MonitorInputTask);
+            pdVoltages[5] = SafeReadPD(PD6MonitorInputTask);
+            pdVoltages[6] = SafeReadPD(PD7MonitorInputTask);
+            pdVoltages[7] = SafeReadPD(PD8MonitorInputTask);
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (!double.IsNaN(pdVoltages[i]))
+                {
+                    // Use snapshot array context elements if background thread loop is operating
+                    int gainIdx = (snapshotGainIndexes != null) ? snapshotGainIndexes[i] : pdGainComboBoxes[i].SelectedIndex;
+                    pdPowers[i] = ConvertVoltageToPower(pdVoltages[i], gainIdx);
+                }
+                else
+                {
+                    pdPowers[i] = double.NaN;
+                }
+            }
+        }
+
+        public void UpdatePDVMonitorUI()
+        {
+            // Execution inside main thread context is fully safe here
+            PollPDMonitor();
+
+            TextBox[] pdTextBoxes = {
+                window.PD1MonitorTextBox, window.PD2MonitorTextBox, window.PD3MonitorTextBox, window.PD4MonitorTextBox,
+                window.PD5MonitorTextBox, window.PD6MonitorTextBox, window.PD7MonitorTextBox, window.PD8MonitorTextBox
+            };
+
+            bool displayAsPower = window.PDConvertToMwCheckBox.Checked;
+
+            for (int i = 0; i < 8; i++)
+            {
+                double displayVal = displayAsPower ? pdPowers[i] : pdVoltages[i];
+                window.SetTextBox(pdTextBoxes[i], double.IsNaN(displayVal) ? "N/A" : displayVal.ToString("N4"));
+            }
+        }
+
+        private void PDLogWorker()
+        {
+            int totalDurationSeconds;
+            if (!int.TryParse(window.PDLogDurationTextBox.Text, out totalDurationSeconds))
+                totalDurationSeconds = 60;
+
+            int pollingPeriodMs;
+            if (!int.TryParse(window.PDSamplePeriodTextBox.Text, out pollingPeriodMs))
+                pollingPeriodMs = 200;
+
+            if (pollingPeriodMs <= 0)
+                pollingPeriodMs = 200;
+
+            CheckBox[] pdLogCheckBoxes = {
+                window.PD1LogCheck, window.PD2LogCheck, window.PD3LogCheck, window.PD4LogCheck,
+                window.PD5LogCheck, window.PD6LogCheck, window.PD7LogCheck, window.PD8LogCheck
+            };
+
+            List<int> selectedChannels = new List<int>();
+            int[] savedGainIndexesSnapshot = new int[8];
+
+            // Extract dropdown control variables before executing background loop
+            for (int i = 0; i < 8; i++)
+            {
+                if (pdLogCheckBoxes[i].Checked)
+                    selectedChannels.Add(i);
+
+                savedGainIndexesSnapshot[i] = pdGainComboBoxes[i].SelectedIndex;
+            }
+
+            if (selectedChannels.Count == 0)
+            {
+                window.EnableControl(window.startPDLogButton, true);
+                window.EnableControl(window.stopPDLogButton, false);
+                return;
+            }
+
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string filePath = Path.Combine(pdLogFileSaveDirectory, $"PD_Log_{timestamp}.csv");
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine($"Log Started,{DateTime.Now}");
+
+                    StringBuilder gainConfigLine = new StringBuilder("Channel Gain Indexes");
+                    foreach (int ch in selectedChannels)
+                    {
+                        int currentGainIdx = savedGainIndexesSnapshot[ch]; // Read from safe local array snapshot
+                        gainConfigLine.Append($",PD{ch + 1}_GainIndex:{currentGainIdx}");
+                    }
+                    writer.WriteLine(gainConfigLine.ToString());
+                    writer.WriteLine();
+
+                    StringBuilder header = new StringBuilder();
+                    header.Append("Relative Time (ms)");
+                    foreach (int ch in selectedChannels)
+                    {
+                        header.Append($",PD{ch + 1} Voltage (V)");
+                        header.Append($",PD{ch + 1} Input Power (mW)");
+                    }
+                    writer.WriteLine(header.ToString());
+
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
+
+                    while (!pdLogFlag && timer.ElapsedMilliseconds < totalDurationSeconds * 1000)
+                    {
+                        // Pass safe array tracking metrics to bypass WinForm execution block locks
+                        PollPDMonitor(savedGainIndexesSnapshot);
+
+                        StringBuilder row = new StringBuilder();
+                        row.Append(timer.ElapsedMilliseconds);
+
+                        foreach (int ch in selectedChannels)
+                        {
+                            double voltage = pdVoltages[ch];
+                            double power = pdPowers[ch];
+
+                            row.Append(",");
+                            row.Append(double.IsNaN(voltage) ? "N/A" : voltage.ToString("F4"));
+
+                            row.Append(",");
+                            row.Append(double.IsNaN(power) ? "N/A" : power.ToString("F4"));
+                        }
+
+                        writer.WriteLine(row.ToString());
+                        writer.Flush();
+
+                        Thread.Sleep(pollingPeriodMs);
+                    }
+
+                    timer.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("PD Logging Error:\n" + ex.Message, "PD Logger", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            window.EnableControl(window.startPDLogButton, true);
+            window.EnableControl(window.stopPDLogButton, false);
+        }
+
+        private Thread pdLogThread;
+        private volatile bool pdLogFlag;
+        public string pdLogFileSaveDirectory = "";
+
+        public void StartPDLogging()
+        {
+            pdLogFileSaveDirectory = window.PDLogDirectoryTextBox.Text;
+            if (!Directory.Exists(pdLogFileSaveDirectory))
+            {
+                Directory.CreateDirectory(pdLogFileSaveDirectory);
+            }
+
+            pdLogThread = new Thread(new ThreadStart(PDLogWorker));
+
+            window.EnableControl(window.startPDLogButton, false);
+            window.EnableControl(window.stopPDLogButton, true);
+
+            pdLogFlag = false;
+            pdLogThread.Start();
+        }
+
+        public void StopPDLogging()
+        {
+            pdLogFlag = true;
+        }
+
+        #endregion
+
         #region Hardware Control Methods - safe for remote
         public void Switch(string channel, bool state)
         {

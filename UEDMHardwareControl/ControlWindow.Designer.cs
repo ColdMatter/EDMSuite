@@ -804,6 +804,7 @@ namespace UEDMHardwareControl
             this.HcoolingMonitorTextBox = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
             this.pollftTCheckBox = new System.Windows.Forms.CheckBox();
+            this.PDMonitorTabPage = new System.Windows.Forms.TabPage();
             this.gbTempMonitors.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -813,6 +814,7 @@ namespace UEDMHardwareControl
             this.tabPage1.SuspendLayout();
             this.tabPagePumping.SuspendLayout();
             this.groupBoxMWSwitch.SuspendLayout();
+            this.PDMonitorTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
@@ -8826,6 +8828,8 @@ namespace UEDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Location = new System.Drawing.Point(296, 33);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Controls.Add(this.PDMonitorTabPage);
+            this.tabControl.Location = new System.Drawing.Point(222, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1388, 912);
@@ -10535,3 +10539,475 @@ namespace UEDMHardwareControl
         public CheckBox pollftTCheckBox;
     }
 }
+
+        // PD log tabpage
+        // Query button
+        this.queryPDButton = new System.Windows.Forms.Button();
+        this.queryPDButton.Location = new System.Drawing.Point(20, 20);
+        this.queryPDButton.Size = new System.Drawing.Size(120, 30);
+        this.queryPDButton.Name = "queryPDButton";
+        this.queryPDButton.Text = "Query PDs";
+        this.queryPDButton.UseVisualStyleBackColor = true;
+        this.queryPDButton.Click += new System.EventHandler(this.QueryPDButton_Click);
+
+        // Display Power Checkbox
+        this.PDConvertToMwCheckBox = new System.Windows.Forms.CheckBox();
+        this.PDConvertToMwCheckBox.Location = new System.Drawing.Point(20, 360);
+        this.PDConvertToMwCheckBox.Size = new System.Drawing.Size(180, 24);
+        this.PDConvertToMwCheckBox.Name = "PDConvertToMwCheckBox";
+        this.PDConvertToMwCheckBox.Text = "Display Input Power (mW)";
+        this.PDConvertToMwCheckBox.CheckedChanged +=
+            new System.EventHandler(this.PDConvertToMwCheckBox_CheckedChanged);
+
+        // Column Labels
+        this.labelPDChannel = new System.Windows.Forms.Label();
+        this.labelPDValue = new System.Windows.Forms.Label();
+        this.labelPDGain = new System.Windows.Forms.Label();
+        this.labelPDLog = new System.Windows.Forms.Label();
+
+        this.labelPDChannel.Location = new System.Drawing.Point(20, 70);
+        this.labelPDChannel.Size = new System.Drawing.Size(50, 20);
+        this.labelPDChannel.Text = "PD";
+
+        this.labelPDValue.Location = new System.Drawing.Point(90, 70);
+        this.labelPDValue.Size = new System.Drawing.Size(80, 20);
+        this.labelPDValue.Text = "Value";
+
+        this.labelPDGain.Location = new System.Drawing.Point(240, 70);
+        this.labelPDGain.Size = new System.Drawing.Size(50, 20);
+        this.labelPDGain.Text = "Gain";
+
+        this.labelPDLog.Location = new System.Drawing.Point(380, 70);
+        this.labelPDLog.Size = new System.Drawing.Size(50, 20);
+        this.labelPDLog.Text = "Log";
+
+        // PD1
+        this.labelPD1 = new System.Windows.Forms.Label();
+        this.PD1MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD1GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD1LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD1.Location = new System.Drawing.Point(20, 100);
+        this.labelPD1.Size = new System.Drawing.Size(40, 20);
+        this.labelPD1.Text = "PD1";
+
+        this.PD1MonitorTextBox.Location = new System.Drawing.Point(90, 98);
+        this.PD1MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD1MonitorTextBox.ReadOnly = true;
+
+        this.PD1GainComboBox.Location = new System.Drawing.Point(240, 98);
+        this.PD1GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD1GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD1GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD1GainComboBox.SelectedIndex = 0;
+        this.PD1GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD1LogCheck.Location = new System.Drawing.Point(390, 100);
+        this.PD1LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD2
+        this.labelPD2 = new System.Windows.Forms.Label();
+        this.PD2MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD2GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD2LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD2.Location = new System.Drawing.Point(20, 130);
+        this.labelPD2.Size = new System.Drawing.Size(40, 20);
+        this.labelPD2.Text = "PD2";
+
+        this.PD2MonitorTextBox.Location = new System.Drawing.Point(90, 128);
+        this.PD2MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD2MonitorTextBox.ReadOnly = true;
+
+        this.PD2GainComboBox.Location = new System.Drawing.Point(240, 128);
+        this.PD2GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD2GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD2GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD2GainComboBox.SelectedIndex = 0;
+        this.PD2GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD2LogCheck.Location = new System.Drawing.Point(390, 130);
+        this.PD2LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD3
+        this.labelPD3 = new System.Windows.Forms.Label();
+        this.PD3MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD3GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD3LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD3.Location = new System.Drawing.Point(20, 160);
+        this.labelPD3.Size = new System.Drawing.Size(40, 20);
+        this.labelPD3.Text = "PD3";
+
+        this.PD3MonitorTextBox.Location = new System.Drawing.Point(90, 158);
+        this.PD3MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD3MonitorTextBox.ReadOnly = true;
+
+        this.PD3GainComboBox.Location = new System.Drawing.Point(240, 158);
+        this.PD3GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD3GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD3GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD3GainComboBox.SelectedIndex = 0;
+        this.PD3GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD3LogCheck.Location = new System.Drawing.Point(390, 160);
+        this.PD3LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD4
+        this.labelPD4 = new System.Windows.Forms.Label();
+        this.PD4MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD4GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD4LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD4.Location = new System.Drawing.Point(20, 190);
+        this.labelPD4.Size = new System.Drawing.Size(40, 20);
+        this.labelPD4.Text = "PD4";
+
+        this.PD4MonitorTextBox.Location = new System.Drawing.Point(90, 188);
+        this.PD4MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD4MonitorTextBox.ReadOnly = true;
+
+        this.PD4GainComboBox.Location = new System.Drawing.Point(240, 188);
+        this.PD4GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD4GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD4GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD4GainComboBox.SelectedIndex = 0;
+        this.PD4GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD4LogCheck.Location = new System.Drawing.Point(390, 190);
+        this.PD4LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD5
+        this.labelPD5 = new System.Windows.Forms.Label();
+        this.PD5MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD5GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD5LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD5.Location = new System.Drawing.Point(20, 220);
+        this.labelPD5.Size = new System.Drawing.Size(40, 20);
+        this.labelPD5.Text = "PD5";
+
+        this.PD5MonitorTextBox.Location = new System.Drawing.Point(90, 218);
+        this.PD5MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD5MonitorTextBox.ReadOnly = true;
+
+        this.PD5GainComboBox.Location = new System.Drawing.Point(240, 218);
+        this.PD5GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD5GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD5GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD5GainComboBox.SelectedIndex = 0;
+        this.PD5GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD5LogCheck.Location = new System.Drawing.Point(390, 220);
+        this.PD5LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD6
+        this.labelPD6 = new System.Windows.Forms.Label();
+        this.PD6MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD6GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD6LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD6.Location = new System.Drawing.Point(20, 250);
+        this.labelPD6.Size = new System.Drawing.Size(40, 20);
+        this.labelPD6.Text = "PD6";
+
+        this.PD6MonitorTextBox.Location = new System.Drawing.Point(90, 248);
+        this.PD6MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD6MonitorTextBox.ReadOnly = true;
+
+        this.PD6GainComboBox.Location = new System.Drawing.Point(240, 248);
+        this.PD6GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD6GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD6GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD6GainComboBox.SelectedIndex = 0;
+        this.PD6GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD6LogCheck.Location = new System.Drawing.Point(390, 250);
+        this.PD6LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD7
+        this.labelPD7 = new System.Windows.Forms.Label();
+        this.PD7MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD7GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD7LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD7.Location = new System.Drawing.Point(20, 280);
+        this.labelPD7.Size = new System.Drawing.Size(40, 20);
+        this.labelPD7.Text = "PD7";
+
+        this.PD7MonitorTextBox.Location = new System.Drawing.Point(90, 278);
+        this.PD7MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD7MonitorTextBox.ReadOnly = true;
+
+        this.PD7GainComboBox.Location = new System.Drawing.Point(240, 278);
+        this.PD7GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD7GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD7GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD7GainComboBox.SelectedIndex = 0;
+        this.PD7GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD7LogCheck.Location = new System.Drawing.Point(390, 280);
+        this.PD7LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // PD8
+        this.labelPD8 = new System.Windows.Forms.Label();
+        this.PD8MonitorTextBox = new System.Windows.Forms.TextBox();
+        this.PD8GainComboBox = new System.Windows.Forms.ComboBox();
+        this.PD8LogCheck = new System.Windows.Forms.CheckBox();
+
+        this.labelPD8.Location = new System.Drawing.Point(20, 310);
+        this.labelPD8.Size = new System.Drawing.Size(40, 20);
+        this.labelPD8.Text = "PD8";
+
+        this.PD8MonitorTextBox.Location = new System.Drawing.Point(90, 308);
+        this.PD8MonitorTextBox.Size = new System.Drawing.Size(120, 23);
+        this.PD8MonitorTextBox.ReadOnly = true;
+
+        this.PD8GainComboBox.Location = new System.Drawing.Point(240, 308);
+        this.PD8GainComboBox.Size = new System.Drawing.Size(100, 23);
+        this.PD8GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        this.PD8GainComboBox.Items.AddRange(new object[]
+        {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"
+        });
+        this.PD8GainComboBox.SelectedIndex = 0;
+        this.PD8GainComboBox.SelectedIndexChanged +=
+            new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+
+        this.PD8LogCheck.Location = new System.Drawing.Point(390, 310);
+        this.PD8LogCheck.Size = new System.Drawing.Size(20, 20);
+
+        // Logging Parameters
+        this.labelPDLogDuration = new System.Windows.Forms.Label();
+        this.PDLogDurationTextBox = new System.Windows.Forms.TextBox();
+
+        this.labelPDLogDuration.Location = new System.Drawing.Point(500, 60);
+        this.labelPDLogDuration.Size = new System.Drawing.Size(120, 20);
+        this.labelPDLogDuration.Text = "Log Duration (s)";
+
+        this.PDLogDurationTextBox.Location = new System.Drawing.Point(630, 58);
+        this.PDLogDurationTextBox.Size = new System.Drawing.Size(80, 23);
+        this.PDLogDurationTextBox.Text = "60";
+
+        // Polling Period
+        this.labelPDSamplePeriod = new System.Windows.Forms.Label();
+        this.PDSamplePeriodTextBox = new System.Windows.Forms.TextBox();
+
+        this.labelPDSamplePeriod.Location = new System.Drawing.Point(500, 100);
+        this.labelPDSamplePeriod.Size = new System.Drawing.Size(120, 20);
+        this.labelPDSamplePeriod.Text = "Polling Period (ms)";
+
+        this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(630, 98);
+        this.PDSamplePeriodTextBox.Size = new System.Drawing.Size(80, 23);
+        this.PDSamplePeriodTextBox.Text = "200";
+
+        // Directory Selection
+        this.labelPDLogDirectory = new System.Windows.Forms.Label();
+        this.PDLogDirectoryTextBox = new System.Windows.Forms.TextBox();
+        this.PDLogDirectoryBrowseButton = new System.Windows.Forms.Button();
+
+        this.labelPDLogDirectory.Location = new System.Drawing.Point(500, 150);
+        this.labelPDLogDirectory.Size = new System.Drawing.Size(80, 20);
+        this.labelPDLogDirectory.Text = "Directory";
+
+        this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(500, 180);
+        this.PDLogDirectoryTextBox.Size = new System.Drawing.Size(260, 23);
+
+        this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(770, 178);
+        this.PDLogDirectoryBrowseButton.Size = new System.Drawing.Size(40, 25);
+        this.PDLogDirectoryBrowseButton.Text = "...";
+        this.PDLogDirectoryBrowseButton.Click +=
+            new System.EventHandler(this.PDLogDirectoryBrowseButton_Click);
+
+        // Start Log Button
+        this.startPDLogButton = new System.Windows.Forms.Button();
+
+        this.startPDLogButton.Location = new System.Drawing.Point(500, 240);
+        this.startPDLogButton.Size = new System.Drawing.Size(120, 35);
+        this.startPDLogButton.Text = "Start Log";
+        this.startPDLogButton.Click +=
+            new System.EventHandler(this.StartPDLogButton_Click);
+
+        // Stop Log Button
+        this.stopPDLogButton = new System.Windows.Forms.Button();
+
+        this.stopPDLogButton.Location = new System.Drawing.Point(650, 240);
+        this.stopPDLogButton.Size = new System.Drawing.Size(120, 35);
+        this.stopPDLogButton.Text = "Stop Log";
+        this.stopPDLogButton.Enabled = false;
+        this.stopPDLogButton.Click +=
+            new System.EventHandler(this.StopPDLogButton_Click);
+
+        this.PDMonitorTabPage.Controls.Add(this.queryPDButton);
+        this.PDMonitorTabPage.Controls.Add(this.PDConvertToMwCheckBox);
+
+        this.PDMonitorTabPage.Controls.Add(this.labelPDChannel);
+        this.PDMonitorTabPage.Controls.Add(this.labelPDValue);
+        this.PDMonitorTabPage.Controls.Add(this.labelPDGain);
+        this.PDMonitorTabPage.Controls.Add(this.labelPDLog);
+
+        this.PDMonitorTabPage.Controls.Add(this.labelPD1);
+        this.PDMonitorTabPage.Controls.Add(this.PD1MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD1GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD1LogCheck);
+
+        this.PDMonitorTabPage.Controls.Add(this.labelPDLogDuration);
+        this.PDMonitorTabPage.Controls.Add(this.PDLogDurationTextBox);
+
+        this.PDMonitorTabPage.Controls.Add(this.labelPDSamplePeriod);
+        this.PDMonitorTabPage.Controls.Add(this.PDSamplePeriodTextBox);
+
+        this.PDMonitorTabPage.Controls.Add(this.labelPDLogDirectory);
+        this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryBrowseButton);
+
+        this.PDMonitorTabPage.Controls.Add(this.startPDLogButton);
+        this.PDMonitorTabPage.Controls.Add(this.stopPDLogButton);
+
+        // PD2
+        this.PDMonitorTabPage.Controls.Add(this.labelPD2);
+        this.PDMonitorTabPage.Controls.Add(this.PD2MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD2GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD2LogCheck);
+
+        // PD3
+        this.PDMonitorTabPage.Controls.Add(this.labelPD3);
+        this.PDMonitorTabPage.Controls.Add(this.PD3MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD3GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD3LogCheck);
+
+        // PD4
+        this.PDMonitorTabPage.Controls.Add(this.labelPD4);
+        this.PDMonitorTabPage.Controls.Add(this.PD4MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD4GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD4LogCheck);
+
+        // PD5
+        this.PDMonitorTabPage.Controls.Add(this.labelPD5);
+        this.PDMonitorTabPage.Controls.Add(this.PD5MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD5GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD5LogCheck);
+
+        // PD6
+        this.PDMonitorTabPage.Controls.Add(this.labelPD6);
+        this.PDMonitorTabPage.Controls.Add(this.PD6MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD6GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD6LogCheck);
+
+        // PD7
+        this.PDMonitorTabPage.Controls.Add(this.labelPD7);
+        this.PDMonitorTabPage.Controls.Add(this.PD7MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD7GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD7LogCheck);
+
+        // PD8
+        this.PDMonitorTabPage.Controls.Add(this.labelPD8);
+        this.PDMonitorTabPage.Controls.Add(this.PD8MonitorTextBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD8GainComboBox);
+        this.PDMonitorTabPage.Controls.Add(this.PD8LogCheck);
+
+        public System.Windows.Forms.TabPage PDMonitorTabPage;
+        public System.Windows.Forms.Button queryPDButton;
+        public System.Windows.Forms.Button startPDLogButton;
+        public System.Windows.Forms.Button stopPDLogButton;
+        public System.Windows.Forms.Button PDLogDirectoryBrowseButton;
+
+        private System.Windows.Forms.Label labelPDChannel;
+        private System.Windows.Forms.Label labelPDValue;
+        private System.Windows.Forms.Label labelPDGain;
+        private System.Windows.Forms.Label labelPDLog;
+        private System.Windows.Forms.Label labelPDLogDuration;
+        private System.Windows.Forms.Label labelPDSamplePeriod;
+        private System.Windows.Forms.Label labelPDLogDirectory;
+        private System.Windows.Forms.Label labelPD1;
+        private System.Windows.Forms.Label labelPD2;
+        private System.Windows.Forms.Label labelPD3;
+        private System.Windows.Forms.Label labelPD4;
+        private System.Windows.Forms.Label labelPD5;
+        private System.Windows.Forms.Label labelPD6;
+        private System.Windows.Forms.Label labelPD7;
+        private System.Windows.Forms.Label labelPD8;
+
+        public System.Windows.Forms.TextBox PDLogDurationTextBox;
+        public System.Windows.Forms.TextBox PDSamplePeriodTextBox;
+        public System.Windows.Forms.TextBox PDLogDirectoryTextBox;
+        public System.Windows.Forms.TextBox PD1MonitorTextBox;
+        public System.Windows.Forms.TextBox PD2MonitorTextBox;
+        public System.Windows.Forms.TextBox PD3MonitorTextBox;
+        public System.Windows.Forms.TextBox PD4MonitorTextBox;
+        public System.Windows.Forms.TextBox PD5MonitorTextBox;
+        public System.Windows.Forms.TextBox PD6MonitorTextBox;
+        public System.Windows.Forms.TextBox PD7MonitorTextBox;
+        public System.Windows.Forms.TextBox PD8MonitorTextBox;
+
+
+        public System.Windows.Forms.ComboBox PD1GainComboBox;
+        public System.Windows.Forms.ComboBox PD2GainComboBox;
+        public System.Windows.Forms.ComboBox PD3GainComboBox;
+        public System.Windows.Forms.ComboBox PD4GainComboBox;
+        public System.Windows.Forms.ComboBox PD5GainComboBox;
+        public System.Windows.Forms.ComboBox PD6GainComboBox;
+        public System.Windows.Forms.ComboBox PD7GainComboBox;
+        public System.Windows.Forms.ComboBox PD8GainComboBox;
+
+        public System.Windows.Forms.CheckBox PD1LogCheck;
+        public System.Windows.Forms.CheckBox PD2LogCheck;
+        public System.Windows.Forms.CheckBox PD3LogCheck;
+        public System.Windows.Forms.CheckBox PD4LogCheck;
+        public System.Windows.Forms.CheckBox PD5LogCheck;
+        public System.Windows.Forms.CheckBox PD6LogCheck;
+        public System.Windows.Forms.CheckBox PD7LogCheck;
+        public System.Windows.Forms.CheckBox PD8LogCheck;
+    }
