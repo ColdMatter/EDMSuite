@@ -26,6 +26,7 @@ namespace NeanderthalDDSController
         public int patternLength = 300;
         StringBuilder sErrorText = new StringBuilder(1024);
         public bool breakFlag = false;
+        private volatile bool _isArmed = false;
 
         private NeanderthalForm ui;
         public Dictionary<string, List<List<double>>> patternList = new Dictionary<string, List<List<double>>>();

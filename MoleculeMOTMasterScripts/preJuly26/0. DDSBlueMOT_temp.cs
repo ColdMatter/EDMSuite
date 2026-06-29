@@ -27,7 +27,7 @@ public class Patterns : MOTMasterScript
         // Camera
         Parameters["Frame0Trigger"] = 4000;
         Parameters["BMTriggerDuration"] = 1000;
-        Parameters["Frame0TriggerDuration"] = 1000;
+        Parameters["Frame0TriggerDuration"] = 300;
         Parameters["TempTriggerDuration"] = 100;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
@@ -113,38 +113,6 @@ public class Patterns : MOTMasterScript
 
         // INTENSITY RAMP DOWN //
 
-        // Ramp end rf amps
-        //Parameters["RampEndAmpDDS1"] = 0.091; // 10%
-        //Parameters["RampEndAmpDDS2"] = 0.1; // 10%
-        //Parameters["RampEndAmpDDS3"] = 0.114; // 10%
-        //Parameters["RampEndAmpDDS4"] = 0.036; // 10%
-
-        //// Ramp end rf amps
-        //Parameters["RampEndAmpDDS1"] = 0.08; // 7%
-        //Parameters["RampEndAmpDDS2"] = 0.077; // 7%
-        //Parameters["RampEndAmpDDS3"] = 0.1; // 7%
-        //Parameters["RampEndAmpDDS4"] = 0.032; // 7%
-
-        // Ramp end rf amps
-        /*
-        Parameters["RampEndAmpDDS1"] = 0.07; // 5%
-        Parameters["RampEndAmpDDS2"] = 0.056; // 5%
-        Parameters["RampEndAmpDDS3"] = 0.086; // 5%
-        Parameters["RampEndAmpDDS4"] = 0.027; // 5%
-        */
-
-        // ramp down mot parameters 15%
-        /*
-        Parameters["RampEndAmpDDS1"] = 0.105; //15%
-        Parameters["RampAmplitudeDDS1"] = -0.00014500000000000003; //15%
-        Parameters["RampEndAmpDDS2"] = 0.128; //15%
-        Parameters["RampAmplitudeDDS2"] = -0.000472; //15%
-        Parameters["RampEndAmpDDS3"] = 0.131; //15%
-        Parameters["RampAmplitudeDDS3"] = -0.00021899999999999998; //15%
-        Parameters["RampEndAmpDDS4"] = 0.042; //15%
-        Parameters["RampAmplitudeDDS4"] = -5.8e-05; //15%
-        */
-
         //12% from lambda measurement
 
         Parameters["RampEndAmpDDS1"] = 0.097; //12%
@@ -159,13 +127,6 @@ public class Patterns : MOTMasterScript
         // lambda rf amps
         Parameters["Lambda1Amp"] = 0.24; // full
         Parameters["Lambda2Amp"] = 0.1; // full
-
-
-        // Ramp slopes
-        //Parameters["RampAmplitudeDDS1"] = ((double)Parameters["RampEndAmpDDS1"] - (double)Parameters["MOTAmpDDS1"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
-        //Parameters["RampAmplitudeDDS2"] = ((double)Parameters["RampEndAmpDDS2"] - (double)Parameters["MOTAmpDDS2"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
-        //Parameters["RampAmplitudeDDS3"] = ((double)Parameters["RampEndAmpDDS3"] - (double)Parameters["MOTAmpDDS3"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
-        //Parameters["RampAmplitudeDDS4"] = ((double)Parameters["RampEndAmpDDS4"] - (double)Parameters["MOTAmpDDS4"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
 
         Parameters["dummy"] = 0.0;
 
@@ -184,7 +145,6 @@ public class Patterns : MOTMasterScript
         Parameters["FreqCVB1"] = 102.5; //+ F = 1Delta 
         // Parameters["FreqCVB2"] = 163.20;
         Parameters["FreqCVB2"] = 139.85;
-        // Parameters["FreqCVB2"] = 0.0;
         Parameters["FreqCVB3"] = 175.88; //- F = 2sig- delta_a
         Parameters["FreqCVB4"] = 176.91; //+ F = 2sig+ delta_b
 
@@ -193,11 +153,12 @@ public class Patterns : MOTMasterScript
         Parameters["ResonanceDDS3"] = 188.04;
         Parameters["ResonanceDDS4"] = 174.29;
 
+        Parameters["ImageOffset"] = 15.0;
 
         Parameters["BlueMOTField"] = 1.42;
         Parameters["BlueMOTRampDuration"] = 4000;
-        Parameters["BlueMOTDuration"] = 1000;
-        Parameters["FreeExpTime"] = 1;
+        Parameters["BlueMOTDuration"] = 2000;
+        Parameters["FreeExpTime"] = 1400;
 
         // END OF PATTERN //
 
@@ -246,8 +207,9 @@ public class Patterns : MOTMasterScript
             (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
             (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS2"]);
 
-        addDDSPattern(p, "image", imageTime+500,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+        addDDSPattern(p, "image", imageTime,
+            (double)Parameters["MOTFreqDDS1"] - (double)Parameters["ImageOffset"], (double)Parameters["MOTFreqDDS2"] - (double)Parameters["ImageOffset"],
+             (double)Parameters["MOTFreqDDS3"] - (double)Parameters["ImageOffset"], (double)Parameters["MOTFreqDDS4"] - (double)Parameters["ImageOffset"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
         
         return p;
@@ -315,13 +277,8 @@ public class Patterns : MOTMasterScript
 
         // CAMERA //
 
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-        // p.Pulse(0, imageTime- (int)Parameters["BMTriggerDuration"], (int)Parameters["BMTriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        p.Pulse(0, BlueMOTRampEnd, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        //p.Pulse(0, imageTime+500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-
-        // SLOWING //
+        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger imaging blue mot
+        
 
         // preset load
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters); 
@@ -334,10 +291,6 @@ public class Patterns : MOTMasterScript
 
         // BX Shutter
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200, (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
-
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT1Shutter");
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT2Shutter");
-        //p.Pulse(patternStartBeforeQ, 0, 100000, "MOT3Shutter");
 
 
         return p;
@@ -419,10 +372,6 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime - 100, 1.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"], 0.0);
-
-
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
 
