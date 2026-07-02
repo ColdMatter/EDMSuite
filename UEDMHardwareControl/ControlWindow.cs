@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 //using Newport.USBComm;//rhys removed 15/02
 //using NewFocus.Picomotor; //rhys removed 15/02
 
@@ -2146,6 +2147,49 @@ namespace UEDMHardwareControl
         private void behlkeOnCheck_CheckedChanged(object sender, EventArgs e)
         {
             controller.EnableBehlkes(behlkeOnCheck.Checked);
+        }
+
+        // shirley adds on 18/06/2026 for PD logging 
+        private void StartPDLogButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(window.PDLogDirectoryTextBox.Text))
+            {
+                MessageBox.Show("Please select a log directory.", "PD Logger", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            controller.StartPDLogging();
+        }
+
+        private void StopPDLogButton_Click(object sender, EventArgs e)
+        {
+            controller.StopPDLogging();
+        }
+
+        private void QueryPDButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDConvertToMwCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDGainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDLogDirectoryBrowseButton_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select PD Log Directory";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    window.PDLogDirectoryTextBox.Text = dialog.SelectedPath;
+                }
+            }
         }
 
     }

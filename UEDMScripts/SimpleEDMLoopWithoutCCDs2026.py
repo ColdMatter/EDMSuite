@@ -62,7 +62,7 @@ def measureParametersAndMakeBC(cluster, eState, bState, mwState):
 	settingsPath = fileSystem.Paths["settingsPath"] + "\\BlockHead\\"
 	# bc = loadBlockConfig(settingsPath + "calibrateBfield.xml")
 	# bc = loadBlockConfig(settingsPath + "default_EfieldBlocks.xml")
-	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Unit4.xml")
+	bc = loadBlockConfig(settingsPath + "default_EfieldBlocks_Unit8_STIRAPAOM01.xml")
     
 	bc.Settings["cluster"] = str(cluster)
 	bc.Settings["eState"] = eState

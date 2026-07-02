@@ -87,8 +87,8 @@ namespace ScanMaster.Acquire.Plugins
         private string nameCCD1;
         private string nameCCD2;
         //private string computerCCD1 = "ULTRACOLDEDM"; 
-        private string computerCCD1 = "PH-NI-LAB"; // CCD A PC (Gobelin)
-        private string computerCCD2 = "ic-czc5347lb5"; // CCD B PC
+        private string computerCCD2 = "PH-NI-LAB"; // CCD B PC (Gobelin)
+        private string computerCCD1 = "ic-czc5347lb5"; // CCD A PC
         private int CCDsnaps;
 
         // add ccd function
