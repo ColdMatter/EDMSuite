@@ -24,10 +24,9 @@ namespace DAQ.HAL
             Boards.Add("mag", "/MAG_PXI_6229");
             //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
-            Boards.Add("PDusb6008", "PhotodiodeDevice"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
             Boards.Add("usbTherm", "/FeedThroughTemp");
             //Boards.Add("usbTherm", "/Dev7");
-            Boards.Add("PDusb6008", "PhotodiodeDevice"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
+            Boards.Add("PDusb6008", "Photodiodes"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
 
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];

@@ -152,12 +152,52 @@ namespace ScanMaster.Acquire.Plugins
         {
         }
 
+        private void CheckCameraConnection(string computerName)
+        {
+            Console.WriteLine("Checking " + computerName);
+
+            Console.WriteLine("Resolving host...");
+            IPHostEntry hostInfo = Dns.GetHostEntry(computerName);
+            Console.WriteLine("Host resolved.");
+
+            Console.WriteLine("Getting port...");
+            EnvironsHelper helper = new EnvironsHelper(computerName);
+            int port = helper.emccdTCPChannel;
+            Console.WriteLine("Port = " + port);
+
+            Console.WriteLine("Connecting...");
+
+            using (TcpClient client = new TcpClient())
+            {
+                IAsyncResult result = client.BeginConnect(computerName, port, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(2000))
+                    throw new Exception(computerName + " is not responding.");
+
+                client.EndConnect(result);
+            }
+
+            Console.WriteLine("Connected.");
+        }
+
         public override void AcquisitionStarting()
         {
             cancelRequested = false;
 
             if ((bool)settings["cameraEnabled"])
             {
+                //try
+                //{
+                //    CheckCameraConnection(computerCCD1);
+                //    CheckCameraConnection(computerCCD2);
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw new Exception(
+                //        "Camera acquisition cannot start because one or more camera computers are unavailable.\n\n"
+                //        + ex.Message);
+                //}
+
                 //Set Up TCP CCD A - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
 
@@ -165,18 +205,19 @@ namespace ScanMaster.Acquire.Plugins
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                         nameCCD1 = addr.ToString();
-                        
+
 
 
                     Console.WriteLine(nameCCD1);
-                    
+
                 }
-                
+
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
-                
+
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
+
 
                 //Set Up TCP CCD B - "ic-czc5347lb5"
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
@@ -559,6 +600,46 @@ namespace ScanMaster.Acquire.Plugins
             catch { /* ignore DAQmx errors during forced stop */ }
         }
 
+        private void CleanupAfterFailedStart()
+        {
+            Console.WriteLine("Cleaning up failed acquisition start...");
+
+            cancelRequested = true;
+
+            SafeStop(inputTask1);
+            SafeStop(inputTask2);
+            SafeStop(counterTaskCCDOnShot);
+            SafeStop(counterTaskCCDOffShot);
+            SafeStop(CCDAcquireStatusTaskOnShot);
+            SafeStop(CCDAcquireStatusTaskOffShot);
+            SafeStop(CCDReadyStatusTask);
+            SafeStop(TaskCompleteTaskOnShot);
+            SafeStop(TaskCompleteTaskOffShot);
+
+            try { inputTask1?.Dispose(); } catch { }
+            try { inputTask2?.Dispose(); } catch { }
+            try { counterTaskCCDOnShot?.Dispose(); } catch { }
+            try { counterTaskCCDOffShot?.Dispose(); } catch { }
+            try { CCDAcquireStatusTaskOnShot?.Dispose(); } catch { }
+            try { CCDAcquireStatusTaskOffShot?.Dispose(); } catch { }
+            try { CCDReadyStatusTask?.Dispose(); } catch { }
+            try { TaskCompleteTaskOnShot?.Dispose(); } catch { }
+            try { TaskCompleteTaskOffShot?.Dispose(); } catch { }
+
+            inputTask1 = null;
+            inputTask2 = null;
+            counterTaskCCDOnShot = null;
+            counterTaskCCDOffShot = null;
+
+            reader1 = null;
+            reader2 = null;
+
+            ccd1controller = null;
+            ccd2controller = null;
+
+            Console.WriteLine("Failed acquisition cleanup complete.");
+        }
+
         // Shirley adds on 21/01/2026. This is to resolve the base path difference between the Gobelin pc and the Centaur pc
         private string RemapCCDPathtoScanMaster(string ccdFullPath)
         {
@@ -650,8 +731,8 @@ namespace ScanMaster.Acquire.Plugins
                     };
 
                     // Shirley adds on 06/05/2026
-                    LatestCCDSettings = logData; // store the latest settings in a property for potential use elsewhere in ScanMaster
-                    settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
+                    //LatestCCDSettings = logData; // store the latest settings in a property for potential use elsewhere in ScanMaster
+                    //settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
 
                     // set up saving directory
                     string ccdSavePath = ccd2controller.GetSaveFullPath();
