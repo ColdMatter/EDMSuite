@@ -158,18 +158,14 @@ namespace ScanMaster.Acquire.Plugins
 
             if ((bool)settings["cameraEnabled"])
             {
-                //Set Up TCP CCD A - gobelin ("PH-NI-LAB")
+                //Set Up TCP CCD A - "ic-czc5347lb5"
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD1).AddressList)
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                         nameCCD1 = addr.ToString();
-                        
-
-
                     Console.WriteLine(nameCCD1);
-                    
                 }
                 
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
@@ -178,7 +174,7 @@ namespace ScanMaster.Acquire.Plugins
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
-                //Set Up TCP CCD B - "ic-czc5347lb5"
+                //Set Up TCP CCD B - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)

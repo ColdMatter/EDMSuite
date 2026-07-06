@@ -9029,12 +9029,18 @@ namespace UEDMHardwareControl
             return (voltage - b) / a;
         }
 
+        private readonly object pdReadLock = new object();
+
         private double SafeReadPD(Task task)
         {
             if (task == null) return double.NaN;
+
             try
             {
-                return ReadAnalogInput(task);
+                lock (pdReadLock)
+                {
+                    return ReadAnalogInput(task);
+                }
             }
             catch
             {
@@ -9042,37 +9048,87 @@ namespace UEDMHardwareControl
             }
         }
 
+        public struct PDSnapshot
+        {
+            public double[] Voltages;
+            public double[] Powers;
+            public DateTime Timestamp;
+        }
+
+        private readonly object pdSnapshotLock = new object();
+        private PDSnapshot latestSnapshot;
+
+        public PDSnapshot AcquirePDSnapshot(int[] snapshotGainIndexes = null)
+        {
+            lock (pdSnapshotLock)
+            {
+                double[] v = ReadPDArray(); // single DAQ entry point
+
+                double[] voltages = new double[8];
+                double[] powers = new double[8];
+
+                for (int i = 0; i < 8; i++)
+                {
+                    voltages[i] = v[i];
+
+                    if (!double.IsNaN(v[i]))
+                    {
+                        int gainIdx =
+                            snapshotGainIndexes != null
+                                ? snapshotGainIndexes[i]
+                                : pdGainComboBoxes[i].SelectedIndex;
+
+                        powers[i] = ConvertVoltageToPower(v[i], gainIdx);
+                    }
+                    else
+                    {
+                        powers[i] = double.NaN;
+                    }
+                }
+
+                latestSnapshot = new PDSnapshot
+                {
+                    Voltages = voltages,
+                    Powers = powers,
+                    Timestamp = DateTime.Now
+                };
+
+                return latestSnapshot;
+            }
+        }
+
+        public PDSnapshot GetLatestPDSnapshot()
+        {
+            lock (pdSnapshotLock)
+            {
+                return latestSnapshot;
+            }
+        }
 
         public void PollPDMonitor(int[] snapshotGainIndexes = null)
         {
-            pdVoltages[0] = SafeReadPD(PD1MonitorInputTask);
-            pdVoltages[1] = SafeReadPD(PD2MonitorInputTask);
-            pdVoltages[2] = SafeReadPD(PD3MonitorInputTask);
-            pdVoltages[3] = SafeReadPD(PD4MonitorInputTask);
-            pdVoltages[4] = SafeReadPD(PD5MonitorInputTask);
-            pdVoltages[5] = SafeReadPD(PD6MonitorInputTask);
-            pdVoltages[6] = SafeReadPD(PD7MonitorInputTask);
-            pdVoltages[7] = SafeReadPD(PD8MonitorInputTask);
+            AcquirePDSnapshot(snapshotGainIndexes);
+        }
 
-            for (int i = 0; i < 8; i++)
-            {
-                if (!double.IsNaN(pdVoltages[i]))
-                {
-                    // Use snapshot array context elements if background thread loop is operating
-                    int gainIdx = (snapshotGainIndexes != null) ? snapshotGainIndexes[i] : pdGainComboBoxes[i].SelectedIndex;
-                    pdPowers[i] = ConvertVoltageToPower(pdVoltages[i], gainIdx);
-                }
-                else
-                {
-                    pdPowers[i] = double.NaN;
-                }
-            }
+        public double[] ReadPDArray()
+        {
+            double[] pd = new double[8];
+
+            pd[0] = SafeReadPD(PD1MonitorInputTask);
+            pd[1] = SafeReadPD(PD2MonitorInputTask);
+            pd[2] = SafeReadPD(PD3MonitorInputTask);
+            pd[3] = SafeReadPD(PD4MonitorInputTask);
+            pd[4] = SafeReadPD(PD5MonitorInputTask);
+            pd[5] = SafeReadPD(PD6MonitorInputTask);
+            pd[6] = SafeReadPD(PD7MonitorInputTask);
+            pd[7] = SafeReadPD(PD8MonitorInputTask);
+
+            return pd;
         }
 
         public void UpdatePDVMonitorUI()
         {
-            // Execution inside main thread context is fully safe here
-            PollPDMonitor();
+            var snapshot = AcquirePDSnapshot();
 
             TextBox[] pdTextBoxes = {
                 window.PD1MonitorTextBox, window.PD2MonitorTextBox, window.PD3MonitorTextBox, window.PD4MonitorTextBox,
@@ -9083,8 +9139,12 @@ namespace UEDMHardwareControl
 
             for (int i = 0; i < 8; i++)
             {
-                double displayVal = displayAsPower ? pdPowers[i] : pdVoltages[i];
-                window.SetTextBox(pdTextBoxes[i], double.IsNaN(displayVal) ? "N/A" : displayVal.ToString("N4"));
+                double val = displayAsPower ? snapshot.Powers[i] : snapshot.Voltages[i];
+
+                window.SetTextBox(
+                    pdTextBoxes[i],
+                    double.IsNaN(val) ? "N/A" : val.ToString("N4")
+                );
             }
         }
 
@@ -9158,15 +9218,15 @@ namespace UEDMHardwareControl
                     while (!pdLogFlag && timer.ElapsedMilliseconds < totalDurationSeconds * 1000)
                     {
                         // Pass safe array tracking metrics to bypass WinForm execution block locks
-                        PollPDMonitor(savedGainIndexesSnapshot);
+                        var snapshot = AcquirePDSnapshot(savedGainIndexesSnapshot);
 
                         StringBuilder row = new StringBuilder();
                         row.Append(timer.ElapsedMilliseconds);
 
                         foreach (int ch in selectedChannels)
                         {
-                            double voltage = pdVoltages[ch];
-                            double power = pdPowers[ch];
+                            double voltage = snapshot.Voltages[ch];
+                            double power = snapshot.Powers[ch];
 
                             row.Append(",");
                             row.Append(double.IsNaN(voltage) ? "N/A" : voltage.ToString("F4"));
