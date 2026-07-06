@@ -80,9 +80,9 @@ namespace MOTMaster
 
         MMDataIOHelper ioHelper;
 
-#endregion
+        #endregion
 
-#region Initialisation
+        #region Initialisation
 
         // without this method, any remote connections to this object will time out after
         // five minutes of inactivity.
@@ -136,8 +136,8 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
-             //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-              //"tcp://172.22.116.195:1172/controller.rem");
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //"tcp://172.22.116.195:1172/controller.rem");
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
             "tcp://127.0.0.1:1172/controller.rem");
 
@@ -154,9 +154,9 @@ namespace MOTMaster
 
         }
 
-#endregion
+        #endregion
 
-#region Hardware control methods
+        #region Hardware control methods
 
 
         private void run(MOTMasterSequence sequence)
@@ -269,9 +269,9 @@ namespace MOTMaster
             releaseHardware();
         }
 
-#endregion
+        #endregion
 
-#region Housekeeping on UI
+        #region Housekeeping on UI
 
         /// - MOTMaster looks in a folder ("scriptListPath") for all classes. 
         ///  Then displays the list in a combo box.
@@ -293,9 +293,9 @@ namespace MOTMaster
             controllerWindow.FillScriptComboBox(s);
         }
 
-#endregion
+        #endregion
 
-#region RUN RUN RUN (public & remotable stuff)
+        #region RUN RUN RUN (public & remotable stuff)
 
         /// <summary>
         /// This is the guts of MOTMaster.
@@ -364,7 +364,7 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public Dictionary<string,List<object>> GetSwitchConfiguration()
+        public Dictionary<string, List<object>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
         }
@@ -415,6 +415,8 @@ namespace MOTMaster
             if (status == RunningState.stopped)
             {
                 status = RunningState.running;
+                try
+                {
                 Stopwatch watch = new Stopwatch();
                 MOTMasterScript script = prepareScript(scriptPath, dict);
                 if (script != null)
@@ -458,6 +460,8 @@ namespace MOTMaster
 
 #if DDS
                     // --- Add the new logic for handling the DDS pattern ---
+                    bool ddsInUse = false;
+                    int ddsTriggersSent = 0;
                     if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
                     {
                         // Set break flag to safely clear the old pattern
@@ -468,6 +472,10 @@ namespace MOTMaster
                         DDSCtrl.InvokeParameterUpdatedSafely();  // update the DDS controller IU
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
+                        ddsInUse = true;
+                        // The card is armed for each trigger by DDSCtrl.waitUntilArmed()
+                        // in the iteration loop below (before every runPattern), so no
+                        // trigger lands in the re-queue deadtime.
                     }
 
 #endif //DDS
@@ -489,19 +497,53 @@ namespace MOTMaster
                     {
                         while (status == RunningState.running)
                         {
-                            if (!config.Debug) runPattern(sequence);
+                            if (!config.Debug)
+                            {
+#if DDS
+                                // Wait up to 1 s for the DDS to be armed before
+                                // firing this iteration's trigger; if it is still
+                                // not ready after 1 s, continue and fire anyway.
+                                if (ddsInUse) DDSCtrl.waitUntilArmed(1.0);
+#endif //DDS
+                                runPattern(sequence);
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
+                            }
                         }
                     }
                     else
                     {
                         for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                         {
-                            if (!config.Debug) runPattern(sequence);
+                            if (!config.Debug)
+                            {
+#if DDS
+                                if (ddsInUse) DDSCtrl.waitUntilArmed(1.0);
+#endif //DDS
+                                runPattern(sequence);
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
+                            }
                         }
                     }
 
 
                     watch.Stop();
+#if DDS
+                    // Report how many DDS triggers were sent vs. how many actually
+                    // fired a pattern (missed = sent - fired). "received" is the card
+                    // trigger counter (edges the card latched, -1 if unsupported).
+                    if (ddsInUse)
+                    {
+                        int ddsFired = DDSCtrl.patternsFired;
+                        int ddsReceived = DDSCtrl.getCardTriggerCount();
+                        Console.WriteLine(
+                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, received: {3}",
+                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
+                    }
+#endif //DDS
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
@@ -555,13 +597,26 @@ namespace MOTMaster
                 {
                     MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
                 }
+                }
+                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex)
+                {
+                    MessageBox.Show("The pattern length is too short to fit all the requested analog events.\n\n"
+                        + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
+                        "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (DAQ.Pattern.InsufficientPatternLengthException ex)
+                {
+                    MessageBox.Show("The pattern length is too short to fit all the requested digital events.\n\n"
+                        + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
+                        "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 status = RunningState.stopped;
             }
         }
 
-#endregion
+        #endregion
 
-#region private stuff
+        #region private stuff
 
         private string constructSaveDirectory()
         {
@@ -614,9 +669,9 @@ namespace MOTMaster
             sequence.AnalogStatic.BuildPattern();
         }
 
-#endregion
+        #endregion
 
-#region Compiler & Loading DLLs
+        #region Compiler & Loading DLLs
 
         /// <summary>
         ///   /// - Once the user has selected a particular implementation of MOTMasterScript, 
@@ -690,14 +745,14 @@ namespace MOTMaster
             return sequence;
         }
 
-#endregion
+        #endregion
 
         public int GetIterations()
         {
             return controllerWindow.GetIterations();
         }
 
-#region CameraControl
+        #region CameraControl
 
         /// <summary>
         /// - Camera control is run through the hardware controller. All MOTMaster knows 
@@ -763,9 +818,9 @@ namespace MOTMaster
                 throw new DataNotArrivedFromHardwareControllerException();
             }
         }
-#endregion
+        #endregion
 
-#region Getting an Experiment Report
+        #region Getting an Experiment Report
         /// <summary>
         /// This is the mechanism for saving experimental parameters which MM doesn't control, but that the hardware controller can monitor
         /// (e.g. oven temperature, vacuum chamber pressure etc).
@@ -777,9 +832,9 @@ namespace MOTMaster
         }
 
 
-#endregion
+        #endregion
 
-#region Translation stage
+        #region Translation stage
         private void armTranslationStageForTimedMotion(MOTMasterScript script)
         {
             tstage.TSConnect();
@@ -801,7 +856,7 @@ namespace MOTMaster
             Thread.Sleep(50);
             tstage.TSDisconnect();
         }
-#endregion
+        #endregion
         /*
 #region NeanderthalDDSController
 
@@ -847,7 +902,7 @@ namespace MOTMaster
 
 #endregion
         */
-#region Re-Running a script (intended for reloading old scripts)
+        #region Re-Running a script (intended for reloading old scripts)
 
         /// <summary>
         /// This section is meant to be for the situation when you want to re-run exactly the same pattern
@@ -887,7 +942,7 @@ namespace MOTMaster
             SetReplicaRunBool(false);
             ioHelper.DisposeReplicaScript(Path.GetDirectoryName(scriptPath));
         }
-#endregion
+        #endregion
     }
 }
 

@@ -106,7 +106,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cameraTrigger", digitalPatternBoardAddress, 0, 7);
             AddDigitalOutputChannel("cameraTrigger2", digitalPatternBoardAddress, 1, 7);
             AddDigitalOutputChannel("aoPatternTrigger", digitalPatternBoardAddress, 1, 0);
-            AddDigitalOutputChannel("v00MOTShutter", digitalPatternBoardAddress, 1, 1);
+            
             AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress, 1, 2);
             AddDigitalOutputChannel("v1Shutter", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("bXLockBlock", digitalPatternBoardAddress, 1, 3);
@@ -115,12 +115,20 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("v0rfswitch2", digitalPatternBoardAddress, 2, 0);
-            AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
+            AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);// channel broken. shutter now controlled with 1.6 "Rbpushbeam"
             AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress2, 3, 2);
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
             AddDigitalOutputChannel("microwaveSwitch", digitalPatternBoardAddress2, 1, 7);
+
+            // CaF MOT Shutters
+            AddDigitalOutputChannel("MOT3Shutter", digitalPatternBoardAddress, 1, 1); // horizontal (not V1)
+            AddDigitalOutputChannel("MOT1Shutter", digitalPatternBoardAddress2, 3, 5); // vertical
+            AddDigitalOutputChannel("MOT2Shutter", digitalPatternBoardAddress2, 3, 6); // horizontal V1
+
+            // Caf optical pumping
+            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
 
             // Lambda cooling and blue MOT
             AddDigitalOutputChannel("v0ddsSwitchA", digitalPatternBoardAddress2, 2, 0);
@@ -131,7 +139,7 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("DDSTrigger", digitalPatternBoardAddress2, 2, 3);
 
             // Rb Digital Pattern
-            AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
+            AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6); //helium shutter
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("rbAbsImagingBeam", digitalPatternBoardAddress, 2, 5);
             AddDigitalOutputChannel("rbRepump", digitalPatternBoardAddress, 2, 6);
@@ -139,18 +147,15 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
             AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress2, 3, 1);
             AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
-            // Rb shutters
-            //AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress2, 3, 5);
 
-            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress2, 3, 6);
-            AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress2, 3,6);
+
 
             AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress2, 3, 7);
             AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress2, 3, 3);
             AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress2, 3, 4);
             AddDigitalOutputChannel("rbD1CoolingSwitch", digitalPatternBoardAddress2, 1, 1);
+
+
 
 
             // tweezer new digital pattern board

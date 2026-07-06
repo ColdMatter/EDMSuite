@@ -554,6 +554,10 @@
       <Project>{f1bf43a3-5641-4adf-81cb-35bc0d9ac423}</Project>
       <Name>TransferCavityLock2012</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UEDMHardwareControl\UEDMHardwareControl.csproj">
+      <Project>{cfd6eb01-f4fc-4f62-b476-f132f79d22e4}</Project>
+      <Name>UEDMHardwareControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaveMeterExample\WavemeterLockServer.csproj">
       <Project>{d2b91c87-f586-4ebc-9f5b-86b71999eafc}</Project>
       <Name>WavemeterLockServer</Name>
@@ -628,6 +632,7 @@
     <Compile Include="AnapicoCH2FrequencyOutputPlugin.cs" />
     <Compile Include="BasicBeamFlowPatternBuilder.cs" />
     <Compile Include="BufferedEventCountingTwoShotGathererPlugin.cs" />
+    <Compile Include="UEDMWavemeterPDPlugin.cs" />
     <Compile Include="ClassicBasicBeamPatternBuilder.cs" />
     <Compile Include="ClassicBasicBeamPatternPlugin.cs" />
     <Compile Include="BasicBeamTwoYAGPatternBuilder.cs" />

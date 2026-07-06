@@ -186,18 +186,6 @@ namespace ScanMaster.Acquire.Plugins
 
             if ((bool)settings["cameraEnabled"])
             {
-                //try
-                //{
-                //    CheckCameraConnection(computerCCD1);
-                //    CheckCameraConnection(computerCCD2);
-                //}
-                //catch (Exception ex)
-                //{
-                //    throw new Exception(
-                //        "Camera acquisition cannot start because one or more camera computers are unavailable.\n\n"
-                //        + ex.Message);
-                //}
-
                 //Set Up TCP CCD A - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
 
@@ -205,19 +193,14 @@ namespace ScanMaster.Acquire.Plugins
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                         nameCCD1 = addr.ToString();
-
-
-
                     Console.WriteLine(nameCCD1);
-
                 }
-
+                
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
 
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
-
 
                 //Set Up TCP CCD B - "ic-czc5347lb5"
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
