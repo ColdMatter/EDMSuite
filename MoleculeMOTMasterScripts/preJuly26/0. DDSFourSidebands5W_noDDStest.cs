@@ -40,8 +40,8 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser250, 1250)
         
-        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
@@ -242,11 +242,17 @@ public class Patterns : MOTMasterScript
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"]-100, (2 * (int)Parameters["SlowingChirpDuration"])+20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
-        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
+
+        p.AddEdge("bXSlowingAOM", 0, true);
+
+
         p.Pulse(patternStartBeforeQ, 0, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOffStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
-        //p.AddEdge("bXSlowingAOM", 0, true);
+
         // BX Shutter
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
+        
+        //p.AddEdge("bXSlowingShutter", 0, true);
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         
@@ -313,12 +319,15 @@ public class Patterns : MOTMasterScript
 
         // New BX power control
 
-        p.AddAnalogValue("BXAOM1att", 0, (double)Parameters["BXAOM1att"]);
-        p.AddAnalogValue("BXAOM2att", 0, (double)Parameters["BXAOM2att"]);
-        
-        p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
-        p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
-        
+        //p.AddAnalogValue("BXAOM1att", 0, (double)Parameters["BXAOM1att"]);
+        //p.AddAnalogValue("BXAOM2att", 0, (double)Parameters["BXAOM2att"]);
+
+        p.AddAnalogValue("BXAOM1att", 0, 8.0);
+        p.AddAnalogValue("BXAOM2att", 0, 8.0);
+
+        //p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+        //p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+
         p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         p.AddAnalogValue("BXAttenuation", 0, (double)Parameters["BXAttenuation"]); //vva for Tcool, correct sideband structure
 

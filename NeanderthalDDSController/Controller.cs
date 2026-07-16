@@ -24,6 +24,11 @@ namespace NeanderthalDDSController
         sbyte[] byData;
         public bool isPatternRunning = false;
         public int patternLength = 300;
+
+        // Count of patterns that actually FIRED (a trigger ran the whole pattern
+        // and drained the queue), as opposed to triggers merely received. Reset by
+        // startRepetitivePattern; incremented once per completed drain.
+        public int patternsFired = 0;
         StringBuilder sErrorText = new StringBuilder(1024);
         public bool breakFlag = false;
 
@@ -98,6 +103,7 @@ namespace NeanderthalDDSController
         public void startRepetitivePattern()
         {
             isPatternRunning = true;
+            patternsFired = 0;
             int iValue;
             long lValue;
             uint code;
@@ -121,6 +127,15 @@ namespace NeanderthalDDSController
                     //Console.WriteLine(iValue);
                     startSinglePattern();
 
+                    // A completed drain (the busy-wait in startSinglePattern exits
+                    // with an empty queue, not via breakFlag) means one external
+                    // trigger ran the whole pattern -> one successfully FIRED
+                    // pattern. Triggers that arrive while re-arming never drain a
+                    // queue, so they are correctly not counted here.
+                    if (!breakFlag)
+                    {
+                        patternsFired++;
+                    }
 
                     Drv.spcm_dwSetParam_i32(hDevice, Regs.SPC_DDS_TRG_SRC, Regs.SPCM_DDS_TRG_SRC_CARD);
 
@@ -452,7 +467,7 @@ namespace NeanderthalDDSController
                 code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP, sortedPatternList[key][2][0]);
                 code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_FREQ_SLOPE, 1e9 * sortedPatternList[key][3][0]);
                 code = Drv.spcm_dwSetParam_d64(hDevice, Regs.SPC_DDS_CORE0_AMP_SLOPE, 1e3 * sortedPatternList[key][4][0]);
-                
+
 
 
                 // Ch 1 core 47
@@ -533,6 +548,76 @@ namespace NeanderthalDDSController
             int comNum;
             dwErrorCode = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_QUEUE_CMD_COUNT, out comNum);
             return comNum;
+        }
+
+        // DDS status register bits and trigger counter (Spectrum manual, Tables 151/152).
+        // Hard-coded here so the code builds even if these symbols are not in Regs.
+        private const int SPCM_DDS_STAT_WAITING_FOR_TRG = 0x1;
+        private const int SPCM_DDS_STAT_QUEUE_UNDERRUN = 0x2;
+        private const int SPCM_DDS_STAT_QUEUE_OVERRUN = 0x4;
+        private const int SPC_DDS_TRG_COUNT_REG = 608013;
+
+        public int getDDSStatus()
+        {
+            int status;
+            dwErrorCode = Drv.spcm_dwGetParam_i32(hDevice, Regs.SPC_DDS_STATUS, out status);
+            return status;
+        }
+
+        // Total DDS trigger events (external + timer + EXEC_NOW) since the last
+        // RESET. Advances by ~(steps + overhead) per external trigger, so it is
+        // NOT directly comparable to the number of triggers sent.
+        public int getTriggerCount()
+        {
+            int count;
+            dwErrorCode = Drv.spcm_dwGetParam_i32(hDevice, SPC_DDS_TRG_COUNT_REG, out count);
+            return count;
+        }
+
+        // Card (external) trigger counter: SPC_TRIGGERCOUNTER. Counts only real
+        // external trigger edges (not timer steps or EXEC_NOW), i.e. triggers
+        // RECEIVED. Returns -1 if the firmware does not support it (manual
+        // requires M4i firmware >= V6; the driver returns an error otherwise).
+        private const int SPC_TRIGGERCOUNTER_REG = 200905;
+        public int getCardTriggerCount()
+        {
+            int count;
+            uint err = Drv.spcm_dwGetParam_i32(hDevice, SPC_TRIGGERCOUNTER_REG, out count);
+            if (err != 0)  // ERR_OK == 0; anything else = not supported / error
+            {
+                return -1;
+            }
+            return count;
+        }
+
+        public bool isWaitingForTrigger()
+        {
+            return (getDDSStatus() & SPCM_DDS_STAT_WAITING_FOR_TRG) != 0;
+        }
+
+        // Block until the DDS reports WAITING_FOR_TRG (armed), or until timeout.
+        //
+        // This fixes the "first trigger is always missing" symptom. startRepetitivePattern
+        // arms the card on a background Task; if the first external DDS trigger pulse
+        // arrives before the first WRITE_TO_CARD has armed the card, it is dropped. Call
+        // this after startRepetitivePattern() and before the first trigger (see MMController).
+        public bool waitUntilArmed(double timeoutSeconds)
+        {
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.Elapsed.TotalSeconds < timeoutSeconds && !breakFlag)
+            {
+                if (isWaitingForTrigger())
+                    return true;
+                System.Threading.Thread.Sleep(1);
+            }
+            Console.WriteLine("Warning: DDS not armed (WAITING_FOR_TRG) within {0}s; status = {1}",
+                timeoutSeconds, getDDSStatus());
+            return false;
+        }
+
+        public bool waitUntilArmed()
+        {
+            return waitUntilArmed(5.0);
         }
 
         public void closeCard()

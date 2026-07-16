@@ -44,3 +44,5 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NeanderthalDDSCon
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NeanderthalDDSController.exe.config
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpcmDrv64.NET.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe.config
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.xml

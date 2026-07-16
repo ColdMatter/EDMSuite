@@ -18,7 +18,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 60000;
+        Parameters["PatternLength"] = 260000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 4000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -160,7 +160,7 @@ public class Patterns : MOTMasterScript
         Parameters["QCL_dur"] = 10;
         Parameters["QCL_max_time"] = 1000;
         Parameters["OpticalPumpDuration"] = 50;
-        Parameters["MagTrapHoldTime"] = 10000;
+        Parameters["MagTrapHoldTime"] = 100000;
         Parameters["shim_settle_on"] = 100;
         Parameters["shim_settle_off"] = 100;
         Parameters["MOTrecaplight_delay"] = 200;
@@ -171,6 +171,10 @@ public class Patterns : MOTMasterScript
         // END OF PATTERN //
 
         Parameters["MOTCoilsSwitchOff"] = 25000;
+
+        Parameters["MOT1ShutterPreDelay"] = 2500; // time before MOT shutters opens to allow for mechanical delay
+        Parameters["MOT2ShutterPreDelay"] = 1300;
+        Parameters["MOT3ShutterPreDelay"] = 1300;
 
     }
 
@@ -215,7 +219,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -276,7 +280,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("v0ddsSwitchD", 0, true);
         p.AddEdge("v0ddsSwitchD", (int)Parameters["PatternLength"] - 1000, false); //trigger for rb experiment
 
-        p.AddEdge("opticalPumpingAOM", 0, true);
+        p.AddEdge("rbAbsImagingBeam", 0, true);
 
         //  SETUP //
 
@@ -295,7 +299,7 @@ public class Patterns : MOTMasterScript
         
         // OPTICAL PUMPING
         if ((int)Parameters["do_optical_pumping"]==1){
-            p.DownPulse(0, OpticalPumpingStart, (int)Parameters["OpticalPumpDuration"], "opticalPumpingAOM");
+            p.DownPulse(0, OpticalPumpingStart, (int)Parameters["OpticalPumpDuration"], "rbAbsImagingBeam");
         }
         // SLOWING //
 
@@ -313,6 +317,10 @@ public class Patterns : MOTMasterScript
         // p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
         p.AddEdge("bXSlowingShutter", patternStartBeforeQ +  (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], true);
         p.AddEdge("bXSlowingShutter", LambdaCoolingStart, false);
+
+        p.Pulse(0, OpticalPumpingStart - (int)Parameters["MOT1ShutterPreDelay"], (int)Parameters["MagTrapHoldTime"] + (int)Parameters["MOT1ShutterPreDelay"], "MOT1Shutter"); // open MOT shutter before magnetic trap turn on
+        p.Pulse(0, OpticalPumpingStart - (int)Parameters["MOT2ShutterPreDelay"], (int)Parameters["MagTrapHoldTime"] + (int)Parameters["MOT2ShutterPreDelay"], "MOT2Shutter"); 
+        p.Pulse(0, OpticalPumpingStart - (int)Parameters["MOT3ShutterPreDelay"], (int)Parameters["MagTrapHoldTime"] + (int)Parameters["MOT3ShutterPreDelay"], "MOT3Shutter");
 
         return p;
     }
@@ -367,8 +375,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("BXAOM1att", 0, (double)Parameters["BXAOM1att"]);
         p.AddAnalogValue("BXAOM2att", 0, (double)Parameters["BXAOM2att"]);
 
-        p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
-        p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+        // p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+        // p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
 
         p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         p.AddAnalogValue("BXAttenuation", 0, (double)Parameters["BXAttenuation"]); //vva for Tcool, correct sideband structure

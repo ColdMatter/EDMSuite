@@ -87,8 +87,8 @@ namespace ScanMaster.Acquire.Plugins
         private string nameCCD1;
         private string nameCCD2;
         //private string computerCCD1 = "ULTRACOLDEDM"; 
-        private string computerCCD1 = "PH-NI-LAB"; // CCD A PC (Gobelin)
-        private string computerCCD2 = "ic-czc5347lb5"; // CCD B PC
+        private string computerCCD2 = "PH-NI-LAB"; // CCD B PC (Gobelin)
+        private string computerCCD1 = "ic-czc5347lb5"; // CCD A PC
         private int CCDsnaps;
 
         // add ccd function
@@ -146,16 +146,7 @@ namespace ScanMaster.Acquire.Plugins
             public int CCDBGain;
             public int SampleRate;
         }
-
-        private string SerializeCCDSettingsToString(CCDSettings data)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
-            using (StringWriter sw = new StringWriter())
-            {
-                serializer.Serialize(sw, data);
-                return sw.ToString();
-            }
-        }
+        
 
         protected override void InitialiseSettings()
         {
@@ -167,18 +158,14 @@ namespace ScanMaster.Acquire.Plugins
 
             if ((bool)settings["cameraEnabled"])
             {
-                //Set Up TCP CCD A - gobelin ("PH-NI-LAB")
+                //Set Up TCP CCD A - "ic-czc5347lb5"
                 IPHostEntry hostInfo = Dns.GetHostEntry(computerCCD1);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD1).AddressList)
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                         nameCCD1 = addr.ToString();
-                        
-
-
                     Console.WriteLine(nameCCD1);
-                    
                 }
                 
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
@@ -187,7 +174,7 @@ namespace ScanMaster.Acquire.Plugins
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
 
-                //Set Up TCP CCD B - "ic-czc5347lb5"
+                //Set Up TCP CCD B - gobelin ("PH-NI-LAB")
                 IPHostEntry hostInfoCCD2 = Dns.GetHostEntry(computerCCD2);
 
                 foreach (var addr in Dns.GetHostEntry(computerCCD2).AddressList)
@@ -658,6 +645,7 @@ namespace ScanMaster.Acquire.Plugins
                         SampleRate = (int)settings["sampleRate"]
                     };
 
+                    // Shirley adds on 06/05/2026
                     LatestCCDSettings = logData; // store the latest settings in a property for potential use elsewhere in ScanMaster
                     settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
 
@@ -682,7 +670,6 @@ namespace ScanMaster.Acquire.Plugins
                     string xmlFileName = $"CCD_Config_{ccdFileIndex:D5}.xml";
                     string fullPath = Path.Combine(logDirectory, xmlFileName);
 
-                    // Shirley adds on 06/05/2026
                     // Use same directory as CCD files
                     string scanDirectory = logDirectory;
 
