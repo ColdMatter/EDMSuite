@@ -4,7 +4,11 @@
 # provides a set of analysis functions for data from the ultracold EDM experiment
 
 # import pythonnet
+# 1. First, import the CLR module (provided by pythonnet)
 import clr
+# 2. Tell the runtime to load the core Windows 'System' library
+clr.AddReference('System')
+
 import sys
 import os
 from System.IO import Path
@@ -331,7 +335,7 @@ def GatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
     return OnBkgSub, OffBkgSub
 
 def PlotGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,\
-                       error=False, display=True, extraTitle=""):
+                       error=False, display=True, extraTitle="",WMlock=False):
     "Plot gated counts against scanned parameter, with background subtraction"
     MeanCounts, StderrCounts, TimeWindow = GetGatedAvgCounts(Scan,TOFData,\
                                                         Time,SigStart,SigStop)
@@ -350,7 +354,11 @@ def PlotGatedAvgCounts(Scan,TOFData,Time,SigStart,SigStop,BkgStart,BkgStop,\
         Xunit = " (V)"
     else:
         Xunit = ""
-    xlabel = Settings["channel"] + " " + Settings["param"] + Xunit
+    
+    if WMlock:
+        xlabel = "Frequency (GHz)"
+    else:
+        xlabel = str(Settings["channel"]) + " " + Settings["param"] + Xunit
     ylabel = "Gated LIF (ms.V)"
     
     fig = plt.figure()
@@ -540,7 +548,7 @@ def TCL_WM_Calibration(Scan, step=0.01, plot=False, Toprint=True):
 
 def ResonanceFreq(Scan, SigStart, SigEnd, BkgStart, BkgEnd,\
                   showTOF=False, showPlot=True, fileLabel="", location="",\
-                      shot_for_TOF=0, freqTHz=542):
+                      shot_for_TOF=0, freqTHz=542, WMlock=False):
     #This is Basic LIF analysis in a function
     Settings = GetScanSettings(Scan)
     ScanParams = GetScanParameterArray(Scan)
@@ -551,15 +559,18 @@ def ResonanceFreq(Scan, SigStart, SigEnd, BkgStart, BkgEnd,\
 
     f_iniTHz, f_relMHz = GetScanFreqArrayMHz(Scan)
     
-    if int(f_iniTHz) == 542:
+    if int(f_iniTHz) == freqTHz:
         TCL_WM_cali = TCL_WM_Calibration(Scan, plot=False, Toprint=False)
         HasWM = True
         TCLconv = TCL_WM_cali['best fit'][0]
         TCLconverr = TCL_WM_cali['error'][0]
         print("TCL calibration = %.4g +- %.2g MHz"%(TCLconv, TCLconverr))
-        if np.abs(TCLconv) > 1000:
-            HasWM = False
-            print("WM data unusable")
+        if WMlock == True:
+            HasWM = True
+        else:
+            if np.abs(TCLconv) > 1000:
+                HasWM = False
+                print("WM data unusable")
     else:
         TCLconv = 0
         TCLconverr = 0

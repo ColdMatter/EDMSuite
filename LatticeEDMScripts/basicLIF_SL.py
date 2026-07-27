@@ -30,9 +30,10 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 #%% Load data
-datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month=datadrive+"\\August 2024\\"
-date=month+"\\13\\"
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+month=datadrive+"\\4f2025\\May2026\\"
+date=month+"\\28\\"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = date
@@ -62,13 +63,15 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 15
-SigEnd = 25
-BkgStart = 35
-BkgEnd = 40
+SigStart = 0.5
+SigEnd = 0.6
+BkgStart = 0.8
+BkgEnd = 1.0
 
 showTOF = True
 shot_for_TOF = 17
+
+WMlock = True
 
 #%%
 Data = EDM.ReadAverageScanInZippedXML(files[0])
@@ -83,15 +86,19 @@ BkgEndIndex = int(BkgEnd * (Settings["sampleRate"]/1000))
 
 f_iniTHz, f_relMHz = EDM.GetScanFreqArrayMHz(Data)
 
-if int(f_iniTHz) == 542:
-    TCL_WM_cali = EDM.TCL_WM_Calibration(Data, plot=True, Toprint=False)
+if WMlock:
     HasWM = True
-    TCLconv = TCL_WM_cali['best fit'][0]
-    TCLconverr = TCL_WM_cali['error'][0]
-    print("TCL calibration = %.4g +- %.2g MHz"%(TCLconv, TCLconverr))
+    print("Data was taken with WM lock")
 else:
-    HasWM = False
-    print("Wrong fibre in WM.")
+    if int(f_iniTHz) == 288:
+        TCL_WM_cali = EDM.TCL_WM_Calibration(Data, plot=True, Toprint=False)
+        HasWM = True
+        TCLconv = TCL_WM_cali['best fit'][0]
+        TCLconverr = TCL_WM_cali['error'][0]
+        print("TCL calibration = %.4g +- %.2g MHz"%(TCLconv, TCLconverr))
+    else:
+        HasWM = False
+        print("Wrong fibre in WM.")
 
 #%% Get TOFs, averaged per point
 TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Data)
@@ -99,8 +106,8 @@ TimeOnSPP, DataOnSPP, TimeOffSPP, DataOffSPP = EDM.GetTOFsSPP(Data)
 if showTOF:
     plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[0][shot_for_TOF], axis=1),\
              label="On")
-    plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][shot_for_TOF], axis=1),\
-             label="Off")
+    #plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][shot_for_TOF], axis=1),\
+    #         label="Off")
     plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
                ymin=np.min(DataOnSPP[0][shot_for_TOF]), \
                ymax=np.max(DataOnSPP[0][shot_for_TOF]),\
@@ -113,13 +120,13 @@ if showTOF:
 
 #%% Bkg-sub TOF
 BkgOn = np.average(DataOnSPP[0][shot_for_TOF][BkgStartIndex:BkgEndIndex])
-BkgOff = np.average(DataOffSPP[0][shot_for_TOF][BkgStartIndex:BkgEndIndex])
+#BkgOff = np.average(DataOffSPP[0][shot_for_TOF][BkgStartIndex:BkgEndIndex])
 
 if showTOF:
     plt.plot(TimeOnSPP*1000, np.average(DataOnSPP[0][shot_for_TOF], axis=1)\
              -BkgOn, label="On")
-    plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][shot_for_TOF], axis=1)\
-             -BkgOff, label="Off")
+    #plt.plot(TimeOffSPP*1000, np.average(DataOffSPP[0][shot_for_TOF], axis=1)\
+    #         -BkgOff, label="Off")
     plt.vlines([SigStart, SigEnd, BkgStart, BkgEnd],\
                ymin=np.min(DataOnSPP[0][shot_for_TOF])-BkgOn, \
                ymax=np.max(DataOnSPP[0][shot_for_TOF])-BkgOn,\
@@ -128,7 +135,7 @@ if showTOF:
               background subtracted")
     plt.xlabel("time (ms)")
     plt.ylabel("PMT signal (V)")
-    plt.ylim(-0.3, 3.5)
+    #plt.ylim(-0.3, 3.5)
     plt.legend()
     plt.show()
 
@@ -142,9 +149,23 @@ BkgSub = MeanCounts - BkgMeanCounts * TimeWindow/BkgTimeWindow
 
 #% Plot gated TOF
 GatedTOF = EDM.PlotGatedAvgCounts(Data,DataOnSPP[0],TimeOnSPP,SigStart,\
-                                  SigEnd,BkgStart,BkgEnd)
-#% Fitting
+                                  SigEnd,BkgStart,BkgEnd,WMlock=WMlock)
+#%% Fitting
+from scipy.optimize import curve_fit
+ScannedParam = np.array(Data.ScanParameterArray)
+fit, cov = curve_fit(tools.double_Gaussian_FWHM, ScannedParam, BkgSub, \
+                     p0=[0.0003, -0.05, 0.01, 0.0006, -0.01, 0.01, 0.])
+print(fit)
 
+#%%
+xspan = np.arange(np.min(ScannedParam), np.max(ScannedParam), 0.001)
+import copy
+newFig = copy.deepcopy(plt.figure(GatedTOF)) 
+plt.plot(xspan, tools.double_Gaussian_FWHM(xspan, *fit), color=colors[1])
+
+plt.show()
+
+#%% Compact, single Gaussian
 FittedGatedTOF, fit_results = tools.FitGaussian(GatedTOF, ScanParams,\
                                 BkgSub, p0=[np.mean(ScanParams), 0.5, 20., 10.])
 

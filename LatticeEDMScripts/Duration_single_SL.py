@@ -27,19 +27,33 @@ import tools as tools
 
 tools.set_plots()
 
+prop_cycle = plt.rcParams['axes.prop_cycle']
+colors = prop_cycle.by_key()['color']
+
 #%% Load data
-datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month="September2025"
-date="29"
-subfolder = ""
+###When we were using OneDrive:
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+#month="September2025"
+#date="29"
+#subfolder = ""
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
+###When we are using Box:
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+month = "June 2026"
+date = "30"
+#blockdrive=datadrive+"\\BlockData\\"
+
+drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
 print(drive)
 
-pattern="*015*.zip"
+pattern="*003*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
+
+fileLabel = re.split(r'[_]', re.split(r'[\\]', files[0])[-1])[0]
+
 
 #%%
 Data = EDM.ReadAverageScanInZippedXML(files[0])
@@ -51,7 +65,7 @@ print(Settings)
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 25
+SigStart = 24
 SigEnd = 27
 BkgStart = 70
 BkgEnd = 80
@@ -85,7 +99,15 @@ Ratio = OnBkgSub/OffBkgSub
 #Offs[fileLabels[i]] = OffBkgSub
 #Ratios[fileLabels[i]] = Ratio
 
-plt.plot(ScanParams, Ratio, '.')
+from scipy.optimize import curve_fit
+
+fit, cov = curve_fit(tools.exp_decay, ScanParams, Ratio, p0=[1., 1000., 0.])
+tspan = np.arange(0., 3000., 1.)
+err = np.sqrt(np.diag(cov))
+
+plt.plot(ScanParams, Ratio, '.', color=colors[0], label=fileLabel + \
+         " \u03C4=%.1f +- %.1f ms"%(fit[1], err[1]))
+plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[0])
 plt.xlabel("V0 slowing duration (us)")
 plt.ylabel("ratio")
 plt.title("Gated TOF over " +\
@@ -93,16 +115,53 @@ plt.title("Gated TOF over " +\
    str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
 #plt.xlim(0, 9800)
 plt.ylim(0, 1)
+plt.legend()
 plt.show()
 
-
-#%%
+#%% *A quick one if other operations are not needed
 fig, fit_results = tools.Fitexp_decay(0, ScanParams, Ratio,\
-                    p0=[1., 5000., 0.], xstep=Settings["end"]*1e-3, \
-            plot=True, display=True, Toprint=True)
+                    p0=[1., 1000., 0.], xstep=Settings["end"]*1e-3, \
+            plot=True, display=True, Toprint=True,\
+                xlabel="V0 slowing duration (us)", ylabel="ratio", \
+                    title="Gated TOF over " +\
+                       str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+                       str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
 
 #Figs[fileLabels[i]] = fig
 #Fits[fileLabels[i]] = fit_results
+
+#%% Stack a second line
+##Save the first data
+t1 = ScanParams
+R1 = Ratio
+label1 = fileLabel + \
+         " \u03C4=%.1f +- %.1f ms"%(fit[1], err[1])
+fit1data = tools.exp_decay(tspan, *fit)
+
+#%% Save 2nd data
+t2 = ScanParams
+R2 = Ratio
+label2 = fileLabel + \
+         " \u03C4=%.1f +- %.1f ms"%(fit[1], err[1]) +\
+             "\nNo 4f"
+fit2data = tools.exp_decay(tspan, *fit)
+
+#%% Plot together
+plt.plot(t1, R1, '.', color=colors[0], label=label1)
+plt.plot(tspan, fit1data, color=colors[0])
+
+plt.plot(t2, R2, '.', color=colors[1], label=label2)
+plt.plot(tspan, fit2data, color=colors[1])
+
+plt.xlabel("V0 slowing duration (us)")
+plt.ylabel("Slowing On/Off ratio")
+plt.title("Gated TOFs over " +\
+   str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+   str(SigStart) + "ms to " + str(SigEnd) + "ms gate")
+#plt.xlim(0, 9800)
+plt.ylim(0, 1)
+plt.legend()
+plt.show()
 
 #%% for off-dupoint
 fig, fit_results = tools.Fitinverse_exp_decay(0, ScanParams, Ratio,\

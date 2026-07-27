@@ -35,18 +35,29 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 #%% Load data
-datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month="November2025" #"Slowing data to publish\\Durations\\Free space slowing\\New V2 scheme"#
-date="24"
-subfolder = ""
+###When we were using OneDrive:
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+#month="September2025"
+#date="29"
+#subfolder = ""
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = datadrive + "\\" + month + "\\" + date + "\\" + subfolder
+###When we are using Box:
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+month = "July 2026"
+date = "24"
+#blockdrive=datadrive+"\\BlockData\\"
+
+drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
 print(drive)
 
-pattern="*V0DurationScan*.zip"
+pattern="*Q0*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
+
+#%% Selection
+sele = ["004", "005", "006"]
 
 #%%
 if len(files) > 0:
@@ -57,10 +68,16 @@ if len(files) > 0:
     for i in range(0, len(files)):
         fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
         Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
-        Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-        print("loaded file " + files[i])
-        fileLabels.append(fileLabel)
-        Lasers.append(Laser)
+       
+       #Use this part if have selections
+        for j in range(0, len(sele)):
+            if fileLabel == sele[j]:
+                print("File "+fileLabel+" selected")
+       ###
+                Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+                print("loaded file " + files[i])
+                fileLabels.append(fileLabel)
+                Lasers.append(Laser)
 
 else:
     print("No matching files.")
@@ -68,8 +85,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 28
-SigEnd = 30
+SigStart = 19
+SigEnd = 21
 BkgStart = 70
 BkgEnd = 80
 
@@ -93,11 +110,11 @@ Durations = []
 Ratios = []
 GoodData = [] #Append index here if fitted tau error is larger than tau
 
-for i in range(0, len(files)):
+for i in range(0, len(sele)):  #for i in range(0, len(files)):
     Scan = Data[fileLabels[i]]
-    print('For file ' + re.split(r'[\\]', files[i])[-1])
+    print('For file ' + re.split(r'[\\]', fileLabels[i])[-1])   #files[i]
     Settings = EDM.GetScanSettings(Scan)
-    fig, fit_results, ScanParams, Ratio = EDM.DurationRunSingle(Scan, fileLabel,\
+    fig, fit_results, ScanParams, Ratio = EDM.DurationRunSingle(Scan, fileLabels[i],\
                                             SigStart, SigEnd, BkgStart, BkgEnd,\
                                             plotFit=True)
     
@@ -154,40 +171,101 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 
 '''
 
-types = {'012':'V0', '013':'V0-V3', '014':'V0-V3 MWN0', '015':'V0-V3 MWN0 P2v0v1',\
-         '016':'V0-V3 MWN0N2 P2v0v1'}
+types = {'004':'004 No MW', '005':'005 With MW', '006':'006 With MW'}
+PlotFit = {'004':False, '005':True, '006':False}
+MovAvg = {'004':False, '005':True, '006':False}
 
-BR = b0 + b1
+BR = b0 #+ b1 + b2 + b3
 
-tspan = np.arange(0., 15000., 0.1)
+tspan = np.arange(0., 2000, 0.1)
 
-for i in range(0, len(files)):
+for i in range(0, len(sele)):
     Scan = Data[fileLabels[i]]
-    print('For file ' + re.split(r'[\\]', files[i])[-1])
+    print('For file ' + re.split(r'[\\]', fileLabels[i])[-1]) #files[i]
     Settings = EDM.GetScanSettings(Scan)
     fig, fit_results, ScanParams, Ratio = EDM.DurationRunSingle(Scan, fileLabel,\
                                             SigStart, SigEnd, BkgStart, BkgEnd,\
                                             plotFit=False)
     
     plt.plot(ScanParams, Ratio, '.', label=types[fileLabels[i]], color=colors[i])
-    plt.plot(tspan, tools.exp_decay(tspan, *fit_results['best fit']), color=colors[i])
-    print("\n File " + fileLabels[i] + ", " + types[fileLabels[i]], ": ", fit_results)
     
-    fit = fit_results['best fit']
-    fiterr = fit_results['error']
-    
-    Scat = -1 / (fit[1] * np.log(BR))
-    Scaterr = -fiterr[1] / (fit[1] * np.log(BR)) / (fit[1]**2 * np.log(BR))
-    print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
-    
-    print("\n")
+    if PlotFit[fileLabels[i]]:
+        plt.plot(tspan, tools.exp_decay(tspan, *fit_results['best fit']), color=colors[i],\
+                 label="Decay time (μs): %.4g +- %.3g"%(fit[1], fiterr[1]))
+        print("\n File " + fileLabels[i] + ", " + types[fileLabels[i]], ": ", fit_results)
+        
+        fit = fit_results['best fit']
+        fiterr = fit_results['error']
+        
+        Scat = -1 / (fit[1] * np.log(BR))
+        Scaterr = -fiterr[1] / (fit[1] * np.log(BR)) / (fit[1]**2 * np.log(BR))
+        print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
+        print("\n Decay time (μs): %.4g +- %.3g"%(fit[1], fiterr[1]))
+        
+        print("\n")
 
-plt.title("V0 Duration scan with P(2) repumps and N=2 MW")
+plt.title("MW effect on pumping with Q(0) probe, July 24th 2026")
 plt.xlabel("V0 slowing duration (μs)")
 plt.ylabel("Population remaining in optical cycle")
-plt.legend(loc="upper right")
+plt.legend(bbox_to_anchor=(1.05, 1.1))
 plt.show()    
+
+#%% Combine multiple dataset into one
+fig, fit_results, ScanParams1, Ratio1 = EDM.DurationRunSingle(Data["005"], fileLabel,\
+                                        SigStart, SigEnd, BkgStart, BkgEnd,\
+                                        plotFit=False)
     
+fig, fit_results, ScanParams2, Ratio2 = EDM.DurationRunSingle(Data["006"], fileLabel,\
+                                        SigStart, SigEnd, BkgStart, BkgEnd,\
+                                        plotFit=False)
+    
+Combi_ScanParams = np.concatenate((ScanParams1, ScanParams2))
+Combi_Ratio = np.concatenate((Ratio1, Ratio2))
+#%%
+plt.plot(Combi_ScanParams, Combi_Ratio, '.', label="before sorting")
+
+# Get the indices that would sort Combi_ScanParams
+sort_indices = np.argsort(Combi_ScanParams)
+
+# Reorder both arrays using those indices
+Combi_ScanParams_sorted = Combi_ScanParams[sort_indices]
+Combi_Ratio_sorted      = Combi_Ratio[sort_indices]
+
+plt.plot(Combi_ScanParams_sorted, Combi_Ratio_sorted, '.', label="after sorting")
+plt.title("Soritng data based on X axis. All points should overlap")
+plt.legend()
+plt.show()
+#%%
+MA = 20
+MoveAvg_SP = tools.MovingAverage(MA, Combi_ScanParams_sorted)
+MoveAvg_R = tools.MovingAverage(MA, Combi_Ratio_sorted)
+
+#Compare set
+fig, fit_results, ScanParams, Ratio = EDM.DurationRunSingle(Data["004"], fileLabel,\
+                                        SigStart, SigEnd, BkgStart, BkgEnd,\
+                                        plotFit=False)
+
+#plot
+plt.plot(ScanParams, Ratio, '.', label="No MW")
+plt.plot(MoveAvg_SP, MoveAvg_R, '.', color=colors[1], label="With MW, Move_avg=%g"%MA)
+
+tspan = np.arange(0., 2000, 0.1)
+fit, cov = curve_fit(tools.exp_decay, MoveAvg_SP, MoveAvg_R, p0=[1., 1000., 0.5])
+err = np.sqrt(np.diag(cov))
+print("Variables: ['amplitude', 'lifetime', 'shift']")
+print("fit: ", fit)
+print("err: ", err)
+plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[1], \
+         label="Decay time (μs): %.4g +- %.3g"%(fit[1], err[1]))
+
+plt.title("MW effect on pumping with Q(0) probe, July 24th 2026")
+plt.xlabel("V0 slowing duration (μs)")
+plt.ylabel("Population remaining in optical cycle")
+plt.legend()
+
+plt.show()
+
+
 #%% Stacked plots
 '''Plotting multiple decay curves on the same plot.
 

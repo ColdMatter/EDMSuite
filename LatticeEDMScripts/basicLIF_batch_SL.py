@@ -29,43 +29,58 @@ tools.set_plots()
 prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
+#%%
+sele = ["003", "004"]
+
 #%% Load data
-datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-month=datadrive+"\\August2025\\"
-date=month+"\\17\\"
+#datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
+datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+month=datadrive+"\\4f2025\\May2026\\"
+date=month+"\\28\\"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = date
 print(drive)
 
-pattern="*_ProbeSetpointScan*.zip"
+pattern="*_IRProbe1_*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
-
 
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
     Data = {}
     fileLabels = []
-    locations = []
+    Lasers = []
     for i in range(0, len(files)):
-        location = re.split(r'[.]', re.split(r'[_]',\
-                                    re.split(r'[\\]', files[i])[-1])[-1])[0]
         fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
-        Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-        print("loaded file " + files[i])
-        fileLabels.append(fileLabel)
-        locations.append(location)
+        Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
+       
+       #Use this part if have selections
+        if len(sele) > 0:
+            for j in range(0, len(sele)):
+                if fileLabel == sele[j]:
+                    print("File "+fileLabel+" selected")
+           ###
+                    Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+                    print("loaded file " + files[i])
+                    fileLabels.append(fileLabel)
+                    Lasers.append(Laser)
+        else:
+            print("No further selection applied.")
+            Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+            print("loaded file " + files[i])
+            fileLabels.append(fileLabel)
+            Lasers.append(Laser)
 
 else:
     print("No matching files.")
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 25
-SigEnd = 27
-BkgStart = 60
-BkgEnd = 70
+SigStart = 0.5
+SigEnd = 0.6
+BkgStart = 0.8
+BkgEnd = 1.0
 
 showTOF = False
 shot_for_TOF = 9
@@ -84,8 +99,7 @@ for i in range(0, len(files)):
     FittedGatedTOF, fit_results, FittedGatedTOFWM, fit_resultsWM, HasWM, summary = \
         EDM.ResonanceFreq(Scan, SigStart, SigEnd, BkgStart, BkgEnd,\
                       showTOF=showTOF, showPlot=True, fileLabel=fileLabels[i],\
-                          location=locations[i],\
-                          shot_for_TOF=0, freqTHz=542)
+                          shot_for_TOF=0, freqTHz=288, WMlock=True)
     
     FittedGatedTOFs[fileLabels[i]] = FittedGatedTOF
     Fit_results[fileLabels[i]] = fit_results
@@ -94,6 +108,9 @@ for i in range(0, len(files)):
     HasWMs[fileLabels[i]] = HasWM
     
     print("\n  \n")
+
+#%%
+
 
 #%%
 TCL_WM_cali = EDM.TCL_WM_Calibration(Data, plot=True)

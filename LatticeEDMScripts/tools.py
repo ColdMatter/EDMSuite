@@ -18,6 +18,7 @@ import sys
 import os
 import glob
 import copy
+from itertools import chain
 
 # settings
 def set_plots():
@@ -90,6 +91,9 @@ def MovingAverage(window_size, data):
 def flattenList(xss):
     return [x for xs in xss for x in xs]
 
+def flattenAnyList(list_of_lists):
+    return [*chain(*list_of_lists)]
+
 
 # Functions to fit
 def Line(x, a, b):
@@ -159,6 +163,9 @@ def Gaussian_FWHM(w, A, w0, dw, shift):
     """ Implements a generalised gaussian profile sampled on w. """
     return A*(2 * np.sqrt(np.log(2) / np.pi) / dw ) * np. exp(- 4 * np.log(2) * (w - w0)**2 / dw**2)+shift
 
+def double_Gaussian_FWHM(w, A1, w01, dw1, A2, w02, dw2, shift):
+    return Gaussian_FWHM(w, A1, w01, dw1, shift) + Gaussian_FWHM(w, A2, w02, dw2, shift)
+
 def Gaussian_FWHM_norm(w, *args):
     """ Implements a unit-area gaussian profile sampled on w. """
     w0, dw = args # centre frequency, FWHM
@@ -189,6 +196,10 @@ def exp_decay(x, A, B, C):
 
 def exp_decay2(x, B, C):
     return np.exp(-x / B)  + C
+
+def exp_decay_FixAmpBkgto1(x, A, B):
+    C = 1-A
+    return A * np.exp(-x / B)  + C
 
 def Fitexp_decay(Figure, xdata, ydata, p0, xstep=0.01, \
                 plot=True, display=True, Toprint=True,\
