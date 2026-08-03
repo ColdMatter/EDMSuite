@@ -52,9 +52,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
-#if DDS
-        private NeanderthalDDSController.Controller DDSCtrl;
-#endif //DDS
+
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -141,10 +139,7 @@ namespace MOTMaster
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
             "tcp://127.0.0.1:1172/controller.rem");
 
-            // --- Initialize the DDS Controller instance ---
-#if DDS
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller), "tcp://127.0.0.1:1818/controller.rem");
-#endif //DDS
+      
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
 
@@ -423,62 +418,7 @@ namespace MOTMaster
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                    ////DDSCtrl.initializeCard();
-
-                    //Dictionary<string, List<List<double>>> pattern_test = new Dictionary<string, List<List<double>>>
-                    //{
-                    //    // The dictionary entry has one Key: "MOT"
-                    //    {
-                    //        "MOT", 
-
-                    //        // The Value for the key is a new List of Lists
-                    //        new List<List<double>>
-                    //        {
-                    //            // List 1: Time Parameters. The function calculates time / 100.0. Here, 0 / 100.0 = 0.0.
-                    //            new List<double> { 0.0 },
-
-                    //            // List 2: Frequencies.
-                    //            new List<double> { 114.07, 156.17, 188.00, 175.44 },
-
-                    //            // List 3: Amplitudes.
-                    //            new List<double> { 1.0, 1.0, 1.0, 1.0 },
-
-                    //            // List 4: Frequency Slopes. Your function call uses the default value of 0.0 for all.
-                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 },
-
-                    //            // List 5: Amplitude Slopes. Your function call also uses the default value of 0.0 for all.
-                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 }
-                    //        }
-                    //    }
-                    //};
-
-                    //DDSCtrl.setBreakFlag(true);
-                    //DDSCtrl.clearPatternList();
-                    //DDSCtrl.patternList = pattern_test;
-                    //DDSCtrl.setBreakFlag(false);
-                    //DDSCtrl.startRepetitivePattern();
-
-#if DDS
-                    // --- Add the new logic for handling the DDS pattern ---
-                    bool ddsInUse = false;
-                    int ddsTriggersSent = 0;
-                    if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
-                    {
-                        // Set break flag to safely clear the old pattern
-                        DDSCtrl.PrepareForNewPattern();
-
-                        // Assign the newly loaded pattern to the DDS controller instance
-                        DDSCtrl.patternList = sequence.DDSPattern;
-                        DDSCtrl.InvokeParameterUpdatedSafely();  // update the DDS controller IU
-                        // Set break flag to false and start the pattern running repetitively
-                        DDSCtrl.startRepetitivePattern();
-                        ddsInUse = true;
-                        // The card is armed for each trigger by DDSCtrl.waitUntilArmed()
-                        // in the iteration loop below (before every runPattern), so no
-                        // trigger lands in the re-queue deadtime.
-                    }
-
-#endif //DDS
+                
                     //try
                     //{
                     //if (config.CameraUsed) prepareCameraControl();
@@ -499,16 +439,9 @@ namespace MOTMaster
                         {
                             if (!config.Debug)
                             {
-#if DDS
-                                // Wait up to 1 s for the DDS to be armed before
-                                // firing this iteration's trigger; if it is still
-                                // not ready after 1 s, continue and fire anyway.
-                                if (ddsInUse) DDSCtrl.waitUntilArmed(1.0);
-#endif //DDS
+
                                 runPattern(sequence);
-#if DDS
-                                if (ddsInUse) ddsTriggersSent++;
-#endif //DDS
+
                             }
                         }
                     }
@@ -518,32 +451,14 @@ namespace MOTMaster
                         {
                             if (!config.Debug)
                             {
-#if DDS
-                                if (ddsInUse) DDSCtrl.waitUntilArmed(1.0);
-#endif //DDS
-                                runPattern(sequence);
-#if DDS
-                                if (ddsInUse) ddsTriggersSent++;
-#endif //DDS
+
                             }
                         }
                     }
 
 
                     watch.Stop();
-#if DDS
-                    // Report how many DDS triggers were sent vs. how many actually
-                    // fired a pattern (missed = sent - fired). "received" is the card
-                    // trigger counter (edges the card latched, -1 if unsupported).
-                    if (ddsInUse)
-                    {
-                        int ddsFired = DDSCtrl.patternsFired;
-                        int ddsReceived = DDSCtrl.getCardTriggerCount();
-                        Console.WriteLine(
-                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, received: {3}",
-                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
-                    }
-#endif //DDS
+
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
@@ -858,49 +773,7 @@ namespace MOTMaster
         }
         #endregion
         /*
-#region NeanderthalDDSController
 
-        public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4, 
-            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
-        {
-            //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
-            List<double> timePar = new List<double>();
-            timePar.Add(time/100.0);
-            List<double> freq = new List<double>(); 
-            freq.Add(freq1);
-            freq.Add(freq2);
-            freq.Add(freq3);
-            freq.Add(freq4);
-            List<double> amp = new List<double>();
-            amp.Add(amp1);
-            amp.Add(amp2);
-            amp.Add(amp3);
-            amp.Add(amp4);
-            List<double> freqSlope = new List<double>();
-            freqSlope.Add(freqSlope1);
-            freqSlope.Add(freqSlope2);
-            freqSlope.Add(freqSlope3);
-            freqSlope.Add(freqSlope4);
-            List<double> ampSlpoe = new List<double>();
-            ampSlpoe.Add(ampSlope1);
-            ampSlpoe.Add(ampSlope2);
-            ampSlpoe.Add(ampSlope3);
-            ampSlpoe.Add(ampSlope4);
-
-            DDSCtrl.clearPatternList();
-            DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
-            
-        }
-
-        public void runDDSPattern()
-        {
-            DDSCtrl.openCard();
-            DDSCtrl.startSinglePattern();
-            // Wait till sequence ends
-            DDSCtrl.closeCard();
-        }
-
-#endregion
         */
         #region Re-Running a script (intended for reloading old scripts)
 
