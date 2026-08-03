@@ -42,6 +42,7 @@ sys.path.append(RootFolder + r"\LatticeEDMScripts")
 import tools as tools
 import System
 import Data
+import zipfile
 
 import copy
 from scipy.optimize import curve_fit
@@ -134,6 +135,29 @@ def ReadAverageScanInZippedXML(Filename):
     Scan = ss.DeserializeScanFromZippedXML(Filename,"average.xml")
     # TODO: Adjust for zip-files with multiple passes
     return Scan
+
+def ReadAllScansInZippedXML(Filename):
+    ss = Data.Scans.ScanSerializer()
+    scans_list = []
+    
+    # 1. Open the zip archive to inspect its contents
+    with zipfile.ZipFile(Filename, 'r') as z:
+        # Get a list of all file names inside the zip file
+        all_files = z.namelist()
+    
+    # 2. Filter for files that end in .xml and are NOT "average.xml"
+    xml_files = [f for f in all_files if f.lower().endswith('.xml') and f != "average.xml"]
+    
+    # 3. Loop through and deserialize each matching XML file
+    for xml_filename in xml_files:
+        try:
+            # Pass the dynamically discovered XML name into your serializer
+            scan = ss.DeserializeScanFromZippedXML(Filename, xml_filename)
+            scans_list.append(scan)
+        except Exception as e:
+            print(f"Error reading {xml_filename}: {e}")
+            
+    return scans_list
 
 def GetTOFs(Scan):
     """Returns the TOFs of a scan. The datasets are On/Off shots and for each 
@@ -316,6 +340,19 @@ def GetGatedAvgCounts(Scan, TOFData,Time,Start,Stop):
     StderrCounts = np.std(RawCounts,axis=1)/np.sqrt(RawCounts.shape[1])
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
     return MeanCounts, StderrCounts, TimeWindow
+
+def GetGatedAvgCounts4Shot(Scan, TOFData,Time,Start,Stop):
+    "This is for processed data in 4-shot patterns. TOFData is already "
+    "background subtracted through YAG On-Off. "
+    "It takes into account that there can be more than 1 shot per point."
+    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    RawCounts = np.sum(TOFData[:,Indi], axis=1)
+    
+    Settings = GetScanSettings(Scan)
+    SPP = Settings["shotsPerPoint"]
+    averages = RawCounts.reshape(-1, SPP).mean(axis=1)
+
+    return averages
 
 def GatedAvgCountsOnOff(Scan,TOFDataOn,TOFDataOff,TimeOn,TimeOff,\
                 SigStart,SigStop,BkgStart,BkgStop):
@@ -534,7 +571,10 @@ def TCL_WM_Calibration(Scan, step=0.01, plot=False, Toprint=True):
              Xunit = " (V)"
         else:
              Xunit = ""
-        xlabel = Settings["channel"] + " " + Settings["param"] + Xunit
+        if Settings["channel"] != None:
+            xlabel = Settings["channel"] + " " + Settings["param"] + Xunit
+        else:
+            xlabel = "Wavemeter lock setpoint (GHz)"
         ylabel = "Relative frequency from %.8g THz"%f_iniTHz
         
         plt.plot(ScanParams, f_relMHz, '.')

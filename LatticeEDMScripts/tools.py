@@ -20,6 +20,15 @@ import glob
 import copy
 from itertools import chain
 
+from tkinter import Tk     # from tkinter import Tk for Python 3.x
+from tkinter.filedialog import askopenfilename,askopenfilenames
+import tkinter as tk
+
+#% Some system settings for convenience
+
+# Create a permanent configuration path in your user folder
+CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".spyder_folder_picker.txt")
+
 # settings
 def set_plots():
     params = {
@@ -69,6 +78,66 @@ def loadCSV(name, path='', skiprow = 0, deli = '', dtype=float):
                        dtype=dtype)
     return data
 
+def get_file_(Filetypes):
+    """
+    This code allows importing the file with a GUI window and also fetches relevant.
+    """
+    root = Tk()
+    root.withdraw()
+    root.call('wm', 'attributes', '.', '-topmost', True)
+    file_paths = askopenfilenames(filetypes=Filetypes)
+    # file_names = file_path.split("/")[-1]
+    # file_dates = " ".join(file_path.split("/")[-3:-1])
+    #file_scan_type = file_name.split("_")[1]
+    #file_beams_used = file_name.split("_")[2]
+
+    scans = []
+    for file_path in file_paths:
+        file_name = file_path.split("/")[-1]
+        file_date = " ".join(file_path.split("/")[-3:-1])
+        scans.append([file_path, file_name, file_date])
+
+    return scans
+
+def get_last_directory():
+    """Reads the saved path from the hidden file, falls back to Home folder if missing."""
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            saved_path = f.read().strip()
+            if os.path.exists(saved_path):  # Verify the folder still exists
+                return saved_path
+    return os.path.expanduser("~")  # Fallback default
+
+def save_last_directory(path):
+    """Saves the selected path permanently to the configuration file."""
+    with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+        f.write(path)
+
+
+def select_folder():
+    # 1. Fetch the permanently stored starting location
+    start_dir = get_last_directory()
+
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+
+    # 2. Open the dialogue box pointing to our saved path
+    folder_path = tk.filedialog.askdirectory(
+        title="Select a Project Folder", initialdir=start_dir
+    )
+
+    root.destroy()  # Clean up memory
+
+    if folder_path:
+        # 3. Permanently write the new path to disk
+        save_last_directory(folder_path)
+        print(f"Directory Saved & Opened: {folder_path}")
+        return folder_path
+    else:
+        print("Selection cancelled. Using last saved location next time.")
+        return None
+
 def MovingAverage(window_size, data):
     Data_series = pd.Series(data)
    
@@ -94,6 +163,29 @@ def flattenList(xss):
 def flattenAnyList(list_of_lists):
     return [*chain(*list_of_lists)]
 
+def VelocityfromFshift(dF, F0, angle):
+    """
+    Parameters
+    ----------
+    dF : TYPE
+        Relative frequency in MHz.
+    F0 : TYPE
+        Reference frequency in THz.
+    angle : TYPE
+        Angle of detection in degrees.
+
+    Returns
+    -------
+    v : TYPE
+        DESCRIPTION.
+    dv : TYPE
+        DESCRIPTION.
+
+    """
+    angle_rad = angle * np.pi / 180
+    v = -dF*1e6 * 299792458 / (F0*1e12 * np.cos(angle_rad))
+    #dv = dFerr/dF * v
+    return v
 
 # Functions to fit
 def Line(x, a, b):
@@ -161,7 +253,7 @@ def FitGaussian(Figure, xdata, ydata, p0, xstep=0.01, \
 
 def Gaussian_FWHM(w, A, w0, dw, shift):
     """ Implements a generalised gaussian profile sampled on w. """
-    return A*(2 * np.sqrt(np.log(2) / np.pi) / dw ) * np. exp(- 4 * np.log(2) * (w - w0)**2 / dw**2)+shift
+    return A * np. exp(- 4 * np.log(2) * (w - w0)**2 / dw**2)+shift #A*(2 * np.sqrt(np.log(2) / np.pi) / dw )
 
 def double_Gaussian_FWHM(w, A1, w01, dw1, A2, w02, dw2, shift):
     return Gaussian_FWHM(w, A1, w01, dw1, shift) + Gaussian_FWHM(w, A2, w02, dw2, shift)

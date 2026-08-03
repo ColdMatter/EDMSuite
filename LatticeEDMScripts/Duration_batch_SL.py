@@ -46,18 +46,18 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "July 2026"
-date = "24"
+date = "30"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
 print(drive)
 
-pattern="*Q0*.zip"
+pattern="*duration*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["004", "005", "006"]
+sele = ["001", "005", "021"]
 
 #%%
 if len(files) > 0:
@@ -85,8 +85,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 19
-SigEnd = 21
+SigStart = 24
+SigEnd = 27
 BkgStart = 70
 BkgEnd = 80
 
@@ -171,13 +171,13 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 
 '''
 
-types = {'004':'004 No MW', '005':'005 With MW', '006':'006 With MW'}
-PlotFit = {'004':False, '005':True, '006':False}
-MovAvg = {'004':False, '005':True, '006':False}
+types = {'001':'001 4f v0 R&Q', '005':'005 MW only', '021':'021 4f v0v1 R'}
+PlotFit = {'001':True, '005':True, '021':True}
+MovAvg = {'001':False, '005':False, '021':False}
 
-BR = b0 #+ b1 + b2 + b3
+BR = b0 + b1 + b2 + b3
 
-tspan = np.arange(0., 2000, 0.1)
+tspan = np.arange(0., 8000, 0.1)
 
 for i in range(0, len(sele)):
     Scan = Data[fileLabels[i]]
@@ -190,12 +190,12 @@ for i in range(0, len(sele)):
     plt.plot(ScanParams, Ratio, '.', label=types[fileLabels[i]], color=colors[i])
     
     if PlotFit[fileLabels[i]]:
+        fit = fit_results['best fit']
+        fiterr = fit_results['error']
+        
         plt.plot(tspan, tools.exp_decay(tspan, *fit_results['best fit']), color=colors[i],\
                  label="Decay time (μs): %.4g +- %.3g"%(fit[1], fiterr[1]))
         print("\n File " + fileLabels[i] + ", " + types[fileLabels[i]], ": ", fit_results)
-        
-        fit = fit_results['best fit']
-        fiterr = fit_results['error']
         
         Scat = -1 / (fit[1] * np.log(BR))
         Scaterr = -fiterr[1] / (fit[1] * np.log(BR)) / (fit[1]**2 * np.log(BR))
@@ -204,10 +204,10 @@ for i in range(0, len(sele)):
         
         print("\n")
 
-plt.title("MW effect on pumping with Q(0) probe, July 24th 2026")
+plt.title("MW and 4f repump effect on pumping, July 30th 2026")
 plt.xlabel("V0 slowing duration (μs)")
 plt.ylabel("Population remaining in optical cycle")
-plt.legend(bbox_to_anchor=(1.05, 1.1))
+plt.legend(bbox_to_anchor=(1.6, 1.1))
 plt.show()    
 
 #%% Combine multiple dataset into one
