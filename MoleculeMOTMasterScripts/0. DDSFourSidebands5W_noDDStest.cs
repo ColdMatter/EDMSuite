@@ -40,7 +40,7 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser250, 1250)
         
-        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
@@ -49,8 +49,8 @@ public class Patterns : MOTMasterScript
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.3; // -0.5 is 480MHz
 
-        Parameters["BXAOM1att"] = 3.5;//7.85;//3.5;//7.2;
-        Parameters["BXAOM2att"] = 3.7;
+        Parameters["BXAOM1att"] = 5.0;// 3.5;//7.85;//3.5;//7.2;
+        Parameters["BXAOM2att"] = 5.0;
 
         Parameters["BXAttenuation"] = 0.91;
 
@@ -247,8 +247,6 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "DDS_Analog_Trg");  // DDS trigger
-
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"]-100, (2 * (int)Parameters["SlowingChirpDuration"])+20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
@@ -295,6 +293,7 @@ public class Patterns : MOTMasterScript
         p.AddEdge("TweezerChamberRbMOTAOMs", 10000, false);
 
 
+      
 
 
         return p;
@@ -326,8 +325,8 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("BXAOM1att", 0, (double)Parameters["BXAOM1att"]);
         p.AddAnalogValue("BXAOM2att", 0, (double)Parameters["BXAOM2att"]);
         
-        p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
-        p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+        //p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
+        //p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
         
         p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
         p.AddAnalogValue("BXAttenuation", 0, (double)Parameters["BXAttenuation"]); //vva for Tcool, correct sideband structure
