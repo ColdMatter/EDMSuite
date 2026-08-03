@@ -15,7 +15,7 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 260000;
+        Parameters["PatternLength"] = 65000;
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 4000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -112,7 +112,7 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsOffValue"] = -0.1;
 
         // magtrap //
-        Parameters["MagtrapDuration"] = 10000;
+        Parameters["MagtrapDuration"] = 20000;
 
         Parameters["MOTCoilsMagtrapValue"] = 1.5;
 
@@ -203,7 +203,7 @@ public class Patterns : MOTMasterScript
         Parameters["BlueMOTField"] = 1.42;
         Parameters["BlueMOTRampDuration"] = 4000;
         Parameters["BlueMOTDuration"] = 100;
-        Parameters["FreeExpTime"] = 1;
+        Parameters["FreeExpTime"] = 1000;
 
         // END OF PATTERN //
 
@@ -258,8 +258,8 @@ public class Patterns : MOTMasterScript
             (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
             (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"]);
 
-        addDDSPattern(p, "image", imageTime - 100,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
+        addDDSPattern(p, "image", imageTime,
+            (double)Parameters["ResonanceDDS1"], (double)Parameters["ResonanceDDS2"], (double)Parameters["ResonanceDDS3"], (double)Parameters["ResonanceDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
         return p;
@@ -325,12 +325,13 @@ public class Patterns : MOTMasterScript
 
         // Time of flight PMT trigger
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
+        p.AddEdge("test10", 0, true); //Shutter CaF light to tweezer chamber - OPEN
 
         // CAMERA //
 
         //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
 
-        p.Pulse(0, imageTime, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger for MOT recap 
+        p.Pulse(0, imageTime, (int)Parameters["TempTriggerDuration"], "cameraTrigger");  //camera trigger for MOT recap 
 
         //p.Pulse(patternStartBeforeQ, imageTime + (int)Parameters["Frame0TriggerDuration"] + 5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");//camera trigger bg
 
@@ -440,12 +441,8 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);
         p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsOffValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCooling2end, (double)Parameters["MOTCoilsMagtrapValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);// in mot imaging
-        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsOffValue"]);// free space imaging
-        //p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
-        //p.AddAnalogValue("MOTCoilsCurrent", imageTime - 100, 1.0);
-        //p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"], 0.0);
-        p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"], (double)Parameters["MOTCoilsOffValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", MagtrapEnd, (double)Parameters["MOTCoilsOffValue"]);// in mot imaging
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"] + 500, 0.0);
 
 
         //p.AddAnalogValue("lightSwitch", 1000, 2.0);

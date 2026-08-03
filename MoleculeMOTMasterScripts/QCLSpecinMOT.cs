@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 7000;
         Parameters["Frame1Trigger"] = 5500;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
@@ -40,7 +40,7 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser250, 1250)
         
-        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
@@ -183,6 +183,8 @@ public class Patterns : MOTMasterScript
         Parameters["MOTAmpDDS2"] = 0.07;
         Parameters["MOTAmpDDS3"] = 0.04;
         */
+
+        Parameters["QCL_interrogation_duration"] = 6000;
     }
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
@@ -247,7 +249,8 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "DDS_Analog_Trg");  // DDS trigger
+        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "cafOptPumpingAOM");  // DDS trigger
+        p.AddEdge("test10", 0, true); //Shutter CaF light to tweezer chamber - OPEN
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"]-100, (2 * (int)Parameters["SlowingChirpDuration"])+20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
@@ -258,6 +261,8 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"] + (int)Parameters["Frame0TriggerDuration"] + (int)Parameters["QCL_interrogation_duration"] + 500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
 
         //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //camera trigger for first frame
 
@@ -274,6 +279,9 @@ public class Patterns : MOTMasterScript
 
 
         p.Pulse(patternStartBeforeQ, 2000, 10, "tofTrigger");
+
+        // QCL shutter
+        p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"] + (int)Parameters["Frame0TriggerDuration"], (int)Parameters["QCL_interrogation_duration"], "QCLShutter");
 
         //p.AddEdge("rb2DMOTShutter", 0, true);
         //p.AddEdge("rb2DMOTShutter", 5000, false);
