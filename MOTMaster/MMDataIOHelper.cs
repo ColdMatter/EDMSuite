@@ -116,6 +116,9 @@ namespace MOTMaster
         {
             storeDigitalPattern(saveFolder + fileTag + "_digitalPattern.json", sequence);
             storeAnalogPattern(saveFolder + fileTag, sequence);
+#if DDS
+            storeDDSPattern(saveFolder + fileTag + "_ddsPattern.json", sequence);
+#endif //DDS
             storeDictionary(saveFolder + fileTag + "_parameters.txt", dict);
             File.Copy(pathToPattern, saveFolder + fileTag + "_script.cs");
             File.Copy(pathToHardwareClass, saveFolder + fileTag + "_hardwareClass.cs");
@@ -335,6 +338,27 @@ namespace MOTMaster
             }
         }
         
+#if DDS
+        /// <summary>
+        /// Save the DDS pattern alongside the digital and analog ones, so a saved
+        /// run records what the RF was actually doing.
+        /// </summary>
+        /// <remarks>
+        /// Written in the units the script wrote it in -- time in ms, frequency in
+        /// MHz, slopes per ms -- so it can be read next to the copy of the .cs file
+        /// in the same zip. Scripts that do not drive the DDS write no file.
+        /// </remarks>
+        private void storeDDSPattern(string dataStoreFilePath, MOTMasterSequence sequence)
+        {
+            if (sequence.DDSPattern == null || sequence.DDSPattern.Count == 0) return;
+
+            SpectrumDDS.DDSPattern pattern =
+                SpectrumDDS.DDSPattern.FromLegacyDictionary(sequence.DDSPattern);
+            SpectrumDDS.DDSPatternFile.Save(pattern, dataStoreFilePath,
+                "written by MOTMaster from the script's GetDDSPattern()");
+        }
+#endif //DDS
+
         private string getDataID(string directory, string element, int batchNumber)
         {
             DateTime dt = DateTime.Now;

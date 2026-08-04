@@ -556,9 +556,13 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj" Condition="$(DefineConstants.Contains('DDS'))">
-      <Project>{0afc0329-ad96-4729-92ae-0fb96d573d05}</Project>
-      <Name>NeanderthalDDSController</Name>
+    <ProjectReference Include="..\SpectrumDDS\SpectrumDDS.csproj" Condition="$(DefineConstants.Contains('DDS'))">
+      <Project>{3a1d4c8e-6b52-4f7a-9d33-1c0e58b7a921}</Project>
+      <Name>SpectrumDDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpectrumDDSController\SpectrumDDSController.csproj" Condition="$(DefineConstants.Contains('DDS'))">
+      <Project>{7f2b93a6-10dc-4e5b-b8c1-4d6f2a03e914}</Project>
+      <Name>SpectrumDDSController</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>

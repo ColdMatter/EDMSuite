@@ -78,6 +78,16 @@ namespace MOTMaster
 
         MMDataIOHelper ioHelper;
 
+#if DDS
+        /// <summary>
+        /// Proxy to SpectrumDDSController, which owns the Spectrum card handle in
+        /// its own process so that manual control works with MOTMaster closed.
+        /// Only the CaF configuration defines DDS, so no other experiment sees any
+        /// of this.
+        /// </summary>
+        private SpectrumDDSController.Controller ddsController;
+#endif //DDS
+
         #endregion
 
         #region Initialisation
@@ -142,6 +152,14 @@ namespace MOTMaster
       
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
+
+#if DDS
+            // Just a proxy: nothing connects until it is first used, so MOTMaster
+            // still starts when SpectrumDDSController is not running.
+            ddsController = (SpectrumDDSController.Controller)Activator.GetObject(
+                typeof(SpectrumDDSController.Controller),
+                "tcp://127.0.0.1:1818/controller.rem");
+#endif //DDS
 
             ScriptLookupAndDisplay();
 
@@ -410,6 +428,12 @@ namespace MOTMaster
             if (status == RunningState.stopped)
             {
                 status = RunningState.running;
+#if DDS
+                // Declared out here so the finally can stop the shot loop however
+                // the run ends.
+                bool ddsInUse = false;
+                int ddsTriggersSent = 0;
+#endif //DDS
                 try
                 {
                 Stopwatch watch = new Stopwatch();
@@ -418,7 +442,26 @@ namespace MOTMaster
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                
+#if DDS
+                    // Hand the script's DDS pattern to the card and leave it armed.
+                    // A script with no DDS pattern -- or one returning null -- just
+                    // runs as it always did.
+                    if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
+                    {
+                        // A script that wants the DDS, run without it, is not the
+                        // experiment anyone asked for -- the AOMs would sit wherever
+                        // they were last left. So a failure here stops the run
+                        // instead of firing the sequence anyway. Nothing has been
+                        // built or armed at this point, so there is nothing to undo.
+                        if (!armDDS(sequence.DDSPattern))
+                        {
+                            status = RunningState.stopped;
+                            return;
+                        }
+                        ddsInUse = true;
+                    }
+#endif //DDS
+
                     //try
                     //{
                     //if (config.CameraUsed) prepareCameraControl();
@@ -439,9 +482,16 @@ namespace MOTMaster
                         {
                             if (!config.Debug)
                             {
-
+#if DDS
+                                // Do not fire into the DDS re-queue deadtime. If it
+                                // is still not armed after a second, go anyway and
+                                // let the tally at the end report the miss.
+                                if (ddsInUse) ddsController.WaitUntilArmed(1.0);
+#endif //DDS
                                 runPattern(sequence);
-
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
                             }
                         }
                     }
@@ -451,13 +501,33 @@ namespace MOTMaster
                         {
                             if (!config.Debug)
                             {
-
+#if DDS
+                                if (ddsInUse) ddsController.WaitUntilArmed(1.0);
+#endif //DDS
+                                runPattern(sequence);
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
                             }
                         }
                     }
 
 
                     watch.Stop();
+#if DDS
+                    if (ddsInUse)
+                    {
+                        // sent   = triggers MOTMaster fired
+                        // fired  = patterns the DDS ran to completion
+                        // received = the card's own trigger counter, which only
+                        //            means anything as a difference
+                        int ddsFired = ddsController.PatternsFired;
+                        int ddsReceived = ddsController.GetCardTriggerCount();
+                        Console.WriteLine(
+                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
+                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
+                    }
+#endif //DDS
 
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
@@ -525,6 +595,16 @@ namespace MOTMaster
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+#if DDS
+                finally
+                {
+                    // Every way out of the run leads here, including the early return
+                    // when the camera data does not arrive. A DDS still arming itself
+                    // after the last trigger is what leaves stale shots queued on the
+                    // card for the next run to play through.
+                    if (ddsInUse) stopDDS();
+                }
+#endif //DDS
                 status = RunningState.stopped;
             }
         }
@@ -532,6 +612,159 @@ namespace MOTMaster
         #endregion
 
         #region private stuff
+
+#if DDS
+        /// <summary>
+        /// Load the script's DDS pattern onto the card and leave it armed, saying
+        /// what is wrong instead of letting the run die.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <see cref="Go(Dictionary{string, object})"/> runs on its own thread, so
+        /// anything thrown out of the DDS calls used to take MOTMaster down with
+        /// nothing on screen to say why. There are three ways they throw, and all
+        /// three are things somebody will hit: the remoting call fails when
+        /// SpectrumDDSController is not running, the driver refuses a pattern while
+        /// the card is closed, and it rejects a pattern that asks for more amplitude
+        /// than the clamp allows.
+        /// </para>
+        /// <para>
+        /// Gated on the DDS compile symbol, which only the CaF configuration
+        /// defines.
+        /// </para>
+        /// </remarks>
+        /// <returns>True if the card is armed and the run may go ahead.</returns>
+        private bool armDDS(Dictionary<string, List<List<double>>> ddsPattern)
+        {
+            // Any call would do to find out whether the controller is there at all;
+            // IsOpen is the cheapest, and answers the next question too.
+            bool cardOpen;
+            try
+            {
+                cardOpen = ddsController.IsOpen;
+            }
+            catch (Exception ex)
+            {
+                offerToLaunchDDSController(ex);
+                return false;
+            }
+
+            if (!cardOpen)
+            {
+                // Opening the card enables no output stage and emits nothing, so
+                // this is safe to offer from here.
+                if (MessageBox.Show(
+                        "This script has a DDS pattern, but the Spectrum DDS card is not open.\n\n" +
+                        "Open it now?",
+                        "Spectrum DDS not open",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return false;
+
+                try
+                {
+                    ddsController.OpenCard();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        "The Spectrum DDS card would not open, so the run has been stopped.\n\n" +
+                        ex.Message,
+                        "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            try
+            {
+                ddsController.PrepareForNewPattern();
+                ddsController.patternList = ddsPattern;
+                ddsController.StartRepetitivePattern();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "The Spectrum DDS would not take this script's pattern, so the run has been stopped.\n\n" +
+                    ex.Message,
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Stop the DDS re-arming once this run has fired its last trigger.
+        /// </summary>
+        /// <remarks>
+        /// Only the loop stops. The card is left alone, so the four channels hold
+        /// the last event's frequency and amplitude until the next pattern is
+        /// loaded, and the one shot the loop had already armed stays queued until
+        /// PrepareForNewPattern discards it. Failing here must not take the run's
+        /// saving and reporting down with it, so it is reported and swallowed.
+        /// </remarks>
+        private void stopDDS()
+        {
+            try
+            {
+                ddsController.StopRepetitivePattern();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not stop the DDS shot loop: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Say that the DDS controller is not running, and offer to start it.
+        /// </summary>
+        /// <remarks>
+        /// SpectrumDDSController.exe is a ProjectReference of this project under the
+        /// DDS symbol, so the build drops it beside MOTMaster.exe.
+        /// </remarks>
+        private void offerToLaunchDDSController(Exception ex)
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                       "SpectrumDDSController.exe");
+
+            if (!File.Exists(path))
+            {
+                MessageBox.Show(
+                    "This script has a DDS pattern, but SpectrumDDSController is not running, " +
+                    "so the run has been stopped.\n\n" + ex.Message +
+                    "\n\nIt could not be started from here either: there is no " +
+                    "SpectrumDDSController.exe at\n" + path,
+                    "Spectrum DDS not running", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (MessageBox.Show(
+                    "This script has a DDS pattern, but SpectrumDDSController is not running, " +
+                    "so the run has been stopped.\n\n" + ex.Message + "\n\nLaunch Spectrum DDS?",
+                    "Spectrum DDS not running",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(path)
+                {
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                    UseShellExecute = true,
+                });
+
+                // It opens the card itself, but that takes a few seconds and this
+                // thread should not sit and block the run button waiting for it.
+                MessageBox.Show(
+                    "Spectrum DDS is starting. It opens the card by itself; once the " +
+                    "Status tab says so, press Go again.",
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception launchException)
+            {
+                MessageBox.Show("Spectrum DDS would not start:\n\n" + launchException.Message,
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+#endif //DDS
 
         private string constructSaveDirectory()
         {

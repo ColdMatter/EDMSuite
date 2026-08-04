@@ -1,3 +1,8 @@
+# Safety
+**I never run a MOTMaster script or fire the experiment.** Running a pattern at the wrong moment
+risks human harm and equipment damage. Anything that drives the NI pattern generators, fires a
+sequence, or triggers the experiment is done **by the user, at a time of their choosing**.
+
 # General
 This project includes the control code for the molecular beam based experiments at the Centre for Cold Matter, Imperial College London. 
 It is currently used to drive experiments including the YbF electron EDM measurement, laser cooling of CaF and SrF, buffer gas cooling of YbF, Li/LiH sympathetic cooling, and precsion measurement of CH transitions to test the stability of fundamental constants.
