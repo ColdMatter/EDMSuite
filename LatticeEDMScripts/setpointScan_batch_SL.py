@@ -41,8 +41,8 @@ colors = prop_cycle.by_key()['color']
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "July 2026"
-date = "29"
+month = "Aug 2026"
+date = "07"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -53,7 +53,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["003", "004", "005", "006"]
+sele = ["008", "009"]
 
 #%%
 LoadPasses = True
@@ -90,8 +90,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 22
-SigEnd = 30
+SigStart = 24
+SigEnd = 27
 BkgStart = 70
 BkgEnd = 80
 
@@ -307,7 +307,7 @@ title2="Gated TOF over " + Settings["param"] + " with " +\
 
 #plt.plot((Xstack_sorted-f_offset)*1e6, Rstack_sorted)
 plt.plot((MoveAvg_f-f_offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
-plt.xlabel("Relative frequency (MHz) to %g THz"%f_iniTHz)
+plt.xlabel("Relative frequency (MHz) to %.9g THz"%f_offset)
 plt.ylabel("Ratio")
 plt.title(title2)
 plt.legend()

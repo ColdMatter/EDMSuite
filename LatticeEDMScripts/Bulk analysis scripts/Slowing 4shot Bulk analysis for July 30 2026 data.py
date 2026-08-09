@@ -110,8 +110,8 @@ angle = 45 # Angle of probe to slowing
 Resonance = 542.809124 #in THz, rest frame probe frequency
 
 showTOF = False # If true, plots an example TOF before and after bkg subtraction
-showIntermediate = False # If true, show unnormalised data with frequency/setpoint axis
-showProcessed = True # If true, show final processed plot with fit
+showIntermediate = True # If true, show unnormalised data with frequency/setpoint axis
+showProcessed = False # If true, show final processed plot with fit
 
 fTHz = 542
 
