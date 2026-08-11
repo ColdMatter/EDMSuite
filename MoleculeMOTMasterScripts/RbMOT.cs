@@ -25,7 +25,7 @@ public class Patterns : MOTMasterScript
         Parameters["HeliumShutterDuration"] = 2000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame0Trigger"] = 7000;
         Parameters["Frame1Trigger"] = 5500;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["CameraTriggerTransverseTime"] = 120;
@@ -40,7 +40,7 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser250, 1250)
         
-        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
@@ -193,7 +193,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS0"], (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"],
             (double)Parameters["MOTAmpDDS0"], (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -247,7 +247,8 @@ public class Patterns : MOTMasterScript
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "DDS_Analog_Trg");  // DDS trigger
+        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "cafOptPumpingAOM");  // DDS trigger
+        p.AddEdge("test10", 0, true); //Shutter CaF light to tweezer chamber - OPEN
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"]-100, (2 * (int)Parameters["SlowingChirpDuration"])+20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
@@ -318,6 +319,7 @@ public class Patterns : MOTMasterScript
         p.AddChannel("BXAOM2att");
         p.AddChannel("ODT90att");
         p.AddChannel("ODT70att");
+        p.AddChannel("transferCoils");
         //p.AddChannel("DipoleRetroX");
         //p.AddChannel("DipoleRetroY");
 
@@ -356,6 +358,9 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
+
+        p.AddLinearRamp("transferCoils", HandoverStart, (int)Parameters["HandoverDur"], 10.0);
+        p.AddLinearRamp("transferCoils", TransferCoilsOff, (int)Parameters["HandoverDur"], 0.0);
 
         return p;
     }

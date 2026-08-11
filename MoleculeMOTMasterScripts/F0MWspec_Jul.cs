@@ -38,14 +38,14 @@ public class Patterns : MOTMasterScript
         Parameters["PMTTriggerDuration"] = 10;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -2.0;
-        Parameters["yShimLoadCurrent"] = -2.4;
-        Parameters["zShimLoadCurrent"] = 0.32;
-        
-        Parameters["xShim"] = 10.0;
+        Parameters["xShimLoadCurrent"] = -1.85;
+        Parameters["yShimLoadCurrent"] = -3.0;
+        Parameters["zShimLoadCurrent"] = 0.22;
+        /*
+        Parameters["xShim"] = -2.3;
         Parameters["yShim"] = -2.4;
         Parameters["zShim"] = 0.32;
-        
+        */
         // SLOWING //
 
         // Slowing Chirp
@@ -170,7 +170,7 @@ public class Patterns : MOTMasterScript
         int ShimOn = OpticalPumpingStart + (int)Parameters["OpticalPumpDuration"];
         int MicrowaveStart = ShimOn + (int)Parameters["shim_settle"]; // 2.5 ms to allow shim values to settle
         int ShimOff = MicrowaveStart + (int)Parameters["MW_max_time"];
-        int Recap = ShimOff; // 2.5 ms to allow shim values to settle
+        //int Recap = ShimOff; // 2.5 ms to allow shim values to settle
 
         addDDSPattern(p, "MOT1", 0,
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
@@ -197,11 +197,11 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"],
             (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["LightoffDDS4"]);
         
-        addDDSPattern(p, "MOTRECAPRampStart", Recap+ (int)Parameters["MOTrecaplight_delay"],
+        addDDSPattern(p, "MOTRECAPRampStart", ShimOff + (int)Parameters["MOTrecaplight_delay"],
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
         
-        return p;
+        return y;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
@@ -257,7 +257,7 @@ public class Patterns : MOTMasterScript
         int ShimOn = OpticalPumpingStart + (int)Parameters["OpticalPumpDuration"];
         int MicrowaveStart = ShimOn + (int)Parameters["shim_settle"]; // 2.5 ms to allow shim values to settle
         int ShimOff = MicrowaveStart + (int)Parameters["MW_max_time"];
-        int Recap = ShimOff; // 2.5 ms to allow shim values to settle
+        //int Recap = ShimOff; // 2.5 ms to allow shim values to settle
 
         p.AddEdge("v0ddsSwitchD", 0, true);
         p.AddEdge("v0ddsSwitchD", (int)Parameters["PatternLength"] - 1000, false); //trigger for rb experiment
@@ -275,12 +275,12 @@ public class Patterns : MOTMasterScript
         //p.Pulse(0, image, (int)Parameters["TempTriggerDuration"], "cameraTrigger"); //camera trigger for temperature
 
         // recap imaging
-        /*
+
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
         //p.Pulse(0, ODTLoadStart - 200, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");//camera trigger for recap
-        p.Pulse(0, Recap + 300, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
+        p.Pulse(0, ShimOff + 300, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
-        *//
+        
         // SLOWING //
 
         // preset load
@@ -296,7 +296,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
 
         // MW switch
-        //p.Pulse(0, MicrowaveStart, (int)Parameters["MW_dur"], "microwaveC");
+        p.Pulse(0, MicrowaveStart, (int)Parameters["MW_dur"], "microwaveC");
         //p.Pulse(0, MicrowaveStart, (int)Parameters["QCL_dur"] - 350, "QCLShutter");
 
         return p;
@@ -313,7 +313,7 @@ public class Patterns : MOTMasterScript
         int ShimOn = OpticalPumpingStart + (int)Parameters["OpticalPumpDuration"];
         int MicrowaveStart = ShimOn + (int)Parameters["shim_settle"]; // 2.5 ms to allow shim values to settle
         int ShimOff = MicrowaveStart + (int)Parameters["MW_max_time"];
-        int Recap = ShimOff; // 2.5 ms to allow shim values to settle
+        //int Recap = ShimOff; // 2.5 ms to allow shim values to settle
 
         p.AddChannel("TCoolSidebandVCO");
         p.AddChannel("BXAttenuation");
@@ -341,7 +341,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        
+        /*
         p.AddAnalogValue("xShimCoilCurrent", ShimOn, (double)Parameters["xShim"]);
         p.AddAnalogValue("yShimCoilCurrent", ShimOn, (double)Parameters["yShim"]);
         p.AddAnalogValue("zShimCoilCurrent", ShimOn, (double)Parameters["zShim"]);
@@ -349,7 +349,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", ShimOff, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", ShimOff, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", ShimOff, (double)Parameters["zShimLoadCurrent"]);
-        
+        */
 
         // SLOWING //
 
@@ -377,7 +377,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", 0, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]); // switch off for molasses
-        p.AddAnalogValue("MOTCoilsCurrent", Recap, (double)Parameters["MOTCoilsCurrentValue"]);
+        p.AddAnalogValue("MOTCoilsCurrent", ShimOff, (double)Parameters["MOTCoilsCurrentValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", (int)Parameters["MOTCoilsSwitchOff"], 0.0);
 
         return p;
