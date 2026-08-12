@@ -70,6 +70,9 @@ namespace SpectrumDDS
         [DllImport(Dll, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Ansi)]
         private static extern uint spcm_dwGetErrorInfo_i32(IntPtr device, IntPtr errorReg, IntPtr errorValue, StringBuilder errorText);
 
+        [DllImport(Dll, CallingConvention = CallingConvention.Winapi)]
+        private static extern uint spcm_dwSetParam_ptr(IntPtr device, int register, byte[] buffer, ulong length);
+
         private IntPtr handle = IntPtr.Zero;
 
         // Serialises individual driver calls, so that a status poll from the GUI
@@ -195,6 +198,30 @@ namespace SpectrumDDS
         private static string Describe(string op, int register)
         {
             return string.Format("{0}(register {1})", op, register);
+        }
+
+        /// <summary>
+        /// Write a custom line to the driver's debug log (SPC_WRITE_TO_LOG), for
+        /// marking connection/pattern boundaries when the debug log is on.
+        /// </summary>
+        /// <remarks>
+        /// The debug log is driver-global, not tied to a device handle -- the
+        /// manual's own example calls this with a NULL handle -- so this works
+        /// whether or not this card is open, and deliberately does not go through
+        /// <see cref="Check"/>: a logging call failing (for example because debug
+        /// logging is off) must never be allowed to break card operation.
+        /// </remarks>
+        public static void WriteLogLine(string text)
+        {
+            try
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(text);
+                spcm_dwSetParam_ptr(IntPtr.Zero, SpcmRegs.SPC_WRITE_TO_LOG, bytes, (ulong)bytes.Length);
+            }
+            catch
+            {
+                // Best-effort diagnostics only.
+            }
         }
     }
 }

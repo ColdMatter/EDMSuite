@@ -32,6 +32,9 @@ namespace SpectrumDDS
         public const int M2STAT_CARD_TRIGGER = 0x2;
         public const int M2STAT_CARD_READY = 0x4;
 
+        /// <summary>Writes a custom line to the driver's debug log. Driver-global -- called with a NULL device handle.</summary>
+        public const int SPC_WRITE_TO_LOG = 121;
+
         // -- card identity ---------------------------------------------------
         public const int SPC_PCITYP = 2000;
         public const int SPC_PCISERIALNO = 2030;

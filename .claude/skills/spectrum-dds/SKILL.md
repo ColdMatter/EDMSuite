@@ -1,6 +1,6 @@
 ---
 name: spectrum-dds
-description: Working with the Spectrum M4i.9622 DDS card that drives the MoleculeMOT (cafmot) AOMs — its driver (SpectrumDDS/), its GUI (SpectrumDDSController/), and its MOTMaster integration. Use this whenever the task touches the DDS card, RF/AOM frequencies or amplitudes, DDS patterns, GetDDSPattern, addDDSPattern, DDSPatternBuilder, spcm_win64.dll, spcm_core, SPC_DDS_* registers, DDS_Analog_Trg, core-to-channel routing, or the spectrum_dds_chapters manual — and also when a symptom points at it without naming it: RF not coming out of an AOM, a MOT script's frequencies not changing, "card is still running", "value not allowed", "the setup isn't valid", queue underrun/overrun, a pattern running one step out of sequence, or the CaF configuration failing to build. The card contradicts its own manual in nine documented places, so reason from this skill rather than from the PDF.
+description: Working with the Spectrum M4i.9622 DDS card that drives the MoleculeMOT (cafmot) AOMs — its driver (SpectrumDDS/), its GUI (SpectrumDDSController/), and its MOTMaster integration. Use this whenever the task touches the DDS card, RF/AOM frequencies or amplitudes, DDS patterns, GetDDSPattern, addDDSPattern, DDSPatternBuilder, spcm_win64.dll, spcm_core, SPC_DDS_* registers, DDS_Analog_Trg, core-to-channel routing, spcmdrv_debug.txt, driver debug log level/path, or the spectrum_dds_chapters manual — and also when a symptom points at it without naming it: RF not coming out of an AOM, a MOT script's frequencies not changing, "card is still running", "value not allowed", "the setup isn't valid", queue underrun/overrun, a pattern running one step out of sequence, missed shots or the software hanging during a run, or the CaF configuration failing to build. The card contradicts its own manual in nine documented places, so reason from this skill rather than from the PDF.
 ---
 
 # Spectrum DDS (M4i.9622) — MoleculeMOT
@@ -37,7 +37,7 @@ first unless they have just asked for exactly that.
 | `SpectrumDDS/` | Driver class library (net461). `SpcmCard` P/Invoke, `SpcmRegs`, `DDSPattern`, `DDSPatternCompiler`, `SpectrumDDSDriver`. |
 | `SpectrumDDSController/` | Standalone WinForms app. Owns the card handle, publishes remoting on TCP 1818. |
 | `MOTMaster/` | Integration, entirely behind `#if DDS`. |
-| `dds_python/` | Python bench scripts and `HANDOFF.md`, the running record of what was measured. |
+| `dds_python/` | Python bench scripts |
 | `spectrum_dds_chapters/` | The manual. Chapter 17 = DDS50 (this card), 11 = triggers, 12 = multi-purpose IO. |
 
 Read `references/codebase.md` before changing any C# or MOTMaster wiring — it has
@@ -202,6 +202,59 @@ per-event. A pattern's XIO column is still edited, saved and stored with the run
 just drives nothing. `SpectrumDDSDriver.XioMarkersRouted` records this and the GUI
 status tab says so, so it fails loudly rather than silently.
 
+## Debug logging
+
+The driver's own debug log (`spcmdrv_debug.txt`, historically `E:\SpectrumLog\`)
+is not something the driver exposes cleanly through the SDK — but it is not a
+black box either. Two undocumented-but-discoverable facts, both confirmed live
+on this card without touching MOTMaster or firing anything:
+
+- **Level, path and append-mode are an ordinary registry key**, the same one
+  Spectrum Control Center's Debugging tab edits:
+  `HKCU\SOFTWARE\Spectrum GmbH\spcm-driver\Debug`, values `LogLevel` (DWORD),
+  `LogPath` (string, a directory) and `LogAppend` (DWORD). There is no
+  `FileName` value — the driver always writes a fixed `spcmdrv_debug.txt` into
+  `LogPath`. `SpectrumDDS/DebugLogSettings.cs` reads and writes this directly,
+  and `SpectrumDDSController` has its own "Debug log level / path" panel on the
+  Status tab — Control Center is no longer needed for this.
+- **Registry changes are not picked up by an already-open connection.**
+  Confirmed on the bench: changing `LogLevel` in the registry while a card was
+  open and logging kept the old verbosity going indefinitely, with no sign of
+  it being re-read. A level or path change only takes effect the next time the
+  card is opened — plan any UI or script around that, not around it applying
+  live.
+
+**Custom lines can be written into the log from code**, via
+`spcm_dwSetParam_ptr(NULL, SPC_WRITE_TO_LOG, text, length)` — `SPC_WRITE_TO_LOG
+= 121`, confirmed against the installed `spcm_core.regs`, not the PDF (chapter
+7 names the feature but not the register number). It is driver-global, not
+tied to a device handle — the manual's own example and this driver's
+`SpcmCard.WriteLogLine` both call it with a NULL handle — so it works whether
+or not a card is open, which also makes it a safe way to bench-test logging
+behaviour without opening the device at all.
+
+**Level 3 ("log all, including library calls") logs every single register
+read**, including ones inside a tight polling loop. `SpectrumDDSDriver.WaitUntilArmed`
+is a busy-spin (`Thread.Sleep(0)`) on `SPC_DDS_STATUS`, called once per shot
+from MOTMaster — at level 3 every poll in that spin is a log write before the
+call returns. This is a real, demonstrated candidate for missed shots and
+hangs during a run, not just a performance nit: found by tracing a live
+missed-frames investigation back to this loop, in a deployment that had been
+running at level 3 continuously. There is no way to keep per-call tracing on
+selectively for just the parts you care about — level is all-or-nothing — so
+the fix is to run at a low level for normal operation and only raise it while
+actively chasing something, then reopen the card for the change to apply.
+
+Because the driver's filename is fixed, "per-day files" don't come from the
+registry either — `DebugLogSettings.RotateIfNewDay()` renames the active file
+aside once it is no longer today's (`spcmdrv_log_{date}_level{n}.txt` — date
+before level so alphabetical order in a file browser is also date order),
+driven off the file's own last-write timestamp, not persisted state. Renaming
+the active file while a connection is writing to it is safe and non-disruptive — proved
+live: the driver creates a fresh file on its very next write, with no
+interruption to whatever process is still open. That is also why rotation
+does not need to coordinate with anything holding the card open.
+
 ## Diagnosing from a symptom
 
 | Symptom | Look at |
@@ -216,14 +269,9 @@ status tab says so, so it fails loudly rather than silently.
 | Shot "ends" one event early | Erratum 7 — `QUEUE_CMD_COUNT` used as a completion test. |
 | RF leaking on Ch0 | Cores 1–46 not silenced. |
 | Nothing on an AOM despite a correct pattern | Output stage disabled, or amplitude above the clamp so the pattern was rejected. |
+| Missed shots / hangs during a run | Check the debug log level (Status tab). Level 3 logs every poll inside `WaitUntilArmed`'s per-shot busy-spin — see Debug logging above. |
 
 ## Working style
-
-Prove behaviour in Python on the card before writing C#. The Python bench in
-`dds_python/` exists so that hardware questions get settled cheaply, and the C# then
-only has to reproduce a known-good order of register writes. When you discover
-something that contradicts the manual, add it to `dds_python/HANDOFF.md` — that file
-is the reason this skill could be written at all.
 
 Prefer read-back over faith. The card snaps some values, rejects others, and reports
 several of its own counters in ways that do not mean what they appear to. A read-back

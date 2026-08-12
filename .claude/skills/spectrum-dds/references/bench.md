@@ -86,6 +86,20 @@ for name in (n for n in dir(R) if n.startswith("SPCM_XMODE_")):
 
 Always restore what you changed before closing.
 
+## Testing driver-global behaviour without opening the card
+
+Some registers and calls are driver-global rather than device-scoped — they
+take a NULL handle instead of an open one. `SPC_WRITE_TO_LOG` is the example
+that matters here (see the skill's "Debug logging" section): `spcm_hOpen(None,
+...)` is never called, so this is safe to test even while the GUI, MOTMaster
+or a bench script already holds the one real handle open (see "Checking the
+card is free" below). It also means registry-backed driver settings
+(`HKCU\SOFTWARE\Spectrum GmbH\spcm-driver\Debug`) can be probed against an
+*already-running* process's behaviour by writing the registry key with
+`winreg` from a second, short-lived Python process while the first stays open
+and logging — which is how it was established that a `LogLevel` change is not
+picked up live. Always restore whatever registry value you changed.
+
 ## Checking the card is free
 
 The GUI, MOTMaster and a bench script all want the same single handle. If open

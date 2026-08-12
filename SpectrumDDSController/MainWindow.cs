@@ -41,6 +41,10 @@ namespace SpectrumDDSController
         private readonly NumericUpDown[] manualClamp = new NumericUpDown[ChannelCount];
         private readonly CheckBox[] manualEnable = new CheckBox[ChannelCount];
 
+        // Debug logging controls, built in code alongside the manual tab controls.
+        private NumericUpDown debugLogLevelBox;
+        private TextBox debugLogPathBox;
+
         /// <summary>Clamps, last manual values and output level, kept across restarts.</summary>
         private readonly ControllerSettings settings = ControllerSettings.Load();
 
@@ -65,6 +69,7 @@ namespace SpectrumDDSController
             BuildPatternGridColumns();
             BuildGraphs();
             BuildManualTab();
+            BuildDebugLoggingPanel();
 
             if (!string.IsNullOrEmpty(patternFile))
             {
@@ -161,6 +166,9 @@ namespace SpectrumDDSController
 
         private void statusTimer_Tick(object sender, EventArgs e)
         {
+            // A connection can stay open for weeks, so the day boundary has to be
+            // caught here too, not just at Open() -- see DebugLogSettings.
+            DebugLogSettings.RotateIfNewDay();
             AdoptExternallyLoadedPattern();
             UpdateStatusTab();
         }
@@ -688,6 +696,84 @@ namespace SpectrumDDSController
             return new Label { Text = text, AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold) };
         }
 
+        // -- debug logging ----------------------------------------------------------
+
+        /// <summary>
+        /// Level and path for the Spectrum driver's own debug log -- the same
+        /// registry key Spectrum Control Center's Debugging tab edits, read and
+        /// written directly rather than needing that separate program open.
+        /// </summary>
+        /// <remarks>
+        /// The driver rotates <c>spcmdrv_debug.txt</c> to a dated, per-level
+        /// archive on its own once a day (<see cref="DebugLogSettings.RotateIfNewDay"/>),
+        /// called from <see cref="statusTimer_Tick"/> and from
+        /// <see cref="SpectrumDDSDriver.Open"/>. What is edited here is only the
+        /// level and the directory.
+        /// </remarks>
+        private void BuildDebugLoggingPanel()
+        {
+            debugLoggingPanel.Controls.Clear();
+
+            debugLoggingPanel.Controls.Add(new Label
+            {
+                Text = "Debug log level",
+                AutoSize = true,
+                Padding = new Padding(0, 6, 4, 0),
+            });
+
+            debugLogLevelBox = new NumericUpDown
+            {
+                Minimum = 0,
+                Maximum = 10,
+                Value = settings.DebugLogLevel,
+                Width = 50,
+            };
+            debugLoggingPanel.Controls.Add(debugLogLevelBox);
+
+            debugLoggingPanel.Controls.Add(new Label
+            {
+                Text = "path",
+                AutoSize = true,
+                Padding = new Padding(12, 6, 4, 0),
+            });
+
+            debugLogPathBox = new TextBox
+            {
+                Text = settings.DebugLogPath,
+                Width = 220,
+            };
+            debugLoggingPanel.Controls.Add(debugLogPathBox);
+
+            Button apply = new Button { Text = "Apply", Width = 70 };
+            apply.Click += debugLogApplyButton_Click;
+            debugLoggingPanel.Controls.Add(apply);
+
+            debugLoggingPanel.Controls.Add(new Label
+            {
+                Text = "takes effect next time the card is opened, not on the running connection",
+                AutoSize = true,
+                ForeColor = SystemColors.GrayText,
+                Padding = new Padding(12, 6, 0, 0),
+            });
+        }
+
+        private void debugLogApplyButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DebugLogSettings.Apply((int)debugLogLevelBox.Value, debugLogPathBox.Text.Trim());
+                SaveSettings();
+                MessageBox.Show(this,
+                    "Saved. This takes effect the next time the card is opened -- " +
+                    "close and reopen the card for it to reach the driver's logging.",
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Complain("Could not update the debug log settings", ex);
+            }
+        }
+
         private void ApplyManualTone(int channel)
         {
             if (!RequireOpenCard()) return;
@@ -799,6 +885,8 @@ namespace SpectrumDDSController
                 settings.ManualAmplitudes[ch] = (double)manualAmplitude[ch].Value;
             }
             settings.OutputLevelMillivolts = (int)outputLevelBox.Value;
+            settings.DebugLogLevel = (int)debugLogLevelBox.Value;
+            settings.DebugLogPath = debugLogPathBox.Text.Trim();
             settings.Save();
         }
 

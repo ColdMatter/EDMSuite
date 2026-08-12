@@ -170,20 +170,38 @@ spinners — **no RF goes out until you press Apply now**.
 
 ---
 
-## Amplitude clamps — read this one
+## Amplitude clamps
 
-Each channel has its own safety clamp, defaulting to **0.25**. A pattern or manual
+Each channel has its own safety clamp, defaulting to 1.0 (max. A pattern or manual
 tone asking for more is **rejected**, with a message naming the channel and the
 value.
 
-The MOT scripts need **0.6 on DDS2 and 0.35 on DDS3**, so out of the box they will
-not load. Raise those two on the Manual tab. The label under the clamps tells you
-which channels are currently too low for the MOT scripts to run.
-
-What the production clamps should be is a physics decision, which is why the driver
-does not just set them for you.
-
 ---
+
+## Debug logging
+
+The Status tab has a **Debug log level / path** row. This is the same setting
+the vendor's separate "Spectrum Control Center" tool edits — Control Center is
+no longer needed for it.
+
+Two things worth knowing before you touch it:
+
+- **Apply does not take effect on the connection already running.** It writes
+  the setting, but the driver only picks it up the next time the card is
+  opened — close and reopen the card (or restart the program) for a level
+  change to actually change what gets logged.
+- **Level 3 ("log all") is expensive during a real run**, not just noisy. The
+  per-shot arming wait polls the card in a tight loop, and at level 3 every
+  one of those polls is a log write — a real, demonstrated candidate for
+  missed shots and hangs on a long run, not a theoretical one. Run at a low
+  level for normal operation and only raise it while you are actively
+  chasing something.
+
+The log file itself (`spcmdrv_debug.txt`, in whatever directory the path box
+names) rotates on its own once a day — the previous day is archived as
+`spcmdrv_log_{date}_level{n}.txt`, date first so alphabetical order in a file
+browser is also date order. Old rotated files are not deleted automatically;
+clean them up by hand as before.
 
 ## What gets saved
 
@@ -225,8 +243,6 @@ ends, and *card trigger count* reads one low after a reset and never catches up.
   checks every return code — so a bad number gives you an error, never a silent
   wrong setting.
 - Nine places where the card contradicts its own manual are documented in
-  `.claude/skills/spectrum-dds/`, and the bench measurements behind them in
-  `dds_python/HANDOFF.md`. If you are debugging at register level, start there
-  rather than with the PDF.
+  `.claude/skills/spectrum-dds/`.
 - Why the old NeanderthalDDS driver dropped patterns, and lost the first shot of
   every scan, is written up in [OLD_DRIVER_POSTMORTEM.md](OLD_DRIVER_POSTMORTEM.md).

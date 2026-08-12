@@ -23,6 +23,7 @@ namespace SpectrumDDSController
             this.liveStatusBox = new System.Windows.Forms.TextBox();
             this.connectButton = new System.Windows.Forms.Button();
             this.statusTimer = new System.Windows.Forms.Timer(this.components);
+            this.debugLoggingPanel = new System.Windows.Forms.FlowLayoutPanel();
 
             // -- pattern tab -----------------------------------------------------
             this.patternTab = new System.Windows.Forms.TabPage();
@@ -96,8 +97,16 @@ namespace SpectrumDDSController
             this.connectButton.Name = "connectButton";
             this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
 
+            this.debugLoggingPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.debugLoggingPanel.AutoSize = true;
+            this.debugLoggingPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.debugLoggingPanel.WrapContents = false;
+            this.debugLoggingPanel.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.debugLoggingPanel.Name = "debugLoggingPanel";
+
             this.statusTab.Controls.Add(this.liveStatusBox);
             this.statusTab.Controls.Add(this.identityBox);
+            this.statusTab.Controls.Add(this.debugLoggingPanel);
             this.statusTab.Controls.Add(this.connectButton);
 
             this.statusTimer.Interval = 250;
@@ -245,6 +254,7 @@ namespace SpectrumDDSController
         private System.Windows.Forms.TextBox liveStatusBox;
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Timer statusTimer;
+        private System.Windows.Forms.FlowLayoutPanel debugLoggingPanel;
 
         private System.Windows.Forms.TabPage patternTab;
         private System.Windows.Forms.SplitContainer patternSplit;

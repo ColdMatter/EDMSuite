@@ -103,7 +103,6 @@ this pattern" from "armed on a 1 µs timer with last shot's leftovers at the hea
 
 The same failure was reproduced independently from Python while building the new
 driver: `run_pattern.py` used to stall on shot 1 with "card never armed"
-(`dds_python/HANDOFF.md` §9).
 
 ---
 
@@ -139,8 +138,8 @@ timer at whatever `TRG_TIMER` is live — usually the prologue's 1 µs. Blocks
 arriving behind it are consumed on a microsecond timer instead of waiting for the
 digital pulse: the whole shot burns through in the time it takes to write it.
 
-This is the "queue drains as fast as it is filled" failure, recorded as fault 2 in
-`dds_python/HANDOFF.md` §9. Whether it bit on any given shot depended on the order
+This is the "queue drains as fast as it is filled" failure.
+ Whether it bit on any given shot depended on the order
 the leftovers happened to land in — hence the intermittency.
 
 ### 3.4 No serialisation, and the shot thread was never joined
@@ -154,8 +153,7 @@ that are a mix of two shots. Between scan points this was the normal situation.
 
 The same class of fault was caught in the new driver during remoting testing —
 `WaitForShot` ignoring stop requests meant a stop-then-start could leave two shot
-threads arming one card — and fixed with an abort callback and a real join
-(`HANDOFF.md` §11).
+threads arming one card — and fixed with an abort callback and a real join.
 
 ### 3.5 Two aggravating factors
 
@@ -217,5 +215,5 @@ in the library queue. `dds_python/spectrum_dds.py` can do this in a couple of
 lines.
 
 Everything else here is either plain in the source or already measured and
-recorded as an erratum in `dds_python/HANDOFF.md` and
+recorded as an erratum in and
 `.claude/skills/spectrum-dds/`.

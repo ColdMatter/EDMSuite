@@ -144,7 +144,11 @@ namespace SpectrumDDS
             // first WRITESETUP with "card is still running, access not possible".
             if (IsOpen) return;
 
+            DebugLogSettings.RotateIfNewDay();
             card.Open();
+            SpcmCard.WriteLogLine(string.Format(
+                "=== SpectrumDDSDriver.Open: device={0}, PID={1} ===",
+                card.Device, Process.GetCurrentProcess().Id));
 
             Identity = DDSCardIdentity.Read(card);
             if (!Identity.HasDDS50)
@@ -186,6 +190,7 @@ namespace SpectrumDDS
         public void Close()
         {
             if (!card.IsOpen) return;
+            SpcmCard.WriteLogLine("=== SpectrumDDSDriver.Close ===");
             try
             {
                 SilenceAllCores();
@@ -504,6 +509,8 @@ namespace SpectrumDDS
 
             armedPattern = pattern;
             patternsFired = 0;
+            SpcmCard.WriteLogLine(string.Format(
+                "=== SpectrumDDSDriver.LoadPattern: {0} events ===", pattern.Count));
         }
 
         /// <summary>

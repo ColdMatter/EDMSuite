@@ -42,6 +42,21 @@ namespace SpectrumDDSController
         [DataMember(Name = "outputLevelMillivolts", Order = 3)]
         public int OutputLevelMillivolts;
 
+        /// <summary>
+        /// The Spectrum driver's debug log level and path -- the same registry
+        /// key the vendor's Spectrum Control Center Debugging tab edits. Kept
+        /// here (rather than just trusting whatever Control Center last had) so
+        /// this app can re-apply a sane default on every startup. Defaults to a
+        /// low level: level 3 ("log all, including library calls") was found to
+        /// log every register read in the per-shot arming poll, which is a
+        /// plausible source of missed frames.
+        /// </summary>
+        [DataMember(Name = "debugLogLevel", Order = 4)]
+        public int DebugLogLevel;
+
+        [DataMember(Name = "debugLogPath", Order = 5)]
+        public string DebugLogPath;
+
         public static string Path
         {
             get
@@ -60,6 +75,14 @@ namespace SpectrumDDSController
                 ManualFrequenciesMHz = new double[DDSPattern.ChannelCount],
                 ManualAmplitudes = new double[DDSPattern.ChannelCount],
                 OutputLevelMillivolts = SpectrumDDSDriver.DefaultOutputLevelMillivolts,
+                // Adopt whatever is currently configured in the registry (the
+                // same key Spectrum Control Center's Debugging tab edits)
+                // rather than silently overriding it -- a fresh settings file
+                // should reflect reality, not surprise the user by changing
+                // logging behaviour on first launch.
+                DebugLogLevel = DebugLogSettings.LogLevel,
+                DebugLogPath = string.IsNullOrEmpty(DebugLogSettings.LogPath)
+                    ? @"E:\SpectrumLog\" : DebugLogSettings.LogPath,
             };
             for (int ch = 0; ch < DDSPattern.ChannelCount; ch++)
             {
@@ -147,6 +170,18 @@ namespace SpectrumDDSController
 
             if (OutputLevelMillivolts < 80 || OutputLevelMillivolts > 2500)
                 OutputLevelMillivolts = SpectrumDDSDriver.DefaultOutputLevelMillivolts;
+
+            // A settings file saved before this feature existed deserialises
+            // with DebugLogPath left null -- treat that the same as a fresh
+            // install and adopt whatever is currently configured, rather than
+            // an unset path silently becoming a real value once Apply is used.
+            if (string.IsNullOrEmpty(DebugLogPath))
+            {
+                DebugLogLevel = DebugLogSettings.LogLevel;
+                DebugLogPath = string.IsNullOrEmpty(DebugLogSettings.LogPath)
+                    ? @"E:\SpectrumLog\" : DebugLogSettings.LogPath;
+            }
+            if (DebugLogLevel < 0 || DebugLogLevel > 10) DebugLogLevel = 0;
         }
 
         private static double[] Fix(double[] values, ref ControllerSettings defaults,

@@ -20,8 +20,10 @@ solution configuration but a `Build.0` line only for the CaF ones.
 any non-zero return, `SpcmRegs` constants taken from `spcm_core.regs`,
 `DDSChannelState`/`DDSEvent`/`DDSPattern`, `DDSCapabilities` reading
 `SPC_DDS_AVAIL_*`, `DDSPatternCompiler` holding the timing model,
-`DDSPatternFile` (JSON via `DataContractJsonSerializer`), and `SpectrumDDSDriver`
-for lifecycle, routing, priming, arm/run and the clamp.
+`DDSPatternFile` (JSON via `DataContractJsonSerializer`), `SpectrumDDSDriver`
+for lifecycle, routing, priming, arm/run and the clamp, and
+`DebugLogSettings` for the driver's debug-log registry key and day-boundary
+log rotation (see the skill's "Debug logging" section).
 
 `SpectrumDDSController/` (WinExe, x64, owns the card handle): `Runner` publishes on
 TCP 1818 as `controller.rem`, `Controller` is the `MarshalByRefObject` remoting
@@ -80,7 +82,9 @@ Four places in `MOTMaster/Controller.cs`, all `#if DDS`:
    DDS pattern.
 3. **`WaitUntilArmed(1.0)` before `runPattern(sequence)` in *both* iteration
    loops** — run-until-stopped and fixed-iteration. Missing it in one loop is an
-   easy and invisible mistake.
+   easy and invisible mistake. It is a busy-spin (`Thread.Sleep(0)`) on
+   `SPC_DDS_STATUS`, so it is also the loop that turns a high debug-log level
+   into per-shot overhead — see the skill's "Debug logging" section.
 4. **Report after the loop** — sent, fired, missed, card count.
 
 `MOTMaster/MMDataIOHelper.cs` `storeDDSPattern` writes `*_ddsPattern.json` into the
@@ -155,8 +159,7 @@ a physics decision, not a coding one.
 Similarly open, and worth asking rather than assuming: per-channel output level
 (500 mV is an arbitrary test value), trigger termination and logic level, whether
 the card should hold the last event's state between shots or return to the first,
-and whether to queue several shots ahead instead of re-arming per shot. Check
-`dds_python/HANDOFF.md` for the current state of these.
+and whether to queue several shots ahead instead of re-arming per shot.
 
 The GUI remembers the clamps, the last manual frequency and amplitude per channel,
 and the output level in `%APPDATA%\SpectrumDDSController\settings.json`
