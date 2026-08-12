@@ -41,17 +41,17 @@ public class Patterns : MOTMasterScript
         Parameters["xShimLoadCurrent"] = -1.85;
         Parameters["yShimLoadCurrent"] = -3.0;
         Parameters["zShimLoadCurrent"] = 0.22;
-        /*
+
         Parameters["xShim"] = -1.85;
         Parameters["yShim"] = -3.0;
-        Parameters["zShim"] = 0.22 + 5.0;
-        */
+        Parameters["zShim"] = 0.22 + 2.5;
+
         // SLOWING //
 
         // Slowing Chirp
 
-        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1050;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.3; // -0.5 is 480MHz
 
@@ -150,10 +150,10 @@ public class Patterns : MOTMasterScript
 
 
         Parameters["LambdaCoolingDuration"] = 2000;
-        Parameters["QCL_dur"] = 1000;
+        Parameters["QCL_dur"] = 400;
         Parameters["QCL_max_time"] = (int)Parameters["QCL_dur"] + 300;
         Parameters["OpticalPumpDuration"] = 50;
-        Parameters["shim_settle_on"] = 0;
+        Parameters["shim_settle_on"] = 500;
         Parameters["shim_settle_off"] = 0;
 
         Parameters["MOTrecaplight_delay"] = 50;
@@ -281,11 +281,11 @@ public class Patterns : MOTMasterScript
         //p.Pulse(0, image, (int)Parameters["TempTriggerDuration"], "cameraTrigger"); //camera trigger for temperature
 
         // recap imaging
+
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
 
-        p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");
-
-
+        
         //check temperature imaging
         //p.Pulse(0, Recap, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
         // p.Pulse(0, Recap, (int)Parameters["PatternLength"]/2, "opticalPumpingAOM");
@@ -356,7 +356,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-        /*
+        
         p.AddAnalogValue("xShimCoilCurrent", ShimOn, (double)Parameters["xShim"]);
         p.AddAnalogValue("yShimCoilCurrent", ShimOn, (double)Parameters["yShim"]);
         p.AddAnalogValue("zShimCoilCurrent", ShimOn, (double)Parameters["zShim"]);
@@ -364,7 +364,7 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", ShimOff, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", ShimOff, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", ShimOff, (double)Parameters["zShimLoadCurrent"]);
-        */
+        
 
         // SLOWING //
 

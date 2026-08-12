@@ -1,4 +1,4 @@
-﻿using MOTMaster;
+using MOTMaster;
 using MOTMaster.SnippetLibrary;
 
 using System;
@@ -10,12 +10,15 @@ using DAQ.Analog;
 // This script is supposed to be the basic script for loading a molecule MOT.
 // Note that times are all in units of the clock periods of the two pattern generator boards (at present, both are 10us).
 // All times are relative to the Q switch, though note that this is not the first event in the pattern.
+//
+// *** MODIFIED: blue MOT loads directly into the magnetic trap with NO lambda molasses
+// *** (LambdaCooling2) in between. The magtrap now starts at BlueMOTEnd.
 public class Patterns : MOTMasterScript
 {
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 85000;
+        Parameters["PatternLength"] = 275000; 
         Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
         Parameters["TCLBlockDuration"] = 4000;
         Parameters["FlashToQ"] = 16; // This is a time before the Q switch
@@ -29,10 +32,10 @@ public class Patterns : MOTMasterScript
 
         // Camera
         Parameters["Frame0Trigger"] = 4000;
-
+        Parameters["BMTriggerDuration"] = 1000;
         Parameters["Frame0TriggerDuration"] = 1000;
         Parameters["Frame0TriggerDuration1"] = 2000;
-        Parameters["TempTriggerDuration"] = 1000;
+        Parameters["TempTriggerDuration"] = 100;
         Parameters["CameraTriggerTransverseTime"] = 120;
         Parameters["FrameTriggerInterval"] = 1100;
         Parameters["waitbeforeimage"] = 1;
@@ -45,28 +48,32 @@ public class Patterns : MOTMasterScript
         Parameters["yShimLoadCurrent"] = -2.13;
         Parameters["zShimLoadCurrent"] = 0.41;
 
-        Parameters["xShimBM"] = -6.0;//-5.2;
-        Parameters["yShimBM"] = -5.0;//2.0;
-        Parameters["zShimBM"] = 0.8;//3.68;
+        Parameters["xShimBM"] = -2.29;
+        Parameters["yShimBM"] = -2.42;
+        Parameters["zShimBM"] = 0.377;
 
         // SLOWING //
 
         // Slowing Chirp
-
-        Parameters["SlowingChirpStartTime"] = 450;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1050;////1400;//1160; //1160
+        /*
+        Parameters["SlowingChirpStartTime"] = 500;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1100;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.3; // -0.5 is 480MHz
+        Parameters["SlowingChirpEndValue"] = -1.25; // -0.5 is 480MHz
+        */
+
+        // Slowing Chirp, 5W ALS laser
+        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
+        Parameters["SlowingChirpStartValue"] = 0.0;//0.0
+        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
 
         Parameters["BXAOM1att"] = 3.5;//7.85;//3.5;//7.2;
         Parameters["BXAOM2att"] = 3.7;
 
-        Parameters["BXAttenuation"] = 0.91; // TCool 
-
         // Slowing AOMS
 
         Parameters["BXAOMAttenuation"] = 10.0;
-
         Parameters["slowingRepumpAOMOnStart"] = 0;
         Parameters["SlowingRepumpAttenuation"] = 6.2;
 
@@ -86,16 +93,20 @@ public class Patterns : MOTMasterScript
 
         //freqs
         Parameters["MOTFreqDDS1"] = 114.07; //+ F = 1-              Parameters["Lambda1"] = 98.00;
-        Parameters["MOTFreqDDS2"] = 156.17; //- F = 0            
+        Parameters["MOTFreqDDS2"] = 156.17; //- F = 0   
         Parameters["MOTFreqDDS3"] = 188.04; //- F = 2. DONE
         Parameters["MOTFreqDDS4"] = 175.44; //+ F = 1+             Parameters["Lambda3"] = 171.00;
 
         //amps for max optical power. dont go higher the amplifiers will saturate
-
         Parameters["MOTAmpDDS1"] = 0.25;
         Parameters["MOTAmpDDS2"] = 0.6;
         Parameters["MOTAmpDDS3"] = 0.35;
         Parameters["MOTAmpDDS4"] = 0.1;
+
+        Parameters["BMOTAmpDDS1"] = 0.25;
+        Parameters["BMOTAmpDDS2"] = 0.6;
+        Parameters["BMOTAmpDDS3"] = 0.35;
+        Parameters["BMOTAmpDDS4"] = 0.1;
 
         // CMOT //
 
@@ -108,6 +119,41 @@ public class Patterns : MOTMasterScript
         Parameters["MOTCoilsOffValue"] = -0.1;
 
 
+
+        // INTENSITY RAMP DOWN //
+
+        // Ramp end rf amps
+        //Parameters["RampEndAmpDDS1"] = 0.091; // 10%
+        //Parameters["RampEndAmpDDS2"] = 0.1; // 10%
+        //Parameters["RampEndAmpDDS3"] = 0.114; // 10%
+        //Parameters["RampEndAmpDDS4"] = 0.036; // 10%
+
+        //// Ramp end rf amps
+        //Parameters["RampEndAmpDDS1"] = 0.08; // 7%
+        //Parameters["RampEndAmpDDS2"] = 0.077; // 7%
+        //Parameters["RampEndAmpDDS3"] = 0.1; // 7%
+        //Parameters["RampEndAmpDDS4"] = 0.032; // 7%
+
+        // Ramp end rf amps
+        /*
+        Parameters["RampEndAmpDDS1"] = 0.07; // 5%
+        Parameters["RampEndAmpDDS2"] = 0.056; // 5%
+        Parameters["RampEndAmpDDS3"] = 0.086; // 5%
+        Parameters["RampEndAmpDDS4"] = 0.027; // 5%
+        */
+
+        // ramp down mot parameters 15%
+        /*
+        Parameters["RampEndAmpDDS1"] = 0.105; //15%
+        Parameters["RampAmplitudeDDS1"] = -0.00014500000000000003; //15%
+        Parameters["RampEndAmpDDS2"] = 0.128; //15%
+        Parameters["RampAmplitudeDDS2"] = -0.000472; //15%
+        Parameters["RampEndAmpDDS3"] = 0.131; //15%
+        Parameters["RampAmplitudeDDS3"] = -0.00021899999999999998; //15%
+        Parameters["RampEndAmpDDS4"] = 0.042; //15%
+        Parameters["RampAmplitudeDDS4"] = -5.8e-05; //15%
+        */
+
         //12% from lambda measurement
 
         Parameters["RampEndAmpDDS1"] = 0.097; //12%
@@ -119,10 +165,16 @@ public class Patterns : MOTMasterScript
         Parameters["RampEndAmpDDS4"] = 0.039; //12%
         Parameters["RampAmplitudeDDS4"] = -6.1000000000000005e-05; //12%
 
-
+        // lambda rf amps
         Parameters["Lambda1Amp"] = 0.24; // full
         Parameters["Lambda2Amp"] = 0.1; // full
 
+
+        // Ramp slopes
+        //Parameters["RampAmplitudeDDS1"] = ((double)Parameters["RampEndAmpDDS1"] - (double)Parameters["MOTAmpDDS1"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
+        //Parameters["RampAmplitudeDDS2"] = ((double)Parameters["RampEndAmpDDS2"] - (double)Parameters["MOTAmpDDS2"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
+        //Parameters["RampAmplitudeDDS3"] = ((double)Parameters["RampEndAmpDDS3"] - (double)Parameters["MOTAmpDDS3"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
+        //Parameters["RampAmplitudeDDS4"] = ((double)Parameters["RampEndAmpDDS4"] - (double)Parameters["MOTAmpDDS4"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
 
         Parameters["dummy"] = 0.0;
 
@@ -135,25 +187,9 @@ public class Patterns : MOTMasterScript
         Parameters["LambdaF1minus"] = 97.28;
         Parameters["LambdaF1plus"] = 171.00;
 
-        Parameters["LambdaF1minusLoad"] = 92.45;
-        Parameters["LambdaF1plusLoad"] = 166.00;
+        Parameters["LambdaCoolingDuration"] = 300;
+        Parameters["LambdaCooling2Duration"] = 300; // unused: LambdaCooling2 stage removed (blue MOT -> magtrap directly)
 
-        Parameters["Lambda0AmpLoad"] = 0.24; // full
-        Parameters["Lambda3AmpLoad"] = 0.1; // full
-
-        Parameters["ResonanceDDS1"] = 111.42;
-        Parameters["ResonanceDDS2"] = 156.17;
-        Parameters["ResonanceDDS3"] = 188.04;
-        Parameters["ResonanceDDS4"] = 174.29;
-
-        //Conveyor belt frequency
-        Parameters["FreqCVB1"] = 102.5; //+ F = 1Delta 
-        Parameters["FreqCVB2"] = 139.75;
-        Parameters["FreqCVB3"] = 175.817; //- F = 2sig- delta_a
-        Parameters["FreqCVB4"] = 177.442; //+ F = 2sig+ delta_b
-
-                /*
-         * 4 freq
         //Conveyor belt frequency
         Parameters["FreqCVB1"] = 102.5; //+ F = 1Delta 
         // Parameters["FreqCVB2"] = 163.20;
@@ -161,31 +197,31 @@ public class Patterns : MOTMasterScript
         // Parameters["FreqCVB2"] = 0.0;
         Parameters["FreqCVB3"] = 175.88; //- F = 2sig- delta_a
         Parameters["FreqCVB4"] = 176.91; //+ F = 2sig+ delta_b
-        */
 
-        Parameters["FreqCVB1recap"] = 102.5; //+ F = 1Delta 
-        Parameters["FreqCVB3recap"] = 175.817; //- F = 2sig- delta_a
-        Parameters["FreqCVB4recap"] = 177.442; //+ F = 2sig+ delta_b
+        Parameters["ResonanceDDS1"] = 111.42;
+        Parameters["ResonanceDDS2"] = 156.17;
+        Parameters["ResonanceDDS3"] = 188.04;
+        Parameters["ResonanceDDS4"] = 174.29;
 
-        Parameters["LambdaCoolingDuration"] = 150;
-        Parameters["LambdaPreODTDuration"] = 0;
 
-        Parameters["BlueMOTField"] = 1.3;
-        Parameters["BlueMOTField1"] = 1.42;
-
-        Parameters["BlueMOTRampDuration"] = 5000;
-        Parameters["ODTBMLoadDuration"] = 1000; // dont change without changing amplitude ramp
-        Parameters["ODTLambdaLoadDuration"] = 2500;
-
-        Parameters["ODTHoldTime"] = 15000;
+        Parameters["BlueMOTField"] = 1.42;
+        Parameters["BlueMOTRampDuration"] = 4000;
+        Parameters["BlueMOTDuration"] = 1500;
         Parameters["FreeExpTime"] = 1;
+
+        // magtrap //
+        Parameters["MagtrapDuration"] = 100000;
+
+        Parameters["MOTCoilsMagtrapValue"] = 1.5;
+
+        //v = 1pumping duration
+        Parameters["V1pumpDuration"] = 500;
 
         // END OF PATTERN //
 
-        Parameters["MOTCoilsSwitchOff"] = 60000;
+        Parameters["MOTCoilsSwitchOff"] = 40000;
 
-        Parameters["ODTdelay"] = 0;
-        Parameters["ODT_atten"] = 10.0;
+        Parameters["Delay"] = 2000;
 
     }
 
@@ -198,12 +234,13 @@ public class Patterns : MOTMasterScript
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int ODTBMLoadStart = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int ODTLambdaLoadStart = ODTBMLoadStart + (int)Parameters["ODTBMLoadDuration"];
-        int ODTLoadEnd = ODTLambdaLoadStart + (int)Parameters["ODTLambdaLoadDuration"];
-        int Recap = ODTLoadEnd + (int)Parameters["ODTHoldTime"];
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
+        int MagtrapEnd = BlueMOTEnd + (int)Parameters["MagtrapDuration"]; // magtrap starts at BlueMOTEnd (no molasses)
+        int imageTime = MagtrapEnd + (int)Parameters["FreeExpTime"];
 
-        addDDSPattern(p, "MOT1", 0,
+
+        addDDSPattern(p, "MOT", 0,
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
@@ -216,39 +253,23 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["RampEndAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["RampEndAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
 
-        addDDSPattern(p, "LambdaCooling", lambdaCoolingStart,
-            (double)Parameters["LambdaF1minusLoad"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plusLoad"],
+        addDDSPattern(p, "LambdaCooling1", lambdaCoolingStart,
+            (double)Parameters["LambdaF1minus"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plus"],
             (double)Parameters["Lambda1Amp"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda2Amp"]);
         
         addDDSPattern(p, "BlueMOTRampStart", BlueMOTRampStart,
             (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"], (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-        
-        addDDSPattern(p, "BMPowerRampStart", ODTBMLoadStart,
+            (double)Parameters["BMOTAmpDDS1"], (double)Parameters["BMOTAmpDDS2"], (double)Parameters["BMOTAmpDDS3"], (double)Parameters["BMOTAmpDDS4"]);
+
+        // Magtrap: light off straight after the blue MOT (no lambda molasses)
+        addDDSPattern(p, "Magtrap", BlueMOTEnd,
+            (double)Parameters["LambdaF1minus"], (double)Parameters["LambdaF1minus"], (double)Parameters["LambdaF1minus"], (double)Parameters["LambdaF1minus"],
+            (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS1"]);
+
+        addDDSPattern(p, "MOTrecap", imageTime,
             (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"], (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"],
-            0.0, 0.0, 0.0, 0.0, 0.0, (double)Parameters["RampAmplitudeDDS2"], 0.0, (double)Parameters["RampAmplitudeDDS4"]);
-        
-        addDDSPattern(p, "BMPowerRampEnd", ODTBMLoadStart + 999,
-            (double)Parameters["FreqCVB1"], (double)Parameters["FreqCVB2"], (double)Parameters["FreqCVB3"], (double)Parameters["FreqCVB4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["RampEndAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["RampEndAmpDDS4"]);
-        
-        addDDSPattern(p, "ODTLambdaLoadStart", ODTLambdaLoadStart,
-            (double)Parameters["LambdaF1minusLoad"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["LambdaF1plusLoad"],
-            (double)Parameters["Lambda0AmpLoad"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["Lambda3AmpLoad"]);
-        
-        addDDSPattern(p, "ODTHold", ODTLoadEnd,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["LightoffDDS1"], (double)Parameters["LightoffDDS2"], (double)Parameters["LightoffDDS3"], (double)Parameters["LightoffDDS4"]);
-        
-        addDDSPattern(p, "BlueMOTRECAP", Recap,
-            (double)Parameters["FreqCVB1recap"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["FreqCVB3recap"], (double)Parameters["FreqCVB4recap"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["LightoffDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-        /*
-        addDDSPattern(p, "MOTRECAP", Recap,
-            (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
-            (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
-        */
+            (double)Parameters["BMOTAmpDDS1"], (double)Parameters["BMOTAmpDDS2"], (double)Parameters["BMOTAmpDDS3"], (double)Parameters["BMOTAmpDDS4"]);
+
         return p;
     }
 
@@ -302,13 +323,10 @@ public class Patterns : MOTMasterScript
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int ODTBMLoadStart = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int ODTLambdaLoadStart = ODTBMLoadStart + (int)Parameters["ODTBMLoadDuration"];
-        int ODTLoadEnd = ODTLambdaLoadStart + (int)Parameters["ODTLambdaLoadDuration"];
-        int Recap = ODTLoadEnd + (int)Parameters["ODTHoldTime"];
-
-        p.AddEdge("v0ddsSwitchD", 0, true);
-        p.AddEdge("v0ddsSwitchD", (int)Parameters["PatternLength"] - 1000, false); //trigger for rb experiment
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
+        int MagtrapEnd = BlueMOTEnd + (int)Parameters["MagtrapDuration"];
+        int imageTime = MagtrapEnd + (int)Parameters["FreeExpTime"];
 
         //  SETUP //
 
@@ -319,46 +337,49 @@ public class Patterns : MOTMasterScript
 
         // CAMERA //
 
-        // size / position imaging
-        //p.Pulse(0, image, (int)Parameters["TempTriggerDuration"], "cameraTrigger"); //camera trigger for temperature
-
-        // recap imaging
-
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-
-        p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");
-        //p.Pulse(0, Recap + 500, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 2000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // bg
+        //p.Pulse(0, BlueMOTRampEnd, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
+        
+        p.Pulse(0, imageTime+500, (int)Parameters["Frame0TriggerDuration1"], "cameraTrigger");  //camera trigger for MOT recap 
+       
+        //p.Pulse(patternStartBeforeQ, imageTime + (int)Parameters["Frame0TriggerDuration"] + 10000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");//camera trigger bg
 
         // SLOWING //
 
         // preset load
-        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
+        MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters); 
 
         // Slowing AOMs
-        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
+        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
-        p.Pulse(patternStartBeforeQ, 0, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], "v10SlowingAOM"); //first pulse to slowing repump AOM
+        p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
+        p.Pulse(patternStartBeforeQ, BlueMOTEnd-(int)Parameters["V1pumpDuration"], (int)Parameters["MagtrapDuration"] , "v10SlowingAOM"); //second pulse to slowing repump AOM, ths switches the v1 off for magtrapping v = 1
+        
         
         // BX Shutter
-        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
+        p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200, (int)Parameters["MagtrapDuration"]+21000, "bXSlowingShutter");
         
-        if ((int)Parameters["PatternLength"] > 80000)
+        // MOT beam shutters - block the MOT light during the magnetic trap (dark hold)
+        p.Pulse(0, BlueMOTEnd - 1600, (int)Parameters["MagtrapDuration"] , "MOT1Shutter");
+        p.Pulse(0, BlueMOTEnd - 600, (int)Parameters["MagtrapDuration"] - 950, "MOT2Shutter");
+        p.Pulse(0, BlueMOTEnd - 800, (int)Parameters["MagtrapDuration"]-500, "MOT3Shutter");
+
+        // v1 shutter for pumping to v = 1
+        p.Pulse(0, CompressRampDownStartTime, imageTime + 3000, "v0rfswitch1");
+
+        if ((int)Parameters["PatternLength"] > 100000)
         {
-            /*
             p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
             p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
-            */
+
             p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
             p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
         }
-        
-        // MOT beam shutters - block the MOT light during the dipole trap
-        p.Pulse(0, ODTLoadEnd - 1600, (int)Parameters["ODTHoldTime"], "MOT1Shutter");
-        p.Pulse(0, ODTLoadEnd - 600, (int)Parameters["ODTHoldTime"] - 950, "MOT2Shutter");
-        p.Pulse(0, ODTLoadEnd - 800, (int)Parameters["ODTHoldTime"] - 500, "MOT3Shutter");
-        
+
+
+
+
         return p;
     }
 
@@ -371,10 +392,10 @@ public class Patterns : MOTMasterScript
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
         int lambdaCoolingStart = CompressRampDownEndTime + (int)Parameters["CompressRampDownHoldDuration"];
         int BlueMOTRampStart = lambdaCoolingStart + (int)Parameters["LambdaCoolingDuration"];
-        int ODTBMLoadStart = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
-        int ODTLambdaLoadStart = ODTBMLoadStart + (int)Parameters["ODTBMLoadDuration"];
-        int ODTLoadEnd = ODTLambdaLoadStart + (int)Parameters["ODTLambdaLoadDuration"];
-        int Recap = ODTLoadEnd + (int)Parameters["ODTHoldTime"];
+        int BlueMOTRampEnd = BlueMOTRampStart + (int)Parameters["BlueMOTRampDuration"];
+        int BlueMOTEnd = BlueMOTRampEnd + (int)Parameters["BlueMOTDuration"];
+        int MagtrapEnd = BlueMOTEnd + (int)Parameters["MagtrapDuration"];
+        int imageTime = MagtrapEnd + (int)Parameters["FreeExpTime"];
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
@@ -399,34 +420,24 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("xShimCoilCurrent", 0, (double)Parameters["xShimLoadCurrent"]);
         p.AddAnalogValue("yShimCoilCurrent", 0, (double)Parameters["yShimLoadCurrent"]);
         p.AddAnalogValue("zShimCoilCurrent", 0, (double)Parameters["zShimLoadCurrent"]);
-
+        /*
         p.AddAnalogValue("xShimCoilCurrent", BlueMOTRampStart, (double)Parameters["xShimBM"]);
         p.AddAnalogValue("yShimCoilCurrent", BlueMOTRampStart, (double)Parameters["yShimBM"]);
         p.AddAnalogValue("zShimCoilCurrent", BlueMOTRampStart, (double)Parameters["zShimBM"]);
-
-        p.AddAnalogValue("xShimCoilCurrent", ODTLambdaLoadStart, (double)Parameters["xShimLoadCurrent"]);
-        p.AddAnalogValue("yShimCoilCurrent", ODTLambdaLoadStart, (double)Parameters["yShimLoadCurrent"]);
-        p.AddAnalogValue("zShimCoilCurrent", ODTLambdaLoadStart, (double)Parameters["zShimLoadCurrent"]);
-
-
+        */
         // SLOWING //
 
         // switch on and off with AOM
-
-
+        /*
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]);
+        p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
+        */
         p.AddAnalogValue("BXAOM1att", 0, (double)Parameters["BXAOM1att"]);
         p.AddAnalogValue("BXAOM2att", 0, (double)Parameters["BXAOM2att"]);
 
         p.AddAnalogValue("BXAOM1att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
         p.AddAnalogValue("BXAOM2att", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 10.0);
-
-
-        //p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] - 100, (double)Parameters["BXAOMAttenuation"]); from 1W 
-        //p.AddAnalogValue("BXAttenuation", (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], 0.1);
-
-        p.AddAnalogValue("TCoolSidebandVCO", 0, 5.15); //5.15V, 63.5MHz
-        p.AddAnalogValue("BXAttenuation", 0, (double)Parameters["BXAttenuation"]); //vva for Tcool, correct sideband structure
-
+        
         p.AddAnalogValue("SlowingRepumpAttenuation", 0, (double)Parameters["SlowingRepumpAttenuation"]);
 
         // Slowing B field
@@ -447,38 +458,13 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("MOTCoilsCurrent", CompressRampDownStartTime, (int)Parameters["CompressRampDownDuration"], (double)Parameters["MOTCoilsCompressionValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", lambdaCoolingStart, (double)Parameters["MOTCoilsOffValue"]); // switch off for molasses
         p.AddLinearRamp("MOTCoilsCurrent", BlueMOTRampStart, (int)Parameters["BlueMOTRampDuration"], (double)Parameters["BlueMOTField"]);
-        p.AddAnalogValue("MOTCoilsCurrent", ODTLambdaLoadStart, (double)Parameters["MOTCoilsOffValue"]); // switch off for molasses
-        p.AddAnalogValue("MOTCoilsCurrent", Recap, (double)Parameters["BlueMOTField1"]);
-        //p.AddAnalogValue("MOTCoilsCurrent", Recap, (double)Parameters["MOTCoilsCurrentValue"]);
-        p.AddAnalogValue("MOTCoilsCurrent", Recap + (int)Parameters["Frame0TriggerDuration1"] + 1000, 0.0);
-
-        //Dipole trap
-
-        // dipole trap sequence
-
-        p.AddAnalogValue("ODT70att", 0, 10.0);
-        p.AddAnalogValue("ODT90att", 0, 0.0);
-
-        p.AddAnalogValue("ODT70att", BlueMOTRampStart + (int)Parameters["ODTdelay"], 0.0);
-        p.AddAnalogValue("ODT90att", BlueMOTRampStart + (int)Parameters["ODTdelay"], (double)Parameters["ODT_atten"]);
-
-        p.AddAnalogValue("ODT70att", Recap, 10.0);
-        p.AddAnalogValue("ODT90att", Recap, 0.0);
-
-        // config 1: Dipole trap off
-
-        //p.AddAnalogValue("ODT70att", 0, 10.0);
-        //p.AddAnalogValue("ODT90att", 0, 0.0);
-
-        // config 2: Dipole trap alignment
-
-        //p.AddAnalogValue("ODT70att", 0, 10.0);
-        //p.AddAnalogValue("ODT90att", 0, 0.6);
+        p.AddAnalogValue("MOTCoilsCurrent", BlueMOTEnd, (double)Parameters["MOTCoilsMagtrapValue"]); // straight into magtrap field (no molasses, no field-off step)
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["BlueMOTField"]);// in mot imaging
+        //p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsOffValue"]);// free space imaging
+        p.AddAnalogValue("MOTCoilsCurrent", imageTime + 3000, (double)Parameters["MOTCoilsOffValue"]);
 
 
-        // config 3: Dipole trap on
-        //p.AddAnalogValue("ODT70att", 0, 0.0);
-        //p.AddAnalogValue("ODT90att", 0, 10.0);
+        //p.AddAnalogValue("lightSwitch", 1000, 2.0);
 
 
         return p;

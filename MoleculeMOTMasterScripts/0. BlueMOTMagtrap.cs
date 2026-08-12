@@ -359,7 +359,9 @@ public class Patterns : MOTMasterScript
         p.Pulse(0, BlueMOTEnd - 1600, (int)Parameters["MagtrapDuration"] , "MOT1Shutter");
         p.Pulse(0, BlueMOTEnd - 600, (int)Parameters["MagtrapDuration"] - 950, "MOT2Shutter");
         p.Pulse(0, BlueMOTEnd - 800, (int)Parameters["MagtrapDuration"]-500, "MOT3Shutter");
-        
+
+    
+
         if ((int)Parameters["PatternLength"] > 100000)
         {
             p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");

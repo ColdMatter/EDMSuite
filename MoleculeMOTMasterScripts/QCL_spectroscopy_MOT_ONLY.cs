@@ -47,8 +47,8 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp
 
-        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 400;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1050;////1400;//1160; //1160
         Parameters["SlowingChirpStartValue"] = 0.0;//0.0
         Parameters["SlowingChirpEndValue"] = -0.3; // -0.5 is 480MHz
 
@@ -157,7 +157,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
             (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"], (double)Parameters["MOTAmpDDS4"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,
