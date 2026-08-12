@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using SpectrumDDS;
 
@@ -30,6 +31,13 @@ namespace SpectrumDDSController
         private Thread shotThread;
         private volatile bool running;
         private Dictionary<string, List<List<double>>> pattern;
+
+        /// <summary>End-of-run tallies, newest last. See <see cref="ReportRunTally"/>.</summary>
+        private readonly Queue<string> runTallies = new Queue<string>();
+        private readonly object tallyLock = new object();
+
+        /// <summary>How many runs the Status tab remembers.</summary>
+        public const int RunTalliesKept = 10;
 
         public SpectrumDDSDriver Driver { get { return driver; } }
         public object CardLock { get { return cardLock; } }
@@ -136,9 +144,30 @@ namespace SpectrumDDSController
         /// Block until the card is armed and waiting for its trigger, so MOTMaster
         /// does not fire a shot into the re-queue deadtime.
         /// </summary>
+        /// <remarks>
+        /// Deliberately outside <see cref="cardLock"/>. The thing this waits for is
+        /// the shot thread's <see cref="SpectrumDDSDriver.ArmForNextShot"/>, which
+        /// needs that lock -- so holding it here blocks the arm and then times out
+        /// waiting for it, and MOTMaster fires into an unarmed card and takes a
+        /// QUEUE_UNDERRUN. Worse, an arm that is slow for its own reasons (debug
+        /// logging at level 3 stalling on the log file) blocks this call for as long
+        /// as the arm lasts, whatever the timeout says. Polling the status register
+        /// needs no lock beyond SpcmCard's own per-call one.
+        /// </remarks>
         public bool WaitUntilArmed(double timeoutSeconds)
         {
-            lock (cardLock) return driver.WaitUntilArmed(timeoutSeconds);
+            try
+            {
+                return driver.WaitUntilArmed(timeoutSeconds);
+            }
+            catch (InvalidOperationException)
+            {
+                // The card was closed from the GUI while we were polling -- which
+                // cardLock used to make impossible. "Not armed" is the honest answer
+                // and the caller already handles it; throwing across remoting into
+                // MOTMaster's run loop would not be.
+                return false;
+            }
         }
 
         public int PatternsFired { get { return driver.PatternsFired; } }
@@ -156,6 +185,85 @@ namespace SpectrumDDSController
         public string GetStatusText()
         {
             lock (cardLock) return driver.IsOpen ? driver.StatusText() : "card not open";
+        }
+
+        // -- the end-of-run tally ------------------------------------------------------
+
+        /// <summary>
+        /// Record how a MOTMaster run went, for the Status tab to show.
+        /// </summary>
+        /// <param name="triggersSent">
+        /// Triggers MOTMaster fired. The one number this side cannot know -- everything
+        /// else is sampled here, at the same moment.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// MOTMaster prints these numbers to its console as well, but that goes nowhere
+        /// anyone sees unless it was started from Visual Studio, which it rarely is. So
+        /// this window is where they actually get read, and it is the only readout of
+        /// whether the DDS kept up with the sequence.
+        /// </para>
+        /// <para>
+        /// Stored rather than pushed at the GUI: the window picks it up on its status
+        /// timer, the same way it picks up a pattern MOTMaster pushed straight into
+        /// <see cref="patternList"/>. That keeps the update on the UI thread without a
+        /// remoting thread having to marshal onto it.
+        /// </para>
+        /// <para>
+        /// The end-of-run status is the useful half. Every run starts with
+        /// <see cref="PrepareForNewPattern"/>, which resets the DDS engine and so clears
+        /// the latched QUEUE_UNDERRUN bit -- so finding it set here means an underrun
+        /// happened during <em>this</em> run. A run that missed shots with an underrun
+        /// was fired into during the re-queue deadtime; one that missed them without was
+        /// simply too slow to arm, which points at the driver's debug log level.
+        /// </para>
+        /// </remarks>
+        public void ReportRunTally(int triggersSent)
+        {
+            int fired = PatternsFired;
+            int missed = triggersSent - fired;
+
+            // The card-derived half is best-effort. Closing the card between the run
+            // ending and this call would make GetCardTriggerCount throw, and losing the
+            // whole tally -- including the sent and fired counts, which are still
+            // perfectly good -- over that would defeat the point of recording it.
+            string cardTriggers, status;
+            try
+            {
+                cardTriggers = GetCardTriggerCount().ToString(CultureInfo.InvariantCulture);
+                status = GetStatusText();
+            }
+            catch (Exception ex)
+            {
+                cardTriggers = "?";
+                status = "could not be read: " + ex.Message;
+            }
+
+            string entry = string.Format(CultureInfo.InvariantCulture,
+                "{0:HH:mm:ss}  sent {1,5}  fired {2,5}  missed {3,4}  card triggers {4,7}  |  {5}{6}",
+                DateTime.Now, triggersSent, fired, missed, cardTriggers, status,
+                missed > 0 ? "   <<< MISSED " + missed : "");
+
+            lock (tallyLock)
+            {
+                runTallies.Enqueue(entry);
+                while (runTallies.Count > RunTalliesKept) runTallies.Dequeue();
+            }
+        }
+
+        /// <summary>
+        /// The remembered run tallies, newest first, one per line. Empty if no run has
+        /// reported since this controller started.
+        /// </summary>
+        public string RunTallyText
+        {
+            get
+            {
+                string[] entries;
+                lock (tallyLock) entries = runTallies.ToArray();
+                Array.Reverse(entries);
+                return string.Join(Environment.NewLine, entries);
+            }
         }
 
         /// <summary>

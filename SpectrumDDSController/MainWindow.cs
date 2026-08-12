@@ -223,10 +223,15 @@ namespace SpectrumDDSController
         {
             connectButton.Text = controller.IsOpen ? "Close card" : "Open card";
 
+            // Built first so it survives the closed-card early return below: someone
+            // closing the card to look at something else must not lose the record of
+            // how the last runs went.
+            string tallies = RunTallyBlock();
+
             if (!controller.IsOpen)
             {
                 identityBox.Text = "The card is not open.";
-                liveStatusBox.Text = "";
+                SetLiveStatus(tallies);
                 return;
             }
 
@@ -266,14 +271,51 @@ namespace SpectrumDDSController
                                       driver.MaximumAmplitudes[i].ToString("0.###",
                                           CultureInfo.InvariantCulture)).ToArray());
 
-                // Only touch the box when something changed, or the caret and any
-                // selection jump every 250 ms.
-                if (liveStatusBox.Text != text) liveStatusBox.Text = text;
+                SetLiveStatus(text + Environment.NewLine + Environment.NewLine + tallies);
             }
             catch (Exception ex)
             {
-                liveStatusBox.Text = "status read failed: " + ex.Message;
+                SetLiveStatus("status read failed: " + ex.Message +
+                              Environment.NewLine + Environment.NewLine + tallies);
             }
+        }
+
+        /// <summary>
+        /// How the last few MOTMaster runs went, as reported by
+        /// <see cref="Controller.ReportRunTally"/>.
+        /// </summary>
+        /// <remarks>
+        /// This is the only place the sent/fired/missed numbers are visible: MOTMaster
+        /// prints them to a console nobody sees unless it was started from Visual
+        /// Studio. A run that quietly lost shots is exactly what they exist to catch,
+        /// so a non-zero miss count is spelled out rather than left to be noticed.
+        /// </remarks>
+        private string RunTallyBlock()
+        {
+            string tallies;
+            try
+            {
+                tallies = controller.RunTallyText;
+            }
+            catch (Exception ex)
+            {
+                return "MOTMaster runs    could not be read: " + ex.Message;
+            }
+
+            return "MOTMaster runs    (last " + Controller.RunTalliesKept + ", newest first)" +
+                   Environment.NewLine +
+                   (string.IsNullOrEmpty(tallies)
+                       ? "  none since this controller started"
+                       : "  " + tallies.Replace(Environment.NewLine, Environment.NewLine + "  "));
+        }
+
+        /// <summary>
+        /// Write the live status box, but only when it changed -- otherwise the caret
+        /// and any selection jump every time the status timer ticks.
+        /// </summary>
+        private void SetLiveStatus(string text)
+        {
+            if (liveStatusBox.Text != text) liveStatusBox.Text = text;
         }
 
         // -- pattern tab -------------------------------------------------------------

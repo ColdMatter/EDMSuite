@@ -555,7 +555,12 @@ namespace SpectrumDDS
             while (clock.Elapsed.TotalSeconds < timeoutSeconds)
             {
                 if ((Status & DDSStatus.WaitingForTrigger) != 0) return true;
-                System.Threading.Thread.Sleep(0);
+                // Sleep(1), not Sleep(0). An arm takes hundreds of milliseconds, so
+                // millisecond resolution is ample, and a Sleep(0) spin here reads the
+                // status register ~90000 times a second -- which with the driver's
+                // debug log at level 3 is 90000 log writes a second, all of them
+                // contending with the arm this is waiting for.
+                System.Threading.Thread.Sleep(1);
             }
             return false;
         }

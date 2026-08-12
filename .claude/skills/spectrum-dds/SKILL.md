@@ -262,6 +262,7 @@ does not need to coordinate with anything holding the card open.
 | Engine never advances, status stays idle | Erratum 5 — trigger engine unconfigured. |
 | Queue drains as fast as it is filled | A live `TRG_SRC = TIMER` left from a previous session. Reset the DDS engine on open. |
 | `QUEUE_UNDERRUN` right after start | Erratum 5 — software trigger in the OR mask. |
+| `QUEUE_UNDERRUN` occasionally, mid-run, with a hang | The shot was fired into the re-queue deadtime. See "Arming has to win the race" below. |
 | Pattern runs one step out of sequence | The prologue was not consumed before queueing. See the timing model. |
 | Error 267 "the setup isn't valid" | Erratum 4 — not primed. |
 | Error 288 "card is still running" | Erratum 8 — a `WRITESETUP` after start. |
@@ -270,6 +271,41 @@ does not need to coordinate with anything holding the card open.
 | RF leaking on Ch0 | Cores 1–46 not silenced. |
 | Nothing on an AOM despite a correct pattern | Output stage disabled, or amplitude above the clamp so the pattern was rejected. |
 | Missed shots / hangs during a run | Check the debug log level (Status tab). Level 3 logs every poll inside `WaitUntilArmed`'s per-shot busy-spin — see Debug logging above. |
+
+## Arming has to win the race
+
+Every shot has a deadtime: the pattern ends, the queue empties, and the whole
+next pattern has to be written in before the next external trigger arrives —
+about 20 register writes per event, so ~283 for the 15-event MOT pattern. A trigger
+that lands inside that window sets `QUEUE_UNDERRUN` and the shot's pattern is
+simply not played — the AOMs hold the last event's settings for a whole cycle.
+MOTMaster's `WaitUntilArmed(1.0)` exists to stop it firing into that window, and
+it ignores a `false` return and fires anyway.
+
+Traced through a 4949 s `until_failure.txt` at MOT rep rate (~1.1 s cycle,
+~0.45 s pattern), two things eat the margin:
+
+- **The arm is only fast if debug logging is low.** At level 3 each of those
+  writes carries a formatted line to the log file — ~1.1 ms each, measured — so
+  an arm takes ~0.35 s
+  instead of a few ms — most of the available deadtime — and an I/O stall on the
+  log turns single arms into 34, 54 and 93 second hangs. Those are the "hangs for
+  tens of seconds" a user sees; MOTMaster is stuck in `WaitUntilArmed` behind
+  them, so the whole run stops, not just the DDS.
+- **`WaitUntilArmed` must not hold `cardLock`.** It used to, which meant it
+  blocked `ArmForNextShot` — the very thing it was waiting for — then timed out
+  after its full second, and MOTMaster fired into the unarmed card. Measured: 83
+  episodes in one run of ~90 000 consecutive `SPC_DDS_STATUS` reads with no
+  writer activity in between, each followed within ~0.5 s by `QUEUE_UNDERRUN`.
+  Fixed by polling outside the lock, and by `Thread.Sleep(1)` rather than
+  `Sleep(0)` in the driver's spin. Holding `cardLock` across any wait is the
+  general trap here: the lock exists to keep a multi-register sequence
+  uninterrupted, and waiting is not one of those.
+
+Underrun is latched. Once set it stays set until `SPCM_DDS_CMD_RESET`, which
+only `PrepareForNewPattern` issues — so a status of `QUEUE_UNDERRUN` means "at
+least one happened since the last pattern load", not "happening now". Count
+onsets in the log, not reads.
 
 ## Working style
 

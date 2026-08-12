@@ -526,6 +526,21 @@ namespace MOTMaster
                         Console.WriteLine(
                             "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
                             ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
+
+                        // The console line above only reaches anyone who started
+                        // MOTMaster from Visual Studio, which is rare, so hand the
+                        // tally to the DDS window as well -- that is on screen anyway
+                        // and is where these numbers actually get read. Reporting must
+                        // never take the run down with it: saving and the report still
+                        // have to happen.
+                        try
+                        {
+                            ddsController.ReportRunTally(ddsTriggersSent);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Could not report the DDS tally: " + ex.Message);
+                        }
                     }
 #endif //DDS
 
