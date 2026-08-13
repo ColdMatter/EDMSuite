@@ -203,6 +203,12 @@ names) rotates on its own once a day — the previous day is archived as
 browser is also date order. Old rotated files are not deleted automatically;
 clean them up by hand as before.
 
+That is the *driver's* log, and it is enormous. There is a much smaller one,
+`Logs\controller_events_{date}.log` at the root of the EDMSuite folder, holding
+just this program's own errors and the end-of-run tallies — start there, and
+only open the driver log if the answer is not in it. See
+[LOGGING.md](../LOGGING.md).
+
 ## What gets saved
 
 Every saved run's zip contains `*_ddsPattern.json` beside the digital and analog
@@ -230,6 +236,10 @@ copy of the `.cs` file. Scripts with no DDS pattern write no file.
 Two counters on the Status tab do **not** mean what they look like, so don't draw
 conclusions from them: *queued commands* reaches zero one event before a pattern
 ends, and *card trigger count* reads one low after a reset and never catches up.
+
+If it already went wrong and you are piecing it together after the fact, the
+errors and run tallies are on disk in `Logs\controller_events_{date}.log` at the
+root of the EDMSuite folder — see [LOGGING.md](../LOGGING.md).
 
 ---
 

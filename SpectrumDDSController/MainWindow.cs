@@ -199,8 +199,9 @@ namespace SpectrumDDSController
             {
                 loaded = controller.LoadedPattern;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DdsLog.Error("MainWindow.AdoptExternallyLoadedPattern", ex);
                 return;     // the card went away; the status tab will say so
             }
 
@@ -275,6 +276,7 @@ namespace SpectrumDDSController
             }
             catch (Exception ex)
             {
+                DdsLog.Error("MainWindow.UpdateStatusTab", ex);
                 SetLiveStatus("status read failed: " + ex.Message +
                               Environment.NewLine + Environment.NewLine + tallies);
             }
@@ -299,6 +301,7 @@ namespace SpectrumDDSController
             }
             catch (Exception ex)
             {
+                DdsLog.Error("MainWindow.RunTallyBlock", ex);
                 return "MOTMaster runs    could not be read: " + ex.Message;
             }
 
@@ -960,6 +963,9 @@ namespace SpectrumDDSController
 
         private void Complain(string what, Exception ex)
         {
+            // Every complaint in this window funnels through here, so one call
+            // records the lot -- including the stack, which the box never shows.
+            DdsLog.Error("MainWindow: " + what, ex);
             MessageBox.Show(this, what + ":" + Environment.NewLine + Environment.NewLine + ex.Message,
                 "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
@@ -972,9 +978,10 @@ namespace SpectrumDDSController
             {
                 controller.CloseCard();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Nothing useful to do while shutting down.
+                // Nothing useful to do while shutting down, beyond leaving a note.
+                DdsLog.Error("MainWindow.FormClosing (CloseCard)", ex);
             }
         }
     }

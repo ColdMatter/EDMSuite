@@ -3,6 +3,7 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Windows.Forms;
+using SpectrumDDS;
 
 namespace SpectrumDDSController
 {
@@ -23,6 +24,22 @@ namespace SpectrumDDSController
         [STAThread]
         private static void Main(string[] args)
         {
+            // Record what killed the process, or what the runtime put a dialog up
+            // about, without changing either. AppDomain.UnhandledException is
+            // notification-only. Application.ThreadException is not -- attaching to
+            // it at all suppresses the ThreadExceptionDialog WinForms would show and
+            // silently carries on -- so the default is reproduced explicitly.
+            AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs e)
+            {
+                DdsLog.Error("Runner", e.ExceptionObject as Exception);
+            };
+            Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs e)
+            {
+                DdsLog.Error("Runner", e.Exception);
+                if (new ThreadExceptionDialog(e.Exception).ShowDialog() == DialogResult.Abort)
+                    Application.Exit();
+            };
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -38,6 +55,7 @@ namespace SpectrumDDSController
             {
                 // Worth running anyway: manual control is useful even when the port
                 // is taken by a leftover instance, and this is the usual sign of one.
+                DdsLog.Error("Runner (remoting port " + RemotingPort + ")", ex);
                 MessageBox.Show(
                     "Could not publish the DDS controller on port " + RemotingPort + ":" +
                     Environment.NewLine + Environment.NewLine + ex.Message +
@@ -61,6 +79,12 @@ namespace SpectrumDDSController
                     AppDomain.CurrentDomain.BaseDirectory, "startup-error.txt");
                 try { System.IO.File.WriteAllText(log, DateTime.Now + Environment.NewLine + ex); }
                 catch (Exception) { }
+
+                // Also into the dated event log, so a startup failure sits in the
+                // same file as everything else that went wrong that day. The write
+                // above stays exactly as it is: it is the last line of defence and
+                // must not come to depend on this.
+                DdsLog.Error("Runner (startup)", ex);
 
                 MessageBox.Show(
                     "The DDS controller could not start:" + Environment.NewLine +

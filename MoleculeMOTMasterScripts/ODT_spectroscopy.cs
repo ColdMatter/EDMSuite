@@ -46,9 +46,9 @@ public class Patterns : MOTMasterScript
         Parameters["yShimLoadCurrent"] = -3.0;
         Parameters["zShimLoadCurrent"] = 0.22;
 
-        Parameters["xShimBM"] = -6.0;//-5.2;
-        Parameters["yShimBM"] = -5.0;//2.0;
-        Parameters["zShimBM"] = 0.8;//3.68;
+        Parameters["xShimBM"] = -6.8;//-5.2;
+        Parameters["yShimBM"] = -5.8;//2.0;
+        Parameters["zShimBM"] = -0.2;//3.68;
 
         Parameters["xShimSpec"] = -1.85;
         Parameters["yShimSpec"] = -3.0;
@@ -183,7 +183,7 @@ public class Patterns : MOTMasterScript
         Parameters["OpticalPumpDuration"] = 50;
         Parameters["shim_settle_on"] = 5000;
         Parameters["shim_settle_off"] = 5000;
-        Parameters["QCL_dur"] = 400;
+        Parameters["QCL_dur"] = 1000;
         Parameters["QCL_max_time"] = 5000;
 
         Parameters["ODTHoldTime"] = (int)Parameters["OpticalPumpDuration"] + (int)Parameters["shim_settle_on"] + (int)Parameters["QCL_max_time"] + (int)Parameters["shim_settle_on"];

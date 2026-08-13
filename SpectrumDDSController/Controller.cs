@@ -160,8 +160,9 @@ namespace SpectrumDDSController
             {
                 return driver.WaitUntilArmed(timeoutSeconds);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
+                DdsLog.Error("Controller.WaitUntilArmed", ex);
                 // The card was closed from the GUI while we were polling -- which
                 // cardLock used to make impossible. "Not armed" is the honest answer
                 // and the caller already handles it; throwing across remoting into
@@ -244,6 +245,11 @@ namespace SpectrumDDSController
                 DateTime.Now, triggersSent, fired, missed, cardTriggers, status,
                 missed > 0 ? "   <<< MISSED " + missed : "");
 
+            // The in-memory queue below is capped and dies with the process, and a
+            // run that missed shots is exactly the thing worth still having a record
+            // of tomorrow. Same string, so the file and the Status tab agree.
+            DdsLog.Write("Controller", entry);
+
             lock (tallyLock)
             {
                 runTallies.Enqueue(entry);
@@ -303,10 +309,13 @@ namespace SpectrumDDSController
                     {
                         lock (cardLock) driver.ArmForNextShot();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // The card has gone away or been stopped from the GUI. Give
                         // up quietly rather than throwing on a background thread.
+                        // Quietly on screen, that is -- the shot loop dying mid-run
+                        // used to leave no trace at all.
+                        DdsLog.Error("Controller.RunShots", ex);
                         running = false;
                         break;
                     }

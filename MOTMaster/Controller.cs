@@ -526,6 +526,9 @@ namespace MOTMaster
                         Console.WriteLine(
                             "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
                             ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
+                        SpectrumDDS.DdsLog.Write("MOTMaster", string.Format(
+                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
+                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived));
 
                         // The console line above only reaches anyone who started
                         // MOTMaster from Visual Studio, which is rare, so hand the
@@ -540,6 +543,7 @@ namespace MOTMaster
                         catch (Exception ex)
                         {
                             Console.WriteLine("Could not report the DDS tally: " + ex.Message);
+                            SpectrumDDS.DdsLog.Error("MOTMaster.ReportRunTally", ex);
                         }
                     }
 #endif //DDS
@@ -600,12 +604,14 @@ namespace MOTMaster
                 }
                 catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex)
                 {
+                    SharedCode.AppLog.Error("Controller.Go (analog pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested analog events.\n\n"
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 catch (DAQ.Pattern.InsufficientPatternLengthException ex)
                 {
+                    SharedCode.AppLog.Error("Controller.Go (digital pattern length)", ex);
                     MessageBox.Show("The pattern length is too short to fit all the requested digital events.\n\n"
                         + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
                         "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -660,6 +666,7 @@ namespace MOTMaster
             }
             catch (Exception ex)
             {
+                SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (controller unreachable)", ex);
                 offerToLaunchDDSController(ex);
                 return false;
             }
@@ -681,6 +688,7 @@ namespace MOTMaster
                 }
                 catch (Exception ex)
                 {
+                    SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (OpenCard)", ex);
                     MessageBox.Show(
                         "The Spectrum DDS card would not open, so the run has been stopped.\n\n" +
                         ex.Message,
@@ -698,6 +706,7 @@ namespace MOTMaster
             }
             catch (Exception ex)
             {
+                SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (load pattern)", ex);
                 MessageBox.Show(
                     "The Spectrum DDS would not take this script's pattern, so the run has been stopped.\n\n" +
                     ex.Message,
@@ -725,6 +734,7 @@ namespace MOTMaster
             catch (Exception ex)
             {
                 Console.WriteLine("Could not stop the DDS shot loop: " + ex.Message);
+                SpectrumDDS.DdsLog.Error("MOTMaster.stopDDS", ex);
             }
         }
 
@@ -873,6 +883,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
+                SharedCode.AppLog.Error("Controller.compileFromFile " + scriptPath, e);
                 MessageBox.Show(e.Message);
                 return null;
             }
@@ -896,6 +907,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
+                SharedCode.AppLog.Error("Controller.loadScriptFromDLL", e);
                 MessageBox.Show(e.Message);
                 return null;
             }
