@@ -620,15 +620,90 @@ def ProcessCCDimagesWithoutPMT(FileCCDA, FileCCDB, CCDAsettings, CCDBsettings, O
 
     return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons, FramesAOn, FramesAOff, FramesBOn, FramesBOff
 
+def ProcessCCDcsv(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings):
+
+    # Read in and reshape the CCD images according to the meta data in the PMT file
+    _, _, _, DataOff, Setpoint, _, _ = ProcessAllScansInZippedXML(FilePMT)
+    Scan = ReadAverageScanInZippedXML(FilePMT)
+    NrPoints = len(Setpoint)
+    ThereAreOffShots = not (np.shape(DataOff)[0]==0)
+    if ThereAreOffShots:
+        OnOff = 2
+    else:    
+        OnOff = 1
+    GainA = Scan.GetSetting("shot","ccd1Gain")
+    CCDAsettings['Gain'] = GainA
+    GainB = Scan.GetSetting("shot","ccd2Gain")
+    CCDBsettings['Gain'] = GainB
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    df = pd.read_csv(FileCCDA)
+    CCDcounts = df["Total Counts/frame"].to_numpy()
+    NrFramesPerShot = Scan.GetSetting("shot","ccdNBurstFrames")
+    Shots = np.reshape(CCDcounts, (int(NrPoints*OnOff), NrFramesPerShot))
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:]
+    if ThereAreOffShots:
+        AOff = Shots[1::OnOff,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(AOn[j,i], CCDAsettings)
+    if ThereAreOffShots:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(AOff[j,i], CCDAsettings)
+        
+    # Process CCD B
+    print("Processing CCD B images...")
+    dfB = pd.read_csv(FileCCDB)
+    CCDcounts = dfB[" Total Counts/frame"].to_numpy()
+    Shots = np.reshape(CCDcounts, (int(NrPoints*OnOff), NrFramesPerShot) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:]
+    if ThereAreOffShots:
+        BOff = Shots[1::OnOff,:]
+    else:
+        BOff = np.array([])
+    
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(BOn[j,i], CCDBsettings)
+    if ThereAreOffShots:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(BOff[j,i], CCDBsettings)
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons
 
 def RemoveCCDoffsetCounts(FrameRaw, CCDsettings):
     Frame = FrameRaw - CCDsettings["Offset"]
     return Frame
 
+def RemoveCCDoffsetCountsFromIntegratedCounts(CountRaw, CCDsettings):
+    Count = CountRaw - CCDsettings["Offset"]*128*128
+    return Count
+
+
 def GetCCDphotons(FrameRaw, CCDsettings):
     # Calculate the counts in a CCD frame by summing over all pixels
     Frame = RemoveCCDoffsetCounts(FrameRaw, CCDsettings)
     Counts = np.sum(Frame)
+    Photons = ConvertCountsToPhotons(Counts, CCDsettings)
+    return Photons
+
+def GetCCDphotonsFromIntegratedCounts(CountRaw, CCDsettings):
+    # Calculate the counts in a CCD frame by summing over all pixels
+    Counts = RemoveCCDoffsetCountsFromIntegratedCounts(CountRaw, CCDsettings)
     Photons = ConvertCountsToPhotons(Counts, CCDsettings)
     return Photons
 
