@@ -107,6 +107,19 @@ namespace DAQ.Pattern
             }
         }
 
+        // Methods for controlling the level of error checking
+        /** Used to enable or disable time order checks when pattern building. If time
+		 * order checking is enabled, adding an edge to a channel at a time earlier than
+		 * the latest edge on that channel will throw a <code>TimeOrderException</code>
+		 */
+        public void EnforceTimeOrdering(bool timeOrdered)
+        {
+            foreach (PatternBuilder32SingleBoard board in Boards.Values)
+            {
+                board.EnforceTimeOrdering = timeOrdered;
+            }
+        }
+
 
         #region Legacy Methods
         /** Add an edge to a pattern. All pattern trees must have addEdges as their terminals

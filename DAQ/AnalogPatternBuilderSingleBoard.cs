@@ -43,7 +43,10 @@ namespace DAQ.Analog
         public void AddChannel(string channelName)
         {
             Dictionary<int, double> d = new Dictionary<int, double>();
-            AnalogPatterns.Add(channelName, d);
+            if (!AnalogPatterns.ContainsKey(channelName))
+            {
+                AnalogPatterns.Add(channelName, d);
+            }
         }
 
         public void AddAnalogValue(string channel, int time, double value)
@@ -136,6 +139,86 @@ namespace DAQ.Analog
                         double fourth = weight4 * (it / t) * (it / t) * (it / t) * (it / t);
                         double norm = startValue + weight1 + weight2 + weight3 + weight4;
                         double value = finalValue * (startValue + first + second + third + fourth) / norm;
+                        if (value > upperThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, upperThresholdValue);
+                        }
+                        else if (value < lowerThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, lowerThresholdValue);
+                        }
+                        else
+                        {
+                            AddAnalogValue(channel, startTime + i, value);
+                        }
+                    }
+                    else
+                    {
+                        throw new ConflictInPatternException();
+                    }
+                }
+            }
+            else
+            {
+                throw new InsufficientPatternLengthException();
+            }
+        }
+
+        public void AddSinusoidal(string channel, int startTime, int steps,
+            double frequency, double offset, double amplitude, double phase,
+            double upperThresholdValue, double lowerThresholdValue)
+        {
+            if (PatternLength > startTime+steps)
+            {
+                double normfrequency = frequency * 10e-6; // assumes 1 timestep is 10 us
+                for (int i = 0; i < steps-1; i++)
+                {
+                    if (AnalogPatterns[channel].ContainsKey(startTime + i) == false)
+                    {
+                        double t = 1.0 * steps;
+                        double it = 1.0 * i;
+                         
+                        double value = amplitude *Math.Sin(2*Math.PI*normfrequency*it + phase) + offset;
+                        if (value > upperThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, upperThresholdValue);
+                        }
+                        else if (value < lowerThresholdValue)
+                        {
+                            AddAnalogValue(channel, startTime + i, lowerThresholdValue);
+                        }
+                        else
+                        {
+                            AddAnalogValue(channel, startTime + i, value);
+                        }
+                    }
+                    else
+                    {
+                        throw new ConflictInPatternException();
+                    }
+                }
+                // set last value to the offset, no matter where in the sine you are
+                AddAnalogValue(channel, startTime + steps-1, offset);
+            }
+            else
+            {
+                throw new InsufficientPatternLengthException();
+            }
+        }
+
+        // arbitrary waveform via 
+        public void AddArbitrary(string channel, int startTime, double[ ] arrValues,
+            double upperThresholdValue, double lowerThresholdValue)
+        {
+            int steps = arrValues.Length;
+            if (PatternLength > startTime + steps)
+            {
+                //double normfrequency = frequency * 10e-6; // assumes 1 timestep is 10 us
+                for (int i = 0; i < steps; i++)
+                {
+                    if (AnalogPatterns[channel].ContainsKey(startTime + i) == false)
+                    {
+                        double value = arrValues[i];
                         if (value > upperThresholdValue)
                         {
                             AddAnalogValue(channel, startTime + i, upperThresholdValue);

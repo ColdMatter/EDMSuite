@@ -47,6 +47,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
             this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
+            this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editParameterFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewPatternButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -124,7 +127,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.patternsToolStripMenuItem});
+            this.patternsToolStripMenuItem,
+            this.parametersToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(736, 24);
@@ -141,7 +145,7 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -157,7 +161,7 @@
             // newPatternToolStripMenuItem
             // 
             this.newPatternToolStripMenuItem.Name = "newPatternToolStripMenuItem";
-            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newPatternToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.newPatternToolStripMenuItem.Text = "Select script";
             this.newPatternToolStripMenuItem.Click += new System.EventHandler(this.newPatternToolStripMenuItem_Click);
             // 
@@ -165,7 +169,7 @@
             // 
             this.ReplicateScriptToolStripMenuItem.Name = "ReplicateScriptToolStripMenuItem";
             this.ReplicateScriptToolStripMenuItem.ShowShortcutKeys = false;
-            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ReplicateScriptToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.ReplicateScriptToolStripMenuItem.Text = "Replicate saved run";
             this.ReplicateScriptToolStripMenuItem.Click += new System.EventHandler(this.ReplicateScriptToolStripMenuItem_Click);
             // 
@@ -227,11 +231,37 @@
             this.triggeredCheckBox.UseVisualStyleBackColor = true;
             this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // parametersToolStripMenuItem
+            // 
+            this.parametersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editParameterFileToolStripMenuItem});
+            this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.parametersToolStripMenuItem.Text = "Parameters";
+            // 
+            // editParameterFileToolStripMenuItem
+            // 
+            this.editParameterFileToolStripMenuItem.Name = "editParameterFileToolStripMenuItem";
+            this.editParameterFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editParameterFileToolStripMenuItem.Text = "Edit parameter file";
+            this.editParameterFileToolStripMenuItem.Click += new System.EventHandler(this.editParameterFileToolStripMenuItem_Click);
+            // 
+            // viewPatternButton
+            // 
+            this.viewPatternButton.Location = new System.Drawing.Point(446, 83);
+            this.viewPatternButton.Name = "viewPatternButton";
+            this.viewPatternButton.Size = new System.Drawing.Size(137, 23);
+            this.viewPatternButton.TabIndex = 18;
+            this.viewPatternButton.Text = "View pattern";
+            this.viewPatternButton.UseVisualStyleBackColor = true;
+            this.viewPatternButton.Click += new System.EventHandler(this.viewPatternButton_Click);
+            // 
             // ControllerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
+            this.Controls.Add(this.viewPatternButton);
             this.Controls.Add(this.triggeredCheckBox);
             this.Controls.Add(this.runUntilStopCheckBox);
             this.Controls.Add(this.label2);
@@ -278,6 +308,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox runUntilStopCheckBox;
         private System.Windows.Forms.CheckBox triggeredCheckBox;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editParameterFileToolStripMenuItem;
+        private System.Windows.Forms.Button viewPatternButton;
     }
 }
 

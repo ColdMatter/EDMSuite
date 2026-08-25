@@ -95,6 +95,24 @@ namespace DAQ.Analog
                 weight1, weight2, weight3, weight4);
         }
 
+        public void AddSinusoidal(string channelName, int startTime, int steps,
+            double frequency, double offset, double amplitude, double phase,
+            double upperThresholdValue, double lowerThresholdValue)
+        {
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddSinusoidal(channelName, startTime, steps,
+                frequency, offset, amplitude, phase,
+                upperThresholdValue, lowerThresholdValue);
+        }
+
+        public void AddArbitrary(string channelName, int startTime, double[ ] arrValues,
+            double upperThresholdValue, double lowerThresholdValue)
+        {
+            AnalogOutputChannel channel = (AnalogOutputChannel)Environs.Hardware.AnalogOutputChannels[channelName];
+            GetBoard(channel).AddArbitrary(channelName, startTime, arrValues,
+                upperThresholdValue, lowerThresholdValue);
+        }
+
         public void BuildPattern()
         {
             foreach (AnalogPatternBuilderSingleBoard board in Boards.Values)

@@ -26,12 +26,14 @@ namespace DAQ.HAL
             Boards.Add("wmOutput", "/PXI1Slot2");         // TCL analog outputs, PXI-6722
             Boards.Add("hcInput", "/PXI1Slot6");
             Boards.Add("output6733", "/PXI1Slot5");
+            Boards.Add("output6738", "/PXI1Slot8");
 
             string pgBoard = (string)Boards["patternGenerator"];
             string TCLInOut = (string)Boards["tclInOut"];
             string WMOutput = (string)Boards["wmOutput"];
             string hcInput = (string)Boards["hcInput"];
             string output6733 = (string)Boards["output6733"];
+            string output6738 = (string)Boards["output6738"];
 
             // map the digital channels of the "pg" card
             AddDigitalOutputChannel("q", pgBoard, 0, 3);
@@ -40,45 +42,85 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("blockTCL", pgBoard, 0, 12);
             AddDigitalOutputChannel("blockV00", pgBoard, 0, 13);
 
-            AddDigitalOutputChannel("greenShutter", pgBoard, 0, 2);
+            // shutters
+            AddDigitalOutputChannel("BXShutter", pgBoard, 0, 2);
+            //AddDigitalOutputChannel("Rb3DCoolingShutter", output6738, 1, 1);
 
             AddDigitalOutputChannel("V00R0AOM", pgBoard, 0, 27);                                           
             AddDigitalOutputChannel("BXAOM", pgBoard, 0, 28);                                           
+            AddDigitalOutputChannel("BXAOM2", pgBoard, 0, 18);
             AddDigitalOutputChannel("RepumpAOM", pgBoard, 0, 29);                                     
             AddDigitalOutputChannel("RepumpBroadening", pgBoard, 0, 26);
             AddDigitalOutputChannel("V00R0EOM", pgBoard, 0, 16);
-            AddDigitalOutputChannel("V00R1plusAOM", pgBoard, 0, 17);
-            AddDigitalOutputChannel("V00R1plusAOMJump", pgBoard, 0, 25);
+            AddDigitalOutputChannel("V00R1plusAOMredMOT", pgBoard, 0, 17);
+            AddDigitalOutputChannel("V00R1plusAOMblueMOT", pgBoard, 0, 25);
+            AddDigitalOutputChannel("V00B2AOMblueMOT", pgBoard, 0, 20);
+            AddDigitalOutputChannel("V00B2AOMmolasses", pgBoard, 0, 21);
             AddDigitalOutputChannel("V00B1minusAOM", pgBoard, 0, 22);
-            AddDigitalOutputChannel("V00B1minusAOMJump", pgBoard, 0, 20);
             AddDigitalOutputChannel("cameraTrigger", pgBoard, 0, 14);
             AddDigitalOutputChannel("camera2Trigger", pgBoard, 0, 15);
-            AddDigitalOutputChannel("shutter", pgBoard, 0, 18);
             AddDigitalOutputChannel("BXSidebands", pgBoard, 0, 24);                                          
-            AddDigitalOutputChannel("V00B2AOM", pgBoard, 0, 21);
             AddDigitalOutputChannel("DipoleTrapAOM", pgBoard, 0, 19);
             AddDigitalOutputChannel("MicrowaveSwitch", pgBoard, 0, 23);
 
+            AddDigitalOutputChannel("DDSTTLP0", pgBoard, 0, 4);
+            AddDigitalOutputChannel("DDSTTLP1", pgBoard, 0, 5);
+            AddDigitalOutputChannel("DDSTTLP2", pgBoard, 0, 6);
+            AddDigitalOutputChannel("DDSTTLP3", pgBoard, 0, 7);
+
+            // Rb digital channel
+            AddDigitalOutputChannel("RbPushBeamAOM", pgBoard, 0, 8);
+            AddDigitalOutputChannel("Rb2DCoilsTTL", pgBoard, 0, 9);
+            AddDigitalOutputChannel("Rb2DCoolingAOM", pgBoard, 0, 10);
+            AddDigitalOutputChannel("Rb3DCoolingAOM", pgBoard, 0, 11);
+            //AddDigitalOutputChannel("RbOpAbsBeamAOM", output6738, 1, 6);
+
             // map the analog output channels for "daq" card
             AddAnalogOutputChannel("BXChirp", output6733 + "/ao0", -5, 5);                             
-            AddAnalogOutputChannel("V00R0AOMVCOFreq", output6733 + "/ao1", 0, 10);                             
+            AddAnalogOutputChannel("V00R0AOMVCOFreq", output6733 + "/ao1", 0, 10);
             AddAnalogOutputChannel("motCoils", output6733 + "/ao2", -10, 10);
             AddAnalogOutputChannel("V00R0AOMVCOAmp", output6733 + "/ao3", 0, 10);                       
-            AddAnalogOutputChannel("V00R0EOMVCOAmp", output6733 + "/ao4", -10, 10);
+            AddAnalogOutputChannel("V00R0EOMAmp", output6733 + "/ao4", -10, 10);
             AddAnalogOutputChannel("V00B2AOMAmp", output6733 + "/ao6", -10, 10);                               
             AddAnalogOutputChannel("V00R1plusAOMAmp", output6733 + "/ao7", -10, 10);
 
             AddAnalogOutputChannel("CavityRamp", output6733 + "/ao5", -5, 5);
 
             AddAnalogOutputChannel("SlowingBField", pgBoard + "/ao0", 0, 5);
-            AddAnalogOutputChannel("ShimCoilX", pgBoard + "/ao1", -10, 10);
-            AddAnalogOutputChannel("ShimCoilY", pgBoard + "/ao2", -10, 10);
-            AddAnalogOutputChannel("ShimCoilZ", pgBoard + "/ao3", -10, 10);
+            AddAnalogOutputChannel("ShimCoilX", pgBoard + "/ao1", -10, 10); // -6 to 6
+            AddAnalogOutputChannel("ShimCoilY", pgBoard + "/ao2", -10, 10); // -4 to 4
+            AddAnalogOutputChannel("ShimCoilZ", pgBoard + "/ao3", -10, 10); // 
+
+
+            // 6738 analog channels
+
+            AddAnalogOutputChannel("ODTVVAControl", output6738 + "/ao0", -10, 10);
+            //AddAnalogOutputChannel("Rb2DCoolingAOMVCOAmp", output6738 + "/ao1", -10, 10);
+            AddAnalogOutputChannel("V00B1minusAOMAmp", output6738 + "/ao2", -10, 10);
+            AddAnalogOutputChannel("Rb2DCoolingAOMVCOAmp", output6738 + "/ao3", -10, 10);
+            //AddAnalogOutputChannel("RbRepumpAOMVCOAmp", output6738 + "/ao3", -10, 10); // this is now 2D cooling VCA
+            AddAnalogOutputChannel("RbPushBeamAOMVCOAmp", output6738 + "/ao4", -10, 10);
+            AddAnalogOutputChannel("Rb3DCoolingAOMVCOAmp", output6738 + "/ao5", -10, 10);
+            AddAnalogOutputChannel("RbOpAbsBeamAOMVCOAmp", output6738 + "/ao6", -10, 10);
+
 
             Info.Add("PGType", "integrated");
             Info.Add("PGClockCounter", "/ctr0");
-            Info.Add("PGClockLine", pgBoard + "/PFI2");
+            Info.Add("PGClockLine", pgBoard + "/PFI1");
             Info.Add("PatternGeneratorBoard", pgBoard);
+
+            // RUBIDIUM - needs setting later
+            //AddDigitalOutputChannel("Rb2DMOTCoilsOptocoupler", pgBoard, 0, 23);
+            //AddDigitalOutputChannel("Rb2DCoolingAOM", pgBoard, 0, 23);
+            //AddDigitalOutputChannel("Rb3DCoolingAOM", pgBoard, 0, 23);
+            //AddDigitalOutputChannel("RbRepumpAOM", pgBoard, 0, 23);
+            //AddDigitalOutputChannel("RbPushBeamAOM", pgBoard, 0, 23);
+            //AddDigitalOutputChannel("RbAbsorptionAOM", pgBoard, 0, 23);
+            //AddAnalogOutputChannel("Rb2DCoolingAOMAmp", pgBoard + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("Rb3DCoolingAOMAmp", pgBoard + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("RbRepumpAOMAmp", pgBoard + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("RbPushBeamAOMAmp", pgBoard + "/ao0", 0, 5);
+            //AddAnalogOutputChannel("RbAbsorptionAOMAmp", pgBoard + "/ao0", 0, 5);
 
             //WaveMeter Output Channels
             AddAnalogOutputChannel("BXLockWML", WMOutput + "/ao0", 0, 5);
@@ -180,6 +222,9 @@ namespace DAQ.HAL
             Info.Add("Element", "CaFBEC");
 
             Dictionary<string, string> analogBoards = new Dictionary<string, string>();
+            analogBoards.Add("ThirdAO", output6738);
+            Info.Add("ThirdAOPatternTrigger", output6738 + "/PFI0"); //PFI0 for pgBoard
+            Info.Add("ThirdAOClockLine", output6738 + "/PFI5"); //PFI6
             analogBoards.Add("SecondAO", output6733);
             Info.Add("SecondAOPatternTrigger", output6733 + "/PFI6"); //PFI0 for pgBoard
             Info.Add("SecondAOClockLine", output6733 + "/PFI5"); //PFI6
@@ -190,6 +235,9 @@ namespace DAQ.HAL
 
             Dictionary<string, string> additionalPatternBoards = new Dictionary<string, string>();
             //additionalPatternBoards.Add(digitalPatternBoardAddress, digitalPatternBoardAddress);
+            //additionalPatternBoards.Add("SecondPGBoard", output6738);
+            //Info.Add("PGSlave0ClockLine", output6738 + "/PFI7");
+            //Info.Add("PGSlave0TriggerLine", output6738 + "/PFI0");
             Info.Add("AdditionalPatternGeneratorBoards", additionalPatternBoards);
 
 

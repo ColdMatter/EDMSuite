@@ -248,7 +248,7 @@ namespace DAQ.HAL
 		{
             if (pgTask != null)
                 pgTask.Dispose();
-            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated") counterTask.Dispose();
+            if ((string)Environs.Hardware.GetInfo("PGType") == "integrated" && counterTask != null) counterTask.Dispose();
         }
 
         private void pgTask_Done(object sender, TaskDoneEventArgs e)

@@ -18,7 +18,7 @@ namespace DAQ
 			Paths.Add("wavemeterLockData", "C:\\wavemeter_lock_data\\");
 			Paths.Add("fakeData", "C: \\ControlPrograms\\Examples");
 
-			Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\OneDrive - Imperial College London\\cafbec\\mot_master_data\\");
+			Paths.Add("MOTMasterDataPath", "C:\\Users\\cafmot\\Box\\Working folder\\cafbec\\mot_master_data\\");
 			Paths.Add("daqDLLPath", "C:\\ControlPrograms\\EDMSuite\\DAQ\\bin\\CaF\\daq.dll");
 			Paths.Add("MOTMasterExePath", "C:\\ControlPrograms\\EDMSuite\\MOTMaster\\bin\\CaFBEC\\");
 			Paths.Add("ExternalFilesPath", "C:\\Users\\cafmot\\Documents\\Temp_camera_images");

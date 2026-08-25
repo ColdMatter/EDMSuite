@@ -25,9 +25,21 @@ namespace DAQ.Pattern
 		
 		public void AddEdge( int channel, bool sense ) 
 		{
-			if (sense) edges[channel] = EdgeSense.UP;
-			else edges[channel] = EdgeSense.DOWN;
-		}
+
+			if (sense)
+            {
+                if (edges[channel] == EdgeSense.DOWN) edges[channel] = EdgeSense.NC;
+                else edges[channel] = EdgeSense.UP;
+            }
+            else
+            {
+                if (edges[channel] == EdgeSense.UP) edges[channel] = EdgeSense.NC;
+                else edges[channel] = EdgeSense.DOWN;
+            }
+
+            //if (sense) edges[channel] = EdgeSense.UP;
+            //else edges[channel] = EdgeSense.DOWN;
+        }
 					
 		public EdgeSense GetEdge(int channel) 
 		{

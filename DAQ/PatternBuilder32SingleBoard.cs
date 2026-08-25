@@ -138,6 +138,7 @@ namespace DAQ.Pattern
 			// Get the event times and fill in the gaps
 			ArrayList times = layout.EventTimes;
 			int numberOfEvents = times.Count;
+
 			// first the time before the first event, if there is any
 			for (int i = 0 ; i < (int)times[0] ; i++ ) 
 			{

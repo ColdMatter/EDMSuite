@@ -52,7 +52,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
-        private NeanderthalDDSController.Controller DDSCtrl;
+        //private NeanderthalDDSController.Controller DDSCtrl;
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -101,7 +101,7 @@ namespace MOTMaster
             pgs = new Dictionary<string, DAQMxPatternGenerator>();
             if (additionalPGs != null)
             {
-                foreach (string address in additionalPGs.Keys)
+                foreach (string address in additionalPGs.Values)
                 {
                     pgs[address] = new DAQMxPatternGenerator(address);
                 }
@@ -138,8 +138,8 @@ namespace MOTMaster
                 "tcp://localhost:1172/controller.rem");
 
             // --- Initialize the DDS Controller instance ---
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
-            DDSCtrl.testDDS();
+            //DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
+            //DDSCtrl.testDDS();
 
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
@@ -238,17 +238,32 @@ namespace MOTMaster
             }
         }
 
-        private void releaseHardware()
+        private void releaseHardware(MOTMasterSequence sequence)
         {
             pgMaster.StopPattern();
-            foreach (DAQMxPatternGenerator pg in pgs.Values)
+            foreach (string address in pgs.Keys)
             {
-                pg.StopPattern();
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                {
+                    pgs[address].StopPattern();
+                }
             }
-            foreach (DAQMxAnalogPatternGenerator apg in analogs.Values)
+            foreach (string address in analogs.Keys)
             {
-                apg.StopPattern();
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogs[address].StopPattern();
+                }
             }
+
+            //foreach (DAQMxPatternGenerator pg in pgs.Values)
+            //{
+            //    pg.StopPattern();
+            //}
+            //foreach (DAQMxAnalogPatternGenerator apg in analogs.Values)
+            //{
+            //    apg.StopPattern();
+            //}
         }
         private void clearDigitalPattern(MOTMasterSequence sequence)
         {
@@ -262,7 +277,7 @@ namespace MOTMaster
         private void releaseHardwareAndClearDigitalPattern(MOTMasterSequence sequence)
         {
             clearDigitalPattern(sequence);
-            releaseHardware();
+            releaseHardware(sequence);
         }
 
         #endregion
@@ -419,7 +434,7 @@ namespace MOTMaster
                     //    // The dictionary entry has one Key: "MOT"
                     //    {
                     //        "MOT", 
-        
+
                     //        // The Value for the key is a new List of Lists
                     //        new List<List<double>>
                     //        {
@@ -449,7 +464,7 @@ namespace MOTMaster
 
 
                     // --- Add the new logic for handling the DDS pattern ---
-                    if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
+                    /*if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
                     {
                         // Set break flag to safely clear the old pattern
                         DDSCtrl.PrepareForNewPattern();
@@ -459,8 +474,8 @@ namespace MOTMaster
 
                         // Set break flag to false and start the pattern running repetitively
                         DDSCtrl.startRepetitivePattern();
-                    }
-                    */
+                    }*/
+
                     //try
                     //{
                     //if (config.CameraUsed) prepareCameraControl();
@@ -549,6 +564,97 @@ namespace MOTMaster
             }
         }
 
+        public void ViewPattern()
+        {
+            MOTMasterScript script = prepareScript(scriptPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+            var digitalChannels = new List<(string, uint[])>
+            {
+                ("PG",  sequence.DigitalPattern.Boards[pgMasterName].Pattern),
+            };
+
+            var digitalNames = new List<(string, SortedList<int, string>)>
+            {
+                ("PG",  GenerateListOfDigitalChannelNames(pgMasterName)),
+            };
+
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                {
+                    digitalChannels.Add((address, sequence.DigitalPattern.Boards[address].Pattern));
+                    digitalNames.Add((address, GenerateListOfDigitalChannelNames(address)));
+                }
+            }
+
+            var analogChannels = new List<(string, double[,])>();
+            //{
+            //    ("output6733", sequence.AnalogPattern.Boards["/PXI1Slot5"].Pattern),
+            //    ("pgBoard", sequence.AnalogPattern.Boards["/PXI1Slot3"].Pattern),
+            //};
+
+            var analogNames = new List<(string, SortedList<int, string>)>();
+            //{
+            //    ("output6733", analogNames1),
+            //    ("pgBoard", analogNames2),
+            //};
+
+            foreach (string address in analogs.Keys)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogChannels.Add((address, sequence.AnalogPattern.Boards[address].Pattern));
+                    var names = new SortedList<int, string>();
+                    ICollection<string> keys = sequence.AnalogPattern.Boards[address].AnalogPatterns.Keys;
+                    int i = 0;
+                    foreach (string key in keys)
+                    {
+                        names.Add(i, key);
+                        i++;
+                    }
+                    analogNames.Add((address, names));
+                }
+            }
+
+            //var analogNames1 = new SortedList<int, string>();
+            //ICollection<string> keys = sequence.AnalogPattern.Boards["/PXI1Slot5"].AnalogPatterns.Keys;
+            //int i = 0;
+            //foreach (string key in keys)
+            //{
+            //    analogNames1.Add(i, key);
+            //    i++;
+            //}
+
+            //var analogNames2 = new SortedList<int, string>();
+            //ICollection<string> keys2 = sequence.AnalogPattern.Boards["/PXI1Slot3"].AnalogPatterns.Keys;
+            //int j = 0;
+            //foreach (string key in keys2)
+            //{
+            //    analogNames2.Add(j, key);
+            //    j++;
+            //}
+
+            using (var viewer = new PatternViewer(digitalChannels, analogChannels, digitalNames, analogNames))
+            {
+                viewer.ShowDialog(controllerWindow);
+            }
+        }
+
+        public SortedList<int, string> GenerateListOfDigitalChannelNames(string boardAddress)
+        {
+            SortedList<int, string> digitalChannelNames = new SortedList<int, string>();
+            foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
+            {
+                if(((DigitalOutputChannel)channel.Value).Device == boardAddress)
+                {
+                    digitalChannelNames.Add(((DigitalOutputChannel)channel.Value).BitNumber, (string)channel.Key);
+                }
+            }
+            return digitalChannelNames;
+        }
+
         #endregion
 
         #region private stuff
@@ -577,7 +683,7 @@ namespace MOTMaster
             initializeHardware(sequence);
             run(sequence);
             while (pgMaster.TaskRunning && status == RunningState.running) ;
-            releaseHardware();
+            releaseHardware(sequence);
         }
 
         private MOTMasterScript prepareScript(string pathToPattern, Dictionary<String, Object> dict)

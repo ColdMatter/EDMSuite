@@ -232,10 +232,6 @@
       <Project>{693fbf90-f77e-4ac3-b91b-c8a8034d0b4d}</Project>
       <Name>MOTMaster</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj">
-      <Project>{67cbabe4-303c-4034-99a0-25d7dd2e5d2d}</Project>
-      <Name>NeanderthalDDSController</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\MoleculeMOTMasterScripts.dll" />
@@ -243,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
