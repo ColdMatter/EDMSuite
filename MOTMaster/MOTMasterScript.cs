@@ -21,15 +21,16 @@ namespace MOTMaster
         public Dictionary<String, Object> Parameters;
 
         /// <summary>
-        /// Loads parameters shared between scripts from globalParameters.txt in the
+        /// Loads parameters shared between scripts from globalParameters.json in the
         /// scripts folder (edited via MOTMaster's Parameters > Edit parameter file menu).
         /// Call this after initialising Parameters and before any script-specific
         /// Parameters[...] assignments, so per-script values still take precedence.
         /// </summary>
         protected void LoadGlobalParameters()
         {
-            string path = Path.Combine((string)Environs.FileSystem.Paths["scriptListPath"], "globalParameters.txt");
-            foreach (ParameterEntry entry in ParameterFileManager.ReadFile(path, typeof(double)))
+            string path = Path.Combine((string)Environs.FileSystem.Paths["scriptListPath"], "globalParameters.json");
+            var groups = ParameterFileManager.ReadFile(path, typeof(double));
+            foreach (ParameterEntry entry in ParameterFileManager.Flatten(groups))
             {
                 Parameters[entry.Name] = Convert.ChangeType(entry.Value, entry.Type, CultureInfo.InvariantCulture);
             }
