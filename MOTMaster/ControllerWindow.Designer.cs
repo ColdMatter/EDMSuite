@@ -48,6 +48,8 @@
             this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
             this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
             this.viewPatternButton = new System.Windows.Forms.Button();
+            this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editParameterFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -125,7 +127,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.patternsToolStripMenuItem});
+            this.patternsToolStripMenuItem,
+            this.parametersToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(736, 24);
@@ -238,6 +241,21 @@
             this.viewPatternButton.UseVisualStyleBackColor = true;
             this.viewPatternButton.Click += new System.EventHandler(this.viewPatternButton_Click);
             //
+            // parametersToolStripMenuItem
+            //
+            this.parametersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editParameterFileToolStripMenuItem});
+            this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.parametersToolStripMenuItem.Text = "Parameters";
+            //
+            // editParameterFileToolStripMenuItem
+            //
+            this.editParameterFileToolStripMenuItem.Name = "editParameterFileToolStripMenuItem";
+            this.editParameterFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editParameterFileToolStripMenuItem.Text = "Edit parameter file";
+            this.editParameterFileToolStripMenuItem.Click += new System.EventHandler(this.editParameterFileToolStripMenuItem_Click);
+            //
             // ControllerWindow
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -291,6 +309,8 @@
         private System.Windows.Forms.CheckBox runUntilStopCheckBox;
         private System.Windows.Forms.CheckBox triggeredCheckBox;
         private System.Windows.Forms.Button viewPatternButton;
+        private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editParameterFileToolStripMenuItem;
     }
 }
 

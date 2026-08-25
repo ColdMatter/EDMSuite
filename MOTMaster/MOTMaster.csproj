@@ -477,6 +477,14 @@
     <Compile Include="PatternViewer.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ParameterFileManager.cs" />
+    <Compile Include="ParameterEntry.cs" />
+    <Compile Include="ParameterWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterWindow.Designer.cs">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
@@ -501,6 +509,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParameterWindow.resx">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PreviewWindow.resx">
       <DependentUpon>PreviewWindow.cs</DependentUpon>
