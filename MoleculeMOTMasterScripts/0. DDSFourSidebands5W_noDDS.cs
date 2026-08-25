@@ -40,8 +40,8 @@ public class Patterns : MOTMasterScript
 
         // Slowing Chirp, 5W ALS laser250, 1250)
         
-        Parameters["SlowingChirpStartTime"] = 300;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1200;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
         /*
         Parameters["SlowingChirpStartTime"] = 160;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
@@ -193,7 +193,7 @@ public class Patterns : MOTMasterScript
             (double)Parameters["MOTFreqDDS0"], (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"],
             (double)Parameters["MOTAmpDDS0"], (double)Parameters["MOTAmpDDS1"], (double)Parameters["MOTAmpDDS2"], (double)Parameters["MOTAmpDDS3"]);
 
-        return null;
+        return p;
     }
 
     public void addDDSPattern(Dictionary<string, List<List<double>>> p, String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4,

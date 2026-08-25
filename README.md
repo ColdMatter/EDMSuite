@@ -10,6 +10,8 @@ General
 
 The code is not terribly pretty, but it does the job. There is minimal documentation, and what is there should be treated with suspicion!
 
+MOTMaster and SpectrumDDSController keep a persistent log of their errors and of missed DDS shots. If something went wrong and you are working out what, start at [LOGGING.md](LOGGING.md).
+
 Building
 ========
 

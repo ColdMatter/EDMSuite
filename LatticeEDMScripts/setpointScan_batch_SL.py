@@ -42,7 +42,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "Aug 2026"
-date = "07"
+date = "10"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -53,7 +53,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["008", "009"]
+sele = ["010", "011"]
 
 #%%
 LoadPasses = True
@@ -90,8 +90,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 24
-SigEnd = 27
+SigStart = 22
+SigEnd = 30
 BkgStart = 70
 BkgEnd = 80
 
@@ -266,7 +266,7 @@ for i in range(0, len(fileLabels)):
     #plt.plot(ScanParams, OffBkgSub, '.', label='Off', color=colors[1])
     #plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOff), color=colors[1])
     plt.plot((MoveAvg_f-f_offset)*1e6, MoveAvg_R, label="With moving average of %g"%MA, color=colors[1])
-    plt.xlabel("Relative frequency (MHz) to %g THz"%f_offset)
+    plt.xlabel("Relative frequency (MHz) to %.9g THz"%f_offset)
     plt.ylabel("Ratio")
     plt.title(title)
     plt.legend()
@@ -305,11 +305,13 @@ title2="Gated TOF over " + Settings["param"] + " with " +\
     str(SigStart) + "ms to " + str(SigEnd) + "ms gate, files " +\
         str(sele)
 
-#plt.plot((Xstack_sorted-f_offset)*1e6, Rstack_sorted)
+plt.plot((Xstack_sorted-f_offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
 plt.plot((MoveAvg_f-f_offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
 plt.xlabel("Relative frequency (MHz) to %.9g THz"%f_offset)
 plt.ylabel("Ratio")
-plt.title(title2)
+#plt.xlim(0, 800)
+#plt.ylim(0.45, 0.49)
+plt.title(title2+"\n4f v1 R line scan in Lattice")
 plt.legend()
 plt.show()   
 
