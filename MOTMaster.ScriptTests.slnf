@@ -1,0 +1,8 @@
+{
+  "solution": {
+    "path": "EDMSuite.sln",
+    "projects": [
+      "MOTMaster.ScriptTests\\MOTMaster.ScriptTests.csproj"
+    ]
+  }
+}
