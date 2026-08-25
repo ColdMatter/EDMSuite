@@ -440,12 +440,26 @@ namespace MOTMaster
 
         public SortedList<int, string> GenerateListOfDigitalChannelNames(string boardAddress)
         {
+            // Some hardware configs define more than one named channel on the same
+            // board/bit (e.g. an old channel left registered as "broken" alongside
+            // its replacement) - combine the names rather than throwing on the
+            // duplicate key.
             SortedList<int, string> digitalChannelNames = new SortedList<int, string>();
             foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
             {
-                if (((DigitalOutputChannel)channel.Value).Device == boardAddress)
+                DigitalOutputChannel digitalOutputChannel = (DigitalOutputChannel)channel.Value;
+                if (digitalOutputChannel.Device == boardAddress)
                 {
-                    digitalChannelNames.Add(((DigitalOutputChannel)channel.Value).BitNumber, (string)channel.Key);
+                    int bitNumber = digitalOutputChannel.BitNumber;
+                    string name = (string)channel.Key;
+                    if (digitalChannelNames.ContainsKey(bitNumber))
+                    {
+                        digitalChannelNames[bitNumber] = digitalChannelNames[bitNumber] + "/" + name;
+                    }
+                    else
+                    {
+                        digitalChannelNames.Add(bitNumber, name);
+                    }
                 }
             }
             return digitalChannelNames;
