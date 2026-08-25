@@ -387,6 +387,70 @@ namespace MOTMaster
             return prepareScript(scriptPath, new Dictionary<string, object> { }).Parameters;
         }
 
+        public void ViewPattern()
+        {
+            MOTMasterScript script = prepareScript(scriptPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+            var digitalChannels = new List<(string, uint[])>
+            {
+                ("PG",  sequence.DigitalPattern.Boards[pgMasterName].Pattern),
+            };
+
+            var digitalNames = new List<(string, SortedList<int, string>)>
+            {
+                ("PG",  GenerateListOfDigitalChannelNames(pgMasterName)),
+            };
+
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                {
+                    digitalChannels.Add((address, sequence.DigitalPattern.Boards[address].Pattern));
+                    digitalNames.Add((address, GenerateListOfDigitalChannelNames(address)));
+                }
+            }
+
+            var analogChannels = new List<(string, double[,])>();
+            var analogNames = new List<(string, SortedList<int, string>)>();
+
+            foreach (string address in analogs.Keys)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogChannels.Add((address, sequence.AnalogPattern.Boards[address].Pattern));
+                    var names = new SortedList<int, string>();
+                    ICollection<string> keys = sequence.AnalogPattern.Boards[address].AnalogPatterns.Keys;
+                    int i = 0;
+                    foreach (string key in keys)
+                    {
+                        names.Add(i, key);
+                        i++;
+                    }
+                    analogNames.Add((address, names));
+                }
+            }
+
+            using (var viewer = new PatternViewer(digitalChannels, analogChannels, digitalNames, analogNames))
+            {
+                viewer.ShowDialog(controllerWindow);
+            }
+        }
+
+        public SortedList<int, string> GenerateListOfDigitalChannelNames(string boardAddress)
+        {
+            SortedList<int, string> digitalChannelNames = new SortedList<int, string>();
+            foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
+            {
+                if (((DigitalOutputChannel)channel.Value).Device == boardAddress)
+                {
+                    digitalChannelNames.Add(((DigitalOutputChannel)channel.Value).BitNumber, (string)channel.Key);
+                }
+            }
+            return digitalChannelNames;
+        }
+
         public void Run()
         {
             runThread = new Thread(new ThreadStart(this.Go));

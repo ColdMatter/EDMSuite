@@ -473,6 +473,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelDescriptor.cs" />
+    <Compile Include="PatternViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
