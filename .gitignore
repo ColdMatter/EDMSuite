@@ -26,3 +26,6 @@ iamjoe.sh
 *.dll
 *.csproj
 *.cache
+
+# Runtime event logs (see LOGGING.md)
+/Logs/

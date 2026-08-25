@@ -22,8 +22,12 @@ namespace DAQ.Environment
             Paths.Add("wavemeterLockData", "E:\\WML_DataLog\\");
             DataSearchPaths.Add(Paths["scanMasterDataPath"]);
 
+            // Referenced by MOTMaster's runtime script compiler, so that scripts can
+            // use the DDS pattern types directly. A path that does not exist makes
+            // every script compile fail, which is what the deleted DDS controller
+            // was doing here.
             List<string> MMAssemblies = new List<string> { };
-            MMAssemblies.Add(@"C:\ControlPrograms\EDMSuite\NeanderthalDDSController\bin\Debug\net461\NeanderthalDDSController.exe");
+            MMAssemblies.Add(@"C:\ControlPrograms\EDMSuite\SpectrumDDS\bin\CaF\SpectrumDDS.dll");
             Paths.Add("AdditionalMOTMasterAssemblies", MMAssemblies);
 
             SortDataByDate = false;
