@@ -35,6 +35,11 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <!-- MainWindow.resx carries non-string resources; newer MSBuild wants either this or a
+         System.Resources.Extensions reference at runtime (MSB3822/3823). This changes the
+         resx serialization format only - no behavior change. Same fix as DAQ.csproj,
+         MOTMaster.csproj and SirCachealot.csproj. -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Decelerator|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -506,6 +511,17 @@
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Required at runtime by GenerateResourceUsePreserializedResources (see the property
+         above) to deserialize the non-string resources in this project's .resx files.
+         PackageReference doesn't resolve into a build-time reference for old-style (non-SDK)
+         projects like this one, so the DLL is vendored (same pattern as MongoDB.Bson.dll
+         below) instead. -->
+    <Reference Include="System.Resources.Extensions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SharedCode\System.Resources.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
