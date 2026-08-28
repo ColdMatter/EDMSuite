@@ -1,10 +1,7 @@
 # Event logging — where to look when something went wrong
 
 Both MOTMaster and SpectrumDDSController keep a small, persistent, plain-text
-record of the errors they hit and the events worth remembering. The point is to
-make "what happened yesterday?" answerable from a file you can open in Notepad,
-rather than from a 50–100 MB/day vendor log or from an in-memory tally that died
-with the process.
+record of the errors they hit and the events worth remembering.
 
 These logs are written best-effort and are for diagnosis only. Nothing in the
 experiment reads them, and nothing depends on them existing.
@@ -26,8 +23,7 @@ write and is git-ignored, so the logs never show up in `git status`.
 
 A new calendar day starts a new file — the date is in the filename, so there is
 no rotation to go wrong and no chance of losing yesterday. **Nothing deletes
-these files.** They are small (a normal day is a few kB), but clean them out by
-hand occasionally, as with the vendor's.
+these files.**
 
 The location is worked out at runtime, by walking up from wherever the
 executable is until `EDMSuite.sln` turns up — the apps run out of
@@ -35,10 +31,6 @@ executable is until `EDMSuite.sln` turns up — the apps run out of
 hard-coded drive letter anywhere: not every machine that runs this code has an
 `E:`. If the marker is not found — a copied-out deployment with no source tree
 around it — the logs land in a `Logs` folder beside the executable instead.
-
-Note the vendor's driver log is **not** in here. That one goes wherever the
-driver's own registry setting points, which the Status tab edits and this code
-does not touch.
 
 ---
 
@@ -115,14 +107,6 @@ best-effort: every write is wrapped in a catch that swallows everything, so that
 a full disk or an unwritable folder can never change what the experiment does.
 If the write failed, the event simply did not get recorded. The apps behave
 identically either way and will not warn you.
-
-**They are not a substitute for the vendor log.** These record what the
-applications did. What the *driver* did is in `spcmdrv_debug.txt`, and for
-anything below the level of "the card refused this" you will still need it.
-
-**MessageBox text is unchanged.** Nothing was moved out of a dialog and into a
-log; the logging was added alongside. If you saw a dialog, its text and the
-stack behind it are now also in the file.
 
 ---
 
