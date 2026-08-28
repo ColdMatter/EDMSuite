@@ -11,6 +11,7 @@ iamjoe.sh
 *.pyc
 *.pdb
 */.vscode
+.vscode/
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/dcamapi4.cs
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/dcamapi.lib
 /HamamatsuCamera/dcamsdk4/samples/cs/csAcq4/app.config
