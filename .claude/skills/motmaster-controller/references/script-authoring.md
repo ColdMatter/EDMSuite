@@ -84,9 +84,11 @@ empty builder.
 
 Added to `MOTMasterScript` (`MOTMaster/MOTMasterScript.cs`) to stop 19 near-identical
 scripts from hand-copying the same 90+ constants. It reads
-`<scriptListPath>\globalParameters.txt` (tab-delimited `Name\tValue\tType`, same format
-`ParameterFileManager` uses, editable through **Parameters → Edit parameter file** in the
-GUI) and writes every entry into `Parameters`.
+`<scriptListPath>\globalParameters.json` (grouped JSON — `{ "groups": [ { "name",
+"parameters": [ { "name", "value", "type" } ] } ] }`, editable through **Parameters →
+Edit parameter file** in the GUI), flattens the groups (`ParameterFileManager.Flatten`,
+which throws if a name is repeated across groups), and writes every entry into
+`Parameters`. Groups are organisational only — scripts see a flat namespace.
 
 **Call it immediately after `Parameters = new Dictionary<string, object>();` and before
 any script-specific `Parameters[...]` assignment** — later assignments in the
@@ -95,14 +97,15 @@ overrides one shared default without touching the shared file. If you call it af
 script-specific assignments, the global value wins instead and silently clobbers the
 script's intended override.
 
-**Adding a new shared parameter:** add a row to `globalParameters.txt`
-(`Name\tValue\tType`, `Type` is `System.Int32` or `System.Double`), then remove the
-matching `Parameters["Name"] = ...;` line from every script that used that exact value.
-Leave the line in place (untouched) in any script that needs a different value — the
-per-script assignment still runs after `LoadGlobalParameters()` and wins. Re-run
-[`verify-scripts.ps1`](../verify-scripts.ps1) afterward: a typo in the new row's `Type`
-column (anything `Type.GetType()` can't resolve) silently falls back to `double` in
-`ParameterFileManager.ReadFile`, which then throws an `InvalidCastException` inside
+**Adding a new shared parameter:** add an entry to `globalParameters.json` (easiest
+through the GUI — pick a group, Add Parameter; `type` is `System.Int32` or
+`System.Double`), then remove the matching `Parameters["Name"] = ...;` line from every
+script that used that exact value. Leave the line in place (untouched) in any script that
+needs a different value — the per-script assignment still runs after
+`LoadGlobalParameters()` and wins. Re-run [`verify-scripts.ps1`](../verify-scripts.ps1)
+afterward: a typo in the new entry's `type` (anything `Type.GetType()` can't resolve)
+silently falls back to `double` in `ParameterFileManager.ReadFile`, which then throws an
+`InvalidCastException` inside
 `Convert.ChangeType` at compile-then-run time if a script unboxes it with `(int)` —
 the verify script won't catch that (it's a runtime cast, not a compile error), so a
 quick check is to cross-reference the new parameter's cast sites by hand.

@@ -104,7 +104,7 @@ namespace MOTMasterScriptCheck
 
                 object patternLengthObj;
                 if (!script.Parameters.TryGetValue("PatternLength", out patternLengthObj))
-                    return "Parameters has no \"PatternLength\" entry - every script needs one (usually from globalParameters.txt or a script-specific override).";
+                    return "Parameters has no \"PatternLength\" entry - every script needs one (usually from globalParameters.json or a script-specific override).";
 
                 int patternLength;
                 try

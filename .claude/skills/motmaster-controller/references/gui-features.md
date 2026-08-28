@@ -41,29 +41,40 @@ one file.
 ## Global parameter-file editor — "Parameters → Edit parameter file"
 
 `ParameterWindow` (`MOTMaster/ParameterWindow.cs` + `.Designer.cs` + `.resx`) is a
-generic editor for **any** `Name\tValue\tType` text file in
-`Environs.FileSystem.Paths["scriptListPath"]` — not specific to `globalParameters.txt`.
-On load it lists every `*.txt` in that folder in a combo box; picking one loads its rows
-into an editable `DataGridView`; every cell edit, added row, or deleted row immediately
-autosaves back to disk via `ParameterFileManager.WriteFile` (`dgvParameters_CellEndEdit`,
-`btnAddRow_Click`, `dgvParameters_UserDeletedRow` / `btnDeleteRow_Click`).
+generic editor for **any** grouped-JSON parameter file in
+`Environs.FileSystem.Paths["scriptListPath"]` — not specific to `globalParameters.json`.
+On load it lists every `*.json` in that folder in a combo box; picking one loads its
+parameters into a grouped `ListView` (`lvParameters`, `View.Details`, `ShowGroups`).
+Every change — an inline cell edit (double-click a cell; text box, or a type dropdown for
+the Type column), an added row (`btnAddRow_Click`, into the group picked in
+`cmbTargetGroup`), a deleted row (`btnDeleteRow_Click` / Delete key / right-click
+Delete), a drag between groups, a right-click **Move to Group**, or a new group
+(`btnNewGroup_Click`) — immediately autosaves the whole file via
+`ParameterFileManager.WriteFile`. Group headers are click-collapsible; the collapse
+plumbing (`GroupHeaderClickWindow`, `LVM_SETGROUPINFO`) is a big chunk of the file and is
+purely cosmetic — it does not affect what gets saved or loaded.
 
-`ParameterEntry` (`ParameterEntry.cs`) is a plain `{Name, Value, Type}` holder — `Value`
-is always stored/round-tripped as a `string`; the `Type` (`System.Int32` /
-`System.Double`, chosen from the `colType` dropdown, `_parameterTypes` in
-`ParameterWindow.cs`) only matters when something later calls
-`Convert.ChangeType(entry.Value, entry.Type, ...)` — i.e. `MOTMasterScript.LoadGlobalParameters()`.
-The editor itself never validates that `Value` actually parses as the selected `Type`; a
-bad edit (e.g. typing `abc` into a row typed `System.Double`) saves fine and only fails
-later, as an unhandled `FormatException`, the next time a script tries to load it.
+On-disk shape: `{ "groups": [ { "name": ..., "parameters": [ { "name", "value", "type" }, ... ] } ] }`.
 
-`ParameterFileManager` (`ParameterFileManager.cs`) is the shared I/O layer — `ReadFile`
-tolerates a missing file (returns empty list) and an unrecognised `Type` string (falls
-back to the caller-supplied `fallbackType`); `WriteFile` always writes `Type.FullName`.
-This is the same class `MOTMasterScript.LoadGlobalParameters()` uses to read
-`globalParameters.txt`, so any file editable through this GUI could in principle be
-loaded by a script the same way — the naming (`globalParameters.txt`) is just a
-convention, not something the format enforces.
+`ParameterEntry` (`ParameterEntry.cs`) is a plain `{Name, Value, Type}` holder and
+`ParameterGroup` (`ParameterGroup.cs`) is a `{Name, List<ParameterEntry>}` holder —
+`Value` is always stored/round-tripped as a `string`; the `Type` (`System.Int32` /
+`System.Double`, `_parameterTypes` in `ParameterWindow.cs`) only matters when something
+later calls `Convert.ChangeType(entry.Value, entry.Type, ...)` — i.e.
+`MOTMasterScript.LoadGlobalParameters()`. The editor never validates that `Value` parses
+as the selected `Type`; a bad edit (e.g. `abc` in a `System.Double` row) saves fine and
+only fails later, as an unhandled exception, the next time a script loads it.
+
+`ParameterFileManager` (`ParameterFileManager.cs`) is the shared I/O layer, using
+`System.Web.Script.Serialization.JavaScriptSerializer`. `ReadFile` returns
+`List<ParameterGroup>` — tolerates a missing file (empty list) and an unrecognised `Type`
+string (falls back to the caller-supplied `fallbackType`); `WriteFile` always writes
+`Type.FullName`. `Flatten(groups)` collapses the groups to a flat `List<ParameterEntry>`
+for callers that don't care about grouping (`LoadGlobalParameters`), and **throws** if
+one parameter name appears in more than one group. Grouping is a pure UI/organisational
+convenience — scripts see a flat namespace. Any `*.json` editable through this GUI could
+be loaded by a script the same way; the name `globalParameters.json` is just the
+convention `LoadGlobalParameters()` looks for.
 
 **Menu wiring:** `ControllerWindow.Designer.cs` adds a top-level `Parameters` menu with
 one child `Edit parameter file`; `ControllerWindow.cs`'s

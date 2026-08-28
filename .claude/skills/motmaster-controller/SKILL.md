@@ -1,6 +1,6 @@
 ---
 name: motmaster-controller
-description: Editing or extending the MOTMaster controller and pattern-generator plumbing — Controller.cs, ControllerWindow, MOTMasterScript, PatternBuilder32/AnalogPatternBuilder, hardware channel registration (AddDigitalOutputChannel), the runtime script-compilation model, globalParameters.txt / LoadGlobalParameters, the pattern visualiser ("View Pattern"), the parameter-file editor ("Edit parameter file"), or checking whether a MoleculeMOTMasterScripts edit will actually run (verify-scripts.ps1). Applies to any experiment on the suite (AlF, EDM variants, Rb tweezer, buffer gas, ...) for the shared MOTMaster/DAQ plumbing, but the concrete details here — machine name, Hardware/FileSystem subclass, build configuration, script folder, globalParameters.txt — are all cafmot/PH-BONESAW's; adapt them per-experiment as this skill itself explains. Use this whenever the task touches MOTMaster's C# internals or a *MOTMasterScripts/*.cs pattern script, or answers a question about how MOTMaster is wired together — building it, adding a channel, adding a shared parameter, editing the GUI, why a script won't compile, or what a symptom like "MSB4126" or a duplicate-channel exception means.
+description: Editing or extending the MOTMaster controller and pattern-generator plumbing — Controller.cs, ControllerWindow, MOTMasterScript, PatternBuilder32/AnalogPatternBuilder, hardware channel registration (AddDigitalOutputChannel), the runtime script-compilation model, globalParameters.json / LoadGlobalParameters, the pattern visualiser ("View Pattern"), the parameter-file editor ("Edit parameter file"), or checking whether a MoleculeMOTMasterScripts edit will actually run (verify-scripts.ps1). Applies to any experiment on the suite (AlF, EDM variants, Rb tweezer, buffer gas, ...) for the shared MOTMaster/DAQ plumbing, but the concrete details here — machine name, Hardware/FileSystem subclass, build configuration, script folder, globalParameters.json — are all cafmot/PH-BONESAW's; adapt them per-experiment as this skill itself explains. Use this whenever the task touches MOTMaster's C# internals or a *MOTMasterScripts/*.cs pattern script, or answers a question about how MOTMaster is wired together — building it, adding a channel, adding a shared parameter, editing the GUI, why a script won't compile, or what a symptom like "MSB4126" or a duplicate-channel exception means.
 ---
 
 # MOTMaster controller
@@ -36,7 +36,7 @@ experiment on the suite. But most of the **concrete specifics** are cafmot's alo
 | `MoleculeMOTHardware.cs` / `PHBonesawFileSystem.cs` | cafmot's `Hardware`/`FileSystem` subclasses — every other experiment has its own pair, chosen by `EnvironsHelper.cs`'s machine-name switch |
 | `CaF` build configuration | cafmot's config name; another experiment builds under its own (see the `Configuration` conditions in `MOTMaster.csproj`/`DAQ.csproj`) |
 | `MoleculeMOTMasterScripts/` | cafmot's script folder; e.g. AlF's is `AlFMOTMasterScripts/` |
-| `globalParameters.txt` / `LoadGlobalParameters()` | a cafmot-specific convention added to the shared `MOTMasterScript` base class — another experiment's scripts may not use it at all, or may have their own file |
+| `globalParameters.json` / `LoadGlobalParameters()` | a cafmot-specific convention added to the shared `MOTMasterScript` base class — another experiment's scripts may not use it at all, or may have their own file |
 | `#if DDS` / Spectrum DDS integration | cafmot-only (only the `CaF` config defines `DDS`) — irrelevant to any experiment without that card |
 | channel names, board/port/line numbers | cafmot's `MoleculeMOTHardware.cs` only — meaningless for another experiment's hardware map |
 
@@ -63,7 +63,7 @@ board:
 - Compiling a pattern script standalone with `csc.exe` (see below) — this exercises
   `Controller.compileFromFile`'s exact logic without instantiating `Controller` or
   touching `Environs.Hardware`.
-- Editing `globalParameters.txt` or any parameter `.txt` file directly.
+- Editing `globalParameters.json` or any parameter file directly.
 
 If a task needs the pattern visualiser or parameter editor actually clicked through in a
 running GUI, that's the user's to do — hand them what to check instead of launching it
@@ -77,12 +77,12 @@ yourself.
 | `MOTMaster/ControllerWindow.cs`/`.Designer.cs` | Thin WinForms shell — handlers are one-line calls into `Controller`. |
 | `MOTMaster/MOTMasterScript.cs` | Abstract base every pattern script derives from; `LoadGlobalParameters()` lives here. |
 | `MOTMaster/PatternViewer.cs`, `ChannelDescriptor.cs` | The pattern visualiser ("View Pattern"). |
-| `MOTMaster/ParameterWindow.cs`, `ParameterFileManager.cs`, `ParameterEntry.cs` | The generic parameter-file editor ("Parameters → Edit parameter file"). |
+| `MOTMaster/ParameterWindow.cs`, `ParameterFileManager.cs`, `ParameterEntry.cs`, `ParameterGroup.cs` | The generic parameter-file editor ("Parameters → Edit parameter file") — grouped JSON parameter files. |
 | `DAQ/Hardware.cs`, `DAQ/MoleculeMOTHardware.cs` | Channel registration (`AddDigitalOutputChannel` etc.) for this experiment. |
 | `DAQ/PatternBuilder32*.cs`, `DAQ/AnalogPatternBuilder*.cs`, `DAQ/AnalogStaticBuilder.cs` | Digital/analog pattern builders scripts call. |
 | `DAQ/EnvironsHelper.cs`, `DAQ/PHBonesawFileSystem.cs` | Per-machine dispatch to `Environs.Hardware`/`Environs.FileSystem`. |
 | `MoleculeMOTMasterScripts/*.cs` (top-level only) | The actual pattern scripts for this experiment. |
-| `MoleculeMOTMasterScripts/globalParameters.txt` | Shared parameter defaults, loaded via `LoadGlobalParameters()`. |
+| `MoleculeMOTMasterScripts/globalParameters.json` | Shared parameter defaults (grouped), loaded + flattened via `LoadGlobalParameters()`. |
 | `.claude/skills/motmaster-controller/verify-scripts.ps1` | Compiles + instantiates + pattern-builds every top-level script without opening MOTMaster — "will MOTMaster accept this edit". See Verifying a change below. |
 
 Read [references/architecture.md](references/architecture.md) first for how it all
@@ -117,7 +117,7 @@ Ran clean this session (only pre-existing NI-assembly-version warnings, nothing 
 
 **2. Every top-level pattern script still compiles, instantiates, and builds a runnable
 pattern** — after touching a script, adding a hardware channel, or changing
-`globalParameters.txt` / `LoadGlobalParameters()`. This is a real check, not just "does
+`globalParameters.json` / `LoadGlobalParameters()`. This is a real check, not just "does
 it compile": it also catches a typo'd channel name or a pattern that doesn't fit
 `PatternLength`, which a bare compile can't. Run it with **`verify-scripts.ps1`** (in
 this skill folder — needs only `csc.exe`, no .NET SDK or VS Code):

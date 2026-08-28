@@ -13,7 +13,7 @@
   compile cleanly and still fail at either of those later steps - e.g. a typo'd channel
   name (a NullReferenceException two frames downstream - see the "Hashtable lookups
   return null" gotcha in references/architecture.md), a pattern that doesn't fit in
-  PatternLength (InsufficientPatternLengthException), or a bad globalParameters.txt row
+  PatternLength (InsufficientPatternLengthException), or a bad globalParameters.json entry
   that throws when Convert.ChangeType'd. This builds ScriptSmokeTest.cs together with
   ScriptCompileCheck.cs (both in this same folder - the latter is the actual check logic)
   and runs the result,
