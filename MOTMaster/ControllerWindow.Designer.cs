@@ -47,7 +47,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.runUntilStopCheckBox = new System.Windows.Forms.CheckBox();
             this.triggeredCheckBox = new System.Windows.Forms.CheckBox();
-            this.preview_button = new System.Windows.Forms.Button();
+            this.viewPatternButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -228,22 +228,22 @@
             this.triggeredCheckBox.UseVisualStyleBackColor = true;
             this.triggeredCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // preview_button
-            // 
-            this.preview_button.Location = new System.Drawing.Point(447, 82);
-            this.preview_button.Name = "preview_button";
-            this.preview_button.Size = new System.Drawing.Size(136, 25);
-            this.preview_button.TabIndex = 18;
-            this.preview_button.Text = "Preview";
-            this.preview_button.UseVisualStyleBackColor = true;
-            this.preview_button.Click += new System.EventHandler(this.preview_button_Click);
-            // 
+            // viewPatternButton
+            //
+            this.viewPatternButton.Location = new System.Drawing.Point(447, 82);
+            this.viewPatternButton.Name = "viewPatternButton";
+            this.viewPatternButton.Size = new System.Drawing.Size(136, 25);
+            this.viewPatternButton.TabIndex = 18;
+            this.viewPatternButton.Text = "View Pattern";
+            this.viewPatternButton.UseVisualStyleBackColor = true;
+            this.viewPatternButton.Click += new System.EventHandler(this.viewPatternButton_Click);
+            //
             // ControllerWindow
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(736, 149);
-            this.Controls.Add(this.preview_button);
+            this.Controls.Add(this.viewPatternButton);
             this.Controls.Add(this.triggeredCheckBox);
             this.Controls.Add(this.runUntilStopCheckBox);
             this.Controls.Add(this.label2);
@@ -290,7 +290,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox runUntilStopCheckBox;
         private System.Windows.Forms.CheckBox triggeredCheckBox;
-        private System.Windows.Forms.Button preview_button;
+        private System.Windows.Forms.Button viewPatternButton;
     }
 }
 
