@@ -15,27 +15,12 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
+        LoadGlobalParameters();
         Parameters["PatternLength"] = 55000;
-        Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 4000;
-        Parameters["FlashToQ"] = 16; // This is a time before the Q switch
-        Parameters["QSwitchPulseDuration"] = 10;
-        Parameters["FlashPulseDuration"] = 10;
-        Parameters["HeliumShutterToQ"] = 300;
-        Parameters["HeliumShutterDuration"] = 2000;
-        Parameters["YagPreFire"] = 35000;
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
-        Parameters["BMTriggerDuration"] = 1000;
-        Parameters["Frame0TriggerDuration"] = 1000;
-        Parameters["TempTriggerDuration"] = 100;
-        Parameters["CameraTriggerTransverseTime"] = 120;
-        Parameters["FrameTriggerInterval"] = 1100;
-        Parameters["waitbeforeimage"] = 1;
 
         //PMT
-        Parameters["PMTTriggerDuration"] = 10;
 
         // Shim fields
         Parameters["xShimLoadCurrent"] = -1.85;
@@ -47,105 +32,38 @@ public class Patterns : MOTMasterScript
         // Slowing Chirp, 5W ALS laser
         Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
-        Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
-
-        Parameters["BXAOM1att"] = 3.5;//7.85;//3.5;//7.2;
-        Parameters["BXAOM2att"] = 3.7;
 
         // Slowing AOMS
 
-        Parameters["BXAOMAttenuation"] = 10.0;
-        Parameters["slowingRepumpAOMOnStart"] = 0;
-        Parameters["SlowingRepumpAttenuation"] = 6.2;
-
         // Slowing B field
-
-        Parameters["slowingCoilsValue"] = 2.0;
 
         // MOT LOAD //
 
         // MOT B field
 
-        Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
-
         // MOT Sidebands
 
         //freqs
-        Parameters["MOTFreqDDS1"] = 114.07; //+ F = 1-              Parameters["Lambda1"] = 98.00;
-        Parameters["MOTFreqDDS2"] = 156.17; //- F = 0   
-        Parameters["MOTFreqDDS3"] = 188.04; //- F = 2. DONE
-        Parameters["MOTFreqDDS4"] = 175.44; //+ F = 1+             Parameters["Lambda3"] = 171.00;
 
         //amps for max optical power. dont go higher the amplifiers will saturate
-        Parameters["MOTAmpDDS1"] = 0.25;
-        Parameters["MOTAmpDDS2"] = 0.6;
-        Parameters["MOTAmpDDS3"] = 0.35;
-        Parameters["MOTAmpDDS4"] = 0.1;
-
-        Parameters["BMOTAmpDDS1"] = 0.25;
-        Parameters["BMOTAmpDDS2"] = 0.6;
-        Parameters["BMOTAmpDDS3"] = 0.35;
-        Parameters["BMOTAmpDDS4"] = 0.1;
 
         // CMOT //
 
-        Parameters["CompressRampDownStartTime"] = 5000;
-        Parameters["CompressRampDownDuration"] = 1000;
-        Parameters["CompressRampDownHoldDuration"] = 500;
-        Parameters["MOTCoilsCompressionValue"] = 1.75;
-
-
-        Parameters["MOTCoilsOffValue"] = -0.1;
-
         // magtrap //
-        Parameters["MagtrapDuration"] = 1000;
-
-        Parameters["MOTCoilsMagtrapValue"] = 1.5;
 
         //12% from lambda measurement
 
-        Parameters["RampEndAmpDDS1"] = 0.097; //12%
-        Parameters["RampAmplitudeDDS1"] = -0.000153; //12%
-        Parameters["RampEndAmpDDS2"] = 0.113; //12%
-        Parameters["RampAmplitudeDDS2"] = -0.00048699999999999997; //12%
-        Parameters["RampEndAmpDDS3"] = 0.122; //12%
-        Parameters["RampAmplitudeDDS3"] = -0.00022799999999999999; //12%
-        Parameters["RampEndAmpDDS4"] = 0.039; //12%
-        Parameters["RampAmplitudeDDS4"] = -6.1000000000000005e-05; //12%
-
         // lambda rf amps
-        Parameters["Lambda1Amp"] = 0.24; // full
-        Parameters["Lambda2Amp"] = 0.1; // full
-
-        Parameters["dummy"] = 0.0;
-
-
-        Parameters["LightoffDDS1"] = 0.0;
-        Parameters["LightoffDDS2"] = 0.0;
-        Parameters["LightoffDDS3"] = 0.0;
-        Parameters["LightoffDDS4"] = 0.0;
-
-        Parameters["LambdaF1minus"] = 97.28;
-        Parameters["LambdaF1plus"] = 171.00;
-
-        Parameters["LambdaCoolingDuration"] = 300;
 
         Parameters["FreeExpTime"] = 1;
 
         // END OF PATTERN //
-
-        Parameters["MOTCoilsSwitchOff"] = 40000;
-
-        Parameters["Delay"] = 2000;
 
     }
 
     public override Dictionary<string, List<List<double>>> GetDDSPattern()
     {
         Dictionary<string, List<List<double>>> p = new Dictionary<string, List<List<double>>>();
-
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
@@ -155,7 +73,6 @@ public class Patterns : MOTMasterScript
         int imageTime = MagtrapEnd + (int)Parameters["FreeExpTime"];
         int lightsoff = imageTime + 2000;
         int background = lightsoff + 10000;
-
 
         addDDSPattern(p, "MOT", 0,
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
@@ -276,14 +193,12 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
-
         return p;
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
@@ -295,7 +210,6 @@ public class Patterns : MOTMasterScript
         int background = lightsoff + 10000;
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
-
 
         // Add Analog Channels
 
@@ -348,7 +262,6 @@ public class Patterns : MOTMasterScript
         p.AddAnalogValue("MOTCoilsCurrent", MagtrapStart, (double)Parameters["MOTCoilsMagtrapValue"]);
         p.AddAnalogValue("MOTCoilsCurrent", imageTime, (double)Parameters["MOTCoilsCurrentValue"]);// in mot imaging
         p.AddAnalogValue("MOTCoilsCurrent", imageTime + (int)Parameters["Frame0TriggerDuration"]+500, (double)Parameters["MOTCoilsOffValue"]);
-        
 
         return p;
     }

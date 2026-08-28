@@ -15,37 +15,13 @@ public class Patterns : MOTMasterScript
     public Patterns()
     {
         Parameters = new Dictionary<string, object>();
-        Parameters["PatternLength"] = 500000; // 850000;
-        Parameters["TCLBlockStart"] = 4000; // This is a time before the Q switch
-        Parameters["TCLBlockDuration"] = 4000;
-        Parameters["FlashToQ"] = 16; // This is a time before the Q switch
-        Parameters["QSwitchPulseDuration"] = 10;
-        Parameters["FlashPulseDuration"] = 10;
-        Parameters["HeliumShutterToQ"] = 300;
-        Parameters["HeliumShutterDuration"] = 2000;
-        Parameters["YagPreFire"] = 35000;
-        Parameters["YagPreFire1"] = 70000;
+        LoadGlobalParameters();
 
         // Camera
-        Parameters["Frame0Trigger"] = 4000;
-        Parameters["Frame0TriggerDuration"] = 1000;
-        Parameters["TweezerImageDur"] = 150;
-        Parameters["TempTriggerDuration"] = 100;
-        Parameters["CameraTriggerTransverseTime"] = 120;
-        Parameters["FrameTriggerInterval"] = 1100;
-        Parameters["waitbeforeimage"] = 1;
 
         //PMT
-        Parameters["PMTTriggerDuration"] = 10;
 
         // Shim fields
-        Parameters["xShimLoadCurrent"] = -2.21;
-        Parameters["yShimLoadCurrent"] = -2.13;
-        Parameters["zShimLoadCurrent"] = 0.41;
-
-        Parameters["xShimBM"] = -2.29;
-        Parameters["yShimBM"] = -2.42;
-        Parameters["zShimBM"] = 0.377;
 
         // SLOWING //
 
@@ -58,64 +34,26 @@ public class Patterns : MOTMasterScript
         */
 
         // Slowing Chirp, 5W ALS laser
-        Parameters["SlowingChirpStartTime"] = 350;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1350;////1400;//1160; //1160
-        Parameters["SlowingChirpStartValue"] = 0.0;//0.0
-        Parameters["SlowingChirpEndValue"] = -0.30; // -0.5 is 480MHz
-
-        Parameters["BXAOM1att"] = 3.5;//7.85;//3.5;//7.2;
-        Parameters["BXAOM2att"] = 3.7;
 
         // Slowing AOMS
 
-        Parameters["BXAOMAttenuation"] = 10.0;
-        Parameters["slowingRepumpAOMOnStart"] = 0;
-        Parameters["SlowingRepumpAttenuation"] = 6.2;
-
         // Slowing B field
 
-        Parameters["slowingCoilsValue"] = 2.0; //1.05;
         //Parameters["slowingCoilsOffTime"] = (int)Parameters["slowingAOMOffStart"]; // 1500;
 
         // MOT LOAD //
 
         // MOT B field
 
-        Parameters["MOTCoilsSwitchOn"] = 0;
-        Parameters["MOTCoilsCurrentValue"] = 1.0; // 0.65;
-
         // MOT Sidebands
 
         //freqs
-        Parameters["MOTFreqDDS1"] = 114.07; //+ F = 1-              Parameters["Lambda1"] = 98.00;
-        Parameters["MOTFreqDDS2"] = 156.17; //- F = 0   
-        Parameters["MOTFreqDDS3"] = 188.04; //- F = 2. DONE
-        Parameters["MOTFreqDDS4"] = 175.44; //+ F = 1+             Parameters["Lambda3"] = 171.00;
 
         //amps for max optical power. dont go higher the amplifiers will saturate
-        Parameters["MOTAmpDDS1"] = 0.25;
-        Parameters["MOTAmpDDS2"] = 0.6;
-        Parameters["MOTAmpDDS3"] = 0.35;
-        Parameters["MOTAmpDDS4"] = 0.1;
-
-        Parameters["BMOTAmpDDS1"] = 0.25;
-        Parameters["BMOTAmpDDS2"] = 0.6;
-        Parameters["BMOTAmpDDS3"] = 0.35;
-        Parameters["BMOTAmpDDS4"] = 0.1;
 
         // CMOT //
 
-        Parameters["CompressRampDownStartTime"] = 5000;
-        Parameters["CompressRampDownDuration"] = 1000;
-        Parameters["CompressRampDownHoldDuration"] = 500;
-        Parameters["MOTCoilsCompressionValue"] = 1.75;
-
-
-        Parameters["MOTCoilsOffValue"] = -0.1;
-
         // magtrap //
-
-        Parameters["MOTCoilsMagtrapValue"] = 1.5;
 
         // INTENSITY RAMP DOWN //
 
@@ -153,19 +91,7 @@ public class Patterns : MOTMasterScript
 
         //12% from lambda measurement
 
-        Parameters["RampEndAmpDDS1"] = 0.097; //12%
-        Parameters["RampAmplitudeDDS1"] = -0.000153; //12%
-        Parameters["RampEndAmpDDS2"] = 0.113; //12%
-        Parameters["RampAmplitudeDDS2"] = -0.00048699999999999997; //12%
-        Parameters["RampEndAmpDDS3"] = 0.122; //12%
-        Parameters["RampAmplitudeDDS3"] = -0.00022799999999999999; //12%
-        Parameters["RampEndAmpDDS4"] = 0.039; //12%
-        Parameters["RampAmplitudeDDS4"] = -6.1000000000000005e-05; //12%
-
         // lambda rf amps
-        Parameters["Lambda1Amp"] = 0.24; // full
-        Parameters["Lambda2Amp"] = 0.1; // full
-
 
         // Ramp slopes
         //Parameters["RampAmplitudeDDS1"] = ((double)Parameters["RampEndAmpDDS1"] - (double)Parameters["MOTAmpDDS1"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
@@ -173,59 +99,15 @@ public class Patterns : MOTMasterScript
         //Parameters["RampAmplitudeDDS3"] = ((double)Parameters["RampEndAmpDDS3"] - (double)Parameters["MOTAmpDDS3"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
         //Parameters["RampAmplitudeDDS4"] = ((double)Parameters["RampEndAmpDDS4"] - (double)Parameters["MOTAmpDDS4"]) / ((double)(int)Parameters["v0IntensityRampDuration"]);
 
-        Parameters["dummy"] = 0.0;
-
-
-        Parameters["LightoffDDS1"] = 0.0;
-        Parameters["LightoffDDS2"] = 0.0;
-        Parameters["LightoffDDS3"] = 0.0;
-        Parameters["LightoffDDS4"] = 0.0;
-
-        Parameters["LambdaF1minus"] = 97.28;
-        Parameters["LambdaF1plus"] = 171.00;
-
-        Parameters["LambdaCoolingDuration"] = 300;
-        Parameters["LambdaCooling2Duration"] = 300;
-
         //Conveyor belt frequency
-        Parameters["FreqCVB1"] = 102.5; //+ F = 1Delta 
         // Parameters["FreqCVB2"] = 163.20;
-        Parameters["FreqCVB2"] = 139.85;
         // Parameters["FreqCVB2"] = 0.0;
-        Parameters["FreqCVB3"] = 175.88; //- F = 2sig- delta_a
-        Parameters["FreqCVB4"] = 176.91; //+ F = 2sig+ delta_b
-
-        Parameters["ResonanceDDS1"] = 111.42;
-        Parameters["ResonanceDDS2"] = 156.17;
-        Parameters["ResonanceDDS3"] = 188.04;
-        Parameters["ResonanceDDS4"] = 174.29;
-
-
-        Parameters["BlueMOTField"] = 1.42;
-        Parameters["BlueMOTRampDuration"] = 4000;
-        Parameters["BlueMOTDuration"] = 100;
-        Parameters["FreeExpTime"] = 1000;
-
-        Parameters["TransportHoldDur"] = 150000;
 
         Parameters["MagtrapDuration"] = 10;
 
-        Parameters["HandoverDur"] = 10000;
-
         // END OF PATTERN //
 
-        Parameters["MOTCoilsSwitchOff"] = 40000;
-
-        Parameters["Delay"] = 2000;
-
-        Parameters["MoveTime"] = 200000; //Need to measure
-
-        Parameters["TransportEdgeDur"] = 180000; //DONT CHANGE
-        Parameters["TransportCoilsAtTweezersDur"] = 50000; //CHANGE THIS ACCORDINGLY
-
         Parameters["ShutterEdgeDur"] = (int)Parameters["MagtrapDuration"] + (int)Parameters["HandoverDur"] + (int)Parameters["MoveTime"] + (int)Parameters["HandoverDur"];
-
-        Parameters["TweezerCoilsHold"] = 10;
 
     }
 
@@ -246,7 +128,6 @@ public class Patterns : MOTMasterScript
         //TWEEZER CHAMBER
         int TweezerHandoverStart = MoveStart + (int)Parameters["MoveTime"];
         int ImageTweezerChamber = TweezerHandoverStart + (int)Parameters["HandoverDur"];
-
 
         addDDSPattern(p, "MOT", 0,
             (double)Parameters["MOTFreqDDS1"], (double)Parameters["MOTFreqDDS2"], (double)Parameters["MOTFreqDDS3"], (double)Parameters["MOTFreqDDS4"],
@@ -365,7 +246,6 @@ public class Patterns : MOTMasterScript
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
         p.Pulse(patternStartBeforeQ, 0, (int)Parameters["QSwitchPulseDuration"], "cafOptPumpingAOM");  // DDS trigger
 
-
         // Slowing AOMs
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
         //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
@@ -397,16 +277,12 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 
-
-
-
         return p;
     }
 
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-
 
         int CompressRampDownStartTime = (int)Parameters["CompressRampDownStartTime"];
         int CompressRampDownEndTime = CompressRampDownStartTime + (int)Parameters["CompressRampDownDuration"];
@@ -420,7 +296,6 @@ public class Patterns : MOTMasterScript
         //TWEEZER CHAMBER
         int TweezerHandoverStart = MoveStart + (int)Parameters["MoveTime"];
         int ImageTweezerChamber = TweezerHandoverStart + (int)Parameters["HandoverDur"];
-
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);
 
@@ -496,10 +371,7 @@ public class Patterns : MOTMasterScript
         p.AddLinearRamp("transferCoils", TweezerHandoverStart, (int)Parameters["HandoverDur"], 0.0);
         p.AddLinearRamp("TweezerCoils", TweezerHandoverStart, (int)Parameters["HandoverDur"], 1.8);
 
-
         p.AddAnalogValue("TweezerCoils", ImageTweezerChamber, 0.0);
-
-
 
         return p;
     }

@@ -459,6 +459,7 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -479,6 +480,15 @@
     <Compile Include="ChannelDescriptor.cs" />
     <Compile Include="PatternViewer.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterFileManager.cs" />
+    <Compile Include="ParameterEntry.cs" />
+    <Compile Include="ParameterGroup.cs" />
+    <Compile Include="ParameterWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterWindow.Designer.cs">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
@@ -504,6 +514,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParameterWindow.resx">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PreviewWindow.resx">
       <DependentUpon>PreviewWindow.cs</DependentUpon>
