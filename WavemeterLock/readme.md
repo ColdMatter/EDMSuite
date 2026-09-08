@@ -143,6 +143,7 @@ Currently constructed plugins:
 
 ## Update Log
 
+* [v 2.1.1] September 8th 2026: Reduced CPU usage by throttling the main polling loop and the lock block checking loop, which were previously spinning unthrottled.
 * [v 2.1.0] May 1st 2026: Added glitch protection to the lock.
 * [v 2.0.0] April 16th 2026: Added a terminal for recording status. When restarting the WML, all laser output voltage are at the preivious value.
 * [v 1.2.0] November 11th 2023: Fixed the lock block issue by putting read block flag channel on another thread. Added log data function for individual lasers. Added save and load setpoints function.

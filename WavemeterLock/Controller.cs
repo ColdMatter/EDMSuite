@@ -501,6 +501,7 @@ namespace WavemeterLock
             while (true)
             {
                 polling();
+                Thread.Sleep(2);
             }
         }
 
@@ -522,15 +523,16 @@ namespace WavemeterLock
         {
             while (true)
             {
-                if (WMLState != ControllerState.STOPPED) { 
+                if (WMLState != ControllerState.STOPPED) {
                     foreach (string slave in lasers.Keys){
-                    
+
                         if (lockBlocked.ContainsKey(slave)){
-                        
+
                             checkBlockStatus(slave);
                         }
                     }
                 }
+                Thread.Sleep(2);
             }
         }
 
