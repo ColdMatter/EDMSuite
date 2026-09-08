@@ -375,10 +375,10 @@ public class Patterns : MOTMasterScript
 
         //Handover to Tweezer coils
         p.AddLinearRamp("transferCoils", TweezerHandoverStart, (int)Parameters["HandoverDur"], 0.0);
-        p.AddLinearRamp("TweezerCoils", TweezerHandoverStart, (int)Parameters["HandoverDur"], 1.8);
+        p.AddLinearRamp("TweezerCoils", TweezerHandoverStart, (int)Parameters["HandoverDur"], 0.48);
 
         //Hold in tweezer coils
-        p.AddAnalogValue("TweezerCoils", TweezerHandoverEnd, 1.8);
+        p.AddAnalogValue("TweezerCoils", TweezerHandoverEnd, 0.48);
         p.AddAnalogValue("TweezerCoils", ImageTweezerChamber + (int)Parameters["TweezerImageDur"], 0.0);
 
         return p;
