@@ -51,6 +51,8 @@
             this.buttonDisconnect = new System.Windows.Forms.Button();
             this.textBox_IPPort = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBox_ConnectTimeout = new System.Windows.Forms.TextBox();
+            this.label_ConnectTimeout = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -216,9 +218,11 @@
             this.groupBox1.Controls.Add(this.buttonDisconnect);
             this.groupBox1.Controls.Add(this.textBox_IPPort);
             this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.textBox_ConnectTimeout);
+            this.groupBox1.Controls.Add(this.label_ConnectTimeout);
             this.groupBox1.Location = new System.Drawing.Point(8, 14);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(260, 353);
+            this.groupBox1.Size = new System.Drawing.Size(260, 378);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Track connection and initialization";
@@ -226,7 +230,7 @@
             // checkBoxLog
             // 
             this.checkBoxLog.AutoSize = true;
-            this.checkBoxLog.Location = new System.Drawing.Point(138, 300);
+            this.checkBoxLog.Location = new System.Drawing.Point(138, 325);
             this.checkBoxLog.Name = "checkBoxLog";
             this.checkBoxLog.Size = new System.Drawing.Size(72, 17);
             this.checkBoxLog.TabIndex = 24;
@@ -236,7 +240,7 @@
             // buttonHome
             // 
             this.buttonHome.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonHome.Location = new System.Drawing.Point(17, 290);
+            this.buttonHome.Location = new System.Drawing.Point(17, 315);
             this.buttonHome.Name = "buttonHome";
             this.buttonHome.Size = new System.Drawing.Size(97, 38);
             this.buttonHome.TabIndex = 23;
@@ -247,7 +251,7 @@
             // buttonKill
             // 
             this.buttonKill.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonKill.Location = new System.Drawing.Point(126, 233);
+            this.buttonKill.Location = new System.Drawing.Point(126, 258);
             this.buttonKill.Name = "buttonKill";
             this.buttonKill.Size = new System.Drawing.Size(97, 38);
             this.buttonKill.TabIndex = 22;
@@ -258,7 +262,7 @@
             // buttonInitialize
             // 
             this.buttonInitialize.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonInitialize.Location = new System.Drawing.Point(17, 233);
+            this.buttonInitialize.Location = new System.Drawing.Point(17, 258);
             this.buttonInitialize.Name = "buttonInitialize";
             this.buttonInitialize.Size = new System.Drawing.Size(97, 38);
             this.buttonInitialize.TabIndex = 21;
@@ -270,7 +274,7 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 196);
+            this.label2.Location = new System.Drawing.Point(28, 221);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(82, 13);
             this.label2.TabIndex = 20;
@@ -279,7 +283,7 @@
             // TextBox_Group
             // 
             this.TextBox_Group.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.TextBox_Group.Location = new System.Drawing.Point(123, 193);
+            this.TextBox_Group.Location = new System.Drawing.Point(123, 218);
             this.TextBox_Group.Name = "TextBox_Group";
             this.TextBox_Group.Size = new System.Drawing.Size(100, 20);
             this.TextBox_Group.TabIndex = 19;
@@ -307,7 +311,7 @@
             // buttonConnect
             // 
             this.buttonConnect.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonConnect.Location = new System.Drawing.Point(17, 127);
+            this.buttonConnect.Location = new System.Drawing.Point(17, 152);
             this.buttonConnect.Name = "buttonConnect";
             this.buttonConnect.Size = new System.Drawing.Size(97, 38);
             this.buttonConnect.TabIndex = 13;
@@ -318,7 +322,7 @@
             // buttonDisconnect
             // 
             this.buttonDisconnect.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonDisconnect.Location = new System.Drawing.Point(126, 127);
+            this.buttonDisconnect.Location = new System.Drawing.Point(126, 152);
             this.buttonDisconnect.Name = "buttonDisconnect";
             this.buttonDisconnect.Size = new System.Drawing.Size(97, 38);
             this.buttonDisconnect.TabIndex = 14;
@@ -344,7 +348,26 @@
             this.label4.Size = new System.Drawing.Size(38, 13);
             this.label4.TabIndex = 18;
             this.label4.Text = "IP port";
-            // 
+            //
+            // textBox_ConnectTimeout
+            //
+            this.textBox_ConnectTimeout.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.textBox_ConnectTimeout.Location = new System.Drawing.Point(91, 107);
+            this.textBox_ConnectTimeout.Name = "textBox_ConnectTimeout";
+            this.textBox_ConnectTimeout.Size = new System.Drawing.Size(132, 20);
+            this.textBox_ConnectTimeout.TabIndex = 17;
+            this.textBox_ConnectTimeout.Text = "10000";
+            //
+            // label_ConnectTimeout
+            //
+            this.label_ConnectTimeout.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label_ConnectTimeout.AutoSize = true;
+            this.label_ConnectTimeout.Location = new System.Drawing.Point(28, 110);
+            this.label_ConnectTimeout.Name = "label_ConnectTimeout";
+            this.label_ConnectTimeout.Size = new System.Drawing.Size(75, 13);
+            this.label_ConnectTimeout.TabIndex = 39;
+            this.label_ConnectTimeout.Text = "Timeout (ms)";
+            //
             // groupBox2
             // 
             this.groupBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -667,6 +690,8 @@
         private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.TextBox textBox_IPPort;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox_ConnectTimeout;
+        private System.Windows.Forms.Label label_ConnectTimeout;
         private System.Windows.Forms.CheckBox checkBoxLog;
         private System.Windows.Forms.Button buttonHome;
         private System.Windows.Forms.Button buttonKill;
