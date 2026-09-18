@@ -2123,15 +2123,15 @@ namespace UEDMHardwareControl
             controller.UpdateFeedthroughTempUI();
         }
 
-        private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.show_HcoolingVoltage();
-        }
+        //private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_HcoolingVoltage();
+        //}
 
-        private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.show_VcoolingVoltage();
-        }
+        //private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_VcoolingVoltage();
+        //}
 
         private void initialiseBehlkesButton_Click(object sender, EventArgs e)
         {
@@ -2172,6 +2172,12 @@ namespace UEDMHardwareControl
 
         private void PDConvertToMwCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            bool displayAsPower = PDConvertToMwCheckBox.Checked;
+
+            labelPDValue.Text = displayAsPower
+                ? "Power (mW)"
+                : "Voltage (V)";
+
             controller.UpdatePDVMonitorUI();
         }
 
@@ -2191,5 +2197,6 @@ namespace UEDMHardwareControl
                 }
             }
         }
+
     }
 }

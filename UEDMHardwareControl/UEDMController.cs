@@ -376,19 +376,19 @@ namespace UEDMHardwareControl
 
             feedthroughTempInputTask = CreateAnalogInputThermocoupleTask("FeedthroughTempInput", 0, 100);
 
-            HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
-            VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
+            //HcoolingInputTask = CreateAnalogInputTask("HCoolingMonitor");
+            //VcoolingInputTask = CreateAnalogInputTask("VCoolingMonitor");
 
             // analog input tasks for photodiode monitoring
             // Wrap each line so if the DAQ or channel fails, the software continues loading safely. Shirley adds on 17/06/26
-            try { PD1MonitorInputTask = CreateAnalogInputTask("PD1", 0, 6); } catch { PD1MonitorInputTask = null; }
-            try { PD2MonitorInputTask = CreateAnalogInputTask("PD2", 0, 6); } catch { PD2MonitorInputTask = null; }
-            try { PD3MonitorInputTask = CreateAnalogInputTask("PD3", 0, 6); } catch { PD3MonitorInputTask = null; }
-            try { PD4MonitorInputTask = CreateAnalogInputTask("PD4", 0, 6); } catch { PD4MonitorInputTask = null; }
-            try { PD5MonitorInputTask = CreateAnalogInputTask("PD5", 0, 6); } catch { PD5MonitorInputTask = null; }
-            try { PD6MonitorInputTask = CreateAnalogInputTask("PD6", 0, 6); } catch { PD6MonitorInputTask = null; }
-            try { PD7MonitorInputTask = CreateAnalogInputTask("PD7", 0, 6); } catch { PD7MonitorInputTask = null; }
-            try { PD8MonitorInputTask = CreateAnalogInputTask("PD8", 0, 6); } catch { PD8MonitorInputTask = null; }
+            try { PD1MonitorInputTask = CreateAnalogInputTask("PD1", 0, 5); } catch { PD1MonitorInputTask = null; }
+            try { PD2MonitorInputTask = CreateAnalogInputTask("PD2", 0, 5); } catch { PD2MonitorInputTask = null; }
+            try { PD3MonitorInputTask = CreateAnalogInputTask("PD3", 0, 5); } catch { PD3MonitorInputTask = null; }
+            try { PD4MonitorInputTask = CreateAnalogInputTask("PD4", 0, 5); } catch { PD4MonitorInputTask = null; }
+            try { PD5MonitorInputTask = CreateAnalogInputTask("PD5", 0, 5); } catch { PD5MonitorInputTask = null; }
+            try { PD6MonitorInputTask = CreateAnalogInputTask("PD6", 0, 5); } catch { PD6MonitorInputTask = null; }
+            try { PD7MonitorInputTask = CreateAnalogInputTask("PD7", 0, 5); } catch { PD7MonitorInputTask = null; }
+            try { PD8MonitorInputTask = CreateAnalogInputTask("PD8", 0, 5); } catch { PD8MonitorInputTask = null; }
 
             // make the control window
             window = new ControlWindow();
@@ -857,10 +857,10 @@ namespace UEDMHardwareControl
             dataStore.steppingBias = SteppingBiasVoltage;
             dataStore.frequency = GreenSynthOnFrequency;
             dataStore.amplitude = GreenSynthOnAmplitude;
-            dataStore.calibrationPowerH = CalibPowerH;
-            dataStore.calibrationVoltageH = CalibVoltageH;
-            dataStore.calibrationPowerV = CalibPowerV;
-            dataStore.calibrationVoltageV = CalibVoltageV;
+            //dataStore.calibrationPowerH = CalibPowerH;
+            //dataStore.calibrationVoltageH = CalibVoltageH;
+            //dataStore.calibrationPowerV = CalibPowerV;
+            //dataStore.calibrationVoltageV = CalibVoltageV;
             //dataStore.dcfm = GreenSynthDCFM;
             dataStore.bStep = UsbFlipStepCurrent;
             dataStore.calStep = UsbCalStepCurrent;
@@ -950,10 +950,10 @@ namespace UEDMHardwareControl
                 BehlkeBleedTime = dataStore.bleedTime;
                 BehlkeSwitchTime = dataStore.switchTime; 
                 BehlkeSettleTime = dataStore.settleTime;
-                CalibVoltageH = dataStore.calibrationVoltageH;
-                CalibVoltageV = dataStore.calibrationVoltageV;
-                CalibPowerH = dataStore.calibrationPowerH;
-                CalibPowerV = dataStore.calibrationPowerV;
+                //CalibVoltageH = dataStore.calibrationVoltageH;
+                //CalibVoltageV = dataStore.calibrationVoltageV;
+                //CalibPowerH = dataStore.calibrationPowerH;
+                //CalibPowerV = dataStore.calibrationPowerV;
                 //SetSteppingBBiasVoltage(dataStore.steppingBias);
                 GreenSynthOnFrequency = dataStore.frequency;
                 GreenSynthOnAmplitude = dataStore.amplitude;
@@ -8916,81 +8916,81 @@ namespace UEDMHardwareControl
 
         #endregion
 
-        #region Cooling Monitoring
-        //tab to monitor all the powers of the cooling
-        //public double HcoolingMonitorVoltage
+        //#region Cooling Monitoring
+        ////tab to monitor all the powers of the cooling
+        ////public double HcoolingMonitorVoltage
+        ////{
+        // //   get
+        // //   {
+        ////        return HcoolingMonitorVoltage;
+        ////    }
+        ////}
+        //private double HcoolingMonitorVoltage;
+        //private double VcoolingMonitorVoltage;
+
+        //public double CalibVoltageH
         //{
-         //   get
-         //   {
-        //        return HcoolingMonitorVoltage;
+        //    get
+        //    {
+        //        return Double.Parse(window.calibrationVoltageH.Text);
+        //    }
+        //    set
+        //    {
+        //        window.SetTextBox(window.calibrationVoltageH, value.ToString());
         //    }
         //}
-        private double HcoolingMonitorVoltage;
-        private double VcoolingMonitorVoltage;
 
-        public double CalibVoltageH
-        {
-            get
-            {
-                return Double.Parse(window.calibrationVoltageH.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.calibrationVoltageH, value.ToString());
-            }
-        }
+        //public double CalibPowerH
+        //{
+        //    get
+        //    {
+        //        return Double.Parse(window.calibrationPowerH.Text);
+        //    }
+        //    set
+        //    {
+        //        window.SetTextBox(window.calibrationPowerH, value.ToString());
+        //    }
+        //}
+        //public double CalibVoltageV
+        //{
+        //    get
+        //    {
+        //        return Double.Parse(window.calibrationVoltageV.Text);
+        //    }
+        //    set
+        //    {
+        //        window.SetTextBox(window.calibrationVoltageV, value.ToString());
+        //    }
+        //}
 
-        public double CalibPowerH
-        {
-            get
-            {
-                return Double.Parse(window.calibrationPowerH.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.calibrationPowerH, value.ToString());
-            }
-        }
-        public double CalibVoltageV
-        {
-            get
-            {
-                return Double.Parse(window.calibrationVoltageV.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.calibrationVoltageV, value.ToString());
-            }
-        }
+        //public double CalibPowerV
+        //{
+        //    get
+        //    {
+        //        return Double.Parse(window.calibrationPowerV.Text);
+        //    }
+        //    set
+        //    {
+        //        window.SetTextBox(window.calibrationPowerV, value.ToString());
+        //    }
+        //}
+        //public void show_HcoolingVoltage()
+        //{
 
-        public double CalibPowerV
-        {
-            get
-            {
-                return Double.Parse(window.calibrationPowerV.Text);
-            }
-            set
-            {
-                window.SetTextBox(window.calibrationPowerV, value.ToString());
-            }
-        }
-        public void show_HcoolingVoltage()
-        {
+        //    double calib_factorH = CalibPowerH / CalibVoltageH;
+        //    HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask,1000,50);
+        //    window.SetTextBox(window.HcoolingMonitorTextBox, HcoolingMonitorVoltage.ToString());
+        //    window.SetTextBox(window.HcoolingPowerBox, (HcoolingMonitorVoltage * calib_factorH).ToString());
+        //}
 
-            double calib_factorH = CalibPowerH / CalibVoltageH;
-            HcoolingMonitorVoltage = ReadAnalogInput(HcoolingInputTask,1000,50);
-            window.SetTextBox(window.HcoolingMonitorTextBox, HcoolingMonitorVoltage.ToString());
-            window.SetTextBox(window.HcoolingPowerBox, (HcoolingMonitorVoltage * calib_factorH).ToString());
-        }
-
-        public void show_VcoolingVoltage()
-        {
-            double calib_factorV = CalibPowerV / CalibVoltageV;
-            VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask, 1000, 50);
-            window.SetTextBox(window.VcoolingMonitorTextBox, VcoolingMonitorVoltage.ToString());
-            window.SetTextBox(window.VcoolingPowerBox, (VcoolingMonitorVoltage * calib_factorV).ToString());
-        }
-        #endregion
+        //public void show_VcoolingVoltage()
+        //{
+        //    double calib_factorV = CalibPowerV / CalibVoltageV;
+        //    VcoolingMonitorVoltage = ReadAnalogInput(VcoolingInputTask, 1000, 50);
+        //    window.SetTextBox(window.VcoolingMonitorTextBox, VcoolingMonitorVoltage.ToString());
+        //    window.SetTextBox(window.VcoolingPowerBox, (VcoolingMonitorVoltage * calib_factorV).ToString());
+        //}
+        //#endregion
 
 
         #region Photodiode Monitoring
@@ -9013,25 +9013,38 @@ namespace UEDMHardwareControl
             window.PD5GainComboBox, window.PD6GainComboBox, window.PD7GainComboBox, window.PD8GainComboBox
         };
 
-        // Voltage = A * Input Power + B, where A is the slope and B is the intercept. To be determined by calibration.
-        private double[] gainA = { 1, 3.2, 1, 1};// slope
-        private double[] gainB = { 0, 0, 0, 0};// intercept
+        // Input Stray Power = slopeA * Voltage + interceptA. This differs by the gain user chooses for the specific PD. The first one is the most sensitive gain (gain 1).
+        // This should apply to all PDs. To be determined by calibration.
+        private double[] slopeA = {0.0382, 0.355, 1, 1};
+        private double[] interceptA = {0.00195, -0.0278, 0, 0};
+        // Monitoring Power = slopeB * Input Stray Power + interceptB. This varies case by case, depending on both the gain used and
+        // the conversion factor between the captured stray light and corresponding monitoring power. To be determined.
+        private double[] slopeB = {556, 147, 1, 1, 1, 1, 1, 1};
+        private double[] interceptB = {1.55, -4.84, 0, 0, 0, 0, 0, 0};
 
         private double ConvertVoltageToPower(double voltage, int gainIndex)
         {
-            if (gainIndex < 0 || gainIndex >= gainA.Length) gainIndex = 0;
+            if (gainIndex < 0 ||
+                gainIndex >= slopeA.Length ||
+                gainIndex >= interceptA.Length ||
+                gainIndex >= slopeB.Length ||
+                gainIndex >= interceptB.Length)
+            {
+                gainIndex = 0;
+            }
 
-            double a = gainA[gainIndex];
-            double b = gainB[gainIndex];
+            double slope = slopeB[gainIndex] * slopeA[gainIndex];
+            double intercept =
+                slopeB[gainIndex] * interceptA[gainIndex] +
+                interceptB[gainIndex];
 
-            if (Math.Abs(a) < 1e-9) return 0.0;
-
-            return (voltage - b) / a;
+            return slope * voltage + intercept;
         }
+
 
         private readonly object pdReadLock = new object();
 
-        private double SafeReadPD(Task task)
+        private double SafeReadPD(NationalInstruments.DAQmx.Task task)
         {
             if (task == null) return double.NaN;
 
@@ -9048,6 +9061,7 @@ namespace UEDMHardwareControl
             }
         }
 
+        [Serializable]
         public struct PDSnapshot
         {
             public double[] Voltages;
@@ -9126,20 +9140,50 @@ namespace UEDMHardwareControl
             return pd;
         }
 
+        //public void UpdatePDVMonitorUI()
+        //{
+        //    var snapshot = AcquirePDSnapshot();
+
+        //    System.Windows.Forms.TextBox[] pdTextBoxes = {
+        //        window.PD1MonitorTextBox, window.PD2MonitorTextBox, window.PD3MonitorTextBox, window.PD4MonitorTextBox,
+        //        window.PD5MonitorTextBox, window.PD6MonitorTextBox, window.PD7MonitorTextBox, window.PD8MonitorTextBox
+        //    };
+
+        //    bool displayAsPower = window.PDConvertToMwCheckBox.Checked;
+
+        //    for (int i = 0; i < 8; i++)
+        //    {
+        //        double val = displayAsPower ? snapshot.Powers[i] : snapshot.Voltages[i];
+
+        //        window.SetTextBox(
+        //            pdTextBoxes[i],
+        //            double.IsNaN(val) ? "N/A" : val.ToString("N4")
+        //        );
+        //    }
+        //}
+
         public void UpdatePDVMonitorUI()
         {
             var snapshot = AcquirePDSnapshot();
 
             System.Windows.Forms.TextBox[] pdTextBoxes = {
-                window.PD1MonitorTextBox, window.PD2MonitorTextBox, window.PD3MonitorTextBox, window.PD4MonitorTextBox,
-                window.PD5MonitorTextBox, window.PD6MonitorTextBox, window.PD7MonitorTextBox, window.PD8MonitorTextBox
+                window.PD1MonitorTextBox,
+                window.PD2MonitorTextBox,
+                window.PD3MonitorTextBox,
+                window.PD4MonitorTextBox,
+                window.PD5MonitorTextBox,
+                window.PD6MonitorTextBox,
+                window.PD7MonitorTextBox,
+                window.PD8MonitorTextBox
             };
 
             bool displayAsPower = window.PDConvertToMwCheckBox.Checked;
 
             for (int i = 0; i < 8; i++)
             {
-                double val = displayAsPower ? snapshot.Powers[i] : snapshot.Voltages[i];
+                double val = displayAsPower
+                    ? snapshot.Powers[i]
+                    : snapshot.Voltages[i];
 
                 window.SetTextBox(
                     pdTextBoxes[i],
@@ -9358,6 +9402,10 @@ namespace UEDMHardwareControl
                 case "StirapAOM":
                     break;
             }
+        }
+        public void SetRemoteSF6Flow(double remoteSF6FlowSetpoint )
+        {
+            sf6FlowController.SetSetpoint(sF6FlowChannelNumber, remoteSF6FlowSetpoint.ToString());
         }
         #endregion
 
