@@ -22,6 +22,7 @@ from itertools import chain
 
 from tkinter import Tk     # from tkinter import Tk for Python 3.x
 from tkinter.filedialog import askopenfilename,askopenfilenames
+from tkinter import filedialog
 import tkinter as tk
 
 #% Some system settings for convenience
@@ -113,6 +114,33 @@ def save_last_directory(path):
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         f.write(path)
 
+def save_dataframe_interactive(
+    df, default_name="fitted_spectral_lines.csv"
+):
+    """Pops up a native file explorer window to select a save location and exports the DataFrame to CSV."""
+    # Create and hide the root Tkinter window so an extra blank GUI window doesn't linger
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)  # Bring window to front
+
+    # Prompt user with native 'Save As' dialog
+    file_path = filedialog.asksaveasfilename(
+        title="Save Fitted DataFrame to CSV",
+        initialfile=default_name,
+        defaultextension=".csv",
+        filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")],
+    )
+
+    root.destroy()  # Clean up GUI memory
+
+    # Export if a path was chosen
+    if file_path:
+        df.to_csv(file_path, index=False)
+        print(f"Saved {len(df)} rows to: {file_path}")
+        return file_path
+    else:
+        print("Export cancelled.")
+        return None
 
 def select_folder():
     # 1. Fetch the permanently stored starting location
@@ -190,6 +218,12 @@ def VelocityfromFshift(dF, F0, angle):
 # Functions to fit
 def Line(x, a, b):
     return a*x + b
+
+def Inverse(x, a, b):
+    return a/x + b
+
+def Saturation(P, A, P_sat):
+    return A * (P/P_sat) / (1 + P/P_sat)
 
 def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True, Toprint=True):
     fit, cov = curve_fit(Line, xdata, ydata, p0=p0)

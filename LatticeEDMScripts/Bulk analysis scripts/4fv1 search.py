@@ -21,7 +21,7 @@ import numpy as np
 import glob
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-
+from pathlib import Path
 
 import tools as tools
 
@@ -30,7 +30,7 @@ tools.set_plots()
 prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
-#%% Load data
+#% Load data
 ###When we were using OneDrive:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 #month="September2025"
@@ -40,20 +40,28 @@ colors = prop_cycle.by_key()['color']
 
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
-datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "Sept 2026"
-date = "07"
+#datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
+#month = "Aug 2026"
+#date = "21"
 #blockdrive=datadrive+"\\BlockData\\"
 
-drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
-print(drive)
+#drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
+#print(drive)
 
-pattern="*setpoint*.zip"
-files = glob.glob(f'{drive}{pattern}', recursive=True)
+#pattern="*4fv1*.zip"
+#files = glob.glob(f'{drive}{pattern}', recursive=True)
+#print("Matching files: ", [os.path.basename(f) for f in files])
+
+#%% Load data (interactive)
+#% Select folder and find all NPZ files
+selected_directory = tools.select_folder()
+
+pattern="**/*.zip"
+files = glob.glob(f'{selected_directory}/{pattern}', recursive=True)
+# Path.rglob searches recursively automatically (not compatible with rest of the pipeline yet)
+#files = list(Path(selected_directory).rglob("*.zip"))
 print("Matching files: ", [os.path.basename(f) for f in files])
 
-#%% Selection
-sele = ["005", "006", "007", "009"]
 
 #%%
 LoadPasses = True
@@ -67,38 +75,34 @@ if len(files) > 0:
         fileLabel = re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[0]
         Laser = re.split(r'[.]', re.split(r'[_]', re.split(r'[\\]', files[i])[-1])[-2])[0]
        
-       #Use this part if have selections
-        for j in range(0, len(sele)):
-            if fileLabel == sele[j]:
-                print("File "+fileLabel+" selected")
-       ###
-                if LoadPasses:
-                    Scans = EDM.ReadAllScansInZippedXML(files[i])
-                    for k in range(0, len(Scans)):
-                        Data[fileLabel+"_%g"%k] = Scans[k]
-                        print("loaded file " + files[i] + ", scan %g"%k)
-                        fileLabels.append(fileLabel+"_%g"%k)
-                        Lasers.append(Laser)
-                else:
-                    Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-                    print("loaded file " + files[i])
-                    fileLabels.append(fileLabel)
-                    Lasers.append(Laser)
+
+        if LoadPasses:
+            Scans = EDM.ReadAllScansInZippedXML(files[i])
+            for k in range(0, len(Scans)):
+                Data[fileLabel+"_%g"%k] = Scans[k]
+                print("loaded file " + files[i] + ", scan %g"%k)
+                fileLabels.append(fileLabel+"_%g"%k)
+                Lasers.append(Laser)
+        else:
+            Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+            print("loaded file " + files[i])
+            fileLabels.append(fileLabel)
+            Lasers.append(Laser)
 
 else:
     print("No matching files.")
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 20
-SigEnd = 22
+SigStart = 27
+SigEnd = 29
 BkgStart = 70
-BkgEnd = 78
+BkgEnd = 80
 
 showTOF = False
 shot_for_TOF = 17
 
-fTHz = 284
+fTHz = 288
 
 #%%
 OnBkgSubs = {}
@@ -202,41 +206,9 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     plt.title(title)
     plt.legend()
     plt.show()   
-
-#%% Fitting
-peakOn = ScanParams[np.where(OnBkgSub == np.min(OnBkgSub))[0][0]]
-fitOn, covOn = curve_fit(tools.SkewedGaussian, ScanParams, OnBkgSub, p0=[peakOn, 1., -1., 0.5, 1.])
-errOn = np.sqrt(np.diag(covOn))
-print("Central ON setpoint = %.4g +- %.3g V"%(fitOn[0], errOn[0]) +\
-      "\n with FWHM = %.4g +- %.3g V"%(fitOn[1]*2*np.sqrt(2*np.log(2)),\
-                                         errOn[1]*2*np.sqrt(2*np.log(2))))
-
-peakOff = ScanParams[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
-fitOff, covOff = curve_fit(tools.SkewedGaussian, ScanParams, OffBkgSub, p0=[peakOff, 1., -1., 0.5, 1.])
-errOff = np.sqrt(np.diag(covOff))
-print("Central OFF setpoint = %.4g +- %.3g V"%(fitOff[0], errOff[0]) +\
-      "\n with FWHM = %.4g +- %.3g V"%(fitOff[1]*2*np.sqrt(2*np.log(2)),\
-                                         errOff[1]*2*np.sqrt(2*np.log(2))))
-
-vspan = np.arange(np.min(ScanParams), np.max(ScanParams), step = 0.01)
-
-plt.plot(ScanParams, OnBkgSub, '.', label='On', color=colors[0])
-plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOn), color=colors[0])
-plt.plot(ScanParams, OffBkgSub, '.', label='Off', color=colors[1])
-plt.plot(vspan, tools.SkewedGaussian(vspan, *fitOff), color=colors[1])
-plt.xlabel('Setpoint (V)')
-plt.ylabel("Gated TOF (ms.V)")
-plt.title(title)
-plt.legend()
-plt.show()
-
-if HasWM:
-    peakOn = f_relMHz[np.where(OnBkgSub == np.max(OnBkgSub))[0][0]]
-    peakOff = f_relMHz[np.where(OffBkgSub == np.max(OffBkgSub))[0][0]]
-    
     
 #%% Ratio
-f_offset = 284.4646 #f_iniTHzs[fileLabels[0]]
+f_offset = f_iniTHzs[fileLabels[0]]
 
 Ratios = {}
 for i in range(0, len(fileLabels)):
@@ -296,22 +268,20 @@ Xstack_sorted = Xstack[sort_indices]
 Rstack_sorted = Rstack[sort_indices]
 
 #%%
-offset = 284.4646
-MA = 20
+MA = 30
 MoveAvg_R = tools.MovingAverage(MA, Rstack_sorted)
 MoveAvg_f = tools.MovingAverage(MA, Xstack_sorted)
 
 title2="Gated TOF over " + Settings["param"] + " with " +\
     str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
-    str(SigStart) + "ms to " + str(SigEnd) + "ms gate, files " +\
-        str(sele)
+    str(SigStart) + "ms to " + str(SigEnd) + "ms gate"
 
-#plt.plot((Xstack_sorted-offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
-plt.plot((MoveAvg_f-offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
-plt.xlabel("Relative frequency (MHz) to %.9g THz"%offset)
+plt.plot((Xstack_sorted-f_offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
+plt.plot((MoveAvg_f-f_offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
+plt.xlabel("Relative frequency (MHz) to %.9g THz"%f_offset)
 plt.ylabel("Ratio")
-#plt.xlim(-600, 400)
-#plt.ylim(0.4, 0.7)
+#plt.xlim(2000, 3500)
+#plt.ylim(0, 2)
 plt.title(title2+"\n4f v1 R line scan in Lattice")
 plt.legend()
 plt.show()   
@@ -319,7 +289,7 @@ plt.show()
 #%% Bin
 from scipy.stats import binned_statistic
 # 2. Define your bins (boundaries along the X-axis)
-fstep = 30
+fstep = 20
 bin_edges = np.arange(np.min(Xstack_sorted), np.max(Xstack_sorted), step=fstep* 1e-6)
 
 # 2. Compute binned averages
@@ -350,88 +320,3 @@ import pandas as pd
 ToSave = pd.DataFrame.from_dict({"Frequency (THz)":Xstack_sorted, "Ratio":Rstack_sorted})
 
 Save_csv = tools.save_dataframe_interactive(ToSave)
-
-#%% Selectively stack
-from scipy.stats import binned_statistic, sem
-# 2. Define your bins (boundaries along the X-axis)
-fstep = 10
-offset = 284.4646
-
-types = {"1.7W":['005', '006'],
-         "3.5W":['007'],
-         "5.7W":['009']}
-
-keys = list(types.keys())
-
-R_stacked = {}
-Freq = {}
-Sterr = {}  #Standard error of mean
-
-R_binned = {}
-Freq_binned = {}
-
-
-for i in range(0, len(keys)):
-    keyList = types[keys[i]]
-    toStackKeys = []
-    toStackX = []
-    toStackY = []
-    
-    for k in keyList: 
-        for f in fileLabels: 
-            if f[:3] == k:
-                toStackKeys.append(f)
-                toStackX.append(X_f_THz[f])
-                toStackY.append(Ratios[f])
-    
-    toStackX_flat = np.array(tools.flattenAnyList(toStackX))
-    toStackY_flat = np.array(tools.flattenAnyList(toStackY))
-    
-    # Get the indices that would sort Combi_ScanParams
-    sort_indices = np.argsort(toStackX_flat)
-
-    # Reorder both arrays using those indices
-    X_sorted = toStackX_flat[sort_indices]
-    R_sorted = toStackY_flat[sort_indices]
-    
-    R_stacked[keys[i]] = R_sorted
-    Freq[keys[i]] = X_sorted
-    
-    bin_edges = np.arange(np.min(X_sorted), np.max(X_sorted), step=fstep* 1e-6)
-
-    # 2. Compute binned averages and standard error of mean
-    bin_means, _, _ = binned_statistic(
-        x=X_sorted, values=R_sorted, statistic='mean', bins=bin_edges
-    )
-    bin_sems, _, _ = binned_statistic(x=X_sorted, values=R_sorted, 
-                                      statistic=sem, bins=bin_edges)
-
-    # 3. Convert bin edges to bin centers
-    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-
-
-    # 4. Filter out NaNs (empty bins) so they don't break the plot
-    valid_mask = ~np.isnan(bin_means)
-    BinnedX = bin_centers[valid_mask]
-    BinnedY = bin_means[valid_mask]
-    
-    R_binned[keys[i]] = BinnedY
-    Freq_binned[keys[i]] = BinnedX
-    Sterr[keys[i]] = bin_sems
-    
-    
-    plt.plot((BinnedX-offset)*1e6, BinnedY, '.', color=colors[i], label=keys[i])
-    plt.fill_between((BinnedX-offset)*1e6, y1=BinnedY-bin_sems, 
-                     y2=BinnedY+bin_sems, alpha=0.3)
-
-title2="Gated TOF over " + Settings["param"] + " with " +\
-    str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
-    str(SigStart) + "ms to " + str(SigEnd) + "ms gate, files " +\
-        str(sele)
-
-plt.xlabel("Relative frequency (MHz) to %g THz"%f_iniTHz)
-plt.ylabel("On/Off ratio")
-plt.title(title2+"\n4f v1 R line scan in Lattice by power")
-plt.legend()
-plt.show()  
-    
