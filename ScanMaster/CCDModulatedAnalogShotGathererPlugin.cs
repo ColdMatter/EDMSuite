@@ -97,9 +97,22 @@ namespace ScanMaster.Acquire.Plugins
         [NonSerialized]
         private csAcq4.CCDController ccd2controller;
 
+        // Shirley adds on 13/08/2026
+        [NonSerialized]
+        private bool currentScanFinished = false;
+
 
         // Shirley adds on 06/05/2026 
         public CCDSettings LatestCCDSettings { get; set; }
+        private string SerializeCCDSettingsToString(CCDSettings data)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(CCDSettings));
+            using (StringWriter sw = new StringWriter ())
+            {
+                serializer.Serialize(sw, data);
+                return sw.ToString();
+            }
+        }
 
         protected override void InitialiseBaseSettings()
         {
@@ -152,8 +165,39 @@ namespace ScanMaster.Acquire.Plugins
         {
         }
 
+        private void CheckCameraConnection(string computerName)
+        {
+            Console.WriteLine("Checking " + computerName);
+
+            Console.WriteLine("Resolving host...");
+            IPHostEntry hostInfo = Dns.GetHostEntry(computerName);
+            Console.WriteLine("Host resolved.");
+
+            Console.WriteLine("Getting port...");
+            EnvironsHelper helper = new EnvironsHelper(computerName);
+            int port = helper.emccdTCPChannel;
+            Console.WriteLine("Port = " + port);
+
+            Console.WriteLine("Connecting...");
+
+            using (TcpClient client = new TcpClient())
+            {
+                IAsyncResult result = client.BeginConnect(computerName, port, null, null);
+
+                if (!result.AsyncWaitHandle.WaitOne(2000))
+                    throw new Exception(computerName + " is not responding.");
+
+                client.EndConnect(result);
+            }
+
+            Console.WriteLine("Connected.");
+        }
+
         public override void AcquisitionStarting()
         {
+            //shirley adds on 13/08/2026
+            //currentScanFinished = false;
+
             cancelRequested = false;
 
             if ((bool)settings["cameraEnabled"])
@@ -169,7 +213,7 @@ namespace ScanMaster.Acquire.Plugins
                 }
                 
                 EnvironsHelper eHelper1 = new EnvironsHelper(computerCCD1);
-                
+
                 int ccd1Port = eHelper1.emccdTCPChannel;
                 Console.WriteLine(ccd1Port.ToString());
                 ccd1controller = (csAcq4.CCDController)(Activator.GetObject(typeof(csAcq4.CCDController), "tcp://" + nameCCD1 + ":" + ccd1Port.ToString() + "/controller.rem"));
@@ -469,7 +513,7 @@ namespace ScanMaster.Acquire.Plugins
                     (int)settings["sampleRate"],
                     SampleClockActiveEdge.Rising,
                     SampleQuantityMode.FiniteSamples,
-                    (int)settings["gateLength"] / 2 //shirley noted on 19/11, used to be (int)settings["gateLength"] / 2
+                    (int)settings["gateLength"] / 2 
                     );
 
                 CCDAcquireStatusTaskOnShot.Triggers.StartTrigger.ConfigureDigitalEdgeTrigger(
@@ -538,10 +582,15 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void ScanStarting()
 		{
-		}
+            // shirley adds on 13/08/2026
+            currentScanFinished = false;
+
+        }
 
         public override void ScanFinished()
         {
+            currentScanFinished = true;
+            Console.WriteLine("Current scan completed normally.");
         }
 
         private void SafeStop(NationalInstruments.DAQmx.Task task) //rhys add 24/11/25
@@ -553,6 +602,46 @@ namespace ScanMaster.Acquire.Plugins
                 task.Stop();
             }
             catch { /* ignore DAQmx errors during forced stop */ }
+        }
+
+        private void CleanupAfterFailedStart()
+        {
+            Console.WriteLine("Cleaning up failed acquisition start...");
+
+            cancelRequested = true;
+
+            SafeStop(inputTask1);
+            SafeStop(inputTask2);
+            SafeStop(counterTaskCCDOnShot);
+            SafeStop(counterTaskCCDOffShot);
+            SafeStop(CCDAcquireStatusTaskOnShot);
+            SafeStop(CCDAcquireStatusTaskOffShot);
+            SafeStop(CCDReadyStatusTask);
+            SafeStop(TaskCompleteTaskOnShot);
+            SafeStop(TaskCompleteTaskOffShot);
+
+            try { inputTask1?.Dispose(); } catch { }
+            try { inputTask2?.Dispose(); } catch { }
+            try { counterTaskCCDOnShot?.Dispose(); } catch { }
+            try { counterTaskCCDOffShot?.Dispose(); } catch { }
+            try { CCDAcquireStatusTaskOnShot?.Dispose(); } catch { }
+            try { CCDAcquireStatusTaskOffShot?.Dispose(); } catch { }
+            try { CCDReadyStatusTask?.Dispose(); } catch { }
+            try { TaskCompleteTaskOnShot?.Dispose(); } catch { }
+            try { TaskCompleteTaskOffShot?.Dispose(); } catch { }
+
+            inputTask1 = null;
+            inputTask2 = null;
+            counterTaskCCDOnShot = null;
+            counterTaskCCDOffShot = null;
+
+            reader1 = null;
+            reader2 = null;
+
+            ccd1controller = null;
+            ccd2controller = null;
+
+            Console.WriteLine("Failed acquisition cleanup complete.");
         }
 
         // Shirley adds on 21/01/2026. This is to resolve the base path difference between the Gobelin pc and the Centaur pc
@@ -575,7 +664,6 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionFinished()
         {
-
             //rhys add 24/11
             // ---- Signal all ArmAndWait loops to exit ----
             cancelRequested = true;
@@ -619,8 +707,9 @@ namespace ScanMaster.Acquire.Plugins
             int shotsPerPoint = (int)config.outputPlugin.Settings["shotsPerPoint"];
             int pointsPerScan = (int)config.outputPlugin.Settings["pointsPerScan"];
 
+            // shirley adds on 13/08/2026
             // Shirley adds the following part for serialising the CCD parameters into xml file on 20/01/2026
-            if ((bool)settings["cameraEnabled"])
+            if ((bool)settings["cameraEnabled"] && currentScanFinished)
             {
                 try
                 {
@@ -650,12 +739,12 @@ namespace ScanMaster.Acquire.Plugins
                     settings["ccdConfigXML"] = SerializeCCDSettingsToString(logData);
 
                     // set up saving directory
-                    string ccdSavePath = ccd2controller.GetSaveFullPath();
-                    int ccdFileIndex = ccd2controller.GetSyncFileName();
+                    string ccdSavePath = ccd1controller.GetSaveFullPath();
+                    int ccdFileIndex = ccd1controller.GetSyncFileName();
 
                     if (string.IsNullOrEmpty(ccdSavePath) || ccdFileIndex < 0)
                     {
-                        throw new InvalidOperationException("CCD save state is not available from CCD A (gobelin) PC.");
+                        throw new InvalidOperationException("CCD save state is not available from CCD A PC.");
                     }
 
                     string smTiffPath = RemapCCDPathtoScanMaster(ccdSavePath);
@@ -676,15 +765,16 @@ namespace ScanMaster.Acquire.Plugins
                     if (!Directory.Exists(scanDirectory))
                         Directory.CreateDirectory(scanDirectory);
 
-                    // Match CCD index → Scan index
-                    string scanFileName = $"Scan_{ccdFileIndex:D5}.zip";
+                    // Match CCD index -> Scan index
+                    string scanFileName = $"Scan_{ccdFileIndex:D2}.zip";
                     string fullScanPath = Path.Combine(scanDirectory, scanFileName);
 
                     // Call ScanMaster save routine
-                    Controller controller = Controller.GetController(); 
+                    Controller controller = Controller.GetController();
                     controller.SaveData(fullScanPath);
-
                     Console.WriteLine("Scan data auto-saved to: " + fullScanPath);
+
+                    Console.WriteLine("CCD Configuration file logged to: " + fullPath);
 
                     // serialise the parameters
                     XmlSerializer writer = new XmlSerializer(typeof(CCDSettings));
@@ -695,13 +785,15 @@ namespace ScanMaster.Acquire.Plugins
 
                     Console.WriteLine("CCD Configuration file logged to: " + fullPath);
                 }
-                catch (Exception ex)
+                                catch (Exception ex)
                 {
                     Console.WriteLine("Could not save CCD xml scan data:" + ex.Message);
                 }
             }
-
-
+            else if ((bool)settings["cameraEnabled"])
+            {
+                Console.WriteLine("Scan aborted mid-run. Skipping auto-save.");
+            }
             //bool SwitchStatus = (bool)config.switchPlugin.Settings["switchActive"];
 
 

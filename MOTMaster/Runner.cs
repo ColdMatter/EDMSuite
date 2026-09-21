@@ -15,6 +15,28 @@ namespace MOTMaster
         [STAThread]
         static void Main()
         {
+            // A throw that reaches here used to kill MOTMaster -- or put up the
+            // runtime's own dialog -- with nothing left behind to say why. Both
+            // handlers only record; what the user sees is unchanged.
+            //
+            // AppDomain.UnhandledException is notification-only: the process still
+            // terminates exactly as before. Application.ThreadException is not --
+            // merely attaching to it suppresses the ThreadExceptionDialog WinForms
+            // would otherwise show and silently continues, which would be a real
+            // change in behaviour for every experiment on this suite. So the
+            // default is reproduced explicitly here: same dialog, and Abort still
+            // ends the application.
+            AppDomain.CurrentDomain.UnhandledException += delegate(object s, UnhandledExceptionEventArgs e)
+            {
+                SharedCode.AppLog.Error("Runner", e.ExceptionObject as Exception);
+            };
+            Application.ThreadException += delegate(object s, System.Threading.ThreadExceptionEventArgs e)
+            {
+                SharedCode.AppLog.Error("Runner", e.Exception);
+                if (new ThreadExceptionDialog(e.Exception).ShowDialog() == DialogResult.Abort)
+                    Application.Exit();
+            };
+
             // instantiate the controller
             Controller controller = new Controller();
 

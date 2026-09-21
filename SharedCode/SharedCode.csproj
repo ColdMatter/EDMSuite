@@ -613,6 +613,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLog.cs" />
     <Compile Include="BlockDemodulator.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="ThreadSync.cs" />
