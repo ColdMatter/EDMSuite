@@ -47,7 +47,11 @@ namespace ScanMaster.Acquire.Plugins
             latestPD = new double[8];
             if (!Environs.Debug)
             {
-                hardwareController = new UEDMHardwareControl.UEDMController();
+                hardwareController =
+                (UEDMHardwareControl.UEDMController)
+                Activator.GetObject(
+                    typeof(UEDMHardwareControl.UEDMController),
+                    "tcp://localhost:1172/UEDMController.rem");
                 serverComputerName = (string)settings["computer"];
 
                 /*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
@@ -114,6 +118,15 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void AcquisitionFinished()
         {
+            lock (this)
+            {
+                // Break the remote reference proxy connection so the server side can release resources
+                if (hardwareController != null)
+                {
+                    hardwareController = null;
+                }
+
+            }
         }
 
         public override void ArmAndWait()

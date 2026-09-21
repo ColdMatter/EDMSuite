@@ -9048,6 +9048,7 @@ namespace UEDMHardwareControl
             }
         }
 
+        [Serializable]
         public struct PDSnapshot
         {
             public double[] Voltages;
