@@ -20,8 +20,9 @@ namespace ScanMaster.Acquire.Plugins
     public class UEDMWavemeterPDPlugin : AnalogInputPlugin
     {
         [NonSerialized]
-        private double latestData;
+        private List<double> latestData = new List<double>();
         [NonSerialized]
+        //private List<double> latestPD = new List<double>();
         private double[] latestPD;
         [NonSerialized]
         private WavemeterLockServer.Controller wavemeterServerContrller;
@@ -30,13 +31,13 @@ namespace ScanMaster.Acquire.Plugins
         [NonSerialized]
         private string ipAddr;
         [NonSerialized]
-        UEDMHardwareControl.UEDMController hardwareController;
+        private UEDMHardwareControl.UEDMController hardwareController;
         //private string hostName = "IC-CZC136CFDJ";// (String)System.Environment.GetEnvironmentVariables()["IC-CZC136CFDJ"];
 
         protected override void InitialiseSettings()
         {
-            settings["channel"] = 1;
-            settings["computer"] = "IC-CZC136CFDJ";
+            settings["channel"] = "1,7";
+            settings["computer"] = "WS8SERVERHUXLEY";
             settings["offset"] = 0.0;//Frequency offset in THz
 
             settings["pdChannels"] = "1,2,3,4,5,6,7,8"; //8 photodiodes channels to read from the Hardware Controller
@@ -47,7 +48,11 @@ namespace ScanMaster.Acquire.Plugins
             latestPD = new double[8];
             if (!Environs.Debug)
             {
-                hardwareController = new UEDMHardwareControl.UEDMController();
+                hardwareController =
+                (UEDMHardwareControl.UEDMController)
+                Activator.GetObject(
+                    typeof(UEDMHardwareControl.UEDMController),
+                    "tcp://localhost:1172/UEDMController.rem");
                 serverComputerName = (string)settings["computer"];
 
                 /*foreach (var addr in Dns.GetHostEntry(serverComputerName).AddressList)
@@ -110,10 +115,29 @@ namespace ScanMaster.Acquire.Plugins
 
         public override void ScanFinished()
         {
+            DisconnectProxy();
         }
 
         public override void AcquisitionFinished()
         {
+            DisconnectProxy();
+        }
+
+        private void DisconnectProxy()
+        {
+            lock (this)
+            {
+                if (hardwareController != null)
+                {
+                    try { System.Runtime.Remoting.RemotingServices.Disconnect(hardwareController); } catch { }
+                    hardwareController = null;
+                }
+                if (wavemeterServerContrller != null)
+                {
+                    try { System.Runtime.Remoting.RemotingServices.Disconnect(wavemeterServerContrller); } catch { }
+                    wavemeterServerContrller = null;
+                }
+            }
         }
 
         public override void ArmAndWait()
@@ -123,10 +147,20 @@ namespace ScanMaster.Acquire.Plugins
                 if (Environs.Debug) return;
 
                 // wavemeter part
-                latestData =
-                    wavemeterServerContrller.getFrequency((int)settings["channel"])
-                    - (double)settings["offset"];
+                if (latestData == null)
+                    latestData = new List<double>();
+                latestData.Clear();
+                if (!Environs.Debug)
+                {
+                    string channelList = (string)settings["channel"];
+                    string[] channels = channelList.Split(new char[] { ',' });
+                    foreach (string channel in channels)
+                    {
+                        latestData.Add(wavemeterServerContrller.getFrequency(int.Parse(channel)) - (double)settings["offset"]);
+                    }
+                }
 
+                // PD part
                 var snapshot = hardwareController.AcquirePDSnapshot();
                 double[] pd = snapshot.Voltages;
 
@@ -161,20 +195,28 @@ namespace ScanMaster.Acquire.Plugins
                         a.Add(new Random().NextDouble());
                         return a;
                     }
+                    
+                    // wavemeter data
+                    if (latestData != null)
+                    {
+                        foreach (double freq in latestData)
+                        {
+                            a.Add((double)freq);
+                        }
+                    }
 
-                    // wavemeter
-                    a.Add(latestData);
-
-                    // PDs (selected only)
+                    // Append active PD data sequentially
                     int[] activePD = GetActivePDChannels();
-
                     foreach (int idx in activePD)
-                        a.Add(latestPD[idx]);
+                    {
+                        a.Add((double)latestPD[idx]);
+                    }
 
                     return a;
                 }
             }
         }
+
     }
 
 }

@@ -1501,10 +1501,10 @@ namespace EDMBlockHead.Acquire
             eChan.Modulation = config.GetModulationByName("E");
             switchedChannels.Add(eChan);
 
-            HardwareControllerSwitchChannel StirapAOMchan = new HardwareControllerSwitchChannel();
-            StirapAOMchan.Channel = "StirapAOM";
-            StirapAOMchan.Modulation = config.GetModulationByName("StirapAOM");
-            switchedChannels.Add(StirapAOMchan);
+            //HardwareControllerSwitchChannel StirapAOMchan = new HardwareControllerSwitchChannel();
+            //StirapAOMchan.Channel = "StirapAOM";
+            //StirapAOMchan.Modulation = config.GetModulationByName("StirapAOM");
+            //switchedChannels.Add(StirapAOMchan);
 
             //HardwareControllerSwitchChannel mwChan = new HardwareControllerSwitchChannel();
             //mwChan.Channel = "mwChan";

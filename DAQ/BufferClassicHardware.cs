@@ -24,10 +24,9 @@ namespace DAQ.HAL
             Boards.Add("mag", "/MAG_PXI_6229");
             //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
-            Boards.Add("PDusb6008", "PhotodiodeDevice"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
             Boards.Add("usbTherm", "/FeedThroughTemp");
             //Boards.Add("usbTherm", "/Dev7");
-            Boards.Add("PDusb6008", "PhotodiodeDevice"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
+            Boards.Add("PDusb6008", "Photodiodes"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
 
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
@@ -159,8 +158,7 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("AI15", UEDMHardwareControllerBoard + "/ai15", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("HCoolingMonitor", UEDMHardwareControllerBoard + "/ai22", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("VCoolingMonitor", UEDMHardwareControllerBoard + "/ai23", AITerminalConfiguration.Rse);
+
 
             //map the analog output channels for the "UEDMHardwareControllerBoard" card
             AddAnalogOutputChannel("cPlusPlate", UEDMHardwareControllerBoard + "/ao0");
@@ -247,15 +245,24 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21 ////Note on 29/07, this port is labelled as V2 laser
 
-            // Add the 8 channel analog input from the NI USB 6008 device for photodiode monitoring
-            AddAnalogInputChannel("PD1", PDusb6008 + "/ai0", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD2", PDusb6008 + "/ai1", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD3", PDusb6008 + "/ai2", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD4", PDusb6008 + "/ai3", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD5", PDusb6008 + "/ai4", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD6", PDusb6008 + "/ai5", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD7", PDusb6008 + "/ai6", AITerminalConfiguration.Rse);
-            AddAnalogInputChannel("PD8", PDusb6008 + "/ai7", AITerminalConfiguration.Rse);
+            // Add the 8 channel analog input for photodiode monitoring
+            AddAnalogInputChannel("PD1", UEDMHardwareControllerBoard + "/ai16", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD2", UEDMHardwareControllerBoard + "/ai17", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD3", UEDMHardwareControllerBoard + "/ai18", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD4", UEDMHardwareControllerBoard + "/ai19", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD5", UEDMHardwareControllerBoard + "/ai20", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD6", UEDMHardwareControllerBoard + "/ai21", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD7", UEDMHardwareControllerBoard + "/ai22", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD8", UEDMHardwareControllerBoard + "/ai23", AITerminalConfiguration.Differential);
+
+            //AddAnalogInputChannel("PD1", PDusb6008 + "/ai0", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD2", PDusb6008 + "/ai1", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD3", PDusb6008 + "/ai2", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD4", PDusb6008 + "/ai3", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD5", PDusb6008 + "/ai4", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD6", PDusb6008 + "/ai5", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD7", PDusb6008 + "/ai6", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD8", PDusb6008 + "/ai7", AITerminalConfiguration.Rse);
 
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
@@ -343,6 +350,8 @@ namespace DAQ.HAL
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
             wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809124, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddSlaveLaser("STIRAPSeed", "STIRAP", 7);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("STIRAPSeed", 271.4106, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
 
