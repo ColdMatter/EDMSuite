@@ -16,6 +16,21 @@ def _rec(out, label, value):
     out[label] = np.atleast_1d(np.asarray(value, dtype=float)).ravel().tolist()
 
 
+def get_4f_branch_scenarios(constants):
+    """Ground state plus the three excited-state scenarios pinned for the 4f
+    branch functions (Pff/Qfe/Rff/Pee/Qef/Ree): 4f-to-4f, 4f-to-A(2Pi_1/2), and
+    4f-to-A(2Pi_3/2). Shared between compute_grid and branch_frequency_tables.py
+    so both use the same definitions.
+    """
+    ground_4f = constants.State_4f_7212['v0'][174]
+    scenarios = (
+        ('4f7212->4f7232', 'branches_4f', constants.State_4f_7232['v0'][174]),
+        ('4f7212->APi12', 'branches_4f_APi12', constants.A_Pi_12['v0'][174]),
+        ('4f7212->APi32', 'branches_4f_APi32', constants.A_Pi_32['v0'][174]),
+    )
+    return ground_4f, scenarios
+
+
 def compute_grid(constants, levels, transitions):
     """Return {label: [values]} for every pinned quantity. Units as noted per label."""
     out = {}
@@ -65,4 +80,20 @@ def compute_grid(constants, levels, transitions):
                      fn(n, excited, ground))
             except Exception as exc:                      # pragma: no cover
                 out[f'{branch}|N={n}|ERROR'] = [repr(exc)]
+
+    # --- 4f-ground J-good branch transitions (Pff/Qfe/Rff/Pee/Qef/Ree), cm^-1 ---
+    ground_4f, scenarios = get_4f_branch_scenarios(constants)
+    for scenario_name, dict_name, excited_4f in scenarios:
+        branch_dict = getattr(transitions, dict_name)
+        for branch_name, (func, j_prime_calc, e_func, g_func) in branch_dict.items():
+            for j in J_GRID:
+                j_prime = j_prime_calc(j)
+                if j < 0.5 or j_prime < 0.5:
+                    continue
+                try:
+                    value = func(j, excited_params=excited_4f, ground_params=ground_4f,
+                                 e_func=e_func, g_func=g_func)
+                    _rec(out, f'{branch_name}|{scenario_name}|J={j}|cm-1', value)
+                except Exception as exc:                  # pragma: no cover
+                    out[f'{branch_name}|{scenario_name}|J={j}|ERROR'] = [repr(exc)]
     return out

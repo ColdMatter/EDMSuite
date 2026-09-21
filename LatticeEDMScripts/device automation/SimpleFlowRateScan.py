@@ -1,5 +1,9 @@
-﻿# This is the first script I wrote. All it does is record TOF profiles
-# for different Helium flow rates.
+﻿# This is an early ScanMaster automation script (not written by SL, from an
+# earlier generation of the experiment). It drives a live ScanMaster session
+# (sm) and hardware controller (hc) to sweep the Helium flow rate through a
+# fixed list of setpoints, waits for it to settle, and fires an acquisition
+# at each setpoint via sm.AcquireAndWait, saving each scan to its own zip file.
+# It records TOF profiles for different Helium flow rates.
 # Import a whole load of stuff not all of these are used
 from System.IO import *
 from System.Drawing import *
