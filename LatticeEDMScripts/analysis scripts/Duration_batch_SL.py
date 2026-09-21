@@ -46,7 +46,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "Sept 2026"
-date = "08"
+date = "21"
 #blockdrive=datadrive+"\\BlockData\\"
 #
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -57,7 +57,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["005", "006", "007", "010"]
+sele = ["010", "014", "016"]
 
 #%%
 LoadPasses = True
@@ -94,8 +94,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 20
-SigEnd = 22
+SigStart = 22
+SigEnd = 24
 BkgStart = 70
 BkgEnd = 78
 
@@ -183,10 +183,11 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #(doesn't work) The fit chose forces amplitude + background = 1.0
 #Use weighted least square fitting where possible
 
-types = {"V3 with V0P(3)":['006'],
-         "4fv0, 0.29W per sideband":['005'],
-         "4fv0, 1.8W per sideband":['007'],
-         "4fv1_R 2.8W, with V1P(3) \n and 1.4W per sideband for 4fv0": ['010']}
+types = {"V3":['010'],
+         "4fv0, R&Q":['014'],
+         "4fv1, R":['016']}
+
+Weighted = True
 
 keys = list(types.keys())
 
@@ -223,16 +224,23 @@ for i in range(0, len(keys)):
     sterr = std/np.sqrt(len(toAvgKeys))
     StandardErr[keys[i]] = sterr
     
-    fit, cov = curve_fit(tools.exp_decay, dur, avg, 
-                         p0=[1.0, 3000., 0.3],
-                         absolute_sigma=True, sigma=sterr)
+    if len(toAvgKeys) > 1:
+        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
+                             p0=[1.0, 1800., 0.3],
+                             absolute_sigma=Weighted, sigma=sterr)
+    else:
+        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
+                             p0=[1.0, 1800., 0.3])
     err = np.sqrt(np.diag(cov))
     
     Fit[keys[i]] = fit
     Err[keys[i]] = err
     
     plt.plot(dur, avg, '.', color=colors[i], label=keys[i])
-    plt.fill_between(dur, y1=avg-sterr, y2=avg+sterr, alpha=0.3)
+    if len(toAvgKeys) > 1:
+        plt.fill_between(dur, y1=avg-sterr, y2=avg+sterr, alpha=0.3,
+                         color=colors[i])
+
     plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
              label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
 
