@@ -161,9 +161,15 @@ namespace MOTMaster
             else controller.triggered = false;
         }
 
-        private void preview_button_Click(object sender, EventArgs e)
+        private void viewPatternButton_Click(object sender, EventArgs e)
         {
+            controller.ViewPattern();
+        }
 
+        private void editParameterFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ParameterWindow parameterWindow = new ParameterWindow();
+            parameterWindow.Show();
         }
     }
 }
