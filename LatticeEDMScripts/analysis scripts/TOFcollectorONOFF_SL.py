@@ -20,7 +20,7 @@ import numpy as np
 
 import glob
 import matplotlib.pyplot as plt
-from scipy.optimise import curve_fit
+from scipy.optimize import curve_fit
 import pandas as pd
 
 import tools as tools
@@ -41,7 +41,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "Sept 2026"
-date = "08"
+date = "22"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -102,8 +102,8 @@ else:
     print("No matching files.")
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 20
-SigEnd = 22
+SigStart = 22
+SigEnd = 24
 BkgStart = 70
 BkgEnd = 78
 
@@ -304,28 +304,24 @@ plt.close()
 
 #%% Combine for ratios for saturation measurements
 #This is for Sept 8th 2026 4fv0 saturation
-V3_file = '011'
+V3_file = ''  #For benchmark
 
-P_Settings = {'012': 380,
-            '013': 1600,
-            '014': 5700,
-            '015': 3700,
-            '016': 730,
-            '017': 170,
-            '018': 54,
-            '019': 300,
-            '020': 580,
-            '021': 4700,
-            '022': 2600,
-            '023': 747,
-            '024': 5700,
-            '025': 1600,
-            '026': 4700,
-            '027': 6700,
-            '028': 170}
+P_Settings = {'007': 100,
+            '008': 40,
+            '009': 200,
+            '010': 250,
+            '011': 150,
+            '012': 15,
+            '014': 165,
+            '015': 270,
+            '016': 125,
+            '017': 42.5,
+            '018': 75}
 
-benchmark = 0
-benchmarkerr = 0
+#If forgot to take a bentchmark measurement, just put the values here
+#Otherwise initialise as 0
+benchmark = 0.524
+benchmarkerr = 0.005
 
 #Initialise with a (0, 0) point
 R_sub = [0]
@@ -368,48 +364,48 @@ R_suberr_proc = df_avg['R_suberr'].to_numpy()
 plt.plot(P_proc, R_sub_proc, '.', color=colors[0])
 plt.errorbar(P_proc, R_sub_proc, R_suberr_proc, fmt=' ', capsize=5, color=colors[0])
 
-fit, cov = curve_fit(tools.exp_decay, P_proc, R_sub_proc, p0=[-0.1, 3000., 0.15],
-                     absolute_sigma=True, sigma=R_suberr_proc)
-err = np.sqrt(np.diag(cov))
+#fit, cov = curve_fit(tools.exp_decay, P_proc, R_sub_proc, p0=[-0.1, 3000., 0.15],
+#                     absolute_sigma=True, sigma=R_suberr_proc)
+#err = np.sqrt(np.diag(cov))
 
 fit2, cov2 = curve_fit(tools.Saturation, P_proc, R_sub_proc, p0=[0.1, 400.],
                      absolute_sigma=True, sigma=R_suberr_proc)
 err2 = np.sqrt(np.diag(cov2))
 
-P_span = np.arange(0, 7000, 1)
-plt.plot(P_span, tools.exp_decay(P_span, *fit), '-.', color='black',
-         label=r'exp fit: $I_{sat}=%.4g \pm %.2gmW$'%(fit[1], err[1]))
+P_span = np.arange(0, 300, 1)
+#plt.plot(P_span, tools.exp_decay(P_span, *fit), '-.', color='black',
+#         label=r'exp fit: $I_{sat}=%.4g \pm %.2gmW$'%(fit[1], err[1]))
 plt.plot(P_span, tools.Saturation(P_span, *fit2), '-.', color='red',
          label=r'Saturation fit: $I_{sat}=%.4g \pm %.2gmW$'%(fit2[1], err2[1]))
 
 plt.xlabel("4fv0 power (mW)")
 plt.ylabel("Relative on/off ratio")
-plt.title("4f v0 repump saturation, with 4ms slowing \n"+
-          "subtracting repump contribution up to V3")
+plt.title("4f v1 repump saturation, with 5ms slowing \n"+
+          "with 1.6W 4fv0 for 1:1 R & Q lines")
 plt.legend()
 plt.show()
 
 # 3. Compute weighted residuals
-residuals = R_sub_proc - tools.exp_decay(P_proc, *fit)
-chi_squared = np.sum((residuals / R_suberr_proc) ** 2)
+#residuals = R_sub_proc - tools.exp_decay(P_proc, *fit)
+#chi_squared = np.sum((residuals / R_suberr_proc) ** 2)
 
 residuals2 = R_sub_proc - tools.Saturation(P_proc, *fit2)
 chi_squared2 = np.sum((residuals2 / R_suberr_proc) ** 2)
 
 # 4. Calculate degrees of freedom (N points - k parameters)
 n_data = len(R_sub_proc)
-n_params = len(fit)
+#n_params = len(fit)
 n_params2 = len(fit2)
-dof = n_data - n_params
+#dof = n_data - n_params
 dof2 = n_data - n_params2
 
 # 5. Reduced chi-squared
-red_chi_sq = chi_squared / dof
+#red_chi_sq = chi_squared / dof
 red_chi_sq2 = chi_squared2 / dof2
 
-print("Exponential fit results: ", fit)
-print("Errors: ", err)
-print("With reduced chi-squared = %g"%red_chi_sq)
+#print("Exponential fit results: ", fit)
+#print("Errors: ", err)
+#print("With reduced chi-squared = %g"%red_chi_sq)
 print("Saturation fit results: ", fit2)
 print("Errors: ", err2)
 print("With reduced chi-squared = %g"%red_chi_sq2)

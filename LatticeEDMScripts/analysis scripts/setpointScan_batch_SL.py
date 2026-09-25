@@ -42,7 +42,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "Sept 2026"
-date = "07"
+date = "22"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -53,7 +53,7 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["005", "006", "007", "009"]
+sele = ["004"]
 
 #%%
 LoadPasses = True
@@ -90,15 +90,15 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 20
-SigEnd = 22
+SigStart = 22
+SigEnd = 24
 BkgStart = 70
 BkgEnd = 78
 
 showTOF = False
 shot_for_TOF = 17
 
-fTHz = 284
+fTHz = 270
 
 #%%
 OnBkgSubs = {}
@@ -236,7 +236,7 @@ if HasWM:
     
     
 #%% Ratio
-f_offset = 284.4646 #f_iniTHzs[fileLabels[0]]
+f_offset = 270.259580 #f_iniTHzs[fileLabels[0]]
 
 Ratios = {}
 for i in range(0, len(fileLabels)):
@@ -276,11 +276,16 @@ for i in range(0, len(fileLabels)):
 #print("Errors of fit [mean, std, amp, shift]: ", errR)
 
 #%% Stack
+ExcludeLabels = ["002_0"] # bad data point in the first pass of file 002
+
 Rstack = 0 # Just to create a variable
-Xstack = 0 
+Xstack = 0
 
 for i in range(0, len(fileLabels)):
-    if i == 0:
+    if fileLabels[i] in ExcludeLabels:
+        print("Excluding " + fileLabels[i] + " from stack")
+        continue
+    if isinstance(Rstack, int):
         Rstack = Ratios[fileLabels[i]]
         Xstack = X_f_THz[fileLabels[i]]
     else:
@@ -296,8 +301,8 @@ Xstack_sorted = Xstack[sort_indices]
 Rstack_sorted = Rstack[sort_indices]
 
 #%%
-offset = 284.4646
-MA = 20
+offset = f_offset #284.4646
+MA = 5
 MoveAvg_R = tools.MovingAverage(MA, Rstack_sorted)
 MoveAvg_f = tools.MovingAverage(MA, Xstack_sorted)
 
@@ -308,10 +313,10 @@ title2="Gated TOF over " + Settings["param"] + " with " +\
 
 #plt.plot((Xstack_sorted-offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
 plt.plot((MoveAvg_f-offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
-plt.xlabel("Relative frequency (MHz) to %.9g THz"%offset)
+plt.xlabel("Relative frequency (MHz) to %.10g THz"%offset)
 plt.ylabel("Ratio")
 #plt.xlim(-600, 400)
-#plt.ylim(0.4, 0.7)
+#plt.ylim(0.4, 1.0)
 plt.title(title2+"\n4f v1 R line scan in Lattice")
 plt.legend()
 plt.show()   
@@ -319,7 +324,7 @@ plt.show()
 #%% Bin
 from scipy.stats import binned_statistic
 # 2. Define your bins (boundaries along the X-axis)
-fstep = 30
+fstep = 5
 bin_edges = np.arange(np.min(Xstack_sorted), np.max(Xstack_sorted), step=fstep* 1e-6)
 
 # 2. Compute binned averages

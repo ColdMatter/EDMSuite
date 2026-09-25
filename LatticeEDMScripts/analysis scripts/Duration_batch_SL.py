@@ -46,7 +46,7 @@ colors = prop_cycle.by_key()['color']
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
 month = "Sept 2026"
-date = "21"
+date = "24"
 #blockdrive=datadrive+"\\BlockData\\"
 #
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -57,8 +57,8 @@ files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["010", "014", "016"]
-
+#sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
+sele = ["001", "002"]
 #%%
 LoadPasses = True
 
@@ -183,9 +183,14 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #(doesn't work) The fit chose forces amplitude + background = 1.0
 #Use weighted least square fitting where possible
 
-types = {"V3":['010'],
-         "4fv0, R&Q":['014'],
-         "4fv1, R":['016']}
+#types = {#"V3":['007', '010'],
+#         "4fv0, R&Q, 1W tot":['001', '006', '009'],
+#         "+4fv1, R, 500mW":['005', '008'],
+         #"only 4fv1, R, 500mW":['011'],
+#         "4fv0, also in OFF shots": ['014'],
+#         "+4fv1, also in OFF shots": ['016']}
+
+types = {"4fv0": ["002"]}
 
 Weighted = True
 
@@ -250,7 +255,12 @@ plt.title('Averaged pumping curves with weighted fit')
 plt.ylim(0.3, 1.1)
 plt.legend(bbox_to_anchor=(1.0, 1.0))
 plt.show()
-    
+
+#%%
+print("Fitted curve at 5ms: ", tools.exp_decay(5000, *fit))
+
+print("Fit values:", fit)
+print("Errors: ", err)
 
 #%% Stacked plots
 '''Plotting multiple decay curves on the same plot.
