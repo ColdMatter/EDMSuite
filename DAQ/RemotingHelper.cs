@@ -62,7 +62,7 @@ namespace DAQ.Remoting
         {
             RemotingConfiguration.RegisterWellKnownClientType(
                     Type.GetType("MoleculeMOTHardwareControl.Controller, MoleculeMOTHardwareControl"),
-                    "tcp://localhost:1172/controller.rem"
+                    "tcp://127.0.0.1:1172/controller.rem"
                     );
         }
 

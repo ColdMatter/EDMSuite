@@ -788,7 +788,7 @@ namespace ScanMaster.GUI
 			viewer.UpdateTOFFit();
 		}
 
-		private void updateSpectrumFitButton_Click(object sender, EventArgs e)
+		private void updateSpectrumFitOffShotsButton_Click(object sender, EventArgs e)
 		{
 			viewer.UpdateSpectrumFit();
 		}

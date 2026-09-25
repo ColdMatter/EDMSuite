@@ -27,7 +27,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 
 using NationalInstruments;
-using NationalInstruments.DAQmx;
+//using NationalInstruments.DAQmx; TW: I have commented this out becaus e it's stopping the moleculemot system building and it doesn't seem to be used. Uncomment if it breaks your system
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MOTMaster
@@ -52,7 +52,7 @@ namespace MOTMaster
         private static string hardwareClassPath = (string)Environs.FileSystem.Paths["HardwareClassPath"];
         private static string externalFilesPath = (string)Environs.FileSystem.Paths["ExternalFilesPath"];
 
-        private NeanderthalDDSController.Controller DDSCtrl;
+
 
         private MMConfig config = (MMConfig)Environs.Hardware.GetInfo("MotMasterConfiguration");
 
@@ -77,6 +77,16 @@ namespace MOTMaster
         ExperimentReportable experimentReporter = null;
 
         MMDataIOHelper ioHelper;
+
+#if DDS
+        /// <summary>
+        /// Proxy to SpectrumDDSController, which owns the Spectrum card handle in
+        /// its own process so that manual control works with MOTMaster closed.
+        /// Only the CaF configuration defines DDS, so no other experiment sees any
+        /// of this.
+        /// </summary>
+        private SpectrumDDSController.Controller ddsController;
+#endif //DDS
 
         #endregion
 
@@ -134,15 +144,22 @@ namespace MOTMaster
             //if (config.TranslationStageUsed) tstage = (TranslationStageControllable)Activator.GetObject(typeof(CameraControllable),
             //    "tcp://localhost:1172/controller.rem");
 
+            //if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
+            //"tcp://172.22.116.195:1172/controller.rem");
             if (config.ReporterUsed) experimentReporter = (ExperimentReportable)Activator.GetObject(typeof(ExperimentReportable),
-                "tcp://localhost:1172/controller.rem");
+            "tcp://127.0.0.1:1172/controller.rem");
 
-            // --- Initialize the DDS Controller instance ---
-            DDSCtrl = (NeanderthalDDSController.Controller)Activator.GetObject(typeof(NeanderthalDDSController.Controller),"tcp://localhost:1818/controller.rem");
-            DDSCtrl.testDDS();
-
+      
             ioHelper = new MMDataIOHelper(motMasterDataPath,
                     (string)Environs.Hardware.GetInfo("Element"));
+
+#if DDS
+            // Just a proxy: nothing connects until it is first used, so MOTMaster
+            // still starts when SpectrumDDSController is not running.
+            ddsController = (SpectrumDDSController.Controller)Activator.GetObject(
+                typeof(SpectrumDDSController.Controller),
+                "tcp://127.0.0.1:1818/controller.rem");
+#endif //DDS
 
             ScriptLookupAndDisplay();
 
@@ -360,9 +377,92 @@ namespace MOTMaster
             dictionaryPath = path;
         }
 
-        public Dictionary<string, List<bool>> GetSwitchConfiguration()
+        public Dictionary<string, List<object>> GetSwitchConfiguration()
         {
             return prepareScript(scriptPath, new Dictionary<string, object> { }).switchConfiguration;
+        }
+
+        public Dictionary<string, object> GetParameters()
+        {
+            return prepareScript(scriptPath, new Dictionary<string, object> { }).Parameters;
+        }
+
+        public void ViewPattern()
+        {
+            MOTMasterScript script = prepareScript(scriptPath, null);
+            MOTMasterSequence sequence = getSequenceFromScript(script);
+            buildPattern(sequence, (int)script.Parameters["PatternLength"]);
+
+            var digitalChannels = new List<(string, uint[])>
+            {
+                ("PG",  sequence.DigitalPattern.Boards[pgMasterName].Pattern),
+            };
+
+            var digitalNames = new List<(string, SortedList<int, string>)>
+            {
+                ("PG",  GenerateListOfDigitalChannelNames(pgMasterName)),
+            };
+
+            foreach (string address in pgs.Keys)
+            {
+                if (sequence.DigitalPattern.Boards.ContainsKey(address))
+                {
+                    digitalChannels.Add((address, sequence.DigitalPattern.Boards[address].Pattern));
+                    digitalNames.Add((address, GenerateListOfDigitalChannelNames(address)));
+                }
+            }
+
+            var analogChannels = new List<(string, double[,])>();
+            var analogNames = new List<(string, SortedList<int, string>)>();
+
+            foreach (string address in analogs.Keys)
+            {
+                if (sequence.AnalogPattern.Boards.ContainsKey(address))
+                {
+                    analogChannels.Add((address, sequence.AnalogPattern.Boards[address].Pattern));
+                    var names = new SortedList<int, string>();
+                    ICollection<string> keys = sequence.AnalogPattern.Boards[address].AnalogPatterns.Keys;
+                    int i = 0;
+                    foreach (string key in keys)
+                    {
+                        names.Add(i, key);
+                        i++;
+                    }
+                    analogNames.Add((address, names));
+                }
+            }
+
+            using (var viewer = new PatternViewer(digitalChannels, analogChannels, digitalNames, analogNames))
+            {
+                viewer.ShowDialog(controllerWindow);
+            }
+        }
+
+        public SortedList<int, string> GenerateListOfDigitalChannelNames(string boardAddress)
+        {
+            // Some hardware configs define more than one named channel on the same
+            // board/bit (e.g. an old channel left registered as "broken" alongside
+            // its replacement) - combine the names rather than throwing on the
+            // duplicate key.
+            SortedList<int, string> digitalChannelNames = new SortedList<int, string>();
+            foreach (DictionaryEntry channel in Environs.Hardware.DigitalOutputChannels)
+            {
+                DigitalOutputChannel digitalOutputChannel = (DigitalOutputChannel)channel.Value;
+                if (digitalOutputChannel.Device == boardAddress)
+                {
+                    int bitNumber = digitalOutputChannel.BitNumber;
+                    string name = (string)channel.Key;
+                    if (digitalChannelNames.ContainsKey(bitNumber))
+                    {
+                        digitalChannelNames[bitNumber] = digitalChannelNames[bitNumber] + "/" + name;
+                    }
+                    else
+                    {
+                        digitalChannelNames.Add(bitNumber, name);
+                    }
+                }
+            }
+            return digitalChannelNames;
         }
 
         public void Run()
@@ -406,61 +506,40 @@ namespace MOTMaster
             if (status == RunningState.stopped)
             {
                 status = RunningState.running;
+#if DDS
+                // Declared out here so the finally can stop the shot loop however
+                // the run ends.
+                bool ddsInUse = false;
+                int ddsTriggersSent = 0;
+#endif //DDS
+                try
+                {
                 Stopwatch watch = new Stopwatch();
                 MOTMasterScript script = prepareScript(scriptPath, dict);
                 if (script != null)
                 {
                     MOTMasterSequence sequence = getSequenceFromScript(script);
 
-                    ////DDSCtrl.initializeCard();
-
-                    //Dictionary<string, List<List<double>>> pattern_test = new Dictionary<string, List<List<double>>>
-                    //{
-                    //    // The dictionary entry has one Key: "MOT"
-                    //    {
-                    //        "MOT", 
-        
-                    //        // The Value for the key is a new List of Lists
-                    //        new List<List<double>>
-                    //        {
-                    //            // List 1: Time Parameters. The function calculates time / 100.0. Here, 0 / 100.0 = 0.0.
-                    //            new List<double> { 0.0 },
-
-                    //            // List 2: Frequencies.
-                    //            new List<double> { 114.07, 156.17, 188.00, 175.44 },
-
-                    //            // List 3: Amplitudes.
-                    //            new List<double> { 1.0, 1.0, 1.0, 1.0 },
-
-                    //            // List 4: Frequency Slopes. Your function call uses the default value of 0.0 for all.
-                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 },
-
-                    //            // List 5: Amplitude Slopes. Your function call also uses the default value of 0.0 for all.
-                    //            new List<double> { 0.0, 0.0, 0.0, 0.0 }
-                    //        }
-                    //    }
-                    //};
-
-                    //DDSCtrl.setBreakFlag(true);
-                    //DDSCtrl.clearPatternList();
-                    //DDSCtrl.patternList = pattern_test;
-                    //DDSCtrl.setBreakFlag(false);
-                    //DDSCtrl.startRepetitivePattern();
-
-
-                    // --- Add the new logic for handling the DDS pattern ---
+#if DDS
+                    // Hand the script's DDS pattern to the card and leave it armed.
+                    // A script with no DDS pattern -- or one returning null -- just
+                    // runs as it always did.
                     if (sequence.DDSPattern != null && sequence.DDSPattern.Count > 0)
                     {
-                        // Set break flag to safely clear the old pattern
-                        DDSCtrl.PrepareForNewPattern();
-
-                        // Assign the newly loaded pattern to the DDS controller instance
-                        DDSCtrl.patternList = sequence.DDSPattern;
-
-                        // Set break flag to false and start the pattern running repetitively
-                        DDSCtrl.startRepetitivePattern();
+                        // A script that wants the DDS, run without it, is not the
+                        // experiment anyone asked for -- the AOMs would sit wherever
+                        // they were last left. So a failure here stops the run
+                        // instead of firing the sequence anyway. Nothing has been
+                        // built or armed at this point, so there is nothing to undo.
+                        if (!armDDS(sequence.DDSPattern))
+                        {
+                            status = RunningState.stopped;
+                            return;
+                        }
+                        ddsInUse = true;
                     }
-                    */
+#endif //DDS
+
                     //try
                     //{
                     //if (config.CameraUsed) prepareCameraControl();
@@ -479,19 +558,74 @@ namespace MOTMaster
                     {
                         while (status == RunningState.running)
                         {
-                            if (!config.Debug) runPattern(sequence);
+                            if (!config.Debug)
+                            {
+#if DDS
+                                // Do not fire into the DDS re-queue deadtime. If it
+                                // is still not armed after a second, go anyway and
+                                // let the tally at the end report the miss.
+                                if (ddsInUse) ddsController.WaitUntilArmed(1.0);
+#endif //DDS
+                                runPattern(sequence);
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
+                            }
                         }
                     }
                     else
                     {
                         for (int i = 0; i < controllerWindow.GetIterations() && status == RunningState.running; i++)
                         {
-                            if (!config.Debug) runPattern(sequence);
+                            if (!config.Debug)
+                            {
+#if DDS
+                                if (ddsInUse) ddsController.WaitUntilArmed(1.0);
+#endif //DDS
+                                runPattern(sequence);
+#if DDS
+                                if (ddsInUse) ddsTriggersSent++;
+#endif //DDS
+                            }
                         }
                     }
 
 
                     watch.Stop();
+#if DDS
+                    if (ddsInUse)
+                    {
+                        // sent   = triggers MOTMaster fired
+                        // fired  = patterns the DDS ran to completion
+                        // received = the card's own trigger counter, which only
+                        //            means anything as a difference
+                        int ddsFired = ddsController.PatternsFired;
+                        int ddsReceived = ddsController.GetCardTriggerCount();
+                        Console.WriteLine(
+                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
+                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived);
+                        SpectrumDDS.DdsLog.Write("MOTMaster", string.Format(
+                            "DDS triggers -- sent: {0}, fired: {1}, missed: {2}, card count: {3}",
+                            ddsTriggersSent, ddsFired, ddsTriggersSent - ddsFired, ddsReceived));
+
+                        // The console line above only reaches anyone who started
+                        // MOTMaster from Visual Studio, which is rare, so hand the
+                        // tally to the DDS window as well -- that is on screen anyway
+                        // and is where these numbers actually get read. Reporting must
+                        // never take the run down with it: saving and the report still
+                        // have to happen.
+                        try
+                        {
+                            ddsController.ReportRunTally(ddsTriggersSent);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Could not report the DDS tally: " + ex.Message);
+                            SpectrumDDS.DdsLog.Error("MOTMaster.ReportRunTally", ex);
+                        }
+                    }
+#endif //DDS
+
                     //MessageBox.Show(watch.ElapsedMilliseconds.ToString());
                     if (saveEnable)
                     {
@@ -545,6 +679,31 @@ namespace MOTMaster
                 {
                     MessageBox.Show("Unable to load pattern. \n Check that the script file exists and that it compiled successfully");
                 }
+                }
+                catch (AnalogPatternBuilderSingleBoard.InsufficientPatternLengthException ex)
+                {
+                    SharedCode.AppLog.Error("Controller.Go (analog pattern length)", ex);
+                    MessageBox.Show("The pattern length is too short to fit all the requested analog events.\n\n"
+                        + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
+                        "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (DAQ.Pattern.InsufficientPatternLengthException ex)
+                {
+                    SharedCode.AppLog.Error("Controller.Go (digital pattern length)", ex);
+                    MessageBox.Show("The pattern length is too short to fit all the requested digital events.\n\n"
+                        + ex.Message + "\n\nIncrease PatternLength in the script and try again.",
+                        "Insufficient Pattern Length", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+#if DDS
+                finally
+                {
+                    // Every way out of the run leads here, including the early return
+                    // when the camera data does not arrive. A DDS still arming itself
+                    // after the last trigger is what leaves stale shots queued on the
+                    // card for the next run to play through.
+                    if (ddsInUse) stopDDS();
+                }
+#endif //DDS
                 status = RunningState.stopped;
             }
         }
@@ -552,6 +711,163 @@ namespace MOTMaster
         #endregion
 
         #region private stuff
+
+#if DDS
+        /// <summary>
+        /// Load the script's DDS pattern onto the card and leave it armed, saying
+        /// what is wrong instead of letting the run die.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <see cref="Go(Dictionary{string, object})"/> runs on its own thread, so
+        /// anything thrown out of the DDS calls used to take MOTMaster down with
+        /// nothing on screen to say why. There are three ways they throw, and all
+        /// three are things somebody will hit: the remoting call fails when
+        /// SpectrumDDSController is not running, the driver refuses a pattern while
+        /// the card is closed, and it rejects a pattern that asks for more amplitude
+        /// than the clamp allows.
+        /// </para>
+        /// <para>
+        /// Gated on the DDS compile symbol, which only the CaF configuration
+        /// defines.
+        /// </para>
+        /// </remarks>
+        /// <returns>True if the card is armed and the run may go ahead.</returns>
+        private bool armDDS(Dictionary<string, List<List<double>>> ddsPattern)
+        {
+            // Any call would do to find out whether the controller is there at all;
+            // IsOpen is the cheapest, and answers the next question too.
+            bool cardOpen;
+            try
+            {
+                cardOpen = ddsController.IsOpen;
+            }
+            catch (Exception ex)
+            {
+                SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (controller unreachable)", ex);
+                offerToLaunchDDSController(ex);
+                return false;
+            }
+
+            if (!cardOpen)
+            {
+                // Opening the card enables no output stage and emits nothing, so
+                // this is safe to offer from here.
+                if (MessageBox.Show(
+                        "This script has a DDS pattern, but the Spectrum DDS card is not open.\n\n" +
+                        "Open it now?",
+                        "Spectrum DDS not open",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return false;
+
+                try
+                {
+                    ddsController.OpenCard();
+                }
+                catch (Exception ex)
+                {
+                    SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (OpenCard)", ex);
+                    MessageBox.Show(
+                        "The Spectrum DDS card would not open, so the run has been stopped.\n\n" +
+                        ex.Message,
+                        "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            try
+            {
+                ddsController.PrepareForNewPattern();
+                ddsController.patternList = ddsPattern;
+                ddsController.StartRepetitivePattern();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                SpectrumDDS.DdsLog.Error("MOTMaster.armDDS (load pattern)", ex);
+                MessageBox.Show(
+                    "The Spectrum DDS would not take this script's pattern, so the run has been stopped.\n\n" +
+                    ex.Message,
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Stop the DDS re-arming once this run has fired its last trigger.
+        /// </summary>
+        /// <remarks>
+        /// Only the loop stops. The card is left alone, so the four channels hold
+        /// the last event's frequency and amplitude until the next pattern is
+        /// loaded, and the one shot the loop had already armed stays queued until
+        /// PrepareForNewPattern discards it. Failing here must not take the run's
+        /// saving and reporting down with it, so it is reported and swallowed.
+        /// </remarks>
+        private void stopDDS()
+        {
+            try
+            {
+                ddsController.StopRepetitivePattern();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not stop the DDS shot loop: " + ex.Message);
+                SpectrumDDS.DdsLog.Error("MOTMaster.stopDDS", ex);
+            }
+        }
+
+        /// <summary>
+        /// Say that the DDS controller is not running, and offer to start it.
+        /// </summary>
+        /// <remarks>
+        /// SpectrumDDSController.exe is a ProjectReference of this project under the
+        /// DDS symbol, so the build drops it beside MOTMaster.exe.
+        /// </remarks>
+        private void offerToLaunchDDSController(Exception ex)
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                       "SpectrumDDSController.exe");
+
+            if (!File.Exists(path))
+            {
+                MessageBox.Show(
+                    "This script has a DDS pattern, but SpectrumDDSController is not running, " +
+                    "so the run has been stopped.\n\n" + ex.Message +
+                    "\n\nIt could not be started from here either: there is no " +
+                    "SpectrumDDSController.exe at\n" + path,
+                    "Spectrum DDS not running", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (MessageBox.Show(
+                    "This script has a DDS pattern, but SpectrumDDSController is not running, " +
+                    "so the run has been stopped.\n\n" + ex.Message + "\n\nLaunch Spectrum DDS?",
+                    "Spectrum DDS not running",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(path)
+                {
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                    UseShellExecute = true,
+                });
+
+                // It opens the card itself, but that takes a few seconds and this
+                // thread should not sit and block the run button waiting for it.
+                MessageBox.Show(
+                    "Spectrum DDS is starting. It opens the card by itself; once the " +
+                    "Status tab says so, press Go again.",
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception launchException)
+            {
+                MessageBox.Show("Spectrum DDS would not start:\n\n" + launchException.Message,
+                    "Spectrum DDS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+#endif //DDS
 
         private string constructSaveDirectory()
         {
@@ -645,6 +961,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
+                SharedCode.AppLog.Error("Controller.compileFromFile " + scriptPath, e);
                 MessageBox.Show(e.Message);
                 return null;
             }
@@ -668,6 +985,7 @@ namespace MOTMaster
             }
             catch (Exception e)
             {
+                SharedCode.AppLog.Error("Controller.loadScriptFromDLL", e);
                 MessageBox.Show(e.Message);
                 return null;
             }
@@ -793,49 +1111,7 @@ namespace MOTMaster
         }
         #endregion
         /*
-        #region NeanderthalDDSController
 
-        public void addDDSPattern(String name, int time, double freq1, double freq2, double freq3, double freq4, double amp1, double amp2, double amp3, double amp4, 
-            double freqSlope1 = 0.0, double freqSlope2 = 0.0, double freqSlope3 = 0.0, double freqSlope4 = 0.0, double ampSlope1 = 0.0, double ampSlope2 = 0.0, double ampSlope3 = 0.0, double ampSlope4 = 0.0)
-        {
-            //List<double> timeDelay, List<double> freq, List<double> amp, List<double> freq_slpoe, List<double> amp_slpoe
-            List<double> timePar = new List<double>();
-            timePar.Add(time/100.0);
-            List<double> freq = new List<double>(); 
-            freq.Add(freq1);
-            freq.Add(freq2);
-            freq.Add(freq3);
-            freq.Add(freq4);
-            List<double> amp = new List<double>();
-            amp.Add(amp1);
-            amp.Add(amp2);
-            amp.Add(amp3);
-            amp.Add(amp4);
-            List<double> freqSlope = new List<double>();
-            freqSlope.Add(freqSlope1);
-            freqSlope.Add(freqSlope2);
-            freqSlope.Add(freqSlope3);
-            freqSlope.Add(freqSlope4);
-            List<double> ampSlpoe = new List<double>();
-            ampSlpoe.Add(ampSlope1);
-            ampSlpoe.Add(ampSlope2);
-            ampSlpoe.Add(ampSlope3);
-            ampSlpoe.Add(ampSlope4);
-
-            DDSCtrl.clearPatternList();
-            DDSCtrl.addParToPatternList(name, timePar, freq, amp, freqSlope, ampSlpoe);
-            
-        }
-
-        public void runDDSPattern()
-        {
-            DDSCtrl.openCard();
-            DDSCtrl.startSinglePattern();
-            // Wait till sequence ends
-            DDSCtrl.closeCard();
-        }
-
-        #endregion
         */
         #region Re-Running a script (intended for reloading old scripts)
 

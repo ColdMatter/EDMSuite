@@ -50,7 +50,17 @@ namespace ScanMaster.Acquire.Plugin
 	 XmlInclude(typeof(STIRAPpatternPlugin)),
 	 XmlInclude(typeof(FourShutterPatternPluginFindV1)),
      XmlInclude(typeof(LatticePatternPlugin)),
-     XmlInclude(typeof(LatticePumpProbePatternPlugin))]
+     XmlInclude(typeof(LatticePumpProbePatternPlugin)),
+	 XmlInclude(typeof(LatticePnPModYAGPatternPlugin)),
+	 XmlInclude(typeof(LatticePnPModYAGFourShotsPatternPlugin)),
+	 XmlInclude(typeof(LatticeFourShotPatternPlugin)),
+	 XmlInclude(typeof(LatticeBFieldModPatternPlugin)),
+	 XmlInclude(typeof(LatticeBFieldFourShotPatternPlugin)),
+	 XmlInclude(typeof(ClassicFourShotPatternPlugin)),
+	 XmlInclude(typeof(ClassicBasicBeamPatternPlugin))]
+	
+
+
 	//XmlInclude(typeof(MMPatternPlugin))]
 	public abstract class PatternPlugin : AcquisitorPlugin
 	{

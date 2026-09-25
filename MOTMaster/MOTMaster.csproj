@@ -103,6 +103,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DDS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Wavemeter|AnyCPU'">
     <OutputPath>bin\Wavemeter\</OutputPath>
@@ -141,6 +142,9 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
+    <DefineConstants>
+    </DefineConstants>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TransferCavityLock2023|AnyCPU'">
     <OutputPath>bin\TransferCavityLock2023\</OutputPath>
@@ -417,12 +421,35 @@
     <LangVersion>7.3</LangVersion>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|AnyCPU'">
+    <OutputPath>bin\RbTweezer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x64'">
+    <OutputPath>bin\x64\RbTweezer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RbTweezer|x86'">
+    <OutputPath>bin\x86\RbTweezer\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
-    <Reference Include="NationalInstruments.DAQmx, Version=25.5.45.49440, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=AMD64" />
+    <Reference Include="NationalInstruments.DAQmx, Version=24.3.45.49472, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.UI.WindowsForms, Version=19.0.45.49154, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NationalInstruments.Visa, Version=22.5.0.49212, Culture=neutral, PublicKeyToken=2eaa5af0834e221d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -432,7 +459,11 @@
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -450,6 +481,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelDescriptor.cs" />
+    <Compile Include="PatternViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterFileManager.cs" />
+    <Compile Include="ParameterEntry.cs" />
+    <Compile Include="ParameterGroup.cs" />
+    <Compile Include="ParameterWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterWindow.Designer.cs">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
     <Compile Include="ControllerWindow.cs">
       <SubType>Form</SubType>
@@ -464,10 +508,22 @@
     <Compile Include="MOTMasterScript.cs" />
     <Compile Include="MOTMasterScriptSnippet.cs" />
     <Compile Include="MOTMasterSequence.cs" />
+    <Compile Include="PreviewWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewWindow.Designer.cs">
+      <DependentUpon>PreviewWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Runner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ControllerWindow.resx">
       <DependentUpon>ControllerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParameterWindow.resx">
+      <DependentUpon>ParameterWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewWindow.resx">
+      <DependentUpon>PreviewWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -483,6 +539,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -524,17 +581,17 @@
       <Project>{bb737b99-2e9f-40c9-9809-895a7c51ad40}</Project>
       <Name>DAQ</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NeanderthalDDSController\NeanderthalDDSController.csproj">
-      <Project>{67cbabe4-303c-4034-99a0-25d7dd2e5d2d}</Project>
-      <Name>NeanderthalDDSController</Name>
+    <ProjectReference Include="..\SpectrumDDS\SpectrumDDS.csproj" Condition="$(DefineConstants.Contains('DDS'))">
+      <Project>{3a1d4c8e-6b52-4f7a-9d33-1c0e58b7a921}</Project>
+      <Name>SpectrumDDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpectrumDDSController\SpectrumDDSController.csproj" Condition="$(DefineConstants.Contains('DDS'))">
+      <Project>{7f2b93a6-10dc-4e5b-b8c1-4d6f2a03e914}</Project>
+      <Name>SpectrumDDSController</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharedCode\SharedCode.csproj">
       <Project>{ba0a0540-3f1c-483b-a180-cb78df424f15}</Project>
       <Name>SharedCode</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WavemeterLock\WavemeterLock.csproj">
-      <Project>{e091da4c-f52b-47e3-9670-a36c4f16ecf7}</Project>
-      <Name>WavemeterLock</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

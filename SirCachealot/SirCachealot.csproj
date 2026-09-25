@@ -430,6 +430,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="CreateDBDialog.cs">
       <SubType>Form</SubType>

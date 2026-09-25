@@ -6,6 +6,7 @@ using NationalInstruments;
 
 using DAQ.Pattern;
 using DAQ.TransferCavityLock2012;
+using DAQ.WavemeterLock;
 
 namespace DAQ.HAL
 {
@@ -21,9 +22,12 @@ namespace DAQ.HAL
             Boards.Add("UEDMHardwareController", "/UEDM_Hardware_Controller_PXI_6229");
             Boards.Add("counter", "/COUNTER_PXI_6602");
             Boards.Add("mag", "/MAG_PXI_6229");
-            Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
+            //Boards.Add("usbDAQ1", "/Dev3");         // this is for the magnetic field feedback
             Boards.Add("usbDAQ2", "/Dev4");         // this is temporarily for the B switch digital channels
-            Boards.Add("usbTherm", "/Dev7");
+            Boards.Add("usbTherm", "/FeedThroughTemp");
+            //Boards.Add("usbTherm", "/Dev7");
+            Boards.Add("PDusb6008", "Photodiodes"); //name to be determined. this is a NI usb 6008 device that is used to read the photodiode signals from laser power monitored.
+
             string daqBoard = (string)Boards["daq"];
             string pgBoard = (string)Boards["pg"];
             string TCLBoard = (string)Boards["tcl"];
@@ -31,9 +35,12 @@ namespace DAQ.HAL
             string UEDMHardwareControllerBoard = (string)Boards["UEDMHardwareController"];
             string counterBoard = (string)Boards["counter"];
             string magBoard = (string)Boards["mag"];
-            string usbDAQ1 = (string)Boards["usbDAQ1"];
+            //string usbDAQ1 = (string)Boards["usbDAQ1"];
             string usbDAQ2 = (string)Boards["usbDAQ2"];
             string usbTherm = (string)Boards["usbTherm"];
+            
+            //string usbTherm = (string)Boards["usbTherm"];
+            string PDusb6008 = (string)Boards["PDusb6008"];
 
             //machine information
             Info.Add("sourceToDetect", 3.5);
@@ -80,8 +87,8 @@ namespace DAQ.HAL
             Info.Add("PGClockLine", pgBoard + "/PFI4");
             Info.Add("PatternGeneratorBoard", pgBoard);
             Info.Add("PGType", "dedicated");
-            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0"); //rhys add 20/07
-            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
+            //Info.Add("ccdDigitalIn", daqBoard + "/port0/line0"); //rhys add 20/07
+            Info.Add("ccdDigitalIn", daqBoard + "/port0/line0:1"); //rhys add 28/07 - Combine both CCD status lines
             AddCounterChannel("cameraEnabler", daqBoard + "/ctr0");//, 0, 19); //labelled as PFI12 - this is the counter channel for PXIe 6363
 
             // Scanmaster config
@@ -109,8 +116,10 @@ namespace DAQ.HAL
             AddAnalogInputChannel("battery", daqBoard + "/ai10", AITerminalConfiguration.Rse);
 
             // map the analog input channels for "mag" card (magnetometers and coil currents)
+            AddAnalogInputChannel("bartington_X", magBoard + "/ai16", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Y", magBoard + "/ai18", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("bartington_Z", magBoard + "/ai20", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinHM_Y", magBoard + "/ai0", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHO_Y", magBoard + "/ai1", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("battery", magBoard + "/ai2", AITerminalConfiguration.Differential); 
             //AddAnalogInputChannel("quSpinHP_Y", magBoard + "/ai2", AITerminalConfiguration.Differential);
@@ -128,8 +137,6 @@ namespace DAQ.HAL
             //AddAnalogInputChannel("quSpinHS_Z", magBoard + "/ai21", AITerminalConfiguration.Differential);
             AddAnalogInputChannel("quSpinHT_Z", magBoard + "/ai7", AITerminalConfiguration.Differential);
             //AddAnalogInputChannel("quSpinFV_Z", magBoard + "/ai23", AITerminalConfiguration.Differential);
-            //AddAnalogInputChannel("bartington_X", daqBoard + "/ai22", AITerminalConfiguration.Rse);
-            //AddAnalogInputChannel("bartington_Y", magBoard + "/ai30", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("coilCurrent_after", magBoard + "/ai31", AITerminalConfiguration.Rse);
             //AddAnalogInputChannel("coilCurrent_before", daqBoard + "/ai8", AITerminalConfiguration.Rse);//Pin 28
 
@@ -152,6 +159,7 @@ namespace DAQ.HAL
             AddAnalogInputChannel("cPlusMonitor", UEDMHardwareControllerBoard + "/ai7", AITerminalConfiguration.Rse);
             AddAnalogInputChannel("cMinusMonitor", UEDMHardwareControllerBoard + "/ai8", AITerminalConfiguration.Rse);
 
+
             //map the analog output channels for the "UEDMHardwareControllerBoard" card
             AddAnalogOutputChannel("cPlusPlate", UEDMHardwareControllerBoard + "/ao0");
             AddAnalogOutputChannel("cMinusPlate", UEDMHardwareControllerBoard + "/ao1");
@@ -165,20 +173,22 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("Port03", UEDMHardwareControllerBoard, 0, 3);
             AddDigitalOutputChannel("heatersS2TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 4);
             AddDigitalOutputChannel("heatersS1TriggerDigitalOutputTask", UEDMHardwareControllerBoard, 0, 5);
-            AddDigitalOutputChannel("ePol", UEDMHardwareControllerBoard, 0, 1);
-            AddDigitalOutputChannel("notEPol", UEDMHardwareControllerBoard, 0, 3);
-            AddDigitalOutputChannel("eBleed", UEDMHardwareControllerBoard, 0, 2);
-            AddDigitalOutputChannel("eConnect", usbDAQ2, 0, 5);
             AddDigitalOutputChannel("bSwitch", usbDAQ2, 0, 0);
             AddDigitalOutputChannel("notB", usbDAQ2, 0, 1);
             AddDigitalOutputChannel("dB", usbDAQ2, 0, 2);
             AddDigitalOutputChannel("notDB", usbDAQ2, 0, 3);
-            AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
-            AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
+            //AddDigitalOutputChannel("targetStepperStep", usbDAQ2, 0, 4);
+            //AddDigitalOutputChannel("targetStepperDirection", usbDAQ2, 0, 6);
             //AddDigitalOutputChannel("cameraEnabler", usbDAQ2, 0, 6);
 
             //UsbThermocouple channels
             AddAnalogInputThermocoupleChannel("FeedthroughTempInput", usbTherm + "/ai0", AITerminalConfiguration.Differential, AIThermocoupleType.K);
+
+            // map the digital channels of the Behlkle control board
+            AddDigitalOutputChannel("behlkeOn", usbDAQ2, 0, 4);
+            AddDigitalOutputChannel("behlkeB", usbDAQ2, 0, 5);
+            AddDigitalOutputChannel("behlkeD", usbDAQ2, 0, 6);
+            AddDigitalOutputChannel("behlkeE", UEDMHardwareControllerBoard, 0, 3);
 
             //Magnetic feedback channels
             AddAnalogInputChannel("bFieldFeedbackInput", usbDAQ2 + "/ai0", AITerminalConfiguration.Rse);
@@ -235,12 +245,34 @@ namespace DAQ.HAL
             AddAnalogOutputChannel("IRrampfb", daqBoard + "/ao0");//Pin 22
             AddAnalogOutputChannel("STIRAP", daqBoard + "/ao1",0,5); //pin 21 ////Note on 29/07, this port is labelled as V2 laser
 
+            // Add the 8 channel analog input for photodiode monitoring
+            AddAnalogInputChannel("PD1", UEDMHardwareControllerBoard + "/ai16", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD2", UEDMHardwareControllerBoard + "/ai17", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD3", UEDMHardwareControllerBoard + "/ai18", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD4", UEDMHardwareControllerBoard + "/ai19", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD5", UEDMHardwareControllerBoard + "/ai20", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD6", UEDMHardwareControllerBoard + "/ai21", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD7", UEDMHardwareControllerBoard + "/ai22", AITerminalConfiguration.Differential);
+            AddAnalogInputChannel("PD8", UEDMHardwareControllerBoard + "/ai23", AITerminalConfiguration.Differential);
+
+            //AddAnalogInputChannel("PD1", PDusb6008 + "/ai0", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD2", PDusb6008 + "/ai1", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD3", PDusb6008 + "/ai2", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD4", PDusb6008 + "/ai3", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD5", PDusb6008 + "/ai4", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD6", PDusb6008 + "/ai5", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD7", PDusb6008 + "/ai6", AITerminalConfiguration.Rse);
+            //AddAnalogInputChannel("PD8", PDusb6008 + "/ai7", AITerminalConfiguration.Rse);
+
             // add the GPIB/RS232/USB instruments
             Instruments.Add("tempController", new LakeShore336TemperatureController("ASRL3::INSTR"));
             Instruments.Add("WindfreakOpticalPumping", new WindfreakSynthHD("ASRL6::INSTR"));
             Instruments.Add("WindfreakDetection", new WindfreakSynthHD("ASRL9::INSTR"));
+            // Shirley adds on 23/03/2026 for new Windfreak Synth HD Mini for det B MW
+            Instruments.Add("WindfreakDetectionB", new WindfreakSynthHD("ASRL10::INSTR"));
+
             Instruments.Add("neonFlowController", new FlowControllerMKSPR4000B("ASRL24::INSTR"));
-            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL11::INSTR"));
+            Instruments.Add("sf6FlowController", new AlicatFlowController("ASRL22::INSTR"));
             Instruments.Add("AD9850DDS", new AD9850DDS("ASRL8::INSTR"));
             Instruments.Add("bCurrentMeter", new HP34401A("GPIB0::12::INSTR"));
             Instruments.Add("rfCounter", new Agilent53131A("GPIB0::5::INSTR"));
@@ -313,6 +345,15 @@ namespace DAQ.HAL
             //These need to be activated for the phase lock
             //AddCounterChannel("phaseLockOscillator", daqBoard + "/ctr0"); //This should be the source pin of a counter PFI 8
             //AddCounterChannel("phaseLockReference", daqBoard + "/PFI9"); //This should be the gate pin of the same counter - need to check it's name
+
+            //Wavemeter lock config
+            WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
+            wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809124, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            wmlConfig.AddSlaveLaser("STIRAPSeed", "STIRAP", 7);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddLaserConfiguration("STIRAPSeed", 271.4106, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
+            Info.Add("Default", wmlConfig);
+
 
         }
 

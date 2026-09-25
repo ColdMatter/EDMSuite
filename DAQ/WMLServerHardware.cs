@@ -22,11 +22,11 @@ namespace DAQ.HAL
 
             AddAnalogOutputChannel("WavemeterLock1", WMLBoard + "/ao0", 0, 5);
             AddAnalogOutputChannel("WavemeterLock2", WMLBoard + "/ao1", 0, 5);
-
+            
             //Configuration for wavemeterlock
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             //wmlConfig.AddSlaveLaser("v0LaserTest", "WavemeterLock1",6);//Laser name, analog channel, wavemeter channel
-            wmlConfig.AddSlaveLaser("WavemeterTest", "WavemeterLock2", 5);
+            wmlConfig.AddSlaveLaser("WavemeterTest", "WavemeterLock2", 4);
             Info.Add("Default", wmlConfig);
 
         }

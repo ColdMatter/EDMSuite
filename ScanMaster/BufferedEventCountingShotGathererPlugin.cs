@@ -116,13 +116,23 @@ namespace ScanMaster.Acquire.Plugins
                 freqOutTask2.Triggers.StartTrigger.Type = StartTriggerType.DigitalEdge;
                 freqOutTask2.Triggers.StartTrigger.DigitalEdge.Edge = DigitalEdgeStartTriggerEdge.Rising;
 				// the trigger is expected to appear on PFI0
-				freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI0";
-                // the trigger is expected to appear on PFI1
-                freqOutTask2.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI1";
+				//freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI0";
+				// Well it was alreayd hard coded, so I will hard code it to mine
+				freqOutTask1.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["analogInNew"] + "/PFI4";
+
+				// the trigger is expected to appear on PFI1
+				//freqOutTask2.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["daq"] + "/PFI1
+				freqOutTask2.Triggers.StartTrigger.DigitalEdge.Source = (string)Environs.Hardware.Boards["analogIn"] + "/PFI1";
+
+				
             }
 		
 			// set up a reader for the edge counter
 			countReader = new CounterReader(countingTask.Stream);
+
+			freqOutTask1.Control(TaskAction.Verify);
+			freqOutTask1.Control(TaskAction.Commit);
+			freqOutTask2.Control(TaskAction.Verify);
 		}
 
 		public override void ScanStarting()

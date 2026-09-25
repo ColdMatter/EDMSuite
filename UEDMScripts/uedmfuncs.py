@@ -4,10 +4,15 @@ from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 from Data.Scans import *
-from DAQ.Environment import *
-from DAQ.Analyze import *
+try:
+    from DAQ.Environment import *
+    from DAQ.Analyze import *
+    from uedm_init_pythonnet import *
+    
+except ImportError as e:
+    print(f"Error importing DAQ modules: {e}")
 import time, os, fnmatch
-from uedm_init_pythonnet import *
+
 
 #Generic functions for fits
 def gaussian(x, a, mu, sigma, c): 

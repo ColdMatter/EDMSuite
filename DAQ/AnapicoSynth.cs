@@ -35,7 +35,27 @@ namespace DAQ.HAL
             }
         }
 
-		public double CWFrequencyCH1
+        public bool EnablePulseMode
+        {
+            set
+            {
+                if (value)
+                {
+                    Write("SOUR1:PULM:STAT ON\n");
+                    Write("SOUR1:PULM:SOUR EXT\n");
+
+                    Write("SOUR2:PULM:STAT ON\n");
+                    Write("SOUR2:PULM:SOUR EXT\n");
+                }
+                else
+                {
+                    Write("SOUR1:PULM:STAT OFF\n");
+                    Write("SOUR2:PULM:STAT OFF\n");
+                }
+            }
+        }
+
+        public double CWFrequencyCH1
 		{
             get
             {
@@ -91,6 +111,79 @@ namespace DAQ.HAL
             }
         }
 
+        public double PowerCH1
+        {
+            get
+            {
+                double power = 0.0;
+                string list = "";
+                if (!Environs.Debug)
+                {
+                    Write("SOUR:SEL 1\n");
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();
+                    char[] delimiters = { ';', '\r', '\n' };
+                    string[] splitList = list.Split(delimiters);
+                    power = Convert.ToDouble(splitList[0]);
+                }
+                return power;
+            }
+
+            set
+            {
+                if (!Environs.Debug)
+                {
+                    Write(":SOUR:SEL 1\n");
+                    Write(":SOUR:POW:MODE CW\n");
+                    Write(":SOUR:POW:ALC:STAT OFF\n");                    // Disables Automatic Leveling Control (ALC)
+                    //Write(":SOUR:POW:ALC:BAND:AUTO ON\n");               // Sets the bandwidth of the ALC to automatic
+                    Write(":SOUR:POW:LEV:IMM:AMPL " + value + "\n");     // In units of dBm
+
+                }
+            }
+        }
+
+
+        public double PowerCH2
+        {
+            get
+            {
+                double power = 0.0;
+                string list = "";
+                if (!Environs.Debug)
+                {
+                    Write("SOUR:SEL 2\n");
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();
+                    char[] delimiters = { ';', '\r', '\n' };
+                    string[] splitList = list.Split(delimiters);
+                    power = Convert.ToDouble(splitList[0]);
+                }
+                return power;
+            }
+
+            set
+            {
+                string list = "";
+                if (!Environs.Debug)
+                {
+    
+                    Write(":SOUR:SEL 2\n");
+                    Write(":SOUR:POW:MODE CW\n");
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();// read the current power for debugging purpose, Guanchen 19Aug2025
+
+                    Write(":SOUR:POW:ALC:STAT ON\n");                    // Disables Automatic Leveling Control (ALC)
+                    Write(":SOUR:POW:ALC:BAND:AUTO ON\n");               // Sets the bandwidth of the ALC to automatic
+                    Write(":SOUR:POW:LEV:IMM:AMPL " + value + "\n");     // In units of dBm
+                    Write("SOUR:SEL 2\n");
+                    Write(":SOUR:POW:LEV:IMM:AMPL?\n");
+                    list = Read();// read the new power for debugging purpose, Guanchen 19Aug2025
+
+                }
+            }
+        }
+
         //ListSweep implemented for output from ch1
         public bool ListSweepEnabled
         {
@@ -113,6 +206,107 @@ namespace DAQ.HAL
                     Write(":SOUR:SEL 1\n");
                     Write(":SOUR:FREQ:MODE FIX\n"); // Sets frequency mode back to CW.
                     Write(":SOUR:POW:MODE FIX\n"); // Sets power mode back to CW
+                }
+            }
+        }
+
+
+        public double FMDeviationCH1
+        {
+            get
+            {
+                double dev = 0.0;
+                string list = "";
+                if (!Environs.Debug)
+                {
+                    Write("SOUR:SEL 1\n");
+                    Write(":SOUR:FM:DEV?\n");
+                    list = Read();
+                    char[] delimiters = { ';', '\r', '\n' };
+                    string[] splitList = list.Split(delimiters);
+                    dev = Convert.ToDouble(splitList[0]);
+                }
+                return dev;
+            }
+
+            set
+            {
+                if (!Environs.Debug)
+                {
+                    Write(":SOUR:SEL 1\n");
+                    Write(":SOUR:FM:DEV " + value + "\n");
+                }
+            }
+        }
+
+        public double FMDeviationCH2
+        {
+            get
+            {
+                double dev = 0.0;
+                string list = "";
+                if (!Environs.Debug)
+                {
+                    Write("SOUR:SEL 2\n");
+                    Write(":SOUR:FM:DEV?\n");
+                    list = Read();
+                    char[] delimiters = { ';', '\r', '\n' };
+                    string[] splitList = list.Split(delimiters);
+                    dev = Convert.ToDouble(splitList[0]);
+                }
+                return dev;
+            }
+
+            set
+            {
+                if (!Environs.Debug)
+                {
+                    Write(":SOUR:SEL 2\n");
+                    Write(":SOUR:FM:DEV " + value + "\n");
+                }
+            }
+        }
+
+        //Frequency modulation for output from ch1
+        public bool FrequencyModulationCH1Enabled
+        {
+            set
+            {
+                if (value)
+                {
+                    Write(":SOUR:SEL 1\n"); // Channel to apply FM on -> Ch 1
+                    Write(":SOUR:FM:SOUR INT\n"); // Signal source for frequency modulation set to internal
+                    Write(":SOUR:FM:INT:SHAP SINE\n");// Frequency is modulated according to a sine wave
+                    Write(":SOUR:FM:INT:FREQ 800000\n"); // Frequency is modulated at the maximum rate of 800 kHz
+                    Write(":SOUR:FM:STAT ON\n"); // Enable FM
+                }
+                else
+                {
+                    Write(":SOUR:SEL 1\n"); // select channel 1
+                    Write(":SOUR:FM:STAT OFF\n"); // disable FM
+                    Write(":SOUR:FREQ:MODE FIX\n"); // Sets frequency mode back to CW.
+                }
+            }
+        }
+
+        //Frequency modulation for output from ch2
+        public bool FrequencyModulationCH2Enabled
+        {
+            set
+            {
+                if (value)
+                {
+                    Write(":SOUR:SEL 2\n"); // Channel to apply FM on -> Ch 2
+                    Write(":SOUR:FM:SOUR INT\n"); // Signal source for frequency modulation set to internal
+                    Write(":SOUR:FM:INT:SHAP SINE\n");// Frequency is modulated according to a sine wave
+                    Write(":SOUR:FM:INT:FREQ 800000\n"); // Frequency is modulated at a rate of 500 Hz
+                    Write(":SOUR:FM:STAT ON\n"); // Enable FM
+                }
+                else
+                {
+                    Write(":SOUR:SEL 2\n"); // select channel 2
+                    Write(":SOUR:FM:STAT OFF\n"); // disable FM
+                    Write(":SOUR:FREQ:MODE FIX\n"); // Sets frequency mode back to CW.
                 }
             }
         }

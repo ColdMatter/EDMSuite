@@ -1,0 +1,6 @@
+2026-08-13 15:25:30	MOTMaster	DDS triggers -- sent: 1, fired: 1, missed: 0, card count: 8
+2026-08-13 15:25:30	Controller	15:25:30  sent     1  fired     1  missed    0  card triggers       8  |  waiting for trigger
+2026-08-13 15:25:38	MOTMaster	DDS triggers -- sent: 5, fired: 5, missed: 0, card count: 36
+2026-08-13 15:25:38	Controller	15:25:38  sent     5  fired     5  missed    0  card triggers      36  |  waiting for trigger
+2026-08-13 15:37:03	MOTMaster	DDS triggers -- sent: 2, fired: 2, missed: 0, card count: 3
+2026-08-13 15:37:03	Controller	15:37:03  sent     2  fired     2  missed    0  card triggers       3  |  waiting for trigger

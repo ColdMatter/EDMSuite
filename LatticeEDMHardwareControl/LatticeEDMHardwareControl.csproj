@@ -76,5 +76,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AlFHardwareControl\AlFHardwareControl.csproj">
+      <Project>{ce9ff52d-4c2c-4541-b16e-0b1a7db360b3}</Project>
+      <Name>AlFHardwareControl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

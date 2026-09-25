@@ -32,6 +32,7 @@ namespace ScanMaster.Acquire.Plugins
 			settings["CameraTrigger"] = 5000; //trigger for the image of molecule, default value is 5ms after the startTrigger
 			settings["BgTrigger"] = 250000; // trigger for the light background, default value is 250ms after the startTrigger which is fired at 2Hz. 
 			settings["shutterPulseLength"] =1000;
+			settings["cameraTriggerDelay"] = 18000;
 		}
 
 		protected override void DoAcquisitionStarting()
@@ -53,6 +54,7 @@ namespace ScanMaster.Acquire.Plugins
                 GateStartTimePGUnits,
 				(int)settings["CameraTrigger"],// a camera trigger
 				(int)settings["BgTrigger"],//15Sept2023 Guanchen added a trigger for the light background image
+				(int)settings["cameraTriggerDelay"],
 				(int)settings["shutterPulseLength"]
 				);
 

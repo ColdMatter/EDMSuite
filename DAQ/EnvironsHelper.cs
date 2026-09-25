@@ -223,17 +223,17 @@ namespace DAQ.Environment
                     //ExperimentType = "edm";
                     break;
 
-                #if EDM
+               
                 case "PIXIE":
                     Hardware = new PXIEDMHardware();
                     FileSystem = new PixieFileSystem();
                     Debug = false;
-                    serverComputerName = "IC-CZC136CFDJ";
+                    serverComputerName = "IC-CZC136CFDJ"; // "IC-CZC222C0F4";// 
                     wavemeterLockTCPChannel = 1012;
                     serverTCPChannel = 1984;
                     //ExperimentType = "edm";
                     break;
-#endif
+
 
                 //PC running TCL for EDM
                 case "GREMLIN":
@@ -340,16 +340,16 @@ namespace DAQ.Environment
                     // FileSystem = new SSWARBFileSystem();
                     Debug = true;
                     break;
-
+                //THIS IS THE ACTUAL ULTRACOLD EDM CENTAUR
                 case "CENTAUR":
                     Hardware = new BufferClassicHardware();
                     FileSystem = new CENTAURFileSystem();
                     Debug = false;
-                    viewerServerComputerName = "ULTRACOLDEDM";
-                    serverComputerName = "ULTRACOLDEDM";
-                    viewerServerTCPChannel = 1997;
-                    serverTCPChannel = 1997;
-                    wavemeterLockTCPChannel = 2345;
+                    //viewerServerComputerName = "WS8SERVERHUXLEY";
+                    serverComputerName = "WS8SERVERHUXLEY";
+                    //viewerServerTCPChannel = 2001;
+                    serverTCPChannel = 2001;
+                    wavemeterLockTCPChannel = 1919;
                     break;
 
                 case "PH-RHENDRIC-02":
@@ -428,6 +428,22 @@ namespace DAQ.Environment
                     serverComputerName = "ic-czc5347lb5";
                     serverTCPChannel = 1984;
                     emccdTCPChannel = 2104;
+                    break;
+
+                case "IC-CZC221CCHS":
+                    Hardware = new RbTweezerHardware();
+                    FileSystem = new RbTweezerFileSystem();
+                    serverComputerName = "PH-BONESAW";
+                    serverTCPChannel = 1800;
+                    wavemeterLockTCPChannel = 2146;
+                    Debug = false;
+                    break;
+
+                case "WS8SERVERHUXLEY":
+                    Hardware = new EDMHardware();
+                    FileSystem = new FileSystem();
+                    serverTCPChannel = 2001;
+                    //ExperimentType = "edm";
                     break;
 
                 default:

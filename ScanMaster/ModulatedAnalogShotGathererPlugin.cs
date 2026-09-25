@@ -49,7 +49,7 @@ namespace ScanMaster.Acquire.Plugins
 			// new analog channel, range -10 to 10 volts
 			if (!Environs.Debug)
 			{
-
+				
                 string channelList = (string)settings["channel"];
                 string[] channels = channelList.Split(new char[] { ',' });
 

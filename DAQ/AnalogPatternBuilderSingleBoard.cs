@@ -54,7 +54,8 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new InsufficientPatternLengthException();
+                throw new InsufficientPatternLengthException("Analog event on channel '" + channel + "' at time " + time
+                    + " requires a pattern length of at least " + (time + 1) + ". Current PatternLength is " + PatternLength + ".");
             }
         }
 
@@ -69,7 +70,9 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new InsufficientPatternLengthException();
+                throw new InsufficientPatternLengthException("Analog pulse on channel '" + channel + "' ending at time "
+                    + (startTime + duration) + " requires a pattern length of at least " + (startTime + duration + 1)
+                    + ". Current PatternLength is " + PatternLength + ".");
             }
         }
 
@@ -113,7 +116,9 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new InsufficientPatternLengthException();
+                throw new InsufficientPatternLengthException("Linear ramp on channel '" + channel + "' ending at time "
+                    + (startTime + steps) + " requires a pattern length of at least " + (startTime + steps + 1)
+                    + ". Current PatternLength is " + PatternLength + ".");
             }
         }
         public void AddPolynomialRamp(string channel, int startTime, int stopTime,
@@ -157,7 +162,9 @@ namespace DAQ.Analog
             }
             else
             {
-                throw new InsufficientPatternLengthException();
+                throw new InsufficientPatternLengthException("Polynomial ramp on channel '" + channel + "' ending at time "
+                    + stopTime + " requires a pattern length of at least " + (stopTime + 1)
+                    + ". Current PatternLength is " + PatternLength + ".");
             }
         }
 
@@ -232,7 +239,11 @@ namespace DAQ.Analog
         }
 
         public class ConflictInPatternException : ApplicationException { }
-        public class InsufficientPatternLengthException : ApplicationException { }
+        public class InsufficientPatternLengthException : ApplicationException
+        {
+            public InsufficientPatternLengthException() { }
+            public InsufficientPatternLengthException(String message) : base(message) { }
+        }
         public class PatternBuildException : ApplicationException
         {
             public PatternBuildException(String message) : base(message) { }

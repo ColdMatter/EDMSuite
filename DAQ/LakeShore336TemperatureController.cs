@@ -68,7 +68,7 @@ namespace DAQ.HAL
         /// <returns></returns>
         private bool ValidateTemperatureRequest(int Channel, string TUnit)
         {
-            if ((Channel < 5) && (Channel > -1) && ((TUnit == "K") || (TUnit == "C"))) { return true; } // check that the temperature unit requested was in celsius or kelvin and that the integer channel number requested was 0, 1, 2, 3, or 4.
+            if ((Channel < 9) && (Channel > -1) && ((TUnit == "K") || (TUnit == "C"))) { return true; } // check that the temperature unit requested was in celsius or kelvin and that the integer channel number requested was 0, 1, 2, 3, or 4.
             else { return false; }
         }
 
@@ -103,7 +103,7 @@ namespace DAQ.HAL
         ///</summary>
         private string SetTChannel(int Channel, string TUnitCommand) 
         {
-            string[] Channels = { "0", "A", "B", "C", "D" }; // 0 = all channels
+            string[] Channels = { "0", "A", "B", "C", "D", "D2", "D3", "D4", "D5" }; // 0 = all channels
             return String.Concat(TUnitCommand, Channels[Channel]); // Concatenate the channel and command. The command should already include the temperature unit.
         }
 

@@ -25,7 +25,7 @@ namespace ScanMaster.Acquire.Plugins
 		protected override void InitialiseSettings()
 		{
 			settings["synth"] = "WindfreakOpticalPumping";
-			settings["channel"] = 1;				// 0 is channel A and 1 is channel B
+			settings["channel"] = 0;				// 0 is channel A and 1 is channel B
 			settings["scanOnFrequency"] = 14475400000; //Hz
 			settings["offAmplitude"] = -30.0;		// dBm
 			settings["offFrequency"] = 14475400000;	// Hz

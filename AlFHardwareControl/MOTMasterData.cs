@@ -92,30 +92,34 @@ namespace AlFHardwareControl
                 }
             }));
             if (mmstuff.ScanData.Count == 0) return;
-            Dictionary<double,List<List<SerializableDictionary<string, List<double[]>>>>> ScanData = mmstuff.ScanData;
-
-            List<SerializableDictionary<string,List<double[]>>> flatData = ScanData.Values.ToList().SelectMany(i => i).SelectMany(i=>i).ToList();
-            List<double[]>[] normedData = Enumerable.Range(0, flatData.Count).Select(
-                i => NormaliseData(flatData[i])).ToArray();
-
-            List<double[]> data = Enumerable.Range(0, normedData[0].Count).Select(
-                                k => Enumerable.Range(0, normedData[0][0].Length).Select(
-                                i => Enumerable.Range(0, normedData.Length).Select(
-                                j => normedData[j][k][i]).Average()).ToArray()).ToList();
-
-            this.Invoke((Action)(() =>
+            lock (mmstuff)
             {
-                for (int i = 0; i < data.Count; ++i)
+                Dictionary<double,List<List<SerializableDictionary<string, List<double[]>>>>> ScanData = mmstuff.ScanData;
+
+                List<SerializableDictionary<string,List<double[]>>> flatData = ScanData.Values.ToList().SelectMany(i => i).SelectMany(i=>i).ToList();
+                List<double[]>[] normedData = Enumerable.Range(0, flatData.Count).Select(
+                    i => NormaliseData(flatData[i],false)).ToArray();
+
+                List<double[]> data = Enumerable.Range(0, normedData[0].Count).Select(
+                                    k => Enumerable.Range(0, normedData[0][0].Length).Select(
+                                    i => Enumerable.Range(0, normedData.Length).Select(
+                                    j => normedData[j][k][i]).Average()).ToArray()).ToList();
+
+                this.Invoke((Action)(() =>
                 {
-                    dataGraph.Plots[2 * i + 1].PlotXY(xData, data[i]);
-                }
-            }));
+                    for (int i = 0; i < data.Count; ++i)
+                    {
+                        dataGraph.Plots[2 * i + 1].PlotXY(xData, data[i]);
+                    }
+                }));
+            }
         }
 
         public void ReDraw()
         {
             if (xData == null || mmstuff.AIData.Count == 0) return;
             List<double[]> data = NormaliseData();
+            UpdateStats(true);
             this.Invoke((Action)(() =>
             {
                 while (mmstuff.SwitchStates * 2 < dataGraph.Plots.Count)
@@ -131,10 +135,13 @@ namespace AlFHardwareControl
                     points.PointColor = points.LineColor;
                     points.LineStyle = NationalInstruments.UI.LineStyle.Dot;
                     scan.LineColor = points.LineColor;
+                    points.Visible = show_last_data.Checked;
+                    scan.Visible = show_average.Checked;
                 }
                 for (int i = 0; i < data.Count; ++i)
                 {
                     dataGraph.Plots[2 * i].ClearData();
+                    if (i >= data.Count) continue; 
                     dataGraph.Plots[2 * i].PlotXY(xData, data[i]);
                 }
                 dataGraph.Update();
@@ -165,19 +172,76 @@ namespace AlFHardwareControl
 
         }
 
-        public List<double[]> NormaliseData(Dictionary<string, List<double[]>> rawData)
+        public void UpdateStats(bool gate)
+        {
+            List<double[]> normedData = new List<double[]> { };
+            List<double[]> normaliser;
+            lock (mmstuff)
+            {
+                if (!sourceEnabled) return;
+                normaliser = mmstuff.AIData[normSourceName];
+                for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
+                {
+                    normedData.Add(new double[xData.Length]);
+                    for (int i = 0; i < xData.Length; ++i)
+                    {
+                        if ((Normalise.Checked && normaliser[j][i] != 0) && (!gate || (dataPlotXhigh.XPosition >= xData[i] && dataPlotXlow.XPosition <= xData[i])))
+                            normedData[j][i] = mmstuff.AIData[name][j][i] / normaliser[j][i];
+                        else if (!Normalise.Checked && (!gate || (dataPlotXhigh.XPosition >= xData[i] && dataPlotXlow.XPosition <= xData[i])))
+                            normedData[j][i] = mmstuff.AIData[name][j][i];
+                        else
+                            normedData[j][i] = 0;
+                    }
+                }
+            }
+            List<double> integrals = Enumerable.Range(0, normedData.Count).Select(
+                    i => Enumerable.Range(0, normedData[0].Length).Select(
+                    j => normedData[i][j]).Sum()).ToList();
+
+            List<double> means = Enumerable.Range(0, normedData.Count).Select(
+                    i => Enumerable.Range(0, normedData[0].Length).Select(
+                    j => normedData[i][j]).Average()).ToList();
+
+            if (mmstuff.SwitchStates < stats.Count)
+                stats.Clear();
+
+            for(int i = 0; i < integrals.Count(); ++i)
+            {
+                if (stats.Count > i)
+                    stats[i] = new StatEntry(integrals[i], means[i]);
+                else
+                    stats.Add(new StatEntry(integrals[i], means[i]));
+            }
+
+        }
+
+        public List<double[]> NormaliseData(Dictionary<string, List<double[]>> rawData, bool gate)
         {
             if (!sourceEnabled) return new List<double[]> { };
-            if (!Normalise.Checked) return rawData[name];
-            List<double[]> normaliser = rawData[normSourceName];
             List<double[]> normedData = new List<double[]> { };
+
+
+            for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
+            {
+                normedData.Add(new double[xData.Length]);
+                for (int i = 0; i < xData.Length; ++i)
+                {
+                    if (!gate || (dataPlotXhigh.XPosition >= xData[i] && dataPlotXlow.XPosition <= xData[i]))
+                        normedData[j][i] = rawData[name][j][i];
+                    else
+                        normedData[j][i] = 0;
+                }
+            } 
+
+            if (!Normalise.Checked) return normedData;
+            List<double[]> normaliser = rawData[normSourceName];
             for (int j = 0; j < mmstuff.AIData[name].Count; ++j)
             {
                 normedData.Add(new double[xData.Length]);
                 for (int i = 0; i < xData.Length; ++i)
                 {
                     if (normaliser[j][i] != 0)
-                        normedData[j][i] = mmstuff.AIData[name][j][i] / normaliser[j][i];
+                        normedData[j][i] = normedData[j][i] / normaliser[j][i];
                     else
                         normedData[j][i] = 0;
                 }
@@ -279,5 +343,67 @@ namespace AlFHardwareControl
             sourceEnabled = sourceEnable.Checked;
         }
 
+        private void show_average_CheckedChanged(object sender, EventArgs e)
+        {
+            this.Invoke((Action)(() =>
+            {
+                for (int i = 0; i < dataGraph.Plots.Count; ++i)
+                {
+                    if (i % 2 == 0) continue;
+                    dataGraph.Plots[i].Visible = show_average.Checked;
+                }
+            }));
+        }
+
+        private void show_last_data_CheckedChanged(object sender, EventArgs e)
+        {
+            this.Invoke((Action)(() =>
+            {
+                for (int i = 0; i < dataGraph.Plots.Count; ++i)
+                {
+                    if (i % 2 == 1) continue;
+                    dataGraph.Plots[i].Visible = show_last_data.Checked;
+                }
+            }));
+        }
+
+        private double xlow = 0;
+        private double xhigh = 10;
+        private void dataPlotLimitsAfterMove(object sender, NationalInstruments.UI.AfterMoveXYCursorEventArgs e)
+        {
+            if (mmstuff == null) return;
+            if (dataPlotXlow.XPosition == xlow && dataPlotXhigh.XPosition == xhigh)
+                return;
+
+            xlow = dataPlotXlow.XPosition;
+            xhigh = dataPlotXhigh.XPosition;
+
+            UpdateScan();
+            mmstuff.ReDrawScanResults();
+            UpdateStats(true);
+        }
+
+        public class StatEntry
+        {
+            public StatEntry(double integral, double mean)
+            {
+                Integral = integral;
+                Mean = mean;
+            }
+            public double Integral { get; set; }
+            public double Mean { get; set; }
+
+        }
+
+        private BindingList<StatEntry> stats = new BindingList<StatEntry> { };
+        public BindingList<StatEntry> Stats
+        {
+            get
+            {
+                return stats;
+            }
+        }
     }
+
+
 }

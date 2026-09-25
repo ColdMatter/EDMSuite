@@ -35,7 +35,7 @@ clr.AddReference("System.Xml")
 
 # Import the SharedCode DLLs, assumes you are executing this function from within
 # the EDMSuite Git repository
-clr.AddReference(Path.GetFullPath(EDMSuiteFolder + r"\SEDM4\Libraries\SharedCode.dll"))
+clr.AddReference(Path.GetFullPath(EDMSuiteFolder + r"/SEDM4/Libraries/SharedCode.dll"))
 import System
 import Data
 
@@ -81,6 +81,16 @@ def ProcessAllScansInZippedXML(Filename):
         index = index + 1
     return TimeOn, DataOn, TimeOff, DataOff, ScanParameters, TimestampsOn, TimestampsOff
     
+def GetAnalogData(Scan):
+    PointsPerScan=len(Scan.Points)
+    Analogs=np.zeros((PointsPerScan))
+    for i in range(PointsPerScan):
+        Analogs[i]=np.array(Scan.Points[i].Analogs[0])
+    return Analogs
+
+def GetMultipleAnalogData(Scan):
+    return np.array([point.Analogs for point in Scan.Points])
+    # Returns shape (PointsPerScan, NumChannels)
 
 def ProcessScan(Scan):
     """Processes a scan object and returns the TOFs, the scan parameters and the 
@@ -248,22 +258,38 @@ def GetShotTimestamps(Scan):
 
 #%% Functions for the TOF
 def BgSubTOF(Data,Time,StartBg,StopBg):
-    Indi= (Time*1000>StartBg) & (Time*1000 < StopBg)
+    Indi= (Time*1000>=StartBg) & (Time*1000 < StopBg)
     BgMean=np.mean(Data[Indi,:,:,:],axis=0)
     return (Data-BgMean)
 
 def GetCounts(Data,Time,Start,Stop):
-    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    Indi = (Time*1000>=Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
     Counts = np.sum(Data[Indi,:,:], axis=0)
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
+    TimeWindowPoints = np.sum(Indi)
+    return Counts, TimeWindowPoints
+
+def GetInterpolatedCounts(Data, Time, Start, Stop):
+    """Here I'm assuming the PMT voltages that are recorded are the instantaneous voltages at the
+      time points given by Time. If the Start and Stop times are not exactly in Time, 
+      I will interpolate the PMT voltages at those time points."""
+    TimeStep = (Time[1] - Time[0])*1000
+    IndStart = np.searchsorted(Time*1000, Start)
+    IndStop = np.searchsorted(Time*1000, Stop)
+    FractionStart = (Start-Time[IndStart-1]*1000)/TimeStep
+    FractionStop = (Stop-Time[IndStop-1]*1000)/TimeStep
+    MiddleCounts = np.sum(Data[IndStart+1:IndStop-1,:,:], axis=0)
+    StartCounts = Data[IndStart-1,:,:]*(1-FractionStart)**2/2 + Data[IndStart,:,:]*((1-FractionStart**2)/2+0.5)
+    StopCounts = Data[IndStop-1,:,:]*((1-(1-FractionStop)**2)/2+0.5) + Data[IndStop,:,:]*FractionStop**2/2
+    Counts = StartCounts + MiddleCounts + StopCounts
+    TimeWindow = Stop - Start
     return Counts, TimeWindow
 
 def GetCountsSPP(Data,Time,Start,Stop):
-    Indi = (Time*1000>Start) & (Time*1000 <Stop)
+    Indi = (Time*1000>=Start) & (Time*1000 <Stop)
     IndiArray = np.where(Indi)[0]
     RawCounts = np.sum(Data[Indi,:,:,:], axis=0)
-    
     MeanCounts = np.mean(RawCounts,axis=1)
     StderrCounts = np.std(RawCounts,axis=1)/np.sqrt(RawCounts.shape[1])
     TimeWindow = Time[IndiArray[-1]]-Time[IndiArray[0]]
@@ -286,18 +312,36 @@ def GetSignalwithBackgroundSubtractionSPP(Data,Time,StartSig,StopSig,StartBg,Sto
     return [MeanSignal, StderrSignal, BackgroundScaled]
 
 def GetBinnedSignal(Data,Time,BinDuration,StartSig,StopSig,StartBg,StopBg):
-    [Background, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
-    NrBins = int(np.floor((StopSig-StartSig)/BinDuration))
+    [BackgroundTot, BgTimeWindow] = GetCounts(Data,Time,StartBg,StopBg)
+    NrBins = int(np.round((StopSig-StartSig)/BinDuration))
     BinStarts = StartSig + np.arange(NrBins)*BinDuration
     BinStops = BinStarts + BinDuration
     Signal = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
+    Background = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
     for i in range(NrBins):
         Start = BinStarts[i]
         Stop = BinStops[i]
         [SignalAndBg, SignalTimeWindow] = GetCounts(Data,Time,Start,Stop)
-        BackgroundScaled = Background*SignalTimeWindow/BgTimeWindow
+        BackgroundScaled = BackgroundTot*SignalTimeWindow/BgTimeWindow
+        Background[i,:,:] = BackgroundScaled
         Signal[i,:,:] = SignalAndBg - BackgroundScaled
-    return [Signal, BackgroundScaled,BinStarts, BinStops]
+    return [Signal, Background, BinStarts, BinStops]
+
+def GetInterpolatedBinnedSignal(Data,Time,BinDuration,StartSig,StopSig,StartBg,StopBg):
+    [BackgroundTot, BgTimeWindow] = GetInterpolatedCounts(Data,Time,StartBg,StopBg)
+    NrBins = int(np.round((StopSig-StartSig)/BinDuration))
+    BinStarts = StartSig + np.arange(NrBins)*BinDuration
+    BinStops = BinStarts + BinDuration
+    Signal = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
+    Background = np.full((NrBins, Data.shape[1], Data.shape[2]), np.nan)
+    for i in range(NrBins):
+        Start = BinStarts[i]
+        Stop = BinStops[i]
+        [SignalAndBg, SignalTimeWindow] = GetInterpolatedCounts(Data,Time,Start,Stop)
+        BackgroundScaled = BackgroundTot*SignalTimeWindow/BgTimeWindow
+        Background[i,:,:] = BackgroundScaled
+        Signal[i,:,:] = SignalAndBg - BackgroundScaled
+    return [Signal, Background, BinStarts, BinStops]
 
 def DownsampleTOF(Data, Time, NrSamples):
     NrRows = int(len(Data)/NrSamples)
@@ -309,7 +353,7 @@ def DownsampleTOF(Data, Time, NrSamples):
 
 def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
     # Assumption is that the background is flat over time
-    Indi = (Time*1000>StartBg) & (Time*1000 <StopBg)
+    Indi = (Time*1000>=StartBg) & (Time*1000 <StopBg)
     Background = Data[Indi]
     Median = np.median(Background)
     Sigma = ScaledMAD(Background)
@@ -319,17 +363,360 @@ def IdentifyPMTspikesInBackground(Data,Time,StartBg,StopBg):
 
 #%% Functions for CCD images
 
-def read_tiff(path):
+def ReadTiff(File):
     """
     path - Path to the multipage-tiff file.
     Returns an array
     """
-    img = Image.open(path)
+    img = Image.open(File)
     images = []
     for i in range(img.n_frames):
         img.seek(i)
         images.append(np.array(img))
     return np.array(images)
+
+def ProcessCCDimagesWithIntervals(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings, AveragingIntervals):
+
+    # Read in and reshape the CCD images according to the meta data in the PMT file
+    _, _, _, DataOff, Setpoint, _, _ = ProcessAllScansInZippedXML(FilePMT)
+    Scan = ReadAverageScanInZippedXML(FilePMT)
+    NrPoints = len(Setpoint)
+    ShotNr = range(NrPoints)
+    ThereAreOffShots = not (np.shape(DataOff)[0]==0)
+    if ThereAreOffShots:
+        OnOff = 2
+    else:    
+        OnOff = 1
+    GainA = Scan.GetSetting("shot","ccd1Gain")
+    CCDAsettings['Gain'] = GainA
+    GainB = Scan.GetSetting("shot","ccd2Gain")
+    CCDBsettings['Gain'] = GainB
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    CCDimages = ReadTiff(FileCCDA)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        AOff = Shots[1::OnOff,:,:,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotons(AOn[j,i,:,:], CCDAsettings)
+    if ThereAreOffShots:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
+        
+    # Process CCD B
+    print("Processing CCD B images...")
+    CCDimages = ReadTiff(FileCCDB)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        BOff = Shots[1::OnOff,:,:,:]
+    else:
+        BOff = np.array([])
+    
+    NrIntervals = np.shape(AveragingIntervals)[0]
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotons(BOn[j,i,:,:], CCDBsettings)
+    if ThereAreOffShots:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
+    
+    FramesAOn = np.full((NrFramesPerShot,NrIntervals,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+    FramesBOn = np.full((NrFramesPerShot,NrIntervals,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(NrIntervals):
+            Indi = (ShotNr>=AveragingIntervals[j][0]) & (ShotNr< AveragingIntervals[j][1])
+            FrameA = RemoveCCDoffsetCounts(np.mean(AOn[Indi,i,:,:], axis=0), CCDAsettings)
+            FrameB = RemoveCCDoffsetCounts(np.mean(BOn[Indi,i,:,:], axis=0), CCDBsettings)
+            FramesAOn[i,j,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+            FramesBOn[i,j,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+
+    if ThereAreOffShots:
+        FramesAOff = np.full((NrFramesPerShot,NrIntervals,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+        FramesBOff = np.full((NrFramesPerShot,NrIntervals,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+        for i in range(NrFramesPerShot):
+            for j in range(NrIntervals):
+                Indi = (ShotNr>=AveragingIntervals[j][0]) & (ShotNr< AveragingIntervals[j][1])
+                FrameA = RemoveCCDoffsetCounts(np.mean(AOff[Indi,i,:,:], axis=0), CCDAsettings)
+                FrameB = RemoveCCDoffsetCounts(np.mean(BOff[Indi,i,:,:], axis=0), CCDBsettings)
+                FramesAOff[i,j,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+                FramesBOff[i,j,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+    else:
+        FramesAOff = np.array([])
+        FramesBOff = np.array([])
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons, FramesAOn, FramesAOff, FramesBOn, FramesBOff
+
+def ProcessCCDimages(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings):
+
+    # Read in and reshape the CCD images according to the meta data in the PMT file
+    _, _, _, DataOff, Setpoint, _, _ = ProcessAllScansInZippedXML(FilePMT)
+    Scan = ReadAverageScanInZippedXML(FilePMT)
+    NrPoints = len(Setpoint)
+    ShotNr = range(NrPoints)
+    ThereAreOffShots = not (np.shape(DataOff)[0]==0)
+    if ThereAreOffShots:
+        OnOff = 2
+    else:    
+        OnOff = 1
+    GainA = Scan.GetSetting("shot","ccd1Gain")
+    CCDAsettings['Gain'] = GainA
+    GainB = Scan.GetSetting("shot","ccd2Gain")
+    CCDBsettings['Gain'] = GainB
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    CCDimages = ReadTiff(FileCCDA)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        AOff = Shots[1::OnOff,:,:,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotons(AOn[j,i,:,:], CCDAsettings)
+    if ThereAreOffShots:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
+        
+    # Process CCD B
+    print("Processing CCD B images...")
+    CCDimages = ReadTiff(FileCCDB)
+    NrFramesPerShot = int(np.shape(CCDimages)[0]/NrPoints/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:,:,:]
+    if ThereAreOffShots:
+        BOff = Shots[1::OnOff,:,:,:]
+    else:
+        BOff = np.array([])
+    
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotons(BOn[j,i,:,:], CCDBsettings)
+    if ThereAreOffShots:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
+    
+    FramesAOn = np.full((NrFramesPerShot,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+    FramesBOn = np.full((NrFramesPerShot,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+    for i in range(NrFramesPerShot):
+        FrameA = RemoveCCDoffsetCounts(np.mean(AOn[:,i,:,:], axis=0), CCDAsettings)
+        FrameB = RemoveCCDoffsetCounts(np.mean(BOn[:,i,:,:], axis=0), CCDBsettings)
+        FramesAOn[i,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+        FramesBOn[i,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+
+    if ThereAreOffShots:
+        FramesAOff = np.full((NrFramesPerShot,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+        FramesBOff = np.full((NrFramesPerShot,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+        for i in range(NrFramesPerShot):
+            FrameA = RemoveCCDoffsetCounts(np.mean(AOff[:,i,:,:], axis=0), CCDAsettings)
+            FrameB = RemoveCCDoffsetCounts(np.mean(BOff[:,i,:,:], axis=0), CCDBsettings)
+            FramesAOff[i,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+            FramesBOff[i,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+    else:
+        FramesAOff = np.array([])
+        FramesBOff = np.array([])
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons, FramesAOn, FramesAOff, FramesBOn, FramesBOff
+
+def ProcessCCDimagesWithoutPMT(FileCCDA, FileCCDB, CCDAsettings, CCDBsettings, OnOff, BurstNumber):
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    CCDimages = ReadTiff(FileCCDA)
+    NrFramesPerShot = BurstNumber
+    NrPoints = int(np.shape(CCDimages)[0]/NrFramesPerShot/OnOff)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:,:,:]
+    if OnOff == 2:
+        AOff = Shots[1::OnOff,:,:,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotons(AOn[j,i,:,:], CCDAsettings)
+    if OnOff == 2:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotons(AOff[j,i,:,:], CCDAsettings)
+        
+    # Process CCD B
+    print("Processing CCD B images...")
+    CCDimages = ReadTiff(FileCCDB)
+    Shots = np.reshape(CCDimages, (int(NrPoints*OnOff), NrFramesPerShot, np.shape(CCDimages)[1], np.shape(CCDimages)[2]) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:,:,:]
+    if OnOff == 2:
+        BOff = Shots[1::OnOff,:,:,:]
+    else:
+        BOff = np.array([])
+    
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotons(BOn[j,i,:,:], CCDBsettings)
+    if OnOff == 2:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotons(BOff[j,i,:,:], CCDBsettings)
+    
+    FramesAOn = np.full((NrFramesPerShot,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+    FramesBOn = np.full((NrFramesPerShot,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+    for i in range(NrFramesPerShot):
+        FrameA = RemoveCCDoffsetCounts(np.mean(AOn[:,i,:,:], axis=0), CCDAsettings)
+        FrameB = RemoveCCDoffsetCounts(np.mean(BOn[:,i,:,:], axis=0), CCDBsettings)
+        FramesAOn[i,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+        FramesBOn[i,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+
+    if OnOff == 2:
+        FramesAOff = np.full((NrFramesPerShot,np.shape(AOn)[2],np.shape(AOn)[3]), np.nan)
+        FramesBOff = np.full((NrFramesPerShot,np.shape(BOn)[2],np.shape(BOn)[3]), np.nan)
+        for i in range(NrFramesPerShot):
+            FrameA = RemoveCCDoffsetCounts(np.mean(AOff[:,i,:,:], axis=0), CCDAsettings)
+            FrameB = RemoveCCDoffsetCounts(np.mean(BOff[:,i,:,:], axis=0), CCDBsettings)
+            FramesAOff[i,:,:] = ConvertCountsToPhotons(FrameA, CCDAsettings)
+            FramesBOff[i,:,:] = ConvertCountsToPhotons(FrameB, CCDBsettings)
+    else:
+        FramesAOff = np.array([])
+        FramesBOff = np.array([])
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons, FramesAOn, FramesAOff, FramesBOn, FramesBOff
+
+def ProcessCCDcsv(FileCCDA, FileCCDB, FilePMT, CCDAsettings, CCDBsettings):
+
+    # Read in and reshape the CCD images according to the meta data in the PMT file
+    _, _, _, DataOff, Setpoint, _, _ = ProcessAllScansInZippedXML(FilePMT)
+    Scan = ReadAverageScanInZippedXML(FilePMT)
+    NrPoints = len(Setpoint)
+    ThereAreOffShots = not (np.shape(DataOff)[0]==0)
+    if ThereAreOffShots:
+        OnOff = 2
+    else:    
+        OnOff = 1
+    GainA = Scan.GetSetting("shot","ccd1Gain")
+    CCDAsettings['Gain'] = GainA
+    GainB = Scan.GetSetting("shot","ccd2Gain")
+    CCDBsettings['Gain'] = GainB
+
+    # Process CCD A
+    print("Processing CCD A images...")
+    df = pd.read_csv(FileCCDA)
+    CCDcounts = df["Total Counts/frame"].to_numpy()
+    NrFramesPerShot = Scan.GetSetting("shot","ccdNBurstFrames")
+    Shots = np.reshape(CCDcounts, (int(NrPoints*OnOff), NrFramesPerShot))
+
+    # For each shot, calculate the integrated counts
+    AOn = Shots[0::OnOff,:]
+    if ThereAreOffShots:
+        AOff = Shots[1::OnOff,:]
+    else:
+        AOff = np.array([])
+    
+    AOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    AOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(np.shape(AOn)[1]):
+        for j in range(np.shape(AOn)[0]):
+            AOnPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(AOn[j,i], CCDAsettings)
+    if ThereAreOffShots:
+        for i in range(np.shape(AOff)[1]):
+            for j in range(np.shape(AOff)[0]):
+                AOffPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(AOff[j,i], CCDAsettings)
+        
+    # Process CCD B
+    print("Processing CCD B images...")
+    dfB = pd.read_csv(FileCCDB)
+    CCDcounts = dfB[" Total Counts/frame"].to_numpy()
+    Shots = np.reshape(CCDcounts, (int(NrPoints*OnOff), NrFramesPerShot) )
+
+    # For each shot, calculate the integrated counts
+    BOn = Shots[0::OnOff,:]
+    if ThereAreOffShots:
+        BOff = Shots[1::OnOff,:]
+    else:
+        BOff = np.array([])
+    
+    BOnPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    BOffPhotons = np.full((NrFramesPerShot,NrPoints), np.nan)
+    for i in range(NrFramesPerShot):
+        for j in range(np.shape(BOn)[0]):
+            BOnPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(BOn[j,i], CCDBsettings)
+    if ThereAreOffShots:
+        for i in range(NrFramesPerShot):
+            for j in range(np.shape(BOff)[0]):
+                BOffPhotons[i,j] = GetCCDphotonsFromIntegratedCounts(BOff[j,i], CCDBsettings)
+
+    return AOnPhotons, AOffPhotons, BOnPhotons, BOffPhotons
+
+def RemoveCCDoffsetCounts(FrameRaw, CCDsettings):
+    Frame = FrameRaw - CCDsettings["Offset"]
+    return Frame
+
+def RemoveCCDoffsetCountsFromIntegratedCounts(CountRaw, CCDsettings):
+    Count = CountRaw - CCDsettings["Offset"]*128*128
+    return Count
+
+
+def GetCCDphotons(FrameRaw, CCDsettings):
+    # Calculate the counts in a CCD frame by summing over all pixels
+    Frame = RemoveCCDoffsetCounts(FrameRaw, CCDsettings)
+    Counts = np.sum(Frame)
+    Photons = ConvertCountsToPhotons(Counts, CCDsettings)
+    return Photons
+
+def GetCCDphotonsFromIntegratedCounts(CountRaw, CCDsettings):
+    # Calculate the counts in a CCD frame by summing over all pixels
+    Counts = RemoveCCDoffsetCountsFromIntegratedCounts(CountRaw, CCDsettings)
+    Photons = ConvertCountsToPhotons(Counts, CCDsettings)
+    return Photons
+
+def ConvertCountsToPhotons(Counts, CCDsettings):
+    QE = CCDsettings['QuantumEfficiency']
+    AnaDigi = CCDsettings['AnalogToDigi']
+    TFilter = CCDsettings['FilterTransmission']
+    Tlens = CCDsettings['LensTransmission']
+    EMGainSlope = CCDsettings['EMGainSlope']
+    Gain = CCDsettings['Gain']
+    Photons = Counts/(TFilter*Tlens*AnaDigi*QE*EMGainSlope*Gain)
+    return Photons
+
 
 
 #%% Functions for Blocks
@@ -555,6 +942,17 @@ def ExtractdBfieldWaveformFromBlock(Block):
             BfieldPattern[i] = -dBmagnitude
     return BfieldPattern
 
+def ExtractStirapAOMWaveformFromBlock(Block):
+    Bits = Block.Config.GetModulationByName('StirapAOM').Waveform.Bits
+    TrueValue = Block.Config.Settings["StirapRFfreqTrue"]
+    FalseValue = Block.Config.Settings["StirapRFfreqFalse"]
+    StirapPattern = np.full((len(Bits)),np.nan)
+    for i in range(len(Bits)):
+        if Bits[i] == True:
+            StirapPattern[i] = TrueValue
+        else:
+            StirapPattern[i] = FalseValue
+    return StirapPattern
 
 def GetDetectorNames(Block):
     DetectorNamesList = []
@@ -571,17 +969,18 @@ def ExtractTOFsfromBlock(Block, TOFnumber):
         Data[PointNumber,:] = np.array(Block.Points[PointNumber].Shot.TOFs[TOFnumber].Data)*Factor
     return Data
 
-def GetTOFsFromBlock(Block, TOFnumber):
+def GetTOFsFromBlock(Block, TOFnumbers):
     """Returns the TOFs of a block. The datasets are On/Off shots and for each 
     detector (TOFs in one shot)"""
     SampleRate = Block.Config.Settings["clockFrequency"]
     NrShots = len(Block.Points)
     TOFlength = len(Block.Points[0].Shot.TOFs[0].Data)
     Time = np.array(Block.Points[0].Shot.TOFs[0].Times)/SampleRate
-    Data = np.empty((TOFlength, NrShots, 1))*np.nan
+    Data = np.empty((TOFlength, NrShots, len(TOFnumbers)))*np.nan
     for indPoint in range(NrShots):
-        DataTemp = np.array(Block.Points[indPoint].Shot.TOFs[TOFnumber].Data)
-        Data[:,indPoint,0] = DataTemp
+        for indTOF in range(len(TOFnumbers)):
+            DataTemp = np.array(Block.Points[indPoint].Shot.TOFs[TOFnumbers[indTOF]].Data)
+            Data[:,indPoint,indTOF] = DataTemp
     return Time, Data
 
 def GetShotTimestampsFromBlock(Block):
@@ -626,7 +1025,10 @@ def GetBSwitchState(Block):
     return SwitchState
 
 def GetSettleTime(Block):
-    SettleTime = Block.Config.Settings["eRampUpDelay"]
+    try:
+        SettleTime = Block.Config.Settings["BehlkeSettleTime"]
+    except:
+        SettleTime = Block.Config.Settings["eRampUpDelay"]
     return SettleTime
     
 
@@ -707,3 +1109,85 @@ def WeightedMean(x, xerr):
 
 def Gauss(x, a, mu, sigma):
     return a*np.exp(-(x-mu)**2/(2*sigma**2))
+
+def GaussianWithOffset(x, A, x0, sigma, y0):
+        return A * np.exp(-0.5 * ((x - x0) / sigma) ** 2) + y0
+
+def GaussianWithOffsetDerivative(x, A, x0, sigma, y0):
+        return -A * (x - x0) / (sigma ** 2) * np.exp(-0.5 * ((x - x0) / sigma) ** 2)
+
+def StraightLine(x, Slope, Intercept):
+    return Slope*x + Intercept
+
+def StraightLineThroughOrigin(x, Slope):
+    return Slope*x
+
+def ShotNoiseAsymmetry(PhotonF1, PhotonF0):
+    sF1= np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return Asy, sAsy
+
+def ShotNoiseAsymmetryWithBackground(PhotonF1, PhotonF0, BackgroundF1, BackgroundF0):
+    sF1 = np.sqrt(PhotonF1 + BackgroundF1*2)
+    sF0 = np.sqrt(PhotonF0 + BackgroundF0*2) 
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return Asy, sAsy
+
+def NoiseEstimatePMT(PhotonF1, PhotonF0, BackgroundF1, BackgroundF0, RatioBinVsBg):
+    Ffactor = 1.2
+    Fcycling = 1.3
+    sF1 = np.sqrt(PhotonF1*Fcycling + BackgroundF1*(1+RatioBinVsBg))*np.sqrt(Ffactor)
+    sF0 = np.sqrt(PhotonF0*Fcycling + BackgroundF0*(1+RatioBinVsBg))*np.sqrt(Ffactor)
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return Asy, sAsy
+
+def NoiseEstimateFromAsymmetryPMT(Asymmetry, NphotonTotal, BackgroundF1, BackgroundF0, RatioBinVsBg):
+    Ffactor = 1.376
+    Fcycling = 1.3**2
+    PhotonF1 = NphotonTotal * (1 - Asymmetry) / 2
+    PhotonF0 = NphotonTotal * (1 + Asymmetry) / 2
+    sF1 = np.sqrt(PhotonF1*Fcycling + BackgroundF1*(1+RatioBinVsBg))*np.sqrt(Ffactor)
+    sF0 = np.sqrt(PhotonF0*Fcycling + BackgroundF0*(1+RatioBinVsBg))*np.sqrt(Ffactor)
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    return sAsy
+
+
+def ShotNoiseFromAsymmetry(Asymmetry, NphotonTotal):
+    PhotonF1 = NphotonTotal * (1 - Asymmetry) / 2
+    PhotonF0 = NphotonTotal * (1 + Asymmetry) / 2
+    sF1 = np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return sAsy
+
+def ShotNoiseFromAsymmetryWithBackground(Asymmetry, NphotonTotal, BackgroundF1, BackgroundF0):
+    PhotonF1 = NphotonTotal * (1 - Asymmetry) / 2
+    PhotonF0 = NphotonTotal * (1 + Asymmetry) / 2
+    sF1 = np.sqrt(PhotonF1 + BackgroundF1*2)
+    sF0 = np.sqrt(PhotonF0 + BackgroundF0*2) 
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2)
+    
+    return sAsy
+
+
+def ShotNoiseAsymmetryWithCorrelation(PhotonF1, PhotonF0, corr):
+    sF1= np.sqrt(PhotonF1)
+    sF0 = np.sqrt(PhotonF0) 
+
+    Asy = (PhotonF0 - PhotonF1) / (PhotonF0 + PhotonF1)
+    sAsy = 2 / (PhotonF0 + PhotonF1)**2 * np.sqrt(PhotonF0**2  * sF1**2 + PhotonF1**2 * sF0**2 - 2*corr*sF0*sF1*PhotonF0*PhotonF1)
+    
+    return Asy, sAsy
+

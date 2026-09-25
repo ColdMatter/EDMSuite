@@ -36,7 +36,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chirp.cs" />
+    <Compile Include="CameraTest1shot.cs" />
+    <Compile Include="CameraTest.cs" />
+    <Compile Include="BasicYAGFireAOMOnOff.cs" />
+    <Compile Include="ChirpOnOff.cs" />
+    <Compile Include="ChirpVecsel1OnOff.cs" />
+    <Compile Include="ChirpVecsel3OnOff.cs" />
+    <Compile Include="ChirpVecsel3.cs" />
+    <Compile Include="WhiteLight.cs" />
+    <Compile Include="PumpProbeVelOnOffSingle.cs" />
+    <Compile Include="PumpProbeVelOnOff.cs" />
+    <Compile Include="PumpProbeVel.cs" />
     <Compile Include="BasicYAGFireOnOff.cs" />
     <Compile Include="BasicYAGFire MOT_PMT_ON_OFF.cs" />
     <Compile Include="DispenserLoadingOnOff.cs" />
@@ -49,6 +59,11 @@
     <Compile Include="DispenserLoading.cs" />
     <Compile Include="EmptyPattern.cs" />
     <Compile Include="BasicYAGFire.cs" />
+    <Compile Include="AOM_alignment.cs" />
+    <Compile Include="ChirpSlowOnOff.cs" />
+    <Compile Include="WhiteLightQ1OnOff.cs" />
+    <Compile Include="WhiteLightQ1DepletionOnOff _Align.cs" />
+    <Compile Include="WhiteLightQ1DepletionOnOff.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAQ\DAQ.csproj">

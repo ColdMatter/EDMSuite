@@ -18,10 +18,14 @@ namespace ScanMaster.Acquire.Patterns
 		//	private const int FLASH_PULSE_LENGTH = 100;
 		private const int Q_PULSE_LENGTH = 15;
 		private const int DETECTOR_TRIGGER_LENGTH = 20;
+		private const int CAMERA_TRIGGER_LENGTH = 10000;
 
 		public int ShotSequence(int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
-			int valvePulseLength, int valveToQ, int flashToQ, int flashToQ2, int flashlampPulseLength, int ShutterPulseLength, int delayToDetectorTrigger,
-			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int switchLineDelay, int shutteroffdelay, int shutter1offdelay, int shutterslowdelay, int ShutterslowPulseLength, bool modulation)
+			int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
+			int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0,
+			int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay,
+			int v3delaytime, int repumpDuration, int repumpDelay, int vacShutterDelay, int vacShutterDuration, int v0chirpTriggerDelay, int v0chirpTriggerDuration,
+			int cameraTriggerDelay, int cameraBackgroundDelay, int offShotSlowingDuration)
 		{
 			int time;
 			if (padStart == 0)
@@ -37,14 +41,15 @@ namespace ScanMaster.Acquire.Patterns
 				// if we're modulating, do the off shot, otherwise only do the on shot
 				if (i==0)//e.g 1,3
 				{
-					int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
-					// first the pulse with the switch line high
-					Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
-					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector");// how does this work in terms of time - it does though - time has been added from previosu
-					Pulse(time, shutter1offdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber);
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
+						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime,
+						repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, true, offShotSlowingDuration);
 
-					Pulse(time, shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);
-					Pulse(time, ShutterslowPulseLength + shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);
+
+					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector",
+						vacShutterDelay, vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay, true);
 
 					time += flashlampPulseInterval;
 					for (int p = 0; p < padShots; p++)
@@ -55,11 +60,16 @@ namespace ScanMaster.Acquire.Patterns
 				}
 				if (modulation==true && i==2||modulation==false && i==1)
 				{
-					Pulse(time, -800, shutter1offdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
-					Pulse(time, shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
-					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector");
-					Pulse(time, ShutterslowPulseLength + shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);//seems to turn off at the next pattern needs to be negative not sure why
-																																														 //Pulse(startTime, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
+						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime,
+						repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, true, offShotSlowingDuration);
+
+
+					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detector",
+						vacShutterDelay, vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay, false);
+					//Pulse(startTime, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
 
 					time += flashlampPulseInterval;
 					for (int p = 0; p < padShots; p++)
@@ -72,14 +82,15 @@ namespace ScanMaster.Acquire.Patterns
 
 				if (modulation == true && i == 1)
 				{
-					int switchChannel = PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine);
-					// first the pulse with the switch line high
-					Pulse(time, valveToQ - switchLineDelay, ShutterPulseLength, switchChannel); // This is just a digital output ttl. We'll use this as the trigger for one of the shutters - 
-					Shot2(time, valvePulseLength, valveToQ, flashToQ2, flashlampPulseLength, delayToDetectorTrigger, "detectorprime");// how does this work in terms of time - it does though - time has been added from previosu
-					Pulse(time, shutter1offdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVEoff"]).BitNumber);
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
+						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime,
+						repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, false, offShotSlowingDuration);
 
-					Pulse(time, shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);
-					Pulse(time, ShutterslowPulseLength + shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);
+
+					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detectorprime",
+						vacShutterDelay, vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay, true);
 
 					time += flashlampPulseInterval;
 					for (int p = 0; p < padShots; p++)
@@ -92,11 +103,15 @@ namespace ScanMaster.Acquire.Patterns
 
 				if (modulation == true && i == 3)
                 {
-					Pulse(time, -800, shutter1offdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
-					Pulse(time, shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//think there something up with this one added time BQ - want shutter to open before the shot fires 9 what about valve to q
-					Shot2(time, valvePulseLength, valveToQ, flashToQ2, flashlampPulseLength, delayToDetectorTrigger, "detectorprime");
-					Pulse(time, ShutterslowPulseLength + shutterslowdelay, ShutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2off"]).BitNumber);//seems to turn off at the next pattern needs to be negative not sure why
-																																														 //Pulse(startTime, 0, shutteroffdelay, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow"]).BitNumber);//this line seems to not work
+					pattern(time, startTime, shots, padShots, padStart, flashlampPulseInterval,
+						valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, shutterPulseLength, delayToDetectorTrigger,
+						ttlSwitchPort, ttlSwitchLine, switchLineDuration, shutteroffdelay, shutterslowdelay, DurationV0,
+						shutterV1delay, shutterV2delay, DurationV2, DurationV1, modulation, switchLineDelay, shutter1offdelay, v3delaytime,
+						repumpDuration, repumpDelay, v0chirpTriggerDelay, v0chirpTriggerDuration, false, offShotSlowingDuration);
+
+
+					Shot(time, valvePulseLength, valveToQ, flashToQ, flashlampPulseLength, delayToDetectorTrigger, "detectorprime",
+						vacShutterDelay, vacShutterDuration, padStart, cameraTriggerDelay, cameraBackgroundDelay, false);
 
 					time += flashlampPulseInterval;
 					for (int p = 0; p < padShots; p++)
@@ -118,65 +133,115 @@ namespace ScanMaster.Acquire.Patterns
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
 		}
 
-		public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int delayToDetectorTrigger, string detectorTriggerSource)
-		{
+		public int Shot(int startTime, int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int
+			delayToDetectorTrigger, string detectorTriggerSource, int vacShutterDelay, int vacShutterDuration, int padStart,
+			int cameraTriggerDelay, int cameraBackgroundDelay, bool yagON)
+		{   // operations that happens in both on and off shots. The detector trigger changes its trigger source for di
 			int time = 0;
 			int tempTime = 0;
 
+
+			if (tempTime > time) time = tempTime;
+			//Vacuum Shutter
+			tempTime = Pulse(startTime - padStart, valveToQ + vacShutterDelay, vacShutterDuration,
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["vacuumShutter"]).BitNumber);
+			if (tempTime > time) time = tempTime;
 			// valve pulse
 			tempTime = Pulse(startTime, 0, valvePulseLength,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["valve"]).BitNumber);
 			if (tempTime > time) time = tempTime;
-			// Flash pulse
-			tempTime = Pulse(startTime, valveToQ - flashToQ, flashlampPulseLength,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Q pulse
-			tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Scope trigger pulse
-			tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["scopetrigger"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Detector trigger
+
+			if (yagON)
+			{
+				// Flash pulse
+				tempTime = Pulse(startTime, valveToQ - flashToQ, flashlampPulseLength,
+					((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash"]).BitNumber);
+				if (tempTime > time) time = tempTime;
+				// Q pulse
+				tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
+					((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q"]).BitNumber);
+				if (tempTime > time) time = tempTime;
+
+			}
+
+			// Detector trigger, PMT data acquisition trigger
 			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
 				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
 			if (tempTime > time) time = tempTime;
 
+			// Dector trigger, Camera enabler trigger: enable the camera data acquisition trigger
+			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, CAMERA_TRIGGER_LENGTH,
+			((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameraEnablerTrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
+
+			// Camera trigger
+			tempTime = Pulse(startTime, cameraTriggerDelay + valveToQ, CAMERA_TRIGGER_LENGTH,
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
+
+			// Camera background trigger
+			tempTime = Pulse(startTime, cameraBackgroundDelay + valveToQ, CAMERA_TRIGGER_LENGTH,    // Uncommented by Michail, 26/11/2024
+				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["cameratrigger"]).BitNumber);
+			if (tempTime > time) time = tempTime;
 
 			return time;
 		}
+		
 
-		public int Shot2(int startTime, int valvePulseLength, int valveToQ, int flashToQ2, int flashlampPulseLength, int delayToDetectorTrigger, string detectorTriggerSource)
+		public void pattern(int time, int startTime, int shots, int padShots, int padStart, int flashlampPulseInterval,
+	int valvePulseLength, int valveToQ, int flashToQ, int flashlampPulseLength, int shutterPulseLength, int delayToDetectorTrigger,
+	int ttlSwitchPort, int ttlSwitchLine, int switchLineDuration, int shutteroffdelay, int shutterslowdelay, int DurationV0,
+	int shutterV1delay, int shutterV2delay, int DurationV2, int DurationV1, bool modulation, int switchLineDelay, int shutter1offdelay,
+	int v3delaytime, int repumpDuration, int repumpDelay, int v0chirpTriggerDelay, int v0chirpTriggerDuration, bool V0slowingOn, int offShotSlowingDuration)
+
 		{
-			int time = 0;
-			int tempTime = 0;
 
-			// valve pulse
-			tempTime = Pulse(startTime, 0, valvePulseLength,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["valve"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Flash pulse
-			tempTime = Pulse(startTime, valveToQ - flashToQ2, flashlampPulseLength,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["flash2"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Q pulse
-			tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["q2"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Scope trigger pulse
-			tempTime = Pulse(startTime, valveToQ, Q_PULSE_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["scopetrigger"]).BitNumber);
-			if (tempTime > time) time = tempTime;
-			// Detector trigger
-			tempTime = Pulse(startTime, delayToDetectorTrigger + valveToQ, DETECTOR_TRIGGER_LENGTH,
-				((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[detectorTriggerSource]).BitNumber);
-			if (tempTime > time) time = tempTime;
+			if (V0slowingOn)
+			{
+				///V0 Slowing
+				// The complicated pulse sequence below is to make the V0 AOM following a sequence of constantly on, quickly switch off, pulsed on, quickly switch off, constantly on, which makes it most of the time warm to reduce the warm-up effect
+				int shutterslowdelayCorrection = 570;//29Sept2024 we found an extra 0.6 ms correction is needed. This may change depends on the alignment of the V0 slowing beam relative to its shutters.
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection + DurationV0, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 4000, DurationV0 + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz Shutter. Which takes approximately 2ms (2000 us) to respond and up to 1ms to change state. 
+			}
+
+			else // Michail 24/11/2024. On the OFF shots, v0 slowing still shines but only for 30 us
+			{
+				// int offShotSlowingDuration = 10;
+				///V0 Slowing
+				// The complicated pulse sequence below is to make the V0 AOM following a sequence of constantly on, quickly switch off, pulsed on, quickly switch off, constantly on, which makes it most of the time warm to reduce the warm-up effect
+				int shutterslowdelayCorrection = 570;//29Sept2024 we found an extra 0.6 ms correction is needed. This may change depends on the alignment of the V0 slowing beam relative to its shutters.
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 3000, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber); //V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection + offShotSlowingDuration, 3000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutter2on"]).BitNumber);//V0 AOM
+				Pulse(time, shutterslowdelay + shutterslowdelayCorrection - 4000, offShotSlowingDuration + 4000, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterslow2"]).BitNumber);//V0 Uniblitz Shutter. Which takes approximately 2ms (2000 us) to respond and up to 1ms to change state. 
+			}
+
+			///V1V2V3, all the repumps are controlled by the same two Shutters		
+			//This shutter, Tom U (it was Thorlab) is responsible for the opening edge of the repump light pulse, we only care about the timing of the rising edge of this shutter itself
+			//so this shutter pulse duration is better to be much longer than the desired repump light pulse duration
+			int repumpFirstShutterDelayCorrection = -3000; //repumpOpenShutterDelayCorrection:it changed from 8.2 to 8.8 ms, which is likely due to the alignment that has changed.
+			int repumpFirsShutterDurationCorrection = -3200;
+			int repumpFirsShutterDuration = 100000;//27Sept2024, I don't think we are going to have any repump duration longer than 100 ms, so this should be pretty safe.
+			Pulse(time, repumpDelay + repumpFirstShutterDelayCorrection, repumpFirsShutterDuration + repumpFirsShutterDurationCorrection, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVE2"]).BitNumber);//This is the thorlab shutter, it only need one TTL
 
 
-			return time;
+			//Steve becomes SteveU after replacing the NewportShutter with an Uniblitz shutter, it opens with the rising edge and closes after the TTL high finishes
+			// we use this shutter to close the light pulse such that the duration of the repump light pulse is controlled. 
+			// so we care about the closing edge timing of this shutter, while the openning edge should be earlier than the other shutter
+			//Pulse(time, 0, shutterPulseLength, PatternBuilder32.ChannelFromNIPort(ttlSwitchPort, ttlSwitchLine));// one pulse open this shutter, as early as it can
+			int repumpSecondShutterDelayCorrection = -5200;
+			//Pulse(time, repumpDelay + repumpDuration + repumpSecondShutterDelayCorrection, shutterPulseLength, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVE1off"]).BitNumber);// Another pulse closes this shutter
+
+			//Again, we use this shutter to be the closing edge of the repump light, so it should be opened as early as possible
+			Pulse(time, 0, repumpDelay + repumpDuration + repumpSecondShutterDelayCorrection, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVE1off"]).BitNumber);// Another pulse closes this shutter, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["shutterSTEVE1off"]).BitNumber);// Another pulse closes this shutter							  
+			///Chirping
+			int chirpDuration = v0chirpTriggerDuration; // 10Sept2024, modified to match the profile variable name, but a bit tedious.
+			Pulse(time, v0chirpTriggerDelay, chirpDuration, ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels["v0chirpTrigger"]).BitNumber);// This is the trigger pulse for the chirp ramp signal, its duration doesn't control the chirp ramp signal on 30Aug2024
+
+
 		}
+
 
 	}
 }

@@ -31,6 +31,7 @@ namespace AlFHardwareControl
         {
             this.DataTabs = new System.Windows.Forms.TabControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cameraEnable = new System.Windows.Forms.CheckBox();
             this.saveEnable = new System.Windows.Forms.CheckBox();
             this.fixY = new System.Windows.Forms.CheckBox();
             this.fixX = new System.Windows.Forms.CheckBox();
@@ -54,14 +55,19 @@ namespace AlFHardwareControl
             this.stopScan = new System.Windows.Forms.Button();
             this.startScan = new System.Windows.Forms.Button();
             this.scanGraph = new NationalInstruments.UI.WindowsForms.ScatterGraph();
+            this.scanLowCursor = new NationalInstruments.UI.XYCursor();
             this.scatterPlot3 = new NationalInstruments.UI.ScatterPlot();
             this.xAxis1 = new NationalInstruments.UI.XAxis();
             this.yAxis1 = new NationalInstruments.UI.YAxis();
+            this.xyCursor2 = new NationalInstruments.UI.XYCursor();
             this.scatterPlot4 = new NationalInstruments.UI.ScatterPlot();
-            this.cameraEnable = new System.Windows.Forms.CheckBox();
+            this.integralView = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             this.scanCtrl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scanLowCursor)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xyCursor2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.integralView)).BeginInit();
             this.SuspendLayout();
             // 
             // DataTabs
@@ -90,6 +96,16 @@ namespace AlFHardwareControl
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
+            // 
+            // cameraEnable
+            // 
+            this.cameraEnable.AutoSize = true;
+            this.cameraEnable.Location = new System.Drawing.Point(138, 88);
+            this.cameraEnable.Name = "cameraEnable";
+            this.cameraEnable.Size = new System.Drawing.Size(98, 17);
+            this.cameraEnable.TabIndex = 9;
+            this.cameraEnable.Text = "Enable Camera";
+            this.cameraEnable.UseVisualStyleBackColor = true;
             // 
             // saveEnable
             // 
@@ -334,6 +350,9 @@ namespace AlFHardwareControl
             // 
             // scanGraph
             // 
+            this.scanGraph.Cursors.AddRange(new NationalInstruments.UI.XYCursor[] {
+            this.scanLowCursor,
+            this.xyCursor2});
             this.scanGraph.InteractionMode = ((NationalInstruments.UI.GraphInteractionModes)((((((((NationalInstruments.UI.GraphInteractionModes.ZoomX | NationalInstruments.UI.GraphInteractionModes.ZoomY) 
             | NationalInstruments.UI.GraphInteractionModes.ZoomAroundPoint) 
             | NationalInstruments.UI.GraphInteractionModes.PanX) 
@@ -346,13 +365,22 @@ namespace AlFHardwareControl
             this.scanGraph.Plots.AddRange(new NationalInstruments.UI.ScatterPlot[] {
             this.scatterPlot3,
             this.scatterPlot4});
-            this.scanGraph.Size = new System.Drawing.Size(563, 264);
+            this.scanGraph.Size = new System.Drawing.Size(359, 264);
             this.scanGraph.TabIndex = 15;
             this.scanGraph.UseColorGenerator = true;
             this.scanGraph.XAxes.AddRange(new NationalInstruments.UI.XAxis[] {
             this.xAxis1});
             this.scanGraph.YAxes.AddRange(new NationalInstruments.UI.YAxis[] {
             this.yAxis1});
+            // 
+            // scanLowCursor
+            // 
+            this.scanLowCursor.Color = System.Drawing.Color.Cyan;
+            this.scanLowCursor.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.scanLowCursor.LabelDisplay = NationalInstruments.UI.XYCursorLabelDisplay.ShowX;
+            this.scanLowCursor.Plot = this.scatterPlot3;
+            this.scanLowCursor.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.scanLowCursor.XPosition = 0D;
             // 
             // scatterPlot3
             // 
@@ -362,6 +390,15 @@ namespace AlFHardwareControl
             this.scatterPlot3.XAxis = this.xAxis1;
             this.scatterPlot3.YAxis = this.yAxis1;
             // 
+            // xyCursor2
+            // 
+            this.xyCursor2.Color = System.Drawing.Color.Crimson;
+            this.xyCursor2.HorizontalCrosshairMode = NationalInstruments.UI.CursorCrosshairMode.None;
+            this.xyCursor2.LabelDisplay = NationalInstruments.UI.XYCursorLabelDisplay.ShowX;
+            this.xyCursor2.Plot = this.scatterPlot3;
+            this.xyCursor2.PointStyle = NationalInstruments.UI.PointStyle.Cross;
+            this.xyCursor2.XPosition = 10D;
+            // 
             // scatterPlot4
             // 
             this.scatterPlot4.LineColor = System.Drawing.Color.Lime;
@@ -369,20 +406,22 @@ namespace AlFHardwareControl
             this.scatterPlot4.XAxis = this.xAxis1;
             this.scatterPlot4.YAxis = this.yAxis1;
             // 
-            // cameraEnable
+            // integralView
             // 
-            this.cameraEnable.AutoSize = true;
-            this.cameraEnable.Location = new System.Drawing.Point(138, 88);
-            this.cameraEnable.Name = "cameraEnable";
-            this.cameraEnable.Size = new System.Drawing.Size(98, 17);
-            this.cameraEnable.TabIndex = 9;
-            this.cameraEnable.Text = "Enable Camera";
-            this.cameraEnable.UseVisualStyleBackColor = true;
+            this.integralView.AllowUserToAddRows = false;
+            this.integralView.AllowUserToDeleteRows = false;
+            this.integralView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.integralView.Location = new System.Drawing.Point(980, 145);
+            this.integralView.Name = "integralView";
+            this.integralView.ReadOnly = true;
+            this.integralView.Size = new System.Drawing.Size(191, 263);
+            this.integralView.TabIndex = 16;
             // 
             // MOTMasterStuff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.integralView);
             this.Controls.Add(this.scanGraph);
             this.Controls.Add(this.scanCtrl);
             this.Controls.Add(this.groupBox1);
@@ -394,6 +433,9 @@ namespace AlFHardwareControl
             this.scanCtrl.ResumeLayout(false);
             this.scanCtrl.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scanGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scanLowCursor)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xyCursor2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.integralView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -430,5 +472,8 @@ namespace AlFHardwareControl
         private NationalInstruments.UI.ScatterPlot scatterPlot3;
         private NationalInstruments.UI.ScatterPlot scatterPlot4;
         private System.Windows.Forms.CheckBox cameraEnable;
+        private NationalInstruments.UI.XYCursor scanLowCursor;
+        private NationalInstruments.UI.XYCursor xyCursor2;
+        private System.Windows.Forms.DataGridView integralView;
     }
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 //using Newport.USBComm;//rhys removed 15/02
 //using NewFocus.Picomotor; //rhys removed 15/02
 
@@ -44,55 +45,55 @@ namespace UEDMHardwareControl
             control.Enabled = enabled;
         }
 
-        public void SetComboBoxSelectedIndex(ComboBox combobox, int index)
+        public void SetComboBoxSelectedIndex(System.Windows.Forms.ComboBox combobox, int index)
         {
             combobox.Invoke(new SetComboBoxSelectedIndexDelegate(SetComboBoxSelectedIndexHelper), new object[] { combobox, index });
         }
-        private delegate void SetComboBoxSelectedIndexDelegate(ComboBox combobox, int index);
-        private void SetComboBoxSelectedIndexHelper(ComboBox combobox, int index)
+        private delegate void SetComboBoxSelectedIndexDelegate(System.Windows.Forms.ComboBox combobox, int index);
+        private void SetComboBoxSelectedIndexHelper(System.Windows.Forms.ComboBox combobox, int index)
         {
             combobox.SelectedIndex = index;
         }
 
-        public int GetComboBoxSelectedIndex(ComboBox combobox)
+        public int GetComboBoxSelectedIndex(System.Windows.Forms.ComboBox combobox)
         {
             return (int)combobox.Invoke(new GetComboBoxSelectedIndexDelegate(GetComboBoxSelectedIndexHelper), new object[] { combobox });
         }
-        private delegate int GetComboBoxSelectedIndexDelegate(ComboBox combobox);
-        private int GetComboBoxSelectedIndexHelper(ComboBox combobox)
+        private delegate int GetComboBoxSelectedIndexDelegate(System.Windows.Forms.ComboBox combobox);
+        private int GetComboBoxSelectedIndexHelper(System.Windows.Forms.ComboBox combobox)
         {
             int index = combobox.SelectedIndex;
             return index;
         }
 
-        public int GetComboBoxTextIndex(ComboBox combobox, string str)
+        public int GetComboBoxTextIndex(System.Windows.Forms.ComboBox combobox, string str)
         {
             return (int)combobox.Invoke(new GetComboBoxTextIndexDelegate(GetComboBoxTextIndexHelper), new object[] { combobox, str });
         }
-        private delegate int GetComboBoxTextIndexDelegate(ComboBox combobox, string str);
-        private int GetComboBoxTextIndexHelper(ComboBox combobox, string str)
+        private delegate int GetComboBoxTextIndexDelegate(System.Windows.Forms.ComboBox combobox, string str);
+        private int GetComboBoxTextIndexHelper(System.Windows.Forms.ComboBox combobox, string str)
         {
             int index = combobox.FindString(str);
             return index;
         }
 
-        public string GetComboBoxSelectedItem(ComboBox combobox)
+        public string GetComboBoxSelectedItem(System.Windows.Forms.ComboBox combobox)
         {
             return (string)combobox.Invoke(new GetComboBoxSelectedItemDelegate(GetComboBoxSelectedItemHelper), new object[] { combobox });
         }
-        private delegate string GetComboBoxSelectedItemDelegate(ComboBox combobox);
-        private string GetComboBoxSelectedItemHelper(ComboBox combobox)
+        private delegate string GetComboBoxSelectedItemDelegate(System.Windows.Forms.ComboBox combobox);
+        private string GetComboBoxSelectedItemHelper(System.Windows.Forms.ComboBox combobox)
         {
             string str = (string)combobox.SelectedItem; // (string) casts the returned object to a string type variable
             return str;
         }
 
-        public void SetTextBox(TextBox box, string text)
+        public void SetTextBox(System.Windows.Forms.TextBox box, string text)
         {
             box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
         }
-        private delegate void SetTextDelegate(TextBox box, string text);
-        private void SetTextHelper(TextBox box, string text)
+        private delegate void SetTextDelegate(System.Windows.Forms.TextBox box, string text);
+        private void SetTextHelper(System.Windows.Forms.TextBox box, string text)
         {
             box.Text = text;
         }
@@ -107,12 +108,12 @@ namespace UEDMHardwareControl
             box.Text = text;
         }
 
-        public void AppendTextBox(TextBox box, string text)
+        public void AppendTextBox(System.Windows.Forms.TextBox box, string text)
         {
             box.Invoke(new AppendTextBoxDelegate(AppendTextBoxHelper), new object[] { box, text });
         }
-        private delegate void AppendTextBoxDelegate(TextBox box, string text);
-        private void AppendTextBoxHelper(TextBox box, string text)
+        private delegate void AppendTextBoxDelegate(System.Windows.Forms.TextBox box, string text);
+        private void AppendTextBoxHelper(System.Windows.Forms.TextBox box, string text)
         {
             box.AppendText(text);
         }
@@ -1203,93 +1204,93 @@ namespace UEDMHardwareControl
 
         private void btUpdateMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWFrequencyUsingUIInput(0);
+            controller.UpdateMWFrequencyUsingUIInput();
         }
 
         private void btIncrementMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWFrequencyUsingUIInput(0);
+            controller.IncrementMWFrequencyUsingUIInput();
         }
 
         private void btUpdateMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.UpdateMWPowerUsingUIInput(0);
+            controller.UpdateMWPowerUsingUIInput();
         }
 
         private void btIncrementMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.IncrementMWPowerUsingUIInput(0);
+            controller.IncrementMWPowerUsingUIInput();
         }
 
-        private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.UpdateMWPowerUsingUIInput(1);
-        }
+        //private void btUpdateMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.UpdateMWPowerUsingUIInput(1);
+        //}
 
-        private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.IncrementMWPowerUsingUIInput(1);
-        }
+        //private void btIncrementMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.IncrementMWPowerUsingUIInput(1);
+        //}
 
-        private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.UpdateMWFrequencyUsingUIInput(1);
-        }
+        //private void btUpdateMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.UpdateMWFrequencyUsingUIInput(1);
+        //}
 
-        private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.IncrementMWFrequencyUsingUIInput(1);
-        }
+        //private void btIncrementMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.IncrementMWFrequencyUsingUIInput(1);
+        //}
 
         private void btQueryMWCHAFrequency_Click(object sender, EventArgs e)
         {
-            controller.QueryMWFrequency(0);
+            controller.QueryMWFrequency();
         }
 
         private void btQueryMWCHAPower_Click(object sender, EventArgs e)
         {
-            controller.QueryMWPower(0);
+            controller.QueryMWPower();
         }
 
-        private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
-        {
-            controller.QueryMWFrequency(1);
-        }
+        //private void btQueryMWCHBFrequency_Click(object sender, EventArgs e)
+        //{
+        //    controller.QueryMWFrequency(1);
+        //}
 
-        private void btQueryMWCHBPower_Click(object sender, EventArgs e)
-        {
-            controller.QueryMWPower(1);
-        }
+        //private void btQueryMWCHBPower_Click(object sender, EventArgs e)
+        //{
+        //    controller.QueryMWPower(1);
+        //}
 
         private void cbCHARFMuted_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetRFMute(0, cbCHARFMuted.Checked);
+            controller.SetRFMute(cbCHARFMuted.Checked);
         }
 
-        private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetRFMute(1, cbCHBRFMuted.Checked);
-        }
+        //private void cbCHBRFMuted_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetRFMute(1, cbCHBRFMuted.Checked);
+        //}
 
         private void cbCHAPAPoweredOn_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPAPower(0, cbCHAPAPoweredOn.Checked);
+            controller.SetPAPower(cbCHAPAPoweredOn.Checked);
         }
 
-        private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
-        }
+        //private void cbCHBPAPoweredOn_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPAPower(1, cbCHBPAPoweredOn.Checked);
+        //}
 
         private void cbCHAPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPLLPower(0, cbCHAPLLPoweredOn.Checked);
+            controller.SetPLLPower(cbCHAPLLPoweredOn.Checked);
         }
 
-        private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
-        }
+        //private void cbCHBPLLPoweredOn_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPLLPower(1, cbCHBPLLPoweredOn.Checked);
+        //}
 
         private void btCHAFRMuteInfo_Click(object sender, EventArgs e)
         {
@@ -1451,6 +1452,67 @@ namespace UEDMHardwareControl
             controller.UpdateMWSynthTemperatureDetection();
         }
 
+        // Shirley adds on 24/03/2026 for the Windfreak Synth HD Mini for Det B
+
+        private void groupBoxMWDetectionB_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        // Frequency
+        private void btUpdateMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWFrequencyUsingUIInputDetectionB();
+        }
+
+        private void btIncrementMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWFrequencyUsingUIInputDetectionB();
+        }
+
+        private void btQueryMWFrequencyDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWFrequencyDetectionB();
+        }
+
+        // Power
+        private void btUpdateMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWPowerUsingUIInputDetectionB();
+        }
+
+        private void btIncrementMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.IncrementMWPowerUsingUIInputDetectionB();
+        }
+
+        private void btQueryMWPowerDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.QueryMWPowerDetectionB();
+        }
+
+        private void cbRFMutedDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetRFMuteDetectionB(cbRFMutedDetectionB.Checked);
+        }
+
+        private void cbPAPoweredOnDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPAPowerDetectionB(cbPAPoweredOnDetectionB.Checked);
+        }
+
+        private void cbPLLPoweredOnDetectionB_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.SetPLLPowerDetectionB(cbPLLPoweredOnDetectionB.Checked);
+        }
+
+        // Temperature
+        private void btQueryMWSynthTemperatureDetectionB_Click(object sender, EventArgs e)
+        {
+            controller.UpdateMWSynthTemperatureDetectionB();
+        }
+
+
         private void eOnCheck_CheckedChanged(object sender, EventArgs e)
         {
             controller.UpdateVoltages();
@@ -1459,11 +1521,6 @@ namespace UEDMHardwareControl
         private void fieldsOffButton_Click(object sender, EventArgs e)
         {
             controller.FieldsOff();
-        }
-
-        private void switchEButton_Click(object sender, EventArgs e)
-        {
-            controller.SwitchE();
         }
 
         private void changePollPeriodButton_Click(object sender, EventArgs e)
@@ -1618,7 +1675,7 @@ namespace UEDMHardwareControl
 
         private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
         {
-            //
+            controller.EnableGreenSynth(true);
         }
 
         private void cbCHATrigger_CheckedChanged(object sender, EventArgs e)
@@ -1626,16 +1683,17 @@ namespace UEDMHardwareControl
             controller.SetDetectionMWTrigger(0, cbCHATrigger.Checked);
         }
 
-        private void cbCHBRFTrigger_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
-        }
+        //private void cbCHBRFTrigger_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    controller.SetPumpingMWTrigger(1, cbCHBRFTrigger.Checked);
+        //}
 
         //Shirley adds on 08/09/2025 to add the trigger armed checkbox for OPMW windfreak channel A
         private void cbCHARFTrigger_CheckedChanged(object sender, EventArgs e)
         {
-            controller.SetPumpingMWTrigger(0, cbCHARFTrigger.Checked);
+            controller.SetPumpingMWTrigger(cbCHARFTrigger.Checked);
         }
+
 
         private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
         {
@@ -1680,21 +1738,6 @@ namespace UEDMHardwareControl
         private void TargetStepButton_Click(object sender, EventArgs e)
         {
             controller.StepTarget();
-        }
-
-        private void eConnectCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            controller.SetEConnect(eConnectCheck.Checked);
-        }
-
-        private void ePolarityCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetEPolarity(ePolarityCheck.Checked);
-        }
-
-        private void eBleedCheck_CheckedChanged(object sender, System.EventArgs e)
-        {
-            controller.SetBleed(eBleedCheck.Checked);
         }
 
         private void TargetManualbutton_Click(object sender, EventArgs e)
@@ -2080,9 +2123,80 @@ namespace UEDMHardwareControl
             controller.UpdateFeedthroughTempUI();
         }
 
-        private void checkboxTCPCCDB_CheckedChanged(object sender, EventArgs e)
-        {
+        //private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_HcoolingVoltage();
+        //}
 
+        //private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_VcoolingVoltage();
+        //}
+
+        private void initialiseBehlkesButton_Click(object sender, EventArgs e)
+        {
+            // Here controller.function to set the Behlke digital lines
+            controller.InitialiseBehlkes();
         }
+
+        private void switchEBehlkeButton_Click(object sender, EventArgs e)
+        {
+            controller.SwitchEfieldBehlkes();
+        }
+
+        private void behlkeOnCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            controller.EnableBehlkes(behlkeOnCheck.Checked);
+        }
+
+        // shirley adds on 18/06/2026 for PD logging 
+        private void StartPDLogButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(PDLogDirectoryTextBox.Text))
+            {
+                MessageBox.Show("Please select a log directory.", "PD Logger", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            controller.StartPDLogging();
+        }
+
+        private void StopPDLogButton_Click(object sender, EventArgs e)
+        {
+            controller.StopPDLogging();
+        }
+
+        private void QueryPDButton_Click(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDConvertToMwCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool displayAsPower = PDConvertToMwCheckBox.Checked;
+
+            labelPDValue.Text = displayAsPower
+                ? "Power (mW)"
+                : "Voltage (V)";
+
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDGainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDLogDirectoryBrowseButton_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select PD Log Directory";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    PDLogDirectoryTextBox.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
     }
 }

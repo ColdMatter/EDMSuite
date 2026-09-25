@@ -1538,6 +1538,97 @@ namespace csAcq4
             }
         }
 
+        //shirely adds on 17/11 to implement the retake logic for edge mode
+        public void SnapforRemote()
+        {
+            if (mydcam == null)
+            {
+                MyShowStatus("Internal Error: mydcam is null");
+                Console.WriteLine("Error: mydcam is null");
+                window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+                return;                         // internal error
+            }
+            window.MyFormStatus_Initialized();     // FormStatus should be Initialized.
+
+            string text = "";
+
+            if (window.IsMyFormStatus_Initialized())
+            {
+                // if FormStatus is Opened, DCAM buffer is not allocated.
+                // So call dcambuf_alloc() to prepare capturing.
+
+                text = string.Format("dcambuf_alloc({0})", numSnaps);
+
+                // allocate numSnaps frames to the buffer
+                if (!mydcam.buf_alloc(numSnaps))
+                {
+                    // allocation was failed
+                    Console.WriteLine("Failed to allocate buffer");
+                    MyShowStatusNG("Failed to allocate buffer", mydcam.m_lasterr);
+                    //window.MyFormStatus_Initialized(); // Reset form status to initialized
+                    return;                     // Fail: dcambuf_alloc()
+                }
+
+                // Success: dcambuf_alloc()
+                update_lut(false);
+            }
+
+            // start acquisition
+            m_cap_stopping = false;
+            mydcam.m_capmode = DCAMCAP_START.SNAP;    // one time capturing.  Acqusition will stop after capturing {numSnaps} frame
+
+            // shirley adds on 17/11 to implement the retake logic for edge mode
+            bool CCDShotSuccessful = false;
+            while (!CCDShotSuccessful)
+            {
+                if (!mydcam.cap_start(this))
+                {
+                    // acquisition was failed and frame buffer is also released.
+                    MyShowStatusNG("Failed to start capturing", mydcam.m_lasterr);
+
+                    while (GetShotStatus() == 0)
+                    {
+                        //Console.WriteLine("Waiting for shot confirmation");
+                        Thread.Sleep(1);
+                    }
+
+                    if (GetShotStatus() == 2)
+                    {
+                        // Store frames of this snap
+                        mydcam.buf_release();           // release unnecessary buffer in DCAM
+                        window.MyFormStatus_Initialized();          // change dialog FormStatus to Initialized
+                        CCDShotSuccessful = true;
+                        shotStatus = 0; //reset the shot status
+                        Console.WriteLine("shot was successful");
+                    }
+                    else if (GetShotStatus() == 1)
+                    {
+                        // If shot was unsuccessful, we can either retry or handle it accordingly
+                        Console.WriteLine("shot was unsuccessful: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+                    else
+                    {
+                        Console.WriteLine("shot status unknown: retake shot");
+                        shotStatus = 0; //reset the shot status
+                    }
+
+                    return;                         // Fail: dcamcap_start()
+                }
+            }
+
+
+            // Success: dcamcap_start()
+            // acquisition has started
+
+            Console.WriteLine("Capture started successfully."); // Log message to indicate successful start
+            MyShowStatusOK($"Camera starts capturing {numSnaps} frames...");
+
+            // Start async capture task
+            snapCancelTokenSource = new CancellationTokenSource();
+            Task.Run(() => OnThreadCapture(snapCancelTokenSource.Token));
+
+        }
 
         public void Snap()
         {
@@ -1897,6 +1988,99 @@ namespace csAcq4
             return filePath;
         }
 
+        // Shirley adds on 21/02/2026 for syncing the file name and save directory for the ccd xml file on scanmaster
+        private string SyncSaveFullPath = "";
+        private int SyncFileName = -1;
+
+        public string GetSaveFullPath()
+        {
+            return SyncSaveFullPath;
+        }
+
+        public int GetSyncFileName()
+        {
+            return SyncFileName;
+        }
+
+
+        private string GetNextFileNameSM(string directory, string extension, int selectedCamera)
+        {
+            int counter = 1;
+            string cameraSuffix = (selectedCamera == 0) ? "CCDA" : "CCDB";
+            string filePath;
+
+            do
+            {
+                filePath = Path.Combine(directory, $"{cameraSuffix}_{counter:D5}{extension}");
+                counter++;
+            } while (File.Exists(filePath)); // Ensure we don't overwrite existing files
+
+            // shirley adds on 21/01/2026 for xml file name syncing. 
+            SyncFileName = counter - 1;
+
+            return filePath;
+        }
+
+        // shirley editing on 19/01/2026 for ScanMaster burst mode saving
+        // Updated version that can now calculate the total counts per frame and automatically save as a csv file along with the MTIF file.
+        // It perform the calculation after the entire acquisition so doenst slow things down.
+        private void SaveAllDataSM(List<List<ushort[]>> imageData)
+        {
+            var saveTimer = Stopwatch.StartNew();
+
+            // Save CSV file
+            // File.WriteAllLines(csvFilePath, countData);
+            // Console.WriteLine("Successfully saved count data.");
+
+            string tiffPath = GetNextFileNameSM(saveDirectory, ".tif", SelectedCamera);
+
+            // shirley adds on 21/01/2026
+            SyncSaveFullPath = tiffPath;
+
+            // Create a CSV path by changing the extension of the tiffPath
+            string csvPath = Path.ChangeExtension(tiffPath, ".csv");
+            //string tiffPath = currentFileName;
+            SaveMultiFrameTiff(tiffPath, imageData, m_image.width, m_image.height);
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(csvPath))
+                {
+                    // Write CSV Header
+                    writer.WriteLine("Snap Index, Frame Index, Total Counts/frame");
+
+                    for (int snapIndex = 0; snapIndex < imageData.Count; snapIndex++)
+                    {
+                        for (int frameIndex = 0; frameIndex < imageData[snapIndex].Count; frameIndex++)
+                        {
+                            ushort[] framePixels = imageData[snapIndex][frameIndex];
+
+                            long frameSum = 0;
+                            if (framePixels != null)
+                            {
+                                for (int i = 0; i < framePixels.Length; i++)
+                                {
+                                    frameSum += framePixels[i];
+                                }
+                            }
+                            // write row: snap index, frame index (0-19), total Counts each frame    
+                            writer.WriteLine($"{snapIndex},{frameIndex},{frameSum}");
+
+                        }
+                    }
+
+                }
+                Console.WriteLine("Successfully saved count data to: {Path.GetFileName(csvPath)}.");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving count data to CSV: {ex.Message}");
+            }
+            saveTimer.Stop();
+            Console.WriteLine($"Total saving time: {saveTimer.Elapsed}");
+        }
+
 
         // Default save directory
         public string saveDirectory = "E:\\Imperial College London\\Team ultracold - PH - Documents\\Data\\2025\\CCD data";
@@ -1930,7 +2114,7 @@ namespace csAcq4
 
         public bool IsCCDReadyForNextBlock()
         {
-            return ccdReadyForNextBlock;
+            return ccdReadyForNextBlock; // set true after init, false during block, true again after SaveAllData
         }
 
 
@@ -3006,7 +3190,7 @@ namespace csAcq4
         {
             
             //Task.Run sets up the function to be run Asynchronously 
-            Task.Run(()=>Snap());
+            Task.Run(()=> SnapforRemote());
         }
 
         public void RemoteBufRelease()

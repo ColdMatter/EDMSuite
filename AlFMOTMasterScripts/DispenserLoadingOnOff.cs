@@ -26,9 +26,9 @@ public class Patterns : MOTMasterScript
         Parameters["WaitTime"] = 5000;
         Parameters["Switch"] = true;
 
-        switchConfiguration = new Dictionary<string, List<bool>>
+        switchConfiguration = new Dictionary<string, List<object>>
             {
-                {"Switch", new List<bool>{true, false}}
+                {"Switch", new List<object>{true, false}}
             };
     }
 
@@ -74,8 +74,8 @@ public class Patterns : MOTMasterScript
     public override AnalogPatternBuilder GetAnalogPattern()
     {
         AnalogPatternBuilder p = new AnalogPatternBuilder((int)Parameters["PatternLength"]);
-        p.AddChannel("VECSEL3_AOM_VCA");
-        p.AddAnalogValue("VECSEL3_AOM_VCA", 0, 0);
+        p.AddChannel("AOM1_VCA");
+        p.AddAnalogValue("AOM1_VCA", 0, 0);
         //p.AddAnalogValue("VECSEL2_PZO", 0, 2);
 
         return p;

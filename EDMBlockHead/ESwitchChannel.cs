@@ -31,7 +31,7 @@ namespace EDMBlockHead.Acquire.Channels
 				currentState = value;
 				try
 				{
-					hardwareController.SwitchEAndWait(value);
+					hardwareController.SwitchEBehlkeAndWait(value);
 				}
 				catch (Exception e)
 				{

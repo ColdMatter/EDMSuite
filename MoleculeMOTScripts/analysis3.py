@@ -207,12 +207,14 @@ class Analysis():
         files.sort(key=natural_keys)
         for f in files:
             if f[-3:]=='tif':
-                if self.diffStr=='':
-                    with archive.open(f) as filename:
-                        imgs.append(np.array(Image.open(filename),dtype=float))
-                elif f[0]==self.diffStr:
-                    with archive.open(f) as filename:
-                        imgs.append(np.array(Image.open(filename),dtype=float))
+                with archive.open(f) as filename:
+                    imgs.append(np.array(Image.open(filename),dtype=float))
+                # if self.diffStr=='':
+                #     with archive.open(f) as filename:
+                #         imgs.append(np.array(Image.open(filename),dtype=float))
+                # elif f[0]==self.diffStr:
+                #     with archive.open(f) as filename:
+                #         imgs.append(np.array(Image.open(filename),dtype=float))
             if f[-14:]=='parameters.txt':
                 with archive.open(f) as filename:
                     scriptParams=filename.readlines()
@@ -222,11 +224,11 @@ class Analysis():
         tempDict={}
         for param in scriptParams:
             paramSplit=param.split(b'\t')
-            tempDict[paramSplit[0]]=np.float(paramSplit[1])
-        for param in hardwareParams:
-            paramSplit=param.split(b'\t')
-            tempDict[paramSplit[0]]=np.float(paramSplit[1]) if \
-                                paramSplit[1].isdigit() else paramSplit[1]
+            tempDict[paramSplit[0]]=float(paramSplit[1])
+        # for param in hardwareParams:
+        #     paramSplit=param.split(b'\t')
+        #     tempDict[paramSplit[0]]=float(paramSplit[1]) if \
+        #                         paramSplit[1].isdigit() else paramSplit[1]
         paramDict={}
         for key in tempDict:
             paramDict[key.decode("utf-8")]=tempDict[key]
@@ -1255,7 +1257,7 @@ def analysisWithDefaultCaFSettings():
     analysis.fullWellCapacity=18000
     analysis.collectionSolidAngle=0.023
     analysis.pixelSize=6.45e-6
-    analysis.binSize=8
+    analysis.binSize=1
     analysis.magFactor=0.5
     analysis.bitsPerChannel=12
     analysis.gamma=1.5e6
@@ -1272,16 +1274,16 @@ def analysisWithDefaultCaFSettings():
 
 def analysisWithDefaultRbSettings():
     analysis=Analysis()
-    analysis.pixelSize=6.45e-6
-    analysis.binSize=2
-    analysis.magFactor=0.41
+    analysis.pixelSize=1
+    analysis.binSize=1
+    analysis.magFactor=2
     analysis.crop=False
     analysis.cropCentre=(220,320)
     analysis.cropHeight=120
     analysis.cropWidth=120
     analysis.detuningInVolt=0
-    analysis.detuningFrequencyScaling=14.7e6
-    analysis.gamma=6e6
+    analysis.detuningFrequencyScaling=1//14.7e6
+    analysis.gamma=1
     analysis.lamda=780e-9
     analysis.massInAMU=86.9
     analysis.diffStr='R'

@@ -47,10 +47,13 @@ namespace AlFHardwareControl
                 this.closedColor = Color.PaleGreen;
                 this.openColor = Color.Salmon;
             }
-            {
+            try {
                 Task t = new Task();
                 ((DigitalOutputChannel)Environs.Hardware.DigitalOutputChannels[shutterChannel]).AddToTask(t);
                 shutterWriter = new DigitalSingleChannelWriter(t.Stream);
+            } catch (DaqException e)
+            {
+                this.Enabled = false;
             }
 
         }
