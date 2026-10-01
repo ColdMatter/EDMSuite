@@ -898,6 +898,7 @@
     <Compile Include="WindfreakSynth.cs" />
     <Compile Include="AD9850DDS.cs" />
     <Compile Include="WindfreakSynthHD.cs" />
+    <Compile Include="Novatech426ASynth.cs" />
     <Compile Include="WMLServerHuxleyFileSystem.cs" />
     <Compile Include="WMLServerHuxleyHardware.cs" />
     <Compile Include="YAGLaser.cs">
