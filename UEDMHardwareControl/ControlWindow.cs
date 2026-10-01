@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO.Ports;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 //using Newport.USBComm;//rhys removed 15/02
 //using NewFocus.Picomotor; //rhys removed 15/02
 
@@ -44,55 +45,55 @@ namespace UEDMHardwareControl
             control.Enabled = enabled;
         }
 
-        public void SetComboBoxSelectedIndex(ComboBox combobox, int index)
+        public void SetComboBoxSelectedIndex(System.Windows.Forms.ComboBox combobox, int index)
         {
             combobox.Invoke(new SetComboBoxSelectedIndexDelegate(SetComboBoxSelectedIndexHelper), new object[] { combobox, index });
         }
-        private delegate void SetComboBoxSelectedIndexDelegate(ComboBox combobox, int index);
-        private void SetComboBoxSelectedIndexHelper(ComboBox combobox, int index)
+        private delegate void SetComboBoxSelectedIndexDelegate(System.Windows.Forms.ComboBox combobox, int index);
+        private void SetComboBoxSelectedIndexHelper(System.Windows.Forms.ComboBox combobox, int index)
         {
             combobox.SelectedIndex = index;
         }
 
-        public int GetComboBoxSelectedIndex(ComboBox combobox)
+        public int GetComboBoxSelectedIndex(System.Windows.Forms.ComboBox combobox)
         {
             return (int)combobox.Invoke(new GetComboBoxSelectedIndexDelegate(GetComboBoxSelectedIndexHelper), new object[] { combobox });
         }
-        private delegate int GetComboBoxSelectedIndexDelegate(ComboBox combobox);
-        private int GetComboBoxSelectedIndexHelper(ComboBox combobox)
+        private delegate int GetComboBoxSelectedIndexDelegate(System.Windows.Forms.ComboBox combobox);
+        private int GetComboBoxSelectedIndexHelper(System.Windows.Forms.ComboBox combobox)
         {
             int index = combobox.SelectedIndex;
             return index;
         }
 
-        public int GetComboBoxTextIndex(ComboBox combobox, string str)
+        public int GetComboBoxTextIndex(System.Windows.Forms.ComboBox combobox, string str)
         {
             return (int)combobox.Invoke(new GetComboBoxTextIndexDelegate(GetComboBoxTextIndexHelper), new object[] { combobox, str });
         }
-        private delegate int GetComboBoxTextIndexDelegate(ComboBox combobox, string str);
-        private int GetComboBoxTextIndexHelper(ComboBox combobox, string str)
+        private delegate int GetComboBoxTextIndexDelegate(System.Windows.Forms.ComboBox combobox, string str);
+        private int GetComboBoxTextIndexHelper(System.Windows.Forms.ComboBox combobox, string str)
         {
             int index = combobox.FindString(str);
             return index;
         }
 
-        public string GetComboBoxSelectedItem(ComboBox combobox)
+        public string GetComboBoxSelectedItem(System.Windows.Forms.ComboBox combobox)
         {
             return (string)combobox.Invoke(new GetComboBoxSelectedItemDelegate(GetComboBoxSelectedItemHelper), new object[] { combobox });
         }
-        private delegate string GetComboBoxSelectedItemDelegate(ComboBox combobox);
-        private string GetComboBoxSelectedItemHelper(ComboBox combobox)
+        private delegate string GetComboBoxSelectedItemDelegate(System.Windows.Forms.ComboBox combobox);
+        private string GetComboBoxSelectedItemHelper(System.Windows.Forms.ComboBox combobox)
         {
             string str = (string)combobox.SelectedItem; // (string) casts the returned object to a string type variable
             return str;
         }
 
-        public void SetTextBox(TextBox box, string text)
+        public void SetTextBox(System.Windows.Forms.TextBox box, string text)
         {
             box.Invoke(new SetTextDelegate(SetTextHelper), new object[] { box, text });
         }
-        private delegate void SetTextDelegate(TextBox box, string text);
-        private void SetTextHelper(TextBox box, string text)
+        private delegate void SetTextDelegate(System.Windows.Forms.TextBox box, string text);
+        private void SetTextHelper(System.Windows.Forms.TextBox box, string text)
         {
             box.Text = text;
         }
@@ -107,12 +108,12 @@ namespace UEDMHardwareControl
             box.Text = text;
         }
 
-        public void AppendTextBox(TextBox box, string text)
+        public void AppendTextBox(System.Windows.Forms.TextBox box, string text)
         {
             box.Invoke(new AppendTextBoxDelegate(AppendTextBoxHelper), new object[] { box, text });
         }
-        private delegate void AppendTextBoxDelegate(TextBox box, string text);
-        private void AppendTextBoxHelper(TextBox box, string text)
+        private delegate void AppendTextBoxDelegate(System.Windows.Forms.TextBox box, string text);
+        private void AppendTextBoxHelper(System.Windows.Forms.TextBox box, string text)
         {
             box.AppendText(text);
         }
@@ -1674,7 +1675,7 @@ namespace UEDMHardwareControl
 
         private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
         {
-            //
+            controller.EnableGreenSynth(true);
         }
 
         private void cbCHATrigger_CheckedChanged(object sender, EventArgs e)
@@ -2122,15 +2123,15 @@ namespace UEDMHardwareControl
             controller.UpdateFeedthroughTempUI();
         }
 
-        private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.show_HcoolingVoltage();
-        }
+        //private void HcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_HcoolingVoltage();
+        //}
 
-        private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
-        {
-            controller.show_VcoolingVoltage();
-        }
+        //private void VcoolingMonitorUpdateButton_Click(object sender, EventArgs e)
+        //{
+        //    controller.show_VcoolingVoltage();
+        //}
 
         private void initialiseBehlkesButton_Click(object sender, EventArgs e)
         {
@@ -2148,19 +2149,54 @@ namespace UEDMHardwareControl
             controller.EnableBehlkes(behlkeOnCheck.Checked);
         }
 
-        private void groupBoxMWCHBdetection_Enter(object sender, EventArgs e)
+        // shirley adds on 18/06/2026 for PD logging 
+        private void StartPDLogButton_Click(object sender, EventArgs e)
         {
-
+            if (string.IsNullOrWhiteSpace(PDLogDirectoryTextBox.Text))
+            {
+                MessageBox.Show("Please select a log directory.", "PD Logger", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            controller.StartPDLogging();
         }
 
-        private void groupBoxMWDetectionB_Enter_1(object sender, EventArgs e)
+        private void StopPDLogButton_Click(object sender, EventArgs e)
         {
-
+            controller.StopPDLogging();
         }
 
-        private void labelDetectSynthTempB_Click(object sender, EventArgs e)
+        private void QueryPDButton_Click(object sender, EventArgs e)
         {
-
+            controller.UpdatePDVMonitorUI();
         }
+
+        private void PDConvertToMwCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            bool displayAsPower = PDConvertToMwCheckBox.Checked;
+
+            labelPDValue.Text = displayAsPower
+                ? "Power (mW)"
+                : "Voltage (V)";
+
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDGainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            controller.UpdatePDVMonitorUI();
+        }
+
+        private void PDLogDirectoryBrowseButton_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select PD Log Directory";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    PDLogDirectoryTextBox.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
     }
 }

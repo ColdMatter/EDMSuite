@@ -1,0 +1,72 @@
+Notes on lattice_init.py and SimpleFlowRateScan.py
+Investigated 2026-09-21, from the code only (no scripts were run, no hardware contacted).
+
+WHAT THEY ARE
+-------------
+Neither script was written by SL; both predate the current codebase structure.
+
+lattice_init.py:
+- Bootstrap/entry point for an interactive IronPython 2 console session used to
+  control the live Lattice EDM hardware.
+- Loads control-program assemblies via clr.AddReferenceToFile: ScanMaster.exe,
+  LatticeHardwareControl.exe, DAQ.dll, SharedCode.dll, TransferCavityLock.exe.
+- Connects over .NET Remoting to already-running control processes:
+    sm -> ScanMaster.Controller at tcp://localhost:1191/controller.rem
+    hc -> LatticeHardwareControl.Program at tcp://localhost:1197/controller.rem
+  (A few more remoting endpoints for EDMBlockHead/SirCachealot/EDMPhaseLock are
+  commented out in the script - presumably retired for this experiment.)
+- Once connected, sm/hc are live proxies to the real control objects - e.g.
+  sm.AcquireAndWait(5) fires a real acquisition.
+- Also scans LatticeEDMScripts for any .py file defining run_script(), lists them,
+  and provides run(i) to execfile + run one inside the same session.
+- Written in genuine IronPython 2 syntax (print without parens, execfile, the nt
+  module) - a different runtime from the CPython 3 + pythonnet setup used by
+  tools.py / LatticeEDM_analysis_library.py elsewhere in LatticeEDMScripts.
+
+SimpleFlowRateScan.py:
+- Meant to be launched via lattice_init.py's run(i), not standalone - it does
+  `from System.IO import *` etc. with no clr.AddReference of its own, relying on
+  lattice_init.py having already loaded those assemblies into the shared session.
+- Sweeps Helium flow rate through a fixed list of setpoints via hc.SetHeliumFlow(),
+  waits for it to settle, then fires an acquisition per setpoint via
+  sm.AcquireAndWait(1), saving each scan to its own zip (records TOF profiles per
+  flow rate).
+
+WOULD THEY STILL CONNECT? (checked against the current C# source, not run)
+---------------------------------------------------------------------------
+sm (ScanMaster, port 1191): plausible.
+- ScanMaster/Runner.cs still does `new TcpChannel(1191)` +
+  ChannelServices.RegisterChannel(...) - this remoting endpoint is alive in the
+  current code.
+- ScanMaster is still built against classic .NET Framework (v4.5.1/v4.7.2), which
+  still supports System.Runtime.Remoting (removed entirely in .NET Core/5+).
+
+hc (hardware control, port 1197): dead.
+- lattice_init.py references class LatticeHardwareControl.Program and
+  LatticeHardwareControl.exe - this points at the OLD project
+  (LatticeEDMtest, namespace LatticeHardwareControl), whose Runner.cs has the
+  remoting registration (TcpChannel(1197), RemotingServices.Marshal(...))
+  already commented out.
+- The actual current hardware-control app is a DIFFERENT project,
+  LatticeEDMHardwareControl (namespace LatticeEDMHardwareControl, not
+  LatticeHardwareControl). Its LEDMRunner.cs Main() just does
+  `Application.Run(new Form1())` - no remoting channel is published at all.
+  There is no hc endpoint listening anymore.
+- SimpleFlowRateScan.py calls hc.GetFlowHelium() / hc.SetHeliumFlow(...) - grepped
+  the whole repo and neither method exists anywhere in current C# code, even if
+  remoting were restored.
+
+WHAT WOULD NEED TO CHANGE BEFORE USE
+-------------------------------------
+- lattice_init.py's build-output paths (bin\LatticeEDM\ etc.) and the
+  LatticeHardwareControl class/namespace/exe name need updating to match the
+  current LatticeEDMHardwareControl project.
+- Remoting (TcpChannel + RemotingServices.Marshal) would need to be re-added to
+  LatticeEDMHardwareControl's Main(), including exposing whatever equivalent of
+  GetFlowHelium/SetHeliumFlow exists today (or new methods written).
+- IronPython 2 (ipy.exe) would need to be available on whichever machine runs
+  lattice_init.py - it's an old, unmaintained runtime, separate from the
+  CPython 3 environment used for analysis scripts.
+- None of this can be verified further without being on the control computer
+  where ScanMaster.exe / LatticeEDMHardwareControl.exe actually run - this
+  investigation was done from the source code only.

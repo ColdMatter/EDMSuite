@@ -135,9 +135,10 @@ namespace ScanMaster.Acquire.Plugin
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
 			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
 			analogInputPlugins.Add("Multiple wavemeter inputs", typeof(MultipleWavemeterInputPlugin));
+			analogInputPlugins.Add("Wavemeter and PD inputs", typeof(UEDMWavemeterPDPlugin));
 
-            //GPIB Input plugins
-            gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
+			//GPIB Input plugins
+			gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
             gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
 			gpibInputPlugins.Add("DMM GPIB input", typeof(DMMInputPlugin));
 			gpibInputPlugins.Add("GPIB input", typeof(GPIBInputPlugin));

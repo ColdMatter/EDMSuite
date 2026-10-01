@@ -421,11 +421,18 @@ namespace MoleculeMOTHardwareControl.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ConnectButton(object sender, EventArgs e)
+        private async void ConnectButton(object sender, EventArgs e)
         {
             // Get IP address and Ip port from form front panel
             m_IPAddress = textBox_IPAddress.Text;
             int.TryParse(textBox_IPPort.Text, out m_IPPort);
+
+            int connectTimeout = DEFAULT_TIMEOUT;
+            if (!int.TryParse(textBox_ConnectTimeout.Text, out connectTimeout) || connectTimeout <= 0)
+            {
+                connectTimeout = DEFAULT_TIMEOUT;
+                textBox_ConnectTimeout.Text = connectTimeout.ToString();
+            }
 
             m_PositionerName = TextBox_Group.Text;
             int index = m_PositionerName.LastIndexOf('.');
@@ -446,57 +453,61 @@ namespace MoleculeMOTHardwareControl.Controls
             m_XPSControllerVersion = string.Empty;
             m_errorDescription = string.Empty;
 
+            // Open socket #1 to order and socket #2 for polling
+            if (m_xpsInterface == null)
+                m_xpsInterface = new CommandInterfaceXPS.XPS();
+            if (m_xpsInterfaceForPolling == null)
+                m_xpsInterfaceForPolling = new CommandInterfaceXPS.XPS();
+
+            // Captured locally rather than read from the instance fields inside the background
+            // task, so a later reconnect attempt (which may replace those fields) can't race
+            // with a still-outstanding OpenInstrument call from this attempt.
+            CommandInterfaceXPS.XPS orderSocket = m_xpsInterface;
+            CommandInterfaceXPS.XPS pollingSocket = m_xpsInterfaceForPolling;
+            string ipAddress = m_IPAddress;
+            int ipPort = m_IPPort;
+
+            buttonConnect.Enabled = false;
+            label_MessageCommunication.ForeColor = Color.Orange;
+            label_MessageCommunication.Text = string.Format("Connecting to XPS...");
+
             try
             {
-                // Open socket #1 to order
-                if (m_xpsInterface == null)
-                    m_xpsInterface = new CommandInterfaceXPS.XPS();
-                if (m_xpsInterface != null)
+                Task<ConnectResult> connectTask = Task.Run(() => TryOpenSockets(orderSocket, pollingSocket, ipAddress, ipPort, connectTimeout));
+                Task finishedTask = await Task.WhenAny(connectTask, Task.Delay(connectTimeout));
+
+                if (finishedTask != connectTask)
                 {
-                    // Open socket
-                    int returnValue = m_xpsInterface.OpenInstrument(m_IPAddress, m_IPPort, DEFAULT_TIMEOUT);
-                    if (returnValue == 0)
-                    {
-                        string errorString = string.Empty;
-                        int result = m_xpsInterface.FirmwareVersionGet(out m_XPSControllerVersion, out errorString);
-                        if (result == CommandInterfaceXPS.XPS.FAILURE) // Communication failure with XPS 
-                        {
-                            if (errorString.Length > 0)
-                            {
-                                int errorCode = 0;
-                                int.TryParse(errorString, out errorCode);
-                                m_xpsInterface.ErrorStringGet(errorCode, out m_errorDescription, out errorString);
-                                m_XPSControllerVersion = string.Format("FirmwareVersionGet ERROR {0}: {1}", result, m_errorDescription);
-                            }
-                            else
-                                m_XPSControllerVersion = string.Format("Communication failure with XPS after FirmwareVersionGet ");
-                        }
-                        else
-                        {
-                            label_MessageCommunication.ForeColor = Color.Green;
-                            label_MessageCommunication.Text = string.Format("Connected to XPS");
-                            m_CommunicationOK = true;
-                        }
-                    }
+                    // The XPS driver didn't return within the configured timeout. Give up on
+                    // this attempt rather than freezing the GUI - the abandoned OpenInstrument
+                    // call (if it is still blocked) will be cleaned up on the next Connect or
+                    // Disconnect click.
+                    m_CommunicationOK = false;
+                    label_MessageCommunication.ForeColor = Color.Red;
+                    label_MessageCommunication.Text = string.Format("Disconnected from XPS");
+                    ErrorMessageHandlerChanged(string.Format("Timed out after {0} ms connecting to XPS at {1}:{2}", connectTimeout, ipAddress, ipPort));
+                    this.Text = "XPS Application";
+                    return;
+                }
+
+                ConnectResult result = await connectTask;
+                m_XPSControllerVersion = result.ControllerVersion;
+                m_errorDescription = result.ErrorDescription;
+                m_CommunicationOK = result.OrderConnected;
+
+                if (result.OrderConnected)
+                {
+                    label_MessageCommunication.ForeColor = Color.Green;
+                    label_MessageCommunication.Text = string.Format("Connected to XPS");
                 }
                 else
-                    m_XPSControllerVersion = "XPS instance is NULL";
-
-                // Open socket #2 for polling
-                if (m_xpsInterfaceForPolling == null)
-                    m_xpsInterfaceForPolling = new CommandInterfaceXPS.XPS();
-                if (m_xpsInterfaceForPolling != null)
                 {
-                    // Open socket
-                    int returnValue = m_xpsInterfaceForPolling.OpenInstrument(m_IPAddress, m_IPPort, DEFAULT_TIMEOUT);
-                    if (returnValue == 0)
-                    {
-                        string errorString = string.Empty;
-                        int result = m_xpsInterfaceForPolling.FirmwareVersionGet(out m_XPSControllerVersion, out errorString);
-                        if (result != CommandInterfaceXPS.XPS.FAILURE) // Communication failure with XPS 
-                            StartPolling();
-                    }
+                    label_MessageCommunication.ForeColor = Color.Red;
+                    label_MessageCommunication.Text = string.Format("Disconnected from XPS");
                 }
+
+                if (result.PollingConnected)
+                    StartPolling();
 
                 if (m_XPSControllerVersion.Length <= 0)
                     m_XPSControllerVersion = "No detected XPS";
@@ -507,6 +518,62 @@ namespace MoleculeMOTHardwareControl.Controls
             {
                 ErrorMessageHandlerChanged("Exception in ConnectButton: " + ex.Message);
             }
+            finally
+            {
+                buttonConnect.Enabled = true;
+            }
+        }
+
+        private class ConnectResult
+        {
+            public bool OrderConnected;
+            public bool PollingConnected;
+            public string ControllerVersion = string.Empty;
+            public string ErrorDescription = string.Empty;
+        }
+
+        /// <summary>
+        /// Runs on a background thread: opens both XPS sockets. Must not touch any GUI controls.
+        /// </summary>
+        private ConnectResult TryOpenSockets(CommandInterfaceXPS.XPS orderSocket, CommandInterfaceXPS.XPS pollingSocket, string ipAddress, int ipPort, int timeoutMs)
+        {
+            ConnectResult connectResult = new ConnectResult();
+
+            int returnValue = orderSocket.OpenInstrument(ipAddress, ipPort, timeoutMs);
+            if (returnValue == 0)
+            {
+                string errorString = string.Empty;
+                int result = orderSocket.FirmwareVersionGet(out connectResult.ControllerVersion, out errorString);
+                if (result == CommandInterfaceXPS.XPS.FAILURE) // Communication failure with XPS
+                {
+                    if (errorString.Length > 0)
+                    {
+                        int errorCode = 0;
+                        int.TryParse(errorString, out errorCode);
+                        orderSocket.ErrorStringGet(errorCode, out connectResult.ErrorDescription, out errorString);
+                        connectResult.ControllerVersion = string.Format("FirmwareVersionGet ERROR {0}: {1}", result, connectResult.ErrorDescription);
+                    }
+                    else
+                        connectResult.ControllerVersion = string.Format("Communication failure with XPS after FirmwareVersionGet ");
+                }
+                else
+                {
+                    connectResult.OrderConnected = true;
+                }
+            }
+            else
+                connectResult.ControllerVersion = "Could not open connection to XPS";
+
+            int returnValuePolling = pollingSocket.OpenInstrument(ipAddress, ipPort, timeoutMs);
+            if (returnValuePolling == 0)
+            {
+                string pollingVersion, errorString = string.Empty;
+                int result = pollingSocket.FirmwareVersionGet(out pollingVersion, out errorString);
+                if (result != CommandInterfaceXPS.XPS.FAILURE) // Communication failure with XPS
+                    connectResult.PollingConnected = true;
+            }
+
+            return connectResult;
         }
 
         /// <summary>

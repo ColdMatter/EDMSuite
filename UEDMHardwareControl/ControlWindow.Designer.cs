@@ -30,45 +30,45 @@ namespace UEDMHardwareControl
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea13 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend13 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series45 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series46 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea14 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend14 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series47 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series48 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series49 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series50 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series51 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series52 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series53 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series54 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series55 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series56 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title9 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlWindow));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea15 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend15 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series57 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title10 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea16 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend16 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series58 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series59 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series60 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title11 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea17 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend17 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series61 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series62 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series63 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series64 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series65 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title12 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea18 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend18 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series66 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series22 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.gbTempMonitors = new System.Windows.Forms.GroupBox();
             this.labelTS1 = new System.Windows.Forms.Label();
             this.tbTS1 = new System.Windows.Forms.TextBox();
@@ -182,6 +182,10 @@ namespace UEDMHardwareControl
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.tbStirapRFfreqFalseValue = new System.Windows.Forms.TextBox();
+            this.tbStirapRFfreqTrueValue = new System.Windows.Forms.TextBox();
             this.labelStirapRFAmp = new System.Windows.Forms.Label();
             this.labelStirapRFFreq = new System.Windows.Forms.Label();
             this.cbStirapRFOn = new System.Windows.Forms.CheckBox();
@@ -421,6 +425,7 @@ namespace UEDMHardwareControl
             this.eOnCheck = new System.Windows.Forms.CheckBox();
             this.cPlusTextBox = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.pollftTCheckBox = new System.Windows.Forms.CheckBox();
             this.pollVCheckBox = new System.Windows.Forms.CheckBox();
             this.tbiMonitorPollPeriod = new System.Windows.Forms.TextBox();
             this.changePollPeriodButton = new System.Windows.Forms.Button();
@@ -778,7 +783,56 @@ namespace UEDMHardwareControl
             this.btinfoCCDExposure = new System.Windows.Forms.Button();
             this.tbCCDShotCount = new System.Windows.Forms.TextBox();
             this.labelCCDShotCount = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.PDMonitorTabPage = new System.Windows.Forms.TabPage();
+            this.queryPDButton = new System.Windows.Forms.Button();
+            this.PDConvertToMwCheckBox = new System.Windows.Forms.CheckBox();
+            this.labelPDChannel = new System.Windows.Forms.Label();
+            this.labelPDValue = new System.Windows.Forms.Label();
+            this.labelPDGain = new System.Windows.Forms.Label();
+            this.labelPDLog = new System.Windows.Forms.Label();
+            this.labelPD1 = new System.Windows.Forms.Label();
+            this.PD1MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD1GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD1LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPDLogDuration = new System.Windows.Forms.Label();
+            this.PDLogDurationTextBox = new System.Windows.Forms.TextBox();
+            this.labelPDSamplePeriod = new System.Windows.Forms.Label();
+            this.PDSamplePeriodTextBox = new System.Windows.Forms.TextBox();
+            this.labelPDLogDirectory = new System.Windows.Forms.Label();
+            this.PDLogDirectoryTextBox = new System.Windows.Forms.TextBox();
+            this.PDLogDirectoryBrowseButton = new System.Windows.Forms.Button();
+            this.startPDLogButton = new System.Windows.Forms.Button();
+            this.stopPDLogButton = new System.Windows.Forms.Button();
+            this.labelPD2 = new System.Windows.Forms.Label();
+            this.PD2MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD2GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD2LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD3 = new System.Windows.Forms.Label();
+            this.PD3MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD3GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD3LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD4 = new System.Windows.Forms.Label();
+            this.PD4MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD4GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD4LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD5 = new System.Windows.Forms.Label();
+            this.PD5MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD5GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD5LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD6 = new System.Windows.Forms.Label();
+            this.PD6MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD6GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD6LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD7 = new System.Windows.Forms.Label();
+            this.PD7MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD7GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD7LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPD8 = new System.Windows.Forms.Label();
+            this.PD8MonitorTextBox = new System.Windows.Forms.TextBox();
+            this.PD8GainComboBox = new System.Windows.Forms.ComboBox();
+            this.PD8LogCheck = new System.Windows.Forms.CheckBox();
+            this.labelPDFileName = new System.Windows.Forms.Label();
+            this.PDFileNameTextBox = new System.Windows.Forms.TextBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.calibrationVoltageV = new System.Windows.Forms.TextBox();
             this.calibrationPowerV = new System.Windows.Forms.TextBox();
@@ -887,9 +941,7 @@ namespace UEDMHardwareControl
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).BeginInit();
             this.tabCCDCamera.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.groupBox9.SuspendLayout();
-            this.HCoolingGroupBox.SuspendLayout();
+            this.PDMonitorTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbTempMonitors
@@ -908,7 +960,7 @@ namespace UEDMHardwareControl
             this.gbTempMonitors.Margin = new System.Windows.Forms.Padding(4);
             this.gbTempMonitors.Name = "gbTempMonitors";
             this.gbTempMonitors.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTempMonitors.Size = new System.Drawing.Size(272, 201);
+            this.gbTempMonitors.Size = new System.Drawing.Size(243, 201);
             this.gbTempMonitors.TabIndex = 0;
             this.gbTempMonitors.TabStop = false;
             this.gbTempMonitors.Text = "Temperature Monitors";
@@ -916,7 +968,7 @@ namespace UEDMHardwareControl
             // labelTS1
             // 
             this.labelTS1.AutoSize = true;
-            this.labelTS1.Location = new System.Drawing.Point(69, 97);
+            this.labelTS1.Location = new System.Drawing.Point(48, 97);
             this.labelTS1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTS1.Name = "labelTS1";
             this.labelTS1.Size = new System.Drawing.Size(29, 17);
@@ -927,7 +979,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTS1.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS1.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS1.Location = new System.Drawing.Point(108, 95);
+            this.tbTS1.Location = new System.Drawing.Point(87, 95);
             this.tbTS1.Margin = new System.Windows.Forms.Padding(4);
             this.tbTS1.Name = "tbTS1";
             this.tbTS1.ReadOnly = true;
@@ -938,7 +990,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTSF6.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTSF6.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTSF6.Location = new System.Drawing.Point(108, 159);
+            this.tbTSF6.Location = new System.Drawing.Point(87, 159);
             this.tbTSF6.Margin = new System.Windows.Forms.Padding(4);
             this.tbTSF6.Name = "tbTSF6";
             this.tbTSF6.ReadOnly = true;
@@ -948,7 +1000,7 @@ namespace UEDMHardwareControl
             // labelTSF6
             // 
             this.labelTSF6.AutoSize = true;
-            this.labelTSF6.Location = new System.Drawing.Point(61, 161);
+            this.labelTSF6.Location = new System.Drawing.Point(40, 161);
             this.labelTSF6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTSF6.Name = "labelTSF6";
             this.labelTSF6.Size = new System.Drawing.Size(37, 17);
@@ -959,7 +1011,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTNeon.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTNeon.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTNeon.Location = new System.Drawing.Point(108, 127);
+            this.tbTNeon.Location = new System.Drawing.Point(87, 127);
             this.tbTNeon.Margin = new System.Windows.Forms.Padding(4);
             this.tbTNeon.Name = "tbTNeon";
             this.tbTNeon.ReadOnly = true;
@@ -969,7 +1021,7 @@ namespace UEDMHardwareControl
             // labelTNeon
             // 
             this.labelTNeon.AutoSize = true;
-            this.labelTNeon.Location = new System.Drawing.Point(52, 129);
+            this.labelTNeon.Location = new System.Drawing.Point(31, 129);
             this.labelTNeon.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTNeon.Name = "labelTNeon";
             this.labelTNeon.Size = new System.Drawing.Size(46, 17);
@@ -980,7 +1032,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTS2.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTS2.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTS2.Location = new System.Drawing.Point(108, 63);
+            this.tbTS2.Location = new System.Drawing.Point(87, 63);
             this.tbTS2.Margin = new System.Windows.Forms.Padding(4);
             this.tbTS2.Name = "tbTS2";
             this.tbTS2.ReadOnly = true;
@@ -990,7 +1042,7 @@ namespace UEDMHardwareControl
             // labelTS2
             // 
             this.labelTS2.AutoSize = true;
-            this.labelTS2.Location = new System.Drawing.Point(69, 65);
+            this.labelTS2.Location = new System.Drawing.Point(48, 65);
             this.labelTS2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTS2.Name = "labelTS2";
             this.labelTS2.Size = new System.Drawing.Size(29, 17);
@@ -1000,7 +1052,7 @@ namespace UEDMHardwareControl
             // labelTCell
             // 
             this.labelTCell.AutoSize = true;
-            this.labelTCell.Location = new System.Drawing.Point(64, 33);
+            this.labelTCell.Location = new System.Drawing.Point(43, 33);
             this.labelTCell.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTCell.Name = "labelTCell";
             this.labelTCell.Size = new System.Drawing.Size(35, 17);
@@ -1011,7 +1063,7 @@ namespace UEDMHardwareControl
             // 
             this.tbTCell.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbTCell.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTCell.Location = new System.Drawing.Point(108, 31);
+            this.tbTCell.Location = new System.Drawing.Point(87, 31);
             this.tbTCell.Margin = new System.Windows.Forms.Padding(4);
             this.tbTCell.Name = "tbTCell";
             this.tbTCell.ReadOnly = true;
@@ -1021,7 +1073,7 @@ namespace UEDMHardwareControl
             // labelPBeamline
             // 
             this.labelPBeamline.AutoSize = true;
-            this.labelPBeamline.Location = new System.Drawing.Point(29, 60);
+            this.labelPBeamline.Location = new System.Drawing.Point(8, 60);
             this.labelPBeamline.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPBeamline.Name = "labelPBeamline";
             this.labelPBeamline.Size = new System.Drawing.Size(70, 17);
@@ -1032,7 +1084,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPBeamline.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPBeamline.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPBeamline.Location = new System.Drawing.Point(108, 57);
+            this.tbPBeamline.Location = new System.Drawing.Point(87, 57);
             this.tbPBeamline.Margin = new System.Windows.Forms.Padding(4);
             this.tbPBeamline.Name = "tbPBeamline";
             this.tbPBeamline.ReadOnly = true;
@@ -1051,7 +1103,7 @@ namespace UEDMHardwareControl
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(272, 132);
+            this.groupBox1.Size = new System.Drawing.Size(243, 132);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pressure Monitors";
@@ -1060,7 +1112,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPDetection.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPDetection.Location = new System.Drawing.Point(108, 92);
+            this.tbPDetection.Location = new System.Drawing.Point(87, 92);
             this.tbPDetection.Margin = new System.Windows.Forms.Padding(4);
             this.tbPDetection.Name = "tbPDetection";
             this.tbPDetection.ReadOnly = true;
@@ -1070,7 +1122,7 @@ namespace UEDMHardwareControl
             // labelPDetection
             // 
             this.labelPDetection.AutoSize = true;
-            this.labelPDetection.Location = new System.Drawing.Point(29, 96);
+            this.labelPDetection.Location = new System.Drawing.Point(8, 96);
             this.labelPDetection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPDetection.Name = "labelPDetection";
             this.labelPDetection.Size = new System.Drawing.Size(72, 17);
@@ -1080,7 +1132,7 @@ namespace UEDMHardwareControl
             // labelPSource
             // 
             this.labelPSource.AutoSize = true;
-            this.labelPSource.Location = new System.Drawing.Point(41, 27);
+            this.labelPSource.Location = new System.Drawing.Point(20, 27);
             this.labelPSource.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPSource.Name = "labelPSource";
             this.labelPSource.Size = new System.Drawing.Size(57, 17);
@@ -1091,7 +1143,7 @@ namespace UEDMHardwareControl
             // 
             this.tbPSource.BackColor = System.Drawing.SystemColors.MenuText;
             this.tbPSource.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbPSource.Location = new System.Drawing.Point(108, 23);
+            this.tbPSource.Location = new System.Drawing.Point(87, 23);
             this.tbPSource.Margin = new System.Windows.Forms.Padding(4);
             this.tbPSource.Name = "tbPSource";
             this.tbPSource.ReadOnly = true;
@@ -1107,7 +1159,7 @@ namespace UEDMHardwareControl
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1715, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(1648, 26);
             this.menuStrip1.TabIndex = 17;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1294,7 +1346,7 @@ namespace UEDMHardwareControl
             this.gbCryoControl.Margin = new System.Windows.Forms.Padding(4);
             this.gbCryoControl.Name = "gbCryoControl";
             this.gbCryoControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbCryoControl.Size = new System.Drawing.Size(272, 90);
+            this.gbCryoControl.Size = new System.Drawing.Size(243, 90);
             this.gbCryoControl.TabIndex = 19;
             this.gbCryoControl.TabStop = false;
             this.gbCryoControl.Text = "Cryo Cooler Control";
@@ -1347,16 +1399,16 @@ namespace UEDMHardwareControl
             this.gbTemperatureandPressureMonitoringControl.Margin = new System.Windows.Forms.Padding(4);
             this.gbTemperatureandPressureMonitoringControl.Name = "gbTemperatureandPressureMonitoringControl";
             this.gbTemperatureandPressureMonitoringControl.Padding = new System.Windows.Forms.Padding(4);
-            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(272, 204);
+            this.gbTemperatureandPressureMonitoringControl.Size = new System.Drawing.Size(243, 204);
             this.gbTemperatureandPressureMonitoringControl.TabIndex = 20;
             this.gbTemperatureandPressureMonitoringControl.TabStop = false;
-            this.gbTemperatureandPressureMonitoringControl.Text = "Temperature and Pressure Monitoring";
+            this.gbTemperatureandPressureMonitoringControl.Text = "T and p Monitoring";
             // 
             // tbTandPPollPeriodMonitor
             // 
             this.tbTandPPollPeriodMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbTandPPollPeriodMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(141, 65);
+            this.tbTandPPollPeriodMonitor.Location = new System.Drawing.Point(131, 65);
             this.tbTandPPollPeriodMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbTandPPollPeriodMonitor.Name = "tbTandPPollPeriodMonitor";
             this.tbTandPPollPeriodMonitor.ReadOnly = true;
@@ -1365,7 +1417,7 @@ namespace UEDMHardwareControl
             // 
             // btSaveAllPTDataToCSV
             // 
-            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(140, 143);
+            this.btSaveAllPTDataToCSV.Location = new System.Drawing.Point(129, 143);
             this.btSaveAllPTDataToCSV.Margin = new System.Windows.Forms.Padding(4);
             this.btSaveAllPTDataToCSV.Name = "btSaveAllPTDataToCSV";
             this.btSaveAllPTDataToCSV.Size = new System.Drawing.Size(100, 47);
@@ -1376,7 +1428,7 @@ namespace UEDMHardwareControl
             // 
             // btResetPTCSVData
             // 
-            this.btResetPTCSVData.Location = new System.Drawing.Point(23, 143);
+            this.btResetPTCSVData.Location = new System.Drawing.Point(12, 143);
             this.btResetPTCSVData.Margin = new System.Windows.Forms.Padding(4);
             this.btResetPTCSVData.Name = "btResetPTCSVData";
             this.btResetPTCSVData.Size = new System.Drawing.Size(100, 47);
@@ -1387,7 +1439,7 @@ namespace UEDMHardwareControl
             // 
             // btUpdatePTPollPeriod
             // 
-            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(23, 98);
+            this.btUpdatePTPollPeriod.Location = new System.Drawing.Point(12, 98);
             this.btUpdatePTPollPeriod.Margin = new System.Windows.Forms.Padding(4);
             this.btUpdatePTPollPeriod.Name = "btUpdatePTPollPeriod";
             this.btUpdatePTPollPeriod.Size = new System.Drawing.Size(100, 28);
@@ -1399,7 +1451,7 @@ namespace UEDMHardwareControl
             // labelTandPPollPeriod
             // 
             this.labelTandPPollPeriod.AutoSize = true;
-            this.labelTandPPollPeriod.Location = new System.Drawing.Point(27, 65);
+            this.labelTandPPollPeriod.Location = new System.Drawing.Point(16, 65);
             this.labelTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelTandPPollPeriod.Name = "labelTandPPollPeriod";
             this.labelTandPPollPeriod.Size = new System.Drawing.Size(111, 17);
@@ -1408,7 +1460,7 @@ namespace UEDMHardwareControl
             // 
             // tbTandPPollPeriod
             // 
-            this.tbTandPPollPeriod.Location = new System.Drawing.Point(140, 101);
+            this.tbTandPPollPeriod.Location = new System.Drawing.Point(129, 101);
             this.tbTandPPollPeriod.Margin = new System.Windows.Forms.Padding(4);
             this.tbTandPPollPeriod.Name = "tbTandPPollPeriod";
             this.tbTandPPollPeriod.Size = new System.Drawing.Size(100, 22);
@@ -1419,7 +1471,7 @@ namespace UEDMHardwareControl
             // btStopTandPMonitoring
             // 
             this.btStopTandPMonitoring.Enabled = false;
-            this.btStopTandPMonitoring.Location = new System.Drawing.Point(141, 27);
+            this.btStopTandPMonitoring.Location = new System.Drawing.Point(131, 27);
             this.btStopTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
             this.btStopTandPMonitoring.Name = "btStopTandPMonitoring";
             this.btStopTandPMonitoring.Size = new System.Drawing.Size(99, 28);
@@ -1430,7 +1482,7 @@ namespace UEDMHardwareControl
             // 
             // btStartTandPMonitoring
             // 
-            this.btStartTandPMonitoring.Location = new System.Drawing.Point(23, 27);
+            this.btStartTandPMonitoring.Location = new System.Drawing.Point(12, 27);
             this.btStartTandPMonitoring.Margin = new System.Windows.Forms.Padding(4);
             this.btStartTandPMonitoring.Name = "btStartTandPMonitoring";
             this.btStartTandPMonitoring.Size = new System.Drawing.Size(100, 28);
@@ -1467,7 +1519,7 @@ namespace UEDMHardwareControl
             this.groupBoxStatus.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxStatus.Name = "groupBoxStatus";
             this.groupBoxStatus.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxStatus.Size = new System.Drawing.Size(272, 207);
+            this.groupBoxStatus.Size = new System.Drawing.Size(243, 207);
             this.groupBoxStatus.TabIndex = 24;
             this.groupBoxStatus.TabStop = false;
             this.groupBoxStatus.Text = "Status";
@@ -1482,7 +1534,7 @@ namespace UEDMHardwareControl
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.ReadOnly = true;
             this.tbStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbStatus.Size = new System.Drawing.Size(255, 176);
+            this.tbStatus.Size = new System.Drawing.Size(233, 176);
             this.tbStatus.TabIndex = 6;
             // 
             // tabPage1
@@ -1523,7 +1575,7 @@ namespace UEDMHardwareControl
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage1.Size = new System.Drawing.Size(1377, 883);
             this.tabPage1.TabIndex = 9;
             this.tabPage1.Text = "Serial Ports";
             // 
@@ -1876,7 +1928,7 @@ namespace UEDMHardwareControl
             this.tabPagePumping.Location = new System.Drawing.Point(4, 25);
             this.tabPagePumping.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPagePumping.Name = "tabPagePumping";
-            this.tabPagePumping.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePumping.Size = new System.Drawing.Size(1377, 883);
             this.tabPagePumping.TabIndex = 7;
             this.tabPagePumping.Text = "Microwaves";
             // 
@@ -1895,7 +1947,7 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitorDetection.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitorDetection.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(1258, 292);
+            this.tbMWSynthTemperatureMonitorDetection.Location = new System.Drawing.Point(1259, 292);
             this.tbMWSynthTemperatureMonitorDetection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWSynthTemperatureMonitorDetection.Name = "tbMWSynthTemperatureMonitorDetection";
             this.tbMWSynthTemperatureMonitorDetection.ReadOnly = true;
@@ -1927,7 +1979,7 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitor.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitor.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(1258, 40);
+            this.tbMWSynthTemperatureMonitor.Location = new System.Drawing.Point(1259, 39);
             this.tbMWSynthTemperatureMonitor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWSynthTemperatureMonitor.Name = "tbMWSynthTemperatureMonitor";
             this.tbMWSynthTemperatureMonitor.ReadOnly = true;
@@ -1937,6 +1989,7 @@ namespace UEDMHardwareControl
             // btQueryMWSynthTemperatureDetectionB
             // 
             this.btQueryMWSynthTemperatureDetectionB.Location = new System.Drawing.Point(1191, 640);
+            this.btQueryMWSynthTemperatureDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btQueryMWSynthTemperatureDetectionB.Name = "btQueryMWSynthTemperatureDetectionB";
             this.btQueryMWSynthTemperatureDetectionB.Size = new System.Drawing.Size(57, 28);
             this.btQueryMWSynthTemperatureDetectionB.TabIndex = 120;
@@ -1948,7 +2001,8 @@ namespace UEDMHardwareControl
             // 
             this.tbMWSynthTemperatureMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWSynthTemperatureMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
-            this.tbMWSynthTemperatureMonitorDetectionB.Location = new System.Drawing.Point(1258, 643);
+            this.tbMWSynthTemperatureMonitorDetectionB.Location = new System.Drawing.Point(1259, 642);
+            this.tbMWSynthTemperatureMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWSynthTemperatureMonitorDetectionB.Name = "tbMWSynthTemperatureMonitorDetectionB";
             this.tbMWSynthTemperatureMonitorDetectionB.ReadOnly = true;
             this.tbMWSynthTemperatureMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
@@ -1962,7 +2016,6 @@ namespace UEDMHardwareControl
             this.labelDetectSynthTempB.Size = new System.Drawing.Size(154, 17);
             this.labelDetectSynthTempB.TabIndex = 122;
             this.labelDetectSynthTempB.Text = "Synth temperature (°C)";
-            this.labelDetectSynthTempB.Click += new System.EventHandler(this.labelDetectSynthTempB_Click);
             // 
             // groupBoxMWSwitch
             // 
@@ -1976,7 +2029,7 @@ namespace UEDMHardwareControl
             this.groupBoxMWSwitch.Controls.Add(this.ledChADetA);
             this.groupBoxMWSwitch.Controls.Add(this.labelMWSwitchState);
             this.groupBoxMWSwitch.Controls.Add(this.cBMWSwitchState);
-            this.groupBoxMWSwitch.Location = new System.Drawing.Point(4, 473);
+            this.groupBoxMWSwitch.Location = new System.Drawing.Point(4, 530);
             this.groupBoxMWSwitch.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxMWSwitch.Name = "groupBoxMWSwitch";
             this.groupBoxMWSwitch.Padding = new System.Windows.Forms.Padding(4);
@@ -2094,6 +2147,10 @@ namespace UEDMHardwareControl
             // 
             // groupBoxStirapRF
             // 
+            this.groupBoxStirapRF.Controls.Add(this.label48);
+            this.groupBoxStirapRF.Controls.Add(this.label47);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqFalseValue);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFfreqTrueValue);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmp);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRFFreq);
             this.groupBoxStirapRF.Controls.Add(this.cbStirapRFOn);
@@ -2109,10 +2166,48 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxStirapRF.Name = "groupBoxStirapRF";
             this.groupBoxStirapRF.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBoxStirapRF.Size = new System.Drawing.Size(339, 231);
+            this.groupBoxStirapRF.Size = new System.Drawing.Size(339, 290);
             this.groupBoxStirapRF.TabIndex = 50;
             this.groupBoxStirapRF.TabStop = false;
             this.groupBoxStirapRF.Text = "Stirap RF";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(175, 217);
+            this.label48.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(126, 17);
+            this.label48.TabIndex = 64;
+            this.label48.Text = "False value (MHz):";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(23, 217);
+            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(122, 17);
+            this.label47.TabIndex = 63;
+            this.label47.Text = "True value (MHz):";
+            // 
+            // tbStirapRFfreqFalseValue
+            // 
+            this.tbStirapRFfreqFalseValue.Location = new System.Drawing.Point(179, 239);
+            this.tbStirapRFfreqFalseValue.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFfreqFalseValue.Name = "tbStirapRFfreqFalseValue";
+            this.tbStirapRFfreqFalseValue.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFfreqFalseValue.TabIndex = 62;
+            this.tbStirapRFfreqFalseValue.Text = "175.02";
+            // 
+            // tbStirapRFfreqTrueValue
+            // 
+            this.tbStirapRFfreqTrueValue.Location = new System.Drawing.Point(27, 239);
+            this.tbStirapRFfreqTrueValue.Margin = new System.Windows.Forms.Padding(4);
+            this.tbStirapRFfreqTrueValue.Name = "tbStirapRFfreqTrueValue";
+            this.tbStirapRFfreqTrueValue.Size = new System.Drawing.Size(100, 22);
+            this.tbStirapRFfreqTrueValue.TabIndex = 61;
+            this.tbStirapRFfreqTrueValue.Text = "175.01";
             // 
             // labelStirapRFAmp
             // 
@@ -2536,7 +2631,6 @@ namespace UEDMHardwareControl
             this.groupBoxMWCHBdetection.TabIndex = 47;
             this.groupBoxMWCHBdetection.TabStop = false;
             this.groupBoxMWCHBdetection.Text = "Channel B - Det A";
-            this.groupBoxMWCHBdetection.Enter += new System.EventHandler(this.groupBoxMWCHBdetection_Enter);
             // 
             // cbCHBTrigger
             // 
@@ -2774,19 +2868,21 @@ namespace UEDMHardwareControl
             this.groupBoxMWDetectionB.Controls.Add(this.btUpdateMWFrequencyDetectionB);
             this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencySetpointDetectionB);
             this.groupBoxMWDetectionB.Controls.Add(this.tbMWFrequencyMonitorDetectionB);
-            this.groupBoxMWDetectionB.Location = new System.Drawing.Point(-1, 360);
+            this.groupBoxMWDetectionB.Location = new System.Drawing.Point(-1, 359);
+            this.groupBoxMWDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxMWDetectionB.Name = "groupBoxMWDetectionB";
+            this.groupBoxMWDetectionB.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxMWDetectionB.Size = new System.Drawing.Size(839, 162);
             this.groupBoxMWDetectionB.TabIndex = 60;
             this.groupBoxMWDetectionB.TabStop = false;
             this.groupBoxMWDetectionB.Text = "Mini Synth: Det B";
-            this.groupBoxMWDetectionB.Enter += new System.EventHandler(this.groupBoxMWDetectionB_Enter_1);
             // 
             // cbTriggerDetectionB
             // 
             this.cbTriggerDetectionB.AutoSize = true;
             this.cbTriggerDetectionB.Enabled = false;
             this.cbTriggerDetectionB.Location = new System.Drawing.Point(617, 22);
+            this.cbTriggerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbTriggerDetectionB.Name = "cbTriggerDetectionB";
             this.cbTriggerDetectionB.Size = new System.Drawing.Size(113, 21);
             this.cbTriggerDetectionB.TabIndex = 0;
@@ -2796,6 +2892,7 @@ namespace UEDMHardwareControl
             // 
             this.cbPLLPoweredOnDetectionB.AutoSize = true;
             this.cbPLLPoweredOnDetectionB.Location = new System.Drawing.Point(617, 127);
+            this.cbPLLPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbPLLPoweredOnDetectionB.Name = "cbPLLPoweredOnDetectionB";
             this.cbPLLPoweredOnDetectionB.Size = new System.Drawing.Size(133, 21);
             this.cbPLLPoweredOnDetectionB.TabIndex = 1;
@@ -2806,6 +2903,7 @@ namespace UEDMHardwareControl
             // 
             this.cbPAPoweredOnDetectionB.AutoSize = true;
             this.cbPAPoweredOnDetectionB.Location = new System.Drawing.Point(617, 91);
+            this.cbPAPoweredOnDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbPAPoweredOnDetectionB.Name = "cbPAPoweredOnDetectionB";
             this.cbPAPoweredOnDetectionB.Size = new System.Drawing.Size(126, 21);
             this.cbPAPoweredOnDetectionB.TabIndex = 2;
@@ -2816,6 +2914,7 @@ namespace UEDMHardwareControl
             // 
             this.cbRFMutedDetectionB.AutoSize = true;
             this.cbRFMutedDetectionB.Location = new System.Drawing.Point(617, 55);
+            this.cbRFMutedDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbRFMutedDetectionB.Name = "cbRFMutedDetectionB";
             this.cbRFMutedDetectionB.Size = new System.Drawing.Size(91, 21);
             this.cbRFMutedDetectionB.TabIndex = 3;
@@ -2825,6 +2924,7 @@ namespace UEDMHardwareControl
             // btQueryMWPowerDetectionB
             // 
             this.btQueryMWPowerDetectionB.Location = new System.Drawing.Point(361, 50);
+            this.btQueryMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btQueryMWPowerDetectionB.Name = "btQueryMWPowerDetectionB";
             this.btQueryMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btQueryMWPowerDetectionB.TabIndex = 4;
@@ -2834,6 +2934,7 @@ namespace UEDMHardwareControl
             // btQueryMWFrequencyDetectionB
             // 
             this.btQueryMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 50);
+            this.btQueryMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btQueryMWFrequencyDetectionB.Name = "btQueryMWFrequencyDetectionB";
             this.btQueryMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btQueryMWFrequencyDetectionB.TabIndex = 5;
@@ -2843,6 +2944,7 @@ namespace UEDMHardwareControl
             // btIncrementMWPowerDetectionB
             // 
             this.btIncrementMWPowerDetectionB.Location = new System.Drawing.Point(361, 122);
+            this.btIncrementMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btIncrementMWPowerDetectionB.Name = "btIncrementMWPowerDetectionB";
             this.btIncrementMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btIncrementMWPowerDetectionB.TabIndex = 6;
@@ -2852,6 +2954,7 @@ namespace UEDMHardwareControl
             // tbMWPowerIncrementDetectionB
             // 
             this.tbMWPowerIncrementDetectionB.Location = new System.Drawing.Point(467, 126);
+            this.tbMWPowerIncrementDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWPowerIncrementDetectionB.Name = "tbMWPowerIncrementDetectionB";
             this.tbMWPowerIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
             this.tbMWPowerIncrementDetectionB.TabIndex = 7;
@@ -2859,6 +2962,7 @@ namespace UEDMHardwareControl
             // btUpdateMWPowerDetectionB
             // 
             this.btUpdateMWPowerDetectionB.Location = new System.Drawing.Point(361, 86);
+            this.btUpdateMWPowerDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btUpdateMWPowerDetectionB.Name = "btUpdateMWPowerDetectionB";
             this.btUpdateMWPowerDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btUpdateMWPowerDetectionB.TabIndex = 8;
@@ -2868,6 +2972,7 @@ namespace UEDMHardwareControl
             // tbMWPowerSetpointDetectionB
             // 
             this.tbMWPowerSetpointDetectionB.Location = new System.Drawing.Point(468, 89);
+            this.tbMWPowerSetpointDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWPowerSetpointDetectionB.Name = "tbMWPowerSetpointDetectionB";
             this.tbMWPowerSetpointDetectionB.Size = new System.Drawing.Size(100, 22);
             this.tbMWPowerSetpointDetectionB.TabIndex = 9;
@@ -2887,6 +2992,7 @@ namespace UEDMHardwareControl
             this.tbMWPowerMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWPowerMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWPowerMonitorDetectionB.Location = new System.Drawing.Point(468, 53);
+            this.tbMWPowerMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWPowerMonitorDetectionB.Name = "tbMWPowerMonitorDetectionB";
             this.tbMWPowerMonitorDetectionB.ReadOnly = true;
             this.tbMWPowerMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
@@ -2901,10 +3007,10 @@ namespace UEDMHardwareControl
             "kHz",
             "Hz"});
             this.comboBoxMWSetpointUnitDetectionB.Location = new System.Drawing.Point(264, 89);
+            this.comboBoxMWSetpointUnitDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBoxMWSetpointUnitDetectionB.Name = "comboBoxMWSetpointUnitDetectionB";
             this.comboBoxMWSetpointUnitDetectionB.Size = new System.Drawing.Size(69, 24);
             this.comboBoxMWSetpointUnitDetectionB.TabIndex = 12;
-            this.comboBoxMWSetpointUnitDetectionB.SelectedIndex = 0;
             // 
             // comboBoxMWIncrementUnitDetectionB
             // 
@@ -2915,6 +3021,7 @@ namespace UEDMHardwareControl
             "kHz",
             "Hz"});
             this.comboBoxMWIncrementUnitDetectionB.Location = new System.Drawing.Point(264, 126);
+            this.comboBoxMWIncrementUnitDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBoxMWIncrementUnitDetectionB.Name = "comboBoxMWIncrementUnitDetectionB";
             this.comboBoxMWIncrementUnitDetectionB.Size = new System.Drawing.Size(69, 24);
             this.comboBoxMWIncrementUnitDetectionB.TabIndex = 13;
@@ -2922,6 +3029,7 @@ namespace UEDMHardwareControl
             // btIncrementMWFrequencyDetectionB
             // 
             this.btIncrementMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 122);
+            this.btIncrementMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btIncrementMWFrequencyDetectionB.Name = "btIncrementMWFrequencyDetectionB";
             this.btIncrementMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btIncrementMWFrequencyDetectionB.TabIndex = 14;
@@ -2931,6 +3039,7 @@ namespace UEDMHardwareControl
             // tbMWFrequencyIncrementDetectionB
             // 
             this.tbMWFrequencyIncrementDetectionB.Location = new System.Drawing.Point(157, 126);
+            this.tbMWFrequencyIncrementDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWFrequencyIncrementDetectionB.Name = "tbMWFrequencyIncrementDetectionB";
             this.tbMWFrequencyIncrementDetectionB.Size = new System.Drawing.Size(100, 22);
             this.tbMWFrequencyIncrementDetectionB.TabIndex = 15;
@@ -2938,6 +3047,7 @@ namespace UEDMHardwareControl
             // btUpdateMWFrequencyDetectionB
             // 
             this.btUpdateMWFrequencyDetectionB.Location = new System.Drawing.Point(49, 86);
+            this.btUpdateMWFrequencyDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btUpdateMWFrequencyDetectionB.Name = "btUpdateMWFrequencyDetectionB";
             this.btUpdateMWFrequencyDetectionB.Size = new System.Drawing.Size(100, 28);
             this.btUpdateMWFrequencyDetectionB.TabIndex = 16;
@@ -2947,6 +3057,7 @@ namespace UEDMHardwareControl
             // tbMWFrequencySetpointDetectionB
             // 
             this.tbMWFrequencySetpointDetectionB.Location = new System.Drawing.Point(157, 89);
+            this.tbMWFrequencySetpointDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWFrequencySetpointDetectionB.Name = "tbMWFrequencySetpointDetectionB";
             this.tbMWFrequencySetpointDetectionB.Size = new System.Drawing.Size(100, 22);
             this.tbMWFrequencySetpointDetectionB.TabIndex = 17;
@@ -2957,6 +3068,7 @@ namespace UEDMHardwareControl
             this.tbMWFrequencyMonitorDetectionB.BackColor = System.Drawing.SystemColors.WindowText;
             this.tbMWFrequencyMonitorDetectionB.ForeColor = System.Drawing.Color.Chartreuse;
             this.tbMWFrequencyMonitorDetectionB.Location = new System.Drawing.Point(156, 53);
+            this.tbMWFrequencyMonitorDetectionB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbMWFrequencyMonitorDetectionB.Name = "tbMWFrequencyMonitorDetectionB";
             this.tbMWFrequencyMonitorDetectionB.ReadOnly = true;
             this.tbMWFrequencyMonitorDetectionB.Size = new System.Drawing.Size(99, 22);
@@ -3427,7 +3539,7 @@ namespace UEDMHardwareControl
             this.tabPageBfield.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageBfield.Name = "tabPageBfield";
             this.tabPageBfield.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageBfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageBfield.Size = new System.Drawing.Size(1377, 883);
             this.tabPageBfield.TabIndex = 8;
             this.tabPageBfield.Text = "B-field";
             // 
@@ -4147,7 +4259,7 @@ namespace UEDMHardwareControl
             this.tabPageEfield.Location = new System.Drawing.Point(4, 25);
             this.tabPageEfield.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageEfield.Name = "tabPageEfield";
-            this.tabPageEfield.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageEfield.Size = new System.Drawing.Size(1377, 883);
             this.tabPageEfield.TabIndex = 6;
             this.tabPageEfield.Text = "E-field";
             // 
@@ -4811,6 +4923,7 @@ namespace UEDMHardwareControl
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.pollftTCheckBox);
             this.groupBox7.Controls.Add(this.pollVCheckBox);
             this.groupBox7.Controls.Add(this.tbiMonitorPollPeriod);
             this.groupBox7.Controls.Add(this.changePollPeriodButton);
@@ -4855,6 +4968,17 @@ namespace UEDMHardwareControl
             this.groupBox7.TabIndex = 44;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Current monitors";
+            // 
+            // pollftTCheckBox
+            // 
+            this.pollftTCheckBox.AutoSize = true;
+            this.pollftTCheckBox.Location = new System.Drawing.Point(904, 84);
+            this.pollftTCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.pollftTCheckBox.Name = "pollftTCheckBox";
+            this.pollftTCheckBox.Size = new System.Drawing.Size(154, 21);
+            this.pollftTCheckBox.TabIndex = 79;
+            this.pollftTCheckBox.Text = "poll feedthrough T?";
+            this.pollftTCheckBox.UseVisualStyleBackColor = true;
             // 
             // pollVCheckBox
             // 
@@ -4904,58 +5028,58 @@ namespace UEDMHardwareControl
             // chart5
             // 
             this.chart5.BackColor = System.Drawing.Color.Black;
-            chartArea13.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
-            chartArea13.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX.Title = "Time";
-            chartArea13.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisX2.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY.Title = "Current (nA)";
-            chartArea13.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea13.AxisY2.TitleForeColor = System.Drawing.Color.White;
-            chartArea13.BackColor = System.Drawing.Color.Black;
-            chartArea13.BackImageTransparentColor = System.Drawing.Color.White;
-            chartArea13.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea13.BorderColor = System.Drawing.Color.White;
-            chartArea13.Name = "ChartArea1";
-            this.chart5.ChartAreas.Add(chartArea13);
-            legend13.Alignment = System.Drawing.StringAlignment.Center;
-            legend13.BackColor = System.Drawing.Color.Black;
-            legend13.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend13.ForeColor = System.Drawing.Color.White;
-            legend13.IsEquallySpacedItems = true;
-            legend13.Name = "Legend1";
-            legend13.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
-            this.chart5.Legends.Add(legend13);
+            chartArea1.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY.Title = "Current (nA)";
+            chartArea1.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea1.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea1.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea1.BorderColor = System.Drawing.Color.White;
+            chartArea1.Name = "ChartArea1";
+            this.chart5.ChartAreas.Add(chartArea1);
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.BackColor = System.Drawing.Color.Black;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.ForeColor = System.Drawing.Color.White;
+            legend1.IsEquallySpacedItems = true;
+            legend1.Name = "Legend1";
+            legend1.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart5.Legends.Add(legend1);
             this.chart5.Location = new System.Drawing.Point(12, 140);
             this.chart5.Margin = new System.Windows.Forms.Padding(4);
             this.chart5.Name = "chart5";
-            series45.ChartArea = "ChartArea1";
-            series45.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series45.Legend = "Legend1";
-            series45.Name = "Leakage Current East";
-            series45.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            series46.ChartArea = "ChartArea1";
-            series46.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series46.Legend = "Legend1";
-            series46.Name = "Leakage Current West";
-            series46.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart5.Series.Add(series45);
-            this.chart5.Series.Add(series46);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.Name = "Leakage Current East";
+            series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "Leakage Current West";
+            series2.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart5.Series.Add(series1);
+            this.chart5.Series.Add(series2);
             this.chart5.Size = new System.Drawing.Size(1297, 321);
             this.chart5.TabIndex = 76;
             this.chart5.Text = "chart5";
@@ -5279,7 +5403,7 @@ namespace UEDMHardwareControl
             this.tabPageADIO.Location = new System.Drawing.Point(4, 25);
             this.tabPageADIO.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageADIO.Name = "tabPageADIO";
-            this.tabPageADIO.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageADIO.Size = new System.Drawing.Size(1377, 883);
             this.tabPageADIO.TabIndex = 5;
             this.tabPageADIO.Text = "Analogue/Digital IO";
             // 
@@ -5847,112 +5971,112 @@ namespace UEDMHardwareControl
             // chart4
             // 
             this.chart4.BackColor = System.Drawing.Color.Black;
-            chartArea14.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea14.AxisX.IsStartedFromZero = false;
-            chartArea14.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea14.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea14.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisX.MajorGrid.Enabled = false;
-            chartArea14.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisX.Title = "Time";
-            chartArea14.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea14.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea14.AxisY.IsStartedFromZero = false;
-            chartArea14.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea14.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisY.MajorGrid.Enabled = false;
-            chartArea14.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea14.AxisY.Title = "Value (See units indicators)";
-            chartArea14.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea14.BackColor = System.Drawing.Color.Black;
-            chartArea14.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea14.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea14.BorderColor = System.Drawing.Color.White;
-            chartArea14.Name = "ChartAreaAnalogueInputsChart";
-            this.chart4.ChartAreas.Add(chartArea14);
-            legend14.BackColor = System.Drawing.Color.Black;
-            legend14.Enabled = false;
-            legend14.ForeColor = System.Drawing.Color.White;
-            legend14.Name = "LegendAnalogueInputs";
-            this.chart4.Legends.Add(legend14);
+            chartArea2.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea2.AxisX.IsStartedFromZero = false;
+            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea2.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea2.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisX.Title = "Time";
+            chartArea2.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea2.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea2.AxisY.IsStartedFromZero = false;
+            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea2.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisY.MajorGrid.Enabled = false;
+            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisY.Title = "Value (See units indicators)";
+            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea2.BackColor = System.Drawing.Color.Black;
+            chartArea2.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea2.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea2.BorderColor = System.Drawing.Color.White;
+            chartArea2.Name = "ChartAreaAnalogueInputsChart";
+            this.chart4.ChartAreas.Add(chartArea2);
+            legend2.BackColor = System.Drawing.Color.Black;
+            legend2.Enabled = false;
+            legend2.ForeColor = System.Drawing.Color.White;
+            legend2.Name = "LegendAnalogueInputs";
+            this.chart4.Legends.Add(legend2);
             this.chart4.Location = new System.Drawing.Point(8, 26);
             this.chart4.Margin = new System.Windows.Forms.Padding(4);
             this.chart4.Name = "chart4";
-            series47.ChartArea = "ChartAreaAnalogueInputsChart";
-            series47.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series47.Enabled = false;
-            series47.Legend = "LegendAnalogueInputs";
-            series47.Name = "AI11";
-            series47.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series48.ChartArea = "ChartAreaAnalogueInputsChart";
-            series48.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series48.Enabled = false;
-            series48.Legend = "LegendAnalogueInputs";
-            series48.Name = "AI12";
-            series48.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series49.ChartArea = "ChartAreaAnalogueInputsChart";
-            series49.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series49.Enabled = false;
-            series49.Legend = "LegendAnalogueInputs";
-            series49.Name = "AI13";
-            series49.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series50.ChartArea = "ChartAreaAnalogueInputsChart";
-            series50.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series50.Enabled = false;
-            series50.Legend = "LegendAnalogueInputs";
-            series50.Name = "AI14";
-            series50.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series51.ChartArea = "ChartAreaAnalogueInputsChart";
-            series51.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series51.Enabled = false;
-            series51.Legend = "LegendAnalogueInputs";
-            series51.Name = "AI15";
-            series51.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series52.ChartArea = "ChartAreaAnalogueInputsChart";
-            series52.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series52.Enabled = false;
-            series52.Legend = "LegendAnalogueInputs";
-            series52.Name = "AI11 Converted";
-            series52.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series53.ChartArea = "ChartAreaAnalogueInputsChart";
-            series53.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series53.Enabled = false;
-            series53.Legend = "LegendAnalogueInputs";
-            series53.Name = "AI12 Converted";
-            series54.ChartArea = "ChartAreaAnalogueInputsChart";
-            series54.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series54.Enabled = false;
-            series54.Legend = "LegendAnalogueInputs";
-            series54.Name = "AI13 Converted";
-            series55.ChartArea = "ChartAreaAnalogueInputsChart";
-            series55.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series55.Enabled = false;
-            series55.Legend = "LegendAnalogueInputs";
-            series55.Name = "AI14 Converted";
-            series56.ChartArea = "ChartAreaAnalogueInputsChart";
-            series56.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series56.Enabled = false;
-            series56.Legend = "LegendAnalogueInputs";
-            series56.Name = "AI15 Converted";
-            this.chart4.Series.Add(series47);
-            this.chart4.Series.Add(series48);
-            this.chart4.Series.Add(series49);
-            this.chart4.Series.Add(series50);
-            this.chart4.Series.Add(series51);
-            this.chart4.Series.Add(series52);
-            this.chart4.Series.Add(series53);
-            this.chart4.Series.Add(series54);
-            this.chart4.Series.Add(series55);
-            this.chart4.Series.Add(series56);
+            series3.ChartArea = "ChartAreaAnalogueInputsChart";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Enabled = false;
+            series3.Legend = "LegendAnalogueInputs";
+            series3.Name = "AI11";
+            series3.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series4.ChartArea = "ChartAreaAnalogueInputsChart";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Enabled = false;
+            series4.Legend = "LegendAnalogueInputs";
+            series4.Name = "AI12";
+            series4.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series5.ChartArea = "ChartAreaAnalogueInputsChart";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Enabled = false;
+            series5.Legend = "LegendAnalogueInputs";
+            series5.Name = "AI13";
+            series5.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series6.ChartArea = "ChartAreaAnalogueInputsChart";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Enabled = false;
+            series6.Legend = "LegendAnalogueInputs";
+            series6.Name = "AI14";
+            series6.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series7.ChartArea = "ChartAreaAnalogueInputsChart";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Enabled = false;
+            series7.Legend = "LegendAnalogueInputs";
+            series7.Name = "AI15";
+            series7.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series8.ChartArea = "ChartAreaAnalogueInputsChart";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series8.Enabled = false;
+            series8.Legend = "LegendAnalogueInputs";
+            series8.Name = "AI11 Converted";
+            series8.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series9.ChartArea = "ChartAreaAnalogueInputsChart";
+            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series9.Enabled = false;
+            series9.Legend = "LegendAnalogueInputs";
+            series9.Name = "AI12 Converted";
+            series10.ChartArea = "ChartAreaAnalogueInputsChart";
+            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series10.Enabled = false;
+            series10.Legend = "LegendAnalogueInputs";
+            series10.Name = "AI13 Converted";
+            series11.ChartArea = "ChartAreaAnalogueInputsChart";
+            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series11.Enabled = false;
+            series11.Legend = "LegendAnalogueInputs";
+            series11.Name = "AI14 Converted";
+            series12.ChartArea = "ChartAreaAnalogueInputsChart";
+            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series12.Enabled = false;
+            series12.Legend = "LegendAnalogueInputs";
+            series12.Name = "AI15 Converted";
+            this.chart4.Series.Add(series3);
+            this.chart4.Series.Add(series4);
+            this.chart4.Series.Add(series5);
+            this.chart4.Series.Add(series6);
+            this.chart4.Series.Add(series7);
+            this.chart4.Series.Add(series8);
+            this.chart4.Series.Add(series9);
+            this.chart4.Series.Add(series10);
+            this.chart4.Series.Add(series11);
+            this.chart4.Series.Add(series12);
             this.chart4.Size = new System.Drawing.Size(1152, 517);
             this.chart4.TabIndex = 20;
             this.chart4.Text = "chartAnalogueInputs";
-            title9.BackColor = System.Drawing.Color.Black;
-            title9.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title9.ForeColor = System.Drawing.Color.White;
-            title9.Name = "chartTitleAnalogueInputs";
-            title9.Text = "Analogue Inputs";
-            this.chart4.Titles.Add(title9);
+            title1.BackColor = System.Drawing.Color.Black;
+            title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title1.ForeColor = System.Drawing.Color.White;
+            title1.Name = "chartTitleAnalogueInputs";
+            title1.Text = "Analogue Inputs";
+            this.chart4.Titles.Add(title1);
             // 
             // gbDigitalOutputs
             // 
@@ -6083,7 +6207,7 @@ namespace UEDMHardwareControl
             this.tabPageLakeShore.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageLakeShore.Name = "tabPageLakeShore";
             this.tabPageLakeShore.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageLakeShore.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageLakeShore.Size = new System.Drawing.Size(1377, 883);
             this.tabPageLakeShore.TabIndex = 1;
             this.tabPageLakeShore.Text = "LakeShore 336";
             // 
@@ -6403,7 +6527,7 @@ namespace UEDMHardwareControl
             this.tabPageFlowControllers.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageFlowControllers.Name = "tabPageFlowControllers";
             this.tabPageFlowControllers.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageFlowControllers.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageFlowControllers.Size = new System.Drawing.Size(1377, 883);
             this.tabPageFlowControllers.TabIndex = 2;
             this.tabPageFlowControllers.Text = "Flow Controllers";
             // 
@@ -6703,53 +6827,53 @@ namespace UEDMHardwareControl
             // chart3
             // 
             this.chart3.BackColor = System.Drawing.Color.Black;
-            chartArea15.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea15.AxisX.IsStartedFromZero = false;
-            chartArea15.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea15.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea15.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisX.MajorGrid.Enabled = false;
-            chartArea15.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisX.Title = "Time";
-            chartArea15.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea15.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea15.AxisY.IsStartedFromZero = false;
-            chartArea15.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea15.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisY.MajorGrid.Enabled = false;
-            chartArea15.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea15.AxisY.Title = "Neon Flow (SCCM)";
-            chartArea15.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea15.BackColor = System.Drawing.Color.Black;
-            chartArea15.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea15.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea15.BorderColor = System.Drawing.Color.White;
-            chartArea15.Name = "ChartAreaNeonFlowChart";
-            this.chart3.ChartAreas.Add(chartArea15);
-            legend15.BackColor = System.Drawing.Color.Black;
-            legend15.Enabled = false;
-            legend15.ForeColor = System.Drawing.Color.White;
-            legend15.Name = "LegendNeonFlowChart";
-            this.chart3.Legends.Add(legend15);
+            chartArea3.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea3.AxisX.IsStartedFromZero = false;
+            chartArea3.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea3.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea3.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea3.AxisX.MajorGrid.Enabled = false;
+            chartArea3.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea3.AxisX.Title = "Time";
+            chartArea3.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea3.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea3.AxisY.IsStartedFromZero = false;
+            chartArea3.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea3.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea3.AxisY.MajorGrid.Enabled = false;
+            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea3.AxisY.Title = "Neon Flow (SCCM)";
+            chartArea3.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea3.BackColor = System.Drawing.Color.Black;
+            chartArea3.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea3.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea3.BorderColor = System.Drawing.Color.White;
+            chartArea3.Name = "ChartAreaNeonFlowChart";
+            this.chart3.ChartAreas.Add(chartArea3);
+            legend3.BackColor = System.Drawing.Color.Black;
+            legend3.Enabled = false;
+            legend3.ForeColor = System.Drawing.Color.White;
+            legend3.Name = "LegendNeonFlowChart";
+            this.chart3.Legends.Add(legend3);
             this.chart3.Location = new System.Drawing.Point(8, 16);
             this.chart3.Margin = new System.Windows.Forms.Padding(4);
             this.chart3.Name = "chart3";
-            series57.ChartArea = "ChartAreaNeonFlowChart";
-            series57.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series57.IsVisibleInLegend = false;
-            series57.Legend = "LegendNeonFlowChart";
-            series57.Name = "Neon Flow";
-            series57.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart3.Series.Add(series57);
+            series13.ChartArea = "ChartAreaNeonFlowChart";
+            series13.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series13.IsVisibleInLegend = false;
+            series13.Legend = "LegendNeonFlowChart";
+            series13.Name = "Neon Flow";
+            series13.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart3.Series.Add(series13);
             this.chart3.Size = new System.Drawing.Size(935, 399);
             this.chart3.TabIndex = 19;
             this.chart3.Text = "chartHeliumFlow";
-            title10.BackColor = System.Drawing.Color.Black;
-            title10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title10.ForeColor = System.Drawing.Color.White;
-            title10.Name = "chartTitleHeliumFlow";
-            title10.Text = "Helium Flow (FL)";
-            this.chart3.Titles.Add(title10);
+            title2.BackColor = System.Drawing.Color.Black;
+            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title2.ForeColor = System.Drawing.Color.White;
+            title2.Name = "chartTitleHeliumFlow";
+            title2.Text = "Helium Flow (FL)";
+            this.chart3.Titles.Add(title2);
             // 
             // lbActFlowSetpointSF6
             // 
@@ -6907,7 +7031,7 @@ namespace UEDMHardwareControl
             this.tabPageHeatersControl.Location = new System.Drawing.Point(4, 25);
             this.tabPageHeatersControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageHeatersControl.Name = "tabPageHeatersControl";
-            this.tabPageHeatersControl.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageHeatersControl.Size = new System.Drawing.Size(1377, 883);
             this.tabPageHeatersControl.TabIndex = 4;
             this.tabPageHeatersControl.Text = "Heaters Control";
             // 
@@ -7213,7 +7337,7 @@ namespace UEDMHardwareControl
             this.tabPageSourceModes.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageSourceModes.Name = "tabPageSourceModes";
             this.tabPageSourceModes.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageSourceModes.Size = new System.Drawing.Size(1380, 883);
+            this.tabPageSourceModes.Size = new System.Drawing.Size(1377, 883);
             this.tabPageSourceModes.TabIndex = 3;
             this.tabPageSourceModes.Text = "Source Modes";
             // 
@@ -7935,7 +8059,7 @@ namespace UEDMHardwareControl
             this.tabPagePlotting.Margin = new System.Windows.Forms.Padding(4);
             this.tabPagePlotting.Name = "tabPagePlotting";
             this.tabPagePlotting.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPagePlotting.Size = new System.Drawing.Size(1380, 883);
+            this.tabPagePlotting.Size = new System.Drawing.Size(1377, 883);
             this.tabPagePlotting.TabIndex = 0;
             this.tabPagePlotting.Text = "Pressure and T";
             // 
@@ -8570,81 +8694,81 @@ namespace UEDMHardwareControl
             // chart1
             // 
             this.chart1.BackColor = System.Drawing.Color.Black;
-            chartArea16.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea16.AxisX.IsStartedFromZero = false;
-            chartArea16.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea16.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea16.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.MinorGrid.Enabled = true;
-            chartArea16.AxisX.MinorTickMark.Enabled = true;
-            chartArea16.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisX.Title = "Time";
-            chartArea16.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea16.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea16.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
-            chartArea16.AxisY.IsStartedFromZero = false;
-            chartArea16.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea16.AxisY.LabelStyle.Format = "e1";
-            chartArea16.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea16.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.MinorGrid.Enabled = true;
-            chartArea16.AxisY.MinorTickMark.Enabled = true;
-            chartArea16.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea16.AxisY.Title = "Pressure (mbar)";
-            chartArea16.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea16.BackColor = System.Drawing.Color.Black;
-            chartArea16.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea16.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea16.BorderColor = System.Drawing.Color.White;
-            chartArea16.CursorX.Interval = 100D;
-            chartArea16.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea16.CursorX.IsUserEnabled = true;
-            chartArea16.CursorX.IsUserSelectionEnabled = true;
-            chartArea16.CursorY.Interval = 1E-08D;
-            chartArea16.CursorY.IsUserEnabled = true;
-            chartArea16.CursorY.IsUserSelectionEnabled = true;
-            chartArea16.Name = "ChartAreaPressureChart";
-            this.chart1.ChartAreas.Add(chartArea16);
-            legend16.BackColor = System.Drawing.Color.Black;
-            legend16.ForeColor = System.Drawing.Color.White;
-            legend16.Name = "LegendPressureChart";
-            this.chart1.Legends.Add(legend16);
+            chartArea4.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea4.AxisX.IsStartedFromZero = false;
+            chartArea4.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea4.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea4.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisX.MinorGrid.Enabled = true;
+            chartArea4.AxisX.MinorTickMark.Enabled = true;
+            chartArea4.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisX.Title = "Time";
+            chartArea4.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea4.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea4.AxisY.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+            chartArea4.AxisY.IsStartedFromZero = false;
+            chartArea4.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea4.AxisY.LabelStyle.Format = "e1";
+            chartArea4.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea4.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisY.MinorGrid.Enabled = true;
+            chartArea4.AxisY.MinorTickMark.Enabled = true;
+            chartArea4.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea4.AxisY.Title = "Pressure (mbar)";
+            chartArea4.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea4.BackColor = System.Drawing.Color.Black;
+            chartArea4.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea4.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea4.BorderColor = System.Drawing.Color.White;
+            chartArea4.CursorX.Interval = 100D;
+            chartArea4.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea4.CursorX.IsUserEnabled = true;
+            chartArea4.CursorX.IsUserSelectionEnabled = true;
+            chartArea4.CursorY.Interval = 1E-08D;
+            chartArea4.CursorY.IsUserEnabled = true;
+            chartArea4.CursorY.IsUserSelectionEnabled = true;
+            chartArea4.Name = "ChartAreaPressureChart";
+            this.chart1.ChartAreas.Add(chartArea4);
+            legend4.BackColor = System.Drawing.Color.Black;
+            legend4.ForeColor = System.Drawing.Color.White;
+            legend4.Name = "LegendPressureChart";
+            this.chart1.Legends.Add(legend4);
             this.chart1.Location = new System.Drawing.Point(8, 7);
             this.chart1.Margin = new System.Windows.Forms.Padding(4);
             this.chart1.Name = "chart1";
-            series58.BackSecondaryColor = System.Drawing.Color.White;
-            series58.BorderColor = System.Drawing.Color.White;
-            series58.ChartArea = "ChartAreaPressureChart";
-            series58.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series58.Color = System.Drawing.Color.White;
-            series58.CustomProperties = "EmptyPointValue=Zero";
-            series58.LabelBackColor = System.Drawing.Color.White;
-            series58.Legend = "LegendPressureChart";
-            series58.Name = "Source";
-            series58.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series59.ChartArea = "ChartAreaPressureChart";
-            series59.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series59.Enabled = false;
-            series59.Legend = "LegendPressureChart";
-            series59.Name = "Beamline";
-            series60.ChartArea = "ChartAreaPressureChart";
-            series60.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series60.Legend = "LegendPressureChart";
-            series60.Name = "Detection";
-            this.chart1.Series.Add(series58);
-            this.chart1.Series.Add(series59);
-            this.chart1.Series.Add(series60);
+            series14.BackSecondaryColor = System.Drawing.Color.White;
+            series14.BorderColor = System.Drawing.Color.White;
+            series14.ChartArea = "ChartAreaPressureChart";
+            series14.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series14.Color = System.Drawing.Color.White;
+            series14.CustomProperties = "EmptyPointValue=Zero";
+            series14.LabelBackColor = System.Drawing.Color.White;
+            series14.Legend = "LegendPressureChart";
+            series14.Name = "Source";
+            series14.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series15.ChartArea = "ChartAreaPressureChart";
+            series15.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series15.Enabled = false;
+            series15.Legend = "LegendPressureChart";
+            series15.Name = "Beamline";
+            series16.ChartArea = "ChartAreaPressureChart";
+            series16.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series16.Legend = "LegendPressureChart";
+            series16.Name = "Detection";
+            this.chart1.Series.Add(series14);
+            this.chart1.Series.Add(series15);
+            this.chart1.Series.Add(series16);
             this.chart1.Size = new System.Drawing.Size(964, 423);
             this.chart1.TabIndex = 18;
             this.chart1.Text = "chartPressure";
-            title11.BackColor = System.Drawing.Color.Black;
-            title11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title11.ForeColor = System.Drawing.Color.White;
-            title11.Name = "chartTitleSourcePressure";
-            title11.Text = "Pressure";
-            this.chart1.Titles.Add(title11);
+            title3.BackColor = System.Drawing.Color.Black;
+            title3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title3.ForeColor = System.Drawing.Color.White;
+            title3.Name = "chartTitleSourcePressure";
+            title3.Text = "Pressure";
+            this.chart1.Titles.Add(title3);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             this.chart1.MouseEnter += new System.EventHandler(this.chart1_MouseEnter);
             this.chart1.MouseLeave += new System.EventHandler(this.chart1_MouseLeave);
@@ -8652,96 +8776,96 @@ namespace UEDMHardwareControl
             // chart2
             // 
             this.chart2.BackColor = System.Drawing.Color.Black;
-            chartArea17.AxisX.InterlacedColor = System.Drawing.Color.Black;
-            chartArea17.AxisX.IsStartedFromZero = false;
-            chartArea17.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea17.AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartArea17.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MajorGrid.Enabled = false;
-            chartArea17.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.MinorTickMark.Enabled = true;
-            chartArea17.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisX.Title = "Time";
-            chartArea17.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea17.AxisY.InterlacedColor = System.Drawing.Color.Black;
-            chartArea17.AxisY.IsStartedFromZero = false;
-            chartArea17.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea17.AxisY.LabelStyle.Format = "000.0";
-            chartArea17.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea17.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.MinorTickMark.Enabled = true;
-            chartArea17.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea17.AxisY.Title = "Temperature (K)";
-            chartArea17.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea17.BackColor = System.Drawing.Color.Black;
-            chartArea17.BackImageTransparentColor = System.Drawing.Color.Black;
-            chartArea17.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea17.BorderColor = System.Drawing.Color.White;
-            chartArea17.CursorX.Interval = 100D;
-            chartArea17.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
-            chartArea17.CursorX.IsUserEnabled = true;
-            chartArea17.CursorX.IsUserSelectionEnabled = true;
-            chartArea17.CursorY.Interval = 0.01D;
-            chartArea17.CursorY.IsUserEnabled = true;
-            chartArea17.CursorY.IsUserSelectionEnabled = true;
-            chartArea17.Name = "ChartArea2";
-            this.chart2.ChartAreas.Add(chartArea17);
-            legend17.BackColor = System.Drawing.Color.Black;
-            legend17.ForeColor = System.Drawing.Color.White;
-            legend17.Name = "LegendChart2";
-            this.chart2.Legends.Add(legend17);
+            chartArea5.AxisX.InterlacedColor = System.Drawing.Color.Black;
+            chartArea5.AxisX.IsStartedFromZero = false;
+            chartArea5.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartArea5.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.MajorGrid.Enabled = false;
+            chartArea5.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.MinorTickMark.Enabled = true;
+            chartArea5.AxisX.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisX.Title = "Time";
+            chartArea5.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY.InterlacedColor = System.Drawing.Color.Black;
+            chartArea5.AxisY.IsStartedFromZero = false;
+            chartArea5.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea5.AxisY.LabelStyle.Format = "000.0";
+            chartArea5.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            chartArea5.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY.MinorTickMark.Enabled = true;
+            chartArea5.AxisY.MinorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea5.AxisY.Title = "Temperature (K)";
+            chartArea5.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea5.BackColor = System.Drawing.Color.Black;
+            chartArea5.BackImageTransparentColor = System.Drawing.Color.Black;
+            chartArea5.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea5.BorderColor = System.Drawing.Color.White;
+            chartArea5.CursorX.Interval = 100D;
+            chartArea5.CursorX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Milliseconds;
+            chartArea5.CursorX.IsUserEnabled = true;
+            chartArea5.CursorX.IsUserSelectionEnabled = true;
+            chartArea5.CursorY.Interval = 0.01D;
+            chartArea5.CursorY.IsUserEnabled = true;
+            chartArea5.CursorY.IsUserSelectionEnabled = true;
+            chartArea5.Name = "ChartArea2";
+            this.chart2.ChartAreas.Add(chartArea5);
+            legend5.BackColor = System.Drawing.Color.Black;
+            legend5.ForeColor = System.Drawing.Color.White;
+            legend5.Name = "LegendChart2";
+            this.chart2.Legends.Add(legend5);
             this.chart2.Location = new System.Drawing.Point(8, 433);
             this.chart2.Margin = new System.Windows.Forms.Padding(4);
             this.chart2.Name = "chart2";
-            series61.BackSecondaryColor = System.Drawing.Color.White;
-            series61.BorderColor = System.Drawing.Color.White;
-            series61.ChartArea = "ChartArea2";
-            series61.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series61.Color = System.Drawing.Color.White;
-            series61.LabelBackColor = System.Drawing.Color.White;
-            series61.Legend = "LegendChart2";
-            series61.Name = "Cell";
-            series61.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series62.ChartArea = "ChartArea2";
-            series62.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series62.Enabled = false;
-            series62.Legend = "LegendChart2";
-            series62.Name = "S2";
-            series62.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series63.ChartArea = "ChartArea2";
-            series63.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series63.Enabled = false;
-            series63.Legend = "LegendChart2";
-            series63.Name = "S1";
-            series63.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series64.ChartArea = "ChartArea2";
-            series64.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series64.Enabled = false;
-            series64.Legend = "LegendChart2";
-            series64.Name = "SF6";
-            series64.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            series65.ChartArea = "ChartArea2";
-            series65.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series65.Enabled = false;
-            series65.Legend = "LegendChart2";
-            series65.Name = "Neon";
-            series65.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
-            this.chart2.Series.Add(series61);
-            this.chart2.Series.Add(series62);
-            this.chart2.Series.Add(series63);
-            this.chart2.Series.Add(series64);
-            this.chart2.Series.Add(series65);
+            series17.BackSecondaryColor = System.Drawing.Color.White;
+            series17.BorderColor = System.Drawing.Color.White;
+            series17.ChartArea = "ChartArea2";
+            series17.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series17.Color = System.Drawing.Color.White;
+            series17.LabelBackColor = System.Drawing.Color.White;
+            series17.Legend = "LegendChart2";
+            series17.Name = "Cell";
+            series17.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series18.ChartArea = "ChartArea2";
+            series18.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series18.Enabled = false;
+            series18.Legend = "LegendChart2";
+            series18.Name = "S2";
+            series18.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series19.ChartArea = "ChartArea2";
+            series19.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series19.Enabled = false;
+            series19.Legend = "LegendChart2";
+            series19.Name = "S1";
+            series19.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series20.ChartArea = "ChartArea2";
+            series20.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series20.Enabled = false;
+            series20.Legend = "LegendChart2";
+            series20.Name = "SF6";
+            series20.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            series21.ChartArea = "ChartArea2";
+            series21.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series21.Enabled = false;
+            series21.Legend = "LegendChart2";
+            series21.Name = "Neon";
+            series21.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.DateTime;
+            this.chart2.Series.Add(series17);
+            this.chart2.Series.Add(series18);
+            this.chart2.Series.Add(series19);
+            this.chart2.Series.Add(series20);
+            this.chart2.Series.Add(series21);
             this.chart2.Size = new System.Drawing.Size(964, 423);
             this.chart2.TabIndex = 22;
             this.chart2.Text = "chart2";
-            title12.BackColor = System.Drawing.Color.Black;
-            title12.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            title12.ForeColor = System.Drawing.Color.White;
-            title12.Name = "chartTitle2";
-            title12.Text = "Temperature";
-            this.chart2.Titles.Add(title12);
+            title4.BackColor = System.Drawing.Color.Black;
+            title4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title4.ForeColor = System.Drawing.Color.White;
+            title4.Name = "chartTitle2";
+            title4.Text = "Temperature";
+            this.chart2.Titles.Add(title4);
             // 
             // tabControl
             // 
@@ -8757,12 +8881,12 @@ namespace UEDMHardwareControl
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabCCDCamera);
-            this.tabControl.Controls.Add(this.tabPage3);
-            this.tabControl.Location = new System.Drawing.Point(296, 33);
+            this.tabControl.Controls.Add(this.PDMonitorTabPage);
+            this.tabControl.Location = new System.Drawing.Point(260, 27);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1388, 912);
+            this.tabControl.Size = new System.Drawing.Size(1385, 912);
             this.tabControl.TabIndex = 23;
             // 
             // tabPage2
@@ -8788,7 +8912,7 @@ namespace UEDMHardwareControl
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1380, 883);
+            this.tabPage2.Size = new System.Drawing.Size(1377, 883);
             this.tabPage2.TabIndex = 10;
             this.tabPage2.Text = "Frequency Counter";
             // 
@@ -8928,52 +9052,52 @@ namespace UEDMHardwareControl
             // chart6
             // 
             this.chart6.BackColor = System.Drawing.Color.Black;
-            chartArea18.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
-            chartArea18.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX.Title = "Time";
-            chartArea18.AxisX.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisX2.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY.Title = "Frequency";
-            chartArea18.AxisY.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
-            chartArea18.AxisY2.TitleForeColor = System.Drawing.Color.White;
-            chartArea18.BackColor = System.Drawing.Color.Black;
-            chartArea18.BackImageTransparentColor = System.Drawing.Color.White;
-            chartArea18.BackSecondaryColor = System.Drawing.Color.White;
-            chartArea18.BorderColor = System.Drawing.Color.White;
-            chartArea18.Name = "ChartArea1";
-            this.chart6.ChartAreas.Add(chartArea18);
-            legend18.Alignment = System.Drawing.StringAlignment.Center;
-            legend18.BackColor = System.Drawing.Color.Black;
-            legend18.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend18.ForeColor = System.Drawing.Color.White;
-            legend18.IsEquallySpacedItems = true;
-            legend18.Name = "Legend1";
-            legend18.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
-            this.chart6.Legends.Add(legend18);
+            chartArea6.AlignmentOrientation = ((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations)((System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Vertical | System.Windows.Forms.DataVisualization.Charting.AreaAlignmentOrientations.Horizontal)));
+            chartArea6.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX.Title = "Time";
+            chartArea6.AxisX.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisX2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY.Title = "Frequency";
+            chartArea6.AxisY.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorGrid.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.MajorTickMark.LineColor = System.Drawing.Color.White;
+            chartArea6.AxisY2.TitleForeColor = System.Drawing.Color.White;
+            chartArea6.BackColor = System.Drawing.Color.Black;
+            chartArea6.BackImageTransparentColor = System.Drawing.Color.White;
+            chartArea6.BackSecondaryColor = System.Drawing.Color.White;
+            chartArea6.BorderColor = System.Drawing.Color.White;
+            chartArea6.Name = "ChartArea1";
+            this.chart6.ChartAreas.Add(chartArea6);
+            legend6.Alignment = System.Drawing.StringAlignment.Center;
+            legend6.BackColor = System.Drawing.Color.Black;
+            legend6.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend6.ForeColor = System.Drawing.Color.White;
+            legend6.IsEquallySpacedItems = true;
+            legend6.Name = "Legend1";
+            legend6.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
+            this.chart6.Legends.Add(legend6);
             this.chart6.Location = new System.Drawing.Point(33, 283);
             this.chart6.Margin = new System.Windows.Forms.Padding(4);
             this.chart6.Name = "chart6";
-            series66.ChartArea = "ChartArea1";
-            series66.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series66.Legend = "Legend1";
-            series66.Name = "Beat Frequency";
-            series66.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
-            this.chart6.Series.Add(series66);
+            series22.ChartArea = "ChartArea1";
+            series22.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series22.Legend = "Legend1";
+            series22.Name = "Beat Frequency";
+            series22.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
+            this.chart6.Series.Add(series22);
             this.chart6.Size = new System.Drawing.Size(1297, 321);
             this.chart6.TabIndex = 77;
             this.chart6.Text = "chart6";
@@ -9037,7 +9161,7 @@ namespace UEDMHardwareControl
             this.tabCCDCamera.Margin = new System.Windows.Forms.Padding(4);
             this.tabCCDCamera.Name = "tabCCDCamera";
             this.tabCCDCamera.Padding = new System.Windows.Forms.Padding(4);
-            this.tabCCDCamera.Size = new System.Drawing.Size(1380, 883);
+            this.tabCCDCamera.Size = new System.Drawing.Size(1377, 883);
             this.tabCCDCamera.TabIndex = 11;
             this.tabCCDCamera.Text = "CCD Camera";
             // 
@@ -9324,221 +9448,682 @@ namespace UEDMHardwareControl
             this.labelCCDShotCount.TabIndex = 34;
             this.labelCCDShotCount.Text = "Shot Count (Read Only)";
             // 
-            // tabPage3
+            // PDMonitorTabPage
             // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.tabPage3.Controls.Add(this.groupBox9);
-            this.tabPage3.Controls.Add(this.HCoolingGroupBox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(1380, 883);
-            this.tabPage3.TabIndex = 12;
-            this.tabPage3.Text = "CoolingMonitoring";
+            this.PDMonitorTabPage.Controls.Add(this.queryPDButton);
+            this.PDMonitorTabPage.Controls.Add(this.PDConvertToMwCheckBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDChannel);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDValue);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDGain);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLog);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD1);
+            this.PDMonitorTabPage.Controls.Add(this.PD1MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD1LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLogDuration);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDurationTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDSamplePeriod);
+            this.PDMonitorTabPage.Controls.Add(this.PDSamplePeriodTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDLogDirectory);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PDLogDirectoryBrowseButton);
+            this.PDMonitorTabPage.Controls.Add(this.startPDLogButton);
+            this.PDMonitorTabPage.Controls.Add(this.stopPDLogButton);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD2);
+            this.PDMonitorTabPage.Controls.Add(this.PD2MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD2LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD3);
+            this.PDMonitorTabPage.Controls.Add(this.PD3MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD3LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD4);
+            this.PDMonitorTabPage.Controls.Add(this.PD4MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD4LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD5);
+            this.PDMonitorTabPage.Controls.Add(this.PD5MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD5LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD6);
+            this.PDMonitorTabPage.Controls.Add(this.PD6MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD6LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD7);
+            this.PDMonitorTabPage.Controls.Add(this.PD7MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD7LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPD8);
+            this.PDMonitorTabPage.Controls.Add(this.PD8MonitorTextBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8GainComboBox);
+            this.PDMonitorTabPage.Controls.Add(this.PD8LogCheck);
+            this.PDMonitorTabPage.Controls.Add(this.labelPDFileName);
+            this.PDMonitorTabPage.Controls.Add(this.PDFileNameTextBox);
+            this.PDMonitorTabPage.Location = new System.Drawing.Point(4, 25);
+            this.PDMonitorTabPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDMonitorTabPage.Name = "PDMonitorTabPage";
+            this.PDMonitorTabPage.Size = new System.Drawing.Size(1377, 883);
+            this.PDMonitorTabPage.TabIndex = 12;
+            this.PDMonitorTabPage.Text = "Photodiode Monitor";
+            // 
+            // queryPDButton
+            // 
+            this.queryPDButton.Location = new System.Drawing.Point(20, 20);
+            this.queryPDButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.queryPDButton.Name = "queryPDButton";
+            this.queryPDButton.Size = new System.Drawing.Size(120, 30);
+            this.queryPDButton.TabIndex = 0;
+            this.queryPDButton.Text = "Query PDs";
+            this.queryPDButton.UseVisualStyleBackColor = true;
+            this.queryPDButton.Click += new System.EventHandler(this.QueryPDButton_Click);
+            // 
+            // PDConvertToMwCheckBox
+            // 
+            this.PDConvertToMwCheckBox.Location = new System.Drawing.Point(20, 359);
+            this.PDConvertToMwCheckBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDConvertToMwCheckBox.Name = "PDConvertToMwCheckBox";
+            this.PDConvertToMwCheckBox.Size = new System.Drawing.Size(373, 57);
+            this.PDConvertToMwCheckBox.TabIndex = 1;
+            this.PDConvertToMwCheckBox.Text = "Display in converted monitoring power (mW) ?";
+            this.PDConvertToMwCheckBox.CheckedChanged += new System.EventHandler(this.PDConvertToMwCheckBox_CheckedChanged);
+            // 
+            // labelPDChannel
+            // 
+            this.labelPDChannel.Location = new System.Drawing.Point(20, 70);
+            this.labelPDChannel.Name = "labelPDChannel";
+            this.labelPDChannel.Size = new System.Drawing.Size(51, 20);
+            this.labelPDChannel.TabIndex = 2;
+            this.labelPDChannel.Text = "PD";
+            // 
+            // labelPDValue
+            // 
+            this.labelPDValue.Location = new System.Drawing.Point(91, 70);
+            this.labelPDValue.Name = "labelPDValue";
+            this.labelPDValue.Size = new System.Drawing.Size(120, 25);
+            this.labelPDValue.TabIndex = 3;
+            this.labelPDValue.Text = "Voltage (V)";
+            // 
+            // labelPDGain
+            // 
+            this.labelPDGain.Location = new System.Drawing.Point(240, 70);
+            this.labelPDGain.Name = "labelPDGain";
+            this.labelPDGain.Size = new System.Drawing.Size(51, 20);
+            this.labelPDGain.TabIndex = 4;
+            this.labelPDGain.Text = "Gain";
+            // 
+            // labelPDLog
+            // 
+            this.labelPDLog.Location = new System.Drawing.Point(380, 70);
+            this.labelPDLog.Name = "labelPDLog";
+            this.labelPDLog.Size = new System.Drawing.Size(51, 20);
+            this.labelPDLog.TabIndex = 5;
+            this.labelPDLog.Text = "Log";
+            // 
+            // labelPD1
+            // 
+            this.labelPD1.Location = new System.Drawing.Point(20, 100);
+            this.labelPD1.Name = "labelPD1";
+            this.labelPD1.Size = new System.Drawing.Size(40, 20);
+            this.labelPD1.TabIndex = 6;
+            this.labelPD1.Text = "PD1";
+            // 
+            // PD1MonitorTextBox
+            // 
+            this.PD1MonitorTextBox.Location = new System.Drawing.Point(91, 98);
+            this.PD1MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1MonitorTextBox.Name = "PD1MonitorTextBox";
+            this.PD1MonitorTextBox.ReadOnly = true;
+            this.PD1MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD1MonitorTextBox.TabIndex = 7;
+            // 
+            // PD1GainComboBox
+            // 
+            this.PD1GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD1GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD1GainComboBox.Location = new System.Drawing.Point(240, 98);
+            this.PD1GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1GainComboBox.Name = "PD1GainComboBox";
+            this.PD1GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD1GainComboBox.TabIndex = 8;
+            this.PD1GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD1LogCheck
+            // 
+            this.PD1LogCheck.Location = new System.Drawing.Point(389, 100);
+            this.PD1LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD1LogCheck.Name = "PD1LogCheck";
+            this.PD1LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD1LogCheck.TabIndex = 9;
+            // 
+            // labelPDLogDuration
+            // 
+            this.labelPDLogDuration.Location = new System.Drawing.Point(500, 60);
+            this.labelPDLogDuration.Name = "labelPDLogDuration";
+            this.labelPDLogDuration.Size = new System.Drawing.Size(120, 20);
+            this.labelPDLogDuration.TabIndex = 10;
+            this.labelPDLogDuration.Text = "Log Duration (s)";
+            // 
+            // PDLogDurationTextBox
+            // 
+            this.PDLogDurationTextBox.Location = new System.Drawing.Point(629, 58);
+            this.PDLogDurationTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDurationTextBox.Name = "PDLogDurationTextBox";
+            this.PDLogDurationTextBox.Size = new System.Drawing.Size(80, 22);
+            this.PDLogDurationTextBox.TabIndex = 11;
+            this.PDLogDurationTextBox.Text = "60";
+            // 
+            // labelPDSamplePeriod
+            // 
+            this.labelPDSamplePeriod.Location = new System.Drawing.Point(500, 97);
+            this.labelPDSamplePeriod.Name = "labelPDSamplePeriod";
+            this.labelPDSamplePeriod.Size = new System.Drawing.Size(124, 22);
+            this.labelPDSamplePeriod.TabIndex = 12;
+            this.labelPDSamplePeriod.Text = "Poll Period (ms)";
+            // 
+            // PDSamplePeriodTextBox
+            // 
+            this.PDSamplePeriodTextBox.Location = new System.Drawing.Point(629, 97);
+            this.PDSamplePeriodTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDSamplePeriodTextBox.Name = "PDSamplePeriodTextBox";
+            this.PDSamplePeriodTextBox.Size = new System.Drawing.Size(80, 22);
+            this.PDSamplePeriodTextBox.TabIndex = 13;
+            this.PDSamplePeriodTextBox.Text = "200";
+            // 
+            // labelPDLogDirectory
+            // 
+            this.labelPDLogDirectory.Location = new System.Drawing.Point(500, 178);
+            this.labelPDLogDirectory.Name = "labelPDLogDirectory";
+            this.labelPDLogDirectory.Size = new System.Drawing.Size(105, 18);
+            this.labelPDLogDirectory.TabIndex = 14;
+            this.labelPDLogDirectory.Text = "Save Directory:";
+            // 
+            // PDLogDirectoryTextBox
+            // 
+            this.PDLogDirectoryTextBox.Location = new System.Drawing.Point(629, 180);
+            this.PDLogDirectoryTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDirectoryTextBox.Name = "PDLogDirectoryTextBox";
+            this.PDLogDirectoryTextBox.Size = new System.Drawing.Size(129, 22);
+            this.PDLogDirectoryTextBox.TabIndex = 15;
+            // 
+            // PDLogDirectoryBrowseButton
+            // 
+            this.PDLogDirectoryBrowseButton.Location = new System.Drawing.Point(771, 178);
+            this.PDLogDirectoryBrowseButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDLogDirectoryBrowseButton.Name = "PDLogDirectoryBrowseButton";
+            this.PDLogDirectoryBrowseButton.Size = new System.Drawing.Size(40, 25);
+            this.PDLogDirectoryBrowseButton.TabIndex = 16;
+            this.PDLogDirectoryBrowseButton.Text = "...";
+            this.PDLogDirectoryBrowseButton.Click += new System.EventHandler(this.PDLogDirectoryBrowseButton_Click);
+            // 
+            // startPDLogButton
+            // 
+            this.startPDLogButton.Location = new System.Drawing.Point(500, 240);
+            this.startPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.startPDLogButton.Name = "startPDLogButton";
+            this.startPDLogButton.Size = new System.Drawing.Size(120, 34);
+            this.startPDLogButton.TabIndex = 17;
+            this.startPDLogButton.Text = "Start Log";
+            this.startPDLogButton.Click += new System.EventHandler(this.StartPDLogButton_Click);
+            // 
+            // stopPDLogButton
+            // 
+            this.stopPDLogButton.Enabled = false;
+            this.stopPDLogButton.Location = new System.Drawing.Point(651, 240);
+            this.stopPDLogButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.stopPDLogButton.Name = "stopPDLogButton";
+            this.stopPDLogButton.Size = new System.Drawing.Size(120, 34);
+            this.stopPDLogButton.TabIndex = 18;
+            this.stopPDLogButton.Text = "Stop Log";
+            this.stopPDLogButton.Click += new System.EventHandler(this.StopPDLogButton_Click);
+            // 
+            // labelPD2
+            // 
+            this.labelPD2.Location = new System.Drawing.Point(20, 130);
+            this.labelPD2.Name = "labelPD2";
+            this.labelPD2.Size = new System.Drawing.Size(40, 20);
+            this.labelPD2.TabIndex = 19;
+            this.labelPD2.Text = "PD2";
+            // 
+            // PD2MonitorTextBox
+            // 
+            this.PD2MonitorTextBox.Location = new System.Drawing.Point(91, 128);
+            this.PD2MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2MonitorTextBox.Name = "PD2MonitorTextBox";
+            this.PD2MonitorTextBox.ReadOnly = true;
+            this.PD2MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD2MonitorTextBox.TabIndex = 20;
+            // 
+            // PD2GainComboBox
+            // 
+            this.PD2GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD2GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD2GainComboBox.Location = new System.Drawing.Point(240, 128);
+            this.PD2GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2GainComboBox.Name = "PD2GainComboBox";
+            this.PD2GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD2GainComboBox.TabIndex = 21;
+            this.PD2GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD2LogCheck
+            // 
+            this.PD2LogCheck.Location = new System.Drawing.Point(389, 130);
+            this.PD2LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD2LogCheck.Name = "PD2LogCheck";
+            this.PD2LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD2LogCheck.TabIndex = 22;
+            // 
+            // labelPD3
+            // 
+            this.labelPD3.Location = new System.Drawing.Point(20, 160);
+            this.labelPD3.Name = "labelPD3";
+            this.labelPD3.Size = new System.Drawing.Size(40, 20);
+            this.labelPD3.TabIndex = 23;
+            this.labelPD3.Text = "PD3";
+            // 
+            // PD3MonitorTextBox
+            // 
+            this.PD3MonitorTextBox.Location = new System.Drawing.Point(91, 158);
+            this.PD3MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3MonitorTextBox.Name = "PD3MonitorTextBox";
+            this.PD3MonitorTextBox.ReadOnly = true;
+            this.PD3MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD3MonitorTextBox.TabIndex = 24;
+            // 
+            // PD3GainComboBox
+            // 
+            this.PD3GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD3GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD3GainComboBox.Location = new System.Drawing.Point(240, 158);
+            this.PD3GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3GainComboBox.Name = "PD3GainComboBox";
+            this.PD3GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD3GainComboBox.TabIndex = 25;
+            this.PD3GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD3LogCheck
+            // 
+            this.PD3LogCheck.Location = new System.Drawing.Point(389, 160);
+            this.PD3LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD3LogCheck.Name = "PD3LogCheck";
+            this.PD3LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD3LogCheck.TabIndex = 26;
+            // 
+            // labelPD4
+            // 
+            this.labelPD4.Location = new System.Drawing.Point(20, 190);
+            this.labelPD4.Name = "labelPD4";
+            this.labelPD4.Size = new System.Drawing.Size(40, 20);
+            this.labelPD4.TabIndex = 27;
+            this.labelPD4.Text = "PD4";
+            // 
+            // PD4MonitorTextBox
+            // 
+            this.PD4MonitorTextBox.Location = new System.Drawing.Point(91, 188);
+            this.PD4MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4MonitorTextBox.Name = "PD4MonitorTextBox";
+            this.PD4MonitorTextBox.ReadOnly = true;
+            this.PD4MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD4MonitorTextBox.TabIndex = 28;
+            // 
+            // PD4GainComboBox
+            // 
+            this.PD4GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD4GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD4GainComboBox.Location = new System.Drawing.Point(240, 188);
+            this.PD4GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4GainComboBox.Name = "PD4GainComboBox";
+            this.PD4GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD4GainComboBox.TabIndex = 29;
+            this.PD4GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD4LogCheck
+            // 
+            this.PD4LogCheck.Location = new System.Drawing.Point(389, 190);
+            this.PD4LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD4LogCheck.Name = "PD4LogCheck";
+            this.PD4LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD4LogCheck.TabIndex = 30;
+            // 
+            // labelPD5
+            // 
+            this.labelPD5.Location = new System.Drawing.Point(20, 220);
+            this.labelPD5.Name = "labelPD5";
+            this.labelPD5.Size = new System.Drawing.Size(40, 20);
+            this.labelPD5.TabIndex = 31;
+            this.labelPD5.Text = "PD5";
+            // 
+            // PD5MonitorTextBox
+            // 
+            this.PD5MonitorTextBox.Location = new System.Drawing.Point(91, 218);
+            this.PD5MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5MonitorTextBox.Name = "PD5MonitorTextBox";
+            this.PD5MonitorTextBox.ReadOnly = true;
+            this.PD5MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD5MonitorTextBox.TabIndex = 32;
+            // 
+            // PD5GainComboBox
+            // 
+            this.PD5GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD5GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD5GainComboBox.Location = new System.Drawing.Point(240, 218);
+            this.PD5GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5GainComboBox.Name = "PD5GainComboBox";
+            this.PD5GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD5GainComboBox.TabIndex = 33;
+            this.PD5GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD5LogCheck
+            // 
+            this.PD5LogCheck.Location = new System.Drawing.Point(389, 220);
+            this.PD5LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD5LogCheck.Name = "PD5LogCheck";
+            this.PD5LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD5LogCheck.TabIndex = 34;
+            // 
+            // labelPD6
+            // 
+            this.labelPD6.Location = new System.Drawing.Point(20, 250);
+            this.labelPD6.Name = "labelPD6";
+            this.labelPD6.Size = new System.Drawing.Size(40, 20);
+            this.labelPD6.TabIndex = 35;
+            this.labelPD6.Text = "PD6";
+            // 
+            // PD6MonitorTextBox
+            // 
+            this.PD6MonitorTextBox.Location = new System.Drawing.Point(91, 249);
+            this.PD6MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6MonitorTextBox.Name = "PD6MonitorTextBox";
+            this.PD6MonitorTextBox.ReadOnly = true;
+            this.PD6MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD6MonitorTextBox.TabIndex = 36;
+            // 
+            // PD6GainComboBox
+            // 
+            this.PD6GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD6GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD6GainComboBox.Location = new System.Drawing.Point(240, 249);
+            this.PD6GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6GainComboBox.Name = "PD6GainComboBox";
+            this.PD6GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD6GainComboBox.TabIndex = 37;
+            this.PD6GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD6LogCheck
+            // 
+            this.PD6LogCheck.Location = new System.Drawing.Point(389, 250);
+            this.PD6LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD6LogCheck.Name = "PD6LogCheck";
+            this.PD6LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD6LogCheck.TabIndex = 38;
+            // 
+            // labelPD7
+            // 
+            this.labelPD7.Location = new System.Drawing.Point(20, 281);
+            this.labelPD7.Name = "labelPD7";
+            this.labelPD7.Size = new System.Drawing.Size(40, 20);
+            this.labelPD7.TabIndex = 39;
+            this.labelPD7.Text = "PD7";
+            // 
+            // PD7MonitorTextBox
+            // 
+            this.PD7MonitorTextBox.Location = new System.Drawing.Point(91, 278);
+            this.PD7MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7MonitorTextBox.Name = "PD7MonitorTextBox";
+            this.PD7MonitorTextBox.ReadOnly = true;
+            this.PD7MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD7MonitorTextBox.TabIndex = 40;
+            // 
+            // PD7GainComboBox
+            // 
+            this.PD7GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD7GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD7GainComboBox.Location = new System.Drawing.Point(240, 278);
+            this.PD7GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7GainComboBox.Name = "PD7GainComboBox";
+            this.PD7GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD7GainComboBox.TabIndex = 41;
+            this.PD7GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD7LogCheck
+            // 
+            this.PD7LogCheck.Location = new System.Drawing.Point(389, 281);
+            this.PD7LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD7LogCheck.Name = "PD7LogCheck";
+            this.PD7LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD7LogCheck.TabIndex = 42;
+            // 
+            // labelPD8
+            // 
+            this.labelPD8.Location = new System.Drawing.Point(20, 310);
+            this.labelPD8.Name = "labelPD8";
+            this.labelPD8.Size = new System.Drawing.Size(40, 20);
+            this.labelPD8.TabIndex = 43;
+            this.labelPD8.Text = "PD8";
+            // 
+            // PD8MonitorTextBox
+            // 
+            this.PD8MonitorTextBox.Location = new System.Drawing.Point(91, 308);
+            this.PD8MonitorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8MonitorTextBox.Name = "PD8MonitorTextBox";
+            this.PD8MonitorTextBox.ReadOnly = true;
+            this.PD8MonitorTextBox.Size = new System.Drawing.Size(120, 22);
+            this.PD8MonitorTextBox.TabIndex = 44;
+            // 
+            // PD8GainComboBox
+            // 
+            this.PD8GainComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PD8GainComboBox.Items.AddRange(new object[] {
+            "Gain 1",
+            "Gain 2",
+            "Gain 3",
+            "Gain 4"});
+            this.PD8GainComboBox.Location = new System.Drawing.Point(240, 308);
+            this.PD8GainComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8GainComboBox.Name = "PD8GainComboBox";
+            this.PD8GainComboBox.Size = new System.Drawing.Size(100, 24);
+            this.PD8GainComboBox.TabIndex = 45;
+            this.PD8GainComboBox.SelectedIndexChanged += new System.EventHandler(this.PDGainComboBox_SelectedIndexChanged);
+            // 
+            // PD8LogCheck
+            // 
+            this.PD8LogCheck.Location = new System.Drawing.Point(389, 310);
+            this.PD8LogCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PD8LogCheck.Name = "PD8LogCheck";
+            this.PD8LogCheck.Size = new System.Drawing.Size(20, 20);
+            this.PD8LogCheck.TabIndex = 46;
+            // 
+            // labelPDFileName
+            // 
+            this.labelPDFileName.Location = new System.Drawing.Point(500, 148);
+            this.labelPDFileName.Name = "labelPDFileName";
+            this.labelPDFileName.Size = new System.Drawing.Size(120, 22);
+            this.labelPDFileName.TabIndex = 47;
+            this.labelPDFileName.Text = "Enter File Name:";
+            // 
+            // PDFileNameTextBox
+            // 
+            this.PDFileNameTextBox.Location = new System.Drawing.Point(629, 148);
+            this.PDFileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PDFileNameTextBox.Name = "PDFileNameTextBox";
+            this.PDFileNameTextBox.Size = new System.Drawing.Size(129, 22);
+            this.PDFileNameTextBox.TabIndex = 48;
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.calibrationVoltageV);
-            this.groupBox9.Controls.Add(this.calibrationPowerV);
-            this.groupBox9.Controls.Add(this.VcoolingPowerBox);
-            this.groupBox9.Controls.Add(this.label46);
-            this.groupBox9.Controls.Add(this.label44);
-            this.groupBox9.Controls.Add(this.label42);
-            this.groupBox9.Controls.Add(this.VcoolingMonitorUpdateButton);
-            this.groupBox9.Controls.Add(this.VcoolingMonitorTextBox);
-            this.groupBox9.Controls.Add(this.label39);
-            this.groupBox9.Location = new System.Drawing.Point(683, 48);
-            this.groupBox9.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox9.Location = new System.Drawing.Point(0, 0);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox9.Size = new System.Drawing.Size(612, 178);
-            this.groupBox9.TabIndex = 1;
+            this.groupBox9.Size = new System.Drawing.Size(200, 100);
+            this.groupBox9.TabIndex = 0;
             this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Vertical cooling monitoring";
             // 
             // calibrationVoltageV
             // 
-            this.calibrationVoltageV.Location = new System.Drawing.Point(227, 145);
+            this.calibrationVoltageV.Location = new System.Drawing.Point(0, 0);
             this.calibrationVoltageV.Name = "calibrationVoltageV";
-            this.calibrationVoltageV.Size = new System.Drawing.Size(113, 22);
-            this.calibrationVoltageV.TabIndex = 56;
+            this.calibrationVoltageV.Size = new System.Drawing.Size(100, 22);
+            this.calibrationVoltageV.TabIndex = 0;
             // 
             // calibrationPowerV
             // 
-            this.calibrationPowerV.Location = new System.Drawing.Point(227, 111);
+            this.calibrationPowerV.Location = new System.Drawing.Point(0, 0);
             this.calibrationPowerV.Name = "calibrationPowerV";
-            this.calibrationPowerV.Size = new System.Drawing.Size(113, 22);
-            this.calibrationPowerV.TabIndex = 55;
+            this.calibrationPowerV.Size = new System.Drawing.Size(100, 22);
+            this.calibrationPowerV.TabIndex = 0;
             // 
             // VcoolingPowerBox
             // 
-            this.VcoolingPowerBox.Location = new System.Drawing.Point(337, 33);
+            this.VcoolingPowerBox.Location = new System.Drawing.Point(0, 0);
             this.VcoolingPowerBox.Name = "VcoolingPowerBox";
-            this.VcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
-            this.VcoolingPowerBox.TabIndex = 54;
+            this.VcoolingPowerBox.Size = new System.Drawing.Size(100, 22);
+            this.VcoolingPowerBox.TabIndex = 0;
             // 
             // label46
             // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(246, 32);
+            this.label46.Location = new System.Drawing.Point(0, 0);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(85, 17);
-            this.label46.TabIndex = 53;
-            this.label46.Text = "Power (mW)";
+            this.label46.Size = new System.Drawing.Size(100, 23);
+            this.label46.TabIndex = 0;
             // 
             // label44
             // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(114, 145);
+            this.label44.Location = new System.Drawing.Point(0, 0);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(79, 17);
-            this.label44.TabIndex = 51;
-            this.label44.Text = "Voltage (V)";
+            this.label44.Size = new System.Drawing.Size(100, 23);
+            this.label44.TabIndex = 0;
             // 
             // label42
             // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(33, 114);
+            this.label42.Location = new System.Drawing.Point(0, 0);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(160, 17);
-            this.label42.TabIndex = 49;
-            this.label42.Text = "Calibration: Power (mW)";
+            this.label42.Size = new System.Drawing.Size(100, 23);
+            this.label42.TabIndex = 0;
             // 
             // VcoolingMonitorUpdateButton
             // 
-            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(496, 24);
-            this.VcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.VcoolingMonitorUpdateButton.Location = new System.Drawing.Point(0, 0);
             this.VcoolingMonitorUpdateButton.Name = "VcoolingMonitorUpdateButton";
-            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 30);
-            this.VcoolingMonitorUpdateButton.TabIndex = 47;
-            this.VcoolingMonitorUpdateButton.Text = "update";
-            this.VcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
-            this.VcoolingMonitorUpdateButton.Click += new System.EventHandler(this.VcoolingMonitorUpdateButton_Click);
+            this.VcoolingMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.VcoolingMonitorUpdateButton.TabIndex = 0;
             // 
             // VcoolingMonitorTextBox
             // 
-            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(117, 29);
-            this.VcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.VcoolingMonitorTextBox.Location = new System.Drawing.Point(0, 0);
             this.VcoolingMonitorTextBox.Name = "VcoolingMonitorTextBox";
-            this.VcoolingMonitorTextBox.ReadOnly = true;
-            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
-            this.VcoolingMonitorTextBox.TabIndex = 46;
-            this.VcoolingMonitorTextBox.Text = "0";
+            this.VcoolingMonitorTextBox.Size = new System.Drawing.Size(100, 22);
+            this.VcoolingMonitorTextBox.TabIndex = 0;
             // 
             // label39
             // 
-            this.label39.Location = new System.Drawing.Point(33, 33);
-            this.label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label39.Location = new System.Drawing.Point(0, 0);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(107, 28);
-            this.label39.TabIndex = 37;
-            this.label39.Text = "Voltage (V)";
+            this.label39.Size = new System.Drawing.Size(100, 23);
+            this.label39.TabIndex = 0;
             // 
             // HCoolingGroupBox
             // 
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingPowerBox);
-            this.HCoolingGroupBox.Controls.Add(this.label45);
-            this.HCoolingGroupBox.Controls.Add(this.calibrationVoltageH);
-            this.HCoolingGroupBox.Controls.Add(this.label43);
-            this.HCoolingGroupBox.Controls.Add(this.calibrationPowerH);
-            this.HCoolingGroupBox.Controls.Add(this.label41);
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorUpdateButton);
-            this.HCoolingGroupBox.Controls.Add(this.HcoolingMonitorTextBox);
-            this.HCoolingGroupBox.Controls.Add(this.label36);
-            this.HCoolingGroupBox.Location = new System.Drawing.Point(93, 48);
-            this.HCoolingGroupBox.Margin = new System.Windows.Forms.Padding(4);
+            this.HCoolingGroupBox.Location = new System.Drawing.Point(0, 0);
             this.HCoolingGroupBox.Name = "HCoolingGroupBox";
-            this.HCoolingGroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.HCoolingGroupBox.Size = new System.Drawing.Size(582, 178);
+            this.HCoolingGroupBox.Size = new System.Drawing.Size(200, 100);
             this.HCoolingGroupBox.TabIndex = 0;
             this.HCoolingGroupBox.TabStop = false;
-            this.HCoolingGroupBox.Text = "Horizontal cooling monitoring";
             // 
             // HcoolingPowerBox
             // 
-            this.HcoolingPowerBox.Location = new System.Drawing.Point(327, 30);
+            this.HcoolingPowerBox.Location = new System.Drawing.Point(0, 0);
             this.HcoolingPowerBox.Name = "HcoolingPowerBox";
-            this.HcoolingPowerBox.Size = new System.Drawing.Size(125, 22);
-            this.HcoolingPowerBox.TabIndex = 53;
+            this.HcoolingPowerBox.Size = new System.Drawing.Size(100, 22);
+            this.HcoolingPowerBox.TabIndex = 0;
             // 
             // label45
             // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(236, 35);
+            this.label45.Location = new System.Drawing.Point(0, 0);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(85, 17);
-            this.label45.TabIndex = 52;
-            this.label45.Text = "Power (mW)";
+            this.label45.Size = new System.Drawing.Size(100, 23);
+            this.label45.TabIndex = 0;
             // 
             // calibrationVoltageH
             // 
-            this.calibrationVoltageH.Location = new System.Drawing.Point(216, 142);
+            this.calibrationVoltageH.Location = new System.Drawing.Point(0, 0);
             this.calibrationVoltageH.Name = "calibrationVoltageH";
-            this.calibrationVoltageH.Size = new System.Drawing.Size(113, 22);
-            this.calibrationVoltageH.TabIndex = 51;
+            this.calibrationVoltageH.Size = new System.Drawing.Size(100, 22);
+            this.calibrationVoltageH.TabIndex = 0;
             // 
             // label43
             // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(115, 145);
+            this.label43.Location = new System.Drawing.Point(0, 0);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(79, 17);
-            this.label43.TabIndex = 50;
-            this.label43.Text = "Voltage (V)";
+            this.label43.Size = new System.Drawing.Size(100, 23);
+            this.label43.TabIndex = 0;
             // 
             // calibrationPowerH
             // 
-            this.calibrationPowerH.Location = new System.Drawing.Point(216, 108);
+            this.calibrationPowerH.Location = new System.Drawing.Point(0, 0);
             this.calibrationPowerH.Name = "calibrationPowerH";
-            this.calibrationPowerH.Size = new System.Drawing.Size(113, 22);
-            this.calibrationPowerH.TabIndex = 49;
+            this.calibrationPowerH.Size = new System.Drawing.Size(100, 22);
+            this.calibrationPowerH.TabIndex = 0;
             // 
             // label41
             // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(34, 114);
+            this.label41.Location = new System.Drawing.Point(0, 0);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(160, 17);
-            this.label41.TabIndex = 48;
-            this.label41.Text = "Calibration: Power (mW)";
+            this.label41.Size = new System.Drawing.Size(100, 23);
+            this.label41.TabIndex = 0;
             // 
             // HcoolingMonitorUpdateButton
             // 
-            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(466, 27);
-            this.HcoolingMonitorUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.HcoolingMonitorUpdateButton.Location = new System.Drawing.Point(0, 0);
             this.HcoolingMonitorUpdateButton.Name = "HcoolingMonitorUpdateButton";
-            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(108, 28);
-            this.HcoolingMonitorUpdateButton.TabIndex = 47;
-            this.HcoolingMonitorUpdateButton.Text = "update";
-            this.HcoolingMonitorUpdateButton.UseVisualStyleBackColor = true;
-            this.HcoolingMonitorUpdateButton.Click += new System.EventHandler(this.HcoolingMonitorUpdateButton_Click);
+            this.HcoolingMonitorUpdateButton.Size = new System.Drawing.Size(75, 23);
+            this.HcoolingMonitorUpdateButton.TabIndex = 0;
             // 
             // HcoolingMonitorTextBox
             // 
-            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(118, 33);
-            this.HcoolingMonitorTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.HcoolingMonitorTextBox.Location = new System.Drawing.Point(0, 0);
             this.HcoolingMonitorTextBox.Name = "HcoolingMonitorTextBox";
-            this.HcoolingMonitorTextBox.ReadOnly = true;
-            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(111, 22);
-            this.HcoolingMonitorTextBox.TabIndex = 46;
-            this.HcoolingMonitorTextBox.Text = "0";
+            this.HcoolingMonitorTextBox.Size = new System.Drawing.Size(100, 22);
+            this.HcoolingMonitorTextBox.TabIndex = 0;
             // 
             // label36
             // 
-            this.label36.Location = new System.Drawing.Point(33, 33);
-            this.label36.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label36.Location = new System.Drawing.Point(0, 0);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(107, 28);
-            this.label36.TabIndex = 37;
-            this.label36.Text = "Voltage (V)";
+            this.label36.Size = new System.Drawing.Size(100, 23);
+            this.label36.TabIndex = 0;
             // 
             // ControlWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1715, 949);
+            this.ClientSize = new System.Drawing.Size(1648, 942);
             this.Controls.Add(this.groupBoxStatus);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.gbTemperatureandPressureMonitoringControl);
@@ -9694,11 +10279,8 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.chart6)).EndInit();
             this.tabCCDCamera.ResumeLayout(false);
             this.tabCCDCamera.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
-            this.HCoolingGroupBox.ResumeLayout(false);
-            this.HCoolingGroupBox.PerformLayout();
+            this.PDMonitorTabPage.ResumeLayout(false);
+            this.PDMonitorTabPage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -10370,7 +10952,7 @@ namespace UEDMHardwareControl
         private Label label34;
         private Button updateFeedthroughTempButton;
         public TextBox tbFeedthroughTemp;
-        private TabPage tabPage3;
+        //private TabPage tabPage3;
         private GroupBox HCoolingGroupBox;
         private Label label36;
         public TextBox HcoolingMonitorTextBox;
@@ -10445,5 +11027,66 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.Label labelDetectMicrowavesPowerDetectionB;
         private System.Windows.Forms.Button btQueryMWSynthTemperatureDetectionB;
         private System.Windows.Forms.Label labelDetectSynthTempB;
+        private Label label48;
+        private Label label47;
+        public TextBox tbStirapRFfreqFalseValue;
+        public TextBox tbStirapRFfreqTrueValue;
+        public CheckBox pollftTCheckBox;
+
+        public System.Windows.Forms.TabPage PDMonitorTabPage;
+        public System.Windows.Forms.Button queryPDButton;
+        public System.Windows.Forms.Button startPDLogButton;
+        public System.Windows.Forms.Button stopPDLogButton;
+        public System.Windows.Forms.Button PDLogDirectoryBrowseButton;
+
+        private System.Windows.Forms.Label labelPDChannel;
+        public System.Windows.Forms.Label labelPDValue;
+        private System.Windows.Forms.Label labelPDGain;
+        private System.Windows.Forms.Label labelPDLog;
+        private System.Windows.Forms.Label labelPDLogDuration;
+        private System.Windows.Forms.Label labelPDSamplePeriod;
+        private System.Windows.Forms.Label labelPDLogDirectory;
+        private System.Windows.Forms.Label labelPD1;
+        private System.Windows.Forms.Label labelPD2;
+        private System.Windows.Forms.Label labelPD3;
+        private System.Windows.Forms.Label labelPD4;
+        private System.Windows.Forms.Label labelPD5;
+        private System.Windows.Forms.Label labelPD6;
+        private System.Windows.Forms.Label labelPD7;
+        private System.Windows.Forms.Label labelPD8;
+
+        public System.Windows.Forms.TextBox PDLogDurationTextBox;
+        public System.Windows.Forms.TextBox PDSamplePeriodTextBox;
+        public System.Windows.Forms.TextBox PDLogDirectoryTextBox;
+        public System.Windows.Forms.TextBox PD1MonitorTextBox;
+        public System.Windows.Forms.TextBox PD2MonitorTextBox;
+        public System.Windows.Forms.TextBox PD3MonitorTextBox;
+        public System.Windows.Forms.TextBox PD4MonitorTextBox;
+        public System.Windows.Forms.TextBox PD5MonitorTextBox;
+        public System.Windows.Forms.TextBox PD6MonitorTextBox;
+        public System.Windows.Forms.TextBox PD7MonitorTextBox;
+        public System.Windows.Forms.TextBox PD8MonitorTextBox;
+
+        public System.Windows.Forms.ComboBox PD1GainComboBox;
+        public System.Windows.Forms.ComboBox PD2GainComboBox;
+        public System.Windows.Forms.ComboBox PD3GainComboBox;
+        public System.Windows.Forms.ComboBox PD4GainComboBox;
+        public System.Windows.Forms.ComboBox PD5GainComboBox;
+        public System.Windows.Forms.ComboBox PD6GainComboBox;
+        public System.Windows.Forms.ComboBox PD7GainComboBox;
+        public System.Windows.Forms.ComboBox PD8GainComboBox;
+
+        public System.Windows.Forms.CheckBox PD1LogCheck;
+        public System.Windows.Forms.CheckBox PD2LogCheck;
+        public System.Windows.Forms.CheckBox PD3LogCheck;
+        public System.Windows.Forms.CheckBox PD4LogCheck;
+        public System.Windows.Forms.CheckBox PD5LogCheck;
+        public System.Windows.Forms.CheckBox PD6LogCheck;
+        public System.Windows.Forms.CheckBox PD7LogCheck;
+        public System.Windows.Forms.CheckBox PD8LogCheck;
+        public System.Windows.Forms.CheckBox PDConvertToMwCheckBox;
+        public System.Windows.Forms.TextBox PDFileNameTextBox;
+        private System.Windows.Forms.Label labelPDFileName;
     }
 }
+

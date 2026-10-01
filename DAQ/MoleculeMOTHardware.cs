@@ -106,8 +106,8 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("cameraTrigger", digitalPatternBoardAddress, 0, 7);
             AddDigitalOutputChannel("cameraTrigger2", digitalPatternBoardAddress, 1, 7);
             AddDigitalOutputChannel("aoPatternTrigger", digitalPatternBoardAddress, 1, 0);
-            AddDigitalOutputChannel("v00MOTShutter", digitalPatternBoardAddress, 1, 1);
-            AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress, 1, 2);
+            
+            AddDigitalOutputChannel("Broken_2", digitalPatternBoardAddress, 1, 2);
             AddDigitalOutputChannel("v1Shutter", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("bXLockBlock", digitalPatternBoardAddress, 1, 3);
             AddDigitalOutputChannel("v00LockBlock", digitalPatternBoardAddress, 2, 1);
@@ -115,15 +115,27 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("bottomCoilDirection", digitalPatternBoardAddress, 1, 5);
             AddDigitalOutputChannel("rbCoolingAOM", digitalPatternBoardAddress, 1, 6);
             AddDigitalOutputChannel("v0rfswitch2", digitalPatternBoardAddress, 2, 0);
-            AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);
-            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress, 3, 2);
+            AddDigitalOutputChannel("heliumShutter", digitalPatternBoardAddress, 2, 2);// channel broken. shutter now controlled with 1.6 "Rbpushbeam"
+            AddDigitalOutputChannel("microwaveC", digitalPatternBoardAddress2, 3, 2);
+            AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress2, 3, 0);
             AddDigitalOutputChannel("v0rfswitch3", digitalPatternBoardAddress, 0, 5);
             AddDigitalOutputChannel("tofTrigger", digitalPatternBoardAddress2, 1, 4);
             AddDigitalOutputChannel("v0rfswitch4", digitalPatternBoardAddress2, 0, 6);
             AddDigitalOutputChannel("microwaveSwitch", digitalPatternBoardAddress2, 1, 7);
 
+            // CaF MOT Shutters
+            AddDigitalOutputChannel("MOT3Shutter", digitalPatternBoardAddress, 1, 1); // horizontal (not V1)
+            AddDigitalOutputChannel("MOT1Shutter", digitalPatternBoardAddress2, 3, 5); // vertical
+            AddDigitalOutputChannel("MOT2Shutter", digitalPatternBoardAddress2, 3, 6); // horizontal V1
+
+            AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress2, 2, 6);
+
+            // Caf optical pumping
+            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
+
             // Lambda cooling and blue MOT
             AddDigitalOutputChannel("v0ddsSwitchA", digitalPatternBoardAddress2, 2, 0);
+            
             AddDigitalOutputChannel("v0ddsSwitchB", digitalPatternBoardAddress2, 2, 1);
             AddDigitalOutputChannel("v0ddsSwitchC", digitalPatternBoardAddress2, 1, 5);
             AddDigitalOutputChannel("v0ddsSwitchD", digitalPatternBoardAddress2, 1, 6);
@@ -131,32 +143,29 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("DDSTrigger", digitalPatternBoardAddress2, 2, 3);
 
             // Rb Digital Pattern
-            AddDigitalOutputChannel("rbPushBeam", digitalPatternBoardAddress, 1, 6);
+            AddDigitalOutputChannel("broken1", digitalPatternBoardAddress, 1, 6); //broken!
             AddDigitalOutputChannel("rbOpticalPumpingAOM", digitalPatternBoardAddress, 2, 3);
             AddDigitalOutputChannel("rbAbsImagingBeam", digitalPatternBoardAddress, 2, 5);
             AddDigitalOutputChannel("rbRepump", digitalPatternBoardAddress, 2, 6);
             AddDigitalOutputChannel("rb2DCooling", digitalPatternBoardAddress, 2, 7);
             AddDigitalOutputChannel("rb3DCooling", digitalPatternBoardAddress, 3, 0);
-            AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress, 3, 1);
+            AddDigitalOutputChannel("rbAbsImgCamTrig", digitalPatternBoardAddress2, 3, 1);
             AddDigitalOutputChannel("rbDDSFrequencySwitch", digitalPatternBoardAddress2, 1, 2);
-            // Rb shutters
-            //AddDigitalOutputChannel("rb3DMOTShutter", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("opticalPumpingAOM", digitalPatternBoardAddress, 2, 4);
-            AddDigitalOutputChannel("rb2DMOTShutter", digitalPatternBoardAddress, 3, 5);
 
-            //AddDigitalOutputChannel("rbspeedbumpCoilsBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
-            AddDigitalOutputChannel("rbPushBamAbsorptionShutter", digitalPatternBoardAddress, 3, 6);
 
-            AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress, 3, 7);
-            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress, 3, 3);
-            AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress, 3, 4);
+
+            AddDigitalOutputChannel("rbOPShutter", digitalPatternBoardAddress2, 3, 7);
+            AddDigitalOutputChannel("dipoleTrapAOM", digitalPatternBoardAddress2, 3, 3);
+            AddDigitalOutputChannel("transportTrack", digitalPatternBoardAddress2, 3, 4);
             AddDigitalOutputChannel("rbD1CoolingSwitch", digitalPatternBoardAddress2, 1, 1);
+
+
 
 
             // tweezer new digital pattern board
             AddDigitalOutputChannel("slavePatternCardTrigger", digitalPatternBoardAddress2, 0, 0);
             //AddDigitalOutputChannel("test01", digitalPatternBoardAddress2, 0, 1);
-            AddDigitalOutputChannel("cafOptPumpingAOM", digitalPatternBoardAddress2, 0, 2);
+            AddDigitalOutputChannel("DDS_Analog_Trg", digitalPatternBoardAddress2, 0, 2);//DDS trigger, and analog board trigger
             AddDigitalOutputChannel("flowEnable", digitalPatternBoardAddress2, 0, 3);
             AddDigitalOutputChannel("cafOptPumpingShutter", digitalPatternBoardAddress2, 0, 4);
             AddDigitalOutputChannel("test10", digitalPatternBoardAddress2, 1, 0);
@@ -205,7 +214,7 @@ namespace DAQ.HAL
 
             // Transfer coil
             AddAnalogOutputChannel("transferCoils", analogPatternBoardAddress + "/ao6");
-            AddAnalogOutputChannel("transferCoilsShunt1", analogPatternBoardAddress + "/ao7");
+            AddAnalogOutputChannel("TweezerCoils", analogPatternBoardAddress + "/ao7", 0.0, 1.80);
             AddAnalogOutputChannel("transferCoilsShunt2", analogPatternBoardAddress + "/ao27");
 
             // Tweezer MOT coils
@@ -441,8 +450,8 @@ namespace DAQ.HAL
 
             // Instruments
             Instruments.Add("windfreak", new WindfreakSynth("ASRL8::INSTR"));
-            Instruments.Add("gigatronics 1", new Gigatronics7100Synth("GPIB0::19::INSTR"));
-            Instruments.Add("gigatronics 2", new Gigatronics7100Synth("GPIB0::6::INSTR"));
+            Instruments.Add("gigatronics 1", new Gigatronics7100Synth("GPIB0::7::INSTR"));
+            //Instruments.Add("gigatronics 2", new Gigatronics7100Synth("GPIB0::6::INSTR"));
             Instruments.Add("hp synth", new HP8656BSynth("GPIB0::18::INSTR"));
 
 

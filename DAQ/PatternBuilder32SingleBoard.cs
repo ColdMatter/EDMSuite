@@ -129,7 +129,7 @@ namespace DAQ.Pattern
 		
 			// Is that big enough ?
 			if ( length < layout.LastEventTime + 1 )
-				throw new PatternBuildException("Pattern will not fit in array of requested length.\n"
+				throw new InsufficientPatternLengthException("Pattern will not fit in array of requested length.\n"
                     + "Pattern length is " + layout.LastEventTime + ". Array length is " + length);
 		
 			// make the pattern array
@@ -350,8 +350,14 @@ namespace DAQ.Pattern
 	}
 
 	public class TimeOrderException : ApplicationException {}
-	public class PatternBuildException : ApplicationException 
+	public class PatternBuildException : ApplicationException
 	{
 		public PatternBuildException(String message) : base(message) {}
+	}
+	// Thrown specifically when the requested pattern length is too short to fit the pattern.
+	// Inherits PatternBuildException so existing catch(PatternBuildException) handlers still work.
+	public class InsufficientPatternLengthException : PatternBuildException
+	{
+		public InsufficientPatternLengthException(String message) : base(message) {}
 	}
 }

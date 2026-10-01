@@ -16,6 +16,7 @@ namespace ScanMaster.Acquire.Plugin
     XmlInclude(typeof(NullAnalogInputPlugin)),
 	XmlInclude(typeof(WavemeterInputPlugin)),
 	XmlInclude(typeof(MultipleWavemeterInputPlugin)),
+	XmlInclude(typeof(UEDMWavemeterPDPlugin)),
 #if DECELERATOR
     XmlInclude(typeof(DecelerationHardwareAnalogInputPlugin))
 #endif

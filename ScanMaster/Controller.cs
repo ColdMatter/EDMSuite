@@ -367,6 +367,7 @@ namespace ScanMaster
 		{
 			if (appState == AppState.running) 
 			{
+
 				acquisitor.AcquireStop();
 				appState = AppState.stopped;
 
