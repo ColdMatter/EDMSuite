@@ -34,48 +34,40 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnStart = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.led1 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.led2 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led2 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.led3 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led3 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.led4 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led4 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.led8 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led8 = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.led7 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led7 = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.led6 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led6 = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.led5 = new NationalInstruments.UI.WindowsForms.Led();
+            this.led5 = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led1)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led2)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led3)).BeginInit();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led4)).BeginInit();
             this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led8)).BeginInit();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led7)).BeginInit();
             this.groupBox7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led6)).BeginInit();
             this.groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.led5)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOpen
@@ -117,10 +109,9 @@
             // 
             // led1
             // 
-            this.led1.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led1.Enabled = false;
             this.led1.Location = new System.Drawing.Point(155, 19);
             this.led1.Name = "led1";
-            this.led1.OnColor = System.Drawing.Color.Crimson;
             this.led1.Size = new System.Drawing.Size(30, 30);
             this.led1.TabIndex = 19;
             // 
@@ -146,13 +137,11 @@
             // 
             // led2
             // 
-            this.led2.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led2.Enabled = false;
             this.led2.Location = new System.Drawing.Point(155, 19);
             this.led2.Name = "led2";
-            this.led2.OnColor = System.Drawing.Color.Crimson;
             this.led2.Size = new System.Drawing.Size(30, 30);
             this.led2.TabIndex = 20;
-            this.led2.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.led2_StateChanged);
             // 
             // label2
             // 
@@ -176,13 +165,11 @@
             // 
             // led3
             // 
-            this.led3.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led3.Enabled = false;
             this.led3.Location = new System.Drawing.Point(155, 19);
             this.led3.Name = "led3";
-            this.led3.OnColor = System.Drawing.Color.Crimson;
             this.led3.Size = new System.Drawing.Size(30, 30);
             this.led3.TabIndex = 20;
-            this.led3.StateChanged += new NationalInstruments.UI.ActionEventHandler(this.led3_StateChanged);
             // 
             // label3
             // 
@@ -206,10 +193,9 @@
             // 
             // led4
             // 
-            this.led4.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led4.Enabled = false;
             this.led4.Location = new System.Drawing.Point(155, 19);
             this.led4.Name = "led4";
-            this.led4.OnColor = System.Drawing.Color.Crimson;
             this.led4.Size = new System.Drawing.Size(30, 30);
             this.led4.TabIndex = 20;
             // 
@@ -234,10 +220,9 @@
             // 
             // led8
             // 
-            this.led8.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led8.Enabled = false;
             this.led8.Location = new System.Drawing.Point(155, 19);
             this.led8.Name = "led8";
-            this.led8.OnColor = System.Drawing.Color.Crimson;
             this.led8.Size = new System.Drawing.Size(30, 30);
             this.led8.TabIndex = 21;
             // 
@@ -271,10 +256,9 @@
             // 
             // led7
             // 
-            this.led7.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led7.Enabled = false;
             this.led7.Location = new System.Drawing.Point(155, 19);
             this.led7.Name = "led7";
-            this.led7.OnColor = System.Drawing.Color.Crimson;
             this.led7.Size = new System.Drawing.Size(30, 30);
             this.led7.TabIndex = 23;
             // 
@@ -307,10 +291,9 @@
             // 
             // led6
             // 
-            this.led6.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led6.Enabled = false;
             this.led6.Location = new System.Drawing.Point(155, 19);
             this.led6.Name = "led6";
-            this.led6.OnColor = System.Drawing.Color.Crimson;
             this.led6.Size = new System.Drawing.Size(30, 30);
             this.led6.TabIndex = 22;
             // 
@@ -327,10 +310,9 @@
             // 
             // led5
             // 
-            this.led5.LedStyle = NationalInstruments.UI.LedStyle.Round3D;
+            this.led5.Enabled = false;
             this.led5.Location = new System.Drawing.Point(155, 19);
             this.led5.Name = "led5";
-            this.led5.OnColor = System.Drawing.Color.Crimson;
             this.led5.Size = new System.Drawing.Size(30, 30);
             this.led5.TabIndex = 21;
             // 
@@ -387,21 +369,13 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerForm_Closing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led1)).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led2)).EndInit();
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led3)).EndInit();
             this.groupBox4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led4)).EndInit();
             this.groupBox5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led8)).EndInit();
             this.groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led7)).EndInit();
             this.groupBox7.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led6)).EndInit();
             this.groupBox8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.led5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -428,15 +402,15 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label label8;
-        private NationalInstruments.UI.WindowsForms.Led led1;
-        private NationalInstruments.UI.WindowsForms.Led led2;
-        private NationalInstruments.UI.WindowsForms.Led led3;
-        private NationalInstruments.UI.WindowsForms.Led led4;
-        private NationalInstruments.UI.WindowsForms.Led led7;
-        private NationalInstruments.UI.WindowsForms.Led led6;
-        private NationalInstruments.UI.WindowsForms.Led led5;
+        private System.Windows.Forms.CheckBox led1;
+        private System.Windows.Forms.CheckBox led2;
+        private System.Windows.Forms.CheckBox led3;
+        private System.Windows.Forms.CheckBox led4;
+        private System.Windows.Forms.CheckBox led7;
+        private System.Windows.Forms.CheckBox led6;
+        private System.Windows.Forms.CheckBox led5;
         private System.Windows.Forms.Label label9;
-        private NationalInstruments.UI.WindowsForms.Led led8;
+        private System.Windows.Forms.CheckBox led8;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label10;
     }
