@@ -2198,5 +2198,9 @@ namespace UEDMHardwareControl
             }
         }
 
+        private void labelPDChannel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

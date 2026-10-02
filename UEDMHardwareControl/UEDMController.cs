@@ -9015,8 +9015,8 @@ namespace UEDMHardwareControl
 
         // Input Stray Power = slopeA * Voltage + interceptA. This differs by the gain user chooses for the specific PD. The first one is the most sensitive gain (gain 1).
         // This should apply to all PDs. To be determined by calibration.
-        private double[] slopeA = {0.0382, 0.355, 1, 1};
-        private double[] interceptA = {0.00195, -0.0278, 0, 0};
+        private double[] slopeA = {0.0323, 0.322, 3.19, 1};
+        private double[] interceptA = {-0.00337, -0.0456, -0.335, 0};
         // Monitoring Power = slopeB * Input Stray Power + interceptB. This varies case by case, depending on both the gain used and
         // the conversion factor between the captured stray light and corresponding monitoring power. To be determined.
         private double[] slopeB = {556, 147, 1, 1, 1, 1, 1, 1};

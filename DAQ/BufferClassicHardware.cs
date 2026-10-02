@@ -350,7 +350,7 @@ namespace DAQ.HAL
             WavemeterLockConfig wmlConfig = new WavemeterLockConfig("Default");
             wmlConfig.AddSlaveLaser("UltracoldProbeLaser", "probelaser", 1);//Laser name, analog channel, wavemeter channel
             wmlConfig.AddLaserConfiguration("UltracoldProbeLaser", 542.809124, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
-            wmlConfig.AddSlaveLaser("STIRAPSeed", "STIRAP", 7);//Laser name, analog channel, wavemeter channel
+            wmlConfig.AddSlaveLaser("STIRAPSeed", "Q1", 7);//Laser name, analog channel, wavemeter channel
             wmlConfig.AddLaserConfiguration("STIRAPSeed", 271.4106, 3000, 1600); //("YourLaserName", SetFrequencyInTHz, PGain, IGain)
             Info.Add("Default", wmlConfig);
 
