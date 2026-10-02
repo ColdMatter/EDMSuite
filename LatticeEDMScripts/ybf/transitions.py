@@ -58,6 +58,12 @@ x_branches_hyperfine = {
     "R": ["N+1", "N-"]
     }
 
+# The six functions below (P_11_X ... R_12_X) and their x_APi12_branches /
+# x_APi32_branches lookup tables are the OLD X-ground branch scheme, superseded
+# by the O_X/P_X/Q_X/R_X functions above. As of Sept 2026 they are not needed for
+# current YbF work, but they're kept here (not deleted) in case we want to go
+# back to them - matching the same note in YbF_spectroscopy_library.py.
+
 # Helper core to handle the energy difference
 def _transition_energy(j_prime, excited_params, e_func, j_double_prime, ground_params, g_func):
     '''

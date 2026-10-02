@@ -598,8 +598,7 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
@@ -899,6 +898,7 @@
     <Compile Include="WindfreakSynth.cs" />
     <Compile Include="AD9850DDS.cs" />
     <Compile Include="WindfreakSynthHD.cs" />
+    <Compile Include="Novatech426ASynth.cs" />
     <Compile Include="WMLServerHuxleyFileSystem.cs" />
     <Compile Include="WMLServerHuxleyHardware.cs" />
     <Compile Include="YAGLaser.cs">

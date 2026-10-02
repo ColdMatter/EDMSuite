@@ -133,44 +133,44 @@ namespace WavemeterLockServer
 
             //Check if there's any remote connection
             if (controller.remoteConnection[0])
-                led1.Value = true;
+                led1.Checked = true;
             else
-                led1.Value = false;
+                led1.Checked = false;
 
             if (controller.remoteConnection[1])
-                led2.Value = true;
+                led2.Checked = true;
             else
-                led2.Value = false;
+                led2.Checked = false;
 
             if (controller.remoteConnection[2])
-                led3.Value = true;
+                led3.Checked = true;
             else
-                led3.Value = false;
+                led3.Checked = false;
 
             if (controller.remoteConnection[3])
-                led4.Value = true;
+                led4.Checked = true;
             else
-                led4.Value = false;
+                led4.Checked = false;
 
             if (controller.remoteConnection[4])
-                led5.Value = true;
+                led5.Checked = true;
             else
-                led5.Value = false;
+                led5.Checked = false;
 
             if (controller.remoteConnection[5])
-                led6.Value = true;
+                led6.Checked = true;
             else
-                led6.Value = false;
+                led6.Checked = false;
 
             if (controller.remoteConnection[6])
-                led7.Value = true;
+                led7.Checked = true;
             else
-                led7.Value = false;
+                led7.Checked = false;
 
             if (controller.remoteConnection[7])
-                led8.Value = true;
+                led8.Checked = true;
             else
-                led8.Value = false;
+                led8.Checked = false;
 
         }
 

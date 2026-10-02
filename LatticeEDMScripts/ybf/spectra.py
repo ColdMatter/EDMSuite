@@ -224,3 +224,30 @@ def extract_branch_data(df, use_wavenumber=False):
         }
 
     return branch_data
+
+
+_UNIT_LABELS = {"Wavenumber_cm-1": "cm-1", "Frequency_THz": "THz"}
+
+
+def branch_table(df, value_cols=("Wavenumber_cm-1", "Frequency_THz")):
+    """Pivot a GetSpectra_N/GetSpectra_J output so branches become columns and
+    the ground-state quantum number (N'' or J'') becomes the row index.
+
+    This is the display tuned in Bulk analysis scripts/4f spectroscopy.py:
+    lets you eyeball predicted transition frequencies branch-by-branch, and
+    cross-check them against saved or experimentally measured values.
+
+    With more than one entry in value_cols (the default: cm-1 and THz), columns
+    become a (Branch, Unit) MultiIndex so both units sit side by side per branch.
+    """
+    df = df.copy()
+    df.columns = df.columns.str.strip()
+    index_col = "J''" if "J''" in df.columns else "N''"
+    value_cols = list(value_cols)
+
+    table = df.pivot(index=index_col, columns="Branch", values=value_cols).sort_index()
+    if len(value_cols) > 1:
+        table = table.swaplevel(axis=1).sort_index(axis=1, level=0, sort_remaining=False)
+        table = table.rename(columns=_UNIT_LABELS, level=1)
+    table.index.name = index_col.strip("'")
+    return table

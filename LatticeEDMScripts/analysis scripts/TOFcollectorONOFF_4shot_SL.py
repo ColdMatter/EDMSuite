@@ -22,7 +22,7 @@ import os
 import re
 
 OneDriveFolder = os.environ['onedrive']
-sys.path.append(OneDriveFolder + r"\Desktop\EDMSuite\LatticeEDMScripts")
+sys.path.append(OneDriveFolder + r"\EDMSuite\LatticeEDMScripts")
 import LatticeEDM_analysis_library as EDM
 
 import numpy as np
@@ -126,13 +126,19 @@ for i in range(0, len(DataOn)):
 title = "TOF at point %g for shot #"%point
 
 for i in range(0, len(OnTOFbyShot)):
-    plt.plot(TimeOn*1000, OnTOFbyShot[i], label='On')
-    plt.plot(TimeOff*1000, OffTOFbyShot[i], label='Off')
+    OnTOFbyShotstd = np.std(OnTOFbyShot[i][3500::])
+    OffTOFbyShotstd = np.std(OffTOFbyShot[i][3500::])
+    
+    plt.plot(TimeOn*1000, OnTOFbyShot[i], label='On, bkg_std=%.3gV'%OnTOFbyShotstd)
+    plt.plot(TimeOff*1000, OffTOFbyShot[i], label='Off, bkg_std=%.3gV'%OffTOFbyShotstd)
     plt.title(title + str(i))
     plt.xlabel("time (ms)")
     plt.ylabel("Signal (V)")
     plt.legend()
     plt.show()
+
+OnTOFbyShotstd = np.std(OnTOFbyShot[3500::])
+OnTOFbyShotstd = np.std(OnTOFbyShot[3500::])
     
 #%% Grouping by ON/OFF and detector
 PMTOnYAGOns = DataOn[0]
@@ -141,11 +147,6 @@ PMTOnYAGOffs = DataOn[1]
 PMTOffYAGOns = DataOff[0]
 PMTOffYAGOffs = DataOff[1]
 
-PDOnYAGOns = DataOn[2]
-PDOnYAGOffs = DataOn[3]
-
-PDOffYAGOns = DataOff[2]
-PDOffYAGOffs = DataOff[3]
 
 #%% check -- passed
 
@@ -189,6 +190,30 @@ PPS = Settings['pointsPerScan']
 
 PMTOns = PMTOnYAGOns - PMTOnYAGOffs
 PMTOffs = PMTOffYAGOns - PMTOffYAGOffs
+
+#%%
+PMTOnsAvg = np.average(PMTOns, axis=0)
+PMTOffsAvg = np.average(PMTOffs, axis=0)
+
+Onstd = np.std(PMTOnsAvg)
+Offstd = np.std(PMTOffsAvg)
+
+plt.plot(TimeOn*1000, PMTOnsAvg, label='On, std=%.3gV'%Onstd)
+plt.plot(TimeOff*1000, PMTOffsAvg, label='Off, std=%.3gV'%Offstd)
+plt.title("Averaged YAG ON-OFF, PMT")
+plt.xlabel("time (ms)")
+plt.ylabel("Signal (V)")
+plt.legend()
+plt.show()
+
+
+#%%
+PDOnYAGOns = DataOn[2]
+PDOnYAGOffs = DataOn[3]
+
+PDOffYAGOns = DataOff[2]
+PDOffYAGOffs = DataOff[3]
+
 PDOns = PDOnYAGOns - PDOnYAGOffs
 PDOffs = PDOffYAGOns - PDOffYAGOffs
 

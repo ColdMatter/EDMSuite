@@ -20,6 +20,7 @@ namespace ScanMaster.Acquire.Plugin
 	XmlInclude(typeof(WindfriekSynthF0AmplitudeOutputPlugin)),
 	XmlInclude(typeof(WindfriekSynthF1AmplitudeOutputPlugin)),
 	XmlInclude(typeof(WindfriekOPAmplitudeOutputPlugin)),
+	XmlInclude(typeof(NovatechSynthFrequencyOutputPlugin)),
 	XmlInclude(typeof(BFieldUSBOutputPlugin)),
 	XmlInclude(typeof(WMLOutputPlugin)),
 	XmlInclude(typeof(DTCLOutputPlugin)),
