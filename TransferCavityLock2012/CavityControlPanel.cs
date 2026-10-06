@@ -134,6 +134,16 @@ namespace TransferCavityLock2012
             SlaveLaserPanels[slaveName].UpdateUIState(state);
         }
 
+        internal void SetSlaveLockCheck(string slaveName, bool state)
+        {
+            SlaveLaserPanels[slaveName].SetLockCheck(state);
+        }
+
+        internal void SetMasterLockCheck(bool state)
+        {
+            UIHelper.SetCheckBox(masterLockEnableCheck, state);
+        }
+
         private void masterLockEnableCheck_CheckedChanged(object sender, EventArgs e)
         {
 

@@ -250,7 +250,12 @@ namespace TransferCavityLock2012
         public void EngageMasterLock(string cavityName)
         {
             MasterLaser laser = Cavities[cavityName].Master;
-            laser.ArmLock();
+            if (!laser.ArmLock())
+            {
+                ui.SetMasterLockCheck(cavityName, false);
+                ShowDialog("Laser in use", laser.Name + " is currently being controlled by " + laser.ClaimedBy + ". Unlock it there first.");
+                return;
+            }
             ui.UpdateMasterUIState(cavityName, laser.lState);
         }
 
@@ -264,7 +269,12 @@ namespace TransferCavityLock2012
         public void EngageLock(string cavityName, string slaveName)
         {
             SlaveLaser laser = Cavities[cavityName].SlaveLasers[slaveName];
-            laser.ArmLock();
+            if (!laser.ArmLock())
+            {
+                ui.SetSlaveLockCheck(cavityName, slaveName, false);
+                ShowDialog("Laser in use", slaveName + " is currently being controlled by " + laser.ClaimedBy + ". Unlock it there first.");
+                return;
+            }
             ui.UpdateSlaveUIState(cavityName, slaveName, laser.lState);
             ui.ClearErrorGraph(cavityName, slaveName);
         }

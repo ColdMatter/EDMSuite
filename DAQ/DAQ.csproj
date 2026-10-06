@@ -598,9 +598,7 @@
     <Reference Include="alglibnet2">
       <HintPath>.\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="Ivi.Visa, Version=5.11.0.0, Culture=neutral, PublicKeyToken=a128c98f1d7717c1, processorArchitecture=MSIL" />
     <Reference Include="NationalInstruments.Common, Version=19.1.40.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -753,6 +751,7 @@
     <Compile Include="DAQMxAnalogPatternGenerator.cs" />
     <Compile Include="DAQMxTCL2012ExtTriggeredMultiReadHelper.cs" />
     <Compile Include="DAQMxTCL2012LaserControlHelper.cs" />
+    <Compile Include="SharedAnalogOutput.cs" />
     <Compile Include="DAQMxTCLHelperSWTimed.cs" />
     <Compile Include="DAQMxTransferCavityLockHelper.cs" />
     <Compile Include="DigitalOutputChannel.cs" />

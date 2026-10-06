@@ -139,11 +139,21 @@ namespace WavemeterLock
             {
                 if (SetPoint != null && !string.IsNullOrWhiteSpace(SetPoint.Text))
                 {
-                    lockMsg.Text = "Lock On";
-                    toggleLED(lockLED, true);
-                    controller.indicateRemoteConnection(channelNumber, true);
                     controller.lasers[name].setFrequency = Convert.ToDouble(SetPoint.Text);
                     controller.EngageLock(name);
+                    if (controller.lasers[name].lState == Laser.LaserState.LOCKED)
+                    {
+                        lockMsg.Text = "Lock On";
+                        toggleLED(lockLED, true);
+                        controller.indicateRemoteConnection(channelNumber, true);
+                    }
+                    else
+                    {
+                        // Another program (e.g. TCL) is locking this laser
+                        lockMsg.Text = "In use elsewhere";
+                        MessageBox.Show(name + " is currently being controlled by " + controller.lasers[name].ClaimedBy + ". Unlock it there first.",
+                            "Laser in use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {

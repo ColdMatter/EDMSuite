@@ -84,6 +84,16 @@ namespace TransferCavityLock2012
             CavityPanels[cavityName].UpdateSlaveUIState(slaveName, state);
         }
 
+        internal void SetSlaveLockCheck(string cavityName, string slaveName, bool state)
+        {
+            CavityPanels[cavityName].SetSlaveLockCheck(slaveName, state);
+        }
+
+        internal void SetMasterLockCheck(string cavityName, bool state)
+        {
+            CavityPanels[cavityName].SetMasterLockCheck(state);
+        }
+
         internal void AppendToErrorGraph(string cavityName, string laserName, int lockCount, double error)
         {
             CavityPanels[cavityName].AppendToErrorGraph(laserName, lockCount, error);
