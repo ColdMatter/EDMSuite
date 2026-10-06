@@ -45,8 +45,8 @@ colors = prop_cycle.by_key()['color']
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "Sept 2026"
-date = "24"
+month = "Oct 2026"
+date = "05"
 #blockdrive=datadrive+"\\BlockData\\"
 #
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
@@ -58,7 +58,7 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
 #sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
-sele = ["001", "002"]
+sele = ["003", "004", "005", "006", "008"]
 #%%
 LoadPasses = True
 
@@ -94,8 +94,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 22
-SigEnd = 24
+SigStart = 23
+SigEnd = 28
 BkgStart = 70
 BkgEnd = 78
 
@@ -114,6 +114,7 @@ Tau = {}
 Tauerr = {}
 Base = {}
 Baseerr = {}
+IndivFit = {}   # full best-fit [A, tau, C] of each scan, used as initial guesses later
 
 Durations = []
 Ratios = []
@@ -147,7 +148,8 @@ for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     Tauerr[fileLabels[i]] = tauerr
     Base[fileLabels[i]] = base
     Baseerr[fileLabels[i]] = baseerr
-    
+    IndivFit[fileLabels[i]] = np.array(fit_results['best fit'])
+
     AllRatios[fileLabels[i]] = Ratio
     AllDurations[fileLabels[i]] = ScanParams
     
@@ -190,9 +192,15 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #         "4fv0, also in OFF shots": ['014'],
 #         "+4fv1, also in OFF shots": ['016']}
 
-types = {"4fv0": ["002"]}
+types = {"Up to V2": ["003"],
+         "+ V3": ["004"],
+         "+ 4fv0, R&Q": ["005"],
+         "+ 4fv1, R": ["006"],
+         "+ 4fv1, Q": ["008"]}
 
 Weighted = True
+UseIndivP0 = True   # True: initial guess = mean of the individual-scan fits (cell above); False: fixed p0_default
+p0_default = [0.5, 2500., 0.5]
 
 keys = list(types.keys())
 
@@ -201,8 +209,9 @@ Dur = {}
 StandardErr = {}
 Fit = {}
 Err = {}
+BadFit = {}
 
-tspan = np.arange(0, 6000, 1)
+tspan = np.arange(0, 7000, 1)
 
 for i in range(0, len(keys)):
     keyList = types[keys[i]]
@@ -228,26 +237,53 @@ for i in range(0, len(keys)):
     
     sterr = std/np.sqrt(len(toAvgKeys))
     StandardErr[keys[i]] = sterr
-    
-    if len(toAvgKeys) > 1:
-        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
-                             p0=[1.0, 1800., 0.3],
-                             absolute_sigma=Weighted, sigma=sterr)
-    else:
-        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
-                             p0=[1.0, 1800., 0.3])
-    err = np.sqrt(np.diag(cov))
-    
+
+    # Initial guess from the individual fits of the scans being averaged (good fits only, if any)
+    p0 = p0_default
+    if UseIndivP0:
+        p0Keys = [f for f in toAvgKeys if f in GoodData and f in IndivFit]
+        if len(p0Keys) == 0:
+            p0Keys = [f for f in toAvgKeys if f in IndivFit]
+            if len(p0Keys) > 0:
+                print(keys[i] + ": no good individual fits - initial guess from all scans")
+        if len(p0Keys) > 0:
+            p0 = np.mean([IndivFit[f] for f in p0Keys], axis=0)
+        else:
+            print(keys[i] + ": no individual fits found - using p0_default")
+    print(keys[i] + " initial guess [A, tau, C]: ", p0)
+
+    try:
+        if len(toAvgKeys) > 1:
+            fit, cov = curve_fit(tools.exp_decay, dur, avg,
+                                 p0=p0,
+                                 absolute_sigma=Weighted, sigma=sterr)
+        else:
+            fit, cov = curve_fit(tools.exp_decay, dur, avg,
+                                 p0=p0)
+        err = np.sqrt(np.diag(cov))
+    except RuntimeError as e:   # fit did not converge
+        print(keys[i] + ": fit failed - " + str(e))
+        fit = np.full(3, np.nan)
+        err = np.full(3, np.nan)
+
+    # Bad fit: failed, non-finite errors, or tau error >= tau (same criterion as the individual fits)
+    badFit = not (np.all(np.isfinite(err)) and err[1] < abs(fit[1]))
+    if badFit:
+        print(keys[i] + ": bad fit, tau = %.5g +- %.4g us - fit line not plotted"%(fit[1], err[1]))
+
     Fit[keys[i]] = fit
     Err[keys[i]] = err
-    
-    plt.plot(dur, avg, '.', color=colors[i], label=keys[i])
+    BadFit[keys[i]] = badFit
+
+    plt.plot(dur, avg, '.', color=colors[i],
+             label=keys[i] + (" (bad fit)" if badFit else ""))
     if len(toAvgKeys) > 1:
         plt.fill_between(dur, y1=avg-sterr, y2=avg+sterr, alpha=0.3,
                          color=colors[i])
 
-    plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
-             label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
+    if not badFit:
+        plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
+                 label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
 
 plt.xlabel(r'V0 slowing duration ($\mu$s)')
 plt.ylabel('On/Off ratio')
