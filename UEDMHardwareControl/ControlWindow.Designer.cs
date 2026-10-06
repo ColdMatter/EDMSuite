@@ -182,6 +182,18 @@ namespace UEDMHardwareControl
             this.cBMWSwitchState = new System.Windows.Forms.CheckBox();
             this.labelOPSynthTemp = new System.Windows.Forms.Label();
             this.groupBoxStirapRF = new System.Windows.Forms.GroupBox();
+            this.groupBoxNovatech = new System.Windows.Forms.GroupBox();
+            this.labelNovatechChannel = new System.Windows.Forms.Label();
+            this.comboBoxNovatechChannel = new System.Windows.Forms.ComboBox();
+            this.labelNovatechReadback = new System.Windows.Forms.Label();
+            this.labelNovatechFreq = new System.Windows.Forms.Label();
+            this.tbNovatechFrequency = new System.Windows.Forms.TextBox();
+            this.tbNovatechFreqMon = new System.Windows.Forms.TextBox();
+            this.labelNovatechAmp = new System.Windows.Forms.Label();
+            this.tbNovatechAmplitude = new System.Windows.Forms.TextBox();
+            this.tbNovatechAmpMon = new System.Windows.Forms.TextBox();
+            this.btUpdateNovatech = new System.Windows.Forms.Button();
+            this.btQueryNovatech = new System.Windows.Forms.Button();
             this.label48 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
             this.tbStirapRFfreqFalseValue = new System.Windows.Forms.TextBox();
@@ -197,6 +209,8 @@ namespace UEDMHardwareControl
             this.tbStirapRFFrequency = new System.Windows.Forms.TextBox();
             this.labelStirapRF = new System.Windows.Forms.Label();
             this.tbStirapRFFreqMon = new System.Windows.Forms.TextBox();
+            this.tbStirapRFAmpMon = new System.Windows.Forms.TextBox();
+            this.labelStirapRFAmpMon = new System.Windows.Forms.Label();
             this.groupBoxWindfreakDetection = new System.Windows.Forms.GroupBox();
             this.groupBoxMWCHAdetection = new System.Windows.Forms.GroupBox();
             this.cbCHATrigger = new System.Windows.Forms.CheckBox();
@@ -876,6 +890,7 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.ledChBDetA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).BeginInit();
             this.groupBoxStirapRF.SuspendLayout();
+            this.groupBoxNovatech.SuspendLayout();
             this.groupBoxWindfreakDetection.SuspendLayout();
             this.groupBoxMWCHAdetection.SuspendLayout();
             this.groupBoxMWCHBdetection.SuspendLayout();
@@ -1930,6 +1945,7 @@ namespace UEDMHardwareControl
             this.tabPagePumping.Controls.Add(this.labelDetectSynthTempB);
             this.tabPagePumping.Controls.Add(this.groupBoxMWSwitch);
             this.tabPagePumping.Controls.Add(this.labelOPSynthTemp);
+            this.tabPagePumping.Controls.Add(this.groupBoxNovatech);
             this.tabPagePumping.Controls.Add(this.groupBoxStirapRF);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreakDetection);
             this.tabPagePumping.Controls.Add(this.groupBoxWindfreaksynthhd);
@@ -2171,6 +2187,8 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFrequency);
             this.groupBoxStirapRF.Controls.Add(this.labelStirapRF);
             this.groupBoxStirapRF.Controls.Add(this.tbStirapRFFreqMon);
+            this.groupBoxStirapRF.Controls.Add(this.tbStirapRFAmpMon);
+            this.groupBoxStirapRF.Controls.Add(this.labelStirapRFAmpMon);
             this.groupBoxStirapRF.Location = new System.Drawing.Point(3, 234);
             this.groupBoxStirapRF.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBoxStirapRF.Name = "groupBoxStirapRF";
@@ -2179,6 +2197,144 @@ namespace UEDMHardwareControl
             this.groupBoxStirapRF.TabIndex = 50;
             this.groupBoxStirapRF.TabStop = false;
             this.groupBoxStirapRF.Text = "Stirap RF";
+            // 
+            // groupBoxNovatech
+            // 
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechChannel);
+            this.groupBoxNovatech.Controls.Add(this.comboBoxNovatechChannel);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechReadback);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechFreq);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechFrequency);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechFreqMon);
+            this.groupBoxNovatech.Controls.Add(this.labelNovatechAmp);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechAmplitude);
+            this.groupBoxNovatech.Controls.Add(this.tbNovatechAmpMon);
+            this.groupBoxNovatech.Controls.Add(this.btUpdateNovatech);
+            this.groupBoxNovatech.Controls.Add(this.btQueryNovatech);
+            this.groupBoxNovatech.Location = new System.Drawing.Point(4, 674);
+            this.groupBoxNovatech.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxNovatech.Name = "groupBoxNovatech";
+            this.groupBoxNovatech.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBoxNovatech.Size = new System.Drawing.Size(337, 175);
+            this.groupBoxNovatech.TabIndex = 51;
+            this.groupBoxNovatech.TabStop = false;
+            this.groupBoxNovatech.Text = "Novatech 426A RF";
+            // 
+            // labelNovatechChannel
+            // 
+            this.labelNovatechChannel.AutoSize = true;
+            this.labelNovatechChannel.Location = new System.Drawing.Point(23, 33);
+            this.labelNovatechChannel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechChannel.Name = "labelNovatechChannel";
+            this.labelNovatechChannel.Size = new System.Drawing.Size(64, 17);
+            this.labelNovatechChannel.TabIndex = 0;
+            this.labelNovatechChannel.Text = "Channel:";
+            // 
+            // comboBoxNovatechChannel
+            // 
+            this.comboBoxNovatechChannel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxNovatechChannel.FormattingEnabled = true;
+            this.comboBoxNovatechChannel.Items.AddRange(new object[] {
+            "0",
+            "1"});
+            this.comboBoxNovatechChannel.Location = new System.Drawing.Point(131, 30);
+            this.comboBoxNovatechChannel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxNovatechChannel.Name = "comboBoxNovatechChannel";
+            this.comboBoxNovatechChannel.Size = new System.Drawing.Size(69, 24);
+            this.comboBoxNovatechChannel.TabIndex = 1;
+            this.comboBoxNovatechChannel.SelectedIndexChanged += new System.EventHandler(this.comboBoxNovatechChannel_SelectedIndexChanged);
+            // 
+            // labelNovatechReadback
+            // 
+            this.labelNovatechReadback.AutoSize = true;
+            this.labelNovatechReadback.Location = new System.Drawing.Point(237, 33);
+            this.labelNovatechReadback.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechReadback.Name = "labelNovatechReadback";
+            this.labelNovatechReadback.Size = new System.Drawing.Size(70, 17);
+            this.labelNovatechReadback.TabIndex = 2;
+            this.labelNovatechReadback.Text = "Readback:";
+            // 
+            // labelNovatechFreq
+            // 
+            this.labelNovatechFreq.AutoSize = true;
+            this.labelNovatechFreq.Location = new System.Drawing.Point(23, 67);
+            this.labelNovatechFreq.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechFreq.Name = "labelNovatechFreq";
+            this.labelNovatechFreq.Size = new System.Drawing.Size(101, 17);
+            this.labelNovatechFreq.TabIndex = 3;
+            this.labelNovatechFreq.Text = "RF freq (MHz):";
+            // 
+            // tbNovatechFrequency
+            // 
+            this.tbNovatechFrequency.Location = new System.Drawing.Point(131, 64);
+            this.tbNovatechFrequency.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNovatechFrequency.Name = "tbNovatechFrequency";
+            this.tbNovatechFrequency.Size = new System.Drawing.Size(100, 22);
+            this.tbNovatechFrequency.TabIndex = 4;
+            this.tbNovatechFrequency.Text = "100";
+            // 
+            // tbNovatechFreqMon
+            // 
+            this.tbNovatechFreqMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbNovatechFreqMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbNovatechFreqMon.Location = new System.Drawing.Point(237, 64);
+            this.tbNovatechFreqMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbNovatechFreqMon.Name = "tbNovatechFreqMon";
+            this.tbNovatechFreqMon.ReadOnly = true;
+            this.tbNovatechFreqMon.Size = new System.Drawing.Size(85, 22);
+            this.tbNovatechFreqMon.TabIndex = 5;
+            // 
+            // labelNovatechAmp
+            // 
+            this.labelNovatechAmp.AutoSize = true;
+            this.labelNovatechAmp.Location = new System.Drawing.Point(23, 99);
+            this.labelNovatechAmp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelNovatechAmp.Name = "labelNovatechAmp";
+            this.labelNovatechAmp.Size = new System.Drawing.Size(98, 17);
+            this.labelNovatechAmp.TabIndex = 6;
+            this.labelNovatechAmp.Text = "Amp (0-1023):";
+            // 
+            // tbNovatechAmplitude
+            // 
+            this.tbNovatechAmplitude.Location = new System.Drawing.Point(131, 96);
+            this.tbNovatechAmplitude.Margin = new System.Windows.Forms.Padding(4);
+            this.tbNovatechAmplitude.Name = "tbNovatechAmplitude";
+            this.tbNovatechAmplitude.Size = new System.Drawing.Size(100, 22);
+            this.tbNovatechAmplitude.TabIndex = 7;
+            this.tbNovatechAmplitude.Text = "1023";
+            // 
+            // tbNovatechAmpMon
+            // 
+            this.tbNovatechAmpMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbNovatechAmpMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbNovatechAmpMon.Location = new System.Drawing.Point(237, 96);
+            this.tbNovatechAmpMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbNovatechAmpMon.Name = "tbNovatechAmpMon";
+            this.tbNovatechAmpMon.ReadOnly = true;
+            this.tbNovatechAmpMon.Size = new System.Drawing.Size(85, 22);
+            this.tbNovatechAmpMon.TabIndex = 8;
+            // 
+            // btUpdateNovatech
+            // 
+            this.btUpdateNovatech.Location = new System.Drawing.Point(23, 132);
+            this.btUpdateNovatech.Margin = new System.Windows.Forms.Padding(4);
+            this.btUpdateNovatech.Name = "btUpdateNovatech";
+            this.btUpdateNovatech.Size = new System.Drawing.Size(100, 28);
+            this.btUpdateNovatech.TabIndex = 9;
+            this.btUpdateNovatech.Text = "Update";
+            this.btUpdateNovatech.UseVisualStyleBackColor = true;
+            this.btUpdateNovatech.Click += new System.EventHandler(this.btUpdateNovatech_Click);
+            // 
+            // btQueryNovatech
+            // 
+            this.btQueryNovatech.Location = new System.Drawing.Point(131, 132);
+            this.btQueryNovatech.Margin = new System.Windows.Forms.Padding(4);
+            this.btQueryNovatech.Name = "btQueryNovatech";
+            this.btQueryNovatech.Size = new System.Drawing.Size(100, 28);
+            this.btQueryNovatech.TabIndex = 10;
+            this.btQueryNovatech.Text = "Query";
+            this.btQueryNovatech.UseVisualStyleBackColor = true;
+            this.btQueryNovatech.Click += new System.EventHandler(this.btQueryNovatech_Click);
             // 
             // label48
             // 
@@ -2259,6 +2415,7 @@ namespace UEDMHardwareControl
             this.btQueryStirapRFFrequency.TabIndex = 55;
             this.btQueryStirapRFFrequency.Text = "Query";
             this.btQueryStirapRFFrequency.UseVisualStyleBackColor = true;
+            this.btQueryStirapRFFrequency.Click += new System.EventHandler(this.btQueryStirapRFFrequency_Click);
             // 
             // comboBoxStirapRFIncrementUnit
             // 
@@ -2338,6 +2495,27 @@ namespace UEDMHardwareControl
             this.tbStirapRFFreqMon.ReadOnly = true;
             this.tbStirapRFFreqMon.Size = new System.Drawing.Size(99, 22);
             this.tbStirapRFFreqMon.TabIndex = 36;
+            // 
+            // tbStirapRFAmpMon
+            // 
+            this.tbStirapRFAmpMon.BackColor = System.Drawing.SystemColors.WindowText;
+            this.tbStirapRFAmpMon.ForeColor = System.Drawing.Color.Chartreuse;
+            this.tbStirapRFAmpMon.Location = new System.Drawing.Point(237, 66);
+            this.tbStirapRFAmpMon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tbStirapRFAmpMon.Name = "tbStirapRFAmpMon";
+            this.tbStirapRFAmpMon.ReadOnly = true;
+            this.tbStirapRFAmpMon.Size = new System.Drawing.Size(69, 22);
+            this.tbStirapRFAmpMon.TabIndex = 65;
+            // 
+            // labelStirapRFAmpMon
+            // 
+            this.labelStirapRFAmpMon.AutoSize = true;
+            this.labelStirapRFAmpMon.Location = new System.Drawing.Point(233, 42);
+            this.labelStirapRFAmpMon.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStirapRFAmpMon.Name = "labelStirapRFAmpMon";
+            this.labelStirapRFAmpMon.Size = new System.Drawing.Size(77, 17);
+            this.labelStirapRFAmpMon.TabIndex = 66;
+            this.labelStirapRFAmpMon.Text = "Amp (dBm):";
             // 
             // groupBoxWindfreakDetection
             // 
@@ -10259,6 +10437,8 @@ namespace UEDMHardwareControl
             ((System.ComponentModel.ISupportInitialize)(this.ledChADetA)).EndInit();
             this.groupBoxStirapRF.ResumeLayout(false);
             this.groupBoxStirapRF.PerformLayout();
+            this.groupBoxNovatech.ResumeLayout(false);
+            this.groupBoxNovatech.PerformLayout();
             this.groupBoxWindfreakDetection.ResumeLayout(false);
             this.groupBoxMWCHAdetection.ResumeLayout(false);
             this.groupBoxMWCHAdetection.PerformLayout();
@@ -10949,6 +11129,18 @@ namespace UEDMHardwareControl
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem parametersToolStripMenuItem1;
         private System.Windows.Forms.GroupBox groupBoxStirapRF;
+        private System.Windows.Forms.GroupBox groupBoxNovatech;
+        private System.Windows.Forms.Label labelNovatechChannel;
+        public System.Windows.Forms.ComboBox comboBoxNovatechChannel;
+        private System.Windows.Forms.Label labelNovatechReadback;
+        private System.Windows.Forms.Label labelNovatechFreq;
+        public System.Windows.Forms.TextBox tbNovatechFrequency;
+        public System.Windows.Forms.TextBox tbNovatechFreqMon;
+        private System.Windows.Forms.Label labelNovatechAmp;
+        public System.Windows.Forms.TextBox tbNovatechAmplitude;
+        public System.Windows.Forms.TextBox tbNovatechAmpMon;
+        public System.Windows.Forms.Button btUpdateNovatech;
+        public System.Windows.Forms.Button btQueryNovatech;
         private System.Windows.Forms.Button btQueryStirapRFFrequency;
         public System.Windows.Forms.ComboBox comboBoxStirapRFIncrementUnit;
         public System.Windows.Forms.ComboBox comboBoxStirapRFSetpointUnit;
@@ -10957,6 +11149,8 @@ namespace UEDMHardwareControl
         public System.Windows.Forms.TextBox tbStirapRFFrequency;
         private System.Windows.Forms.Label labelStirapRF;
         public System.Windows.Forms.TextBox tbStirapRFFreqMon;
+        public System.Windows.Forms.TextBox tbStirapRFAmpMon;
+        private System.Windows.Forms.Label labelStirapRFAmpMon;
         public System.Windows.Forms.CheckBox cbCHATrigger;
         public System.Windows.Forms.CheckBox cbCHARFTrigger;
         public System.Windows.Forms.CheckBox cbStirapRFOn;

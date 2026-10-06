@@ -121,6 +121,9 @@ namespace UEDMHardwareControl
         // Stirap Synth
         HP8657ASynth greenSynth = (HP8657ASynth)Environs.Hardware.Instruments["green"];
 
+        // Novatech 426A dual channel RF synth
+        Novatech426ASynth novatechSynth = (Novatech426ASynth)Environs.Hardware.Instruments["Novatech2channels"];
+
         // Pressure gauges
         // The following gauges have the same voltage-mbar conversion is used for the AgilentFRG720Gauge.
         AgilentFRG720Gauge beamlinePressureMonitor = new AgilentFRG720Gauge("Pressure gauge beamline", "pressureGaugeBeamline");
@@ -246,10 +249,16 @@ namespace UEDMHardwareControl
                 AnalogSingleChannelReader reader = new AnalogSingleChannelReader(task.Stream);
 
                 task.Start();
-                double val = reader.ReadSingleSample();
-                task.Stop();
-                task.Control(TaskAction.Unreserve);
-                return val;
+                try
+                {
+                    return reader.ReadSingleSample();
+                }
+                finally
+                {
+                    // Always release the card, otherwise a failed read leaves it reserved and blocks every other task on it
+                    task.Stop();
+                    task.Control(TaskAction.Unreserve);
+                }
             }
             catch (Exception e)
             {
@@ -3537,15 +3546,29 @@ namespace UEDMHardwareControl
                     UpdateNeonFlowSetpointMonitor();
                     if (window.cbSF6Valve.Checked)
                     {
-                        UpdateSF6FlowActMonitor();
-                        UpdateSF6FlowSetpointMonitor();
+                        try
+                        {
+                            UpdateSF6FlowActMonitor();
+                            UpdateSF6FlowSetpointMonitor();
+                        }
+                        catch (Exception e)
+                        {
+                            HandleSF6FlowControllerError(e);
+                        }
                     }
                     if (NeonFlowSetPointFlag)
                     {
                         neonFlowController.SetSetpoint(neonFlowChannelNumber, newNeonFlowSetpoint.ToString());
                         if (window.cbSF6Valve.Checked)
                         {
-                            sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                            try
+                            {
+                                sf6FlowController.SetSetpoint(sF6FlowChannelNumber, newSF6FlowSetpoint.ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                HandleSF6FlowControllerError(e);
+                            }
                         }
                         NeonFlowSetPointFlag = false;
                     }
@@ -3562,6 +3585,16 @@ namespace UEDMHardwareControl
             window.EnableControl(window.btSetNewHeliumFlowSetpoint, false);
             window.EnableControl(window.tbNewSF6FlowSetpoint, false);
             window.EnableControl(window.btSetNewSF6FlowSetpoint, false);
+        }
+
+        // If the Alicat doesn't respond (e.g. wrong COM port or unit ID), stop polling it rather than crashing the app.
+        private void HandleSF6FlowControllerError(Exception e)
+        {
+            window.SetCheckBoxCheckedStatus(window.cbSF6Valve, false);
+            string message = "Lost communication with the Alicat SF6 flow controller, so it has been disabled (\"Use Alicat?\" unticked).\n\n"
+                + "Check the COM port and unit ID, then tick the box again to retry.\n\n" + e.GetType().Name + ": " + e.Message;
+            // BeginInvoke so the poll thread isn't blocked while the message box is open
+            window.BeginInvoke(new Action(() => MessageBox.Show(message, "Alicat flow controller error", MessageBoxButtons.OK)));
         }
 
         public void SetNeonFlowSetpoint()
@@ -7104,6 +7137,20 @@ namespace UEDMHardwareControl
         #region STIRAP RF
         private const double greenSynthOffAmplitude = -130.0;
 
+        // The HP8657A can't report its settings over GPIB, so the readback boxes show the last values this program sent to it
+        private double greenSynthLastFrequency = Double.NaN;
+        private double greenSynthLastAmplitude = Double.NaN;
+
+        public void DisplayGreenSynthLastSettings()
+        {
+            window.SetTextBox(window.tbStirapRFFreqMon, Double.IsNaN(greenSynthLastFrequency) ? "Not set" : String.Format("{0:F5}", greenSynthLastFrequency));
+            string amplitudeText;
+            if (Double.IsNaN(greenSynthLastAmplitude)) amplitudeText = "Not set";
+            else if (greenSynthLastAmplitude == greenSynthOffAmplitude) amplitudeText = "Off";
+            else amplitudeText = greenSynthLastAmplitude.ToString();
+            window.SetTextBox(window.tbStirapRFAmpMon, amplitudeText);
+        }
+
         public double GreenSynthOnFrequency
         {
             get
@@ -7175,7 +7222,9 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
             greenSynth.Frequency = value;
+            greenSynthLastFrequency = value;
             window.SetTextBox(window.tbStirapRFFrequency, String.Format("{0:F5}", value));
+            DisplayGreenSynthLastSettings();
             try
             {
                 greenSynth.Disconnect();
@@ -7201,12 +7250,17 @@ namespace UEDMHardwareControl
             {
                 if (enable)
                 {
-                    greenSynth.Frequency = GreenSynthOnFrequency;
-                    greenSynth.Amplitude = GreenSynthOnAmplitude;
+                    double frequency = GreenSynthOnFrequency;
+                    double amplitude = GreenSynthOnAmplitude;
+                    greenSynth.Frequency = frequency;
+                    greenSynthLastFrequency = frequency;
+                    greenSynth.Amplitude = amplitude;
+                    greenSynthLastAmplitude = amplitude;
                 }
                 else
                 {
                     greenSynth.Amplitude = greenSynthOffAmplitude;
+                    greenSynthLastAmplitude = greenSynthOffAmplitude;
                 }
             }
 
@@ -7214,6 +7268,7 @@ namespace UEDMHardwareControl
             {
                 MessageBox.Show("Error while setting parameters: " + e.Message);
             }
+            DisplayGreenSynthLastSettings();
 
             try
             {
@@ -7224,6 +7279,13 @@ namespace UEDMHardwareControl
                 MessageBox.Show("Disconnect error: " + e.Message);
             }
 
+        }
+
+        // Called remotely (e.g. by ScanMaster's synth frequency output plugin at the end of a scan) to put the
+        // synth back to the settings in the Stirap RF box: on with its frequency/amplitude, or off
+        public void RestoreGreenSynthToUISettings()
+        {
+            window.Invoke(new Action(() => EnableGreenSynth(GreenSynthEnabled)));
         }
 
         public void SwitchStirapAOMfrequency(bool state)
@@ -7253,6 +7315,81 @@ namespace UEDMHardwareControl
             if (vIn < vMin) return vMin;
             if (vIn > vMax) return vMax;
             return vIn;
+        }
+
+        #endregion
+
+        #region Novatech 426A RF
+        // Each channel of the Novatech is set independently. The channel combo box selects which one
+        // the frequency/amplitude boxes and the readback boxes refer to.
+
+        private Novatech426ASynth.Novatech426AChannel SelectedNovatechChannel
+        {
+            get
+            {
+                int channel = window.comboBoxNovatechChannel.SelectedIndex;
+                return novatechSynth.Channel(channel < 0 ? 0 : channel);
+            }
+        }
+
+        public void UpdateNovatechUsingUIInput()
+        {
+            if (novatechSynth == null)
+            {
+                MessageBox.Show("Novatech 426A not found in hardware instruments.", "Novatech", MessageBoxButtons.OK);
+                return;
+            }
+            if (!Double.TryParse(window.tbNovatechFrequency.Text, out double frequency))
+            {
+                MessageBox.Show("Unable to parse Novatech frequency. Check input is a number (MHz).", "User input exception", MessageBoxButtons.OK);
+                return;
+            }
+            if (!Int32.TryParse(window.tbNovatechAmplitude.Text, out int amplitude))
+            {
+                MessageBox.Show("Unable to parse Novatech amplitude. Check input is an integer between 0 and 1023.", "User input exception", MessageBoxButtons.OK);
+                return;
+            }
+
+            try
+            {
+                Novatech426ASynth.Novatech426AChannel channel = SelectedNovatechChannel;
+                channel.Frequency = frequency;
+                // Make sure the amplitude is actually written, even if the channel was previously set to 0
+                if (!channel.Enabled) channel.Enabled = true;
+                channel.Amplitude = amplitude;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while setting Novatech parameters: " + e.Message, "Novatech", MessageBoxButtons.OK);
+            }
+            DisplayNovatechChannelSettings();
+        }
+
+        public void QueryNovatech()
+        {
+            if (novatechSynth == null)
+            {
+                MessageBox.Show("Novatech 426A not found in hardware instruments.", "Novatech", MessageBoxButtons.OK);
+                return;
+            }
+            try
+            {
+                novatechSynth.ReadSettingsFromDevice();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error while querying Novatech: " + e.Message, "Novatech", MessageBoxButtons.OK);
+            }
+            DisplayNovatechChannelSettings();
+        }
+
+        // Shows the last known (set or queried) values of the selected channel in the readback boxes
+        public void DisplayNovatechChannelSettings()
+        {
+            if (novatechSynth == null) return;
+            Novatech426ASynth.Novatech426AChannel channel = SelectedNovatechChannel;
+            window.SetTextBox(window.tbNovatechFreqMon, String.Format("{0:F6}", channel.Frequency));
+            window.SetTextBox(window.tbNovatechAmpMon, (channel.Enabled ? channel.Amplitude : 0).ToString());
         }
 
         #endregion
@@ -9042,15 +9179,15 @@ namespace UEDMHardwareControl
         }
 
 
-        private readonly object pdReadLock = new object();
-
         private double SafeReadPD(NationalInstruments.DAQmx.Task task)
         {
             if (task == null) return double.NaN;
 
             try
             {
-                lock (pdReadLock)
+                // The PDs are on the same DAQ card as the pressure gauges and other monitors, so share their lock.
+                // Using a separate lock let PD reads overlap with pressure reads, giving DAQmx error -50103 (resource reserved).
+                lock (HardwareControllerDAQCardLock)
                 {
                     return ReadAnalogInput(task);
                 }

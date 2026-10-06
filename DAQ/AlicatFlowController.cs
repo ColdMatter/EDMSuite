@@ -87,47 +87,75 @@ namespace DAQ.HAL
         public string QueryData(string ControllerAddress)
         {
             Connect();
-            string DataQuery = String.Concat(ControllerAddress, "\r");
-            string response = Query(DataQuery);
-            Disconnect();
-            return response;
+            try
+            {
+                string DataQuery = String.Concat(ControllerAddress, "\r");
+                return Query(DataQuery);
+            }
+            finally
+            {
+                Disconnect(); // Always release the port, even if the query times out
+            }
         }
 
         public string QueryFlow(string ControllerAddress)
         {
             Connect();
-            string DataQuery = String.Concat(ControllerAddress, "\r");
-            string response = Query(DataQuery);
-            string[] responses = response.Split();
-            Disconnect();
-            return responses[4];
+            try
+            {
+                string DataQuery = String.Concat(ControllerAddress, "\r");
+                string response = Query(DataQuery);
+                string[] responses = response.Split();
+                return responses[4];
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         public string QuerySetpoint(string ControllerAddress)
         {
             Connect();
-            string DataQuery = String.Concat(ControllerAddress, "\r");
-            string response = Query(DataQuery);
-            string[] responses = response.Split();
-            Disconnect();
-            return responses[5];
+            try
+            {
+                string DataQuery = String.Concat(ControllerAddress, "\r");
+                string response = Query(DataQuery);
+                string[] responses = response.Split();
+                return responses[5];
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         public string SetSetpoint(string ControllerAddress, string flowrate)
         {
             Connect();
-            string FlowQuery = String.Concat(ControllerAddress, "s", flowrate, "\r");
-            string response = Query(FlowQuery);
-            Disconnect();
-            return response;
+            try
+            {
+                string FlowQuery = String.Concat(ControllerAddress, "s", flowrate, "\r");
+                return Query(FlowQuery);
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         public void StopStreaming()
         {
             Connect();
-            string StopCommand = String.Concat(CommandTypes.StopStreaming, "\r");
-            string response = Query(StopCommand);
-            Disconnect();
+            try
+            {
+                string StopCommand = String.Concat(CommandTypes.StopStreaming, "\r");
+                Query(StopCommand);
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         #endregion

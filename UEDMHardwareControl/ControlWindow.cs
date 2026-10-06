@@ -24,6 +24,7 @@ namespace UEDMHardwareControl
         public ControlWindow()
         {
             InitializeComponent();
+            comboBoxNovatechChannel.SelectedIndex = 0;
         }
 
         private void WindowLoaded(object sender, EventArgs e)
@@ -1673,6 +1674,11 @@ namespace UEDMHardwareControl
             controller.SaveParametersWithDialog();
         }
 
+        private void btQueryStirapRFFrequency_Click(object sender, EventArgs e)
+        {
+            controller.DisplayGreenSynthLastSettings();
+        }
+
         private void btUpdateStirapRFFrequency_Click(object sender, EventArgs e)
         {
             controller.EnableGreenSynth(true);
@@ -1698,6 +1704,21 @@ namespace UEDMHardwareControl
         private void cbStirapRFOn_CheckedChanged(object sender, EventArgs e)
         {
             controller.EnableGreenSynth(cbStirapRFOn.Checked);
+        }
+
+        private void btUpdateNovatech_Click(object sender, EventArgs e)
+        {
+            controller.UpdateNovatechUsingUIInput();
+        }
+
+        private void btQueryNovatech_Click(object sender, EventArgs e)
+        {
+            controller.QueryNovatech();
+        }
+
+        private void comboBoxNovatechChannel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (controller != null) controller.DisplayNovatechChannelSettings();
         }
 
         private void cbCHBTrigger_CheckedChanged(object sender, EventArgs e)

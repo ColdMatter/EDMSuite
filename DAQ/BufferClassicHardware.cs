@@ -280,7 +280,7 @@ namespace DAQ.HAL
             Instruments.Add("green", new HP8657ASynth("GPIB0::7::INSTR"));
             Instruments.Add("targetStepperControl", new StepperMotorController("ASRL4::INSTR"));
             Instruments.Add("bCurrentSource", new TwinleafCSB("ASRL13::INSTR"));
-
+            Instruments.Add("Novatech2channels", new Novatech426ASynth("ASRL14::INSTR"));
 
             // TCL, we can now put many cavities in a single instance of TCL (thanks to Luke)
             // multiple cavities share a single ramp (BaseRamp analog input) + trigger
