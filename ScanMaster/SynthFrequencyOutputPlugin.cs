@@ -28,6 +28,9 @@ namespace ScanMaster.Acquire.Plugins
 			settings["scanOnAmplitude"] = 170.254;
 			settings["offAmplitude"] = -130.0;
 			settings["offFrequency"] = 168.0;
+			// If true, at the end of the acquisition the UEDM hardware controller puts the synth back to the
+			// settings in its Stirap RF box, instead of this plugin setting it to offAmplitude/offFrequency
+			settings["restoreUEDMHardwareControllerSettings"] = false;
 		}
 
 		public override void AcquisitionStarting()
@@ -48,6 +51,23 @@ namespace ScanMaster.Acquire.Plugins
 
 		public override void AcquisitionFinished()
 		{
+			// Profiles saved before this setting existed don't have it, so treat a missing value as false
+			object restore = settings["restoreUEDMHardwareControllerSettings"];
+			if (restore != null && Convert.ToBoolean(restore))
+			{
+				synth.Disconnect();
+				try
+				{
+					UEDMHardwareControl.UEDMController hardwareController = (UEDMHardwareControl.UEDMController)Activator.GetObject(
+						typeof(UEDMHardwareControl.UEDMController), "tcp://localhost:1172/UEDMController.rem");
+					hardwareController.RestoreGreenSynthToUISettings();
+					return;
+				}
+				catch (Exception)
+				{
+					// Hardware controller not reachable - fall back to the usual off settings below
+				}
+			}
 			synth.Amplitude = (double)settings["offAmplitude"];
 			synth.Frequency = (double)settings["offFrequency"];
 			synth.Disconnect();
