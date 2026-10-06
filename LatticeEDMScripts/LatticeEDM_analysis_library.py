@@ -115,6 +115,8 @@ def GetScanSettings(Scan):
     bfieldDelay = Scan.ScanSettings["pg:bfieldDelay"]
     v1toMOTdelay = Scan.ScanSettings["pg:v2OffDupoint"]
     
+    F_offset = Scan.ScanSettings["out:offset"]
+    
     Tconv = 1/sampleRate * 1000 #convert to ms
     
     Settings = {"pointsPerScan":pointsPerScan, "start":ScanStart, \
@@ -126,7 +128,8 @@ def GetScanSettings(Scan):
                             "repumpDelay":repumpDelay, "repumpDuration":repumpDuration,\
                             "shutterslowDelay":shutterslowDelay, "v1 to MOT": v1toMOTdelay,\
                             "switch":Switch, "B field duration": bfieldDuration,\
-                            "B field delay":bfieldDelay}
+                            "B field delay":bfieldDelay,
+                            "Freq offset THz":F_offset}
     
     return Settings
 
