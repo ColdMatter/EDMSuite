@@ -36,6 +36,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Windfrieksynth F1 Amplitude output", typeof(WindfriekSynthF1AmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth OP Amplitude output", typeof(WindfriekOPAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
+			scanOutputPlugins.Add("Novatech synth frequency output", typeof(NovatechSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
             scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));
@@ -135,9 +136,10 @@ namespace ScanMaster.Acquire.Plugin
 			analogInputPlugins.Add("Analog input", typeof(DAQMxAnalogInputPlugin));
 			analogInputPlugins.Add("Wavemeter input", typeof(WavemeterInputPlugin));
 			analogInputPlugins.Add("Multiple wavemeter inputs", typeof(MultipleWavemeterInputPlugin));
+			analogInputPlugins.Add("Wavemeter and PD inputs", typeof(UEDMWavemeterPDPlugin));
 
-            //GPIB Input plugins
-            gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
+			//GPIB Input plugins
+			gpibInputPlugins.Add("Single Counter input", typeof(SingleCounterInputPlugin));
             gpibInputPlugins.Add("No GPIB input", typeof(NullGPIBInputPlugin));
 			gpibInputPlugins.Add("DMM GPIB input", typeof(DMMInputPlugin));
 			gpibInputPlugins.Add("GPIB input", typeof(GPIBInputPlugin));

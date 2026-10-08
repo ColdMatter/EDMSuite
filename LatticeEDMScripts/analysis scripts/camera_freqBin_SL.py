@@ -48,108 +48,16 @@ from scipy.ndimage import gaussian_filter
 import io
 import zipfile
 import xml.etree.ElementTree as ET
-from tkinter import Tk     # from tkinter import Tk for Python 3.x
-from tkinter.filedialog import askopenfilename,askopenfilenames
 
 import xmltodict
 
 import pandas as pd
-from tqdm import tqdm 
+from tqdm import tqdm
 
 from matplotlib.widgets import EllipseSelector
 
-def get_tiff():
-    """
-    Open a GUI to select a TIFF image stack and extract useful metadata.
-    """
-    root = Tk()
-    root.withdraw()
-    root.call('wm', 'attributes', '.', '-topmost', True)
-
-    file_path = askopenfilename(
-        title="Select a TIFF image stack",
-        filetypes=[("TIFF files", "*.tif *.tiff")]
-    )
-
-    if not file_path:
-        return None, None, None
-
-    file_name = os.path.basename(file_path)
-    file_date = " ".join(file_path.split(os.sep)[-3:-1])
-
-    return file_path, file_name, file_date
-
-
-from tkinter import filedialog
-
-def get_tiff_all(keyword, extension, selection=[]):
-    """
-    Open a GUI to select a TIFF image stack and extract useful metadata.
-    """
-    root = Tk()
-    root.withdraw()
-    root.call('wm', 'attributes', '.', '-topmost', True)
-
-#    file_path = askopenfilename(
-#        title="Select a TIFF image stack",
-#        filetypes=[("TIFF files", "*.tif *.tiff")]
-#    )
-    
-    folder_path = filedialog.askdirectory()
-    
-    wanted_extensions = ('.tif')  # add more if needed
-
-    filtered_file_paths = []
-    for root_dir, dirs, files in os.walk(folder_path):
-        for file in files:
-            if (
-                    file.lower().endswith(wanted_extensions)
-                    and keyword.lower() in file.lower()
-                    ):
-                filtered_file_paths.append(os.path.join(root_dir, file))
-            
-    #print(filtered_files)
-
-    #print(all_files)
-    
-    if not filtered_file_paths:
-        return None, None, None
-
-    file_names = []
-    for file in filtered_file_paths:
-        file_names.append(os.path.basename(file))
-#    file_dates = " ".join(filtered_file_paths.split(os.sep)[-3:-1])
-
-    if len(selection) > 0:
-        selected_file_paths = []
-        selected_file_names = []
-        for sele in selection:
-            for i in range(0, len(file_names)):
-                if file_names[i][:3] == sele:
-                    selected_file_paths.append(filtered_file_paths[i])
-                    selected_file_names.append(file_names[i])
-        return selected_file_paths, selected_file_names, folder_path
-    else:
-        return filtered_file_paths, file_names, folder_path#, file_dates
-    
-def bin_2d(arr, bin_h, bin_w, mode="mean"):
-    h, w = arr.shape
-    
-    # Trim array so it's divisible
-    arr = arr[:h - h % bin_h, :w - w % bin_w]
-    
-    # Reshape into blocks
-    reshaped = arr.reshape(
-        arr.shape[0] // bin_h, bin_h,
-        arr.shape[1] // bin_w, bin_w
-    )
-    
-    if mode == "mean":
-        return reshaped.mean(axis=(1, 3))
-    elif mode == "sum":
-        return reshaped.sum(axis=(1, 3))
-    else:
-        raise ValueError("mode must be 'mean' or 'sum'")
+# get_tiff(), get_tiff_all(), and bin_2d() now live in tools.py, shared
+# across camera analysis scripts -- call as tools.get_tiff_all(...) etc.
 
 #%% Selection
 #sele = ["003", "004", "005", "006", "007", "008", "009", "010", "011", "012"]
@@ -182,7 +90,7 @@ Max2 = 60
 Min2 = -60
 
 #%% Get camera images
-imagePaths, imageNames, folderPath = get_tiff_all("TOF", ".tif", selection=sele)
+imagePaths, imageNames, folderPath = tools.get_tiff_all("TOF", ".tif", selection=sele)
 
 if imagePaths is None:
     raise ValueError("Aucun fichier TIFF sélectionné.")
@@ -365,8 +273,8 @@ for i in range(0, len(imagePaths)):
         filtered_image_array_add_rot90 = np.rot90(filtered_image_array_add,k=kAdd)
     
     if Binning:
-        filtered_image_array_config1_rot90= bin_2d(signal_bfield1_rot90, binsize, binsize, mode="sum")
-        filtered_image_array_config2_rot90 = bin_2d(signal_bfield2_rot90, binsize, binsize, mode="sum")
+        filtered_image_array_config1_rot90= tools.bin_2d(signal_bfield1_rot90, binsize, binsize, mode="sum")
+        filtered_image_array_config2_rot90 = tools.bin_2d(signal_bfield2_rot90, binsize, binsize, mode="sum")
         
         diff = filtered_image_array_config1_rot90 - filtered_image_array_config2_rot90
         diff_rot90 = diff
@@ -379,7 +287,7 @@ for i in range(0, len(imagePaths)):
         Filtered_diffs[fileID] = filtered_image_array_diff_rot90
         
         add = (signal_bfield1+signal_bfield2)/2
-        filtered_image_array_add = bin_2d(add, binsize, binsize, mode="sum")
+        filtered_image_array_add = tools.bin_2d(add, binsize, binsize, mode="sum")
         add_rot90 = np.rot90(add,k=1)
         filtered_image_array_add_rot90 = np.rot90(filtered_image_array_add,k=kAdd)
     
@@ -488,8 +396,8 @@ for i in range(0, len(imagePaths)):
             Diff_array_rot_cropped = Diff_array_rot[yStart:yEnd,xStart:xEnd]
             
         if Binning:
-            sig1_binned = bin_2d(sig1, binsize, binsize, mode="sum")
-            sig2_binned = bin_2d(sig2, binsize, binsize, mode="sum")
+            sig1_binned = tools.bin_2d(sig1, binsize, binsize, mode="sum")
+            sig2_binned = tools.bin_2d(sig2, binsize, binsize, mode="sum")
             Diff_array_rot = sig1_binned - sig2_binned
             
             xStartbin = int(xStart/binsize)
@@ -590,7 +498,7 @@ binsize = 2
 
 
 
-binned_diff = bin_2d(filtered_image_array_diff_rot90, binsize, binsize, mode="sum")
+binned_diff = tools.bin_2d(filtered_image_array_diff_rot90, binsize, binsize, mode="sum")
 
 norm2 = TwoSlopeNorm(vmin=-1000, vcenter=0, vmax=1000)
 plt.imshow(binned_diff, cmap='seismic',norm= norm2, origin='lower')

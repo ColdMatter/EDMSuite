@@ -41,19 +41,19 @@ colors = prop_cycle.by_key()['color']
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "Aug 2026"
-date = "10"
+month = "Sept 2026"
+date = "22"
 #blockdrive=datadrive+"\\BlockData\\"
 
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
 print(drive)
 
-pattern="*4fv1*.zip"
+pattern="*setpoint*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["010", "011"]
+sele = ["004"]
 
 #%%
 LoadPasses = True
@@ -91,14 +91,14 @@ else:
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
 SigStart = 22
-SigEnd = 30
+SigEnd = 24
 BkgStart = 70
-BkgEnd = 80
+BkgEnd = 78
 
 showTOF = False
 shot_for_TOF = 17
 
-fTHz = 288
+fTHz = 270
 
 #%%
 OnBkgSubs = {}
@@ -236,7 +236,7 @@ if HasWM:
     
     
 #%% Ratio
-f_offset = f_iniTHzs[fileLabels[0]]
+f_offset = 270.259580 #f_iniTHzs[fileLabels[0]]
 
 Ratios = {}
 for i in range(0, len(fileLabels)):
@@ -276,11 +276,16 @@ for i in range(0, len(fileLabels)):
 #print("Errors of fit [mean, std, amp, shift]: ", errR)
 
 #%% Stack
+ExcludeLabels = ["002_0"] # bad data point in the first pass of file 002
+
 Rstack = 0 # Just to create a variable
-Xstack = 0 
+Xstack = 0
 
 for i in range(0, len(fileLabels)):
-    if i == 0:
+    if fileLabels[i] in ExcludeLabels:
+        print("Excluding " + fileLabels[i] + " from stack")
+        continue
+    if isinstance(Rstack, int):
         Rstack = Ratios[fileLabels[i]]
         Xstack = X_f_THz[fileLabels[i]]
     else:
@@ -296,7 +301,8 @@ Xstack_sorted = Xstack[sort_indices]
 Rstack_sorted = Rstack[sort_indices]
 
 #%%
-MA = 60
+offset = f_offset #284.4646
+MA = 5
 MoveAvg_R = tools.MovingAverage(MA, Rstack_sorted)
 MoveAvg_f = tools.MovingAverage(MA, Xstack_sorted)
 
@@ -305,12 +311,12 @@ title2="Gated TOF over " + Settings["param"] + " with " +\
     str(SigStart) + "ms to " + str(SigEnd) + "ms gate, files " +\
         str(sele)
 
-plt.plot((Xstack_sorted-f_offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
-plt.plot((MoveAvg_f-f_offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
-plt.xlabel("Relative frequency (MHz) to %.9g THz"%f_offset)
+#plt.plot((Xstack_sorted-offset)*1e6, Rstack_sorted, '.', label='Stacked raw')
+plt.plot((MoveAvg_f-offset)*1e6, MoveAvg_R, label="moving average of %g"%MA)
+plt.xlabel("Relative frequency (MHz) to %.10g THz"%offset)
 plt.ylabel("Ratio")
-#plt.xlim(0, 800)
-#plt.ylim(0.45, 0.49)
+#plt.xlim(-600, 400)
+#plt.ylim(0.4, 1.0)
 plt.title(title2+"\n4f v1 R line scan in Lattice")
 plt.legend()
 plt.show()   
@@ -318,7 +324,7 @@ plt.show()
 #%% Bin
 from scipy.stats import binned_statistic
 # 2. Define your bins (boundaries along the X-axis)
-fstep = 30
+fstep = 5
 bin_edges = np.arange(np.min(Xstack_sorted), np.max(Xstack_sorted), step=fstep* 1e-6)
 
 # 2. Compute binned averages
@@ -342,3 +348,95 @@ plt.ylabel("Ratio")
 plt.title(title2)
 plt.legend()
 plt.show()   
+
+#%% Export
+import pandas as pd
+
+ToSave = pd.DataFrame.from_dict({"Frequency (THz)":Xstack_sorted, "Ratio":Rstack_sorted})
+
+Save_csv = tools.save_dataframe_interactive(ToSave)
+
+#%% Selectively stack
+from scipy.stats import binned_statistic, sem
+# 2. Define your bins (boundaries along the X-axis)
+fstep = 10
+offset = 284.4646
+
+types = {"1.7W":['005', '006'],
+         "3.5W":['007'],
+         "5.7W":['009']}
+
+keys = list(types.keys())
+
+R_stacked = {}
+Freq = {}
+Sterr = {}  #Standard error of mean
+
+R_binned = {}
+Freq_binned = {}
+
+
+for i in range(0, len(keys)):
+    keyList = types[keys[i]]
+    toStackKeys = []
+    toStackX = []
+    toStackY = []
+    
+    for k in keyList: 
+        for f in fileLabels: 
+            if f[:3] == k:
+                toStackKeys.append(f)
+                toStackX.append(X_f_THz[f])
+                toStackY.append(Ratios[f])
+    
+    toStackX_flat = np.array(tools.flattenAnyList(toStackX))
+    toStackY_flat = np.array(tools.flattenAnyList(toStackY))
+    
+    # Get the indices that would sort Combi_ScanParams
+    sort_indices = np.argsort(toStackX_flat)
+
+    # Reorder both arrays using those indices
+    X_sorted = toStackX_flat[sort_indices]
+    R_sorted = toStackY_flat[sort_indices]
+    
+    R_stacked[keys[i]] = R_sorted
+    Freq[keys[i]] = X_sorted
+    
+    bin_edges = np.arange(np.min(X_sorted), np.max(X_sorted), step=fstep* 1e-6)
+
+    # 2. Compute binned averages and standard error of mean
+    bin_means, _, _ = binned_statistic(
+        x=X_sorted, values=R_sorted, statistic='mean', bins=bin_edges
+    )
+    bin_sems, _, _ = binned_statistic(x=X_sorted, values=R_sorted, 
+                                      statistic=sem, bins=bin_edges)
+
+    # 3. Convert bin edges to bin centers
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+
+    # 4. Filter out NaNs (empty bins) so they don't break the plot
+    valid_mask = ~np.isnan(bin_means)
+    BinnedX = bin_centers[valid_mask]
+    BinnedY = bin_means[valid_mask]
+    
+    R_binned[keys[i]] = BinnedY
+    Freq_binned[keys[i]] = BinnedX
+    Sterr[keys[i]] = bin_sems
+    
+    
+    plt.plot((BinnedX-offset)*1e6, BinnedY, '.', color=colors[i], label=keys[i])
+    plt.fill_between((BinnedX-offset)*1e6, y1=BinnedY-bin_sems, 
+                     y2=BinnedY+bin_sems, alpha=0.3)
+
+title2="Gated TOF over " + Settings["param"] + " with " +\
+    str(Settings["shotsPerPoint"]) + " shots per point \n from " +\
+    str(SigStart) + "ms to " + str(SigEnd) + "ms gate, files " +\
+        str(sele)
+
+plt.xlabel("Relative frequency (MHz) to %g THz"%f_iniTHz)
+plt.ylabel("On/Off ratio")
+plt.title(title2+"\n4f v1 R line scan in Lattice by power")
+plt.legend()
+plt.show()  
+    

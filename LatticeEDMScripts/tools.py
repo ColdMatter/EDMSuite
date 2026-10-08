@@ -22,6 +22,7 @@ from itertools import chain
 
 from tkinter import Tk     # from tkinter import Tk for Python 3.x
 from tkinter.filedialog import askopenfilename,askopenfilenames
+from tkinter import filedialog
 import tkinter as tk
 
 #% Some system settings for convenience
@@ -113,6 +114,33 @@ def save_last_directory(path):
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         f.write(path)
 
+def save_dataframe_interactive(
+    df, default_name="fitted_spectral_lines.csv"
+):
+    """Pops up a native file explorer window to select a save location and exports the DataFrame to CSV."""
+    # Create and hide the root Tkinter window so an extra blank GUI window doesn't linger
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)  # Bring window to front
+
+    # Prompt user with native 'Save As' dialog
+    file_path = filedialog.asksaveasfilename(
+        title="Save Fitted DataFrame to CSV",
+        initialfile=default_name,
+        defaultextension=".csv",
+        filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")],
+    )
+
+    root.destroy()  # Clean up GUI memory
+
+    # Export if a path was chosen
+    if file_path:
+        df.to_csv(file_path, index=False)
+        print(f"Saved {len(df)} rows to: {file_path}")
+        return file_path
+    else:
+        print("Export cancelled.")
+        return None
 
 def select_folder():
     # 1. Fetch the permanently stored starting location
@@ -137,6 +165,89 @@ def select_folder():
     else:
         print("Selection cancelled. Using last saved location next time.")
         return None
+
+def get_tiff():
+    """
+    Open a GUI to select a TIFF image stack and extract useful metadata.
+    """
+    root = Tk()
+    root.withdraw()
+    root.call('wm', 'attributes', '.', '-topmost', True)
+
+    file_path = askopenfilename(
+        title="Select a TIFF image stack",
+        filetypes=[("TIFF files", "*.tif *.tiff")]
+    )
+
+    if not file_path:
+        return None, None, None
+
+    file_name = os.path.basename(file_path)
+    file_date = " ".join(file_path.split(os.sep)[-3:-1])
+
+    return file_path, file_name, file_date
+
+def get_tiff_all(keyword, extension, selection=[]):
+    """
+    Open a GUI to select a folder and return all TIFF stacks in it
+    (optionally filtered by a filename keyword and/or a list of 3-digit
+    file ID prefixes).
+    """
+    root = Tk()
+    root.withdraw()
+    root.call('wm', 'attributes', '.', '-topmost', True)
+
+    folder_path = filedialog.askdirectory()
+
+    wanted_extensions = ('.tif')  # add more if needed
+
+    filtered_file_paths = []
+    for root_dir, dirs, files in os.walk(folder_path):
+        for file in files:
+            if (
+                    file.lower().endswith(wanted_extensions)
+                    and keyword.lower() in file.lower()
+                    ):
+                filtered_file_paths.append(os.path.join(root_dir, file))
+
+    if not filtered_file_paths:
+        return None, None, None
+
+    file_names = []
+    for file in filtered_file_paths:
+        file_names.append(os.path.basename(file))
+
+    if len(selection) > 0:
+        selected_file_paths = []
+        selected_file_names = []
+        for sele in selection:
+            for i in range(0, len(file_names)):
+                if file_names[i][:3] == sele:
+                    selected_file_paths.append(filtered_file_paths[i])
+                    selected_file_names.append(file_names[i])
+        return selected_file_paths, selected_file_names, folder_path
+    else:
+        return filtered_file_paths, file_names, folder_path
+
+def bin_2d(arr, bin_h, bin_w, mode="mean"):
+    """Bin a 2D array by summing/averaging bin_h x bin_w blocks of pixels."""
+    h, w = arr.shape
+
+    # Trim array so it's divisible
+    arr = arr[:h - h % bin_h, :w - w % bin_w]
+
+    # Reshape into blocks
+    reshaped = arr.reshape(
+        arr.shape[0] // bin_h, bin_h,
+        arr.shape[1] // bin_w, bin_w
+    )
+
+    if mode == "mean":
+        return reshaped.mean(axis=(1, 3))
+    elif mode == "sum":
+        return reshaped.sum(axis=(1, 3))
+    else:
+        raise ValueError("mode must be 'mean' or 'sum'")
 
 def MovingAverage(window_size, data):
     Data_series = pd.Series(data)
@@ -190,6 +301,12 @@ def VelocityfromFshift(dF, F0, angle):
 # Functions to fit
 def Line(x, a, b):
     return a*x + b
+
+def Inverse(x, a, b):
+    return a/x + b
+
+def Saturation(P, A, P_sat):
+    return A * (P/P_sat) / (1 + P/P_sat)
 
 def FitLine(Figure, xdata, ydata, p0, xstep=0.01, display=True, Toprint=True):
     fit, cov = curve_fit(Line, xdata, ydata, p0=p0)

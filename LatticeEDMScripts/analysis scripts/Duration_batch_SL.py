@@ -45,21 +45,23 @@ colors = prop_cycle.by_key()['color']
 ###When we are using Box:
 #datadrive=str(os.environ["Onedrive"]+"\\Desktop\\Lattice EDM\\data")
 datadrive = r"C:\Users\sl5119\Box\LatticeEDM\data"
-month = "July 2026"
-date = "30"
+month = "Sept 2026"
+date = "24"
 #blockdrive=datadrive+"\\BlockData\\"
-
+#
 drive = datadrive + "\\" + month + "\\" + date + "\\"# + subfolder
 print(drive)
 
-pattern="*duration*.zip"
+pattern="*Duration*.zip"
 files = glob.glob(f'{drive}{pattern}', recursive=True)
 print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
-sele = ["001", "005", "021"]
-
+#sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
+sele = ["001", "002"]
 #%%
+LoadPasses = True
+
 if len(files) > 0:
     print("%g matching files found. Loading"%len(files))
     Data = {}
@@ -74,21 +76,28 @@ if len(files) > 0:
             if fileLabel == sele[j]:
                 print("File "+fileLabel+" selected")
        ###
-                Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
-                print("loaded file " + files[i])
-                fileLabels.append(fileLabel)
-                Lasers.append(Laser)
+                if LoadPasses:
+                    Scans = EDM.ReadAllScansInZippedXML(files[i])
+                    for k in range(0, len(Scans)):
+                        Data[fileLabel+"_%g"%k] = Scans[k]
+                        print("loaded file " + files[i] + ", scan %g"%k)
+                        fileLabels.append(fileLabel+"_%g"%k)
+                        Lasers.append(Laser)
+                else:
+                    Data[fileLabel] = EDM.ReadAverageScanInZippedXML(files[i])
+                    print("loaded file " + files[i])
+                    fileLabels.append(fileLabel)
+                    Lasers.append(Laser)
 
 else:
     print("No matching files.")
 
-
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 24
-SigEnd = 27
+SigStart = 22
+SigEnd = 24
 BkgStart = 70
-BkgEnd = 80
+BkgEnd = 78
 
 showTOF = False
 shot_for_TOF = 20
@@ -110,7 +119,10 @@ Durations = []
 Ratios = []
 GoodData = [] #Append index here if fitted tau error is larger than tau
 
-for i in range(0, len(sele)):  #for i in range(0, len(files)):
+AllRatios = {}
+AllDurations = {}
+
+for i in range(0, len(fileLabels)):  #for i in range(0, len(files)):
     Scan = Data[fileLabels[i]]
     print('For file ' + re.split(r'[\\]', fileLabels[i])[-1])   #files[i]
     Settings = EDM.GetScanSettings(Scan)
@@ -135,6 +147,9 @@ for i in range(0, len(sele)):  #for i in range(0, len(files)):
     Tauerr[fileLabels[i]] = tauerr
     Base[fileLabels[i]] = base
     Baseerr[fileLabels[i]] = baseerr
+    
+    AllRatios[fileLabels[i]] = Ratio
+    AllDurations[fileLabels[i]] = ScanParams
     
     print('\n')
     
@@ -164,6 +179,89 @@ Scat = -1 / (fit[1] * np.log(BR))
 Scaterr = -fiterr[1] / (fit[1] * np.log(BR)) / (fit[1]**2 * np.log(BR))
 print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 
+#%% Selectively average and fit
+#(doesn't work) The fit chose forces amplitude + background = 1.0
+#Use weighted least square fitting where possible
+
+#types = {#"V3":['007', '010'],
+#         "4fv0, R&Q, 1W tot":['001', '006', '009'],
+#         "+4fv1, R, 500mW":['005', '008'],
+         #"only 4fv1, R, 500mW":['011'],
+#         "4fv0, also in OFF shots": ['014'],
+#         "+4fv1, also in OFF shots": ['016']}
+
+types = {"4fv0": ["002"]}
+
+Weighted = True
+
+keys = list(types.keys())
+
+Avg = {}
+Dur = {}
+StandardErr = {}
+Fit = {}
+Err = {}
+
+tspan = np.arange(0, 6000, 1)
+
+for i in range(0, len(keys)):
+    keyList = types[keys[i]]
+    toAvg = []
+    toAvgKeys = []
+    
+    for k in keyList:    
+        for f in fileLabels: 
+            if f[:3] == k:
+                toAvgKeys.append(f)
+                toAvg.append(AllRatios[f])
+    
+    avg = np.average(np.array(toAvg), axis=0)
+    dur = AllDurations[toAvgKeys[0]]
+    
+    Avg[keys[i]] = avg
+    Dur[keys[i]] = dur
+    
+    if len(toAvgKeys) > 1:
+        std = np.std(np.array(toAvg), axis=0)
+    else:
+        std = np.zeros(len(toAvg[0]))
+    
+    sterr = std/np.sqrt(len(toAvgKeys))
+    StandardErr[keys[i]] = sterr
+    
+    if len(toAvgKeys) > 1:
+        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
+                             p0=[1.0, 1800., 0.3],
+                             absolute_sigma=Weighted, sigma=sterr)
+    else:
+        fit, cov = curve_fit(tools.exp_decay, dur, avg, 
+                             p0=[1.0, 1800., 0.3])
+    err = np.sqrt(np.diag(cov))
+    
+    Fit[keys[i]] = fit
+    Err[keys[i]] = err
+    
+    plt.plot(dur, avg, '.', color=colors[i], label=keys[i])
+    if len(toAvgKeys) > 1:
+        plt.fill_between(dur, y1=avg-sterr, y2=avg+sterr, alpha=0.3,
+                         color=colors[i])
+
+    plt.plot(tspan, tools.exp_decay(tspan, *fit), color=colors[i],
+             label=r'$\tau=$%.5g+-%.4g $\mu$s'%(fit[1], err[1]))
+
+plt.xlabel(r'V0 slowing duration ($\mu$s)')
+plt.ylabel('On/Off ratio')
+plt.title('Averaged pumping curves with weighted fit')
+plt.ylim(0.3, 1.1)
+plt.legend(bbox_to_anchor=(1.0, 1.0))
+plt.show()
+
+#%%
+print("Fitted curve at 5ms: ", tools.exp_decay(5000, *fit))
+
+print("Fit values:", fit)
+print("Errors: ", err)
+
 #%% Stacked plots
 '''Plotting multiple decay curves on the same plot.
 
@@ -171,13 +269,15 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 
 '''
 
-types = {'001':'001 4f v0 R&Q', '005':'005 MW only', '021':'021 4f v0v1 R'}
-PlotFit = {'001':True, '005':True, '021':True}
-MovAvg = {'001':False, '005':False, '021':False}
+types = {'004':'004, pump with V0V1V2', 
+         '005':'005, pump with V0V1V2 + 610mW of 4fv0',
+         '006':'006, pump with V0V1V2 + 330mW of 4fv0'}
+PlotFit = {'004':True, '005':True, '006':True}
+MovAvg = {'004':False, '005':False, '006':False}
 
 BR = b0 + b1 + b2 + b3
 
-tspan = np.arange(0., 8000, 0.1)
+tspan = np.arange(0., 3000, 0.1)
 
 for i in range(0, len(sele)):
     Scan = Data[fileLabels[i]]
@@ -204,10 +304,10 @@ for i in range(0, len(sele)):
         
         print("\n")
 
-plt.title("MW and 4f repump effect on pumping, July 30th 2026")
-plt.xlabel("V0 slowing duration (μs)")
+plt.title("V3 pump-back, Aug 20th 2026, 2ms pump duration")
+plt.xlabel("V3 pump-back duration (μs)")
 plt.ylabel("Population remaining in optical cycle")
-plt.legend(bbox_to_anchor=(1.6, 1.1))
+plt.legend(bbox_to_anchor=(1.0, 1.1))
 plt.show()    
 
 #%% Combine multiple dataset into one

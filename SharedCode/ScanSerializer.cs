@@ -39,22 +39,22 @@ namespace Data.Scans
 		}
 
 		public void AppendFileToZip(string filePath, string entryName)
-        {
-            if (runningZipStream == null)
-                throw new InvalidOperationException("Zip not initialized. Call PrepareZip first.");
+		{
+			if (runningZipStream == null)
+				throw new InvalidOperationException("Zip not initialized. Call PrepareZip first.");
 
-            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-                ZipEntry entry = new ZipEntry(entryName);
-                runningZipStream.PutNextEntry(entry);
+			using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+			{
+				ZipEntry entry = new ZipEntry(entryName);
+				runningZipStream.PutNextEntry(entry);
 
-                fileStream.CopyTo(runningZipStream);
+				fileStream.CopyTo(runningZipStream);
 
-                runningZipStream.CloseEntry();
-            }
-        }
+				runningZipStream.CloseEntry();
+			}
+		}
 
-        public void CloseZip()
+		public void CloseZip()
         {
             if (runningZipStream != null)
             {

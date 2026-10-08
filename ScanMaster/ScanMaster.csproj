@@ -710,6 +710,7 @@
     <Compile Include="WindfriekSynthF1AmplitudeOutputPlugin.cs" />
     <Compile Include="WindfriekSynthF0AmplitudeOutputPlugin.cs" />
     <Compile Include="WindfriekSynthFrequencyOutputPlugin.cs" />
+    <Compile Include="NovatechSynthFrequencyOutputPlugin.cs" />
     <Compile Include="DualCCDPatternBuilder.cs" />
     <Compile Include="DualCCDPatternPlugin.cs" />
     <Compile Include="LeakTestPatternBuilder.cs" />

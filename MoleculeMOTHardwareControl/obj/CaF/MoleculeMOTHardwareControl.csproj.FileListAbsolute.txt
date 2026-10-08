@@ -19,7 +19,6 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\DAQ.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\MOTMaster.exe.config
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SharedCode.pdb
-C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.DAQmx.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\Ivi.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\NationalInstruments.Visa.xml
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\obj\CaF\MoleculeMOTHardwareControl.csproj.AssemblyReference.cache
@@ -46,3 +45,5 @@ C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpectrumDDS.dll
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpectrumDDSController.pdb
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpectrumDDSController.exe.config
 C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\SpectrumDDS.pdb
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\System.ValueTuple.dll
+C:\ControlPrograms\EDMSuite\MoleculeMOTHardwareControl\bin\CaF\System.ValueTuple.xml
