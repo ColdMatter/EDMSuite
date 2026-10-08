@@ -36,8 +36,8 @@ public class Patterns : MOTMasterScript
         */
 
         // Slowing Chirp, 5W ALS laser
-        Parameters["SlowingChirpStartTime"] = 200;//360; //400;// 380;
-        Parameters["SlowingChirpDuration"] = 1400;////1400;//1160; //1160
+        Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
+        Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
 
         // Slowing AOMS
 
@@ -108,12 +108,11 @@ public class Patterns : MOTMasterScript
         // Parameters["FreqCVB2"] = 0.0;
 
         // END OF PATTERN //
-
-        Parameters["ShutterEdgeDur"] = (int)Parameters["MagtrapDuration"] + (int)Parameters["HandoverDur"] + (int)Parameters["MoveTime"] + (int)Parameters["HandoverDur"];
-
         Parameters["TweezerCoilsHold"] = 10000;
+        Parameters["FinalCoilsHold"] = 10000;
+        Parameters["ShutterEdgeDur"] = (int)Parameters["MagtrapDuration"] + (int)Parameters["HandoverDur"] + (int)Parameters["MoveTime"] + (int)Parameters["HandoverDur"] + (int)Parameters["MoveTime"];
 
-        Parameters["FinalCoilsHold"] = 4000;
+
 
     }
 
@@ -249,10 +248,7 @@ public class Patterns : MOTMasterScript
         // CAMERA //
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-
-        //p.Pulse(0, ImageTweezerChamber, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");  //camera trigger for MOT recap 
-
-        p.Pulse(0, FinalHandoverEnd, (int)Parameters["FinalCoilsHold"], "cameraTrigger"); //Tweezer camera trig
+        p.Pulse(FinalHandoverEnd + 250, 0, (int)Parameters["FinalCoilsHold"], "cameraTrigger"); //Tweezer camera trig
 
         //p.Pulse(patternStartBeforeQ, imageTime + (int)Parameters["Frame0TriggerDuration"] + 5000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");//camera trigger bg
 
@@ -264,29 +260,32 @@ public class Patterns : MOTMasterScript
 
         // Slowing AOMs
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"], (2 * (int)Parameters["SlowingChirpDuration"]) + 20000, "bXLockBlock"); // Want it to be blocked for whole time that bX laser is moved
-        //p.Pulse(patternStartBeforeQ, 100, 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] - 100, (int)Parameters["SlowingChirpDuration"] + 100, "bXSlowingAOM"); //first pulse to slowing AOM
         p.Pulse(patternStartBeforeQ, (int)Parameters["slowingRepumpAOMOnStart"], (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] - (int)Parameters["slowingRepumpAOMOnStart"], "v10SlowingAOM"); //first pulse to slowing repump AOM
 
         // BX Shutter
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200, (int)Parameters["MagtrapDuration"] + 21000, "bXSlowingShutter");
 
-        //   p.Pulse(patternStartBeforeQ, BlueMOTEnd-3000, (int)Parameters["MagtrapDuration"]-900, "MOT1Shutter");
-        // p.Pulse(patternStartBeforeQ, BlueMOTEnd-1200, (int)Parameters["MagtrapDuration"]-1500, "MOT2Shutter");
-        //  p.Pulse(patternStartBeforeQ, BlueMOTEnd-1200, (int)Parameters["MagtrapDuration"]-1500, "MOT3Shutter");
+        // CaF MOT Shutters
+        p.AddEdge("MOT1Shutter", BlueMOTEnd - 1600, true);
+        p.AddEdge("MOT2Shutter", BlueMOTEnd - 600, true);
+        p.AddEdge("MOT3Shutter", BlueMOTEnd - 800, true);
 
-        p.Pulse(0, BlueMOTEnd - 1600, (int)Parameters["ShutterEdgeDur"], "MOT1Shutter");
-        p.Pulse(0, BlueMOTEnd - 600, (int)Parameters["ShutterEdgeDur"] - 950, "MOT2Shutter");
-        p.Pulse(0, BlueMOTEnd - 800, (int)Parameters["ShutterEdgeDur"] - 500, "MOT3Shutter");
+        p.AddEdge("MOT1Shutter", FinalHandoverStart - 1600, false);
+        p.AddEdge("MOT2Shutter", FinalHandoverStart - 600, false);
+        p.AddEdge("MOT3Shutter", FinalHandoverStart - 800, false);
 
-        //p.AddEdge("test10", FinalCoilsHold - 250, true); //Shutter CaF light to tweezer chamber - OPEN
-        //p.AddEdge("test10", ImageTweezerChamber+3000, false);
-        //p.Pulse(0, ImageTweezerChamber, (int)Parameters["ShutterEdgeDur"]-10000, "test10"); // SHUT DURING MAG TRAP & TRANSPORT / HANDOVER
 
+        // Tweezer Chamber CaF Light Shutter
+        //p.AddEdge("TweezerChamberMOTShutter", TweezerHandoverEnd - 1000, true); //Shutter CaF light to tweezer chamber - OPEN
+        //p.AddEdge("TweezerChamberMOTShutter", TweezerHandoverStart1, false);
+
+        // Transport Control
         p.AddEdge("transportTrack", 0, true);
+        p.AddEdge("transportTrack", MoveStart, false);
+        p.AddEdge("transportTrack", MoveBackStart, true);
 
-        p.DownPulse(0, MoveStart, (int)Parameters["TransportEdgeDur"] + (int)Parameters["TransportCoilsAtTweezersDur"], "transportTrack");
-
+        // YaG Compensating Shots
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"] - (int)Parameters["FlashToQ"], (int)Parameters["QSwitchPulseDuration"], "flashLamp");
         p.Pulse(patternStartBeforeQ, (int)Parameters["PatternLength"] - (int)Parameters["YagPreFire1"], (int)Parameters["QSwitchPulseDuration"], "qSwitch");
 

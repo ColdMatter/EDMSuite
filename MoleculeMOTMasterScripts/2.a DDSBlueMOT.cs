@@ -17,6 +17,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
         LoadGlobalParameters();
         Parameters["PatternLength"] = 50000;
+        Parameters["BMTriggerDuration"] = 1000;
 
         // Camera
 
@@ -101,6 +102,11 @@ public class Patterns : MOTMasterScript
         //Conveyor belt frequency
         // Parameters["FreqCVB2"] = 163.20;
         // Parameters["FreqCVB2"] = 0.0;
+
+
+        //Parameters["xShimLoadCurrent"] = -1.85;
+        //Parameters["yShimLoadCurrent"] = -3.0;
+        //Parameters["zShimLoadCurrent"] = 0.22;
 
         Parameters["BlueMOTDuration"] = 1000;
         Parameters["FreeExpTime"] = 1;
