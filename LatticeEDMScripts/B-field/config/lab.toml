@@ -1,0 +1,54 @@
+# Lab settings for the B-field programs: the facts about THIS bench that the
+# old scripts took as command-line flags every time.
+#
+# To change something on one machine only, put the changed keys in
+# config/lab.local.toml (same layout, git-ignored); it is merged on top.
+# Every run copies the merged config into its session json.
+
+[paths]
+# Where runs are written and where the analysis scripts look. The Box
+# folder; it holds a copy of the old IROP_research/result tree (copied
+# 2026-09-24) plus every new run, bucket by bucket.
+data_root = "C:/Users/cafmot/Box/LatticeEDM/EDM chamber/Magnetic shield/Test data"
+# Default bucket (sub-folder of data_root) per program. Pass --outdir to
+# file a run straight into its proper bucket instead of these.
+bucket_record = "newdata"
+bucket_degauss = "degaussingtest"
+bucket_relax = "degaussrelax"
+bucket_sf = "shield_sf"
+
+# ---------------------------------------------------------------- sensors
+# The sensor heads (number, QuSpin head ID, USB ID, location note) are in
+# config/sensors.toml -- edited from the GUI (QZFM tab, "Manage sensors")
+# or by hand.
+
+[qzfm.defaults]
+gain = "1x"
+zero_cond_pT_per_s = 100.0
+lock_timeout_s = 600.0
+poll_s = 2.0
+zero_shift_warn_pT = 200.0
+
+[daq]
+# NI USB-6008. Leave device empty to auto-detect (refused if two NI
+# devices are present).
+device = ""
+fs_hz = 1200.0          # keeps the 923 Hz carrier alias off 77 Hz
+vrange_V = 2.0
+# Input slots: the (Z, Y) inputs of the 1st and 2nd sensor of a run, in the
+# order the sensors are chosen. The USB-6008 has four differential inputs,
+# so two dual-axis sensors per run; the program tells you which sensor to
+# plug into which slot.
+slots = [["ai0", "ai1"], ["ai2", "ai3"]]
+
+[degausser]
+port = "COM5"
+max_amp_A = 8.0         # vendor recipe = unit firmware cap
+# the standing winding since 2026-08-13
+winding = "parallel"
+
+[scope]
+# Tektronix TBS1052B-EDU carries the S(f) drive current. Empty = the one
+# USB instrument VISA finds (refused if there are several).
+resource = ""
+channel = "CH1"

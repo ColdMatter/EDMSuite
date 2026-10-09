@@ -1,0 +1,18 @@
+# The sensor heads. Written by the GUI (Manage sensors); hand
+# edits are fine too. One block per physical QZFM head:
+#   number      stays with the head wherever it is mounted
+#   label       the QuSpin head ID printed on it (Z3D0-...)
+#   usb_serial  the USB ID the PC sees on its COM port (FTDI)
+#   location    free note: where it is in the experiment
+
+[[sensors]]
+number = 1
+label = "Z3D0-AB3Q"
+usb_serial = "A10QHMQMA"
+location = ""
+
+[[sensors]]
+number = 2
+label = "Z3D0-AB3S"
+usb_serial = "A10QHJ1ZA"
+location = ""
