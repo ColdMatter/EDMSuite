@@ -10,7 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IMAQ</RootNamespace>
     <AssemblyName>IMAQ</AssemblyName>
+<<<<<<< HEAD
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+=======
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+>>>>>>> 677c08cdbcd698cb6f72fd8a18e73fd3eccfd5bd
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
