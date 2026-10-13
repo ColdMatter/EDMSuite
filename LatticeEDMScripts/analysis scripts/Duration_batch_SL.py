@@ -16,6 +16,11 @@ import sys
 import os
 import re
 
+# On macOS, pythonnet needs pointing at Mono before anything imports clr
+if sys.platform == "darwin":
+    from pythonnet import load
+    load("mono", libmono="/Library/Frameworks/Mono.framework/Versions/Current/lib/libmonosgen-2.0.dylib")
+
 # Add LatticeEDMScripts (parent of "analysis scripts") to the path so the
 # library imports work whatever the working directory or OS
 try:
