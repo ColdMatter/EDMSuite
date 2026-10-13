@@ -36,6 +36,7 @@ namespace ScanMaster.Acquire.Plugin
 			scanOutputPlugins.Add("Windfrieksynth F1 Amplitude output", typeof(WindfriekSynthF1AmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Windfrieksynth OP Amplitude output", typeof(WindfriekOPAmplitudeOutputPlugin));
 			scanOutputPlugins.Add("Synth amplitude output", typeof(SynthAmplitudeOutputPlugin));
+			scanOutputPlugins.Add("Novatech synth frequency output", typeof(NovatechSynthFrequencyOutputPlugin));
 			scanOutputPlugins.Add("PG parameter scan", typeof(PGOutputPlugin));
             scanOutputPlugins.Add("TCL scan", typeof(TCLOutputPlugin));
             scanOutputPlugins.Add("DTCL scan", typeof(DTCLOutputPlugin));

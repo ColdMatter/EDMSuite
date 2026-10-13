@@ -124,10 +124,10 @@ namespace DAQ.HAL
             AddDigitalOutputChannel("microwaveSwitch", digitalPatternBoardAddress2, 1, 7);
 
             // CaF MOT Shutters
-            AddDigitalOutputChannel("MOT3Shutter", digitalPatternBoardAddress, 1, 1); // horizontal (not V1)
+            AddDigitalOutputChannel("MOT3Shutter", digitalPatternBoardAddress2, 3, 7); // horizontal (not V1)
             AddDigitalOutputChannel("MOT1Shutter", digitalPatternBoardAddress2, 3, 5); // vertical
             AddDigitalOutputChannel("MOT2Shutter", digitalPatternBoardAddress2, 3, 6); // horizontal V1
-
+            AddDigitalOutputChannel("TweezerChamberMOTShutter", digitalPatternBoardAddress, 1, 1); // Shutter for the CaF light to the tweezer chamber
             AddDigitalOutputChannel("bXSlowingShutter", digitalPatternBoardAddress2, 2, 6);
 
             // Caf optical pumping

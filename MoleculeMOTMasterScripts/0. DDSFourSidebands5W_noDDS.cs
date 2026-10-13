@@ -19,12 +19,17 @@ public class Patterns : MOTMasterScript
         Parameters["PatternLength"] = 50000;
 
         // Camera
-        Parameters["Frame1Trigger"] = 5500;
+        Parameters["Frame0Trigger"] = 4000;
+        Parameters["Frame1Trigger"] = 10000;
 
         //PMT
 
         // Slowing Chirp, 5W ALS laser250, 1250)
-        
+
+        Parameters["xShimLoadCurrent"] = -1.85;
+        Parameters["yShimLoadCurrent"] = -3.0;
+        Parameters["zShimLoadCurrent"] = 0.22;
+
         Parameters["SlowingChirpStartTime"] = 250;//360; //400;// 380;
         Parameters["SlowingChirpDuration"] = 1250;////1400;//1160; //1160
         /*
@@ -208,7 +213,7 @@ public class Patterns : MOTMasterScript
         int patternStartBeforeQ = (int)Parameters["TCLBlockStart"];
         //int BXShutterClose = patternStartBeforeQ + (int)Parameters["BXShutterClose"];
 
-        //p.AddEdge("rbAbsImagingBeam", 0, true);
+        p.AddEdge("QCLShutter", 0, true);
 
         MOTMasterScriptSnippet lm = new LoadMoleculeMOTNoSlowingEdge(p, Parameters);  // This is how you load "preset" patterns.
 
@@ -223,13 +228,7 @@ public class Patterns : MOTMasterScript
         p.Pulse(patternStartBeforeQ, (int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"], (int)Parameters["MOTCoilsSwitchOff"] - ((int)Parameters["SlowingChirpStartTime"] + (int)Parameters["SlowingChirpDuration"] + 200), "bXSlowingShutter");
 
         p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for first frame
-
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"], (int)Parameters["Frame0TriggerDuration"], "rbAbsImgCamTrig"); //camera trigger for first frame
-
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame1Trigger"], (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for recap
-
-        //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger");
-
+        //p.Pulse(patternStartBeforeQ, (int)Parameters["Frame0Trigger"]+9000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); //camera trigger for recap
         //p.Pulse(patternStartBeforeQ, (int)Parameters["MOTCoilsSwitchOff"] + 1000, (int)Parameters["Frame0TriggerDuration"], "cameraTrigger"); // in sequence background
         //live lifetime
         //for (int i = 0; i < 12; i++)
