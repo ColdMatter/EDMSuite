@@ -59,7 +59,7 @@ if sys.platform == "win32":
 else:
     datadrive = os.path.expanduser("~/Library/CloudStorage/Box-Box/LatticeEDM/data")  # TODO: set Mac path
 month = "Oct 2026"
-date = "10"
+date = "12"
 #blockdrive=datadrive+"\\BlockData\\"
 #
 drive = os.path.join(datadrive, month, date, "")# + subfolder
@@ -71,7 +71,7 @@ print("Matching files: ", [os.path.basename(f) for f in files])
 
 #%% Selection
 #sele = ["001", "005", "006", "007", "008", "009", "010", "011", "014", "016"]
-sele = ["003", "004", "005", "006", "008"]
+sele = ["001", "002", "003", "004"]
 #%%
 LoadPasses = True
 
@@ -107,8 +107,8 @@ else:
 
 #%% Analysis settings
 """Can also read from scan settings (optional, for later)"""
-SigStart = 23
-SigEnd = 28
+SigStart = 24
+SigEnd = 30
 BkgStart = 70
 BkgEnd = 78
 
@@ -205,11 +205,10 @@ print("\n Scatterint rate (MHz): %.4g +- %.3g"%(Scat, Scaterr))
 #         "4fv0, also in OFF shots": ['014'],
 #         "+4fv1, also in OFF shots": ['016']}
 
-types = {"Up to V2": ["003"],
-         "+ V3": ["004"],
-         "+ 4fv0, R&Q": ["005"],
-         "+ 4fv1, R": ["006"],
-         "+ 4fv1, Q": ["008"]}
+types = {"Up to V3": ["001"],
+         "+ 4fv0, R&Q": ["003"],
+         "+ 4fv1, R&Q": ["004"]
+         }
 
 Weighted = True
 UseIndivP0 = True   # True: initial guess = mean of the individual-scan fits (cell above); False: fixed p0_default
@@ -224,7 +223,7 @@ Fit = {}
 Err = {}
 BadFit = {}
 
-tspan = np.arange(0, 7000, 1)
+tspan = np.arange(0, 8000, 1)
 
 for i in range(0, len(keys)):
     keyList = types[keys[i]]
