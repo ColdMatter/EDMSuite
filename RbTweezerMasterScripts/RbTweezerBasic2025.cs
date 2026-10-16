@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 26000;
+        Parameters["PatternLength"] = 37000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -28,14 +28,14 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 9.878; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -2.375; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.0378; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 9.9405; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -3.7875; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = -0.0346; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
-        Parameters["tMolassesShimXccValue"] = 10.0; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.35; // 0.3 // 0.52
+        Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
+        Parameters["tMolassesShimYccValue"] = 3.1225; // 3.8 // 3.29
+        Parameters["tMolassesShimZccValue"] = 0.4068; // 0.3 // 0.52
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
@@ -64,10 +64,10 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 10000;
+        Parameters["tRbRedMOTDuration"] = 20000;
         Parameters["tMolassesDelay"] = 1;
         Parameters["tRbRedMolassesDuration"] = 5000;
-        Parameters["tImgTOF"] = 1;
+        Parameters["tImgTOF"] = 1000;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
     }

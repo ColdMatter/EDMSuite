@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 51000;
+        Parameters["PatternLength"] = 105000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -28,9 +28,9 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 8.0177; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -3.3111; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.1967; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 9.9763; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -2.0943; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = 0.1164; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
@@ -39,27 +39,27 @@ public class Patterns : MOTMasterScript
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.9504; //Cool at 2.4 - 2.6
-        Parameters["tMOTRep"] = 3.8599;
-        Parameters["tMOTCoolVVA"] = 1.5727; // between 0 and 1 V
-        Parameters["tMOTRepVVA"] = 2.9010;
+        Parameters["tMOTCool"] = 3.4800; //Cool at 2.4 - 2.6
+        Parameters["tMOTRep"] = 3.00;
+        Parameters["tMOTCoolVVA"] = 1.1702; // between 0 and 1 V
+        Parameters["tMOTRepVVA"] = 2.00;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
-        Parameters["tImgRep"] = 0.028; // 3.0
-        Parameters["tImgCoolVVA"] = 0.405;
-        Parameters["tImgRepVVA"] = 1.050;
+        Parameters["tImgCool"] = 0.6; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgRep"] = 3.00; // 3.0
+        Parameters["tImgCoolVVA"] = 0.44;
+        Parameters["tImgRepVVA"] = 0.40;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool1"] = 0.0000;
-        Parameters["tMolRep1"] = 0.35;
-        Parameters["tMolCoolVVA1"] = 0.4886;
-        Parameters["tMolRepVVA1"] = 1.00;
+        Parameters["tMolCool1"] = 1.6361;
+        Parameters["tMolRep1"] = 3.00;
+        Parameters["tMolCoolVVA1"] = 0.5132;
+        Parameters["tMolRepVVA1"] = 0.41;
 
-        Parameters["tMolCool2"] = 0.0000;
-        Parameters["tMolRep2"] = 0.00;
-        Parameters["tMolCoolVVA2"] = 0.40;
-        Parameters["tMolRepVVA2"] = 0.47;
+        Parameters["tMolCool2"] = 1.0828;
+        Parameters["tMolRep2"] = 3.00;
+        Parameters["tMolCoolVVA2"] = 0.4545;
+        Parameters["tMolRepVVA2"] = 0.40;
 
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
@@ -68,14 +68,13 @@ public class Patterns : MOTMasterScript
 
         // Timing
         Parameters["tRbMOTStart"] = 10;
-        Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 20000;
+        Parameters["tRbRedMOTDuration"] = 70000;
         Parameters["tMolassesDelay"] = 1;
         Parameters["tRbRedMolassesDuration"] = 10000;
-        Parameters["tImgTOF"] = 1;
+        Parameters["tImgTOF"] = 1000;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
-        Parameters["tTweezerBackgroundDelay"] = 600; 
+        Parameters["tTweezerBackgroundDelay"] = 2000; 
     }
     // Digital Pattern
     public override PatternBuilder32 GetDigitalPattern()
@@ -104,12 +103,11 @@ public class Patterns : MOTMasterScript
 
         // Red Molasses Laser
         p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"], "tCoolSwitch"); // Red Molasses Coolng Pulse
-        p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"], "tRepSwitch"); // Red Molasses Repump Pulse
+        p.Pulse(RedMolassesStart, 0, (int)Parameters["tRbRedMolassesDuration"] - 100, "tRepSwitch"); // Red Molasses Repump Pulse
 
         // Tweezer
         p.AddEdge("tTweezerModSwitch", RedMOTStart, true); // Turn OFF tweezer modulation 
-        p.AddEdge("tTweezerSwitch", RedMolassesStart - (int)Parameters["tDropTime"], true); // Turn OFF tweezer to drop atoms before true loading
-        p.AddEdge("tTweezerSwitch", RedMolassesStart, false); // Turn ON tweezer switch at start of molasses loading
+
         p.AddEdge("tTweezerSwitch", BgTOFStart, true); // Turn OFF tweezer switch after imaging to drop atoms
         p.AddEdge("tTweezerSwitch", BgStart, false); // Turn ON tweezer switch after background delay to img background
 

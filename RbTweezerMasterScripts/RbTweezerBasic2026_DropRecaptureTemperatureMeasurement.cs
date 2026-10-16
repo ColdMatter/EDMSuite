@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 38000;
+        Parameters["PatternLength"] = 60000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -28,9 +28,9 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 9.8780; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -2.3751; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.0378; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 9.9405; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -3.7875; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = -0.0346; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
         Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
@@ -39,27 +39,27 @@ public class Patterns : MOTMasterScript
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
-        Parameters["tMOTCool"] = 3.7001; //Cool at 2.4 - 2.6
-        Parameters["tMOTRep"] = 3.8599;
-        Parameters["tMOTCoolVVA"] = 1.8286; // between 0 and 1 V
-        Parameters["tMOTRepVVA"] = 2.9010;
+        Parameters["tMOTCool"] = 4.1794; //Cool at 2.4 - 2.6
+        Parameters["tMOTRep"] = 2.2053;
+        Parameters["tMOTCoolVVA"] = 2.4424; // between 0 and 1 V
+        Parameters["tMOTRepVVA"] = 1.6205;
 
         // Imaging Cooling and Repump VCO & VVA
-        Parameters["tImgCool"] = 1.840; // 3.6 - 4.0, resonance is 4.0
+        Parameters["tImgCool"] = 0.67; // 3.6 - 4.0, resonance is 4.0
         Parameters["tImgRep"] = 0.028; // 3.0
-        Parameters["tImgCoolVVA"] = 0.405;
+        Parameters["tImgCoolVVA"] = 0.42;
         Parameters["tImgRepVVA"] = 1.050;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool1"] = 0.00;
-        Parameters["tMolRep1"] = 0.35;
-        Parameters["tMolCoolVVA1"] = 0.55;
+        Parameters["tMolCool1"] = 1.9745;
+        Parameters["tMolRep1"] = 1.1108;
+        Parameters["tMolCoolVVA1"] = 0.4232;
         Parameters["tMolRepVVA1"] = 1.00;
 
-        Parameters["tMolCool2"] = 0.00;
-        Parameters["tMolRep2"] = 0.00;
-        Parameters["tMolCoolVVA2"] = 0.40;
-        Parameters["tMolRepVVA2"] = 0.47;
+        Parameters["tMolCool2"] = 2.6926;
+        Parameters["tMolRep2"] = 4.1274;
+        Parameters["tMolCoolVVA2"] = 0.4303;
+        Parameters["tMolRepVVA2"] = 0.9105;
 
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
@@ -70,14 +70,14 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 10000;
+        Parameters["tRbRedMOTDuration"] = 20000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 5000;
+        Parameters["tRbRedMolassesDuration"] = 10000;
         Parameters["tImgTOF"] = 1000;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
         Parameters["tDropDuration"] = 20;
-        Parameters["tTweezerImg2Delay"] = 900; 
+        Parameters["tTweezerImg2Delay"] = 2000; 
     }
 
     // Digital Pattern

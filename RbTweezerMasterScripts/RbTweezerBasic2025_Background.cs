@@ -14,7 +14,7 @@ public class Patterns : MOTMasterScript
         Parameters = new Dictionary<string, object>();
 
         // General
-        Parameters["PatternLength"] = 31000;
+        Parameters["PatternLength"] = 42000;
         Parameters["TCLBlockStart"] = 0;
         Parameters["tScanCount"] = 0;
 
@@ -28,14 +28,14 @@ public class Patterns : MOTMasterScript
         Parameters["tMOTccSwitch"] = 5.5;
 
         // Shim Coils Default
-        Parameters["tShimXccValue"] = 9.878; // 8.8; //8.8; //  0.0
-        Parameters["tShimYccValue"] = -2.375; // 3.8;//3.8; // -2.0
-        Parameters["tShimZccValue"] = -0.0378; // 0.3; //0.3; // -0.85
+        Parameters["tShimXccValue"] = 9.9405; // 8.8; //8.8; //  0.0
+        Parameters["tShimYccValue"] = -3.7875; // 3.8;//3.8; // -2.0
+        Parameters["tShimZccValue"] = -0.0346; // 0.3; //0.3; // -0.85
 
         // Shim Coils Molasses
-        Parameters["tMolassesShimXccValue"] = 10.0; // 8.8 // 10.0
-        Parameters["tMolassesShimYccValue"] = 3.29; // 3.8 // 3.29
-        Parameters["tMolassesShimZccValue"] = 0.35; // 0.3 // 0.52
+        Parameters["tMolassesShimXccValue"] = 10.0000; // 8.8 // 10.0
+        Parameters["tMolassesShimYccValue"] = 3.1225; // 3.8 // 3.29
+        Parameters["tMolassesShimZccValue"] = 0.4068; // 0.3 // 0.52
 
         // tRb AOMs 
         // MOT Cooling and Repump VCO & VVA
@@ -51,10 +51,10 @@ public class Patterns : MOTMasterScript
         Parameters["tImgRepVVA"] = 1.050;
 
         // Molasses Cooling and Repump VCO & VVA
-        Parameters["tMolCool"] = 0.0;
-        Parameters["tMolRep"] = 0.79;
-        Parameters["tMolCoolVVA"] = 0.45;
-        Parameters["tMolRepVVA"] = 0.6;
+        Parameters["tMolCool"] = 0.2718;
+        Parameters["tMolRep"] = 1.8552;
+        Parameters["tMolCoolVVA"] = 0.4382;
+        Parameters["tMolRepVVA"] = 1.9732;
 
         // Tweezer Control
         Parameters["tTweezerSetVCO"] = 9.0; // 10 -> 110 MHz
@@ -64,13 +64,12 @@ public class Patterns : MOTMasterScript
         // Timing
         Parameters["tRbMOTStart"] = 10;
         Parameters["tDropTime"] = 10;
-        Parameters["tRbRedMOTDuration"] = 10000;
+        Parameters["tRbRedMOTDuration"] = 20000;
         Parameters["tMolassesDelay"] = 1;
-        Parameters["tRbRedMolassesDuration"] = 5000;
-        Parameters["tImgTOF"] = 1;
+        Parameters["tRbRedMolassesDuration"] = 10000;
+        Parameters["tImgTOF"] = 1000;
         Parameters["tMOTExposure"] = 1;
         Parameters["tTweezerExposure"] = 10000;
-        Parameters["tTweezerBackgroundDelay"] = 1; // 20000
     }
     // Digital Pattern
     public override PatternBuilder32 GetDigitalPattern()
